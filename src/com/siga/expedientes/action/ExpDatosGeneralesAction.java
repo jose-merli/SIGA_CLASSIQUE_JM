@@ -1467,6 +1467,12 @@ public class ExpDatosGeneralesAction extends MasterAction
 		            		Hashtable hEjSancion = new Hashtable();
 		            		hEjSancion.put("idInstitucion",userBean.getLocation());
 		            		hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+		            		//aalg: para poder modificar el estado a todos los denunciados
+		            		hEjSancion.put("IdInstitucion_tipoExpediente", expBean.getIdInstitucion_tipoExpediente());
+		            		hEjSancion.put("IdTipoExpediente", expBean.getIdTipoExpediente());
+		            		hEjSancion.put("numeroExpediente", expBean.getNumeroExpediente());
+		            		hEjSancion.put("anioExpediente", expBean.getAnioExpediente());
+		            		
 		            		request.getSession().setAttribute("ejecucionSancion",hEjSancion);
 		            		forward = "ejecucionSancion"; 
 		            		

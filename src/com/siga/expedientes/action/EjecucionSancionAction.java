@@ -6,6 +6,7 @@
 package com.siga.expedientes.action;
 
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
+import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.expedientes.form.EjecucionSancionForm;
 import com.siga.general.MasterAction;
@@ -54,9 +56,14 @@ public class EjecucionSancionAction extends MasterAction {
 			Hashtable hEjSancion = (Hashtable)request.getSession().getAttribute("ejecucionSancion");
 			String idInstitucion=(String)hEjSancion.get("idInstitucion");
 			String idPersona=(String)hEjSancion.get("idPersona");
+			Integer idInstitucion_tipoExpediente = (Integer)hEjSancion.get("IdInstitucion_tipoExpediente");
+			Integer IdTipoExpediente = (Integer)hEjSancion.get("IdTipoExpediente");
+			Integer numeroExpediente=(Integer)hEjSancion.get("numeroExpediente");
+			Integer anioExpediente=(Integer)hEjSancion.get("anioExpediente");		
 		
 			//Comienzo la transaccion:
 			tx.begin();
+			//aalg:se modifica primero el estado del denunciado que está grabado en exp_expediente
 			if (form.isBajaTurno()){
 				ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 				//Obligo a que no use internamente una transaccion.
@@ -78,6 +85,37 @@ public class EjecucionSancionAction extends MasterAction {
 				CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
 				c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
 			}
+			//aalg: se buscan los denunciados para modificarles el estado
+			ExpExpedienteAdm exp = new ExpExpedienteAdm(this.getUserBean(request));
+			Vector vDenunciado = exp.getDenunciados(idInstitucion, idInstitucion_tipoExpediente.toString(), anioExpediente.toString(), numeroExpediente.toString(), IdTipoExpediente.toString());
+				
+			for (int  j = 0; j < vDenunciado.size(); j++){
+				Hashtable h = new Hashtable();
+				h = (Hashtable)vDenunciado.get(j);
+				idPersona = (String)h.get("IDPERSONA");
+				if (form.isBajaTurno()){
+					ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
+					//Obligo a que no use internamente una transaccion.
+					 tAdm.insertarBajaEnTurnos(idPersona,idInstitucion,form.getMotivo());
+				}
+				if (form.isBajaColegial()){
+					CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+					c1Adm.insertarBajaColegial(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+				}
+				if (form.isBajaEjercicio()){
+					CenDatosColegialesEstadoAdm c2Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+					c2Adm.insertarBajaEnEjercicio(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+				}
+				if (form.isInhabilitacion()){
+					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+					c3Adm.insertarInhabilitacion(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+				}
+				if (form.isSuspension()){
+					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+					c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+				}
+				
+			}
 			//Fin de la transaccion:
 		    tx.commit();
 		}catch(Exception e){
@@ -86,5 +124,4 @@ public class EjecucionSancionAction extends MasterAction {
 		
 		return exitoModal("messages.updated.success",request);
 	}
-
 }

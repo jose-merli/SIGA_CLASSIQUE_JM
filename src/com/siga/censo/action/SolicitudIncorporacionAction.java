@@ -86,6 +86,7 @@ import es.satec.businessManager.BusinessManager;
 public class SolicitudIncorporacionAction extends MasterAction
 {
 	final int solicitudDesestima = -2;
+	final int solicitudDesestimaInhabilitacion = -3;
 	
 		/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -279,11 +280,17 @@ public class SolicitudIncorporacionAction extends MasterAction
 			CenPersonaBean perBean = null;
 			perBean= obtenerDatosPersona(miFormulario.getNIFCIF(),request);
 				
-				
+			//aalg: incidencia 142 (INC_03706_SIGA)	
 			if (tipoSolicitud.intValue() == this.solicitudDesestima) {
 				
 				String msj=UtilidadesString.getMensajeIdioma(usr,
 						"messages.censo.solicitudIncorporacion.errorSolicitudDesestimada");	
+			  	msj+=" Sus datos son: "+miFormulario.getNIFCIF()+"-"+
+			  			perBean.getNombre()+" "+perBean.getApellido1()+" "+perBean.getApellido2();
+				return exito(msj,request);
+			} else if (tipoSolicitud.intValue() == this.solicitudDesestimaInhabilitacion) {
+				String msj=UtilidadesString.getMensajeIdioma(usr,
+						"messages.censo.solicitudIncorporacion.errorSolicitudDesestimadaInhabilitado");	
 			  	msj+=" Sus datos son: "+miFormulario.getNIFCIF()+"-"+
 			  			perBean.getNombre()+" "+perBean.getApellido1()+" "+perBean.getApellido2();
 				return exito(msj,request);
@@ -898,9 +905,15 @@ public class SolicitudIncorporacionAction extends MasterAction
 					ClsConstants.ESTADO_COLEGIAL_SUSPENSION)
 			{
 				// Desestimar solicitud y avisar
-				mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), 
-						"censo.solicitudIncorporacion.literal.DesestimarSolicitud");
-				return this.solicitudDesestima;
+				//aalg: incidencia 142 (INC_03706_SIGA)	Controlar la inhabilitación
+				if (estado.intValue() == ClsConstants.ESTADO_COLEGIAL_INHABILITACION)
+					//mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), 
+					//		"censo.solicitudIncorporacion.literal.DesestSolicitudInhabilitado");
+					return this.solicitudDesestimaInhabilitacion;
+				else
+					//mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), 
+						//"censo.solicitudIncorporacion.literal.DesestimarSolicitud");
+					return this.solicitudDesestima;
 			}
 			
 			// El estado es Baja Colegial
@@ -1293,4 +1306,5 @@ public class SolicitudIncorporacionAction extends MasterAction
 		request.setAttribute("modal","editar");
 		return "exitoGuardar"; 
 	}
+	
 }

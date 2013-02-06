@@ -38,6 +38,7 @@ import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDatosCVAdm;
@@ -340,20 +341,30 @@ public class EnvioInformesGenericos extends MasterReport {
 			String sHoy = sdf2.format(hoy);
 
 			FacFacturaAdm facturaAdm = new FacFacturaAdm(usrBean);
-			CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
 
 			Vector vDatosInforme = facturaAdm.selectFacturasMoroso(
 					idInstitucion, idPersona, null, null, alFacturasPersona,
 					null, false, true, usrBean.getLanguage());
 
 			Hashtable htCabeceraInforme = new Hashtable();
+			
+			CenClienteAdm admCli = new CenClienteAdm(usrBean);
 
-			Hashtable htCol = admCol.obtenerDatosColegiado(
+
+			Hashtable htCol = admCli.obtenerDatosColegiadoONo(true,
 					idInstitucion.toString(), idPersona, usrBean.getLanguage());
 			// se añade esta linea para que recupere todos los campos de la
 			// select que esta en la función obtenerDatosColegiado(..)
 			// y posteriormente utilizarla en las plantillas.
-			htCabeceraInforme.putAll(htCol);
+			//aalg: se controla que no sea colegiado. INC_10396_SIGA
+			if (htCol == null){
+				htCol = admCli.obtenerDatosColegiadoONo(false,
+						idInstitucion.toString(), idPersona, usrBean.getLanguage());
+			}
+			//aalg: por si no hay datos
+			if (htCol != null){
+				htCabeceraInforme.putAll(htCol);
+			}
 
 			String direccion = "";
 			if (htCol != null && htCol.size() > 0) {
