@@ -1110,78 +1110,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @throws ClsExceptions
 	 */
 	public Hashtable obtenerDatosColegiado(String idInstitucion, String idPersona, String lenguaje)throws ClsExceptions{
-		Hashtable ht=null;
-		String lg=lenguaje.toUpperCase();
-		String hombre=UtilidadesString.getMensajeIdioma(lg,"censo.sexo.hombre");
-		String mujer=UtilidadesString.getMensajeIdioma(lg,"censo.sexo.mujer");
-		
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),idInstitucion);
-		codigos.put(new Integer(3),idInstitucion);
-        codigos.put(new Integer(4),idPersona);
-        String consultaLetrado=
-			"select "+
-			"decode(p."+CenPersonaBean.C_SEXO+",'H','"+hombre+"','M','"+mujer+"','') SEXO_LETRADO,"+
-			"F_SIGA_CALCULONCOLEGIADO(c."+CenColegiadoBean.C_IDINSTITUCION+",c."+CenColegiadoBean.C_IDPERSONA+") NCOLEGIADO_LETRADO,"+
-			"p."+CenPersonaBean.C_APELLIDOS1+"||' '||p."+CenPersonaBean.C_APELLIDOS2+"||', '|| p."+CenPersonaBean.C_NOMBRE+" NOMBRE_LETRADO,"+
-			"p."+CenPersonaBean.C_APELLIDOS1+ " APELLIDO1_LETRADO,"+
-			"p."+CenPersonaBean.C_APELLIDOS2+ " APELLIDO2_LETRADO,"+
-			"p."+CenPersonaBean.C_NOMBRE+ " N_LETRADO,"+
-			" F_SIGA_GETRECURSO(tra."+CenTratamientoBean.C_DESCRIPCION +", 1) TRATAMIENTO, "+
-			"tra."+CenTratamientoBean.C_IDTRATAMIENTO +" IDTRATAMIENTO,"+
-			"d2.*,"+
-			"d6."+CenDireccionesBean.C_TELEFONO1+" TELEFONO1_LETRADO,"+
-			"d6."+CenDireccionesBean.C_TELEFONO2+" TELEFONO2_LETRADO,"+
-			"d6."+CenDireccionesBean.C_MOVIL+" MOVIL_LETRADO,"+
-			"d6."+CenDireccionesBean.C_FAX1+" FAX1"+
-			" from "+
-			CenPersonaBean.T_NOMBRETABLA+" p,"+
-			CenColegiadoBean.T_NOMBRETABLA+" c,"+
-			CenClienteBean.T_NOMBRETABLA+" cl,"+
-			CenTratamientoBean.T_NOMBRETABLA+" tra,"+		
-			"(select d."+CenDireccionesBean.C_IDPERSONA+", d."+CenDireccionesBean.C_DOMICILIO+"||' '||d."+CenDireccionesBean.C_CODIGOPOSTAL+"||' '||pb."+CenPoblacionesBean.C_NOMBRE+" DIRECCION_LETRADO,"+
-			"d.DOMICILIO DIRECCION_LETR," +
-			"d.CODIGOPOSTAL CP_LETR," +
-			"pb.NOMBRE POBLACION_LETR," +
-			"d.poblacionextranjera POBLACION_EXTRANJERA,"+
-			"(select pr.nombre from cen_provincias pr where pr.idprovincia=d.idprovincia) PROVINCIA_LETR"+
-			"   from "+CenDireccionesBean.T_NOMBRETABLA+" d,"+CenPoblacionesBean.T_NOMBRETABLA+" pb,"+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" td "+
-			"  where d."+CenDireccionesBean.C_IDINSTITUCION+"=:1"+
-			"    and d."+CenDireccionesBean.C_IDINSTITUCION+"= td."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
-			"    and d."+CenDireccionesBean.C_IDDIRECCION+"= td."+CenDireccionTipoDireccionBean.C_IDDIRECCION+
-			"    and d."+CenDireccionesBean.C_IDPERSONA+"= td."+CenDireccionTipoDireccionBean.C_IDPERSONA+
-			"    AND d."+CenDireccionesBean.C_FECHABAJA+" is null "+
-			"    and td."+CenTipoDireccionBean.C_IDTIPODIRECCION+"=2 "+
-			
-			"    and d."+CenDireccionesBean.C_IDPOBLACION+"=pb."+CenPoblacionesBean.C_IDPOBLACION+"(+)"+
-			"  order by d."+CenDireccionesBean.C_FECHAMODIFICACION+" desc "+
-			")    d2,"+
-			"(select d."+CenDireccionesBean.C_IDPERSONA+",d."+CenDireccionesBean.C_TELEFONO1+",d."+CenDireccionesBean.C_TELEFONO2+",d."+CenDireccionesBean.C_MOVIL+",d."+CenDireccionesBean.C_FAX1+
-			"   from "+CenDireccionesBean.T_NOMBRETABLA+" d,"+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" td "+
-			"  where d."+CenDireccionesBean.C_IDINSTITUCION+"=:2"+
-			"    and d."+CenDireccionesBean.C_IDINSTITUCION+"= td."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
-			"    and d."+CenDireccionesBean.C_IDDIRECCION+"= td."+CenDireccionTipoDireccionBean.C_IDDIRECCION+
-			"    and d."+CenDireccionesBean.C_IDPERSONA+"= td."+CenDireccionTipoDireccionBean.C_IDPERSONA+
-			"    AND d."+CenDireccionesBean.C_FECHABAJA+" is null "+
-			"    and td."+CenTipoDireccionBean.C_IDTIPODIRECCION+"=6 "+
-			"  order by d."+CenDireccionesBean.C_FECHAMODIFICACION+" desc "+
-			")    d6 "+
-			"where c."+CenColegiadoBean.C_IDINSTITUCION+"=:3"+
-			"  and c."+CenColegiadoBean.C_IDINSTITUCION+"=cl."+CenClienteBean.C_IDINSTITUCION+
-			"  and p."+CenPersonaBean.C_IDPERSONA+" = :4"+
-			"  and p."+CenPersonaBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA+
-			"  and p."+CenPersonaBean.C_IDPERSONA+"=cl."+CenClienteBean.C_IDPERSONA+
-			"  and p."+CenPersonaBean.C_IDPERSONA+"=d2."+CenDireccionesBean.C_IDPERSONA+"(+)"+
-			"  and p."+CenPersonaBean.C_IDPERSONA+"=d6."+CenDireccionesBean.C_IDPERSONA+"(+)"+
-			"  and cl."+ CenClienteBean.C_IDTRATAMIENTO+"= tra."+CenTratamientoBean.C_IDTRATAMIENTO+
-			"  and rownum <2";
-		
-		RowsContainer rc = this.findBind(consultaLetrado,codigos);
-		if(rc!=null && rc.size()==1){
-			ht=((Row)rc.get(0)).getRow();
-		}
-		return ht;		
+		return new CenClienteAdm(usrbean).obtenerDatosColegiadoONo(true, idInstitucion, idPersona, lenguaje);
 	}
 	
 	public Vector getInformeLetrado (String idInstitucion, String idPersona, String idioma, boolean isInforme) throws ClsExceptions {

@@ -2490,7 +2490,26 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 
 		
-}
+	}
+	//aalg: función para obtener los idPersona de los denunciados del expediente
+	public Vector getDenunciados(String institucion, String instiTipo, String anio, String numero, String idTipo) throws ClsExceptions, SIGAException
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append("");
+		sql.append("SELECT IDPERSONA ");
+		sql.append("FROM EXP_DENUNCIADO ");
+		sql.append("WHERE IDINSTITUCION = " + institucion + " ");
+		sql.append("AND IDTIPOEXPEDIENTE = " + idTipo + " ");
+		sql.append("AND NUMEROEXPEDIENTE = "  + numero + " ");
+		sql.append("AND ANIOEXPEDIENTE = " + anio + " ");
+		sql.append("AND IDINSTITUCION_TIPOEXPEDIENTE = " + instiTipo + " ");
+
+		try {
+			return this.selectGenerico(sql.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion sobre los denunciantes de un expediente.");
+		}
+	}
 
 	
 	
