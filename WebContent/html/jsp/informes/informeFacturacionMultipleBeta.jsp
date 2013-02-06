@@ -70,6 +70,7 @@
 					
 					var grupoFact =  document.getElementById("grupoFacturacion").value;
 					var datos = "idFacturacionIni" + "==" + idFactIni + "##" + "idFacturacionFin" + "==" + idFactFin + "##"+ "grupoFacturacion" + "==" + grupoFact + "##"+ "idInstitucion" + "==" + idInstitucion;
+					
 					document.InformesGenericosForm.datosInforme.value=datos;
 					
 					if(document.getElementById("informeUnico").value=='1'){
@@ -116,10 +117,10 @@
 			
 				<% if (esConsejo) { %>
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.institucion"/>&nbsp;(*)
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px;" id="colegioFacturacion">
 								<%=optionsInstituciones%>
 							</select>
@@ -127,30 +128,30 @@
 					</tr>							
 				
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.grupo"/>&nbsp;(*)
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px;" id="grupoFacturacion" disabled>
 							</select>						
 						</td>
 					</tr>
 					
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px" id="idFacturacionInicio" disabled>
 							</select>						
 						</td>
 					</tr>
 					
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px;" id="idFacturacionFin" disabled>
 							</select>											
 						</td>
@@ -169,30 +170,30 @@
 
 				<% 	} else { %>
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.grupo"/>&nbsp;(*)
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px;" id="grupoFacturacion">
 							</select>						
 						</td>
 					</tr>	
 					
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px" id="idFacturacionInicio" disabled>
 							</select>						
 						</td>
 					</tr>
 					
 					<tr>
-						<td class="labelText" width="140px">
+						<td class="labelText" width="140px" style="vertical-align: middle;">
 							<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />
 						</td>
-						<td>
+						<td style="vertical-align: middle;">
 							<select styleClass="boxCombo" style="width:800px;" id="idFacturacionFin" disabled>
 							</select>											
 						</td>
@@ -214,7 +215,7 @@
 				<% } %>			
 				
 				<tr>
-					<td class="labelText" colspan="2">
+					<td class="labelText" colspan="2" style="vertical-align: middle;">
 						<siga:Idioma key="factSJCS.informes.informeMultiple.mensaje" />
 					</td>
 				</tr>				
