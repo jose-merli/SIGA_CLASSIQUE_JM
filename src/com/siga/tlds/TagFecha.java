@@ -203,7 +203,7 @@ public class TagFecha extends TagSupport {
 				}
 			}
 			if ((this.disabled == null)||((this.disabled != null)&&this.disabled.equals("false"))){
-				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
+				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img id=\"calendario_"+ this.nombreCampo +"\" src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			}
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
