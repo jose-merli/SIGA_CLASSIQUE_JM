@@ -382,12 +382,12 @@
 		{	
 			sub();	
 			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario
-			//if(isNaN(document.ExpDatosGeneralesForm.anioExpDisciplinario.value) || isNaN(document.ExpDatosGeneralesForm.numExpDisciplinario.value)){
+			if(isNaN(document.ExpDatosGeneralesForm.anioExpDisciplinario.value) || isNaN(document.ExpDatosGeneralesForm.numExpDisciplinario.value)){
 				alert('<siga:Idioma key="messages.general.aviso.valorCampo"/> <siga:Idioma key="<%=nombreExpDisciplinario%>" /> <siga:Idioma key="messages.general.aviso.numericoEntero"/>');
 				
 				fin();
 				return false;
-			//}
+			}
 				
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
