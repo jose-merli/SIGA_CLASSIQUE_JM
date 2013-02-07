@@ -80,7 +80,7 @@
 					}
 		
 				} else {
-					alert("Seleccione un pago");
+					alert("<siga:Idioma key='informes.sjcs.pagos.literal.sinpago'/>");
 					fin();
 					return false;
 				} 			 

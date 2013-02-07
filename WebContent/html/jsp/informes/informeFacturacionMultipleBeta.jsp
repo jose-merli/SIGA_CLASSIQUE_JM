@@ -89,7 +89,7 @@
 					}
 					
 				} else {
-					alert("Seleccione una facturacion");
+					alert("<siga:Idioma key='factSJCS.informes.informeMultiple.sinfacturacion'/>");
 					fin();
 					return false;
 				} 
