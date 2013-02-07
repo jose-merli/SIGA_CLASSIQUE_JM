@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +37,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.oracle.vmm.client.provider.ovm22.ws.sps.ArrayList;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.general.SIGAException;
