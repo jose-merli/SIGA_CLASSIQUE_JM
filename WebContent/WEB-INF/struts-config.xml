@@ -3303,6 +3303,12 @@
 		<action path="/CEN_Poblaciones" type="com.siga.censo.action.PoblacionesAction" scope="request">
 		</action>		
 		
+		<action path="/GEN_Juzgados" type="com.siga.general.JuzgadosAction" scope="request">
+		</action>
+		
+		<action path="/GEN_Comisarias" type="com.siga.general.ComisariasAction" scope="request">
+		</action>			
+		
 		<action path="/JGR_DatosEconomicosEJG" type="com.siga.gratuita.action.DatosEconomicosEJGAction" name="DatosEconomicosEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/datosEconomicos.jsp"/>
 			<forward name="ingresos" path="/html/jsp/gratuita/datosEconomicosIngresos.jsp"/>
