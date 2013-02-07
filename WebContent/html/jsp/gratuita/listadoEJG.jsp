@@ -107,7 +107,7 @@
 		   tamanoCol="5,13,13,5,6,15,9,10,14,10"
 		   alto="100%" 
 		   ajustePaginador="true"
-		   activarFilaSel="true" >
+		   ajusteBotonera="true" >
 
 	<%if (resultado.size()>0){%>
   			<%

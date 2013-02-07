@@ -139,6 +139,7 @@
 		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante"
 		   tamanoCol="5,15,15,5,6,15,9,10"
 		   alto="100%" 
+		   ajuste="28"
 		   ajustePaginador="true"
 		   ajusteBotonera="true" >
 			
