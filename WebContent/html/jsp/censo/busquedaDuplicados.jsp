@@ -188,7 +188,7 @@
 		<siga:ConjCampos leyenda="censo.busquedaDuplicados.coincidencias.cabecera">
 			<table class="tablaCampos" align="center" width="100%">
 				<tr>
-					<td colspan="3" class="labelText">
+					<td colspan="4" class="labelText">
 						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.explicacion"/>
 					</td>
 				</tr>
@@ -201,18 +201,6 @@
 						<html:checkbox styleid="chkApellidos" name="MantenimientoDuplicadosForm" property="chkApellidos" /> 
 						<label for="chkApellidos"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.apellidos"/></label>
 					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<html:checkbox styleid="chkIdentificador" name="MantenimientoDuplicadosForm" property="chkIdentificador" /> 
-						<label for="chkIdentificador"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nifCif"/></label>
-					</td>
-					<td class="labelText">
-						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" /> 
-						<label for="chkNumColegiado"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.numeroColegiado"/></label>
-					</td>
-				</tr>
-				<tr>
 					<td class="labelText" style="align:right">
 						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.ordenacion"/>
 						<html:select name="MantenimientoDuplicadosForm" property="campoOrdenacion" styleClass="boxCombo">
@@ -224,7 +212,16 @@
 							<html:option value="desc" key="orden.literal.descendente"></html:option>
 						</html:select>
 					</td>
-					
+				</tr>
+				<tr>
+					<td class="labelText">
+						<html:checkbox styleid="chkIdentificador" name="MantenimientoDuplicadosForm" property="chkIdentificador" /> 
+						<label for="chkIdentificador"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nifCif"/></label>
+					</td>
+					<td class="labelText">
+						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" /> 
+						<label for="chkNumColegiado"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.numeroColegiado"/></label>
+					</td>
 					<td class="labelText" style="align:right">
 						<html:select name="MantenimientoDuplicadosForm" property="tipoConexion" styleClass="boxCombo">
 							<html:option value="intersect"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.todos"/></html:option>
