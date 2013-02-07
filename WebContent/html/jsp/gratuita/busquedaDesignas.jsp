@@ -94,7 +94,7 @@ String[] getdatos = { usr.getLocation() };
 					calidadSel.add(0,idcalidad+","+calidadidinstitucion);
 				} 
 			}else{
-				if (!calidad.equals("")&&(calidad!=null)){					
+				if ((calidad!=null)&&!calidad.equals("")){					
 					calidadSel.add(0,calidad+","+idInstitucion);
 				}
 			}
