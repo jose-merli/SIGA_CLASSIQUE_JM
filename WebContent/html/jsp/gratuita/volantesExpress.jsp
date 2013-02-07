@@ -1077,7 +1077,7 @@ jQuery.noConflict();
 		if(combo!="-1"){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
   				type: "POST",
-				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria2",
+				url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria2",
 				data: "idCombo="+combo,
 				dataType: "json",
 				success: function(json){		
@@ -1102,7 +1102,7 @@ jQuery.noConflict();
 		if(codigo!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
   				type: "POST",
-				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria3",
+				url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria3",
 				data: "codigo="+codigo,
 				dataType: "json",
 				success: function(json){		

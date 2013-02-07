@@ -1090,7 +1090,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			if(comboComisaria.value!=""){
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	   				type: "POST",
-					url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria",
+					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria",
 					data: "idCombo="+comboComisaria.value,
 					dataType: "json",
 					success: function(json){		

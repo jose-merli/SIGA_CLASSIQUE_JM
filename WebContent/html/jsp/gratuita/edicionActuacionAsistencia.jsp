@@ -643,7 +643,7 @@
 		
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoComisarias.do?modo=getAjaxComisaria2",
+				url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria2",
 				data: "idCombo="+comboComisaria.value,
 				dataType: "json",
 				success: function(json){		
