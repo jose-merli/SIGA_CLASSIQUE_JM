@@ -213,7 +213,7 @@ public class SolicitudesModificacionAction extends MasterAction {
 			
 			// Obtengo el UserBean, el identificador de la institucion y el de la persona
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
-			//String idInstitucion=user.getLocation();
+			String idInstitucionOri=user.getLocation();
 			//Long idPersona=new Long(1000); // Para pruebas
 			Long idPersona=new Long(user.getIdPersona());
 			
@@ -234,8 +234,12 @@ public class SolicitudesModificacionAction extends MasterAction {
 				user.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 				hash.put("IDINSTITUCION",miForm.getIdInstitucion());
 				hash.put("IDPERSONA",miForm.getIdPersona());
+				
+				hash.put("IDINSTITUCIONORIGEN",idInstitucionOri);
+				hash.put("USUMODIFICACIONORIGEN",user.getUserName());
+				
 			} else {
-				hash.put("IDINSTITUCION",user.getLocation());
+				hash.put("IDINSTITUCION",idInstitucionOri);
 				hash.put("IDPERSONA",idPersona.toString());
 			}
 			admin.prepararInsert(hash);
@@ -612,6 +616,8 @@ public class SolicitudesModificacionAction extends MasterAction {
 			request.setAttribute("IDINSTITUCION", idInstitucion);
 			request.setAttribute("IDPERSONA", idPersona.toString());
 			request.setAttribute("IDPERSONASOL", miForm.getIdPersona());
+			//Le enviamos un atributo tipo para saber si es llamado desde la modal o la pantalla principal
+			request.setAttribute("TIPO", "modal");
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 

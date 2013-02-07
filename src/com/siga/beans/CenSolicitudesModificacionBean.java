@@ -20,7 +20,9 @@ public class CenSolicitudesModificacionBean extends MasterBean{
 	private Long idPersona;	
 	private Integer idTipoModificacion;
 	private String fechaAlta;	
-	private Integer idEstadoSolic;	
+	private Integer idEstadoSolic;
+	private Integer idInstitucionOrigen;
+	private Integer idUsuModificacionOrigen;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDESMODIFICACION";
@@ -33,6 +35,8 @@ public class CenSolicitudesModificacionBean extends MasterBean{
 	static public final String C_IDTIPOMODIFICACION	= "IDTIPOMODIFICACION";
 	static public final String C_FECHAALTA	= "FECHAALTA";
 	static public final String C_IDESTADOSOLIC	= "IDESTADOSOLIC";	
+	static public final String C_IDINSTITUCIONORIGEN	= "IDINSTITUCIONORIGEN";
+	static public final String C_USUMODIFICACIONORIGEN	= "USUMODIFICACIONORIGEN";	
 	
 
 	// Metodos SET
@@ -43,6 +47,8 @@ public class CenSolicitudesModificacionBean extends MasterBean{
 	public void setIdTipoModificacion (Integer id)	{ this.idTipoModificacion = id; }
 	public void setFechaAlta (String fecha)	{ this.fechaAlta = fecha; }	
 	public void setIdEstadoSolic (Integer id)	{ this.idEstadoSolic = id; }	
+	public void setIdInstitucionOrigen (Integer id)	{ this.idInstitucionOrigen = id; }	
+	public void setUsuModificacionOrigen (Integer id)	{ this.idUsuModificacionOrigen = id; }	
 
 	// Metodos GET
 	public Long getIdSolicitud () 	{ return this.idSolicitud; }
@@ -52,4 +58,6 @@ public class CenSolicitudesModificacionBean extends MasterBean{
 	public Integer getIdTipoModificacion ()	{ return this.idTipoModificacion; }
 	public String getFechaAlta ()	{ return this.fechaAlta; }	
 	public Integer getIdEstadoSolic ()	{ return this.idEstadoSolic; }	
+	public Integer getIdInstitucionOrigen ()	{ return this.idInstitucionOrigen; }	
+	public Integer getUsuModificacionOrigen ()	{ return this.idUsuModificacionOrigen; }	
 }

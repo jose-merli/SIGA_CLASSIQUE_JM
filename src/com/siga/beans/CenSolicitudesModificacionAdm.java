@@ -40,7 +40,9 @@ public class CenSolicitudesModificacionAdm extends MasterBeanAdministrador {
 							CenSolicitudesModificacionBean.C_FECHAALTA,							
 							CenSolicitudesModificacionBean.C_IDESTADOSOLIC,							
 							CenSolicitudesModificacionBean.C_FECHAMODIFICACION,
-							CenSolicitudesModificacionBean.C_USUMODIFICACION};
+							CenSolicitudesModificacionBean.C_USUMODIFICACION,
+							CenSolicitudesModificacionBean.C_IDINSTITUCIONORIGEN,
+							CenSolicitudesModificacionBean.C_USUMODIFICACIONORIGEN};
 		return campos;
 	}
 	
@@ -73,7 +75,9 @@ public class CenSolicitudesModificacionAdm extends MasterBeanAdministrador {
 			bean.setFechaAlta(UtilidadesHash.getString(hash,CenSolicitudesModificacionBean.C_FECHAALTA));
 			bean.setIdEstadoSolic (UtilidadesHash.getInteger(hash,CenSolicitudesModificacionBean.C_IDESTADOSOLIC));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenSolicitudesModificacionBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSolicitudesModificacionBean.C_USUMODIFICACION));			
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSolicitudesModificacionBean.C_USUMODIFICACION));
+			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash,CenSolicitudesModificacionBean.C_IDINSTITUCIONORIGEN));
+			bean.setUsuModificacionOrigen(UtilidadesHash.getInteger(hash,CenSolicitudesModificacionBean.C_USUMODIFICACIONORIGEN));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -103,6 +107,8 @@ public class CenSolicitudesModificacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,CenSolicitudesModificacionBean.C_FECHAALTA,b.getFechaAlta());
 			UtilidadesHash.set(htData,CenSolicitudesModificacionBean.C_FECHAMODIFICACION,b.getFechaMod());			
 			UtilidadesHash.set(htData,CenSolicitudesModificacionBean.C_USUMODIFICACION,b.getUsuMod());
+			UtilidadesHash.set(htData,CenSolicitudesModificacionBean.C_IDINSTITUCIONORIGEN,b.getIdInstitucionOrigen());
+			UtilidadesHash.set(htData,CenSolicitudesModificacionBean.C_USUMODIFICACIONORIGEN,b.getUsuModificacionOrigen());
 		}
 		catch (Exception e) {
 			htData = null;

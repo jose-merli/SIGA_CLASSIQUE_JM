@@ -33,6 +33,7 @@
 	Long idPersona=new Long((String)request.getAttribute("IDPERSONA")); 
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION");
 	String idPersonaSol=(String)request.getAttribute("IDPERSONASOL");
+	String idTipoSol=(String)request.getAttribute("TIPO");
 	
 	//MHG Incidencia 30
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
@@ -102,10 +103,16 @@
 								<tr>				
 									<td class="labelText" style="width:20%;">
 										<siga:Idioma key="censo.solicitudTextoLibre.literal.tipoModificacion"/>&nbsp;(*)
-									</td>				
-									<td>
+									</td>
+									<% if (idTipoSol == null){ %>
+									<td>	
 										<siga:ComboBD nombre ="cmbTipoModificacion" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
-									</td>								
+									</td>	
+									<% } else { %>
+									<td>
+										<siga:ComboBD nombre ="cmbTipoModificacion" elementoSelstring="10" readonly="true" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
+									</td>
+									<% }%>	
 								</tr>
 								<!-- FILA -->
 								<tr>				
@@ -133,7 +140,11 @@
 				 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
 				 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 			-->
-			<siga:ConjBotonesAccion botones="G,R" clase="botonesDetalle"  />
+			<% if (idTipoSol == null){ %>
+				<siga:ConjBotonesAccion botones="G,R" clase="botonesDetalle"  />
+			<% } else { %>
+				<siga:ConjBotonesAccion botones="Y,R,C" clase="botonesDetalle"  />
+			<% }%>
 		<% } %>
 		<!-- FIN: BOTONES REGISTRO -->
 	
@@ -147,15 +158,35 @@
 				document.forms[0].reset();
 			}
 		
+			//Asociada al boton GuardarCerrar -->
+			function accionGuardarCerrar() 
+			{
+				sub();	
+				if (validateSolicitudesModificacionForm(document.SolicitudesModificacionForm)){
+					document.forms[0].submit();	
+					top.cierraConParametros("NORMAL");
+				} else{
+					fin();
+					return false;
+				}
+			}
+			
 			//Asociada al boton Guardar -->
 			function accionGuardar() 
 			{	
 				sub();	
 				if (validateSolicitudesModificacionForm(document.SolicitudesModificacionForm)){
 					document.forms[0].submit();
+					top.cierraConParametros("NORMAL");
 				}else{
 					fin();
 				}		
+			}
+			
+			<!-- Asociada al boton Cerrar -->
+			function accionCerrar() 
+			{		
+				window.top.close();
 			}
 			
 		</script>
