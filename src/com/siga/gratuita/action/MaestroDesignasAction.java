@@ -981,7 +981,11 @@ public class MaestroDesignasAction extends MasterAction {
 			htDesigna.put(ScsDesignaBean.C_IDTURNO,miform.getIdTurno());
 			htDesigna.put(ScsDesignaBean.C_NUMERO,miform.getNumero());
 			htDesigna.put(ScsDesignaBean.C_NUMPROCEDIMIENTO,miform.getNumeroProcedimiento());
-			htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,miform.getAnioProcedimiento());
+			if (miform.getAnioProcedimiento() == null)
+				htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,"");
+			else
+				htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,miform.getAnioProcedimiento());
+			
 			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1"))
 				htDesigna.put(ScsDesignaBean.C_IDPROCEDIMIENTO,miform.getIdProcedimiento());
 			if(miform.getIdJuzgado()!=null && !miform.getIdJuzgado().equals("")&& !miform.getIdJuzgado().equals("-1")){
