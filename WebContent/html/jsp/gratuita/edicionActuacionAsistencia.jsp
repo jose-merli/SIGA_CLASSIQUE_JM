@@ -695,7 +695,7 @@
 		
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	   			type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado3",
+				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
 				data: "idCombo="+comboJuzgado.value,
 				dataType: "json",
 				success: function(json){		

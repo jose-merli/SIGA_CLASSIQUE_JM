@@ -94,7 +94,7 @@ String[] getdatos = { usr.getLocation() };
 					calidadSel.add(0,idcalidad+","+calidadidinstitucion);
 				} 
 			}else{
-				if (calidad!=null && !calidad.equals("")){					
+				if (!calidad.equals("")&&(calidad!=null)){					
 					calidadSel.add(0,calidad+","+idInstitucion);
 				}
 			}
@@ -550,7 +550,7 @@ String[] getdatos = { usr.getLocation() };
 			if(comboJuzgado.value!=""){
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		   			type: "POST",
-					url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
 					data: "idCombo="+comboJuzgado.value,
 					dataType: "json",
 					success: function(json){		

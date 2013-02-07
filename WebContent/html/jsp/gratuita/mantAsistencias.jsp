@@ -1135,7 +1135,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			if(comboJuzgado.value!=""){
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	   				type: "POST",
-					url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado2",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
 					data: "idCombo="+comboJuzgado.value,
 					dataType: "json",
 					success: function(json){		

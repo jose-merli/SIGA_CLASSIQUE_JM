@@ -43,7 +43,7 @@
 		if(combo!="-1"){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 						type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado3",
+				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
 				data: "idCombo="+combo,
 				dataType: "json",
 				success: function(json){		
@@ -66,7 +66,7 @@
 		if(codigo!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 						type: "POST",
-				url: "/SIGA/JGR_MantenimientoJuzgados.do?modo=getAjaxJuzgado4",
+				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado4",
 				data: "codigo="+codigo,
 				dataType: "json",
 				success: function(json){		
