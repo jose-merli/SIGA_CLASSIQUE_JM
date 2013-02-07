@@ -939,7 +939,10 @@ public class MaestroDesignasAction extends MasterAction {
 		miform.setTurno(turnoBean.getDescripcion());
 		ScsDesignaBean beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 		miform.setNumeroProcedimiento(beanDesigna.getNumProcedimiento());
-		miform.setAnioProcedimiento(beanDesigna.getAnioProcedimiento().toString());
+		if (beanDesigna.getAnioProcedimiento() == null)
+			miform.setAnioProcedimiento("");
+		else
+			miform.setAnioProcedimiento(beanDesigna.getAnioProcedimiento().toString());
 		
 		List<ScsJuzgadoBean> alJuzgados = null;
 		ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(usr);
