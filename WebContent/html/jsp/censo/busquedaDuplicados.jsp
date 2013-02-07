@@ -44,9 +44,13 @@
 	String parametro[] = new String[1];
 	parametro[0] = user.getLocation();
 	
+	// para ver si tengo que buscar tras mostrar la pantalla
+	String buscar = (String)request.getAttribute("buscar");
 	
 	/**************/
+		
 %>
+
 
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
@@ -63,6 +67,13 @@
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 	<script>
+		function ChequearCriterios(){
+			$('input[name=chkApellidos]').attr('checked', true);
+			$('input[name=chkNombreApellidos]').attr('checked', true);
+			$('input[name=chkIdentificador]').attr('checked', true);
+			$('input[name=chkNumColegiado]').attr('checked', true); 
+		}
+		
 		function preAccionBusqueda(){
 			sub();
 		}
@@ -70,52 +81,58 @@
 		function postAccionBusqueda(){
 			fin();
 		}
+		
 		function buscar(){
 			sub();
+			//chequear los criterios en el hidden
+			if (document.MantenimientoDuplicadosForm.chkApellidos.checked)
+				document.MantenimientoDuplicadosForm.valoresCheck.value = "1";
+			else
+				document.MantenimientoDuplicadosForm.valoresCheck.value = "0";
+			if (document.MantenimientoDuplicadosForm.chkNombreApellidos.checked)
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
+			else
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
+			if (document.MantenimientoDuplicadosForm.chkIdentificador.checked)
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
+			else
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
+			if (document.MantenimientoDuplicadosForm.chkNumColegiado.checked)
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
+			else
+				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
+			
 			if(comprobarFiltros()){
 				document.MantenimientoDuplicadosForm.modo.value = "buscar";
-				document.MantenimientoDuplicadosForm.target="mainWorkArea";
+				document.MantenimientoDuplicadosForm.target="resultado";
 			 	document.MantenimientoDuplicadosForm.submit();
 			}else{
 				fin();
 			}
 		}		
 
-		//MHG Incidencia 45 Método para limpiar los campos del formulario.
 		function limpiar()
 		{
-			  var elements =  document.forms[0].elements; 
-			  document.forms[0].reset();
-		
-			  for(i=0; i<elements.length; i++) {
-			 
-				  if(elements[i].type=="text"){
-					  elements[i].value = ""; 
-				  }
-				  
-				  if(elements[i].type =="radio" || elements[i].type =="checkbox"){
-					  if (elements[i].checked) {
-				          elements[i].checked = false; 
-				      }
-				  }
-				  
-				  if(elements[i].type =="select-one" || elements[i].type =="select-multi"){
-					  elements[i].selectedIndex = 0;
-				  }
-			  }
-		}
-		
+			document.MantenimientoDuplicadosForm.reset();
+			ChequearCriterios();
+		}	
 		function refrescarLocal(){
 			buscar();
 		}
 		function comprobarFiltros(){
 			var error=false;
 			var msg="";
+			//aalg: modificado para controlar que siempre haya un check marcado al buscar
 			if(!(document.MantenimientoDuplicadosForm.chkApellidos.checked ||
 				document.MantenimientoDuplicadosForm.chkNombreApellidos.checked||
 				document.MantenimientoDuplicadosForm.chkIdentificador.checked||
 				document.MantenimientoDuplicadosForm.chkNumColegiado.checked)){
 				
+				error = true;
+				msg=msg+"Tiene que estar marcado alguno de los criterios de coincidencia";
+
+			}
+			else {
 				if(document.MantenimientoDuplicadosForm.nombre.value.length>0&&
 				   document.MantenimientoDuplicadosForm.nombre.value.length<3){
 					error=true;
@@ -131,9 +148,9 @@
 					error=true;
 					msg=msg+"El campo Apellido 2 es demasiado corto\n";
 				}
+				msg= msg + "Si no se rellenan al menos 3 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
 			}
 			if(error){
-				msg= msg + "Si no se rellenan al menos 3 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
 				alert(msg);
 				return false;
 			}else{
@@ -141,20 +158,30 @@
 			}
 		}
 		
-
+		function inicio(){
+			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
+				document.forms[0].modo.value="buscarPor";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();	
+			<% } else{%>
+				ChequearCriterios();
+			<%}%>
+			
+		}
 		</script>
 		<siga:Titulo 
 			titulo="censo.busquedaDuplicados.titulo" 
 			localizacion="censo.busquedaDuplicados.localizacion"/>
 </head>
 
-<body onload="ajusteAlto('resultado');">
+<body onload="inicio();ajusteAlto('resultado');">
 
 
 	
 
 <html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea" >
 	<input type="hidden" name="modo" value="">
+	<input type="hidden" name="valoresCheck" value="">
 	
 	<table  class="tablaCentralCampos"  align="center"><tr><td>
 	
@@ -246,6 +273,7 @@
 		</siga:ConjCampos>
 	</td></tr></table>
 	<siga:ConjBotonesBusqueda botones="B,L"/>
+
 	</html:form>  
    <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 			id="resultado"
@@ -259,5 +287,6 @@
 
 
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"/>
+	
 </body>
 </html>

@@ -9,6 +9,7 @@
 	// Este include contiene la logica de vuelta para las pestanhas 
 	// de cliente. SE PUEDE PEGAR EN CUALQUIER PARTE SIEMPRE QUE ESTE
 	// DENTRO DEL BODY Y DESPUES DEL FORMULARIO PRINCIPAL.
+	// aalg: se ha añadido la posible vuelta desde la página de duplicados
 	
 	// crea el formulario de vuelta
  	if (!busquedaVolver.equals("volverNo")) { 
@@ -79,6 +80,11 @@
 				<html:hidden property="accion" value="buscar"/>
 				<html:hidden property="deleteForm" value="true"/>
 				<html:hidden property="id" value=""/>
+			</html:form>
+			<!-- aalg: para volver a la pantalla de personas duplicadas -->
+<% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="buscarPor"/>
 			</html:form>
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
@@ -163,6 +169,10 @@
 					document.BusquedaColegiadosForm.id.value = document.forms[0].id.value;
 					document.BusquedaColegiadosForm.accion.value = "buscarAvanzada";
 					document.BusquedaColegiadosForm.submit();	
+<%				} else if (busquedaVolver.equals("DUPLICADOS")) {	%>
+					document.MantenimientoDuplicadosForm.action = "<%=app%>/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+					document.MantenimientoDuplicadosForm.submit();
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "<%=app%>/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();

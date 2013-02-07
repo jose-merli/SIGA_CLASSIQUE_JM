@@ -161,7 +161,7 @@
 					</tr>
 				</table>
 				<hr style="color:black;"></hr>
-		<div name="divScroll" style="overflow:auto;height:420px;">
+		<div name="divScroll" style="overflow:auto;height:520px;">
 				<table width="100%">
 					<tr>
 						<td class="tableTitle" colspan="3">

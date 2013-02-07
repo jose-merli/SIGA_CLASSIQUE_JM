@@ -980,8 +980,9 @@
 		</action>
 		<!-- Mirar todas esta jspssssssss -->
 			
-		<action path="/CEN_MantenimientoDuplicados" type="com.siga.censo.action.MantenimientoDuplicadosAction" name="MantenimientoDuplicadosForm" scope="request">
+		<action path="/CEN_MantenimientoDuplicados" type="com.siga.censo.action.MantenimientoDuplicadosAction" name="MantenimientoDuplicadosForm" scope="session">
 			<forward name="inicio" path="/html/jsp/censo/busquedaDuplicados.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/resultadoBusquedaDuplicados.jsp"/>
 			<forward name="gestionar" path="/html/jsp/censo/gestionarDuplicado.jsp"/>
 			<forward name="espera" path="/html/jsp/censo/esperaDuplicados.jsp"/>

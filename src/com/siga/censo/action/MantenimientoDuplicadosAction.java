@@ -2,7 +2,10 @@
 // raul.ggonzalez 14-12-2004 Creacion
 // miguel.villegas 11-01-2005 Incorpora "borrar"
 // juan.grau 18-04-2005 Incorpora 'buscarPersona' y 'enviarPersona'
-
+// aalg. 2012. Se modifica todo el funcionamiento de duplicados. Se hace que aparezca todo en una misma pantalla
+// se pagina (se crea buscarPor)
+// la exportación ya no es de lo que se muestra en pantalla sino que hay que hacer la selección de todos los que están en el paginador
+// se añaden ver y editar para acceder a los datos del no colegiado o el letrado 
 /**
  * @version 30/01/2006 (david.sanchezp): nuevo valor de pestanha.
  */
@@ -21,6 +24,7 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.apache.batik.dom.util.HashTable;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -30,6 +34,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
@@ -40,12 +45,16 @@ import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSancionAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.DuplicadosHelper;
 import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -84,14 +93,31 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 			miForm = (MasterForm) formulario;
 			if (miForm != null) {
-				//MantenimientoDuplicadosForm form = (MantenimientoDuplicadosForm)miForm;
 				String accion = miForm.getModo();
+				
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio")){
+					//aalg: en el acceso inicial a la página de duplicados tienen que estar chequeados todos
+					//aalg: añadido para el paginador
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					MantenimientoDuplicadosForm formDupl = (MantenimientoDuplicadosForm)miForm;
+					formDupl.reset(mapping,request);
+					formDupl.setApellido1("");
+					formDupl.setApellido2("");
+					formDupl.setCampoOrdenacion("apellidos");
+					formDupl.setNifcif("");
+					formDupl.setNombre("");
+					formDupl.setNumeroColegiado("");
+					formDupl.setSentidoOrdenacion("asc");
+					formDupl.setTipoConexion("intersect");
+					formDupl.setIdInstitucion("");
+					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("buscar")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					((MantenimientoDuplicadosForm)miForm).setDatosPaginador(null);
 					mapDestino = buscar(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("buscarPor")){
-					mapDestino = buscar(mapping, miForm, request, response);
+					mapDestino = buscarPor(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("gestionar")){
 					mapDestino = gestionar(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("aceptar")){
@@ -106,6 +132,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
 			}
+			 miForm.setModo("");
 
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null)	{ 
@@ -187,19 +214,99 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion=user.getLocation();
-			Vector resultado = null;
 
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
+
+			String chequeados = (String)request.getParameter("valoresCheck");
+
+			if (chequeados!=null){
+				miFormulario.setChkApellidos((boolean)(chequeados.substring(0, 1).equals("1") ? true : false));
+				miFormulario.setChkNombreApellidos((boolean)(chequeados.substring(1, 2).equals("1") ? true : false));
+				miFormulario.setChkIdentificador((boolean)(chequeados.substring(2, 3).equals("1") ? true : false));
+				miFormulario.setChkNumColegiado((boolean)(chequeados.substring(3, 4).equals("1") ? true : false));			
+			}
+			DuplicadosHelper helper = new DuplicadosHelper();
+			//aalg: para añadir la paginación
+			HashMap databackup = new HashMap();
+							
+			databackup=new HashMap();
+			Vector datos = null;
+			PaginadorBind resultado = null;
+			
+			resultado = new PaginadorBind(helper.getPersonasSimilares(miFormulario));
+			request.setAttribute("resultado", resultado);
+			databackup.put("paginador",resultado);
+			
+			datos = resultado.obtenerPagina(1);
+			databackup.put("datos",datos);
+			miFormulario.setDatosPaginador(databackup);
+			miFormulario.setRegistrosSeleccionados(new ArrayList());
+			formulario=miFormulario;
+			destino="resultado";
+
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		}
+		return destino;
+	}
+	
+	/**
+	 * Metodo que implementa el modo buscar para realizar la busqueda de duplicados
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		String destino = "";
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion=user.getLocation();
+
+			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
+			
+			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+			String seleccionados = request.getParameter("Seleccion");
+			
+			
+			if (seleccionados != null ) {
+				ArrayList alRegistros = actualizarSelecionados(clavesBusqueda,seleccionados, clavesRegSeleccinados);
+				if (alRegistros != null) {
+					clavesRegSeleccinados = alRegistros;
+					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+				}
+			}
 			
 			request.getSession().setAttribute("duplicadosForm", miFormulario);
 
 			DuplicadosHelper helper = new DuplicadosHelper();
-			HashMap databackup = new HashMap();
-			
-			resultado = helper.getPersonasSimilares(miFormulario);
-			request.setAttribute("resultado", resultado);
-			miFormulario.setResultadoBusqueda(resultado);
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null){ 
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				
+				Vector datos=new Vector();
+				if (paginador!=null){
+					String pagina = (String)request.getParameter("pagina");
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
 
+			}
+			
+			formulario=miFormulario;
 			destino="resultado";
 
 		}catch (SIGAException e1) {
@@ -300,14 +407,14 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						beanP.setFechaMod(UtilidadesString.formatoFecha(beanP.getFechaMod(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 						hashPersona.put("datosPersonales", beanP);
 						
-						Vector vDirecciones = admCliente.getDirecciones(Long.valueOf(idPersona), Integer.valueOf(2000), false);
+						Vector vDirecciones = admCliente.getDirecciones(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE, false);
 						for (int j=0; j<vDirecciones.size();j++){
 							Hashtable dir = (Hashtable)vDirecciones.get(j);
 							dir.put("FECHAMODIFICACION", UtilidadesString.formatoFecha(dir.get("FECHAMODIFICACION").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 						}
 						hashPersona.put("datosDirecciones", vDirecciones);
 						
-						int cert = admCertificados.getNumeroCertificados("2000",idPersona);
+						int cert = admCertificados.getNumeroCertificados(Integer.toString(ClsConstants.INSTITUCION_CGAE),idPersona);
 						
 					}else{
 						idPersona = claves[0];
@@ -665,7 +772,22 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		try {
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
 			//ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			String seleccionados = request.getParameter("registrosSeleccionados");
+			//aalg-----------
+			Vector vdatos=new Vector();
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			String seleccionados ="";
+			PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+			for (int i=1;i<=paginador.getNumeroPaginas();i++){
+				vdatos = paginador.obtenerPagina(i);
+				for (int j=0;j<vdatos.size();j++){
+					Hashtable hdatos = (Hashtable)vdatos.get(j);
+					seleccionados += "null||" + (String)hdatos.get("IDPERSONA") + ",";
+				}
+			}
+			seleccionados = seleccionados.substring(0, seleccionados.length()-1);
+			
+			//aalg-----------
+			//String seleccionados = request.getParameter("registrosSeleccionados");
 			if(seleccionados == null||seleccionados.equalsIgnoreCase(""))
 				seleccionados = miFormulario.getSeleccion();
 			// Los seleccionados deberian ser 2, separados por comas
@@ -752,5 +874,279 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 		return datos;
+	}
+	
+	/**
+	 * Metodo que implementa el modo ver 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String destino = "";
+		
+		try{	
+			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
+			miFormulario.setModo("");
+			// OBTENGO VALORES DEL FORM
+			// solamente el 0 porque es el unico que he pulsado
+			Vector vOcultos = miFormulario.getDatosTablaOcultos(0);
+			// obtener idpersona
+			String idPersona = (String)vOcultos.get(0);
+			// obtener idinstitucion
+			String idInstitucion;
+			if (vOcultos.size()>1)
+				idInstitucion = (String)vOcultos.get(1);
+			else // es un no colegiado que tiene que ser obligatoriamente de CGAE. 2000
+				idInstitucion = Integer.toString(ClsConstants.INSTITUCION_CGAE);
+			// Obtenemos el tipo para saber si el registro es de una Sociedad o Personal:
+			String tipo = ClsConstants.COMBO_TIPO_PERSONAL;
+			if (vOcultos.size()==3)
+				tipo = (String)vOcultos.get(2);
+			
+			String modo = "ver";
+			Integer tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+			
+			String[] pestanasOcultas=new String [1];
+			String tipoCliente = clienteAdm.getTipoCliente(new Long(idPersona), new Integer(idInstitucion));
+			
+			if (tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO) || tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
+			}else{
+				
+			  
+				//tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+				CenPersonaAdm admPer = new CenPersonaAdm(this.getUserBean(request));
+				CenPersonaBean beanPer = admPer.getIdentificador(new Long(idPersona));
+				
+				Hashtable  claveh=new Hashtable();
+				claveh.put(CenClienteBean.C_IDPERSONA,idPersona);
+				claveh.put(CenClienteBean.C_IDINSTITUCION,idInstitucion);
+				
+				
+				Vector resultadoObj = clienteAdm.selectByPK(claveh);
+				CenClienteBean obj = (CenClienteBean)resultadoObj.get(0);
+				if (obj.getLetrado().equals(ClsConstants.DB_TRUE)){
+					tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
+				}else{
+
+				// AHORA HAY QUE COMPROBARLO POR EL TIPO DE NO COLEGIADO
+				// obtengo los datos de nocolegiado
+				Hashtable hashNoCol = new Hashtable();
+				hashNoCol.put(CenNoColegiadoBean.C_IDINSTITUCION,idInstitucion);
+				hashNoCol.put(CenNoColegiadoBean.C_IDPERSONA,idPersona);
+				CenNoColegiadoAdm nocolAdm = new CenNoColegiadoAdm(this.getUserBean(request));
+				Vector v = nocolAdm.selectByPK(hashNoCol);
+					if (v!=null && v.size()>0) {
+						CenNoColegiadoBean nocolBean = (CenNoColegiadoBean) v.get(0);
+						if (!nocolBean.getTipo().equals(ClsConstants.COMBO_TIPO_PERSONAL)) {
+							// SOCIEDAD
+							tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO);
+						} else {
+							// PERSONAL
+							tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+						}
+					}			
+			   }	
+			 }
+			
+			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()){
+				  
+				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+				  request.setAttribute("pestanasOcultas",pestanasOcultas);
+			}else{
+				GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+		 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+		 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
+				  pestanasOcultas=new String [1];
+				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+				  request.setAttribute("pestanasOcultas",pestanasOcultas);
+		 		}
+			}
+			Hashtable datosCliente = new Hashtable();
+			datosCliente.put("accion",modo);
+			datosCliente.put("idPersona",idPersona);
+			datosCliente.put("idInstitucion",idInstitucion);
+			datosCliente.put("tipoAcceso",String.valueOf(tipoAcceso));
+			// Para ver si debemos abrir el jsp comun de colegiados o el propio para no colegiados:
+			datosCliente.put("tipo",tipo);
+          
+			request.setAttribute("datosCliente", datosCliente);		
+			
+			request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
+			
+			destino="administracion";
+		 } 	
+		 catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+	 	 }
+		 return destino;
+    }
+	
+	/**
+	 * Metodo que implementa el modo editar 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String elementoActivo="1";
+		try {
+			MantenimientoDuplicadosForm miform = (MantenimientoDuplicadosForm)formulario;
+			miform.setModo("");
+	
+			// OBTENGO VALORES DEL FORM
+			// solamente el 0 porque es el unico que he pulsado
+			Vector vOcultos = miform.getDatosTablaOcultos(0);
+			// obtener idpersona
+			String idPersona = (String)vOcultos.get(0);
+			// obtener idinstitucion
+			String idInstitucion;
+			if (vOcultos.size()>1)
+				idInstitucion = (String)vOcultos.get(1);
+			else // es un no colegiado que tiene que ser obligatoriamente de CGAE. 2000
+				idInstitucion = Integer.toString(ClsConstants.INSTITUCION_CGAE);
+			// Obtenemos el tipo para saber si el registro es de una Sociedad o Personal:
+			String tipo = ClsConstants.COMBO_TIPO_PERSONAL;
+			if (vOcultos.size()==3)
+				tipo = (String)vOcultos.get(2);
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String[] pestanasOcultas=new String [1];
+			Integer tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+			
+			
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+			String verFichaLetrado = request.getParameter("verFichaLetrado");
+			/*if (verFichaLetrado == null){
+				verFichaLetrado = miform.getVerFichaLetrado();
+			}*/
+			if (verFichaLetrado!=null && verFichaLetrado.equals("1")){
+				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
+				elementoActivo="3";
+				
+			}else{
+			String tipoCliente = clienteAdm.getTipoCliente(new Long(idPersona), new Integer(idInstitucion));
+			
+			if (tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO) || tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
+			} else {
+				//tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+				CenPersonaAdm admPer = new CenPersonaAdm(this.getUserBean(request));
+				CenPersonaBean beanPer = admPer.getIdentificador(new Long(idPersona));
+
+				Hashtable  claveh=new Hashtable();
+				claveh.put(CenClienteBean.C_IDPERSONA,idPersona);
+				claveh.put(CenClienteBean.C_IDINSTITUCION,idInstitucion);
+				
+				
+				Vector resultadoObj = clienteAdm.selectByPK(claveh);
+				CenClienteBean obj = (CenClienteBean)resultadoObj.get(0);
+				if (obj.getLetrado().equals(ClsConstants.DB_TRUE)){//si es letrado 
+					tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
+				}else{//si no es letrado
+					// AHORA HAY QUE COMPROBARLO POR EL TIPO DE NO COLEGIADO
+					// obtengo los datos de nocolegiado
+					Hashtable hashNoCol = new Hashtable();
+					hashNoCol.put(CenNoColegiadoBean.C_IDINSTITUCION,idInstitucion);
+					hashNoCol.put(CenNoColegiadoBean.C_IDPERSONA,idPersona);
+					CenNoColegiadoAdm nocolAdm = new CenNoColegiadoAdm(this.getUserBean(request));
+					Vector v = nocolAdm.selectByPK(hashNoCol);
+					if (v!=null && v.size()>0) {
+						CenNoColegiadoBean nocolBean = (CenNoColegiadoBean) v.get(0);
+						if (!nocolBean.getTipo().equals(ClsConstants.COMBO_TIPO_PERSONAL)) {
+							// SOCIEDAD
+							if (nocolBean.getSociedadSJ().equals("1") || (nocolBean.getSociedadSP().equals("1")) ){
+								tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO);
+							}else{
+								tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+							}
+						} else {
+							// PERSONAL
+							tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
+						}
+					}
+			  }	
+				
+			}
+			}
+			
+			
+			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()){
+				  
+				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+				  request.setAttribute("pestanasOcultas",pestanasOcultas);
+			}else{
+				GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+		 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+		 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
+				  pestanasOcultas=new String [1];
+				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+				  request.setAttribute("pestanasOcultas",pestanasOcultas);
+		 		}
+			}
+			String modo = "editar";
+			Hashtable datosCliente = new Hashtable();
+			datosCliente.put("accion",modo);
+			datosCliente.put("idPersona",idPersona);
+			datosCliente.put("idInstitucion",idInstitucion);
+			request.setAttribute("elementoActivo",elementoActivo);    
+			datosCliente.put("tipoAcceso",String.valueOf(tipoAcceso));
+			// Para ver si debemos abrir el jsp comun de colegiados o el propio para no colegiados:
+			datosCliente.put("tipo",tipo);
+	
+			request.setAttribute("datosCliente", datosCliente);		
+			
+			request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
+			 
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		}	
+		return "administracion";
+	}
+	
+	/**
+	 * Metodo que implementa el modo abrirConParametros
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action 
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String abrirConParametros (ActionMapping mapping, 		
+							MasterForm formulario, 
+							HttpServletRequest request, 
+							HttpServletResponse response) throws SIGAException 
+	{
+		try {
+
+			// obtengo la visibilidad para el user
+			//String visibilidad = obtenerVisibilidadUsuario(request);
+			//request.setAttribute("CenInstitucionesVisibles",visibilidad);
+
+			// para saber en que tipo de busqueda estoy
+			request.getSession().setAttribute("CenBusquedaClientesTipo","N"); // busqueda normal
+			
+			
+			// miro a ver si tengo que ejecutar 
+			//la busqueda una vez presentada la pagina
+			String buscar = request.getParameter("buscar");
+			request.setAttribute("buscar",buscar);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		}
+		
+		return "inicio";
 	}
 }
