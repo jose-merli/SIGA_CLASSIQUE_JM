@@ -950,6 +950,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String tratamiento = miform.getTratamiento().replace("\u00a0"," ").trim();			
 			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
 			String pais = miform.getPais().replace("\u00a0"," ").trim();	
+			String idTipoIden = miform.getIdTipoIdentificacion().replace("\u00a0"," ").trim();	
 			
 			Hashtable datosCliente = new Hashtable();
 			
@@ -974,6 +975,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("FechaNacimiento",perBean.getFechaNacimiento());
 			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
 			datosCliente.put("colegiadoen",colegiadoen);
+			datosCliente.put("idTipoIden",idTipoIden);
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 
@@ -1371,6 +1373,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setApellido1((String)infoCliente.get("APELLIDO1"));
 							miForm.setNombre((String)infoCliente.get("NOMBRE"));
 							miForm.setNif(nif);
+							miForm.setIdTipoIdentificacion((String)infoCliente.get("IDTIPOIDENTIFICACION"));
 							miForm.setIdInstitucion((String)infoCliente.get("ID_COLEGIO"));
 							miForm.setFax1((String)infoCliente.get("FAX"));
 							miForm.setMail((String)infoCliente.get("MAIL"));
@@ -1414,7 +1417,8 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setApellido1(perBean.getApellido1());
 							miForm.setNombre(perBean.getNombre());
 							miForm.setNif(nif);
-							
+							if(perBean.getIdTipoIdentificacion()!=null)
+								miForm.setIdTipoIdentificacion(perBean.getIdTipoIdentificacion().toString());
 							miForm.setSexo("");
 							miForm.setFechaNacimiento("");
 							miForm.setLugarNacimiento("");
@@ -1551,6 +1555,7 @@ public class BusquedaCensoAction extends MasterAction {
 			listaParametros.add(miForm.getApellido2());
 			listaParametros.add(miForm.getNombre());
 			listaParametros.add(miForm.getNif());
+			listaParametros.add(miForm.getIdTipoIdentificacion());
 			listaParametros.add(miForm.getIdInstitucion());
 			listaParametros.add(miForm.getFax1());
 			listaParametros.add(miForm.getMail());

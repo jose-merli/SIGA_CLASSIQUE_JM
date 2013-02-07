@@ -330,7 +330,7 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 		try {
 			sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
 							"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
-							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
 							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
 						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 			
@@ -411,7 +411,7 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 						sqlClientes += " UNION " +
 	
 						" SELECT nc.id_letrado, nc.id_colegio, 'No Colegiado', 'No Colegiado', 'No Colegiado',nc.descripcion,nc.idtratamiento, "
-						+"		 nc.nombre, nc.apellido1, nc.apellido2, nc.num_doc,nc.sexo,'-', "
+						+"		 nc.nombre, nc.apellido1, nc.apellido2, nc.num_doc,nc.idtipoidentificacion,nc.sexo,'-', "
 						+" 		 '-', '-', '-', '-', '-','-', '-', '-', '-' "
 						+" FROM V_CENSO_NOCOLEGIADOS nc " + " WHERE 1 = 1 ";
 						if (idInstitucionActual != null && !idInstitucionActual.trim().equals("")) {
@@ -522,7 +522,7 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 		try {
 			sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
 							"C.residencia, C.ejerciente,c.descripcion,C.tratamiento, " +
-							" L.nombre, L.apellido1,L.apellido2,L.num_doc, L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion, L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
 							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS, L.IDPROVINCIA, L.IDPOBLACION,L.POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
 						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 					  

@@ -24,6 +24,7 @@ import com.siga.general.MasterForm;
 	 	String apellido1;
 	 	String apellido2;
 	 	String nif;
+	 	String idTipoIdentificacion;
 	 	String accion;	 	
 
 		String direccion;
@@ -290,6 +291,12 @@ import com.siga.general.MasterForm;
 		public void setIdioma(String idioma) {
 			this.idioma = idioma;
 		}
+		public String getIdTipoIdentificacion() {
+			return idTipoIdentificacion;
+		}
+		public void setIdTipoIdentificacion(String idTipoIdentificacion) {
+			this.idTipoIdentificacion = idTipoIdentificacion;
+		}
 		public void reset(){
 			
 		 	  nombre="";
@@ -310,7 +317,7 @@ import com.siga.general.MasterForm;
 		 	  telefono="";
 		 	  sexo="";
 		 	  paginaWeb="";
-		 	
+		 	  idTipoIdentificacion="";
 		 	
 			  numeroColegiado="";
 		 	  poblacion="";

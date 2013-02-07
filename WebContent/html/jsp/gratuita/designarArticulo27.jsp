@@ -265,6 +265,7 @@
 				datosGeneralesForm.nombre.value          = resultado[4];
 				datosGeneralesForm.apellido1.value       = resultado[5];
 				datosGeneralesForm.apellido2.value = resultado[6]; 
+				datosGeneralesForm.tipoIdentificacion.value = resultado[21]; 
 
 				//Informacion adicional
 				datosGeneralesForm.sexo.value=resultado[14];
@@ -848,6 +849,7 @@
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
 					formatearDocumento();
+					document.getElementById("tipoIdentificacion").value 		= document.busquedaCensoModalForm.idTipoIdentificacion.value;
 
 					//Datos direcciones
 					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
@@ -1356,11 +1358,12 @@
 	<html:hidden  name="busquedaCensoModalForm" property="textoAlerta"/>
 	<html:hidden  name="busquedaCensoModalForm" property="nombre"/>
 	<html:hidden  name="busquedaCensoModalForm" property="apellido1"/>
-	<html:hidden  name="busquedaCensoModalForm" property="apellido2"/>
+	<html:hidden  name="busquedaCensoModalForm" property="apellido2"/>	
 	<html:hidden  name="busquedaCensoModalForm" property="numeroColegiado"/>
 	<html:hidden  name="busquedaCensoModalForm" property="idPersona"/>
 	<html:hidden  name="busquedaCensoModalForm" property="idInstitucion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="nif"/>
+	<html:hidden  name="busquedaCensoModalForm" property="idTipoIdentificacion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="direccion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="codPostal"/>
 	<html:hidden  name="busquedaCensoModalForm" property="pais"/>
@@ -1401,7 +1404,7 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxBusquedaNIF"
-	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento,idioma"
+	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idTipoIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento,idioma"
 	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre},existeNIF={existeNIF}"
 	postFunction="postAccionBusquedaNIF"
 	preFunction="preAccionBusquedaNIF" 

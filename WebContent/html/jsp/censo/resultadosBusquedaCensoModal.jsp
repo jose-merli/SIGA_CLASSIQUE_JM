@@ -132,7 +132,9 @@
 						document.busquedaCensoModalForm.fax1.value = oculto.value;
 					}else if(j=='17'){
 						document.busquedaCensoModalForm.pais.value = oculto.value;
-					}  
+					}else if(j=='18'){
+						document.busquedaCensoModalForm.idTipoIdentificacion.value = oculto.value;
+					}   
 							
 					j++;
 				}
@@ -175,6 +177,7 @@
 			<html:hidden property="tratamiento" value=""/>	
 		    <html:hidden property="fax1" value=""/>
 		    <html:hidden property="pais" value=""/>
+		    <html:hidden property="idTipoIdentificacion" value=""/>
 			
 		</html:form>
 		<%
@@ -250,6 +253,7 @@
 						 apellido2 = UtilidadesString.mostrarDatoJSP(registro.get("APELLIDO2"));
 					String nombre = UtilidadesString.mostrarDatoJSP(registro.get("NOMBRE"));
 					String nif = UtilidadesString.mostrarDatoJSP(registro.get("NUM_DOC"));
+					String idTipoIdentificacion = UtilidadesString.mostrarDatoJSP(registro.get("IDTIPOIDENTIFICACION"));
 					String descripcion = "";
 					String ncolegiado = "";
 					String estadoColegial = "";
@@ -320,7 +324,8 @@
 								<input type="hidden" name="oculto<%=cont%>_14" value="<%=sexo%>">
 								<input type="hidden" name="oculto<%=cont%>_15" value="<%=tratamiento%>">
 								<input type="hidden" name="oculto<%=cont%>_16" value="<%=fax1%>">		
-								<input type="hidden" name="oculto<%=cont%>_17" value="<%=pais%>">								
+								<input type="hidden" name="oculto<%=cont%>_17" value="<%=pais%>">
+								<input type="hidden" name="oculto<%=cont%>_18" value="<%=idTipoIdentificacion%>">								
 								<%=descripcion%>
 							</td>
 							<td>
