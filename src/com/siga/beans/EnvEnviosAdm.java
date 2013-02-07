@@ -1594,7 +1594,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if(CenPersonaAdm.K_PERSONA_GENERICA.equals(idPersona)){
 		        	sSQL = rp.returnProperty("envios.consulta.sinPersona");
 				}else{
-					if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+					if(tipoDestinatario!=null&&(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)||tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR))){
 						sSQL = rp.returnProperty("envios.consulta.conPersonaJG");
 					}else if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
 						sSQL = rp.returnProperty("envios.consulta.conJuzgado");						
