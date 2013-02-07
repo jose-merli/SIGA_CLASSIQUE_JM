@@ -1,24 +1,85 @@
 package com.siga.certificados.action;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostexto;
+import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample;
+import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalExample;
+import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoExample.Criteria;
+import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.*;
-import com.siga.beans.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.GestorContadores;
+import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.CenBancosBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CerEstadoSoliCertifiAdm;
+import com.siga.beans.CerEstadoSoliCertifiBean;
+import com.siga.beans.CerPlantillasAdm;
+import com.siga.beans.CerPlantillasBean;
+import com.siga.beans.CerSolicitudCertificadosAdm;
+import com.siga.beans.CerSolicitudCertificadosBean;
+import com.siga.beans.CerSolicitudCertificadosTextoBean;
+import com.siga.beans.FacEstadoConfirmFactBean;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacFacturacionProgramadaAdm;
+import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacSerieFacturacionBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysCompraAdm;
+import com.siga.beans.PysCompraBean;
+import com.siga.beans.PysPeticionCompraSuscripcionAdm;
+import com.siga.beans.PysPeticionCompraSuscripcionBean;
+import com.siga.beans.PysProductosInstitucionAdm;
+import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.PysProductosSolicitadosAdm;
+import com.siga.beans.PysProductosSolicitadosBean;
+import com.siga.beans.PysServiciosSolicitadosBean;
+import com.siga.certificados.Certificado;
+import com.siga.certificados.Plantilla;
+import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.facturacion.Facturacion;
-import com.siga.general.*;
+import com.siga.general.CenVisibilidad;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
-import com.siga.Utilidades.*;
-import com.siga.certificados.*;
-import com.siga.certificados.form.*;
 
 
 
@@ -476,164 +537,179 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	} //contieneMasProductos ()
 
 
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
+    protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+    {
     	try{
     		MasterForm miForm = (MasterForm) formulario;
     		String accion = miForm.getModo();
     		request.setAttribute("modo", accion);
-    		
-	        SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
-	        Vector vOcultos = form.getDatosTablaOcultos(0);
-	        
-		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
-		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
-		    String idEstadoSolicitud=((String)vOcultos.elementAt(9)).trim();
-		    String tipoCertificado=((String)vOcultos.elementAt(11)).trim();
-		   
-	
-		    Hashtable htSolicitud = new Hashtable();
-		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-		    
-		    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-		    
-		    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-		    
-		    CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request));
-		    
-		    String idInstitucionOrigen = ""+beanSolicitud.getIdInstitucionOrigen();
-		    String idInstitucionDestino = ""+beanSolicitud.getIdInstitucionDestino();
-		    String idInstitucionColegiacion = ""+beanSolicitud.getIdInstitucionColegiacion();
-		    CenInstitucionBean beanInstitucionOrigen = null;
-		    Hashtable htInstitucion = new Hashtable();
-		    if(!idInstitucionOrigen.equalsIgnoreCase("null") ){
-		    htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionOrigen);
-				    vDatos = admInstitucion.selectByPK(htInstitucion);
-				    if (vDatos!=null && vDatos.size()==1)
-				    {
-				        beanInstitucionOrigen = (CenInstitucionBean)vDatos.elementAt(0);
-				    }
-		    		    
-		    }
-		    	    
-		    CenInstitucionBean beanInstitucionColegiacion = null;
-		    if(!idInstitucionColegiacion.equalsIgnoreCase("null") ){
-		    htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionColegiacion);
-				    vDatos = admInstitucion.selectByPK(htInstitucion);
-				    if (vDatos!=null && vDatos.size()==1)
-				    {
-				        beanInstitucionColegiacion = (CenInstitucionBean)vDatos.elementAt(0);
-				    }
-		    		    
-		    }
-		    
-		    CenInstitucionBean beanInstitucionDestino = null;
-		    
-		    if(!idInstitucionDestino.equalsIgnoreCase("null")){
-			    htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionDestino);
-			    vDatos = admInstitucion.selectByPK(htInstitucion);
-		    	
-			    if (vDatos!=null && vDatos.size()==1)
-			    {
-			        beanInstitucionDestino = (CenInstitucionBean)vDatos.elementAt(0);
-			    }
-		    }
-		    
-		    
-		    
-		    
-		    // obtengo el texto de sanciones. se modifica. Lo que se obtiene es el texto del certificado
-		    //String textoCertificado = admSolicitud.getTextoCertificado(beanSolicitud.getIdInstitucion().toString(), beanSolicitud.getIdSolicitud().toString());
-		    CerSolicitudCertificadosTextoBean beanTextoCertificado = admSolicitud.getSolicitudCertificadosTexto(beanSolicitud.getIdInstitucion().toString(), beanSolicitud.getIdSolicitud().toString());
-		    String textoCertificado = "";
-		    String incluirDeudas = "off";
-		    String incluirSanciones = "off";
-		    if(beanTextoCertificado!=null){
-		    	textoCertificado = beanTextoCertificado.getTexto();
-		    	if(beanTextoCertificado.getIncluirDeudas()!=null && beanTextoCertificado.getIncluirDeudas().equalsIgnoreCase("S"))
-		    		incluirDeudas = "on";
-		    	if(beanTextoCertificado.getIncluirSanciones()!=null && beanTextoCertificado.getIncluirSanciones().equalsIgnoreCase("S"))
-		    		incluirSanciones = "on";
-		    		
-		    	
-		    }
-		    
-		    form.setIncluirDeudas(incluirDeudas);
-		    form.setIncluirSanciones(incluirSanciones);
-		    request.setAttribute("sanciones", textoCertificado);
-		    
-		    request.setAttribute("solicitud", beanSolicitud);
-		    request.setAttribute("idEstadoSolicitud", idEstadoSolicitud);
-		    
-		    if (beanSolicitud.getIdEstadoSolicitudCertificado().toString().equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)
-		    	|| beanSolicitud.getIdEstadoSolicitudCertificado().toString().equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)) {
-		    	
-		    	request.setAttribute("modificarSolicitud", "0");
-		    } else {
-		    	request.setAttribute("modificarSolicitud", "1");
-		    }
-		    request.setAttribute("institucionOrigen", beanInstitucionOrigen);
-		    request.setAttribute("institucionDestino", beanInstitucionDestino);
-		    request.setAttribute("institucionColegiacion", beanInstitucionColegiacion);
-		    request.setAttribute("tipoCertificado", tipoCertificado);
-		    
-			// TRATAMIENTO DEL CONTADOR
-			String pre = (beanSolicitud.getPrefijoCer()!=null)?beanSolicitud.getPrefijoCer():"";
-			String suf = (beanSolicitud.getSufijoCer()!=null)?beanSolicitud.getSufijoCer():"";
-			String numContador=beanSolicitud.getContadorCer();
-			String idtipop=beanSolicitud.getPpn_IdTipoProducto().toString();
-			String idp=beanSolicitud.getPpn_IdProducto().toString();
-			String idpi=beanSolicitud.getPpn_IdProductoInstitucion().toString();
-			
-			if (numContador!=null && !numContador.equals("")) {
-				// obtengo el objeto contador
-				GestorContadores gc = new GestorContadores(this.getUserBean(request)); 
-				
-				//String idContador="PYS_"+idtipop+"_"+idp+"_"+idpi;
-				// obtenemos el contador de la FK del producto
-				String idContador="";
-				PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(this.getUserBean(request));
-				Vector v=admProd.select("WHERE "+PysProductosInstitucionBean.C_IDINSTITUCION+"="+idInstitucion+" AND "+PysProductosInstitucionBean.C_IDTIPOPRODUCTO+"="+idtipop+" AND "+PysProductosInstitucionBean.C_IDPRODUCTO+"="+idp+" AND "+PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION+"="+idpi);
-				PysProductosInstitucionBean beanProd=null;
-				if (v!=null && v.size()>0) {
-					beanProd = (PysProductosInstitucionBean) v.get(0);
-					idContador=beanProd.getIdContador();
-				}
-				Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
-				
-				// formateo el contador
-				Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
-				int longitudContador=longitud.intValue();
-			  	Integer contadorSugerido=new Integer(numContador);
-			  	String contadorFinalSugerido=UtilidadesString.formatea(contadorSugerido,longitudContador,true);
-				String contador =pre.trim()+contadorFinalSugerido+suf.trim(); 			
 
-				// lo guardamos formateado
-				request.setAttribute("codigo",contador);
-			} else {
-				request.setAttribute("codigo","");
-			}
-			
-			{
-				AdmUsuariosAdm adm = new AdmUsuariosAdm(this.getUserBean(request));
-				Hashtable h = new Hashtable();
-				UtilidadesHash.set (h, AdmUsuariosBean.C_IDUSUARIO,     beanSolicitud.getUsuMod());
-				UtilidadesHash.set (h, AdmUsuariosBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
-				Vector v = adm.select(h);
-				if ((v != null) && (v.size() == 1)) 
-					request.setAttribute("nombreUltimoUsuMod", ((AdmUsuariosBean)v.get(0)).getDescripcion());
-			}
+    		SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
+    		CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+    		Vector vOcultos = form.getDatosTablaOcultos(0);
+
+    		String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
+    		String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
+    		String idEstadoSolicitud=((String)vOcultos.elementAt(9)).trim();
+    		String tipoCertificado=((String)vOcultos.elementAt(11)).trim();
+
+
+    		Hashtable htSolicitud = new Hashtable();
+    		htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+    		htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+
+    		Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+
+    		CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
+
+    		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request));
+
+    		String idInstitucionOrigen = ""+beanSolicitud.getIdInstitucionOrigen();
+    		String idInstitucionDestino = ""+beanSolicitud.getIdInstitucionDestino();
+    		String idInstitucionColegiacion = ""+beanSolicitud.getIdInstitucionColegiacion();
+    		CenInstitucionBean beanInstitucionOrigen = null;
+    		Hashtable htInstitucion = new Hashtable();
+    		if(!idInstitucionOrigen.equalsIgnoreCase("null") ){
+    			htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionOrigen);
+    			vDatos = admInstitucion.selectByPK(htInstitucion);
+    			if (vDatos!=null && vDatos.size()==1)
+    			{
+    				beanInstitucionOrigen = (CenInstitucionBean)vDatos.elementAt(0);
+    			}
+
+    		}
+
+    		CenInstitucionBean beanInstitucionColegiacion = null;
+    		if(!idInstitucionColegiacion.equalsIgnoreCase("null") ){
+    			htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionColegiacion);
+    			vDatos = admInstitucion.selectByPK(htInstitucion);
+    			if (vDatos!=null && vDatos.size()==1)
+    			{
+    				beanInstitucionColegiacion = (CenInstitucionBean)vDatos.elementAt(0);
+    			}
+
+    		}
+
+    		CenInstitucionBean beanInstitucionDestino = null;
+
+    		if(!idInstitucionDestino.equalsIgnoreCase("null")){
+    			htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionDestino);
+    			vDatos = admInstitucion.selectByPK(htInstitucion);
+
+    			if (vDatos!=null && vDatos.size()==1)
+    			{
+    				beanInstitucionDestino = (CenInstitucionBean)vDatos.elementAt(0);
+    			}
+    		}
+
+    		// obtengo el texto de sanciones. se modifica. Lo que se obtiene es el texto del certificado
+    		//String textoCertificado = admSolicitud.getTextoCertificado(beanSolicitud.getIdInstitucion().toString(), beanSolicitud.getIdSolicitud().toString());
+    		//		    ESTA TABLA ESTA MAL YA QUE NO TIENE SENTIDO EL CAMPO IDTEXTO COMO PARTE DE LA PK CUANDO NO EXSITE TAL MULTIPLICAIDAD. 
+    		CerSolicitudCertificadosTextoService certificadosTextoService   = (CerSolicitudCertificadosTextoService) getBusinessManager().getService(CerSolicitudCertificadosTextoService.class);
+    		CerSolicitudcertificadostextoExample cerSolicitudcertificadostextoExample = new CerSolicitudcertificadostextoExample();
+    		 org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample.Criteria criteria =  cerSolicitudcertificadostextoExample.createCriteria();
+    		
+    		 criteria.andIdinstitucionEqualTo(beanSolicitud.getIdInstitucion().shortValue());
+    		 criteria.andIdsolicitudEqualTo(beanSolicitud.getIdSolicitud());
+    		//		    cerSolicitudcertificadostexto.setIdtexto((short) 2);
+    		
+//		    
+    		
+    		List<CerSolicitudcertificadostexto> cerSolicitudcertificadostextoList =certificadosTextoService.getList(cerSolicitudcertificadostextoExample);
+    		String textoCertificado = "";
+    		String incluirDeudas = "off";
+    		String incluirSanciones = "off";
+    		if(cerSolicitudcertificadostextoList.size()>0){
+    			CerSolicitudcertificadostexto cerSolicitudcertificadostexto = cerSolicitudcertificadostextoList.get(0);
+//    			cerSolicitudcertificadostexto = certificadosTextoService.get(cerSolicitudcertificadostexto);
+
+    			
+
+    			if(cerSolicitudcertificadostexto!=null){
+    				textoCertificado = cerSolicitudcertificadostexto.getTexto();
+    				if(cerSolicitudcertificadostexto.getIncluirdeudas()!=null && cerSolicitudcertificadostexto.getIncluirdeudas().equalsIgnoreCase("S"))
+    					incluirDeudas = "on";
+    				if(cerSolicitudcertificadostexto.getIncluirsanciones()!=null && cerSolicitudcertificadostexto.getIncluirsanciones().equalsIgnoreCase("S"))
+    					incluirSanciones = "on";
+
+
+    			}
+
+    			form.setIncluirDeudas(incluirDeudas);
+    			form.setIncluirSanciones(incluirSanciones);
+    		}
+    		request.setAttribute("sanciones", textoCertificado);
+
+    		request.setAttribute("solicitud", beanSolicitud);
+    		request.setAttribute("idEstadoSolicitud", idEstadoSolicitud);
+
+    		if (beanSolicitud.getIdEstadoSolicitudCertificado().toString().equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)
+    				|| beanSolicitud.getIdEstadoSolicitudCertificado().toString().equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)) {
+
+    			request.setAttribute("modificarSolicitud", "0");
+    		} else {
+    			request.setAttribute("modificarSolicitud", "1");
+    		}
+    		request.setAttribute("institucionOrigen", beanInstitucionOrigen);
+    		request.setAttribute("institucionDestino", beanInstitucionDestino);
+    		request.setAttribute("institucionColegiacion", beanInstitucionColegiacion);
+    		request.setAttribute("tipoCertificado", tipoCertificado);
+
+    		// TRATAMIENTO DEL CONTADOR
+    		String pre = (beanSolicitud.getPrefijoCer()!=null)?beanSolicitud.getPrefijoCer():"";
+    		String suf = (beanSolicitud.getSufijoCer()!=null)?beanSolicitud.getSufijoCer():"";
+    		String numContador=beanSolicitud.getContadorCer();
+    		String idtipop=beanSolicitud.getPpn_IdTipoProducto().toString();
+    		String idp=beanSolicitud.getPpn_IdProducto().toString();
+    		String idpi=beanSolicitud.getPpn_IdProductoInstitucion().toString();
+
+    		if (numContador!=null && !numContador.equals("")) {
+    			// obtengo el objeto contador
+    			GestorContadores gc = new GestorContadores(this.getUserBean(request)); 
+
+    			//String idContador="PYS_"+idtipop+"_"+idp+"_"+idpi;
+    			// obtenemos el contador de la FK del producto
+    			String idContador="";
+    			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(this.getUserBean(request));
+    			Vector v=admProd.select("WHERE "+PysProductosInstitucionBean.C_IDINSTITUCION+"="+idInstitucion+" AND "+PysProductosInstitucionBean.C_IDTIPOPRODUCTO+"="+idtipop+" AND "+PysProductosInstitucionBean.C_IDPRODUCTO+"="+idp+" AND "+PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION+"="+idpi);
+    			PysProductosInstitucionBean beanProd=null;
+    			if (v!=null && v.size()>0) {
+    				beanProd = (PysProductosInstitucionBean) v.get(0);
+    				idContador=beanProd.getIdContador();
+    			}
+    			Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
+
+    			// formateo el contador
+    			Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+    			int longitudContador=longitud.intValue();
+    			Integer contadorSugerido=new Integer(numContador);
+    			String contadorFinalSugerido=UtilidadesString.formatea(contadorSugerido,longitudContador,true);
+    			String contador =pre.trim()+contadorFinalSugerido+suf.trim(); 			
+
+    			// lo guardamos formateado
+    			request.setAttribute("codigo",contador);
+    		} else {
+    			request.setAttribute("codigo","");
+    		}
+
+    		{
+    			AdmUsuariosAdm adm = new AdmUsuariosAdm(this.getUserBean(request));
+    			Hashtable h = new Hashtable();
+    			UtilidadesHash.set (h, AdmUsuariosBean.C_IDUSUARIO,     beanSolicitud.getUsuMod());
+    			UtilidadesHash.set (h, AdmUsuariosBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
+    			Vector v = adm.select(h);
+    			if ((v != null) && (v.size() == 1)) 
+    				request.setAttribute("nombreUltimoUsuMod", ((AdmUsuariosBean)v.get(0)).getDescripcion());
+    		}
     	}catch (SIGAException e) {
-			throw e;	
-		}    	
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
-		}		    
-		return "mostrar";
-	}
-	
+    		throw e;	
+    	}    	
+    	catch (Exception e) { 
+    		throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
+    	}		    
+    	return "mostrar";
+    }
+
 	private void almacenarCertificado(String idInstitucion, String idSolicitud, HttpServletRequest request,PysProductosInstitucionBean beanProd,String idTipoProducto,String idProducto,String idProductoInstitucion,
 		String idPlantilla,String idPersona,File fIn,File fOut,String sRutaPlantillas,String idInstitucionOrigen,boolean usarIdInstitucion)throws ClsExceptions, SIGAException {
 	    
@@ -2115,7 +2191,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	        // - Que existe un producto comunicado en el origen (tal y como se hace en sol. de comun. y dilig.
 	        
 			// Obtengo la transaccion
-			tx = usr.getTransaction();
+			tx = usr.getTransactionPesada();
 			
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    
