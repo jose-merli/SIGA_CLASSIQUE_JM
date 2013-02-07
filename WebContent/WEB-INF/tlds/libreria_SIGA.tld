@@ -105,6 +105,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>elementoSelstring</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>seleccionMultiple</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

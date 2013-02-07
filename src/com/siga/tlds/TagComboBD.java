@@ -104,6 +104,17 @@ public class TagComboBD extends TagSupport {
 		porFilas = 0;
 		this.elementoSel = datos;		
 	}
+	public void setElementoSelstring (String datos)			{ 		
+		ArrayList a = new ArrayList();
+		String[] arrayDatos = datos.split(",");
+		for (String dato:arrayDatos){
+			Integer ent = new Integer(dato);
+			a.add(ent);
+		}
+		porFilas = 0;		
+		this.elementoSel = a;
+	}
+	
 	public void setElementoSel (int datos)			{ 
 		ArrayList a = new ArrayList();
 		Integer ent = new Integer(datos);
