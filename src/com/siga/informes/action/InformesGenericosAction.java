@@ -876,12 +876,12 @@ public class InformesGenericosAction extends MasterAction {
 			if (aux.size()==4)
 				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervaloGrupos(idinstitucion, (String) aux.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"), (String) aux.get("grupoFacturacion"));
 			else
-				idfacturaciones = (String) aux.get ("idFacturacion");
+				idfacturaciones = (String) aux.get ("idFacturacionIni");
 				
 			idioma = usr.getLanguage();
+			
 		} catch(Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.facturacionSJCS" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
 		}
 
 		// generando lista de filtros

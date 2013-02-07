@@ -21,12 +21,13 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
+import com.siga.beans.FcsPagosJGAdm;
+import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
@@ -82,13 +83,21 @@ public class InformesFacturacionMultipleAction extends MasterAction
 			} else if (accion.equalsIgnoreCase("generarInforme")){
 				mapDestino = generarInforme(mapping, miForm, request, response);
 				
+			} else if (accion.equalsIgnoreCase("ajaxObtenerInstituciones")){
+				ajaxObtenerInstituciones(mapping, miForm, request, response);
+				return null;				
+				
 			} else if (accion.equalsIgnoreCase("ajaxObtenerTurnos")){
 				ajaxObtenerTurnos(mapping, miForm, request, response);
 				return null;
 				
 			} else if (accion.equalsIgnoreCase("ajaxObtenerFacturas")){
 				ajaxObtenerFacturas(mapping, miForm, request, response);
-				return null;				
+				return null;		
+				
+			} else if (accion.equalsIgnoreCase("ajaxObtenerPagos")){
+				ajaxObtenerPagos(mapping, miForm, request, response);
+				return null;					
 				
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
@@ -192,44 +201,32 @@ public class InformesFacturacionMultipleAction extends MasterAction
 	}
 	
 	/**
-	 * Metodo que implementa el modo abrir
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
 	 */
-	protected String abrir (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try {		
-			//Obtengo datos del usuario
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");			
-			String sInstitucion = user.getLocation();			
-			int idConsejo = Integer.parseInt(sInstitucion);
-			
-			//Compruebo si es consejo
-			//En caso de ser consejo, obtengo las instituciones del consejo 
-			if (idConsejo == ClsConstants.INSTITUCION_CONSEJOGENERAL || idConsejo >= ClsConstants.INSTITUCION_CONSEJO){ 
-				List<CenInstitucionBean> aInstituciones = null;
-				CenInstitucionAdm admInstituciones = new CenInstitucionAdm(user);
-				aInstituciones = admInstituciones.getInstitucionesConsejo(sInstitucion);
-				
-				String optionsInstituciones = "<option selected value='-1'>"+UtilidadesString.getMensajeIdioma(user, "general.combo.seleccionar")+"</option>";
-				
-				for (int i=0; i<aInstituciones.size(); i++) {
-					CenInstitucionBean institucionBean = (CenInstitucionBean) aInstituciones.get(i);
-					optionsInstituciones += "<option value='"+institucionBean.getIdInstitucion()+"'>"+institucionBean.getAbreviatura()+"</option>";
-				}
-				
-				request.setAttribute("optionsInstituciones", optionsInstituciones);
-			}
+	protected void ajaxObtenerInstituciones (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		List<CenInstitucionBean> aInstituciones = null;
+		
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");	
+		int intInstitucion = Integer.parseInt(idInstitucion);
+		
+		//Compruebo si estan indicados los datos minimos
+		if (intInstitucion == ClsConstants.INSTITUCION_CONSEJOGENERAL || intInstitucion >= ClsConstants.INSTITUCION_CONSEJO) { 		
+			CenInstitucionAdm admInstituciones = new CenInstitucionAdm(user);
+			aInstituciones = admInstituciones.getInstitucionesConsejo(idInstitucion);		
+		} else {
+			aInstituciones = new ArrayList<CenInstitucionBean>();
 		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}
-
-		return "inicio";
-	}
+	    respuestaAjax(new AjaxCollectionXmlBuilder<CenInstitucionBean>(), aInstituciones, response);		
+	}	
 	
 	/**
 	 * 
@@ -246,16 +243,16 @@ public class InformesFacturacionMultipleAction extends MasterAction
 		List<ScsTurnoBean> alTurnos = null;
 		
 		//Recogemos el parametro enviado por ajax
-		String colegioFacturacion = request.getParameter("colegioFacturacion");		
+		String idInstitucion = request.getParameter("idInstitucion");		
 		
 		//Compruebo si estan indicados los datos minimos
-		if (colegioFacturacion==null || colegioFacturacion.equalsIgnoreCase("-1")) {
+		if (idInstitucion==null || idInstitucion.equalsIgnoreCase("-1")) {
 			alTurnos = new ArrayList<ScsTurnoBean>();
 			
 		} else {
 			//Sacamos los turnos
 			ScsTurnoAdm admTurnos = new ScsTurnoAdm(user);
-			alTurnos = admTurnos.getTurnosInformes(colegioFacturacion);
+			alTurnos = admTurnos.getTurnosInformes(idInstitucion);
 		}
 	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos, response);
 	}	
@@ -274,16 +271,16 @@ public class InformesFacturacionMultipleAction extends MasterAction
 		List<FcsFacturacionJGBean> aFacturas = null;
 		
 		//Recogemos los parametros enviados por ajax
-		String colegioFacturacion = request.getParameter("colegioFacturacion");		
-		String grupoFacturacion = request.getParameter("grupoFacturacion");
+		String idInstitucion = request.getParameter("idInstitucion");		
+		String idGrupo = request.getParameter("idGrupo");
 		
 		//Obtengo datos del usuario
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		String sInstitucion = user.getLocation();			
-		int iInstitucion = Integer.parseInt(sInstitucion);
+		String strInstitucion = user.getLocation();			
+		int intInstitucion = Integer.parseInt(strInstitucion);
 		
 		//Compruebo si estan indicados los datos minimos
-		if (colegioFacturacion==null || grupoFacturacion == null || colegioFacturacion.equalsIgnoreCase("-1") || grupoFacturacion.equalsIgnoreCase("")) {
+		if (idInstitucion==null || idGrupo == null || idInstitucion.equalsIgnoreCase("-1") || idGrupo.equalsIgnoreCase("")) {
 			aFacturas = new ArrayList<FcsFacturacionJGBean>();
 			
 		} else {
@@ -292,12 +289,43 @@ public class InformesFacturacionMultipleAction extends MasterAction
 			
 			//Compruebo si el usuario entra desde un consejo
 			//Solo muestra facturas cerradas
-			if (iInstitucion == ClsConstants.INSTITUCION_CONSEJOGENERAL || iInstitucion >= ClsConstants.INSTITUCION_CONSEJO) 
-				aFacturas = admFacturaciones.getFacturacionesInformes(colegioFacturacion, grupoFacturacion, "30");
+			if (intInstitucion == ClsConstants.INSTITUCION_CONSEJOGENERAL || intInstitucion >= ClsConstants.INSTITUCION_CONSEJO) 
+				aFacturas = admFacturaciones.getFacturacionesInformes(idInstitucion, idGrupo, "30");
 			
 			else 
-				aFacturas = admFacturaciones.getFacturacionesInformes(colegioFacturacion, grupoFacturacion, "20,30");
+				aFacturas = admFacturaciones.getFacturacionesInformes(idInstitucion, idGrupo, "20,30");
 		}
 	    respuestaAjax(new AjaxCollectionXmlBuilder<FcsFacturacionJGBean>(), aFacturas, response);
-	}	
+	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void ajaxObtenerPagos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {		
+		List<FcsPagosJGBean> aPagos = null;
+		
+		//Recogemos los parametros enviados por ajax
+		String idInstitucion = request.getParameter("idInstitucion");		
+		String idGrupo = request.getParameter("idGrupo");
+		
+		//Obtengo datos del usuario
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Compruebo si estan indicados los datos minimos
+		if (idInstitucion==null || idGrupo == null || idInstitucion.equalsIgnoreCase("-1") || idGrupo.equalsIgnoreCase("")) {
+			aPagos = new ArrayList<FcsPagosJGBean>();
+			
+		} else {
+			FcsPagosJGAdm admPagos = new FcsPagosJGAdm(user);
+			aPagos = admPagos.getPagosInformes(idInstitucion, idGrupo, ClsConstants.ESTADO_PAGO_EJECUTADO);
+		}
+	    respuestaAjax(new AjaxCollectionXmlBuilder<FcsPagosJGBean>(), aPagos, response);
+	}		
 }

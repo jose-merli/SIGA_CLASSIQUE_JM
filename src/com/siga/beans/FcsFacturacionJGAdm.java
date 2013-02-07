@@ -4813,6 +4813,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param sEstados
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public List<FcsFacturacionJGBean> getFacturacionesInformes(String idInstitucion, String idTurno, String sEstados) throws ClsExceptions {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		

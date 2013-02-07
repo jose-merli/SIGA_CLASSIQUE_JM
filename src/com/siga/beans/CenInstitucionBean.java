@@ -1,12 +1,16 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
 * @author ruben.fernandez
 *
 * TODO To change the template for this generated type comment go to
 * Window - Preferences - Java - Code Style - Code Templates
 */
-
+@AjaxXMLBuilderAnnotation 
 public class CenInstitucionBean extends MasterBean{
 	
 	/* Variables */ 
@@ -57,13 +61,15 @@ public class CenInstitucionBean extends MasterBean{
 		
 	/*Metodos GET*/
 	
-	public Integer getIdInstitucion				()	{ return this.idInstitucion;}
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
+	public Integer getIdInstitucion				()	{ return this.idInstitucion;}	
 	public String getNombre						()	{ return this.nombre;}
 	public Integer getCuentaContableCaja		()	{ return this.cuentaContableCaja;}
 	public Integer getBbddcpd					()  { return this.bbddcpd;}
 	public String  getIdLenguaje	 			() 	{ return this.idLenguaje;}
 	public Integer getIdPersona	 				() 	{ return this.idPersona;}
 	public Integer getCen_inst_idInstitucion	() 	{ return this.cen_inst_idInstitucion;}
+	@AjaxXMLBuilderNameAnnotation
 	public String getAbreviatura				()	{ return this.abreviatura;}
 	public String getFechaEnProduccion			()	{ return this.fechaEnProduccion;}
 }

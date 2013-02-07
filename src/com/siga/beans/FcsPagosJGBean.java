@@ -4,12 +4,17 @@
 //
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
 * Bean de la tabla FCS_PAGOSJG
 * 
 * @author david.sanchezp 
 * 
 */
+@AjaxXMLBuilderAnnotation 
 public class FcsPagosJGBean extends MasterBean {
 	
 	/* Variables */
@@ -123,6 +128,7 @@ public class FcsPagosJGBean extends MasterBean {
 	/**
 	 * @return Returns the idPagosJG.
 	 */
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer getIdPagosJG() {
 		return idPagosJG;
 	}
@@ -147,6 +153,7 @@ public class FcsPagosJGBean extends MasterBean {
 	/**
 	 * @return Returns the nombre.
 	 */
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre() {
 		return nombre;
 	}

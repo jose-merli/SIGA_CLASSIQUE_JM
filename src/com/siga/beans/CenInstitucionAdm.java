@@ -12,6 +12,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -523,13 +524,18 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer(); 
 												
             if (rc.query(sql)) {
-            	aInstituciones = new ArrayList<CenInstitucionBean>();        
+            	aInstituciones = new ArrayList<CenInstitucionBean>();       
+            	
+            	CenInstitucionBean institucionBean = new CenInstitucionBean();
+            	institucionBean.setIdInstitucion(-1);
+        		institucionBean.setAbreviatura(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+        		aInstituciones.add(institucionBean);
     			
     			for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
             		
-            		CenInstitucionBean institucionBean = new CenInstitucionBean();            		
+            		institucionBean = new CenInstitucionBean();            		
             		institucionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenInstitucionBean.C_IDINSTITUCION));
             		institucionBean.setAbreviatura(UtilidadesHash.getString(htFila, CenInstitucionBean.C_ABREVIATURA));
             		aInstituciones.add(institucionBean);

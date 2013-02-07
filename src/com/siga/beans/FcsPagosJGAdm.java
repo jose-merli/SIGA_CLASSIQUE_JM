@@ -5,7 +5,9 @@
 package com.siga.beans;
 
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -16,12 +18,12 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.form.MantenimientoInformesForm;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 
 /**
 * Administrador de Pagos de Justicia Gratuita de la tabla FCS_PAGOSJG
@@ -1441,4 +1443,63 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return (resultado > 0);
 	}		
 	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param sEstado
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<FcsPagosJGBean> getPagosInformes(String idInstitucion, String idTurno, String sEstado) throws ClsExceptions {
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		
+		String sql = " SELECT P." + FcsPagosJGBean.C_IDPAGOSJG + ", " +
+				" TO_CHAR(E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + ", 'dd/mm/yy')  || ' - ' || P." + FcsPagosJGBean.C_NOMBRE + " || ' (' || TO_CHAR(P." + FcsPagosJGBean.C_FECHADESDE + ", 'dd/mm/yy') || '-' ||TO_CHAR(P." + FcsPagosJGBean.C_FECHAHASTA + ", 'dd/mm/yy') || ')' AS " + FcsPagosJGBean.C_NOMBRE +
+			" FROM " + FcsPagosJGBean.T_NOMBRETABLA + " P, " + 
+				FcsPagosEstadosPagosBean.T_NOMBRETABLA + " E, " +
+				FcsFacturacionJGBean.T_NOMBRETABLA + " FACT, " + 
+				FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " HITO, " + 
+				ScsGrupoFacturacionBean.T_NOMBRETABLA + " GRUP " +
+			" WHERE (GRUP." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION + " = " + idTurno + " OR " + idTurno + " = -1) " +
+				" AND P." + FcsPagosJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+				" AND E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + " = (SELECT MAX(ES." + FcsPagosEstadosPagosBean.C_FECHAESTADO + ") FROM " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + " ES WHERE ES." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = P." + FcsPagosJGBean.C_IDPAGOSJG + " AND ES." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = P." + FcsPagosJGBean.C_IDINSTITUCION + ") " +
+				" AND (SELECT ESTADO." + FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG + " FROM " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + " ESTADO WHERE ESTADO." + FcsPagosEstadosPagosBean.C_FECHAESTADO + " = E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + " AND ESTADO." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = E." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " AND ESTADO." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = E." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + ") > " + sEstado + 
+				" AND P." + FcsPagosJGBean.C_IDINSTITUCION + " = E." + FcsPagosEstadosPagosBean.C_IDINSTITUCION +
+				" AND P." + FcsPagosJGBean.C_IDPAGOSJG + " = E." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + 
+				" AND P." + FcsPagosJGBean.C_IDINSTITUCION + " = FACT." + FcsFacturacionJGBean.C_IDINSTITUCION +  
+				" AND P." + FcsPagosJGBean.C_IDFACTURACION + " = FACT." + FcsFacturacionJGBean.C_IDFACTURACION +
+				" AND FACT." + FcsFacturacionJGBean.C_IDINSTITUCION + " = HITO." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION +
+				" AND FACT." + FcsFacturacionJGBean.C_IDFACTURACION + " = HITO." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + 
+				" AND HITO." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = GRUP." + ScsGrupoFacturacionBean.C_IDINSTITUCION + 
+				" AND HITO." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = GRUP." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION +
+			" GROUP BY P." + FcsPagosJGBean.C_IDPAGOSJG + ", " +
+				" P." + FcsPagosJGBean.C_FECHADESDE + ", " +
+				" P." + FcsPagosJGBean.C_FECHAHASTA + ", " +
+				" P." + FcsPagosJGBean.C_NOMBRE + ", " +
+				" E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + 
+			" ORDER BY E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + " DESC, " +
+				" P." + FcsPagosJGBean.C_FECHADESDE + " DESC";
+		
+		List<FcsPagosJGBean> aPagos = new ArrayList<FcsPagosJGBean>();
+		try {
+			RowsContainer rc = new RowsContainer();
+			
+			if (rc.query(sql)) {
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		FcsPagosJGBean pagoBean = new FcsPagosJGBean();            		
+            		pagoBean.setIdPagosJG(UtilidadesHash.getInteger(htFila, FcsPagosJGBean.C_IDPAGOSJG));
+            		pagoBean.setNombre(UtilidadesHash.getString(htFila, FcsPagosJGBean.C_NOMBRE));
+            		aPagos.add(pagoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return aPagos;		
+	}			
 } 

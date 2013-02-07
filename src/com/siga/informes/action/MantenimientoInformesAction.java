@@ -59,30 +59,32 @@ public class MantenimientoInformesAction extends MasterAction {
 					mapDestino = inf.generarFichaPago(mapping, formulario,
 							request, response);
 					return mapping.findForward(mapDestino);
+					
 				} else if (modo.equalsIgnoreCase("generarFichaFacturacion")) {
 					InformeFichaFacturacion inf = new InformeFichaFacturacion();
 					mapDestino = inf.generarFichaFacturacion(mapping,
 							formulario, request, response);
 					return mapping.findForward(mapDestino);
+					
 				} else if (modo.equalsIgnoreCase("generarInformeFacturacion")) {
 					InformeFichaFacturacion inf = new InformeFichaFacturacion();
 					mapDestino = inf.generarInformeFacturacion(mapping,
 							formulario, request, response);
 					return mapping.findForward(mapDestino);
+					
 				} else if (modo.equalsIgnoreCase("generarCertificadoPago")) {
 					
 					return  mapping.findForward(generaInfPersonalizablePago(mapping, miForm, request, response));/**/
-				} else if (miForm.getModo().equalsIgnoreCase(
-						"generarInformeIRPF")) {
-					return mapping.findForward(this.generarInformeIRPF(mapping,
-							miForm, request, response));
+					
+				} else if (miForm.getModo().equalsIgnoreCase("generarInformeIRPF")) {
+					return mapping.findForward(this.generarInformeIRPF(mapping,	miForm, request, response));
 
 				} else if (modo.equalsIgnoreCase("descargar")) {
 					mapDestino = descargar(mapping, miForm, request, response);
 					return mapping.findForward(mapDestino);
+					
 				} else {
-					return super.executeInternal(mapping, formulario, request,
-							response);
+					return super.executeInternal(mapping, formulario, request,response);
 				}
 			} else{
 				String idTipoInforme = mapping.getParameter();
@@ -111,8 +113,7 @@ public class MantenimientoInformesAction extends MasterAction {
 	throws SIGAException, ClsExceptions{
 		
 		UsrBean usr = this.getUserBean(request);
-		ArrayList<HashMap<String, String>> filtrosInforme = 
-			obtenerDatosFormCertificadoPago(formulario, request);
+		ArrayList<HashMap<String, String>> filtrosInforme = obtenerDatosFormCertificadoPago(formulario, request);
 		InformePersonalizable inf = new InformePersonalizable();
 		File ficheroSalida = inf.getFicheroGenerado(usr, InformePersonalizable.I_CERTIFICADOPAGO,null, filtrosInforme);
 		request.setAttribute("nombreFichero", ficheroSalida.getName());
@@ -154,9 +155,7 @@ public class MantenimientoInformesAction extends MasterAction {
 	/**
 	 * Obtiene los filtros del formulario para generar el Certificado de Pago
 	 */
-	private ArrayList<HashMap<String, String>> obtenerDatosFormCertificadoPago(
-			ActionForm formulario, HttpServletRequest request) throws SIGAException
-	{
+	private ArrayList<HashMap<String, String>> obtenerDatosFormCertificadoPago(ActionForm formulario, HttpServletRequest request) throws SIGAException {
 		// Controles y Variables
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		ArrayList<HashMap<String, String>> filtros;
@@ -166,20 +165,17 @@ public class MantenimientoInformesAction extends MasterAction {
 		String idpagoFinal = null;
 		String idioma = null;
 		String idpagos = null;
-		String grupoFacturaciones = null;
 		String grupoFac = null;
 		
 		// obteniendo valores del formulario
 		try {
-			idinstitucion = usr.getLocation();
+			idinstitucion = request.getParameter("idInstitucion");
+			grupoFac = (String)request.getParameter("idGrupo");
 			idpago = request.getParameter("idPago");
-			idioma = usr.getLanguage();
-			idpagoFinal = request.getParameter("idPagoFinal");
-			grupoFac = (String)request.getParameter("grupoFacturacion");
-			String[] resul=grupoFac.split(",");
-			grupoFacturaciones = resul[0];
-			if(idpagoFinal != null && !idpagoFinal.equals("")){
-				idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago,idpagoFinal,grupoFacturaciones);
+			idpagoFinal = request.getParameter("idPagoFin");
+			idioma = usr.getLanguage();			
+			if(idpagoFinal != null && !idpagoFinal.equalsIgnoreCase("") && !idpagoFinal.equalsIgnoreCase(idpago)){
+				idpagos = EjecucionPLs.ejecutarFuncPagosIntervaloGrupoFacturacion(idinstitucion, idpago, idpagoFinal, grupoFac);
 			}else{
 				idpagos = idpago;
 			}
@@ -212,8 +208,7 @@ public class MantenimientoInformesAction extends MasterAction {
 	/**
 	 * Metodo que permite la descarga de un fichero
 	 */
-	protected String descargar(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
+	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
 		File fichero = null;
@@ -226,8 +221,7 @@ public class MantenimientoInformesAction extends MasterAction {
 			rutaFichero = miform.getRutaFichero();
 			fichero = new File(rutaFichero);
 			if (fichero == null || !fichero.exists()) {
-				throw new SIGAException(
-						"messages.general.error.ficheroNoExiste");
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
 			}
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
@@ -239,5 +233,4 @@ public class MantenimientoInformesAction extends MasterAction {
 		}
 		return "descargaFichero";
 	}
-
 }

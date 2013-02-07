@@ -111,7 +111,8 @@
 	<body>
 		<!-- Campos -->
 		<siga:ConjCampos leyenda="menu.justiciaGratuita.informes.informeMultipleNuevo">
-			<input type="hidden" id= "informeUnico" value="<%=informeUnico%>" />			
+			<input type="hidden" id= "informeUnico" value="<%=informeUnico%>" />	
+			<input type="hidden" id= "idInstitucion" value="<%=sInstitucion%>" />		
 
 			<table class="tablaCampos" align="center" border="0">
 			
@@ -155,17 +156,23 @@
 							<select styleClass="boxCombo" style="width:800px;" id="idFacturacionFin" disabled>
 							</select>											
 						</td>
-					</tr>							
+					</tr>															
+						
+					<ajax:select
+						baseUrl="/SIGA/INF_InformesMultiples.do"
+						source="idInstitucion" target="colegioFacturacion" 
+						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerInstituciones"
+						executeOnLoad="true"/>					
 					
 					<ajax:select
 						baseUrl="/SIGA/INF_InformesMultiples.do"
 						source="colegioFacturacion" target="grupoFacturacion" 
-						parameters="colegioFacturacion={colegioFacturacion},modo=ajaxObtenerTurnos"/>
+						parameters="idInstitucion={colegioFacturacion},modo=ajaxObtenerTurnos"/>
 						
 					<ajax:select
 						baseUrl="/SIGA/INF_InformesMultiples.do"
 						source="grupoFacturacion" target="idFacturacionInicio"
-						parameters="colegioFacturacion={colegioFacturacion},grupoFacturacion={grupoFacturacion},modo=ajaxObtenerFacturas"
+						parameters="idInstitucion={colegioFacturacion},idGrupo={grupoFacturacion},modo=ajaxObtenerFacturas"
 						postFunction="postAccionTurno" />							
 
 				<% 	} else { %>
@@ -199,18 +206,16 @@
 						</td>
 					</tr>							
 					
-					<input type="hidden" id= "idInstitucion" value="<%=sInstitucion%>" />
-					
 					<ajax:select
 						baseUrl="/SIGA/INF_InformesMultiples.do"
 						source="idInstitucion" target="grupoFacturacion" 
-						parameters="colegioFacturacion={idInstitucion},modo=ajaxObtenerTurnos"
+						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerTurnos"
 						executeOnLoad="true"/>			
 												
 					<ajax:select
 						baseUrl="/SIGA/INF_InformesMultiples.do"
 						source="grupoFacturacion" target="idFacturacionInicio"
-						parameters="colegioFacturacion={idInstitucion},grupoFacturacion={grupoFacturacion},modo=ajaxObtenerFacturas"
+						parameters="idInstitucion={idInstitucion},idGrupo={grupoFacturacion},modo=ajaxObtenerFacturas"
 						postFunction="postAccionTurno" />								
 				<% } %>			
 				
@@ -221,8 +226,6 @@
 				</tr>				
 			</table>
 		</siga:ConjCampos>
-		
-
 
 		<!-- Formularios -->
 		<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
