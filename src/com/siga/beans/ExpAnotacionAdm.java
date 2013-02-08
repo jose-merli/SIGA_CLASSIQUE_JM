@@ -470,11 +470,11 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 		anotBean.setIdAnotacion(anotAdm.getNewIdAnotacion(datosAnot));
 		
 		//mhg - Comprobamos si existe la anotación para el tipo de expediente. En caso que no exista la insertamos.
-		boolean existe = existeAnotacion(new Integer(idInstitucion), ExpTiposAnotacionesAdm.codigoTipoComunicacion, idTipoExp);
+		boolean existe = existeAnotacion(new Integer(idInstitucionTipoExp), ExpTiposAnotacionesAdm.codigoTipoComunicacion, idTipoExp);
 		if(!existe){
 			String nombre = "expedientes.tipoAnotacion.comunicacion.nombre";
 			String mensaje = "expedientes.tipoAnotacion.comunicacion.mensaje";
-			insertarAnotacion(usrBean, ExpTiposAnotacionesAdm.codigoTipoComunicacion, new Integer(idInstitucion), idTipoExp, nombre, mensaje);
+			insertarTipoAnotacion(usrBean, ExpTiposAnotacionesAdm.codigoTipoComunicacion, new Integer(idInstitucionTipoExp), idTipoExp, nombre, mensaje);
 		}
 		//Ahora procedemos a insertarlo
 		anotAdm.insert(anotBean);	 
@@ -526,11 +526,11 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			anotacionBean.setIdInstitucion_Usuario(expBean.getIdInstitucion());
 			anotacionBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoAutomatico);	    
 			
-			boolean existe = existeAnotacion(expBean.getIdInstitucion(), ExpTiposAnotacionesAdm.codigoTipoAutomatico, expBean.getIdTipoExpediente());
+			boolean existe = existeAnotacion(expBean.getIdInstitucion_tipoExpediente(), ExpTiposAnotacionesAdm.codigoTipoAutomatico, expBean.getIdTipoExpediente());
 			if(!existe){
 				String nombre = "expedientes.tipoAnotacion.automatica.nombre";
 				String mensaje = "expedientes.tipoAnotacion.automatica.mensaje";
-				insertarAnotacion(usrbean, ExpTiposAnotacionesAdm.codigoTipoAutomatico, new Integer(expBean.getIdInstitucion()), expBean.getIdTipoExpediente(), nombre, mensaje);
+				insertarTipoAnotacion(usrbean, ExpTiposAnotacionesAdm.codigoTipoAutomatico, new Integer(expBean.getIdInstitucion_tipoExpediente()), expBean.getIdTipoExpediente(), nombre, mensaje);
 			}
 			
 	        if (!this.insert(anotacionBean)){
@@ -543,19 +543,19 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 	}
 	
     /*
-	 * Método para insertar anotaciones
+	 * Método para insertar tipos de anotaciones
 	 */
-	public void insertarAnotacion(UsrBean usrBean, Integer tipoAnotacion, Integer idInstitucion, Integer idTipoExp, String nombre, String mensaje)
+	public void insertarTipoAnotacion(UsrBean usrBean, Integer tipoAnotacion, Integer idInstitucionTipoExpediente, Integer idTipoExp, String nombre, String mensaje)
 			throws ClsExceptions {
 	    try{
 	    	
 	    	ExpTiposAnotacionesAdm admTipoAnotacion = new ExpTiposAnotacionesAdm(usrBean);
 	        ExpTiposAnotacionesBean beanTipoAnotacion = new ExpTiposAnotacionesBean();
-	        beanTipoAnotacion.setIdInstitucion(idInstitucion);
+	        beanTipoAnotacion.setIdInstitucion(idInstitucionTipoExpediente);
 	        beanTipoAnotacion.setIdTipoExpediente(idTipoExp);
 	        beanTipoAnotacion.setIdTipoAnotacion(tipoAnotacion);
 	        ///
-	        String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(idInstitucion), idTipoExp+"_"+tipoAnotacion);
+	        String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(idInstitucionTipoExpediente), idTipoExp+"_"+tipoAnotacion);
 	        beanTipoAnotacion.setNombre((idRecurso!=null)?""+idRecurso:UtilidadesString.getMensajeIdioma(usrBean,nombre));
 	        beanTipoAnotacion.setMensaje(UtilidadesString.getMensajeIdioma(usrBean,mensaje));	    
 		    //Ahora procedemos a insertarlo

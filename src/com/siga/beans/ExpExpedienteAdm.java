@@ -1506,7 +1506,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	   			   nombre = "expedientes.tipoAnotacion.automatica.nombre";
 	   			   mensaje = "expedientes.tipoAnotacion.automatica.mensaje";
 	   		   }
-			   expAnotacionAdm.insertarAnotacion(this.usrbean, anotBean.getIdTipoAnotacion(), exp.getIdInstitucion(), exp.getIdTipoExpediente(), nombre, mensaje);
+			   expAnotacionAdm.insertarTipoAnotacion(this.usrbean, anotBean.getIdTipoAnotacion(), exp.getIdInstitucion_tipoExpediente(), exp.getIdTipoExpediente(), nombre, mensaje);
 	   	   }
            
            anotAdm.insert(anotBean);
