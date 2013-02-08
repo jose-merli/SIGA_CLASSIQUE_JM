@@ -113,6 +113,12 @@
 			    return false;
 		       }
 		   <%}%> 
+		   
+		   if (document.MantenimientoProcuradorForm.idColProcurador.value==""){
+			    fin();
+			    alert('<siga:Idioma key="gratuita.datosProcurador.message.requeridoColegio"/>');
+			    return false;
+		       }
 			  
 				MantenimientoProcuradorForm.modo.value = "<%=accion%>";
 				MantenimientoProcuradorForm.submit();

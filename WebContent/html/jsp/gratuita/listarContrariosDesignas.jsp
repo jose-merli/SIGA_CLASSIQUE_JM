@@ -123,7 +123,6 @@
 		</tr>
 		</table>
 
-<table width="100%" border ="0"><tr><td>
 			<siga:TablaCabecerasFijas 
 			   nombre="tablaDatos"
 			   borde="1"
@@ -132,7 +131,8 @@
 			   tamanoCol="10,30,25,25,15"
 			   alto="100%"
 			   modal="G"
-			   
+			   ajusteBotonera="true"
+			   activarFilaSel="true"	
 			  >
 
 		<% if (obj==null || obj.size()==0){%>
@@ -169,7 +169,6 @@
 				<%recordNumber++;%>
 				<%}%>	
 		<%}%>
-		</td></tr></table>
 			</siga:TablaCabecerasFijas>
 
 
