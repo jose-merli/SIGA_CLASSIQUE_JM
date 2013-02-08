@@ -25,6 +25,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacEstadoConfirmFactAdm;
@@ -344,8 +345,26 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				}
 				if (form.getFechaCargo() != null && !form.getFechaCargo().equals("")) {
 					beanP.setFechaCargo(GstDate.getApplicationFormatDate("",form.getFechaCargo()));
-				}
+				} else {
 				
+	    			String fechaCargo = "";
+	    			
+	    				if ((fechaCargo == null || fechaCargo.equals("")) && form.getFacturacionRapida().equals("1")){
+	    					// Sysdate
+	    					fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
+	    					String anyo = fechaCargo.substring(0,4);
+	    					String mes = fechaCargo.substring(5,7);
+	    					String dia = fechaCargo.substring(8,10);
+	    					fechaCargo = fechaCargo.substring(8,10) + "/" + fechaCargo.substring(5,7) + "/" + fechaCargo.substring(0,4);
+	    				}
+	    				// Fecha de Cargo (DDMMAA):
+	    				
+	    				
+	    				beanP.setFechaCargo(GstDate.getApplicationFormatDate("",fechaCargo));
+ 
+	    					
+				
+				}
 				if (!adm.updateDirect(beanP)) {
 					throw new ClsExceptions("Error al actualizar estados de la programación: "+adm.getError());
 				}

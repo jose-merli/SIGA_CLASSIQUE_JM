@@ -15,6 +15,7 @@ import com.siga.general.MasterForm;
  */
 public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
+	private String facturacionRapida;
 //	private String generarEnvios = "";
 	
 	public String getFechaCargo() {
@@ -49,6 +50,12 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	public String getArchivadas() {
 		return archivadas;
 	}
+	public String getFacturacionRapida() {
+		return facturacionRapida;
+	}
+	public void setFacturacionRapida(String facturacionRapida) {
+		this.facturacionRapida = facturacionRapida;
+	}	
 	
 /*
 	public String getGenerarEnvios() {

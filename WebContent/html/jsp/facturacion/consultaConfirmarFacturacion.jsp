@@ -280,6 +280,7 @@
 			subicono('iconoboton_confirmacionInmediata'+fila);
 			
 			var datos;
+			
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
@@ -298,9 +299,17 @@
 			datos.value = datos.value + "%";
 		
 			// Abro la ventana de las tuercas:
-			document.confirmarFacturacionForm.modo.value = "confirmacionInmediata";
+		//	document.confirmarFacturacionForm.modo.value = "confirmacionInmediata";
+		//	var f = document.confirmarFacturacionForm.name;	
+		//	window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
+		
+			document.confirmarFacturacionForm.modo.value = "confirmarFactura";
+			document.all.confirmarFacturacionForm.facturacionRapida.value = "1";
 			var f = document.confirmarFacturacionForm.name;	
-			window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
+			// Abro la ventana de las tuercas:
+			document.confirmarFacturacionForm.submit();		
+		
+		
 		}
 
 		//Funcion asociada al boton Consultar
@@ -346,6 +355,7 @@
 		<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">		
 			<html:hidden name="confirmarFacturacionForm" property="modo" styleId="modo" value = ""/>
 			<html:hidden name="confirmarFacturacionForm" property="fechaCargo" styleId="fechaCargo" value = ""/>
+			<html:hidden name="confirmarFacturacionForm" property="facturacionRapida" styleId="facturacionRapida" value = ""/>
 			<html:hidden name="confirmarFacturacionForm" property="generarEnvios" styleId="generarEnvios" value = ""/>
 		</html:form>
 		
