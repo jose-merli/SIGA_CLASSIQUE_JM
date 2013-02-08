@@ -162,12 +162,66 @@ String[] getdatos = { usr.getLocation() };
 			f.apellido1.value = "<%=apellido1%>";
 			f.apellido2.value = "<%=apellido2%>";
 		}
+		
 		function inicio(){
-		<%if (BUSQUEDAREALIZADA!=null){%>
-			seleccionDatos();
-			buscarPaginador();
-		<%}%>
+			<%if (BUSQUEDAREALIZADA!=null){%>
+				seleccionDatos();
+				buscarPaginador();
+			<%}%>
 		}
+		
+		var comboJuzgado ="";
+		// Funcion que obtiene el juzgado buscando por codigo externo	
+		function obtenerJuzgado(codigo, combo) { 
+			if (codigo.value!=""){
+				comboJuzgado=combo;
+				document.MantenimientoJuzgadoForm.codigoExt2.value=codigo.value;
+				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value=combo;		
+				document.MantenimientoJuzgadoForm.submit();		
+			}
+			else
+				seleccionComboSiga(combo,-1);
+		}
+			
+		function traspasoDatos(resultado){		
+			if (comboJuzgado=="juzgado") {
+				if (resultado[0]==undefined) {
+					seleccionComboSiga("juzgado",-1);
+					document.getElementById("codigoExtJuzgado").value = "";
+				} 
+				else
+					seleccionComboSiga("juzgado",resultado[0]);					
+			}
+			else {
+				if (resultado[0]==undefined) {
+					seleccionComboSiga("juzgadoActu",-1);
+					document.getElementById("codigoExtJuzgadoActu").value = "";
+				} 
+				else
+					seleccionComboSiga("juzgadoActu",resultado[0]);						
+			} 
+		}			
+		
+		function cambiarJuzgado(comboJuzgado, codigo) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		   			type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById(codigo).value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById(codigo).value = "";
+		}			
 	</script>
 	
 </head>
@@ -440,9 +494,7 @@ String[] getdatos = { usr.getLocation() };
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 	
-
-		
-		<!-- Funcion asociada a boton buscar -->
+		//<!-- Funcion asociada a boton buscar -->
 		function buscar(modo) 
 		{
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
@@ -496,14 +548,14 @@ String[] getdatos = { usr.getLocation() };
 				//}
 		}			
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar() 
 		{		
 			document.forms[1].reset();
 			document.forms[1].ncolegiado.value="";
 		}
 		
-		<!-- Funcion asociada a boton Nuevo -->
+		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{		
 			document.forms[1].modo.value = "nuevo";
@@ -512,60 +564,7 @@ String[] getdatos = { usr.getLocation() };
 			{
 				redireccionar();
 			}
-		}
-		
-		var comboJuzgado ="";
-		// Funcion que obtiene el juzgado buscando por codigo externo	
-		function obtenerJuzgado(codigo, combo) { 
-			if (codigo.value!=""){
-				comboJuzgado=combo;
-				document.MantenimientoJuzgadoForm.codigoExt2.value=codigo.value;
-				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value=combo;		
-				document.MantenimientoJuzgadoForm.submit();		
-			}
-			else
-				seleccionComboSiga(combo,-1);
-		}
-			
-		function traspasoDatos(resultado){		
-			if (comboJuzgado=="juzgado") {
-				if (resultado[0]==undefined) {
-					seleccionComboSiga("juzgado",-1);
-					document.getElementById("codigoExtJuzgado").value = "";
-				} 
-				else
-					seleccionComboSiga("juzgado",resultado[0]);					
-			}
-			else {
-				if (resultado[0]==undefined) {
-					seleccionComboSiga("juzgadoActu",-1);
-					document.getElementById("codigoExtJuzgadoActu").value = "";
-				} 
-				else
-					seleccionComboSiga("juzgadoActu",resultado[0]);						
-			} 
-		}			
-		
-		function cambiarJuzgado(comboJuzgado, codigo) {
-			if(comboJuzgado.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		   			type: "POST",
-					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-					data: "idCombo="+comboJuzgado.value,
-					dataType: "json",
-					success: function(json){		
-			       		document.getElementById(codigo).value = json.codigoExt2;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById(codigo).value = "";
-		}		
+		}	
 		
 		function refrescarLocal()
 		{
@@ -586,27 +585,21 @@ String[] getdatos = { usr.getLocation() };
 			
 		}
 		
+		function generarCarta() {
+		    if(window.frames.resultado.ObjArray){
+			 	window.frames.resultado.accionComunicar();
+			}
+			else {
+				alert("<siga:Idioma key='general.message.seleccionar'/>");
+				fin();
+			}		
+		} 	
 		
-	</script>
-
-
-<!-- boton informe generico por resultados -->
-<script>
-function generarCarta() {
-    if(window.frames.resultado.ObjArray){
-	 	window.frames.resultado.accionComunicar();
-	}
-	else {
-		alert("<siga:Idioma key='general.message.seleccionar'/>");
-		fin();
-	}		
-} 	
-
-function consultas() 
-{		
-	document.RecuperarConsultasForm.submit();
-	
-}
+		function consultas() 
+		{		
+			document.RecuperarConsultasForm.submit();
+			
+		}
 </script>
 <!--<input type="button" name="descarga" value="Descargar Factura Rectificativa" onclick="generaInformeGenericoSimple();" class="button">-->
 
