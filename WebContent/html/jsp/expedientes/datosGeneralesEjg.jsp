@@ -475,26 +475,26 @@
 				seleccionComboSiga("juzgado",resultado[0]);				 
 		}		
 	
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}	
+		function cambiarJuzgado(comboJuzgado) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		   			type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtJuzgado").value = "";
+		}	
 		
 		function getPlazo(){
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
@@ -667,13 +667,9 @@
 				}
 			}
 		}
-
-
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
-		
-	
 </head>
 
 <body class="detallePestanas" onload="<%=recargarCombos%>; calcularTotalMinuta (); calcularTotalMinutaFinal ()">

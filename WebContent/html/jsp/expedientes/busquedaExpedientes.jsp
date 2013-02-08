@@ -139,10 +139,45 @@
 			}
 		}
 		
+		function obtenerJuzgado() { 
+		  	if (document.getElementById("codigoExtJuzgado").value!=""){
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
+				document.MantenimientoJuzgadoForm.submit();		
+		 	} 
+		 	else
+		 		seleccionComboSiga("juzgado",-1);
+		}		
 
+		function traspasoDatos(resultado) {
+			if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);				 
+		}			
 		
-		
-		
+		function cambiarJuzgado(comboJuzgado) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		   			type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtJuzgado").value = "";
+		}
 	</script>
 </head>
 
@@ -553,46 +588,7 @@
 		
 		}
 		
-		function obtenerJuzgado() 
-		{ 
-		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
-				document.MantenimientoJuzgadoForm.submit();		
-		 	} 
-		 	else
-		 		seleccionComboSiga("juzgado",-1);
-		}		
-
-		function traspasoDatos(resultado){
-			if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
-				document.getElementById("codigoExtJuzgado").value = "";
-			} 
-			else
-				seleccionComboSiga("juzgado",resultado[0]);				 
-		}			
-		
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}			
+			
 </script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 

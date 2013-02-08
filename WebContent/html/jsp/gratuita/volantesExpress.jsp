@@ -51,7 +51,8 @@
 <siga:TituloExt titulo="gratuita.volantesExpres.literal.titulo"	localizacion="gratuita.volantesExpres.literal.localizacion" />
 
 <script type="text/javascript">
-jQuery.noConflict();
+	jQuery.noConflict();
+	
 		function init() {
 			
 		   	jQuery("#colegiadosSustituidos").attr("disabled","disabled");
@@ -676,6 +677,119 @@ jQuery.noConflict();
 		return isValidado;
 	}
 		
+		function cambiarComisaria(fila) {
+			var combo = document.getElementById("comisaria_"+fila).value;
+			
+			if(combo!="-1"){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	  				type: "POST",
+					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria2",
+					data: "idCombo="+combo,
+					dataType: "json",
+					success: function(json){		
+		    	   		document.getElementById("codComisaria_"+fila).value = json.codigoExt;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codComisaria_"+fila).value = "";
+		}		
+		
+		function obtenerComisaria(fila) { 
+			var txtCodigoComisaria="codComisaria_"+fila;
+			var txtComboComisaria="comisaria_"+fila;		
+			var codigo = document.getElementById(txtCodigoComisaria).value;
+			
+			if(codigo!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	  				type: "POST",
+					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria3",
+					data: "codigo="+codigo,
+					dataType: "json",
+					success: function(json){		
+						if (json.idComisaria=="") {
+							document.getElementById(txtComboComisaria).value = "-1";
+							document.getElementById(txtCodigoComisaria).value = "";
+						} else {
+		    	   			document.getElementById(txtComboComisaria).value = json.idComisaria;    
+							if (document.getElementById(txtComboComisaria).value=="") {
+								document.getElementById(txtComboComisaria).value = "-1";
+								document.getElementById(txtCodigoComisaria).value = "";
+		    	   			}
+						}
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById(txtComboComisaria).value = "-1";
+		}	
+		
+		function cambiarJuzgado(fila) {
+			var combo = document.getElementById("juzgado_"+fila).value;
+			
+			if(combo!="-1"){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	  					type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
+					data: "idCombo="+combo,
+					dataType: "json",
+					success: function(json){		
+		    	   		document.getElementById("codJuzgado_"+fila).value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codJuzgado_"+fila).value = "";
+		}		
+		
+		function obtenerJuzgado(fila) { 
+			var txtCodigoJuzgado="codJuzgado_"+fila;
+			var txtComboJuzgado="juzgado_"+fila;
+			var codigo = document.getElementById(txtCodigoJuzgado).value;
+			
+			if(codigo!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	  					type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado4",
+					data: "codigo="+codigo,
+					dataType: "json",
+					success: function(json){		
+						if (json.idJuzgado=="") {
+							document.getElementById(txtComboJuzgado).value = "-1";
+							document.getElementById(txtCodigoJuzgado).value = "";
+						} else {
+		    	   			document.getElementById(txtComboJuzgado).value = json.idJuzgado;
+		    	   			if (document.getElementById(txtComboJuzgado).value=="") {
+								document.getElementById(txtComboJuzgado).value = "-1";
+								document.getElementById(txtCodigoJuzgado).value = "";
+		    	   			}
+						}
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById(txtComboJuzgado).value = "-1";
+		}				
 	</script>
 
 </head>
@@ -1070,121 +1184,7 @@ jQuery.noConflict();
 		document.VolantesExpressForm.submit();
 	
 	}
-	
-	function cambiarComisaria(fila) {
-		var combo = document.getElementById("comisaria_"+fila).value;
-		
-		if(combo!="-1"){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-  				type: "POST",
-				url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria2",
-				data: "idCombo="+combo,
-				dataType: "json",
-				success: function(json){		
-	    	   		document.getElementById("codComisaria_"+fila).value = json.codigoExt;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codComisaria_"+fila).value = "";
-	}		
-	
-	function obtenerComisaria(fila) { 
-		var txtCodigoComisaria="codComisaria_"+fila;
-		var txtComboComisaria="comisaria_"+fila;		
-		var codigo = document.getElementById(txtCodigoComisaria).value;
-		
-		if(codigo!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-  				type: "POST",
-				url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria3",
-				data: "codigo="+codigo,
-				dataType: "json",
-				success: function(json){		
-					if (json.idComisaria=="") {
-						document.getElementById(txtComboComisaria).value = "-1";
-						document.getElementById(txtCodigoComisaria).value = "";
-					} else {
-	    	   			document.getElementById(txtComboComisaria).value = json.idComisaria;    
-						if (document.getElementById(txtComboComisaria).value=="") {
-							document.getElementById(txtComboComisaria).value = "-1";
-							document.getElementById(txtCodigoComisaria).value = "";
-	    	   			}
-					}
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById(txtComboComisaria).value = "-1";
-	}	
-	
-	function cambiarJuzgado(fila) {
-		var combo = document.getElementById("juzgado_"+fila).value;
-		
-		if(combo!="-1"){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-  					type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
-				data: "idCombo="+combo,
-				dataType: "json",
-				success: function(json){		
-	    	   		document.getElementById("codJuzgado_"+fila).value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codJuzgado_"+fila).value = "";
-	}		
-	
-	function obtenerJuzgado(fila) { 
-		var txtCodigoJuzgado="codJuzgado_"+fila;
-		var txtComboJuzgado="juzgado_"+fila;
-		var codigo = document.getElementById(txtCodigoJuzgado).value;
-		
-		if(codigo!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-  					type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado4",
-				data: "codigo="+codigo,
-				dataType: "json",
-				success: function(json){		
-					if (json.idJuzgado=="") {
-						document.getElementById(txtComboJuzgado).value = "-1";
-						document.getElementById(txtCodigoJuzgado).value = "";
-					} else {
-	    	   			document.getElementById(txtComboJuzgado).value = json.idJuzgado;
-	    	   			if (document.getElementById(txtComboJuzgado).value=="") {
-							document.getElementById(txtComboJuzgado).value = "-1";
-							document.getElementById(txtCodigoJuzgado).value = "";
-	    	   			}
-					}
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById(txtComboJuzgado).value = "-1";
-	}		
-		
+			
 	function obtenerPersona (fila) 
 	{
 		o = document.getElementById ("dni_" + fila);

@@ -263,6 +263,98 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
+	<script>
+		// Funcion que obtiene la comisaria buscando por codigo externo	
+		function obtenerComisaria() { 
+			if (document.forms[0].codigoExtComisaria.value!=""){
+				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
+				document.MantenimientoComisariaForm.submit();	
+			}
+			else {
+		 		document.getElementById("comisaria").value=-1;
+		 		actualizarTdNumeroDiligencia();
+		 	}
+		}
+			 
+		function traspasoDatosComisaria(resultado) {
+			if (resultado[0]==undefined) {
+				document.getElementById("comisaria").value=-1;
+				document.getElementById("codigoExtComisaria").value = "";
+			} 
+			else
+				document.getElementById("comisaria").value=resultado[0];	
+				
+			actualizarTdNumeroDiligencia();
+		}			
+		
+		function cambiarComisaria(comboComisaria) {
+			if(comboComisaria.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria",
+					data: "idCombo="+comboComisaria.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtComisaria").value = "";
+				
+			actualizarTdNumeroDiligencia();
+		}	
+	
+		function obtenerJuzgado() { 
+			 if (document.forms[0].codigoExtJuzgado.value!=""){
+				    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
+				document.MantenimientoJuzgadoForm.submit();	
+			 }
+			 else {
+			 	document.getElementById("juzgado").value=-1;
+			 	actualizarTdNumeroProcedimiento();
+			 }
+		}
+		
+		function traspasoDatos(resultado){
+			if (resultado[0]==undefined) {
+				document.getElementById("juzgado").value=-1;
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				document.getElementById("juzgado").value=resultado[0];
+				
+			actualizarTdNumeroProcedimiento();
+		}		
+	
+		function cambiarJuzgado(comboJuzgado) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+		    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtJuzgado").value = "";
+			
+			actualizarTdNumeroProcedimiento();
+		}			
+	</script>	
 </head>
 
 <body onload="cargarComboModulo();">
@@ -1062,97 +1154,6 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 					document.getElementById("tdNumeroDiligencia").innerHTML = '<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>';
 			}
 		}
-		
-		// Funcion que obtiene la comisaria buscando por codigo externo	
-		function obtenerComisaria() { 
-			if (document.forms[0].codigoExtComisaria.value!=""){
-				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-				document.MantenimientoComisariaForm.submit();	
-			}
-			else {
-		 		document.getElementById("comisaria").value=-1;
-		 		actualizarTdNumeroDiligencia();
-		 	}
-		}
-			 
-		function traspasoDatosComisaria(resultado) {
-			if (resultado[0]==undefined) {
-				document.getElementById("comisaria").value=-1;
-				document.getElementById("codigoExtComisaria").value = "";
-			} 
-			else
-				document.getElementById("comisaria").value=resultado[0];	
-				
-			actualizarTdNumeroDiligencia();
-		}			
-		
-		function cambiarComisaria(comboComisaria) {
-			if(comboComisaria.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   				type: "POST",
-					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria",
-					data: "idCombo="+comboComisaria.value,
-					dataType: "json",
-					success: function(json){		
-			       		document.getElementById("codigoExtComisaria").value = json.codigoExt;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById("codigoExtComisaria").value = "";
-				
-			actualizarTdNumeroDiligencia();
-		}	
-	
-		function obtenerJuzgado() { 
-			 if (document.forms[0].codigoExtJuzgado.value!=""){
- 			    document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
-				document.MantenimientoJuzgadoForm.submit();	
-			 }
-			 else {
-			 	document.getElementById("juzgado").value=-1;
-			 	actualizarTdNumeroProcedimiento();
-			 }
-		}
-		
-		function traspasoDatos(resultado){
-			if (resultado[0]==undefined) {
-				document.getElementById("juzgado").value=-1;
-				document.getElementById("codigoExtJuzgado").value = "";
-			} 
-			else
-				document.getElementById("juzgado").value=resultado[0];
-				
-			actualizarTdNumeroProcedimiento();
-		}		
-	
-		function cambiarJuzgado(comboJuzgado) {
-			if(comboJuzgado.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   				type: "POST",
-					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-					data: "idCombo="+comboJuzgado.value,
-					dataType: "json",
-					success: function(json){		
-		    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById("codigoExtJuzgado").value = "";
-			
-			actualizarTdNumeroProcedimiento();
-		}	
 	
 	function cargarComboModulo() {
 		<% if (!modo.equalsIgnoreCase("ver")) { %>

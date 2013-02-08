@@ -147,6 +147,46 @@
 				document.forms[0].segundoApellidoDenunciante.value=resultado[6];
 			}
 		}
+		
+		function traspasoDatos(resultado){
+			 if (resultado[0]==undefined) {
+				seleccionComboSiga("juzgado",-1);
+				document.getElementById("codigoExtJuzgado").value = "";
+			} 
+			else
+				seleccionComboSiga("juzgado",resultado[0]);		
+		}	
+		
+	 	function obtenerJuzgado() {
+		  	if (document.getElementById("codigoExtJuzgado").value!=""){
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
+				document.MantenimientoJuzgadoForm.submit();		
+		 	}
+		 	else
+		 		seleccionComboSiga("juzgado",-1);
+		}
+	 	
+		function cambiarJuzgado(comboJuzgado) {
+			if(comboJuzgado.value!=""){
+				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		   			type: "POST",
+					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
+					data: "idCombo="+comboJuzgado.value,
+					dataType: "json",
+					success: function(json){		
+			       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+			else
+				document.getElementById("codigoExtJuzgado").value = "";
+		}	 			
 	</script>
 </head>
 
@@ -512,8 +552,9 @@
 	<html:hidden property="modo" value="" />
 	<html:hidden property="idInstitucion_TipoExpediente" value="" />
 	<html:hidden property="idTipoExpediente" value="" />
-</html:form> <!-- INICIO: SCRIPTS BOTONES BUSQUEDA --> <script language="JavaScript">
+</html:form> <!-- INICIO: SCRIPTS BOTONES BUSQUEDA --> 
 
+<script language="JavaScript">
 		<!-- Funcion asociada al check -->
 		function marked() 
 		{		
@@ -532,7 +573,7 @@
 			}			
 		}
 		
-		<!-- Funcion asociada a boton buscar -->
+		//<!-- Funcion asociada a boton buscar -->
 		function buscar(modo) 
 		{
 			sub();
@@ -557,7 +598,7 @@
 		}	
 		
 
-		<!-- Funcion asociada a boton busqueda simple -->
+		//<!-- Funcion asociada a boton busqueda simple -->
 		function buscarSimple() 
 		{		
 			document.forms[0].modo.value="abrir";
@@ -576,51 +617,11 @@
 			document.forms[0].submit();	
 		}
 			
-		<!-- Funcion asociada a boton Nuevo -->
+		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{							
 			document.forms[1].submit();
 		}
-
-		function traspasoDatos(resultado){
-			 if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
-				document.getElementById("codigoExtJuzgado").value = "";
-			} 
-			else
-				seleccionComboSiga("juzgado",resultado[0]);		
-		}	
-		
-	 	function obtenerJuzgado() {
-		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
-				document.MantenimientoJuzgadoForm.submit();		
-		 	}
-		 	else
-		 		seleccionComboSiga("juzgado",-1);
-		}
-	 	
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
-		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}	 	
 </script> <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"
