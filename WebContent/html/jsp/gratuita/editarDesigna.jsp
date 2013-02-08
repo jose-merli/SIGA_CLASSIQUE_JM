@@ -483,7 +483,7 @@
 		 	
 			if(document.getElementById("numeroProcedimiento").value != "" || document.getElementById("anioProcedimiento").value != ""){
 				if(document.getElementById("numeroProcedimiento").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento").value))
-					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato.ejis'/>"+ '\n';
 				if(document.getElementById("anioProcedimiento").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento").value))	
 					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
 					

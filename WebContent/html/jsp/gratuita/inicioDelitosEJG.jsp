@@ -710,7 +710,7 @@
 		 	
 			if(document.getElementById("numeroProcedimiento2").value != "" || document.getElementById("anioProcedimiento2").value != ""){
 				if(document.getElementById("numeroProcedimiento2").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
-					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato.ejis'/>"+ '\n';
 				if(document.getElementById("anioProcedimiento2").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento2").value))	
 					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
 					
