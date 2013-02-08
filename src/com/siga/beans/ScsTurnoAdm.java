@@ -1163,43 +1163,5 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
        }
        return alTurnos;
 		
-	}
-	
-	public List<ScsTurnoBean> getTurnosInformes(String idInstitucion)throws ClsExceptions{
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		
-		String sql = " SELECT " + ScsTurnoBean.C_IDTURNO + ", " +
-				ScsTurnoBean.C_NOMBRE +
-			" FROM " + ScsTurnoBean.T_NOMBRETABLA +
-			" WHERE " + ScsTurnoBean.C_IDINSTITUCION + " = " + idInstitucion +
-			" ORDER BY 2";
-		
-		List<ScsTurnoBean> alTurnos = new ArrayList<ScsTurnoBean>();
-		try {
-			RowsContainer rc = new RowsContainer();
-			
-			if (rc.query(sql)) {
-			
-				ScsTurnoBean turnoBean = new ScsTurnoBean();            		
-	    		turnoBean.setIdTurno(-1);
-	    		turnoBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "consultas.recuperarconsulta.literal.todos"));
-	    		alTurnos.add(turnoBean);												
-            
-    			for (int i = 0; i < rc.size(); i++){
-            		Row fila = (Row) rc.get(i);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		
-            		turnoBean = new ScsTurnoBean();            		
-            		turnoBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_IDTURNO));
-            		turnoBean.setNombre(UtilidadesHash.getString(htFila, ScsTurnoBean.C_NOMBRE));
-            		alTurnos.add(turnoBean);
-            	}
-            } 
-       } catch (Exception e) {
-       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-       }
-		
-       return alTurnos;		
 	}	
 }

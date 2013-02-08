@@ -28,8 +28,8 @@ import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.FcsPagosJGAdm;
 import com.siga.beans.FcsPagosJGBean;
-import com.siga.beans.ScsTurnoAdm;
-import com.siga.beans.ScsTurnoBean;
+import com.siga.beans.ScsGrupoFacturacionAdm;
+import com.siga.beans.ScsGrupoFacturacionBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -240,21 +240,21 @@ public class InformesFacturacionMultipleAction extends MasterAction
 	 */
 	protected void ajaxObtenerTurnos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		List<ScsTurnoBean> alTurnos = null;
+		List<ScsGrupoFacturacionBean> alTurnos = null;
 		
 		//Recogemos el parametro enviado por ajax
 		String idInstitucion = request.getParameter("idInstitucion");		
 		
 		//Compruebo si estan indicados los datos minimos
 		if (idInstitucion==null || idInstitucion.equalsIgnoreCase("-1")) {
-			alTurnos = new ArrayList<ScsTurnoBean>();
+			alTurnos = new ArrayList<ScsGrupoFacturacionBean>();
 			
 		} else {
 			//Sacamos los turnos
-			ScsTurnoAdm admTurnos = new ScsTurnoAdm(user);
+			ScsGrupoFacturacionAdm admTurnos = new ScsGrupoFacturacionAdm(user);
 			alTurnos = admTurnos.getTurnosInformes(idInstitucion);
 		}
-	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos, response);
+	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsGrupoFacturacionBean>(), alTurnos, response);
 	}	
 	
 	/**

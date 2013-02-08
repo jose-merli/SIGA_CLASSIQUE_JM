@@ -1,12 +1,16 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_GRUPOFACTURACION
  * 
  * @author ruben.fernandez
  * @since 06/12/2004 
  */
- 
+ @AjaxXMLBuilderAnnotation 
 public class ScsGrupoFacturacionBean extends MasterBean{
 	
 	/**
@@ -44,13 +48,14 @@ public class ScsGrupoFacturacionBean extends MasterBean{
 	//////
 		
 	// Métodos GET
-		
+	@AjaxXMLBuilderValueAnnotation(isCData=false)	
 	public Integer getIdGrupoFacturacion() {
 		return idGrupoFacturacion;
 	}
 	public Integer getIdInstitucion() {
 		return idInstitucion;
 	}
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre() {
 		return nombre;
 	}

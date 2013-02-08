@@ -1,7 +1,9 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -11,6 +13,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_GRUPOFACTURACION
@@ -228,4 +231,47 @@ public class ScsGrupoFacturacionAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<ScsGrupoFacturacionBean> getTurnosInformes(String idInstitucion) throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		
+		String sql = " SELECT " + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION + ", " +
+				" F_SIGA_GETRECURSO(" + ScsGrupoFacturacionBean.C_NOMBRE + ", " + this.usrbean.getLanguage() + ") AS " + ScsGrupoFacturacionBean.C_NOMBRE +
+			" FROM " + ScsGrupoFacturacionBean.T_NOMBRETABLA +
+			" WHERE " + ScsGrupoFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+			" ORDER BY 2";
+		
+		List<ScsGrupoFacturacionBean> alTurnos = new ArrayList<ScsGrupoFacturacionBean>();
+		try {
+			RowsContainer rc = new RowsContainer();
+			
+			if (rc.query(sql)) {
+			
+				ScsGrupoFacturacionBean turnoBean = new ScsGrupoFacturacionBean();            		
+	    		turnoBean.setIdGrupoFacturacion(-1);
+	    		turnoBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "consultas.recuperarconsulta.literal.todos"));
+	    		alTurnos.add(turnoBean);												
+            
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		turnoBean = new ScsGrupoFacturacionBean();            		
+            		turnoBean.setIdGrupoFacturacion(UtilidadesHash.getInteger(htFila, ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION));
+            		turnoBean.setNombre(UtilidadesHash.getString(htFila, ScsTurnoBean.C_NOMBRE));
+            		alTurnos.add(turnoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return alTurnos;		
+	}		
 }
