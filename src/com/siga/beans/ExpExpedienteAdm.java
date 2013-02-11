@@ -1087,7 +1087,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 		return tipoExpediente;
 	}
-	public Vector selectExpedientesCliente(long idPersona, int idInstitucion) throws ClsExceptions 
+	
+	public Vector selectExpedientesCliente(long idPersona, int idInstitucion) throws ClsExceptions {
+		return selectExpedientesCliente(idPersona, idInstitucion, null);
+	}
+	public Vector selectExpedientesCliente(long idPersona, int idInstitucion, String sSancionado) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
 		
@@ -1179,6 +1183,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    
 		    sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
 		    sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
+		    if (sSancionado != null)
+		    	sql += "e." + ExpExpedienteBean.C_SANCIONADO + " = '"+sSancionado+"' and ";
 			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
 		    
 		   		

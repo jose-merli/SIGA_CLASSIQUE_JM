@@ -3960,25 +3960,24 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			if(isIncluirSanciones){
 				ExpExpedienteAdm admExpedientes = new ExpExpedienteAdm(this.usrbean);
 				//CenSancionAdm admSanciones = new CenSancionAdm(this.usrbean);
-	    		Hashtable htFiltroSanciones = new Hashtable();
+	    		//Hashtable htFiltroSanciones = new Hashtable();
 	    		
-	    		htFiltroSanciones.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
+	    		//htFiltroSanciones.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 	    		//htFiltroSanciones.put(ExpDenunciadoBean.C_IDPERSONA,personaCertificado);
-	    		htFiltroSanciones.put(ExpExpedienteBean.C_SANCIONADO,"S");
-	    		//TODO: YA NO PUEDE SER UN SELECT?
-	    		Vector vSanciones = admExpedientes.select(htFiltroSanciones);
+	    		//htFiltroSanciones.put(ExpExpedienteBean.C_SANCIONADO,"S");
+	    		Vector vSanciones = admExpedientes.selectExpedientesCliente(personaCertificado, Integer.valueOf(idInstitucion), "S");	    		
 	    		StringBuffer descSancion = new StringBuffer("");
 	    		if(vSanciones!=null && !vSanciones.isEmpty()){
 	    			descSancion.append(UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"certificados.solicitudes.informe.sanciones.si").trim());
 	    			
 	    			for (int i=0;i<vSanciones.size();i++) {
-	    				ExpExpedienteBean beanExpediente = (ExpExpedienteBean) vSanciones.get(i);
+	    				Hashtable row = ((com.atos.utils.Row)vSanciones.get(i)).getRow();
 	    				descSancion.append(" ");
 	    				descSancion.append(UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"certificados.solicitudes.informe.sanciones.expediente").trim());
 	    				descSancion.append(" ");
-	    				descSancion.append(beanExpediente.getAnioExpediente());
+	    				descSancion.append(row.get(ExpExpedienteBean.C_ANIOEXPEDIENTE));
 	    				descSancion.append("/");
-	    				descSancion.append(beanExpediente.getNumeroExpediente());
+	    				descSancion.append(row.get(ExpExpedienteBean.C_NUMEROEXPEDIENTE));
 	    				if(i!=vSanciones.size()-1)
 	    					descSancion.append(",");
 	    				descSancion.append("\n\r\n\r");
