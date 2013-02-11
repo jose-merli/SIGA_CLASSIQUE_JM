@@ -386,16 +386,6 @@
 		//aalg: añadida para quitar la validación con structs y poder sacar todos los mensajes juntos con un mensaje variable según el tipo de interesado
 		function validarGuardar(){
 			var mensajeError = "";
-			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario			
-			if ($("#numExpDisciplinario").length != 0){
-				if ($.isNumeric($("#numExpDisciplinario").val())==false || $("#numExpDisciplinario").val().length == 4)
-					mensajeError = '<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
-			}
-			
-			if ($("#anioExpDisciplinario").length != 0){
-				if ($.isNumeric($("#anioExpDisciplinario").val())==false || $("#anioExpDisciplinario").val().length == 4)
-					mensajeError = '<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
-			}
 			
 			if ($("#clasificacion").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
@@ -424,7 +414,13 @@
 		}
 		function accionGuardar() 
 		{	
-			sub();	
+			sub();
+			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario
+			if(isNaN(document.ExpDatosGeneralesForm.anioExpDisciplinario.value) || isNaN(document.ExpDatosGeneralesForm.numExpDisciplinario.value)){
+				alert('<siga:Idioma key="messages.general.aviso.valorCampo"/> <siga:Idioma key="<%=nombreExpDisciplinario%>" /> <siga:Idioma key="messages.general.aviso.numericoEntero"/>');
+				fin();
+				return false;
+			}
 			var mensajeError = validarGuardar();
 			if (mensajeError == ""){
 				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaFinal.value && document.ExpDatosGeneralesForm.fechaFinal.value!='')) {
