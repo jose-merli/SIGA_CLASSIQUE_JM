@@ -1859,176 +1859,176 @@ public class ExpDatosGeneralesAction extends MasterAction
 			tx.begin();   
 								
 			//Ahora procedemos a insertarlo
-			if (expAdm.insert(expBean)){
-				
-				if (!form.getEstado().equals("")){
-					Hashtable hEstado = new Hashtable();
-					hEstado.put(ExpEstadosBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
-					hEstado.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-					hEstado.put(ExpEstadosBean.C_IDFASE,form.getFase());
-					hEstado.put(ExpEstadosBean.C_IDESTADO,form.getEstado());
-					ExpEstadosAdm estAdm = new ExpEstadosAdm(this.getUserBean(request));
-					Vector vEstado = estAdm.select(hEstado);
-					ExpEstadosBean estBean = (ExpEstadosBean)vEstado.elementAt(0);
-					
-					
-					//Si al nuevo expediente se le asigna un estado, se generan las alertas/logs correspondientes
-					try{
-						expAdm.cambioEstado(expBean,null,estBean,false);
-					}catch (Exception e) {
-						throw new ClsExceptions(e,"Error al cambiar el estado");
-					}
-					
-					String sCopia = "N";
-					if (hash.containsKey("copia"))
-						sCopia = (String) hash.get("copia");
-					if ("S".equalsIgnoreCase(sCopia)){
-						if (expDatosParticulares != null){
-							// Obtenemos los datos del expediente orignal
-							ExpExpedienteBean oldExpBean = new ExpExpedienteBean();
-							oldExpBean.setIdInstitucion(expDatosParticulares.getIdInstitucion());
-						    oldExpBean.setIdInstitucion_tipoExpediente(expDatosParticulares.getIdInstitucion_tipoExpediente());
-						    oldExpBean.setIdTipoExpediente(expDatosParticulares.getIdTipoExpediente());  
-						    oldExpBean.setNumeroExpediente(expDatosParticulares.getNumeroExpediente());
-						    oldExpBean.setAnioExpediente(expDatosParticulares.getAnioExpediente());
-						    
-							// Insertamos todos los denunciados en el nuevo	expediente							   
-						    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
-						    
-						    List<ExpDenunciadoBean> denunciadosExpOld = denAdm.getDenunciados(oldExpBean);
-						    if (denunciadosExpOld != null && denunciadosExpOld.size() > 0){
-						    	java.util.Iterator<ExpDenunciadoBean> iteraDenunciadosExpOld = denunciadosExpOld.iterator();
-						    	while (iteraDenunciadosExpOld.hasNext()){
-						    		ExpDenunciadoBean denunciado = iteraDenunciadosExpOld.next();
-						    		denunciado.setIdInstitucion(Integer.valueOf(idInstitucion));
-						    		denunciado.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-						    		denunciado.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-						    		denunciado.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-						    		denunciado.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-						    		
-						    		if(!denAdm.insert(denunciado)) {
-									    return this.exitoModalSinRefresco("messages.inserted.error",request);
-						    		}
-						    	}
-						    }
-						    
-						 // Insertamos todos los denunciantes en el nuevo expediene						   
-						    ExpDenuncianteAdm  denteAdm  = new ExpDenuncianteAdm(this.getUserBean(request));						    
-						    
-						    List<ExpDenuncianteBean> denunciantesExpOld = denteAdm.getDenunciantes(oldExpBean);
-						    if (denunciantesExpOld != null && denunciantesExpOld.size() > 0){
-						    	java.util.Iterator<ExpDenuncianteBean> iteraDenunciantesExpOld = denunciantesExpOld.iterator();
-						    	while (iteraDenunciantesExpOld.hasNext()){
-						    		ExpDenuncianteBean denunciante = iteraDenunciantesExpOld.next();
-						    		denunciante.setIdInstitucion(Integer.valueOf(idInstitucion));
-						    		denunciante.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-						    		denunciante.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-						    		denunciante.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-						    		denunciante.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-						    		
-						    		if(!denteAdm.insert(denunciante)) {
-									    return this.exitoModalSinRefresco("messages.inserted.error",request);
-						    		}
-						    	}
-						    }
-						} else {
-							return this.exitoModalSinRefresco("messages.inserted.error",request);
-						}
-					} else {
-						//Se inserta el denunciado si hay
-						if (form.getIdPersonaDenunciado() != null && !form.getIdPersonaDenunciado().equals("")){
-						    ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
-						    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
-						    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-						    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-						    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-						    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-						    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-						    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
-						    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
-						    		    
-						    if(!denAdm.insert(denBean)) {
+			if (!expAdm.insert(expBean))
+				throw new ClsExceptions(expAdm.getError());
+							
+			// RGG obtengo los campos configurados para las pestañas configuradas del tipo de expediente
+			// Y Los inseerto en blanco.
+			ExpCampoConfAdm admCampoConf = new ExpCampoConfAdm(this.getUserBean(request));
+			ExpCamposValorAdm admCampoVal = new ExpCamposValorAdm(this.getUserBean(request));
+			
+			Vector campos1 = admCampoConf.obtenerCamposConfigurados (idInstitucion_TipoExpediente,idTipoExpediente,"1");
+			for (int g=0;g<campos1.size();g++) {
+			    ExpCampoConfBean beanCampoConf = (ExpCampoConfBean) campos1.get(g);
+			    ExpCamposValorBean beanCampoVal = new ExpCamposValorBean();
+			    beanCampoVal.setIdInstitucion(new Integer(user.getLocation()));
+			    beanCampoVal.setIdInstitucion_TipoExpediente(beanCampoConf.getIdInstitucion());
+			    beanCampoVal.setIdTipoExpediente(beanCampoConf.getIdTipoExpediente());
+			    beanCampoVal.setIdPestanaConf(beanCampoConf.getIdPestanaConf());
+			    beanCampoVal.setIdCampo(beanCampoConf.getIdCampo());
+			    beanCampoVal.setIdCampoConf(beanCampoConf.getIdCampoConf());
+			    beanCampoVal.setNumeroExpediente(numExpAGuardar);
+			    beanCampoVal.setAnioExpediente(anioExpAGuardar);
+			    beanCampoVal.setValor("");
+			    if (!admCampoVal.insert(beanCampoVal)) {
+			        throw new ClsExceptions("Error al crear campos valor 1. "+admCampoVal.getError());
+			    }
+			}
+			Vector campos2 = admCampoConf.obtenerCamposConfigurados (idInstitucion_TipoExpediente,idTipoExpediente,"2");
+			for (int g=0;g<campos2.size();g++) {
+			    ExpCampoConfBean beanCampoConf = (ExpCampoConfBean) campos2.get(g);
+			    ExpCamposValorBean beanCampoVal = new ExpCamposValorBean();
+			    beanCampoVal.setIdInstitucion(new Integer(user.getLocation()));
+			    beanCampoVal.setIdInstitucion_TipoExpediente(beanCampoConf.getIdInstitucion());
+			    beanCampoVal.setIdTipoExpediente(beanCampoConf.getIdTipoExpediente());
+			    beanCampoVal.setIdPestanaConf(beanCampoConf.getIdPestanaConf());
+			    beanCampoVal.setIdCampo(beanCampoConf.getIdCampo());
+			    beanCampoVal.setIdCampoConf(beanCampoConf.getIdCampoConf());
+			    beanCampoVal.setNumeroExpediente(numExpAGuardar);
+			    beanCampoVal.setAnioExpediente(anioExpAGuardar);
+			    beanCampoVal.setValor("");
+			    if (!admCampoVal.insert(beanCampoVal)) {
+			        throw new ClsExceptions("Error al crear campos valor 2. "+admCampoVal.getError());
+			    }
+			}
+									
+			
+			String sCopia = "N";
+			if (hash.containsKey("copia"))
+				sCopia = (String) hash.get("copia");
+			if ("S".equalsIgnoreCase(sCopia)){
+				if (expDatosParticulares != null){
+					// Obtenemos los datos del expediente orignal
+					ExpExpedienteBean oldExpBean = new ExpExpedienteBean();
+					oldExpBean.setIdInstitucion(expDatosParticulares.getIdInstitucion());
+				    oldExpBean.setIdInstitucion_tipoExpediente(expDatosParticulares.getIdInstitucion_tipoExpediente());
+				    oldExpBean.setIdTipoExpediente(expDatosParticulares.getIdTipoExpediente());  
+				    oldExpBean.setNumeroExpediente(expDatosParticulares.getNumeroExpediente());
+				    oldExpBean.setAnioExpediente(expDatosParticulares.getAnioExpediente());
+				    
+					// Insertamos todos los denunciados en el nuevo	expediente							   
+				    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+				    
+				    List<ExpDenunciadoBean> denunciadosExpOld = denAdm.getDenunciados(oldExpBean);
+				    if (denunciadosExpOld != null && denunciadosExpOld.size() > 0){
+				    	java.util.Iterator<ExpDenunciadoBean> iteraDenunciadosExpOld = denunciadosExpOld.iterator();
+				    	while (iteraDenunciadosExpOld.hasNext()){
+				    		ExpDenunciadoBean denunciado = iteraDenunciadosExpOld.next();
+				    		denunciado.setIdInstitucion(Integer.valueOf(idInstitucion));
+				    		denunciado.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+				    		denunciado.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+				    		denunciado.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+				    		denunciado.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+				    		
+				    		if(!denAdm.insert(denunciado)) {
 							    return this.exitoModalSinRefresco("messages.inserted.error",request);
-						    }		
-						}
-						
-						//Se inserta el denunciante si hay
-						if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
-						    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
-						    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
-						    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-						    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-						    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-						    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-						    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-						    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
-						    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
-						    		    
-						    if(!denAdm.insert(denBean)) {
+				    		}
+				    	}
+				    }
+				    
+				 // Insertamos todos los denunciantes en el nuevo expediene						   
+				    ExpDenuncianteAdm  denteAdm  = new ExpDenuncianteAdm(this.getUserBean(request));						    
+				    
+				    List<ExpDenuncianteBean> denunciantesExpOld = denteAdm.getDenunciantes(oldExpBean);
+				    if (denunciantesExpOld != null && denunciantesExpOld.size() > 0){
+				    	java.util.Iterator<ExpDenuncianteBean> iteraDenunciantesExpOld = denunciantesExpOld.iterator();
+				    	while (iteraDenunciantesExpOld.hasNext()){
+				    		ExpDenuncianteBean denunciante = iteraDenunciantesExpOld.next();
+				    		denunciante.setIdInstitucion(Integer.valueOf(idInstitucion));
+				    		denunciante.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+				    		denunciante.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+				    		denunciante.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+				    		denunciante.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+				    		
+				    		if(!denteAdm.insert(denunciante)) {
 							    return this.exitoModalSinRefresco("messages.inserted.error",request);
-						    }		
-						}
-					}
-					Hashtable nuevo = expAdm.beanToHashTable(expBean); 
-					if (expAdm.updateDirect(nuevo,null,null)){
-						//Averiguamos si el estado tiene ESEJECUCIONSANCION='S'
-						if (estBean.getEjecucionSancion().equals("S")){
-							request.setAttribute("nuevo","true");
-							Hashtable hEjSancion = new Hashtable();
-							hEjSancion.put("idInstitucion",idInstitucion);
-							hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
-							session.setAttribute("ejecucionSancion",hEjSancion);
-							tx.commit();
-							return "ejecucionSancion";
-						}
-					}
-					
-					// RGG obtengo los campos configurados para las pestañas configuradas del tipo de expediente
-					// Y Los inseerto en blanco.
-					ExpCampoConfAdm admCampoConf = new ExpCampoConfAdm(this.getUserBean(request));
-					ExpCamposValorAdm admCampoVal = new ExpCamposValorAdm(this.getUserBean(request));
-					
-					Vector campos1 = admCampoConf.obtenerCamposConfigurados (idInstitucion_TipoExpediente,idTipoExpediente,"1");
-					for (int g=0;g<campos1.size();g++) {
-					    ExpCampoConfBean beanCampoConf = (ExpCampoConfBean) campos1.get(g);
-					    ExpCamposValorBean beanCampoVal = new ExpCamposValorBean();
-					    beanCampoVal.setIdInstitucion(new Integer(user.getLocation()));
-					    beanCampoVal.setIdInstitucion_TipoExpediente(beanCampoConf.getIdInstitucion());
-					    beanCampoVal.setIdTipoExpediente(beanCampoConf.getIdTipoExpediente());
-					    beanCampoVal.setIdPestanaConf(beanCampoConf.getIdPestanaConf());
-					    beanCampoVal.setIdCampo(beanCampoConf.getIdCampo());
-					    beanCampoVal.setIdCampoConf(beanCampoConf.getIdCampoConf());
-					    beanCampoVal.setNumeroExpediente(numExpAGuardar);
-					    beanCampoVal.setAnioExpediente(anioExpAGuardar);
-					    beanCampoVal.setValor("");
-					    if (!admCampoVal.insert(beanCampoVal)) {
-					        throw new ClsExceptions("Error al crear campos valor 1. "+admCampoVal.getError());
-					    }
-					}
-					Vector campos2 = admCampoConf.obtenerCamposConfigurados (idInstitucion_TipoExpediente,idTipoExpediente,"2");
-					for (int g=0;g<campos2.size();g++) {
-					    ExpCampoConfBean beanCampoConf = (ExpCampoConfBean) campos2.get(g);
-					    ExpCamposValorBean beanCampoVal = new ExpCamposValorBean();
-					    beanCampoVal.setIdInstitucion(new Integer(user.getLocation()));
-					    beanCampoVal.setIdInstitucion_TipoExpediente(beanCampoConf.getIdInstitucion());
-					    beanCampoVal.setIdTipoExpediente(beanCampoConf.getIdTipoExpediente());
-					    beanCampoVal.setIdPestanaConf(beanCampoConf.getIdPestanaConf());
-					    beanCampoVal.setIdCampo(beanCampoConf.getIdCampo());
-					    beanCampoVal.setIdCampoConf(beanCampoConf.getIdCampoConf());
-					    beanCampoVal.setNumeroExpediente(numExpAGuardar);
-					    beanCampoVal.setAnioExpediente(anioExpAGuardar);
-					    beanCampoVal.setValor("");
-					    if (!admCampoVal.insert(beanCampoVal)) {
-					        throw new ClsExceptions("Error al crear campos valor 2. "+admCampoVal.getError());
-					    }
-					}
-										
+				    		}
+				    	}
+				    }
+				} else {
+					return this.exitoModalSinRefresco("messages.inserted.error",request);
+				}
+			} else {
+				//Se inserta el denunciado si hay
+				if (form.getIdPersonaDenunciado() != null && !form.getIdPersonaDenunciado().equals("")){
+				    ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
+				    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+				    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+				    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+				    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+				    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+				    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+				    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+				    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
+				    		    
+				    if(!denAdm.insert(denBean)) {
+					    return this.exitoModalSinRefresco("messages.inserted.error",request);
+				    }		
 				}
 				
-				tx.commit();
-			} else {
-				throw new ClsExceptions(expAdm.getError());
+				//Se inserta el denunciante si hay
+				if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
+				    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
+				    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
+				    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+				    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+				    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+				    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+				    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+				    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+				    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+				    		    
+				    if(!denAdm.insert(denBean)) {
+					    return this.exitoModalSinRefresco("messages.inserted.error",request);
+				    }		
+				}
 			}
+			
+			if (!form.getEstado().equals("")){
+				Hashtable hEstado = new Hashtable();
+				hEstado.put(ExpEstadosBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+				hEstado.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+				hEstado.put(ExpEstadosBean.C_IDFASE,form.getFase());
+				hEstado.put(ExpEstadosBean.C_IDESTADO,form.getEstado());
+				ExpEstadosAdm estAdm = new ExpEstadosAdm(this.getUserBean(request));
+				Vector vEstado = estAdm.select(hEstado);
+				ExpEstadosBean estBean = (ExpEstadosBean)vEstado.elementAt(0);
+				
+				
+				//Si al nuevo expediente se le asigna un estado, se generan las alertas/logs correspondientes
+				try{
+					expAdm.cambioEstado(expBean,null,estBean,false);
+				}catch (Exception e) {
+					throw new ClsExceptions(e,"Error al cambiar el estado");
+				}
+				
+				
+				Hashtable nuevo = expAdm.beanToHashTable(expBean); 
+				if (expAdm.updateDirect(nuevo,null,null)){
+					//Averiguamos si el estado tiene ESEJECUCIONSANCION='S'
+					if (estBean.getEjecucionSancion().equals("S")){
+						request.setAttribute("nuevo","true");
+						Hashtable hEjSancion = new Hashtable();
+						hEjSancion.put("idInstitucion",idInstitucion);
+						hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+						session.setAttribute("ejecucionSancion",hEjSancion);
+						tx.commit();
+						return "ejecucionSancion";
+					}
+				}
+			}
+			
+			tx.commit();			
 			
 		}catch (ClsExceptions cl) {
 			if(cl.getMsg().contains("PK_EXP_EXPEDIENTE")){

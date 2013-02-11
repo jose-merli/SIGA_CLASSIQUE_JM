@@ -102,6 +102,19 @@ public class CenPersonaBean extends MasterBean
 	public CenColegiadoBean getColegiado() {return colegiado;}
 	
 	public String getNombreCompleto(){
+		String sNombreCompleto = "";
+		if (this.getNombre() != null)
+			sNombreCompleto += this.getNombre();
+		if (this.getApellido1() != null){
+			if (!sNombreCompleto.equals(""))
+				sNombreCompleto += " ";
+			sNombreCompleto += this.getApellido1();
+		}
+		if (this.getApellido2() != null){
+			if (!sNombreCompleto.equals(""))
+				sNombreCompleto += " ";
+			sNombreCompleto += this.getApellido2();
+		}
 		return this.getNombre() + " " + this.getApellido1() + " " + this.getApellido2();
 	}
 	
