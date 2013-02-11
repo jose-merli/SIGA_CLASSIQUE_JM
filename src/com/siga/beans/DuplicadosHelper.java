@@ -123,13 +123,23 @@ public class DuplicadosHelper{
 			sqlMismoNif.append("    and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
 
 			StringBuffer sqlMismosApellidos = new StringBuffer();
-			sqlMismosApellidos.append("   and (regexp_replace(replace(replace(replace(upper(translate(p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2), ");
+/*			sqlMismosApellidos.append("   and (regexp_replace(replace(replace(replace(upper(translate(p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2), ");
+			
 			sqlMismosApellidos.append(" 'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', " +
 							" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', '')  = ");
-			sqlMismosApellidos.append("        regexp_replace(replace(replace(replace(upper(translate(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), "); 
+*/
+			sqlMismosApellidos.append(" and (regexp_replace(upper(translate(p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2), " +
+					"'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', " + 
+					"'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I | ', '') = ");
+			
+			sqlMismosApellidos.append("regexp_replace(upper(translate(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), " +
+							"'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', " + 
+							"'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I | ', ''))");
+			
+			/*sqlMismosApellidos.append("        regexp_replace(replace(replace(replace(upper(translate(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), "); 
 			sqlMismosApellidos.append(" 'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', " +
 					" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', ''))");
-	
+	*/
 					
 
 			StringBuffer sqlMismoNombreApellidos = new StringBuffer();
