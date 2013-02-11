@@ -1022,6 +1022,72 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }	
 	
+	
+	/**
+	 * Obtiene los contrarios del EJG
+	 * @param idInstitucion
+	 * @param tipoEjg
+	 * @param anioEjg
+	 * @param numeroEjg
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getContrariosEjg(String idInstitucion, String  tipoEjg, String anioEjg, String numeroEjg) throws ClsExceptions {	
+  		Vector datos=new Vector();   
+  		RowsContainer rc = new RowsContainer();
+  		String sql = " SELECT " + 
+		  		" NVL(PER." + ScsPersonaJGBean.C_NOMBRE + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO1 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO1 + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO2 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO2 + ", '') " +
+  				" AS NOMBRE_CONTRARIO, " +
+  				" NVL2(VIA." + CenTiposViasBean.C_DESCRIPCION + ", F_SIGA_GETRECURSO(PER." + ScsPersonaJGBean.C_DIRECCION + "," + this.usrbean.getLanguage() + "), '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_DIRECCION + ", ' ' || PER." + ScsPersonaJGBean.C_DIRECCION + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_NUMERODIR + ", ' ' || PER." + ScsPersonaJGBean.C_NUMERODIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_ESCALERADIR + ", ' ' || PER." + ScsPersonaJGBean.C_ESCALERADIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_PISODIR + ", ' ' || PER." + ScsPersonaJGBean.C_PISODIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_PUERTADIR + ", ' ' || PER." + ScsPersonaJGBean.C_PUERTADIR + ", '') " +
+  				" AS DOMICILIO_CONTRARIO, " +
+  				" NVL(PER." + ScsPersonaJGBean.C_CODIGOPOSTAL + ", '') AS CP_CONTRARIO, " +
+  				" NVL(POBL." + CenPoblacionesBean.C_NOMBRE + ", '') AS POBLACION_CONTRARIO, " +
+  				" NVL(PROV." + CenProvinciaBean.C_NOMBRE + ", '') AS PROVINCIA_CONTRARIO, " +
+  				" NVL2(PER." + ScsPersonaJGBean.C_SEXO + ", DECODE(PER." + ScsPersonaJGBean.C_SEXO + ",'H','o','a'), '') AS O_A_CONTRARIO, "+
+  				" NVL(PER." + ScsPersonaJGBean.C_NIF + ", '') AS NIF_CONTRARIO, " +
+  				" (SELECT NVL(TEL." + ScsTelefonosPersonaBean.C_NUMEROTELEFONO + ", '') " +
+  					" FROM " + ScsTelefonosPersonaBean.T_NOMBRETABLA + " TEL " + 
+  					" WHERE TEL." + ScsTelefonosPersonaBean.C_IDINSTITUCION + " = PER." + ScsPersonaJGBean.C_IDINSTITUCION +
+  					" AND TEL." + ScsTelefonosPersonaBean.C_IDPERSONA + " = PER." + ScsPersonaJGBean.C_IDPERSONA + 
+  					" AND ROWNUM = 1) AS TELEFONO1_CONTRARIO " +
+  			" FROM " + ScsContrariosEJGBean.T_NOMBRETABLA + " CON, " +  				
+  				ScsPersonaJGBean.T_NOMBRETABLA + " PER, " +
+  				CenTiposViasBean.T_NOMBRETABLA + " VIA, " +
+  				CenPoblacionesBean.T_NOMBRETABLA + " POBL, " +
+  				CenProvinciaBean.T_NOMBRETABLA + " PROV " +
+  			" WHERE CON." + ScsContrariosEJGBean.C_IDINSTITUCION + " = PER." + ScsPersonaJGBean.C_IDINSTITUCION + 
+  				" AND CON." + ScsContrariosEJGBean.C_IDPERSONA + " = PER." + ScsPersonaJGBean.C_IDPERSONA + 
+  				" AND CON." + ScsContrariosEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+  				" AND CON." + ScsContrariosEJGBean.C_IDTIPOEJG + " = " + tipoEjg +
+  				" AND CON." + ScsContrariosEJGBean.C_ANIO + " = " + anioEjg +
+  				" AND CON." + ScsContrariosEJGBean.C_NUMERO + " = " + numeroEjg + 
+  				" AND VIA." + CenTiposViasBean.C_IDINSTITUCION + "(+) = PER." + ScsPersonaJGBean.C_IDINSTITUCION +
+  				" AND VIA." + CenTiposViasBean.C_IDTIPOVIA + "(+) = PER." + ScsPersonaJGBean.C_IDTIPOVIA +
+  				" AND POBL." + CenPoblacionesBean.C_IDPOBLACION + "(+) = PER." + ScsPersonaJGBean.C_IDPOBLACION +
+  				" AND PROV." + CenProvinciaBean.C_IDPROVINCIA + "(+) = PER." + ScsPersonaJGBean.C_IDPROVINCIA;
+  				
+        try {    
+        	if (rc.find(sql)) {
+        		for (int i = 0; i < rc.size(); i++){
+        			Row fila = (Row) rc.get(i);
+        			Hashtable resultado=fila.getRow();	                  
+		            datos.add(resultado);
+        		}
+        	} 
+        } catch (Exception e) {
+        	throw new ClsExceptions (e, "Error al obtener la informacion sobre el tipo ejg colegio de una designa.");
+        }
+       
+        return datos;      
+	}	
+	
 	/** 
 	 * Recoge informacion sobre los datos de la defensa juridica 
 	 * @param  institucion - identificador de la institucion	 	  
@@ -3207,139 +3273,111 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	public Vector getEjgSalida (String idInstitucion, String tipoEjg,
-			String anio, String numero,String idioma) throws ClsExceptions  
-	{
-		try {
-			Hashtable htCodigos = new Hashtable();
-			int keyContador = 0;
+	public Vector getEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero,String idioma) throws ClsExceptions {
+			RowsContainer rc = new RowsContainer();
+			Vector datos = new Vector();
 			
-		
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" SELECT  ");
-			sql.append(" EJGD.IDINSTITUCION DES_INSTITUCION,EJGD.IDTURNO DES_IDTURNO,EJGD.ANIODESIGNA DES_ANIO,EJGD.NUMERODESIGNA DES_NUMERO,  ");
-			sql.append(" EJG.IDPERSONA,EJG.idfundamentocalif,EJG.IDPROCURADOR,EJG.IDINSTITUCION_PROC, ");
-			sql.append(" EJG.JUZGADO AS IDJUZGADO_DJ, EJG.JUZGADOIDINSTITUCION AS JUZGADOIDINSTITUCION_DJ,EJG.COMISARIA, EJG.COMISARIAIDINSTITUCION, ");
-
+			String sql = " SELECT EJGD.IDINSTITUCION DES_INSTITUCION, " +
+				" EJGD.IDTURNO DES_IDTURNO, " +
+				" EJGD.ANIODESIGNA DES_ANIO, " + 
+				" EJGD.NUMERODESIGNA DES_NUMERO, " + 
+				" EJG.IDPERSONA, " +
+				" EJG.idfundamentocalif, " +
+				" EJG.IDPROCURADOR, " + 
+				" EJG.IDINSTITUCION_PROC, "+ 
+				" EJG.JUZGADO AS IDJUZGADO_DJ, " +
+				" EJG.JUZGADOIDINSTITUCION AS JUZGADOIDINSTITUCION_DJ, " +
+				" EJG.COMISARIA, " +
+				" EJG.COMISARIAIDINSTITUCION, " + 
+				" EJG.ANIO AS ANIO_EJG, " +
+				" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, " +
+				" EJG.OBSERVACIONES AS OBSERVACIONES, " +
+				" EJG.OBSERVACIONES AS ASUNTO_EJG, " +
+				" (SELECT observaciones FROM scs_designa des WHERE des.IDINSTITUCION = EJGD.Idinstitucion AND des.IDTURNO = EJGD.Idturno AND des.ANIO = ejgd.aniodesigna AND des.NUMERO = EJGD.Numerodesigna) as OBSERVACIONES_DESIGNA, " +			
+				" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, " + 
+				" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, " +
+				" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, " +
+				" EJG.IDTIPOEJG, " +
+				" EJG.ANIO, " +
+				" EJG.NUMEJG as NUMERO, " +
+				" (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG, " +
+				" EJG.IDPERSONA, " +			
+				" EJG.CALIDAD, " +			
+				" (SELECT Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = Ejg.Idinstitucion AND Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DJ_DESCRIPCION, " +  			
+				" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, " +
+				" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, " +
+				" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, " + 
+				" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, " + 
+				" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, " +
+				" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, " +
+				" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, " +
+				" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, " +
+				" EJG.NIG, " + 
+				" TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR, " +
+				" EJG.NUMERODESIGNAPROC AS NUMDESIGNA_PROCURADOR, " + 
+				" EJG.idtipodictamenejg, " + 
+				" TO_CHAR(EJG.fechadictamen,'dd-mm-yyyy') AS fechadictamen, " + 
+				" EJG.dictamen, " + 
+				" TO_CHAR(EJG.fecharesolucioncajg,'dd-mm-yyyy') AS fecharesolucioncajg, " + 
+				" EJG.idtiporatificacionejg, " + 
+				" TO_CHAR(EJG.fechanotificacion,'dd-mm-yyyy') AS fechanotificacion, " + 
+				" EJG.refauto, " +
+				" EJG.ratificaciondictamen, " +
+				" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto, " +
+				" EJG.idtiporesolauto, " +
+				" EJG.idtiposentidoauto, " + 
+				" (SELECT pon.nombre FROM SCS_PONENTE pon WHERE pon.idPonente = EJG.idPONENTE AND pon.idInstitucion = EJG.IDINSTITUCION) as PONENTE, " + 			
+				" (SELECT DESCRIPCION FROM SCS_TIPOEJGCOLEGIO TEC WHERE tec.IDINSTITUCION = EJG.IDINSTITUCION AND TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS DESCRIPCIONTIPOEJGCOL, " +			
+				" TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion, " +			
+				" TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION, " +
+				" TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, " +
+				// Campos necesarios para las comucioncaciones de la comision
+				// Nos quedamos con los digitos para saber la cantidad que se reduce
+				" REGEXP_REPLACE((SELECT F_SIGA_GETRECURSO(r.descripcion, 1) FROM Scs_Tiporesolucion r WHERE r.Idtiporesolucion=ejg.idtiporatificacionejg),'[^[:digit:]]','') as REDUCCION, " +
+				// Las fechas en letra
+				" TO_CHAR(EJG.Fecharatificacion, 'dd/mm/yyyy') AS FECHARATIFICACIONLETRA, " + 
+				" TO_CHAR(EJG.FECHAPRESENTACION, 'dd/mm/yyyy') AS FECHAPRESENTACIONLETRA, " + 
+				" TO_CHAR(EJG.FECHALIMITEPRESENTACION,'dd/mm/yyyy') AS FECHALIMITEPRESENTACIONLETRA, " +
+				" TO_CHAR(EJG.fechaauto,'dd/mm/yyyy') AS FECHAAUTO_LETRA, " +
+				" TO_CHAR(EJG.fechanotificacion,'dd/mm/yyyy') AS FECHANOTIFICACIONLETRA, " +
+				" TO_CHAR(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA, " +
+				" TO_CHAR(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA, " + 
+				" TO_CHAR(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA, " + 
+				" FUND.TEXTOPLANTILLA, " +
+				" FUND.TEXTOPLANTILLA2, " +
+				" FUND.TEXTOPLANTILLA3, " +
+				" FUND.TEXTOPLANTILLA4, " +
+				" F_SIGA_GETRECURSO (FUND.DESCRIPCION, " + idioma + ") AS FUNDAMENTO_JURIDICO " +
+			" FROM SCS_EJG EJG, " +
+				" SCS_EJGDESIGNA EJGD, " +
+				" SCS_TIPOFUNDAMENTOS FUND " +
+			" WHERE EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+) " +
+				" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) " + 
+				" AND EJG.ANIO = EJGD.ANIOEJG(+) " + 
+				" AND EJG.NUMERO = EJGD.NUMEROEJG (+) " +
+				" AND fund.idfundamento(+)=ejg.idfundamentojuridico " + 
+				" AND fund.idinstitucion(+)=ejg.idinstitucion " + 
+				" AND EJG.idinstitucion = " + idInstitucion +
+				" AND EJG.idtipoejg = " + tipoEjg +
+				" AND EJG.anio = " + anio +
+				" AND EJG.numero = " + numero;
 			
-			sql.append(" EJG.ANIO AS ANIO_EJG, ");
-			sql.append(" to_char(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, ");
-			sql.append(" EJG.OBSERVACIONES AS OBSERVACIONES, ");
-			sql.append(" EJG.OBSERVACIONES AS ASUNTO_EJG, ");
-		    sql.append(" (select observaciones from scs_designa des where des.IDINSTITUCION = EJGD.Idinstitucion and des.IDTURNO = EJGD.Idturno and des.ANIO = ejgd.aniodesigna and des.NUMERO = EJGD.Numerodesigna) as OBSERVACIONES_DESIGNA, ");			
-			sql.append(" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, ");
-			sql.append(" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, ");
-			sql.append(" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, ");
-
-			sql.append(" EJG.IDTIPOEJG, EJG.ANIO,EJG.NUMEJG as NUMERO, (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG , EJG.IDPERSONA, ");			
-			sql.append(" ejg.CALIDAD, ");
+	       try{    	   	    	   			
+				 rc = this.find(sql);
+	 			if (rc!=null){
+					for (int i = 0; i < rc.size(); i++)	{
+						Row fila = (Row) rc.get(i);
+						Hashtable registro = (Hashtable)fila.getRow(); 
+						if (registro != null) 
+							datos.add(registro);
+					}
+				}		       
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error ScsEJGAdm.getEjgSalida.");	
+			} 
 			
-			sql.append(" (Select  Descripcion " );
-			sql.append("    From Scs_Tipoencalidad  ");
-			sql.append("    Where Idinstitucion = Ejg.Idinstitucion ");
-			sql.append("    And Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DJ_DESCRIPCION,");  			
-			
-			/*sql.append(" (Select     f_Siga_Getrecurso(Descripcion,"+idioma+") " );
-			sql.append("    From Scs_Tipoencalidad  ");
-			sql.append("    Where Idinstitucion = Ejg.Idinstitucion ");
-			sql.append("    And Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DEFENSA_JURIDICA,");*/    
-			
-			sql.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, ");
-			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, ");
-			sql.append(" EJG.NIG ");
-			sql.append(" ,TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR ");
-			sql.append(" ,EJG.NUMERODESIGNAPROC AS  NUMDESIGNA_PROCURADOR ");
-			sql.append(" ,EJG.idtipodictamenejg, ");
-			sql.append(" TO_CHAR(EJG.fechadictamen,'dd-mm-yyyy') AS fechadictamen, ");
-			sql.append(" EJG.dictamen, ");
-			sql.append("  TO_CHAR(EJG.fecharesolucioncajg,'dd-mm-yyyy') AS fecharesolucioncajg, ");
-			sql.append(" EJG.idtiporatificacionejg, ");
-			sql.append(" TO_CHAR(EJG.fechanotificacion,'dd-mm-yyyy') AS fechanotificacion, ");
-			sql.append(" EJG.refauto, ");
-			sql.append(" EJG.ratificaciondictamen, ");
-			sql.append(" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto,");
-			sql.append(" EJG.idtiporesolauto, ");
-			sql.append(" EJG.idtiposentidoauto, ");
-			sql.append(" (Select pon.nombre from SCS_PONENTE pon where pon.idPonente = EJG.idPONENTE and pon.idInstitucion = EJG.IDINSTITUCION) as PONENTE, ");
-			
-			sql.append(" (Select DESCRIPCION ");
-			sql.append("  From SCS_TIPOEJGCOLEGIO TEC");
-			sql.append("  where tec.IDINSTITUCION = EJG.IDINSTITUCION and TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS DESCRIPCIONTIPOEJGCOL ");
-			
-			sql.append(" ,TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion ");
-			
-			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
-			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION");
-			// Campos necesarios para las comucioncaciones de la comision
-			// Nos quedamos con los digitos para saber la cantidad que se reduce
-			sql.append(" ,regexp_replace( (select F_SIGA_GETRECURSO(r.descripcion, 1) From Scs_Tiporesolucion r");
-            sql.append(" where r.Idtiporesolucion=ejg.idtiporatificacionejg),'[^[:digit:]]','') as REDUCCION");
-            // Las fechas en letra
-            sql.append(" ,to_char(EJG.Fecharatificacion, 'dd/mm/yyyy') AS FECHARATIFICACIONLETRA ");
-            sql.append(" ,to_char(EJG.FECHAPRESENTACION, 'dd/mm/yyyy') AS FECHAPRESENTACIONLETRA "); 
-            sql.append(" , to_char(EJG.FECHALIMITEPRESENTACION,'dd/mm/yyyy') AS  FECHALIMITEPRESENTACIONLETRA ");
-            sql.append(" , to_char(EJG.fechaauto,'dd/mm/yyyy') AS FECHAAUTO_LETRA ");
-            sql.append(" , to_char(EJG.fechanotificacion,'dd/mm/yyyy') AS FECHANOTIFICACIONLETRA ");
-            sql.append(" , to_char(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA ");
-            sql.append(" , to_char(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA ");
-            sql.append(" , to_char(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA ");
-            sql.append(" , FUND.TEXTOPLANTILLA AS FUNDAMENTOJURIDICO ");
-            sql.append(" , F_SIGA_GETRECURSO (FUND.DESCRIPCION, "+idioma+")  AS FUNDAMENTO_JURIDICO ");
-		   	sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_TIPOFUNDAMENTOS FUND");
-			sql.append(" WHERE  ");
-
-   
-			sql.append(" EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+) ");
-			sql.append(" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) ");
-			sql.append(" AND EJG.ANIO = EJGD.ANIOEJG(+) ");
-			sql.append(" AND EJG.NUMERO = EJGD.NUMEROEJG (+) ");
-
-			
-
-			sql.append(" and fund.idfundamento(+)=ejg.idfundamentojuridico ");
-			sql.append(" and fund.idinstitucion(+)=ejg.idinstitucion ");
-   
-     		sql.append(" AND  ");
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" ejg.idinstitucion = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), tipoEjg);
-			sql.append(" and ejg.idtipoejg = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), anio);
-			sql.append(" and ejg.anio = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), numero);
-			sql.append(" and ejg.numero = :");
-			sql.append(keyContador);
-			
-			
-			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
-			
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getEjgSalida.");
-		}
-	}
-	
-	
-	
+			return datos;			
+	}			
 	
 	private Vector getAsistenciaEjgSalida (String idInstitucion, String tipoEjg,
 			String anio, String numero) throws ClsExceptions  
@@ -4164,24 +4202,33 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								case 4:  idiomainforme="GL"; break;	
 						}	
 						
-					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-					
-					registro.put("CODIGOLENGUAJE", idiomainforme);
-					registro.put("NIF_DEFENDIDO", "");
-					registro.put("NOMBRE_DEFENDIDO", "");
-					registro.put("FECHANAC_DEFENDIDO", "");
-					registro.put("ESTADOCIVIL_DEFENDIDO", "");
-					registro.put("DOMICILIO_DEFENDIDO", "");
-					registro.put("CP_DEFENDIDO", "");
-					registro.put("POBLACION_DEFENDIDO", "");
-					registro.put("TELEFONO1_DEFENDIDO", "");
-					registro.put("PROVINCIA_DEFENDIDO", "");
-					registro.put("SEXO_INTERESADO", "");
-					registro.put("LENGUAJE_INTERESADO", "");
-					registro.put("CALIDAD_INTERESADO", "");
-					registro.put("CODIGOLENGUAJE", "");
-					registro.put("PROFESION_DEFENDIDO", "");
-					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+						
+						registro.put("CODIGOLENGUAJE", idiomainforme);
+						registro.put("NIF_DEFENDIDO", "");
+						registro.put("NOMBRE_DEFENDIDO", "");
+						registro.put("FECHANAC_DEFENDIDO", "");
+						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+						registro.put("DOMICILIO_DEFENDIDO", "");
+						registro.put("CP_DEFENDIDO", "");
+						registro.put("POBLACION_DEFENDIDO", "");
+						registro.put("TELEFONO1_DEFENDIDO", "");
+						registro.put("PROVINCIA_DEFENDIDO", "");
+						registro.put("SEXO_INTERESADO", "");
+						registro.put("LENGUAJE_INTERESADO", "");
+						registro.put("CALIDAD_INTERESADO", "");
+						registro.put("CODIGOLENGUAJE", "");
+						registro.put("PROFESION_DEFENDIDO", "");
+						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+						
+						registro.put("NOMBRE_CONTRARIO", "");
+						registro.put("DOMICILIO_CONTRARIO", "");
+						registro.put("CP_CONTRARIO", "");
+						registro.put("POBLACION_CONTRARIO", "");
+						registro.put("PROVINCIA_CONTRARIO", "");
+						registro.put("O_A_CONTRARIO", "");
+						registro.put("NIF_CONTRARIO", "");
+						registro.put("TELEFONO1_CONTRARIO", "");
 						
 						vSalida.add(registro);
 					}	
@@ -4251,6 +4298,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("CODIGOLENGUAJE", "");
 					registro.put("PROFESION_DEFENDIDO", "");
 					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+					
+					registro.put("NOMBRE_CONTRARIO", "");
+					registro.put("DOMICILIO_CONTRARIO", "");
+					registro.put("CP_CONTRARIO", "");
+					registro.put("POBLACION_CONTRARIO", "");
+					registro.put("PROVINCIA_CONTRARIO", "");
+					registro.put("O_A_CONTRARIO", "");
+					registro.put("NIF_CONTRARIO", "");
+					registro.put("TELEFONO1_CONTRARIO", "");
 					
 					vSalida.add(registro);
 				}
@@ -4688,10 +4744,106 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			htFuncion.put(new Integer(3), anioEjg);
 			htFuncion.put(new Integer(4), numeroEjg);
 			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETCONTRARIOS_EJG", "CONTRARIOS_DEFENSA_JURIDICA"));
+			
+			// Obtendo los contrarios del ejg
+			Vector contrariosEjg = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg);		
+
+			String listaNombreContrarios="";	
+			String listaDomicilioContrarios="";
+			String listaCpContrarios="";
+			String listaPoblacionContrarios="";
+			String listaProvinciaContrarios="";
+			String listaOaContrarios="";
+			String listaNifContrarios="";
+			String listaTelefono1Contrarios="";
+			
+			for (int i = 0; i < contrariosEjg.size(); i++) {					
+				Hashtable registroContrariosEjg = (Hashtable) contrariosEjg.get(i);
+							    
+			    String nombreContrario = (String)registroContrariosEjg.get("NOMBRE_CONTRARIO");
+			    String domicilioContrario = (String)registroContrariosEjg.get("DOMICILIO_CONTRARIO");	
+			    String cpContrario = (String)registroContrariosEjg.get("CP_CONTRARIO"); 			    
+			    String poblacionContrario = (String)registroContrariosEjg.get("POBLACION_CONTRARIO");
+			    String provinciaContrario = (String)registroContrariosEjg.get("PROVINCIA_CONTRARIO");
+			    String oaContrario = (String)registroContrariosEjg.get("O_A_CONTRARIO");
+			    String nifContrario  = (String)registroContrariosEjg.get("NIF_CONTRARIO");
+			    String telefono1Contrario = (String)registroContrariosEjg.get("TELEFONO1_CONTRARIO");
 				
+				if (nombreContrario != null) {
+					if (listaNombreContrarios.equals("")) {
+						listaNombreContrarios = nombreContrario;
+					} else {
+						listaNombreContrarios += "," + nombreContrario;
+					}						
+				}
 				
+				if (domicilioContrario != null) {
+					if (listaDomicilioContrarios.equals("")) {
+						listaDomicilioContrarios = domicilioContrario;
+					} else {
+						listaDomicilioContrarios += "," + domicilioContrario;
+					}						
+				}
 				
-				//Aniadimos los delitos de la defensa juridica
+				if (cpContrario != null) {
+					if (listaCpContrarios.equals("")) {
+						listaCpContrarios = cpContrario;
+					} else {
+						listaCpContrarios += "," + cpContrario;
+					}						
+				}
+				
+				if (poblacionContrario != null) {
+					if (listaPoblacionContrarios.equals("")) {
+						listaPoblacionContrarios = poblacionContrario;
+					} else {
+						listaPoblacionContrarios += "," + poblacionContrario;
+					}						
+				}
+				
+				if (provinciaContrario != null) {
+					if (listaProvinciaContrarios.equals("")) {
+						listaProvinciaContrarios = provinciaContrario;
+					} else {
+						listaProvinciaContrarios += "," + provinciaContrario;
+					}						
+				}
+				
+				if (oaContrario != null) {
+					if (listaOaContrarios.equals("")) {
+						listaOaContrarios = oaContrario;
+					} else {
+						listaOaContrarios += "," + oaContrario;
+					}						
+				}
+				
+				if (nifContrario != null) {
+					if (listaNifContrarios.equals("")) {
+						listaNifContrarios = nifContrario;
+					} else {
+						listaNifContrarios += "," + nifContrario;
+					}						
+				}
+				
+				if (telefono1Contrario != null) {
+					if (listaTelefono1Contrarios.equals("")) {
+						listaTelefono1Contrarios = telefono1Contrario;
+					} else {
+						listaTelefono1Contrarios += "," + telefono1Contrario;
+					}						
+				}							
+			}//FIN FOR			
+			
+			UtilidadesHash.set(registro, "NOMBRE_CONTRARIO", listaNombreContrarios);
+			UtilidadesHash.set(registro, "DOMICILIO_CONTRARIO", listaDomicilioContrarios);
+			UtilidadesHash.set(registro, "CP_CONTRARIO", listaCpContrarios);
+			UtilidadesHash.set(registro, "POBLACION_CONTRARIO", listaPoblacionContrarios);
+			UtilidadesHash.set(registro, "PROVINCIA_CONTRARIO", listaProvinciaContrarios);
+			UtilidadesHash.set(registro, "O_A_CONTRARIO", listaOaContrarios);
+			UtilidadesHash.set(registro, "NIF_CONTRARIO", listaNifContrarios);
+			UtilidadesHash.set(registro, "TELEFONO1_CONTRARIO", listaTelefono1Contrarios);
+				
+			//Aniadimos los delitos de la defensa juridica
 			htFuncion.put(new Integer(5), idioma);
 			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETDELITOS_EJG", "DELITOS_DEFENSA_JURIDICA"));
 				
