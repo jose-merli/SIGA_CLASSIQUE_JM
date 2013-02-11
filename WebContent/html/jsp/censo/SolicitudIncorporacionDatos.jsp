@@ -1738,7 +1738,7 @@
 						</td>
 						<td>
 							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
-								<html:text styleId="numColBox" property="numeroColegiado" style="vertical-align:middle;width:100" maxlength="20" styleClass="boxDisabled" disabled="true" />
+								<html:text styleId="numColBox" property="numeroColegiado" style="vertical-align:middle;width:100" maxlength="20" styleClass="boxDisabled" disabled="true" onchange="existeNColegiado()"/>
 								<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left;display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 							<%}else{%>
 								<html:text styleId="numColBox" property="numeroColegiado" style="vertical-align:middle;width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" onchange="existeNColegiado()"/>
