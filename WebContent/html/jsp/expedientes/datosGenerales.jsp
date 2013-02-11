@@ -406,7 +406,7 @@
 			if ($("#fechaInicial").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			
-			if ($("#idPersona").val()=="")
+			if ($("#idPersonaDenunciado").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="<%=tituloDenunciadoMensajeError%>"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			
 			return mensajeError;
