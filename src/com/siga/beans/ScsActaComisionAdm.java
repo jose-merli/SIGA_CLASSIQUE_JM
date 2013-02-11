@@ -448,16 +448,17 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		StringBuffer consulta = new StringBuffer();
 		RowsContainer rc = new RowsContainer(); 
 		Vector resultado = new Vector();
+		consulta.append("select rownum as NACUERDO, data.* from (");
 		
 		consulta.append("select ");
 		consulta.append(" ejg."+ScsEJGBean.C_ANIO + " as ANIO");
 		consulta.append(", ejg."+ScsEJGBean.C_NUMEJG + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_FECHAAPERTURA + " as FECHAAPERTURA");
+		//consulta.append(", ejg."+ScsEJGBean.C_FECHAAPERTURA + " as FECHAAPERTURA");
 		consulta.append(", to_char(ejg."+ScsEJGBean.C_FECHAAPERTURA+", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA);
 		consulta.append(", tur."+ScsTurnoBean.C_NOMBRE + " as TURNO");
 		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
 		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
+		//consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
 		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 		consulta.append(", ejg."+ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN");
@@ -511,8 +512,10 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
 		consulta.append(keyContador);
 		
-		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
+		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " asc");
 
+		consulta.append(") data");
+		
 		//HelperInformesAdm helperInformes = new HelperInformesAdm();
 		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
 		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
