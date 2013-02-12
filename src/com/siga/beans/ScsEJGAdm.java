@@ -1040,7 +1040,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
   					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO1 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO1 + ", '') " +
   					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO2 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO2 + ", '') " +
   				" AS NOMBRE_CONTRARIO, " +
-  				" NVL2(VIA." + CenTiposViasBean.C_DESCRIPCION + ", F_SIGA_GETRECURSO(PER." + CenTiposViasBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + "), '') " +
+  				" NVL2(VIA." + CenTiposViasBean.C_DESCRIPCION + ", F_SIGA_GETRECURSO(VIA." + CenTiposViasBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + "), '') " +
   					" || NVL2(PER." + ScsPersonaJGBean.C_DIRECCION + ", ' ' || PER." + ScsPersonaJGBean.C_DIRECCION + ", '') " +
   					" || NVL2(PER." + ScsPersonaJGBean.C_NUMERODIR + ", ' ' || PER." + ScsPersonaJGBean.C_NUMERODIR + ", '') " +
   					" || NVL2(PER." + ScsPersonaJGBean.C_ESCALERADIR + ", ' ' || PER." + ScsPersonaJGBean.C_ESCALERADIR + ", '') " +
