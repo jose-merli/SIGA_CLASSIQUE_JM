@@ -3120,6 +3120,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		        sql.append(" and des.idturno = " + idturno);
 		        sql.append(" and des.numero = " + numero);
 		        sql.append(" and des.numero = edes.numerodesigna ");
+		        sql.append(" and des.anio = edes.aniodesigna ");
 		        sql.append(" and des.idturno = edes.idturno ");
 		        sql.append(" and ejg.numero = edes.numeroejg ");
 		        sql.append(" and ejg.idtipoejg = edes.idtipoejg ");		       
