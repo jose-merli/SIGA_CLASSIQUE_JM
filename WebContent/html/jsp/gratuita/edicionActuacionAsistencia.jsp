@@ -574,7 +574,7 @@
 					leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0">
 						<tr>
-							<td width="15%">1</td>
+							<td width="15%"></td>
 							<td width="15%"></td>
 							<td width="10%"></td>
 							<td width="20%"></td>
@@ -616,7 +616,7 @@
 					leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0">
 						<tr>
-							<td width="15%"><c:out value="${ActuacionAsistenciaFormEdicion.fechaJustificacion}"></c:out> </td>
+							<td width="15%"></td>
 							<td width="15%"></td>
 							<td width="10%"></td>
 							<td width="20%"></td>

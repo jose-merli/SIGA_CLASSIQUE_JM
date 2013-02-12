@@ -477,21 +477,9 @@
 	</html:form>
 </div>
 
+<siga:ConjBotonesAccion botones="V,SC,AT" modo="${modoAccion}" clase="botonesDetalle"/>
 
-<table class="botonesDetalle" align="center" style="display:none;">
-	<tr>
-	<td class="tdBotones">
-	<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
-	</td>
-	<td  style="width:900px;"> &nbsp; </td>
-	<td class="tdBotones">
-		<input type="button" alt="" id="idButtonSolicitar" onclick="return accionGuardar();" class="button" name="idButton" value="<siga:Idioma key='general.boton.solicitarCompra'/>">
-	</td>
-	<td class="tdBotones">
-		<input type="button" alt=""  id="idButtonActualizar" onclick="return accionActualizar();" class="button" name="idButton" value="<siga:Idioma key='general.boton.actualizarTarifa'/>">
-	</td>
-	</tr>
-</table>
+
 
 
 	<div id="dialog-message" title="SIGA" style="vertical-align: top; max-height: 400px"></div>
