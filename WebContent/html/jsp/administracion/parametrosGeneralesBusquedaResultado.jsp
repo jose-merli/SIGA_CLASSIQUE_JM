@@ -116,7 +116,7 @@
 	   			clase="tableTitle"
   				nombreCol="administracion.parametrosGenerales.literal.editar,administracion.parametrosGenerales.literal.modulo,administracion.parametrosGenerales.literal.parametro,administracion.parametrosGenerales.literal.valor," 
    				tamanoCol="6,6,45,38,5"
-	   			ajusteBotonera="true" >
+	   			alto="100%" >
 		   			
 		   	<%	if ( (vDatos != null) && (vDatos.size() > 0) ) {
 

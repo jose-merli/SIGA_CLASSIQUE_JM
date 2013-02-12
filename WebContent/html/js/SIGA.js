@@ -660,9 +660,11 @@ function ajusteAltoMain(nObj, menos) {
 				}
 			}
 			hCont = hCont - menos;
+			if (hCont > 0){
 			//alert("final height = "+hCont);
 			obj.style.height = hCont;
 			obj.style.pixelHeight = hCont;
+			}
 		}
 	}
 }
