@@ -549,7 +549,10 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			}				
 			iResult = 2;
 		  }
+		} else {
+			iResult = 0;
 		}
+		
 		return iResult;
 	}
 	
