@@ -55,7 +55,8 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 			if((campos == null && cabeceras==null) || cabeceras.length!=campos.length)
 				throw new Exception("Inconsitencia entre número de campos y numero de cabeceras");
 				
-			response.setContentType("'text/csv'");
+			//BNS INC_10281 AÑADO CHARSET PARA CODIFICAR € 
+			response.setContentType("'text/csv';charset=ISO-8859-15");
 			response.setHeader(
 			"Content-Disposition",
 			"attachment; filename=\""+nombreFichero+".xls\"" );
