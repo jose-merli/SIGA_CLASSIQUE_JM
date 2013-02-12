@@ -155,7 +155,7 @@ public class DuplicadosHelper{
 			StringBuffer sqlOrden = new StringBuffer();
 	       	String campoOrden = formulario.getCampoOrdenacion();
 	       	if (campoOrden.equalsIgnoreCase("nif"))
-	       		sqlOrden.append(" order by to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) ");
+	       		sqlOrden.append(" order by regexp_replace(nifcif, '[^[:digit:]]', '') ");
 	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
 	       		sqlOrden.append(" order by to_number(ncolegiado) ");
 	       	if (campoOrden.equalsIgnoreCase("apellidos"))
