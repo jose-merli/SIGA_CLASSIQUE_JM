@@ -200,6 +200,7 @@ public class MantenimientoProcuradorAction extends MasterAction {
 			beanProcurador.setEmail(miForm.getEmail());
 			beanProcurador.setIdProcurador(procuradorAdm.getNuevoIdProcurador(user.getLocation()));
 			beanProcurador.setNColegiado(miForm.getNColegiado());
+			beanProcurador.setIdColProcurador(miForm.getIdColProcurador());
 			beanProcurador.setCodProcurador(miForm.getCodProcurador());
 			
 			if(ScsProcuradorAdm.comprobarDuplicidad(idInstitucion,nombre,apellido1,apellido2)){
