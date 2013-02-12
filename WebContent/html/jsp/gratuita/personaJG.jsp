@@ -1478,7 +1478,7 @@
 				
 			</td>
 			<td>		
-				<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+				<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
 			</td>
 			
 			<td class="labelText">
@@ -1495,7 +1495,7 @@
 				
 			</td>
 			<td>		
-				<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:40" ></html:text>
+				<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:40" maxlength="10"></html:text>
 			</td>
 			
 			<td class="labelText">
@@ -1512,7 +1512,7 @@
 				
 			</td>
 			<td>		
-				<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+				<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
 			</td>
 			
 			<td class="labelText">
@@ -1529,7 +1529,7 @@
 				
 			</td>
 			<td>		
-				<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" ></html:text>
+				<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
 			</td>															
 			
 		</tr>
