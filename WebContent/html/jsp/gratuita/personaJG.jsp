@@ -2115,12 +2115,12 @@ function limpiarPersonaContrario() {
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
 		</td>
-		<td>
+		<td >
  			
  					
  					<html:hidden  name="PersonaJGForm" property="ncolegiadoRepresentante"  styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
 		 			 <html:hidden  name="PersonaJGForm" property="idPersonaRepresentante" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10"></html:hidden>
-		 			 <html:text  name="PersonaJGForm" property="representante" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+		 			 <html:text  name="PersonaJGForm" property="representante" size="70" maxlength="200" styleClass="boxConsulta" readOnly="true"  ></html:text>
  			         		 			 
 			
 			
@@ -2159,7 +2159,7 @@ function limpiarPersonaContrario() {
 		       
 					<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
 		 			<html:hidden  name="PersonaJGForm" property="idPersonaContrario" styleClass="box"  readOnly="true" size="10" maxlength="10"></html:hidden>
-		 			<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+		 			<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="true"></html:text>
 					
 							
 		</td>		
