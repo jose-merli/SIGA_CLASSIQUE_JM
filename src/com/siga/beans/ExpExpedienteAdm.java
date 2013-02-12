@@ -2380,7 +2380,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			
 			if(datos!=null && datos.size()>0){
 				 Hashtable expedienteHashtable = (Hashtable) datos.get(0);
-				 if(!UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG).equals("")){
+				 //BNS FALLABA CUANDO VENÍA UN TIPOEJG COMO " "
+				 String sTipoEJG = UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG);
+				 if (sTipoEJG == null)
+					 sTipoEJG = "";
+				 if(!sTipoEJG.trim().equals("")){
 					 ScsEJGAdm ejgAdm = new ScsEJGAdm(usrbean);
 					 Hashtable haste = ejgAdm.getDatosEjg(UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDINSTITUCION), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_ANIOEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_NUMEROEJG), UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG));
 					 String SUFIJO = (String) haste.get("SUFIJO");
