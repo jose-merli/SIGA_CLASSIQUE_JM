@@ -1339,7 +1339,6 @@
 			</siga:ConjCampos>	
 	  	</td>
 	</tr>
-	<tr><td>&nbsp;</td></tr> 
 	<tr align="center">
 		<td align="center" id="textomod" class="ocultar" style="display:none">
 			(*)&nbsp;<siga:Idioma key="gratuita.modificardireccion.literal"/>
