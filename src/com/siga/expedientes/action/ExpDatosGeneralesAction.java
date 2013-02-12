@@ -713,10 +713,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
 				
 			datosExp = expAdm.selectDatosGenerales(where);
-			Row fila = (Row)datosExp.elementAt(0);
-			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
-				idTipoExpediente=idTipoExpedienteNew;
-			}	
+			Row fila = (Row)datosExp.elementAt(0);				
 		
 			//Hacemos los sets del formulario
 
@@ -913,6 +910,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
 			*/
 			//END BNS
+			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
+				idTipoExpediente=idTipoExpedienteNew;
+			}
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
 			form.setIdMateriaSolo(fila.getString(ExpExpedienteBean.C_IDMATERIA));
 			form.setJuzgado(fila.getString(ExpExpedienteBean.C_JUZGADO));
@@ -1901,7 +1901,40 @@ public class ExpDatosGeneralesAction extends MasterAction
 			        throw new ClsExceptions("Error al crear campos valor 2. "+admCampoVal.getError());
 			    }
 			}
-									
+			
+			//Se inserta el denunciado si hay
+			if (form.getIdPersonaDenunciado() != null && !form.getIdPersonaDenunciado().equals("")){
+			    ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
+			    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
+			    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+			    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+			    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+			    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+			    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+			    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+			    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
+			    		    
+			    if(!denAdm.insert(denBean)) {
+				    return this.exitoModalSinRefresco("messages.inserted.error",request);
+			    }		
+			}
+			
+			//Se inserta el denunciante si hay
+			if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
+			    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
+			    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
+			    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+			    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+			    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+			    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+			    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+			    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
+			    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+			    		    
+			    if(!denAdm.insert(denBean)) {
+				    return this.exitoModalSinRefresco("messages.inserted.error",request);
+			    }		
+			}
 			
 			String sCopia = "N";
 			if (hash.containsKey("copia"))
@@ -1924,19 +1957,21 @@ public class ExpDatosGeneralesAction extends MasterAction
 				    	java.util.Iterator<ExpDenunciadoBean> iteraDenunciadosExpOld = denunciadosExpOld.iterator();
 				    	while (iteraDenunciadosExpOld.hasNext()){
 				    		ExpDenunciadoBean denunciado = iteraDenunciadosExpOld.next();
-				    		denunciado.setIdInstitucion(Integer.valueOf(idInstitucion));
-				    		denunciado.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-				    		denunciado.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-				    		denunciado.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-				    		denunciado.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-				    		
-				    		if(!denAdm.insert(denunciado)) {
-							    return this.exitoModalSinRefresco("messages.inserted.error",request);
+				    		if (!ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL.equals(denunciado.getIdDenunciado())){
+					    		denunciado.setIdInstitucion(Integer.valueOf(idInstitucion));
+					    		denunciado.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+					    		denunciado.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+					    		denunciado.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+					    		denunciado.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+					    		
+					    		if(!denAdm.insert(denunciado)) {
+								    return this.exitoModalSinRefresco("messages.inserted.error",request);
+					    		}
 				    		}
 				    	}
 				    }
 				    
-				 // Insertamos todos los denunciantes en el nuevo expediene						   
+				    // Insertamos todos los denunciantes en el nuevo expediene						   
 				    ExpDenuncianteAdm  denteAdm  = new ExpDenuncianteAdm(this.getUserBean(request));						    
 				    
 				    List<ExpDenuncianteBean> denunciantesExpOld = denteAdm.getDenunciantes(oldExpBean);
@@ -1944,53 +1979,21 @@ public class ExpDatosGeneralesAction extends MasterAction
 				    	java.util.Iterator<ExpDenuncianteBean> iteraDenunciantesExpOld = denunciantesExpOld.iterator();
 				    	while (iteraDenunciantesExpOld.hasNext()){
 				    		ExpDenuncianteBean denunciante = iteraDenunciantesExpOld.next();
-				    		denunciante.setIdInstitucion(Integer.valueOf(idInstitucion));
-				    		denunciante.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-				    		denunciante.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-				    		denunciante.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-				    		denunciante.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-				    		
-				    		if(!denteAdm.insert(denunciante)) {
-							    return this.exitoModalSinRefresco("messages.inserted.error",request);
+				    		if (!ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL.equals(denunciante.getIdDenunciante())){
+					    		denunciante.setIdInstitucion(Integer.valueOf(idInstitucion));
+					    		denunciante.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
+					    		denunciante.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
+					    		denunciante.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
+					    		denunciante.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
+					    		
+					    		if(!denteAdm.insert(denunciante)) {
+								    return this.exitoModalSinRefresco("messages.inserted.error",request);
+					    		}
 				    		}
 				    	}
 				    }
 				} else {
 					return this.exitoModalSinRefresco("messages.inserted.error",request);
-				}
-			} else {
-				//Se inserta el denunciado si hay
-				if (form.getIdPersonaDenunciado() != null && !form.getIdPersonaDenunciado().equals("")){
-				    ExpDenunciadoBean denBean = new ExpDenunciadoBean();	    
-				    ExpDenunciadoAdm  denAdm  = new ExpDenunciadoAdm(this.getUserBean(request));
-				    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-				    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-				    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-				    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-				    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-				    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
-				    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
-				    		    
-				    if(!denAdm.insert(denBean)) {
-					    return this.exitoModalSinRefresco("messages.inserted.error",request);
-				    }		
-				}
-				
-				//Se inserta el denunciante si hay
-				if (form.getIdPersonaDenunciante() != null && !form.getIdPersonaDenunciante().equals("")){
-				    ExpDenuncianteBean denBean = new ExpDenuncianteBean();	    
-				    ExpDenuncianteAdm  denAdm  = new ExpDenuncianteAdm(this.getUserBean(request));
-				    denBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-				    denBean.setIdInstitucion_TipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
-				    denBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));  
-				    denBean.setNumeroExpediente(Integer.valueOf(form.getNumExpediente()));
-				    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
-				    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
-				    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
-				    		    
-				    if(!denAdm.insert(denBean)) {
-					    return this.exitoModalSinRefresco("messages.inserted.error",request);
-				    }		
 				}
 			}
 			
