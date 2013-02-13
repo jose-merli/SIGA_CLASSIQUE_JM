@@ -55,7 +55,7 @@ public class EjecucionSancionAction extends MasterAction {
 			
 			Hashtable hEjSancion = (Hashtable)request.getSession().getAttribute("ejecucionSancion");
 			String idInstitucion=(String)hEjSancion.get("idInstitucion");
-			String idPersona=(String)hEjSancion.get("idPersona");
+			//String idPersona=(String)hEjSancion.get("idPersona");
 			Integer idInstitucion_tipoExpediente = (Integer)hEjSancion.get("IdInstitucion_tipoExpediente");
 			Integer IdTipoExpediente = (Integer)hEjSancion.get("IdTipoExpediente");
 			Integer numeroExpediente=(Integer)hEjSancion.get("numeroExpediente");
@@ -63,7 +63,7 @@ public class EjecucionSancionAction extends MasterAction {
 		
 			//Comienzo la transaccion:
 			tx.begin();
-			//aalg:se modifica primero el estado del denunciado que está grabado en exp_expediente
+			/*//aalg:se modifica primero el estado del denunciado que está grabado en exp_expediente
 			if (form.isBajaTurno()){
 				ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 				//Obligo a que no use internamente una transaccion.
@@ -84,8 +84,9 @@ public class EjecucionSancionAction extends MasterAction {
 			if (form.isSuspension()){
 				CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
 				c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
-			}
+			}*/
 			//aalg: se buscan los denunciados para modificarles el estado
+			String idPersona;
 			ExpExpedienteAdm exp = new ExpExpedienteAdm(this.getUserBean(request));
 			Vector vDenunciado = exp.getDenunciados(idInstitucion, idInstitucion_tipoExpediente.toString(), anioExpediente.toString(), numeroExpediente.toString(), IdTipoExpediente.toString());
 				

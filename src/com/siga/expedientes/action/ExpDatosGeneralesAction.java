@@ -1464,7 +1464,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 		            	if (estBeanNew.getEjecucionSancion().equals("S")){
 		            		Hashtable hEjSancion = new Hashtable();
 		            		hEjSancion.put("idInstitucion",userBean.getLocation());
-		            		hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+		            		//hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
 		            		//aalg: para poder modificar el estado a todos los denunciados
 		            		hEjSancion.put("IdInstitucion_tipoExpediente", expBean.getIdInstitucion_tipoExpediente());
 		            		hEjSancion.put("IdTipoExpediente", expBean.getIdTipoExpediente());
@@ -2023,7 +2023,12 @@ public class ExpDatosGeneralesAction extends MasterAction
 						request.setAttribute("nuevo","true");
 						Hashtable hEjSancion = new Hashtable();
 						hEjSancion.put("idInstitucion",idInstitucion);
-						hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+						//hEjSancion.put("idPersona",form.getIdPersonaDenunciado());
+						//aalg: para poder modificar el estado al denunciado en la tabla exp_denunciado
+	            		hEjSancion.put("IdInstitucion_tipoExpediente", expBean.getIdInstitucion_tipoExpediente());
+	            		hEjSancion.put("IdTipoExpediente", expBean.getIdTipoExpediente());
+	            		hEjSancion.put("numeroExpediente", expBean.getNumeroExpediente());
+	            		hEjSancion.put("anioExpediente", expBean.getAnioExpediente());
 						session.setAttribute("ejecucionSancion",hEjSancion);
 						tx.commit();
 						return "ejecucionSancion";
