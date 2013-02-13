@@ -25,6 +25,72 @@
 	</style>	
 <html>
 <head>
+<script>
+function habilitarCampos(isHabilitar) {
+		
+		if(isHabilitar==true){
+			var inputs = document.getElementsByTagName("input");
+			for(var i = 0 ; i <inputs.length ; i++) {
+				input = inputs[i];
+				if(input.type=="checkbox") {
+					jQuery.removeAttr(input,"disabled");
+					//$(input).removeAttr("disabled");
+				} else if(input.type!="button") {
+					input.className = "box";
+					jQuery.removeAttr(input,"readonly");
+					//$(input).removeAttr("readonly");
+				}
+			}
+			var selects = document.getElementsByTagName("select");
+			for(var i = 0 ; i <selects.length ; i++) {
+				select = selects[i];
+				jQuery.removeAttr(select,"disabled");
+				//$(select).removeAttr("disabled"); 
+			}
+			var textareas = document.getElementsByTagName("textarea");
+			for(var i = 0 ; i <textareas.length ; i++) {
+				textarea = textareas[i];
+				jQuery.removeAttr(textarea,"disabled");
+				//$(select).removeAttr("disabled"); 
+			}				
+		} else {
+
+
+
+
+			
+			var inputs = document.getElementsByTagName("input");
+			for(var i = 0 ; i < inputs.length ; i++) {
+				var input = inputs[i];
+				if(input.type=="checkbox"){
+					jQuery.attr(input,"disabled","disabled");
+					//$(input).attr("disabled","disabled");
+				} else if(input.type!="button"){
+					input.className = "boxConsulta";
+					//$(input).attr("readonly","readonly");
+					jQuery.attr(input,"readonly","readonly");
+				}
+			}
+			
+			var selects = document.getElementsByTagName("select");
+			for(var i = 0 ; i < selects.length ; i++) {
+				var select = selects[i];
+				jQuery.attr(select,"disabled","disabled");
+				//$(select).attr("disabled","disabled");
+			}
+			var textareas = document.getElementsByTagName("textarea");
+			for(var i = 0 ; i <textareas.length ; i++) {
+				var textarea = textareas[i];
+				jQuery.attr(textarea,"disabled","disabled")
+				//$(textarea).attr("disabled","disabled"); 
+			}			
+			
+		}
+	
+	}
+
+</script>
+
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 				 
@@ -670,6 +736,11 @@
 </c:if>
 </div>
 </html:form>
+
+<c:if test="${MutualidadForm.modo=='ver'}">
+		<script>habilitarCampos('false'); </script>
+	</c:if>
+	
 
 					
 						
