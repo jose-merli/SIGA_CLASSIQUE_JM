@@ -84,17 +84,18 @@
 	}
 	
 	function onInit(){
-		if(document.getElementById('deshabilitarValidaciones').value=='true'){
-		 	document.getElementById('idValidarSolicitud').disabled=true;
-		    document.getElementById('idDenegarSolicitud').disabled=true;
-	    }else{
-	    	document.getElementById('idValidarSolicitud').disabled=false;
-		    document.getElementById('idDenegarSolicitud').disabled=false;
-	    }
+		if (document.getElementById('deshabilitarValidaciones') != null){
+			if(document.getElementById('deshabilitarValidaciones').value=='true'){
+			 	document.getElementById('idValidarSolicitud').disabled=true;
+			    document.getElementById('idDenegarSolicitud').disabled=true;
+		    }else{
+		    	if (document.getElementById('idValidarSolicitud') != null)
+		    		document.getElementById('idValidarSolicitud').disabled=false;
+		    	if (document.getElementById('idDenegarSolicitud') != null)
+		    		document.getElementById('idDenegarSolicitud').disabled=false;
+		    }
+		}
 		
-		
-	 	
-
     }
 	function accionNuevo(desdeFichaColegial,msjSeleccionar){
 		if(desdeFichaColegial){
