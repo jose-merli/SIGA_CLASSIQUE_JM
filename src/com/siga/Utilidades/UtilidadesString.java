@@ -368,6 +368,7 @@ public class UtilidadesString {
 	    sSalida = sSalida.replaceAll("\n\r", " ");
 	    sSalida = sSalida.replaceAll("\n", " ");
 	    sSalida = sSalida.replaceAll("\r", " ");
+	    //sSalida = sSalida.replaceAll("€", "\u20ac");
 	    return sSalida;
 	  }
 

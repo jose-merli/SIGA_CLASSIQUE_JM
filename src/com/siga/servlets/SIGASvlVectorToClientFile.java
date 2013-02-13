@@ -6,7 +6,9 @@
 package com.siga.servlets;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -24,6 +26,9 @@ import com.siga.Utilidades.UtilidadesString;
  * 
  */
 public class SIGASvlVectorToClientFile extends HttpServlet {
+	
+	private static String CHARSET = "UTF-8";
+	public static final String UTF8_BOM = "\uFEFF";
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		doPost(request,response);
@@ -49,19 +54,22 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 		if(cabeceras==null)
 			cabeceras = campos;
 		
-		OutputStream out = null;
+		PrintWriter out = null;
 		
 		try {
 			if((campos == null && cabeceras==null) || cabeceras.length!=campos.length)
 				throw new Exception("Inconsitencia entre número de campos y numero de cabeceras");
 				
 			//BNS INC_10281 AÑADO CHARSET PARA CODIFICAR € 
-			response.setContentType("text/csv; charset=ISO-8859-15");
+			response.setContentType("text/csv; charset="+CHARSET);
 			response.setHeader(
 			"Content-Disposition",
 			"attachment; filename=\""+nombreFichero+".xls\"" );
-			out = response.getOutputStream();
+			//BNS INC_10281 AÑADO PrintWriter PARA CONTROLAR CODIFICACIÓN EN DISTINTAS JVMs 
+			out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), Charset.forName(CHARSET)), true);
 			
+			if (Charset.forName(CHARSET).equals(Charset.forName("UTF-8")))
+				out.write(UTF8_BOM);
 			
 			for (int i=0;i<datos.size();i++){
 				String linea = "";
@@ -78,21 +86,22 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 				
 				if (i==0){
 					for (int j=0;j<cabeceras.length;j++){
-						cabecera += cabeceras[j]+ClsConstants.SEPARADOR;
+						cabecera += cabeceras[j]+";";
 					}
 					cabecera=cabecera.toLowerCase()+"\r\n";
-					out.write(cabecera.getBytes());
+					out.write(cabecera);
 				}
-				
+				//BNS INC_10281 CAMBIO SEPARADOR \t por ; ya que en UTF-8 no funciona en excel 
 				for (int k=0;k<campos.length;k++){
-					// inc6861 // linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+ClsConstants.SEPARADOR;
-					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]).replaceAll("\n", " "))+ClsConstants.SEPARADOR;
+					// inc6861 // linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+";";
+					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]).replaceAll("\n", " ").replaceAll(";", "\u037E"))+";";
 				}
 				linea=linea+"\r\n";
-				out.write(linea.getBytes("ISO-8859-15"));
+				out.write(linea);				
 		    	
 				
 			}
+			out.flush();
 			//response.flushBuffer();
 			
 		} catch (Exception e) {
