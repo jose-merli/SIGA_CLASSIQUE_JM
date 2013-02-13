@@ -1530,6 +1530,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    //Iniciamos la transacción
         UserTransaction tx2 = userBean.getTransaction();
 
+        CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 	    ExpAlertaAdm alertaAdm = new ExpAlertaAdm(this.usrbean);
 	    ExpAnotacionAdm anotacionAdm = new ExpAnotacionAdm(this.usrbean);
 	    RowsContainer rc1 = new RowsContainer();
@@ -1565,10 +1566,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					try {
 					    tx2.begin();
 						Row fila1 = (Row) rc1.get(i);
+
+						CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+						
 						// Nueva anotación de estado caducado + cambio de estado automático. Ya no se inserta alerta.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
+						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
 						    throw new ClsExceptions("1.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
 				        ClsLogging.writeFileLog("1.Anotacion insertada.",7);
@@ -1634,6 +1638,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					try {
 					    tx2.begin();
 						Row fila1 = (Row) rc1.get(i);
+						
+						CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+						
 						// Nueva alerta de expediente caducado.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
@@ -1641,7 +1648,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				        //    throw new ClsExceptions("2.Error al insertar alarma. "+alertaAdm.getError());
 				        //}
 				        //ClsLogging.writeFileLog("2.Alerta insertada.",7);
-						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
+						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
 						    throw new ClsExceptions("2.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
 				        ClsLogging.writeFileLog("2.Anotacion insertada.",7);
@@ -1685,10 +1692,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					try {
 					    tx2.begin();
 						Row fila1 = (Row) rc1.get(i);
+						
+						CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+						
 						// Nueva alerta de aviso de que está en un estado final.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 						
-				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
+				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("3.Error al insertar alarma. "+alertaAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("3.Alerta insertada.",7);
@@ -1735,10 +1745,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					try {
 					    tx2.begin();
 						Row fila1 = (Row) rc1.get(i);
+						
+						CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+						
 						// Nueva anotación de cambio de fase + cambio de fase automático
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-				        if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.faseVencida")  + " ("+fila1.getString("NOMBRE")+")")) {
+				        if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.faseVencida")  + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("4.Error al insertar anotación. "+anotacionAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("4.Anotacion insertada.",7);
@@ -1788,11 +1801,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						Row fila1 = (Row) rc1.get(i);
 						// SOLO SI EXISTEN DÍAS DE ANTELACIÓN
 						if (!fila1.getString("DIASANTELACION").equals("0")) {
-						
+							
+							CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+							
 							// Nueva alerta de aviso de vencimiento de la fase
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 					        
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("5.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("5.Alerta insertada.",7);
@@ -1859,11 +1874,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						Row fila1 = (Row) rc1.get(i);
 						// SOLO SI EXISTEN DÍAS DE ANTELACIÓN
 						if (!fila1.getString("DIASANTELACION").equals("0")) {
-						
+							
+							CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+							
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("6.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("6.Alerta insertada.",7);
@@ -1915,11 +1932,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						Row fila1 = (Row) rc1.get(i);
 						// SOLO SI EXISTEN DÍAS DE ANTELACIÓN
 						if (!fila1.getString("DIASANTELACION").equals("0")) {
-						
+							
+							CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
+							
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
 					            throw new ClsExceptions("7.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("7.Alerta insertada.",7);

@@ -386,6 +386,12 @@
 		//aalg: añadida para quitar la validación con structs y poder sacar todos los mensajes juntos con un mensaje variable según el tipo de interesado
 		function validarGuardar(){
 			var mensajeError = "";
+			
+			//Comprobamos que exista el campo, que tenga valor y que tenga 4 digitos
+			if($("#anioExpDisciplinario").length != 0 && $("#anioExpDisciplinario").val()!="" && $("#anioExpDisciplinario").val().length != 4){
+				mensajeError = mensajeError + '<siga:Idioma key="fecha.error.anio"/> \n';
+			}
+			
 			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario			
 			if ($("#numExpDisciplinario").length != 0 && $("#anioExpDisciplinario").length != 0){
 				if($("#numExpDisciplinario").val()!="" || $("#anioExpDisciplinario").val()!=""){

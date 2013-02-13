@@ -547,4 +547,25 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		
        return aInstituciones;
 	}
+	
+	public CenInstitucionBean getInstitucion (String idInstitucion) throws Exception
+	{
+		CenInstitucionBean b= null;
+		try {
+			
+			Hashtable datos = new Hashtable();
+			datos.put(CenInstitucionBean.C_IDINSTITUCION,idInstitucion);
+			
+			Vector v = this.selectByPK(datos);
+			if (v!=null && v.size()>0) {
+				b = (CenInstitucionBean) v.get(0);
+				
+			}
+			return b;
+		}
+		catch (Exception e) {
+			throw e;
+		}
+	}
+	
 }
