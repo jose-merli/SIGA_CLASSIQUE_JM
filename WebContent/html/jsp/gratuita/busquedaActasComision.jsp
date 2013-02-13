@@ -64,11 +64,11 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-							<td class="labelText" colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-							<td class="labelText" colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						</table>
 					</siga:ConjCampos>	

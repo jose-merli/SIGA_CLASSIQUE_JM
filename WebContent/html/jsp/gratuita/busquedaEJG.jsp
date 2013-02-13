@@ -507,7 +507,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
 				</td>
 				<td style="vertical-align:middle"> 
-					<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
+					<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="375"/>
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle" width="140px">

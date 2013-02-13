@@ -22,22 +22,21 @@
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
-<% 
-	String app=request.getContextPath(); 
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector obj = (Vector) request.getAttribute("resultadoNIF");
-	
+
 	ScsPersonaJGBean myBean = null;
 	request.getSession().removeAttribute("resultadoTelefonos");
-	
-	if (obj!=null && obj.size()>0)
-	{
-		myBean = (ScsPersonaJGBean)obj.elementAt(0);
+
+	if (obj != null && obj.size() > 0) {
+		myBean = (ScsPersonaJGBean) obj.elementAt(0);
 	}
-	request.getSession().setAttribute("buscarGuardias","1");
-	
+	request.getSession().setAttribute("buscarGuardias", "1");
+
 	String NombreObjetoDestino = (String) request.getAttribute("NombreObjetoDestino");
 %>
 <html>
@@ -59,22 +58,13 @@
 	{
 		aux[i]="";
 	}
-<%
-	if (myBean!=null)
-	{
-%>	    bNuevo = "1";
+<%if (myBean != null) {%>	    bNuevo = "1";
 		aux[0]="<%=myBean.getTipoIdentificacion()%>";
-		<% 
-		if (myBean.getIdPersona()==null){
-		%>
+		<%if (myBean.getIdPersona() == null) {%>
 			aux[1]="";
-		<% 
-		}else{
-		%>
+		<%} else {%>
 			aux[1]="<%=myBean.getIdPersona()%>";
-		<% 
-		}
-		%>
+		<%}%>
 		aux[2]="<%=myBean.getNif()%>";
 		aux[3]="<%=myBean.getNombre()%>";
 		aux[4]="<%=myBean.getApellido1()%>";
@@ -86,7 +76,7 @@
 		aux[10]="<%=myBean.getIdPoblacion()%>";
 		aux[11]="<%=myBean.getIdEstadoCivil()%>";
 		aux[12]="<%=myBean.getRegimenConyugal()%>";
-		aux[13]="<%=GstDate.getFormatedDateShort(usr.getLanguage(),myBean.getFechaNacimiento())%>";
+		aux[13]="<%=GstDate.getFormatedDateShort(usr.getLanguage(), myBean.getFechaNacimiento())%>";
 		aux[14]="<%=myBean.getIdProfesion()%>";
 		aux[15]="<%=myBean.getIdRepresentanteJG()%>";
 		aux[18]="<%=myBean.getHijos()%>";
@@ -96,24 +86,27 @@
 		aux[22]="<%=myBean.getTipo()%>"; //Este es El tipo persona F o J 	
 		aux[23]="<%=myBean.getIdMinusvalia()%>";	
 		aux[24]="<%=myBean.getEdad()%>";
-		aux[25]="<%=myBean.getExisteDomicilio()%>";  			
-		<% 
-		String nom = (String) request.getAttribute("nombreRepresentante");
-		if (nom==null) nom="";
-		%>
-		aux[16]="<%=nom %>";
+		aux[25]="<%=myBean.getExisteDomicilio()%>";  	
+		aux[26]="<%=myBean.getNumeroDir()%>";
+		aux[27]="<%=myBean.getEscaleraDir()%>";
+		aux[28]="<%=myBean.getPisoDir()%>";
+		aux[29]="<%=myBean.getPuertaDir()%>";
+		aux[30]="<%=myBean.getIdTipoVia()%>";
+		
+		<%String nom = (String) request.getAttribute("nombreRepresentante");
+				if (nom == null)
+					nom = "";%>
+		aux[16]="<%=nom%>";
 		// aqui guardo el nuevo
 		aux[17]=bNuevo;
 
-<%
-	}
-%>
+<%}%>
 
-<% if (NombreObjetoDestino != null && !NombreObjetoDestino.equals("")) {%>
+<%if (NombreObjetoDestino != null && !NombreObjetoDestino.equals("")) {%>
 	window.parent.traspasoDatos(aux, bNuevo, "<%=NombreObjetoDestino%>");
 <%} else {%>
 	window.parent.traspasoDatos(aux,bNuevo);
-<%} %>
+<%}%>
 	
 	</script>
 </head>

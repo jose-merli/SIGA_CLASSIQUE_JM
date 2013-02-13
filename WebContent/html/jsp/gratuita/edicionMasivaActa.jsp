@@ -61,7 +61,7 @@
 						<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="240" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
+						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
 					</td>
 				</tr>
 				

@@ -71,11 +71,11 @@
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400"/></td>
+				<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400"/></td>
+				<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.miembrosComision"/></td>

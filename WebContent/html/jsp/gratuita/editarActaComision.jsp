@@ -130,11 +130,11 @@
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400" elementoSel="<%=presidenteSel%>"/></td>
+				<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=presidenteSel%>"/></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>"filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="400" elementoSel="<%=secretarioSel%>"/></td>
+				<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>"filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=secretarioSel%>"/></td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.miembrosComision"/></td>

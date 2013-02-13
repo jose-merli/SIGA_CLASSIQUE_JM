@@ -271,13 +271,17 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
 					</td>
-					<td>
+					<td colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200" readOnly="true"/>
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" readOnly="true"/>
 						<%} else {%>
-							<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="200"/>
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" />
 						<%}%>
 					</td>
+					
+				</tr>
+
+				<tr>					
 					
 					<td class="labelText">
 						<siga:Idioma key="gratuita.operarEJG.literal.presentacionPonente"/>
