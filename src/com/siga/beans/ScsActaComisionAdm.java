@@ -442,85 +442,73 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException 
 	 */
 	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		Vector datos = new Vector();
 		
-		Vector salida = new Vector();
+		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
+			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
+				" EJG." + ScsEJGBean.C_NUMEJG + " as NUMERO, " +
+				" TO_CHAR(EJG." + ScsEJGBean.C_FECHAAPERTURA + ", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA + ", " +
+				" TUR." + ScsTurnoBean.C_NOMBRE + " as TURNO, " + 
+				" GUA." + ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA, " + 
+				" SOL." + ScsPersonaJGBean.C_NOMBRE + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE, " +
+				" EJG." + ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION, " +
+				" EJG." + ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG, " +
+				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN, " +
+				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", 1) as FUNDAMENTO, " +
+				" F_SIGA_GETRECURSO(RES.descripcion, 1) as RESOLUCION, " +
+				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
+				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", 1) as TIPOEJG, " +
+				" DECODE(EJG.requierenotificarproc, '1', F_SIGA_GETRECURSO_ETIQUETA('gratuita.operarRatificacion.mensaje.requiereNotificarProc', " + this.usrbean.getLanguage() + ") || " +
+					" F_SIGA_GETPROCURADORCONTR_EJG(EJG.idinstitucion, EJG.idtipoejg, EJG.anio, EJG.numero), '') as NOTIFICAR_PROCURADOR_CONTRARIO, " +
+				" FUN.TEXTOPLANTILLA3, " +
+				" FUN.TEXTOPLANTILLA4, " +
+				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE " +
+			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
+				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
+				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
+				ScsGuardiasTurnoBean.T_NOMBRETABLA + " GUA, " +
+				ScsTipoFundamentosBean.T_NOMBRETABLA + " FUN, " +
+				ScsPonenteBean.T_NOMBRETABLA + " PON, " +
+				ScsTipoEJGColegioBean.T_NOMBRETABLA + " TIP, " +
+				" SCS_TIPORESOLUCION RES " +
+			" WHERE TUR." + ScsTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND TUR." + ScsTurnoBean.C_IDTURNO+ "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA +
+				" AND SOL." + ScsPersonaJGBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND SOL." + ScsPersonaJGBean.C_IDPERSONA + "(+) = EJG." + ScsEJGBean.C_IDPERSONAJG +
+				" AND PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE +
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " <> 0" + 
+				" AND FUN." + ScsTipoFundamentosBean.C_IDFUNDAMENTO + "(+) = EJG." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO +
+				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
+				" AND RES.idtiporesolucion(+) = EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG +
+				" AND TIP." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO + "(+) = EJG." + ScsEJGBean.C_IDTIPOEJGCOLEGIO +
+				" AND TIP." + ScsTipoEJGColegioBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
+				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
+				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
+				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
+			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " DESC , " + 
+				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
+			") DATOS";
 		
-		StringBuffer consulta = new StringBuffer();
-		RowsContainer rc = new RowsContainer(); 
-		Vector resultado = new Vector();
-		consulta.append("select rownum as NACUERDO, data.* from (");
+       try{    	   	    	   			
+			 rc = this.find(sql);
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsInforme.");	
+		} 
 		
-		consulta.append("select ");
-		consulta.append(" ejg."+ScsEJGBean.C_ANIO + " as ANIO");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMEJG + " as NUMERO");
-		//consulta.append(", ejg."+ScsEJGBean.C_FECHAAPERTURA + " as FECHAAPERTURA");
-		consulta.append(", to_char(ejg."+ScsEJGBean.C_FECHAAPERTURA+", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA);
-		consulta.append(", tur."+ScsTurnoBean.C_NOMBRE + " as TURNO");
-		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
-		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
-		//consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
-		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
-		consulta.append(", ejg."+ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN");
-		consulta.append(", f_siga_getrecurso(fun."+ScsTipoFundamentosBean.C_DESCRIPCION+",1) as FUNDAMENTO");
-		consulta.append(", f_siga_getrecurso(res.descripcion,1) as RESOLUCION");
-		consulta.append(", f_siga_getrecurso(pon."+ScsPonenteBean.C_NOMBRE+",1) as PONENTE");
-		consulta.append(", f_siga_getrecurso(tip."+ScsTipoEJGColegioBean.C_DESCRIPCION+",1) as TIPOEJG");
-		consulta.append(", decode(ejg.requierenotificarproc,'1',f_siga_getrecurso_etiqueta('gratuita.operarRatificacion.mensaje.requiereNotificarProc',"+this.usrbean.getLanguage()+") ||");
-		consulta.append(" f_siga_getprocuradorcontr_ejg(ejg.idinstitucion, ejg.idtipoejg, ejg.anio, ejg.numero),'') as NOTIFICAR_PROCURADOR_CONTRARIO");
-
-		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
-		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
-		consulta.append(" , " + ScsPersonaJGBean.T_NOMBRETABLA +" sol");
-		consulta.append(" , " + ScsGuardiasTurnoBean.T_NOMBRETABLA +" gua");
-		consulta.append(" , " + ScsTipoFundamentosBean.T_NOMBRETABLA +" fun");
-		consulta.append(" , " + ScsPonenteBean.T_NOMBRETABLA +" pon");
-		consulta.append(" , " + ScsTipoEJGColegioBean.T_NOMBRETABLA +" tip");
-		consulta.append(" , scs_tiporesolucion res");
-
-		consulta.append(" where ");
-		consulta.append(" tur." + ScsTurnoBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and tur." + ScsTurnoBean.C_IDTURNO+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDTURNO+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDGUARDIA+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA);
-		consulta.append(" and sol." + ScsPersonaJGBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and sol." + ScsPersonaJGBean.C_IDPERSONA+ "(+) = ejg." + ScsEJGBean.C_IDPERSONAJG);
-		consulta.append(" and pon." + ScsPonenteBean.C_IDPONENTE+ "(+) = ejg." + ScsEJGBean.C_IDPONENTE);
-		consulta.append(" and pon." + ScsPonenteBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG+ " <> 0");
-		consulta.append(" and fun." + ScsTipoFundamentosBean.C_IDFUNDAMENTO+ "(+) = ejg." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO);
-		consulta.append(" and fun.IDINSTITUCION(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and res.idtiporesolucion(+) = ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG);
-		consulta.append(" and tip." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO+ "(+) = ejg." + ScsEJGBean.C_IDTIPOEJGCOLEGIO);
-		consulta.append(" and tip." + ScsTipoEJGColegioBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-				
-		Hashtable htCodigos = new Hashtable();
-		int keyContador = 0;
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idInstitucion);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDINSTITUCIONACTA + " =:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), anioActa);
-		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA + "=:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idActa);
-		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
-		consulta.append(keyContador);
-		
-		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " asc");
-
-		consulta.append(") data");
-		
-		//HelperInformesAdm helperInformes = new HelperInformesAdm();
-		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
-		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
-		return salida;
-
+		return datos;			
 	}
 	
 	/**
@@ -533,78 +521,71 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException 
 	 */
 	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		Vector datos = new Vector();
 		
-		Vector salida = new Vector();
+		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
+			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
+				" EJG." + ScsEJGBean.C_NUMEJG + " as NUMERO, " +
+				" TO_CHAR(EJG." + ScsEJGBean.C_FECHAAPERTURA + ", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA + ", " +
+				" TUR." + ScsTurnoBean.C_NOMBRE + " as TURNO, " + 
+				" GUA." + ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA, " + 
+				" SOL." + ScsPersonaJGBean.C_NOMBRE + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE, " +
+				" EJG." + ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION, " +
+				" EJG." + ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG, " +
+				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN, " +
+				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", 1) as FUNDAMENTO, " +
+				" F_SIGA_GETRECURSO(RES.descripcion, 1) as RESOLUCION, " +
+				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
+				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", 1) as TIPOEJG, " +
+				" FUN.TEXTOPLANTILLA3, " +
+				" FUN.TEXTOPLANTILLA4, " +
+				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE " +
+			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
+				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
+				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
+				ScsGuardiasTurnoBean.T_NOMBRETABLA + " GUA, " +
+				ScsTipoFundamentosBean.T_NOMBRETABLA + " FUN, " +
+				ScsPonenteBean.T_NOMBRETABLA + " PON, " +
+				ScsTipoEJGColegioBean.T_NOMBRETABLA + " TIP, " +
+				" SCS_TIPORESOLUCION RES " +
+			" WHERE TUR." + ScsTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND TUR." + ScsTurnoBean.C_IDTURNO+ "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
+				" AND GUA." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA +
+				" AND SOL." + ScsPersonaJGBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND SOL." + ScsPersonaJGBean.C_IDPERSONA + "(+) = EJG." + ScsEJGBean.C_IDPERSONAJG +
+				" AND PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE +
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = 0 " + 
+				" AND FUN." + ScsTipoFundamentosBean.C_IDFUNDAMENTO + "(+) = EJG." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO +
+				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
+				" AND RES.idtiporesolucion(+) = EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG +
+				" AND TIP." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO + "(+) = EJG." + ScsEJGBean.C_IDTIPOEJGCOLEGIO +
+				" AND TIP." + ScsTipoEJGColegioBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
+				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
+				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
+				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
+			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " DESC , " + 
+				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
+			") DATOS";
 		
-		StringBuffer consulta = new StringBuffer();
-		RowsContainer rc = new RowsContainer(); 
-		Vector resultado = new Vector();
-		consulta.append("select ");
-		consulta.append(" ejg."+ScsEJGBean.C_ANIO + " as ANIO");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMEJG + " as NUMERO");
-		consulta.append(", to_char(ejg."+ScsEJGBean.C_FECHAAPERTURA+", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA);
-		consulta.append(", tur."+ScsTurnoBean.C_NOMBRE + " as TURNO");
-		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
-		consulta.append(", sol."+ScsPersonaJGBean.C_NOMBRE+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO1+"||' '||sol."+ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE ");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUMERO");
-		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
-		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
-		consulta.append(", ejg."+ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN");
-		consulta.append(", f_siga_getrecurso(fun."+ScsTipoFundamentosBean.C_DESCRIPCION+",1) as FUNDAMENTO");
-		consulta.append(", f_siga_getrecurso(res.descripcion,1) as RESOLUCION");
-		consulta.append(", f_siga_getrecurso(pon."+ScsPonenteBean.C_NOMBRE+",1) as PONENTE");
-		consulta.append(", f_siga_getrecurso(tip."+ScsTipoEJGColegioBean.C_DESCRIPCION+",1) as TIPOEJG");
-
-		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
-		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
-		consulta.append(" , " + ScsPersonaJGBean.T_NOMBRETABLA +" sol");
-		consulta.append(" , " + ScsGuardiasTurnoBean.T_NOMBRETABLA +" gua");
-		consulta.append(" , " + ScsTipoFundamentosBean.T_NOMBRETABLA +" fun");
-		consulta.append(" , " + ScsPonenteBean.T_NOMBRETABLA +" pon");
-		consulta.append(" , " + ScsTipoEJGColegioBean.T_NOMBRETABLA +" tip");
-		consulta.append(" , scs_tiporesolucion res");
-
-		consulta.append(" where ");
-		consulta.append(" tur." + ScsTurnoBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and tur." + ScsTurnoBean.C_IDTURNO+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDTURNO+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO);
-		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDGUARDIA+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA);
-		consulta.append(" and sol." + ScsPersonaJGBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and sol." + ScsPersonaJGBean.C_IDPERSONA+ "(+) = ejg." + ScsEJGBean.C_IDPERSONAJG);
-		consulta.append(" and pon." + ScsPonenteBean.C_IDPONENTE+ "(+) = ejg." + ScsEJGBean.C_IDPONENTE);
-		consulta.append(" and pon." + ScsPonenteBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and fun." + ScsTipoFundamentosBean.C_IDFUNDAMENTO+ "(+) = ejg." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG+ " = 0");
-		consulta.append(" and fun.IDINSTITUCION(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and res.idtiporesolucion(+) = ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG);
-		consulta.append(" and tip." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO+ "(+) = ejg." + ScsEJGBean.C_IDTIPOEJGCOLEGIO);
-		consulta.append(" and tip." + ScsTipoEJGColegioBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-				
-		Hashtable htCodigos = new Hashtable();
-		int keyContador = 0;
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idInstitucion);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDINSTITUCIONACTA + " =:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), anioActa);
-		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA + "=:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idActa);
-		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
-		consulta.append(keyContador);
+       try{    	   	    	   			
+			 rc = this.find(sql);
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsPendientes.");	
+		} 
 		
-		consulta.append(" order by ejg." + ScsEJGBean.C_IDTIPOEJGCOLEGIO + " desc, ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
-
-		//HelperInformesAdm helperInformes = new HelperInformesAdm();
-		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
-		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
-		return salida;
-
+		return datos;			
 	}
 	
 	/**
