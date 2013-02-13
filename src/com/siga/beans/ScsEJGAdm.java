@@ -4217,7 +4217,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						registro.put("SEXO_INTERESADO", "");
 						registro.put("LENGUAJE_INTERESADO", "");
 						registro.put("CALIDAD_INTERESADO", "");
-						registro.put("CODIGOLENGUAJE", "");
+						//registro.put("CODIGOLENGUAJE", "");
 						registro.put("PROFESION_DEFENDIDO", "");
 						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 						
@@ -4295,7 +4295,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("SEXO_INTERESADO", "");
 					registro.put("LENGUAJE_INTERESADO", "");
 					registro.put("CALIDAD_INTERESADO", "");
-					registro.put("CODIGOLENGUAJE", "");
+					//registro.put("CODIGOLENGUAJE", "");
 					registro.put("PROFESION_DEFENDIDO", "");
 					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 					
