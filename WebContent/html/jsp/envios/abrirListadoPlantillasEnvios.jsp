@@ -44,7 +44,7 @@
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
-		<siga:Titulo titulo="envios.plantillas.literal.titulo" localizacion="envios.plantillas.literal.localizacion"/>
+		<siga:Titulo titulo="envios.plantillas.literal.titulo" localizacion="envios.definir.literal.localizacion"/>
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">

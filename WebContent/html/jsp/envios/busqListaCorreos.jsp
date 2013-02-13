@@ -50,7 +50,7 @@
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo 
 		titulo="envios.listas.literal.titulo" 
-		localizacion="envios.listas.literal.localizacion"/>
+		localizacion="envios.definir.literal.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>

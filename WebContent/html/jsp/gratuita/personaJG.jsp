@@ -1986,7 +1986,7 @@
 					} else {
 				%>
 			<html:hidden  name="PersonaJGForm" property="sexo" value="<%=sexo %>"/>
-			<html:text name="PersonaJGForm" property="ssexo" size="20" styleClass="<%=estiloBox %>" value="<%=ssexo %>"  ></html:text>				
+			<html:text name="PersonaJGForm" property="ssexo" readonly="true" size="20" styleClass="<%=estiloBox %>" value="<%=ssexo %>"  ></html:text>				
 		<%
 							}
 						%>					
