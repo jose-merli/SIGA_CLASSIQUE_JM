@@ -38,7 +38,7 @@
 	String numeroCAJG="", anioCAJG="";
 	boolean requiereTurnado= false,requiereNotificarProc=false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList(), vActa = new ArrayList();
-	
+	String idActa = "";
 	ArrayList vOrigenCAJGSel = new ArrayList();
 	
 	boolean accesoActas=false;
@@ -91,10 +91,11 @@
 			vOrigenCAJGSel.add(0, vOrigenCAJG);
 		}
 		
-		if (miHash.containsKey(ScsEJGBean.C_IDACTA) && miHash.get(ScsEJGBean.C_IDACTA) != null && 
-			miHash.containsKey(ScsEJGBean.C_IDINSTITUCIONACTA) && miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA) != null && 
-			miHash.containsKey(ScsEJGBean.C_ANIOACTA) && miHash.get(ScsEJGBean.C_ANIOACTA) != null) {
-			vActa.add(miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA).toString()+","+miHash.get(ScsEJGBean.C_ANIOACTA)+","+miHash.get(ScsEJGBean.C_IDACTA));
+		if (miHash.containsKey(ScsEJGBean.C_IDACTA) && miHash.get(ScsEJGBean.C_IDACTA) != null 
+				&& miHash.containsKey(ScsEJGBean.C_IDINSTITUCIONACTA) && miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA) != null 
+				&& miHash.containsKey(ScsEJGBean.C_ANIOACTA) && miHash.get(ScsEJGBean.C_ANIOACTA) != null) {
+			idActa = miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA).toString() + "," + miHash.get(ScsEJGBean.C_ANIOACTA) + "," + miHash.get(ScsEJGBean.C_IDACTA);
+			vActa.add(idActa);
 		}
 		
 	}catch(Exception e){e.printStackTrace();};
@@ -239,6 +240,8 @@
 												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 											<%}%>
 										</td>
+									<%} else {%>
+										<html:hidden property="idActaComp" value ="<%=idActa%>"/>
 									<%}%>
 									
 									<td class="labelText" width="220">
