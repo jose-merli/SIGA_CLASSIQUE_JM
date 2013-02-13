@@ -3606,8 +3606,14 @@ public class EnvioInformesGenericos extends MasterReport {
 							if (idioma == null || idioma.equals(""))
 								idioma = usr.getLanguage();
 							datosInforme.put("idioma", idioma);
-							String idPersona2 = (String) datosInforme
-									.get("idPersona");
+							String idPersona2 = null;
+							if (datosInforme.containsKey("idPersona")){
+								idPersona2 = (String) datosInforme.get("idPersona");
+							}
+									
+							if (datosInforme.containsKey("idPersonaDenunciado") && (idPersona2 == null || "".equals(idPersona2))){
+								idPersona2 = (String) datosInforme.get("idPersonaDenunciado");
+							}
 							String idInstitucion2 = (String) datosInforme
 									.get("idInstitucion");
 							String anio = (String) datosInforme

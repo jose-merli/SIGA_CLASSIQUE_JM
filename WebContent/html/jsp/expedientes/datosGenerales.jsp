@@ -920,7 +920,7 @@
 
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
- 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersonaDenunciado=="+idPersonaDenunciado +"##idTipoInforme==EXP%%%";
+ 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersonaDenunciado +"##idTipoInforme==EXP%%%";
 			
 			document.InformesGenericosForm.datosInforme.value =datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
