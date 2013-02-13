@@ -419,7 +419,7 @@
 	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 		<tr>
 			<td class="tdBotones">
-				<input type="button" id="idButton" name="idButton" class="button" value="Volver" onclick="accionVolver();">
+				
 			</td>
 		</tr>
 	</table>
