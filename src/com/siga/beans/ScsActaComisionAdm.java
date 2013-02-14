@@ -11,13 +11,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.general.SIGAException;
 import com.siga.ws.PCAJGConstantes;
@@ -455,15 +453,16 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" EJG." + ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION, " +
 				" EJG." + ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG, " +
 				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN, " +
-				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", 1) as FUNDAMENTO, " +
-				" F_SIGA_GETRECURSO(RES.descripcion, 1) as RESOLUCION, " +
-				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
-				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", 1) as TIPOEJG, " +
-				" DECODE(EJG.requierenotificarproc, '1', F_SIGA_GETRECURSO_ETIQUETA('gratuita.operarRatificacion.mensaje.requiereNotificarProc', " + this.usrbean.getLanguage() + ") || " +
-					" F_SIGA_GETPROCURADORCONTR_EJG(EJG.idinstitucion, EJG.idtipoejg, EJG.anio, EJG.numero), '') as NOTIFICAR_PROCURADOR_CONTRARIO, " +
+				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as FUNDAMENTO, " +
+				" F_SIGA_GETRECURSO(RES.descripcion, " + this.usrbean.getLanguage() + ") as RESOLUCION, " +
+				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", " + this.usrbean.getLanguage() + ") as PONENTE, " +
+				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as TIPOEJG, " +
+				" DECODE(EJG." + ScsEJGBean.C_REQUIERENOTIFICARPROC + ", '1', F_SIGA_GETRECURSO_ETIQUETA('gratuita.operarRatificacion.mensaje.requiereNotificarProc', " + this.usrbean.getLanguage() + ") || " +
+					" F_SIGA_GETPROCURADORCONTR_EJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + "), '') as NOTIFICAR_PROCURADOR_CONTRARIO, " +
 				" FUN.TEXTOPLANTILLA3, " +
 				" FUN.TEXTOPLANTILLA4, " +
-				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE " +
+				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE, " +
+				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + 
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
 				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
 				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
@@ -534,13 +533,14 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" EJG." + ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION, " +
 				" EJG." + ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG, " +
 				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN, " +
-				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", 1) as FUNDAMENTO, " +
-				" F_SIGA_GETRECURSO(RES.descripcion, 1) as RESOLUCION, " +
-				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
-				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", 1) as TIPOEJG, " +
+				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as FUNDAMENTO, " +
+				" F_SIGA_GETRECURSO(RES.descripcion, " + this.usrbean.getLanguage() + ") as RESOLUCION, " +
+				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", " + this.usrbean.getLanguage() + ") as PONENTE, " +
+				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as TIPOEJG, " +
 				" FUN.TEXTOPLANTILLA3, " +
 				" FUN.TEXTOPLANTILLA4, " +
-				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE " +
+				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE, " +
+				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + 
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
 				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
 				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
@@ -569,7 +569,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
 			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " DESC , " + 
 				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
-			") DATOS";
+			") DATOS";		
 		
        try{    	   	    	   			
 			 rc = this.find(sql);
@@ -598,45 +598,35 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException 
 	 */
 	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		Vector datos = new Vector();
 		
-		Vector salida = new Vector();
+		String sql = "SELECT F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
+				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || EJG." + ScsEJGBean.C_NUMEJG + "), ',', ', ') as LISTAEJG " +
+			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " + 
+				ScsPonenteBean.T_NOMBRETABLA +" PON " +
+			" WHERE PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE + 
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
+				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = 0 " + 
+				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
+				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
+				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +
+			" GROUP BY PON." + ScsPonenteBean.C_NOMBRE;
 		
-		StringBuffer consulta = new StringBuffer();
-		RowsContainer rc = new RowsContainer(); 
-		Vector resultado = new Vector();
-		consulta.append("select f_siga_getrecurso(pon.nombre, 1) as PONENTE, replace(wm_concat(ejg.anio || '/' || ejg.numejg) ,',',', ') as LISTAEJG");
-
-		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
-		consulta.append(" , " + ScsPonenteBean.T_NOMBRETABLA +" pon");
-
-		consulta.append(" where ");
-		consulta.append(" pon." + ScsPonenteBean.C_IDPONENTE+ "(+) = ejg." + ScsEJGBean.C_IDPONENTE);
-		consulta.append(" and pon." + ScsPonenteBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDTIPORATIFICACIONEJG+ " = 0");
+		try{    	   	    	   			
+			rc = this.find(sql);
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsPendientesPonentes.");	
+		} 
 		
-		Hashtable htCodigos = new Hashtable();
-		int keyContador = 0;
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idInstitucion);
-		consulta.append(" and ejg." + ScsEJGBean.C_IDINSTITUCIONACTA + " =:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), anioActa);
-		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA + "=:");
-		consulta.append(keyContador);
-
-		keyContador++;
-		htCodigos.put(new Integer(keyContador), idActa);
-		consulta.append("  and ejg." + ScsEJGBean.C_IDACTA+ " = :");
-		consulta.append(keyContador);
-		
-		consulta.append(" group by pon." + ScsPonenteBean.C_NOMBRE);
-
-		//HelperInformesAdm helperInformes = new HelperInformesAdm();
-		//salida = helperInformes.ejecutaConsultaBind(consulta.toString(), htCodigos);
-		salida = this.selectGenericoBind(consulta.toString(), htCodigos);
-		return salida;
-
+		return datos;			
 	}
 }
