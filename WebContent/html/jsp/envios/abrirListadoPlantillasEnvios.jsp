@@ -63,9 +63,12 @@
 				PlantillasEnviosForm.modo.value="nuevo";
 				var resultado=ventaModalGeneral("PlantillasEnviosForm","P");
 
-				if (resultado!=undefined)
-				{
-					MyForm.tablaDatosDinamicosD.value=resultado;
+				if (resultado!=undefined) {
+					//BNS FALLABA AL DAR DE ALTA UNO NUEVO SIN BUSCAR (tablaDatosDinamicosD no estaba creado)
+					if (jQuery("#tablaDatosDinamicosD").length <= 0){
+						jQuery('form:first',document).append('<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />');
+					}
+					jQuery("#tablaDatosDinamicosD").val(resultado);
 					MyForm.submit();
 				}
 			}
