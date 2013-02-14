@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.siga.Utilidades.UtilidadesString;
@@ -102,7 +101,6 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 				
 			}
 			out.flush();
-			//response.flushBuffer();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
