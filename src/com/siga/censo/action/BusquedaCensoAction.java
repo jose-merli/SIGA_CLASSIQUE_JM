@@ -417,7 +417,8 @@ public class BusquedaCensoAction extends MasterAction {
 			request.setAttribute("colegioOrigen",colOrigen);
 			request.setAttribute("nColegiado",miForm.getNumeroColegiado());
 			request.setAttribute("nif",miForm.getNif());
-			request.setAttribute("idDireccion",miForm.getIdDireccion());
+			//BNS ESTABA METIENDO -1 DEL ID DEL FORM (nuevo/seleccionar), DEBE PASAR EL ID DEL NUEVO REG. INSERTADO
+			request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
 		} catch (SIGAException e) {
 			throw e;		
 	    } catch (Exception e) {
