@@ -146,18 +146,18 @@
 					</tr>																	
 					
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_CertificadoPago.do"
 						source="idInstitucion" target="colegioPagos" 
 						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerInstituciones"
 						executeOnLoad="true"/>			
 					
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_CertificadoPago.do"
 						source="colegioPagos" target="grupoPagos" 
 						parameters="idInstitucion={colegioPagos},modo=ajaxObtenerTurnos"/>
 						
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_CertificadoPago.do"
 						source="grupoPagos" target="idPagoInicial"
 						parameters="idInstitucion={colegioPagos},idGrupo={grupoPagos},modo=ajaxObtenerPagos"
 						postFunction="postAccionTurno" />							
@@ -194,13 +194,13 @@
 					</tr>													
 					
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_CertificadoPago.do"
 						source="idInstitucion" target="grupoPagos" 
 						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerTurnos"
 						executeOnLoad="true"/>			
 												
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_CertificadoPago.do"
 						source="grupoPagos" target="idPagoInicial"
 						parameters="idInstitucion={idInstitucion},idGrupo={grupoPagos},modo=ajaxObtenerPagos"
 						postFunction="postAccionTurno" />						

@@ -159,18 +159,18 @@
 					</tr>															
 						
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_InformesMultiplesBeta.do"
 						source="idInstitucion" target="colegioFacturacion" 
 						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerInstituciones"
 						executeOnLoad="true"/>					
 					
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_InformesMultiplesBeta.do"
 						source="colegioFacturacion" target="grupoFacturacion" 
 						parameters="idInstitucion={colegioFacturacion},modo=ajaxObtenerTurnos"/>
 						
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_InformesMultiplesBeta.do"
 						source="grupoFacturacion" target="idFacturacionInicio"
 						parameters="idInstitucion={colegioFacturacion},idGrupo={grupoFacturacion},modo=ajaxObtenerFacturas"
 						postFunction="postAccionTurno" />							
@@ -207,13 +207,13 @@
 					</tr>							
 					
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_InformesMultiplesBeta.do"
 						source="idInstitucion" target="grupoFacturacion" 
 						parameters="idInstitucion={idInstitucion},modo=ajaxObtenerTurnos"
 						executeOnLoad="true"/>			
 												
 					<ajax:select
-						baseUrl="/SIGA/INF_InformesMultiples.do"
+						baseUrl="/SIGA/INF_InformesMultiplesBeta.do"
 						source="grupoFacturacion" target="idFacturacionInicio"
 						parameters="idInstitucion={idInstitucion},idGrupo={grupoFacturacion},modo=ajaxObtenerFacturas"
 						postFunction="postAccionTurno" />								

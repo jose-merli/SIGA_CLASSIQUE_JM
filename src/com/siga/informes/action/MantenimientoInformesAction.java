@@ -83,6 +83,22 @@ public class MantenimientoInformesAction extends MasterAction {
 					mapDestino = descargar(mapping, miForm, request, response);
 					return mapping.findForward(mapDestino);
 					
+				} else if (modo.equalsIgnoreCase("ajaxObtenerInstituciones")){
+					new InformesFacturacionMultipleAction().ajaxObtenerInstituciones(mapping, miForm, request, response);
+					return null;				
+					
+				} else if (modo.equalsIgnoreCase("ajaxObtenerTurnos")){
+					new InformesFacturacionMultipleAction().ajaxObtenerTurnos(mapping, miForm, request, response);
+					return null;
+					
+				} else if (modo.equalsIgnoreCase("ajaxObtenerFacturas")){
+					new InformesFacturacionMultipleAction().ajaxObtenerFacturas(mapping, miForm, request, response);
+					return null;		
+					
+				} else if (modo.equalsIgnoreCase("ajaxObtenerPagos")){
+					new InformesFacturacionMultipleAction().ajaxObtenerPagos(mapping, miForm, request, response);
+					return null;						
+					
 				} else {
 					return super.executeInternal(mapping, formulario, request,response);
 				}
