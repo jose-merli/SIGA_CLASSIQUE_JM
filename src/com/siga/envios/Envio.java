@@ -630,6 +630,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarEnvio(String idPersona,String tipoDestinatario, Vector documentos) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+        //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -644,6 +646,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarEnvioSms(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -659,6 +663,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarEnvio(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -677,6 +683,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarEnvioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -701,6 +709,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG,Hashtable htJuzgado, Hashtable htProcurador) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -741,6 +751,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes
@@ -897,6 +909,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		
 		try {
 	        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+	      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+	        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
 	        //Insertamos el envio:
 	        envAdm.insert(enviosBean);
 	        
@@ -939,6 +953,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		
 		try {
 	        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+	      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+	        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
 	        //Insertamos el envio:
 	        envAdm.insert(enviosBean);
 	        

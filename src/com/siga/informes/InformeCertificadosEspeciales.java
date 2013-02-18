@@ -49,7 +49,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		String institucion = this.getUsuario().getLocation();
 		Hashtable hDatosFijos = new Hashtable ();
 		
-		
+
 		// Colocamos los registros
 		Vector vDatos =getDatos(datosBase);
 		CenClienteAdm admcli=new CenClienteAdm(this.getUsuario());
@@ -202,6 +202,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 		
 
 		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
+		//aalg: inc_10344_siga. Quitar la cadena BRdummyBR que se añadió para quitar los \n de texto
+		plantillaFO = UtilidadesString.replaceAllIgnoreCase(plantillaFO, "BRdummyBR", "<fo:block  space-before=\"0.2cm\" />");
 		return plantillaFO;
 	}
 
