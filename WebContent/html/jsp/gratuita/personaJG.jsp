@@ -2345,9 +2345,9 @@ function limpiarPersonaContrario() {
 			<siga:Idioma key="envios.etiquetas.tipoCliente.abogado"/>	
 		</td>
 		<td>	
-		    	<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
-		 		<html:hidden  name="PersonaJGForm" property="idAbogadoContrarioEJG" styleClass="box"  readOnly="false" size="10" maxlength="10"></html:hidden>
-		 		<html:text  name="PersonaJGForm" property="abogadoContrarioEJG" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+		    	<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario"  ></html:hidden> 	
+		 		<html:hidden  name="PersonaJGForm" property="idAbogadoContrarioEJG"></html:hidden>
+		 		<html:text  name="PersonaJGForm" property="abogadoContrarioEJG" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="true"></html:text>
 					
 			 			
 		</td>		
