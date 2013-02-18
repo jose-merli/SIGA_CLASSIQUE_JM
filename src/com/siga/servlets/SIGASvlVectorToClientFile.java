@@ -6,9 +6,7 @@
 package com.siga.servlets;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
+import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -17,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.siga.Utilidades.UtilidadesString;
@@ -25,9 +24,6 @@ import com.siga.Utilidades.UtilidadesString;
  * 
  */
 public class SIGASvlVectorToClientFile extends HttpServlet {
-	
-	private static String CHARSET = "UTF-8";
-	public static final String UTF8_BOM = "\uFEFF";
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		doPost(request,response);
@@ -53,22 +49,18 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 		if(cabeceras==null)
 			cabeceras = campos;
 		
-		PrintWriter out = null;
+		OutputStream out = null;
 		
 		try {
 			if((campos == null && cabeceras==null) || cabeceras.length!=campos.length)
 				throw new Exception("Inconsitencia entre número de campos y numero de cabeceras");
 				
-			//BNS INC_10281 AÑADO CHARSET PARA CODIFICAR € 
-			response.setContentType("text/csv; charset="+CHARSET);
+			response.setContentType("'text/csv'");
 			response.setHeader(
 			"Content-Disposition",
 			"attachment; filename=\""+nombreFichero+".xls\"" );
-			//BNS INC_10281 AÑADO PrintWriter PARA CONTROLAR CODIFICACIÓN EN DISTINTAS JVMs 
-			out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), Charset.forName(CHARSET)), true);
+			out = response.getOutputStream();
 			
-			if (Charset.forName(CHARSET).equals(Charset.forName("UTF-8")))
-				out.write(UTF8_BOM);
 			
 			for (int i=0;i<datos.size();i++){
 				String linea = "";
@@ -85,22 +77,22 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 				
 				if (i==0){
 					for (int j=0;j<cabeceras.length;j++){
-						cabecera += cabeceras[j]+";";
+						cabecera += cabeceras[j]+ClsConstants.SEPARADOR;
 					}
 					cabecera=cabecera.toLowerCase()+"\r\n";
-					out.write(cabecera);
+					out.write(cabecera.getBytes());
 				}
-				//BNS INC_10281 CAMBIO SEPARADOR \t por ; ya que en UTF-8 no funciona en excel 
+				
 				for (int k=0;k<campos.length;k++){
-					// inc6861 // linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+";";
-					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]).replaceAll("\n", " ").replaceAll(";", "\u037E"))+";";
+					// inc6861 // linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+ClsConstants.SEPARADOR;
+					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]).replaceAll("\n", " "))+ClsConstants.SEPARADOR;
 				}
 				linea=linea+"\r\n";
-				out.write(linea);				
+				out.write(linea.getBytes());
 		    	
 				
 			}
-			out.flush();
+			//response.flushBuffer();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
