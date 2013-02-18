@@ -26,8 +26,6 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
-import com.siga.beans.FcsPagosJGAdm;
-import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.ScsGrupoFacturacionAdm;
 import com.siga.beans.ScsGrupoFacturacionBean;
 import com.siga.general.MasterAction;
@@ -93,11 +91,7 @@ public class InformesFacturacionMultipleAction extends MasterAction
 				
 			} else if (accion.equalsIgnoreCase("ajaxObtenerFacturas")){
 				ajaxObtenerFacturas(mapping, miForm, request, response);
-				return null;		
-				
-			} else if (accion.equalsIgnoreCase("ajaxObtenerPagos")){
-				ajaxObtenerPagos(mapping, miForm, request, response);
-				return null;					
+				return null;						
 				
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
@@ -296,36 +290,5 @@ public class InformesFacturacionMultipleAction extends MasterAction
 				aFacturas = admFacturaciones.getFacturacionesInformes(idInstitucion, idGrupo, "20,30");
 		}
 	    respuestaAjax(new AjaxCollectionXmlBuilder<FcsFacturacionJGBean>(), aFacturas, response);
-	}
-	
-	/**
-	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 * @throws Exception
-	 */
-	protected void ajaxObtenerPagos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {		
-		List<FcsPagosJGBean> aPagos = null;
-		
-		//Recogemos los parametros enviados por ajax
-		String idInstitucion = request.getParameter("idInstitucion");		
-		String idGrupo = request.getParameter("idGrupo");
-		
-		//Obtengo datos del usuario
-		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		
-		//Compruebo si estan indicados los datos minimos
-		if (idInstitucion==null || idGrupo == null || idInstitucion.equalsIgnoreCase("-1") || idGrupo.equalsIgnoreCase("")) {
-			aPagos = new ArrayList<FcsPagosJGBean>();
-			
-		} else {
-			FcsPagosJGAdm admPagos = new FcsPagosJGAdm(user);
-			aPagos = admPagos.getPagosInformes(idInstitucion, idGrupo, ClsConstants.ESTADO_PAGO_EJECUTADO);
-		}
-	    respuestaAjax(new AjaxCollectionXmlBuilder<FcsPagosJGBean>(), aPagos, response);
 	}		
 }

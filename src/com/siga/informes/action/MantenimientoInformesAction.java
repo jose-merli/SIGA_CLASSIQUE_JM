@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +17,17 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.FcsFacturacionJGAdm;
+import com.siga.beans.FcsFacturacionJGBean;
+import com.siga.beans.FcsPagosJGAdm;
+import com.siga.beans.FcsPagosJGBean;
+import com.siga.beans.ScsGrupoFacturacionAdm;
+import com.siga.beans.ScsGrupoFacturacionBean;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -84,19 +94,15 @@ public class MantenimientoInformesAction extends MasterAction {
 					return mapping.findForward(mapDestino);
 					
 				} else if (modo.equalsIgnoreCase("ajaxObtenerInstituciones")){
-					new InformesFacturacionMultipleAction().ajaxObtenerInstituciones(mapping, miForm, request, response);
+					ajaxObtenerInstituciones(mapping, miForm, request, response);
 					return null;				
 					
 				} else if (modo.equalsIgnoreCase("ajaxObtenerTurnos")){
-					new InformesFacturacionMultipleAction().ajaxObtenerTurnos(mapping, miForm, request, response);
-					return null;
-					
-				} else if (modo.equalsIgnoreCase("ajaxObtenerFacturas")){
-					new InformesFacturacionMultipleAction().ajaxObtenerFacturas(mapping, miForm, request, response);
-					return null;		
+					ajaxObtenerTurnos(mapping, miForm, request, response);
+					return null;	
 					
 				} else if (modo.equalsIgnoreCase("ajaxObtenerPagos")){
-					new InformesFacturacionMultipleAction().ajaxObtenerPagos(mapping, miForm, request, response);
+					ajaxObtenerPagos(mapping, miForm, request, response);
 					return null;						
 					
 				} else {
@@ -249,4 +255,92 @@ public class MantenimientoInformesAction extends MasterAction {
 		}
 		return "descargaFichero";
 	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void ajaxObtenerInstituciones (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		List<CenInstitucionBean> aInstituciones = null;
+		
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");	
+		int intInstitucion = Integer.parseInt(idInstitucion);
+		
+		//Compruebo si estan indicados los datos minimos
+		if (intInstitucion == ClsConstants.INSTITUCION_CONSEJOGENERAL || intInstitucion >= ClsConstants.INSTITUCION_CONSEJO) { 		
+			CenInstitucionAdm admInstituciones = new CenInstitucionAdm(user);
+			aInstituciones = admInstituciones.getInstitucionesConsejo(idInstitucion);		
+		} else {
+			aInstituciones = new ArrayList<CenInstitucionBean>();
+		}
+	    respuestaAjax(new AjaxCollectionXmlBuilder<CenInstitucionBean>(), aInstituciones, response);		
+	}	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void ajaxObtenerTurnos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		List<ScsGrupoFacturacionBean> alTurnos = null;
+		
+		//Recogemos el parametro enviado por ajax
+		String idInstitucion = request.getParameter("idInstitucion");		
+		
+		//Compruebo si estan indicados los datos minimos
+		if (idInstitucion==null || idInstitucion.equalsIgnoreCase("-1")) {
+			alTurnos = new ArrayList<ScsGrupoFacturacionBean>();
+			
+		} else {
+			//Sacamos los turnos
+			ScsGrupoFacturacionAdm admTurnos = new ScsGrupoFacturacionAdm(user);
+			alTurnos = admTurnos.getTurnosInformes(idInstitucion);
+		}
+	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsGrupoFacturacionBean>(), alTurnos, response);
+	}	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void ajaxObtenerPagos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {		
+		List<FcsPagosJGBean> aPagos = null;
+		
+		//Recogemos los parametros enviados por ajax
+		String idInstitucion = request.getParameter("idInstitucion");		
+		String idGrupo = request.getParameter("idGrupo");
+		
+		//Obtengo datos del usuario
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		//Compruebo si estan indicados los datos minimos
+		if (idInstitucion==null || idGrupo == null || idInstitucion.equalsIgnoreCase("-1") || idGrupo.equalsIgnoreCase("")) {
+			aPagos = new ArrayList<FcsPagosJGBean>();
+			
+		} else {
+			FcsPagosJGAdm admPagos = new FcsPagosJGAdm(user);
+			aPagos = admPagos.getPagosInformes(idInstitucion, idGrupo, ClsConstants.ESTADO_PAGO_EJECUTADO);
+		}
+	    respuestaAjax(new AjaxCollectionXmlBuilder<FcsPagosJGBean>(), aPagos, response);
+	}	
 }
