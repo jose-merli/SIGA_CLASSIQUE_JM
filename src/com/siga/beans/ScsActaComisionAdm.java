@@ -489,7 +489,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
 				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
 				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
-			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " DESC , " + 
+			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
 				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
 			") DATOS";
 		
@@ -567,7 +567,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
 				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
 				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
-			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " DESC , " + 
+			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
 				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
 			") DATOS";		
 		
