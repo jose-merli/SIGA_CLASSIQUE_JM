@@ -92,7 +92,8 @@
   			  f.concepto.value="Servicio";
 			}
 			//fpadre.catalogo.disabled=true;
-			parent.document.all.solicitudCompraForm.idInstitucionPresentador.disabled=true;
+			//aalg: INC_10384_SIGA
+			//parent.document.all.solicitudCompraForm.idInstitucionPresentador.disabled=true;
 			f.submit();
 		}
 		
