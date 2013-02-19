@@ -843,6 +843,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	 * @return vector con los registros encontrados. 
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 * */
+	//BNS ATENCIÓN! NO EXISTEN LLAMADAS A ESTE MÉTODO COMO EL DENUNCIADO YA NO EXISTE EN LA TABLA DE EXPEDIENTES
+	// DEBERÍA VENIR EL JOIN EN EL WHERE 
+	/*
 	public Vector selectBusqExpAvda(String where, boolean hayPartes) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
@@ -856,7 +859,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String I_ABREVIATURA = "I."+CenInstitucionBean.C_ABREVIATURA;
 		
 		//JOINS ESPECIALES
-		String SEL_DENUNCIADO = "( SELECT PE.NOMBRE||' '||PE.APELLIDOS1||' '||PE.APELLIDOS2 FROM CEN_PERSONA PE WHERE PE.IDPERSONA= E.IDPERSONA) AS DENUNCIADO";
+		String SEL_DENUNCIADO = "( SELECT PE.NOMBRE||' '||PE.APELLIDOS1||' '||PE.APELLIDOS2 FROM CEN_PERSONA PE WHERE PE.IDPERSONA= D.IDPERSONA) AS DENUNCIADO";
 		
 		// Acceso a BBDD
 		RowsContainer rc = null;
@@ -890,7 +893,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    //LMS 08/08/2006
 			//Se añade la relación con la tabla de permisos de expedientes.
 			sql += " FROM ";
-		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
+		    sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+ExpDenunciadoBean.T_NOMBRETABLA+" D, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+ExpPermisosTiposExpedientesBean.T_NOMBRETABLA+" X";
 		    
 		    if (hayPartes){
 		    	sql +=", "+ExpPartesBean.T_NOMBRETABLA+" PA";
@@ -911,6 +914,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	*/
 	public Vector selectGenerico(String select) throws ClsExceptions {
 		Vector datos = new Vector();
 		
@@ -2343,7 +2347,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = CLA.IDTIPOEXPEDIENTE(+)    AND EXP.IDINSTITUCION = FASE.IDINSTITUCION (+)   AND EXP.IDTIPOEXPEDIENTE = FASE.IDTIPOEXPEDIENTE (+)   AND EXP.IDFASE = FASE.IDFASE (+)   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = EST.IDINSTITUCION(+)   AND EXP.IDFASE = EST.IDFASE(+)   AND EXP.IDESTADO = EST.IDESTADO(+) ");
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+)   AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+)   AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+)   AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+)   AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+)   AND EXP.JUZGADO = JUZ.IDJUZGADO(+)   AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) ");
 			sql.append(" AND JUZ.IDPOBLACION = POB.IDPOBLACION(+)   AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+)   AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) ");
-			sql.append(" AND exp.IDINSTITUCION = dir.idinstitucion(+)  AND EXP.IDPERSONA = dir.idpersona(+)  AND exp.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
+			sql.append(" AND DEN.IDINSTITUCION = dir.idinstitucion(+)  AND DEN.IDPERSONA = dir.idpersona(+)  AND den.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
 			sql.append(" and EXP.idMateria = mate.idmateria(+) and EXP.idinstitucion =mate.idinstitucion(+) and EXP.idarea =mate.idarea(+) and mate.idarea = area.idarea(+) ");
    
 			keyContador++;
@@ -2474,19 +2478,20 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		sql.append("       EXP.IDINSTITUCION IDINSTITUCION, ");
 		sql.append("       EXP.ANIOEXPEDIENTE ANIO, ");
 		sql.append("       ' ' AS NUMERO, ");
-		sql.append("       EXP.IDPERSONA IDLETRADO, ");
+		sql.append("       DEN.IDPERSONA IDLETRADO, ");
 		sql.append("       PER.APELLIDOS1||' '||PER.APELLIDOS2||', '||PER.NOMBRE AS NOMBRELETRADO, ");
 		sql.append("       ' ' AS IDTURNO, ");
 		sql.append("       EXP.IDTIPOEXPEDIENTE  AS IDTIPO, ");
 		sql.append("       EXP.NUMEROEXPEDIENTE  AS CODIGO, ");
 		sql.append("       EXT.NOMBRE AS DES_TIPO, ");
 		sql.append("       ' ' AS DES_TURNO ");
-		sql.append("  FROM EXP_EXPEDIENTE   EXP,  CEN_PERSONA   PER, EXP_TIPOEXPEDIENTE EXT ");
+		sql.append("  FROM EXP_EXPEDIENTE   EXP, EXP_DENUNCIADO DEN,  CEN_PERSONA   PER, EXP_TIPOEXPEDIENTE EXT ");
 		sql.append(" WHERE EXP.ANIOEJG = " + anio + " ");
 		sql.append("   AND EXP.NUMEROEJG = " + numero + " ");
 		sql.append("   AND EXP.IDTIPOEJG = " + idTipo + " ");
 		sql.append("   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = " + institucion + " ");
-		sql.append("   AND EXP.IDPERSONA= PER.IDPERSONA ");
+		sql.append("   AND EXP.IDINSTITUCION = DEN.IDINSTITUCION AND EXP.IDTIPOEXPEDIENTE = DEN.IDTIPOEXPEDIENTE AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = DEN.IDINSTITUCION_TIPOEXPEDIENTE AND EXP.NUMEROEXPEDIENTE = DEN.NUMEROEXPEDIENTE AND EXP.ANIOEXPEDIENTE = DEN.ANIOEXPEDIENTE AND DEN.IDDENUNCIADO = "+ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
+		sql.append("   AND DEN.IDPERSONA= PER.IDPERSONA ");
 		sql.append("   AND EXP.IDTIPOEXPEDIENTE = EXT.IDTIPOEXPEDIENTE");
 		sql.append("   AND Exp.Idinstitucion_Tipoexpediente = Ext.Idinstitucion");
 
