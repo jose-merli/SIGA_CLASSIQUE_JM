@@ -39,12 +39,7 @@
 			
 			</html:form>
 			
-<% 		} else if (busquedaVolver.equals("SMG")) {  /* solicitud incorporacion*/ %>
-			<html:form  action="/CEN_SolicitudesModificacionGenericas.do" method="POST" target="mainWorkArea">
-				<html:hidden property="modo"/>
-			</html:form>
-			
-<% 		} else if (busquedaVolver.equals("GAA")) {  /* solicitud incorporacion*/ %>
+<% 		}else if (busquedaVolver.equals("GAA")) {  /* solicitud incorporacion*/ %>
 			<html:form  action="/FAC_GenerarAbonos.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo"/>
 			</html:form>
@@ -121,6 +116,7 @@
 <% 				} else if (busquedaVolver.equals("SMG")) {  %>
 					document.SolicitudesModificacionForm.action = "<%=app%>/CEN_SolicitudesModificacionGenericas.do" + "?noReset=true&buscar=true";
 					document.SolicitudesModificacionForm.modo.value="abrir";
+					document.SolicitudesModificacionForm.target="mainWorkArea";
 					document.SolicitudesModificacionForm.submit();	
 <% 				} else if (busquedaVolver.equals("GAA")) {  %>
 					document.GenerarAbonosForm.action = "<%=app%>/FAC_GenerarAbonos.do" + "?noReset=true&buscar=true";

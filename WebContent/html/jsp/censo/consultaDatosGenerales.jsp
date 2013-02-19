@@ -1130,7 +1130,7 @@ function str_replace(search, replace, subject) {
 				</tr>
 				<tr>
 					<td class="labelText" colspan="4">
-						<% if (!bDatosGeneralesEditables && !esLetrado) { %> 
+						<% if (!bDatosGeneralesEditables && !esLetrado && !institucionParam[0].equals("2000")) { %> 
 							<input type="button" class="button" id="mensaje" name="mensaje"  value='Comunicar CGAE' onClick="solicitarModificacionDatos();">
 						<% } %>
 					</td>
@@ -1418,6 +1418,7 @@ function str_replace(search, replace, subject) {
 		}
 		
 		function solicitarModificacionDatos() {
+			document.SolicitudesModificacionForm.target="submitArea";
 			ventaModalGeneral(document.SolicitudesModificacionForm.name,'G');
 			document.SolicitudesModificacionForm.submit();	
 		}
@@ -1515,7 +1516,7 @@ function str_replace(search, replace, subject) {
 	
 <%	} // else de "no hay datos" %>
 
-<html:form action="/CEN_ModificacionDatos.do" method="POST" target="submitArea"  style="display:none">
+<html:form action="/CEN_ModificacionDatos.do" method="POST" target="mainWorkArea"  style="display:none">
 		<input type="hidden" name="modo" value="solicitarModificacionDatos">
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "idPersona" value = "<%=idPersonaSolicitud%>"/>
