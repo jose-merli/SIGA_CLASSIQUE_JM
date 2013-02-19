@@ -209,6 +209,11 @@ public class SolicitudesModificacionAction extends MasterAction {
 		boolean acceso=true;
 		UserTransaction tx=null;
 
+		CenClienteBean beanCli = null;
+		CenNoColegiadoBean beanNoCol = null;
+		CenClienteAdm admCliente;
+		CenNoColegiadoAdm admNoColegiado;
+		
 		try{
 			
 			// Obtengo el UserBean, el identificador de la institucion y el de la persona
@@ -246,6 +251,79 @@ public class SolicitudesModificacionAction extends MasterAction {
 			// Comienzo control de transacciones
 			tx = user.getTransaction();					
 			tx.begin();		
+			
+			//BEGIN MHG
+			//Si al guardar una Modificación de datos no existe el cliente procedemos a insertarlo asi como el no colegiado.
+			String idInstitucionFin;
+			String idPersonaFin;
+			if(!"".equals(miForm.getIdInstitucion()) && !user.getLocation().equals(miForm.getIdInstitucion())){
+				idInstitucionFin =  miForm.getIdInstitucion();
+				idPersonaFin = miForm.getIdPersona();
+			}else{
+				idInstitucionFin = idInstitucionOri;
+				idPersonaFin = idPersona.toString();
+			}
+			
+			admCliente = new CenClienteAdm(user);
+			admNoColegiado = new CenNoColegiadoAdm(user);
+			boolean existeCliente = false;
+			boolean existeNoColegiado = false;
+			
+			beanCli = admCliente.existeCliente(Long.parseLong(idPersonaFin), Integer.parseInt(idInstitucionFin));
+			if (beanCli != null) {
+				existeCliente = true;
+			}
+			
+			if(!existeCliente){
+				// creando el bean de cliente
+				beanCli = new CenClienteBean();
+	
+				// rellenando campos para el registro de cliente
+				beanCli.setIdTratamiento(ClsConstants.TRATAMIENTO_DESCONOCIDO);
+				beanCli.setIdInstitucion(Integer.parseInt(idInstitucionFin));
+				beanCli.setIdPersona(Long.parseLong(idPersonaFin));
+				beanCli.setFechaAlta("SYSDATE");
+				beanCli.setIdLenguaje(ClsConstants.LENGUAJE_ESP);
+				beanCli.setAbonosBanco(ClsConstants.TIPO_CARGO_BANCO);
+				beanCli.setCargosBanco(ClsConstants.TIPO_CARGO_BANCO);
+				beanCli.setPublicidad(ClsConstants.DB_FALSE);
+				beanCli.setExportarFoto("0");
+				beanCli.setGuiaJudicial(ClsConstants.DB_FALSE);
+				beanCli.setComisiones(ClsConstants.DB_FALSE);
+				beanCli.setCaracter(ClsConstants.TIPO_CARACTER_PUBLICO);
+				// insertando el nuevo cliente
+				if (!admCliente.insert(beanCli))
+					throw new SIGAException(admCliente.getError());
+				
+				
+				//NOCOLEGIADOS
+				Hashtable hashNoCol = new Hashtable();
+				hashNoCol.put(CenNoColegiadoBean.C_IDINSTITUCION,idInstitucionFin);
+				hashNoCol.put(CenNoColegiadoBean.C_IDPERSONA,idPersonaFin);
+				Vector vNoColegiados = admNoColegiado.select(hashNoCol);
+				if (!vNoColegiados.isEmpty()) {
+					existeNoColegiado = true;
+				}
+				
+				if(!existeNoColegiado){
+					// Inserto los datos del no colegiado en CenNoColegiado:
+					Hashtable hashNoColegiado = new Hashtable();
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,idInstitucionFin);
+					hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,idPersonaFin);
+					//El tipo sera siempre Personal:
+					hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,ClsConstants.COMBO_TIPO_PERSONAL);
+					//No es sociedad SJ:
+					hashNoColegiado.put(CenNoColegiadoBean.C_SOCIEDADSJ,ClsConstants.DB_FALSE);
+					hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,user.getUserName());
+					hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
+					
+		   		    admNoColegiado.insert(hashNoColegiado);
+					
+				}
+				
+			}
+			
+			//END MHG
 			
 			// Inserto en CEN_SOLICITUDESMODIFICACION 
 			if (admin.insert(hash)){ 

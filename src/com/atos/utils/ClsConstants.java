@@ -354,6 +354,9 @@ public class ClsConstants {
 	  public static final String TIPO_ACCESO_PESTANAS_FACTURACION_NOCOLEGIADO="11";
 	  public static final String TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO="2";
 	  public static final String TIPO_ACCESO_PESTANAS_LETRADO="16";
+	  
+	  //Tratamiento por defectos para clientes
+	  public static final int TRATAMIENTO_DESCONOCIDO=1;
 
 	  // RGG 07-02-2005
 	  public static final int MAX_DIAS_DOCUMENTACION_ENTREGA=365;
