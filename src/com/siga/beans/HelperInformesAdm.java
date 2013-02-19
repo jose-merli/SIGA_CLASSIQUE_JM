@@ -580,11 +580,13 @@ public class HelperInformesAdm  {
 				codigos.put(new Integer(3), idTipoExp);
 				codigos.put(new Integer(4), anio);
 				codigos.put(new Integer(5), numero);
+				/*
 				codigos.put(new Integer(6), idInstitucion);
 				codigos.put(new Integer(7), idInstitucionTipoExp);
 				codigos.put(new Integer(8), idTipoExp);
 				codigos.put(new Integer(9), anio);
 				codigos.put(new Integer(10), numero);
+				*/
 
 				StringBuffer sql = new StringBuffer();
 				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE "); 
@@ -595,6 +597,7 @@ public class HelperInformesAdm  {
 				sql.append(" and   d.idtipoexpediente=:3 ");
 				sql.append(" and   d.anioexpediente=:4 ");
 				sql.append(" and   d.numeroexpediente=:5 ");
+				/*
 				sql.append(" union ");
 				sql.append(" select INITCAP(pe.nombre) || ' ' || INITCAP(pe.apellidos1) || ' ' || INITCAP(pe.apellidos2) as NOMBRE "); 
 				sql.append(" from exp_expediente ex, cen_persona pe ");
@@ -604,6 +607,7 @@ public class HelperInformesAdm  {
 				sql.append(" and   ex.idtipoexpediente=:8 ");
 				sql.append(" and   ex.anioexpediente=:9 ");
 				sql.append(" and   ex.numeroexpediente=:10 ");
+				*/
 				
 				Vector aux = ejecutaConsultaBind(sql.toString(), codigos);
 				String campoDenunciados = "";
@@ -768,11 +772,11 @@ public class HelperInformesAdm  {
 				sql.append("        pe.sexo AS SEXO, ");
 				sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 				sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-				sql.append(" from exp_expediente ex, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
-				sql.append(" where ex.idpersona = pe.idpersona ");
-				sql.append(" and   ex.idpersona = dir.idpersona(+) ");
-				sql.append(" and   ex.idinstitucion = dir.idinstitucion(+) ");
-				sql.append(" and   ex.iddireccion = dir.iddireccion(+) ");
+				sql.append(" from exp_expediente ex, exp_denunciado den, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
+				sql.append(" where ex.IDINSTITUCION = DEN.IDINSTITUCION AND ex.IDTIPOEXPEDIENTE = DEN.IDTIPOEXPEDIENTE AND ex.IDINSTITUCION_TIPOEXPEDIENTE = DEN.IDINSTITUCION_TIPOEXPEDIENTE AND ex.NUMEROEXPEDIENTE = DEN.NUMEROEXPEDIENTE AND ex.ANIOEXPEDIENTE = DEN.ANIOEXPEDIENTE AND DEN.IDDENUNCIADO = "+ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL+" and den.idpersona = pe.idpersona ");
+				sql.append(" and   den.idpersona = dir.idpersona(+) ");
+				sql.append(" and   den.idinstitucion = dir.idinstitucion(+) ");
+				sql.append(" and   den.iddireccion = dir.iddireccion(+) ");
 				sql.append(" and   ex.idinstitucion =:2 ");
 				sql.append(" and   ex.idinstitucion_tipoexpediente=:3 ");
 				sql.append(" and   ex.idtipoexpediente=:4 ");
