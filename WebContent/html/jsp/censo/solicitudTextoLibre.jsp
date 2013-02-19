@@ -177,7 +177,6 @@
 				sub();	
 				if (validateSolicitudesModificacionForm(document.SolicitudesModificacionForm)){
 					document.forms[0].submit();
-					top.cierraConParametros("NORMAL");
 				}else{
 					fin();
 				}		
