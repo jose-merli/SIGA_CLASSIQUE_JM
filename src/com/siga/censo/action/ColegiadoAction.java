@@ -58,8 +58,13 @@ public class ColegiadoAction extends PagedSortedAction {
 
 			if (miForm != null)  {
 				String accion = miForm.getAccion();
-
-				if (accion.equalsIgnoreCase("getJQueryAllSearchedPKs")) {
+				
+				if ("ajaxGetComisionesCargos".equals(accion)){
+					ajaxGetComisionesCargos(mapping, (BusquedaColegiadosForm)formulario, request, response);
+					return null;
+				} else if ("abrirAvanzada".equals(accion)){
+					return mapping.findForward(abrirAvanzada(mapping, (BusquedaColegiadosForm)formulario, request, response));
+				} else if (accion.equalsIgnoreCase("getJQueryAllSearchedPKs")) {
 					getJQueryAllSearchedPKs(mapping, miForm, request, response);
 					return null;
 				}
@@ -515,21 +520,23 @@ public class ColegiadoAction extends PagedSortedAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws SIGAException, IOException{
 
-		String idioma = getUserBean(request).getLanguage();
-		String idInstitucion = getUserBean(request).getLocation();
-		List listaParametros = new ArrayList();
-
-		List<ValueKeyVO> listaComisiones = new ArrayList<ValueKeyVO>();
-		listaComisiones.add(new ValueKeyVO("",""));
-		listaComisiones.addAll(getComisiones(idioma, idInstitucion, formulario.getTipoApunteCV()));
-		listaParametros.add(listaComisiones);
-
-		List<ValueKeyVO> listaCargos = new ArrayList<ValueKeyVO>();
-		listaCargos.add(new ValueKeyVO("",""));
-		listaCargos.addAll(getCargos(idioma, idInstitucion, formulario.getTipoApunteCV()));
-		listaParametros.add(listaCargos);
-
-		respuestaAjax(new AjaxMultipleCollectionXmlBuilder<ValueKeyVO>(), listaParametros,response);
+		if (formulario.getTipoApunteCV() != null && !"undefined".equals(formulario.getTipoApunteCV()) && !"".equals(formulario.getTipoApunteCV())){
+			String idioma = getUserBean(request).getLanguage();
+			String idInstitucion = getUserBean(request).getLocation();
+			List listaParametros = new ArrayList();
+	
+			List<ValueKeyVO> listaComisiones = new ArrayList<ValueKeyVO>();
+			listaComisiones.add(new ValueKeyVO("",""));
+			listaComisiones.addAll(getComisiones(idioma, idInstitucion, formulario.getTipoApunteCV()));
+			listaParametros.add(listaComisiones);
+	
+			List<ValueKeyVO> listaCargos = new ArrayList<ValueKeyVO>();
+			listaCargos.add(new ValueKeyVO("",""));
+			listaCargos.addAll(getCargos(idioma, idInstitucion, formulario.getTipoApunteCV()));
+			listaParametros.add(listaCargos);
+	
+			respuestaAjax(new AjaxMultipleCollectionXmlBuilder<ValueKeyVO>(), listaParametros,response);
+		}
 	}
 
 	/**
