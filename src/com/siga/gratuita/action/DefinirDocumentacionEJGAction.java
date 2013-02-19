@@ -485,6 +485,15 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			v = admBean.buscar(miHash);
 			request.setAttribute("resultado", v);
 			request.setAttribute("accion", formulario.getModo());
+			//aalg: Inc_10313.
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;				
+			}
+
+			request.setAttribute("informeUnico", informeUnico);
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
