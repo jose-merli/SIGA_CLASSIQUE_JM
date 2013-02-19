@@ -1005,11 +1005,11 @@
 					</td>				
 					
 					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:130px" tabindex="-1" readonly
+						<input class="boxLabel" type="text" style="width:128px" tabindex="-1" readonly
 							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre="tipoColegiacion" ancho="130" tipo="colegiacion" clase="boxCombo" obligatorio="true" />
+						<siga:ComboBD nombre="tipoColegiacion" ancho="125" tipo="colegiacion" clase="boxCombo" obligatorio="true" />
 					</td>
 					
 					<td class="boxLabel">
