@@ -33,6 +33,9 @@ function habilitarCampos(isHabilitar) {
 				if(input.type=="checkbox") {
 					jQuery.removeAttr(input,"disabled");
 					//$(input).removeAttr("disabled");
+				}else if(input.type=="button") {
+					jQuery.removeAttr(input,"disabled");
+					
 				} else if(input.type!="button") {
 					input.className = "box";
 					jQuery.removeAttr(input,"readonly");
@@ -63,7 +66,11 @@ function habilitarCampos(isHabilitar) {
 				if(input.type=="checkbox"){
 					jQuery.attr(input,"disabled","disabled");
 					//$(input).attr("disabled","disabled");
-				} else if(input.type!="button"){
+				}else if(input.type=="button") {
+					//jQuery.attr(input,"disabled","disabled");
+					$('#botonNuevoFamiliar').hide();
+					
+				}else if(input.type!="button"){
 					input.className = "boxConsulta";
 					//$(input).attr("readonly","readonly");
 					jQuery.attr(input,"readonly","readonly");
@@ -439,7 +446,7 @@ function habilitarCampos(isHabilitar) {
 		
 		<fieldset id="fieldsetFamiliares">
 			<legend><siga:Idioma key="censo.alterMutua.literal.familiares"/> 
-				<html:button styleId="botonNuevoFamiliar" property="idButton" onclick="return nuevoFamiliar();" styleClass="button"><siga:Idioma key="censo.alterMutua.literal.anadir"/></html:button>
+				<html:button styleId="botonNuevoFamiliar" property="idButton" onclick="return nuevoFamiliar();" styleClass="button" ><siga:Idioma key="censo.alterMutua.literal.anadir"/></html:button>
 			</legend>
 			<div>
 				<table  class="familiares" style="width:100%">
