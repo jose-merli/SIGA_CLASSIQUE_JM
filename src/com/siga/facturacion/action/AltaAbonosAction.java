@@ -241,15 +241,18 @@ public class AltaAbonosAction extends MasterAction {
 			hash.put(FacAbonoBean.C_FECHA,"SYSDATE");
 			hash.put(FacAbonoBean.C_CONTABILIZADA,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
 			hash.put(FacAbonoBean.C_IDFACTURA,miForm.getIdFactura());
-			//Miramos si tiene persona deudora 
+			
+			//mhg - INC_09854_SIGA 
+			String idPersonaDeudor = (String)((Row)asociados.firstElement()).getRow().get("IDPERSONADEUDOR");
+			String idPersona = (String)((Row)asociados.firstElement()).getRow().get("IDPERSONA");
 			
 			boolean isPersonaDeudora = true;
-			String idPersona = (String)((Row)asociados.firstElement()).getRow().get("IDPERSONADEUDOR");
-			if(idPersona==null || idPersona.equals("")){
-				idPersona = (String)((Row)asociados.firstElement()).getRow().get("IDPERSONA");
+			if(idPersonaDeudor==null || idPersonaDeudor.equals("")){
 				isPersonaDeudora = false;
 			}
+			
 			hash.put(FacAbonoBean.C_IDPERSONA,idPersona);
+			hash.put(FacAbonoBean.C_IDPERSONADEUDOR,idPersonaDeudor);
 			contadorTablaHash=gc.getContador(new Integer(usr.getLocation()),ClsConstants.FAC_ABONOS);
 			String numeroAbono=gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
@@ -261,25 +264,35 @@ public class AltaAbonosAction extends MasterAction {
 			//Entonces metemos el numero de cuenta al abono para que quede pendiente de abonar por banco.
 			String formaPago = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDFORMAPAGO);
 			if(formaPago!=null && Integer.parseInt(formaPago)==ClsConstants.TIPO_FORMAPAGO_FACTURA){
-				String idCuenta = null;
-				if(isPersonaDeudora)
-					idCuenta = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTADEUDOR);
-				else
-					idCuenta = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTA);
-				if(idCuenta!=null && !idCuenta.trim().equals("")){
+
+				//mhg - INC_09854_SIGA Sacamos la cuenta de la persona y del deudor.
+				String idCuentaDeudor = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTADEUDOR);
+				String idCuenta = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTA);
+				String idCuentaFinal = null;
+				String idPersonaFinal = null;
+				
+				idCuentaFinal = isPersonaDeudora ? idCuentaDeudor : idCuenta;
+				idPersonaFinal = isPersonaDeudora ? idPersonaDeudor : idPersona;
+				
+				if((idCuentaFinal!=null && !idCuentaFinal.trim().equals(""))){
 					//Ahora hay que comprobar que la cuenta sea de abono o cargo.
 					//Si no es asi habra que buscar una cuentade abono o cargo del usuario
 					CenCuentasBancariasAdm cbAdm = new CenCuentasBancariasAdm(usr);
-					ArrayList alCuentas = cbAdm.getCuentasAbono(new Long(idPersona), new Integer(miForm.getIdInstitucion()));
+					ArrayList alCuentas = cbAdm.getCuentasAbono(new Long(idPersonaFinal), new Integer(miForm.getIdInstitucion()));
 					//si no es cuenta de abono es porque el array de cuentas de abono no lo contiene
 					//Por lo tanto cogemos la primera cuenta de abono
-					if(alCuentas!=null && alCuentas.size()>0 && !alCuentas.contains(idCuenta))
-						idCuenta = String.valueOf((Integer)alCuentas.get(0));
+					if(alCuentas!=null && alCuentas.size()>0 && !alCuentas.contains(idCuentaFinal))
+						idCuentaFinal = String.valueOf((Integer)alCuentas.get(0));
 					else
 						throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
 					
-					hash.put(FacAbonoBean.C_IDCUENTA,idCuenta);
-					
+					if(isPersonaDeudora){
+						hash.put(FacAbonoBean.C_IDCUENTADEUDOR,idCuentaFinal);
+						hash.put(FacAbonoBean.C_IDCUENTA,"");
+					}else{
+						hash.put(FacAbonoBean.C_IDCUENTA,idCuentaFinal);
+						hash.put(FacAbonoBean.C_IDCUENTADEUDOR,"");
+					}
 					
 				}else{
 					throw new SIGAException("messages.abonos.domiciliacionSinCuenta");

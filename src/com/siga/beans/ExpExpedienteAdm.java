@@ -726,7 +726,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 			}
 			
-			//MHG Incidencia 194 Se añade a todos los order by la ordenación por fecha y número de expediente descendente.
+			//MHG INC_10329_SIGA Se añade a todos los order by la ordenación por fecha y número de expediente descendente.
 			switch (Integer.parseInt(form.getOrden())) 
 			{
 				case 1:

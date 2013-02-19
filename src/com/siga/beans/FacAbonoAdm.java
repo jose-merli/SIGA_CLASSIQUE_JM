@@ -56,7 +56,9 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.C_IMPTOTALIVA,
 							FacAbonoBean.C_IMPTOTALNETO,
 							FacAbonoBean.C_IMPPENDIENTEPORABONAR,
-							FacAbonoBean.C_OBSERVACIONES};
+							FacAbonoBean.C_OBSERVACIONES,
+							FacAbonoBean.C_IDPERSONADEUDOR,
+							FacAbonoBean.C_IDCUENTADEUDOR};
 		return campos;
 	}
 	
@@ -108,6 +110,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			bean.setImpTotalIva(UtilidadesHash.getDouble(hash,FacAbonoBean.C_IMPTOTALIVA));
 			bean.setImpTotalNeto(UtilidadesHash.getDouble(hash,FacAbonoBean.C_IMPTOTALNETO));
 			bean.setObservaciones(UtilidadesHash.getString(hash,FacAbonoBean.C_OBSERVACIONES));
+			bean.setIdPersonaDeudor (UtilidadesHash.getLong(hash,FacAbonoBean.C_IDPERSONADEUDOR));
+			bean.setIdCuentaDeudor (UtilidadesHash.getInteger(hash,FacAbonoBean.C_IDCUENTADEUDOR));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -149,6 +153,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacAbonoBean.C_IMPTOTALIVA,b.getImpTotalIva());
 			UtilidadesHash.set(htData,FacAbonoBean.C_IMPTOTALNETO,b.getImpTotalNeto());
 			UtilidadesHash.set(htData,FacAbonoBean.C_OBSERVACIONES,b.getObservaciones());
+			UtilidadesHash.set(htData,FacAbonoBean.C_IDPERSONADEUDOR,b.getIdPersonaDeudor ());
+			UtilidadesHash.set(htData,FacAbonoBean.C_IDCUENTADEUDOR ,b.getIdCuentaDeudor());
 		}
 		catch (Exception e) {
 			htData = null;

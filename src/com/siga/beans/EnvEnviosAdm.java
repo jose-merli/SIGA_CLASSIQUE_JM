@@ -2287,6 +2287,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				sql = (String) ht.get("sentencia");
 				Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
 				RowsContainer rcDestDin = new RowsContainer();
+				ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios Consulta Experta ->"+ sql,10);
 				rcDestDin.findBind(sql,codigosOrdenados);
 				obtenerBeanResultados(idInstitucion, idEnvio, vDestDin, rcDestDin);
             }

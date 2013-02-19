@@ -20,6 +20,8 @@ public class FacAbonoBean extends MasterBean{
 	private String 	fecha;
 	private Long idPersona;
 	private Integer idCuenta;
+	private Long idPersonaDeudor;
+	private Integer idCuentaDeudor;
 	private Integer idPagosJG;
 	private String 	contabilizada;
 	private String idFactura;
@@ -52,6 +54,8 @@ public class FacAbonoBean extends MasterBean{
 	static public final String C_NUMEROABONO	= "NUMEROABONO";
 	static public final String C_IMPEXCESIVO	= "IMPEXCESIVO";
 	static public final String C_OBSERVACIONES	= "OBSERVACIONES";
+	static public final String C_IDPERSONADEUDOR= "IDPERSONADEUDOR";	
+	static public final String C_IDCUENTADEUDOR	= "IDCUENTADEUDOR";
 
 	static public final String C_ESTADO	= "ESTADO";
 	static public final String C_IMPTOTALNETO	= "IMPTOTALNETO";
@@ -107,4 +111,17 @@ public class FacAbonoBean extends MasterBean{
 	public Double getImpTotalAbonadoPorBanco () 	{ return this.impTotalAbonadoPorBanco; }
 	public Double getImpTotalAbonado () 	{ return this.impTotalAbonado; }
 	public Double getImpPendientePorAbonar () 	{ return this.impPendientePorBanco; }
+	
+	public Long getIdPersonaDeudor() {
+		return idPersonaDeudor;
+	}
+	public void setIdPersonaDeudor(Long idPersonaDeudor) {
+		this.idPersonaDeudor = idPersonaDeudor;
+	}
+	public Integer getIdCuentaDeudor() {
+		return idCuentaDeudor;
+	}
+	public void setIdCuentaDeudor(Integer idCuentaDeudor) {
+		this.idCuentaDeudor = idCuentaDeudor;
+	}
 }
