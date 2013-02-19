@@ -995,7 +995,7 @@
 							<tr>
 								<td class="boxLabel">
 									<input class="boxLabel" type="text" style="width:80px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />&nbsp;(*)
+										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />(*)
 								</td>
 								<td>
 									<siga:ComboBD nombre="tipoSolicitud" tipo="solicitud" ancho="200" clase="boxCombo" obligatorio="true"/>
@@ -1006,7 +1006,7 @@
 					
 					<td class="boxLabel">
 						<input class="boxLabel" type="text" style="width:130px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />&nbsp;(*)
+							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />(*)
 					</td>
 					<td>
 						<siga:ComboBD nombre="tipoColegiacion" ancho="130" tipo="colegiacion" clase="boxCombo" obligatorio="true" />
@@ -1014,7 +1014,7 @@
 					
 					<td class="boxLabel">
 						<input class="boxLabel" type="text" style="width:170px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />&nbsp;(*)
+							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />(*)
 					</td>	
 					<td>
 						<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="170" 
