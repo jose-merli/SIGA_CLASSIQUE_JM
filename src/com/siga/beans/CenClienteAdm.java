@@ -1734,10 +1734,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
    // la consulta adecuada.    
        if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
     	   if ((bBusqueda ) ) {
-    		   contador++;
-    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
-    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
-    		   //sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpperExacta(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
+    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")='" + formulario.getNif().trim().toUpperCase() + "'";    		   
     	   }else{
     		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
     			   contador++;
