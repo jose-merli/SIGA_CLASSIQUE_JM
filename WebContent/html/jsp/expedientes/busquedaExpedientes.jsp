@@ -34,7 +34,8 @@
 	String buscar = (String) request.getAttribute("buscar");
 	String funcionBuscar = "";
 	if (buscar != null) {
-		funcionBuscar = "recargarCombos();buscar('buscarPor')";
+		//aalg: inc_10284. Se añade opción buscarVolver para refrescar la búsqueda cuando vuelve
+		funcionBuscar = "recargarCombos();buscar('buscarVolver')";
 	}
 
 	ArrayList vTipoExp = new ArrayList();

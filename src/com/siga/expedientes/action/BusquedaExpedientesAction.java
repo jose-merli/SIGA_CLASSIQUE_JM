@@ -75,6 +75,11 @@ public class BusquedaExpedientesAction extends MasterAction {
 				formExp.reset(mapping,request);
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = abrirAvanzada(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("buscarVolver")){
+				//aalg: inc_10284. Se añade opción buscarVolver para refrescar la búsqueda cuando vuelve
+				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				((BusquedaExpedientesForm)miForm).setDatosPaginador(null);
+				mapDestino = buscarInit(mapping, miForm, request, response); 
 			}else if (accion.equalsIgnoreCase("buscarInit")){
 				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 				request.getSession().removeAttribute("DATAPAGINADOR");
