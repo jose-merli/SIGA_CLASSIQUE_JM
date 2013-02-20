@@ -5592,18 +5592,18 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						if (sTexto.length()>LONGITUD_SMS) 
 							sTexto=sTexto.substring(LONGITUD_SMS-1);
 
-						ClsLogging.writeFileLog("locator: " + url_locator,10);
-						ClsLogging.writeFileLog("service: " + url_service,10);
-
-						ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator();
-						ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service),locator);
+						
 
 						// destinatario
 						String sTo = destBean.getMovil();										
 						if (sTo==null || sTo.trim().equals("")) {
 							throw new ClsExceptions("No existe número de móvil válido para el destinatario.");
 						}
+						
+						
 						sTo = UtilidadesString.getNumeroConPrefijoECOS(sTo);
+						
+						
 						
 						//BEGIN BNS INC_09400_SIGA
 						//Comprobamos que el destinatario del SMS tienen número de movil y este tiene un formato correcto
@@ -5612,6 +5612,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 							throw new ClsExceptions("El formato del número de móvil "+sTo+" es incorrecto. Formato correcto (+xx)6xxxxxxxx / (+xx)7xxxxxxxx");
 						}
 						String[] listaTOs = new String[] {sTo};
+						
+						ClsLogging.writeFileLog("locator: " + url_locator,10);
+						ClsLogging.writeFileLog("service: " + url_service,10);
+
+						ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator();
+						ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service),locator);
+						
 						//END BNS INC_09400_SIGA
 
 						//SMS
@@ -5832,17 +5839,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					if (sTexto.length()>LONGITUD_SMS) 
 						sTexto=sTexto.substring(LONGITUD_SMS-1);						
 		            
-		            ClsLogging.writeFileLog("locator: " + url_locator,10);
-					ClsLogging.writeFileLog("service: " + url_service,10);
-					
-					ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator(url_locator);
-					ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service), locator);
+		           
 					
 					// destinatario
 					String sTo = destBean.getMovil();									
 					if (sTo==null || sTo.trim().equals("")) {
 						throw new ClsExceptions("No existe número de móvil válido para el destinatario.");
 					}
+					
+					
 					sTo = UtilidadesString.getNumeroConPrefijoECOS(sTo);
 					
 					//BEGIN BNS INC_09400_SIGA
@@ -5851,6 +5856,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					if (!UtilidadesString.esNumMovilECOS(sTo)){
 						throw new ClsExceptions("El formato del número de móvil "+sTo+" es incorrecto. Formato correcto (+xx)6xxxxxxxx / (+xx)7xxxxxxxx");
 					}
+					 ClsLogging.writeFileLog("locator: " + url_locator,10);
+					ClsLogging.writeFileLog("service: " + url_service,10);
+					
+					ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator(url_locator);
+					ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service), locator);
+					
 					String[] listaTOs = new String[] {sTo};
 					//END BNS INC_09400_SIGA
 					
