@@ -523,7 +523,11 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idTurno);
-		sql.append(" and nvl(scs_procedimientos.vigente, '0') = '1' ");
+		//sql.append(" and nvl(scs_procedimientos.vigente, '0') = '1' ");
+		
+		
+        sql.append("    AND scs_procedimientos.fechadesdevigor <= sysdate  ");
+        sql.append("    AND (scs_procedimientos.fechahastavigor >= sysdate OR scs_procedimientos.fechahastavigor IS NULL) ");		
 		
 		if(isBusqueda){
 			sql.append(" ) ORDER BY scs_juzgado.fechabaja DESC, NOMBRE ");
