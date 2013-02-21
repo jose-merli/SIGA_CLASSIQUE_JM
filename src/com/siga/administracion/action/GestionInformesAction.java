@@ -195,17 +195,32 @@ public class GestionInformesAction extends MasterAction {
 		UsrBean usrBean = this.getUserBean(request);
 		GenParametrosAdm param = new GenParametrosAdm(usrBean);
 		boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
-		String comboTipoEnvio = "cmbTipoEnviosInst";
+		String comboTipoEnvio = "cmbTipoEnviosInstNotTelematico";
 		if(isEnvioSmsConfigurado){
 //			Descomentar esto cuando se quiera abrir las plantillas al resto de tipos de envios(11/11/11) y borrar comboTipoEnvio = "cmbTipoEnviosSoloSms"(tambien del combo.properties)
 //			comboTipoEnvio = "cmbTipoEnviosInstSms";
-			comboTipoEnvio = "cmbTipoEnviosInstSms";
+			comboTipoEnvio = "cmbTipoEnviosInstSmsNotTelematico";
 			
 		}
 		request.setAttribute("comboTipoEnvio", comboTipoEnvio);
 
 		
 	}
+	
+	protected void comprobarComboConTipoTelematico(HttpServletRequest request)  throws ClsExceptions, SIGAException {
+		
+		UsrBean usrBean = this.getUserBean(request);
+		GenParametrosAdm param = new GenParametrosAdm(usrBean);
+		boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
+		String comboTipoEnvio = "cmbTipoEnviosInst";
+		if(isEnvioSmsConfigurado){
+			comboTipoEnvio = "cmbTipoEnviosInstSms";
+			
+		}
+		request.setAttribute("comboTipoEnvio", comboTipoEnvio);
+
+		
+	}	
 	
 	protected String getAjaxBusqueda (ActionMapping mapping, 		
 			MasterForm formulario, 
@@ -304,9 +319,14 @@ public class GestionInformesAction extends MasterAction {
 		InformeForm informeFormEdicion = new InformeForm();
 		informeFormEdicion.setUsrBean(this.getUserBean(request));
 		informeFormEdicion.setIdInstitucion(informeFormEdicion.getUsrBean().getLocation());
+		String idInstitucion = informeFormEdicion.getUsrBean().getLocation();
 		informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 		
-		comprobarComboSms(request);
+		if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) && !idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
+			comprobarComboSms(request);
+		}else{
+			comprobarComboConTipoTelematico(request);
+		}
 		request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 		
 		request.setAttribute("idTipoEnvioSeleccionado",new ArrayList());
@@ -344,8 +364,12 @@ public class GestionInformesAction extends MasterAction {
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			
-
-			comprobarComboSms(request);
+			if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) && !idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
+				comprobarComboSms(request);
+			}else{
+				comprobarComboConTipoTelematico(request);
+			}
+				
 			request.setAttribute("parametrosComboEnvios", new String[]{informeForm.getIdInstitucion()});
 				
 				
@@ -371,6 +395,9 @@ public class GestionInformesAction extends MasterAction {
 				
 				if(envTipoEnviosBean.getIdTipoEnvios().toString().equals(ClsConstants.TIPO_IDTIPOENVIO_TELEMATICO)){
 					intercambioTelematico = true;
+					if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) && !idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
+						comprobarComboConTipoTelematico(request);
+					}
 				}
 			}
 			request.setAttribute("idTipoEnvioSeleccionado",alIdsTipoEnvio);
