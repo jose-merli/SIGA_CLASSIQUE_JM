@@ -485,7 +485,7 @@ public class GestionInformesAction extends MasterAction {
 			informeFormEdicion.setLenguajes(informeForm.getLenguajes());
 			informeFormEdicion.setClaseTipoInforme(informeForm.getClaseTipoInforme());
 			
-			String comboTipoEnvio = "cmbTipoEnviosInstSms";
+			String comboTipoEnvio ="cmbTipoEnviosInstSms";
 			request.setAttribute("comboTipoEnvio", comboTipoEnvio);
 			request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 				
