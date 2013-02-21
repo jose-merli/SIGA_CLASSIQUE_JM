@@ -100,14 +100,13 @@ public class InsertaRecursos {
 	    	}
 	    }
 	    try {
-		    if (args[1]!=null) {
+		    if (args.length > 1 && args[1]!=null) {
 			    PrintWriter printer = new PrintWriter(new BufferedWriter(new FileWriter(args[1], false)));
 		        printer.println(trace.toString());
 		        printer.flush();
 		        printer.close();
 		    } else {
-		    	System.out.println("NO EXISTE FICHERO DE SALIDA");
-		    	System.out.println(trace.toString());
+		    	System.out.println("NO EXISTE FICHERO DE SALIDA");		    	
 		    }
 		
 	    } catch (IOException e) {
@@ -126,14 +125,13 @@ public class InsertaRecursos {
 	}
 	}
 
-	private static void conecta() throws Exception {
-		String claseConexion = "oracle.jdbc.driver.OracleDriver";
+	private static void conecta() throws Exception {		
 		String cadenaConexion = "jdbc:oracle:thin:@192.168.11.55:1521:SIGADES";
 		String usuario = "uscgae2";
 		String clave = "uscgae2";
 
 		con = null;
-		Class.forName(claseConexion);
+		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
 		con = DriverManager.getConnection(cadenaConexion, usuario, clave);
 	}
 
