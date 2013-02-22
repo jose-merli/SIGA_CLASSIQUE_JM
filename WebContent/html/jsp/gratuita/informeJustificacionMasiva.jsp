@@ -329,7 +329,17 @@
 			if(document.getElementById("activarRestricciones"))
 				document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value =document.getElementById("activarRestricciones").checked;
 			
+			if(document.InformeJustificacionMasivaForm.anio){
+				var objRegExp  = /^([0-9]{4})?$/;
+				if(!objRegExp.test(document.InformeJustificacionMasivaForm.anio.value)){
+					var	error = "<siga:Idioma key='errors.short' arg0='gratuita.informeJustificacionMasiva.literal.anio'/>"+ '\n';				
+					alert(error);
+					fin();
+					return false;
+				}
+			}
 			
+				
 			if (document.InformeJustificacionMasivaForm.idPersona.value) {
 				document.InformeJustificacionMasivaForm.modo.value = "buscarInit";
 				// document.InformeJustificacionMasivaForm.modo.value = "buscar";
