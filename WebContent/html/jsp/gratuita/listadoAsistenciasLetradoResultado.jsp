@@ -232,14 +232,12 @@
 					if (usr.isLetrado()) {						
 						botones = "C,E";
 					} else { //Como administrador						
-						if(idFacturacion != null && !idFacturacion.trim().equals("")) {
-							if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver"))
-								botones = "C";
-							else
-								botones = "C,E,B";
-						} else // No es Fciah Colegial, estamos como Administrador en menu SJCS con todos los permisos:
-								botones = "C,E,B";
+						if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver"))
+							botones = "C";
+						else
+							botones = "C,E,B";
 					}
+
 					// Verificamos si el turno permite la modificacion de la asistencia
 					if (!UtilidadesString.stringToBoolean((String)registro.get(ScsTurnoBean.C_LETRADOASISTENCIAS))) {
 						botones = "C";

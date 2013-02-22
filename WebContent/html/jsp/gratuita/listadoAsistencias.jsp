@@ -189,13 +189,7 @@
 					if (usr.isLetrado()) {
 						botones = "E";
 					} else { //Como administrador
-						if(idFacturacion != null && !idFacturacion.trim().equals("")) {
-							if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver"))
-								botones = "C";
-							else
-								botones = "C,E,B";
-						} else // No es Fciah Colegial, estamos como Administrador en menu SJCS con todos los permisos:
-								botones = "C,E,B";
+						botones = "C,E,B";
 					}
 					
 					nTurno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("IDTURNO"));
