@@ -1109,7 +1109,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			  }
 			}  
 			// Sólo se comprueba cuando se ha modificado la acreditacion
-			if (!actuacionAntigua.get(ScsActuacionDesignaBean.C_IDACREDITACION).equals(""+idAcreditacion))
+			if (!actuacionAntigua.get(ScsActuacionDesignaBean.C_IDACREDITACION).equals(""+idAcreditacion)||!actuacionAntigua.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO).equals(""+idProcedimiento))
 			{
 			    boolean multiplesAcreditaciones = false;
 		        boolean bAplicarRestriccionesActuaciones = false;
@@ -1146,7 +1146,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 				}
 			    
 				// Valido que el nuevo estado de la acreditacion es correcto:
-				if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, true, actuacionAntigua, request, bAplicarRestriccionesActuaciones)) {
+				// Valido que el nuevo estado de la acreditacion es correcto:
+				boolean modificaAcreditacion = !actuacionAntigua.get(ScsActuacionDesignaBean.C_IDACREDITACION).equals(""+idAcreditacion);
+				
+				if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, modificaAcreditacion, actuacionAntigua, request, bAplicarRestriccionesActuaciones)) {
 					tx.begin();
 					//actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
 					actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
