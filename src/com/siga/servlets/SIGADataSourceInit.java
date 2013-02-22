@@ -13,6 +13,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
+import com.siga.beans.EnvEnviosAdm;
 import com.siga.general.CenVisibilidad;
 
 
@@ -70,6 +71,22 @@ public class SIGADataSourceInit extends ActionServlet {
             ClsLogging.writeFileLogWithoutSession("",1);
             throw new ServletException("Error al cargar la visibilidad Instituciones: "+ e.toString());
         }
+        
+        // BEGIN BNS INC_10389_SIGA 22/02/2013
+        // Relanzar envíos en estado procesando
+        ClsLogging.writeFileLogWithoutSession("",1);
+        ClsLogging.writeFileLogWithoutSession(" > Relanzando envíos en estado procesando.",1);
+        
+        try {            
+        	EnvEnviosAdm.relanzarEnviosProcesando();
+            ClsLogging.writeFileLogWithoutSession(" > Envíos relanzados OK.",1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+        } catch(ClsExceptions e) {
+            ClsLogging.writeFileLogWithoutSession(" > Envíos relanzados ERROR.\r\n" + e,1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+            throw new ServletException("Error al relanzar envíos en estado procesando: "+ e.toString());
+        }
+        //END BNS INC_10389_SIGA
         
         seg_last=System.currentTimeMillis();
         //ClsLogging.writeFileLogWithoutSession(" ",1);

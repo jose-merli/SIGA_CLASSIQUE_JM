@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +38,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
-
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -58,6 +60,7 @@ import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.ExceptionManager;
 import com.atos.utils.GstDate;
@@ -81,7 +84,6 @@ import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.sun.mail.smtp.SMTPAddressFailedException;
-import com.siga.envios.Envio;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -91,6 +93,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
   public final static int ESTADO_PROCESADO = 2;
   public final static int ESTADO_PROCESADO_ERRORES= 3;
   public final static int ESTADO_PENDIENTE_AUTOMATICO = 4;
+  public final static int ESTADO_PROCESANDO = 5;
 
   public final static int TIPO_CORREO_ELECTRONICO = 1;
   public final static int TIPO_CORREO_ORDINARIO = 2;
@@ -5958,4 +5961,42 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		}
 	}
 
+    public static Integer relanzarEnviosProcesando() throws ClsExceptions{
+    	String sql = " UPDATE " + EnvEnviosBean.T_NOMBRETABLA + " SET IDESTADO = " + ESTADO_INICIAL + " WHERE IDESTADO = " + ESTADO_PROCESANDO;
+    	Connection connec = null;
+    	PreparedStatement SqlStatement = null;
+    	Integer updatedRecords = null;
+    	try{
+	    	connec = ClsMngBBDD.getConnection();
+	    	SqlStatement = connec.prepareStatement(sql);
+	    	updatedRecords = SqlStatement.executeUpdate();
+    	} catch (SQLException exc) {
+	       	ClsLogging.writeFileLog("Error en UPDATE BIND: "+ exc.getMessage() + " SQL:"+sql,3);
+		    ClsExceptions psscEx = new ClsExceptions(exc,exc.getMessage().substring(0, exc.getMessage().length() - 1));
+			psscEx.setErrorType("9");
+			psscEx.setParam(EnvEnviosBean.T_NOMBRETABLA);
+			throw psscEx;
+	    } finally {
+			try {
+				if (SqlStatement != null) {
+					SqlStatement.close();
+				}
+				
+				if (connec != null) {
+					ClsMngBBDD.closeConnection(connec);
+				}
+			} catch (SQLException exc) {
+				if (connec != null) {
+					ClsMngBBDD.closeConnection(connec);
+				}
+				
+				ClsExceptions psscEx = new ClsExceptions(exc,exc.getMessage().substring(0, exc.getMessage().length() - 1));
+				psscEx.setErrorType("9");
+				psscEx.setParam(EnvEnviosBean.T_NOMBRETABLA);
+				
+				throw psscEx;
+			}
+		}
+    	return updatedRecords;
+    }
 }
