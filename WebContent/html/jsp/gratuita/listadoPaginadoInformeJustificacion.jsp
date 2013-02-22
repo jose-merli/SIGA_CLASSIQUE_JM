@@ -1615,6 +1615,21 @@ function downloadDocumentoResolucion(docResolucion) {
 		</tr>
 	</table>
 </c:when>
+<c:when test="${permitirBotones==false && not empty designaFormList}">
+	<table class="botonesDetalle" align="center">
+		<tr>
+			<td style="width: 900px;">&nbsp;</td>
+			<td class="tdBotones"><input type="button" alt="Guardar"
+				id="idButton" onclick="return accionGuardar(${usrBean.letrado});" class="button"
+				name="idButton" value="Guardar" style="display: none;"></td>
+			<td class="tdBotones"><input type="button" alt="Informe Justif."
+				id="idInformeJustificacion" onclick="return informeGenerico();"
+				class="button" name="idButton" value="Informe Justif."></td>
+		</tr>
+	</table>
+</c:when>
+
+
 <c:otherwise>
 	<table class="botonesDetalle" align="center" >
 		<tr>
