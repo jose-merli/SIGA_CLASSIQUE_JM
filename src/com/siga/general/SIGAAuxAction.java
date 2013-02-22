@@ -24,6 +24,9 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -35,6 +38,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
 import com.siga.administracion.SIGAConstants;
+import com.siga.censo.vos.ColegiadoVO;
 import com.siga.comun.action.SessionForms;
 import com.siga.comun.form.AuxForm;
 import com.siga.comun.form.BaseForm;
@@ -360,13 +364,55 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	 * Metodos para las acciones que utilizan AJAX
 	 */
 
+	protected void respuestaComboHTMLOptionsJson(StringBuilder comboHTMLOptions, HttpServletResponse response) throws IOException, JSONException {
+		JSONObject json = new JSONObject();
+		
+		json.put("itemsHTML", comboHTMLOptions.toString());
+		respuestaJson(json, response);
+	}
+	
+	protected void respuestacomboHTMLOptionsAndArrayJson(List<ParejaNombreID> list, HttpServletResponse response) throws IOException, JSONException {
+		JSONObject json = new JSONObject();
+		
+		StringBuilder optionsHTML = new StringBuilder();
+		JSONArray items = new JSONArray();
+		for (int i=0;i<list.size();i++) {		
+			JSONObject item = new JSONObject();
+			ParejaNombreID parejaNombreID = (ParejaNombreID) list.get(i);
+			item.put("name", parejaNombreID.getNombre());
+			item.put("value", parejaNombreID.getIdNombre());
+			items.put(item);
+			optionsHTML.append("<option value='");
+			optionsHTML.append(parejaNombreID.getIdNombre());
+			optionsHTML.append("'>");
+			optionsHTML.append(parejaNombreID.getNombre());
+			optionsHTML.append("</option>");
+		}
+		
+		json.put("items", items);
+		json.put("itemsHTML", optionsHTML);
+		respuestaJson(json, response);
+	}
+	
+	protected void respuestaJson(JSONObject json, HttpServletResponse response) throws IOException{
+		response.setContentType("text/x-json;charset=ISO-8859-15");
+		response.setHeader("Cache-Control", "no-cache");		
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString());
+	}
+	
+	protected void respuestaAjaxParejaNombreID(AjaxXmlBuilder ajaxXmlBuilder, List<ParejaNombreID> list, HttpServletResponse response) throws IOException {
+		ajaxXmlBuilder.addItems(list);
+		respuestaAjax(ajaxXmlBuilder, response);
+	}
+	
 	protected void respuestaAjaxString(AjaxXmlBuilder ajaxXmlBuilder, List<String> list, HttpServletResponse response) throws IOException {
 		for (int i = 0; i < list.size(); i++) {
 			ajaxXmlBuilder.addItem(list.get(i),list.get(i));
 		}
 		respuestaAjax(ajaxXmlBuilder, response);
-	}
-
+	}	
+	
 	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder, List<String> list, HttpServletResponse response) throws IOException {
 		for (int i = 0; i < list.size(); i++) {
 			ajaxXmlBuilder.addItem((String)list.get(i));

@@ -38,6 +38,101 @@ var mensajetelef1="<siga:Idioma key="certificados.solicitudes.literal.longitudTe
 var mensajetelef2="<siga:Idioma key="certificados.solicitudes.literal.errorTelef"/>";
 var mensajetelef3="<siga:Idioma key="certificados.solicitudes.literal.soloNumeros"/>";
 
+// BEGIN BNS 05/12/2012
+// INCIDENCIA INC_07085_SIGA
+// FUNCIONES DE VALIDACION DE DOCUMENTO DE IDENTIDAD
+var obtenerCaracterVerificacion = false;
+
+function formatearDocumentoIdentidad(campoDocIdentidad, validar, tipoDocIdentidad){
+	var bResult = false;
+	if (campoDocIdentidad != undefined && campoDocIdentidad.value != undefined && campoDocIdentidad.value != ""){
+		var docIdentidad = campoDocIdentidad.value;
+		if (tipoDocIdentidad != "" && tipoDocIdentidad != undefined){
+			if (tipoDocIdentidad == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+				var obtenerLetra = false;
+				var sNif = docIdentidad;
+				if (obtenerCaracterVerificacion && !isNaN(sNif[sNif.length - 1])){
+					obtenerLetra = true;
+				}
+				sNif = formatearNIF(sNif);
+				if (obtenerLetra){
+					var letra = obtenerCaracterVerificacionNif(sNif);
+					sNif = sNif.substring(0,8) + letra;
+					docIdentidad = sNif;
+					bResult = true;
+				} else if (validar){
+					var nifValido = validarNIF(sNif);
+					if (nifValido === -1){
+						// NIF con formato correcto pero caracter de verificación no válido
+						alert (mensajeCifNif);
+					} else if (nifValido === -2){
+						// Formato de NIF incorrecto
+						alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.erroneo"/>");
+					} else {
+						docIdentidad = sNif;
+						bResult = true;
+					}
+				} else { 
+					docIdentidad = sNif;
+					bResult = true;
+				}
+			} else if (tipoDocIdentidad == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+				var sNie = formatearDocIdentidad(docIdentidad);
+				if (validar){
+					var nieValido = validarNIF(sNif);
+					if (nieValido === -1){
+						// NIE con formato correcto pero caracter de verificación no válido
+						alert (mensajeNIE);
+					} else if (nieValido === -2){
+						// Formato de NIE incorrecto
+						alert ("<siga:Idioma key="messages.nie.comprobacion.digitos.erroneo"/>");
+					} else {
+						docIdentidad = sNie;
+						bResult = true;
+					}
+				} else {
+					docIdentidad = sNie;
+					bResult = true;
+				}
+			} else if (tipoDocIdentidad == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
+				var sCif = formatearDocIdentidad(docIdentidad);
+				if (validar){
+					var cifValido = validarCIF(sCif);
+					if (cifValido === -1){
+						// CIF con formato correcto pero caracter de verificación no válido
+						//TODO: EL MENSAJE NO SE CORRESPONDE CON ERROR DE VALIDACIÓN
+						alert (mensajeCifNif);
+					} else if (cifValido === -2){
+						// Formato de CIF incorrecto
+						//TODO: EL MENSAJE NO SE CORRESPONDE CON ERROR DE FORMATO
+						alert ("<siga:Idioma key="messages.nifcif.comprobacion.error"/>");
+					} else {
+						docIdentidad = sCif;
+						bResult = true;
+					}
+				} else {
+					docIdentidad = sCif;
+					bResult = true;
+				}
+			} else if (tipoDocIdentidad == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>"){
+				docIdentidad = trim(docIdentidad).toUpperCase();
+				bResult = true;
+			} else if (tipoDocIdentidad == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>"){
+				// NINGÚN CONTROL
+				bResult = true;
+			}
+			campoDocIdentidad.value = docIdentidad;
+		} else {
+			//TODO: Crear función genérica independiente del tipo si hace falta
+		}
+	} else {
+		// campoDocIdentidad no encontrado o vacío
+		// TODO: Mostrar mensaje?
+	}
+	return bResult;
+}
+
+// END BNS 05/12/2012
 
 function ValidaCIF (cif)
 {   

@@ -101,9 +101,9 @@
 <div>		
 	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
-			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.archivo.nombre"/></td>
-			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.archivo.permisos"/></td>
-			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.archivo.fecha"/></td>
+			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.nombre"/></b></td>
+			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.permisos"/></b></td>
+			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.fecha"/></b></td>
 			<td align='center' width='10%'>&nbsp;</td>
 		</tr>
 	</table>

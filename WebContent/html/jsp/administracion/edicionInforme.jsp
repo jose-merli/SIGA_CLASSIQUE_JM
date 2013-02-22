@@ -254,10 +254,11 @@ function onChangeTipoIntercambio() {
 	<table width="100%" border="0">
 		<tr>
 			<td width="15%"></td>
-			<td width="25%"></td>
 			<td width="20%"></td>
-			<td width="40%"></td>
-			
+			<td width="15%"></td>
+			<td width="10%"></td>
+			<td width="15%"></td>
+			<td width="25%"></td>
 		</tr>
 		
 		<tr>
@@ -292,12 +293,11 @@ function onChangeTipoIntercambio() {
 							</c:choose>								
 						</logic:iterate>
 					</logic:notEmpty>
-				</td>
-				
+				</td>				
 				<td class="labelText" >
 					<siga:Idioma key="administracion.informes.literal.colegio"/>(*)
-				</td>
-				<td class="labelText" colspan="3">
+				</td>				
+				<td class="labelText" colspan="2">
 					<html:select styleClass="boxCombo" style="width:200px;" name="InformeFormEdicion" property="idInstitucion"  >
 						<bean:define id="instituciones" name="InformeForm" property="instituciones" type="java.util.Collection" />
 						<html:optionsCollection  name="instituciones" value="idInstitucion" label="abreviatura" />
@@ -310,6 +310,7 @@ function onChangeTipoIntercambio() {
 					</logic:notEmpty>
 					
 				</td>
+				<td></td>
 			</tr>
 			
 		</tr>
@@ -319,23 +320,10 @@ function onChangeTipoIntercambio() {
 			</td>
 			<td class="labelText">
 				<html:text name="InformeFormEdicion"  property="alias"  styleClass="box" maxlength="50" onblur="onBlurAlias();"></html:text>
-			</td>
-			
+			</td>						
 		
-		
-			<td class="labelText" rowspan ="2"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
-			<td rowspan ="2">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="2" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo"  readonly="false"></html:textarea></td>
-			
-			
-		</tr>
-		<tr id="ocultarOrden">
-			<td class="labelText">
-				<siga:Idioma key="administracion.informes.literal.orden"/>(*)
-			</td>
-			<td class="labelText">
-				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box"></html:text>
-					</td>
-			
+			<td class="labelText" rowspan ="4"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
+			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo"  readonly="false"></html:textarea></td>
 		</tr>
 		<tr>
 			<td class="labelText">
@@ -343,7 +331,9 @@ function onChangeTipoIntercambio() {
 			</td>
 			<td class="labelText">
 				<html:text name="InformeFormEdicion"  property="directorio"  styleClass="box" ></html:text>
-					</td>
+			</td>
+		</tr>
+		<tr>
 			<td class="labelText">
 				<siga:Idioma key="administracion.informes.literal.nombreFisico"/>(*)
 			</td>
@@ -357,23 +347,6 @@ function onChangeTipoIntercambio() {
 			</td>
 			<td class="labelText">
 				<html:text name="InformeFormEdicion"  property="nombreSalida" styleClass="box"></html:text>
-					</td>
-			<td class="labelText">
-				<siga:Idioma key="administracion.informes.literal.formato"/>
-			</td>
-			<td class="labelText">
-				<html:select name="InformeFormEdicion"  property="tipoFormato"
-				styleClass="boxCombo"><html:option value="">
-					<siga:Idioma key="general.combo.seleccionar" />
-				</html:option>
-				<html:option value="W">
-					<siga:Idioma key="administracion.informes.formato.word"/>
-				</html:option>
-				<html:option value="E">
-					<siga:Idioma key="administracion.informes.formato.excel"/>
-				</html:option>
-				<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
-			</html:select></td>
 			</td>
 		</tr>
 		<tr>
@@ -387,6 +360,33 @@ function onChangeTipoIntercambio() {
 							<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 					</html:select>							
 			</td>
+			<td class="labelText ocultarOrden">
+				<siga:Idioma key="administracion.informes.literal.orden"/>(*)
+			</td>
+			<td class="labelText ocultarOrden">
+				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box" style="width:20"></html:text>
+			</td>
+			<td class="labelText">
+				<siga:Idioma key="administracion.informes.literal.formato"/>(*)
+			</td>
+			<td class="labelText">
+				<html:select name="InformeFormEdicion"  property="tipoFormato"
+				styleClass="boxCombo"><html:option value="-1">
+					<siga:Idioma key="general.combo.seleccionar" />
+				</html:option>
+				<html:option value="W">
+					<siga:Idioma key="administracion.informes.formato.word"/>
+				</html:option>
+				<html:option value="E">
+					<siga:Idioma key="administracion.informes.formato.excel"/>
+				</html:option>
+				<!-- BNS INC_10391_SIGA				
+				<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
+				-->
+				</html:select>
+			</td>
+		</tr>
+		<tr>
 			<td class="labelText" id="ocultarLabelPreseleccionado">
 					<siga:Idioma key="administracion.informes.literal.preseleccionado"/>(*)
 			</td>
@@ -506,10 +506,16 @@ function onChangeTipoIntercambio() {
 			</tr>
 
 
-
-
-
-
+			<tr>
+				<td colspan = "4" >&nbsp;</td>
+			</tr>
+<logic:equal name="InformeForm" property="modo" value="insertar">
+			<tr id="textomod">
+				<td colspan = "4">
+					<b>(*)&nbsp;<siga:Idioma key="administracion.informes.literal.avisoAltaPlantillas" /></b>
+				</td>
+			</tr>
+</logic:equal>
 			<tr>
 				<td colspan = "4" >&nbsp;</td>
 			</tr>
@@ -701,7 +707,7 @@ function inicio()
 			document.getElementById("idTipoInforme").disabled="";
 			// document.getElementById("tipoFormato").disabled="";
 		}
-	
+		document.InformeFormEdicion.visible.value="S";
 	}
 	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
 		//document.InformeFormEdicion.idTipoInforme.value=document.InformeForm.idTipoInforme.value;
@@ -758,6 +764,13 @@ function accionGuardar()
 		}
 		document.getElementById("alias").disabled="";
 		
+		if(document.InformeFormEdicion.tipoFormato.value=='-1' || document.InformeFormEdicion.tipoFormato.value==''){
+			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.formato' />";
+			alert(error);
+			fin();
+
+			return false;
+		}
 	}
 
 	document.getElementById("directorio").disabled="";
@@ -817,7 +830,7 @@ function accionGuardar()
 		var destinatarios ="";
 		for(var i = 0 ; i <listaDestinatarios.length ; i++) {
 			if(listaDestinatarios[i].checked){
-				destinatarios+=listaDestinatarios[i].value
+				destinatarios+=listaDestinatarios[i].value;
 			}	
 		}
 		if(destinatarios==''){
@@ -827,7 +840,7 @@ function accionGuardar()
 
 			document.getElementById("idInstitucion").disabled="disabled";
 			document.getElementById("idPlantilla").disabled="disabled";
-			document.getElementById("idTipoInforme").disabled="disabled";
+			//document.getElementById("idTipoInforme").disabled="disabled";
 			document.getElementById("directorio").disabled="disabled";
 
 			return false;
@@ -858,12 +871,13 @@ function accionGuardar()
 	document.getElementById("idPlantilla").disabled="disabled";
 	if(document.InformeFormEdicion.idTipoInforme.value=='CON')
 		document.getElementById("alias").disabled="disabled";
-	document.getElementById("idTipoInforme").disabled="disabled";
+	//document.getElementById("idTipoInforme").disabled="disabled";
 	// document.getElementById("tipoFormato").disabled="disabled";
 	document.getElementById("directorio").disabled = "disabled";
 	document.getElementById("idTiposEnvio").disabled="disabled";
 	document.getElementById("idTipoIntercambioTelem").disabled="disabled";
 }
+
 function formatearFormulario(formulario)
 {
 	var existeAlgunEspacio = false;

@@ -77,11 +77,30 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/itcgaeinit.do</url-pattern>
 	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>HttpsFilter</filter-name>
+		<url-pattern>/infoDirectorio.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AccesoCertificadoFilter</filter-name>
+		<url-pattern>/infoDirectorio.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CtrlCRLFilter</filter-name>
+		<url-pattern>/infoDirectorio.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>DatosSesionFilter</filter-name>
+		<url-pattern>/infoDirectorio.do</url-pattern>
+	</filter-mapping>
 
+<!-- 
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
+	
 	<filter-mapping>
 		<filter-name>AccesoCertificadoFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -94,7 +113,7 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
-
+ -->
 	<!--************ Seguridad de Certificados FIN ************-->
 
 		<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
@@ -189,6 +208,11 @@
 		<servlet-class>com.siga.servlets.SIGATPVControl</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>ServletFicherosInfoDirectorio</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlInfoDirectorioFileManagement</servlet-class>
+	</servlet>
+	
 	<servlet>
 		<servlet-name>ServletDescargaFichero</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlDownloadFile</servlet-class>
@@ -348,6 +372,11 @@
 	<servlet-mapping>
 		<servlet-name>ServletDescargaFichero</servlet-name>
 		<url-pattern>ServletDescargaFichero.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ServletFicherosInfoDirectorio</servlet-name>
+		<url-pattern>ServletFicherosInfoDirectorio.svrl</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

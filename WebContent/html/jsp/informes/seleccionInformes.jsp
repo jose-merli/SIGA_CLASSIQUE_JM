@@ -213,11 +213,16 @@ jQuery.noConflict();
 </c:otherwise>
 </c:choose>
 
-	<siga:TablaCabecerasFijas nombre="tablaDatos" borde="1"
+	<siga:TablaCabecerasFijas 
+		nombre="tablaDatos" 
+		borde="1"
 		clase="tableTitle"
 		nombreCol="${nombreCol}"
-		tamanoCol="${tamanoCol}" alto="100%" modal="G"
-		activarFilaSel="true" ajusteBotonera="true">
+		tamanoCol="${tamanoCol}" 
+		alto="100%" 
+		modal="G"
+		activarFilaSel="true" 
+		scrollModal="true">
 		
 		<c:forEach items="${informeForms}" var="informe" varStatus="status">
 			<c:set var="preseleccionado" value="" />
@@ -272,9 +277,9 @@ jQuery.noConflict();
 				</c:choose>
 			</siga:FilaConIconos>
 		</c:forEach>
-
 	</siga:TablaCabecerasFijas>
-	<c:choose>
+	
+	<c:choose>	
 	<c:when test="${InformesGenericosForm.enviar =='1'}">
 		<siga:ConjBotonesAccion botones="D,EN,C" ordenar="D,EN,C" modal="P" />
 	</c:when>

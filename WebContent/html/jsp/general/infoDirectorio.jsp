@@ -20,6 +20,8 @@
 		
 try {
 
+	boolean bAllowed = InfoDirectorio.isAllowed(request);
+	if (bAllowed){
 	Vector vDatos = null;
 	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	String pathBase = rp.returnProperty("facturacion.directorioFisicoPagosBancosJava");
@@ -48,9 +50,9 @@ try {
 			path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
 		}
 		if (patron!=null && !patron.equalsIgnoreCase("") && path.startsWith(pathBase)){
-			vDatos = InfoDirectorio.busqueda(path, patron);
+			vDatos = InfoDirectorio.busqueda(path, patron, request);
 		}else if (path.startsWith(pathBase)){
-			vDatos = InfoDirectorio.getInfoDirectorio(path);
+			vDatos = InfoDirectorio.getInfoDirectorio(path, request);
 		}else{
 			path=pathBase;
 		}
@@ -197,7 +199,7 @@ try {
 
 <% if (vDatos != null && vDatos.size() > 0) { %>
 
-	<form name="descargar" action="<%=app%>/ServletDescargaFichero.svrl" method="POST">
+	<form name="descargar" action="<%=app%>/ServletFicherosInfoDirectorio.svrl" method="POST">
 		<input type="hidden" name="nombreFichero" value=""/>
 		<input type="hidden" name="rutaFichero"   value=""/>
 		<input type="hidden" name="accion"        value=""/>
@@ -246,7 +248,7 @@ try {
 		   <td width="200px"><%=fecha%></td>
 		   <% if(tipo.equals("d")){%>
 			   <td colspan="2">	  
-			   		<form name="subir_<%=i%>" action="<%=app%>/ServletDescargaFichero.svrl"  method="POST" enctype="multipart/form-data">
+			   		<form name="subir_<%=i%>" action="<%=app%>/ServletFicherosInfoDirectorio.svrl"  method="POST" enctype="multipart/form-data">
 						<input type="hidden" name="nombreFichero" value=""/>
 						<input type="hidden" name="rutaFichero"   value=""/>
 						<input type="hidden" name="accion"        value=""/>
@@ -270,7 +272,10 @@ try {
 <% } %>
 
 
-<% } catch (Exception e) { %>
+<% } else { %>
+		<p><b>No autorizado:</b> No tiene privilegios para consultar esta página</p>
+	<%}
+   } catch (Exception e) { %>
 		<p><b>Excepcion:</b> <%e.printStackTrace(new java.io.PrintWriter(out)); %></p>
 <% } %>
 	

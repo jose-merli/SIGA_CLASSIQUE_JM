@@ -10,6 +10,7 @@ import com.atos.utils.*;
 
 import javax.servlet.http.*;
 import com.siga.Utilidades.*;
+import com.siga.general.ParejaNombreID;
 
 
 import javax.servlet.jsp.tagext.*;
@@ -25,34 +26,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 public class TagComboBDExt extends TagSupport {
 	
-	// *****************************************************
-	public static class ParejaNombreID implements Serializable {
-
-		// Atributos
-		private String nombre, idNombre;
-		
-		// Constructor
-		ParejaNombreID () {
-			this.idNombre = "";
-			this.nombre = "";
-		}
-
-		ParejaNombreID (String id, String nombre) {
-			this.idNombre = id;
-			this.nombre = nombre;
-		}
-
-		// Metodos Get
-		public String getNombre		() 		{ return this.nombre;	}
-		public String getIdNombre	() 		{ return this.idNombre;	}
-		
-		// Metodos Set
-		public void setNombre 	(String s) 	{ this.nombre = s;		}
-		public void setIdNombre (String i) 	{ this.idNombre = i;	}
-		public void setIdNombre (Integer i) { this.idNombre = i.toString();	}
-	}
-	// *****************************************************
-
 	private static int OK = 1;
 	private static int ERROR = -1;
 	private static String parametroWhere = "@parametro@";

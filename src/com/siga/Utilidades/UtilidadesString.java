@@ -30,10 +30,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -1513,4 +1515,30 @@ public class UtilidadesString {
     	ClsLogging.writeFileLog("NUMERO DE TELÉFONO CON PREFIJO:" + numero,10);
     	return numero;
     }
+	
+	public static String ReemplazaIdioma (String consulta, HttpSession session, String parametroIdioma) {
+		try {
+			String idioma = "";
+			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+			try {
+				idioma = "" + usrbean.getLanguage();
+			}
+			catch (Exception e) {
+				idioma = "1"; // Por defecto español para la pantalla inicial de los 3 combos (es temporal)
+			}
+			consulta = consulta.replaceAll("(?i)" + parametroIdioma , idioma);
+		}
+		catch (Exception e) {}
+		return consulta;
+	}
+	
+	public static String ReemplazaParametros (String nombreParametro,String consulta, String dato[]) {
+		for (int i = 0; i < dato.length; i++) {
+			if ((dato[i] == null) || (dato[i].trim().equalsIgnoreCase(""))){
+				break;
+			}
+			consulta = consulta.replaceFirst("(?i)"+nombreParametro, dato[i]);
+		}
+		return consulta;
+	}
 }

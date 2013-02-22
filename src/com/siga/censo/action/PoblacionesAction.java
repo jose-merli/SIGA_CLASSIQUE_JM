@@ -44,13 +44,15 @@ public class PoblacionesAction extends MasterAction{
 		try {				    		
 			String modo = (String) request.getParameter("modo");
 
-			if (modo!=null && modo.equalsIgnoreCase("getAjaxPoblacionesCP")){
+			if ("getAjaxPoblacionesCP".equalsIgnoreCase(modo)){
 				getAjaxPoblacionesCP (request, response);
 				
-			} else { 
-				if (modo!=null && modo.equalsIgnoreCase("getAjaxPoblacionesCPFiltro")){
-					getAjaxPoblacionesCPFiltro (request, response);
-				}
+			} else if ("getAjaxPoblacionesCPFiltro".equalsIgnoreCase(modo)){
+				getAjaxPoblacionesCPFiltro (request, response);
+			} else if ("getAjaxPoblacionesDeProvincia".equalsIgnoreCase(modo)){
+				getAjaxPoblacionesDeProvincia (request, response);
+			} else if("getAjaxNombreDePoblacion".equalsIgnoreCase(modo)){
+				getAjaxNombreDePoblacion(request, response);
 			}
 		} catch (SIGAException es) {
 			throw es;
@@ -432,4 +434,30 @@ public class PoblacionesAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 		
 	}		
+	
+	protected void getAjaxPoblacionesDeProvincia (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		final String tipo = "poblacion";
+		String valorProvincia = request.getParameter("valorProvincia");
+		String[] parametrosWhere = {valorProvincia};
+		StringBuilder comboHTMLOptions = getComboHTMLOptions(request, tipo, parametrosWhere);
+		respuestaComboHTMLOptionsJson(comboHTMLOptions, response);
+	}
+	
+	protected void getAjaxNombreDePoblacion (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String valorProvincia = request.getParameter("valorProvincia");
+		String valorPoblacion = request.getParameter("valorPoblacion");
+		String nombreDePoblacion = "Error B.D.";
+		String sql = "Select NOMBRE as DESCRIPCION From CEN_POBLACIONES Where IDPROVINCIA = "+valorProvincia+" AND IDPOBLACION = "+valorPoblacion+" Order by NOMBRE";
+		RowsContainer rc = new RowsContainer();
+		
+		rc.findNLS(sql);
+		
+		if (rc!=null && rc.size() == 1) {
+			Row fila = (Row) rc.get(0);
+			nombreDePoblacion = fila.getString("DESCRIPCION");
+		}
+		JSONObject json = new JSONObject();
+		json.put("nombrePoblacion", nombreDePoblacion);
+		respuestaJson(json, response);
+	}
 }

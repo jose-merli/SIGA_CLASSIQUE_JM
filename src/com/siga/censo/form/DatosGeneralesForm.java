@@ -4,7 +4,6 @@
 
 package com.siga.censo.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +12,12 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.general.MasterForm;
-import com.siga.beans.*;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenTipoSociedadBean;
 import com.siga.censo.vos.ColegiadoVO;
-import com.siga.comun.vos.Vo;
+import com.siga.general.MasterForm;
+import com.siga.general.ParejaNombreID;
 
 /**
  * Clase action form del caso de uso DATOS GENERALES
@@ -685,6 +686,8 @@ import com.siga.comun.vos.Vo;
 	String continuarAprobacion;
 	String numColegiado="";
 	List<DireccionesForm> direcciones;
+	List<ParejaNombreID> paises;
+	List<ParejaNombreID> provincias;
 	String textoAlerta;
 
 	public String getIdTipoDireccion() {
@@ -893,6 +896,22 @@ import com.siga.comun.vos.Vo;
 
 	public void setTextoAlerta(String textoAlerta) {
 		this.textoAlerta = textoAlerta;
+	}
+
+	public List<ParejaNombreID> getPaises() {
+		return paises;
+	}
+
+	public void setPaises(List<ParejaNombreID> paises) {
+		this.paises = paises;
+	}
+
+	public List<ParejaNombreID> getProvincias() {
+		return provincias;
+	}
+
+	public void setProvincias(List<ParejaNombreID> provincias) {
+		this.provincias = provincias;
 	}	
 	
 }

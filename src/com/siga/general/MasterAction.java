@@ -21,6 +21,8 @@ package com.siga.general;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +31,12 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesString;
 
 
@@ -696,4 +702,77 @@ public abstract class MasterAction extends SIGAAuxAction {
     	return alClaves;
 	}
 
+	protected List<ParejaNombreID> getComboList(HttpServletRequest request, String tipo){
+		return getComboList(request, tipo, null);
+	}
+	
+	protected StringBuilder getComboHTMLOptions(HttpServletRequest request, String tipo, String[] parametrosWhere){
+		final String parametroIdioma = "@idioma@";
+		final String parametroWhere = "@parametro@";
+		StringBuilder comboHTMLOptions = new StringBuilder();
+		
+		ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
+		String consultaSQL = p.returnProperty(tipo, true);
+		consultaSQL = UtilidadesString.ReemplazaIdioma(consultaSQL, request.getSession(), parametroIdioma);
+		
+		if (parametrosWhere != null && parametrosWhere.length > 0 && parametrosWhere[0] != null && !parametrosWhere[0].equals("")){
+			consultaSQL = UtilidadesString.ReemplazaParametros(parametroWhere,consultaSQL, parametrosWhere);
+		}
+		
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer();
+			if (rc.queryNLS(consultaSQL)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					comboHTMLOptions.append("<option value='");
+					comboHTMLOptions.append((String)fila.getRow().get("ID"));
+					comboHTMLOptions.append("'>");
+					comboHTMLOptions.append((String)fila.getRow().get("DESCRIPCION"));
+					comboHTMLOptions.append("</option>");					
+				}
+			}
+		} 
+		catch (Exception e) { 				
+			comboHTMLOptions = new StringBuilder();
+			comboHTMLOptions.append("<option value='1'>Error B.D.</option>");
+		}
+		return comboHTMLOptions;
+	}
+	
+	protected List<ParejaNombreID> getComboList(HttpServletRequest request, String tipo, String[] parametrosWhere){
+		final String parametroIdioma = "@idioma@";
+		final String parametroWhere = "@parametro@";
+		List<ParejaNombreID> comboList = new Vector();
+		
+		ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
+		String consultaSQL = p.returnProperty(tipo, true);
+		consultaSQL = UtilidadesString.ReemplazaIdioma(consultaSQL, request.getSession(), parametroIdioma);
+		
+		if (parametrosWhere != null && parametrosWhere.length > 0 && parametrosWhere[0] != null && !parametrosWhere[0].equals("")){
+			consultaSQL = UtilidadesString.ReemplazaParametros(parametroWhere,consultaSQL, parametrosWhere);
+		}
+		
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer();
+			if (rc.queryNLS(consultaSQL)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					ParejaNombreID dato = new ParejaNombreID();
+					dato.setIdNombre((String)fila.getRow().get("ID"));
+					dato.setNombre((String)fila.getRow().get("DESCRIPCION"));
+					comboList.add(dato);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			ParejaNombreID dato = new ParejaNombreID();
+			dato.setIdNombre("1");
+			dato.setNombre("Error B.D.");
+			//dato.setNombre("");
+			comboList.add(dato);
+		}
+		return comboList;
+	}
 }

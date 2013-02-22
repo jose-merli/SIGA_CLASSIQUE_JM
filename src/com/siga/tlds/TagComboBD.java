@@ -11,6 +11,7 @@ import com.atos.utils.*;
 
 import javax.servlet.http.*;
 import com.siga.Utilidades.*;
+import com.siga.general.ParejaNombreID;
 
 
 import javax.servlet.jsp.tagext.*;
@@ -24,34 +25,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 public class TagComboBD extends TagSupport {
 	
-	// *****************************************************
-	public static class ParejaNombreID implements Serializable {
-
-		// Atributos
-		private String nombre, idNombre;
-		
-		// Constructor
-		ParejaNombreID () {
-			this.idNombre = "";
-			this.nombre = "";
-		}
-
-		ParejaNombreID (String id, String nombre) {
-			this.idNombre = id;
-			this.nombre = nombre;
-		}
-
-		// Metodos Get
-		public String getNombre		() 		{ return this.nombre;	}
-		public String getIdNombre	() 		{ return this.idNombre;	}
-		
-		// Metodos Set
-		public void setNombre 	(String s) 	{ this.nombre = s;		}
-		public void setIdNombre (String i) 	{ this.idNombre = i;	}
-		public void setIdNombre (Integer i) { this.idNombre = i.toString();	}
-	}
-	// *****************************************************
-
 	private static int OK = 1;
 	private static int ERROR = -1;
 	private static String parametroWhere  = "@parametro@";
@@ -150,7 +123,7 @@ public class TagComboBD extends TagSupport {
 
 				if (this.sqlplano.equals("")) {
 
-					consultaSQL = ReemplazaIdioma(consultaSQL);
+					consultaSQL = UtilidadesString.ReemplazaIdioma(consultaSQL, pageContext.getSession(), parametroIdioma);
 					StringTokenizer st = new StringTokenizer(consultaSQL, "@");
 					//int i=1;
 //					st.nextToken();
@@ -228,11 +201,11 @@ public class TagComboBD extends TagSupport {
 					// este es el caso como funcionaba antes
 					// Se debe utilizar para cuando los parametros a pasar no son valores
 					// sino que son concatenaciones a la consulta (in listavalores, concatenaciones)
-					consultaSQL = ReemplazaIdioma(consultaSQL);
+					consultaSQL = UtilidadesString.ReemplazaIdioma(consultaSQL, pageContext.getSession(), parametroIdioma);
 
 					if (this.parametros != null && this.parametros.length > 0 && this.parametros[0] != null && !this.parametros[0].equals("")){
 
-						consultaSQL = ReemplazaParametros(parametroWhere,consultaSQL, this.parametros);
+						consultaSQL = UtilidadesString.ReemplazaParametros(parametroWhere,consultaSQL, this.parametros);
 					}
 					if (this.parametrosIn != null && this.parametrosIn.length > 0 && this.parametrosIn[0] != null&& !this.parametrosIn[0].equals("")) {
 						consultaSQL = ReemplazaParametrosIn(parametroIn,consultaSQL, this.parametrosIn);
@@ -727,21 +700,7 @@ public class TagComboBD extends TagSupport {
 		
 		return TagComboBD.OK;
 	}
-	
-	private String ReemplazaParametros (String nombreParametro,String consulta, String dato[]) 
-	{
-		for (int i = 0; i < dato.length; i++) {
-			if ((dato[i] == null) || (dato[i].trim().equalsIgnoreCase(""))){
-				break;
-			}
-			consulta = consulta.replaceFirst("(?i)"+nombreParametro, dato[i]);
-		}
-		return consulta;
-
-//		if (consulta.indexOf(TagComboBD.parametroWhere) > 0) 
-//			return TagComboBD.ERROR;
-//		return TagComboBD.OK;
-	}
+		
 	private String ReemplazaParametrosIn (String nombreParametro,String consulta, Object dato[]) 
 	{
 		StringBuffer cadena = new StringBuffer();
@@ -918,23 +877,7 @@ public class TagComboBD extends TagSupport {
 //		return TagComboBD.OK;
 	}
 	
-	private String ReemplazaIdioma (String consulta) 
-	{
-		try {
-			String idioma = "";
-			HttpSession session = pageContext.getSession();
-			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-			try {
-				idioma = "" + usrbean.getLanguage();
-			}
-			catch (Exception e) {
-				idioma = "1"; // Por defecto español para la pantalla inicial de los 3 combos (es temporal)
-			}
-			consulta = consulta.replaceAll("(?i)" + parametroIdioma, idioma);
-		}
-		catch (Exception e) {}
-		return consulta;
-	}
+	
 	
 /*	Vector getCamposConsulta(String consultaSQL) {
 		Vector campos = new Vector();

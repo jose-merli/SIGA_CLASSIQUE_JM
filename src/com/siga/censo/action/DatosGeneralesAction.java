@@ -70,6 +70,7 @@ import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
+import com.siga.general.ParejaNombreID;
 import com.siga.general.SIGAException;
 
 
@@ -2647,6 +2648,13 @@ public class DatosGeneralesAction extends MasterAction {
 			request.setAttribute("modoPestanha",accionPestanha);
 
 			miform.setDirecciones(list);
+			
+			//Cargar combo Paises
+			miform.setPaises(getPaisesList(request));
+			
+			//Cargar combo Provincias
+			miform.setProvincias(getProvinciasList(request));
+			
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
 			if (sNumIdentificacion != null && !"".equals(sNumIdentificacion)){				
@@ -2668,6 +2676,16 @@ public class DatosGeneralesAction extends MasterAction {
 		return forward;
 		
 	}		
+	
+	private List<ParejaNombreID> getPaisesList(HttpServletRequest request) {
+		final String tipo = "pais";
+		return getComboList(request, tipo);
+	}
+
+	private List<ParejaNombreID> getProvinciasList(HttpServletRequest request) {
+		final String tipo = "provincia";
+		return getComboList(request, tipo);
+	}
 	
 	@SuppressWarnings("unchecked")
 	protected void getAjaxDirecciones (ActionMapping mapping, 		

@@ -215,7 +215,7 @@ public class TagTabla extends TagSupport {
 			out.println("  ");
 			if (!this.modal.equals("")) {
 				out.println("    jQuery('form:first',document).append('<input type=\"hidden\" name=\"actionModal\" id=\"actionModal\">');  ");
-			}
+			}			
 			out.println("     });  ");
 			
 			out.println("");
@@ -428,11 +428,11 @@ public class TagTabla extends TagSupport {
 			// LMS 15/02/2005 Con el position absolute había que estar haciendo filigranas en los JPS. Le elimino.
 			
 			if(estilo!=null && !estilo.equals("")){
-				out.println("<div id='" + this.nombre + "Div' style='" + this.estilo +"'>");		
+				out.println("<div id='" + this.nombre + "Div' name='" + this.nombre + "Div' style='" + this.estilo +"'>");		
 			}else{
-				out.println("<div id='" + this.nombre + "Div' style='display:none; height:" + this.alto + "; width:100%; overflow-y:auto'>");
+				out.println("<div id='" + this.nombre + "Div' name='" + this.nombre + "Div' style='display:none; height:" + this.alto + "; width:100%; overflow-y:auto'>");
 			}
-			out.println("<table id='" + this.nombre + "' border='" + this.borde + 
+			out.println("<table id='" + this.nombre + "' name='" + this.nombre + "' border='" + this.borde + 
 						"' align='center' width='100%' cellspacing='0' cellpadding='0'  style='table-layout:fixed; margin:0px;'>"); 
 			
 			out.println("	<tr>");
@@ -474,8 +474,8 @@ public class TagTabla extends TagSupport {
 			//out.println("</SCRIPT>");
 			
 			out.println("<script language='JavaScript'>");
-			out.println("jQuery(document).ready(function() {jQuery(\"#" + this.nombre + "Div\").show(); validarAncho_" + this.nombre + "();");
-			out.println("});");
+			out.println("	jQuery(document).ready(function() {jQuery(\"#" + this.nombre + "Div\").show(); validarAncho_" + this.nombre + "();");			
+			out.println("	});");
 			if (this.ajusteAlto) {
 				
 				//int espacioMenos= 0;
@@ -530,6 +530,26 @@ public class TagTabla extends TagSupport {
 			out.println(" } else {");
 			out.println(" 	validarAncho_" + this.nombre + "();");
 			out.println(" } ");
+			
+			//BNS INC_10371_SIGA			
+			out.println("	jQuery(document).ready(function() {");						
+			//out.println("alert(jQuery('#" + this.nombre + "').css('height')+ ' > ' + jQuery('#" + this.nombre + "Div').css('height'))");
+			out.println("if (jQuery('#" + this.nombre + "').css('height') > jQuery('#" + this.nombre + "Div').css('height'))");
+			//out.println("    	jQuery('#" + this.nombre + "Cabeceras').width(jQuery('#" + this.nombre + "').width() - scrollbarWidth());");scrollHeight
+			out.println("    	jQuery('#" + this.nombre + "Cabeceras').width(jQuery('#" + this.nombre + "').get(0).clientWidth);");
+			out.println("function scrollbarWidth() {");
+			out.println("    var $inner = jQuery('<div style=\"width: 100%; height:200px;\">test</div>'),");
+			out.println("        $outer = jQuery('<div style=\"width:200px;height:150px; position: absolute; top: 0; left: 0; visibility: hidden; overflow:hidden;\"></div>').append($inner),");
+			out.println("        inner = $inner[0],");
+			out.println("        outer = $outer[0];");
+			out.println("    jQuery('body').append(outer);");
+			out.println("    var width1 = inner.offsetWidth;");
+			out.println("    $outer.css('overflow', 'scroll');");
+			out.println("    var width2 = outer.clientWidth;");
+			out.println("    $outer.remove();");
+			out.println("    return (width1 - width2);");
+			out.println("}");
+			out.println("	});");
 			out.println("</script>");
 			
 

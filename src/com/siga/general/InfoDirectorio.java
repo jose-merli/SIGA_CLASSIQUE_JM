@@ -10,6 +10,11 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.atos.utils.ClsLogging;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 
 /*
@@ -21,10 +26,12 @@ import com.siga.Utilidades.UtilidadesString;
  * @author danielc
  *
  */
-public class InfoDirectorio {
-
-	public static Vector getInfoDirectorio(String path) 
-	{
+public class InfoDirectorio {	
+	
+	public static Vector getInfoDirectorio(String path, HttpServletRequest request) {
+		if (!isAllowed(request)){
+			return null;
+		}
      	if (path == null || path.equals("")){
 			return null;
 		} 
@@ -39,6 +46,39 @@ public class InfoDirectorio {
 		return v;
 	}
 
+	public static Vector busqueda(String p, String s, HttpServletRequest request) 
+	{
+		if (!isAllowed(request)){
+			return null;
+		}
+		
+     	if (s == null || s.equals("")){
+			return null;
+		} 
+		
+     	File f = new File (p);
+		if (!f.exists()) { 
+			return null;
+		}
+		
+		Vector v = new Vector();
+		getApariciones(f, s ,0, v);
+		return v;
+	}
+	
+	public static boolean isAllowed(HttpServletRequest request){
+		boolean bAllowed = false;
+		HttpSession ses= request.getSession();
+		if (ses != null && ses.getAttribute("USRBEAN") != null){
+			UsrBean usrBean = (UsrBean) ses.getAttribute("USRBEAN");
+			if (usrBean.getLocation() != null && "2000".equals(usrBean.getLocation().trim()))
+				bAllowed = true;
+		} else {
+			ClsLogging.writeFileLog("InfoDirectorio.isAllowed: Sesion o userbean en sesion no encontrados", 0);
+		}
+		return bAllowed;
+	}
+	
 	private static void pintaInfoDirectorio (File f, int nivel, Vector v) 
 	{
 		Date d = new Date(f.lastModified());
@@ -93,24 +133,7 @@ public class InfoDirectorio {
 	//			traza ("|- " + f.getName(), (f.canExecute()?"+X":"-X") + (f.canRead()?"+R":"-R") + (f.canWrite()?"+W":"+W"), fecha, nivel+1, v);
 		}
 		
-	}
-	
-	
-	public static Vector busqueda(String p, String s) 
-	{
-     	if (s == null || s.equals("")){
-			return null;
-		} 
-		
-     	File f = new File (p);
-		if (!f.exists()) { 
-			return null;
-		}
-		
-		Vector v = new Vector();
-		getApariciones(f, s ,0, v);
-		return v;
-	}
+	}			
 
 	private static void getApariciones (File f, String s, int nivel, Vector v) 
 	{
