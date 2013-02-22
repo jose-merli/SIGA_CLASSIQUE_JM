@@ -366,10 +366,10 @@ function onChangeTipoIntercambio() {
 			<td class="labelText ocultarOrden">
 				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box" style="width:20"></html:text>
 			</td>
-			<td class="labelText">
+			<td id="literalFormatoTD" class="labelText">
 				<siga:Idioma key="administracion.informes.literal.formato"/>(*)
 			</td>
-			<td class="labelText">
+			<td id="formatoTD" class="labelText">
 				<html:select name="InformeFormEdicion"  property="tipoFormato"
 				styleClass="boxCombo"><html:option value="-1">
 					<siga:Idioma key="general.combo.seleccionar" />
@@ -414,7 +414,7 @@ function onChangeTipoIntercambio() {
 					<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>(*)
 			</td>
 					
-			<td class="labelText">
+			<td colspan="3" class="labelText">
 					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
 					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
 					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
@@ -423,7 +423,7 @@ function onChangeTipoIntercambio() {
 		</tr>
 			<tr id="trEnvios">
 
-				<td colspan="4">
+				<td colspan="6">
 					<table>
 						<tr>
 							<td width="15%"></td>
@@ -507,17 +507,17 @@ function onChangeTipoIntercambio() {
 
 
 			<tr>
-				<td colspan = "4" >&nbsp;</td>
+				<td colspan = "6" >&nbsp;</td>
 			</tr>
 <logic:equal name="InformeForm" property="modo" value="insertar">
 			<tr id="textomod">
-				<td colspan = "4">
+				<td colspan = "6">
 					<b>(*)&nbsp;<siga:Idioma key="administracion.informes.literal.avisoAltaPlantillas" /></b>
 				</td>
 			</tr>
 </logic:equal>
 			<tr>
-				<td colspan = "4" >&nbsp;</td>
+				<td colspan = "6" >&nbsp;</td>
 			</tr>
 	</table>
 </html:form>	
@@ -544,6 +544,12 @@ function onChangeTipoIntercambio() {
 				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 				style="display: none"></iframe>	
 <script type="text/javascript">
+jQuery(document).ready(function(){
+	if(document.InformeFormEdicion.idTipoInforme.value!='CON'){
+		jQuery("#literalFormatoTD").html("");
+		jQuery("#formatoTD").html("");
+	}
+});
 <!-- Asociada al boton GuardarCerrar -->
 function cargarListadoArchivos(){
 	
@@ -583,10 +589,12 @@ function onChangeIdTipoInforme()
 	document.getElementById("directorio").disabled = "";
 	document.InformeFormEdicion.directorio.value = directorioTipoInforme;
 	document.getElementById("directorio").disabled = "disabled";
-	if(claseTipoInforme=='P'||claseTipoInforme=='C'){
-		document.getElementById("tipoFormato").disabled="";
-	}else{
-		document.getElementById("tipoFormato").disabled="disabled";	
+	if (document.getElementById("tipoFormato") != undefined){
+		if(claseTipoInforme=='P'||claseTipoInforme=='C'){
+			document.getElementById("tipoFormato").disabled="";
+		}else{
+			document.getElementById("tipoFormato").disabled="disabled";	
+		}
 	}
 	
 	if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
@@ -613,11 +621,13 @@ function inicio()
 	
 		}
 	}
-	if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
-		document.getElementById("tipoFormato").disabled="";
-	}else{
-		document.getElementById("tipoFormato").disabled="disabled";	
-	
+	if (document.getElementById("tipoFormato") != undefined){
+		if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
+			document.getElementById("tipoFormato").disabled="";
+		}else{
+			document.getElementById("tipoFormato").disabled="disabled";	
+		
+		}
 	}
 	document.getElementById("directorio").disabled="disabled";
 	
@@ -759,11 +769,6 @@ function accionGuardar()
 		}
 	}else{
 		
-		if(document.getElementById("alias").value.length>50){
-			document.getElementById("alias").value = document.getElementById("alias").value.substring(0,50);
-		}
-		document.getElementById("alias").disabled="";
-		
 		if(document.InformeFormEdicion.tipoFormato.value=='-1' || document.InformeFormEdicion.tipoFormato.value==''){
 			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.formato' />";
 			alert(error);
@@ -771,8 +776,14 @@ function accionGuardar()
 
 			return false;
 		}
-	}
-
+		
+		if(document.getElementById("alias").value.length>50){
+			document.getElementById("alias").value = document.getElementById("alias").value.substring(0,50);
+		}
+		document.getElementById("alias").disabled="";
+				
+	}	
+	
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
 	document.getElementById("idPlantilla").disabled="";
@@ -801,7 +812,7 @@ function accionGuardar()
 		document.InformeFormEdicion.idInstitucion.value = '';
 	if(document.InformeFormEdicion.idTipoInforme.value=='-1')
 		document.InformeFormEdicion.idTipoInforme.value = '';
-	if(document.InformeFormEdicion.tipoFormato.value=='-1')
+	if(document.InformeFormEdicion.tipoFormato != undefined && document.InformeFormEdicion.tipoFormato.value=='-1')
 		document.InformeFormEdicion.tipoFormato.value = '';
 	if(document.InformeFormEdicion.preseleccionado.value=='-1')
 		document.InformeFormEdicion.preseleccionado.value = '';
