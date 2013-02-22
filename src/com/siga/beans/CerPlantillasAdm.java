@@ -138,9 +138,11 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
     	String salida=null; 
     	try
     	{
+    		//aalg: se añade el idproducto al where
     		String sWhere = " WHERE " +
     						CerPlantillasBean.C_IDINSTITUCION + "=" + idInstitucion + " AND " +
     						CerPlantillasBean.C_IDTIPOPRODUCTO + "=" + idTipoProducto + " AND " +
+    						CerPlantillasBean.C_IDPRODUCTO + "=" + idProducto + " AND " +
     						CerPlantillasBean.C_IDPRODUCTOINSTITUCION + "=" + idProductoInstitucion + " AND " +
     						CerPlantillasBean.C_PORDEFECTO + "='S'";
 
