@@ -711,7 +711,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     }
 
 	private void almacenarCertificado(String idInstitucion, String idSolicitud, HttpServletRequest request,PysProductosInstitucionBean beanProd,String idTipoProducto,String idProducto,String idProductoInstitucion,
-		String idPlantilla,String idPersona,File fIn,File fOut,String sRutaPlantillas,String idInstitucionOrigen,boolean usarIdInstitucion)throws ClsExceptions, SIGAException {
+		String idPlantilla,String idPersona,File fIn,File fOut,String sRutaPlantillas,String idInstitucionOrigen,boolean usarIdInstitucion, UsrBean usr)throws ClsExceptions, SIGAException {
 	    
     	// OBTENEMOS LA SOLICITUD
     	Hashtable htSolicitud = new Hashtable();
@@ -734,32 +734,18 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		// obtenemos el contador de la FK del producto
 		String idContador=beanProd.getIdContador();
 		
-		// INICIO BLOQUE SINCRONIZADO 
-		//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-		obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
-		//FIN BLOQUE SINCRONIZADO 				
-
-		///////////////////////////////////////////////
-        if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
-	      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);    
-	      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-        }
-
-	    String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
+		String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
         
         //pdm es necesario actualizar estas fechas cuando se aprueba la solicitud del certificado
         String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO,CerSolicitudCertificadosBean.C_PREFIJO_CER,CerSolicitudCertificadosBean.C_SUFIJO_CER, CerSolicitudCertificadosBean.C_CONTADOR_CER,CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,CerSolicitudCertificadosBean.C_FECHAMODIFICACION,CerSolicitudCertificadosBean.C_FECHAESTADO};
-        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
-        if (beanSolicitud.getFechaEmisionCertificado() == null || beanSolicitud.getFechaEmisionCertificado().equals("")) {
-            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
-        }
+		
+		// INICIO BLOQUE SINCRONIZADO 
+		//obtenerContadorSinronizado(gc, idInstitucionOrigen, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew);
+		obtenerContadorSinronizado(gc, idInstitucion, idContador, idTipoProducto, idProducto, idProductoInstitucion, tieneContador, htNew, admSolicitud, beanSolicitud, claves, campos, usr);
+		//FIN BLOQUE SINCRONIZADO 				
+
+		///////////////////////////////////////////////
         
-	  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-	    
-        if (!admSolicitud.updateDirect(htNew, claves, campos ))
-	    {
-	        throw new ClsExceptions("Error al GENERAR el/los PDF/s");
-	    }
 	    
         ////////////////////////////////////////////////////////
 	    // GENERAR CERTIFICADO
@@ -805,13 +791,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	protected String generarVariosPDF(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 
-		UserTransaction tx=null;
+		//UserTransaction tx=null;
 		try{
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			// Comienzo control de transacciones
-			tx = usr.getTransactionPesada();
+			//tx = usr.getTransactionPesada();
 			
 		    SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    
@@ -931,15 +917,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        fIn.deleteOnExit();
 			        
 			        try {
-			        	tx.begin();
+			        	//tx.begin();
 			        	
 			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
 			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
-                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion, usr);
 					    
 				        contador++;
 				        
-						tx.commit();
+						//tx.commit();
 
 			        
 			        } catch (SIGAException e) {
@@ -947,13 +933,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    		ClsLogging.writeFileLogError("ERROR EN APROBAR Y GENERAR PDF MASIVO. SOLICITUD:" +nombreSolicitud+ " Error:" + e.getLiteral(userBean.getLanguage()),e, 3);
 			        	contadorErrores++;
 		        		
-			        	tx.rollback();
+			        	//tx.rollback();
 		        	    
-				        if (contadorReg==1) {
+				       /* if (contadorReg==1) {
 			        	    throw e;
-			        	} else {
+			        	} else {*/
 			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	}
+			        	//}
 		            }
 		
 			        fIn.delete();
@@ -993,19 +979,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			request.setAttribute("mensaje",mensaje);
 		} 
 		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
+			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
 	    return "exitoConString";
 	}
    
 	protected String generarPDF(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-		UserTransaction tx=null;
+		//UserTransaction tx=null;
 		try	{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			// Comienzo control de transacciones
-			tx = usr.getTransactionPesada();
+			//tx = usr.getTransactionPesada();
 			
 		    SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1172,37 +1158,37 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        
 			        try {
 			        	
-					    tx.begin();
+					   // tx.begin();
 					    
 			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
 			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
-                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);					    
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion, usr);					    
 				        
 				        contador++;
 			        
-						tx.commit();
+						//tx.commit();
 
 
 			        } catch (SIGAException e) {
 				        ClsLogging.writeFileLogError("Error GENERAL al aprobar y generar el certificado PDF: " + e.getLiteral(userBean.getLanguage()),e, 3);
 				        contadorErrores++;
-		        		tx.rollback();
+		        		//tx.rollback();
 		        		
-			        	if (contadorReg==1) {
+			        	/*if (contadorReg==1) {
 	
-			        		/*String mensaje = e.getLiteral(userBean.getLanguage());
+			        		String mensaje = e.getLiteral(userBean.getLanguage());
 			        		if (mensaje==null) mensaje = "";
 			        		String[] datos = {""+contador};
 			        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
 			        		
 			        		request.setAttribute("mensaje",mensaje);	
-			        		*/
+			        		
 			        	    //return "exitoConString";
 			        		throw e;
 	
-			        	} else {
+			        	} else {*/
 			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	}
+			        	//}
 		            }
 		
 			        fIn.delete();
@@ -1243,11 +1229,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 			
 			request.setAttribute("mensaje",mensaje);
-		}catch (SIGAException e) {
+		}/*catch (SIGAException e) {
 			throw e;	
-		} 
+		}*/ 
 		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
+			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
 			
 	    return "exitoConString";
@@ -1257,13 +1243,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	protected String generarPDFUnaPlantilla(ActionMapping mapping, String IdsParaGenerarFicheros, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 
-		UserTransaction tx=null;
+		//UserTransaction tx=null;
 		try{
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			// Comienzo control de transacciones
-			tx = usr.getTransactionPesada();
+			//tx = usr.getTransactionPesada();
 			
 		  //  SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1408,37 +1394,37 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        
 			        try {
 			        	
-					    tx.begin();
+					   // tx.begin();
 					    
 			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
 			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
-                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion);					    
+                						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion, usr);					    
 				        
 				        contador++;
 			        
-						tx.commit();
+						//tx.commit();
 
 
 			        } catch (SIGAException e) {
 				        ClsLogging.writeFileLogError("Error GENERAL al aprobar y generar el certificado PDF: " + e.getLiteral(userBean.getLanguage()),e, 3);
 				        contadorErrores++;
-		        		tx.rollback();
-		        		
+		        		//tx.rollback();
+		        		/*
 			        	if (contadorReg==1) {
 	
-			        		/*String mensaje = e.getLiteral(userBean.getLanguage());
+			        		String mensaje = e.getLiteral(userBean.getLanguage());
 			        		if (mensaje==null) mensaje = "";
 			        		String[] datos = {""+contador};
 			        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
 			        		
 			        		request.setAttribute("mensaje",mensaje);	
-			        		*/
+			        		
 			        	    //return "exitoConString";
 			        		throw e;
 	
-			        	} else {
+			        	} else {*/
 			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	}
+			        	//}
 		            }
 		
 			        fIn.delete();
@@ -1481,7 +1467,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			request.setAttribute("mensaje",mensaje);	
 		} 
 		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
+			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
 			
 	    return "exitoConString";
@@ -2678,64 +2664,75 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		return salida;
 	}
 	
-	
-	public void obtenerContadorSinronizado(GestorContadores gc, String idInstitucion, String idContador, String idTipoProducto, String idProducto,
-			String idProductoInstitucion, boolean tieneContador, Hashtable htNew) {
+	//aalg: inc_10359_siga. Se ha modificado para que siempre busque el contador en base de datos
+	//e inmediatamente asigne en base de datos el número de certificado.
+	//todo dentro del método sincronizado para que no se puedan ejecutar varios a la vez.
+	public synchronized void obtenerContadorSinronizado(GestorContadores gc, String idInstitucion, String idContador, String idTipoProducto, String idProducto,
+			String idProductoInstitucion, boolean tieneContador, Hashtable htNew,
+			CerSolicitudCertificadosAdm admSolicitud, CerSolicitudCertificadosBean beanSolicitud,
+			String[] claves, String[] campos, UsrBean usr) {
+
+		UserTransaction tx=null;
 
 		try {
-			synchronized (contadores) {
+			tx = usr.getTransaction();
+			tx.begin();
+			// obteniendo registro de contador de BD
+			Hashtable contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
 
-				// obteniendo registro de contador de BD
-				Hashtable contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
+			if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")) {
+				// MODO REGISTRO. Se suponen siempre asi estos
 
-				if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")) {
-					// MODO REGISTRO. Se suponen siempre asi estos
+				int numContador;
+				numContador = new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
+				// En la tabla contador se guarda el ultimo nº utilizado por lo que el siguiente a utilizar el contador + 1
 
-					int numContador;
-					// comprobando si el contador ya ha sido actualizado en este
-					// metodo (por otro hilo)
-					if (contadores.size() > 0 && contadores.get(idInstitucion + "#" + idContador) != null
-							&& contadores.get(idInstitucion + "#" + idContador) >= (Long) contadorTablaHash.get("CONTADOR")) {
-						numContador = contadores.get(idInstitucion + "#" + idContador) + 1;
-						// en el caso de que no se haya actualizado en este metodo, o bien este desactualizado el contador en Java
-						// respecto a BD: se tiene que leer de BD
-					} else {
-						numContador = new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
-						numContador = numContador + 1; 
-						// En la tabla contador se guarda el ultimo nº utilizado por lo que el siguiente a utilizar el contador + 1
-					}
-
-					// comprobando la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
-					while (gc.comprobarUnicidadContadorProdCertif(numContador, contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)) {
-						numContador++;
-					}
-					gc.validarLogitudContador(numContador, contadorTablaHash);
-
-					// guardando el contador para que el siguiente hilo lo encuentre actualizado
-					contadores.put(idInstitucion + "#" + idContador, numContador);
-
-					// construyendo contador final
-					Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
-					int longitudContador = longitud.intValue();
-					Integer contadorSugerido = new Integer(numContador);
-					String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
-
-					// guardando contador en BD
-					gc.setContador(contadorTablaHash, contadorFinalSugerido);
-
-					// devolviendo el contador para la continuacion del proceso
-					htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER, (String) contadorTablaHash.get("PREFIJO"));
-					htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER, (String) contadorTablaHash.get("SUFIJO"));
-					htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER, contadorFinalSugerido);
+				numContador = numContador + 1;
+				// comprobando la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
+				while (gc.comprobarUnicidadContadorProdCertif(numContador, contadorTablaHash, idTipoProducto, idProducto, idProductoInstitucion)) {
+					numContador++;
 				}
+				gc.validarLogitudContador(numContador, contadorTablaHash);
+
+				// construyendo contador final
+				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+				int longitudContador = longitud.intValue();
+				Integer contadorSugerido = new Integer(numContador);
+				String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
+
+				// guardando contador en BD
+				gc.setContador(contadorTablaHash, contadorFinalSugerido);
+
+				// devolviendo el contador para la continuacion del proceso
+				htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER, (String) contadorTablaHash.get("PREFIJO"));
+				htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER, (String) contadorTablaHash.get("SUFIJO"));
+				htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER, contadorFinalSugerido);
 			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClsExceptions e) {
-			e.printStackTrace();
-		} catch (SIGAException e) {
+			//aalg: se añade la carga en base de datos dentro de la sincronización para evitar la pérdida de número de certificado
+			//inc_10359_siga
+			if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
+			      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);    
+			      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+		        }
+
+	        // RGG 15/10/2007 CAMBIO PARA ACTUALIZAR LA FECHA DE EMISION SOLAMENTE SI ESTA A NULA 
+	        if (beanSolicitud.getFechaEmisionCertificado() == null || beanSolicitud.getFechaEmisionCertificado().equals("")) {
+	            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,"sysdate");
+	        }
+	        
+		  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
+		    
+	        if (!admSolicitud.updateDirect(htNew, claves, campos ))
+		    {
+	        	tx.rollback();
+		        throw new ClsExceptions("Error al aprobar la solicitud");
+		    }
+	        tx.commit(); 
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 }
