@@ -626,7 +626,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		try {
-			if(miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")){
+			if ((miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")) && miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
 				Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
 				if(miForm.getFechaValidacionTurno()!=null&& !miForm.getFechaValidacionTurno().equals("")){
 					Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());

@@ -230,9 +230,11 @@
 						||document.InscripcionTGForm.modo.value=='vitValidar'
 						||document.InscripcionTGForm.modo.value=='vigValidar'
 						||document.InscripcionTGForm.modo.value=='vmitValidar'
-						||document.InscripcionTGForm.modo.value=='vmigValidar') {						
+						||document.InscripcionTGForm.modo.value=='vmigValidar') {	
+						
 						if(document.getElementById('validar').checked) {						
 							document.InscripcionTGForm.fechaValidacion.value = document.getElementById('fechaCheck').value;
+							
 							// La fecha de validacion no puede ser nula
 							if(document.InscripcionTGForm.fechaValidacion.value == "") {
 								fin();
@@ -244,19 +246,29 @@
 							//	CASO TURNO: La fecha de validacion no puede ser inferior a la fecha de baja de la inscripcion anterior
 							//	CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo	
 						
-					} else if(document.getElementById('denegar').checked) {
-					//denegacion de alta
-						if(document.InscripcionTGForm.observacionesValidacion) {
-							if(document.InscripcionTGForm.observacionesValidacion.value == "") {
-								fin();
-								alert("<siga:Idioma key='gratuita.altaTurnos.literal.alertObVa'/>");
-								document.InscripcionTGForm.observacionesValidacion.focus();
-								return false;
+						} else { 
+							if(document.getElementById('denegar').checked) {
+								document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;
+								
+								if(document.InscripcionTGForm.fechaDenegacion.value == "") {
+									fin();
+									alert("<siga:Idioma key='gratuita.altaTurnos.literal.alerFeVa'/>");
+									document.getElementById('fechaCheck').focus();
+									return false;
+								}						
+								
+								if(document.InscripcionTGForm.observacionesValidacion) {
+									document.InscripcionTGForm.observacionesDenegacion.value = document.InscripcionTGForm.observacionesValidacion.value;
+									if(document.InscripcionTGForm.observacionesDenegacion.value == "") {
+										fin();
+										alert("<siga:Idioma key='gratuita.altaTurnos.literal.alertObVa'/>");
+										document.InscripcionTGForm.observacionesValidacion.focus();
+										return false;
+									}							
+								}									
 							}
-						}
-						document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;
-						document.InscripcionTGForm.observacionesDenegacion.value = document.InscripcionTGForm.observacionesValidacion.value;					
-					}						
+						}			
+						
 				} else {
 				// Este es el caso de las bajas de inscripcion
 				// sbtComprobarInsertar
@@ -265,13 +277,15 @@
 				// vbgComprobarValidar
 				// vmbgComprobarValidar
 					if(document.getElementById('validar').checked) {
-						document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;						
+						document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;	
+						
 						if(document.InscripcionTGForm.fechaBaja.value == "") {
 							fin();
 							alert("<siga:Idioma key='gratuita.altaTurnos.literal.alerFeVa'/>");
 							document.getElementById('fechaCheck').focus();
 							return false;
 						}
+						
 						if(document.InscripcionTGForm.fechaValidacionTurno.value!='' ){
 							var fechaValidacion = document.InscripcionTGForm.fechaValidacionTurno.value;
 							fechaValidacion = fechaValidacion.substring(8,10)+"/"+fechaValidacion.substring(5,7)+"/"+fechaValidacion.substring(0,4);
@@ -307,6 +321,7 @@
 								document.getElementById("tipoActualizacionSyC").value="";
 							}								
 						}
+						
 						//validaciones de guardia
 						if(document.InscripcionTGForm.idGuardia.value!=''){
 							var fechaValidacion = document.InscripcionTGForm.fechaValidacion.value;
@@ -335,7 +350,8 @@
 										&& document.InscripcionTGForm.syc[1].checked==true) {
 								document.getElementById("tipoActualizacionSyC").value="";
 							}
-						}						
+						}		
+						
 						document.InscripcionTGForm.observacionesValBaja.value = document.InscripcionTGForm.observacionesValidacion.value;	
 						
 						if( (document.InscripcionTGForm.modo.value=='vbgComprobarValidar'
@@ -350,18 +366,29 @@
 							fin();
 							alert("<siga:Idioma key='gratuita.altaTurnos.literal.defsaltosycompensaciones'/>");							
 							return false;
-						}						
-					} else if(document.getElementById('denegar').checked) {
-						if(document.InscripcionTGForm.observacionesValidacion) {
-							if(document.InscripcionTGForm.observacionesValidacion.value == "") {
+						}			
+						
+					} else {
+						if(document.getElementById('denegar').checked) {
+							document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;
+							
+							if(document.InscripcionTGForm.fechaDenegacion.value == "") {
 								fin();
-								alert("<siga:Idioma key='gratuita.altaTurnos.literal.alertObVa'/>");
-								document.InscripcionTGForm.observacionesValidacion.focus();
+								alert("<siga:Idioma key='gratuita.altaTurnos.literal.alerFeVa'/>");
+								document.getElementById('fechaCheck').focus();
 								return false;
-							}
-							document.InscripcionTGForm.observacionesDenegacion.value = document.InscripcionTGForm.observacionesValidacion.value;
+							} 
+							
+							if(document.InscripcionTGForm.observacionesValidacion) {
+								document.InscripcionTGForm.observacionesDenegacion.value = document.InscripcionTGForm.observacionesValidacion.value;
+								if(document.InscripcionTGForm.observacionesDenegacion.value == "") {
+									fin();
+									alert("<siga:Idioma key='gratuita.altaTurnos.literal.alertObVa'/>");
+									document.InscripcionTGForm.observacionesValidacion.focus();
+									return false;
+								}							
+							}											
 						}
-						document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;					
 					}
 				}					
 			}
@@ -687,7 +714,7 @@
 										</td>
 										<td>
 											<input type="checkbox" id="denegar" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('fechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
 										</td>
 										<td>&nbsp;</td>
 									</c:when>
@@ -702,7 +729,7 @@
 										</td>
 										<td>
 											<input type="checkbox" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('fechaCheck').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
 										</td>
 										<td class="labelText">
 											<div id="capa1" style="visibility: hidden">								
@@ -734,13 +761,11 @@
 									</c:when>
 									<c:otherwise>
 										<td>
-											<input type="checkbox" id="validar" name="validar" value="no"
-												onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+											<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
 										</td>
 										<td>&nbsp;</td>
 										<td>
-											<input type="checkbox" id="denegar" name="denegar" value="no"
-												style="visibility: hidden"></td>
+											<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden"></td>
 										<td>&nbsp;</td>	
 									</c:otherwise>
 								</c:choose>
