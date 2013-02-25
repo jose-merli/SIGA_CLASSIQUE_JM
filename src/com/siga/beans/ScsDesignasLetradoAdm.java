@@ -954,9 +954,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 	}
 	
 	
-	
-	
-	private String getQueryWhereResolucion(String tipoResolucionDesigna){
+	private String getQueryEjgs(String tipoResolucionDesigna){
 		 ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
 		StringBuffer sql = new StringBuffer();
@@ -965,17 +963,13 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
 			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
 			final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
-			sql.append(" AND EXISTS (SELECT * ");
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
-			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
-			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
-			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
 			
+			sql.append(", (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
+			sql.append("        FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append("        WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append("         AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append("         AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append("         AND EJGDES.NUMEROEJG = EJG.NUMERO ");
 			sql.append(" AND (( EJG.IDTIPORATIFICACIONEJG IN ( ");
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
@@ -994,50 +988,23 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
 			sql.append(" ))))");
-			sql.append(" ) ");
-
-			
+			sql.append(" ) EJGS ");
+	
 		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)){
 			
 			final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
-			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
-			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
 			
-			sql.append(" AND EXISTS (SELECT * ");
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
-			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
-			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
-			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" , (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
+			sql.append("         FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append("         WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append("                  AND EJGDES.NUMEROEJG = EJG.NUMERO ");
 			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_PTE_CAJG);
 			
-			sql.append(" ) ");
-				        
-			sql.append(" ) ");
-			sql.append(" AND NOT EXISTS (SELECT * ");
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
-			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
-			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
-			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN ( ");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-			sql.append(" ) ");
-			
-			sql.append(" ) ");
-
-			
+			sql.append(" )) EJGS ");
+                            
 		}
 		else if(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
 			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
@@ -1046,21 +1013,12 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
 			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
 			
-			
-			
-			
-			
-			
-			sql.append(" AND EXISTS (SELECT * ");
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
-			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
-			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
-			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" , (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
+			sql.append("         FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append("         WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append("                AND EJGDES.NUMEROEJG = EJG.NUMERO ");
 			sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
 			sql.append(",");
@@ -1081,21 +1039,8 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
-			sql.append(")))))");
-			
-			
-			sql.append(" AND NOT EXISTS (SELECT * ");
-			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
-			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
-			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
-			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-
-			sql.append(" AND (( EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append("))))");
+			sql.append(" AND NOT (( EJG.IDTIPORATIFICACIONEJG IN ( ");
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
@@ -1112,13 +1057,19 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
-			sql.append(")))))");
+			sql.append("))))) EJGS ");
 			
-			
-			
-
-			
-		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)){
+		}
+		return sql.toString();
+		
+	}
+	
+	private String getQueryWhereResolucion(String tipoResolucionDesigna){
+		 ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+		StringBuffer sql = new StringBuffer();
+		
+		if(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)){
 			//Todo sus ejgs estan sin resolucion
 			sql.append(" AND (SELECT COUNT(*) ");
 			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
@@ -1233,18 +1184,30 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 		
 		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
+		
+		sql.append(getQueryEjgs(tipoResolucionDesigna));
+		
 		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
 		sql.append(" AND D.ANIO = DL.ANIO ");
 		sql.append(" AND D.NUMERO = DL.NUMERO ");
 		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
 		sql.append(" AND DL.IDINSTITUCION = :");
-		
+
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
 		//sql.append("    and d.codigo in ('00164') ");
 		
 		//sql.append("    and d.codigo in ('00157','00158','00211','00212') ");
+		
+		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable) ||
+				tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG) ||
+				tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
+				sql.append(" AND D.IDINSTITUCION = EJGS.IDINSTITUCION ");
+				sql.append(" AND D.IDTURNO = EJGS.IDTURNO ");
+				sql.append(" AND D.ANIO = EJGS.ANIODESIGNA ");
+				sql.append("  AND D.NUMERO = EJGS.NUMERODESIGNA ");
+		}
 		
 		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
 			sql.append(" and DL.IDPERSONA = :");
