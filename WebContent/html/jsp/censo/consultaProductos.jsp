@@ -384,16 +384,28 @@
 						.get("NOFACTURABLE");
 				
 				if (modo.equals("editar") && !usr.isLetrado()
-						
 						&& estadoProducto.equals("Aceptado")) {
-					elems[1] = new FilaExtElement(
-							"cambiarFechaEfectiva",
-							"cambiarFechaEfectiva",
-							SIGAConstants.ACCESS_READ);
-					elems2[0] = new FilaExtElement(
-							"cambiarFechaEfectiva",
-							"cambiarFechaEfectiva",
-							SIGAConstants.ACCESS_READ);
+					//mhg - INC_09859_SIGA Si el producto está facturado no debe poder editar la fecha efectiva.
+					//El persimo ACCESS_SIGAENPRODUCCION tiene valor 40 y nos vale para controlar los permisos a nivel de lógica de negocio.
+					if(estadoPago2.equals("estados.compra.facturado")){
+						elems[1] = new FilaExtElement(
+								"cambiarFechaEfectiva",
+								"cambiarFechaEfectiva",
+								SIGAConstants.ACCESS_SIGAENPRODUCCION);
+						elems2[0] = new FilaExtElement(
+								"cambiarFechaEfectiva",
+								"cambiarFechaEfectiva",
+								SIGAConstants.ACCESS_SIGAENPRODUCCION);
+					}else{
+						elems[1] = new FilaExtElement(
+								"cambiarFechaEfectiva",
+								"cambiarFechaEfectiva",
+								SIGAConstants.ACCESS_READ);
+						elems2[0] = new FilaExtElement(
+								"cambiarFechaEfectiva",
+								"cambiarFechaEfectiva",
+								SIGAConstants.ACCESS_READ);
+					}
 				}
 				
 				//Fecha Efectiva:
