@@ -237,8 +237,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 	    return salida;
 	}
 
-	public void insertarApunte(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona) 
-	throws ClsExceptions {
+	public void insertarApunte(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona) {
     
     try {
         // log de envio
@@ -263,17 +262,16 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 	    bean.setIdEnvio(idEnvio);
 	    bean.setIdTipoEnvio(idTipoEnvio);
 	    bean.setIdPersona(idPersona);
+	    
         if (!this.insert(bean)) {
             throw new ClsExceptions("Error al insertar apunte estadístico de envíos: "+this.getError());
         }
-
     } catch (ClsExceptions e) {
-        throw e;
+    	ClsLogging.writeFileLogWithoutSession(e.getMessage(), 10);
     }
 }
 
-	public void insertarApunteExtra(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona, String extra) 
-	throws ClsExceptions {
+	public void insertarApunteExtra(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona, String extra) {
     
     try {
         // log de envio
@@ -297,12 +295,12 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 	    bean.setIdEnvio(idEnvio);
 	    bean.setIdTipoEnvio(idTipoEnvio);
 	    bean.setIdPersona(idPersona);
+	    
         if (!this.insert(bean)) {
             throw new ClsExceptions("Error al insertar apunte estadístico de envíos: "+this.getError());
         }
-
     } catch (ClsExceptions e) {
-        throw e;
+    	ClsLogging.writeFileLogWithoutSession(e.getMessage(), 10);
     }
 }
 
