@@ -2,7 +2,6 @@ package com.siga.general;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +37,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
 import com.siga.administracion.SIGAConstants;
-import com.siga.censo.vos.ColegiadoVO;
 import com.siga.comun.action.SessionForms;
 import com.siga.comun.form.AuxForm;
 import com.siga.comun.form.BaseForm;
