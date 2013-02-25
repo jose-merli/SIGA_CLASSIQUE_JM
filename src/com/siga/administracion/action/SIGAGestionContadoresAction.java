@@ -61,7 +61,9 @@ public class SIGAGestionContadoresAction extends MasterAction
 				AdmContadorBean.C_RECONFIGURACIONCONTADOR,
 				AdmContadorBean.C_RECONFIGURACIONPREFIJO,
 				AdmContadorBean.C_RECONFIGURACIONSUFIJO,
-				AdmContadorBean.C_SUFIJO, 				AdmContadorBean.C_FECHAMODIFICACION, AdmContadorBean.C_USUMODIFICACION};
+				AdmContadorBean.C_SUFIJO, 				
+				AdmContadorBean.C_FECHAMODIFICACION, 
+				AdmContadorBean.C_USUMODIFICACION};
 
 		try {
 			SIGAGestionContadoresForm form = (SIGAGestionContadoresForm) formulario;

@@ -67,7 +67,8 @@
   				nombreCol="administracion.parametrosGenerales.literal.codigo,administracion.parametrosGenerales.literal.nombre,administracion.parametrosGenerales.literal.descripcion,administracion.parametrosGenerales.literal.prefijo,administracion.parametrosGenerales.literal.contadorActual,administracion.parametrosGenerales.literal.sufijo,"  
    				tamanoCol="15,25,27,5,15,5,8"
 	   			ajusteBotonera="true"
-				modal="G" 
+				modal="G"
+				alto="100%"
 		   		activarFilaSel="true" >
 		   			
 		   	<%	if ( (vDatos != null) && (vDatos.size() > 0) ) {
@@ -129,8 +130,6 @@
 			
 		</siga:TablaCabecerasFijas>		
   
-		<siga:ConjBotonesAccion botones=""  clase="botonesDetalle"/>
-
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 
 	</body>
