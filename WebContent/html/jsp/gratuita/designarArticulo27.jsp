@@ -1261,7 +1261,7 @@
 							key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
 						</td>
 						<td id="poblacionEspanola">
-							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion">
+							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion" style="width:150">
 									<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 							</html:select>							
 						</td>
@@ -1878,7 +1878,7 @@
 		}
 		
 		var html_idPoblacion = "poblacion";
-		var comboPoblacionHTML = '<select name="'+html_idPoblacion+'" class="boxCombo" id="'+html_idPoblacion+'"></select>';
+		var comboPoblacionHTML = '<select name="'+html_idPoblacion+'" class="boxCombo" id="'+html_idPoblacion+'" style="width:150"></select>';
 		
 		function cargarPoblaciones(comboProvincia){
 			var idProvincia = jQuery("#provincia").val();			
