@@ -445,7 +445,8 @@ public class PoblacionesAction extends MasterAction{
 		ClsLogging.writeFileLog("++++++    PARAMETRO getAjaxPoblacionesDeProvincia.provincia: " + valorProvincia,10);
 		String[] parametrosWhere = {valorProvincia};
 		StringBuilder comboHTMLOptions = getComboHTMLOptions(request, tipo, parametrosWhere);
-		respuestaComboHTMLOptionsJson(comboHTMLOptions, response);
+		//respuestaComboHTMLOptionsJson(comboHTMLOptions, response);
+		respuestaComboHTMLoptionsHTML(comboHTMLOptions, response);
 		Date tiempoFin = new Date();
 		ClsLogging.writeFileLog("++++++    FIN getAjaxPoblacionesDeProvincia   ++++++++  TIEMPO:" +new Long((tiempoFin.getTime()-tiempoIni.getTime())).toString() + " milisegundos. Longitud de options: " + comboHTMLOptions.length(),10);
 	}

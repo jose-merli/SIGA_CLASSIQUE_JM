@@ -362,32 +362,44 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	 * Metodos para las acciones que utilizan AJAX
 	 */
 
+	protected void respuestaComboHTMLoptionsHTML(StringBuilder comboHTMLOptions, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.getWriter().write(comboHTMLOptions.toString());
+	}
+	
 	protected void respuestaComboHTMLOptionsJson(StringBuilder comboHTMLOptions, HttpServletResponse response) throws IOException, JSONException {
+		respuestaComboHTMLOptionsJson(comboHTMLOptions, response, false);
+	}
+	protected void respuestaComboHTMLOptionsJson(StringBuilder comboHTMLOptions, HttpServletResponse response, boolean bMaxItemLength) throws IOException, JSONException {
 		final int MAX_ITEM_LONG = 250;
 		JSONObject json = new JSONObject();
 		JSONArray items = new JSONArray();
 		
-		if (comboHTMLOptions.length() > MAX_ITEM_LONG){
-			int i = 1;
-			String itemsHTML = comboHTMLOptions.toString();
-			items.put(itemsHTML.substring(0, MAX_ITEM_LONG));
-			while (itemsHTML.length() > i*MAX_ITEM_LONG){
-				int endIndex = (i+1)*MAX_ITEM_LONG;
-				if (endIndex > itemsHTML.length() - 1){
-					endIndex = itemsHTML.length() - 1;
+		if (bMaxItemLength){
+			if (comboHTMLOptions.length() > MAX_ITEM_LONG){
+				int i = 1;
+				String itemsHTML = comboHTMLOptions.toString();
+				items.put(itemsHTML.substring(0, MAX_ITEM_LONG));
+				while (itemsHTML.length() > i*MAX_ITEM_LONG){
+					int endIndex = (i+1)*MAX_ITEM_LONG;
+					if (endIndex > itemsHTML.length() - 1){
+						endIndex = itemsHTML.length() - 1;
+					}
+					items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, endIndex));
+					i++;
 				}
-				items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, endIndex));
-				i++;
+				if (i*MAX_ITEM_LONG < itemsHTML.length()){
+					items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, itemsHTML.length() - 1));
+				}
+				
+			} else {
+				items.put(comboHTMLOptions.toString());
 			}
-			if (i*MAX_ITEM_LONG < itemsHTML.length()){
-				items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, itemsHTML.length() - 1));
-			}
-			
+			json.put("itemsHTML", items);
 		} else {
-			items.put(comboHTMLOptions.toString());
+			json.put("itemsHTML", comboHTMLOptions.toString());
 		}
-		
-		json.put("itemsHTML", items);
 		respuestaJson(json, response);
 	}
 	
