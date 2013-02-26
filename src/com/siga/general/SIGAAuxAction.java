@@ -363,9 +363,31 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	 */
 
 	protected void respuestaComboHTMLOptionsJson(StringBuilder comboHTMLOptions, HttpServletResponse response) throws IOException, JSONException {
+		final int MAX_ITEM_LONG = 250;
 		JSONObject json = new JSONObject();
+		JSONArray items = new JSONArray();
 		
-		json.put("itemsHTML", comboHTMLOptions.toString());
+		if (comboHTMLOptions.length() > MAX_ITEM_LONG){
+			int i = 1;
+			String itemsHTML = comboHTMLOptions.toString();
+			items.put(itemsHTML.substring(0, MAX_ITEM_LONG));
+			while (itemsHTML.length() > i*MAX_ITEM_LONG){
+				int endIndex = (i+1)*MAX_ITEM_LONG;
+				if (endIndex > itemsHTML.length() - 1){
+					endIndex = itemsHTML.length() - 1;
+				}
+				items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, endIndex));
+				i++;
+			}
+			if (i*MAX_ITEM_LONG < itemsHTML.length()){
+				items.put(itemsHTML.substring(i*MAX_ITEM_LONG + 1, itemsHTML.length() - 1));
+			}
+			
+		} else {
+			items.put(comboHTMLOptions.toString());
+		}
+		
+		json.put("itemsHTML", items);
 		respuestaJson(json, response);
 	}
 	

@@ -1912,7 +1912,11 @@
 							if (jQuery("#"+html_idPoblacion).length > 0){
 								document.getElementById("poblacionEspanola").innerHTML = comboPoblacionHTML;
 							}
-							jQuery("#"+html_idPoblacion).html(defaultOptionPoblacion+json.itemsHTML);
+							var optionsHTML = defaultOptionPoblacion;
+							for (var i = 0; i < json.itemsHTML.length; i++){
+								optionsHTML = optionsHTML + json.itemsHTML[i];
+							}
+							jQuery("#"+html_idPoblacion).html(optionsHTML);
 							jQuery("#"+html_idPoblacion).val("-1");
 							if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
 								jQuery("#"+html_idPoblacion).val(document.busquedaCensoModalForm.poblacionValue.value);
