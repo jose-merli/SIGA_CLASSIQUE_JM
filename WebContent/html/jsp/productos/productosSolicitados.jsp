@@ -71,6 +71,13 @@
 				  	fin();
 				  	return false;
 				}
+				//aalg: INC_09651. controlar que continua solo si tiene interesado
+				if (parent.document.solicitudCompraForm.idPersona != null && parent.document.solicitudCompraForm.idPersona.value == ""){
+					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionCliente"/>" ;
+					alert(mensaje);
+				  	fin();
+				  	return false;	
+				}
 			
 					parent.document.solicitudCompraForm.modo.value = "continuar";	
 					parent.document.solicitudCompraForm.target="mainWorkArea";					

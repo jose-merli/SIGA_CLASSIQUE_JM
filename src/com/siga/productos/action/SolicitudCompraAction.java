@@ -518,7 +518,7 @@ public class SolicitudCompraAction extends MasterAction{
 			request.setAttribute("idInstitucion", form.getIdInstitucion());
 			request.setAttribute("idInstitucionPresentador", form.getIdInstitucionPresentador());
 			request.setAttribute("nombrePersona",  per.obtenerNombreApellidos(form.getIdPersona().toString()));
-			request.setAttribute("numero", request.getParameter("numeroColegiado"));
+			request.setAttribute("numero", per.getPersonaColegiado(form.getIdPersona(), form.getIdInstitucion()).getColegiado().getNColegiado());
 			request.setAttribute("nif",per.obtenerNIF(form.getIdPersona().toString()));
 			request.setAttribute("existeCarro", "S");
 			//request.setAttribute("deCertificado",certificado);

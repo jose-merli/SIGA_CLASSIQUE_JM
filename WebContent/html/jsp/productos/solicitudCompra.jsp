@@ -585,7 +585,7 @@
 		}
 		
 
-								
+
 	</script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -601,7 +601,7 @@
 					<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
 						<table class="tablaCampos" align="center" border=0>
 						<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" type="">
-		  				<input type="hidden" id="numeroColegiado"  name="actionModal" value="">
+		  				<input type="hidden" id="actionModal"  name="actionModal" value="">
 		  				<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
 		  				<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
 						<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
@@ -827,6 +827,9 @@
 
 
 <script>
+//aalg: INC_09651. Se pierde el interesado al volver atrás en una solicitud de compra
+jQuery("#numeroNifTagBusquedaPersonas").val('<%=numero%>');
+jQuery("#nombrePersona").val('<%=nombre%>');
 
 function compruebaComboSigaPadre () 
 {   
