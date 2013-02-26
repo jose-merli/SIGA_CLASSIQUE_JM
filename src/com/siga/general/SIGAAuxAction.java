@@ -393,7 +393,9 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	}
 	
 	protected void respuestaJson(JSONObject json, HttpServletResponse response) throws IOException{
-		response.setContentType("text/x-json;charset=ISO-8859-15");
+		//response.setContentType("text/x-json;charset=ISO-8859-15");
+		//response.setHeader("Content-Type", "application/json");
+		response.setContentType("text/x-json;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");		
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString());
