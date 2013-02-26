@@ -1906,6 +1906,8 @@
 						type: "POST",
 						url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesDeProvincia",				
 						data: "valorProvincia="+idProvincia,
+						cache: "true",
+						timeout: "5000",
 						dataType: "json"}).done(function(json){							
 							if (jQuery("#"+html_idPoblacion).length > 0){
 								document.getElementById("poblacionEspanola").innerHTML = comboPoblacionHTML;

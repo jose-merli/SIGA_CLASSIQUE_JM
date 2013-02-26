@@ -1,6 +1,7 @@
 package com.siga.censo.action;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -436,11 +438,16 @@ public class PoblacionesAction extends MasterAction{
 	}		
 	
 	protected void getAjaxPoblacionesDeProvincia (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Date tiempoIni = new Date();
+		ClsLogging.writeFileLog("++++++    INICIO getAjaxPoblacionesDeProvincia   ++++++",10);
 		final String tipo = "poblacion";
 		String valorProvincia = request.getParameter("valorProvincia");
+		ClsLogging.writeFileLog("++++++    PARAMETRO getAjaxPoblacionesDeProvincia.provincia: " + valorProvincia,10);
 		String[] parametrosWhere = {valorProvincia};
 		StringBuilder comboHTMLOptions = getComboHTMLOptions(request, tipo, parametrosWhere);
 		respuestaComboHTMLOptionsJson(comboHTMLOptions, response);
+		Date tiempoFin = new Date();
+		ClsLogging.writeFileLog("++++++    FIN getAjaxPoblacionesDeProvincia   ++++++++  TIEMPO:" +new Long((tiempoFin.getTime()-tiempoIni.getTime())).toString() + " milisegundos. Longitud de options: " + comboHTMLOptions.length(),10);
 	}
 	
 	protected void getAjaxNombreDePoblacion (HttpServletRequest request, HttpServletResponse response) throws Exception {

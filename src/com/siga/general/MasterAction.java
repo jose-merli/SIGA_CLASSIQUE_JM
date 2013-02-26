@@ -35,6 +35,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesString;
@@ -733,7 +734,8 @@ public abstract class MasterAction extends SIGAAuxAction {
 				}
 			}
 		} 
-		catch (Exception e) { 				
+		catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR getComboHTMLOptions", e, 8);
 			comboHTMLOptions = new StringBuilder();
 			comboHTMLOptions.append("<option value='1'>Error B.D.</option>");
 		}
