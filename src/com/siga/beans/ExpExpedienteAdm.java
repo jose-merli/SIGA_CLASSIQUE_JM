@@ -569,7 +569,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			 sqlDenunciado.append((!hay_ap1_denunciado.equals("")) ? " and "+hay_ap1_denunciado : "");
 			 sqlDenunciado.append((!hay_ap2_denunciado.equals("")) ? " and "+hay_ap2_denunciado : "");
 			 
-			 sqlDenunciado.append(" ) > 0) ");
+			 sqlDenunciado.append(" ) > 0 ");
 			 where += sqlDenunciado.toString();
 		}
 		
