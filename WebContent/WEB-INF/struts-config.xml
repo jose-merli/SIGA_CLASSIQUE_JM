@@ -2169,9 +2169,6 @@
 		</action>
 		
 		<action path="/JGR_ActualizarInformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionMasivaAction"  name="InformeJustificacionMasivaForm"/>
-		
-		
-		
 
 		<action path="/JGR_PestanaProximasDesignas" type="com.siga.gratuita.action.ProximasDesignasAction">
 			<forward name="listado" path="/html/jsp/gratuita/listarProximasDesignasTurno.jsp"/>
@@ -3325,6 +3322,13 @@
 			<forward name="cargaeconomica" path="/html/jsp/gratuita/datosEconomicosCargaEconomica.jsp"/>
 			<forward name="irpf20" path="/html/jsp/gratuita/datosEconomicosIrpf20.jsp"/>	
 		</action>				
+		
+		<action path="/CEN_SJCS_NoColegiado" forward="/html/jsp/gratuita/pestanasCenSJCSNoColegiado.jsp"/>
+		<action path="/CEN_SJCS_RET_NoColegiado" forward="/html/jsp/gratuita/pestanasCenSJCSRetNoColegiado.jsp"/>
+		
+		<action path="/CEN_SJCS_RET_IRPF_NoColegiado" type="com.siga.gratuita.action.RetencionesIRPFAction" name="RetencionesIRPFForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/pestanasCenSJCSRetIRPFNoColegiado.jsp"/>
+		</action>					
 
 		<!-- ****************************************************************************
 -->
