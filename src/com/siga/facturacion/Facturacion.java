@@ -78,6 +78,7 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysFormaPagoProductoAdm;
+import com.siga.beans.PysFormaPagoProductoBean;
 import com.siga.beans.PysPeticionCompraSuscripcionAdm;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -2203,37 +2204,24 @@ public class Facturacion {
 				String formaPago="";
 				// Inserciones relacionadas previa obtencion forma de pago
 				PysFormaPagoProductoAdm admFPP= new PysFormaPagoProductoAdm(userBean);
-				
-				
-				/* RGG 
-				 * 12/11/2007
-				 */ 
-				
-				formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
-				// Si la cuenta viene dada en la llamada, no la obtenemos
-				if (idCuenta == null)
-					idCuenta=facturaDisquete.getIdCuenta().toString();
-				
-				/* RGG 
-				 * 12/11/2007 
-				 * Como finalmente el tratamiento es el mismo se quita el if y las operaciones.
-				 * Lo que hacemos es ponerle siempre la misma forma de pago (Domiciliacion) y la cuenta la del disquete.
-				 * 
-				Vector formasPagoProductoComision = admFPP.getProductoPorFactura((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
-				if (formasPagoProductoComision.isEmpty()){
+
+				//aalg: INC_09853_SIGA. Hay que buscar la forma de pago que tenga la comisión bancaria
+			
+				Vector formasPagoProductoComision = admFPP.getFormasPagoProducto((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
+				if (formasPagoProductoComision == null || formasPagoProductoComision.isEmpty()){
 					// No existe forma de pago por banco para el producto comision.
 					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
 					idCuenta=facturaDisquete.getIdCuenta().toString();
 				} else {
 					// SI existe forma de pago por banco para el producto comision.
-					//Vector formasPago=new Vector();
-					//formasPago=admFPP.getFormasPagoProducto((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
-					if(formasPagoProductoComision.size()>0)
-						formaPago=((Row)formasPagoProductoComision.firstElement()).getRow().get(PysFormaPagoProductoBean.C_IDFORMAPAGO).toString();
-					//idCuenta=null;
-					idCuenta=facturaDisquete.getIdCuenta().toString();
+					formaPago=((Row)formasPagoProductoComision.firstElement()).getRow().get(PysFormaPagoProductoBean.C_IDFORMAPAGO).toString();
+					if (formaPago.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA)))
+						idCuenta=facturaDisquete.getIdCuenta().toString();
+					else
+						idCuenta = "";
+
 				}
-				*/
+				
 				
 				// Insercion PYS_COMPRASUSCRIPCION						
 				PysPeticionCompraSuscripcionAdm admPCS= new PysPeticionCompraSuscripcionAdm(userBean);
