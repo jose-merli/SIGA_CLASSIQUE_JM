@@ -928,8 +928,9 @@ public class DefinirEnviosAction extends MasterAction {
 				enviosBean.setIdEnvio(Integer.valueOf(idEnvio));
 			enviosBean.setDescripcion(nombreEnvio);
 			enviosBean.setIdTipoEnvios(Integer.valueOf(idTipoEnvio));
+			//mhg - Se saca fuera del if el setIdPlantillaEnvios ya que es un campo obligatorio en bbdd. Ese if es para controlar el idPlantillaGeneracion.
+			enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
 			if(!isEnvioSMS){
-				enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
 				if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {
 					enviosBean.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
 				} else {
