@@ -315,7 +315,14 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
     	    // campos diferentes
     	    salida.setTipoSerie("T");
     	    salida.setIdSerieFacturacion(new Long(nuevoId));
-    	    salida.setDescripcion("Fact. Autom. "+admPer.obtenerNombreApellidos(peticion.getIdPersona().toString()));
+    	    //mhg - Da error al insertar porque el campo descripción es mas grande que lo definido en bbdd.
+    	    String descripcion = "Fact. Autom. "+admPer.obtenerNombreApellidos(peticion.getIdPersona().toString());
+    	    if(descripcion.length()>100){
+    	    	salida.setDescripcion(descripcion.substring(0, 100));
+    	    }else{
+    	    	salida.setDescripcion(descripcion);
+    	    }
+    	    
     	    salida.setNombreAbreviado("AUTOM_"+peticion.getIdPersona().toString()+"_"+salida.getIdSerieFacturacion().toString());
     	    if (!this.insert(salida)) {
     	        throw new ClsExceptions("Error al crear la serie de facturacion temporal");

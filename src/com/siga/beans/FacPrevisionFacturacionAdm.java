@@ -198,7 +198,9 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 		try{
 			rc = new RowsContainer(); 
 			// Para solucionar la incidencia-4274 a la fecha se le concatena las 22:00 para cerciorarse que el útimo día se recoge, actualmente se ponian las 00:00 y por tanto el último día no se está teniendo en cuenta.
-			String sql = "Select to_date((to_char(Greatest("+FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_FECHAFINSERVICIOS+", "+FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_FECHAFINPRODUCTOS+"),'dd/mm/yyyy')||' '||'22:00:00'),'dd/mm/yyyy hh24:mi:ss') FECHAPREVISTAGENERACION " +
+			//mhg - En vez de comparar las fechas de fin periodo productos/servicios sea el día actual.
+			//String sql = "Select to_date((to_char(Greatest("+FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_FECHAFINSERVICIOS+", "+FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_FECHAFINPRODUCTOS+"),'dd/mm/yyyy')||' '||'22:00:00'),'dd/mm/yyyy hh24:mi:ss') FECHAPREVISTAGENERACION " +
+			String sql = "Select to_date((to_char(sysdate, 'dd/mm/yyyy')||' '||'22:00:00'),'dd/mm/yyyy hh24:mi:ss') FECHAPREVISTAGENERACION " +
 								 ", " + FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_DESCRIPCION;
 			sql += " From "+FacPrevisionFacturacionBean.T_NOMBRETABLA;
 			sql += where;
