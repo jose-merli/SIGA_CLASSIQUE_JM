@@ -148,16 +148,12 @@ public class MantenimientoInformesAction extends MasterAction {
 	/**
 	 * Abre la JSP de inicio
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
-			request.setAttribute("anyoIRPF", String.valueOf(Calendar
-					.getInstance().get(Calendar.YEAR) - 1));
+			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.sjcs" },
-					e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.sjcs" }, e, null);
 		}
 
 		return "inicio";

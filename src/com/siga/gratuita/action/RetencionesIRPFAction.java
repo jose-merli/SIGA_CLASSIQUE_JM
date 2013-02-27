@@ -64,29 +64,40 @@ public class RetencionesIRPFAction extends MasterAction {
 
 		MasterForm miForm = null;
 		miForm = (MasterForm) formulario;
+		
+		String modo = (String) request.getParameter("MODO");
+		
+		if (modo != null && !modo.equals("") && miForm != null && (miForm.getModo()==null||miForm.getModo().equals(""))) {
+			miForm.setModo(modo);
+		}
+		
 		try{
-			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
+			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))) {
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
-			}
-			else if(miForm.getModo().equalsIgnoreCase("guardarPagoPor"))
-			{
+				
+			} else if(miForm.getModo().equalsIgnoreCase("buscarIRPFNoColegiado")) {
+				return mapping.findForward(this.buscarIRPFNoColegiado(mapping, miForm, request, response));
+			
+			} else if(miForm.getModo().equalsIgnoreCase("guardarPagoPor")) {
 				return mapping.findForward(this.guardarPagoPor(mapping, miForm, request, response));
-			}else if (miForm.getModo().equalsIgnoreCase("dialogoInformeIRPF")){
-				return mapping.findForward(this.dialogoInformeIRPF(mapping, miForm, request, response));
 				
+			} else if (miForm.getModo().equalsIgnoreCase("dialogoInformeIRPF")) {
+				return mapping.findForward(this.dialogoInformeIRPF(mapping, miForm, request, response));				
 				
-			}else if (miForm.getModo().equalsIgnoreCase("generarInformeIRPF")){
+			} else if (miForm.getModo().equalsIgnoreCase("generarInformeIRPF")) {
 				return mapping.findForward(this.generarInformeIRPF(mapping, miForm, request, response));
 			
-			}else if (miForm.getModo().equalsIgnoreCase("traeDatos")){
+			} else if (miForm.getModo().equalsIgnoreCase("traeDatos")) {
 				return mapping.findForward(this.traeDatos(mapping, miForm, request, response));
 				
-			}  
-			else return super.executeInternal(mapping, formulario, request, response);
+			} else return super.executeInternal(mapping, formulario, request, response);
+			
 		} catch (SIGAException e) {
 			throw e;
+			
 		} catch(ClsExceptions e) {
 			throw new SIGAException("ClsException no controlada -> " + e.getMessage() ,e);
+			
 		} catch (Exception e){
 			throw new SIGAException("Exception no controlada -> " + e.getMessage(),e);
 		}
@@ -102,12 +113,7 @@ public class RetencionesIRPFAction extends MasterAction {
 		return salida;
 	}
 	
-	protected String dialogoInformeIRPF(ActionMapping mapping,
-										MasterForm formulario,
-										HttpServletRequest request,
-										HttpServletResponse response)
-			throws SIGAException
-	{
+	protected String dialogoInformeIRPF(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 
 			RetencionesIRPFForm miform = (RetencionesIRPFForm) formulario;
@@ -117,17 +123,14 @@ public class RetencionesIRPFAction extends MasterAction {
 			Long idPersona = new Long(miform.getIdPersona());
 			String idInstitucion = miform.getIdInstitucion();
 			CenColegiadoAdm admCol = new CenColegiadoAdm(user);
-			CenColegiadoBean beanCol = admCol.getDatosColegiales(idPersona,
-					new Integer(idInstitucion.trim()));
+			CenColegiadoBean beanCol = admCol.getDatosColegiales(idPersona,	new Integer(idInstitucion.trim()));
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-			String nombre = personaAdm.obtenerNombreApellidos(miform
-					.getIdPersona());
+			String nombre = personaAdm.obtenerNombreApellidos(miform.getIdPersona());
 			request.setAttribute("nombre", nombre);
 			request.setAttribute("idPersona", idPersona.toString());
 			request.setAttribute("colegiado", beanCol);
 			request.setAttribute("desdeFicha", desdeFicha);
-			request.setAttribute("anyoIRPF", String.valueOf(Calendar
-					.getInstance().get(Calendar.YEAR) - 1));
+			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
 			
 			String informeUnico = ClsConstants.DB_TRUE;
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
@@ -135,16 +138,13 @@ public class RetencionesIRPFAction extends MasterAction {
 			
 			Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"IRPF",null, null);
 			if(informeBeans!=null && informeBeans.size()>1){
-				informeUnico = ClsConstants.DB_FALSE;
-				
+				informeUnico = ClsConstants.DB_FALSE;				
 			}
 
-			request.setAttribute("informeUnico", informeUnico);
-			
+			request.setAttribute("informeUnico", informeUnico);			
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.censo" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
 
 		return "dialogoInformeIRPF";
@@ -985,4 +985,48 @@ public class RetencionesIRPFAction extends MasterAction {
 		return null;
 	}
 	
+		private String buscarIRPFNoColegiado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+			try {
+				UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+				String sIdPersona = (String)request.getParameter("idPersonaPestana");
+				String sIdInstitucion = (String)request.getParameter("idInstitucionPestana");
+				
+				// Calcula IRPF
+				String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(sIdInstitucion, sIdPersona, true);
+				
+				// Obtiene Retenciones
+				String where = " WHERE " + ScsRetencionesBean.T_NOMBRETABLA + "." + ScsRetencionesBean.C_IDRETENCION + " = '" + resultado[1] + "'";
+				ScsRetencionesAdm irpf = new ScsRetencionesAdm(usr);
+				Vector vIrpf = irpf.select(where);				
+					
+				//  Compruebo que tiene Retenciones
+				Vector vRetenciones = new Vector();
+				if (vIrpf.size() > 0) {
+					Hashtable hashRetencion = new Hashtable();
+
+					// Actualmente una sociedad sólo puede tener un IRPF 
+					ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
+					
+					
+					ScsRetencionesIRPFAdm reten = new ScsRetencionesIRPFAdm(usr);
+					String sql = "SELECT F_SIGA_GETRECURSO(descripcion, " + usr.getLanguage() + ") DESCRIPCION FROM scs_maestroretenciones WHERE descripcion = " + scsRetencionesBean.getDescripcion();
+					Hashtable<String, String> descripcion = (Hashtable<String, String>) reten.select(sql).get(0);
+					
+					hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
+					hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
+					hashRetencion.put("DESCRIPCION", descripcion.get("DESCRIPCION") );					
+					
+					vRetenciones.add(hashRetencion);
+				}
+								
+				request.setAttribute("resultado", vRetenciones);
+				request.setAttribute("idPersona", sIdPersona);
+				request.setAttribute("idInstitucion", sIdInstitucion);
+				
+			} catch (Exception e) {
+				throw new SIGAException("messages.general.error", e, new String[] {"modulo.gratuita"});
+			} 	
+			
+			return "inicio"; 
+		}		
 	}

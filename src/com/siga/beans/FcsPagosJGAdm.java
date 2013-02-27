@@ -1048,11 +1048,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 	} //getQueryDetallePago()
 	
-	public String getQueryDetallePagoColegiado(String idInstitucion,
-											   String idPagosJg,
-											   boolean irpf,
-											   String idioma) 
-	{
+	public String getQueryDetallePagoColegiado(String idInstitucion, String idPagosJg, boolean irpf, String idioma) {
 		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null, irpf, idioma);
 	} //getQueryDetallePagoColegiado()
 	
@@ -1060,87 +1056,66 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * Obtiene los datos de Detalle de Pago:
 	 * usado en el Excel de Detalle de Letrado, por ejemplo 
 	 */
-	public String getQueryDetallePagoColegiado(String idInstitucion,
-											   String idPagosJg, 
-											   String idPersona, 
-											   boolean irpf,
-											   String idioma)
-	{
-		StringBuffer sql = new StringBuffer();
+	public String getQueryDetallePagoColegiado(String idInstitucion, String idPagosJg, String idPersona, boolean irpf, String idioma) {		
+		String sql = " SELECT PC.IDINSTITUCION, " +
+			" PC.IDPAGOSJG as IDPAGOS, " + 						
+			" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCS, " + 
+			" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONES, " + 
+			" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMOVIMIENTOS, " + 			
+			" -1*ROUND(ABS(SUM((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100)), 2) AS TOTALIMPORTEIRPF, ";
 		
-		sql.append("select ");
-		if (irpf)
-			sql.append("   idperdestino as idpersonaSJCS, ");
-		else
-			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
-		
-		sql.append("       pc.idpagosjg as idpagos, ");
-		sql.append("       sum (pc.impOficio) as importeTotalOficio, ");
-		sql.append("       sum (pc.impAsistencia) as importeTotalAsistencia, ");
-		sql.append("       sum (pc.impEJG) as importeTotalEJG, ");
-		sql.append("       sum (pc.impSOJ) as importeTotalSOJ, ");
-		sql.append("       idperdestino as idperdestino, ");
-		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
-		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
-		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
-		sql.append("       pc.idcuenta as IDCUENTA, ");
-		sql.append("       -1*round(abs(sum((pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * pc.impirpf / 100)), 2) as TOTALIMPORTEIRPF, ");
-		sql.append("       pc.impirpf AS tipoirpf, ");
-		sql.append("       DECODE (pc.idperdestino, ");
-		sql.append("       		pc.IDPERORIGEN, 'Colegiado', ");
-		sql.append("       		'Sociedad' ");
-		sql.append("       		) AS destinatario,  ");
-		sql.append("       pc.idinstitucion, ");
-		sql.append("       f_siga_getrecurso_etiqueta(decode(");
-		sql.append("       pc.idcuenta, ");
-		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
-		sql.append("       as FORMADEPAGO, ");
-		sql.append("       (select cen_bancos.nombre ");
-		sql.append("          from cen_cuentasbancarias ");
-		sql.append("               INNER JOIN cen_bancos ");
-		sql.append("               ON cen_cuentasbancarias.cbo_codigo = ");
-		sql.append("                        cen_bancos.codigo ");
-		sql.append("          WHERE idperdestino = ");
-		sql.append("                        cen_cuentasbancarias.idpersona ");
-		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
-		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
-		sql.append("                        AND ROWNUM = 1) AS nombrebanco, ");		
-		sql.append("       (select (   cen_cuentasbancarias.cbo_codigo ");
-		sql.append("       || '-' ");
-		sql.append("       || cen_cuentasbancarias.codigosucursal ");
-		sql.append("       || '-' ");		
-		sql.append("       || cen_cuentasbancarias.digitocontrol ");
-		sql.append("       || '-' ");
-		sql.append("       || LPAD (SUBSTR (cen_cuentasbancarias.numerocuenta, ");
-		sql.append("       7 ");
-		sql.append("        ), ");
-		sql.append("       10, ");
-		sql.append("       '*' ");
-		sql.append("       ) ");
-		sql.append("       ) AS cuenta ");
-		sql.append("          FROM cen_cuentasbancarias ");
-		sql.append("          WHERE idperdestino = ");
-		sql.append("                        cen_cuentasbancarias.idpersona ");
-		sql.append("                        AND pc.idinstitucion = cen_cuentasbancarias.idinstitucion ");
-		sql.append("                        AND pc.idcuenta = cen_cuentasbancarias.idcuenta ");
-		sql.append("                        AND ROWNUM = 1) AS numerocuenta ");				
-		
-		
-		
-		sql.append("  from FCS_PAGO_COLEGIADO pc ");
-		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
-		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
-		if(idPersona!=null){
-			sql.append("   AND (idperdestino = "+idPersona+" OR idperorigen = "+idPersona+" )");/*
-			sql.append("   AND (idperdestino in (SELECT idpersona FROM cen_componentes comp ");
-			sql.append("   WHERE comp.cen_cliente_idpersona = "+idPersona+" and comp.sociedad=1) ");
-			sql.append("   or idperorigen = "+idPersona+") ");*/
+		if (irpf) {
+			sql += " PC.IDPERDESTINO as IDPERSONASJCS ";
+			
+		} else {
+			sql += " PC.IDCUENTA, " +
+				" PC.IDPERDESTINO, " +
+				" PC.IMPIRPF AS TIPOIRPF, " +
+				" SUM(PC.IMPOFICIO) AS IMPORTETOTALOFICIO, " + 
+				" SUM(PC.IMPASISTENCIA) AS IMPORTETOTALASISTENCIA, " + 
+				" SUM(PC.IMPEJG) AS IMPORTETOTALEJG, " + 
+				" SUM(PC.IMPSOJ) AS IMPORTETOTALSOJ, " + 	
+				" DECODE(PC.IDPERDESTINO, PC.IDPERORIGEN, 'Colegiado', 'Sociedad') AS DESTINATARIO, " + 
+				" F_SIGA_GETRECURSO_ETIQUETA(DECODE(PC.IDCUENTA, NULL, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), " + idioma + ") AS FORMADEPAGO, " + 
+				" ( " +
+					" SELECT B.NOMBRE " + 
+					" FROM CEN_CUENTASBANCARIAS CB " + 
+						" INNER JOIN CEN_BANCOS B " + 
+						" ON CB.CBO_CODIGO = B.CODIGO " + 
+					" WHERE PC.IDPERDESTINO = CB.IDPERSONA " + 
+						" AND PC.IDINSTITUCION = CB.IDINSTITUCION " + 
+						" AND PC.IDCUENTA = CB.IDCUENTA " + 
+				" ) AS NOMBREBANCO, " + 		
+				" ( " +
+					" SELECT (CB.CBO_CODIGO || '-' || CB.CODIGOSUCURSAL || '-' || CB.DIGITOCONTROL || '-' || LPAD(SUBSTR(CB.NUMEROCUENTA, 7), 10, '*')) AS CUENTA " + 
+					" FROM CEN_CUENTASBANCARIAS CB " + 
+					" WHERE PC.IDPERDESTINO = CB.IDPERSONA " + 
+						" AND PC.IDINSTITUCION = CB.IDINSTITUCION " + 
+						" AND PC.IDCUENTA = CB.IDCUENTA " + 
+				" ) AS NUMEROCUENTA, " + 
+				" PC.IDPERORIGEN as IDPERSONASJCS ";
 		}
-		if (irpf)
-			sql.append("  and impirpf > 0 ");		
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, pc.impirpf, pc.idcuenta ");
 		
-		return sql.toString();
+		sql += " FROM FCS_PAGO_COLEGIADO PC " + 
+			" WHERE PC.IDINSTITUCION = " + idInstitucion +
+				" AND PC.IDPAGOSJG = NVL(" + idPagosJg + ", PC.IDPAGOSJG) ";
+		
+		if(idPersona!=null) {
+			if (irpf) {
+				sql += " AND PC.IDPERDESTINO = " + idPersona;
+			} else {
+				sql += " AND PC.IDPERORIGEN = " + idPersona;
+			}
+		}
+		
+		if (irpf) {
+			sql += " AND PC.IMPIRPF > 0 " +
+				" GROUP BY PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.IMPIRPF, PC.IDCUENTA ";
+		} else {
+			sql += " GROUP BY PC.IDPERORIGEN, PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.IMPIRPF, PC.IDCUENTA ";
+		}
+		
+		return sql;
 	} //getQueryDetallePagoColegiado()
 	
 		/**

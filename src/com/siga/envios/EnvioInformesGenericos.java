@@ -263,22 +263,17 @@ public class EnvioInformesGenericos extends MasterReport {
 				htDatosInforme.put("componentes",vInformeCompAux);
 			}
 
-		} else if (idTipoInforme
-				.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
 			InformeColegiadosPagos infColegiado = new InformeColegiadosPagos();
-			datosInforme = infColegiado.getDatosInformeColegiado(usrBean,
-					datosInforme);
+			datosInforme = infColegiado.getDatosInformeColegiado(usrBean, datosInforme);
 			htDatosInforme.put("row", datosInforme);
 
-		} else if (idTipoInforme
-				.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)) {
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)) {
 			InformeColegiadosFacturaciones infColegiado = new InformeColegiadosFacturaciones();
-			datosInforme = infColegiado.getDatosInformeColegiado(usrBean,
-					datosInforme);
+			datosInforme = infColegiado.getDatosInformeColegiado(usrBean,datosInforme);
 			htDatosInforme.put("row", datosInforme);
 
-		} else if (idTipoInforme
-				.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)) {
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)) {
 
 			/*
 			 * Vector datosFormulario = (Vector)
@@ -290,14 +285,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			 * if(isSolçicitantes==false){
 			 */
 			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
-			boolean isSolicitantes = aSolicitantes != null
-					&& aSolicitantes.equalsIgnoreCase("S");
-			Hashtable datosconsulta = getDatosSalidaListaGuardias(datosInforme,
-					usrBean, isSolicitantes);
+			boolean isSolicitantes = aSolicitantes != null && aSolicitantes.equalsIgnoreCase("S");
+			Hashtable datosconsulta = getDatosSalidaListaGuardias(datosInforme,	usrBean, isSolicitantes);
 			htDatosInforme.put("row", datosconsulta.get("htCabeceraInforme"));
 			htDatosInforme.put("region", datosconsulta.get("vDatosInforme"));
-			htDatosInforme.put("hDatosListaGuardias",
-					datosconsulta.get("hDatosListaGuardias"));
+			htDatosInforme.put("hDatosListaGuardias", datosconsulta.get("hDatosListaGuardias"));
 			/*
 			 * }else{ for (int j = 0; j < datosFormulario.size(); j++) {
 			 * Hashtable htDatoInforme = new Hashtable();

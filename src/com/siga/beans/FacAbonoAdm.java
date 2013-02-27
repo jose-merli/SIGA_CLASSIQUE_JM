@@ -1399,13 +1399,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getRetencionesIRPF(String idInstitucion,
-									 String idPersona,
-									 String periodo,
-									 String anyoRetencionIRPF,
-									 String idioma)
-			throws ClsExceptions, SIGAException
-	{
+	public Vector getRetencionesIRPF(String idInstitucion, String idPersona, String periodo, String anyoRetencionIRPF, String idioma) throws ClsExceptions, SIGAException {
 		Vector datosObtenidos = new Vector();
 		
 		try {
@@ -1414,61 +1408,49 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			Hashtable htCodigos = new Hashtable();
 			int codigo = 0;
 			
-			sql.append(" SELECT ");
-			sql.append("    IDPERSONASJCS, ");
-			sql.append("        SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, ");
-			sql.append("        abs(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
-			sql.append("   FROM (SELECT IDPERSONASJCS, ");
-			sql.append("                IDPAGOS, ");
-			sql.append("                SUM(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
-			sql.append("                SUM(IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,");
-			sql.append("                SUM(IMPORTETOTALMOVIMIENTOS) AS IMPORTETOTALMOVIMIENTOS, ");
-			sql.append("                MAX(TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
-			sql.append("           FROM (");
-			sql.append(new FcsPagosJGAdm(usrbean).getQueryDetallePagoColegiado(idInstitucion,
-					null,idPersona, true, idioma));
-			sql.append("                ) ");
-			sql.append("          WHERE ");
-			
-			/*if (idPersona != null) {
-				sql.append("            IDPERSONASJCS = :");
-				codigo++;
-				sql.append(codigo);
-				htCodigos.put(new Integer(codigo), idPersona);
-				sql.append("        AND ");
-			}*/
-			
-			sql.append("                IDPAGOS IN (SELECT FAC_ABONO.IDPAGOSJG ");
-			sql.append("                              FROM FAC_ABONO ");
-			sql.append("                             WHERE FAC_ABONO.IDINSTITUCION = IDINSTITUCION ");
-			sql.append("                               AND FAC_ABONO.IDPAGOSJG = IDPAGOS ");
-			sql.append("                               AND FAC_ABONO.IDPERSONA = IDPERSONASJCS ");
+			sql.append(" SELECT IDPERSONASJCS, ");
+			sql.append("	SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, ");
+			sql.append("	ABS(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
+			sql.append(" FROM ( ");
+			sql.append(" 	SELECT TOTAL.IDPERSONASJCS, ");
+			sql.append("		TOTAL.IDPAGOS, ");
+			sql.append("		SUM(TOTAL.TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
+			sql.append("		SUM(TOTAL.IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,");
+			sql.append("		SUM(TOTAL.IMPORTETOTALMOVIMIENTOS) AS IMPORTETOTALMOVIMIENTOS, ");
+			sql.append("		MAX(TOTAL.TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
+			sql.append("	FROM (" + new FcsPagosJGAdm(usrbean).getQueryDetallePagoColegiado(idInstitucion,null,idPersona, true, idioma) + ") TOTAL ");
+			sql.append("	WHERE IDPAGOS IN (");
+			sql.append("		SELECT FAC_ABONO.IDPAGOSJG ");
+			sql.append("		FROM FAC_ABONO ");
+			sql.append("		WHERE FAC_ABONO.IDINSTITUCION = TOTAL.IDINSTITUCION ");
+			sql.append("			AND FAC_ABONO.IDPAGOSJG = TOTAL.IDPAGOS ");
+			sql.append("			AND FAC_ABONO.IDPERSONA = TOTAL.IDPERSONASJCS ");
 			
 			//obteniendo los abonos dentro del periodo indicado
-			sql.append("                               And Trunc(Fecha) Between ");
-			sql.append("                                 (Select To_Date(Per.Diainicio || '/' || Per.Mesinicio || '/' || ");
-			codigo++;
-			sql.append("                                                 Nvl(Per.Anioinicio, :"+codigo+"), ");
-			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
-			sql.append("                                                 'dd/mm/yyyy') ");
-			sql.append("                                    From Gen_Periodo Per ");
-			codigo++;
-			sql.append("                                   Where Idperiodo = :"+codigo+") And ");
-			htCodigos.put(new Integer(codigo), periodo);
-			sql.append("                                 (Select To_Date(Per.Diafin || '/' || Per.Mesfin || '/' || ");
-			codigo++;
-			sql.append("                                                 Nvl(Per.Anioinicio, :"+codigo+"), ");
-			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
-			sql.append("                                                 'dd/mm/yyyy') ");
-			sql.append("                                    From Gen_Periodo Per ");
-			codigo++;
-			sql.append("                                   Where Idperiodo = :"+codigo+") ");
-			htCodigos.put(new Integer(codigo), periodo);
+			sql.append("			AND TRUNC(Fecha) BETWEEN (");
 			
-			sql.append("                           ) ");
-			sql.append("          GROUP BY IDPERSONASJCS, IDPAGOS ");
-			sql.append("          ) ");
+			codigo++;
+			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
+			sql.append("				SELECT To_Date(PER.Diainicio || '/' || PER.Mesinicio || '/' || NVL(PER.Anioinicio, :" + codigo + "), 'dd/mm/yyyy') ");
+			sql.append("				FROM Gen_Periodo PER ");
 			
+			codigo++;
+			htCodigos.put(new Integer(codigo), periodo);
+			sql.append("				WHERE PER.Idperiodo = :" + codigo);
+			sql.append("			) AND ( ");
+			
+			codigo++;
+			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
+			sql.append("				SELECT To_Date(PER.Diafin || '/' || PER.Mesfin || '/' || NVL(PER.Anioinicio, :" + codigo + "), 'dd/mm/yyyy') ");
+			sql.append("				FROM Gen_Periodo PER ");
+			
+			codigo++;
+			htCodigos.put(new Integer(codigo), periodo);
+			sql.append("				WHERE PER.Idperiodo = :" + codigo);
+			sql.append("			) ");
+			sql.append("	) ");
+			sql.append("	GROUP BY TOTAL.IDPERSONASJCS, TOTAL.IDPAGOS ");
+			sql.append(") ");			
 			sql.append("GROUP BY IDPERSONASJCS ");
 
 			//consultando en BD
@@ -1503,9 +1485,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				}
 			} else {
 				if (datosObtenidos != null && datosObtenidos.size() < 1)
-					throw new SIGAException(
-							"gratuita.retencionesIRPF.informe.mensaje.sinDatos");
-
+					throw new SIGAException("gratuita.retencionesIRPF.informe.mensaje.sinDatos");
 			}
 		} catch (SIGAException e) {
 			throw e;
