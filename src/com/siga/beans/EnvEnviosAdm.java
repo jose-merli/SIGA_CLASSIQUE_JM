@@ -1597,11 +1597,16 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if(CenPersonaAdm.K_PERSONA_GENERICA.equals(idPersona)){
 		        	sSQL = rp.returnProperty("envios.consulta.sinPersona");
 				}else{
-					if(tipoDestinatario!=null&&(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)||tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR))){
+					if(tipoDestinatario!=null&&(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG))){
 						sSQL = rp.returnProperty("envios.consulta.conPersonaJG");
 					}else if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
 						sSQL = rp.returnProperty("envios.consulta.conJuzgado");						
+					}else if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
+						sSQL = rp.returnProperty("envios.consulta.conProcurador");
+						
 					}else{
+						
+						
 						sSQL = rp.returnProperty("envios.consulta.conPersona");
 					}
 				}
