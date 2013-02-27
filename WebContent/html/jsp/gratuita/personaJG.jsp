@@ -1978,7 +1978,7 @@
 					if (!accion.equalsIgnoreCase("ver")) {
 		%>
 		    <html:select name="PersonaJGForm" property="sexo"  styleClass = "<%=estiloBox %>" value="<%=sexo%>"   >
-			<html:option value="0" >&nbsp;</html:option>
+			<html:option value="" >&nbsp;</html:option>
 			<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
 			<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
 			</html:select>		
