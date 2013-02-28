@@ -1424,16 +1424,6 @@
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
-				
-				<% if(opcionDireccion){ %>				
-					<div id="desaparece">
-						<%=asterisco%> 
-					</div>
-					
-				<% }else if (obligatorioDireccion) { %>
-					<%=asterisco%> 				
-				<% } %>
-				
 			</td>
 			
 				<%
@@ -1466,16 +1456,6 @@
 			
 			<td class="labelText" >
 				<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
-				
-				<% if(opcionDireccion){ %>				
-					<div id="desaparece3">
-						<%=asterisco%> 
-					</div>
-					
-				<% }else if (obligatorioDireccion) { %>
-					<%=asterisco%> 				
-				<% } %>
-				
 			</td>
 			<td>		
 				<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
@@ -1483,16 +1463,6 @@
 			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.personaJG.literal.escdir"/>
-				
-				<% if(opcionDireccion){ %>				
-					<div id="desaparece4">
-						<%=asterisco%> 
-					</div>
-					
-				<% }else if (obligatorioDireccion) { %>
-					<%=asterisco%> 				
-				<% } %>
-				
 			</td>
 			<td>		
 				<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:40" maxlength="10"></html:text>
@@ -1500,16 +1470,6 @@
 			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.personaJG.literal.pisodir"/>
-				
-				<% if(opcionDireccion){ %>				
-					<div id="desaparece5">
-						<%=asterisco%> 
-					</div>
-					
-				<% }else if (obligatorioDireccion) { %>
-					<%=asterisco%> 				
-				<% } %>
-				
 			</td>
 			<td>		
 				<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
@@ -1517,16 +1477,6 @@
 			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.personaJG.literal.puertadir"/>
-				
-				<% if(opcionDireccion){ %>				
-					<div id="desaparece6">
-						<%=asterisco%> 
-					</div>
-					
-				<% }else if (obligatorioDireccion) { %>
-					<%=asterisco%> 				
-				<% } %>
-				
 			</td>
 			<td>		
 				<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30" maxlength="5"></html:text>
