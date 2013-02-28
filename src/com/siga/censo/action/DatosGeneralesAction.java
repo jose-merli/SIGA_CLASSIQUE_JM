@@ -998,7 +998,7 @@ public class DatosGeneralesAction extends MasterAction {
 			
 			hash.put(CenPersonaBean.C_NIFCIF,miForm.getNumIdentificacion().toUpperCase());
 			
-			if(hash.get(CenPersonaBean.C_NOMBRE)!=null)
+			if(hash.get(CenPersonaBean.C_NOMBRE)!=null) 
 				hash.put(CenPersonaBean.C_NOMBRE, ((String)hash.get(CenPersonaBean.C_NOMBRE)).trim());
 			if(hash.get(CenPersonaBean.C_APELLIDOS1)!=null)
 				hash.put(CenPersonaBean.C_APELLIDOS1, ((String)hash.get(CenPersonaBean.C_APELLIDOS1)).trim());
