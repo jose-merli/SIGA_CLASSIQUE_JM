@@ -141,12 +141,14 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		
 		if (tipoProducto!=null && !tipoProducto.trim().equals("")) {
 			campos += ", "+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+
-					  ", "+PysTiposProductosBean.T_NOMBRETABLA;
+					  ", "+PysTiposProductosBean.T_NOMBRETABLA+
+					  ", "+PysProductosBean.T_NOMBRETABLA;
 		}
 		
 		if (tipoServicio!=null && !tipoServicio.trim().equals("")) {
 			campos += ", "+FacTiposServInclsEnFactBean.T_NOMBRETABLA+
-					  ", "+PysTipoServiciosBean.T_NOMBRETABLA;
+					  ", "+PysTipoServiciosBean.T_NOMBRETABLA+
+					  ", "+PysServiciosBean.T_NOMBRETABLA;
 		}
 				 		
 		if (grupoClienteFijo!=null && !grupoClienteFijo.trim().equals("")) {

@@ -42,8 +42,10 @@ import com.siga.beans.FacTiposProduIncluEnFactuAdm;
 import com.siga.beans.FacTiposProduIncluEnFactuBean;
 import com.siga.beans.FacTiposServInclsEnFactAdm;
 import com.siga.beans.FacTiposServInclsEnFactBean;
+import com.siga.beans.PysServiciosBean;
 import com.siga.beans.PysTipoServiciosBean;
 import com.siga.beans.PysTiposProductosBean;
+import com.siga.beans.PysProductosBean;
 import com.siga.facturacion.form.AsignacionConceptosFacturablesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -132,21 +134,25 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 				where += " and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+"."+FacTiposProduIncluEnFactuBean.C_IDINSTITUCION+
 					 	" and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION+"="+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+"."+FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION+
 						" and "+PysTiposProductosBean.T_NOMBRETABLA+"."+ PysTiposProductosBean.C_IDTIPOPRODUCTO+"="+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+"."+FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO+
-						" and "+ComodinBusquedas.prepararSentenciaCompleta(tipoProducto.trim(),UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA+"."+ PysTiposProductosBean.C_DESCRIPCION,user.getLanguage()) );
+						" and "+PysProductosBean.T_NOMBRETABLA+"."+ PysProductosBean.C_IDTIPOPRODUCTO+"="+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+"."+FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO+
+						" and "+PysProductosBean.T_NOMBRETABLA+"."+ PysProductosBean.C_IDPRODUCTO+"="+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+"."+FacTiposProduIncluEnFactuBean.C_IDPRODUCTO+
+						" and "+ComodinBusquedas.prepararSentenciaCompleta(tipoProducto.trim(),PysProductosBean.T_NOMBRETABLA+"."+ PysProductosBean.C_DESCRIPCION );
 			}
 			
 			if (tipoServicio!=null && !tipoServicio.trim().equals("")) {
 				where += " and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+FacTiposServInclsEnFactBean.T_NOMBRETABLA+"."+FacTiposServInclsEnFactBean.C_IDINSTITUCION+
 					 	" and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION+"="+FacTiposServInclsEnFactBean.T_NOMBRETABLA+"."+FacTiposServInclsEnFactBean.C_IDSERIEFACTURACION+
 						" and "+PysTipoServiciosBean.T_NOMBRETABLA+"."+ PysTipoServiciosBean.C_IDTIPOSERVICIOS+"="+FacTiposServInclsEnFactBean.T_NOMBRETABLA+"."+FacTiposServInclsEnFactBean.C_IDTIPOSERVICIOS+
-						" and "+ComodinBusquedas.prepararSentenciaCompleta(tipoServicio.trim(),UtilidadesMultidioma.getCampoMultidiomaSimple(PysTipoServiciosBean.T_NOMBRETABLA+"."+ PysTipoServiciosBean.C_DESCRIPCION,user.getLanguage()));
+						" and "+PysServiciosBean.T_NOMBRETABLA+"."+ PysServiciosBean.C_IDTIPOSERVICIOS+"="+FacTiposServInclsEnFactBean.T_NOMBRETABLA+"."+FacTiposServInclsEnFactBean.C_IDTIPOSERVICIOS+
+						" and "+PysServiciosBean.T_NOMBRETABLA+"."+ PysServiciosBean.C_IDSERVICIO+"="+FacTiposServInclsEnFactBean.T_NOMBRETABLA+"."+FacTiposServInclsEnFactBean.C_IDSERVICIO+
+						" and "+ComodinBusquedas.prepararSentenciaCompleta(tipoServicio.trim(),PysServiciosBean.T_NOMBRETABLA+"."+ PysServiciosBean.C_DESCRIPCION );
 			}
 			
 			if (grupoClienteFijo!=null && !grupoClienteFijo.trim().equals("")) {
 				where += " and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+FacTipoCliIncluidoEnSerieFacBean.T_NOMBRETABLA+"."+FacTipoCliIncluidoEnSerieFacBean.C_IDINSTITUCION+
 					 	" and "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION+"="+FacTipoCliIncluidoEnSerieFacBean.T_NOMBRETABLA+"."+FacTipoCliIncluidoEnSerieFacBean.C_IDSERIEFACTURACION+
 						" and "+CenGruposClienteBean.T_NOMBRETABLA+"."+ CenGruposClienteBean.C_IDGRUPO+"="+FacTipoCliIncluidoEnSerieFacBean.T_NOMBRETABLA+"."+FacTipoCliIncluidoEnSerieFacBean.C_IDGRUPO+
-						" and "+ComodinBusquedas.prepararSentenciaCompleta(grupoClienteFijo.trim(),CenGruposClienteBean.T_NOMBRETABLA+"."+ CenGruposClienteBean.C_NOMBRE);
+						" and "+ComodinBusquedas.prepararSentenciaCompleta(grupoClienteFijo.trim(), UtilidadesMultidioma.getCampoMultidiomaSimple(CenGruposClienteBean.T_NOMBRETABLA+"."+ CenGruposClienteBean.C_NOMBRE,user.getLanguage()));
 			}
 			
 			if (grupoClientesDinamico!=null && !grupoClientesDinamico.trim().equals("")) {
