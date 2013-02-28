@@ -130,16 +130,20 @@ public class InformeColegiadosPagos extends MasterReport {
 		//Datos de los Oficios
 		Vector datosOficios = (Vector)htDatos.get("VOFICIOS");
 		plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
-		
+				
+		// Jorge PT: no tiene sentido este codigo
 		//Datos del Pago y Totales
 		String total2=(htDatos.get("TOTAL_MOVIMIENTOS")!=null)?(String)htDatos.get("TOTAL_MOVIMIENTOS"):"0";
-		if (total2.length()>2) total2=total2.substring(0,total2.length()-2);
+		if (total2.length()>2) 
+			total2=total2.substring(0,total2.length()-2);
 		if (total2.equals("0")) {
 			String delimIni=CTR+"INI_TODO_MOVIMIENTOS"+CTR;
 			String delimFin=CTR+"FIN_TODO_MOVIMIENTOS"+CTR;
 			String sAux="";
 			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}
+		
+		// Jorge PT: no tiene sentido este codigo
 		total2=(htDatos.get("TOTAL_RETENCIONES")!=null)?(String)htDatos.get("TOTAL_RETENCIONES"):"0";
 		if (total2.length()>2) total2=total2.substring(0,total2.length()-2);
 		if (total2.equals("0")) {
@@ -152,9 +156,6 @@ public class InformeColegiadosPagos extends MasterReport {
 		return this.reemplazaVariables(htDatos,plantillaFO);
 	} //reemplazarDatos()
 	
-	
-	
-	
 	/**
 	 * Obtienes nombre y direccion del letrado o Sociedad
 	 * @param idInstitucion Identificador de la institucion
@@ -163,156 +164,114 @@ public class InformeColegiadosPagos extends MasterReport {
 	 * @throws SIGAException
 	 */	
 	protected Hashtable obtenerDatosPersonaSociedad(String idInstitucion, String idPersona, UsrBean user, String idPagos) throws ClsExceptions {
-		Hashtable result= new Hashtable();
-		RowsContainer rc=null;
-		
-		String idSociedad=null;
-		//UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		Hashtable result = new Hashtable();
+		RowsContainer rc = null;		
 		
 		try {
 			 //buscamos el nombre de la persona
-			String sql=
-				 "select "+UtilidadesMultidioma.getCampoMultidiomaSimple("T.DESCRIPCION",user.getLanguage())+"||' '||P.NOMBRE||' '||P.APELLIDOS1||' '||P.APELLIDOS2 NOMBRE_PERSONA, P.APELLIDOS1||' '||P.APELLIDOS2 APELLIDOS_PERSONA" +
-				 "  from CEN_PERSONA P, CEN_CLIENTE C, CEN_TRATAMIENTO T " +
-				 " where C.IDPERSONA = P.IDPERSONA  " +
-				 "   and C.IDTRATAMIENTO = T.IDTRATAMIENTO " +
-				 "   and C.IDPERSONA = " +idPersona+
-				 "   and C.IDINSTITUCION ="+idInstitucion;
+			String sql = "SELECT " + UtilidadesMultidioma.getCampoMultidiomaSimple("T.DESCRIPCION",user.getLanguage()) + " || ' ' || P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || P.APELLIDOS2 AS NOMBRE_PERSONA, " +
+					" P.APELLIDOS1 || ' ' || P.APELLIDOS2 AS APELLIDOS_PERSONA, " +
+					" P.NOMBRE || NVL2(P.APELLIDOS1, ' ' || P.APELLIDOS1, '') || NVL2(P.APELLIDOS2, ' ' || P.APELLIDOS2, '') AS NOMBRE_DESTINO, " +
+					" P.NIFCIF AS NIFCIF_DESTINO " +
+				" FROM CEN_PERSONA P, " +
+					" CEN_CLIENTE C, " +
+					" CEN_TRATAMIENTO T " +
+				" WHERE C.IDPERSONA = P.IDPERSONA " +
+					" AND C.IDTRATAMIENTO = T.IDTRATAMIENTO " +
+					" AND C.IDPERSONA = " + idPersona+
+					" AND C.IDINSTITUCION = " + idInstitucion;
+			
 			 rc = new RowsContainer();
 			 rc.find(sql);
-			 if(rc!=null && rc.size()>0){
+			 if(rc!=null && rc.size()>0) {
 				 Row r=(Row)rc.get(0);
 				 result.putAll(r.getRow());
 			 }
-			 
-			 //compruebo si actua en nombre de una sociedad
-			 sql=
-				 "select C.IDPERSONA, C.SOCIEDAD " +
-				 "  from CEN_PERSONA P, CEN_COMPONENTES C " +
-				 " where C.IDPERSONA = P.IDPERSONA " +
-				 "   and C.CEN_CLIENTE_IDPERSONA = " +idPersona+
-				 "   and C.CEN_CLIENTE_IDINSTITUCION = "+idInstitucion;
-			 rc = new RowsContainer(); 
-			 rc.find(sql);
-			 if(rc!=null && rc.size()>0){
-				 for (int i=0;i<rc.size();i++)
-				 {
-					 Row r=(Row)rc.get(i);
-					 String sSociedad= r.getString("SOCIEDAD");
-					 if(sSociedad!=null && sSociedad.equals(ClsConstants.DB_TRUE)){
-						 idSociedad=r.getString("IDPERSONA");
-					 }
-				 }
-			 }
-
-			 
-			 if(idSociedad==null){
+				 			
+			sql = "SELECT NVL(IDPERDESTINO, '') AS IDPERDESTINO " +
+				" FROM FCS_PAGO_COLEGIADO " +
+				" WHERE IDPERORIGEN = " + idPersona +
+					" AND IDINSTITUCION = " + idInstitucion +
+					" AND IDPAGOSJG = " + idPagos;	
+			
+			rc = new RowsContainer(); 
+			rc.find(sql);
+			String idPerDestino="";
+			if(rc!=null && rc.size()>0){
+				Row r = (Row)rc.get(0);											
+				result.putAll(r.getRow());
+				idPerDestino=r.getString("IDPERDESTINO");
+			}	 				 			
+			
+			// Controlo si no tiene destino, o si el destinatario es el mismo que el origen
+			if(idPerDestino==null || idPerDestino.equals("") || idPerDestino.equals(idPersona)){
 				 //Si no existe sociedad sacamos los datos relativos a la persona
-				 idSociedad=idPersona;
+				 idPerDestino=idPersona;
 				 
-			 }else{
+			} else {
 				 //nombre de la sociedad
-				 sql=
-					 "select P.NOMBRE||' '||P.APELLIDOS1||' '||P.APELLIDOS2 NOMBRE_SOCIEDAD" +
-					 "  from CEN_PERSONA P, CEN_CLIENTE C" +
-					 " where C.IDPERSONA = P.IDPERSONA  " +
-					 "   and C.IDPERSONA = " +idSociedad+
-					 "   and C.IDINSTITUCION ="+idInstitucion;
+				 sql = "SELECT PER.NOMBRE || NVL2(PER.APELLIDOS1, ' ' || PER.APELLIDOS1, '') || NVL2(PER.APELLIDOS2, ' ' || PER.APELLIDOS2, '') AS NOMBRE_SOCIEDAD, " +
+						 " PER.NIFCIF AS CIF_SOCIEDAD " +
+					" FROM CEN_PERSONA PER, CEN_CLIENTE CLI " +
+					" WHERE CLI.IDPERSONA = PER.IDPERSONA " +
+						" AND CLI.IDPERSONA = " + idPerDestino +
+						" AND CLI.IDINSTITUCION = " + idInstitucion;
+				 
 				 rc = new RowsContainer();
 				 rc.find(sql);
 				 if(rc!=null && rc.size()>0){
-					 Row r=(Row)rc.get(0);
+					 Row r = (Row)rc.get(0);
 					 result.putAll(r.getRow());
+					 result.put("NOMBRE_DESTINO", r.getString("NOMBRE_SOCIEDAD"));
+					 result.put("NIFCIF_DESTINO", r.getString("CIF_SOCIEDAD"));
 				 }
-			 }
-			
-			
-			//Direccion de la sociedad o persona
-			 String direccion="";
-				 direccion=this.getDireccionCartaPago(idSociedad,idInstitucion,"C");// buscamos una direccion preferente correo
-				 rc = new RowsContainer();
-					rc.find(direccion);
-					if(rc!=null && rc.size()>0){
-						Row r=(Row)rc.get(0);
-						result.putAll(r.getRow());
-					}
 				 
-				 if (rc==null || rc.size()==0 ) {
-				 	direccion=this.getDireccionCartaPago(idSociedad,idInstitucion,"2");// si no hay direccion preferente Correo, buscamos cualquier direccion de despacho.
-				 	 rc = new RowsContainer();
-						rc.find(direccion);
-						if(rc!=null && rc.size()>0){
-							Row r=(Row)rc.get(0);
-							result.putAll(r.getRow());
-						}
-				 	if (rc==null || rc.size()==0 ) {
-				 		direccion=this.getDireccionCartaPago(idSociedad,idInstitucion,"3");// si no hay direccion de despacho, buscamos cualquier direccion de correo.
-				 		 rc = new RowsContainer();
-							rc.find(direccion);
-							if(rc!=null && rc.size()>0){
-								Row r=(Row)rc.get(0);
-								result.putAll(r.getRow());
-							}
-				 		if (rc ==null || rc.size()==0 ){
-				 			direccion=this.getDireccionCartaPago(idSociedad,idInstitucion,"");// si no hay direccion de correo, buscamos cualquier direccion.
-				 			 rc = new RowsContainer();
-								rc.find(direccion);
-								if(rc!=null && rc.size()>0){
-									Row r=(Row)rc.get(0);
-									result.putAll(r.getRow());
-								}
-				 		   
-				 		}  
-				 	}
-				 }
-				 			
-			String sqlQuery = "select idperdestino from fcs_pago_colegiado where idperorigen="+idPersona +" and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
-					RowsContainer rct=new RowsContainer();
-					rct.find(sqlQuery);
-					String idPerDestino="";
-					if(rct!=null && rct.size()>0){
-						int size=rct.size();
-						for(int i=0;i<size;i++){
-							Row r1=(Row)rct.get(i);
-							Hashtable htAux=r1.getRow();
-							idPerDestino=r1.getString("IDPERDESTINO");
-							result.put("IDPERDESTINO",idPerDestino);
-						}
-					}	 
-				 
-			if(idPerDestino == null || idPerDestino.equals(""))
-				idPerDestino ="";
+				 // OBTENGO LA DIRECCION DE LA SOCIEDAD
+				 this.obtenerDireccion(idPerDestino, idInstitucion, "_SOCIEDAD", result);
+			}
+			 
+			// OBTENGO LA DIRECCION DESTINO
+			this.obtenerDireccion(idPerDestino, idInstitucion, "", result);
+			 
+			// OBTENGO LA DIRECCION DE LA PERSONA
+			this.obtenerDireccion(idPersona, idInstitucion, "_PERSONA", result);			
 					
-			String sql1 = "select * from fac_abono where idpersona="+idPerDestino +"and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
-			RowsContainer rc1=new RowsContainer();
-			rc1.find(sql1);
+			sql = "SELECT * " +
+				" FROM FAC_ABONO " +
+				" WHERE IDPERSONA = "+idPerDestino +
+					" AND IDINSTITUCION = " + idInstitucion +
+					" AND IDPAGOSJG ="+idPagos;
+			
+			rc=new RowsContainer();
+			rc.find(sql);
 			String idCuenta="";
-			if(rc1!=null && rc1.size()>0){
-				int size=rc1.size();
-				for(int i=0;i<size;i++){
-					Row r1=(Row)rc1.get(i);
-					Hashtable htAux=r1.getRow();
-					 idCuenta=r1.getString("IDCUENTA");
-				}
+			if(rc!=null && rc.size()>0){
+				Row r = (Row)rc.get(0);											
+				result.putAll(r.getRow());
+				idCuenta=r.getString("IDCUENTA");
 			}	
 			
-			if (!(idCuenta.equals(""))){
+			if (!(idCuenta==null || idCuenta.equals(""))){
 				// Datos Bancarios de la sociedad o persona
-		    sql=
-		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE" +
-		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
-		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
-		    	"   AND CUEN.FECHABAJA IS NULL " +
-		    	"   AND CUEN.Idcuenta = "+idCuenta +
-		    	"   AND CUEN.IDINSTITUCION = "+idInstitucion+
-		    	"   AND CUEN.IDPERSONA = " +idSociedad;
-			rc = new RowsContainer();
-			rc.find(sql);
-			if(rc!=null && rc.size()>0){
-				Row r=(Row)rc.get(0);
-				result.putAll(r.getRow());
+			    sql = "SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE " +
+			    	" FROM CEN_CUENTASBANCARIAS CUEN, " +
+			    		" CEN_BANCOS BAN " +
+			    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
+			    		" AND CUEN.FECHABAJA IS NULL " +
+			    		" AND CUEN.Idcuenta = " + idCuenta +
+			    		" AND CUEN.IDINSTITUCION = " + idInstitucion +
+			    		" AND CUEN.IDPERSONA = " + idPerDestino;
+			    
+				rc = new RowsContainer();
+				rc.find(sql);
+				if(rc!=null && rc.size()>0){
+					Row r=(Row)rc.get(0);
+					result.putAll(r.getRow());
+				}
+				
+			} else { 
+				result.put("CUENTA_CORRIENTE","");
 			}
-			}else result.put("CUENTA_CORRIENTE","");
 			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
@@ -760,8 +719,6 @@ public class InformeColegiadosPagos extends MasterReport {
 		String sDescripcion="";
 		double sTotalLiquidacion = 0;
 		String sFormaPago;
-		
-		
 		int IRPF = 0;
 		
 		try {
@@ -784,7 +741,6 @@ public class InformeColegiadosPagos extends MasterReport {
 				pcAsistencia=(String)r.getString("PORCENTAJE_ASISTENCIA");
 				pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
 			}
-
 			
 			//Obtiene el importe del compensado o pagado por caja o rectificativo
 			buf0 = new StringBuffer();
@@ -819,8 +775,6 @@ public class InformeColegiadosPagos extends MasterReport {
 					dCompensadoCaja= Double.parseDouble(r.getString("COMPENSADO_FACTURA"));
 				}else {    
 					dCompensadoCaja = 0;
-
-
 				}					
 			}
 			
@@ -870,8 +824,6 @@ public class InformeColegiadosPagos extends MasterReport {
 			}
 			
 			//Obtiene lo que se ha pagado por banco
-			
-			
 			if (String.valueOf(sTotalLiquidacion).equals(null) || sTotalLiquidacion == 0 || String.valueOf(sTotalLiquidacion).equals("")) {
 				
 				buf0 = new StringBuffer();
@@ -903,8 +855,7 @@ public class InformeColegiadosPagos extends MasterReport {
 					result.putAll(r.getRow());
 					result.put("FORMA_PAGO",r.getString("DESCRIP"));
 				}
-			}
-						
+			}						
 			
 			//Obtiene el IRPF,los totales y facturados de oficios
 			buf0 = new StringBuffer();
@@ -934,10 +885,6 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("TOTAL_OFICIOS",UtilidadesString.formatoImporte(dTotalOficio)+ClsConstants.CODIGO_EURO);
 				result.put("CPC_OFICIOS", UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
 			}
-			
-			
-			
-			
 			
 			//Obtiene el IRPF,los totales y facturados de asistencias
 			buf0 = new StringBuffer();
@@ -1013,44 +960,81 @@ public class InformeColegiadosPagos extends MasterReport {
 		}		
 		return result;
 	}
-	public String getDireccionCartaPago (String idSociedad, String idInstitucion, String idDireccion) throws ClsExceptions, SIGAException {
-		   Hashtable datos=new Hashtable();
-		   String sql="";
-		   Row result=new Row();
-	      
-	            RowsContainer rc = new RowsContainer(); 
-	            sql=
-			    	"select D.DOMICILIO, D.CODIGOPOSTAL," +
-			    	"(select p.nombre from cen_poblaciones p where p.idpoblacion=d.idpoblacion) POBLACION," +
-			    	"(select p.nombre from cen_provincias p where p.idprovincia=d.idprovincia) PROVINCIA" +
-			    	"  from CEN_DIRECCIONES D, CEN_DIRECCION_TIPODIRECCION DTD" +
-			    	" where D.IDDIRECCION = DTD.IDDIRECCION  " +
-			    	"   and D.IDINSTITUCION = DTD.IDINSTITUCION   " +
-			    	"   and D.IDPERSONA = DTD.IDPERSONA    " +
-			    	"   and d.fechabaja is null"+
-			    	"   and D.IDPERSONA = " +idSociedad+
-	                "   and D.IDINSTITUCION="+idInstitucion;
-	                
-							try{
-							 if (idDireccion!=null){
-								if ((new Integer(idDireccion)) != null){ 
-									sql+=  " AND DTD." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION + "=" +idDireccion;
-								}	
-								else {
-									throw new Exception ("");
-								}
-							 }	
-							 	
-							}	catch(Exception e){
-								sql+=  " AND upper(D.PREFERENTE) like upper('%" +idDireccion+"%') ";
-							}
-							
-							
-	      
-	       
-	      
-	       return sql;                        
-	    }
 	
+	public String getDireccionCartaPago (String idSociedad, String idInstitucion, String idDireccion, String tituloEtiqueta) throws ClsExceptions, SIGAException {
+	   String sql = "SELECT D.DOMICILIO AS DOMICILIO" + tituloEtiqueta + ", " +
+	    		" D.CODIGOPOSTAL AS CODIGOPOSTAL" + tituloEtiqueta + ", " +
+	    		"(select p.nombre from cen_poblaciones p where p.idpoblacion=d.idpoblacion) AS POBLACION" + tituloEtiqueta + ", " +
+	    		"(select p.nombre from cen_provincias p where p.idprovincia=d.idprovincia) AS PROVINCIA" + tituloEtiqueta +
+	    	" FROM CEN_DIRECCIONES D, CEN_DIRECCION_TIPODIRECCION DTD " +
+	    	" WHERE D.IDDIRECCION = DTD.IDDIRECCION " +
+	    		" AND D.IDINSTITUCION = DTD.IDINSTITUCION " +
+	    		" AND D.IDPERSONA = DTD.IDPERSONA " +
+	    		" AND d.fechabaja is null " +
+	    		" AND D.IDPERSONA = " + idSociedad +
+	    		" AND D.IDINSTITUCION = " + idInstitucion;
+            
+		if (idDireccion != null){
+			if (isNumeric(idDireccion)) { 
+				sql += " AND DTD." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION + " = " +idDireccion;				
+			} else {
+				sql += " AND UPPER(D.PREFERENTE) LIKE UPPER('%" + idDireccion + "%') ";
+			}
+		}			 	
+
+		return sql;                        
+    }
 	
+	public void obtenerDireccion (String idPersona, String idInstitucion, String tituloEtiqueta, Hashtable resultado) throws ClsExceptions, SIGAException {		
+		if (tituloEtiqueta == null) {
+			tituloEtiqueta = "";
+		}
+		
+		String direccion=this.getDireccionCartaPago(idPersona, idInstitucion, "C", tituloEtiqueta);// buscamos una direccion preferente correo
+		RowsContainer rc = new RowsContainer();
+		rc.find(direccion);
+		if(rc!=null && rc.size()>0){
+			Row r=(Row)rc.get(0);
+			resultado.putAll(r.getRow());
+		}
+		 
+		if (rc==null || rc.size()==0 ) {
+			direccion=this.getDireccionCartaPago(idPersona, idInstitucion, "2", tituloEtiqueta);// si no hay direccion preferente Correo, buscamos cualquier direccion de despacho.
+		 	rc = new RowsContainer();
+			rc.find(direccion);
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				resultado.putAll(r.getRow());
+				
+			} else {
+		 		direccion=this.getDireccionCartaPago(idPersona, idInstitucion, "3", tituloEtiqueta);// si no hay direccion de despacho, buscamos cualquier direccion de correo.
+		 		rc = new RowsContainer();
+				rc.find(direccion);
+				if(rc!=null && rc.size()>0){
+					Row r=(Row)rc.get(0);
+					resultado.putAll(r.getRow());
+					
+				} else {
+		 			direccion=this.getDireccionCartaPago(idPersona, idInstitucion, "", tituloEtiqueta);// si no hay direccion de correo, buscamos cualquier direccion.
+		 			rc = new RowsContainer();
+					rc.find(direccion);
+					if(rc!=null && rc.size()>0){
+						Row r=(Row)rc.get(0);
+						resultado.putAll(r.getRow());
+					}				 		   
+		 		}  
+		 	}
+		 }
+	}
+	
+	private static boolean isNumeric(String cadena){	
+		try {		
+			Integer.parseInt(cadena);		
+			return true;	
+		} catch (NumberFormatException nfe){		
+			return false;	
+		}
+	}
 }
+
+	
