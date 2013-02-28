@@ -969,12 +969,12 @@ public class DatosGeneralesAction extends MasterAction {
 				isColegiado = false;
 			}
 			
-			//MHG Incidencia 36
-			if (nombreFoto!=null) {
+			// guardo en el hash el path de la imagen para grabar en cliente
+			if (nombreFoto!=null && !nombreFoto.equals("")) {
 	    		hash.put(CenClienteBean.C_FOTOGRAFIA, nombreFoto);			
 			} 
-			else{
-				hash.put(CenClienteBean.C_FOTOGRAFIA, "");	
+			else {
+				hash.remove(CenClienteBean.C_FOTOGRAFIA);
 			}
 			
 			hash.put(CenClienteBean.C_FECHAALTA,GstDate.getApplicationFormatDate("",miForm.getFechaAlta()));	
@@ -1046,6 +1046,10 @@ public class DatosGeneralesAction extends MasterAction {
 			// Cargo una nueva tabla hash para insertar en la tabla de historico
 			Hashtable hashHist = new Hashtable();			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
+			//mhg
+			if (nombreFoto==null || nombreFoto.equals("")) {
+				hash.put(CenClienteBean.C_FOTOGRAFIA, hashOriginal.get(CenClienteBean.C_FOTOGRAFIA));	
+			}
 			CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
 			
 			//Se inserta el histórico de los datos de CenPersona
