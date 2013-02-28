@@ -24,13 +24,14 @@
 <%@ page import = "com.siga.beans.CenDatosCVBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-
+	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	// Datos del cliente a visualizar
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
@@ -38,6 +39,11 @@
 
 	// Si tiene producto comision
 	String tieneProductoComision=(String)request.getAttribute("TIENEPRODUCTOCOMISION");
+	
+	// MENSAJE = mensaje a mostrar (si no hay mensaje no muestra alert)  
+	String mensaje = (String)request.getAttribute("mensaje");
+	// SUFIJO = Permite anhadir una cadena de texto al mensaje a mostrar
+	String sufijo = (String)request.getAttribute("sufijo");
 
 %>
 <html>
@@ -61,6 +67,18 @@
 		var tieneProductoComision = <%=tieneProductoComision%>;
 		var msgNoTieneProductoComision = "<siga:Idioma key="messages.facturacion.devoluciones.noProductoComision"/>";
 		
+		<%  if (mensaje!=null){
+			String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
+			String estilo="notice";
+			if(mensaje.contains("error")){
+				estilo="error";
+			}else if(mensaje.contains("success")||mensaje.contains("updated")){
+				estilo="success";
+			} 
+%>
+	alert(unescape("<%=msg %>"),"<%=estilo%>");
+			
+<%  } %>
 		<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 
 			window.top.close();

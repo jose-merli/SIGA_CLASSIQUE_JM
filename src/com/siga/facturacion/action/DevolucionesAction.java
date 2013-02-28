@@ -299,7 +299,8 @@ public class DevolucionesAction extends MasterAction {
 		boolean correcto=true;
 		
 		String codigoError = "5397";	// Código de error, el fichero no se ha encontrado.
-		String codigoErrorFormato = "5402";	// Código de error, Formato incorrecto.
+		String[] codigosErrorFormato = {"20000", "5399", "5402"};
+		String codigoErrorBanco = "-100"; // Código de error, EL FICHERO CARGADO ES DE UN BANCO DIFERENTE AL USADO POR EL COLEGIO PARA EMITIR SUS DOMICILIACIONES
 		String codretorno;
 
 		try{
@@ -479,16 +480,22 @@ public class DevolucionesAction extends MasterAction {
 			}else if(codretorno.equalsIgnoreCase(codigoError)){
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
-				return "mostrarVentana";
-			}else if(codretorno.equalsIgnoreCase(codigoErrorFormato)){
-				tx.rollback();				
-				return exitoModal("facturacion.nuevoFichero.literal.errorFormato",request);
+				return "nuevo";
+			}else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
+				tx.rollback();		
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
+				return "nuevo";
+			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
+				tx.rollback();	
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
+				return "nuevo";
 			}else{
 				correcto=false;
 			}
 			if (codretorno.equalsIgnoreCase("-32")){
 				tx.rollback();
-				result=exitoModal("messages.facturacion.devoluciones.noProductoComision",request);
+				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
+				return "nuevo";
 			}else{
 			
 				if (correcto){
@@ -501,13 +508,12 @@ public class DevolucionesAction extends MasterAction {
 						
 					}else{
 						result=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-						
 					}
-									
 				}
 				else{
-					tx.rollback();				
-					result=exitoModal("facturacion.nuevoFichero.literal.errorLectura",request);
+					tx.rollback();		
+					request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorLectura");
+					return "nuevo";
 				}
 			}
 		}catch (Exception e) { 
@@ -727,12 +733,12 @@ public class DevolucionesAction extends MasterAction {
 	protected String actualizacionTablasDevoluciones(String institucion, String path, String fichero, String idioma, String usuario) throws ClsExceptions {	
 		String resultado[] = new String[2];
 	//	boolean devolucion=true;
-		String codigoError = "5397";	// Código de error, el fichero no se ha encontrado.
-		String codigoErrorFormato = "5402";	// Código de error, Formato incorrecto
-		String codretorno  = codigoError;
+		String codigoError_FicNoEncontrado = "5397";	// Código de error, el fichero no se ha encontrado.
+		//String codigoError_Formato = "5402";	// Código de error, Formato incorrecto
+		String codretorno  = codigoError_FicNoEncontrado;
 		try	{			
 			int i=0;
-			while (i<3 && codretorno.equalsIgnoreCase(codigoError)){
+			while (i<3 && codretorno.equalsIgnoreCase(codigoError_FicNoEncontrado)){
 				i++;
 				Thread.sleep(1000);
 				Object[] param_in = new Object[5];
