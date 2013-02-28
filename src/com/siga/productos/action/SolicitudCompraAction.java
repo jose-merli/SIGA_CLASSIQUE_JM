@@ -1669,7 +1669,9 @@ public class SolicitudCompraAction extends MasterAction{
 			salida = "descarga";
 				
 		} catch (SIGAException es) {
-			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);	
+			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
+		} catch (ArrayIndexOutOfBoundsException e){
+			throwExcp("messages.facturacionRapida.error.Array",new String[] {"modulo.certificados"},e,tx);
 		} catch (ClsExceptions es) {
 			throwExcp (es.getMessage(), new String[] {"modulo.censo"}, es, tx);	
 		}catch (Exception e) { 
