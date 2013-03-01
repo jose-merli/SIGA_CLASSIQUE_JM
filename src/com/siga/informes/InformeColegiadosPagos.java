@@ -238,9 +238,10 @@ public class InformeColegiadosPagos extends MasterReport {
 					
 			sql = "SELECT * " +
 				" FROM FAC_ABONO " +
-				" WHERE IDPERSONA = "+idPerDestino +
+				" WHERE IDPERSONA = " + idPerDestino +
 					" AND IDINSTITUCION = " + idInstitucion +
-					" AND IDPAGOSJG ="+idPagos;
+					" AND IDPAGOSJG = " + idPagos + 
+					" AND IDPERORIGEN = " + idPersona;
 			
 			rc=new RowsContainer();
 			rc.find(sql);
@@ -744,28 +745,23 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 			//Obtiene el importe del compensado o pagado por caja o rectificativo
 			buf0 = new StringBuffer();
-			buf0.append("SELECT   abo.numeroabono numeroabono, SUM (caj.importe) compensado_factura,");
-			buf0.append(" SUM (efe.importe) pagado_caja");
-			buf0.append(" FROM fac_pagoabonoefectivo efe RIGHT JOIN fac_abono abo");
-			buf0.append(" ON efe.idinstitucion = abo.idinstitucion");
-			buf0.append(" AND efe.idabono = abo.idabono");
-			buf0.append(" LEFT JOIN fac_pagosporcaja caj");
-			buf0.append(" ON efe.idinstitucion = caj.idinstitucion");
-			buf0.append(" AND efe.idabono = caj.idabono");
-			buf0.append(" AND efe.idpagoabono = caj.idpagoabono");
+			buf0.append(" SELECT abo.numeroabono numeroabono, ");
+			buf0.append(" 	SUM (caj.importe) compensado_factura, ");			
+			buf0.append(" 	SUM (efe.importe) pagado_caja ");
+			buf0.append(" FROM fac_pagoabonoefectivo efe ");
+			buf0.append("	RIGHT JOIN fac_abono abo ");			
+			buf0.append(" 		ON efe.idinstitucion = abo.idinstitucion ");
+			buf0.append(" 		AND efe.idabono = abo.idabono ");
+			buf0.append(" 	LEFT JOIN fac_pagosporcaja caj ");
+			buf0.append(" 		ON efe.idinstitucion = caj.idinstitucion ");
+			buf0.append(" 		AND efe.idabono = caj.idabono ");
+			buf0.append(" 		AND efe.idpagoabono = caj.idpagoabono ");
 			buf0.append(" WHERE abo.idpersona = " + IdPerDestino);
-			buf0.append(" and abo.idpagosjg = " +idPago);
-			buf0.append(" and abo.idinstitucion = " + idInstitucion);
-			buf0.append(" group by abo.numeroabono, abo.idpagosjg");		
+			buf0.append(" 	AND abo.idpagosjg = " + idPago);
+			buf0.append(" 	AND abo.idinstitucion = " + idInstitucion);
+			buf0.append(" 	AND abo.idperorigen = " + idPersona);
+			buf0.append(" GROUP BY abo.numeroabono, abo.idpagosjg");		
 			
-	/*		buf0.append("select abo.numeroabono as NUMEROABONO, sum(efe.importe) as COMPENSADO_CAJA");
-			buf0.append(" from FAC_ABONO ABO, FAC_PAGOABONOEFECTIVO EFE");
-			buf0.append(" where abo.idinstitucion = efe.idinstitucion(+)");
-			buf0.append(" and abo.idabono = efe.idabono(+)");
-			buf0.append(" and abo.idpersona = " + idPersona);
-			buf0.append(" and abo.idpagosjg = " +idPago);
-			buf0.append(" and abo.idinstitucion = " + idInstitucion);
-			buf0.append(" group by abo.numeroabono");*/
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
 			if(rc!=null && rc.size()>0){
@@ -938,16 +934,21 @@ public class InformeColegiadosPagos extends MasterReport {
 			//fecha de abono del disco bancario
 			
 			buf0 = new StringBuffer();
-			buf0.append("SELECT TO_CHAR(fd.fecha, 'DD/MM/YYYY') FECHAABONODISCOBANCO FROM FAC_ABONO fa, FCS_PAGOSJG fp,fac_abonoincluidoendisquete fi, fac_disqueteabonos fd ");
-			buf0.append(" where fa.idinstitucion =" + idInstitucion);
-			buf0.append(" and fa.idpagosjg= " + idPago);
-			buf0.append(" and fa.idpersona="+ IdPerDestino);
-			buf0.append(" AND fa.idinstitucion = fa.idinstitucion ");
-			buf0.append(" AND fa.idpagosjg = fp.idpagosjg ");
-			buf0.append(" and fi.idinstitucion= fa.idinstitucion ");
-			buf0.append(" and fi.idabono = fa.idabono ");
-			buf0.append(" and fi.idinstitucion= fd.idinstitucion ");
-			buf0.append(" and fi.iddisqueteabono= fd.iddisqueteabono ");			
+			buf0.append(" SELECT TO_CHAR(fd.fecha, 'DD/MM/YYYY') FECHAABONODISCOBANCO ");
+			buf0.append(" FROM FAC_ABONO fa, ");
+			buf0.append(" 	FCS_PAGOSJG fp, ");
+			buf0.append(" 	fac_abonoincluidoendisquete fi, ");
+			buf0.append(" 	fac_disqueteabonos fd ");
+			buf0.append(" WHERE fa.idinstitucion = " + idInstitucion);
+			buf0.append(" 	AND fa.idpagosjg = " + idPago);
+			buf0.append(" 	AND fa.idpersona = " + IdPerDestino);
+			buf0.append(" 	AND fa.idpersona = " + idPersona);
+			buf0.append(" 	AND fa.idinstitucion = fa.idinstitucion ");
+			buf0.append(" 	AND fa.idpagosjg = fp.idpagosjg ");
+			buf0.append(" 	AND fi.idinstitucion = fa.idinstitucion ");
+			buf0.append(" 	AND fi.idabono = fa.idabono ");
+			buf0.append(" 	AND fi.idinstitucion = fd.idinstitucion ");
+			buf0.append(" 	AND fi.iddisqueteabono = fd.iddisqueteabono ");			
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
 			if(rc!=null && rc.size()>0){

@@ -56,6 +56,7 @@ public class FacAbonoBean extends MasterBean{
 	static public final String C_OBSERVACIONES	= "OBSERVACIONES";
 	static public final String C_IDPERSONADEUDOR= "IDPERSONADEUDOR";	
 	static public final String C_IDCUENTADEUDOR	= "IDCUENTADEUDOR";
+	static public final String C_IDPERORIGEN	= "IDPERORIGEN";
 
 	static public final String C_ESTADO	= "ESTADO";
 	static public final String C_IMPTOTALNETO	= "IMPTOTALNETO";

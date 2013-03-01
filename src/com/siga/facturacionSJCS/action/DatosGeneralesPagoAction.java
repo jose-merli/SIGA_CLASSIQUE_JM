@@ -2143,68 +2143,53 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			importeRetenciones = (String) importes.get("importeRetenciones");
 
 			// Perparamos el motivo del pago
-			String motivoPago = UtilidadesString.getMensajeIdioma(
-					(String) usr.getLanguage(),
-					"factSJCS.abonos.literal.motivo");
-			CenPersonaBean sociedadBean = personaAdm.getIdentificador(new Long(
-					idPersonaSoc));
+			String motivoPago = UtilidadesString.getMensajeIdioma((String) usr.getLanguage(), "factSJCS.abonos.literal.motivo");
+			CenPersonaBean sociedadBean = personaAdm.getIdentificador(new Long(idPersonaSoc));
 			sociedadPago = sociedadBean.getNombre();
-			CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(
-					idPersonaSJCS));
-			personaPago = personaBean.getNombre() + " "
-					+ personaBean.getApellido1() + " "
-					+ personaBean.getApellido2();
+			CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(idPersonaSJCS));
+			personaPago = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();
+			
 			if (idPersonaSJCS.equalsIgnoreCase(idPersonaSoc)) {
-				// Si coinciden idPersonaSJCS e idPersonaSoc el pago es a una
-				// persona
+				// Si coinciden idPersonaSJCS e idPersonaSoc el pago es a una persona
 				motivoPago += " " + personaPago;
+				
 			} else {
 				// Si no coinciden el será a una sociedad a traves de un letrado
-				motivoPago += " " + sociedadPago;
-				motivoPago += " "
-						+ UtilidadesString.getMensajeIdioma(
-								(String) usr.getLanguage(),
-								"factSJCS.abonos.literal.motivo.letrado");
-				motivoPago += " " + personaPago;
+				motivoPago += " " + sociedadPago +
+					" " + UtilidadesString.getMensajeIdioma((String) usr.getLanguage(),	"factSJCS.abonos.literal.motivo.letrado") + 
+					" " + personaPago;
 			}
 
 			// preparamos el abono
 			Hashtable hash = new Hashtable();
 			FacAbonoAdm abonoAdm = new FacAbonoAdm(this.getUserBean(request));
-			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(
-					this.getUserBean(request));
+			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(this.getUserBean(request));
 			FcsPagosJGBean pagosBean = new FcsPagosJGBean();
-			String idAbono = ((Long) abonoAdm.getNuevoID(usr.getLocation()))
-					.toString();
-			GestorContadores gc = new GestorContadores(
-					this.getUserBean(request));
-			Hashtable contadorTablaHash = gc.getContador(
-					new Integer(usr.getLocation()), ClsConstants.FAC_ABONOS);
-			String numeroAbono = gc
-					.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
+			String idAbono = ((Long) abonoAdm.getNuevoID(usr.getLocation())).toString();
+			GestorContadores gc = new GestorContadores(this.getUserBean(request));
+			Hashtable contadorTablaHash = gc.getContador(new Integer(usr.getLocation()), ClsConstants.FAC_ABONOS);
+			String numeroAbono = gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_IDINSTITUCION, (String) usr.getLocation());
 			hash.put(FacAbonoBean.C_IDABONO, idAbono);
 			hash.put(FacAbonoBean.C_NUMEROABONO, numeroAbono);
 			hash.put(FacAbonoBean.C_MOTIVOS, motivoPago);
 			hash.put(FacAbonoBean.C_FECHA, "SYSDATE");
-			hash.put(FacAbonoBean.C_CONTABILIZADA,
-					ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
+			hash.put(FacAbonoBean.C_CONTABILIZADA, ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
 			hash.put(FacAbonoBean.C_IDPERSONA, idPersona);
 			hash.put(FacAbonoBean.C_IDCUENTA, idCuenta);
 			hash.put(FacAbonoBean.C_IDPAGOSJG, idPago);
+			hash.put(FacAbonoBean.C_IDPERORIGEN, idPersonaSJCS);
 
 			// Recuperamos el nombre del pago si esta disponible y lo metemos en
 			// las observaciones
 			Hashtable criterios = new Hashtable();
 			criterios.put("idPagosjg", idPago);
 			criterios.put("idInstitucion", (String) usr.getLocation());
-			pagos = pagosAdm.getPagosParaCerrar(criterios,
-					(String) usr.getLocation());
+			pagos = pagosAdm.getPagosParaCerrar(criterios, (String) usr.getLocation());
 			if (!pagos.isEmpty()) {
 				// pagosBean = (FcsPagosJGBean)pagos.get(0);
 				Hashtable registro = (Hashtable) pagos.get(0);
-				UtilidadesHash.set(hash, FacAbonoBean.C_OBSERVACIONES, registro
-						.get(FcsPagosJGBean.C_NOMBRE).toString());
+				UtilidadesHash.set(hash, FacAbonoBean.C_OBSERVACIONES, registro.get(FcsPagosJGBean.C_NOMBRE).toString());
 			}
 
 			// preparamos las listas de abono
@@ -2216,10 +2201,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			Hashtable htMovimientos = new Hashtable();
 			Hashtable htRetencionPersona = new Hashtable();
 
-			FacLineaAbonoAdm lineaAbonoAdm = new FacLineaAbonoAdm(
-					this.getUserBean(request));
-			String idLineaAbono = ((Long) lineaAbonoAdm.getNuevoID(
-					idInstitucion, idAbono)).toString();
+			FacLineaAbonoAdm lineaAbonoAdm = new FacLineaAbonoAdm(this.getUserBean(request));
+			String idLineaAbono = ((Long) lineaAbonoAdm.getNuevoID(idInstitucion, idAbono)).toString();
 			int idLinea = Integer.parseInt(idLineaAbono);
 
 			// campos comunes
@@ -2230,8 +2213,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			// insertamos el abono
 			abonoAdm.insert(hash);
-			gc.setContador(contadorTablaHash,
-					gc.getNuevoContador(contadorTablaHash));
+			gc.setContador(contadorTablaHash, gc.getNuevoContador(contadorTablaHash));
 
 			double importeNeto = 0;
 			double importeIVA = 0;
@@ -2247,10 +2229,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// ("Error en PL ejecutarProcPROC_SIGA_ACTESTADOABONO al egenrar el abono");
 
 			if (Double.parseDouble(importeTurnos) != 0) {
-				htTurnos = this.prepararListaAbono(htLista, importeTurnos,
-						idLinea, UtilidadesString.getMensajeIdioma(
-								usr.getLanguage(),
-								"factSJCS.abonos.literal.turnos"));
+				htTurnos = this.prepararListaAbono(htLista, importeTurnos, idLinea, UtilidadesString.getMensajeIdioma(usr.getLanguage(), "factSJCS.abonos.literal.turnos"));
 				idLinea++;
 				lineaAbonoAdm.insert(htTurnos);
 				importeNeto += new Double(importeTurnos).doubleValue()

@@ -58,7 +58,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.C_IMPPENDIENTEPORABONAR,
 							FacAbonoBean.C_OBSERVACIONES,
 							FacAbonoBean.C_IDPERSONADEUDOR,
-							FacAbonoBean.C_IDCUENTADEUDOR};
+							FacAbonoBean.C_IDCUENTADEUDOR,
+							FacAbonoBean.C_IDPERORIGEN};
 		return campos;
 	}
 	
@@ -575,8 +576,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 		try {
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ( ");
+
 			if(destinatarioAbono==DESTINATARIOABONO_SOCIEDAD || destinatarioAbono==DESTINATARIOABONO_SJCS){
-				
 				sql.append(" (SELECT A.IDABONO, A.NUMEROABONO, A.IDINSTITUCION, ");
 				sql.append(" A.OBSERVACIONES,A.MOTIVOS,  A.FECHA, ");
 				sql.append(" A.CONTABILIZADA, A.IDFACTURA, A.IMPEXCESIVO, ");
@@ -591,14 +592,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
 				sql.append(" WHERE A.IDINSTITUCION = PC.IDINSTITUCION ");
 				sql.append(" AND A.IDPAGOSJG = PC.IDPAGOSJG ");
-				sql.append(" AND ");
-				sql.append(idPersona);
-				sql.append(" in (PC.IDPERORIGEN, pc.idperdestino) ");
-				sql.append(" AND PC.IDINSTITUCION = ");
-				sql.append(institucion);
-				sql.append(" AND A.IDPERSONA in (PC.IDPERORIGEN, pc.idperdestino) ");
+				sql.append(" AND A.IDPERORIGEN = PC.IDPERORIGEN ");
+				sql.append(" AND A.IDPERSONA = PC.IDPERDESTINO ");
+				sql.append(" AND A.IDPERORIGEN = " + idPersona);
 				if (anyosAbono!=null){		 
-					sql.append("  AND SYSDATE - A.FECHA < ");
+					sql.append(" AND SYSDATE - A.FECHA < ");
 					sql.append(anyosAbono);
 				}
 				sql.append(" ) ");
@@ -618,34 +616,21 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALIVA(A.IDINSTITUCION, A.IDABONO) AS TOTALIVA, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALABONADO(A.IDINSTITUCION, A.IDABONO) AS TOTALABONADO, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTAL(A.IDINSTITUCION, A.IDABONO) AS TOTAL, ");
-				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");
-				
+				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");				
 				sql.append(" FROM FAC_ABONO A ");
 				sql.append(" WHERE A.IDINSTITUCION = ");
-				sql.append(institucion);
-				
+				sql.append(institucion);				
 				sql.append(" AND A.IDPERSONA = ");
 				sql.append(idPersona);
 				sql.append(" AND A.IDPAGOSJG IS NULL ");
 				if (anyosAbono!=null){		 
 					sql.append("  AND SYSDATE - A.FECHA < ");
 					sql.append(anyosAbono);
-				}
-				
-				sql.append(" ) ");
-			
-			}
-			
-			sql.append(" ) ");
-			
+				}				
+				sql.append(" ) ");			
+			}			
+			sql.append(" ) ");			
 			sql.append(" ORDER BY FECHA DESC"); 
-			
-			
-			
-			
-			
-			
-			
 	
 			PaginadorBind paginador = new PaginadorBind(sql.toString(), new Hashtable());
 			int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -660,7 +645,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
 		}
 	}
-
 	
 	/** 
 	 * Recoge informacion relativa a los pagos del registro pasado como parametro<br/> 
