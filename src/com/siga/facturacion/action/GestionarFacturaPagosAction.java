@@ -280,38 +280,42 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			pagoBean.setTarjeta("N");
 
 			t.begin();
-			if(pagosAdm.insert(pagoBean)) {
-			    FacFacturaBean facturaBean = null;
-				FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
-			    Hashtable ht = new Hashtable();
-			    ht.put(FacFacturaBean.C_IDINSTITUCION,pagoBean.getIdInstitucion());
-			    ht.put(FacFacturaBean.C_IDFACTURA,pagoBean.getIdFactura());
-			    Vector v = facturaAdm.selectByPK(ht);
-			    if (v!=null && v.size()>0) {
-			        facturaBean = (FacFacturaBean) v.get(0);
+			
+		    FacFacturaBean facturaBean = null;
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+		    Hashtable ht = new Hashtable();
+		    ht.put(FacFacturaBean.C_IDINSTITUCION,pagoBean.getIdInstitucion());
+		    ht.put(FacFacturaBean.C_IDFACTURA,pagoBean.getIdFactura());
+		    Vector v = facturaAdm.selectByPK(ht);
+		    if (v!=null && v.size()>0) {
+		        facturaBean = (FacFacturaBean) v.get(0);
+		        
+		        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
+		        facturaBean.setImpTotalPagadoPorCaja(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
+		        facturaBean.setImpTotalPagadoSoloCaja(new Double(facturaBean.getImpTotalPagadoSoloCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
+		        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
+		        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
+		        
+		        if (facturaBean.getImpTotalPorPagar() >= 0) {
+			
+		        	if(pagosAdm.insert(pagoBean)) {
 			        
-			        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-			        facturaBean.setImpTotalPagadoPorCaja(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-			        facturaBean.setImpTotalPagadoSoloCaja(new Double(facturaBean.getImpTotalPagadoSoloCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-			        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-			        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-			        
-			        if (facturaAdm.update(facturaBean)) {
+		        		if (facturaAdm.update(facturaBean)) {
 				        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-						facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
-			        } else {
-			            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
-			        }
-					
-					t.commit();
-
-			    } else {
-			        throw new ClsExceptions("No se ha encontrado la factura buscada: "+pagoBean.getIdInstitucion()+ " "+pagoBean.getIdFactura());
-			    }
+		        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+		        			t.commit();
+		        		} else {
+		        			t.rollback();
+		        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+		        		}
+		        	} else {
+		        		t.rollback();
+		        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
+		        	}
 				
-			}
-			else {
-			    throw new ClsExceptions("Error al insertar el pago y/o actualizar los importes y el estado de la factura: "+pagosAdm.getError()); 
+		        } 
+		    } else {
+				throw new ClsExceptions("No se ha encontrado la factura: "+pagosAdm.getError());
 			}
 		} 
 		catch (Exception e) { 
