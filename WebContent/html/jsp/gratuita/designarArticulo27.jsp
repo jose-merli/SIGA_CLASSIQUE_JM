@@ -287,7 +287,7 @@
 					if (resultado[10] != "" && resultado[10] != idEspana) {
 						datosGeneralesForm.poblacionExt.value=resultado[8];
 					}else{
-						//document.getElementById("provincia").value = resultado[9];
+						document.getElementById("provincia").value = resultado[9];
 						poblacionSeleccionada = resultado[8];
 						document.busquedaCensoModalForm.poblacionValue.value = resultado[8];
 						document.getElementById("provincia").onchange();
@@ -1885,7 +1885,7 @@
 			jQuery("#poblacionEspanola").show();
 			jQuery("#poblacionExtranjera").hide();
 			if (idProvincia != "-1" && idProvincia != "" && idProvincia != undefined){
-				if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
+				if (document.getElementById("direcciones").value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
 					// Cambiamos el select por un input text con el nombre de la población seleccionada															
 					jQuery.ajax({ 
 						type: "POST",
@@ -1893,41 +1893,42 @@
 						data: "valorProvincia="+idProvincia+"&valorPoblacion="+document.busquedaCensoModalForm.poblacionValue.value,
 						dataType: "json"}).done(function(json){
 							var nombrePoblacion = json.nombrePoblacion;	
-							document.getElementById("poblacionEspanola").innerHTML = "<input type='text' id='poblacion_display' disabled='disabled' value='"+nombrePoblacion+"'/><input type='hidden' name='poblacion' id='poblacion' value='"+document.busquedaCensoModalForm.poblacionValue.value+"'/>";							
+							
+							document.getElementById("poblacionEspanola").innerHTML = "<input type='text' id='poblacion_display' disabled='disabled' value='"+nombrePoblacion+"'/><input type='hidden' name='poblacion' id='poblacion' value='"+document.busquedaCensoModalForm.poblacionValue.value+"'/>";
+							if (nombrePoblacion == "Error B.D.")
+								recargarPoblacionesDeProvincia(html_idPoblacion, idProvincia);
 						}).fail(function( jqXHR, textStatus, errorThrown){
-							alert(mensajeGeneralError);
+							recargarPoblacionesDeProvincia(html_idPoblacion, idProvincia);
 						});
 				} else {
-					// Volvemos a poner el combo si lo hemos quitado					
-					restablecerComboPoblacion();
-					jQuery("#"+html_idPoblacion).attr("disabled","disabled");
-					// Cargamos las poblaciones de la provincia
-					jQuery.ajax({ 
-						type: "POST",
-						url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesDeProvincia",				
-						data: "valorProvincia="+idProvincia,
-						cache: "true",
-						timeout: "5000",
-						dataType: "html"}).done(function(data){							
-							if (jQuery("#"+html_idPoblacion).length > 0){
-								document.getElementById("poblacionEspanola").innerHTML = comboPoblacionHTML;
-							}
-							/*
-							var optionsHTML = defaultOptionPoblacion;
-							for (var i = 0; i < json.itemsHTML.length; i++){
-								optionsHTML = optionsHTML + json.itemsHTML[i];
-							}
-							*/
-							jQuery("#"+html_idPoblacion).html(data);
-							jQuery("#"+html_idPoblacion).val("-1");
-							if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
-								jQuery("#"+html_idPoblacion).val(document.busquedaCensoModalForm.poblacionValue.value);
-							}
-						}).fail(function( jqXHR, textStatus, errorThrown){
-							alert(mensajeGeneralError);
-						}).always(function(){if (jQuery("#"+html_idPoblacion).val() == -1) jQuery("#"+html_idPoblacion).removeAttr("disabled");});
-					}
+					recargarPoblacionesDeProvincia(html_idPoblacion, idProvincia);
+				}
 			}
+		}
+		
+		function recargarPoblacionesDeProvincia(html_idPoblacion, idProvincia){
+			// Volvemos a poner el combo si lo hemos quitado					
+			restablecerComboPoblacion();
+			jQuery("#"+html_idPoblacion).attr("disabled","disabled");
+			// Cargamos las poblaciones de la provincia
+			jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesDeProvincia",				
+				data: "valorProvincia="+idProvincia,
+				cache: "true",
+				timeout: "5000",
+				dataType: "html"}).done(function(data){							
+					if (jQuery("#"+html_idPoblacion).length > 0){
+						document.getElementById("poblacionEspanola").innerHTML = comboPoblacionHTML;
+					}							
+					jQuery("#"+html_idPoblacion).html(data);
+					jQuery("#"+html_idPoblacion).val("-1");
+					if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
+						jQuery("#"+html_idPoblacion).val(document.busquedaCensoModalForm.poblacionValue.value);
+					}
+				}).fail(function( jqXHR, textStatus, errorThrown){
+					alert(mensajeGeneralError);
+				}).always(function(){if (jQuery("#"+html_idPoblacion).val() == -1) jQuery("#"+html_idPoblacion).removeAttr("disabled");});
 		}
 		
 		function restablecerComboPoblacion(){
