@@ -37,6 +37,10 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>		
 	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<siga:TituloExt titulo="censo.fichaCliente.sjcs.retencionesIRPF.cabecera" localizacion="censo.fichaCliente.sjcs.retencionesIRPF.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
+	
 	<script>
 		function accionInformeRetencionesIRPF() {			
 			document.RetencionesIRPFForm.modo.value = "dialogoInformeIRPF";
