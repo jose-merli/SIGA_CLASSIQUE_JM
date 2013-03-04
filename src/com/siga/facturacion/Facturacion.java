@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -881,18 +882,22 @@ public class Facturacion {
     	}
     }
  
-
+    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco) throws ClsExceptions, SIGAException {
+    	confirmarProgramacionFactura(beanP, req, archivarFacturacion, log, isTransacionPesada, generarPagosBanco, null);
+    }
     
-    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco) throws ClsExceptions, SIGAException 
+    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco, UserTransaction tx) throws ClsExceptions, SIGAException 
     {
-    	UserTransaction tx = null;
+    	boolean bTransaccionInterna = tx == null;
     	boolean isFacturadoOk = true;
     	String msjAviso = null; 
     	try {
-    		if(isTransacionPesada)
-    			tx = (UserTransaction) this.usrbean.getTransactionPesada();
-    		else
-    			tx = this.usrbean.getTransaction();
+    		if (bTransaccionInterna){
+	    		if(isTransacionPesada)
+	    			tx = (UserTransaction) this.usrbean.getTransactionPesada();
+	    		else
+	    			tx = this.usrbean.getTransaction();
+    		}
 
     		// actualizacion de estado
     		// fichero de log
@@ -948,7 +953,8 @@ public class Facturacion {
     		try {
 
     			//////////// TRANSACCION ////////////////
-    			tx.begin();
+    			if (Status.STATUS_NO_TRANSACTION == tx.getStatus())
+    				tx.begin();
     			//////////// TRANSACCION ////////////////
 
     			//Se genera numero de factura definitivo
@@ -1033,7 +1039,8 @@ public class Facturacion {
     			}
 
     			//----- cambio de estado confirmacion a FINALIZADA CON ERRORES -------//
-    			tx.begin();
+    			UserTransaction tx2 = this.usrbean.getTransaction();
+    			tx2.begin();
 
     			// C_IDESTADOCONFIRMACION(CONFIRM_FINALIZADAERRORES),C_FECHACONFIRMACION(""),C_FECHAPREVISTACONFIRM(sysdate),C_ARCHIVARFACT(0 ó 1)};
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
@@ -1041,8 +1048,7 @@ public class Facturacion {
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
     			facadm.updateDirect(hashNew, claves, camposFactura);
 
-
-    			tx.commit();
+    			tx2.commit();
 
     			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
     			isFacturadoOk =false;
@@ -1066,7 +1072,6 @@ public class Facturacion {
 
     	} 
     	catch (ClsExceptions e) {
-
     		try { 
     			if(tx != null)
     				tx.rollback(); 
@@ -1102,9 +1107,8 @@ public class Facturacion {
 
     	if(msjAviso!=null)
     		throw new ClsExceptions(msjAviso);
-
-
     }
+    
     private String generarPdfEnvioProgramacionFactura(UserTransaction tx,FacFacturacionProgramadaAdm facadm,FacFacturacionProgramadaBean beanP,
     		
     		HttpServletRequest req,SIGALogging log,String idSerieFacturacion,

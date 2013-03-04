@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -2387,27 +2388,36 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    UserTransaction tx = null;
 	    String mensaje="";
 	    String salida = "";
-	    try {
-			UsrBean usr = this.getUserBean(request);
-			tx=usr.getTransaction();
-			
+	    try {						
 		    // datos llamada
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
 		    
+		    // Transacción
+		    UsrBean usr = this.getUserBean(request);
+			tx=usr.getTransaction();
+			tx.begin();
+		    
 		    // administradores
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
 		    Facturacion facturacion = new Facturacion(this.getUserBean(request));
+		    FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
+		    
+		    // Bloqueamos las tablas de factura y compra
+		    admFactura.lockTable();
+		    admCompra.lockTable();
 		    
 		    // Obtengo la peticion de compra
 		    PysCompraBean beanCompra = admSolicitud.obtenerCompra(idInstitucion, idSolicitudCertificado);
 		    
 		    // Compruebo SI esta facturada la compra
 		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {
-		    	
+		    	// YA ESTÁ FACTURADA
+		    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
+		    	tx.rollback();
 		    	// Comprobamos si no esta confirmada la facturacion, la confirmamos
 	    		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm (this.getUserBean(request));
 		    	FacFacturacionProgramadaBean b = adm.getFacturacionProgramadaDesdeCompra(beanCompra);
@@ -2512,6 +2522,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        request.setAttribute("numeroFacturas",new Integer(numero));
 			        request.setAttribute("mensaje","messages.facturacionRapida.aviso.variasFacturas");
 			        salida =  "preguntaNumeroFacturas";
+			        // LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+			        tx.rollback();
 			        return salida;
 			    }
 			}
@@ -2520,7 +2532,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			FacFacturacionProgramadaBean programacion = null;
 			Vector facts = null;
 		    try {
-			    tx.begin();
 			    
 			    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
 			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
@@ -2539,25 +2550,20 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    // PASO 2: DESHACER RELACIONES TEMPORALES
 			    programacion = facturacion.restaurarSerieFacturacionGenerica(serieFacturacionTemporal);
 		        
-			    tx.commit();
+			    // PASO 3: FACTURACION RAPIDA (CONFIRMACION)
+				// BNS INCLUYO LA CONFIRMACIÓN EN LA TRANSACCIÓN
+			    facturacion.confirmarProgramacionFactura(programacion, request,true,null,false,true, tx);
+			    
+			    if (Status.STATUS_ACTIVE  == tx.getStatus())
+			    	tx.commit();
 
 		    } catch (Exception e) {
-			    try { tx.rollback(); } catch (Exception ee) {}
+			    try {
+			    	tx.rollback();
+			    } catch (Exception ee) {}
+
 			    throw e;
-		    }
-			
-		    // PASO 3: FACTURACION RAPIDA (CONFIRMACION)
-			// en este caso la transacción se gestiona dentro
-		    try {
-		        facturacion.confirmarProgramacionFactura(programacion, request,true,null,false,true);
-			} catch (SIGAException ee) {
-				mensaje="messages.facturacionRapida.errorConfirmacion";
-				return exitoRefresco(mensaje,request);
-			} catch (Exception e) {
-				mensaje="messages.facturacionRapida.errorConfirmacion";
-				return exitoRefresco(mensaje,request);
-		    }
- 
+		    }		    
 			
 			/*********************pdm***********/
 		 if (programacion.getGenerarPDF().trim().equals("1")) {

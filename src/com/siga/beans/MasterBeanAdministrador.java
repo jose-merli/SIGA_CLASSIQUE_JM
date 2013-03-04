@@ -5,6 +5,8 @@
 package com.siga.beans;
 
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.*;
 
 import com.atos.utils.*;
@@ -1189,5 +1191,17 @@ public abstract class MasterBeanAdministrador {
 		return filaModificadas;	
 	}
 
-
+	public void lockTable() throws ClsExceptions  {
+		Statement st = null;
+		Connection connec = null;
+		String sqlLock = "lock table "+ this.nombreTabla +" in exclusive mode";
+		try{
+			ClsLogging.writeFileLog("SQL LOCK TABLE: " + sqlLock, 10);
+			connec = ClsMngBBDD.getConnection();
+			st = connec.createStatement();
+			st.execute(sqlLock);
+		} catch(Exception e){
+			throw new ClsExceptions(e,  e.getMessage());
+		}
+	}
 }
