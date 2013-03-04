@@ -587,14 +587,16 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			
 			// Peticion de BAJA
 			else {
-				if(fechaEfectiva.equals("0")){
+				fechaEfectiva=GstDate.getApplicationFormatDate("ES",fechaEfectiva);
+				//mhg - Se comenta porque no se quiere modificar la fechaSolicitud
+				/*if(fechaEfectiva.equals("0")){
 					peticionBean.setFecha("sysdate");
 					
 				}
 				else{
 					fechaEfectiva=GstDate.getApplicationFormatDate("ES",fechaEfectiva);
 					peticionBean.setFecha(fechaEfectiva);
-				}	
+				}*/	
 				// 1. Cambiamos el estado de peticion de baja a PROCESADA
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("EN",fechaEfectiva));
@@ -643,14 +645,15 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				peticionBean = (PysPeticionCompraSuscripcionBean) peticionAdm.selectByPK(claves).get(0);
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("EN",fechaEfectiva));
-				if(fechaEfectiva.equals("0")){ 
+				//mhg - Se comenta porque se esta haciendo lo mismo mas arriba. No le veo el sentido ...
+				/*if(fechaEfectiva.equals("0")){ 
 					peticionBean.setFecha("sysdate");
 					
 				}
 				else{
 					
 					peticionBean.setFecha(fechaEfectiva);
-				}	
+				}*/	
 				if (!peticionAdm.update(peticionBean)) {
 				    return false;
 				}
