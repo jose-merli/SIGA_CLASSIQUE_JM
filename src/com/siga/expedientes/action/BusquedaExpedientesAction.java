@@ -722,7 +722,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 		    		String idTipoExp = (String) vCampos.get(2);
 					String anio = (String) vCampos.get(3);
 					String numero = (String) vCampos.get(4);
-					datos.addAll(expedienteAdm.getDatosInformeExpediente(idInstitucion, idInstitucionTipoExp, idTipoExp, anio, numero, null, false, false));
+					datos.addAll(expedienteAdm.getDatosInformeExpediente(idInstitucion, idInstitucionTipoExp, idTipoExp, anio, numero, null,null, false,false));
 		    
 		    	
 		    

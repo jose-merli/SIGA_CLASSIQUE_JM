@@ -2205,9 +2205,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 	public Vector getDatosInformeExpediente (String idInstitucion ,String idInstitucionTipoExp,String idTipoExp ,
-			String anio,String numero, String idPersona, boolean isInforme, boolean isASolicitantes
+			String anio,String numero, String idPersona,String destinatario,boolean isInforme, boolean isDesdoblar
 	) throws ClsExceptions  
 	{
+		
 		Vector datos = null;
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -2227,6 +2228,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					+ " EXP.IDTIPOEXPEDIENTE, "
 					+ " EXP.ANIOEXPEDIENTE, "
 					+ " EXP.NUMEROEXPEDIENTE, "
+					
+					
 					+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHA, "
 					+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHAINICIO, "
 					+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHA, 'M', "+this.usrbean.getLanguage()+") FECHAINICIO_LETRA, "
@@ -2404,6 +2407,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			
 			if(datos!=null && datos.size()>0){
 				 Hashtable expedienteHashtable = (Hashtable) datos.get(0);
+				 //No comprao con null porque son campos obligatorios
+				 expedienteHashtable.put("IDINSTITUCIONTIPOEXP", (String)expedienteHashtable.get("IDINSTITUCION_TIPOEXPEDIENTE"));
+				 expedienteHashtable.put("IDTIPOEXP", (String)expedienteHashtable.get("IDTIPOEXPEDIENTE"));
 				 //BNS FALLABA CUANDO VENÍA UN TIPOEJG COMO " "
 				 String sTipoEJG = UtilidadesHash.getString(expedienteHashtable, ExpExpedienteBean.C_IDTIPOEJG);
 				 if (sTipoEJG == null)
@@ -2455,7 +2461,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			// Nombres de partes separados por comas
 			datos = helperInformes.getNombresPartesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage());			
 			// Implicados y direcciones
-			datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(), isASolicitantes);		
+			if(destinatario!=null)
+				datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(),destinatario,isDesdoblar);		
 			
 		
 		}

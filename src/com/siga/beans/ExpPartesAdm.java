@@ -6,6 +6,7 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -225,5 +226,47 @@ public class ExpPartesAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return new Integer (nuevoIdParte);
+	}
+	public List getPartes(ExpExpedienteBean beanExp) throws ClsExceptions {
+		try {
+				Hashtable htCodigos = new Hashtable();
+				int keyContador = 0;
+				StringBuffer where = new StringBuffer(" WHERE ");
+			
+				where.append(ExpPartesBean.C_IDINSTITUCION);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdInstitucion());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpPartesBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdInstitucion_tipoExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpPartesBean.C_IDTIPOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getIdTipoExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpPartesBean.C_NUMEROEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getNumeroExpediente());
+				where.append("=:");
+				where.append(keyContador);
+				where.append(" AND ");
+				where.append(ExpPartesBean.C_ANIOEXPEDIENTE);
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), beanExp.getAnioExpediente());
+				where.append("=:");
+				where.append(keyContador);
+			
+				return selectBind(where.toString(), htCodigos);
+				
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error ExpDenuncianteAdm.getPartes.");
+			}
 	}
 }

@@ -200,6 +200,23 @@ public class ExpDenunciadoAdm extends MasterBeanAdministrador {
 	    return personaBean;
 	}
 	
+	public ExpDenunciadoBean getDenunciado(Integer idInstitucion, Integer idInstitucion_TipoExpediente, Integer idTipoExpediente, String numExpediente, Integer anioExpediente, Long idPersonaDenunciado) throws ClsExceptions {
+		ExpDenunciadoBean denunciadoBean = null;
+		Hashtable hashDenunciado = new Hashtable();
+		hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION,idInstitucion);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE,numExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE,anioExpediente);
+	    hashDenunciado.put(ExpDenunciadoBean.C_IDPERSONA,idPersonaDenunciado);
+	    Vector datosDenunciadoPpal = select(hashDenunciado);
+	    if (datosDenunciadoPpal != null && datosDenunciadoPpal.size() > 0){
+	    	denunciadoBean = (ExpDenunciadoBean) datosDenunciadoPpal.get(0);
+	    	
+	    }
+	    return denunciadoBean;
+	}
+	
 	public List getDenunciados(ExpExpedienteBean beanExp) throws ClsExceptions {
 		try {
 			Hashtable htCodigos = new Hashtable();

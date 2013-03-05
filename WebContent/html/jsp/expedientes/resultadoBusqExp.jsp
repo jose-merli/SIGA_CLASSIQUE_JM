@@ -476,8 +476,9 @@
 		 
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
- 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersona +"##idTipoInforme==EXP%%%";
-			
+ 		   		 +"##numeroExpediente=="+numeroExpediente +"##idTipoInforme==EXP%%%";
+		  //"+"##idPersona=="+idPersona QUITO EL DENUNCIADO PRINCIPAL YA QUE solo sirve a efectos de interfaz de
+			//la caratula del expediente, no de la gestion de informes y envios
 			document.InformesGenericosForm.datosInforme.value =datos;
 
 			
@@ -532,8 +533,9 @@
 			idPersona = idRegistros.substring(index+2);
  		   	datos = datos +"idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExp+"##anioExpediente=="+anioExpediente 
- 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersona +"##idTipoInforme==EXP%%%";
-			
+ 		   		 +"##numeroExpediente=="+numeroExpediente  +"##idTipoInforme==EXP%%%";
+ 		 //"+"##idPersona=="+idPersona QUITO EL DENUNCIADO PRINCIPAL YA QUE solo sirve a efectos de interfaz de
+			//la caratula del expediente, no de la gestion de informes y envios
 			
 		}
 		numElementosSeleccionados =  ObjArray.length; 

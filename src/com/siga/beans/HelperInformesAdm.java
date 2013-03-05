@@ -1,9 +1,11 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -722,11 +724,13 @@ public class HelperInformesAdm  {
 			String numero,
 			String idPersona,
 			String lenguaje,
-			boolean isASolicitantes) throws SIGAException, ClsExceptions
-	{
-		Vector datosNuevos = new Vector();
+			String destinatario,boolean isDesdoblar) throws SIGAException, ClsExceptions
+			{
+		Vector denunciadosVector = new Vector();
+		Vector denunciantesVector = new Vector();
+		Vector partesVector = new Vector();
 		Hashtable datoActual, datoNuevo;
-		
+
 		// Variables para la ejecucion de las consultas
 		StringBuffer sql; // sentencia
 		Hashtable codigos; // codigos para select BIND
@@ -771,22 +775,25 @@ public class HelperInformesAdm  {
 				sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
 				sql.append("        pe.sexo AS SEXO, ");
 				sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
-				sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-				sql.append(" from exp_expediente ex, exp_denunciado den, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
-				sql.append(" where ex.IDINSTITUCION = DEN.IDINSTITUCION AND ex.IDTIPOEXPEDIENTE = DEN.IDTIPOEXPEDIENTE AND ex.IDINSTITUCION_TIPOEXPEDIENTE = DEN.IDINSTITUCION_TIPOEXPEDIENTE AND ex.NUMEROEXPEDIENTE = DEN.NUMEROEXPEDIENTE AND ex.ANIOEXPEDIENTE = DEN.ANIOEXPEDIENTE AND DEN.IDDENUNCIADO = "+ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL+" and den.idpersona = pe.idpersona ");
+				sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA, ");
+				sql.append("        den.idpersona AS IDINTERESADO ");
+				sql.append(" from  exp_denunciado den, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra");
+				sql.append(" where den.idpersona = pe.idpersona ");
 				sql.append(" and   den.idpersona = dir.idpersona(+) ");
 				sql.append(" and   den.idinstitucion = dir.idinstitucion(+) ");
 				sql.append(" and   den.iddireccion = dir.iddireccion(+) ");
-				sql.append(" and   ex.idinstitucion =:2 ");
-				sql.append(" and   ex.idinstitucion_tipoexpediente=:3 ");
-				sql.append(" and   ex.idtipoexpediente=:4 ");
-				sql.append(" and   ex.anioexpediente=:5 ");
-				sql.append(" and   ex.numeroexpediente=:6 ");
+				sql.append(" and   DEN.idinstitucion =:2 ");
+				sql.append(" and   DEN.idinstitucion_tipoexpediente=:3 ");
+				sql.append(" and   DEN.idtipoexpediente=:4 ");
+				sql.append(" and   DEN.anioexpediente=:5 ");
+				sql.append(" and   DEN.numeroexpediente=:6 ");
+//				sql.append(" and   DEN.IDDENUNCIADO = "+ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL+"  ");
 				sql.append(" and   pe.idpersona=cli.idpersona ");
 				sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
-				sql.append(" and   cli.idinstitucion=ex.idinstitucion ");
+				sql.append(" and   cli.idinstitucion=DEN.idinstitucion ");
 
 				resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
+				String idPersonaDenunciadoPrincipal = null;
 				for (int i = 0; i < resultadoConsulta.size(); i++) {
 					reg = (Hashtable) resultadoConsulta.get(i);
 					if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
@@ -820,97 +827,17 @@ public class HelperInformesAdm  {
 					datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
 					datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
 					datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+					datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
 					
-					datosNuevos.add(datoNuevo);
+//					idPersonaDenunciadoPrincipal = (String) reg.get("IDDENUNCIADO_PRINCIPAL");
+//					if(idPersonaDenunciado==null || idPersonaDenunciado.equals(idPersonaDenunciadoPrincipal))
+					
+					denunciadosVector.add(datoNuevo);
+					
 				}
 
-				if (isASolicitantes) {
-					// ////// NOMBRES Y DIRECCIONES DE DENUNCIADOS
-					codigos = new Hashtable();
-					codigos.put(new Integer(1), lenguaje);
-					codigos.put(new Integer(2), idInstitucion);
-					codigos.put(new Integer(3), idInstitucionTipoExp);
-					codigos.put(new Integer(4), idTipoExp);
-					codigos.put(new Integer(5), anio);
-					codigos.put(new Integer(6), numero);
 
-					sql = new StringBuffer();
-					// NO OLVIDAR SACAR LOS NOMBRES DE POBLACION, PROVINCIA, PAIS, ETC...
-					sql.append(" select pe.nifcif as NIFCIF, ");
-					sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
-					sql.append("        dir.idpersona as IDPERSONA_DIR, ");
-					sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
-					sql.append("        dir.domicilio, ");
-					sql.append("        dir.codigopostal, ");
-					sql.append("        dir.telefono1, ");
-					sql.append("        dir.telefono2, ");
-					sql.append("        dir.movil, ");
-					sql.append("        dir.fax1, ");
-					sql.append("        dir.fax2, ");
-					sql.append("        dir.correoelectronico, ");
-					sql.append("        dir.paginaweb, ");
-					sql.append("        dir.poblacionextranjera, ");
-					sql.append("        (select po.nombre from cen_poblaciones po where po.idpoblacion = dir.idpoblacion) as NOMBRE_POBLACION, ");
-					sql.append("        (select pr.nombre from cen_provincias pr where pr.idprovincia = dir.idprovincia) as NOMBRE_PROVINCIA, ");
-					sql.append("        (select f_siga_getrecurso(pa.nombre,:1) from cen_pais pa where pa.idpais = dir.idpais) as NOMBRE_PAIS, ");
-					sql.append("        INITCAP(pe.nombre) as NOMBRE, ");
-					sql.append("        INITCAP(pe.apellidos1) as APELLIDO1, ");
-					sql.append("        INITCAP(pe.apellidos2) as APELLIDO2, ");
-					sql.append("        pe.sexo AS SEXO, ");
-					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
-					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
-					sql.append(" from exp_denunciado d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
-					sql.append(" where d.idpersona = pe.idpersona ");
-					sql.append(" and	d.idpersona = dir.idpersona(+) ");
-					sql.append(" and   d.idinstitucion = dir.idinstitucion(+) ");
-					sql.append(" and   d.iddireccion = dir.iddireccion(+) ");
-					sql.append(" and   d.idinstitucion =:2 ");
-					sql.append(" and   d.idinstitucion_tipoexpediente=:3 ");
-					sql.append(" and   d.idtipoexpediente=:4 ");
-					sql.append(" and   d.anioexpediente=:5 ");
-					sql.append(" and   d.numeroexpediente=:6 ");
-					sql.append(" and   pe.idpersona=cli.idpersona ");
-					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
-					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
-
-					resultadoConsulta = this.ejecutaConsultaBind(sql.toString(), codigos);
-					for (int i = 0; i < resultadoConsulta.size(); i++) {
-						reg = (Hashtable) resultadoConsulta.get(i);
-						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
-						datoNuevo = new Hashtable();
-						datoNuevo.putAll(datoActual);
-
-						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
-						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
-						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
-						datoNuevo.put("APELLIDO1_DEST_MAYUS", ((String) reg.get("APELLIDO1")).toUpperCase());
-						datoNuevo.put("APELLIDO2_DEST", (String) reg.get("APELLIDO2"));
-						datoNuevo.put("APELLIDO2_DEST_MAYUS", ((String) reg.get("APELLIDO2")).toUpperCase());
-						datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
-						datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
-						datoNuevo.put("SEXO_DEST", (String) reg.get("SEXO"));
-						datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
-						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
-						// .. resto de campos obtenidos.
-						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
-						
-						datosNuevos.add(datoNuevo);
-
-					}
+				
 
 					// ////// NOMBRES Y DIRECCIONES DE DENUNCIANTES
 					codigos = new Hashtable();
@@ -946,6 +873,7 @@ public class HelperInformesAdm  {
 					sql.append("        pe.sexo AS SEXO, ");
 					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+					sql.append("        ,d.idpersona as IDINTERESADO ");
 					sql.append(" from exp_denunciante d, cen_persona pe, cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
 					sql.append(" where d.idpersona = pe.idpersona ");
 					sql.append(" and	d.idpersona = dir.idpersona(+) ");
@@ -959,14 +887,14 @@ public class HelperInformesAdm  {
 					sql.append(" and   pe.idpersona=cli.idpersona ");
 					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
 					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
-					
+
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
 						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
-						
+
 						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
@@ -994,10 +922,11 @@ public class HelperInformesAdm  {
 						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
 						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
 						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
-						
-						datosNuevos.add(datoNuevo);
+						datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
+						denunciantesVector.add(datoNuevo);
+							
 					}
-					
+
 					// ////// NOMBRES Y DIRECCIONES DE PARTES
 					codigos = new Hashtable();
 					codigos.put(new Integer(1), lenguaje);
@@ -1013,6 +942,7 @@ public class HelperInformesAdm  {
 					sql.append(" select pe.nifcif as NIFCIF, ");
 					sql.append("        f_siga_getrecurso(tra.descripcion,1) TRATAMIENTO, ");
 					sql.append("        dir.idpersona as IDPERSONA_DIR, ");
+					
 					sql.append("        dir.iddireccion as IDDIRECCION_DIR, ");
 					sql.append("        dir.domicilio, ");
 					sql.append("        dir.codigopostal, ");
@@ -1034,6 +964,7 @@ public class HelperInformesAdm  {
 					sql.append("        pe.sexo AS SEXO, ");
 					sql.append("        DECODE(pe.SEXO, 'H','o','a') AS O_A, ");
 					sql.append("        DECODE(pe.SEXO, 'H','el','la') AS EL_LA ");
+					sql.append("        ,d.idpersona as IDINTERESADO ");
 					sql.append(" from exp_parte d, cen_persona pe, exp_rolparte r , cen_direcciones dir, cen_cliente cli, cen_tratamiento tra ");
 					sql.append(" where d.idpersona = pe.idpersona ");
 					sql.append(" and   d.idrol = r.idrol  ");
@@ -1050,14 +981,14 @@ public class HelperInformesAdm  {
 					sql.append(" and   pe.idpersona=cli.idpersona ");
 					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
 					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
-					
+
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
 						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
-						
+
 						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 						datoNuevo.put("NOMBRE_DEST_MAYUS", ((String) reg.get("NOMBRE")).toUpperCase());
 						datoNuevo.put("APELLIDO1_DEST", (String) reg.get("APELLIDO1"));
@@ -1086,24 +1017,211 @@ public class HelperInformesAdm  {
 						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
 						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
 						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+						datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
+						partesVector.add(datoNuevo);
 						
-						datosNuevos.add(datoNuevo);
+					}
+				
+
+			}
+			
+			
+			// en caso de no haber datos por lo menos devuelvo lo que he recibido.
+			
+			
+				
+
+			if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+				// A Lios denunciados le metemos regiones de partes y denunciantes
+				for (int i = 0; i < denunciadosVector.size(); i++) {
+					Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
+					if(denunciantesVector!=null && denunciantesVector.size()>0)
+						datosHashtable.put("regiondenunciantes", denunciantesVector);
+					else
+						datosHashtable.put("regiondenunciantes", new Vector());
+					
+					if(partesVector!=null && partesVector.size()>0)
+						datosHashtable.put("regionpartes", partesVector);
+					else
+						datosHashtable.put("regionpartes", new Vector());
+					
+					for (int j = 0; j < partesVector.size(); j++) {
+						Hashtable datosPartes = (Hashtable)partesVector.get(j);
+						String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+						Iterator iteParte = datosPartes.keySet().iterator();
+						while (iteParte.hasNext()) {
+							String objParte = (String) iteParte.next();
+							datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+							
+						}
+						
+					}
+					
+					
+					
+				}
+				//VAmo a meter las parte concatenando el nombre de su rol
+				
+				
+				
+				
+				
+				Vector denunciadosVectorClon =  (Vector) denunciadosVector.clone();
+				for (int i = 0; i < denunciadosVector.size(); i++) {
+					Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
+					datosHashtable.put("regiondenunciados", denunciadosVectorClon);
+					
+				}
+				if(idPersona!=null){
+					Iterator iterador = denunciadosVector.iterator();
+					while (iterador.hasNext()) {
+						Hashtable datosHashtable = (Hashtable) iterador.next();
+						String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+						if(!idPersona.equals(idPersonaAux))
+							iterador.remove();
+						if(datosHashtable.get("IDPERSONA_DEST")==null){
+							ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciado) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+						}
+						
 					}
 				}
-
+				
+				
+				
+				
+				
+				if(denunciadosVector.size()>0)
+					return denunciadosVector;
+				else
+					return datos;
+				
 			}
-
-			// en caso de no haber datos por lo menos devuelvo lo que he recibido.
-			if (datosNuevos == null || datosNuevos.size() == 0) {
-				return datos;
-			} else {
-				return datosNuevos;
+			else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+				//Para los denunciantes le metemos regiones de denunciados 
+				for (int i = 0; i < denunciantesVector.size(); i++) {
+					Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+					if(denunciadosVector!=null && denunciadosVector.size()>0)
+						datosHashtable.put("regiondenunciados", denunciadosVector);
+					else//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
+						datosHashtable.put("regiondenunciados", new Vector());
+					
+					if(partesVector!=null && partesVector.size()>0)
+						datosHashtable.put("regionpartes", partesVector);
+					else
+						datosHashtable.put("regionpartes", new Vector());
+					
+					for (int j = 0; j < partesVector.size(); j++) {
+						Hashtable datosPartes = (Hashtable)partesVector.get(j);
+						String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+						Iterator iteParte = datosPartes.keySet().iterator();
+						while (iteParte.hasNext()) {
+							String objParte = (String) iteParte.next();
+							datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+							
+						}
+						
+					}
+					
+				}
+				
+				
+				
+				Vector denunciantesVectorClon =  (Vector) denunciantesVector.clone();
+				for (int i = 0; i < denunciantesVector.size(); i++) {
+					Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+					datosHashtable.put("regiondenunciantes", denunciantesVectorClon);
+					
+				}
+				if(idPersona!=null){
+					Iterator iterador = denunciantesVector.iterator();
+					while (iterador.hasNext()) {
+						Hashtable datosHashtable = (Hashtable) iterador.next();
+						String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+						if(!idPersona.equals(idPersonaAux))
+							iterador.remove();
+						if(datosHashtable.get("IDPERSONA_DEST")==null){
+							ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(parte) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+						}
+						
+					}
+				}
+				
+				if(denunciantesVector.size()>0)
+					return denunciantesVector;
+				else
+					return datos;
+				
 			}
+			else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
+					//Para las partes le metemos regiones de denunciados y de denunciantes
+					for (int i = 0; i < partesVector.size(); i++) {
+						Hashtable datosHashtable = (Hashtable)partesVector.get(i);
+						if(denunciadosVector!=null && denunciadosVector.size()>0)
+							datosHashtable.put("regiondenunciados", denunciadosVector);
+						//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
+						else
+							datosHashtable.put("regiondenunciados", new Vector());
+						if(denunciantesVector!=null && denunciantesVector.size()>0)
+							datosHashtable.put("regiondenunciantes", denunciantesVector);
+						else
+							datosHashtable.put("regiondenunciantes", new Vector());
+						
+						
+						
+						Hashtable auxParteHashtable = new Hashtable();
+						for (int j = 0; j < partesVector.size(); j++) {
+							Hashtable datosPartes = (Hashtable)partesVector.get(j);
+							String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+							Iterator iteParte = datosPartes.keySet().iterator();
+							while (iteParte.hasNext()) {
+								String objParte = (String) iteParte.next();
+								auxParteHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+								
+							}
+							
+						}
+						datosHashtable.putAll(auxParteHashtable);
+						
+						
+						
+					}
+					
+					if(idPersona!=null){
+						Iterator iterador = partesVector.iterator();
+						while (iterador.hasNext()) {
+							Hashtable datosHashtable = (Hashtable) iterador.next();
+							String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+							if(!idPersona.equals(idPersonaAux))
+								iterador.remove();
+							if(datosHashtable.get("IDPERSONA_DEST")==null){
+								ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciante) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+							}
+							
+						}
+					}
+					
+					if(partesVector.size()>0)
+						return partesVector;
+					else
+						return datos;
+					
+				}
+				 else{
+					return datos;
+				}
+				
+				
+				
+				
+			
+				
+				
+			
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al ejecutar getImplicadosDireccionesExpediente");
 		}
 
-	} //getImplicadosDireccionesExpediente()
+			} //getImplicadosDireccionesExpediente()
 
 }

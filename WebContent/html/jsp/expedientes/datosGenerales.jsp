@@ -920,8 +920,9 @@
 
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
- 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersonaDenunciado +"##idTipoInforme==EXP%%%";
-			
+ 		   		 +"##numeroExpediente=="+numeroExpediente +"##idTipoInforme==EXP%%%";
+			//"##idPersona=="+idPersonaDenunciado QUITO EL DENUNCIADO PRINCIPAL YA QUE solo sirve a efectos de interfaz de
+			//la caratula del expediente, no de la gestion de informes y envios
 			document.InformesGenericosForm.datosInforme.value =datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 			if (arrayResultado==undefined||arrayResultado[0]==undefined){
