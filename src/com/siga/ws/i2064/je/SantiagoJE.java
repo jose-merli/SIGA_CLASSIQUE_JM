@@ -20,6 +20,7 @@ import org.apache.xmlbeans.XmlOptions;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionjgKey;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
@@ -28,7 +29,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.InformeXML;
-import com.siga.ws.SigaWSHelper;
 import com.siga.ws.i2064.WSSantiagoAdm;
 import com.siga.ws.i2064.je.axis.EnvioJustificacionesServicePortBindingStub;
 import com.siga.ws.i2064.je.axis.EnvioJustificacionesService_ServiceLocator;
@@ -112,27 +112,27 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		for (Hashtable<String, String> hash : listMapAsis) {
 			String asistencia = hash.get(ANIO_ASISTENCIA) + "/" + hash.get(NUMERO_ASISTENCIA);
 			try {
-				Short numColegiado = SigaWSHelper.getShort("número de colegiado", hash.get(A_CODCOLEGIADO));
+				Short numColegiado = SIGAServicesHelper.getShort("número de colegiado", hash.get(A_CODCOLEGIADO));
 				if (!codColegiado.equals(numColegiado)) {
 					codColegiado = numColegiado;
 					colegiadoAsistencia = asistencias.addNewColegiado();
 					colegiadoAsistencia.setCodColegiado(codColegiado); 
 				}			
 				Asuntos asuntos = colegiadoAsistencia.addNewAsuntos();
-				asuntos.setFechaActuacion(SigaWSHelper.getCalendar(hash.get(A_FECHAACTUACION)));
+				asuntos.setFechaActuacion(SIGAServicesHelper.getCalendar(hash.get(A_FECHAACTUACION)));
 				
-				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SigaWSHelper.getInteger("sox año", hash.get(A_SOX_ANO)), SigaWSHelper.getBigInteger("sox número", hash.get(A_SOX_NUMERO)));
+				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SIGAServicesHelper.getInteger("sox año", hash.get(A_SOX_ANO)), SIGAServicesHelper.getBigInteger("sox número", hash.get(A_SOX_NUMERO)));
 				
 				IDExpAXG idExpAXG = asuntos.addNewIDExpAXG();
 				idExpAXG.setCons(hash.get(A_EXP_CONS));
 				idExpAXG.setProc(hash.get(A_EXP_PROC));
-				Integer in = SigaWSHelper.getInteger("año exp AXG", hash.get(A_EXP_ANO));
+				Integer in = SIGAServicesHelper.getInteger("año exp AXG", hash.get(A_EXP_ANO));
 				if (in != null) idExpAXG.setAno(in);
-				idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(A_EXP_NUM)));
-				in = SigaWSHelper.getInteger("prov exp AXG", hash.get(A_EXP_PROV));
+				idExpAXG.setNum(SIGAServicesHelper.getBigInteger("número exp AXG", hash.get(A_EXP_NUM)));
+				in = SIGAServicesHelper.getInteger("prov exp AXG", hash.get(A_EXP_PROV));
 				if (in != null) idExpAXG.setProv(Prov.Enum.forInt(in+1));//El enumerado empieza en 1
 				
-				asuntos.setFechaResolAXG(SigaWSHelper.getCalendar(hash.get(A_FECHARESOLAXG)));
+				asuntos.setFechaResolAXG(SIGAServicesHelper.getCalendar(hash.get(A_FECHARESOLAXG)));
 				
 				Datosatestado datosatestado = asuntos.addNewDatosatestado();
 				
@@ -142,9 +142,9 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 				}
 				
 				rellenaPersonaType(asuntos.addNewDetido(), hash.get(A_D_NOME), hash.get(A_D_PRIMER_APELLIDO), hash.get(A_D_SEGUNDO_APELLIDO), hash.get(A_D_TIPOIDENTIFICADOR), hash.get(A_D_NIF));
-				rellenaImporteType(asuntos.addNewIMPORTE(), SigaWSHelper.getBigDecimal("importe", hash.get(A_I_IMPORTE)), SigaWSHelper.getBigDecimal("irpf", hash.get(A_I_IRPF)));
+				rellenaImporteType(asuntos.addNewIMPORTE(), SIGAServicesHelper.getBigDecimal("importe", hash.get(A_I_IMPORTE)), SIGAServicesHelper.getBigDecimal("irpf", hash.get(A_I_IRPF)));
 				
-				List<String> erroresList = SigaWSHelper.validate(asuntos);
+				List<String> erroresList = SIGAServicesHelper.validate(asuntos);
 				for (String error : erroresList) {
 					String msg = "Error en la asistencia " + asistencia + ";";
 					msg += error;
@@ -167,35 +167,35 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			String designa = hash.get(ANIO_DESIGNA) + "/" + hash.get(NUMERO_DESIGNA);
 			
 			try {
-				Short numColegiado = SigaWSHelper.getShort("número de colegiado", hash.get(TO_CODCOLEGIADO));
+				Short numColegiado = SIGAServicesHelper.getShort("número de colegiado", hash.get(TO_CODCOLEGIADO));
 				if (!codColegiado.equals(numColegiado)) {
 					codColegiado = numColegiado;
 					colegiadoTurnoOficio = turnoOficio.addNewColegiado();
 					colegiadoTurnoOficio.setCodColegiado(codColegiado);
 				}
 				com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos asuntos = colegiadoTurnoOficio.addNewAsuntos();
-				asuntos.setFechaActuacion(SigaWSHelper.getCalendar(hash.get(TO_FECHAACTUACION)));
+				asuntos.setFechaActuacion(SIGAServicesHelper.getCalendar(hash.get(TO_FECHAACTUACION)));
 				
-				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SigaWSHelper.getInteger("sox año", hash.get(TO_SOX_ANO)), SigaWSHelper.getBigInteger("sox número", hash.get(TO_SOX_NUMERO)));
+				rellenaSoxClaveType(asuntos.addNewSOXCLAVE(), SIGAServicesHelper.getInteger("sox año", hash.get(TO_SOX_ANO)), SIGAServicesHelper.getBigInteger("sox número", hash.get(TO_SOX_NUMERO)));
 				
 				com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG idExpAXG = asuntos.addNewIDExpAXG();
 				idExpAXG.setCons(hash.get(TO_EXP_CONS));
 				idExpAXG.setProc(hash.get(TO_EXP_PROC));
-				Integer in = SigaWSHelper.getInteger("año exp AXG", hash.get(TO_EXP_ANO));
+				Integer in = SIGAServicesHelper.getInteger("año exp AXG", hash.get(TO_EXP_ANO));
 				if (in != null) idExpAXG.setAno(in);
-				idExpAXG.setNum(SigaWSHelper.getBigInteger("número exp AXG", hash.get(TO_EXP_NUM)));
-				in = SigaWSHelper.getInteger("prov exp AXG", hash.get(TO_EXP_PROV));
+				idExpAXG.setNum(SIGAServicesHelper.getBigInteger("número exp AXG", hash.get(TO_EXP_NUM)));
+				in = SIGAServicesHelper.getInteger("prov exp AXG", hash.get(TO_EXP_PROV));
 				if (in != null) {
 					idExpAXG.setProv(com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.TurnoOficio.Colegiado.Asuntos.IDExpAXG.Prov.Enum.forInt(in+1));//El enumerado empieza en 1
 				}
 								
-				asuntos.setFechaResolAXG(SigaWSHelper.getCalendar(hash.get(TO_FECHARESOLAXG)));
+				asuntos.setFechaResolAXG(SIGAServicesHelper.getCalendar(hash.get(TO_FECHARESOLAXG)));
 				
 				rellenaDatosJudiciales(asuntos.addNewDatosxudiciais(), hash);
 				rellenaPersonaType(asuntos.addNewSolicitante(), hash.get(TO_S_NOME), hash.get(TO_S_PRIMER_APELLIDO), hash.get(TO_S_SEGUNDO_APELLIDO), hash.get(TO_S_TIPOIDENTIFICADOR), hash.get(TO_S_NIF));
-				rellenaImporteType(asuntos.addNewIMPORTE(), SigaWSHelper.getBigDecimal("importe", hash.get(TO_I_IMPORTE)), SigaWSHelper.getBigDecimal("irpf", hash.get(TO_I_IRPF)));
+				rellenaImporteType(asuntos.addNewIMPORTE(), SIGAServicesHelper.getBigDecimal("importe", hash.get(TO_I_IMPORTE)), SIGAServicesHelper.getBigDecimal("irpf", hash.get(TO_I_IRPF)));
 				
-				List<String> erroresList = SigaWSHelper.validate(asuntos);
+				List<String> erroresList = SIGAServicesHelper.validate(asuntos);
 				for (String error : erroresList) {
 					String msg = "Error en actuación número " + actuacion + " de la designa " + designa + ";";
 					msg += error;
@@ -208,7 +208,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			}
 		}
 		
-		List<String> erroresList = SigaWSHelper.validate(datosJustificacionesDocument);
+		List<String> erroresList = SIGAServicesHelper.validate(datosJustificacionesDocument);
 		for (String error : erroresList) {	
 			String msg = "Error en el fichero generado;";
 			msg += error;
@@ -254,15 +254,15 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 		
 	private void rellenaDatosJudiciales(DATOSXUDICIAISTYPE datosxudiciais, Hashtable<String, String> hash) {
-		rellenaOrganoXudicial(datosxudiciais.addNewJuzgado(), hash.get(TO_J_NUMEROSALASECCION), SigaWSHelper.getShort("partido judicial", hash.get(TO_J_PARTIDOXUDICIAL)), hash.get(TO_J_COD_ORGANO));
+		rellenaOrganoXudicial(datosxudiciais.addNewJuzgado(), hash.get(TO_J_NUMEROSALASECCION), SIGAServicesHelper.getShort("partido judicial", hash.get(TO_J_PARTIDOXUDICIAL)), hash.get(TO_J_COD_ORGANO));
 		PROCBAREMOTYPE procbaremotype = datosxudiciais.addNewProcBaremo();
-		Short sh = SigaWSHelper.getShort("tipo baremo", hash.get(TO_J_TIPO_BAREMO));
+		Short sh = SIGAServicesHelper.getShort("tipo baremo", hash.get(TO_J_TIPO_BAREMO));
 		if (sh != null) procbaremotype.setTIPOBAREMO(sh);
-		sh = SigaWSHelper.getShort("código baremo", hash.get(TO_J_COD_BAREMO));
+		sh = SIGAServicesHelper.getShort("código baremo", hash.get(TO_J_COD_BAREMO));
 		if (sh != null) procbaremotype.setCODBAREMO(sh);
-		Integer in = SigaWSHelper.getInteger("año del procedimiento", hash.get(TO_J_ANO_PROC));
+		Integer in = SIGAServicesHelper.getInteger("año del procedimiento", hash.get(TO_J_ANO_PROC));
 		if (in != null) procbaremotype.setANOPROC(in);
-		Long l = SigaWSHelper.getLong("número del procedimiento", hash.get(TO_J_NUM_PROC));
+		Long l = SIGAServicesHelper.getLong("número del procedimiento", hash.get(TO_J_NUM_PROC));
 		if (l != null) procbaremotype.setNUMPROC(l);
 		String st = hash.get(TO_J_DESC_PROC);
 		if (st != null) {
@@ -272,11 +272,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		String codBaremoPorcentaje = hash.get(TO_J_COD_BAREM_POR);
 		if (!vacio(porcentaje) && !vacio(codBaremoPorcentaje)) {
 			PROCPORCENTUAL procPorcentual = procbaremotype.addNewPROCPORCENTUAL();
-			sh = SigaWSHelper.getShort("porcentaje", porcentaje);
+			sh = SIGAServicesHelper.getShort("porcentaje", porcentaje);
 			if (sh != null) {
 				procPorcentual.setPORCENTAJE(sh);
 			}
-			sh = SigaWSHelper.getShort("código acreditación", codBaremoPorcentaje);
+			sh = SIGAServicesHelper.getShort("código acreditación", codBaremoPorcentaje);
 			if (sh != null) {
 				procPorcentual.setCODBAREMO(sh);
 			}
@@ -314,10 +314,10 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 	private void rellenaOrganoJudicial(Datosatestado datosatestado, Hashtable<String, String> hash) {
 		if (!vacio(hash.get(A_J_COD_ORGANO))) {
 			OrganoJudicial organoJudicial = datosatestado.addNewOrganoJudicial();
-			rellenaOrganoXudicial(organoJudicial.addNewJuzgado(), hash.get(A_J_NUMEROSALASECCION), SigaWSHelper.getShort("partido judicial", hash.get(A_J_PARTIDOXUDICIAL)), hash.get(A_J_COD_ORGANO));
-			Long l = SigaWSHelper.getLong("número de procedimiento", hash.get(A_J_NUM_PROC));
+			rellenaOrganoXudicial(organoJudicial.addNewJuzgado(), hash.get(A_J_NUMEROSALASECCION), SIGAServicesHelper.getShort("partido judicial", hash.get(A_J_PARTIDOXUDICIAL)), hash.get(A_J_COD_ORGANO));
+			Long l = SIGAServicesHelper.getLong("número de procedimiento", hash.get(A_J_NUM_PROC));
 			if (l != null) organoJudicial.setNUMPROC(l);
-			Integer in = SigaWSHelper.getInteger("año del procedimiento", hash.get(A_J_ANO_PROC));
+			Integer in = SIGAServicesHelper.getInteger("año del procedimiento", hash.get(A_J_ANO_PROC));
 			if (in != null)	organoJudicial.setANOPROC(in);
 		}
 	}
@@ -326,7 +326,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		if (!vacio(hash.get(A_U_COD_UNIDADE))) {
 			com.siga.ws.i2064.je.xsd.DatosJustificacionesDocument.DatosJustificaciones.Asistencias.Colegiado.Asuntos.Datosatestado.UnidadPolicial unidadPolicial = datosatestado.addNewUnidadPolicial();
 			rellenaComisaria(unidadPolicial.addNewComisaria(), hash.get(A_U_DESC_UNIDADE), hash.get(A_U_COD_UNIDADE));
-			rellenaAtestado(unidadPolicial.addNewAtestado(), SigaWSHelper.getInteger("año del atestado", hash.get(A_U_ANO_ATESTADO)), SigaWSHelper.getLong("número del atestado", hash.get(A_U_NUM_ATESTADO)), hash.get(A_U_CAUSADETENCION));
+			rellenaAtestado(unidadPolicial.addNewAtestado(), SIGAServicesHelper.getInteger("año del atestado", hash.get(A_U_ANO_ATESTADO)), SIGAServicesHelper.getLong("número del atestado", hash.get(A_U_NUM_ATESTADO)), hash.get(A_U_CAUSADETENCION));
 		}		
 	}
 
@@ -336,12 +336,12 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			UnidadYJuzgado unidadYJuzgado = datosAtestado.addNewUnidadYJuzgado();
 			UnidadPolicial unidadPolicial = unidadYJuzgado.addNewUnidadPolicial();
 			rellenaComisaria(unidadPolicial.addNewComisaria(), hash.get(A_U_DESC_UNIDADE), hash.get(A_U_COD_UNIDADE));
-			rellenaAtestado(unidadPolicial.addNewAtestado(), SigaWSHelper.getInteger("año atestado", hash.get(A_U_ANO_ATESTADO)), SigaWSHelper.getLong("número atestado", hash.get(A_U_NUM_ATESTADO)), hash.get(A_U_CAUSADETENCION));
+			rellenaAtestado(unidadPolicial.addNewAtestado(), SIGAServicesHelper.getInteger("año atestado", hash.get(A_U_ANO_ATESTADO)), SIGAServicesHelper.getLong("número atestado", hash.get(A_U_NUM_ATESTADO)), hash.get(A_U_CAUSADETENCION));
 			Juzgado juzgado = unidadYJuzgado.addNewJuzgado();
-			rellenaOrganoXudicial(juzgado.addNewJuzgado(), hash.get(A_J_NUMEROSALASECCION), SigaWSHelper.getShort("partido judicial", hash.get(A_J_PARTIDOXUDICIAL)), hash.get(A_J_COD_ORGANO));
-			Long l = SigaWSHelper.getLong("num proc", hash.get(A_J_NUM_PROC));
+			rellenaOrganoXudicial(juzgado.addNewJuzgado(), hash.get(A_J_NUMEROSALASECCION), SIGAServicesHelper.getShort("partido judicial", hash.get(A_J_PARTIDOXUDICIAL)), hash.get(A_J_COD_ORGANO));
+			Long l = SIGAServicesHelper.getLong("num proc", hash.get(A_J_NUM_PROC));
 			if (l != null) juzgado.setNUMPROC(l);
-			Integer in = SigaWSHelper.getInteger("año proc", hash.get(A_J_ANO_PROC));
+			Integer in = SIGAServicesHelper.getInteger("año proc", hash.get(A_J_ANO_PROC));
 			if (in != null) juzgado.setANOPROC(in);
 		}
 		return rellenaUnidadYJuzgado;
@@ -370,12 +370,12 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 
 	private void rellenaDatosFacturacion(DatosJustificaciones datosJustificaciones, Map<String, String> mapaFacturacion) throws Exception {
 		Periodo periodo = datosJustificaciones.addNewPeriodo();
-		Integer in = SigaWSHelper.getInteger("periodo año", mapaFacturacion.get(PERIODO_ANO));
+		Integer in = SIGAServicesHelper.getInteger("periodo año", mapaFacturacion.get(PERIODO_ANO));
 		if (in != null) periodo.setAno(in);
-		in = SigaWSHelper.getInteger("periodo trimestre", mapaFacturacion.get(PERIODO_TRIMESTRE));
+		in = SIGAServicesHelper.getInteger("periodo trimestre", mapaFacturacion.get(PERIODO_TRIMESTRE));
 		if (in != null) periodo.setTrimestre(TRIMESTRETYPE.Enum.forInt(in));
-		periodo.setDende(SigaWSHelper.getCalendar(mapaFacturacion.get(PERIODO_DENDE)));
-		periodo.setAta(SigaWSHelper.getCalendar(mapaFacturacion.get(PERIODO_ATA)));
+		periodo.setDende(SIGAServicesHelper.getCalendar(mapaFacturacion.get(PERIODO_DENDE)));
+		periodo.setAta(SIGAServicesHelper.getCalendar(mapaFacturacion.get(PERIODO_ATA)));
 		
 		datosJustificaciones.addNewColegio().setIDColegio(mapaFacturacion.get(COL_IDCOLEGIO));
 	}
@@ -483,7 +483,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 						if (res != null) {
 							if (!res.validate()) {
 								StringBuffer s = new StringBuffer("Se ha producido un error en el envío de WebService de Justificación económica para la institución " + idInstitucion + ". La respuesta obtenida no cumple con el esquema establecido.");
-								List<String> errores = SigaWSHelper.validate(res);
+								List<String> errores = SIGAServicesHelper.validate(res);
 								if (errores != null) {
 									for (String error:errores) {
 										s.append("\n" + error);

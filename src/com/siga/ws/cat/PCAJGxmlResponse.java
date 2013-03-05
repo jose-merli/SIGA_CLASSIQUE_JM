@@ -19,6 +19,7 @@ import javax.transaction.UserTransaction;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -37,24 +38,23 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
-import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.CodigoExpedienteError;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.DetalleError;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 
 
 
@@ -176,7 +176,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					throw e;
 				}
 				
-				if (SigaWSHelper.validate(intercambioIRDoc).size() > 0) {					
+				if (SIGAServicesHelper.validate(intercambioIRDoc).size() > 0) {					
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}
 				
@@ -295,7 +295,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		idIntercambio.setCodOrigenIntercambio(String.valueOf(getIdInstitucion()));
 		idIntercambio.setCodDestinoIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getCodOrigenIntercambio());		
 		idIntercambio.setIdentificadorIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getIdentificadorIntercambio());
-		idIntercambio.setFechaIntercambio(SigaWSHelper.clearCalendar(Calendar.getInstance()));		
+		idIntercambio.setFechaIntercambio(SIGAServicesHelper.clearCalendar(Calendar.getInstance()));		
 		idIntercambio.setNumeroDetallesIntercambio(numeroDetalles);
 		idIntercambio.setVersion(informacionIntercambioIR.getIdentificacionIntercambio().getVersion());
 	}
@@ -459,7 +459,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					escribeLogRemesa("El xml " + file.getName() + " no es un fichero de \"Intercambio\" válido.");
 					throw e;
 				}	
-				if (SigaWSHelper.validate(intercambioRespuestaDoc).size() > 0) {
+				if (SIGAServicesHelper.validate(intercambioRespuestaDoc).size() > 0) {
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}			
 				

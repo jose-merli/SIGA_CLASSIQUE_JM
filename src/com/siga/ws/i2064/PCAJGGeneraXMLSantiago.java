@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.transaction.UserTransaction;
 
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
@@ -24,16 +25,40 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.informes.MasterWords;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.SigaWSHelper;
 import com.siga.ws.i2064.xsd.ANEXOITYPE;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.CONXUXE;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.FAMILIA.FAMILIAR;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE.BENS;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS.FAMILIA;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.DOCUMENTOSADXUNTOS;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.NUMEROSOX;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.PROFAMILIA;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO.DILIXENCIA;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO;
+import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO.ORGANO2;
 import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE;
+import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.CONDICION;
+import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.TIPOEXPEDIENTE;
 import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE;
+import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.AEATTGSSCATASTRO;
+import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.IDENTIDAD;
 import com.siga.ws.i2064.xsd.AVOGADOTYPE;
+import com.siga.ws.i2064.xsd.AVOGADOTYPE.DESIGNACION;
 import com.siga.ws.i2064.xsd.BENINMUEBLETYPE;
+import com.siga.ws.i2064.xsd.BENINMUEBLETYPE.TIPOVALORACION;
 import com.siga.ws.i2064.xsd.BENMUEBLETYPE;
 import com.siga.ws.i2064.xsd.DATOSCONTACTO;
 import com.siga.ws.i2064.xsd.DIRECCIONTYPE;
 import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE;
+import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
+import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
 import com.siga.ws.i2064.xsd.FAMILIARTYPE;
 import com.siga.ws.i2064.xsd.INGRESOSTYPE;
 import com.siga.ws.i2064.xsd.NOMEAPELIDOSTYPE;
@@ -42,31 +67,6 @@ import com.siga.ws.i2064.xsd.PERSOATYPE;
 import com.siga.ws.i2064.xsd.PROCURADORTYPE;
 import com.siga.ws.i2064.xsd.REPRESENTANTELEGALTYPE;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DOCUMENTOSADXUNTOS;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.NUMEROSOX;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.CONXUXE;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.FAMILIA.FAMILIAR;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.SOLICITANTE.BENS;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSPERSOAIS.FAMILIA;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.PROFAMILIA;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.ADMINISTRATIVO.DILIXENCIA;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO;
-import com.siga.ws.i2064.xsd.ANEXOITYPE.PROCEDEMENTO.TIPOPROCEDEMENTO.XUDICIAL.ORGANO.ORGANO2;
-import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.CONDICION;
-import com.siga.ws.i2064.xsd.ASUNTOSPENALESTYPE.TIPOEXPEDIENTE;
-import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.AEATTGSSCATASTRO;
-import com.siga.ws.i2064.xsd.AUTORIZACIONESTYPE.IDENTIDAD;
-import com.siga.ws.i2064.xsd.AVOGADOTYPE.DESIGNACION;
-import com.siga.ws.i2064.xsd.BENINMUEBLETYPE.TIPOVALORACION;
-import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.DOCUMENTADO;
-import com.siga.ws.i2064.xsd.DOCIDENTIFICADORTYPE.INDOCUMENTADO;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument.SOLICITUDEAXG;
 
 /**
@@ -128,7 +128,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 				try {
 					anexoIType = solicitudeAXG.addNewANEXOI();
 					rellenaNumeroSox(anexoIType.addNewNUMEROSOX(), mapExp);
-					anexoIType.setDATARECEPCION(SigaWSHelper.getCalendar(mapExp.get(DATA_RECEPCION)));
+					anexoIType.setDATARECEPCION(SIGAServicesHelper.getCalendar(mapExp.get(DATA_RECEPCION)));
 					rellenaDatosPersoais(anexoIType.addNewDATOSPERSOAIS(), mapExp);
 					rellenaDatosEconomicos(anexoIType.addNewDATOSECONOMICOS(), mapExp);
 					rellenaProcedimiento(anexoIType.addNewPROCEDEMENTO(), mapExp);					
@@ -151,7 +151,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 						autorizacionestype.setIDENTIDAD(IDENTIDAD.Enum.forString(s));
 					}
 					
-					SigaWSHelper.deleteEmptyNode(anexoIType.getDomNode());
+					SIGAServicesHelper.deleteEmptyNode(anexoIType.getDomNode());
 					
 					if (anexoIType.getDATOSECONOMICOS() == null) {
 						//ñapa pq los datos economicos no pueden ser nulos pero sí su contenido!!!
@@ -320,7 +320,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 */
 	private void rellenaProcedimiento(PROCEDEMENTO procedemento, Map<String, String> mapExp) throws Exception {		
 		
-		Integer xurisdiccion = SigaWSHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION));
+		Integer xurisdiccion = SIGAServicesHelper.getInteger("jurisdicción", mapExp.get(P_XURISDICCION));
 		if (xurisdiccion != null) {
 			procedemento.setXURISDICCION(xurisdiccion);
 		}
@@ -338,7 +338,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			xudicial.setNIG(mapExp.get(P_TPX_NIG));
 			xudicial.setDESCRICION(mapExp.get(P_TPX_DESCRIPCION));
 			ORGANO organo = xudicial.addNewORGANO();			
-			organo.xsetORGANO(ORGANO2.Factory.newValue(SigaWSHelper.getInteger("juzgado", mapExp.get(P_TPXO_ORGANO))));
+			organo.xsetORGANO(ORGANO2.Factory.newValue(SIGAServicesHelper.getInteger("juzgado", mapExp.get(P_TPXO_ORGANO))));
 			organo.setNUMEROSALASECCION(getBigInteger(mapExp.get(P_TPXO_NUMEROSALASECCION)));
 			organo.setPARTIDOXUDICIAL(getBigInteger(mapExp.get(P_TPXO_PARTIDO_XUDICIAL)));
 		} else if (TIPO_PROCEDEMENTO_ADMINISTRATIVO.equals(mapExp.get(TIPO_PROCEDEMENTO_CHOICE))) {
@@ -353,7 +353,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			throw new IllegalArgumentException("No está definido si es un procedimiento judicial o administrativo.");
 		}
 		procedemento.setPRETENSION(mapExp.get(P_PRETENSION));		
-		procedemento.setDATAINICIO(SigaWSHelper.getCalendar(mapExp.get(P_DATA_INICIO)));
+		procedemento.setDATAINICIO(SIGAServicesHelper.getCalendar(mapExp.get(P_DATA_INICIO)));
 		
 		ASUNTOSPENALESTYPE asuntospenalestype = procedemento.addNewASUNTOSPENALES();
 		String condicion = mapExp.get(P_CONDICION);
@@ -507,7 +507,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		nomeapelidostype.setNOME(nome);
 		nomeapelidostype.setPRIMERAPELLIDO(apellido1);
 		nomeapelidostype.setSEGUNDOAPELLIDO(apellido2);
-		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SigaWSHelper.getInteger("edad", idade)));
+		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SIGAServicesHelper.getInteger("edad", idade)));
 		familiar.setPARENTESCO(getBigInteger(parentesco));
 	}
 
@@ -524,8 +524,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		nombreApeSol.setNOME(map.get(NOME));
 		nombreApeSol.setPRIMERAPELLIDO(map.get(APELLIDO1));
 		nombreApeSol.setSEGUNDOAPELLIDO(map.get(APELLIDO2));		
-		personaType.setNACIONALIDADE(SigaWSHelper.getBigInteger("nacionalidad", map.get(NACIONALIDADE)));
-		Integer iEstadoCivil = SigaWSHelper.getInteger("estado civil", map.get(ESTADO_CIVIL));
+		personaType.setNACIONALIDADE(SIGAServicesHelper.getBigInteger("nacionalidad", map.get(NACIONALIDADE)));
+		Integer iEstadoCivil = SIGAServicesHelper.getInteger("estado civil", map.get(ESTADO_CIVIL));
 		if (iEstadoCivil != null) {
 			personaType.setESTADOCIVIL(iEstadoCivil);
 		}
@@ -542,7 +542,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		}
 		
 		
-		personaType.setDATANACEMENTO(SigaWSHelper.getCalendar(map.get(DATA_NACEMENTO)));
+		personaType.setDATANACEMENTO(SIGAServicesHelper.getCalendar(map.get(DATA_NACEMENTO)));
 		DATOSCONTACTO datosContacto = personaType.addNewDATOSCONTACTO();
 		DIRECCIONTYPE direccion = datosContacto.addNewENDEREZO();
 		direccion.setENDEREZO(map.get(DC_ENDEREZO));

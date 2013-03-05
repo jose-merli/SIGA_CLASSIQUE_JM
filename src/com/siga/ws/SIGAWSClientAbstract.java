@@ -19,6 +19,7 @@ import java.util.Vector;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlValidationError;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -307,9 +308,9 @@ public abstract class SIGAWSClientAbstract {
 		boolean valido = true;
 		List<String> list = null;
 		if (deleteEmptyNode) {
-			list = SigaWSHelper.validate(xmlObject);
+			list = SIGAServicesHelper.validate(xmlObject);
 		} else {
-			list = SigaWSHelper.validateNoDeleteEmptyNode(xmlObject);
+			list = SIGAServicesHelper.validate(xmlObject, false);
 		}
 		if (list != null && list.size() > 0) {
 			valido = false;
@@ -463,7 +464,7 @@ public abstract class SIGAWSClientAbstract {
 	}
 	
 	protected void guardaFicheroFormatoCatalan(IntercambioDocument intercambioDocument, File file) throws Exception {
-		SigaWSHelper.deleteEmptyNode(intercambioDocument.getIntercambio().getDomNode());
+		SIGAServicesHelper.deleteEmptyNode(intercambioDocument.getIntercambio().getDomNode());
 		
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);

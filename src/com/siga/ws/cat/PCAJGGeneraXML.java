@@ -13,6 +13,7 @@ import java.util.Vector;
 import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -32,14 +33,8 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
-import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpediente;
-import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpedienteServicio;
-import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
-import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados;
 import com.siga.ws.pcajg.cat.xsd.DatosContactoDocument.DatosContacto;
 import com.siga.ws.pcajg.cat.xsd.DatosDomicilioDocument.DatosDomicilio;
 import com.siga.ws.pcajg.cat.xsd.DatosPersonaDocument.DatosPersona;
@@ -48,37 +43,42 @@ import com.siga.ws.pcajg.cat.xsd.DocumentacionExpedienteDocument.DocumentacionEx
 import com.siga.ws.pcajg.cat.xsd.DocumentacionExpedienteDocument.DocumentacionExpediente.DatosDocumento;
 import com.siga.ws.pcajg.cat.xsd.DomiciliosPersonaDocument.DomiciliosPersona;
 import com.siga.ws.pcajg.cat.xsd.IdentificacionTramiteDocument.IdentificacionTramite;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoICD;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosContrario;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente.MarcasExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosFamiliares;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosRepresentante;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente.MarcasExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteArchivo;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteDictamen;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoAdministrativo;
-import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoJudicial;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.AsistenciaCentroDetencion;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.AsistenciaOrganoJudicial;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.Delito;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoAdministrativo;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoJudicial;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoICD;
+import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpediente;
+import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpedienteServicio;
+import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados;
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado;
-import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.ProcuradorDesignado;
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado.LibreDatosAbogado;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.ProcuradorDesignado;
 
 
 /**
@@ -324,7 +324,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		codigoExpediente.setColegioExpediente((String)htEJGs.get(DE_CE_COLEGIOEXPEDIENTE));
 		String numExpediente = UtilidadesString.formatea(htEJGs.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
-		Integer anyoExpediente = SigaWSHelper.getInteger("año del expediente", (String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
+		Integer anyoExpediente = SIGAServicesHelper.getInteger("año del expediente", (String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
 		if (anyoExpediente != null) {
 			codigoExpediente.setAnyoExpediente(anyoExpediente);	
 		}
@@ -345,7 +345,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			codigoExpedienteServicio.setNumExpedienteServicio(value);
 		}		
 		
-		Integer anyoExpServicio = SigaWSHelper.getInteger("año CAJG" ,(String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
+		Integer anyoExpServicio = SIGAServicesHelper.getInteger("año CAJG" ,(String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
 		if (anyoExpServicio != null) {			
 			codigoExpedienteServicio.setAnyoExpedienteServicio(anyoExpServicio);
 		}
@@ -429,7 +429,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		
 		ProcuradorDesignado procuradorDesignado = profesionalesDesignados.addNewProcuradorDesignado();		
-		Integer valueInt = SigaWSHelper.getInteger("baja procurador designado", (String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
+		Integer valueInt = SIGAServicesHelper.getInteger("baja procurador designado", (String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
 		if (valueInt != null) {
 			procuradorDesignado.setBajaProcuradorDesignado(valueInt.intValue());
 		}
@@ -439,11 +439,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosProcurador.setNumColegiadoProcurador((String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));		
 		datosProcurador.setNombreCompletoProcurador((String)htEJGs.get(PD_PD_DP_NOMBRECOMPLETOPROCURA));		
 		
-		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(PD_PD_FECHADESIGNACIONPROCURAD));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(PD_PD_FECHADESIGNACIONPROCURAD));
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
-		Long valueLong = SigaWSHelper.getLong("número designación procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
+		Long valueLong = SIGAServicesHelper.getLong("número designación procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
 		if (valueLong != null) {
 			procuradorDesignado.setNumDesignacionProcurador(valueLong);
 		}
@@ -514,7 +514,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		identificacionTramite.setCodEstadoExpediente(getCodigoElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
 		identificacionTramite.setDescEstadoExpediente(getDescripcionElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
 				
-		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(it_fechaestado));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(it_fechaestado));
 		if (cal != null) {
 			identificacionTramite.setFechaEstado(cal);
 		}
@@ -553,7 +553,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		String codOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA));
 		if (codOrganoJudicial != null) {//por juzgado DILIGENCIA
-			Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
+			Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
 			if (cal != null) {
 				asistenciaPenal.setFechaAsistencia(cal);
 			}
@@ -562,7 +562,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			asistenciaOrganoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA)));
 			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DAD_NUMERODILIGENCIA));
 		} else { //por comisaría ATESTADO
-			Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
+			Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
 			if (cal != null) {
 				asistenciaPenal.setFechaAsistencia(cal);
 			}
@@ -604,17 +604,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	
 	private void abogadoDesignado(AbogadoDesignado abogadoDesignado, Hashtable ht) throws Exception {	
 		
-		Integer valueInt = SigaWSHelper.getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
+		Integer valueInt = SIGAServicesHelper.getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
 		if (valueInt != null) {
 			abogadoDesignado.setBajaAbogadoDesignado(valueInt.intValue());
 		}
 		
 		abogadoDesignado.setNumColegiadoAbogado((String)ht.get(PD_AD_AD_NUMCOLEGIADOABOGADO));
-		Calendar cal = SigaWSHelper.getCalendar((String)ht.get(PD_AD_AD_FECHADESIGNACIONABOGA));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)ht.get(PD_AD_AD_FECHADESIGNACIONABOGA));
 		if (cal != null) {
 			abogadoDesignado.setFechaDesignacionAbogado(cal);
 		}
-		Long valueLong = SigaWSHelper.getLong("número designación abogado", (String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
+		Long valueLong = SIGAServicesHelper.getLong("número designación abogado", (String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
 		if (valueLong != null) {
 			abogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
 		}
@@ -656,17 +656,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		pretension.setDescTipoProcedimiento(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
 		pretension.setResumenPretension((String)htEJGs.get(DDJ_RESUMENPRETENSION));
 		
-		Integer renunciaDesignacion = SigaWSHelper.getInteger("renuncia designación", (String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
+		Integer renunciaDesignacion = SIGAServicesHelper.getInteger("renuncia designación", (String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
 		if (renunciaDesignacion != null){
 			pretension.setRenunciaDesignacion(renunciaDesignacion.shortValue());			
 		}
 		
-		BigInteger renunciaHonorarios = SigaWSHelper.getBigInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
+		BigInteger renunciaHonorarios = SIGAServicesHelper.getBigInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
 		if (renunciaHonorarios != null){
 			pretension.setRenunciaHonorarios(renunciaHonorarios);			
 		}
 		
-		Integer demandanteDemandado = SigaWSHelper.getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
+		Integer demandanteDemandado = SIGAServicesHelper.getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
 		if (demandanteDemandado != null) {
 			pretension.setDemandadoDemandante(demandanteDemandado.shortValue());
 		}
@@ -704,7 +704,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosFamiliares.setCodParentesco(getCodigoElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));		
 		datosFamiliares.setDescParentesco(getDescripcionElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));
 						
-		Integer familiarMenor = SigaWSHelper.getInteger("familiar menor", ((String)htFam.get(F_F_FAMILIARMENOR)));
+		Integer familiarMenor = SIGAServicesHelper.getInteger("familiar menor", ((String)htFam.get(F_F_FAMILIARMENOR)));
 		if (familiarMenor != null) {
 			datosFamiliares.setFamiliarMenor(familiarMenor.shortValue());
 		}
@@ -825,11 +825,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				
 		ingresos.setObservacionesIngresos((String) htEJGs.get(DS_DEP_I_OBSERVACIONESINGRESOS));
 		ingresos.setDescripcionIngresos((String) htEJGs.get(DS_DEP_I_DESCRIPCIONINGRESOS));
-		Double value = SigaWSHelper.getDouble("importe bruto", (String) htEJGs.get(DS_DEP_I_IMPORTEBRUTO));
+		Double value = SIGAServicesHelper.getDouble("importe bruto", (String) htEJGs.get(DS_DEP_I_IMPORTEBRUTO));
 		if (value != null) {
 			ingresos.setImporteBruto(value.floatValue());
 		}
-		Integer valueInt = SigaWSHelper.getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
+		Integer valueInt = SIGAServicesHelper.getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
 		if (valueInt != null) {
 			ingresos.setAcumulable(valueInt.shortValue());
 		}
@@ -844,11 +844,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				
 		propiedadesBienesInmuebles.setCargas((String) htEJGs.get(DS_DEP_PBI_CARGAS));
 		propiedadesBienesInmuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBI_OBSERVACIONES));
-		value = SigaWSHelper.getDouble("valoración económica bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_VALORACIONECONOMICA));
+		value = SIGAServicesHelper.getDouble("valoración económica bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesInmuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = SigaWSHelper.getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
+		valueInt = SIGAServicesHelper.getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesInmuebles.setAcumulable(valueInt.shortValue());
 		}
@@ -858,11 +858,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		propiedadesBienesMuebles.setDescTipoBienMueble(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_PBM_TIPOBIENMUEBLE_CDA)));
 				
 		propiedadesBienesMuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBM_OBSERVACIONES));
-		value = SigaWSHelper.getDouble("valoracion económica bienes muebles", (String) htEJGs.get(DS_DEP_PBM_VALORACIONECONOMICA));
+		value = SIGAServicesHelper.getDouble("valoracion económica bienes muebles", (String) htEJGs.get(DS_DEP_PBM_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesMuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = SigaWSHelper.getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
+		valueInt = SIGAServicesHelper.getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesMuebles.setAcumulable(valueInt.shortValue());
 		}
@@ -871,12 +871,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		propiedadesBienesOtros.setCargas((String) htEJGs.get(DS_DEP_PBO_CARGAS));
 		propiedadesBienesOtros.setDescripcionBien((String) htEJGs.get(DS_DEP_PBO_DESCRIPCIONBIEN));
 		propiedadesBienesOtros.setObservaciones((String) htEJGs.get(DS_DEP_PBO_OBSERVACIONES));
-		value = SigaWSHelper.getDouble("valoración económica otros bienes", (String) htEJGs.get(DS_DEP_PBO_VALORACIONECONOMICA));
+		value = SIGAServicesHelper.getDouble("valoración económica otros bienes", (String) htEJGs.get(DS_DEP_PBO_VALORACIONECONOMICA));
 		if (value != null) {
 			propiedadesBienesOtros.setValoracionEconomica(value.floatValue());
 		}
 
-		valueInt = SigaWSHelper.getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
+		valueInt = SIGAServicesHelper.getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesOtros.setAcumulable(valueInt.shortValue());
 		}
@@ -908,12 +908,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosDocumento.setCodTipoDocumento(getCodigoElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
 		datosDocumento.setDescTipoDocumento(getDescripcionElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
 				
-		Calendar cal = SigaWSHelper.getCalendar((String)htDocumentacion.get(de_dd_fechapresentaciondocumento));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)htDocumentacion.get(de_dd_fechapresentaciondocumento));
 		if (cal != null) {
 			datosDocumento.setFechaPresentacionDocumento(cal);
 		}
 		datosDocumento.setDescripcionAmpliadaDocumento((String)htDocumentacion.get(de_dd_descripcionampliadadocumento));
-		Integer valueInt = SigaWSHelper.getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
+		Integer valueInt = SIGAServicesHelper.getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
 		if (valueInt != null) {
 			datosDocumento.setProcedente(valueInt.shortValue());
 		}
@@ -1026,7 +1026,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosPersona.setPrimerApellido((String)htEJGs.get(dp_primerapellido));
 		datosPersona.setSegundoApellido((String)htEJGs.get(dp_segundoapellido));
 		datosPersona.setRazonSocial((String)htEJGs.get(dp_razonsocial));
-		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(dp_fechanacimiento));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(dp_fechanacimiento));
 		if (cal != null) {
 			datosPersona.setFechaNacimiento(cal);
 		}
@@ -1047,11 +1047,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		datosPersona.setCodRegimenEconomico(getCodigoElementoTipificado((String)htEJGs.get(dp_regimeneconomico_cda)));
 				
-		Long value = SigaWSHelper.getLong("número de hijos", (String)htEJGs.get(dp_numhijos));
+		Long value = SIGAServicesHelper.getLong("número de hijos", (String)htEJGs.get(dp_numhijos));
 		if (value != null) {
 			datosPersona.setNumHijos(value.longValue());
 		}
-		cal = SigaWSHelper.getCalendar((String)htEJGs.get(dp_fechaformalizacion));
+		cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(dp_fechaformalizacion));
 		if (cal != null) {
 			datosPersona.setFechaFormalizacion(cal);
 		}
@@ -1122,7 +1122,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 		
-		Calendar cal = SigaWSHelper.getCalendar((String)htEJGs.get(DE_FECHASOLICITUD));
+		Calendar cal = SIGAServicesHelper.getCalendar((String)htEJGs.get(DE_FECHASOLICITUD));
 		if (cal != null) {
 			datosExpediente.setFechaSolicitud(cal);
 		}
@@ -1181,9 +1181,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			identificacionIntercambio.setCodDestinoIntercambio(getCodigoElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
 			identificacionIntercambio.setDescDestinoIntercambio(getDescripcionElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
 						
-			Long valueLong = SigaWSHelper.getLong("identificador del intercambio", (String)ht.get(IDENTIFICADORINTERCAMBIO));
+			Long valueLong = SIGAServicesHelper.getLong("identificador del intercambio", (String)ht.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
-			identificacionIntercambio.setFechaIntercambio(SigaWSHelper.clearCalendar(Calendar.getInstance()));			
+			identificacionIntercambio.setFechaIntercambio(SIGAServicesHelper.clearCalendar(Calendar.getInstance()));			
 			identificacionIntercambio.setVersion((String)ht.get(VERSION_XSD_GENERALITAT));
 		}
 		return informacionIntercambio;
