@@ -144,7 +144,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 		            			" WHERE " + 
 								FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + institucion +
 								" AND " +
+								FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_SJCS + "= 0 " +
+								" AND " +
 								FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL)" +
+							" AND " +
+							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_SJCS + "= 0 " +
 							" AND " +
 							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL" +
 							" AND ROWNUM < 2";
@@ -216,7 +220,9 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			" WHERE " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + institucion +
 							" AND " +
-							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_BANCOS_CODIGO + "<>" + codigoBanco + 
+							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_BANCOS_CODIGO + "<>" + codigoBanco +
+							" AND " +
+							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_SJCS + "= 0 " +
 							" AND " +
 							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL";
 							
