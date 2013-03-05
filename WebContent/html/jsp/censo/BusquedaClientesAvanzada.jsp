@@ -20,12 +20,9 @@
 
 <!-- JSP -->
 <%  
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-%>	
-	
-<%  
+
 	// locales
 	BusquedaClientesForm formulario = (BusquedaClientesForm)request.getSession().getAttribute("busquedaClientesAvanzadaForm");
 	if (formulario==null) {
@@ -42,16 +39,16 @@
 	
 	ArrayList tipoApunte = new ArrayList();	
 	if (formulario.getTipoApunte()==null||formulario.getTipoApunte().equals("")){
-	 tipoApunte.add("");
+	 	tipoApunte.add("");
 	}else{
-	 tipoApunte.add(formulario.getTipoApunte());
+	 	tipoApunte.add(formulario.getTipoApunte());
 	} 
 	
 	ArrayList comision = new ArrayList();	
 	if (formulario.getComision()==null||formulario.getComision().equals("")){
-	 comision.add("");
+	 	comision.add("");
 	}else{
-	 comision.add(formulario.getComision());
+	 	comision.add(formulario.getComision());
 	} 
 	
 	ArrayList colegioSel = new ArrayList();
@@ -158,6 +155,9 @@
 	if (formulario.getFechaAltaHasta()!=null && !formulario.getFechaAltaHasta().equals("")){
 		fechaAltaHasta = formulario.getFechaAltaHasta();
 	}
+	
+	ArrayList tipoSel = new ArrayList();
+	tipoSel.add(formulario.getTipo());
 %>
 
 <%@page import="java.util.ArrayList"%>
@@ -167,23 +167,23 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>	
+		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo titulo="<%=titu %>" localizacion="<%=loca %>"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
-		<!-- Calendario -->
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 			<html:javascript formName="busquedaClientesAvanzadaForm" staticJavascript="false" />  
-		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->		
 	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->	
@@ -196,14 +196,16 @@
 				if (document.forms[0].fechaNacimientoHasta.value != "" && validaFechafechaNacimientoHasta(document.forms[0].fechaNacimientoHasta) != 0)
 					return false;
 				
-				if (document.forms[0].fechaIncorporacionDesde.value != "" && validaFechafechaIncorporacionDesde(document.forms[0].fechaIncorporacionDesde) != 0)
-					return false;
+				<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2")){ %>
+					if (document.forms[0].fechaIncorporacionDesde.value != "" && validaFechafechaIncorporacionDesde(document.forms[0].fechaIncorporacionDesde) != 0)
+						return false;				
 				
-				if (document.forms[0].fechaIncorporacionHasta.value != "" && validaFechafechaIncorporacionHasta(document.forms[0].fechaIncorporacionHasta) != 0)
-					return false;
-				
+					if (document.forms[0].fechaIncorporacionHasta.value != "" && validaFechafechaIncorporacionHasta(document.forms[0].fechaIncorporacionHasta) != 0)
+						return false;
+				<%}%>					
+					
 				if (document.forms[0].fechaAltaDesde.value != "" && validaFechafechaAltaDesde(document.forms[0].fechaAltaDesde) != 0)
-					return false;
+					return false;				
 				
 				if (document.forms[0].fechaAltaHasta.value != "" && validaFechafechaAltaHasta(document.forms[0].fechaAltaHasta) != 0)
 					return false;
@@ -241,6 +243,27 @@
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();	
 			}
+			
+			// Funcion asociada a boton limpiar
+			function limpiar()  {		
+				document.forms[0].modo.value="abrirAvanzada";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();	
+			}
+
+			// Funcion asociada a boton nuevo
+			function nuevo() {		
+				document.forms[0].modo.value="nuevo";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();	
+			}
+
+			// Funcion asociada a boton Nueva Sociedad
+			function nuevaSociedad() {		
+				document.forms[0].modo.value="nuevaSociedad";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();	
+			}			
 			
 			var tipoCurriculum;			
 			function init() {			 
@@ -494,7 +517,7 @@
 											</td>
 											<td>
 												<!-- TIPO -->
-												<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" />
+												<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoSel%>"/>
 											</td>
 					
 											<input type="hidden" name="numeroColegiado">
@@ -638,7 +661,7 @@
 			
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>
