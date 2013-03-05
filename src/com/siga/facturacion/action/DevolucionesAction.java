@@ -480,7 +480,7 @@ public class DevolucionesAction extends MasterAction {
 			}else if(codretorno.equalsIgnoreCase(codigoError)){
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
-				return "nuevo";
+				return "mostrarVentana";
 			}else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
 				tx.rollback();		
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
