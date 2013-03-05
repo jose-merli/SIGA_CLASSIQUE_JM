@@ -1441,7 +1441,7 @@
 				<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
 				
 				<% if(opcionDireccion){ %>				
-					<div id="desaparece2">
+					<div id="desaparece">
 						<%=asterisco%> 
 					</div>
 					
