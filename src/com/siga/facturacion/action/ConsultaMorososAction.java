@@ -294,7 +294,11 @@ public class ConsultaMorososAction extends MasterAction {
 						ArrayList clavesRegSeleccinados = new ArrayList((Collection)facAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
 						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						if(miFormulario.getSeleccionarTodos()!=null && !miFormulario.getSeleccionarTodos().equals("")){
+							datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						}else{
+							datos = resultado.obtenerPagina(1);
+						}
 						miFormulario.setSeleccionarTodos("");
 						
 					}else{
