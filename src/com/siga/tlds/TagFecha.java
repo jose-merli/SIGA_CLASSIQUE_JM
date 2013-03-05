@@ -152,6 +152,7 @@ public class TagFecha extends TagSupport {
 			out.println("		campoFecha.select();");
 			out.println("		campoFecha.focus();");
 			out.println("	}");
+			out.println("	return err;");
 			out.println("}");
 			out.println("</script>");
 			out.println(""); // Linea vacia por legibilidad del codigo

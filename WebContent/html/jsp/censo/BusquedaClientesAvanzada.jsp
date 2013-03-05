@@ -1,4 +1,5 @@
 <!-- BusquedaClientesAvanzada.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -8,9 +9,7 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -34,29 +33,30 @@
 	}
 	// datos seleccionados Combo
 	
-	ArrayList tipoColeg = new ArrayList();
-	
+	ArrayList tipoColeg = new ArrayList();	
 	if (formulario.getTipoColegiacion()==null||formulario.getTipoColegiacion().equals("")){
-	 tipoColeg.add(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA));
-	}else{
-	 tipoColeg.add(formulario.getTipoColegiacion());
+	 	tipoColeg.add(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA));
+	} else {
+	 	tipoColeg.add(formulario.getTipoColegiacion());
 	} 
-	ArrayList tipoApunte = new ArrayList();
 	
+	ArrayList tipoApunte = new ArrayList();	
 	if (formulario.getTipoApunte()==null||formulario.getTipoApunte().equals("")){
 	 tipoApunte.add("");
 	}else{
 	 tipoApunte.add(formulario.getTipoApunte());
 	} 
-	ArrayList comision = new ArrayList();
 	
+	ArrayList comision = new ArrayList();	
 	if (formulario.getComision()==null||formulario.getComision().equals("")){
 	 comision.add("");
 	}else{
 	 comision.add(formulario.getComision());
 	} 
+	
 	ArrayList colegioSel = new ArrayList();
 	colegioSel.add(formulario.getNombreInstitucion());
+	
 	ArrayList grupoClienteSel = new ArrayList();
 	grupoClienteSel.add(formulario.getGrupoClientes());
 
@@ -66,12 +66,16 @@
 
 	String sexo = formulario.getSexo();
 	if (sexo==null) sexo="";
+	
 	String residente = formulario.getResidente();
 	if (residente==null) residente="";
+	
 	String comunitario = formulario.getComunitario();
 	if (comunitario==null) comunitario="";
+	
 	String ejerciente = formulario.getEjerciente();
 	if (ejerciente==null) ejerciente="";
+	
 	String tipoCliente = formulario.getTipoCliente();
 	if (tipoCliente==null) tipoCliente="";
 
@@ -88,7 +92,6 @@
 		//letrados
 		titu = "censo.busquedaClientesAvanzada.letrados.titulo";
 	}
-
 
 	// institucionesVisibles
 	String institucionesVisibles = (String) request.getAttribute("CenInstitucionesVisibles");
@@ -115,525 +118,149 @@
    ArrayList idSubtipo1 = new ArrayList();
 	ArrayList idSubtipo2 = new ArrayList();
 	if (formulario.getIdTipoCVSubtipo1()==null||formulario.getIdTipoCVSubtipo1().equals("")){
-	 idSubtipo1.add("");
-	 
-	}else{
-	 idSubtipo1.add(formulario.getIdTipoCVSubtipo1());
-	 
+	 	idSubtipo1.add("");	 
+	} else {
+	 	idSubtipo1.add(formulario.getIdTipoCVSubtipo1());	 
 	} 
+	
 	if (formulario.getIdTipoCVSubtipo2()==null||formulario.getIdTipoCVSubtipo2().equals("")){
-	 idSubtipo2.add("");
-	 
-	}else{
-	 idSubtipo2.add(formulario.getIdTipoCVSubtipo2());
-	 
+	 	idSubtipo2.add("");	
+	} else {
+	 	idSubtipo2.add(formulario.getIdTipoCVSubtipo2());	 
 	} 
 	
+	String fechaNacimientoDesde = "";
+	if (formulario.getFechaNacimientoDesde()!=null && !formulario.getFechaNacimientoDesde().equals("")){
+		fechaNacimientoDesde = formulario.getFechaNacimientoDesde();
+	}
 	
+	String fechaNacimientoHasta = "";
+	if (formulario.getFechaNacimientoHasta()!=null && !formulario.getFechaNacimientoHasta().equals("")){
+		fechaNacimientoHasta = formulario.getFechaNacimientoHasta();
+	}
+	
+	String fechaIncorporacionDesde = "";
+	if (formulario.getFechaIncorporacionDesde()!=null && !formulario.getFechaIncorporacionDesde().equals("")){
+		fechaIncorporacionDesde = formulario.getFechaIncorporacionDesde();
+	}
+	
+	String fechaIncorporacionHasta = "";
+	if (formulario.getFechaIncorporacionHasta()!=null && !formulario.getFechaIncorporacionHasta().equals("")){
+		fechaIncorporacionHasta = formulario.getFechaIncorporacionHasta();
+	}
+	
+	String fechaAltaDesde = "";
+	if (formulario.getFechaAltaDesde()!=null && !formulario.getFechaAltaDesde().equals("")){
+		fechaAltaDesde = formulario.getFechaAltaDesde();
+	}		
+	
+	String fechaAltaHasta = "";
+	if (formulario.getFechaAltaHasta()!=null && !formulario.getFechaAltaHasta().equals("")){
+		fechaAltaHasta = formulario.getFechaAltaHasta();
+	}
 %>
 
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Properties"%>
+
 <html>
 
-<!-- HEAD -->
-<head>
-
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	 
+	<!-- HEAD -->
+	<head>
+		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="<%=titu %>" 
-		localizacion="<%=loca %>"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->
-
-	<!-- Calendario -->
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	<!-- Validaciones en Cliente -->
-	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="busquedaClientesAvanzadaForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	
-</head>
-
-
-<body onload="init();">
-<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
-
-	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
-	<!-- INICIO: CAMPOS DE BUSQUEDA-->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table  class="tablaCentralCampos"  align="center">
-	<html:form action="/CEN_BusquedaClientesAvanzada.do?noReset=true" method="POST" target="mainWorkArea">
-		<html:hidden  name="busquedaClientesAvanzadaForm" property="modo"/>
-		<!-- parametro para colegiados o no -->
-		<html:hidden name="busquedaClientesAvanzadaForm" property = "colegiado" value="<%=colegiado%>"/>
-		<html:hidden name="busquedaClientesAvanzadaForm" property = "avanzada"/>
-		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
-		<html:hidden property="seleccionarTodos" />
-	<tr>				
-	<td>
-
-	<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo1">
-
-	<table class="tablaCampos" align="center" border="0">
+		<!-- INICIO: TITULO Y LOCALIZACION -->
+		<!-- Escribe el título y localización en la barra de título del frame principal -->
+		<siga:Titulo titulo="<%=titu %>" localizacion="<%=loca %>"/>
+		<!-- FIN: TITULO Y LOCALIZACION -->
 	
-	<!-- FILA -->
+		<!-- Calendario -->
+		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	
-	<!-- FILA -->
-	<tr>				
-
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nif"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesAvanzadaForm" property="nif" size="15" styleClass="box"></html:text>
-		</td>
+		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+		<!-- Validaciones en Cliente -->
+		<!-- El nombre del formulario se obtiene del struts-config -->
+			<html:javascript formName="busquedaClientesAvanzadaForm" staticJavascript="false" />  
+		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->		
 	
-
-		<!-- -->
-		<td class="labelText" width="20%">
-			<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
-				<!-- caso de no colegiado-->
-			<siga:Idioma key="censo.busquedaClientes.literal.nombreDenominacion" />
-			<% } else { %>
-				<!-- casos de letrado y colegiado-->
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nombre"/>
-			<% } %>
-		</td>				
-		<td colspan="3">
-			<html:text name="busquedaClientesAvanzadaForm" property="nombrePersona" size="30" styleClass="box"></html:text>
-		</td>
-	
-	</tr>
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.apellido1"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesAvanzadaForm" property="apellido1" size="30" styleClass="box"></html:text>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.apellido2"/>
-		</td>
-		<td colspan="3">
-			<html:text name="busquedaClientesAvanzadaForm" property="apellido2" size="30" styleClass="box"></html:text>
-		</td>
-	
-	</tr>
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoDesde"/>
-			</td>				
-			<td>
-			<siga:Fecha  nombreCampo= "fechaNacimientoDesde"/>
-			
-		</td>
-        <td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
-			</td>				
-			<td colspan="2">
-			<siga:Fecha  nombreCampo= "fechaNacimientoHasta"/>
-			
-		</td>
-	</tr>
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.sexo"/>
-		</td>
-		<td >
-			<!-- option select -->
-			<html:select name="busquedaClientesAvanzadaForm" property="sexo" style = "null" styleClass = "boxCombo" value="<%=sexo %>">
-				<html:option value="" > </html:option>
-				<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
-				<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
-			</html:select>						
-		</td>
-	
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.domicilio"/>
-		</td>
-		<td colspan="3">
-			<html:text name="busquedaClientesAvanzadaForm" property="domicilio" size="40" styleClass="box"></html:text>
-		</td>
-	
-	</tr>
-	<!-- FILA -->
-	<tr>				
-
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.cp"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesAvanzadaForm" property="codigoPostal" size="5" styleClass="box"></html:text>	
-		</td>
-
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.telefono"/>
-		</td>				
-		<td colspan="3">
-			<html:text name="busquedaClientesAvanzadaForm" property="telefono" size="20" styleClass="box"></html:text>
-		</td>
-	
-	</tr>
-	<!-- FILA -->
-	<tr>				
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fax"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesAvanzadaForm" property="fax" size="20" styleClass="box"></html:text>
-		</td>
-
-		<!-- -->
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.correo"/>
-		</td>
-		<td colspan="3">
-			<html:text name="busquedaClientesAvanzadaForm" property="correo" size="30" styleClass="box"></html:text>
-		</td>
-	
-	</tr>
-	<!-- FILA -->
-	 <tr>
-   <td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.grupoCliente"/>
-		</td>
-		<td colspan="4">
-			<siga:ComboBD nombre = "grupoClientes" tipo="cmbGruposCliente_1" clase="boxCombo" obligatorio="false" elementoSel="<%=grupoClienteSel %>" parametro="<%=institucionParam%>" />
-		</td>
-	</tr>
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoApunteCV"/>
-		</td>
-		<td>
-			<siga:ComboBD nombre = "tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoApunte %>" parametro="<%=institucionParam%>" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
-		</td>
-		<td >
-		<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1" parametro="<%=parametro%>" clase="boxCombo" obligatorio="true"  elementoSel = "<%=idSubtipo1%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
-		</td>		
-		<td colspan="3">
-		<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1" parametro="<%=parametro%>" clase="boxCombo"  obligatorio="true"  elementoSel = "<%=idSubtipo2%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
-		</td>
-   </tr>
-  	</table>
-
-	</siga:ConjCampos>
-
-<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2") || (colegiado.equals(ClsConstants.DB_FALSE) && !institucionAcceso.equalsIgnoreCase(institucionesVisibles))) { %>
-
-	<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo2">
-
-		<table class="tablaCampos" align="center" width="100%" border="0">
-		<!-- FILA. aalg: se informa del significado de los campos de colegiado en el caso de letrado -->
-		<% if (colegiado.equals("2")) { %>
-			<tr>
-				<td class="labelText" colspan="6">
-					<siga:Idioma key="censo.busquedaClientesAvanzada.messages.colegiadoLetrado"/>
-				</td>
-			</tr>
-		<%} %>
-			
-		<!-- FILA. aalg: se pasan los datos del colegio y número de colegiado al conjunto de campos referentes al colegio  -->
-		<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
-		<% if (!institucionAcceso.equalsIgnoreCase(institucionesVisibles)){%> 
-		<tr>				
-
-			<td class="labelText" width="19%">
-				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.colegio"/>
-			</td>				
-			<td colspan="5">
-				<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
-		     	  <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
-				<% }else{ %>
-					<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
-				<% } %>
-			</td>
+		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->	
+		<script language="JavaScript">
 		
-		</tr>
-				<% } %>
-		<!-- FILA -->
-		<tr>				
-	
-	<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
-			<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientes.literal.tipoCliente"/>
-		</td>
-		<td >
-			<!-- TIPO -->
-			<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" />
-		</td>
-			<!-- -->
-			<td class="labelText" >
-				&nbsp;
-			</td>
-			<td >
-				<input type="hidden" name="numeroColegiado">
-			</td>
-	<% } else { %>
-		<!-- -->
-			<td class="labelText" >
-				<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
-			</td>
-			<td >
-				<html:text name="busquedaClientesAvanzadaForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box"></html:text>
-			</td>
-			<td class="labelText" >
-				&nbsp;
-			</td>
-			<td  colspan="3">
-				<input type="hidden" name="tipoCliente">
-			</td>
-		
-	<% } %>
-	
-		
-		</tr>
-		<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2")){ %>
-		<!-- FILA -->
-		<tr>				
-	
-		 <td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/>
-		 </td>				
-		 <td   colspan="5">
-			<siga:ComboBD nombre = "tipoColegiacion" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
-		 </td>
-		</tr>
-		<tr>				
-	
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.situacion"/>
-		</td>				
-		<td >
-			<!-- option select -->
-			<html:select name="busquedaClientesAvanzadaForm" property="ejerciente" style = "null" styleClass = "boxCombo" value="<%=ejerciente %>">
-				<html:option value="" > </html:option>
-				<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
-				<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
-			</html:select>						
-		</td>
-	
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionDesde"/>
-		</td>
-		<td >
-		<siga:Fecha  nombreCampo= "fechaIncorporacionDesde"/>
-		</td>
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
-		</td>
-		<td >
-		<siga:Fecha  nombreCampo= "fechaIncorporacionHasta"/>
-		</td>
-	
-		</tr>				
-
-		<!-- FILA -->
-		<tr>				
-
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.residente"/>
-		</td>
-		<td >
-			<!-- option select -->
-			<html:select name="busquedaClientesAvanzadaForm" property="residente" style = "null" styleClass = "boxCombo" value="<%=residente %>">
-				<html:option value="" > </html:option>
-				<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
-				<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
-			</html:select>						
-		</td>
-	
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.comunitario"/>
-		</td>
-		<td colspan="3">
-			<!-- option select -->
-			<html:select name="busquedaClientesAvanzadaForm" property="comunitario" style = "null" styleClass = "boxCombo" value="<%=comunitario %>">
-				<html:option value="" > </html:option>
-				<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
-				<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
-			</html:select>						
-		</td>
-
-		</tr>				
-	<%} %>
-		</table>
-		
-	</siga:ConjCampos>
-
-<% 
-	} else { 
-		// campos de validacion que no hacen falta
-%>
-		<input type="hidden" name="ejerciente">
-		<input type="hidden" name="residente">
-		<input type="hidden" name="fechaIncorporacion">
-<% 	} %>
-
-	<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo3">
-
-		<table class="tablaCampos" align="center">
-	
-		<!-- FILA -->
-		<tr>				
-	
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaDesde"/>
-		</td>
-		<td >
-			<siga:Fecha  nombreCampo= "fechaAltaDesde"/>
-		</td>
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
-		</td>
-		<td >
-			<siga:Fecha  nombreCampo= "fechaAltaHasta"/>
-		</td>
-
-		<td colspan="2" class="labelText" >
-		&nbsp;
-		</td>		
-		<!-- 
-		<td class="labelText" >
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.concepto"/>
-		</td>				
-		<td >
-			<html:text name="busquedaClientesAvanzadaForm" property="concepto" size="30" styleClass="box"></html:text>
-		</td>
- -->
-		</tr>
-	
-		</table>
-
-	</siga:ConjCampos>
-
-	</td>
-	</tr>
-
-	</html:form>
-	
-	</table>
-
-
-
-	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
-	<!-- INICIO: BOTONES BUSQUEDA -->
-	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
-		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
-	-->
-
-<%  
-	String botones = "B,S";
-	if (colegiado.equals(ClsConstants.DB_FALSE)) {
-		botones += ",N,NS";
-	} 
-%>
-
-
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="" />
-
-	<!-- FIN: BOTONES BUSQUEDA -->
-
-	
-	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-	
-	<script language="JavaScript">
-
-		<!-- Funcion asociada a boton buscar -->
-		function buscar(modo) 
-		{		
-//			if (validateBusquedaClientesAvanzadaForm(document.forms[0])) 
-			{
-				sub();
-				if(modo)
-					document.forms[0].modo.value = modo;
-				else
-					document.forms[0].modo.value="buscarInit";
+			function validarFechas() {
+				if (document.forms[0].fechaNacimientoDesde.value != "" && validaFechafechaNacimientoDesde(document.forms[0].fechaNacimientoDesde) != 0)
+					return false;
 				
-				document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
+				if (document.forms[0].fechaNacimientoHasta.value != "" && validaFechafechaNacimientoHasta(document.forms[0].fechaNacimientoHasta) != 0)
+					return false;
+				
+				if (document.forms[0].fechaIncorporacionDesde.value != "" && validaFechafechaIncorporacionDesde(document.forms[0].fechaIncorporacionDesde) != 0)
+					return false;
+				
+				if (document.forms[0].fechaIncorporacionHasta.value != "" && validaFechafechaIncorporacionHasta(document.forms[0].fechaIncorporacionHasta) != 0)
+					return false;
+				
+				if (document.forms[0].fechaAltaDesde.value != "" && validaFechafechaAltaDesde(document.forms[0].fechaAltaDesde) != 0)
+					return false;
+				
+				if (document.forms[0].fechaAltaHasta.value != "" && validaFechafechaAltaHasta(document.forms[0].fechaAltaHasta) != 0)
+					return false;
+				
+				return true;
+			}
+	
+			// Funcion asociada a boton buscar
+			function buscar(modo) {		
+				sub();
+				
+				if (validarFechas()) {				
+					if(modo)
+						document.forms[0].modo.value = modo;
+					else
+						document.forms[0].modo.value="buscarInit";
+					
+					document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
+					document.forms[0].target="mainWorkArea";	
+					document.forms[0].submit();
+				} else {
+					fin();
+					return false;
+				}
+			}
+			
+			function seleccionarTodos(pagina) {
+				document.forms[0].seleccionarTodos.value = pagina;
+				buscar('buscarPor');					
+			}
+	
+			// Funcion asociada a boton busqueda simple
+			function buscarSimple() {		
+				document.forms[0].modo.value="abrir";
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();	
 			}
-		}
-		function seleccionarTodos(pagina) 
-		{
-			document.forms[0].seleccionarTodos.value = pagina;
-			buscar('buscarPor');
-				
-		}
-
-		<!-- Funcion asociada a boton busqueda simple -->
-		function buscarSimple() 
-		{		
-			document.forms[0].modo.value="abrir";
-			document.forms[0].target="mainWorkArea";	
-			document.forms[0].submit();	
-		}
-		
-		<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
-			document.forms[0].modo.value="abrirAvanzada";
-			document.forms[0].target="mainWorkArea";	
-			document.forms[0].submit();	
-		}
-
-		<!-- Funcion asociada a boton nuevo -->
-		function nuevo() 
-		{		
-			document.forms[0].modo.value="nuevo";
-			document.forms[0].target="mainWorkArea";	
-			document.forms[0].submit();	
-		}
-
-		<!-- Funcion asociada a boton Nueva Sociedad -->
-		function nuevaSociedad() 
-		{		
-			document.forms[0].modo.value="nuevaSociedad";
-			document.forms[0].target="mainWorkArea";	
-			document.forms[0].submit();	
-		}
-		var tipoCurriculum;
-		
-		function init(){
-		 
-		  var cmb1 = document.getElementsByName("tipoApunte");
-		  var cmb2 = cmb1[0]; 
-		   tipoCurriculum=<%=tipoApunte%>;
-		  cmb2.onchange();
-		
-		}
-		function recargarCombos(tipo){
-		   if (tipo){
-		    if (tipoCurriculum!=tipo.value){
-			  limpiarCombo("idTipoCVSubtipo1");
-     		  limpiarCombo("idTipoCVSubtipo2");
-		    }
-		   }
-		
-		}
-		function limpiarCombo(nombre){
-		   iframeCombo = window.top.frames[0].document.getElementById (nombre + "Frame");
+			
+			var tipoCurriculum;			
+			function init() {			 
+			  	var cmb1 = document.getElementsByName("tipoApunte");
+			  	var cmb2 = cmb1[0]; 
+			   	tipoCurriculum=<%=tipoApunte%>;
+			  	cmb2.onchange();			
+			}
+			
+			function recargarCombos(tipo) {
+				if (tipo) {
+			    	if (tipoCurriculum!=tipo.value){
+				  		limpiarCombo("idTipoCVSubtipo1");
+	     		  		limpiarCombo("idTipoCVSubtipo2");
+			    	}
+			   	}			
+			}
+			
+			function limpiarCombo(nombre) {
+			   iframeCombo = window.top.frames[0].document.getElementById (nombre + "Frame");
 				cadenaInicial = iframeCombo.src;
 				
 				if (cadenaInicial.indexOf("&elementoSel=[0]") > 1)  {
@@ -652,21 +279,361 @@
 				}
 
 				iframeCombo.src = cadenaFinal;
-		}
-						
-		function deshabilitarCombos(o){
-		  v_subTipo1=o; 
-		  if (o.options.length > 1) {
-			 o.disabled = false;
-		  }
-		  else {
-			 o.disabled = true;
-		  }
-		 
-		}
-	</script>
-	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+			}
+							
+			function deshabilitarCombos(o) {
+			  	v_subTipo1=o; 
+			  	if (o.options.length > 1) {
+					 o.disabled = false;
+			  	} else {
+				 	o.disabled = true;
+			  	}			 
+			}
+		</script>
+		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
+	</head>
 
+
+<body onload="init();">
+	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
+
+		<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
+		<!-- INICIO: CAMPOS DE BUSQUEDA-->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table class="tablaCentralCampos"  align="center">
+			<html:form action="/CEN_BusquedaClientesAvanzada.do?noReset=true" method="POST" target="mainWorkArea">
+				<html:hidden  name="busquedaClientesAvanzadaForm" property="modo"/>
+				<!-- parametro para colegiados o no -->
+				<html:hidden name="busquedaClientesAvanzadaForm" property = "colegiado" value="<%=colegiado%>"/>
+				<html:hidden name="busquedaClientesAvanzadaForm" property = "avanzada"/>
+				<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
+				<html:hidden property="seleccionarTodos" />
+				
+				<tr>				
+					<td>
+						<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo1">
+							<table class="tablaCampos" align="center" border="0">
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nif"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="nif" size="15" styleClass="box" />
+									</td>
+	
+									<td class="labelText" width="20%">
+										<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+											<!-- caso de no colegiado-->
+										<siga:Idioma key="censo.busquedaClientes.literal.nombreDenominacion" />
+										<% } else { %>
+											<!-- casos de letrado y colegiado-->
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nombre"/>
+										<% } %>
+									</td>				
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="nombrePersona" size="30" styleClass="box" />
+									</td>
+								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.apellido1"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="apellido1" size="30" styleClass="box" />
+									</td>
+									
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.apellido2"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="apellido2" size="30" styleClass="box" />
+									</td>								
+								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoDesde"/>
+									</td>				
+									<td>
+										<siga:Fecha nombreCampo= "fechaNacimientoDesde" valorInicial="<%=fechaNacimientoDesde%>"/>										
+									</td>
+									
+							        <td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
+									</td>													
+									<td>
+										<siga:Fecha  nombreCampo= "fechaNacimientoHasta" valorInicial="<%=fechaNacimientoHasta%>"/>										
+									</td>
+								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.sexo"/>
+									</td>
+									<td>
+										<!-- option select -->
+										<html:select name="busquedaClientesAvanzadaForm" property="sexo" style = "null" styleClass = "boxCombo" value="<%=sexo %>">
+											<html:option value="" > </html:option>
+											<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
+											<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
+										</html:select>						
+									</td>
+								
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.domicilio"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="domicilio" size="40" styleClass="box" />
+									</td>								
+								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.cp"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="codigoPostal" size="5" styleClass="box" />	
+									</td>
+							
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.telefono"/>
+									</td>				
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="telefono" size="20" styleClass="box" />
+									</td>
+								</tr>
+	
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fax"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="fax" size="20" styleClass="box" />
+									</td>
+							
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.correo"/>
+									</td>
+									<td>
+										<html:text name="busquedaClientesAvanzadaForm" property="correo" size="30" styleClass="box" />
+									</td>							
+								</tr>
+								
+								<!-- FILA -->
+		 						<tr>
+								   <td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.grupoCliente"/>
+									</td>
+									<td colspan="3">
+										<siga:ComboBD nombre = "grupoClientes" tipo="cmbGruposCliente_1" clase="boxCombo" obligatorio="false" elementoSel="<%=grupoClienteSel %>" parametro="<%=institucionParam%>" />
+									</td>
+								</tr>
+								
+								<!-- FILA -->						
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoApunteCV"/>
+									</td>
+									<td>
+										<siga:ComboBD nombre = "tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoApunte %>" parametro="<%=institucionParam%>" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
+									</td>
+									
+									<td>
+										<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1" parametro="<%=parametro%>" clase="boxCombo" obligatorio="true"  elementoSel = "<%=idSubtipo1%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
+									</td>		
+									<td>
+										<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1" parametro="<%=parametro%>" clase="boxCombo"  obligatorio="true"  elementoSel = "<%=idSubtipo2%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
+									</td>
+							   </tr>
+  							</table>
+						</siga:ConjCampos>
+
+						<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2") || (colegiado.equals(ClsConstants.DB_FALSE) && !institucionAcceso.equalsIgnoreCase(institucionesVisibles))) { %>
+							<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo2">
+								<table class="tablaCampos" align="center" width="100%" border="0">
+									<!-- FILA. aalg: se informa del significado de los campos de colegiado en el caso de letrado -->
+									<% if (colegiado.equals("2")) { %>
+										<tr>
+											<td class="labelText" colspan="6">
+												<siga:Idioma key="censo.busquedaClientesAvanzada.messages.colegiadoLetrado"/>
+											</td>
+										</tr>
+									<%}%>
+				
+									<!-- FILA. aalg: se pasan los datos del colegio y número de colegiado al conjunto de campos referentes al colegio  -->
+									<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
+									<% if (!institucionAcceso.equalsIgnoreCase(institucionesVisibles)){%> 
+										<tr>				
+											<td class="labelText" width="19%">
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.colegio"/>
+											</td>				
+											<td colspan="5">
+												<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+									     	  		<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
+									     	  		
+												<% } else { %>
+													<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
+												<% } %>
+											</td>
+										</tr>		
+									<%}%>
+												
+									<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+										<!-- FILA -->
+										<tr>
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientes.literal.tipoCliente"/>
+											</td>
+											<td>
+												<!-- TIPO -->
+												<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" />
+											</td>
+					
+											<input type="hidden" name="numeroColegiado">
+										</tr>
+										
+									<% } else { %>
+										<!-- FILA -->
+										<tr>
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
+											</td>
+											<td>
+												<html:text name="busquedaClientesAvanzadaForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box"></html:text>
+											</td>
+						
+											<input type="hidden" name="tipoCliente">	
+										</tr>	
+									<% } %>		
+				
+									<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2")){ %>
+										<!-- FILA -->
+										<tr>					
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/>
+											</td>				
+				 							<td colspan="5">
+												<siga:ComboBD nombre = "tipoColegiacion" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+				 							</td>
+										</tr>
+										
+										<!-- FILA -->
+										<tr>				
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.situacion"/>
+											</td>				
+											<td>
+												<!-- option select -->
+												<html:select name="busquedaClientesAvanzadaForm" property="ejerciente" style = "null" styleClass = "boxCombo" value="<%=ejerciente %>">
+													<html:option value="" > </html:option>
+													<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
+													<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
+												</html:select>						
+											</td>
+			
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionDesde"/>
+											</td>
+											<td>
+												<siga:Fecha nombreCampo= "fechaIncorporacionDesde" valorInicial="<%=fechaIncorporacionDesde%>"/>
+											</td>
+											
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
+											</td>
+											<td>
+												<siga:Fecha nombreCampo= "fechaIncorporacionHasta" valorInicial="<%=fechaIncorporacionHasta%>"/>
+											</td>
+										</tr>
+														
+										<!-- FILA -->
+										<tr>				
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.residente"/>
+											</td>
+											<td >
+												<!-- option select -->
+												<html:select name="busquedaClientesAvanzadaForm" property="residente" style = "null" styleClass = "boxCombo" value="<%=residente %>">
+													<html:option value="" > </html:option>
+													<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
+													<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
+												</html:select>						
+											</td>
+										
+											<td class="labelText" >
+												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.comunitario"/>
+											</td>
+											<td colspan="3">
+												<!-- option select -->
+												<html:select name="busquedaClientesAvanzadaForm" property="comunitario" style = "null" styleClass = "boxCombo" value="<%=comunitario %>">
+													<html:option value="" > </html:option>
+													<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
+													<html:option value="<%=ClsConstants.DB_FALSE %>" ><siga:Idioma key="general.no"/></html:option>
+												</html:select>						
+											</td>
+										</tr>				
+									<%}%>
+								</table>		
+							</siga:ConjCampos>
+	
+						<% 
+							} else { 
+								// campos de validacion que no hacen falta
+						%>
+							<input type="hidden" name="ejerciente">
+							<input type="hidden" name="residente">
+							<input type="hidden" name="fechaIncorporacion">
+						<% 	} %>
+	
+						<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo3">
+							<table class="tablaCampos" align="center">
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText" >
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaDesde"/>
+									</td>
+									<td>
+										<siga:Fecha nombreCampo= "fechaAltaDesde" valorInicial="<%=fechaAltaDesde%>"/>
+									</td>
+									
+									<td class="labelText" >
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
+									</td>
+									<td>
+										<siga:Fecha nombreCampo= "fechaAltaHasta" valorInicial="<%=fechaAltaHasta%>"/>
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+			</html:form>	
+		</table>
+		<!-- FIN: CAMPOS DE BUSQUEDA-->
+	
+		<!-- INICIO: BOTONES BUSQUEDA -->
+		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
+			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
+			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
+		-->
+	
+		<%  
+			String botones = "B,S";
+			if (colegiado.equals(ClsConstants.DB_FALSE)) {
+				botones += ",N,NS";
+			} 
+		%>
+
+		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="" />
+		<!-- FIN: BOTONES BUSQUEDA -->
 </div>
 			
 <!-- INICIO: SUBMIT AREA -->
