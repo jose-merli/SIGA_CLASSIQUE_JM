@@ -5619,7 +5619,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
         String consultaLetrado=
 			"select "+
 			"decode(p."+CenPersonaBean.C_SEXO+",'H','"+hombre+"','M','"+mujer+"','') SEXO_LETRADO,"+
-			"'' NCOLEGIADO_LETRADO,"+
+			(colegiado ? "c." + CenColegiadoBean.C_NCOLEGIADO  : "'' ")+
+			" NCOLEGIADO_LETRADO,"+
 			"p."+CenPersonaBean.C_APELLIDOS1+"||' '||p."+CenPersonaBean.C_APELLIDOS2+"||', '|| p."+CenPersonaBean.C_NOMBRE+" NOMBRE_LETRADO,"+
 			"p."+CenPersonaBean.C_APELLIDOS1+ " APELLIDO1_LETRADO,"+
 			"p."+CenPersonaBean.C_APELLIDOS2+ " APELLIDO2_LETRADO,"+
