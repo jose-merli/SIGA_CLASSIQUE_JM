@@ -133,20 +133,20 @@ public class TagFecha extends TagSupport {
 			out.println("	}else if (err == 6) {");
 			// Si el campo se ha marcado como necesario se incluye la clausula que no permita que el campo quede vacio
 			if(this.necesario.equalsIgnoreCase("true")){
-				out.println("		alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.campo.necesario") + "\");");
+				out.println("		oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.campo.necesario") + "\");");
 				out.println("		campoFecha.select();");
 				out.println("		campoFecha.focus();");
 			}
 			out.println("	}else {");
-			out.println("		if (err ==5){alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.formato") + "\") }");
+			out.println("		if (err ==5){oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.formato") + "\") }");
 			out.println("		else{");
 			out.println("			if (day.length==1) day=\"0\" + day;");
 			out.println("			if (month.length==1) month=\"0\" + month;");
 			out.println("			campoFecha.value = day + separador + month + separador + year;");
-			out.println("			if (err ==4){alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.valida") + "\") }");
-			out.println("			if (err ==2){alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.mes") + "\") }");
-			out.println("			if (err ==1){alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.anio") + "\") }");
-			out.println("			if (err ==3){alert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.dia") + "\") }");
+			out.println("			if (err ==4){oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.valida") + "\") }");
+			out.println("			if (err ==2){oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.mes") + "\") }");
+			out.println("			if (err ==1){oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.anio") + "\") }");
+			out.println("			if (err ==3){oldAlert(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.dia") + "\") }");
 			out.println("		}");
 			out.println("		// Finalmente seleccion la fecha incorrecta y devuelve el foco al campo fecha");
 			out.println("		campoFecha.select();");
@@ -163,7 +163,7 @@ public class TagFecha extends TagSupport {
 				out.println("	size=\"10\" maxlength=\"10\" ");
 			}
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
-				out.println("		alert(this.valorInicial); ");
+				out.println("		oldAlert(this.valorInicial); ");
 				out.println("	value=\"" + this.valorInicial + "\" ");
 			}
 			else

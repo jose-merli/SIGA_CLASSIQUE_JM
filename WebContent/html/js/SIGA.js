@@ -28,8 +28,9 @@ function alert(message, title, acceptText) {
 	return returnValue;
 }
 */
+var alertStop = window.alert;
 
-function alert(message, estilo) {
+window.alert=function (message, estilo) {
 	var returnValue = true;
 	var windowTop=window.top;
 	message = message.replace(/\r\n|\r|\n/g, "<br>");
