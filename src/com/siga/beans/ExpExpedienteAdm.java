@@ -1168,29 +1168,27 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += subselect;	
 		    
 		    
-		    //mhg Incidencia 179. Nueva query. Ahora la tabla principal es exp_denunciado y se han introducido Left Join
 		    sql += " FROM ";
 		    sql += T_EXP_DENUNCIADO + ", "+ T_EXP_EXPEDIENTE + " e, " + T_EXP_TIPOEXPEDIENTE+", " + T_EXP_ESTADOS;
 		    sql += " WHERE ";
-		    sql += "d." + ExpDenunciadoBean.C_IDINSTITUCION + "= e." + E_IDINSTITUCION + "(+) and ";
-		    sql += "d." + ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE + "= e." + E_IDINSTITUCION_TIPOEXPEDIENTE + "(+) and ";
-		    sql += "d." + ExpDenunciadoBean.C_NUMEROEXPEDIENTE + "= e." + E_NUMEROEXPEDIENTE + "(+) and ";
-		    sql += "d." + ExpDenunciadoBean.C_ANIOEXPEDIENTE + "= e." + E_ANIOEXPEDIENTE + "(+) and ";
-		    
-		    sql += "e." + E_IDINSTITUCION + " = " + "t." + ExpTipoExpedienteBean.C_IDINSTITUCION + " (+) and ";
-		    sql += "e." + E_IDTIPOEXPEDIENTE + " = " + "t." + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE + " (+) and ";
-		    
-		    sql += "e." + E_IDINSTITUCION + " = " + "es." + ExpEstadosBean.C_IDINSTITUCION + " (+) and ";
-		    sql += "e." + E_IDTIPOEXPEDIENTE + " = " + "es." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " (+) and ";
-		    sql += "e." + E_IDFASE + " = " + "es." + ExpEstadosBean.C_IDFASE + " (+) and ";
-		    sql += "e." + E_IDESTADO + " = " + "es." + ExpEstadosBean.C_IDESTADO + " (+) and ";
-		    
-		    sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
-		    sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
-		    if (sSancionado != null)
-		    	sql += "e." + ExpExpedienteBean.C_SANCIONADO + " = '"+sSancionado+"' and ";
-			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
-		    
+		    sql += " d.Idinstitucion_Tipoexpediente = t.IDINSTITUCION ";
+            sql += " and d.IDTIPOEXPEDIENTE = t.IDTIPOEXPEDIENTE ";
+                     
+            sql += " and  d.IDINSTITUCION = e.IDINSTITUCION ";
+            sql += " and d.IDINSTITUCION_TIPOEXPEDIENTE = e.IDINSTITUCION_TIPOEXPEDIENTE ";
+            sql += " and d.NUMEROEXPEDIENTE = e.NUMEROEXPEDIENTE ";
+            sql += " and d.ANIOEXPEDIENTE = e.ANIOEXPEDIENTE ";
+
+            sql += " and e.IDINSTITUCION = es.IDINSTITUCION(+) ";
+            sql += " and e.IDTIPOEXPEDIENTE = es.IDTIPOEXPEDIENTE(+) ";
+            sql += " and e.IDFASE = es.IDFASE(+) ";
+            sql += " and e.IDESTADO = es.IDESTADO(+) ";
+            sql += " and ";
+            sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
+            sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
+            if (sSancionado != null)
+                sql += "e." + ExpExpedienteBean.C_SANCIONADO + " = '"+sSancionado+"' and ";
+            sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
 		   		
 			//Query antigua
 		    /*sql += T_EXP_EXPEDIENTE + " e, " + 
