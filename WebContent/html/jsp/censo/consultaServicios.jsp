@@ -260,7 +260,7 @@ String app = request.getContextPath();
 		String tamanosCol="";
 		String nombresCol="";
 		tamanosCol="8,6,12,11,17,6,7,9,8,8,7";
-		nombresCol="cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoPago,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
+		nombresCol="cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
 %>
 
 		<siga:TablaCabecerasFijas 	 
