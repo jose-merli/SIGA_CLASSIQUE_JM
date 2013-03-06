@@ -155,19 +155,8 @@
 				datos.value = ""; 
 				var j;
 				var tabla;
-				<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
-					var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-					window.top.focus();
-					if( fecha!=null){ 
-			  	  		// document.forms[0].fechaEfectiva.value=fecha;
-			  	  		var campoFecha = 'ocultoP' + fila + '_6'; // Columna oculta con la fecha efectiva
-			  	  		document.getElementById(campoFecha).value = fecha;
-			  		} else {
-			  			finsubicono('solicitarbaja_'+fila);
-			  			refrescarLocal();
-			  			return false;
-			  		}
-		    	<%}else{%>
+				//mhg - INC_08066_SIGA Cuando se da de baja una solicitud no hace falta pedir la fecha efectiva por lo que se ha quitado.
+				<%if((esLetrado)&&(!aprobarSolicitudBaja)){%>
 		    		if (!confirm("<siga:Idioma key="pys.solicitarBaja.literal.confirmaSolicitud"/>")){
 		    			finsubicono('solicitarbaja_'+fila);
 		    			return false;
