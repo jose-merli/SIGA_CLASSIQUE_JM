@@ -6,6 +6,8 @@
  
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -199,7 +201,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			int contador=0;
 			Hashtable codigos = new Hashtable();
 			StringBuffer sql =  new StringBuffer();
-			sql.append(" select NVL((SELECT PYS_COMPRA.FECHA ");
+			
+			//mhg - INC_10542_SIGA Para sacar la fecha efectiva añadimos la fecha de baja.
+			sql.append(" select NVL(NVL((SELECT PYS_COMPRA.FECHABAJA ");
 			sql.append(" FROM PYS_COMPRA ");
 			sql.append(" WHERE PYS_COMPRA.IDINSTITUCION = ");
 			contador++;
@@ -223,6 +227,31 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),idProductoInstitucion);
 			sql.append(":"+contador);
 			sql.append(" ), ");
+			
+			sql.append(" (SELECT PYS_COMPRA.FECHA ");
+			sql.append(" FROM PYS_COMPRA ");
+			sql.append(" WHERE PYS_COMPRA.IDINSTITUCION = ");
+			contador++;
+			codigos.put(new Integer(contador),idInstitucion);
+			sql.append(":"+contador);
+			sql.append(" AND PYS_COMPRA.IDPETICION = ");
+			contador++;
+			codigos.put(new Integer(contador),idPeticionConsulta);
+			sql.append(":"+contador);
+			sql.append(" AND PYS_COMPRA.IDTIPOPRODUCTO = ");
+			contador++;
+			codigos.put(new Integer(contador),idTipoProducto);
+			sql.append(":"+contador);
+			sql.append(" AND PYS_COMPRA.IDPRODUCTO = ");
+			contador++;
+			codigos.put(new Integer(contador),idProducto);
+			sql.append(":"+contador);
+			sql.append(" AND PYS_COMPRA.IDPRODUCTOINSTITUCION = ");
+			contador++;
+			
+			codigos.put(new Integer(contador),idProductoInstitucion);
+			sql.append(":"+contador);
+			sql.append(" )), ");
 			sql.append(" (SELECT max(petco.fecha) ");
 			sql.append(" FROM PYS_PETICIONCOMPRASUSCRIPCION petco, ");
 			sql.append(" PYS_PRODUCTOSSOLICITADOS      prodsol ");
@@ -708,13 +737,6 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				*/
 				
 				// 2. Cambiamos el estado de peticion de baja a PROCESADA
-				if(fechaEfectiva.equals("0")||fechaEfectiva==null){
-					peticionBean.setFecha("sysdate");
-				}
-				else{
-					fechaEfectiva=GstDate.getApplicationFormatDate("ES",fechaEfectiva);
-					peticionBean.setFecha(fechaEfectiva);
-				}
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("ES",fechaEfectiva));
 				if (!peticionAdm.update(peticionBean)) {
@@ -752,6 +774,31 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				if (productos_serviciosPendientes > 0) {
 					return true;
 				}
+				
+				//mhg - Cogemos el producto que queremos dar de baja para actualizar la fecha de baja/efectiva
+				String where2 = " WHERE " + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" AND " + PysProductosSolicitadosBean.C_IDPETICION + " = " + peticionBean.getIdPeticionAlta() +
+						" AND " + PysCompraBean.C_IDTIPOPRODUCTO + " = " + idTipoProducto +
+						" AND " + PysCompraBean.C_IDPRODUCTO + " = " + idProducto +
+						" AND " + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion;
+		
+				Vector vProducto = compraAdm.select(where2);
+				if ((vProducto != null) && (vProducto.size() > 0)){
+					PysCompraBean compraBean = (PysCompraBean) vProducto.get(0);
+					if(fechaEfectiva.equals("0")){
+						compraBean.setFechaBaja("sysdate");
+					}
+					//mhg - El siguiente caso nunca deberia pasar ya que en una anulación no se deberia seleccionar la fecha de baja.
+					else{
+						fechaEfectiva=GstDate.getApplicationFormatDate("ES",fechaEfectiva);
+						compraBean.setFechaBaja(fechaEfectiva);
+					}	
+
+				    if (!compraAdm.updateDirect(compraBean)) {
+					    return false;
+				    }
+				}
+				
 				// 5.1 No hay articulos pendientes, cambiamos el estado a PROCESADA
 				claves.clear();
 				UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, idInstitucion);
@@ -759,15 +806,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				peticionBean = (PysPeticionCompraSuscripcionBean) peticionAdm.selectByPK(claves).get(0);
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("ES",fechaEfectiva));
 				
-				if(fechaEfectiva.equals("0")||fechaEfectiva==null){
-					peticionBean.setFecha("sysdate");
-				}
-				else{
-					
-					peticionBean.setFecha(fechaEfectiva);
-				}
-				
 				return peticionAdm.update(peticionBean);
+				
 			}
 		}
 	    catch (Exception e) {
