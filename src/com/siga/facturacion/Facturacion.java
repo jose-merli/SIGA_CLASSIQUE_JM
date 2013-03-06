@@ -809,6 +809,9 @@ public class Facturacion {
                 salida.setIdPrevision(aux.getIdPrevision());
                 salida.setLocked(aux.getLocked());
                 salida.setVisible(aux.getVisible());
+                if (salida.getEnvio().equals(ClsConstants.ENVIO)) {
+                	salida.setIdTipoPlantillaMail(aux.getIdTipoPlantillaMail());
+                }
 
                 // campos nuevos
                 salida.setIdProgramacion(nuevoIdP);
@@ -1765,6 +1768,7 @@ public class Facturacion {
     	    beanPro.setIdSerieFacturacion(salida.getIdSerieFacturacion());
     	    beanPro.setLocked("1");
     	    beanPro.setIdProgramacion(admPro.getNuevoID(beanPro));
+    	    beanPro.setIdTipoPlantillaMail(salida.getIdTipoPlantillaMail());
 
     	    // Ultimo campo a setear necesita idprogramacion, idinstitucion, idseriefacturacion
     	    beanPro.setDescripcion(admPro.getDescripcionPorDefecto(beanPro));

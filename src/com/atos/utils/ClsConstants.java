@@ -648,6 +648,8 @@ MDB Microsoft Access Database
 	  public static int IDTIPO_RESOLUCIONAUTO_MODYDENEGAR=3;
 	  public static int IDTIPO_RESOLUCIONAUTO_MODYCONCEDER=1;
 	  
+	
+	  public static final String ENVIO="1";  
 	  
 	  
   public ClsConstants() {

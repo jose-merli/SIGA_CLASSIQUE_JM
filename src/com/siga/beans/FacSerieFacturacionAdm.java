@@ -313,6 +313,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
     	    salida.setIdInstitucion(beanSerie.getIdInstitucion());
     	    salida.setIdPlantilla(beanSerie.getIdPlantilla());
     	    salida.setObservaciones(beanSerie.getObservaciones());
+    	    salida.setIdTipoPlantillaMail(beanSerie.getIdTipoPlantillaMail());
     	    
     	    // campos diferentes
     	    salida.setTipoSerie("T");
