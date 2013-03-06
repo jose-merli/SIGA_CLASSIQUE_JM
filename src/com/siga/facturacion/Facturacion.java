@@ -2158,16 +2158,14 @@ public class Facturacion {
 			FacDisqueteDevolucionesBean disqueteDevolucion = new FacDisqueteDevolucionesBean();
 			bancos=admDD.selectByPKForUpdate(criteriosDevolucion);
 			disqueteDevolucion=(FacDisqueteDevolucionesBean)bancos.firstElement();
-			// Comision banco a aplicar (ajena o propia)
-			Vector comisiones = new Vector();
+			
 			Hashtable criteriosBanco = new Hashtable();
 			FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
 			FacBancoInstitucionBean comision = new FacBancoInstitucionBean();
 			if(disqueteDevolucion.getIdInstitucion()!= null)
 				criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,disqueteDevolucion.getIdInstitucion().toString());
 			criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,disqueteDevolucion.getBancosCodigo());
-			comisiones=admBI.selectByPKForUpdate(criteriosBanco);
-			comision=(FacBancoInstitucionBean)comisiones.firstElement();
+			
 			// Deteccion banco del cliente
 			CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
 			CenCuentasBancariasBean cuentaCliente = new CenCuentasBancariasBean();
@@ -2200,12 +2198,9 @@ public class Facturacion {
 				original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
 			lineaDevolucion.setOriginalHash(original);
 			lineaDevolucion.setCargarCliente("S");
-			if (disqueteDevolucion.getBancosCodigo().equalsIgnoreCase(cuentaCliente.getCbo_Codigo())){
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionPropiaCargo());
-			}
-			else{
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionAjenaCargo());
-			}
+			//aalg: INC_06393_SIGA. se utiliza  la comisión grabada en el tipo de producto comisión
+			lineaDevolucion.setGastosDevolucion(Double.parseDouble((String)productoComision.get(PysProductosInstitucionBean.C_VALOR)));
+			
 			resultado=admLDDB.update(lineaDevolucion);
 
 			if (resultado){
