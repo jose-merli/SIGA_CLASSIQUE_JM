@@ -2121,6 +2121,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
 								
 				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
+				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE DESDOBLA POR SOLICITANTE
 				if(isSolicitantes){											
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
@@ -2195,8 +2196,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								}
 								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							}else
+							} else {
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
+								registroDefendido.put("IDPERSONAINTERESADO", "");
+							}
 							
 							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idLenguaje);
 							String estadoCivilDefendido = "";
@@ -2208,7 +2211,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							clone.putAll(registroDefendido);						
 							vSalida.add(clone);
 						}  // END FOR
-					}else{
+						
+					// SI ENTRA AL ELSE NO TIENE DEFENDIDOS 
+					}else{						
 						if (idiomaletrado != null && !idiomaletrado.equals("")) {
 							idioma = idiomaletrado;
 						}
@@ -2220,13 +2225,26 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							case 4:  idiomainforme="GL"; break;
 						}
 						
-						registro.put("FECHARESOLUCIONCAJG", "");
-						registro.put("FECHARESOLUCIONCAJGLETRA", "");
-						registro.put("NUMERO_EJG", "");
-						registro.put("FECHAAPERTURA_EJG", "");
-						registro.put("FECHAAPERTURA_EJG_LETRA", "");
-						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+						// Control de datos para el informe
+						if((String)registro.get("FECHARESOLUCIONCAJG")!=null && !((String)registro.get("FECHARESOLUCIONCAJG")).trim().equals(""))
+							registro.put("FECHARESOLUCIONCAJG", "");
 						
+						if((String)registro.get("FECHARESOLUCIONCAJGLETRA")!=null && !((String)registro.get("FECHARESOLUCIONCAJGLETRA")).trim().equals(""))
+							registro.put("FECHARESOLUCIONCAJGLETRA", "");
+						
+						if((String)registro.get("NUMERO_EJG")!=null && !((String)registro.get("NUMERO_EJG")).trim().equals(""))
+							registro.put("NUMERO_EJG", "");
+						
+						if((String)registro.get("FECHAAPERTURA_EJG")!=null && !((String)registro.get("FECHAAPERTURA_EJG")).trim().equals(""))
+							registro.put("FECHAAPERTURA_EJG", "");
+						
+						if((String)registro.get("FECHAAPERTURA_EJG_LETRA")!=null && !((String)registro.get("FECHAAPERTURA_EJG_LETRA")).trim().equals(""))
+							registro.put("FECHAAPERTURA_EJG_LETRA", "");
+						
+						if((String)registro.get("PARRAFO_LETRADO_PROCURADOR")!=null && !((String)registro.get("PARRAFO_LETRADO_PROCURADOR")).trim().equals(""))
+							registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+						
+						// Como no tiene defendidos, no muestra las siguientes etiquetas
 						registro.put("CODIGOLENGUAJE", idiomainforme);	
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");						
 						registro.put("NIF_DEFENDIDO", "");
@@ -2244,10 +2262,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						registro.put("EL_LA_DEFENDIDO", "");
 						registro.put("ESTADOCIVIL_DEFENDIDO", "");
 						registro.put("NOMBRE_PAIS", "");
+						registro.put("IDPERSONAINTERESADO", "");
 						
 						vSalida.add(registro);
 					}	
 				
+				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE NO DESDOBLA POR SOLICITANTE
 				}else{	
 					if (idiomaletrado!=null && !idiomaletrado.equals("")){
 						idioma=idiomaletrado;		
@@ -2316,8 +2336,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								}
 								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							}else
+							} else {
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
+								registroDefendido.put("IDPERSONAINTERESADO", "");
+							}
 							
 							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idioma);
 							String estadoCivilDefendido = "";
@@ -2331,13 +2353,26 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						//registro.put("defendido","");
 					}
 					
-					registro.put("FECHARESOLUCIONCAJG", "");
-					registro.put("FECHARESOLUCIONCAJGLETRA", "");
-					registro.put("NUMERO_EJG", "");
-					registro.put("FECHAAPERTURA_EJG", "");
-					registro.put("FECHAAPERTURA_EJG_LETRA", "");
-					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-
+					// Control de datos para el informe
+					if((String)registro.get("FECHARESOLUCIONCAJG")!=null && !((String)registro.get("FECHARESOLUCIONCAJG")).trim().equals(""))
+						registro.put("FECHARESOLUCIONCAJG", "");
+					
+					if((String)registro.get("FECHARESOLUCIONCAJGLETRA")!=null && !((String)registro.get("FECHARESOLUCIONCAJGLETRA")).trim().equals(""))
+						registro.put("FECHARESOLUCIONCAJGLETRA", "");
+					
+					if((String)registro.get("NUMERO_EJG")!=null && !((String)registro.get("NUMERO_EJG")).trim().equals(""))
+						registro.put("NUMERO_EJG", "");
+					
+					if((String)registro.get("FECHAAPERTURA_EJG")!=null && !((String)registro.get("FECHAAPERTURA_EJG")).trim().equals(""))
+						registro.put("FECHAAPERTURA_EJG", "");
+					
+					if((String)registro.get("FECHAAPERTURA_EJG_LETRA")!=null && !((String)registro.get("FECHAAPERTURA_EJG_LETRA")).trim().equals(""))
+						registro.put("FECHAAPERTURA_EJG_LETRA", "");
+					
+					if((String)registro.get("PARRAFO_LETRADO_PROCURADOR")!=null && !((String)registro.get("PARRAFO_LETRADO_PROCURADOR")).trim().equals(""))
+						registro.put("PARRAFO_LETRADO_PROCURADOR", "");					
+					
+					// Como desdobla, no muestra las siguientes etiquetas individualmente
 					registro.put("CODIGOLENGUAJE", idiomainforme);
 					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					registro.put("NIF_DEFENDIDO", "");
@@ -2355,6 +2390,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("EL_LA_DEFENDIDO", "");
 					registro.put("ESTADOCIVIL_DEFENDIDO", "");
 					registro.put("NOMBRE_PAIS", "");
+					registro.put("IDPERSONAINTERESADO", "");
 					
 					vSalida.add(registro);
 				}		
@@ -2364,11 +2400,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosSalidaOficio");
 		}
 		return vSalida;
-		
-		
-		
-	}
-	
+	}	
 	
 	public Vector getDesignaSalidaOficio (String idInstitucion,
 										  String idturno,

@@ -299,30 +299,15 @@ public class HelperInformesAdm  {
 			String sql = " SELECT JUZ2.IDINSTITUCION IDINSTITUCION_JUZG" +
 			prolongarCampo+
 					","+
-			   " JUZ2.IDJUZGADO AS IDJUZGADO" 
-					+ prolongarCampo+
-			   ","+
-		       " JUZ2.NOMBRE AS JUZGADO"
-		       + prolongarCampo+
-		       ","+
-		       " JUZ2.DOMICILIO AS DIR_JUZGADO"
-		       + prolongarCampo+
-		       ","+
-		       " JUZ2.CODIGOPOSTAL  AS CP_JUZGADO"
-		       + prolongarCampo+
-		       ","+
-		       " JUZ2.IDPROVINCIA AS ID_PROVINCIA_JUZGADO"
-		       + prolongarCampo+
-		       ","+
-		       " JUZ2.IDPOBLACION AS ID_POBLACION_JUZGADO"
-		       + prolongarCampo+
-		       ""+
-		       ","+
-		       " JUZ2.CODIGOEXT AS CODIGOJUZGADO"
-		       + prolongarCampo+
-		       ""+
-       
-		       " FROM SCS_JUZGADO JUZ2"+
+			   " JUZ2.IDJUZGADO AS IDJUZGADO" + prolongarCampo + "," +
+		       " JUZ2.NOMBRE AS JUZGADO" + prolongarCampo + "," +
+		       " JUZ2.DOMICILIO AS DIR_JUZGADO" + prolongarCampo + "," +
+		       " JUZ2.CODIGOPOSTAL  AS CP_JUZGADO" + prolongarCampo + "," +
+		       " JUZ2.IDPROVINCIA AS ID_PROVINCIA_JUZGADO" + prolongarCampo + "," +
+		       " JUZ2.IDPOBLACION AS ID_POBLACION_JUZGADO" + prolongarCampo + "," +
+		       " JUZ2.CODIGOEXT AS CODIGOJUZGADO" + prolongarCampo + "," +
+		       " JUZ2.CODIGOEXT2 AS CODIGOJUZGADO2" + prolongarCampo +
+		       " FROM SCS_JUZGADO JUZ2" +
 		       " WHERE JUZ2.IDINSTITUCION= :1 AND  JUZ2.IDJUZGADO = :2 ";
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);
