@@ -1172,23 +1172,24 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += T_EXP_DENUNCIADO + ", "+ T_EXP_EXPEDIENTE + " e, " + T_EXP_TIPOEXPEDIENTE+", " + T_EXP_ESTADOS;
 		    sql += " WHERE ";
 		    sql += " d.Idinstitucion_Tipoexpediente = t.IDINSTITUCION ";
-            sql += " and d.IDTIPOEXPEDIENTE = t.IDTIPOEXPEDIENTE ";
-                     
-            sql += " and  d.IDINSTITUCION = e.IDINSTITUCION ";
-            sql += " and d.IDINSTITUCION_TIPOEXPEDIENTE = e.IDINSTITUCION_TIPOEXPEDIENTE ";
-            sql += " and d.NUMEROEXPEDIENTE = e.NUMEROEXPEDIENTE ";
-            sql += " and d.ANIOEXPEDIENTE = e.ANIOEXPEDIENTE ";
+		    sql += " and d.IDTIPOEXPEDIENTE = t.IDTIPOEXPEDIENTE ";
+		    		 
+		    sql += " and  d.IDINSTITUCION = e.IDINSTITUCION ";
+		    sql += " and d.IDINSTITUCION_TIPOEXPEDIENTE = e.IDINSTITUCION_TIPOEXPEDIENTE ";
+		    sql += " and d.Idtipoexpediente = e.IDTIPOEXPEDIENTE ";
+		    sql += " and d.NUMEROEXPEDIENTE = e.NUMEROEXPEDIENTE ";
+		    sql += " and d.ANIOEXPEDIENTE = e.ANIOEXPEDIENTE ";
 
-            sql += " and e.IDINSTITUCION = es.IDINSTITUCION(+) ";
-            sql += " and e.IDTIPOEXPEDIENTE = es.IDTIPOEXPEDIENTE(+) ";
-            sql += " and e.IDFASE = es.IDFASE(+) ";
-            sql += " and e.IDESTADO = es.IDESTADO(+) ";
-            sql += " and ";
-            sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
-            sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
-            if (sSancionado != null)
-                sql += "e." + ExpExpedienteBean.C_SANCIONADO + " = '"+sSancionado+"' and ";
-            sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
+		    sql += " and e.IDINSTITUCION = es.IDINSTITUCION(+) ";
+		    sql += " and e.IDTIPOEXPEDIENTE = es.IDTIPOEXPEDIENTE(+) ";
+		    sql += " and e.IDFASE = es.IDFASE(+) ";
+		    sql += " and e.IDESTADO = es.IDESTADO(+) ";
+		    sql += " and ";
+		    sql += "d." + E_IDINSTITUCION + " = " + idInstitucion + " and ";
+		    sql += "d." + ExpDenunciadoBean.C_IDPERSONA + " = " + idPersona + " and ";
+		    if (sSancionado != null)
+		    	sql += "e." + ExpExpedienteBean.C_SANCIONADO + " = '"+sSancionado+"' and ";
+			sql += "e." + E_ESVISIBLEENFICHA + " = 'S' ";
 		   		
 			//Query antigua
 		    /*sql += T_EXP_EXPEDIENTE + " e, " + 
