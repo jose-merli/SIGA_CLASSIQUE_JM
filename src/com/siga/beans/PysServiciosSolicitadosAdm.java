@@ -316,7 +316,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 									" THEN 'PAGADO'" +
 									" ELSE 'PENDIENTE' " +
 									" END AS ESTADOPAGO "*/
-									" F_SIGA_ESTADOCOMPRA(PYS_SERVICIOSSOLICITADOS.IDINSTITUCION,PYS_SERVICIOSSOLICITADOS.IDPETICION,PYS_SERVICIOSSOLICITADOS.IDSERVICIO,PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS,PYS_SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION) AS ESTADOPAGO ";
+									" F_SIGA_ESTADOSUSCRIPCION(PYS_SERVICIOSSOLICITADOS.IDINSTITUCION,PYS_SERVICIOSSOLICITADOS.IDPETICION,PYS_SERVICIOSSOLICITADOS.IDSERVICIO,PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS,PYS_SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION) AS ESTADOPAGO ";
 			String from  =  " FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA + ", " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA;
 			
 			String where =  " WHERE " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + idInstitucion +
@@ -1380,6 +1380,57 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getPrecioServicio");
 		}
 	}
-		
+	
+	/**
+	 * getEstadoCompraProducto Este metodo es parte de la consulta de productos que relentiza la query.
+	 * @param idInstitucion
+	 * @param idTipoProducto
+	 * @param idProducto
+	 * @param idProductoInstitucion
+	 * @param idPeticionConsulta
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getEstadoSuscripcion(String idInstitucion, String idTipoServicio,
+			String idServicio,String idServiciosInstitucion,String idPeticionConsulta) throws ClsExceptions  
+	{
+		try {
+			int contador=0;
+			Hashtable codigos = new Hashtable();
+			
+
+
+			StringBuffer sql =  new StringBuffer();
+			sql.append(" select F_SIGA_ESTADOSUSCRIPCION( ");
+			contador++;
+			codigos.put(new Integer(contador),idInstitucion);
+			sql.append(":"+contador);
+			sql.append(",");
+			contador++;
+			codigos.put(new Integer(contador),idPeticionConsulta);
+			sql.append(":"+contador);
+			sql.append(",");
+			contador++;
+			codigos.put(new Integer(contador),idServicio);
+			sql.append(":"+contador);
+			sql.append(",");
+			contador++;
+			codigos.put(new Integer(contador),idTipoServicio);
+			sql.append(":"+contador);
+			sql.append(",");
+			contador++;
+			codigos.put(new Integer(contador),idServiciosInstitucion);
+			sql.append(":"+contador);
+			
+			sql.append(" ) AS ESTADOPAGO FROM DUAL ");
+			
+
+				
+			return this.selectGenericoBind(sql.toString(), codigos);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getEstadoCompraProducto");
+		}
+	}
 	
 }

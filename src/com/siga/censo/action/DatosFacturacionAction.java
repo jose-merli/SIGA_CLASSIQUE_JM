@@ -1066,7 +1066,7 @@ public class DatosFacturacionAction extends MasterAction {
 			
 			
 			
-			Vector vEstadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoServicio,idServicio,idServicioInstitucion,idPeticion);
+			Vector vEstadoCompra = serviciosAdm.getEstadoSuscripcion(idInstitucion, idTipoServicio,idServicio,idServicioInstitucion,idPeticion);
 			registro = completarHashSalida(registro,vEstadoCompra );
 		}
 		
