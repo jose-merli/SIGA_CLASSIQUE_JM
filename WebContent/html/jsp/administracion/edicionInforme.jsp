@@ -323,7 +323,7 @@ function onChangeTipoIntercambio() {
 			</td>						
 		
 			<td class="labelText" rowspan ="4"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
-			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo"  readonly="false"></html:textarea></td>
+			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
 		</tr>
 		<tr>
 			<td class="labelText">
@@ -364,7 +364,7 @@ function onChangeTipoIntercambio() {
 				<siga:Idioma key="administracion.informes.literal.orden"/>(*)
 			</td>
 			<td class="labelText ocultarOrden">
-				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box" style="width:20"></html:text>
+				<html:text name="InformeFormEdicion"  property="orden"  styleClass="box" style="width:50"></html:text>
 			</td>
 			<td id="literalFormatoTD" class="labelText">
 				<siga:Idioma key="administracion.informes.literal.formato"/>(*)
