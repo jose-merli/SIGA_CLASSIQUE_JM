@@ -638,6 +638,9 @@ public class SolicitudCompraAction extends MasterAction{
 								a.setImporteAnticipado(new Double(0));								
 							}
 						}
+						//mhg - INC_10528_SIGA Si algún producto de la compra es no facturable le pasamos un valor al jsp
+						if(a.getIdFormaPago() == null)
+							request.setAttribute("noFacturable",true);
 					}
 				}
 			}
