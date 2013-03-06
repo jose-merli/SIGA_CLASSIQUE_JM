@@ -671,20 +671,24 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			htPK.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,idInstitucionEJG );
 			htPK.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,idTipoEJG );
 			Vector vUF = admUnidadFam.selectByPK(htPK);
-			ScsUnidadFamiliarEJGBean auxUnidadFamiliarVo = (ScsUnidadFamiliarEJGBean) vUF.get(0);
+			
 			ScsParentescoBean parentesco = null;
-			if(auxUnidadFamiliarVo.getIdParentesco()!=null){
-				ScsParentescoAdm admParentesco = new ScsParentescoAdm(usr);
-				htPK = new Hashtable<String, Object>();
-				htPK.put(ScsParentescoBean.C_IDINSTITUCION,idInstitucionEJG );
-				htPK.put(ScsParentescoBean.C_IDPARENTESCO, auxUnidadFamiliarVo.getIdParentesco());
-				parentesco = admParentesco.getParentesco(htPK,usr.getLanguage());
+			if(vUF!=null && vUF.size()>0){
+				ScsUnidadFamiliarEJGBean auxUnidadFamiliarVo = (ScsUnidadFamiliarEJGBean) vUF.get(0);
+				if(auxUnidadFamiliarVo.getIdParentesco()!=null){
+					ScsParentescoAdm admParentesco = new ScsParentescoAdm(usr);
+					htPK = new Hashtable<String, Object>();
+					htPK.put(ScsParentescoBean.C_IDINSTITUCION,idInstitucionEJG );
+					htPK.put(ScsParentescoBean.C_IDPARENTESCO, auxUnidadFamiliarVo.getIdParentesco());
+					parentesco = admParentesco.getParentesco(htPK,usr.getLanguage());
+				}
 				
-			}else{
+			}
+			if(parentesco==null){
 				parentesco = new ScsParentescoBean();
 				String literalSolicitante = UtilidadesString.getMensajeIdioma(usr,"gratuita.busquedaEJG.literal.solicitante");
 				parentesco.setDescripcion(literalSolicitante);
-				
+				ClsLogging.writeFileLog("El parentesco se desconoce ya que ha cambiado la personaJG. Le ponemos solicitante", 10);
 				
 			}
 			miForm.setParentesco(parentesco);
