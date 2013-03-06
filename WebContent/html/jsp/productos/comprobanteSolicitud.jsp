@@ -67,6 +67,11 @@
 		nif=(String)htData.get("nif");	
 		fecha = (String)htData.get("fecha"); 	
 	}
+	
+	Boolean noFact = (Boolean)request.getAttribute("noFacturable");
+	if(noFact == null){
+		noFact = Boolean.FALSE;
+	}
 %>
 <html>
 
@@ -425,6 +430,12 @@
 				<tr>
 					<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
 				</tr>
+				<!-- mhg - Mostramos el siguiente mensaje si tenemos productos no facturables -->
+				<%if (noFact){ %>
+				<tr>
+					<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.pys.solicitudCompra.compraNoFacturable"/></td>	
+				</tr>
+				<%}%>
 			</table>
 		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	</div>
