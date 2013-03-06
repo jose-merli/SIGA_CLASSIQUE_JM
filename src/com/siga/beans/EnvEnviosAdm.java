@@ -3236,13 +3236,18 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ScsPersonaJGBean beanPersonaJG = null;
 					if (v!=null && v.size()>0) {
 						beanPersonaJG = (ScsPersonaJGBean) v.get(0);
+						sLinea += beanPersonaJG.getNif() + separador;
+						sLinea += beanPersonaJG.getNombre() + separador;
+						sLinea += beanPersonaJG.getApellido1() + separador;
+						sLinea += beanPersonaJG.getApellido2() + separador;						
+					
+					}else{					
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;							
 					}
 					
-					sLinea += beanPersonaJG.getNif() + separador;
-					sLinea += beanPersonaJG.getNombre() + separador;
-					sLinea += beanPersonaJG.getApellido1() + separador;
-					sLinea += beanPersonaJG.getApellido2() + separador;
-	            
 	            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
 	            	Hashtable htJuz = new Hashtable();
 					htJuz.put(ScsJuzgadoBean.C_IDJUZGADO,destBean.getIdPersona());
@@ -3252,16 +3257,40 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ScsJuzgadoBean beanJuzgado= null;
 					if (v!=null && v.size()>0) {
 						beanJuzgado = (ScsJuzgadoBean) v.get(0);
+						sLinea += "" + separador;
+						sLinea += beanJuzgado.getNombre() + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;		
+						
+					}else{
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;							
 					}
 					
-					sLinea += "" + separador;
-					sLinea += beanJuzgado.getNombre() + separador;
-					sLinea += "" + separador;
-					sLinea += "" + separador;
+	            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
+	            	Hashtable htProc = new Hashtable();
+					htProc.put(ScsProcuradorBean.C_IDPROCURADOR,destBean.getIdPersona());
+					htProc.put(ScsProcuradorBean.C_IDINSTITUCION,destBean.getIdInstitucion());
+					ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.usrbean);
+					Vector v = procuradorAdm.selectByPK(htProc);
+					ScsProcuradorBean procuradorBean = null;
+					if (v!=null && v.size()>0) {
+						procuradorBean = (ScsProcuradorBean) v.get(0);
+						sLinea += "" + separador;
+						sLinea += procuradorBean.getNombre() + separador;
+						sLinea += procuradorBean.getApellido1() + separador;
+						sLinea += procuradorBean.getApellido2() + separador;				
+						
+					}else{
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;							
+					}
 					
-					
-					
-	            }else{
+	            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)){
 	            	CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
 		            Hashtable htPer = new Hashtable();
 					htPer.put(CenPersonaBean.C_IDPERSONA,destBean.getIdPersona());
@@ -3269,13 +3298,22 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					CenPersonaBean beanPersona = null;
 					if (v!=null && v.size()>0) {
 						beanPersona = (CenPersonaBean) v.get(0);
+						sLinea += beanPersona.getNIFCIF() + separador;
+						sLinea += beanPersona.getNombre() + separador;
+						sLinea += beanPersona.getApellido1() + separador;
+						sLinea += beanPersona.getApellido2() + separador;
+						
+					}else{
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;
+						sLinea += "" + separador;							
 					}
 					
-					sLinea += beanPersona.getNIFCIF() + separador;
-					sLinea += beanPersona.getNombre() + separador;
-					sLinea += beanPersona.getApellido1() + separador;
-					sLinea += beanPersona.getApellido2() + separador;
+	            }else{
+	            	throw new SIGAException("Este tipo de persona no está controlado por el sistema");
 	            }
+	            	
 	            sLinea += destBean.getFax1() + separador;
 	            sLinea += destBean.getFax2() + separador;
 	            sLinea += destBean.getMovil() + separador;
