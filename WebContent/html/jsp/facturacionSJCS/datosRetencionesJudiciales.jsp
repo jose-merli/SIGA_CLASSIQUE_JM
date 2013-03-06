@@ -176,9 +176,10 @@
 			  
 			  }
 		}
-		
+		var cuentaContable_bu = "";
 		function traspasoDatos(resultado){
-		  document.getElementById("cuentaContable").value=resultado[0]
+			cuentaContable_bu = resultado[0];
+		  document.getElementById("cuentaContable").value=cuentaContable_bu;
 		}		
 	</script>
 </head>
@@ -372,6 +373,7 @@
 		function accionRestablecer() 
 		{		
 			document.forms[1].reset();
+			document.getElementById("cuentaContable").value=cuentaContable_bu;
 		}
 		
 		<!-- Asociada al boton Guardar y Cerrar -->
