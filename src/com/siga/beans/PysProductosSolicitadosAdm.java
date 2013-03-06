@@ -203,7 +203,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			StringBuffer sql =  new StringBuffer();
 			
 			//mhg - INC_10542_SIGA Para sacar la fecha efectiva añadimos la fecha de baja.
-			sql.append(" select NVL(NVL((SELECT PYS_COMPRA.FECHABAJA ");
+			sql.append(" select NVL((SELECT NVL(PYS_COMPRA.FECHABAJA, PYS_COMPRA.FECHA) ");
 			sql.append(" FROM PYS_COMPRA ");
 			sql.append(" WHERE PYS_COMPRA.IDINSTITUCION = ");
 			contador++;
@@ -227,31 +227,6 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),idProductoInstitucion);
 			sql.append(":"+contador);
 			sql.append(" ), ");
-			
-			sql.append(" (SELECT PYS_COMPRA.FECHA ");
-			sql.append(" FROM PYS_COMPRA ");
-			sql.append(" WHERE PYS_COMPRA.IDINSTITUCION = ");
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDPETICION = ");
-			contador++;
-			codigos.put(new Integer(contador),idPeticionConsulta);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDTIPOPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idTipoProducto);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idProducto);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDPRODUCTOINSTITUCION = ");
-			contador++;
-			
-			codigos.put(new Integer(contador),idProductoInstitucion);
-			sql.append(":"+contador);
-			sql.append(" )), ");
 			sql.append(" (SELECT max(petco.fecha) ");
 			sql.append(" FROM PYS_PETICIONCOMPRASUSCRIPCION petco, ");
 			sql.append(" PYS_PRODUCTOSSOLICITADOS      prodsol ");
