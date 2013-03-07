@@ -1019,6 +1019,35 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE");
 		String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA");
 		StringBuffer sql = new StringBuffer();
+		
+		//mhg - 7208 - Todo servicio que tenga fecha efectiva posterior a hoy tendra el estado de la solicitud "Aceptado". 
+		sql.append("SELECT CONSULTA, ");
+		sql.append(PysServiciosSolicitadosBean.C_IDPETICION);
+		sql.append(", ");
+		sql.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+		sql.append(", ");
+		sql.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+		sql.append(", ");
+		sql.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+		sql.append(", ");
+		sql.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+		sql.append(", ");
+		sql.append(PysServiciosSolicitadosBean.C_IDCUENTA);
+		sql.append(", "); 
+		sql.append(PysServiciosSolicitadosBean.C_CANTIDAD);
+		sql.append(", ");	
+		sql.append("case when to_date(nvl(FECHAEFEC, sysdate), 'dd/mm/yyyy') > to_date(sysdate, 'dd/mm/yyyy') then 'A' else aceptado end ACEPTADO");
+		sql.append(", ");
+		sql.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+		sql.append(", ");	
+		sql.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+		sql.append(", ");	
+		sql.append(PysServiciosSolicitadosBean.C_IDFORMAPAGO);
+		sql.append(", ");	
+		sql.append(" FORMAPAGO, FECHAEFEC, CONCEPTO, SOLICITARBAJA, ESTAFACTURADO, NCUENTA ");
+		sql.append(" FROM ( " ); 
+		
+		
 		sql.append("SELECT 'SERVICIO' AS CONSULTA, " ); 
 		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA); sql.append("."); sql.append(PysServiciosSolicitadosBean.C_IDPETICION );
 		sql.append(", ");
@@ -1234,16 +1263,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			sql.append(":"+contador);
 			
 		}
-		if (distintoCampoAceptado != null) {
-			sql.append( " AND ");  
-			sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(PysServiciosSolicitadosBean.C_ACEPTADO); sql.append(" <> "); 
-			contador++;
-			codigos.put(new Integer(contador),distintoCampoAceptado);
-			sql.append(":"+contador);
-			
-		}
 		
 		// MODIFICADO POR MAV PARA INCLUIR NUEVOS FILTROS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (idTipoServicios != null) {																																	//
@@ -1314,9 +1333,26 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			}
 		}
 		
+		//mhg - cerramos el select que he creado y ponemos la condicion para que saque no saque los estados de baja
+		sql.append(" ) ");
+		if (distintoCampoAceptado != null) {
+			sql.append( " WHERE ");  
+			sql.append(PysServiciosSolicitadosBean.C_ACEPTADO); sql.append(" <> "); 
+			contador++;
+			codigos.put(new Integer(contador),distintoCampoAceptado);
+			sql.append(":"+contador);
+			sql.append( " OR ( ");  
+			sql.append(PysServiciosSolicitadosBean.C_ACEPTADO); sql.append(" = "); 
+			contador++;
+			codigos.put(new Integer(contador),distintoCampoAceptado);
+			sql.append(":"+contador);
+			sql.append( " AND ");
+			sql.append( " FECHAEFEC > SYSDATE )");
+		}
+		
 		sql.append(" ORDER BY ");
-		sql.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		sql.append("."); 
+		//sql.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+		//sql.append("."); 
 		sql.append(PysPeticionCompraSuscripcionBean.C_FECHA); 
 		sql.append(" DESC ");
 		
