@@ -187,11 +187,11 @@
 		</td>
 	</tr>
 </table>		
-	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
+	<table id='listadoArchivosCab' style="table-layout:fixed" border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
-			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
-			<td align='center' width='30%'><siga:Idioma key="administracion.informes.literal.formato"/></td>
-			<td width='30%'></td>
+			<td align='left' width='80%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
+			<td align='center' width='10%'><siga:Idioma key="administracion.informes.literal.formato"/></td>
+			<td width='10%'></td>
 		</tr>
 		<c:choose>
 			<c:when test="${listadoInformes==null}">
