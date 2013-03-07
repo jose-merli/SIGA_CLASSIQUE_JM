@@ -1592,10 +1592,10 @@ public class DatosGeneralesAction extends MasterAction {
 				beanDir.setFax2 (miForm.getFax2 ());
 				beanDir.setIdInstitucion(new Integer(idInstitucion));
 				beanDir.setIdPais (miForm.getPais ());
-				if (miForm.getPais ().equals ("")) {
+				if (miForm.getPais()!=null && miForm.getPais().equals ("")) {
 					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
 				}
-				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+				if (miForm.getPais()!=null && miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
 					beanDir.setIdPoblacion (miForm.getPoblacion ());
 					beanDir.setIdProvincia (miForm.getProvincia ());
 					beanDir.setPoblacionExtranjera ("");
