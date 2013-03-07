@@ -113,7 +113,7 @@
 		}
 
 		function accionCancelar() {		
-			;
+			window.top.close();
 		}
 		
 		//Asociada al boton Finalizar -->
