@@ -643,6 +643,23 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos);        
     }
+    
+    public void generarEnvioBean(String idPersona,String tipoDestinatario, Vector documentos, Object bean) throws SIGAException,ClsExceptions {
+        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
+        envAdm.insert(enviosBean);
+
+        // Copiamos los datos la plantilla, incluidos los remitentes
+        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
+			enviosBean.getIdEnvio(), 
+			enviosBean.getIdTipoEnvios(),
+			enviosBean.getIdPlantillaEnvios(),
+			bean);
+
+        if (idPersona!=null) 
+        	addDocumentosDestinatario(idPersona, tipoDestinatario, documentos);        
+    }    
+    
     public void generarEnvioSms(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);

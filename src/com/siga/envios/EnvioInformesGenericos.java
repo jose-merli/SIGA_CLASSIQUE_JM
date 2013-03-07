@@ -3022,6 +3022,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			EnvEnvioProgramadoBean envioProgramadoBean) throws ClsExceptions,
 			SIGAException {
 
+
 		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
 		Hashtable datosInforme = new Hashtable();
 		Vector vDocumentos = null;
@@ -3298,11 +3299,21 @@ public class EnvioInformesGenericos extends MasterReport {
 							programInfBean.getIdTipoInforme()));
 				}
 			}
+	
+			// Comunicaciones de EJG
+			if (programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)) {
+				datosInforme.put("aSolicitantes", "N");
+				Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+				Vector datosInformeEjg = (Vector) htDatosInformeFinal.get("row");
+				ScsEJGBean ejgBean = new ScsEJGBean();
+				ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
 
-			// Genera el envio:
-			envio.generarEnvio(destProgramInfBean.getIdPersona().toString(),
-					destProgramInfBean.getTipoDestinatario(), vDocumentos);
-
+				envio.generarEnvioBean(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(), vDocumentos, ejgBean);
+				
+			} else {
+				// Genera el envio:
+				envio.generarEnvio(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(), vDocumentos);
+			}
 		}
 
 		// Generamos la comunicacion de morosos

@@ -857,8 +857,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
         }
     }
-    public void copiarCamposPlantilla(Integer idInstitucion, Integer id, Integer idTipoEnvio, Integer idPlantilla,Object bean) throws ClsExceptions, SIGAException 
-	{
+    public void copiarCamposPlantilla(Integer idInstitucion, Integer id, Integer idTipoEnvio, Integer idPlantilla,Object bean) throws ClsExceptions, SIGAException {
         EnvCamposPlantillaAdm cpAdm = new EnvCamposPlantillaAdm(this.usrbean);
         EnvCamposEnviosAdm ceAdm = new EnvCamposEnviosAdm(this.usrbean);
 
@@ -891,6 +890,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    	if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO)){
 	    	    		Hashtable htDatosEnvio = new Hashtable();
 	    	    		StringBuffer asunto = new StringBuffer();
+	    	    		
 	    	    		if(bean instanceof ExpAlertaBean){
 	    	    			ExpAlertaBean expAlertaBean = (ExpAlertaBean)bean;
 	    	    			asunto.append(expAlertaBean.getAnioExpediente());
@@ -911,8 +911,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			}
 	    	    			if (expAlertaBean.getEstado() != null){
 	    	    				htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
-	    	    			}
-	    	    			
+	    	    			}	    	    			
+	    	    		}
+	    	    		
+	    	    		if(bean instanceof ScsEJGBean){	    	    			
+	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
+	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -943,67 +948,32 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			}
 	    	    			if (expAlertaBean.getEstado() != null){
 	    	    				htDatosEnvio.put("EXP_ESTADO", expAlertaBean.getEstado().getNombre());
-	    	    			}
-	    	    				
+	    	    			}	    	    				
 	    	    		}
 	    	    		
-	    	    		
+	    	    		if(bean instanceof ScsEJGBean){	    	    			
+	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
+	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
+	    	    		}
+	    	    			    	    		
 	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
-	    	    		cpBean.setValor(sAsunto);
-	    	    		 
-	    	    	}
-	    	    	
-	    	    		
-	    	    		
+	    	    		cpBean.setValor(sAsunto);	    	    		
+	    	    	}	    	    		
 	    	    	
 	    	    }else if(cpBean.getTipoCampo().equals(EnvCamposAdm.K_TIPOCAMPO_S)){
 	    	    	if(cpBean.getIdCampo().toString().equals(EnvCamposPlantillaAdm.K_IDCAMPO_SMS)){
+	    	    		
 	    	    		Hashtable htDatosEnvio = new Hashtable();
-	    	    		if(bean instanceof ScsEJGBean){
-	    	    			
+	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
-	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();
-	    	    			htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
-	    	    			if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
-	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
-	    	    			else
-	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1","");
-	    	    			if(ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO")!=null)
-	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
-	    	    			else
-	    	    				htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2","");
-	    	    			if(ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO")!=null)
-	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
-	    	    			else
-	    	    				htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
-	    	    			if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
-	    	    				String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
-	    	    				if(telefonoDespacho.length()>13)
-	    	    					telefonoDespacho = telefonoDespacho.substring(0,13);
-	    	    				htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
-	    	    			}else
-	    	    				htDatosEnvio.put("EJG_TLFNO", "");
-	    	    			if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
-	    	    				String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
-	    	    				if(dictamenEJG.length()>10)
-	    	    					dictamenEJG = dictamenEJG.substring(0,10);
-	    	    				
-	    	    				htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
-	    	    			}else{
-	    	    				htDatosEnvio.put("EJG_DICTAM","");
-	    	    				
-	    	    				
-	    	    			}
-	    	    			
-	    	    			
+	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
 	    	    		cpBean.setValor(sCuerpo);
-	    	    		
-	    	    		
-	    	    	}
-	    	    	
+	    	    	}	    	    	
 	    	    }
 	    	    
 	    	    ceBean.setValor(cpBean.getValor());	            
@@ -1018,6 +988,54 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         catch (Exception e) {
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
         }
+    }
+    
+    public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio) {
+    	
+		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
+		
+		if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
+			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
+		else
+			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1","");
+		
+		if(ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO")!=null)
+			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
+		else
+			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2","");
+		
+		if(ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO")!=null)
+			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
+		else
+			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
+		
+		if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
+			String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
+			if(telefonoDespacho.length()>13)
+				telefonoDespacho = telefonoDespacho.substring(0,13);
+			htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
+		}else
+			htDatosEnvio.put("EJG_TLFNO", "");
+		
+		if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
+			String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
+			if(dictamenEJG.length()>10)
+				dictamenEJG = dictamenEJG.substring(0,10);
+			
+			htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
+		}else{
+			htDatosEnvio.put("EJG_DICTAM","");	    	    					    	    				
+		}	
+		
+		if(ejgHashtable.get("NUM_PROCEDIMIENTO_EJG")!=null)
+			htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO", (String) ejgHashtable.get("NUM_PROCEDIMIENTO_EJG"));
+		else
+			htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO","");
+		
+		if(ejgHashtable.get("ASUNTO_EJG")!=null)
+			htDatosEnvio.put("EJG_ASUNTO", (String) ejgHashtable.get("ASUNTO_EJG"));
+		else
+			htDatosEnvio.put("EJG_ASUNTO","");
     }
     
 
@@ -3236,11 +3254,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ScsPersonaJGBean beanPersonaJG = null;
 					if (v!=null && v.size()>0) {
 						beanPersonaJG = (ScsPersonaJGBean) v.get(0);
-						sLinea += beanPersonaJG.getNif() + separador;
-						sLinea += beanPersonaJG.getNombre() + separador;
-						sLinea += beanPersonaJG.getApellido1() + separador;
-						sLinea += beanPersonaJG.getApellido2() + separador;						
-					
+					sLinea += beanPersonaJG.getNif() + separador;
+					sLinea += beanPersonaJG.getNombre() + separador;
+					sLinea += beanPersonaJG.getApellido1() + separador;
+					sLinea += beanPersonaJG.getApellido2() + separador;
+	            
 					}else{					
 						sLinea += "" + separador;
 						sLinea += "" + separador;
@@ -3257,11 +3275,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ScsJuzgadoBean beanJuzgado= null;
 					if (v!=null && v.size()>0) {
 						beanJuzgado = (ScsJuzgadoBean) v.get(0);
-						sLinea += "" + separador;
-						sLinea += beanJuzgado.getNombre() + separador;
-						sLinea += "" + separador;
-						sLinea += "" + separador;		
-						
+					sLinea += "" + separador;
+					sLinea += beanJuzgado.getNombre() + separador;
+					sLinea += "" + separador;
+					sLinea += "" + separador;
+					
 					}else{
 						sLinea += "" + separador;
 						sLinea += "" + separador;
@@ -3282,8 +3300,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						sLinea += procuradorBean.getNombre() + separador;
 						sLinea += procuradorBean.getApellido1() + separador;
 						sLinea += procuradorBean.getApellido2() + separador;				
-						
-					}else{
+					
+	            }else{
 						sLinea += "" + separador;
 						sLinea += "" + separador;
 						sLinea += "" + separador;
@@ -3298,10 +3316,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					CenPersonaBean beanPersona = null;
 					if (v!=null && v.size()>0) {
 						beanPersona = (CenPersonaBean) v.get(0);
-						sLinea += beanPersona.getNIFCIF() + separador;
-						sLinea += beanPersona.getNombre() + separador;
-						sLinea += beanPersona.getApellido1() + separador;
-						sLinea += beanPersona.getApellido2() + separador;
+					sLinea += beanPersona.getNIFCIF() + separador;
+					sLinea += beanPersona.getNombre() + separador;
+					sLinea += beanPersona.getApellido1() + separador;
+					sLinea += beanPersona.getApellido2() + separador;
 						
 					}else{
 						sLinea += "" + separador;
@@ -3313,7 +3331,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            }else{
 	            	throw new SIGAException("Este tipo de persona no está controlado por el sistema");
 	            }
-	            	
 	            sLinea += destBean.getFax1() + separador;
 	            sLinea += destBean.getFax2() + separador;
 	            sLinea += destBean.getMovil() + separador;
