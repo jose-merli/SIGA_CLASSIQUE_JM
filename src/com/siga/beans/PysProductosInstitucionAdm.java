@@ -654,7 +654,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	 */
 	public Vector getProductosComisiones (String institucion) throws ClsExceptions, SIGAException {
 		   Vector datos=new Vector();
-		   //aalg: INC_06393_SIGA. añado el dato del valor en la select
+		  
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
@@ -664,8 +664,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION  + "," +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR  + "," +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA +", "+ 	
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +	
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_VALOR  + 
+	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + 
 							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +  
 							" WHERE " +
 							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION + "=" + institucion +
