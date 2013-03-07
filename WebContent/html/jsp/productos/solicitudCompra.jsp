@@ -592,7 +592,7 @@
 
 </head>
 
-<body onload="cargarCombos();ajusteAlto('resultado');mostrarColegio();">
+<body onload="cargarCombos();mostrarColegio();">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
@@ -794,28 +794,28 @@
 
 <!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
 		<iframe align="center" src="<%=app%>/html/jsp/productos/productosEncontrados.jsp"
-						id="resultado1"
-						name="resultado1" 
-						scrolling="no"
-						frameborder="0"
-						marginheight="0"
-						marginwidth="0"
-						style="position:relative;height:45%;width:100%;"			 
-						>					
+			id="resultado1"
+			name="resultado1" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"
+			style="position:relative;height:45%;width:100%;"			 
+			>					
 		</iframe>
 
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
 
 	<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
 		<iframe align="center" src="<%=app%>/html/jsp/productos/productosSolicitados.jsp"
-						id="resultado"
-						name="resultado" 
-						scrolling="no"
-						frameborder="0"
-						marginheight="0"
-						marginwidth="0";					 
-						style="position:relative;width:100%;"
-						>					
+			id="resultado"
+			name="resultado" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0";					 
+			style="position:relative;height:41%;width:100%;"
+			>					
 		</iframe>
 
 

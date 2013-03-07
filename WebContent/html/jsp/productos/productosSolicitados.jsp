@@ -92,7 +92,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body class="tablaCentralCampos">			
+<body class="tablaCentralCampos" onload="ajusteAltoBotones('cabeceraDiv')">			
 
 	<html:form action="/PYS_GenerarSolicitudes.do" method="POST"  >
 		<input type="hidden" name="modo" 				value="abrirBusquedaModal">	
@@ -118,9 +118,7 @@
 	   		clase="tableTitle"
 			nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
 			tamanoCol="30,30,23,7,10"
-			alto="160"
-			ajusteBotonera="true"	
-			activarFilaSel="true" >
+			alto="100%" >
 <% 				
 				if(carro == null) 
 				{ 	

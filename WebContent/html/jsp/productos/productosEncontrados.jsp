@@ -133,7 +133,7 @@
 		   		clase="tableTitle"
 				nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,"  
 				tamanoCol="30,30,30,10"
-				alto="160" 
+				alto="1000" 
 			>
 
 <%
