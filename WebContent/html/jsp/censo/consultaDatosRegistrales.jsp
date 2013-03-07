@@ -312,46 +312,75 @@
 
 		function validaNumeroIdentificacion(){
 			var valido = true;
-			var errorNIF = false;
-			var errorNIE = false;
-				if(document.getElementById("tipoIdentificacion").value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-					var numero = document.getElementById("numIdentificacion").value;
-					if(numero.length==9){
-						letIn = numero.substring(8,9);
-						num = numero.substring(0,8);
-						var posicion = num % 23;
-						letras='TRWAGMYFPDXBNJZSQVHLCKET';
-						var letra=letras.substring(posicion,posicion+1);
-						if (letra!=letIn) {
-							errorNIF=true;
-						}
-					} else {
+
+			// Si no se pusieron nombre y apellidos, entonces no se inserta notario
+			if(DatosRegistralesForm.nombre.value == "" && DatosRegistralesForm.apellido1.value == "") {
+				DatosRegistralesForm.numIdentificacion.value = "";
+				DatosRegistralesForm.tipoIdentificacion.value = "";
+				
+			} // Si se dejo en blanco el N. Identificacion
+			else if(DatosRegistralesForm.numIdentificacion.value == "") {
+				DatosRegistralesForm.tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+				generarIdenHistorico();
+				
+			} // Si se dejo en blanco el Tipo de identificacion
+			else if (DatosRegistralesForm.tipoIdentificacion.value == ""){
+				if(document.DatosRegistralesForm.numIdentificacion.disabled == true){//Viene de busqueda
+					DatosRegistralesForm.tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+				}
+			}
+			else if(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+				var errorNIF = false;
+				var numero = DatosRegistralesForm.numIdentificacion.value;
+				
+				if(numero.length==9){
+					letIn = numero.substring(8,9);
+					num = numero.substring(0,8);
+					var posicion = num % 23;
+					letras='TRWAGMYFPDXBNJZSQVHLCKET';
+					var letra=letras.substring(posicion,posicion+1);
+					if (letra!=letIn) {
 						errorNIF=true;
 					}
+				}else{
+					errorNIF=true;
 				}
-				if(document.getElementById("tipoIdentificacion").value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
-					var dnie = document.getElementById("numIdentificacion").value;
-					if(dnie.length==9){
-						letIni = dnie.substring(0,1);
-						primera=letIni;
-						if  (letIni.toUpperCase()=='Y')
-					 		letIni = '1';
-					 	else if  (letIni.toUpperCase()=='Z')
-					 		letIni = '2';
-					 	else{
-					 		letIni = '0';
-					 	}
-						num = letIni + dnie.substring(1,8);
-						letFin = dnie.substring(8,9);
-						var posicion = num % 23;
-						letras='TRWAGMYFPDXBNJZSQVHLCKET';
-						var letra=letras.substring(posicion,posicion+1);
-						if (!primera.match('[X|Y|Z]')||letra!=letFin) {
-							errorNIE=true;
-						}
-					} else {
+				
+				if (errorNIF){
+					// ERROR NIF
+					if(document.DatosRegistralesForm.numIdentificacion.disabled == true){ //Viene de busqueda
+						DatosRegistralesForm.tipoIdentificacion.value = "50";
+						valido = true;
+					}else{
+						valido = false;
+						alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+					}
+				}
+			}
+			if(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+				var errorNIE = false;
+				var dnie = DatosRegistralesForm.numIdentificacion.value;
+
+				if(dnie.length==9){
+					letIni = dnie.substring(0,1);
+					primera=letIni;
+					if  (letIni.toUpperCase()=='Y')
+				 		letIni = '1';
+				 	else if  (letIni.toUpperCase()=='Z')
+				 		letIni = '2';
+				 	else{
+				 		letIni = '0';
+				 	}
+					num = letIni + dnie.substring(1,8);
+					letFin = dnie.substring(8,9);
+					var posicion = num % 23;
+					letras='TRWAGMYFPDXBNJZSQVHLCKET';
+					var letra=letras.substring(posicion,posicion+1);
+					if (!primera.match('[X|Y|Z]')||letra!=letFin) {
 						errorNIE=true;
 					}
+				}else{
+					errorNIE=true;
 				}
 
 				// No tiene tipo identificacion (Seleccionar)
@@ -381,10 +410,13 @@
 						valido = false;
 						alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
 					}
-				}			
-				return valido;
-			}
+				}	
 
+			}
+			
+			return valido;
+		}
+		
 			function obtenerLetra(){
 				generarLetra();
 			}
@@ -491,6 +523,7 @@
 				url: "/SIGA/CEN_DatosGenerales.do?modo=getIdNotario",
 				data: "idInstitucion="+DatosRegistralesForm.idInstitucion.value,
 				dataType: "json",
+				async: false,
 				success:  function(json) {
 					DatosRegistralesForm.numIdentificacion.value=json.numHistorico;
 				   	jQuery("#numIdentificacion").attr("disabled","disabled");
