@@ -1406,9 +1406,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			double importeNeto = importeBruto + importeIrpfTotal;
 
 			// 5. Aplicar retenciones judiciales y no judiciales
+			//aalg Incidencia del 28-sep-2011. Se modifica el usuario de modificacion que se estaba
+			// cogiendo el idPersona en vez del userName
 			aplicarRetencionesJudiciales(idInstitucion, idPago, idPersona,
-					Double.toString(importeNeto),
-					Long.toString(usr.getIdPersona()), usr.getLanguage());
+					Double.toString(importeNeto), 
+					usr.getUserName(), usr.getLanguage());
 			// obtener el importe de las retenciones judiciales
 			FcsCobrosRetencionJudicialAdm crjAdm = new FcsCobrosRetencionJudicialAdm(
 					usr);
