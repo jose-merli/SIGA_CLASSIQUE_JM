@@ -191,7 +191,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body onLoad="ajusteAlto('tablaAbajo');ajusteAlto('serviciosDiv');" class="tablaCentralCampos">			
+<body class="tablaCentralCampos">			
 
 		<html:form action="/PYS_Bajas.do" method="POST" target="submitArea" style="display:none">
 			<input type="hidden" name="modo" 				value="abrirBusquedaModal">		
@@ -216,13 +216,12 @@
 	</table>			
 				<siga:TablaCabecerasFijasExt
 	  				nombre="productos"
-	  				borde="2"
-	  				
+	  				borde="0"	  				
 			   		clase="tableTitle"
 	  				nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"
 					tamanoCol="10,7,15,13,17,6,11,10,6,5"
-			   alto="190"
-			   	ajusteAlto="false"
+			   		alto="37%"
+			   		ajusteAlto="false"
  					variasTablasEnLaMismaPagina="true">
  <% 				if(vProductos == null || vProductos.size()<1 )
  							{  
@@ -320,118 +319,120 @@
 			</siga:TablaCabecerasFijasExt>
 	
 	
-	<div id="tablaAbajo" style="position:relative;top:190px;">		
-	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
-		<tr>
-			<td class="titulosPeq">
-				<siga:Idioma key="pys.solicitudBaja.titulo2"/>
-			</td>
-		</tr>
-	</table>			
+	<div id="tablaAbajo" style="position:relative; height:38%; width:100%;">		
+		<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="titulosPeq">
+					<siga:Idioma key="pys.solicitudBaja.titulo2"/>
+				</td>
+			</tr>
+		</table>			
 		
-				<siga:TablaCabecerasFijasExt 
-	  				nombre="servicios"
-	  				borde="2"
-	  				
-			   		clase="tableTitle"
-	  				nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
-					tamanoCol="10,7,15,13,17,6,11,10,6,5"
-			   		alto="100%"
-			   		ajuste="0"
-			   		
- 					variasTablasEnLaMismaPagina="true">
-<% 					if(vServicios == null || vServicios.size()<1 )
- 							{  
-%> 	
-					  		<br>
-					   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-					 			<br>			
-<% 
-	 						}else{
-	 							Enumeration en = vServicios.elements();		
-	 							int i=0; 
-	 							int k=0;  							
-								while(en.hasMoreElements()){
-									i++;
-									FilaExtElement[] elems=new FilaExtElement[1];
-									Hashtable hash = (Hashtable)en.nextElement();
-									aceptado=(String)hash.get(PysServiciosSolicitadosBean.C_ACEPTADO);
-									solicitarBaja=(String)hash.get(PysServiciosInstitucionBean.C_SOLICITARBAJA);
-									if((aceptado.equalsIgnoreCase(pPendiente) || aceptado.equalsIgnoreCase(pAceptado)) && 
-										((solicitarBaja.equalsIgnoreCase(DB_TRUE) && esLetrado) || (!esLetrado))){
-											k++; 				 	  							
-											
-											String tipopeticion = (String)hash.get("ESTADO_BAJA");
-	  										if (tipopeticion!=null && tipopeticion.equals("SI")) {
-	  											elems=null;
-	  										}else{
-	  											elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
-	  										}
-	  										
-											if (hash.get(PysProductosSolicitadosBean.C_VALOR)!=null){					
-											  precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
-											}
-											
-											//if (hash.get(PysProductosSolicitadosBean.C_PORCENTAJEIVA)!=null){		
-											  //iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
-											//}
-											if (hash.get("VALORIVA")!=null){		
-											  iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
-											}
-											precio = UtilidadesNumero.redondea ((precio * (1 + (iva / 100))), 2);			
-											String estadoPago	= UtilidadesProductosServicios.getEstadoPago(UtilidadesHash.getString(hash, "ESTADOPAGO"));																																								
-%> 				
-										<siga:FilaConIconosExtExt fila='<%=String.valueOf(k)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit" nombreTablaPadre="servicios" >
-											<td>
-												<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_1' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDPETICION)%>'>	 							
-												<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_2' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS)%>'>	
-												<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_3' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDSERVICIO)%>'>	
-												<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_4' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION)%>'>	
-						 						<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_5' value='<%=CLASE_SERVICIO%>'>
-						 						<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_6' value='<%=fechaEfectiva%>'>		
-						 						<%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)hash.get(PysPeticionCompraSuscripcionBean.C_FECHA)))%> 	
-		  								</td>
-		  								<td>
-		  									<%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_IDPETICION))%>  																													
-		  								</td> 
-		  								<td>
-												<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>											
-											</td>
-		  								<td>
-		  									<%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%>  																
-		  								</td>
-		  								<td>  									
-		  									<%=UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"))%>  														
-		  								</td>
-		  								<td>   																
-		  									<%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%>  														
-		  							 	</td>
-		  								<td>  									
-		  									<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(hash.get("SERVICIO_DESCRIPCION_PERIODICIDAD"))%>   													
-		  								</td>
-		  								<td>
-		  									<siga:Idioma key="<%=estadoPago%>"/>																
-		  								</td>
-		  								<td>
-		  									<%
-		  										tipopeticion = (String)hash.get("ESTADO_BAJA");
-		  										if (tipopeticion!=null && tipopeticion.equals("SI")) { %>
-				  								<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/>
-		  									<% } else { %>
-		  										&nbsp;
-		  									<% } %>
-		  								</td>
-		  							</siga:FilaConIconosExtExt>
-	<%		
- 									}
- 								} // While  			
-			 				} 			 				
-	%> 
+		<siga:TablaCabecerasFijasExt 
+ 			nombre="servicios"
+ 			borde="0"	  				
+	   		clase="tableTitle"
+ 			nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
+			tamanoCol="10,7,15,13,17,6,11,10,6,5"
+	   		alto="100%"
+	   		ajusteAlto="false"
+			variasTablasEnLaMismaPagina="true">
+			
+			<%if(vServicios == null || vServicios.size()<1 ) {%> 	
+				<br>
+				<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+				<br>
+							
+			<%} else {
+				Enumeration en = vServicios.elements();		
+				int i=0; 
+				int k=0;  							
+				while(en.hasMoreElements()) {
+					i++;
+					FilaExtElement[] elems=new FilaExtElement[1];
+					Hashtable hash = (Hashtable)en.nextElement();
+					aceptado=(String)hash.get(PysServiciosSolicitadosBean.C_ACEPTADO);
+					solicitarBaja=(String)hash.get(PysServiciosInstitucionBean.C_SOLICITARBAJA);
+					if((aceptado.equalsIgnoreCase(pPendiente) || aceptado.equalsIgnoreCase(pAceptado)) && ((solicitarBaja.equalsIgnoreCase(DB_TRUE) && esLetrado) || (!esLetrado))){
+						k++; 				 	  							
+						
+						String tipopeticion = (String)hash.get("ESTADO_BAJA");
+						if (tipopeticion!=null && tipopeticion.equals("SI")) {
+							elems=null;
+						}else{
+							elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
+						}
+								
+						if (hash.get(PysProductosSolicitadosBean.C_VALOR)!=null){					
+						  precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
+						}
+						
+						//if (hash.get(PysProductosSolicitadosBean.C_PORCENTAJEIVA)!=null){		
+						  //iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+						//}
+						if (hash.get("VALORIVA")!=null){		
+						  iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
+						}
+						precio = UtilidadesNumero.redondea ((precio * (1 + (iva / 100))), 2);			
+						String estadoPago = UtilidadesProductosServicios.getEstadoPago(UtilidadesHash.getString(hash, "ESTADOPAGO"));																																								
+				%> 			
+						<siga:FilaConIconosExtExt fila='<%=String.valueOf(k)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit" nombreTablaPadre="servicios" >
+							<td>
+								<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_1' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDPETICION)%>'>	 							
+								<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_2' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS)%>'>	
+								<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_3' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDSERVICIO)%>'>	
+								<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_4' value='<%=hash.get(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION)%>'>	
+		 						<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_5' value='<%=CLASE_SERVICIO%>'>
+		 						<input type='hidden' name='ocultoS<%=String.valueOf(k)%>_6' value='<%=fechaEfectiva%>'>		
+		 						<%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)hash.get(PysPeticionCompraSuscripcionBean.C_FECHA)))%> 	
+							</td>
+							
+							<td>
+								<%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_IDPETICION))%>  																													
+							</td> 
+							
+							<td>
+								<%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%>											
+							</td>
+		  					
+		  					<td>
+		  						<%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%>  																
+		  					</td>
+		  					
+		  					<td>  									
+		  						<%=UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"))%>  														
+		  					</td>
+		  					
+		  					<td>   																
+		  						<%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%>  														
+		  					</td>
+		  					
+		  					<td>  									
+		  						<%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(hash.get("SERVICIO_DESCRIPCION_PERIODICIDAD"))%>   													
+		  					</td>
+		  					
+		  					<td>
+		  						<siga:Idioma key="<%=estadoPago%>"/>																
+		  					</td>
+		  					
+		  					<td>
+		  					
+		  						<%tipopeticion = (String)hash.get("ESTADO_BAJA");
+		  						if (tipopeticion!=null && tipopeticion.equals("SI")) { %>
+				  					<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/>
+		  						<% } else { %>
+		  							&nbsp;
+		  						<% } %>
+		  					</td>
+		  				</siga:FilaConIconosExtExt>
+		  				
+					<%	} // IF
+ 				} // WHILE  			
+			} // ELSE  			 				
+			%> 
 		</siga:TablaCabecerasFijasExt>
 	</div>		
-<%
-				}
-%>		
+<%}%>		
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
