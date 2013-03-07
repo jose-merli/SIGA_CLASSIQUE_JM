@@ -526,8 +526,12 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    						|| !idIntitucionPropietario.equals("0")&&idIntitucionPropietario.equals(idInstitucionUsuario);
    				ClsLogging.writeFileLog("uploadFile.isPermitidoBorrar..."+isPermitidoBorrar,3);
    				informeForm.getDirectorioFile().getFiles().add(new FileInforme(theFile.getFileName(),"","",new File(pathInforme.toString()),isPermitidoBorrar));
+   				
+   				ClsLogging.writeFileLog("uploadFile.getFiles().add..."+theFile.getFileName()+"   "+pathInforme.toString(),3);
+   				
    				bos = new FileOutputStream(pathInforme.toString());
    	   			
+   				ClsLogging.writeFileLog("uploadFile.bos"+pathInforme.toString(),3);
    	   			
    	   			int bytesRead = 0;
    	   			byte[] buffer = new byte[8192];
@@ -536,6 +540,9 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    	   			{
    	   				bos.write(buffer, 0, bytesRead);
    	   			}
+   	   			
+   	   			ClsLogging.writeFileLog("uploadFile.write.....",3);
+   	   			
 			} catch (FileNotFoundException e) { 
 				throw new SIGAException("error.messages.fileNotFound");
 			} catch (IOException e) {
@@ -546,6 +553,8 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 	    				bos.close();
 	    			if(stream!=null)
 	    				stream.close();
+	    			
+	    			ClsLogging.writeFileLog("uploadFile.FIN DEL METODO",3);
 	    		}
 		    	catch (Exception e) {
 		    		ClsLogging.writeFileLog("uploadFile.Error..."+e,3);
