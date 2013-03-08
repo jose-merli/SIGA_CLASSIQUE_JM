@@ -1791,7 +1791,7 @@ public class Facturacion {
         	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?)}", 2, param_in);
         	String codretorno = resultado[0];
         	if (!codretorno.equals("0")){
-        		 throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
+        		throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
         	}
         	beanPro.setLocked("0");
 			if (!admPro.updateDirect(beanPro)) {
