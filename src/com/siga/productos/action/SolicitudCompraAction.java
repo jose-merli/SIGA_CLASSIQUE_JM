@@ -16,6 +16,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -1539,6 +1540,12 @@ public class SolicitudCompraAction extends MasterAction{
 			FacSerieFacturacionAdm admSerie = new FacSerieFacturacionAdm(this.getUserBean(request));
 			PysPeticionCompraSuscripcionAdm admPeticion = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 		    Facturacion facturacion = new Facturacion(this.getUserBean(request));
+		    FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
+		    
+		    //BNS: BLOQUEAMOS LAS TABLAS DE COMPRA Y FACTURA EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS
+		    tx.begin();
+		    admCompra.lockTable();
+		    admFactura.lockTable();
 		    
 		    // Obtengo la peticion de compra
 		    Hashtable htP= new Hashtable(); 
@@ -1553,9 +1560,7 @@ public class SolicitudCompraAction extends MasterAction{
 			FacSerieFacturacionBean serieFacturacionCandidata = null;
 			FacSerieFacturacionBean serieFacturacionTemporal = null;
 			FacFacturacionProgramadaBean programacion = null;
-			Vector facts = null;
-
-			tx.begin();
+			Vector facts = null;			
 		        
 	        // PASO 0: LOCALIZO LAS COMRPAS (SI NO EXISTEN LAS GENERO)
 		    Vector compras = new Vector();
@@ -1621,9 +1626,13 @@ public class SolicitudCompraAction extends MasterAction{
 			    // Deshacer relaciones temporales
 			    programacion = facturacion.restaurarSerieFacturacion(serieFacturacionCandidata, serieFacturacionTemporal);
 		        
-			    tx.commit();
+			    //BNS INCLUIMOS LA CONFIRMACIÓN EN LA MISMA TRANSACCIÓN
+			    facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false,tx);
 			    
+			    if (Status.STATUS_ACTIVE  == tx.getStatus())
+			    	tx.commit();
 			    
+			    /*
 			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    try {
 			        facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false);
@@ -1635,7 +1644,9 @@ public class SolicitudCompraAction extends MasterAction{
 					mensaje="messages.facturacionRapida.errorConfirmacion";
 					return exito(mensaje,request);
 			    }
+			    */
 			} else {
+				// YA FACTURADA, SE DESCARGA LA FACTURA
 				tx.commit();
 				idFactura = pysCompraBean.getIdFactura();
 			}
