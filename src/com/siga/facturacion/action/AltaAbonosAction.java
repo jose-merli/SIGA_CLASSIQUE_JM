@@ -210,11 +210,23 @@ public class AltaAbonosAction extends MasterAction {
 			FacFacturaAdm adminF=new FacFacturaAdm(this.getUserBean(request));
 			FacLineaFacturaAdm adminLF=new FacLineaFacturaAdm(this.getUserBean(request));
 			GestorContadores gc = new GestorContadores(this.getUserBean(request));
+			FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(usr);
+			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(usr);
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 			Hashtable contadorTablaHash= null;
 			
 			// Comienzo control de transacciones
-			tx = usr.getTransaction(); 
-
+			tx = usr.getTransaction();
+			//BNS: INC_10519_SIGA Comenzamos la transacción antes de las comprobaciones y bloqueamos las tablas implicadas
+			// para que nadie pueda insertar entre medias
+			tx.begin();
+			admin.lockTable();
+			adminPAE.lockTable();
+			adminPPC.lockTable();
+			facturaAdm.lockTable();
+			adminLA.lockTable();
+			adminF.lockTable();
+			
 			// Obtengo los datos del formulario
 			AltaAbonosForm miForm = (AltaAbonosForm)formulario;
 			
@@ -222,14 +234,14 @@ public class AltaAbonosAction extends MasterAction {
 			// Compruebo que la factura asociada exista y este ligada a la misma persona //ESTO SOBRARIA YA QUE SE HACE EN LA VENTANA PREVIA
 			if(miForm.getNumFactura()!=null)
 				 numfactura =miForm.getNumFactura().trim().toUpperCase();
-			Vector asociados = adminF.getFacturaPorNumeroSimple(miForm.getIdInstitucion(),numfactura);
+			//BNS INC_10519_SIGA COMPROBAMOS TAMBIEN QUE NO ESTÁ YA ABONADA
+			Vector asociados = adminF.getFacturaPorNumero(miForm.getIdInstitucion(),numfactura,true);
 			if (asociados.isEmpty()){
 				throw new SIGAException("facturacion.altaAbonos.literal.facturaNoAsociada");	
 			}
 			
 			//AbonosPagosAction abonosPagos=new AbonosPagosAction();
-			Hashtable datosPagoFactura=new Hashtable();
-			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(usr);
+			Hashtable datosPagoFactura=new Hashtable();			
 			
 			//String numFactura=miForm.getNumFactura();
 			Long idAbono=admin.getNuevoID(usr.getLocation());
@@ -249,10 +261,11 @@ public class AltaAbonosAction extends MasterAction {
 			boolean isPersonaDeudora = true;
 			if(idPersonaDeudor==null || idPersonaDeudor.equals("")){
 				isPersonaDeudora = false;
+			} else {
+				hash.put(FacAbonoBean.C_IDPERSONADEUDOR,idPersonaDeudor);
 			}
 			
-			hash.put(FacAbonoBean.C_IDPERSONA,idPersona);
-			hash.put(FacAbonoBean.C_IDPERSONADEUDOR,idPersonaDeudor);
+			hash.put(FacAbonoBean.C_IDPERSONA,idPersona);			
 			contadorTablaHash=gc.getContador(new Integer(usr.getLocation()),ClsConstants.FAC_ABONOS);
 			String numeroAbono=gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
@@ -262,6 +275,40 @@ public class AltaAbonosAction extends MasterAction {
 			
 			//JTA comprobamos si la factura tiene numero de cuenta y en tal caso es que el pago por banco.
 			//Entonces metemos el numero de cuenta al abono para que quede pendiente de abonar por banco.
+			
+			//BEGIN BNS OBTENGO LA FACTURA Y SUS DATOS
+			//double importeNeto = 0; 
+			double importeCompensado = 0; 
+			//double importeIva = 0;
+			double importeTotal = 0;
+			Hashtable hashFactura=adminF.getFacturaDatosGeneralesTotalFactura(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura(), this.getLenguaje(request));
+			// IMPORTE COMPENSADO
+			if (hashFactura != null) {
+				String totalPendientePagar = UtilidadesHash.getString(hashFactura,"TOTAL_PENDIENTEPAGAR");
+				if (totalPendientePagar !=null){
+					totalPendientePagar = totalPendientePagar.trim();
+					importeCompensado = new Double(totalPendientePagar).doubleValue();
+				}
+				String totalConIva = UtilidadesHash.getString(hashFactura,"TOTAL_FACTURA");
+				if (totalConIva !=null){
+					totalConIva = totalConIva.trim();
+					importeTotal = new Double(totalConIva).doubleValue();
+				}
+			}
+			/*
+			Hashtable ht = new Hashtable();
+			ht.put(FacLineaFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+			ht.put(FacLineaFacturaBean.C_IDFACTURA,miForm.getIdFactura());
+			Vector vLineasFactura = adminLF.select(ht);
+			// IMPORTE NETO / IVA
+			for (int i=0; vLineasFactura!=null && i<vLineasFactura.size();i++) {
+				FacLineaFacturaBean blf=(FacLineaFacturaBean)vLineasFactura.get(i);
+				importeNeto += blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue(); 
+				importeIva += ((blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue())* blf.getIva().floatValue())/100;
+			}
+			*/
+			//END BNS
+			
 			String formaPago = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDFORMAPAGO);
 			if(formaPago!=null && Integer.parseInt(formaPago)==ClsConstants.TIPO_FORMAPAGO_FACTURA){
 
@@ -283,8 +330,15 @@ public class AltaAbonosAction extends MasterAction {
 					//Por lo tanto cogemos la primera cuenta de abono
 					if(alCuentas!=null && alCuentas.size()>0 && !alCuentas.contains(idCuentaFinal))
 						idCuentaFinal = String.valueOf((Integer)alCuentas.get(0));
-					else
+					else if ((importeTotal-importeCompensado)>0) {
+						// BNS LA FACTURA HABÍA SIDO PAGADA POR LO QUE NECESITAMOS UNA CUENTA A
+						// LA QUE DEVOLVER EL ABONO
 						throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
+				    } else {
+				    	// BNS LA FACTURA NO HABÍA SIDO PAGADA POR LO QUE NO NECESITAMOS UNA CUENTA A
+						// LA QUE DEVOLVER EL ABONO
+				    	idCuentaFinal = "";
+					}
 					
 					if(isPersonaDeudora){
 						hash.put(FacAbonoBean.C_IDCUENTADEUDOR,idCuentaFinal);
@@ -298,21 +352,8 @@ public class AltaAbonosAction extends MasterAction {
 					throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
 					
 				}
-			}
-			
-			// y los datos de las lineas de la factura
-			Hashtable ht = new Hashtable();
-			ht.put(FacLineaFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			ht.put(FacLineaFacturaBean.C_IDFACTURA,miForm.getIdFactura());
-			Vector vLineasFactura = adminLF.select(ht);
-
-			double importeNeto = 0; 
-			double importeCompensado = 0; 
-			double importeIva = 0; 
+			}			
 			    
-			// Comienzo la transaccion
-			tx.begin();		
-				
 			// Inserto el abono
 			if (admin.insert(hash)){
 				
@@ -327,12 +368,11 @@ public class AltaAbonosAction extends MasterAction {
 				}
 				
 				////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//Meter la linea en la pestaña Pagos del abono "Compensacion con factura x"
-				FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(usr);
-				Hashtable h=adminF.getFacturaDatosGeneralesTotalFactura(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura(), this.getLenguaje(request));
+				//Meter la linea en la pestaña Pagos del abono "Compensacion con factura x"				
+				hashFactura=adminF.getFacturaDatosGeneralesTotalFactura(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura(), this.getLenguaje(request));
 				String total="";
-				if (h != null) {
-					total = UtilidadesHash.getString(h,"TOTAL_PENDIENTEPAGAR");
+				if (hashFactura != null) {
+					total = UtilidadesHash.getString(hashFactura,"TOTAL_PENDIENTEPAGAR");
 				}			
 				//String totalPagado = UtilidadesHash.getString(h,"TOTALPAGADO");
 				if(total!=null && !total.trim().equals("")&& Double.parseDouble(total.trim())!=0){
@@ -373,8 +413,7 @@ public class AltaAbonosAction extends MasterAction {
 				    if (correcto) {
 				        
 						// ahora tenemos que actualizar los importes y estado de la factura.
-					    FacFacturaBean facturaBean = null;
-						FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+					    FacFacturaBean facturaBean = null;						
 					    Hashtable ht2 = new Hashtable();
 					    ht2.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 					    ht2.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
@@ -404,7 +443,10 @@ public class AltaAbonosAction extends MasterAction {
 					
 
 				////////////////////////////////////////////////////////////////////////////////////////////////////////				
-				
+				Hashtable ht = new Hashtable();
+				ht.put(FacLineaFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+				ht.put(FacLineaFacturaBean.C_IDFACTURA,miForm.getIdFactura());
+				Vector vLineasFactura = adminLF.select(ht);
 			    // Inserto las lineas
 				for (int i=0; vLineasFactura!=null && i<vLineasFactura.size();i++) {
 					FacLineaFacturaBean blf=(FacLineaFacturaBean)vLineasFactura.get(i);
@@ -422,8 +464,8 @@ public class AltaAbonosAction extends MasterAction {
 					htL.put(FacLineaAbonoBean.C_NUMEROLINEA,new Integer(i+2).toString());
 					htL.put(FacLineaAbonoBean.C_PRECIOUNITARIO,blf.getPrecioUnitario());
 	
-					importeNeto += blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue(); 
-					importeIva += ((blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue())* blf.getIva().floatValue())/100; 
+					//importeNeto += blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue(); 
+					//importeIva += ((blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue())* blf.getIva().floatValue())/100; 
 					
 					if (!adminLA.insert(htL)){
 					    throw new ClsExceptions("Error en insertar linea abono Devolucion: "+adminLA.getError());
@@ -433,14 +475,14 @@ public class AltaAbonosAction extends MasterAction {
 	
 				// RGG 29/05/2009 Cambio de funciones de abono
 				if (correcto){
-					bAbono.setImpTotal(new Double(importeNeto+importeIva));
-				    bAbono.setImpPendientePorAbonar(new Double(importeNeto+importeIva-importeCompensado));
+					bAbono.setImpTotal(importeTotal);
+				    bAbono.setImpPendientePorAbonar(new Double(importeTotal-importeCompensado));
 				    bAbono.setImpTotalAbonado(new Double(importeCompensado));
 				    bAbono.setImpTotalAbonadoEfectivo(new Double(0));
 				    bAbono.setImpTotalAbonadoPorBanco(new Double(0));
-				    bAbono.setImpTotalIva(new Double(importeIva));
-				    bAbono.setImpTotalNeto(new Double(importeNeto));
-				    if ((importeNeto+importeIva-importeCompensado)<=0) {
+				    bAbono.setImpTotalIva(new Double(UtilidadesHash.getString(hashFactura,"TOTAL_IVA")));
+				    bAbono.setImpTotalNeto(new Double(UtilidadesHash.getString(hashFactura,"TOTAL_NETO")));
+				    if ((importeTotal-importeCompensado)<=0) {
 				        // pagado
 				        bAbono.setEstado(new Integer(1));
 				    } else {
