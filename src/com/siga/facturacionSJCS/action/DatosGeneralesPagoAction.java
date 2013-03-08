@@ -43,8 +43,11 @@ import com.siga.beans.ColegiadosPagosBean;
 import com.siga.beans.CriteriosPagosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
+import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
+import com.siga.beans.FacPagoAbonoEfectivoAdm;
+import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
 import com.siga.beans.FcsCobrosRetencionJudicialAdm;
@@ -1215,18 +1218,31 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	protected String cerrarPagoManual(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
-		FcsPagosEstadosPagosAdm estadoPagosAdm = new FcsPagosEstadosPagosAdm(
-				this.getUserBean(request));
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm) formulario;
+				
 		String forward = "";
 		String idPago = "";
 		UserTransaction tx = null;
 
 		try {
+			UsrBean usr = this.getUserBean(request);
+			DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm) formulario;
+			FcsPagosEstadosPagosAdm estadoPagosAdm = new FcsPagosEstadosPagosAdm(usr);
+			FacAbonoAdm abonoAdm = new FacAbonoAdm(usr);
+			FacLineaAbonoAdm lineaAbonoAdm = new FacLineaAbonoAdm(usr);
+			FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(usr);
+			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(usr);
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 			tx = usr.getTransactionPesada();
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
+			
+			//BNS INC_10519_SIGA BLOQUEO LAS TABLAS IMPLICADAS EN LA TRANSACCIÓN
+			tx.begin();
+			estadoPagosAdm.lockTable();
+			abonoAdm.lockTable();
+			lineaAbonoAdm.lockTable();
+			adminPAE.lockTable();
+			adminPPC.lockTable();
+			facturaAdm.lockTable();
+			
 			// Obtenemos el Pago modificado del JSP:
 			Hashtable datosEntrada = (Hashtable) miform.getDatos();
 			datosEntrada
@@ -1238,8 +1254,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			estadoPagosBean.setIdEstadoPagosJG(new Integer(
 					ClsConstants.ESTADO_PAGO_CERRADO));
 			estadoPagosBean.setFechaEstado("SYSDATE");
-
-			tx.begin();
+			
 			// Insertamos el estado del pago:
 			estadoPagosAdm.insert(estadoPagosBean);
 			request.setAttribute("modo", "modificarPago");
