@@ -323,7 +323,7 @@ function onChangeTipoIntercambio() {
 			</td>						
 		
 			<td class="labelText" rowspan ="4"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
-			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
+			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1000)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1000);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
 		</tr>
 		<tr>
 			<td class="labelText">
