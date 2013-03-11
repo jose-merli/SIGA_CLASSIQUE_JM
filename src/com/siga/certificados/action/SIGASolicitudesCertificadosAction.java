@@ -2121,7 +2121,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 		    
 		    if (contErrores==0) {
-		    	mensaje = UtilidadesString.getMensajeIdiomaCombo(userBean,"messages.certificados.finalizarCertificadosMasivo.success2");
+		    	mensaje = "messages.certificados.finalizarCertificadosMasivo.success2";
 		    } else {
 		    	mensaje=UtilidadesString.getMensaje("messages.certificados.finalizarCertificadosMasivo.success",new String[] {new Integer(contErrores).toString()},userBean.getLanguage());
 		    }
