@@ -143,7 +143,16 @@ public class SIGAMantenimientoCertificadosCamposAction extends MasterAction
         Hashtable hashNew = (Hashtable)hashOld.clone();
 	    
 	    hashNew.put(CerProducInstiCampCertifBean.C_IDFORMATO, form.getIdFormato());
-	    hashNew.put(CerProducInstiCampCertifBean.C_VALOR, form.getValor().trim());
+	    
+	    //aalg: sustituir las comas y los espacios al final puesto que hace fallar el hashmap
+	    
+	    String valor = form.getValor().trim();
+	    while (valor.endsWith(",")){
+	    	valor = valor.substring(0, valor.length() -1);
+	    	valor = valor.trim();
+	    }
+	    hashNew.put(CerProducInstiCampCertifBean.C_VALOR, valor);
+	    
 	    
         if (admProducto.update(hashNew, hashOld))
         {
