@@ -366,11 +366,15 @@
 					if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado
 						.equals(ClsConstants.PRODUCTO_PENDIENTE))
 						&& !estadoPago2
-								.equals("estados.compra.cobrado")
+								.equals("general.literal.pagado")
 						&& !estadoPago2
-								.equals("estados.compra.pendienteFactura")
+								.equals("general.literal.renegociada")
 						&& !estadoPago2
-								.equals("estados.compra.facturado")
+								.equals("general.literal.enRevision")
+						&& !estadoPago2
+								.equals("general.literal.pendientecobro")
+						&& !estadoPago2
+								.equals("general.literal.pendienteBanco")
 						&& modo.equals("editar")) {
 					botones = "E";
 				}
@@ -387,7 +391,7 @@
 						&& estadoProducto.equals("Aceptado")) {
 					//mhg - INC_09859_SIGA Si el producto está facturado no debe poder editar la fecha efectiva.
 					//El persimo ACCESS_SIGAENPRODUCCION tiene valor 40 y nos vale para controlar los permisos a nivel de lógica de negocio.
-					if(estadoPago2.equals("estados.compra.facturado")){
+					if(estadoPago2.equals("general.literal.pendientecobro") || estadoPago2.equals("general.literal.pendienteBanco")){
 						elems[1] = new FilaExtElement(
 								"cambiarFechaEfectiva",
 								"cambiarFechaEfectiva",
