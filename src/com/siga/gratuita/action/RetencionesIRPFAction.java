@@ -985,48 +985,64 @@ public class RetencionesIRPFAction extends MasterAction {
 		return null;
 	}
 	
-		private String buscarIRPFNoColegiado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-			try {
-				UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-				String sIdPersona = (String)request.getParameter("idPersonaPestana");
-				String sIdInstitucion = (String)request.getParameter("idInstitucionPestana");
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	private String buscarIRPFNoColegiado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		try {
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			String sIdPersona = (String)request.getParameter("idPersonaPestana");
+			String sIdInstitucion = (String)request.getParameter("idInstitucionPestana");
+			
+			ScsRetencionesAdm admRetenciones = new ScsRetencionesAdm(usuario);
+			ScsRetencionesIRPFAdm admIRPF = new ScsRetencionesIRPFAdm(usuario);
+			
+			// Calcula IRPF
+			String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(sIdInstitucion, sIdPersona, true);
+			
+			// Obtiene Retenciones
+			String where = " WHERE " + ScsRetencionesBean.T_NOMBRETABLA + "." + ScsRetencionesBean.C_IDRETENCION + " = '" + resultado[1] + "'";			
+			Vector vRetenciones = admRetenciones.select(where);				
 				
-				// Calcula IRPF
-				String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(sIdInstitucion, sIdPersona, true);
-				
-				// Obtiene Retenciones
-				String where = " WHERE " + ScsRetencionesBean.T_NOMBRETABLA + "." + ScsRetencionesBean.C_IDRETENCION + " = '" + resultado[1] + "'";
-				ScsRetencionesAdm irpf = new ScsRetencionesAdm(usr);
-				Vector vIrpf = irpf.select(where);				
-					
-				//  Compruebo que tiene Retenciones
-				Vector vRetenciones = new Vector();
-				if (vIrpf.size() > 0) {
-					Hashtable hashRetencion = new Hashtable();
+			//  Compruebo que tiene Retenciones
+			Vector vResultado = new Vector();
+			if (vRetenciones.size() > 0) {				
 
-					// Actualmente una sociedad sólo puede tener un IRPF 
-					ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
+				// Actualmente una sociedad solo puede tener un IRPF 
+				ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vRetenciones.get(0);
+								
+				// Busco el nombre de la retencion
+				String sql = "SELECT F_SIGA_GETRECURSO(descripcion, " + usuario.getLanguage() + ") DESCRIPCION FROM scs_maestroretenciones WHERE descripcion = '" + scsRetencionesBean.getDescripcion() + "'";								
+				Vector vIRPF = admIRPF.select(sql);
+				
+				if (vIRPF.size() > 0) {
+					Hashtable hashRetencion = new Hashtable();
 					
-					
-					ScsRetencionesIRPFAdm reten = new ScsRetencionesIRPFAdm(usr);
-					String sql = "SELECT F_SIGA_GETRECURSO(descripcion, " + usr.getLanguage() + ") DESCRIPCION FROM scs_maestroretenciones WHERE descripcion = " + scsRetencionesBean.getDescripcion();
-					Hashtable<String, String> descripcion = (Hashtable<String, String>) reten.select(sql).get(0);
-					
+					Hashtable<String, String> descripcion = (Hashtable<String, String>) vIRPF.get(0);
+					hashRetencion.put("DESCRIPCION", descripcion.get("DESCRIPCION") );				
+				
 					hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
 					hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
-					hashRetencion.put("DESCRIPCION", descripcion.get("DESCRIPCION") );					
-					
-					vRetenciones.add(hashRetencion);
+													
+					vResultado.add(hashRetencion);
 				}
-								
-				request.setAttribute("resultado", vRetenciones);
-				request.setAttribute("idPersona", sIdPersona);
-				request.setAttribute("idInstitucion", sIdInstitucion);
-				
-			} catch (Exception e) {
-				throw new SIGAException("messages.general.error", e, new String[] {"modulo.gratuita"});
-			} 	
+			}
+							
+			request.setAttribute("resultado", vResultado);
+			request.setAttribute("idPersona", sIdPersona);
+			request.setAttribute("idInstitucion", sIdInstitucion);
 			
-			return "inicio"; 
-		}		
-	}
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] {"modulo.gratuita"});
+		} 	
+		
+		return "inicio"; 
+	}		
+}
