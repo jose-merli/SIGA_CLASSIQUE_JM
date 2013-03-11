@@ -917,7 +917,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, false);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -954,7 +954,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, false);
 	    	    		}
 	    	    			    	    		
 	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -968,7 +968,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, true);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -990,8 +990,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         }
     }
     
-    public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio) {
-    	
+    /**
+     * Obtención de los datos del EJG para los envios
+     * @param ejgHashtable
+     * @param htDatosEnvio
+     * @param bSms
+     */
+    public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio, boolean bSms) {    	
 		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
 		
 		if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
@@ -1011,7 +1016,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
 		if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
 			String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
-			if(telefonoDespacho.length()>13)
+			if(telefonoDespacho.length()>13 && bSms)
 				telefonoDespacho = telefonoDespacho.substring(0,13);
 			htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
 		}else
@@ -1019,9 +1024,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
 		if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
 			String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
-			if(dictamenEJG.length()>10)
-				dictamenEJG = dictamenEJG.substring(0,10);
-			
+			if(dictamenEJG.length()>10 && bSms)
+				dictamenEJG = dictamenEJG.substring(0,10);			
 			htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
 		}else{
 			htDatosEnvio.put("EJG_DICTAM","");	    	    					    	    				
@@ -1037,8 +1041,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		else
 			htDatosEnvio.put("EJG_ASUNTO","");
     }
-    
-
     
     /**
      * Funcion que copia los remitentes de la plantilla si los tiene. 
