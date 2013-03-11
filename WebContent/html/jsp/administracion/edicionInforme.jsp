@@ -124,7 +124,7 @@ function inicioTiposIntercambioTelematico() {
 function onChangeTipoenvio() {
 	var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
 	var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
-	if(comboTiposEnvio.value!=''){			
+	if(comboTiposEnvio.value!='' && comboTiposEnvio.value != "undefined"){			
 	jQuery.ajax({ //Comunicación jQuery hacia JSP  
            type: "POST",
            url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
@@ -323,7 +323,7 @@ function onChangeTipoIntercambio() {
 			</td>						
 		
 			<td class="labelText" rowspan ="4"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
-			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1000)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1000);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
+			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
 		</tr>
 		<tr>
 			<td class="labelText">
@@ -801,7 +801,8 @@ function accionGuardar()
 	if (document.InformeForm.modo.value=='insertar'){
 		indiceTipoInforme = document.getElementById("idTipoInforme").selectedIndex;
 		idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
-		claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
+		if (document.getElementById(idClaseTipoInforme) != undefined)
+			claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 		document.InformeFormEdicion.claseTipoInforme.value = claseTipoInforme;
 
 		indiceInstitucion = document.getElementById("idInstitucion").selectedIndex;
