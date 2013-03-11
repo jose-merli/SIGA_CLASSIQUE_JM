@@ -1633,438 +1633,390 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		try {
 			//String bBusqueda = formulario.getChkBusqueda();
 			boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getValorCheck());
-			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , " +
+			sqlClientes = "SELECT " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ", " +			
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", " +
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "," + 
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " +
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_FECHANACIMIENTO + ", " +
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ", " +
+					CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + ", " +
+					CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO + ", " +
+					CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL + ", " +
+					" NVL(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA + "," + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_NOMBRE + ") as POBLACION, " +
+					" NVL(" + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_NOAPARECERREDABOGACIA + ",'0') " + CenClienteBean.C_NOAPARECERREDABOGACIA +
+				" FROM " + CenPersonaBean.T_NOMBRETABLA + ", " +
+					CenClienteBean.T_NOMBRETABLA + ", " +
+					CenDireccionesBean.T_NOMBRETABLA + ", " + 
+					CenPoblacionesBean.T_NOMBRETABLA;
 			
-			" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" , "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" ,"+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+", nvl("+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_POBLACIONEXTRANJERA+","+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") as POBLACION"+
-			" ,  nvl("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+",'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+" " +
-			" FROM  "+CenPersonaBean.T_NOMBRETABLA+" ,  "+CenClienteBean.T_NOMBRETABLA  +" ,  "+ CenDireccionesBean.T_NOMBRETABLA+" ,  "+CenPoblacionesBean.T_NOMBRETABLA;
-		//	 if (formulario.getResidente()!=null && !formulario.getResidente().equals("0")){
-				 
-		//	 	sqlClientes+=", "+CenColegiadoBean.T_NOMBRETABLA;
-		//	 }
-			sqlClientes+=" WHERE " +
-			" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA;
-		//	if (formulario.getResidente()!=null && !formulario.getResidente().equals("0")){
-				
-		//	sqlClientes+=" and "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA;	
-		//	}
-			contador++;
-			codigos.put(new Integer (contador),"1");
-			sqlClientes+=" and "+CenClienteBean.C_LETRADO+" =:"+contador ;
-			contador++;
-			codigos.put(new Integer (contador),idInstitucion);
-			sqlClientes+=" and "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"= :"+contador;
-			   
+			sqlClientes += " WHERE " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+				" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_LETRADO + " = 1 " +
+				" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + " = " + idInstitucion;			   
 			
 			//añadimos la información sobre las direcciones del censo web
-			sqlClientes+= " AND "+ CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPOBLACION+" = "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION +"(+)"+
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+"(+) = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA +
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+"(+) = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+
-                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDDIRECCION+"(+) = f_siga_getiddireccion_tipopre2("+idInstitucion+","+CenClienteBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+",3,null)";
-                   
+			sqlClientes+= " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPOBLACION + " = " + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_IDPOBLACION + "(+) " +
+                  " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "(+) = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+                  " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "(+) = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+                  " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + "(+) = F_SIGA_GETIDDIRECCION_TIPOPRE2(" + idInstitucion + "," + CenClienteBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ", 3, null) ";
                   
-// 3
-       if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
-       	if ((bBusqueda ) ) {
-       		
-       		sqlClientes += " AND (translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getNombrePersona().trim())+") ";
-			  
-       	}else{
-       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNombrePersona().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE )+") ";  
-       	}
-       }
-			
-
-//     4 y 5 Criterio de busqueda especial para los campos Apellido1 y Apellido2
-       if (!formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-       	if ((bBusqueda ) ) {
-       		contador++;
-       		sqlClientes += " AND (((translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1().trim() )+")"+
-       		               " AND (translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido2().trim() )+"))"+
-						   " OR (translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim() )+"))";
-       	}else{
-       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1 )+")"+
-                           " AND ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2)+"))"+
-			               " OR ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim() ,CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1 )+"))";
-       		
-       	}
-       }else if (!formulario.getApellido1().trim().equals("")&&(formulario.getApellido2().trim().equals(""))) {//Apellido1 relleno
-       	if ((bBusqueda) ) {
-       		contador++;
-       		sqlClientes += " AND ((translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1())+") OR (translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") LIKE translate(upper('"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+" %'),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+")))";
-       	}else{
-       		sqlClientes += " AND "+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1 );
-       		
-       	}
-       }else if (formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {//Apellido2 relleno
-       	if ((bBusqueda ) ) {
-       		contador++;
-       		sqlClientes += " AND (translate(upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+"),"+ComodinBusquedas.vocalesBuscar+","+ComodinBusquedas.vocalesSustituir+") "+ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido2().trim() )+") ";
-			               
-       		 
-       	}else{
-       		sqlClientes += " AND "+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2); 
-			               
-       	}
-       	
-       }       
-       
-     /*  if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("")) {
-    	if ((bBusqueda != null && bBusqueda.equals("1")) ) {
-    		sqlClientes += " AND ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1 +" "+ComodinBusquedas.prepararSentenciaExacta(formulario.getApellido1().trim())+") ";
-       		  
-    	}else{
-    		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1 )+") ";  
-     	}	  
-       }
-
-       if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
-       	if ((bBusqueda != null && bBusqueda.equals("1")) ) {
-       		sqlClientes += " AND ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" "+ComodinBusquedas.prepararSentenciaExacta(formulario.getApellido2().trim())+") ";
-       		  
-       	}else{
-       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2)+") ";
-   	}	
-       }*/
-       
-       
-// 6 //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-   // de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-   // la consulta adecuada.    
-       if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
-    	   if ((bBusqueda ) ) {
-    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")='" + formulario.getNif().trim().toUpperCase() + "'";    		   
-    	   }else{
-    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
-    			   contador++;
-    			   sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF )+") ";
-    		   }else{
-
-    			   sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpper(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
-    		   }
-    	   }
-       }
-       
-//  	 8
-       String grupoClientes=formulario.getGrupoClientes();
-       if (grupoClientes!=null && !grupoClientes.trim().equals("")) {
-    	   int coma=grupoClientes.indexOf(",");
-    	   if(coma!=-1){
-    	   	contador++;
-    	   	codigos.put(new Integer(contador),grupoClientes.substring(0,coma));
-    	   	
-    	   	
-    	   	sqlClientes +=
-    			   " AND EXISTS (SELECT 1 "+
-    			   " FROM  "+CenGruposClienteClienteBean.T_NOMBRETABLA+"   "+
-    			   " WHERE "+CenGruposClienteClienteBean.T_NOMBRETABLA+"."+CenGruposClienteClienteBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-    			   " AND "+CenGruposClienteClienteBean.T_NOMBRETABLA+"."+CenGruposClienteClienteBean.C_IDINSTITUCION+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-    			   " AND "+CenGruposClienteClienteBean.T_NOMBRETABLA+"."+CenGruposClienteClienteBean.C_IDGRUPO+" = :"+contador;
-    	   	
-    		contador++;
-    	   	codigos.put(new Integer(contador),grupoClientes.substring(coma+1));
-    	   	sqlClientes +=
-    			   " AND "+CenGruposClienteClienteBean.T_NOMBRETABLA+"."+CenGruposClienteClienteBean.C_IDINSTITUCION_GRUPO+" = :"+contador+
-    			   ") ";
-    	   }
-       }       
-// 9 
-       if (formulario.getSexo()!=null &&!formulario.getSexo().trim().equals("")) {
-    	   contador++;
-    	   codigos.put(new Integer (contador),formulario.getSexo());
-       		sqlClientes += " AND ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_SEXO+" = :"+contador+") ";
-       }
-// 11
-       
-       if (formulario.getFechaIncorporacion()!=null && !formulario.getFechaIncorporacion().trim().equals("")) {
-    	   contador++;
-    	   codigos.put(new Integer (contador),formulario.getFechaIncorporacion());
-       		sqlClientes += " AND (TO_CHAR("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION+",'DD/MM/YYYY') = :" + contador+ ") ";
-       }
-       
-//  	 13
-       if (formulario.getDomicilio()!=null && !formulario.getDomicilio().trim().equals("")) {
-       	   sqlClientes += " AND EXISTS (SELECT "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO+" "+
-			" FROM  "+CenDireccionesBean.T_NOMBRETABLA+"  "+
-			" WHERE "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FECHABAJA+" is null "+
-			" AND "+ ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getDomicilio().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO)+") ";
-			
-       }       
-
-// 14
-       if (formulario.getCodigoPostal()!=null && !formulario.getCodigoPostal().trim().equals("")) {
-    	   contador++;
-    	   codigos.put(new Integer (contador),formulario.getCodigoPostal());
-			sqlClientes += " AND EXISTS (SELECT "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+" "+
-			" FROM  "+CenDireccionesBean.T_NOMBRETABLA+"   "+
-			" WHERE "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FECHABAJA+" is null "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+"= :"+contador+") ";
-       }
-// 15
-       if (formulario.getTelefono()!=null && !formulario.getTelefono().trim().equals("")) {
-    	   contador++;
-    	   codigos.put(new Integer (contador),formulario.getTelefono());
-			sqlClientes += " AND EXISTS (SELECT 1 "+
-			" FROM  "+CenDireccionesBean.T_NOMBRETABLA+"  "+
-			" WHERE "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FECHABAJA+" is null ";
-			contador++;
-			sqlClientes +=" AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_TELEFONO1,contador,codigos);
-			contador++;
-			sqlClientes +=" OR "+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_TELEFONO2,contador,codigos)+" OR " +
-			
-			" "+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_MOVIL,contador,codigos)+")) ";
-	   }
-// 16
-       if (formulario.getFax()!=null && !formulario.getFax().trim().equals("")) {
-			sqlClientes += " AND EXISTS (SELECT 1 "+
-			" FROM  "+CenDireccionesBean.T_NOMBRETABLA+"   "+
-			" WHERE "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FECHABAJA+" is null "+
-    		" AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getFax().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FAX1)+" OR "+ComodinBusquedas.prepararSentenciaCompleta(formulario.getFax().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FAX2)+")) ";
-	   }
-// 17         
-       if (formulario.getCorreo()!=null && !formulario.getCorreo().trim().equals("")) {
-			sqlClientes += " AND EXISTS (SELECT "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CORREOELECTRONICO+""+
-			" FROM  "+CenDireccionesBean.T_NOMBRETABLA+"   "+
-			" WHERE "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-			" AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_FECHABAJA+" is null "+
-			" AND "+ComodinBusquedas.prepararSentenciaCompleta(formulario.getCorreo().trim(),CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CORREOELECTRONICO)+") ";
-			
-	   }
- 
-//  	 18
-       String fDesdeAlta = formulario.getFechaAltaDesde(); 
-	   String fHastaAlta = formulario.getFechaAltaHasta();
-		if ((fDesdeAlta != null && !fDesdeAlta.trim().equals("")) || (fHastaAlta != null && !fHastaAlta.trim().equals(""))) {
-			if (!fDesdeAlta.equals(""))
-				fDesdeAlta = GstDate.getApplicationFormatDate("", fDesdeAlta); 
-			if (!fHastaAlta.equals(""))
-				fHastaAlta = GstDate.getApplicationFormatDate("", fHastaAlta);
-			sqlClientes += " AND EXISTS (SELECT 1 "+ 
-											" FROM FAC_FACTURA "+
-											" WHERE FAC_FACTURA.IDPERSONA = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-											" AND FAC_FACTURA.IDINSTITUCION = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" ";
-			
-			
-			Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind("FAC_FACTURA.FECHAEMISION", fDesdeAlta, fHastaAlta,contador,codigos);
-			
-			contador=new Integer(vCondicion.get(0).toString()).intValue();
-			sqlClientes +=" and " + vCondicion.get(1) + ") ";
-			
-		}
-      
-//	  	 20 fecha nacimiento
-      String fDesdeNac = formulario.getFechaNacimientoDesde(); 
-	   String fHastaNac = formulario.getFechaNacimientoHasta();
-		if ((fDesdeNac != null && !fDesdeNac.trim().equals("")) || (fHastaNac != null && !fHastaNac.trim().equals(""))) {
-			if (!fDesdeNac.equals(""))
-				fDesdeNac = GstDate.getApplicationFormatDate("", fDesdeNac); 
-			if (!fHastaNac.equals(""))
-				fHastaNac = GstDate.getApplicationFormatDate("", fHastaNac);
-			
-			Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind(CenPersonaBean.C_FECHANACIMIENTO, fDesdeNac, fHastaNac,contador,codigos);
-			
-			contador=new Integer(vCondicion.get(0).toString()).intValue();
-			
-			sqlClientes +=" and " + vCondicion.get(1);
-
-		}
-
-//     22 Tipo Apunte
-       if (formulario.getTipoApunte()!=null && !formulario.getTipoApunte().equals("")){
-       	contador++;
-       	codigos.put(new Integer(contador),formulario.getTipoApunte());
-       	sqlClientes +=   " AND EXISTS (SELECT 1 "+
-									      " FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-										  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-			                                " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" "+
-		                                    " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador+
-											" AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";
-				
-				
-	   }
-//       22 idTipoCVSubtipo1
-       if (formulario.getIdTipoCVSubtipo1()!=null && !formulario.getIdTipoCVSubtipo1().equals("")){
-    	   String[] datosCVSubtipo1;
-    	   datosCVSubtipo1=formulario.getIdTipoCVSubtipo1().toString().split("@");
-			  idTipoCVSubtipo1=new Integer(datosCVSubtipo1[0]);
-			  idInstitucionSubtipo1=new Integer(datosCVSubtipo1[1]);
-			  sqlClientes +=   " AND EXISTS (SELECT 1 "+
-		 " FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-		  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-           " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" ";
-		contador++;
-       	codigos.put(new Integer(contador),formulario.getTipoApunte());
-       	sqlClientes +=  " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador;
-       	contador++;
-       	codigos.put(new Integer(contador),idTipoCVSubtipo1.toString());
-       	sqlClientes +=   " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+"=:"+contador;
-       	contador++;
-       	codigos.put(new Integer(contador),idInstitucionSubtipo1.toString());
-       	sqlClientes +=   " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+"=:"+contador+
-			                  " AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";														
-	   }
-      	       
-       
-//       22 idTipoCVSubtipo2
-       if (formulario.getIdTipoCVSubtipo2()!=null && !formulario.getIdTipoCVSubtipo2().equals("")){
-    	   String[] datosCVSubtipo2;
-			 datosCVSubtipo2=formulario.getIdTipoCVSubtipo2().toString().split("@");
-			 idTipoCVSubtipo2=new Integer(datosCVSubtipo2[0]);
-			 idInstitucionSubtipo2=new Integer(datosCVSubtipo2[1]);
-			 sqlClientes +=   " AND EXISTS (SELECT 1 "+
-		" FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-		  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-         " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" ";
-		contador++;
-       	codigos.put(new Integer(contador),formulario.getTipoApunte());
-       	sqlClientes += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador;
-       	contador++;
-       	codigos.put(new Integer(contador),idTipoCVSubtipo2.toString());
-       	sqlClientes += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+"=:"+contador;
-       	contador++;
-       	codigos.put(new Integer(contador),idInstitucionSubtipo2.toString()); 
-       	sqlClientes += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION_SUBT2+"=:"+contador;
-       	
-       	sqlClientes +=  " AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";
-											
-				
-				
-	   }	       
-   
-       //aalg: se añaden los filtros por colegio. Se buscarán aquellos letrados que tengan alguna colegiación que cumpla todos los criterios especificados
-       String sqlSubSelect = "SELECT DISTINCT "+ CenColegiadoBean.C_IDPERSONA+ " FROM " + CenColegiadoBean.T_NOMBRETABLA + " WHERE 1=1 ";
-       
-       //Institución
-       if (formulario.getNombreInstitucion()!=null && !formulario.getNombreInstitucion().trim().equals("")) {
-	       	contador++;
-			codigos.put(new Integer(contador),formulario.getNombreInstitucion().trim());
-			sqlSubSelect += " AND " + CenColegiadoBean.C_IDINSTITUCION + " = :"+contador;
-       }  
-       //	 2. Número de colegiado 
-	   if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-	       	contador++;
-			codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-			sqlSubSelect += " AND LTRIM(DECODE(" + CenColegiadoBean.C_COMUNITARIO + ",'1'," + CenColegiadoBean.C_NCOMUNITARIO + ", " + CenColegiadoBean.C_NCOLEGIADO + "),'0') = LTRIM(:"+contador+",'0') " ;
-	   }
-//		 10 Ejerciente
-       if (formulario.getEjerciente()!=null && !formulario.getEjerciente().trim().equals("")) {
-       		contador++;
-       		codigos.put(new Integer(contador),formulario.getEjerciente().trim());
-       		sqlSubSelect += " AND ("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_SITUACIONEJERCICIO+" = :"+contador+") ";
-       }
-//  	 11
-       
-       String fDesdeInc = formulario.getFechaIncorporacionDesde(); 
-	   String fHastaInc = formulario.getFechaIncorporacionHasta();
-		if ((fDesdeInc != null && !fDesdeInc.trim().equals("")) || (fHastaInc != null && !fHastaInc.trim().equals(""))) {
-			
-			if (!fDesdeInc.equals(""))
-				fDesdeInc = GstDate.getApplicationFormatDate("", fDesdeInc); 
-			if (!fHastaInc.equals(""))
-				fHastaInc = GstDate.getApplicationFormatDate("", fHastaInc);
-			Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind(CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION, fDesdeInc, fHastaInc,contador,codigos);
-			
-			contador=new Integer(vCondicion.get(0).toString()).intValue();
-			sqlSubSelect +=" and " + vCondicion.get(1) ;
-		}
-       
-//     21 Comunitario
-       
-      if (formulario.getComunitario()!=null && !formulario.getComunitario().trim().equals("")) {
-      	contador++;
-      	codigos.put(new Integer(contador),formulario.getComunitario().trim());
-      	sqlSubSelect += " AND ("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" = :"+contador+") ";
-      }  
-      
-//	     12 Residencia. Tiene que estar en último lugar dentro de la subselect de colegiado
-	  if (formulario.getResidente()!=null && !formulario.getResidente().equals("")){
-	       if (formulario.getResidente().trim().equals("S")) {
-	       		
-	    	   sqlSubSelect += " having sum (decode("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_SITUACIONRESIDENTE+",'1',1,'S',1,0))=0  group by IdPersona";
-
-	       }else{
-	       	if (formulario.getResidente().trim().equals("M")){
-	       		
-	       		sqlSubSelect += " having sum (decode("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_SITUACIONRESIDENTE+",'1',1,'S',1,0))>1 group by IdPersona";
-	       	} 
-	       	else{
-	       		contador++;
-	        	codigos.put(new Integer(contador),formulario.getResidente().trim());
-	        	sqlSubSelect += " AND ("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_SITUACIONRESIDENTE+" = :"+contador+") ";
-	       	}
+	       if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
+	       		if (bBusqueda) {       		
+	       			sqlClientes += " AND (TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getNombrePersona().trim()) + ") ";			  
+	       		}else{
+	       			sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNombrePersona().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE) + ") ";  
+	       		}
 	       }
-	  }		
-
-//     24 Tipo Colegiacion
-       String sqlTipoCol = "";
-       if (formulario.getTipoColegiacion()!=null && !formulario.getTipoColegiacion().equals("")){
-
-		 	sqlTipoCol += "SELECT IDPERSONA "+
-		 					  "                              FROM CEN_DATOSCOLEGIALESESTADO A "+
-		 					  "           WHERE FECHAESTADO =(select max(FECHAESTADO) "+      
-		 					  "                   from CEN_DATOSCOLEGIALESESTADO B "+ 
-		 					  "                   where B.IDINSTITUCION = A.IDINSTITUCION	and B.IDPERSONA=A.IDPERSONA "+	
-		 					  "                   					and B.FECHAESTADO <= sysdate) ";
-		 	if (formulario.getTipoColegiacion().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA))){
-		 		sqlTipoCol +=" and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in ("+ClsConstants.ESTADO_COLEGIAL_EJERCIENTE+","+ClsConstants.ESTADO_COLEGIAL_SINEJERCER+")";
-		 	}
-		 	else{
-		 		contador++;
-			    codigos.put(new Integer(contador),formulario.getTipoColegiacion());
-			    sqlTipoCol +=" and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in (:"+contador+")";
-		 	}
-		 	sqlClientes+= "AND " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " IN (" + sqlTipoCol + ") ";
-		 }
-       if (!sqlSubSelect.substring(sqlSubSelect.length() - 4, sqlSubSelect.length()).equals("1=1 "))
-    	   sqlClientes+= " and " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " in (" + sqlSubSelect + ") ";
-       
-       //aalg: fin
-       sqlClientes+=" group by "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+
-	                  CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+", "+
-	                  CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+", "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+", "+
-	                  CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+", "+ 
-	                  CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_POBLACIONEXTRANJERA;
-	                 
-       
-     //aalg: se añade la ordenacion en español
-       sqlClientes+= " ORDER BY NLSSORT("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", 'NLS_SORT=SPANISH'), NLSSORT("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", 'NLS_SORT=SPANISH'), NLSSORT("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", 'NLS_SORT=SPANISH')";
-       
-      // No utilizamos la clase Paginador para la busqueda de letrados porque al filtrar por residencia la consulta no devolvia bien los 
-      //  datos que eran de tipo varchar (devolvía n veces el mismo resultado), utilizamos el paginador PaginadorCaseSensitive
-       // y hacemos a parte el tratamiento de mayusculas y signos de acentuación
-       PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sqlClientes,codigos);
-        totalRegistros = paginador.getNumeroTotalRegistros();
- 		
- 		if (totalRegistros==0){
- 			contador++;
- 			paginador =null;
- 		}
-      
-		
-       	
-		// RGG cambio para visibilidad
-		/*rcClientes = this.find(sqlClientes); 
-		salida = new Vector();
-		if (rcClientes!=null) {
-       		for (int i = 0; i < rcClientes.size(); i++)	{
-				Row filaClientes = (Row) rcClientes.get(i);
-				salida.add(filaClientes.getRow());
+				
+	       // Criterio de busqueda especial para los campos Apellido1 y Apellido2
+	       if (!formulario.getApellido1().trim().equals("") && (!formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
+	       		if (bBusqueda) {
+	       			sqlClientes += " AND (((TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1().trim()) + ") " +
+	       				" AND (TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido2().trim()) + ")) " +
+	       		        " OR (TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1().trim() + " " + formulario.getApellido2().trim()) + ")) ";
+	       		} else {
+	       			sqlClientes += " AND (((" + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1) + ") " +
+	   					" AND (" + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido2().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2) + ")) " +
+				        " OR (" + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim() + " " + formulario.getApellido2().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1) + ")) ";       		
+	       		}
+	       		
+	       } else if (!formulario.getApellido1().trim().equals("") && (formulario.getApellido2().trim().equals(""))) {//Apellido1 relleno
+	       		if (bBusqueda) {
+	       			sqlClientes += " AND ((TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido1()) + ") " +
+	       				" OR (TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") LIKE TRANSLATE(UPPER('" + UtilidadesBDAdm.validateChars(formulario.getApellido1().trim()) + " %'), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + "))) ";
+	       		}else{
+	       			sqlClientes += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido1().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1);       		
+	       		}
+	       		
+	       } else if (formulario.getApellido1().trim().equals("") && (!formulario.getApellido2().trim().equals(""))) {//Apellido2 relleno
+	       		if (bBusqueda) {
+	       			sqlClientes += " AND (TRANSLATE(UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + "), " + ComodinBusquedas.vocalesBuscar + ", " + ComodinBusquedas.vocalesSustituir + ") " + ComodinBusquedas.prepararSentenciaExactaTranslateUpper(formulario.getApellido2().trim()) + ") ";
+	       		} else {
+	       			sqlClientes += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getApellido2().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2); 			               
+	       		}       	
+	       }           
+	       
+	       /*Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, 
+	        * en el caso de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte la consulta adecuada.    
+	        */
+	       if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
+	    	   if (bBusqueda) {
+	    		   sqlClientes +=" AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") = '" + formulario.getNif().trim().toUpperCase() + "' ";    		   
+	    	   }else{
+	    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
+	    			   sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNif().trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF) + ") ";
+	    		   }else{
+	    			   sqlClientes +=" AND " + ComodinBusquedas.prepararSentenciaNIFUpper(formulario.getNif(), "UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") ");
+	    		   }
+	    	   }
+	       }
+	       
+	       String grupoClientes=formulario.getGrupoClientes();
+	       if (grupoClientes!=null && !grupoClientes.trim().equals("")) {
+	    	   int coma=grupoClientes.indexOf(",");
+	    	   if(coma!=-1){
+	    	   		contador++;
+	    	   		codigos.put(new Integer(contador), grupoClientes.substring(0,coma));   	   	    	   	
+	    	   		sqlClientes += " AND EXISTS (SELECT 1 " +
+		   				" FROM " + CenGruposClienteClienteBean.T_NOMBRETABLA +
+	    			   	" WHERE " + CenGruposClienteClienteBean.T_NOMBRETABLA + "." + CenGruposClienteClienteBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+	    			   		" AND " + CenGruposClienteClienteBean.T_NOMBRETABLA + "." + CenGruposClienteClienteBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+	    			   		" AND " + CenGruposClienteClienteBean.T_NOMBRETABLA + "." + CenGruposClienteClienteBean.C_IDGRUPO + " = :" + contador;
+	    	   	
+	    	   		contador++;
+	    	   		codigos.put(new Integer(contador),grupoClientes.substring(coma+1));
+	    	   		sqlClientes += " AND " + CenGruposClienteClienteBean.T_NOMBRETABLA + "." + CenGruposClienteClienteBean.C_IDINSTITUCION_GRUPO + " = :" + contador + ") ";
+	    	   }
+	       }       
+	
+	       if (formulario.getSexo()!=null && !formulario.getSexo().trim().equals("")) {
+	    	   	contador++;
+	    	   	codigos.put(new Integer (contador), formulario.getSexo());
+	       		sqlClientes += " AND (" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_SEXO + " = :" + contador + ") ";
+	       }
+	       
+	       if (formulario.getFechaIncorporacion()!=null && !formulario.getFechaIncorporacion().trim().equals("")) {
+	    	   	contador++;
+	    	   	codigos.put(new Integer (contador), formulario.getFechaIncorporacion());
+	       		sqlClientes += " AND (TO_CHAR(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_FECHAINCORPORACION + ", 'DD/MM/YYYY') = :" + contador + ") ";
+	       }
+	       
+	       if (formulario.getDomicilio()!=null && !formulario.getDomicilio().trim().equals("")) {
+	       	  	sqlClientes += " AND EXISTS (SELECT " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO +
+	       			" FROM " + CenDireccionesBean.T_NOMBRETABLA +
+	       			" WHERE " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+	       				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+	       				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " is null " +
+	       				" AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getDomicilio().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO) + ") ";
+	       }       
+	
+	       if (formulario.getCodigoPostal()!=null && !formulario.getCodigoPostal().trim().equals("")) {
+	    	   	contador++;
+	    	   	codigos.put(new Integer (contador),formulario.getCodigoPostal());
+	    	   	sqlClientes += " AND EXISTS (SELECT " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL +
+		   			" FROM " + CenDireccionesBean.T_NOMBRETABLA +
+		   			" WHERE " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+		   				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+		   				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " is null " +
+		   				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL + " = :" + contador + ") ";
+	       }
+	
+	       if (formulario.getTelefono()!=null && !formulario.getTelefono().trim().equals("")) {
+	    	   	contador++;
+	    	   	codigos.put(new Integer (contador),formulario.getTelefono());
+	    	   	sqlClientes += " AND EXISTS (SELECT 1 "+
+		   			" FROM " + CenDireccionesBean.T_NOMBRETABLA +
+		   			" WHERE " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+		   				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+		   				" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " is null ";
+	    	   	
+				contador++;
+				sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO1, contador, codigos);
+				
+				contador++;
+				sqlClientes += " OR " + ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO2, contador, codigos) +
+					" OR " + ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getTelefono().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_MOVIL, contador, codigos) + ")) ";
+		   }
+	       
+	       if (formulario.getFax()!=null && !formulario.getFax().trim().equals("")) {
+				sqlClientes += " AND EXISTS (SELECT 1 "+
+					" FROM  " + CenDireccionesBean.T_NOMBRETABLA +
+					" WHERE " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+						" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+						" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " is null " +
+						" AND (" + ComodinBusquedas.prepararSentenciaCompleta(formulario.getFax().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX1) + 
+						" OR " + ComodinBusquedas.prepararSentenciaCompleta(formulario.getFax().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX2) + ")) ";
+		   }
+	
+	       if (formulario.getCorreo()!=null && !formulario.getCorreo().trim().equals("")) {
+				sqlClientes += " AND EXISTS (SELECT " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CORREOELECTRONICO +
+					" FROM " + CenDireccionesBean.T_NOMBRETABLA +
+					" WHERE " +CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION +
+						" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+						" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " is null " +
+						" AND " + ComodinBusquedas.prepararSentenciaCompleta(formulario.getCorreo().trim(), CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CORREOELECTRONICO) + ") ";			
+		   }
+	 
+	       String fDesdeAlta = formulario.getFechaAltaDesde(); 
+		   String fHastaAlta = formulario.getFechaAltaHasta();
+			if ((fDesdeAlta != null && !fDesdeAlta.trim().equals("")) || (fHastaAlta != null && !fHastaAlta.trim().equals(""))) {
+				if (!fDesdeAlta.equals(""))
+					fDesdeAlta = GstDate.getApplicationFormatDate("", fDesdeAlta); 
+				
+				if (!fHastaAlta.equals(""))
+					fHastaAlta = GstDate.getApplicationFormatDate("", fHastaAlta);
+				
+				sqlClientes += " AND EXISTS (SELECT 1 " + 
+					" FROM FAC_FACTURA " +
+					" WHERE FAC_FACTURA.IDPERSONA = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
+					" AND FAC_FACTURA.IDINSTITUCION = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION;
+				
+				Vector vCondicion = GstDate.dateBetweenDesdeAndHastaBind("FAC_FACTURA.FECHAEMISION", fDesdeAlta, fHastaAlta, contador, codigos);			
+				contador = new Integer(vCondicion.get(0).toString()).intValue();
+				sqlClientes += " AND " + vCondicion.get(1) + ") ";			
 			}
-		}*/
-		
-		return paginador;
-		} 
-		catch (Exception e) { 	
+	      
+			// Fecha Nacimiento
+			String fDesdeNac = formulario.getFechaNacimientoDesde(); 
+			String fHastaNac = formulario.getFechaNacimientoHasta();
+			if ((fDesdeNac != null && !fDesdeNac.trim().equals("")) || (fHastaNac != null && !fHastaNac.trim().equals(""))) {
+				if (!fDesdeNac.equals(""))
+					fDesdeNac = GstDate.getApplicationFormatDate("", fDesdeNac); 
+				
+				if (!fHastaNac.equals(""))
+					fHastaNac = GstDate.getApplicationFormatDate("", fHastaNac);
+				
+				Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind(CenPersonaBean.C_FECHANACIMIENTO, fDesdeNac, fHastaNac, contador, codigos);			
+				contador=new Integer(vCondicion.get(0).toString()).intValue();			
+				sqlClientes += " AND " + vCondicion.get(1);
+			}
+	
+			// Tipo Apunte
+			if (formulario.getTipoApunte()!=null && !formulario.getTipoApunte().equals("")){
+	       		contador++;
+	       		codigos.put(new Integer(contador), formulario.getTipoApunte());
+	       		sqlClientes += " AND EXISTS (SELECT 1 " +
+	   				" FROM " + CenDatosCVBean.T_NOMBRETABLA +
+					" WHERE " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA +
+				    	" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION +
+			            " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCV + " = :" + contador +
+						" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + " IS NULL) ";
+		   	}
+	       
+	       	// idTipoCVSubtipo1
+	       	if (formulario.getIdTipoCVSubtipo1()!=null && !formulario.getIdTipoCVSubtipo1().equals("")){
+	    	   	String[] datosCVSubtipo1;
+	    	   	datosCVSubtipo1 = formulario.getIdTipoCVSubtipo1().toString().split("@");
+	    	   	idTipoCVSubtipo1 = new Integer(datosCVSubtipo1[0]);
+				idInstitucionSubtipo1 = new Integer(datosCVSubtipo1[1]);
+				sqlClientes +=   " AND EXISTS (SELECT 1 " +
+					" FROM  " + CenDatosCVBean.T_NOMBRETABLA +
+					" WHERE " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA +
+						" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION;
+			
+				contador++;
+				codigos.put(new Integer(contador), formulario.getTipoApunte());
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCV + " = :" + contador;
+				
+				contador++;
+				codigos.put(new Integer(contador), idTipoCVSubtipo1.toString());
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO1 + " = :" + contador;
+				
+				contador++;
+				codigos.put(new Integer(contador), idInstitucionSubtipo1.toString());
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT1 + " = :" + contador +
+					" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + " IS NULL) ";														
+		   	}
+	      	              
+	       	// idTipoCVSubtipo2
+	       	if (formulario.getIdTipoCVSubtipo2()!=null && !formulario.getIdTipoCVSubtipo2().equals("")){
+	    	   	String[] datosCVSubtipo2;
+				datosCVSubtipo2 = formulario.getIdTipoCVSubtipo2().toString().split("@");
+				idTipoCVSubtipo2 = new Integer(datosCVSubtipo2[0]);
+				idInstitucionSubtipo2 = new Integer(datosCVSubtipo2[1]);
+				sqlClientes += " AND EXISTS (SELECT 1 " +
+					" FROM " + CenDatosCVBean.T_NOMBRETABLA +
+					" WHERE " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA +
+						" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION;
+				
+				contador++;
+				codigos.put(new Integer(contador), formulario.getTipoApunte());
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCV + " = :" + contador;
+				
+				contador++;
+				codigos.put(new Integer(contador), idTipoCVSubtipo2.toString());
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO2 + " = :" + contador;
+				
+				contador++;
+				codigos.put(new Integer(contador),idInstitucionSubtipo2.toString()); 
+				sqlClientes += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT2 + " = :" + contador +        	
+					" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + " IS NULL) ";
+		   	}	       
+	   
+	       	//aalg: se añaden los filtros por colegio. Se buscarán aquellos letrados que tengan alguna colegiación que cumpla todos los criterios especificados
+	       	String sqlSubSelect = "SELECT DISTINCT " + CenColegiadoBean.C_IDPERSONA + 
+			   " FROM " + CenColegiadoBean.T_NOMBRETABLA + " WHERE 1 = 1 ";
+	       
+	       	// Institución
+	       	if (formulario.getNombreInstitucion()!=null && !formulario.getNombreInstitucion().trim().equals("")) {
+		       	contador++;
+				codigos.put(new Integer(contador), formulario.getNombreInstitucion().trim());
+				sqlSubSelect += " AND " + CenColegiadoBean.C_IDINSTITUCION + " = :" + contador;
+	       	}
+	       
+	       	// Número de colegiado 
+		   	if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
+		       	contador++;
+				codigos.put(new Integer(contador), formulario.getNumeroColegiado().trim());
+				sqlSubSelect += " AND LTRIM(DECODE(" + CenColegiadoBean.C_COMUNITARIO + ", '1', " + CenColegiadoBean.C_NCOMUNITARIO + ", " + CenColegiadoBean.C_NCOLEGIADO + "),'0') = LTRIM(:" + contador + ", '0') " ;
+		   	}
+		   
+		   	// Ejerciente
+	       	if (formulario.getEjerciente()!=null && !formulario.getEjerciente().trim().equals("")) {
+	       		contador++;
+	       		codigos.put(new Integer(contador), formulario.getEjerciente().trim());
+	       		sqlSubSelect += " AND (" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_SITUACIONEJERCICIO + " = :" + contador + ") ";
+	       	}
+	       
+	       	String fDesdeInc = formulario.getFechaIncorporacionDesde(); 
+	       	String fHastaInc = formulario.getFechaIncorporacionHasta();
+			if ((fDesdeInc != null && !fDesdeInc.trim().equals("")) || (fHastaInc != null && !fHastaInc.trim().equals(""))) {			
+				if (!fDesdeInc.equals(""))
+					fDesdeInc = GstDate.getApplicationFormatDate("", fDesdeInc); 
+				
+				if (!fHastaInc.equals(""))
+					fHastaInc = GstDate.getApplicationFormatDate("", fHastaInc);
+				
+				Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind(CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_FECHAINCORPORACION, fDesdeInc, fHastaInc, contador, codigos);			
+				contador = new Integer(vCondicion.get(0).toString()).intValue();
+				sqlSubSelect +=" AND " + vCondicion.get(1);
+			}
+	       
+			// Comunitario       
+			if (formulario.getComunitario()!=null && !formulario.getComunitario().trim().equals("")) {
+				contador++;
+				codigos.put(new Integer(contador), formulario.getComunitario().trim());
+				sqlSubSelect += " AND (" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_COMUNITARIO + " = :" + contador + ") ";
+			}  
+	      
+			// Residencia. Tiene que estar en último lugar dentro de la subselect de colegiado
+			if (formulario.getResidente()!=null && !formulario.getResidente().equals("")){
+				if (formulario.getResidente().trim().equals("S")) {	       		
+		    	   sqlSubSelect += " HAVING SUM(DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_SITUACIONRESIDENTE + ", '1', 1, 'S', 1, 0)) = 0 " +
+	    			   " GROUP BY IdPersona ";
+	
+		       	} else {
+		       		if (formulario.getResidente().trim().equals("M")) {	       		
+		       			sqlSubSelect += " HAVING SUM(DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_SITUACIONRESIDENTE + ", '1', 1, 'S', 1, 0)) > 1 " +
+		       				" GROUP BY IdPersona ";
+		       		} else {
+		       			contador++;
+		       			codigos.put(new Integer(contador), formulario.getResidente().trim());
+		       			sqlSubSelect += " AND (" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_SITUACIONRESIDENTE + " = :" + contador + ") ";
+		       		}
+		       	}
+			}
+			
+			// Esta sentencia tiene que estar aqui, porque sino se pierden los contadores de sqlSubSelect
+			if (!sqlSubSelect.substring(sqlSubSelect.length()-6, sqlSubSelect.length()).equals("1 = 1 "))
+	    	   sqlClientes += " AND " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " IN (" + sqlSubSelect + ") ";
+	
+			// Tipo Colegiacion
+	       String sqlTipoCol = "";
+	       if (formulario.getTipoColegiacion()!=null && !formulario.getTipoColegiacion().equals("")){
+	
+	    	   sqlTipoCol += "SELECT IDPERSONA " +
+		 			" FROM CEN_DATOSCOLEGIALESESTADO A " +
+		 			" WHERE FECHAESTADO  = (SELECT MAX(FECHAESTADO) " +      
+			 			" FROM CEN_DATOSCOLEGIALESESTADO B " + 
+			 			" WHERE B.IDINSTITUCION = A.IDINSTITUCION " +
+			 				" AND B.IDPERSONA = A.IDPERSONA " +	
+			 				" AND B.FECHAESTADO <= sysdate) ";
+			 	
+			 	if (formulario.getTipoColegiacion().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA))){
+			 		sqlTipoCol += " AND " + CenDatosColegialesEstadoBean.C_IDESTADO + " IN (" + ClsConstants.ESTADO_COLEGIAL_EJERCIENTE + ", " + ClsConstants.ESTADO_COLEGIAL_SINEJERCER + ") ";
+			 		
+			 	} else {
+			 		contador++;
+				    codigos.put(new Integer(contador), formulario.getTipoColegiacion());
+				    sqlTipoCol += " AND "+CenDatosColegialesEstadoBean.C_IDESTADO + " IN (:" + contador + ") ";
+			 	}
+			 	
+			 	sqlClientes += " AND " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " IN (" + sqlTipoCol + ") ";
+	       }
+	       
+	       //aalg: fin
+	       sqlClientes +=" GROUP BY " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ", " +
+			  CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", " +
+			  CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", " +
+	          CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " + 
+			  CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_FECHANACIMIENTO + ", " +
+	          CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ", "+
+	          CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + ", " +
+	          CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_NOAPARECERREDABOGACIA + ", " +
+	          CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO + ", " +
+	          CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL + ", "+ 
+	          CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_NOMBRE + ", " +
+	          CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA;	                 
+	       
+	       //aalg: se añade la ordenacion en español
+	       sqlClientes += " ORDER BY NLSSORT(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", 'NLS_SORT=SPANISH'), " +
+			   " NLSSORT(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", 'NLS_SORT=SPANISH'), " +
+			   " NLSSORT(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", 'NLS_SORT=SPANISH')";
+	       
+	       	/*No utilizamos la clase Paginador para la busqueda de letrados porque al filtrar por residencia la consulta no devolvia bien los datos que eran de tipo varchar (devolvía n veces el mismo resultado), 
+	       	 * utilizamos el paginador PaginadorCaseSensitive y hacemos a parte el tratamiento de mayusculas y signos de acentuación
+	       	 */
+	       	PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sqlClientes,codigos);
+	        totalRegistros = paginador.getNumeroTotalRegistros();
+	 		
+	 		if (totalRegistros==0){
+	 			contador++;
+	 			paginador =null;
+	 		}
+			
+			return paginador;
+			
+		} catch (Exception e) { 	
 			throw new ClsExceptions(e,"Error obteniendo clientes colegiados"); 
 		}
 	}
