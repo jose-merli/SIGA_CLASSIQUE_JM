@@ -31,6 +31,7 @@
 	Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");		
 	String nombrePestanha = "";
 	String numeroPestanha = "";
+	
 	if (datosColegiado != null) {
 		nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
 		numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
@@ -96,8 +97,17 @@
 	}
 
 	
+	String botonNuevo = "";
+	if (usr.isLetrado()) {						
+		botonNuevo = "N";
+	} else { //Como administrador						
+		if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver")){
+			botonNuevo = "";
+		}else{
+			botonNuevo = "N";
+		}
+	}		
 	
-
 %>
 <html>
 <head>
@@ -221,6 +231,7 @@
 				String nTurno = "";
 		    	int recordNumber=1;
 		    	String select = "";
+		    	
 		    	Vector v = null;
 		    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
 		    	
@@ -232,10 +243,11 @@
 					if (usr.isLetrado()) {						
 						botones = "C,E";
 					} else { //Como administrador						
-						if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver"))
+						if (esFichaColegial && modoPestanha!=null && modoPestanha.equalsIgnoreCase("ver")){
 							botones = "C";
-						else
+						}else{
 							botones = "C,E,B";
+						}
 					}
 
 					// Verificamos si el turno permite la modificacion de la asistencia
@@ -303,9 +315,16 @@
 
 
 	<% if (!busquedaVolver.equals("volverNo")) { %>
-	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" />
+		
+		<% if (botonNuevo.equals("")) { %>
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" />
+		<% } else { %>
+			<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" />
+		<% } %>
+		
 	<% } else { %>
-	<siga:ConjBotonesAccion botones="N" clase="botonesDetalle" />
+		<siga:ConjBotonesAccion botones="<%=botonNuevo%>" clase="botonesDetalle" />
+	
 	<% } %>
 
 	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
