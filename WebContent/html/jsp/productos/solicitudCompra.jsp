@@ -800,7 +800,7 @@
 			frameborder="0"
 			marginheight="0"
 			marginwidth="0"
-			style="position:relative;height:45%;width:100%;"			 
+			style="position:relative;height:38%;width:100%;"			 
 			>					
 		</iframe>
 
@@ -814,7 +814,7 @@
 			frameborder="0"
 			marginheight="0"
 			marginwidth="0";					 
-			style="position:relative;height:41%;width:100%;"
+			style="position:relative;height:40%;width:100%;"
 			>					
 		</iframe>
 

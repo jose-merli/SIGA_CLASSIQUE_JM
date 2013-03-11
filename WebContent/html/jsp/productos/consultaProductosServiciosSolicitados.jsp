@@ -318,8 +318,6 @@
 	%> 
 			</siga:TablaCabecerasFijasExt>
 	
-	
-	<div id="tablaAbajo" style="position:relative; height:38%; width:100%;">		
 		<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 			<tr>
 				<td class="titulosPeq">
@@ -334,7 +332,7 @@
 	   		clase="tableTitle"
  			nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
 			tamanoCol="10,7,15,13,17,6,11,10,6,5"
-	   		alto="100%"
+	   		alto="37%"
 	   		ajusteAlto="false"
 			variasTablasEnLaMismaPagina="true">
 			
@@ -430,9 +428,8 @@
  				} // WHILE  			
 			} // ELSE  			 				
 			%> 
-		</siga:TablaCabecerasFijasExt>
-	</div>		
-<%}%>		
+		</siga:TablaCabecerasFijasExt>	
+	<%}%>		
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
