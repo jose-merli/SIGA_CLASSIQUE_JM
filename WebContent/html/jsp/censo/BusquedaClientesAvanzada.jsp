@@ -31,7 +31,7 @@
 	// datos seleccionados Combo
 	
 	ArrayList tipoColeg = new ArrayList();	
-	if (formulario.getTipoColegiacion()==null||formulario.getTipoColegiacion().equals("")){
+	if (formulario.getEstadoFormulario()==null||formulario.getEstadoFormulario().equals("")||formulario.getEstadoFormulario().equals("0")){
 	 	tipoColeg.add(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA));
 	} else {
 	 	tipoColeg.add(formulario.getTipoColegiacion());
@@ -331,6 +331,7 @@
 				<html:hidden name="busquedaClientesAvanzadaForm" property = "avanzada"/>
 				<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 				<html:hidden property="seleccionarTodos" />
+				<html:hidden property="estadoFormulario" value="1"/>
 				
 				<tr>				
 					<td>
