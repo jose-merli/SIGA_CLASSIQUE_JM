@@ -250,6 +250,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 		
 		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
+		
+		sql.append(getQueryEjgs(tipoResolucionDesigna));
+		
 		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
 		sql.append(" AND D.ANIO = DL.ANIO ");
 		sql.append(" AND D.NUMERO = DL.NUMERO ");
@@ -259,6 +262,15 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
+		
+		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable) ||
+				tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG) ||
+				tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
+				sql.append(" AND D.IDINSTITUCION = EJGS.IDINSTITUCION ");
+				sql.append(" AND D.IDTURNO = EJGS.IDTURNO ");
+				sql.append(" AND D.ANIO = EJGS.ANIODESIGNA ");
+				sql.append("  AND D.NUMERO = EJGS.NUMERODESIGNA ");
+		}
 		
 		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
 			sql.append(" and DL.IDPERSONA = :");
