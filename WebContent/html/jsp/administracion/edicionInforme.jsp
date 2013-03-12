@@ -323,7 +323,7 @@ function onChangeTipoIntercambio() {
 			</td>						
 		
 			<td class="labelText" rowspan ="4"><siga:Idioma key="administracion.informes.literal.descripcion"/>(*)</td>
-			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
+			<td rowspan ="4" colspan="3">&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1000)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1000);" styleClass="boxCombo" maxlength="1000" readonly="false"></html:textarea></td>
 		</tr>
 		<tr>
 			<td class="labelText">
@@ -633,8 +633,6 @@ function inicio()
 	
 	if(document.InformeForm.modo.value=='modificar'){
 
-
-
 		if(${intercambioTelematico} == '0'){
 			document.getElementById("idInstitucion").disabled="disabled";
 			document.getElementById("idPlantilla").disabled="disabled";
@@ -665,13 +663,18 @@ function inicio()
 			jQuery('#idButton').removeAttr("disabled");
 			jQuery('#idButtonGuardar').removeAttr("disabled");
 			jQuery('#modoInterno').removeAttr("disabled");
-		}	
+		}
+		
+		document.getElementById('idTipoIntercambioTelematico').disabled="disabled";
 
 		if(document.InformeFormEdicion.idInstitucion.value == '0'){
 			document.getElementById("idTipoEnvioDefecto").disabled="disabled";
 			document.getElementById("idPlantillaEnvioDefecto").disabled="disabled";
 		}
 		
+		if(document.getElementById("location").value=='2000'){
+			jQuery('#idTipoIntercambioTelematico').removeAttr("disabled");
+		}
 
 	}else if(document.InformeForm.modo.value=='consultar'){
 	
@@ -703,16 +706,15 @@ function inicio()
 		if(document.getElementById("location").value=='2000'){
 			document.getElementById("idInstitucion").disabled="";
 			document.getElementById("idPlantilla").disabled="";
-
 			document.getElementById("idTipoInforme").disabled="";
-			
+			document.getElementById('idTipoIntercambioTelematico').disabled="";
 			// document.getElementById("tipoFormato").disabled="";
 		}else{
 			//Mostramos la propia institcion(0 seleciona , 1 pordefecto, 2 intitucion)
 			document.getElementById("idInstitucion").selectedIndex = "2";
 			document.getElementById("idInstitucion").disabled="disabled";
 			document.getElementById("idPlantilla").disabled="";
-
+			document.getElementById('idTipoIntercambioTelematico').disabled="disabled";
 
 			document.getElementById("idTipoInforme").disabled="";
 			// document.getElementById("tipoFormato").disabled="";
