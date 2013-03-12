@@ -156,12 +156,10 @@
 				var j;
 				var tabla;
 				//mhg - INC_08066_SIGA Cuando se da de baja una solicitud no hace falta pedir la fecha efectiva por lo que se ha quitado.
-				<%if((esLetrado)&&(!aprobarSolicitudBaja)){%>
-		    		if (!confirm("<siga:Idioma key="pys.solicitarBaja.literal.confirmaSolicitud"/>")){
-		    			finsubicono('solicitarbaja_'+fila);
-		    			return false;
-		    		}
-		    	<%}%>
+				if (!confirm("<siga:Idioma key="pys.solicitarBaja.literal.confirmaSolicitud"/>")){
+	    			finsubicono('solicitarbaja_'+fila);
+	    			return false;
+				}
 				tabla = document.getElementById('productos');
 				
 				var flag = true;
