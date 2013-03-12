@@ -781,7 +781,7 @@ public class HelperInformesAdm  {
 				String idPersonaDenunciadoPrincipal = null;
 				for (int i = 0; i < resultadoConsulta.size(); i++) {
 					reg = (Hashtable) resultadoConsulta.get(i);
-					if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+//					if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 					datoNuevo = new Hashtable();
 					datoNuevo.putAll(datoActual);
 
@@ -797,21 +797,23 @@ public class HelperInformesAdm  {
 					// .. resto de campos obtenidos.
 					datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 					datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
-					datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-					datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-					datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-					datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-					datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-					datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-					datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-					datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-					datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-					datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-					datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-					datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-					datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-					datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-					datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+					
+					datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+					datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
+					datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
+					datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
+					datoNuevo.put("TELEFONO1_DEST",reg.get("TELEFONO1")!=null?(String)reg.get("TELEFONO1"):"") ;
+					datoNuevo.put("TELEFONO2_DEST",reg.get("TELEFONO2")!=null?(String)reg.get("TELEFONO2"):"") ;
+					datoNuevo.put("MOVIL_DEST",reg.get("MOVIL")!=null?(String)reg.get("MOVIL"):"") ;
+					datoNuevo.put("FAX1_DEST",reg.get("FAX1")!=null?(String)reg.get("FAX1"):"") ;
+					datoNuevo.put("FAX2_DEST",reg.get("FAX2")!=null?(String)reg.get("FAX2"):"") ;
+					datoNuevo.put("CORREOELECTRONICO_DEST",reg.get("CORREOELECTRONICO")!=null?(String)reg.get("CORREOELECTRONICO"):"");
+					datoNuevo.put("PAGINAWEB_DEST",reg.get("PAGINAWEB")!=null?(String)reg.get("PAGINAWEB"):"") ;
+					datoNuevo.put("POBLACIONEXTRANJERA_DEST",reg.get("POBLACIONEXTRANJERA")!=null?(String)reg.get("POBLACIONEXTRANJERA"):"") ;
+					datoNuevo.put("NOMBRE_POBLACION_DEST",reg.get("NOMBRE_POBLACION")!=null?(String)reg.get("NOMBRE_POBLACION"):"") ;
+					datoNuevo.put("NOMBRE_PROVINCIA_DEST",reg.get("NOMBRE_PROVINCIA")!=null?(String)reg.get("NOMBRE_PROVINCIA"):"") ;
+					datoNuevo.put("NOMBRE_PAIS_DEST",reg.get("NOMBRE_PAIS")!=null?(String)reg.get("NOMBRE_PAIS"):"") ;
+					
 					datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
 					
 //					idPersonaDenunciadoPrincipal = (String) reg.get("IDDENUNCIADO_PRINCIPAL");
@@ -876,7 +878,7 @@ public class HelperInformesAdm  {
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
-						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+//						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
 
@@ -892,21 +894,25 @@ public class HelperInformesAdm  {
 						datoNuevo.put("O_A_DEST", (String) reg.get("O_A"));
 						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 						// .. resto de campos obtenidos.
-						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+						
+						
+						
+						datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+						datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
+						datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
+						datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
+						datoNuevo.put("TELEFONO1_DEST",reg.get("TELEFONO1")!=null?(String)reg.get("TELEFONO1"):"") ;
+						datoNuevo.put("TELEFONO2_DEST",reg.get("TELEFONO2")!=null?(String)reg.get("TELEFONO2"):"") ;
+						datoNuevo.put("MOVIL_DEST",reg.get("MOVIL")!=null?(String)reg.get("MOVIL"):"") ;
+						datoNuevo.put("FAX1_DEST",reg.get("FAX1")!=null?(String)reg.get("FAX1"):"") ;
+						datoNuevo.put("FAX2_DEST",reg.get("FAX2")!=null?(String)reg.get("FAX2"):"") ;
+						datoNuevo.put("CORREOELECTRONICO_DEST",reg.get("CORREOELECTRONICO")!=null?(String)reg.get("CORREOELECTRONICO"):"");
+						datoNuevo.put("PAGINAWEB_DEST",reg.get("PAGINAWEB")!=null?(String)reg.get("PAGINAWEB"):"") ;
+						datoNuevo.put("POBLACIONEXTRANJERA_DEST",reg.get("POBLACIONEXTRANJERA")!=null?(String)reg.get("POBLACIONEXTRANJERA"):"") ;
+						datoNuevo.put("NOMBRE_POBLACION_DEST",reg.get("NOMBRE_POBLACION")!=null?(String)reg.get("NOMBRE_POBLACION"):"") ;
+						datoNuevo.put("NOMBRE_PROVINCIA_DEST",reg.get("NOMBRE_PROVINCIA")!=null?(String)reg.get("NOMBRE_PROVINCIA"):"") ;
+						datoNuevo.put("NOMBRE_PAIS_DEST",reg.get("NOMBRE_PAIS")!=null?(String)reg.get("NOMBRE_PAIS"):"") ;
+						
 						datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
 						denunciantesVector.add(datoNuevo);
 							
@@ -970,7 +976,7 @@ public class HelperInformesAdm  {
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
-						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+//						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
 
@@ -987,21 +993,22 @@ public class HelperInformesAdm  {
 						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 						datoNuevo.put("DESC_ROLPARTE", (String) reg.get("NOMBREROL"));
 						// .. resto de campos obtenidos.
-						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
-						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
-						datoNuevo.put("DOMICILIO_DEST", (String) reg.get("DOMICILIO"));
-						datoNuevo.put("CODIGOPOSTAL_DEST", (String) reg.get("CODIGOPOSTAL"));
-						datoNuevo.put("TELEFONO1_DEST", (String) reg.get("TELEFONO1"));
-						datoNuevo.put("TELEFONO2_DEST", (String) reg.get("TELEFONO2"));
-						datoNuevo.put("MOVIL_DEST", (String) reg.get("MOVIL"));
-						datoNuevo.put("FAX1_DEST", (String) reg.get("FAX1"));
-						datoNuevo.put("FAX2_DEST", (String) reg.get("FAX2"));
-						datoNuevo.put("CORREOELECTRONICO_DEST", (String) reg.get("CORREOELECTRONICO"));
-						datoNuevo.put("PAGINAWEB_DEST", (String) reg.get("PAGINAWEB"));
-						datoNuevo.put("POBLACIONEXTRANJERA_DEST", (String) reg.get("POBLACIONEXTRANJERA"));
-						datoNuevo.put("NOMBRE_POBLACION_DEST", (String) reg.get("NOMBRE_POBLACION"));
-						datoNuevo.put("NOMBRE_PROVINCIA_DEST", (String) reg.get("NOMBRE_PROVINCIA"));
-						datoNuevo.put("NOMBRE_PAIS_DEST", (String) reg.get("NOMBRE_PAIS"));
+						datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+						datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
+						datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
+						datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
+						datoNuevo.put("TELEFONO1_DEST",reg.get("TELEFONO1")!=null?(String)reg.get("TELEFONO1"):"") ;
+						datoNuevo.put("TELEFONO2_DEST",reg.get("TELEFONO2")!=null?(String)reg.get("TELEFONO2"):"") ;
+						datoNuevo.put("MOVIL_DEST",reg.get("MOVIL")!=null?(String)reg.get("MOVIL"):"") ;
+						datoNuevo.put("FAX1_DEST",reg.get("FAX1")!=null?(String)reg.get("FAX1"):"") ;
+						datoNuevo.put("FAX2_DEST",reg.get("FAX2")!=null?(String)reg.get("FAX2"):"") ;
+						datoNuevo.put("CORREOELECTRONICO_DEST",reg.get("CORREOELECTRONICO")!=null?(String)reg.get("CORREOELECTRONICO"):"");
+						datoNuevo.put("PAGINAWEB_DEST",reg.get("PAGINAWEB")!=null?(String)reg.get("PAGINAWEB"):"") ;
+						datoNuevo.put("POBLACIONEXTRANJERA_DEST",reg.get("POBLACIONEXTRANJERA")!=null?(String)reg.get("POBLACIONEXTRANJERA"):"") ;
+						datoNuevo.put("NOMBRE_POBLACION_DEST",reg.get("NOMBRE_POBLACION")!=null?(String)reg.get("NOMBRE_POBLACION"):"") ;
+						datoNuevo.put("NOMBRE_PROVINCIA_DEST",reg.get("NOMBRE_PROVINCIA")!=null?(String)reg.get("NOMBRE_PROVINCIA"):"") ;
+						datoNuevo.put("NOMBRE_PAIS_DEST",reg.get("NOMBRE_PAIS")!=null?(String)reg.get("NOMBRE_PAIS"):"") ;
+						
 						datoNuevo.put("IDINTERESADO", (String) reg.get("IDINTERESADO"));
 						partesVector.add(datoNuevo);
 						
@@ -1208,5 +1215,6 @@ public class HelperInformesAdm  {
 		}
 
 			} //getImplicadosDireccionesExpediente()
+	
 
 }
