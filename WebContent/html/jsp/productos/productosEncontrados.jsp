@@ -127,13 +127,15 @@
 		 </table>
 		
 			<siga:TablaCabecerasFijas 
-				nombre="tablaDatos"
-				borde="1"
+				nombre="productosEncontrados"
+				borde=""
 				estilo=""
 		   		clase="tableTitle"
 				nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,"  
 				tamanoCol="30,30,30,10"
 				alto="100%" 
+				ajuste="0"				
+				ajusteChrome="31"
 			>
 
 <%

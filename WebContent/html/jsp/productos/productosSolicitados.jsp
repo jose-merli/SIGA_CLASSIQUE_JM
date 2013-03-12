@@ -51,7 +51,7 @@
 			sub();
 			  var existe=0;
 			//validamos antes que si se ha elegido un producto de tipo Certificado, el combo de institucion Origen/Presentacion debe estar relleno
-			 var tabla=document.getElementById('cabecera');
+			 var tabla=document.getElementById('productosSolicitados');
 			
 				for(i=0; i<tabla.rows.length-1; i++)
 				{
@@ -92,7 +92,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body class="tablaCentralCampos" onload="ajusteAltoBotones('cabeceraDiv')">			
+<body class="tablaCentralCampos">			
 
 	<html:form action="/PYS_GenerarSolicitudes.do" method="POST"  >
 		<input type="hidden" name="modo" 				value="abrirBusquedaModal">	
@@ -112,13 +112,15 @@
 		 </tr>
 		 </table>
 			<siga:TablaCabecerasFijas 
-			nombre="cabecera"
-			borde="1"
+			nombre="productosSolicitados"
+			borde=""
 			estilo=""
 	   		clase="tableTitle"
 			nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
 			tamanoCol="30,30,23,7,10"
-			alto="100%" >
+			alto="100%"
+			ajuste="30"
+			ajusteChrome="45">
 <% 				
 				if(carro == null) 
 				{ 	
