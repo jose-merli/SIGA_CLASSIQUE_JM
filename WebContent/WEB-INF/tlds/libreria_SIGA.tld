@@ -318,6 +318,11 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>ajusteChrome</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>    
   </tag>
 
   <!-- TABLA EXT CON CABECERA FIJA -->

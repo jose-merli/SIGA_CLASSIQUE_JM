@@ -41,6 +41,7 @@ public class TagTabla extends TagSupport {
 	boolean scrollModal=false;
 	boolean ajusteAlto=true;
 	String ajuste="0";
+	String ajusteChrome="0";
 	boolean ajusteBotonera=false;
 	boolean ajustePaginador=false;
 	boolean activarFilaSel=false;			// Activa la seleccion automatica de la fila pulsada
@@ -163,6 +164,15 @@ public class TagTabla extends TagSupport {
 	{
 		this.activarFilaSel = UtilidadesString.stringToBoolean(dato);		
 	}
+	public void setAjusteChrome (String dato) {
+		try {
+			if (dato != null) 
+				this.ajusteChrome = dato;
+		}
+		catch (Exception e) {
+			this.ajusteChrome = "0";
+		}
+	}		
 
 	
 	public int doStartTag() 
@@ -496,9 +506,21 @@ public class TagTabla extends TagSupport {
 				*/
 				if (this.ajuste == null || "".equals(this.ajuste))
 					this.ajuste = "0";
+					
 				out.println("");
-				out.println("jQuery(document).ready(function() {validarAncho_" + this.nombre + "(); var espacioMenos = "+this.ajuste+"; "+sAjusteBotonera+" ajusteAltoMain('" + this.nombre + "Div',espacioMenos);});");
-				out.println("");
+				out.println("jQuery(document).ready(function() {");
+				out.println("   validarAncho_" + this.nombre + "();");
+				
+				out.println(" 	var navegador = navigator.userAgent; ");
+				out.println(" 	if (navigator.userAgent.indexOf('Chrome') !=-1) { ");
+				out.println("    	var espacioMenos = " + this.ajuste + " + " + this.ajusteChrome + ";");
+				out.println("   } else {");
+				out.println("    	var espacioMenos = " + this.ajuste + ";");
+				out.println("   }");
+		
+				out.println(    sAjusteBotonera);
+				out.println("   ajusteAltoMain('" + this.nombre + "Div',espacioMenos);");
+				out.println("});");
 			}
 			out.println("");
 			out.println(" function validarAncho_" + this.nombre + "() {");
@@ -532,9 +554,12 @@ public class TagTabla extends TagSupport {
 			out.println(" } ");
 			
 			//BNS INC_10371_SIGA			
-			out.println("	jQuery(document).ready(function() {");						
+			out.println("	jQuery(document).ready(function() {");
+			out.println(" 	var hDatos = jQuery('#" + this.nombre + "').css('height');");
+			out.println(" 	var hDiv = jQuery('#" + this.nombre + "Div').css('height'); ");		
+			out.println("	if (hDatos.length > hDiv.length || (hDatos.length==hDiv.length && hDatos > hDiv))");
 			//out.println("alert(jQuery('#" + this.nombre + "').css('height')+ ' > ' + jQuery('#" + this.nombre + "Div').css('height'))");
-			out.println("if (jQuery('#" + this.nombre + "').css('height') > jQuery('#" + this.nombre + "Div').css('height'))");
+			//out.println("if (jQuery('#" + this.nombre + "').css('height') > jQuery('#" + this.nombre + "Div').css('height'))");
 			//out.println("    	jQuery('#" + this.nombre + "Cabeceras').width(jQuery('#" + this.nombre + "').width() - scrollbarWidth());");scrollHeight
 			out.println("    	jQuery('#" + this.nombre + "Cabeceras').width(jQuery('#" + this.nombre + "').get(0).clientWidth);");
 			out.println("function scrollbarWidth() {");
