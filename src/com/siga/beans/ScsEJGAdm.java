@@ -2536,7 +2536,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append("null, "+idioma+ ",Pjg.Idlenguaje)) SITUACION_LABORAL,");
 			sql.append(" nvl(pjg.nombre || ' ' || pjg.apellido1 || ' ' || pjg.apellido2, '-') as NOMBRE_APE_SOLIC, ");
 			sql.append(" pjg.nif as NIFCIF_SOLIC, ");
-			sql.append(" nvl(pjg.direccion, '-') as DIR_SOLIC, ");
+			sql.append(" DECODE(pjg.DIRECCION, NULL, '-', ((SELECT (UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+idioma+"), 1, 1))) || (LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+idioma+"),2))) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = pjg.IDTIPOVIA AND TV.IDINSTITUCION = fam.IDINSTITUCION) || ' ' || pjg.DIRECCION || ' ' || pjg.NUMERODIR || ' ' || pjg.ESCALERADIR || ' ' || pjg.PISODIR || ' ' || pjg.PUERTADIR)) as DIR_SOLIC, ");
 			sql.append(" nvl(pjg.codigopostal, '-') as CP_SOLIC, ");
 			sql.append(" nvl((SELECT F_SIGA_GETRECURSO(Nombre,decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) ");
 			sql.append(" FROM CEN_POBLACIONES ");			
