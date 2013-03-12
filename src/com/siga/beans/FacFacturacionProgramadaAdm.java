@@ -292,7 +292,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasFacturacion(), this.getCamposFacturacion());
 			sql += where;
 			sql += UtilidadesBDAdm.sqlOrderBy(orden);  
-			sql += "desc";
+			sql += "asc";
             rc = this.findBind(sql,codigos);
             if (rc!=null) {
  				v = new Vector();

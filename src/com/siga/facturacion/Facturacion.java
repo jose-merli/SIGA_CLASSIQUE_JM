@@ -345,7 +345,7 @@ public class Facturacion {
 			sWhere += FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA;
 			sWhere += " ) ";
 			
-			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			
 			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
@@ -434,7 +434,7 @@ public class Facturacion {
 			sWhere += " and ";
 			sWhere += FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_PROGRAMADA;
 			
-			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			
 			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
@@ -936,7 +936,7 @@ public class Facturacion {
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, beanP.getIdInstitucion());
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion );
-    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
+    		//UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
     		if (archivarFacturacion) {
