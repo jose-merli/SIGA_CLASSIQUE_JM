@@ -2453,64 +2453,65 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				//	 nombreFicheroAlmacen = beanCompra.getIdFactura() +".pdf";
 				//   rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + nombreFicheroAlmacen;
 		        // Ahora:
-		        {
-		        	FacFacturaAdm admFac = new FacFacturaAdm (this.getUserBean(request));
-		        	/**********/
-		        	InformeFactura inf = new InformeFactura(this.getUserBean(request));
-			        CenClienteAdm cliAdm = new CenClienteAdm(this.getUserBean(request));
-			        /**********/
-		        	Hashtable h = new Hashtable ();
-		        	UtilidadesHash.set(h,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-		        	UtilidadesHash.set(h,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-		        	boolean correcto=true;
-		        	Vector v = admFac.selectByPK(h);
-		        	
-		        	if (v != null && v.size() == 1) {
-		        		FacFacturaBean fac = (FacFacturaBean) v.get(0);
-		        		/***********/
-		        		String idPersona=fac.getIdPersona().toString();
-		    			// Obtenemos el lenguaje del cliente 
-		    			String lenguaje = cliAdm.getLenguaje(fac.getIdInstitucion().toString(),idPersona); 
-		        		/**********/
-		        		String nombreFactura="";
-		        		if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
-		        			nombreFactura=fac.getNumeroFactura();
-		        		}else{
-		        			nombreFactura=fac.getIdFactura();
-		        		}
-		        		CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-						Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-			  			String nColegiado = "";
-			  			if (htCol!=null && htCol.size()>0) {
-			  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-			  			}	
+	        	FacFacturaAdm admFac = new FacFacturaAdm (this.getUserBean(request));
+	        	/**********/
+	        	InformeFactura inf = new InformeFactura(this.getUserBean(request));
+		        CenClienteAdm cliAdm = new CenClienteAdm(this.getUserBean(request));
+		        /**********/
+	        	Hashtable h = new Hashtable ();
+	        	UtilidadesHash.set(h,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
+	        	UtilidadesHash.set(h,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
+	        	boolean correcto=true;
+	        	Vector v = admFac.selectByPK(h);
+	        	
+	        	if (v != null && v.size() == 1) {
+	        		FacFacturaBean fac = (FacFacturaBean) v.get(0);
+	        		/***********/
+	        		String idPersona=fac.getIdPersona().toString();
+	    			// Obtenemos el lenguaje del cliente 
+	    			String lenguaje = cliAdm.getLenguaje(fac.getIdInstitucion().toString(),idPersona); 
+	        		/**********/
+	        		String nombreFactura="";
+	        		if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
+	        			nombreFactura=fac.getNumeroFactura();
+	        		}else{
+	        			nombreFactura=fac.getIdFactura();
+	        		}
+	        		CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+					Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
+		  			String nColegiado = "";
+		  			if (htCol!=null && htCol.size()>0) {
+		  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
+		  			}	
 //				        nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
 //				        rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + fac.getIdSerieFacturacion() + "_" + fac.getIdProgramacion() + barraAlmacen + nombreFicheroAlmacen;
-				        
-				        /**********************/
+			        
+			        /**********************/
 //				        File directorio1 = new File(rutaAlmacen);// Si el fichero no existe en el directorio sRutaJava se genera
 //			  			if (directorio1==null || !directorio1.exists()){
-						 File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),this.getUserBean(request).getLocation(),fac.getIdFactura(),nColegiado);
-							 if (filePDF==null) {
-							    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
-							} else {
-								request.setAttribute("nombreFichero", filePDF.getName());
-								request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
-								request.setAttribute("borrarFichero", "true");
-								correcto = true;
-							}
-		        		
-			  			/*****************/
-		        	}
-		        }
+					 File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),this.getUserBean(request).getLocation(),fac.getIdFactura(),nColegiado);
+						 if (filePDF==null) {
+						    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
+						} else {
+							request.setAttribute("nombreFichero", filePDF.getName());
+							request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
+							request.setAttribute("borrarFichero", "true");
+							correcto = true;
+						}
+					if (!filePDF.exists()){
+						throw new SIGAException("messages.general.error.ficheroNoExisteReintentar");
+					}
+				    return "descargaFichero";				    
+		  			/*****************/
+	        	} else {
+	        		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
+	        	}
 		        ////////////////////////////
 		        
 //				File fileFAC = new File(rutaAlmacen);
 //			    if (!fileFAC.exists())  {
 //			        throw new SIGAException("messages.general.error.ficheroNoExiste");
-//			    }
-		        			
-				return "descargaFichero";
+//			    }		        							
 		    }
 		   
 		    
