@@ -1999,7 +1999,8 @@ public class EnvioInformesGenericos extends MasterReport {
 						identificador.append("_");
 						identificador.append(idInstitucionTipoExp);
 						identificador.append("_");
-						identificador.append(idPersonaReal);
+						if (idPersonaReal!=null && !idPersonaReal.trim().equals(""))
+							identificador.append(idPersonaReal);
 						identificador.append("_");
 						identificador.append(new Integer(i).toString());
 						identificador.append("_");
