@@ -781,7 +781,7 @@ public class HelperInformesAdm  {
 				String idPersonaDenunciadoPrincipal = null;
 				for (int i = 0; i < resultadoConsulta.size(); i++) {
 					reg = (Hashtable) resultadoConsulta.get(i);
-//					if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+					if (((String) reg.get("IDINTERESADO")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 					datoNuevo = new Hashtable();
 					datoNuevo.putAll(datoActual);
 
@@ -798,7 +798,8 @@ public class HelperInformesAdm  {
 					datoNuevo.put("TRATAMIENTO_DEST", (String) reg.get("TRATAMIENTO"));
 					datoNuevo.put("NIFCIF_DEST", (String) reg.get("NIFCIF"));
 					
-					datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+					datoNuevo.put("IDPERSONA_DEST",reg.get("IDINTERESADO")!=null?(String)reg.get("IDINTERESADO"):"");
+					
 					datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
 					datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
 					datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
@@ -878,7 +879,7 @@ public class HelperInformesAdm  {
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
-//						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+						if (((String) reg.get("IDINTERESADO")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
 
@@ -897,7 +898,7 @@ public class HelperInformesAdm  {
 						
 						
 						
-						datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+						datoNuevo.put("IDPERSONA_DEST",reg.get("IDINTERESADO")!=null?(String)reg.get("IDINTERESADO"):"");
 						datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
 						datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
 						datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
@@ -976,7 +977,7 @@ public class HelperInformesAdm  {
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
-//						if (((String) reg.get("IDPERSONA_DIR")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
+						if (((String) reg.get("IDINTERESADO")).trim().equals("")) continue; // esto hay que hacerlo porque el metodo ejecutaConsultaBind devuelve un Hash con valores vacios si la consulta no obtiene resultados
 						datoNuevo = new Hashtable();
 						datoNuevo.putAll(datoActual);
 
@@ -993,7 +994,7 @@ public class HelperInformesAdm  {
 						datoNuevo.put("EL_LA_DEST", (String) reg.get("EL_LA"));
 						datoNuevo.put("DESC_ROLPARTE", (String) reg.get("NOMBREROL"));
 						// .. resto de campos obtenidos.
-						datoNuevo.put("IDPERSONA_DEST",reg.get("IDPERSONA_DIR")!=null?(String)reg.get("IDPERSONA_DIR"):"");
+						datoNuevo.put("IDPERSONA_DEST",reg.get("IDINTERESADO")!=null?(String)reg.get("IDINTERESADO"):"");
 						datoNuevo.put("IDDIRECCION_DEST",reg.get("IDDIRECCION_DIR")!=null?(String)reg.get("IDDIRECCION_DIR"):"") ;
 						datoNuevo.put("DOMICILIO_DEST",reg.get("DOMICILIO")!=null?(String)reg.get("DOMICILIO"):"");
 						datoNuevo.put("CODIGOPOSTAL_DEST",reg.get("CODIGOPOSTAL")!=null?(String)reg.get("CODIGOPOSTAL"):"") ;
