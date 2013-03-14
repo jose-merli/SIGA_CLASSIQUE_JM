@@ -382,12 +382,16 @@ public class RetencionesIRPFAction extends MasterAction {
 					Hashtable hashRetencion = new Hashtable();							
 					ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
 					hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
-					Hashtable<String, String> descripcion = (Hashtable<String, String>)reten.select("select f_siga_getrecurso(descripcion, "+ usr.getLanguage()+ ") DESCRIPCION from scs_maestroretenciones where descripcion = "+scsRetencionesBean.getDescripcion()).get(0);
-					hashRetencion.put("DESCRIPCION",descripcion.get("DESCRIPCION") );
-					hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
-					request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
-					request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
-					vRete.add(hashRetencion);
+					
+					Vector vMaestroReten = reten.select("select f_siga_getrecurso(descripcion, "+ usr.getLanguage()+ ") DESCRIPCION from scs_maestroretenciones where descripcion = "+scsRetencionesBean.getDescripcion());
+					if (vMaestroReten.size()>0) {									
+						Hashtable<String, String> descripcion = (Hashtable<String, String>)vMaestroReten.get(0);
+						hashRetencion.put("DESCRIPCION",descripcion.get("DESCRIPCION") );
+						hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
+						request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
+						request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
+						vRete.add(hashRetencion);
+					}
 				}
 				
 				miForm.setCuentasSJCSSociedad(getCuentasList(miForm,sociedad.getIdPersona().toString(), usr));
