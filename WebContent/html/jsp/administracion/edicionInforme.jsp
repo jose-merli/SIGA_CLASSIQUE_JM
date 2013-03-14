@@ -295,8 +295,7 @@
 						<logic:iterate name="InformeForm" property="instituciones" id="institucion" indexId="index">
 							<input type="hidden" name="institucionId_${index}" value="${institucion.idInstitucion}">
 						</logic:iterate>
-					</logic:notEmpty>
-					
+					</logic:notEmpty>					
 				</td>
 			</tr>
 			
@@ -431,22 +430,12 @@
 			
 			<tr id="trEnvios">
 				<td colspan="6">
-					<table>
+					<table width="100%" border="0">						
 						<tr>
-							<td width="15%"></td>
-							<td width="25%"></td>
-							<td width="15%"></td>
-							<td width="15%"></td>
-							<td width="15%"></td>
-							<td width="15%"></td>
-	
-						</tr>
-						
-						<tr>
-							<td class="labelText">
-								<siga:Idioma key="administracion.informes.literal.tipoEnviosPermitidos" /> 
+							<td class="labelText" rowspan="3">
+								<siga:Idioma key="administracion.informes.literal.tipoEnviosPermitidos" />(*) 
 							</td>						
-							<td>
+							<td rowspan="3">
 								<siga:ComboBD nombre = "comboTipoEnvioPermitidos" tipo="${comboTipoEnvio}"
 									 clase="box" filasMostrar="7"
 								 	parametro="${parametrosComboEnvios}"
@@ -459,7 +448,7 @@
 								<siga:Idioma key="administracion.informes.literal.tipoEnvioDefecto" />
 							</td>
 							<td>
-								<select  style="width:132px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
+								<select style="width:150px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
 									<option  value=""></option>
 									<c:forEach items="${tipoEnviosBeans}" var="tipoEnvio">
 										<c:set var="envioSeleccionado" value="" />
@@ -469,30 +458,30 @@
 										<option ${envioSeleccionado} value="${tipoEnvio.idTipoEnvios}" ><c:out value="${tipoEnvio.nombre}"/> </option>
 									</c:forEach>
 								</select>
-							</td>
-	
+							</td>						
+						</tr>
+						
+						<tr>						
 							<td class="labelText">
 								<siga:Idioma key="administracion.informes.literal.plantillaEnvioDefecto" />
 							</td>
 							<td>
-								<select style="width:202px;" id="idPlantillaEnvioDefecto">									
+								<select style="width:440px;" id="idPlantillaEnvioDefecto">									
 									<option value="${idPlantillaEnvioDef}"><c:out value="${idPlantillaEnvioDef}" /></option>									
 								</select>
 								<script type="text/javascript">
 									inicioPlantillasEnvio();
 								</script>	
-							</td>							
+							</td>	
 						</tr>
-	
-						<tr>
-							<td colspan="2"></td>
-							
+						
+						<tr>						
 							<td class="labelText">
 								<siga:Idioma key="administracion.informes.literal.tipointercambio" />
 							</td>
 	
 							<td colspan="3">
-								<select style="width:460px;" id="idTipoIntercambioTelematico">
+								<select style="width:440px;" id="idTipoIntercambioTelematico">
 									<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
 								</select>
 								<script type="text/javascript">
@@ -501,6 +490,7 @@
 							</td>						
 						</tr>
 					</table>
+
 				</td>
 			</tr>
 				
