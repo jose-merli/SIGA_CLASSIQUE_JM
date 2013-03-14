@@ -210,7 +210,9 @@ public class InformeColegiadosPagos extends MasterReport {
 				 
 			} else {
 				 //nombre de la sociedad
-				 sql = "SELECT PER.NOMBRE || NVL2(PER.APELLIDOS1, ' ' || PER.APELLIDOS1, '') || NVL2(PER.APELLIDOS2, ' ' || PER.APELLIDOS2, '') AS NOMBRE_SOCIEDAD, " +
+				 sql = "SELECT PER.NOMBRE " +
+						 " || NVL2 (PER.APELLIDOS1, DECODE(PER.APELLIDOS1,'#NA', '', ' ' || PER.APELLIDOS1), '') " + 
+						 " || NVL2(PER.APELLIDOS2, ' ' || PER.APELLIDOS2, '') AS NOMBRE_SOCIEDAD, " +
 						 " PER.NIFCIF AS CIF_SOCIEDAD " +
 					" FROM CEN_PERSONA PER, CEN_CLIENTE CLI " +
 					" WHERE CLI.IDPERSONA = PER.IDPERSONA " +
