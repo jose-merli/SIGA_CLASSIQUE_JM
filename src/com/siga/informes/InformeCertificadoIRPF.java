@@ -273,11 +273,11 @@ public class InformeCertificadoIRPF extends MasterReport
 		htDatosInforme.put("NIFCIF_PER", personaBean.getNIFCIF() );
 		StringBuffer nombreCompleto = new StringBuffer(personaBean.getNombre());
 		
-		if(personaBean.getApellido1()!=null){
+		if(personaBean.getApellido1()!=null && !personaBean.getApellido1().trim().equals("") && !personaBean.getApellido1().trim().equals("#NA")){
 			nombreCompleto.append(" ");
 			nombreCompleto.append(personaBean.getApellido1());
 		}
-		if(personaBean.getApellido2()!=null){
+		if(personaBean.getApellido2()!=null && !personaBean.getApellido2().trim().equals("")){
 			nombreCompleto.append(" ");
 			nombreCompleto.append(personaBean.getApellido2());
 		}
