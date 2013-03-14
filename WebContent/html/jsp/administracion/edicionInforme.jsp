@@ -466,7 +466,7 @@
 								<siga:Idioma key="administracion.informes.literal.plantillaEnvioDefecto" />
 							</td>
 							<td>
-								<select style="width:440px;" id="idPlantillaEnvioDefecto">									
+								<select style="width:400px;" id="idPlantillaEnvioDefecto">									
 									<option value="${idPlantillaEnvioDef}"><c:out value="${idPlantillaEnvioDef}" /></option>									
 								</select>
 								<script type="text/javascript">
@@ -481,7 +481,7 @@
 							</td>
 	
 							<td colspan="3">
-								<select style="width:440px;" id="idTipoIntercambioTelematico">
+								<select style="width:400px;" id="idTipoIntercambioTelematico">
 									<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
 								</select>
 								<script type="text/javascript">
