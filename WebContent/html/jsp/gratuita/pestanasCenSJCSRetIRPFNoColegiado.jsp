@@ -110,6 +110,7 @@
 		<input type="hidden" id="actionModal" name="actionModal" value=""/>
 		<input type="hidden" id="idInstitucion" name="idInstitucion" value="<%=sIdInstitucion%>" />
 		<input type="hidden" id="idPersona" name="idPersona" value="<%=sIdPersona%>" />
+		<input type="hidden" id="desdeFicha" name="desdeFicha" value="1" />
 	</html:form>
 	
 	<siga:ConjBotonesAccion botones="V, IRI" clase="botonesDetalle"  />
