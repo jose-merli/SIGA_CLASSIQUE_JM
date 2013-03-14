@@ -255,7 +255,7 @@
 				numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
 				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
-				orden = ((String)hash.get("ORDEN")).equals("")?"":(String)hash.get("ORDEN");
+				orden = (hash.get("ORDEN")==null||((String)hash.get("ORDEN")).equals(""))?"&nbsp;":(String)hash.get("ORDEN");
 				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
