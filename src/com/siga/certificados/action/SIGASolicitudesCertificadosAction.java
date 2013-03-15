@@ -2380,6 +2380,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
         	contErrores++;
     		ClsLogging.writeFileLog("----- ERROR FINALIZACION -----",4);
     		ClsLogging.writeFileLog("ERROR EN FINALIZACION MASIVA. solicitud certificado: "+idSolicitud+" Error: "+e.toString(),4);
+    		throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
         }
         
 	}
