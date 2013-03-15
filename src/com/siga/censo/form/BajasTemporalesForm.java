@@ -63,6 +63,8 @@ public class BajasTemporalesForm extends MasterForm {
 
 	String botones ="";
 	UsrBean usrBean;
+	//aalg: para saber si entra como consulta o edición
+	String accion = "";
 	
 	public String getBotones() {
 		botones = "";
@@ -450,7 +452,13 @@ public class BajasTemporalesForm extends MasterForm {
 		this.personasDeGuardia = personasDeGuardia;
 	}
 
-	
+	public String getAccion() {
+		return accion;
+	}
+
+	public void setAccion(String accion) {
+		this.accion = accion;
+	}
 
 	
 	
