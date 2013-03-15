@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -335,6 +336,10 @@ public class MasterWords
 				while(builder.moveToMergeField(clave))
 					{
 						Object o = dato.get(clave);
+						/*if (o instanceof Vector) {
+							Vector aux = (Vector)o;
+							doc = sustituyeRegionDocumento(doc,clave,aux);
+						}else*/
 						if (!(o instanceof String)) {
 							o = (String)o;
 						}

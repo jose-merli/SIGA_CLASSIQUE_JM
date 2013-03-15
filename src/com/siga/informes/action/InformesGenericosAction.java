@@ -292,10 +292,15 @@ public class InformesGenericosAction extends MasterAction {
 			throw new SIGAException(e.getMsg());
 		}
 		File ficheroSalida=null;
+		boolean isAlgunRepresentanteLegal = false;
+		boolean isAlgunInformeoNoGenerado = false;
 		try {
 			String idsesion = request.getSession().getId();
 			ficheroSalida = informeGenerico.getInformeGenerico(
 					miForm, idsesion, this.getUserBean(request), isAEnviar,isPermisoEnvio);
+			isAlgunRepresentanteLegal = informeGenerico.isAlgunRepresentanteLegal();
+			isAlgunInformeoNoGenerado = informeGenerico.isAlgunInformeNoGenerado();
+			
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.informes"}, e, null);
@@ -314,10 +319,34 @@ public class InformesGenericosAction extends MasterAction {
 		}
 		else {
 			request.setAttribute("nombreFichero", ficheroSalida.getName());
-			request.setAttribute("rutaFichero", ficheroSalida.getPath());
+			String path =  UtilidadesString.replaceAllIgnoreCase( ficheroSalida.getPath(), "\\", "/");
+			
+			request.setAttribute("rutaFichero", path);
 			request.setAttribute("borrarFichero", "true");
 			request.setAttribute("generacionOK","OK");
-			return "descarga";
+			StringBuffer aviso = null;
+			if(isAlgunInformeoNoGenerado){
+				aviso = new StringBuffer();
+				aviso.append("Ha habido algún informe que no se ha generado al no existir direccion configurada de algun destinatario");
+				if(isAlgunRepresentanteLegal){
+					aviso.append("\nHa habido algún informe en el que se ha sustituido el destinatario por su representante legal");
+				}
+				
+			}else if(isAlgunRepresentanteLegal){
+				if(aviso==null){
+					aviso = new StringBuffer();
+					aviso.append("Ha habido algun informe en el que se ha sustituido el destinatario por su representante legal");
+				}
+				
+			}
+			
+			
+			if(aviso!=null){
+				//request.setAttribute("rutaFichero",  ficheroSalida.getPath());
+				request.setAttribute("mensaje",aviso.toString());
+				return "exitoDescarga";
+			}else
+				return "descarga";
 		}
 	} //informeGenerico()
 	
@@ -557,13 +586,16 @@ public class InformesGenericosAction extends MasterAction {
 									idTipoEJG= (String)aux.get("idtipo");
 									anio= (String)aux.get("anio");
 									numero= (String)aux.get("numero");
-									String idPersonaJG=null;
-									if ((String)aux.get("idPersonaJG")!=null){
-										idPersonaJG = (String)aux.get("idPersonaJG");
-									}
+//									String idPersonaJG=null;
+//									if ((String)aux.get("idPersonaJG")!=null){
+//										idPersonaJG = (String)aux.get("idPersonaJG");
+//									}
 
 									boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
-									String keyConsultasHechas = usr.getLocation()+anio+idTipoEJG+numero+isSolicitantes;
+									boolean isaContrarios = beanInforme.getaContrarios()!=null && beanInforme.getaContrarios().equalsIgnoreCase("S");
+									boolean isGenerarInformeSindireccion = beanInforme.getGenerarInformeSinDireccion()!=null && beanInforme.getGenerarInformeSinDireccion().equalsIgnoreCase("S");
+									
+									String keyConsultasHechas = usr.getLocation()+anio+idTipoEJG+numero+isSolicitantes+isaContrarios;
 									Vector datosconsulta = null, regionUF = null, regionConyuge = null;									
 									if(hashConsultasHechas.containsKey(keyConsultasHechas)){
 									// como esto se recorre para cada plantilla (for (int i=0;i<plantillas.size();i++))
@@ -574,7 +606,8 @@ public class InformesGenericosAction extends MasterAction {
 
 									}else{
 										datosconsulta=ejgAdm.getDatosInformeEjg(usr.getLocation(),idTipoEJG,anio,numero,
-												idioma,isSolicitantes,idPersonaJG);
+												idioma,isSolicitantes,isaContrarios,null,null,isGenerarInformeSindireccion);
+										
 										regionUF = ejgAdm.getDatosRegionUF(usr.getLocation(),idTipoEJG,anio,numero);
 										regionConyuge = ejgAdm.getDatosRegionConyuge(usr.getLocation(),idTipoEJG,anio,numero);
 										hashConsultasHechas.put(keyConsultasHechas, datosconsulta);
@@ -582,11 +615,31 @@ public class InformesGenericosAction extends MasterAction {
 										hashConsultasHechas.put("regionConyuge", regionConyuge);
 
 									}
+									 if( datosconsulta.size()>0){
+											if(!isSolicitantes ){
+												Hashtable registro = (Hashtable) datosconsulta.get(0);
+												if(registro.get("defendido")!=null){
+													hashConsultasHechas.put("defendido", registro.get("defendido"));
+													registro.remove("defendido");
+												}
+											}
+											if(!isaContrarios ){
+												Hashtable registro = (Hashtable) datosconsulta.get(0);
+												if(registro.get("contrarios")!=null){
+													hashConsultasHechas.put("contrarios", registro.get("contrarios"));
+													registro.remove("contrarios");
+												}
+											}
+											
+										 }
+									
 
 									HelperInformesAdm helperInformes = new HelperInformesAdm();
 									String idiomainteresado="";
 									String idiomainforme="";
 									if (datosconsulta!=null && datosconsulta.size()>0) {
+										
+										
 										for (int j=0;j<datosconsulta.size();j++) {
 											clonDatoscomunes=(Hashtable)((Hashtable)datosconsulta.get(j)).clone();
 											//Seleccionamos el idioma del interesado para seleccionar la plantilla

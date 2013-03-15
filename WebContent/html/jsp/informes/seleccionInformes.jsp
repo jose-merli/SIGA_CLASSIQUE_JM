@@ -405,6 +405,9 @@ function accionDownload()
 		}
 		
 	}
+	function refrescarLocal(){
+		// alert("");
+	}
 	// descargarUnica();
 	
 </script>

@@ -642,7 +642,7 @@
 				}
 			}
 			jQuery("#turnosPrincipales").removeAttr("disabled");
-			jQuery("#idGuardiaPrincipal").removeAttr("disabled");
+			jQuery("#guardiasPrincipales").removeAttr("disabled");
 			jQuery("#guardia").removeAttr("disabled");
 			jQuery("#descripcion").removeAttr("disabled");
 			jQuery("#descripcionFacturacion").removeAttr("disabled");

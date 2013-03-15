@@ -19,7 +19,8 @@ public class AdmInformeBean extends MasterBean {
 
 	// Variables	
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
-			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava;
+			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava,aContrarios,generarInformeSinDireccion;
+	
 	private Integer idInstitucion;
 	private String idTipoIntercambioTelematico;
 	
@@ -30,6 +31,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
 	static public final String TIPODESTINATARIO_SCSPROCURADOR = "P";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "J";
+	static public final String TIPODESTINATARIO_SCSCONTRARIOSJG = "X";
 	static public final String TIPOFORMATO_WORD = "W";
 	static public final String TIPOFORMATO_EXCEL = "E";
 	static public final String TIPOFORMATO_XML = "X";
@@ -53,6 +55,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String C_PRESELECCIONADO = "PRESELECCIONADO";
 	static public final String C_ASOLICITANTES = "ASOLICITANTES";
+	static public final String C_ACONTRARIOS = "ACONTRARIOS";
 	static public final String C_DESTINATARIOS = "DESTINATARIOS";
 	static public final String C_TIPOFORMATO = "TIPOFORMATO";
 	static public final String C_CODIGO = "CODIGO";
@@ -60,6 +63,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_CLASEJAVA = "CLASEJAVA";
 	static public final String C_IDTIPOINTERCAMBIOTELEMATICO  = "IDTIPOINTERCAMBIOTELEMATICO";
 	static public final String C_PLANTILLA = "PLANTILLA";
+	static public final String C_GENERARINFORMESINDIRECCION = "GENERARINFORMESINDIRECCION";
 
 	
 	// Metodos SET
@@ -75,6 +79,7 @@ public class AdmInformeBean extends MasterBean {
 	public void setPreseleccionado(String valor) {this.preseleccionado = valor;}
 	public void setDestinatarios(String valor) {this.destinatarios = valor;}
 	public void setASolicitantes(String solicitantes) {aSolicitantes = solicitantes;}	
+
 	public void setTipoformato(String tipoformato) {this.tipoformato = tipoformato;}
 	public void setCodigo(String codigo) {this.codigo = codigo;}
 	public void setOrden(String orden) {this.orden = orden;}
@@ -94,6 +99,7 @@ public class AdmInformeBean extends MasterBean {
 	public String getDestinatarios() {return this.destinatarios;}
 	public Integer getIdInstitucion() {return this.idInstitucion;}
 	public String getASolicitantes() {return aSolicitantes;}
+	
 	public String getTipoformato() {return tipoformato;}
 	public String getCodigo() {return codigo;}
 	public String getOrden() {return orden;}
@@ -130,11 +136,13 @@ public class AdmInformeBean extends MasterBean {
 		informeForm.setIdInstitucion(idInstitucion.toString());	
 		informeForm.setPreseleccionado(preseleccionado);
 		informeForm.setDestinatarios(destinatarios);
-		informeForm.setASolicitantes(aSolicitantes);	
+		informeForm.setASolicitantes(aSolicitantes);
+		informeForm.setaContrarios(aContrarios);	
 		informeForm.setTipoFormato(tipoformato);
 		informeForm.setOrden(orden);
 		informeForm.setUsrBean(usrBean);
 		informeForm.setPlantilla(plantilla);
+		informeForm.setGenerarInformeSinDireccion(generarInformeSinDireccion);
 		if(idTipoIntercambioTelematico!=null && !idTipoIntercambioTelematico.equals("")){
 			informeForm.setIdTipoIntercambioTelem(idTipoIntercambioTelematico.toString());
 		}
@@ -147,6 +155,19 @@ public class AdmInformeBean extends MasterBean {
 	public void setPlantilla(String plantilla) {
 		this.plantilla = plantilla;
 	}
+	public String getaContrarios() {
+		return aContrarios;
+	}
+	public void setaContrarios(String aContrarios) {
+		this.aContrarios = aContrarios;
+	}
+	public String getGenerarInformeSinDireccion() {
+		return generarInformeSinDireccion;
+	}
+	public void setGenerarInformeSinDireccion(String generarInformeSinDireccion) {
+		this.generarInformeSinDireccion = generarInformeSinDireccion;
+	}
+	
 	
 	
 	

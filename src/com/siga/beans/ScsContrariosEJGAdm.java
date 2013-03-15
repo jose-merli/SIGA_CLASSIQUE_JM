@@ -230,6 +230,40 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 			return consulta;
 	
 	}
+	 public Vector getPersonasContrariosEjg(Integer idInstitucion, Integer idTipoEJG, Integer anio, Integer numero) throws ClsExceptions,SIGAException {
+			Vector datos=new Vector();
+			try {
+				
+				StringBuffer sql = new StringBuffer();
+				sql.append(" SELECT  IDPERSONA ");
+				sql.append(" FROM SCS_CONTRARIOSEJG EJGD ");
+				sql.append(" WHERE EJGD.IDINSTITUCION = ");
+				sql.append(idInstitucion);
+				sql.append(" AND EJGD.IDTIPOEJG = ");
+				sql.append(idTipoEJG);
+				sql.append(" AND EJGD.ANIO =  ");
+				sql.append(anio);
+				sql.append(" AND EJGD.NUMERO =  ");
+				sql.append(numero);
+
+
+				
+				
+				
+				RowsContainer rc = new RowsContainer(); 
+				if (rc.find(sql.toString())) {
+					for (int i = 0; i < rc.size(); i++){
+						Row fila = (Row) rc.get(i);
+						Hashtable resultado=fila.getRow();	                  
+						datos.add(resultado);
+					}
+				} 
+			}
+			catch (Exception e) {
+				throw new ClsExceptions (e, "Error al obtener la informacion sobre getPersonasContrariosEjg");
+			}
+			return datos;                        
+		}
 	
 	
 	

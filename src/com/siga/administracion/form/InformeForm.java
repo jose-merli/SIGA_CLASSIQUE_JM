@@ -59,7 +59,9 @@ public class InformeForm extends MasterForm {
 	private String idPlantillaGeneracion;
 	private String idTipoIntercambioTelem;
 	private List<EnvTipoEnviosBean> tiposEnvioPermitidos;
-	String plantilla;
+	private String plantilla;
+	private String  aContrarios;
+	private String  generarInformeSinDireccion;
 	
 	public String getIdConsulta() {
 		return idConsulta;
@@ -287,9 +289,11 @@ public class InformeForm extends MasterForm {
 		informeVO.setPreseleccionado(preseleccionado);
 		informeVO.setDestinatarios(destinatarios);
 		informeVO.setASolicitantes(aSolicitantes);
+		informeVO.setaContrarios(aContrarios);
 		informeVO.setTipoformato(tipoFormato);
 		informeVO.setUsrBean(usrBean);
 		informeVO.setOrden(orden);
+		informeVO.setGenerarInformeSinDireccion(generarInformeSinDireccion);
 		if(idTipoIntercambioTelem!=null && !idTipoIntercambioTelem.equals(""))
 			informeVO.setIdTipoIntercambioTelematico(idTipoIntercambioTelem);
 		informeVO.setPlantilla(plantilla);
@@ -316,6 +320,7 @@ public class InformeForm extends MasterForm {
 		directorioFile = null;
 		lenguaje = null;
 		orden = null;
+		generarInformeSinDireccion=null;
 		
 	}
 
@@ -453,6 +458,22 @@ public class InformeForm extends MasterForm {
 
 	public void setPlantilla(String plantilla) {
 		this.plantilla = plantilla;
+	}
+
+	public String getaContrarios() {
+		return aContrarios;
+	}
+
+	public void setaContrarios(String aContrarios) {
+		this.aContrarios = aContrarios;
+	}
+
+	public String getGenerarInformeSinDireccion() {
+		return generarInformeSinDireccion;
+	}
+
+	public void setGenerarInformeSinDireccion(String generarInformeSinDireccion) {
+		this.generarInformeSinDireccion = generarInformeSinDireccion;
 	}
 
 }

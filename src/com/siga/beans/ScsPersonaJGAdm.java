@@ -1011,7 +1011,88 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		return idlenguajeSolicitante;
 	}
 	
-	
+		
+		public Hashtable getDatosPersonaJG(String idPersonaJG,String idInstitucion ) throws ClsExceptions {	
+	  		Vector datos=new Vector();   
+	  		RowsContainer rc = new RowsContainer();
+	  		StringBuffer sqlBuffer = new StringBuffer();
+	  		 
+	  		
+	  		sqlBuffer.append("SELECT PER.IDPERSONA IDPERSONA_PJG, ");
+	  		sqlBuffer.append("DECODE(PER.DIRECCION, null, null, 1) IDDIRECCION_PJG, ");
+	  		sqlBuffer.append("NVL(PER.NOMBRE, '') NOMBRE_PJG, ");
+	  		sqlBuffer.append("NVL(PER.APELLIDO1, '') APELLIDO1_PJG, ");
+	  		sqlBuffer.append("NVL(PER.APELLIDO2, '') APELLIDO2_PJG, ");
+	  		sqlBuffer.append("NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+this.usrbean.getLanguage()+"), '') || ");
+	  		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
+	  		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
+	  		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
+	  		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
+	  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') AS DOMICILIO_PJG, ");
+	  		sqlBuffer.append("NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
+	  		sqlBuffer.append("NVL(POBL.NOMBRE, '') AS POBLACION_PJG, ");
+	  		sqlBuffer.append("NVL(PROV.NOMBRE, '') AS PROVINCIA_PJG, ");
+	  		sqlBuffer.append("DECODE(PER.SEXO,  null,    null,   'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_PJG, ");
+	  		sqlBuffer.append("NVL2(PER.SEXO, DECODE(PER.SEXO, 'H', 'o', 'a'), '') AS O_A_PJG, ");
+	  		sqlBuffer.append("DECODE(PER.SEXO, 'H', 'el', 'la') as EL_LA_PJG, ");
+	  		sqlBuffer.append("NVL(PER.NIF, '') AS NIF_PJG, ");
+	        
+	  		sqlBuffer.append("(SELECT ST.NUMEROTELEFONO ");
+	  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
+	  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
+	  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
+	  		sqlBuffer.append("AND ST.IDTELEFONO = 1) TELEFONO1_PJG, ");
+	  		sqlBuffer.append("(SELECT ST.NUMEROTELEFONO ");
+	  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
+	  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
+	  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
+	  		sqlBuffer.append("AND ST.IDTELEFONO = 2) TELEFONO2_PJG, ");
+	        
+	  		sqlBuffer.append("(SELECT MAX(ST.NUMEROTELEFONO) ");
+	  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
+	  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
+	  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
+	  		sqlBuffer.append("AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
+	  		sqlBuffer.append("PER.Fax FAX_PJG, ");
+	  		sqlBuffer.append("PER.CORREOELECTRONICO CORREOELECTRONICO_PJG ");
+	  		sqlBuffer.append("FROM SCS_PERSONAJG   PER, ");
+	  		sqlBuffer.append("CEN_TIPOVIA     VIA, ");
+	  		sqlBuffer.append("CEN_POBLACIONES POBL, ");
+	  		sqlBuffer.append("CEN_PROVINCIAS  PROV ");
+	  		sqlBuffer.append("WHERE ");
+	  		sqlBuffer.append(" VIA.IDINSTITUCION(+) = PER.IDINSTITUCION ");
+	  		sqlBuffer.append("AND VIA.IDTIPOVIA(+) = PER.IDTIPOVIA ");
+	  		sqlBuffer.append("AND POBL.IDPOBLACION(+) = PER.IDPOBLACION ");
+	  		sqlBuffer.append("AND PROV.IDPROVINCIA(+) = PER.IDPROVINCIA ");
+	  		sqlBuffer.append("AND PER.IDINSTITUCION = ");
+	  		sqlBuffer.append(idInstitucion);
+	  		sqlBuffer.append("AND PER.IDPERSONA = ");
+	  		sqlBuffer.append(idPersonaJG);
+	  		
+
+	  		
+	  		
+	  		
+	  				
+	  				Hashtable resultado = null;
+	  				
+	  			try {    
+	        
+	  				if (rc.find(sqlBuffer.toString())) {
+	  					
+  						Row fila = (Row) rc.get(0);
+  						resultado=fila.getRow();	                  
+			            
+	  					
+	        	}else{
+	        		throw new SIGAException("No se ha encontrado la Persona JG");
+	        	} 
+	        } catch (Exception e) {
+	        	throw new ClsExceptions (e, "Error al obtener la informacion. ScsPersonaJG.getDatosPersonaJG.");
+	        }
+	       
+	        return resultado;      
+		}	
 
 	
 	

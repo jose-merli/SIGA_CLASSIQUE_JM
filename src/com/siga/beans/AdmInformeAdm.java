@@ -44,13 +44,15 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_PRESELECCIONADO,
 				AdmInformeBean.C_VISIBLE,
 				AdmInformeBean.C_ASOLICITANTES,
+				AdmInformeBean.C_ACONTRARIOS,
 				AdmInformeBean.C_DESTINATARIOS,
 				AdmInformeBean.C_TIPOFORMATO,
 				AdmInformeBean.C_CODIGO,
 				AdmInformeBean.C_ORDEN,
 				AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO,
 				AdmInformeBean.C_CLASEJAVA,
-				AdmInformeBean.C_PLANTILLA
+				AdmInformeBean.C_PLANTILLA,
+				AdmInformeBean.C_GENERARINFORMESINDIRECCION
 				
 				
 		};
@@ -95,6 +97,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setVisible			(UtilidadesHash.getString(hash, AdmInformeBean.C_VISIBLE));
 			bean.setPreseleccionado	(UtilidadesHash.getString(hash, AdmInformeBean.C_PRESELECCIONADO));
 			bean.setASolicitantes	(UtilidadesHash.getString(hash, AdmInformeBean.C_ASOLICITANTES));
+			bean.setaContrarios(UtilidadesHash.getString(hash, AdmInformeBean.C_ACONTRARIOS));
 			bean.setDestinatarios	(UtilidadesHash.getString(hash, AdmInformeBean.C_DESTINATARIOS));
 			bean.setTipoformato		(UtilidadesHash.getString(hash, AdmInformeBean.C_TIPOFORMATO));
 			bean.setCodigo	(UtilidadesHash.getString(hash, AdmInformeBean.C_CODIGO));
@@ -102,7 +105,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setIdTipoIntercambioTelematico(UtilidadesHash.getString(hash, AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 			bean.setClaseJava	(UtilidadesHash.getString(hash, AdmInformeBean.C_CLASEJAVA));
 			bean.setPlantilla		(UtilidadesHash.getString(hash, AdmInformeBean.C_PLANTILLA));
-			
+			bean.setGenerarInformeSinDireccion(UtilidadesHash.getString(hash, AdmInformeBean.C_GENERARINFORMESINDIRECCION));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -130,6 +133,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_VISIBLE, 			b.getVisible());
 			UtilidadesHash.set(htData, AdmInformeBean.C_PRESELECCIONADO, 	b.getPreseleccionado());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ASOLICITANTES, 		b.getASolicitantes());
+			UtilidadesHash.set(htData, AdmInformeBean.C_ACONTRARIOS, 		b.getaContrarios());
 			UtilidadesHash.set(htData, AdmInformeBean.C_DESTINATARIOS, 		b.getDestinatarios());
 			UtilidadesHash.set(htData, AdmInformeBean.C_TIPOFORMATO, 		b.getTipoformato());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CODIGO, 		b.getCodigo());
@@ -137,6 +141,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO, 		b.getIdTipoIntercambioTelematico());
 			UtilidadesHash.set(htData, AdmInformeBean.C_CLASEJAVA, 		b.getClaseJava());
 			UtilidadesHash.set(htData, AdmInformeBean.C_PLANTILLA, 		b.getPlantilla());
+			UtilidadesHash.set(htData, AdmInformeBean.C_GENERARINFORMESINDIRECCION, 		b.getGenerarInformeSinDireccion());
 			
 		}
 		catch (Exception e) {
@@ -175,6 +180,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_PRESELECCIONADO+", " +
 				"       "+AdmInformeBean.C_VISIBLE+"," +
 				"       "+AdmInformeBean.C_ASOLICITANTES+", " +
+				"       "+AdmInformeBean.C_ACONTRARIOS+", " +
+				"       "+AdmInformeBean.C_GENERARINFORMESINDIRECCION+", " +
 				"       "+AdmInformeBean.C_DESTINATARIOS+", " +
 				"       "+AdmInformeBean.C_TIPOFORMATO+", " +
 				"       "+AdmInformeBean.C_CODIGO+", " +
@@ -207,6 +214,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setPreseleccionado	((String)ht.get(AdmInformeBean.C_PRESELECCIONADO));
 				salida.setVisible			((String)ht.get(AdmInformeBean.C_VISIBLE));
 				salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));
+				salida.setaContrarios(	(String)ht.get(AdmInformeBean.C_ACONTRARIOS));
 				salida.setDestinatarios		((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
 				salida.setTipoformato		((String)ht.get(AdmInformeBean.C_TIPOFORMATO));
 				salida.setCodigo		((String)ht.get(AdmInformeBean.C_CODIGO));
@@ -215,6 +223,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 					salida.setIdTipoIntercambioTelematico((String)ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 				salida.setClaseJava((String)ht.get(AdmInformeBean.C_CLASEJAVA));
 				salida.setPlantilla((String)ht.get(AdmInformeBean.C_PLANTILLA));
+				salida.setGenerarInformeSinDireccion((String)ht.get(AdmInformeBean.C_GENERARINFORMESINDIRECCION));
 				
 			}
 		}
