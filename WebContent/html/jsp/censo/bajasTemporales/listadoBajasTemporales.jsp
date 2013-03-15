@@ -50,9 +50,7 @@
 			}			
 		}		
 	</script>
-	<!--aalg: se obtiene el modo de acceso para controlar los permisos  -->
-	<% String accion = String.valueOf(request.getSession().getAttribute("modoPestanha")); %>
-<head>
+<head> 
 
 <body  onload="onInit();">
 
@@ -163,7 +161,7 @@
 		<tr>
 			<td style="width: 900px;">&nbsp;</td>
 				<!--aalg: se controlan los permisos según el modo de acceso -->
-			<% if (accion.equals("editar")){%>
+			<c:if test="${BajasTemporalesForm.accion.equals('editar') || (BajasTemporalesForm.accion.equals('ver') && BajasTemporalesForm.usrBean.letrado==true)}">	
 				<td class="tdBotones">
 					<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo(true,'<siga:Idioma key="general.message.seleccionar"/>');" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
 				</td>
@@ -181,7 +179,7 @@
 					name="idDenegarSolicitud"
 					value="<siga:Idioma key="censo.bajastemporales.boton.denegarSolicitud"/>"">
 				</td>
-			<% }%>
+			</c:if>
 		</tr>
 	</table>
 	
