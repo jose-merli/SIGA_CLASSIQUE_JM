@@ -501,13 +501,13 @@
 		<% if (!estaDeBaja) { %>
 				<!--aalg: se controlan los permisos según el modo de acceso  -->
 			<% if (!busquedaVolver.equals("volverNo")) { 
-			if (accion.equals("editar")){%>
+			if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true) ){%>
 					<siga:ConjBotonesAccion botones="V,bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
 				<%  } else { %>
 					<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 				<%  } %>	
 			<%  } else { 
-				if (accion.equals("editar")){%>
+				if (accion.equals("editar")|| (accion.equals("ver") && usr.isLetrado()==true)){%>
 					<siga:ConjBotonesAccion botones="bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
 			<%  }} %>
 		<% } else { %>
@@ -646,6 +646,7 @@
 					} else {
 						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "N";
 					}
+					document.DefinirTurnosLetradoForm.accion.value = "<%=accion%>";
 					document.DefinirTurnosLetradoForm.modo.value = "abrirTurnosLimpiar";
 					document.DefinirTurnosLetradoForm.submit();
 	}
@@ -685,6 +686,7 @@
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 			<html:hidden property="modo"  styleId="modo"  value="" />
 			<html:hidden property="fechaConsulta"  styleId="fechaConsulta"/>
+			<html:hidden styleId="accion"  property="accion" />
 		</html:form>	
 		
 		<html:form action="/JGR_AltaTurnosGuardias" name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm" styleId="FormASolicitar">
