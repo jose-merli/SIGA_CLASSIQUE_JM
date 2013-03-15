@@ -245,8 +245,8 @@
 				<td width="20%"></td>
 				<td width="13%"></td>
 				<td width="15%"></td>
-				<td width="10%"></td>
-				<td width="20%"></td>
+				<td width="15%"></td>
+				<td width="15%"></td>
 			</tr>
 			
 			<tr>				
