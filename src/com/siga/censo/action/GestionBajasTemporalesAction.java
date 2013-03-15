@@ -124,6 +124,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		bajasTemporalesForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
 		bajasTemporalesForm.setUsrBean(usrBean);
+		//aalg: para controlar si entra como consulta o edición
+		bajasTemporalesForm.setAccion(String.valueOf(request.getSession().getAttribute("modoPestanha")));
 		
 		// Si vengo desde la ficha colegial
 		if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
