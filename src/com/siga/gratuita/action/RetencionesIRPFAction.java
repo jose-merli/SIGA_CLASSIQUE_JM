@@ -376,26 +376,33 @@ public class RetencionesIRPFAction extends MasterAction {
 					request.setAttribute("modal", "1");
 					request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
 					request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
-
 					//forward = "exito";
-				} else {
-					Hashtable hashRetencion = new Hashtable();							
-					ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
-					hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
 					
+				// Tiene IRPF	
+				} else {
+						
+					// OBTIENE EL PRIMER IRPF (LAS SOCIEDADES SOLO PUEDEN TENER UN IRPF)
+					ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);				
+				
+					// COMPRUEBO LA RELACION CON MAESTRO DE RETENCIONES
 					Vector vMaestroReten = reten.select("select f_siga_getrecurso(descripcion, "+ usr.getLanguage()+ ") DESCRIPCION from scs_maestroretenciones where descripcion = "+scsRetencionesBean.getDescripcion());
-					if (vMaestroReten.size()>0) {									
+					if (vMaestroReten.size()>0) {
+						Hashtable hashRetencion = new Hashtable();
 						Hashtable<String, String> descripcion = (Hashtable<String, String>)vMaestroReten.get(0);
+				
+						// GENERO EL HASH
+						hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
 						hashRetencion.put("DESCRIPCION",descripcion.get("DESCRIPCION") );
 						hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
-						request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
-						request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
+					
 						vRete.add(hashRetencion);
-					}
+					}				
+				
+					request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
+					request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));					
 				}
 				
-				miForm.setCuentasSJCSSociedad(getCuentasList(miForm,sociedad.getIdPersona().toString(), usr));
-		
+				miForm.setCuentasSJCSSociedad(getCuentasList(miForm,sociedad.getIdPersona().toString(), usr));		
 			}
 			
 			request.setAttribute("idInstitucion", idInstitucion);
@@ -512,20 +519,29 @@ public class RetencionesIRPFAction extends MasterAction {
 				request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
 				request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
 				//forward = "exito";
-			} else {
-				Hashtable hashRetencion = new Hashtable();							
-				ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
-				hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
 				
+			// Tiene IRPF	
+			} else {
+						
+				// OBTIENE EL PRIMER IRPF (LAS SOCIEDADES SOLO PUEDEN TENER UN IRPF)
+				ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);				
+				
+				// COMPRUEBO LA RELACION CON MAESTRO DE RETENCIONES
 				Vector vMaestroReten = reten.select("select f_siga_getrecurso(descripcion, "+ usr.getLanguage()+ ") DESCRIPCION from scs_maestroretenciones where descripcion = "+scsRetencionesBean.getDescripcion());
-				if (vMaestroReten.size()>0) {									
+				if (vMaestroReten.size()>0) {
+					Hashtable hashRetencion = new Hashtable();
 					Hashtable<String, String> descripcion = (Hashtable<String, String>)vMaestroReten.get(0);
+				
+					// GENERO EL HASH
+					hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
 					hashRetencion.put("DESCRIPCION",descripcion.get("DESCRIPCION") );
 					hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
-					request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
-					request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
+					
 					vRete.add(hashRetencion);
 				}				
+				
+				request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
+				request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));
 			}
 			miForm.setCuentasSJCSSociedad(getCuentasList(miForm,miForm.getSociedadRefresca(), usr));
 		}
