@@ -143,6 +143,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		InformeJustificacionMasivaForm form = (InformeJustificacionMasivaForm) formulario;
 		form.clear();
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		//aalg: INC_140564_SIGA. le pasamos si es consulta o edición al formulario
+		form.setAccion((String)request.getParameter("accion"));
 		
 		
 		if(request.getParameter("idPersonaPestanha")!=null){
@@ -719,6 +721,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		} catch (ClsExceptions e) {
 			throw new SIGAException(e.getMsg());
 		}
+		
+		//aalg: INC_140564_SIGA. controlamos también si es consulta o edición
+		if (isPermisoActualizarDesignas){
+			String accion = f.getAccion();
+			if (accion.equalsIgnoreCase("ver"))
+				isPermisoActualizarDesignas = false;
+		}
+			
+		
 		request.setAttribute("permitirBotones", isPermisoActualizarDesignas);
 		
 		

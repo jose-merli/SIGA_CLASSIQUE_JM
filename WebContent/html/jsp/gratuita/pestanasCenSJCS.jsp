@@ -76,6 +76,8 @@
 	Hashtable datosPestanha = new Hashtable();
 	datosPestanha.put("idPersonaPestanha",request.getParameter("idPersona"));
 	datosPestanha.put("idInstitucionPestanha",request.getParameter("idInstitucion"));
+	//aalg: paso la accion ver o editar al siguiente nivel de pestanhas
+	datosPestanha.put("accion", request.getParameter("accion"));
 	//Meto la hash en la request:
 	request.setAttribute("datosCliente",datosPestanha);
 %>

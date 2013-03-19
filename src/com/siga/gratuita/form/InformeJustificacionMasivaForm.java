@@ -40,6 +40,7 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	private String incluirEjgPteCAJG;
 	private String mensajeResponsabilidadJustificacionLetrado;
 	private String docResolucion;
+	private String accion;
 	
 	
 	public String getMensajeResponsabilidadJustificacionLetrado() {
@@ -259,5 +260,13 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	public void setDocResolucion(String docResolucion) {
 		this.docResolucion = docResolucion;
 	}
+	
+	public String getAccion	() 	{ 
+ 		return accion;		
+ 	}
+	
+	public void setAccion (String accion) { 
+ 			this.accion = accion;
+ 	}
 	
 }
