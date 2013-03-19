@@ -19,6 +19,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.CenVisibilidad;
@@ -60,7 +61,24 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return getClavesBean();
 	}
 
-
+	//aalg: INC_06787_SIGA. Para hacer la consulta con nvl en los importes
+	protected String[] getCamposBeanNVL() {
+		String [] campos = {FcsPagosJGBean.C_IDINSTITUCION, 	FcsPagosJGBean.C_IDPAGOSJG,				
+							FcsPagosJGBean.C_IDFACTURACION, 	FcsPagosJGBean.C_NOMBRE,
+							FcsPagosJGBean.C_ABREVIATURA, 		FcsPagosJGBean.C_FECHADESDE,
+							FcsPagosJGBean.C_FECHAHASTA, 		FcsPagosJGBean.C_CRITERIOPAGOTURNO,
+							"nvl(" + FcsPagosJGBean.C_IMPORTEPAGADO + ", 0) "+ FcsPagosJGBean.C_IMPORTEPAGADO,	
+							"nvl(" + FcsPagosJGBean.C_IMPORTEREPARTIR+ ", 0 )"+ FcsPagosJGBean.C_IMPORTEREPARTIR,
+							"nvl(" +FcsPagosJGBean.C_IMPORTEEJG+ ", 0) "+ FcsPagosJGBean.C_IMPORTEEJG,	
+							"nvl(" + FcsPagosJGBean.C_IMPORTEGUARDIA+ ", 0) "+ FcsPagosJGBean.C_IMPORTEGUARDIA,
+							"nvl(" +FcsPagosJGBean.C_IMPORTEMINIMO+ ", 0) "+ FcsPagosJGBean.C_IMPORTEMINIMO,	
+							"nvl(" + FcsPagosJGBean.C_IMPORTEOFICIO+ ", 0 )"+ FcsPagosJGBean.C_IMPORTEOFICIO,
+							"nvl(" +FcsPagosJGBean.C_IMPORTESOJ+ ", 0) "+ FcsPagosJGBean.C_IMPORTESOJ,		
+							FcsPagosJGBean.C_CONTABILIZADO,
+							FcsPagosJGBean.C_BANCOS_CODIGO,		FcsPagosJGBean.C_CONCEPTO,
+							FcsPagosJGBean.C_FECHAMODIFICACION, FcsPagosJGBean.C_USUMODIFICACION};
+		return campos;
+	}
 	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		FcsPagosJGBean bean = null;
 		
@@ -1476,5 +1494,36 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
        }
 		
        return aPagos;		
-	}			
+	}	
+	
+	/**aalg: INC_06787_SIGA. Para hacer la consulta con nvl en los importes 
+	 * Funcion selectNVL (String where)
+	 * @param criteros para filtrar el select con nvl en los importes, campo where 
+	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
+	 * */
+	public Vector selectNVL(String where) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBeanNVL());
+			sql += " " + where;
+			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					MasterBean registro = (MasterBean) this.hashTableToBeanInicial(fila.getRow()); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, e.getMessage()); 
+		}
+		return datos;
+	}
 } 

@@ -330,7 +330,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			// Traemos de base de datos el pago seleccionado, con los datos
 			// recogidos de la pestanha
-			Vector registros = pagosAdm.select(where);
+			Vector registros = pagosAdm.selectNVL(where);
 			pagosBean = (FcsPagosJGBean) registros.get(0);
 			registroOriginal = pagosAdm.beanToHashTable(pagosBean);
 
