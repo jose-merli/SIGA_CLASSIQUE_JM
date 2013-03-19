@@ -28,6 +28,7 @@
 	request.setAttribute("parametros",parametros);
 	ses.setAttribute("idPersonaPestanha",request.getParameter("idPersonaPestanha"));
 	ses.setAttribute("idInstitucionPestanha",request.getParameter("idInstitucionPestanha"));
+	ses.setAttribute("accion", request.getParameter("accion"));
 
 %>	
 	

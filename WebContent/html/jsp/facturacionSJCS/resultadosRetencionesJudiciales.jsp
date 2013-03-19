@@ -30,6 +30,8 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String esFicha = (String)request.getParameter("esFichaColegial");
+	//aalg:controlar el acceso en modo consulta
+	String accion = (String)request.getAttribute("accion");
 	
 	Hashtable fila = new Hashtable();
 	
@@ -72,7 +74,7 @@
     <html:form action="${path}" method="post" target="submitArea">
 		<input type="hidden" id="modo"  name="modo" value="">		
 	</html:form>	
-	
+
 		<siga:TablaCabecerasFijas 		   
 		   nombre="listadoRetencionesJudiciales"
 		   borde="2"
@@ -87,7 +89,8 @@
   			<%
 	    	int recordNumber=1;
 			while (recordNumber-1 < obj.size())
-			{	botones = "C,E,B";		
+			{	
+				botones = "C,E,B";		
 				fila = (Hashtable)obj.get(recordNumber-1);
 				if(fila.get("RETENCIONAPLICADA").equals("1")){
 					botones = "C,E";
@@ -103,6 +106,9 @@
 						 botones = "C";
 					 }
 				} 
+				//aalg:controlar el acceso en modo consulta
+				if (accion.equalsIgnoreCase("ver"))
+					botones = "C";
 			%>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" >
 					<td><input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDRETENCION")%>">
