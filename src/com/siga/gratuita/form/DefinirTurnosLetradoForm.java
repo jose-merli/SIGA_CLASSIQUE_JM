@@ -14,6 +14,7 @@ public class DefinirTurnosLetradoForm extends MasterForm {
 	
 	public String idpersona = "";
 	public String idinstitucion = "";
+	public String accion = "";
 	
 	public String getIncluirRegistrosConBajaLogica() {
 		return this.incluirRegistrosConBajaLogica;
@@ -45,6 +46,14 @@ public class DefinirTurnosLetradoForm extends MasterForm {
 
 	public void setFechaConsulta(String fechaConsulta) {
 		this.fechaConsulta = fechaConsulta;
+	}
+
+	public String getAccion() {
+		return accion;
+	}
+
+	public void setAccion(String accion) {
+		this.accion = accion;
 	}
 	
 }

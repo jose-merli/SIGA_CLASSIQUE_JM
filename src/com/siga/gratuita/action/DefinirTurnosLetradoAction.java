@@ -94,9 +94,14 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			String accion = miForm.getModo();
 			String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
 			
+//			if(fechaConsultaTurno!=null){
+//				if(miForm.getFechaConsulta()==null || miForm.getFechaConsulta().equals(fechaConsultaTurno)){
+//					miForm.setFechaConsulta(fechaConsultaTurno);
+//				}
+//			}
 			if(fechaConsultaTurno!=null){
-				if(miForm.getFechaConsulta()==null || miForm.getFechaConsulta().equals(fechaConsultaTurno)){
-					miForm.setFechaConsulta(fechaConsultaTurno);
+				if(miForm.getFechaConsulta()==null){
+					miForm.setFechaConsulta("sysdate");
 				}
 			}
 			else{

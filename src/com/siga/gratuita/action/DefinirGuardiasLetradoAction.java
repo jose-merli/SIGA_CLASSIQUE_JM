@@ -95,11 +95,12 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 				if(miForm.getModo()!=null && miForm.getModo().equals("abrirGuardias")){
 					return mapping.findForward(this.abrirGuardias(mapping,miForm,request,response));
 				}else{
-					String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
-					if(fechaConsultaTurno!=null)
-						miForm.setFechaConsulta(fechaConsultaTurno);
-					else
-						miForm.setFechaConsulta("sysdate");
+					//aalg: INC_08112_SIGA. Al entrar en la página debe aparecer siempre la fecha del sistema
+//					String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+//					if(fechaConsultaTurno!=null)
+//						miForm.setFechaConsulta(fechaConsultaTurno);
+//					else
+					miForm.setFechaConsulta("sysdate");
 					return super.executeInternal(mapping, formulario,request,response);
 				}
 				
