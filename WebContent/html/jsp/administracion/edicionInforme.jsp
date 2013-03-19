@@ -239,21 +239,12 @@
 			ArrayList idPlantillaEnvioSeleccionado = (ArrayList)request.getAttribute("idPlantillaEnvioSeleccionado");	
 		%>
 	
-		<table width="100%" border="0">
-			<tr>
-				<td width="22%"></td>
-				<td width="20%"></td>
-				<td width="13%"></td>
-				<td width="15%"></td>
-				<td width="15%"></td>
-				<td width="15%"></td>
-			</tr>
-			
+		<table border="0" cellpadding="5" cellspacing="0">		
 			<tr>				
-				<td class="labelText">
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.tipoInforme"/>(*)
 				</td>	
-				<td class="labelText">
+				<td>
 					<html:select styleClass="boxCombo" style="width:200px;"
 						name="InformeFormEdicion" property="idTipoInforme" onchange="onChangeIdTipoInforme();"  >
 	
@@ -282,10 +273,10 @@
 					</logic:notEmpty>
 				</td>	
 							
-				<td class="labelText" >
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.colegio"/>(*)
 				</td>				
-				<td class="labelText" colspan="3">
+				<td colspan="3">
 					<html:select styleClass="boxCombo" style="width:200px;" name="InformeFormEdicion" property="idInstitucion"  >
 						<bean:define id="instituciones" name="InformeForm" property="instituciones" type="java.util.Collection" />
 						<html:optionsCollection  name="instituciones" value="idInstitucion" label="abreviatura" />
@@ -300,84 +291,98 @@
 			</tr>
 			
 			<tr>
-				<td class="labelText" >
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.nombre"/>(*)
 				</td>
-				<td class="labelText">
+				<td>
 					<html:text name="InformeFormEdicion"  property="alias"  styleClass="box" maxlength="50" onblur="onBlurAlias();" />
 				</td>						
 			
-				<td class="labelText" rowspan="4">
+				<td class="labelText" style="vertical-align: middle;" rowspan="3">
 					<siga:Idioma key="administracion.informes.literal.descripcion"/>(*)
 				</td>
-				<td rowspan="4" colspan="3">
-					&nbsp;&nbsp;<html:textarea name="InformeFormEdicion"  property="descripcion"  onchange="cuenta(this,1000)" cols="65" rows="4" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1000);" styleClass="boxCombo" maxlength="1000" readonly="false"/>
+				<td rowspan="3" colspan="3">
+					<html:textarea name="InformeFormEdicion" property="descripcion" 
+						maxlength="1000" onchange="cuenta(this,1000)" onkeydown="cuenta(this,1000);"
+						cols="65" rows="6" style="overflow=auto; width=375; height=80; resize:none;" 
+						styleClass="boxCombo"  readonly="false"/>
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText">
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.directorio"/>(*)
 				</td>
-				<td class="labelText">
+				<td>
 					<html:text name="InformeFormEdicion"  property="directorio"  styleClass="box" />
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText">
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.nombreFisico"/>(*)
 				</td>
-				<td class="labelText">
+				<td>
 					<html:text name="InformeFormEdicion"  property="nombreFisico" styleClass="box" />
 				</td>
-			</tr>
+			</tr>	
 			
 			<tr>
-				<td class="labelText">
+				<td class="labelText" style="vertical-align: middle;" width="220px">
 					<siga:Idioma key="administracion.informes.literal.nombreFichGenerado"/>(*)
 				</td>
-				<td class="labelText">
+				<td>
 					<html:text name="InformeFormEdicion"  property="nombreSalida" styleClass="box" />
 				</td>
+				
+				<td class="labelText" style="vertical-align: middle;" id="ocultarLabelPreseleccionado" width="130px">
+					<siga:Idioma key="administracion.informes.literal.preseleccionado"/>(*)
+				</td>
+				<td id="ocultarSelectPreseleccionado">
+					<html:select property="preseleccionado"  name="InformeFormEdicion" styleClass="boxCombo"  style="width:50">
+						<html:option value="S"><siga:Idioma key="general.yes"/>	</html:option>
+						<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+					</html:select>		
+				</td>
+				
+				<td class="labelText" style="vertical-align: middle;" width="80px">
+					<siga:Idioma key="administracion.informes.literal.visible"/>(*)
+				</td>
+				<td>
+					<html:select property="visible" name="InformeFormEdicion"  styleClass="boxCombo">
+						<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+						<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+					</html:select>							
+				</td>									
 			</tr>
 			
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="administracion.informes.literal.visible"/>(*)
+				<td class="labelText" style="vertical-align: middle;" width="220px">
+					<siga:Idioma key="administracion.informes.literal.generarinformesindireccion"/>(*)
 				</td>
-				<td class="labelText">
-					<html:select property="visible"  name="InformeFormEdicion"  styleClass="boxCombo" >
-						<html:option value="S">
-							<siga:Idioma key="general.yes"/>
+				<td width="210px">
+					<html:select property="generarInformeSinDireccion"  name="InformeFormEdicion"  styleClass="boxCombo" >
+						<html:option value="S"><siga:Idioma key="general.yes"/>
 						</html:option>
-						<html:option value="N">
-							<siga:Idioma key="general.no"/>
-						</html:option>
-					</html:select>							
-				</td>
+						<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+					</html:select>		
+				</td>	
 				
-				<td class="labelText ocultarOrden">
+				<td class="labelText" style="vertical-align: middle;" id="ocultarOrden" width="130px">
 					<siga:Idioma key="administracion.informes.literal.orden"/>(*)
 				</td>
-				<td class="labelText ocultarOrden">
-					<html:text name="InformeFormEdicion"  property="orden"  styleClass="box" style="width:50" />
+				<td id="ocultarOrden">
+					<html:text name="InformeFormEdicion" property="orden" styleClass="box" style="width:50" />
 				</td>
 				
-				<td id="literalFormatoTD" class="labelText">
+				<td class="labelText" style="vertical-align: middle;" id="literalFormatoTD" width="80px">
 					<siga:Idioma key="administracion.informes.literal.formato"/>(*)
 				</td>
-				<td id="formatoTD" class="labelText">
+				<td id="formatoTD">
 					<html:select name="InformeFormEdicion"  property="tipoFormato" styleClass="boxCombo">
-						<html:option value="-1">
-							<siga:Idioma key="general.combo.seleccionar" />
-						</html:option>
-						<html:option value="W">
-							<siga:Idioma key="administracion.informes.formato.word"/>
-						</html:option>
-						<html:option value="E">
-							<siga:Idioma key="administracion.informes.formato.excel"/>
-						</html:option>
+						<html:option value="-1"><siga:Idioma key="general.combo.seleccionar" />	</html:option>
+						<html:option value="W"><siga:Idioma key="administracion.informes.formato.word"/></html:option>
+						<html:option value="E"><siga:Idioma key="administracion.informes.formato.excel"/></html:option>
 					<!-- BNS INC_10391_SIGA				
 					<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
 					-->
@@ -385,57 +390,56 @@
 				</td>
 			</tr>
 			
-			<tr>
-				<td class="labelText" id="ocultarLabelPreseleccionado">
-						<siga:Idioma key="administracion.informes.literal.preseleccionado"/>(*)
-				</td>
-				<td class="labelText" id="ocultarSelectPreseleccionado">
-					<html:select property="preseleccionado"  name="InformeFormEdicion"  styleClass="boxCombo" >
-						<html:option value="S">
-							<siga:Idioma key="general.yes"/>
-						</html:option>
-						<html:option value="N">
-							<siga:Idioma key="general.no"/>
-						</html:option>
-					</html:select>		
-				</td>
-			</tr>
-			
 			<tr  id="ocultarSolicitantes">
-				<td class="labelText">
-					<siga:Idioma key="administracion.informes.literal.solicitantes"/>(*)
-				</td>
-				<td class="labelText">
-					<html:select name="InformeFormEdicion"  property="ASolicitantes"  styleClass="boxCombo" >
-						<html:option value="S">
-							<siga:Idioma key="general.yes"/>
-						</html:option>
-						<html:option value="N">
-							<siga:Idioma key="general.no"/>
-						</html:option>
-					</html:select>		
-				</td>
-						
-				<td class="labelText">
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>(*)
-				</td>
-						
-				<td colspan="3" class="labelText">
-					<input type="radio" name="destinatariosCheck" value="C" ><siga:Idioma key="administracion.informes.destinatarios.colegiados"/>
-					<input type="radio" name="destinatariosCheck" value="S" ><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/>
-					<input type="radio" name="destinatariosCheck" value="P" ><siga:Idioma key="administracion.informes.destinatarios.procurador"/>
-					<input type="radio" name="destinatariosCheck" value="J" ><siga:Idioma key="administracion.informes.destinatarios.juzgado"/>
-				</td>
-			</tr>
+				</td>				
+				<td width="210px">
+					<html:select property="destinatarios"  name="InformeFormEdicion"  styleClass="boxCombo" >
+						<html:option value="C"><siga:Idioma key="administracion.informes.destinatarios.colegiados"/></html:option>
+						<html:option value="S"><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/></html:option>
+						<html:option value="P"><siga:Idioma key="administracion.informes.destinatarios.procurador"/></html:option>
+						<html:option value="J"><siga:Idioma key="administracion.informes.destinatarios.juzgado"/></html:option>
+						<html:option value="X"><siga:Idioma key="administracion.informes.destinatarios.contrarios"/></html:option>							
+					</html:select>						
+				</td>				
 			
+				<td style="padding:0px; spacing:0px" colspan="4">
+					<table border="0" cellpadding="5" cellspacing="0">	
+						<tr>					
+							<td class="labelText" style="vertical-align: middle;">
+								<siga:Idioma key="administracion.informes.literal.solicitantes"/>(*)
+							</td>
+							<td>
+								<html:select name="InformeFormEdicion"  property="ASolicitantes"  styleClass="boxCombo" >
+									<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+								</html:select>		
+							</td>
+			
+							<td class="labelText" style="vertical-align: middle;">
+								<siga:Idioma key="administracion.informes.literal.desdoblarcontrarios"/>(*)
+							</td>
+							<td>
+								<html:select name="InformeFormEdicion" property="aContrarios" styleClass="boxCombo">
+									<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+								</html:select>		
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>			
+					
 			<tr id="trEnvios">
-				<td colspan="6">
+				<td class="labelText" style="vertical-align: middle;" rowspan="3">
+					<siga:Idioma key="administracion.informes.literal.tipoEnviosPermitidos" />(*) 
+				</td>
+				
+				<td style="padding:0px; spacing:0px" colspan="5">				
 					<table width="100%" border="0">						
-						<tr>
-							<td class="labelText" rowspan="3">
-								<siga:Idioma key="administracion.informes.literal.tipoEnviosPermitidos" />(*) 
-							</td>						
-							<td rowspan="3">
+						<tr>													
+							<td rowspan="4">
 								<siga:ComboBD nombre = "comboTipoEnvioPermitidos" tipo="${comboTipoEnvio}"
 									 clase="box" filasMostrar="7"
 								 	parametro="${parametrosComboEnvios}"
@@ -444,11 +448,11 @@
 									accion="accionComboTipoEnvio(this.selectedIndex);"/>							
 							</td>
 								
-							<td class="labelText">
+							<td class="labelText" style="vertical-align: middle;">
 								<siga:Idioma key="administracion.informes.literal.tipoEnvioDefecto" />
 							</td>
 							<td>
-								<select style="width:150px;" id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();">
+								<select id="idTipoEnvioDefecto" onchange="onChangeTipoenvio();" styleClass="boxCombo" style="width:150px;">
 									<option  value=""></option>
 									<c:forEach items="${tipoEnviosBeans}" var="tipoEnvio">
 										<c:set var="envioSeleccionado" value="" />
@@ -462,11 +466,11 @@
 						</tr>
 						
 						<tr>						
-							<td class="labelText">
+							<td class="labelText" style="vertical-align: middle;">
 								<siga:Idioma key="administracion.informes.literal.plantillaEnvioDefecto" />
 							</td>
 							<td>
-								<select style="width:400px;" id="idPlantillaEnvioDefecto">									
+								<select id="idPlantillaEnvioDefecto" styleClass="boxCombo" style="width:400px;">									
 									<option value="${idPlantillaEnvioDef}"><c:out value="${idPlantillaEnvioDef}" /></option>									
 								</select>
 								<script type="text/javascript">
@@ -476,12 +480,11 @@
 						</tr>
 						
 						<tr>						
-							<td class="labelText">
+							<td class="labelText" style="vertical-align: middle;">
 								<siga:Idioma key="administracion.informes.literal.tipointercambio" />
 							</td>
-	
-							<td colspan="3">
-								<select style="width:400px;" id="idTipoIntercambioTelematico">
+							<td>
+								<select id="idTipoIntercambioTelematico" styleClass="boxCombo" style="width:400px;">
 									<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
 								</select>
 								<script type="text/javascript">
@@ -490,7 +493,6 @@
 							</td>						
 						</tr>
 					</table>
-
 				</td>
 			</tr>
 				
@@ -594,19 +596,7 @@
 			
 		}
 		
-		function inicio() 
-		{	
-			var listaDestinatarios = document.InformeFormEdicion.destinatarios.value;
-			listaCheck = document.getElementsByName("destinatariosCheck");
-			for(var i = 0 ; i <listaDestinatarios.length ; i++) {
-				for(var j = 0 ; j <listaCheck.length ; j++) {
-					if(listaCheck[j].value == listaDestinatarios.charAt(i)){
-						listaCheck[j].checked = "checked";
-						break;
-					}
-			
-				}
-			}
+		function inicio() {				
 			if (document.getElementById("tipoFormato") != undefined){
 				if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
 					document.getElementById("tipoFormato").disabled="";
@@ -618,20 +608,19 @@
 			document.getElementById("directorio").disabled="disabled";
 			
 			if(document.InformeForm.modo.value=='modificar'){
-		
 				if(${intercambioTelematico} == '0'){
 					document.getElementById("idInstitucion").disabled="disabled";
 					document.getElementById("idPlantilla").disabled="disabled";
 					//document.getElementById("tipoFormato").disabled="disabled";
 					document.getElementById("idTipoInforme").disabled="disabled";
-		
+
 				}else if (${intercambioTelematico} == '1'){
 					inputs = document.getElementsByTagName("input");
 					for(var i = 0 ; i <inputs.length ; i++) {
 						input = inputs[i];
 						input.disabled =  "disabled"; 
 					}
-		
+
 					selects = document.getElementsByTagName("select");
 					for(var i = 0 ; i <selects.length ; i++) {
 						select = selects[i];
@@ -649,8 +638,8 @@
 					jQuery('#idButton').removeAttr("disabled");
 					jQuery('#idButtonGuardar').removeAttr("disabled");
 					jQuery('#modoInterno').removeAttr("disabled");
-				}
-				
+				}	
+
 				document.getElementById('idTipoIntercambioTelematico').disabled="disabled";
 		
 				if(document.InformeFormEdicion.idInstitucion.value == '0'){
@@ -661,11 +650,11 @@
 				if(document.getElementById("location").value=='2000'){
 					jQuery('#idTipoIntercambioTelematico').removeAttr("disabled");
 				}
-		
+				
 			}else if(document.InformeForm.modo.value=='consultar'){
 			
 				inputs = document.getElementsByTagName("input");
-				for(var i = 0 ; i <inputs.length ; i++) {
+				for(var i = 0 ; i <inputs.length; i++) {
 					input = inputs[i];
 					input.disabled =  "disabled"; 
 				}
@@ -680,8 +669,8 @@
 					textarea = textareas[i];
 					textarea.disabled =  "disabled"; 
 				}
-				document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.consulta.titulo'  />';		
-		
+				document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.consulta.titulo'  />';
+
 			}else if(document.InformeForm.modo.value=='insertar'){
 				document.getElementById ("titulo").innerHTML = '<siga:Idioma key='administracion.informes.nuevo.titulo'  />';
 				if(document.getElementById("location").value=='2000'){
@@ -689,20 +678,19 @@
 					document.getElementById("idPlantilla").disabled="";
 					document.getElementById("idTipoInforme").disabled="";
 					document.getElementById('idTipoIntercambioTelematico').disabled="";
+					
 					// document.getElementById("tipoFormato").disabled="";
 				}else{
 					//Mostramos la propia institcion(0 seleciona , 1 pordefecto, 2 intitucion)
 					document.getElementById("idInstitucion").selectedIndex = "2";
 					document.getElementById("idInstitucion").disabled="disabled";
-					document.getElementById("idPlantilla").disabled="";
-					document.getElementById('idTipoIntercambioTelematico').disabled="disabled";
-		
+					document.getElementById("idPlantilla").disabled="";					
 					document.getElementById("idTipoInforme").disabled="";
+					document.getElementById('idTipoIntercambioTelematico').disabled="disabled";
 					// document.getElementById("tipoFormato").disabled="";
 				}
 				document.InformeFormEdicion.visible.value="S";
 			}
-			
 			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
 				//document.InformeFormEdicion.idTipoInforme.value=document.InformeForm.idTipoInforme.value;
 				//alert("document.getElementById(idTipoInforme)"+document.getElementById("idTipoInforme").disabled);
@@ -716,6 +704,7 @@
 					if(tipoInforme.value=="CON"){
 						document.getElementById("idTipoInforme").remove(i);
 						break;
+						
 					}
 				}
 			}
@@ -812,33 +801,10 @@
 			document.InformeFormEdicion.idPlantillaEnvio.value = document.getElementById("idPlantillaEnvioDefecto").value;
 			document.InformeFormEdicion.idTipoIntercambioTelem.value = document.getElementById("idTipoIntercambioTelematico").value;
 			sub();
-			if(document.InformeFormEdicion.idTipoInforme.value!='CON'){ 
-				listaDestinatarios = document.getElementsByName("destinatariosCheck");
-				var destinatarios ="";
-				for(var i = 0 ; i <listaDestinatarios.length ; i++) {
-					if(listaDestinatarios[i].checked){
-						destinatarios+=listaDestinatarios[i].value;
-					}	
-				}
-				
-				if(destinatarios==''){
-					error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.destinatarios' />";
-					alert(error);
-					fin();
-		
-					document.getElementById("idInstitucion").disabled="disabled";
-					document.getElementById("idPlantilla").disabled="disabled";
-					//document.getElementById("idTipoInforme").disabled="disabled";
-					document.getElementById("directorio").disabled="disabled";
-		
-					return false;
-				}
-				document.InformeFormEdicion.destinatarios.value = destinatarios;
-				
-			}else{
-				document.InformeFormEdicion.destinatarios.value = 'C';
+			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){ 				
 				document.InformeFormEdicion.preseleccionado.value = 'S';
 				document.InformeFormEdicion.ASolicitantes.value = 'S';
+				document.InformeFormEdicion.Acontrarios.value = 'N';				
 			}
 			
 			document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
