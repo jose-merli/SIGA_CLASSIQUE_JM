@@ -618,7 +618,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 
 			Hashtable codigos = new Hashtable();
 			int contador = 0;
-
+			//aalg: INC_09675. Se filtra por las fechas de baja y validación de la suscripción
 			String sql = " SELECT "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA + " AS IDGUARDIA, "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_DESCRIPCION + " AS DESCRIPCIONGUARDIA, "
@@ -763,8 +763,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
-					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", "
-					+ "       SCS_GRUPOGUARDIACOLEGIADO Gru,       SCS_GRUPOGUARDIA          Grg "+
+					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ","
+					+ ScsInscripcionGuardiaBean.T_NOMBRETABLA + 
 					" WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION
 					+ "=guardias2." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + "=guardias2."
@@ -778,7 +778,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " AND "
 					+ CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + "=guardias2."
 					+ ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND " + CenColegiadoBean.T_NOMBRETABLA + "."
-					+ CenColegiadoBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND ";
+					+ CenColegiadoBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND " 
+					+  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDINSTITUCION + "=guardias2."
+					+ ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "."
+					+ ScsInscripcionGuardiaBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND "
+					+  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDTURNO + "=guardias2."
+					+ ScsCabeceraGuardiasBean.C_IDTURNO + " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "."
+					+ ScsInscripcionGuardiaBean.C_IDGUARDIA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " AND ";
 			contador++;
 			codigos.put(new Integer(contador), fechaInicio);
 
@@ -800,8 +806,17 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			sql += "guardias2." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " >= TO_DATE(:" + contador + ",'DD/MM/YYYY')))"
 					+ " AND ";
 			contador++;
+			codigos.put(new Integer(contador), fechaFin);
+			
+			sql += "(" + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL OR " +  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " >  TO_DATE(:" + contador + ",'DD/MM/YYYY') "
+					+ ") AND ";
+			contador++;
+			codigos.put(new Integer(contador), fechaFin);
+			
+			sql += ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " <  TO_DATE(:" + contador + ",'DD/MM/YYYY') AND ";
+			contador++;
 			codigos.put(new Integer(contador), institucion);
-
+			
 			sql += ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "=:" + contador;
 
 			if (guardias != null && guardias.size() > 0) {
@@ -834,13 +849,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			if (idPersona!=null&&!idPersona.trim().equalsIgnoreCase("")) {
 				sql += " AND guardias2.idpersona="+ idPersona;
 			}
-			
-			sql += " And guardias2.Idinstitucion = Gru.Idinstitucion(+) "+
-			   " And guardias2.Idturno = Gru.Idturno(+) "+
-			   " And guardias2.Idguardia = Gru.Idguardia(+) "+
-			   " And guardias2.Idpersona = Gru.Idpersona(+) "+
-			   //And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)
-			   "And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ";
 			
 			sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, GUARDIA, POSICION, LETRADO";
 			// jbd // inc7654
