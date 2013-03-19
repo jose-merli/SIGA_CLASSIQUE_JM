@@ -1035,76 +1035,46 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public Vector getContrariosEjg(String idInstitucion, String  tipoEjg, String anioEjg, String numeroEjg, String idContrario) throws ClsExceptions {	
   		Vector datos=new Vector();   
   		RowsContainer rc = new RowsContainer();
-  		StringBuffer sqlBuffer = new StringBuffer();
- 		 
-  		
-  		sqlBuffer.append("SELECT PER.IDPERSONA IDPERSONA_PJG, ");
-  		sqlBuffer.append("DECODE(PER.DIRECCION, null, null, 1) IDDIRECCION_PJG, ");
-  		sqlBuffer.append("NVL(PER.NOMBRE, '') NOMBRE_PJG, ");
-  		sqlBuffer.append("NVL(PER.APELLIDO1, '') APELLIDO1_PJG, ");
-  		sqlBuffer.append("NVL(PER.APELLIDO2, '') APELLIDO2_PJG, ");
-  		sqlBuffer.append("NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+this.usrbean.getLanguage()+"), '') || ");
-  		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
-  		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
-  		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
-  		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
-  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') AS DOMICILIO_PJG, ");
-  		sqlBuffer.append("NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
-  		sqlBuffer.append("NVL(POBL.NOMBRE, '') AS POBLACION_PJG, ");
-  		sqlBuffer.append("NVL(PROV.NOMBRE, '') AS PROVINCIA_PJG, ");
-  		sqlBuffer.append("DECODE(PER.SEXO,  null,    null,   'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_PJG, ");
-  		sqlBuffer.append("NVL2(PER.SEXO, DECODE(PER.SEXO, 'H', 'o', 'a'), '') AS O_A_PJG, ");
-  		sqlBuffer.append("DECODE(PER.SEXO, 'H', 'el', 'la') as EL_LA_PJG, ");
-  		sqlBuffer.append("NVL(PER.NIF, '') AS NIF_PJG, ");
-        
-  		sqlBuffer.append("(SELECT ST.NUMEROTELEFONO ");
-  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
-  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
-  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
-  		sqlBuffer.append("AND ST.IDTELEFONO = 1) TELEFONO1_PJG, ");
-  		sqlBuffer.append("(SELECT ST.NUMEROTELEFONO ");
-  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
-  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
-  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
-  		sqlBuffer.append("AND ST.IDTELEFONO = 2) TELEFONO2_PJG, ");
-        
-  		sqlBuffer.append("(SELECT MAX(ST.NUMEROTELEFONO) ");
-  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA ST ");
-  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
-  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
-  		sqlBuffer.append("AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
-  		sqlBuffer.append("PER.Fax FAX_PJG, ");
-  		sqlBuffer.append("PER.CORREOELECTRONICO CORREOELECTRONICO_PJG ");
-  		sqlBuffer.append(",  PER.IDREPRESENTANTEJG,   PER.IDINSTITUCION ");
-  		
-  		sqlBuffer.append("FROM  SCS_CONTRARIOSEJG CON,SCS_PERSONAJG   PER, ");
-  		sqlBuffer.append("CEN_TIPOVIA     VIA, ");
-  		sqlBuffer.append("CEN_POBLACIONES POBL, ");
-  		sqlBuffer.append("CEN_PROVINCIAS  PROV ");
-  		sqlBuffer.append("WHERE ");
-  		sqlBuffer.append("CON.IDINSTITUCION = PER.IDINSTITUCION ");
-  		sqlBuffer.append("AND CON.IDPERSONA = PER.IDPERSONA ");
-  		sqlBuffer.append("AND VIA.IDINSTITUCION(+) = PER.IDINSTITUCION ");
-  		sqlBuffer.append("AND VIA.IDTIPOVIA(+) = PER.IDTIPOVIA ");
-  		sqlBuffer.append("AND POBL.IDPOBLACION(+) = PER.IDPOBLACION ");
-  		sqlBuffer.append("AND PROV.IDPROVINCIA(+) = PER.IDPROVINCIA ");
-  		sqlBuffer.append("AND CON.IDINSTITUCION =  ");
-  		sqlBuffer.append(idInstitucion);
-  		sqlBuffer.append("AND CON.IDTIPOEJG =  ");
-  		sqlBuffer.append(tipoEjg);
-  		sqlBuffer.append("AND CON.ANIO =  ");
-  		sqlBuffer.append(anioEjg);
-  		sqlBuffer.append("AND CON.NUMERO =  ");
-  		sqlBuffer.append(numeroEjg);
-  				  				
-  				
-  		if(idContrario!=null){
-  			sqlBuffer.append(" AND CON.IDPERSONA =  ");
-  			sqlBuffer.append(idContrario);
-  		}
+  		String sql = " SELECT " + 
+		  		" NVL(PER." + ScsPersonaJGBean.C_NOMBRE + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO1 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO1 + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_APELLIDO2 + ", ' ' || PER." + ScsPersonaJGBean.C_APELLIDO2 + ", '') " +
+  				" AS NOMBRE_CONTRARIO, " +
+  				" NVL2(VIA." + CenTiposViasBean.C_DESCRIPCION + ", F_SIGA_GETRECURSO(VIA." + CenTiposViasBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + "), '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_DIRECCION + ", ' ' || PER." + ScsPersonaJGBean.C_DIRECCION + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_NUMERODIR + ", ' ' || PER." + ScsPersonaJGBean.C_NUMERODIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_ESCALERADIR + ", ' ' || PER." + ScsPersonaJGBean.C_ESCALERADIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_PISODIR + ", ' ' || PER." + ScsPersonaJGBean.C_PISODIR + ", '') " +
+  					" || NVL2(PER." + ScsPersonaJGBean.C_PUERTADIR + ", ' ' || PER." + ScsPersonaJGBean.C_PUERTADIR + ", '') " +
+  				" AS DOMICILIO_CONTRARIO, " +
+  				" NVL(PER." + ScsPersonaJGBean.C_CODIGOPOSTAL + ", '') AS CP_CONTRARIO, " +
+  				" NVL(POBL." + CenPoblacionesBean.C_NOMBRE + ", '') AS POBLACION_CONTRARIO, " +
+  				" NVL(PROV." + CenProvinciaBean.C_NOMBRE + ", '') AS PROVINCIA_CONTRARIO, " +
+  				" NVL2(PER." + ScsPersonaJGBean.C_SEXO + ", DECODE(PER." + ScsPersonaJGBean.C_SEXO + ",'H','o','a'), '') AS O_A_CONTRARIO, "+
+  				" NVL(PER." + ScsPersonaJGBean.C_NIF + ", '') AS NIF_CONTRARIO, " +
+  				" (SELECT NVL(TEL." + ScsTelefonosPersonaBean.C_NUMEROTELEFONO + ", '') " +
+  					" FROM " + ScsTelefonosPersonaBean.T_NOMBRETABLA + " TEL " + 
+  					" WHERE TEL." + ScsTelefonosPersonaBean.C_IDINSTITUCION + " = PER." + ScsPersonaJGBean.C_IDINSTITUCION +
+  					" AND TEL." + ScsTelefonosPersonaBean.C_IDPERSONA + " = PER." + ScsPersonaJGBean.C_IDPERSONA + 
+  					" AND ROWNUM = 1) AS TELEFONO1_CONTRARIO " +
+  			" FROM " + ScsContrariosEJGBean.T_NOMBRETABLA + " CON, " +  				
+  				ScsPersonaJGBean.T_NOMBRETABLA + " PER, " +
+  				CenTiposViasBean.T_NOMBRETABLA + " VIA, " +
+  				CenPoblacionesBean.T_NOMBRETABLA + " POBL, " +
+  				CenProvinciaBean.T_NOMBRETABLA + " PROV " +
+  			" WHERE CON." + ScsContrariosEJGBean.C_IDINSTITUCION + " = PER." + ScsPersonaJGBean.C_IDINSTITUCION + 
+  				" AND CON." + ScsContrariosEJGBean.C_IDPERSONA + " = PER." + ScsPersonaJGBean.C_IDPERSONA + 
+  				" AND CON." + ScsContrariosEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+  				" AND CON." + ScsContrariosEJGBean.C_IDTIPOEJG + " = " + tipoEjg +
+  				" AND CON." + ScsContrariosEJGBean.C_ANIO + " = " + anioEjg +
+  				" AND CON." + ScsContrariosEJGBean.C_NUMERO + " = " + numeroEjg + 
+  				" AND VIA." + CenTiposViasBean.C_IDINSTITUCION + "(+) = PER." + ScsPersonaJGBean.C_IDINSTITUCION +
+  				" AND VIA." + CenTiposViasBean.C_IDTIPOVIA + "(+) = PER." + ScsPersonaJGBean.C_IDTIPOVIA +
+  				" AND POBL." + CenPoblacionesBean.C_IDPOBLACION + "(+) = PER." + ScsPersonaJGBean.C_IDPOBLACION +
+  				" AND PROV." + CenProvinciaBean.C_IDPROVINCIA + "(+) = PER." + ScsPersonaJGBean.C_IDPROVINCIA;
   				
         try {    
-        	if (rc.find(sqlBuffer.toString())) {
+        	if (rc.find(sql)) {
         		for (int i = 0; i < rc.size(); i++){
         			Row fila = (Row) rc.get(i);
         			Hashtable resultado=fila.getRow();	                  
@@ -2311,9 +2281,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and ejg.JUZGADO=:"+contador;	
 		}
 
+		//aalg: INC_08086_SIGA
 		if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals(""))) {
 			contador++;
-			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(),"ejg.numerodiligencia", contador, codigos );
+			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(),"ejg.observaciones", contador, codigos );
 		}
 
 		if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals(""))) {
