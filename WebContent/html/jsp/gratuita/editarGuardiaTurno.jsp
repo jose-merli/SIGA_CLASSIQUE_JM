@@ -814,7 +814,7 @@
 					<td rowspan="2" class="labelText" valign="center" align="middle">
 						<html:checkbox name="DefinirGuardiasTurnosForm"
 							property="hayDiasASeparar" value="<%=ClsConstants.DB_TRUE%>"
-							disabled="true" /> <siga:Idioma
+							disabled="true" styleId="hayDiasASeparar" /> <siga:Idioma
 							key="gratuita.guardiasTurno.literal.separarGuardia" /> <%=diasASeparar%>
 					</td>
 					<td><IMG border=0 src="<%=app+"/html/imagenes/"%>help.gif"
@@ -987,7 +987,11 @@ function init()
 		jQuery("#guardiasPrincipales").attr("disabled","disabled");
 
 	}
-	
+	<%if(soloLectura){%>
+		jQuery("input").not("*[type=button]").not("*.boxConsulta").not("*.boxConsultaNumber").attr("disabled","disabled");
+		jQuery("select").attr("readonly","readonly");		
+	<%}%>
+	jQuery("#hayDiasASeparar").attr("disabled","disabled");
 
 }
 
