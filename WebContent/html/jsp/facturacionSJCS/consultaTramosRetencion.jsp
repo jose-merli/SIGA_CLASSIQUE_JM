@@ -130,10 +130,10 @@
 			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>
 			<td><html:text property="numeroMeses" styleClass="box" maxlength="2" style="width:30" onchange="onChangeNumeroMeses();"></html:text></td>
 			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importe" /></td>
-			<td><html:text property="importe" styleId="idImporte" styleClass="box" style="width:70;text-align=right" /></td>
+			<td><html:text property="importe" styleId="idImporte" styleClass="box" style="width:70;text-align=right" value="" /></td>
 			<td>&nbsp;</td>
 			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importeRetencion" /></td>
-			<td><html:text property="importeRetencion" styleClass="boxConsulta" readonly="true" style="width:70;text-align=right" /></td>
+			<td><html:text property="importeRetencion" styleClass="boxConsulta" readonly="true" style="width:70;text-align=right" value="" /></td>
 		</tr>
 	</table>
 </siga:ConjCampos>
