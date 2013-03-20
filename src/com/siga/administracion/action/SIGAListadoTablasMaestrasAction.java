@@ -215,13 +215,19 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        row.setValue(sNombreCampoCodigoExt, sCodigoExt);
 	        row.setValue(sNombreCampoDescripcion, (idRecurso!=null)?""+idRecurso:sDescripcion);
 	        row.setValue(MasterBean.C_USUMODIFICACION, userBean.getUserName());
-	        row.setValue(MasterBean.C_FECHAMODIFICACION, "SYSDATE");
+	        row.setValue(MasterBean.C_FECHAMODIFICACION, "SYSDATE");	    
 	
 	        vFields.add(sNombreCampoCodigo);
 	        vFields.add(sNombreCampoCodigoExt);
 	        vFields.add(sNombreCampoDescripcion);
 	        vFields.add(MasterBean.C_USUMODIFICACION);
 	        vFields.add(MasterBean.C_FECHAMODIFICACION);
+	        
+	        //En el caso de la tabla SCS_TIPOFUNDAMENTOCALIF se añade el tipo de dictamen escogido
+	    	if (sNombreTabla != null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA) && form.getIdTipoDictamen() != null && !form.getIdTipoDictamen().equals("")){
+	    		row.setValue(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
+	    		vFields.add(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG);
+	    	}	
 	
 	        if (sLocal.equals("S"))
 	        {
@@ -407,7 +413,11 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    			
 	    			//En el caso de la tabla SCS_TIPOFUNDAMENTOCALIF se añade el tipo de dictamen escogido
 	    			if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
-	    				htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
+	    				if (form.getIdTipoDictamen() == null || form.getIdTipoDictamen().equals("")){
+	    					htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, "");
+	    				} else {
+	    					htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
+	    				}
 	    			}	
 	    			
 			        row.load(htNew);
