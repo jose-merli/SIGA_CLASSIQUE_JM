@@ -139,8 +139,8 @@
 			<td class="labelText"><siga:Idioma key="censo.bajastemporales.descripcion"/></td>
 			<td align="left" colspan="3">
 			
-			
-			<html:textarea name="BajasTemporalesForm" property="descripcion"  onchange="cuenta(this,1024)" cols="65" rows="2" style="overflow=auto;width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo"  readonly="false"></html:textarea>
+			<!-- aalg: INC_07989. Reducir el tamaño de la caja de texto para que quepa -->
+			<html:textarea name="BajasTemporalesForm" property="descripcion"  onchange="cuenta(this,1024)" cols="57" rows="2" style="overflow=auto;width=350;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo"  readonly="false"></html:textarea>
 			
 			
 			</td>

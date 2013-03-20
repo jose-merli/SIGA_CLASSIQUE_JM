@@ -100,17 +100,19 @@ jQuery.noConflict();
 					key="censo.bajastemporales.situacion" />
 				</td>
 				<td  align="left">
+				<!-- aalg: INC_07989. Que aparezca por defecto todos -->
 				<html:select styleId="situacion" property="situacion" onclick="accionComboSituacion();" styleClass="boxCombo" >
 					
+						<html:option value="T"><siga:Idioma
+					key="censo.bajastemporales.situacion.todos" /></html:option>
 						<html:option value="B"><siga:Idioma
 					key="censo.bajastemporales.situacion.bajaTemporal" />
 						</html:option>
 						
 						<html:option value="A"><siga:Idioma
 					key="censo.bajastemporales.situacion.activos" /></html:option>
-					<html:option value="T"><siga:Idioma
-					key="censo.bajastemporales.situacion.todos" /></html:option>
-						</html:select>
+					
+				</html:select>
 				</td>
 				
 				
