@@ -23,6 +23,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsCalendarioGuardiasAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
@@ -92,11 +93,10 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
 		Vector ocultos = new Vector();
 		ocultos = miForm.getDatosTablaOcultos(0);
-		String idGrupoGuardia = (String)ocultos.get(9);
+		String idGrupoGuardia = (String)ocultos.get(3);
 		//Si viene idpersona la fila seleccionada no es de grupos
 		if(idGrupoGuardia.equals("null")){
 			ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-			ScsSaltosCompensacionesBean beanSaltos = new ScsSaltosCompensacionesBean();
 
 			ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
 			ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.getUserBean(request));
@@ -116,18 +116,29 @@ public class SaltosYCompensacionesAction extends MasterAction {
 				// Obtengo los datos del formulario:
 				visibles = miForm.getDatosTablaVisibles(0);
 
+
+				//mhg - INC_05540_SIGA Se ha modificado la forma de obtener los datos. Ahora no se cogen del vector oculto del jsp.
+				//Obtenemos un objeto de tipo beanSaltoCompensacion y apartir de ahí rellenamos el miHash.
+				Hashtable hash = new Hashtable();
+				hash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, (String) ocultos.get(0));
+				hash.put(ScsSaltosCompensacionesBean.C_IDTURNO, (String) ocultos.get(1));
+				hash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, (String) ocultos.get(2));	
+				ScsSaltosCompensacionesBean beanSaltoCompensacion = (ScsSaltosCompensacionesBean) admSaltosYCompensaciones.select(hash).get(0);
+				
+				
 				// Datos de la Tabla que puedes venir vacios:
-				miHash.put(ScsSaltosCompensacionesBean.C_IDGUARDIA, ((String) ocultos.get(3)).trim());
-				miHash.put(ScsSaltosCompensacionesBean.C_MOTIVOS, ((String) ocultos.get(7)).trim());
-				miHash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, ((String) ocultos.get(8)).trim());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_IDGUARDIA, beanSaltoCompensacion.getIdGuardia());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_MOTIVOS,  beanSaltoCompensacion.getMotivos().trim());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, beanSaltoCompensacion.getFechaCumplimiento().trim());
 
 				// Datos de la Tabla que vienen rellenos:
-				miHash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, (String) ocultos.get(0));
-				miHash.put(ScsSaltosCompensacionesBean.C_IDTURNO, (String) ocultos.get(1));
-				miHash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, (String) ocultos.get(2));
-				miHash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, (String) ocultos.get(4));
-				miHash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, (String) ocultos.get(5));
-				miHash.put(ScsSaltosCompensacionesBean.C_FECHA, (String) ocultos.get(6));
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_IDINSTITUCION, beanSaltoCompensacion.getIdInstitucion());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_IDTURNO, beanSaltoCompensacion.getIdTurno());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, beanSaltoCompensacion.getIdSaltosTurno());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_IDPERSONA, beanSaltoCompensacion.getIdPersona());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, beanSaltoCompensacion.getSaltoCompensacion());
+				UtilidadesHash.set(miHash, ScsSaltosCompensacionesBean.C_FECHA, beanSaltoCompensacion.getFecha());
+				
 
 				// Almaceno en sesion el registro para futuras modificaciones
 				request.getSession().setAttribute("DATABACKUP", miHash);
@@ -157,7 +168,6 @@ public class SaltosYCompensacionesAction extends MasterAction {
 	protected String editarGrupos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
 		ScsSaltoCompensacionGrupoAdm admSaltosYCompensaciones = new ScsSaltoCompensacionGrupoAdm(this.getUserBean(request));
-		ScsSaltoCompensacionGrupoBean beanSaltos = new ScsSaltoCompensacionGrupoBean(); 
 		
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.getUserBean(request));
@@ -178,18 +188,25 @@ public class SaltosYCompensacionesAction extends MasterAction {
 			ocultos = miForm.getDatosTablaOcultos(0);
 			visibles = miForm.getDatosTablaVisibles(0);
 
-			//Datos de la Tabla que puedes venir vacios:
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_IDGUARDIA,((String)ocultos.get(3)).trim());
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_MOTIVO,((String)ocultos.get(10)).trim());
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO,((String)ocultos.get(8)).trim());
+			
+			//mhg - INC_05540_SIGA Se ha modificado la forma de obtener los datos. Ahora no se cogen del vector oculto del jsp.
+			//Obtenemos un objeto de tipo beanSaltoCompensacion y apartir de ahí rellenamos el miHash.
+			Hashtable hash = new Hashtable();
+			hash.put(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,(String)ocultos.get(4));			
+			ScsSaltoCompensacionGrupoBean beanSaltoCompensacionGrupo = (ScsSaltoCompensacionGrupoBean) admSaltosYCompensaciones.select(hash).get(0);
+			
+			// Datos de la Tabla que puedes venir vacios:
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_IDGUARDIA, beanSaltoCompensacionGrupo.getIdGuardia());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_MOTIVO,  beanSaltoCompensacionGrupo.getMotivo().trim());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO, beanSaltoCompensacionGrupo.getFechaCumplimiento().trim());
 			
 			//Datos de la Tabla que vienen rellenos:
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION,(String)ocultos.get(0));			
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_IDTURNO,(String)ocultos.get(1));
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA,(String)ocultos.get(9));
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION,(String)ocultos.get(5));
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_FECHA,(String)ocultos.get(6));			
-			miHash.put(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,(String)ocultos.get(11));
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION, beanSaltoCompensacionGrupo.getIdInstitucion());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_IDTURNO, beanSaltoCompensacionGrupo.getIdTurno());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA, beanSaltoCompensacionGrupo.getIdGrupoGuardia());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION, beanSaltoCompensacionGrupo.getSaltoCompensacion());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_FECHA,beanSaltoCompensacionGrupo.getFecha());
+			UtilidadesHash.set(miHash, ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO, beanSaltoCompensacionGrupo.getIdSaltoCompensacionGrupo());
 			
 			//Almaceno en sesion el registro para futuras modificaciones
 			request.getSession().setAttribute("DATABACKUP",miHash);						
@@ -556,7 +573,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 
 		Vector ocultos = new Vector();
 		ocultos = miForm.getDatosTablaOcultos(0);
-		String idGrupoGuardia = (String) ocultos.get(9);
+		String idGrupoGuardia = (String) ocultos.get(3);
 		// Si viene idpersona la fila seleccionada no es de grupos
 		if (idGrupoGuardia.equals("null")) {
 
@@ -616,7 +633,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 			ocultos = miForm.getDatosTablaOcultos(0);
 			UtilidadesHash.set(registro,ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION,(String)ocultos.get(0));
 			UtilidadesHash.set(registro,ScsSaltoCompensacionGrupoBean.C_IDTURNO,(String)ocultos.get(1));
-			UtilidadesHash.set(registro,ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,(String)ocultos.get(11));
+			UtilidadesHash.set(registro,ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,(String)ocultos.get(4));
 			
 			if (admSaltosYCompensaciones.delete(registro))
 				forward = exitoRefresco("messages.deleted.success",request);				

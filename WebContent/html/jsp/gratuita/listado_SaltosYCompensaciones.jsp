@@ -80,8 +80,8 @@
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 			<%
 			//Datos ocultos:
-			String idInstitucion="", idTurno="", idSaltosTurno="", idGuardia="", idPersona="", idGrupoGuardia = "";
-			String saltoOCompensacion="", fecha="", motivos="", fechaCumplimiento="", motivosGrupo= "";
+			String idInstitucion="", idTurno="", idSaltosTurno="", idGuardia="", idGrupoGuardia = "";
+			String saltoOCompensacion="", fecha="", fechaCumplimiento="";
 			//Datos visibles:
 			String nombreTurno="", nombreGuardia="", datosLetrado="", nCol="&nbsp;", idSaltoCompensacionGrupo="";
 			
@@ -115,19 +115,11 @@
 			idTurno = hash.get(ScsSaltosCompensacionesBean.C_IDTURNO)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDTURNO);
 			idSaltosTurno = hash.get(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
 			idSaltoCompensacionGrupo = hash.get(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO)==null?"&nbsp;":(String)hash.get(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO);
-			idPersona = hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
+			//idPersona = hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
 			saltoOCompensacion = hash.get(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION)==null?"&nbsp;":(String)hash.get(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
 			fecha = hash.get(ScsSaltosCompensacionesBean.C_FECHA)==null?"":(String)hash.get(ScsSaltosCompensacionesBean.C_FECHA);
 
 			//Campos que pueden venir vacios:
-			if (hash.get(ScsSaltosCompensacionesBean.C_MOTIVOS)!=null && ((String)hash.get(ScsSaltosCompensacionesBean.C_MOTIVOS)).equals(""))
-				motivos = " ";
-			else
-				motivos = (String)hash.get(ScsSaltosCompensacionesBean.C_MOTIVOS);
-			if (hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO)!=null && ((String)hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO)).equals(""))
-				motivosGrupo = " ";
-			else
-				motivosGrupo = (String)hash.get(ScsSaltoCompensacionGrupoBean.C_MOTIVO);
 			if (hash.get(ScsSaltosCompensacionesBean.C_IDGUARDIA)!=null && ((String)hash.get(ScsSaltosCompensacionesBean.C_IDGUARDIA)).equals(""))
 				idGuardia = " ";
 			else
@@ -156,22 +148,15 @@
 			if(fechaCumplimiento==null || fechaCumplimiento.trim().equals("")){
 				permisos += ",E,B";			
 			}
-
+			//mhg - INC_05540_SIGA Pasamos los valores ocultos necesarios para poder obtener los objetos que necesitamos en el action.
 			%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=permisos%>" clase="listaNonEdit">
 				<td>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idInstitucion%>'>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurno%>'>
 					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idSaltosTurno%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idGuardia%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=idPersona%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=saltoOCompensacion%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=fecha%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=motivos%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaCumplimiento%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=idGrupoGuardia%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=motivosGrupo%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=idSaltoCompensacionGrupo%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idGrupoGuardia%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=idSaltoCompensacionGrupo%>'>
 					<%=nombreTurno%>
 				</td>
 				<td><% if(nombreGuardia.equals(" ")) { %>
