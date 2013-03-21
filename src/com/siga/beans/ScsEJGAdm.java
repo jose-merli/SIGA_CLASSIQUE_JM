@@ -2017,7 +2017,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 		Hashtable codigos = new Hashtable();
 		int contador=0;
-		
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 		// Estos son los campos que devuelve la select
 		String consulta = 
 			"select ejg." + ScsEJGBean.C_ANIO + ", ejg." + ScsEJGBean.C_IDINSTITUCION + ", ejg." + ScsEJGBean.C_IDTIPOEJG + ", ejg." + ScsEJGBean.C_IDFACTURACION +", ejg. " + ScsEJGBean.C_FECHARATIFICACION +
@@ -2025,8 +2025,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			", ejg." + ScsEJGBean.C_NUMEJG + ", ejg." + ScsEJGBean.C_FECHAAPERTURA + 
 			", ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO+", ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA +
 			", '' AS APELLIDO1,'' AS APELLIDO2" +
-			", F_SIGA_GET_ULTIMOESTADOEJG(ejg." + ScsEJGBean.C_IDINSTITUCION + ", ejg." + ScsEJGBean.C_IDTIPOEJG + "" +
-			", ejg." + ScsEJGBean.C_ANIO + ", ejg." + ScsEJGBean.C_NUMERO + ") AS DESC_ESTADO " + 
+			", nvl(mee." + ScsMaestroEstadosEJGBean.C_DESCRIPCION + ", '') AS DESC_ESTADO " + 
 			", ejg."+ScsEJGBean.C_NUMERO+",ejg."+ScsEJGBean.C_FECHAMODIFICACION+", ejg."+ScsEJGBean.C_SUFIJO ;
 
 		// Metemos las tablas implicadas en la select 
@@ -2034,6 +2033,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsEJGBean.T_NOMBRETABLA + " ejg,"  + 
 			ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + 
 			CenColegiadoBean.T_NOMBRETABLA + " colegiado" ;
+		
+		//aalg: las tablas de estado para la select
+		consulta += ", (select  e2."+ ScsEstadoEJGBean.C_IDINSTITUCION +", e2."+ ScsEstadoEJGBean.C_IDTIPOEJG +", e2."+ ScsEstadoEJGBean.C_ANIO +", e2."+ ScsEstadoEJGBean.C_NUMERO + 
+						", e2."+ ScsEstadoEJGBean.C_IDESTADOEJG + ", e2." + ScsEstadoEJGBean.C_FECHAINICIO +
+					  " from  " + 
+					  " (select "+ ScsEstadoEJGBean.C_IDINSTITUCION +", "+ ScsEstadoEJGBean.C_IDTIPOEJG +", "+ ScsEstadoEJGBean.C_ANIO +", "+ ScsEstadoEJGBean.C_NUMERO +", max("+ ScsEstadoEJGBean.C_FECHAINICIO +") fechainicio " +
+					  " from " + ScsEstadoEJGBean.T_NOMBRETABLA +
+					  " group by "+ ScsEstadoEJGBean.C_IDINSTITUCION +", "+ ScsEstadoEJGBean.C_IDTIPOEJG +", "+ ScsEstadoEJGBean.C_ANIO +", "+ ScsEstadoEJGBean.C_NUMERO +") e1, " + ScsEstadoEJGBean.T_NOMBRETABLA + " e2 " +
+					  " where e1."+ ScsEstadoEJGBean.C_IDINSTITUCION +" = e2."+ ScsEstadoEJGBean.C_IDINSTITUCION +" and " +
+					  " e1."+ ScsEstadoEJGBean.C_IDTIPOEJG +" = e2."+ ScsEstadoEJGBean.C_IDTIPOEJG +" and " +
+					  "  e1."+ ScsEstadoEJGBean.C_ANIO +" = e2."+ ScsEstadoEJGBean.C_ANIO +" and " +
+					  " e1."+ ScsEstadoEJGBean.C_NUMERO +" = e2."+ ScsEstadoEJGBean.C_NUMERO +" and " +
+					  "  e1."+ ScsEstadoEJGBean.C_FECHAINICIO + "= e2."+ ScsEstadoEJGBean.C_FECHAINICIO +  
+					  "  ) estado, " + ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " mee ";
 		
 		// Si se filtra por acta necesitamos la tabla
 		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
@@ -2059,13 +2072,22 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
 			" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
 		}
+		
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
+		consulta +=" and ejg."+ ScsEJGBean.C_IDINSTITUCION +" = estado."+ ScsEstadoEJGBean.C_IDINSTITUCION +"(+) " +
+		   " and ejg."+ ScsEJGBean.C_IDTIPOEJG +" = estado."+ ScsEstadoEJGBean.C_IDTIPOEJG +"(+) " +
+		   " and ejg."+ ScsEJGBean.C_NUMERO +" = estado."+ ScsEstadoEJGBean.C_NUMERO +"(+) " +
+		   " and ejg."+ ScsEJGBean.C_ANIO +" = estado."+ ScsEstadoEJGBean.C_ANIO +"(+) ";
+		
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
-			consulta +=" AND (f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero)" +
-			" NOT IN (7, 8, 9, 10, 11) OR f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) IS NULL) ";			
+			consulta +=" AND (estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" NOT IN (7, 8, 9, 10, 11) OR estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" IS NULL) ";			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
-			consulta += " AND F_SIGA_GET_IDULTIMOESTADOEJG(ejg.IDINSTITUCION, ejg.IDTIPOEJG, ejg.ANIO, ejg.NUMERO) IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ")";
+			consulta += " AND estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ")";
 		}
+		
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
+		consulta += " and mee."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = estado."+ ScsEstadoEJGBean.C_IDESTADOEJG;
 		
 		// Se filtra por numero cajg
 		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
@@ -2317,46 +2339,25 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and " +  ScsEJGBean.C_IDPONENTE + " =:" + contador ; 
 		}
 		
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
-			consulta += " and f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) = :" + contador;
+			consulta += " and estado."+ ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
 			
 			if ((miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")) ||
 					(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals(""))) {
 			  
-				
-					consulta+= " and exists " +
-					" (select 1" +
-			        "  from scs_estadoejg estadoEjg" +
-			        " where estadoEjg.Idtipoejg = ejg.IDTIPOEJG" +
-			        "   and estadoEjg.Idinstitucion = ejg.idinstitucion" +
-			        "   and estadoEjg.Anio = ejg.anio" +
-			        "   and estadoEjg.numero = ejg.numero" +
-			        "   and estadoEjg.Idestadoejg = f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) ";
 			        if(miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")){
 			        	contador++;
 			        	codigos.put(new Integer(contador), miForm.getfechaEstadoDesde());
-			        	consulta +="   and trunc(estadoejg.fechainicio) >=trunc(TO_DATE( :" + contador+"))";
+			        	consulta +="   and trunc(estado."+ ScsEstadoEJGBean.C_FECHAINICIO + ") >=trunc(TO_DATE( :" + contador+"))";
 			        }
 			        if(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals("")){
 			        	contador++;
 			        	codigos.put(new Integer(contador), miForm.getfechaEstadoHasta());
-			        	consulta += "   and trunc(estadoejg.fechainicio) <= trunc(TO_DATE( :" + contador+"))";
+			        	consulta += "   and trunc(estado."+ ScsEstadoEJGBean.C_FECHAINICIO + ") <= trunc(TO_DATE( :" + contador+"))";
 			        }
-			        consulta+=" ) ";
-				/*Vector v = GstDate.dateBetweenDesdeAndHastaBind("(select trunc(estadoejg.fechainicio)" +
-						" from scs_estadoejg estadoEjg" +
-						" where estadoEjg.Idtipoejg=ejg.IDTIPOEJG" +
-						"  and  estadoEjg.Idinstitucion=ejg.idinstitucion" +
-						"  and  estadoEjg.Anio=ejg.anio" +
-						"  and  estadoEjg.numero=ejg.numero" +
-						"  and estadoEjg.Idestadoejg= "+UtilidadesHash.getString(miHash, "ESTADOEJG")+
-						"  and rownum=1)", GstDate.getApplicationFormatDate("",miForm.getfechaEstadoDesde()),GstDate.getApplicationFormatDate("",miForm.getfechaEstadoHasta()),contador,codigos);
-				Integer in = (Integer)v.get(0);
-				String st = (String)v.get(1);
-				contador = in.intValue();
-				consulta += " and " + st; */                    
 			} 
 		} else if ((miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))) {
 			contador++;
@@ -2386,7 +2387,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
 				contador++;
 				codigos.put(new Integer(contador), "8");
-				consulta += " and f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) > :" + contador;
+				consulta += " and estado."+ ScsEstadoEJGBean.C_IDESTADOEJG + " > :" + contador;
 			}
 		}
 
