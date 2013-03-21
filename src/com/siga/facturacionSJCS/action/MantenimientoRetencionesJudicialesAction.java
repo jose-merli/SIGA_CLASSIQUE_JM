@@ -460,22 +460,23 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			miHash = miForm.getDatos();			
 			miHash.put(FcsRetencionesJudicialesBean.C_FECHAINICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicio()));
 			if (miHash.get(FcsRetencionesJudicialesBean.C_FECHAFIN)!=null && !miHash.get(FcsRetencionesJudicialesBean.C_FECHAFIN).equals("") ){
-			 miHash.put(FcsRetencionesJudicialesBean.C_FECHAFIN,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaFin()));
+				miHash.put(FcsRetencionesJudicialesBean.C_FECHAFIN,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaFin()));
 			}
-			/*if (UtilidadesHash.getString(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION).equalsIgnoreCase("Porcentual")){
-				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION,ClsConstants.TIPO_RETENCION_PORCENTAJE);
+			
+			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(miForm.getCheckEsDeTurno());
+			if (checkEsDeTurno){
+				UtilidadesHash.set(miHash, FcsRetencionesJudicialesBean.C_ESDETURNO, ClsConstants.DB_TRUE);
 			}else{
-				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION,ClsConstants.TIPO_RETENCION_IMPORTEFIJO);
-			}*/
+				UtilidadesHash.set(miHash, FcsRetencionesJudicialesBean.C_ESDETURNO, ClsConstants.DB_FALSE);
+			}
+			
 			Hashtable hashBkp = new Hashtable();
 			Vector resultado= admBean.selectPorClave(miHash);
 			hashBkp = ((FcsRetencionesJudicialesBean)resultado.get(0)).getOriginalHash();	
-			UtilidadesHash.set(miHash,(String)hashBkp.get(FcsRetencionesJudicialesBean.C_ESDETURNO),FcsRetencionesJudicialesBean.C_ESDETURNO);
 			
 			tx=usr.getTransaction();
 			tx.begin();
-			if (admBean.update(miHash,hashBkp)) 
-			{
+			if (admBean.update(miHash, hashBkp)) {
 				tx.commit();
 				forward = "exitoModal";
 			}			
@@ -484,8 +485,10 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 		}catch(Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
-		if (forward.equalsIgnoreCase("exitoModal")) return exitoModal("messages.updated.success",request);
-		else return exito("messages.updated.error",request);
+		if (forward.equalsIgnoreCase("exitoModal")) 
+			return exitoModal("messages.updated.success",request);
+		else 
+			return exito("messages.updated.error",request);
 	}
 
 	/**
