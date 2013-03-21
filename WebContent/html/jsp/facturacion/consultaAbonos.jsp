@@ -185,6 +185,13 @@
 			        
 	            	String total=row.getString("TOTAL");
 	            	Boolean isPermitidoBorrar =(Boolean) row.getRow().get("ESPERMITIDOBORRAR");
+	            	// BNS NO SE PERMITE BORRAR ABONOS SJCS
+	            	if (isPermitidoBorrar){
+		            	String IDPAGOSJG = (String) row.getRow().get("IDPAGOSJG");
+		            	if (IDPAGOSJG != null && !IDPAGOSJG.equals("")){
+		            		isPermitidoBorrar = false;
+		            	}
+	            	}
 					total=new Double(UtilidadesNumero.redondea(new Double(row.getString("TOTAL")).doubleValue(),2)).toString();
 	            	botonesFila="C";
 	            	// Modificada MAV 12/7/05 a instancias JG para no permitir editable cuando el abono esté contabilizado y pagado

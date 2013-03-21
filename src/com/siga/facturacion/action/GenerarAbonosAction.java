@@ -255,6 +255,7 @@ public class GenerarAbonosAction extends MasterAction {
 		FacLineaAbonoAdm admLineaAbono=new FacLineaAbonoAdm(usr);
 		FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(usr);
 		FacPagoAbonoEfectivoAdm admPagoAbonoefectivo = new FacPagoAbonoEfectivoAdm(usr);
+		FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 		// Comienzo control de transacciones
 		tx = usr.getTransaction(); 			
 		// Obtengo los datos del formulario		
@@ -266,6 +267,12 @@ public class GenerarAbonosAction extends MasterAction {
 			
 			
 			tx.begin();
+			admAbono.lockTable();
+			facturaAdm.lockTable();
+			admPagosPorCaja.lockTable();
+			admPagoAbonoefectivo.lockTable();			
+			admLineaAbono.lockTable();
+			
 			Hashtable htRegistro = new Hashtable();
 			htRegistro.put(FacLineaAbonoBean.C_IDINSTITUCION, idInstitucion);
 			htRegistro.put(FacLineaAbonoBean.C_IDABONO, idAbono);
@@ -280,6 +287,11 @@ public class GenerarAbonosAction extends MasterAction {
 		        throw new ClsExceptions("No se encuentra el abono a eliminar: "+abonoAdm.getError());
 		    }
 		    
+		    //BNS Comprobamos si es un abono SJCS para no permitirlo (SJCS tendrá su propia gestión de abonos)
+		    if (abonoBean.getIdPagosJG() != null && !abonoBean.getIdPagosJG().equals("")){
+		    	throw new ClsExceptions("No se puede eliminar un abono SJCS, el mantenimiento de estos abonos se realizará desde su propia pantalla");
+		    }
+		    
 			String clavesLineas[]= new String[]{FacLineaAbonoBean.C_IDINSTITUCION,FacLineaAbonoBean.C_IDABONO};
 			correcto = admLineaAbono.deleteDirect(htRegistro, clavesLineas);
 			if(!correcto) {
@@ -288,12 +300,20 @@ public class GenerarAbonosAction extends MasterAction {
 
 			htRegistro.put(FacPagosPorCajaBean.C_TIPOAPUNTE, FacPagosPorCajaBean.tipoApunteCompensado);
 
+			boolean bAbonoConFacturaAsociada = false;
+			//BNS: Como puede ser un abono SJCS controlamos si tiene factura asociada o no
+			if (abonoBean.getIdFactura() != null && abonoBean.getIdFactura() != ""){
+				bAbonoConFacturaAsociada = true;
+				//BNS: Como puede haber pagos parciales de un abono SJCS incluimos el id de factura en la query
+				htRegistro.put(FacPagosPorCajaBean.C_IDFACTURA, abonoBean.getIdFactura());								
+		    }
+			
 			Vector vP = admPagosPorCaja.select(htRegistro);
 			double importeCompensado = 0;
 			int numeroPagos = 0;
-		    if (vP!=null && vP.size()>0) {
+		    if (vP!=null && vP.size()>0) {		    	
 		        for (int g=0;g<vP.size();g++) {
-		            FacPagosPorCajaBean pagosBean = (FacPagosPorCajaBean) vP.get(g);
+		            FacPagosPorCajaBean pagosBean = (FacPagosPorCajaBean) vP.get(0);
 		            numeroPagos++;
 		            importeCompensado+=pagosBean.getImporte().doubleValue();
 		        }
@@ -306,10 +326,9 @@ public class GenerarAbonosAction extends MasterAction {
 			    String clavesPagoPorCaja[]= new String[]{FacPagosPorCajaBean.C_IDINSTITUCION,FacPagosPorCajaBean.C_IDABONO,FacPagosPorCajaBean.C_TIPOAPUNTE};
 				correcto = admPagosPorCaja.deleteDirect(htRegistro, clavesPagoPorCaja);
 			
-				if(correcto) {
+				if(correcto && bAbonoConFacturaAsociada) {
 				    // ahora tenemos que actualizar los importes y estado de la factura.
-				    FacFacturaBean facturaBean = null;
-					FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+				    FacFacturaBean facturaBean = null;					
 				    Hashtable ht = new Hashtable();
 				    ht.put(FacFacturaBean.C_IDINSTITUCION,idInstitucion);
 				    ht.put(FacFacturaBean.C_IDFACTURA,abonoBean.getIdFactura());
@@ -332,7 +351,7 @@ public class GenerarAbonosAction extends MasterAction {
 				    } else {
 				        throw new ClsExceptions("No se ha encontrado la factura buscada: "+idInstitucion+ " "+abonoBean.getIdFactura());
 				    }
-				} else {
+				} else if (!correcto){
 					throw new ClsExceptions("Error al eliminar las compensaciones del abono (Pagos por caja de la factura): "+admPagosPorCaja.getError());
 				}
 			}

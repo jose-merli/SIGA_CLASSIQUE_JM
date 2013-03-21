@@ -306,6 +306,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		
 		try {
 			select  = " SELECT comisaria."+ScsComisariaBean.C_NOMBRE;
+			select += " , comisaria."+ScsComisariaBean.C_IDINSTITUCION+" AS IDINSTITUCIONCOMISARIA";
 			select += " , comisaria."+ScsComisariaBean.C_IDCOMISARIA;
 			select += " , comisaria."+ScsComisariaBean.C_IDPROVINCIA;
 			select += " , comisaria."+ScsComisariaBean.C_IDPOBLACION;

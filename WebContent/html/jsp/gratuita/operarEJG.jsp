@@ -58,6 +58,14 @@
 	Hashtable hash = (Hashtable) request.getSession().getAttribute(
 			"DATABACKUP");
 	
+	String DESIGNA_IDJUZGADO = "";
+	String DESIGNA_IDJUZGADOINSTITUCION = "";
+	String DESIGNA_NUMPROCEDIMIENTO = "";
+	String DESIGNA_ANIOPROCEDIMIENTO = "";
+	String DESIGNA_IDPROCEDIMIENTO = "";
+	String DESIGNA_IDPRETENSION = "";
+	String DESIGNA_IDPRETENSIONINSTITUCION = "";
+	
 	
 	try {
 		ESTADO = hash.get("ESTADO").toString();
@@ -126,6 +134,21 @@
 			DESIGNA_TURNO_NOMBRE = hash.get("DESIGNA_TURNO_NOMBRE")
 					.toString();
 
+		if (hash.containsKey("DES_IDJUZGADO"))
+			DESIGNA_IDJUZGADO = hash.get("DES_IDJUZGADO").toString();
+		if (hash.containsKey("DES_IDJUZGADOINSTITUCION"))
+			DESIGNA_IDJUZGADOINSTITUCION = hash.get("DES_IDJUZGADOINSTITUCION").toString();
+		if (hash.containsKey("DES_NUMPROCEDIMIENTO"))
+			DESIGNA_NUMPROCEDIMIENTO = hash.get("DES_NUMPROCEDIMIENTO").toString();
+		if (hash.containsKey("DES_ANIOPROCEDIMIENTO"))
+			DESIGNA_ANIOPROCEDIMIENTO = hash.get("DES_ANIOPROCEDIMIENTO").toString();
+		if (hash.containsKey("DES_IDPROCEDIMIENTO"))
+			DESIGNA_IDPROCEDIMIENTO = hash.get("DES_IDPROCEDIMIENTO").toString();
+		if (hash.containsKey("DES_IDPRETENSION"))
+			DESIGNA_IDPRETENSION = hash.get("DES_IDPRETENSION").toString();
+		if (hash.containsKey("DES_IDPRETENSIONINSTITUCION"))
+			DESIGNA_IDPRETENSIONINSTITUCION = hash.get("DES_IDPRETENSIONINSTITUCION").toString();
+		
 		if (hash.containsKey("CODIGO"))
 			DESIGNA_CODIGO = hash.get("CODIGO").toString();
 		
@@ -1027,13 +1050,14 @@
 		<html:hidden property ="nifSolicitante"     value = "<%=NIFASISTIDO%>" />
 		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBRECOMPLETOASISTIDO%>" />
 		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=usr.getLocation()%>"/>	
-		<html:hidden property ="numeroProcedimiento"   value = "<%=numeroProcedimientoAsi%>"/>
-		<html:hidden property ="anioProcedimiento"   value = "<%=anioProcedimientoAsi%>"/>
+		<html:hidden property ="numeroProcedimiento"   value = "<%=DESIGNA_NUMPROCEDIMIENTO%>"/>
+		<html:hidden property ="anioProcedimiento"   value = "<%=DESIGNA_ANIOPROCEDIMIENTO%>"/>
+		<html:hidden property ="procedimiento"   value = "<%=DESIGNA_IDPROCEDIMIENTO%>"/>		
 		<html:hidden property ="asunto"     value = "<%=OBSERVACIONES%>"/>
-		<html:hidden property ="juzgado"   value = "<%=juzgadoAsi%>"/>
-		<html:hidden property ="juzgadoInstitucion"   value = "<%= juzgadoInstitucionAsi%>"/>
-		<html:hidden property ="pretension"     value = "<%=idPretension%>" />
-		<html:hidden property ="pretensionInstitucion"     value = "<%=idPretensionInstitucion%>" />
+		<html:hidden property ="juzgado"   value = "<%=DESIGNA_IDJUZGADO%>"/>
+		<html:hidden property ="juzgadoInstitucion"   value = "<%= DESIGNA_IDJUZGADOINSTITUCION%>"/>
+		<html:hidden property ="pretension"     value = "<%=DESIGNA_IDPRETENSION%>" />
+		<html:hidden property ="pretensionInstitucion"     value = "<%=DESIGNA_IDPRETENSIONINSTITUCION%>" />
 		<html:hidden property ="idturnoDesignado"     value = "<%=designaIdTurno%>" />
 		<html:hidden property ="nombreDesignado" value= "<%=t_idpersonaD%>"/>	
 		<html:hidden property ="numColDesignado" value= "<%=numtramidesig%>"/>

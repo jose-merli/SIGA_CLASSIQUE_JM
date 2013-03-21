@@ -104,9 +104,16 @@ public class MantenimientoComisariaAction extends MasterAction {
 		
 		try {
 			MantenimientoComisariaForm miForm = (MantenimientoComisariaForm) formulario;
-			
-			String	idInstitucionComisaria = (String)miForm.getDatosTablaOcultos(0).get(0);
-			String	idComisaria = (String)miForm.getDatosTablaOcultos(0).get(1);
+			String	idInstitucionComisaria = "";
+			String	idComisaria = "";
+			if (miForm.getIdInstitucionComisaria() != null && !"".equals(miForm.getIdInstitucionComisaria()) &&
+					miForm.getIdComisaria() != null && !"".equals(miForm.getIdComisaria())){
+				idInstitucionComisaria = miForm.getIdInstitucionComisaria();
+				idComisaria = miForm.getIdComisaria();
+			} else {
+				idInstitucionComisaria = (String)miForm.getDatosTablaOcultos(0).get(0);
+				idComisaria = (String)miForm.getDatosTablaOcultos(0).get(1);
+			}
 			
 			ScsComisariaAdm comisariaAdm = new ScsComisariaAdm (this.getUserBean(request));
 			

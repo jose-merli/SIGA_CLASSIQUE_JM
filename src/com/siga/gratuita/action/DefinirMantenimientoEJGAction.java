@@ -34,6 +34,7 @@ import com.siga.beans.ScsContrariosDesignaAdm;
 import com.siga.beans.ScsContrariosDesignaBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
+import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
@@ -607,6 +608,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  ",ejg."+ScsEJGBean.C_SUFIJO + " SUFIJO " + 
 							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " +
 							  ",ejg."+ScsEJGBean.C_NIG + " NIG " +
+							  //BNS: INC_10286_SIGA SACAMOS LOS DATOS DE ASUNTO JUDICIAL DE LA DESIGNACIÓN
+							  ",designa."+ScsDesignaBean.C_IDJUZGADO+" AS DES_IDJUZGADO" +
+							  ",designa."+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+" AS DES_IDJUZGADOINSTITUCION" +
+							  ",designa."+ScsDesignaBean.C_NUMPROCEDIMIENTO+" AS DES_NUMPROCEDIMIENTO" +
+							  ",designa."+ScsDesignaBean.C_ANIOPROCEDIMIENTO+" AS DES_ANIOPROCEDIMIENTO" +
+							  ",designa."+ScsDesignaBean.C_IDPROCEDIMIENTO+" AS DES_IDPROCEDIMIENTO" +
+							  ",designa."+ScsDesignaBean.C_IDPRETENSION+" AS DES_IDPRETENSION" +
+							  ",designa."+ScsDesignaBean.C_IDINSTITUCION+" AS DES_IDPRETENSIONINSTITUCION" +
 							  ",designa.codigo codigo";
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +

@@ -1063,8 +1063,14 @@
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();comprobarTipoPersona();comprobarTipoIdent();">
-
+<body class="tablaCentralCampos">
+	<script type="text/javascript">
+	jQuery(document).ready(function(){
+		recargar();
+		comprobarTipoPersona();
+		comprobarTipoIdent();
+	});
+	</script>
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
 
@@ -1076,8 +1082,15 @@
 
 
 
-<body class="tablaCentralCampos" onload="ajusteAlto('resultado');recargar();comprobarTipoPersona();proFechaNac();">
-
+<body class="tablaCentralCampos">
+	<script type="text/javascript">
+	jQuery(document).ready(function(){
+		ajusteAlto('resultado');
+		recargar();
+		comprobarTipoPersona();
+		proFechaNac();
+	});
+	</script>
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>

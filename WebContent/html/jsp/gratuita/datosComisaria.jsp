@@ -33,12 +33,16 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
-
+		
+		String idInstitucionComisaria = "";
+		
 		// Formulario
 		MantenimientoComisariaForm formulario = (MantenimientoComisariaForm) request.getAttribute("MantenimientoComisariaForm");
 		if(formulario.getDatos().get("FECHABAJA")!=null && !((String)formulario.getDatos().get("FECHABAJA")).equals("")){
 			fechaBaja = GstDate.getFormatedDateShort("", (String)formulario.getDatos().get("FECHABAJA"));
 		}
+		if(formulario.getDatos().get("IDINSTITUCIONCOMISARIA")!=null && !((String)formulario.getDatos().get("IDINSTITUCIONCOMISARIA")).equals(""))
+			idInstitucionComisaria = (String)formulario.getDatos().get("IDINSTITUCIONCOMISARIA"); 
 		String ponerBaja = "N";
 		if(fechaBaja !=null && !fechaBaja.equals("")){
 			ponerBaja = "S";
@@ -91,14 +95,20 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
+		var idProvinciaOriginal = <%=provinciaSel%>;
+		var idPoblacionOriginal = <%=poblacionSel%>;
+	
 		//Asociada al boton Volver -->
 		function accionCerrar(){ 
 			window.top.close();
 		}	
 
 		//Asociada al boton Reset -->
-		function accionRestablecer(){ 
+		function accionRestablecer(){ 			
 			MantenimientoComisariaForm.reset();
+			jQuery("#idProvincia").val(idProvinciaOriginal);
+			jQuery("#idProvincia").change();
+			jQuery("#idPoblacionSel").val(idPoblacionOriginal);
 		}	
 	
 		//Asociada al boton GuardarCerrar -->
@@ -144,6 +154,7 @@
 	<html:form action="/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
 		<html:hidden property = "modo" />
 		<html:hidden name="MantenimientoComisariaForm" property="idComisaria" />
+		<html:hidden name="MantenimientoComisariaForm" property="idInstitucionComisaria" value="<%=idInstitucionComisaria %>"/>
 		
 		<table class="tablaCentralCamposMedia" align="center">
 			<tr>

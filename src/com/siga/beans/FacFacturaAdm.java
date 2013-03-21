@@ -3152,6 +3152,26 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	            nuevoEstado = "1";
 	        } else {
 	            // Pendiente de pago
+	        	// BNS 
+	        	Hashtable ultimoFicheroBancarioDeFactura = this.getRenegociacionFactura(facturaBean.getIdInstitucion().toString(),facturaBean.getIdFactura().toString());
+                if (ultimoFicheroBancarioDeFactura==null) {
+                	if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
+    		            // pendiente pago por caja 
+    	                nuevoEstado = "2";
+    	            } else {
+	                    // La factura esta pendiente de enviar a banco
+	                    nuevoEstado="5";
+    	            }
+                } else {
+                    if (ultimoFicheroBancarioDeFactura.get("IDRENEGOCIACION")==null || ((String)ultimoFicheroBancarioDeFactura.get("IDRENEGOCIACION")).trim().equals("")) {
+                        //La factura esta devuelta y pendiente de renegociacion
+                        nuevoEstado="4";
+                    } else {
+                        // La factura esta renegociada y pendiente de enviar a banco
+                        nuevoEstado="3";
+                    }
+                }
+	        	/*
 	            if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
 		            // pendiente pago por caja 
 	                nuevoEstado = "2";
@@ -3172,6 +3192,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		            // pendiente pago por banco 
 	                nuevoEstado = "5";
 	            }
+	            */
 	        }
 		    Hashtable ht = new Hashtable();
 		    ht.put(FacFacturaBean.C_IDINSTITUCION,facturaBean.getIdInstitucion());

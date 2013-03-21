@@ -350,7 +350,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setAnioExpDisciplinario(request.getParameter("anioEjg"));
 			form.setNumExpDisciplinario(request.getParameter("numeroEjg"));
 			form.setObservaciones(UtilidadesString.getMensajeIdioma(this.getUserBean(request).getLanguage(),"gratuita.EJG.solicitante")+request.getParameter("nifSolicitante")+", "+request.getParameter("nombreSolicitante"));
-			form.setProcedimiento("1");
+			form.setProcedimiento(request.getParameter("procedimiento"));
 			form.setNumAsunto(request.getParameter("numeroProcedimiento"));
 			form.setAsunto(request.getParameter("asunto"));
 			form.setJuzgado(request.getParameter("juzgado"));

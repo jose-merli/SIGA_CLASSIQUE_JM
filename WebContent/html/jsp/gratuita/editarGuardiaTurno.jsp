@@ -1124,7 +1124,7 @@ function init()
 	
 	<!-- Asociada al boton Restablecer -->
 	function accionRestablecer() 	{
-		document.forms[0].reset();
+		jQuery("#mainWorkArea", window.top.document).contents().find(".framePestanas").contents().find("#pestana\\.justiciagratuitaguardia\\.datosgenerales").click();
 	}
 
 	<!-- Asociada al boton Guardar -->
