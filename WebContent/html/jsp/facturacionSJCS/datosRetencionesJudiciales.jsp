@@ -426,7 +426,7 @@
 			  			return false;
 			 		}
 			 		
-			 		if ((MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' || MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='I')&&MantenimientoRetencionesJudicialesForm.importe.value==''){
+			 		if ((MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' || MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='F')&&MantenimientoRetencionesJudicialesForm.importe.value==''){
 			 			msg = "<siga:Idioma key='errors.required' arg0='FactSJCS.mantRetencionesJ.literal.importe'/>";
 						alert(msg);
 						fin();
