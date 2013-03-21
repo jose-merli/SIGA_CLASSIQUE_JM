@@ -107,12 +107,14 @@
 
 				</c:when>
 				<c:otherwise>
-					<td class="labelText"><siga:Idioma key="censo.bajastemporales.fechaInicio"/></td>
-					<td><html:text property="fechaDesde" size="10" readonly="true"
-						styleClass="box" /></td>
+					<td class="labelText"  style="align:left"><siga:Idioma key="censo.bajastemporales.fechaInicio"/></td>
+					<td>
+					<siga:Fecha  nombreCampo= "fechaDesde" posicionX="10" posicionY="10" valorInicial="${BajasTemporalesForm.fechaDesde}"/>
+					</td>
 					<td class="labelText"><siga:Idioma key="censo.bajastemporales.fechaFin"/></td>
-					<td><html:text property="fechaHasta" size="10" readonly="true"
-						styleClass="box" /></td>
+					<td>
+					<siga:Fecha  nombreCampo= "fechaHasta"  posicionX="10" posicionY="10" valorInicial="${BajasTemporalesForm.fechaHasta}"/>
+					</td>
 				</c:otherwise>
 			</c:choose>
 

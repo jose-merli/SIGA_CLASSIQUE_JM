@@ -736,9 +736,10 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
     	
     	
     }
-    public void modificarBajaTemporal(CenBajasTemporalesBean bajaTemporal) throws ClsExceptions{
+    public void modificarBajaTemporal(CenBajasTemporalesBean bajaTemporal) throws ClsExceptions{    	
     	String[] claves ={CenBajasTemporalesBean.C_IDINSTITUCION,CenBajasTemporalesBean.C_FECHAALTA,CenBajasTemporalesBean.C_IDPERSONA};
-    	String[] campos ={CenBajasTemporalesBean.C_TIPO,CenBajasTemporalesBean.C_DESCRIPCION};
+    	//BNS: INC_07527_SIGA PERMITIR EDITAR FECHA DESDE Y FECHA HASTA
+    	String[] campos ={CenBajasTemporalesBean.C_TIPO,CenBajasTemporalesBean.C_DESCRIPCION,CenBajasTemporalesBean.C_FECHADESDE, CenBajasTemporalesBean.C_FECHAHASTA};
     	try {
     		updateDirect(bajaTemporal, claves, campos);
 		} catch (ClsExceptions e) {
