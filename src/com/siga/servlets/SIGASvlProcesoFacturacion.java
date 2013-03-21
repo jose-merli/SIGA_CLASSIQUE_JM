@@ -93,6 +93,10 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	   					fac = new Facturacion(usr);
    	   					fac.confirmarProgramacionesFacturasInstitucion(request,""+beanInstitucion.getIdInstitucion(),usr);
    	   					//Facturacion.confirmarFacturasPartes(request,""+beanInstitucion.getIdInstitucion(),UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString()));
+   	   					
+   	   					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS ", 3);
+   	   					fac.generarPDFsYenviarFacturasProgramacion(request,""+beanInstitucion.getIdInstitucion(),usr);
+   	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION Y CONFIRMACION DE FACTURAS. INSTITUCION: "+beanInstitucion.getIdInstitucion(), 3);
    	   					
 					} catch (Exception e) {

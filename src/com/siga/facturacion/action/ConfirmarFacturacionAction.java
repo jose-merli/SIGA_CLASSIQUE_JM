@@ -654,7 +654,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					factBean.setEnvio("1");
 					Hashtable hash = new Hashtable();
 					hash.put("REQUEST", request);
-					hash.put("FACFACTURACIONPROGRAMADABEAN", factBean);
+					hash.put("proceso", factBean);
 					
 					SIGASvlProcesoAutomaticoRapido.NotificarAhora(hash);
 				}

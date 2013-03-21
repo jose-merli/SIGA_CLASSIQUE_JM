@@ -410,7 +410,7 @@
 								Integer idEstadoConfirmacion = new Integer((String)htData.get("IDESTADOCONFIRMACION"));
 								Integer idEstadoPDF = new Integer((String)htData.get("IDESTADOPDF"));
 
-								FilaExtElement[] elems=new FilaExtElement[6];
+								FilaExtElement[] elems=new FilaExtElement[7];
 								elems[0]=new FilaExtElement("consultar","consultarfactura",SIGAConstants.ACCESS_READ);
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {									
 									elems[1]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
@@ -424,10 +424,8 @@
 								} 
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[5]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
+									elems[6]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
 								}
-								/*if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
-									elems[5]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
-								}*/
 
 								i++;
 								%> 							

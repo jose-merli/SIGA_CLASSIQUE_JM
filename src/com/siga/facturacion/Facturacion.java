@@ -477,6 +477,87 @@ public class Facturacion {
 		
 
 	}
+	
+	public void generarPDFsYenviarFacturasProgramacion(HttpServletRequest request, String idInstitucion, UsrBean userBean){
+		
+		
+		try {
+			ClsLogging.writeFileLog("GENERAR PDF DE FACTURAS POR INSTITUCION: "+idInstitucion,10);
+			UserTransaction tx = null;
+			tx = (UserTransaction) userBean.getTransactionPesada();
+			
+   			// fichero de log
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
+			
+	    	// ficheros de log
+			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+    		String sBarra2 = "";
+    		if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
+    		if (pathFichero2.indexOf("\\") > -1) sBarra2 = "\\";        		
+			String nombreFichero = "";
+			SIGALogging log=null;
+			// obtención de las facturaciones programadas y pendientes con fecha de prevista confirmacion pasada a ahora
+			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer("1"), idInstitucion);
+			String sWhere=" where " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 ";
+			// para fechas previstas de confirmacion adecuadas 
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM+ " IS NOT NULL ";
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM+ " <= SYSDATE";
+			// solo las que estan generadas 
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAREALGENERACION+ " IS NOT NULL ";
+			// para los estados de confirmacion adecuados
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA;
+			// para las que tienen pdf programados pero no generados
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_PROGRAMADA;
+			
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			
+			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
+			
+		    for (int i=0;i<vDatos.size();i++){
+
+				// PROCESO PARA CADA FACTURACION PROGRAMADA
+		    	FacFacturacionProgramadaBean factBean = (FacFacturacionProgramadaBean)vDatos.elementAt(i);
+		    	
+				ClsLogging.writeFileLog("GENERAR PDFs Y ENVIAR FACTURACION PROGRAMADA: "+idInstitucion+" " +factBean.getIdSerieFacturacion()+" " +factBean.getIdProgramacion(),10);
+
+		    	// fichero de log
+				nombreFichero = "LOG_CONFIRM_FAC_"+ factBean.getIdInstitucion()+"_"+factBean.getIdSerieFacturacion()+"_"+factBean.getIdProgramacion()+".log.xls"; 
+				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
+				try {
+					generaryEnviarProgramacionFactura(request, userBean, 
+							factBean.getIdInstitucion(), 
+							factBean.getIdSerieFacturacion(), 
+							factBean.getIdProgramacion(), true, log, tx);
+					/*
+					confirmarProgramacionFactura(factBean,request,false,log,true,true);
+					generarZip(
+							factBean.getIdInstitucion().toString(),
+							factBean.getIdSerieFacturacion().toString(),
+							factBean.getIdProgramacion().toString());*/
+				} catch (ClsExceptions e) {
+					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
+				} catch (Exception e) {
+											
+					ClsLogging.writeFileLogError("@@@ Error al confirmar facturas (Proceso automático) Programación:" ,e,3);
+
+					
+				}
+				
+		    }// del for
+		    
+		} catch (Exception e) {
+			// Error general (No hacemos nada, para que continue con la siguiente institucion
+			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
+		}
+	}
 
 	
 	public void generarZip(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws SIGAException, ClsExceptions{
