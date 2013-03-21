@@ -282,7 +282,8 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 			this.insert(bean);
 		else
 			this.updateDirect(bean);
-		
+		//aalg: INC_09672_SIGA. Para actualizar el último idpersona de la cola si el grupo modificado es el último que ha trabajado
+		actualizarColaGuardia(idInstitucion, idTurno, idGuardia);
 	}
 	
 	public void updateOrderGruposLetrados() {
