@@ -179,14 +179,12 @@
 	<!-- FIN: BOTONES BUSQUEDA -->
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 		<siga:TablaCabecerasFijas 		   
-			   nombre="listado"
-			   borde="2"
-			   clase="tableTitle"		   
-			   nombreCol="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
-			   tamanoCol="20,20,22,28,10"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-
+		   	nombre="listado"
+		   	borde="2"
+		   	clase="tableTitle"		   
+		   	nombreCol="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
+		   	tamanoCol="20,20,22,28,10"
+   		 	alto="100%"
 		>
 				<%
 				int recordNumber=1;
