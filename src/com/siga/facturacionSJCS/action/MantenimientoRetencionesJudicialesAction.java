@@ -366,7 +366,10 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			resultado = admRetenciones.selectGenerico(consulta);	
 			
 			request.setAttribute("resultado",resultado);
-			request.setAttribute("accion", request.getSession().getAttribute("accion"));
+			String accion = (String)request.getSession().getAttribute("accion");
+			if (accion == null)
+				accion = "";
+			request.setAttribute("accion", accion);
 			
 			destino="resultado";
 			
