@@ -486,7 +486,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<td class="labelText" >	
 					<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
 				</td>
-				<td class="labelTextValor"  width="30%" >	
+				<td class="labelTextValor"  width="15%" >	
 					<% if(modo.equals("editar")){%>
 					<siga:Fecha  nombreCampo= "fechaCierre" valorInicial="<%=FECHACIERRE%>"/>
 				<%}else{%>
@@ -512,7 +512,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 					<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
 				</td>
 				<td class="labelTextValor" >
-					<html:textarea name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:textarea>
+					<html:text name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:text>
 				</td>
 				
 			</tr>
@@ -575,7 +575,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
 		   <table width="100%">
 		   	<tr>
-		   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>(*)
+		   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
 		   		</td>
 		   	<td>
 				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
@@ -602,7 +602,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 		   <table width="100%">
 		   	<tr>
-			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;(*)
+			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;
 			   	</td>
 			   	
 			   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>

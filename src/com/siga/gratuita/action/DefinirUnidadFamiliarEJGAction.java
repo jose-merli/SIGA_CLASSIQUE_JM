@@ -741,7 +741,9 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
 			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejgMultiplesEjg(miForm.getDatosInforme(),usr);
 			if(mapInformeEejg==null || mapInformeEejg.size()==0){
-				return exitoModalSinRefresco("gratuita.eejg.message.ningunInforme", request);
+				//mhg - Inc 9/08/2012
+				//return exitoModalSinRefresco("gratuita.eejg.message.ningunInforme", request);
+				return exito("gratuita.eejg.message.ningunInforme", request);
 			}else{
 				File fichero = eEjgS.getInformeEejg(mapInformeEejg, usr);
 				

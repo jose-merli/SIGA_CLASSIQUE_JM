@@ -715,6 +715,11 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					throw new SIGAException("No se han podido obtener los datos asociados a la guardia principal");
 				}
 				ScsGuardiasTurnoBean beanVinculado = (ScsGuardiasTurnoBean)principalVector.get(0);
+				
+				//mhg - Se le asigna el valor null a la persona_ultima para que se pueda insertar y una vez lanzado el trigger del insert pasamos a ponerle su valor.
+				Long idPersonaUltima = beanVinculado.getIdPersona_Ultimo();
+				beanVinculado.setIdPersona_Ultimo(null);
+				
 				beanVinculado.setDescripcion(miForm.getDescripcion());
 				beanVinculado.setNombre(miForm.getGuardia());
 				beanVinculado.setDescripcionFacturacion(miForm.getDescripcionFacturacion());
@@ -753,7 +758,17 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				tx.begin();
 				if(ordenacionHashtable!=null)
 					ordenacion.insert(ordenacionHashtable);
+				
+				//mhg - Actualizamos los datos del ultimo letrado un paso posterior a la inserción ya que esta lanza un trigger.
+				Hashtable hashVinculado = guardiaAdm.prepararInsert(guardiaAdm.beanToHashTable(beanVinculado));
+				beanVinculado = (ScsGuardiasTurnoBean) guardiaAdm.hashTableToBean(hashVinculado);				
 				guardiaAdm.insert(beanVinculado);
+				
+				if(idPersonaUltima != null){
+					beanVinculado.setIdPersona_Ultimo(idPersonaUltima);
+					guardiaAdm.update(beanVinculado);
+				}
+				
 				tx.commit();
 				
 			 	return exitoModal("messages.inserted.success",request);

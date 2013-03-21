@@ -223,14 +223,16 @@
 		
 				
 			</td>
+		</tr>
+		<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>
 			</td>
-			<td class="labelTextValor">
+			<td class="labelTextValor" colspan="3">
 				<% if (modo.equalsIgnoreCase("VER")) { %>
-					<html:textarea name="DefinirCalendarioGuardiaForm" property="observaciones" cols="60" rows="2" style="overflow:auto" styleClass="boxConsulta" value="<%=observaciones%>" readOnly="true" ></html:textarea>
+					<html:textarea name="DefinirCalendarioGuardiaForm" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxConsulta" value="<%=observaciones%>" readOnly="true" ></html:textarea>
 				<% } else { %>
-					<html:textarea name="DefinirCalendarioGuardiaForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="2" style="overflow:auto" styleClass="boxCombo" value="<%=observaciones%>" readOnly="false" ></html:textarea>
+					<html:textarea name="DefinirCalendarioGuardiaForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxCombo" value="<%=observaciones%>" readOnly="false" ></html:textarea>
 				<% } %>
 			</td>
 		</tr>
