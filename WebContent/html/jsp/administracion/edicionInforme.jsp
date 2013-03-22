@@ -214,7 +214,6 @@
 		<html:hidden styleId="modo" property="modo"  value="${InformeFormEdicion.modo}"/>
 		<html:hidden styleId="modoInterno" property="modoInterno" value="${InformeFormEdicion.modoInterno}"/>
 		<html:hidden styleId="idPlantilla"  property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
-		<html:hidden styleId="destinatarios"  property="destinatarios"  value="${InformeFormEdicion.destinatarios}"/>
 		<html:hidden styleId="claseTipoInforme" property="claseTipoInforme"  value="${InformeFormEdicion.claseTipoInforme}"/>
 		<html:hidden styleId="idConsulta" property="idConsulta" value="${InformeFormEdicion.idConsulta}"/>
 		<html:hidden styleId="idInstitucionConsulta" property="idInstitucionConsulta" value="${InformeFormEdicion.idInstitucionConsulta}"/>
@@ -224,8 +223,7 @@
 		<html:hidden styleId="idTipoIntercambioTelem" property="idTipoIntercambioTelem"/>
 		
 		<input type="hidden"  id="location"  name="location" value="${InformeFormEdicion.usrBean.location}"/>
-		<input type="hidden"  id="actionModal" name="actionModal" />
-	
+		<input type="hidden"  id="actionModal" name="actionModal" />	
 		
 		<bean:define id="location" name="InformeFormEdicion" property="usrBean.location"  />
 		<bean:define id="comboTipoEnvio" name="comboTipoEnvio"  scope="request"/>
@@ -432,14 +430,14 @@
 			</tr>			
 					
 			<tr id="trEnvios">
-				<td class="labelText" style="vertical-align: middle;" rowspan="3">
+				<td class="labelText" style="vertical-align: middle;">
 					<siga:Idioma key="administracion.informes.literal.tipoEnviosPermitidos" />(*) 
 				</td>
 				
 				<td style="padding:0px; spacing:0px" colspan="5">				
 					<table width="100%" border="0">						
 						<tr>													
-							<td rowspan="4">
+							<td rowspan="3">
 								<siga:ComboBD nombre = "comboTipoEnvioPermitidos" tipo="${comboTipoEnvio}"
 									 clase="box" filasMostrar="7"
 								 	parametro="${parametrosComboEnvios}"
