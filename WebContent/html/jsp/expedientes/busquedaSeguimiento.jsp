@@ -24,7 +24,6 @@
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
 	ExpSeguimientoForm form = (ExpSeguimientoForm)request.getAttribute("ExpSeguimientoForm");
 	
 	String[] parametro = new String[2];
@@ -39,10 +38,13 @@
 <html>
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<!-- Calendario -->
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo titulo="expedientes.auditoria.seguimiento.cabecera" localizacion="expedientes.auditoria.localizacion" />
@@ -60,9 +62,9 @@
 			<html:hidden property="anioExpediente" />
 			<html:hidden property="editable" />
 		
-			<!-- RGG: cambio a formularios ligeros -->
-			
+			<!-- RGG: cambio a formularios ligeros -->			
 			<input type="hidden" name="actionModal" value="">
+			
 			<table class="tablaTitulo" align="center" cellspacing="0">
 				<tr>
 					<td id="titulo" class="titulitosDatos">
@@ -71,6 +73,7 @@
 					</td>
 				</tr>
 			</table>
+			
 			<fieldset>
 				<table class="tablaCampos" align="center">
 					<!-- FILA -->
@@ -81,6 +84,7 @@
 						<td>
 							<siga:ComboBD nombre="comboFases" tipo="cmbFases" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" accion="Hijo:comboEstados" hijo="t" pestana="t" />
 						</td>
+						
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.estado" />
 						</td>
@@ -88,6 +92,7 @@
 							<siga:ComboBD nombre="comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" hijo="t" pestana="t" />
 						</td>
 					</tr>
+					
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.tipoanotacion" />
@@ -95,6 +100,7 @@
 						<td>
 							<siga:ComboBD nombre="idTipoAnotacion" tipo="cmbTipoAnotacion" clase="boxCombo" parametro="<%=parametro%>" obligatorio="false" />
 						</td>
+						
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.usuario" />
 						</td>
@@ -102,12 +108,14 @@
 							<siga:ComboBD nombre="idUsuario" tipo="cmbUsuariosAnotacion" clase="boxCombo" parametro="<%=parametro%>" obligatorio="false" />
 						</td>
 					</tr>
+					
 					<tr>
 						<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.fechainicial" />
 						</td>
 						<td>
 							<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=form.getFechaDesde()%>" />
 						</td>
+						
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.fechafinal" />
 						</td>
@@ -119,11 +127,17 @@
 			</fieldset>
 		</html:form>
 
-		<siga:ConjBotonesBusqueda botones="B" />
+		<siga:ConjBotonesBusqueda botones="B" />		
 
-		<iframe align="middle" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"; class="frameGeneral">
-		</iframe>
-		
+		<iframe align="middle" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" 
+			id="resultado"
+			name="resultado" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0";					 
+			class="frameGeneral">					
+		</iframe>	
 		<!-- FIN: LISTA DE VALORES -->
 		
 		<!-- INICIO: BOTONES REGISTRO -->
@@ -142,21 +156,21 @@
 				document.location.reload();
 			}
 
-			<!-- Asociada al boton Volver -->
+			// Asociada al boton Volver
 			function accionVolver() {		
 				<% if (busquedaVolver.equals("AB")) { %>
-					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
+					document.forms[1].action = "/SIGA/EXP_AuditoriaExpedientes.do?noReset=true";
 					document.forms[1].modo.value="buscarPor";
 					document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
 				<% } else if (busquedaVolver.equals("NB")){ %>
-					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
+					document.forms[1].action = "/SIGA/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 					document.forms[1].modo.value="abrir";
 				<% } else if(busquedaVolver.equals("AV")) { %>
-					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
+					document.forms[1].action = "/SIGA/EXP_AuditoriaExpedientes.do?noReset=true";
 					document.forms[1].modo.value="buscarPor";
 					document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
 				<% }  else if (busquedaVolver.equals("Al")){%>
-					document.forms[1].action = "<%=app%>/EXP_Consultas.do?noReset=true&buscar=true";
+					document.forms[1].action = "/SIGA/EXP_Consultas.do?noReset=true&buscar=true";
 					document.forms[1].modo.value="abrir";
 				<% } %>
 				document.forms[1].submit();	
@@ -169,7 +183,7 @@
 				document.ExpSeguimientoForm.submit();
 			}
 
-			<!-- Asociada al boton Nuevo -->
+			// Asociada al boton Nuevo
 			function accionNuevo() {		
 				document.forms[0].modo.value = "nuevo";
 				var resultado=ventaModalGeneral(document.forms[0].name,"M");
@@ -177,12 +191,9 @@
 					refrescarLocal();
 				}
 			}
-			
-			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
-
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none">
-		</iframe>
+		
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>	
 	</body>
 </html>
