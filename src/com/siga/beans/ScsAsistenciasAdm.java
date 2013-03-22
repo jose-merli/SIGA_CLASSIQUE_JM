@@ -1973,6 +1973,12 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			String numDiligencia = asistencia.getNumeroDiligencia()==null ? "" : asistencia.getNumeroDiligencia();
 			isAsistenciaModificada = !((numDiligencia==null && asistenciaBBDD.getNumeroDiligencia()==null)
 					|| (numDiligencia!=null && asistenciaBBDD.getNumeroDiligencia()!=null && numDiligencia.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroDiligencia().trim())));
+			
+			//mhg - INC_09104_SIGA
+			String idDelito = asistencia.getIdDelito()==null ? "" : asistencia.getIdDelito().toString();
+			isAsistenciaModificada = !((idDelito==null && asistenciaBBDD.getIdDelito()==null)
+					|| (idDelito!=null && asistenciaBBDD.getIdDelito()!=null));
+			
 			if(isAsistenciaModificada) return true;
 		}else{
 		

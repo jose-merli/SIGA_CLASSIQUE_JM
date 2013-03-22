@@ -383,7 +383,7 @@ public class ComodinBusquedas {
         } else {
             //temp = " LIKE '%" + cadena + "%'";
            
-            sentenciaCompleta="regexp_like("+Campo+",'"+cadena+"')";
+            sentenciaCompleta=" regexp_like("+Campo+",'"+cadena+"')";
         }
        
         return sentenciaCompleta;

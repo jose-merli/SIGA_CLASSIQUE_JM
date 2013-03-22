@@ -478,66 +478,52 @@
 					<td class="labelText" colspan="2">&nbsp;</td>
 				</tr>
 				<tr>
-					<td colspan="5">
-						<table>
-							<tr>
-								<td width="20%"></td>
-								<td width="5%"></td>
-								<td width="5%"></td>
-								<td width="70%"></td>
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td class="labelText"><siga:Idioma
-										key="gratuita.mantenimientoTablasMaestra.literal.comisaria" /></td>
-								<td>
-									<input type="text" id="codComisaria" class="box"
-										size="8" style="margin-top: 2px;" maxlength="10"
-										onBlur="obtenerComisaria();" />
-								</td>
-								<td id="tdSelectComisaria">
-									<html:select styleClass="boxCombo" style="width:680px;"
-										name="ActuacionAsistenciaFormEdicion" property="idComisaria"
-										styleId="idComisaria"
-										onchange="cambioComisaria();">
-										<bean:define id="comisarias" name="ActuacionAsistenciaForm"
-											property="comisarias" type="java.util.Collection" />
-										<html:optionsCollection name="comisarias" value="idComisaria"
-											label="nombre" />
-									</html:select>
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td class="labelText" style="text-align: center;">ó</td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-								</td>
-								<td>
-									<input type="text" id="codJuzgado" class="box" size="8"
-										style="margin-top: 2px;" maxlength="10"
-										onBlur="obtenerJuzgado();" />
-								</td>
-								<td id="tdSelectJuzgado">
-									<html:select styleClass="boxCombo"
-										style="width:680px;" name="ActuacionAsistenciaFormEdicion"
-										styleId="idJuzgado"
-										property="idJuzgado" onchange="cambioJuzgado();">
-										<bean:define id="juzgados" name="ActuacionAsistenciaForm"
-											property="juzgados" type="java.util.Collection" />
-										<html:optionsCollection name="juzgados" value="idJuzgado"
-											label="nombre" />
-									</html:select>
-								</td>
-							</tr>
-						</table>
+					<td class="labelText"><siga:Idioma
+							key="gratuita.mantenimientoTablasMaestra.literal.comisaria" /></td>
+					<td>
+						<input type="text" id="codComisaria" class="box"
+							size="8" style="margin-top: 2px;" maxlength="10"
+							onBlur="obtenerComisaria();" />
 					</td>
+					<td colspan="5" id="tdSelectComisaria">
+						<html:select styleClass="boxCombo" style="width:680px;"
+							name="ActuacionAsistenciaFormEdicion" property="idComisaria"
+							styleId="idComisaria"
+							onchange="cambioComisaria();">
+							<bean:define id="comisarias" name="ActuacionAsistenciaForm"
+								property="comisarias" type="java.util.Collection" />
+							<html:optionsCollection name="comisarias" value="idComisaria"
+								label="nombre" />
+						</html:select>
+					</td>
+				</tr>
 				<tr>
+					<td class="labelText" style="padding-left: 30px;">ó</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
+					</td>
+					<td>
+						<input type="text" id="codJuzgado" class="box" size="8"
+							style="margin-top: 2px;" maxlength="10"
+							onBlur="obtenerJuzgado();" />
+					</td>
+					<td colspan="5" id="tdSelectJuzgado">
+						<html:select styleClass="boxCombo"
+							style="width:680px;" name="ActuacionAsistenciaFormEdicion"
+							styleId="idJuzgado"
+							property="idJuzgado" onchange="cambioJuzgado();">
+							<bean:define id="juzgados" name="ActuacionAsistenciaForm"
+								property="juzgados" type="java.util.Collection" />
+							<html:optionsCollection name="juzgados" value="idJuzgado"
+								label="nombre" />
+						</html:select>
+					</td>
+				</tr>
+				<tr>		
 					<td class="labelText"><siga:Idioma
 							key='gratuita.mantAsistencias.literal.NIG' /></td>
 					<td colspan="5">
@@ -558,7 +544,7 @@
 					<td class="labelText">
 						<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
 					</td>
-					<td> 
+					<td colspan="2"> 
 						<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones"
 							property="observaciones" cols="90" rows="3" style="overflow:auto"
 							styleClass="boxCombo"></html:textarea>
@@ -749,7 +735,6 @@
 					if(document.getElementById("calendario_fechaJustificacion")){ 
 						document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
 					}
-					document.getElementById("idValidacion").style.visibility="hidden";
 					jQuery("#checkAnulacion").removeAttr("disabled");
 				} else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
 					habilitarCampos(false);						
