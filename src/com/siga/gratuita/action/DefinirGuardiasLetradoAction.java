@@ -168,7 +168,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 			
 			
 			String fecha = miForm.getFechaConsulta();
-			
+			//aalg: INC_8988_SIGA.
 			consulta =  " SELECT "+guardias.getCamposTabla(ScsGuardiasTurnoAdm.CAMPOS_LISTAINSCRIPCIONES)+", "+
 	                    " (select s."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+
                         "  from "+ScsInscripcionTurnoBean.T_NOMBRETABLA+" s "+
@@ -199,8 +199,8 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 										
 										   //PENDIENTES DE ALTA
 										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NULL ";
-										consulta += " AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL) ";
-										     
+										consulta += " AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
+//										     
 										consulta += " OR ";
 										     //VALIDADOS DE ALTA
 										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL AND ";
@@ -212,16 +212,16 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 										
 										
 										
-										consulta += " OR ";
+//										consulta += " OR ";
 										     // PENDIENTES DE BAJA
-										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL) ";
+//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL) ";
 										       
 										       //BAJA FUTURA
 //										consulta += " OR TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >"+fecha.trim()+" ";
 										       
 										       // BAJA DENEGADA
-										consulta += " OR "; 
-										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL) ";
+//										consulta += " OR "; 
+//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL) ";
 										consulta += " ) ";
 										
 										
