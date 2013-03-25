@@ -2913,7 +2913,8 @@ public class DatosGeneralesAction extends MasterAction {
 			}
 			
 			t.commit();
-			modo = exitoModal("messages.censo.solicitudes.exito",request);
+			//modo = exitoModal("messages.censo.solicitudes.exito",request);
+			modo = exito("messages.censo.solicitudes.exito",request);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
