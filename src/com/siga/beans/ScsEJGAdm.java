@@ -4652,7 +4652,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									
 									
 								
-								
+									
 									
 								
 								}else{
@@ -5311,14 +5311,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			for (int i = 0; i < contrariosEjg.size(); i++) {					
 				Hashtable registroContrariosEjg = (Hashtable) contrariosEjg.get(i);
 							    
-			    String nombreContrario = (String)registroContrariosEjg.get("NOMBRE_CONTRARIO");
-			    String domicilioContrario = (String)registroContrariosEjg.get("DOMICILIO_CONTRARIO");	
-			    String cpContrario = (String)registroContrariosEjg.get("CP_CONTRARIO"); 			    
-			    String poblacionContrario = (String)registroContrariosEjg.get("POBLACION_CONTRARIO");
-			    String provinciaContrario = (String)registroContrariosEjg.get("PROVINCIA_CONTRARIO");
-			    String oaContrario = (String)registroContrariosEjg.get("O_A_CONTRARIO");
-			    String nifContrario  = (String)registroContrariosEjg.get("NIF_CONTRARIO");
-			    String telefono1Contrario = (String)registroContrariosEjg.get("TELEFONO1_CONTRARIO");
+			    String nombreContrario = (String)registroContrariosEjg.get("NOMBRE_PJG");
+			    String domicilioContrario = (String)registroContrariosEjg.get("DOMICILIO_PJG");	
+			    String cpContrario = (String)registroContrariosEjg.get("CP_PJG"); 			    
+			    String poblacionContrario = (String)registroContrariosEjg.get("POBLACION_PJG");
+			    String provinciaContrario = (String)registroContrariosEjg.get("PROVINCIA_PJG");
+			    String oaContrario = (String)registroContrariosEjg.get("O_A_PJG");
+			    String nifContrario  = (String)registroContrariosEjg.get("NIF_PJG");
+			    String telefono1Contrario = (String)registroContrariosEjg.get("TELEFONO1_PJG");
 				
 				if (nombreContrario != null) {
 					if (listaNombreContrarios.equals("")) {
