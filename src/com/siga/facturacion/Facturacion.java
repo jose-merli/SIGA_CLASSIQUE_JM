@@ -484,6 +484,7 @@ public class Facturacion {
 		try {
 			ClsLogging.writeFileLog("GENERAR PDF DE FACTURAS POR INSTITUCION: "+idInstitucion,10);
 			UserTransaction tx = null;
+			boolean envio;
 			tx = (UserTransaction) userBean.getTransactionPesada();
 			
    			// fichero de log
@@ -532,10 +533,30 @@ public class Facturacion {
 				nombreFichero = "LOG_CONFIRM_FAC_"+ factBean.getIdInstitucion()+"_"+factBean.getIdSerieFacturacion()+"_"+factBean.getIdProgramacion()+".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					generaryEnviarProgramacionFactura(request, userBean, 
+					/*if (factBean.getEnvio().equals("0"))
+						envio = false;
+					 	else envio = true;*/
+					
+					FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
+		    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+		    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM,
+		    				FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+		    		Hashtable hashNew = new Hashtable();	
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, factBean.getIdInstitucion());
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, factBean.getIdProgramacion());
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,factBean.getIdSerieFacturacion() );
+		    		//UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+
+					
+					/*generaryEnviarProgramacionFactura(request, userBean, 
 							factBean.getIdInstitucion(), 
 							factBean.getIdSerieFacturacion(), 
-							factBean.getIdProgramacion(), true, log, tx);
+							factBean.getIdProgramacion(), envio, log, tx);*/
+					generarPdfEnvioProgramacionFactura(tx, facadm, factBean, request, log,  
+							factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString(), claves,
+							camposFactura, hashNew, true);
 					/*
 					confirmarProgramacionFactura(factBean,request,false,log,true,true);
 					generarZip(
