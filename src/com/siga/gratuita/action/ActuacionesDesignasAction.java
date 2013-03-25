@@ -1108,7 +1108,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			  	
 			  }
 			}  
-			// Sólo se comprueba cuando se ha modificado la acreditacion
+			// Sólo se comprueba cuando se ha modificado la acreditacion o se ha cambiado el procedimiento
 			if (!actuacionAntigua.get(ScsActuacionDesignaBean.C_IDACREDITACION).equals(""+idAcreditacion)||!actuacionAntigua.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO).equals(""+idProcedimiento))
 			{
 			    boolean multiplesAcreditaciones = false;
@@ -1145,11 +1145,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 		        	}
 				}
 			    
-				// Valido que el nuevo estado de la acreditacion es correcto:
-				// Valido que el nuevo estado de la acreditacion es correcto:
-				boolean modificaAcreditacion = !actuacionAntigua.get(ScsActuacionDesignaBean.C_IDACREDITACION).equals(""+idAcreditacion);
 				
-				if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, modificaAcreditacion, actuacionAntigua, request, bAplicarRestriccionesActuaciones)) {
+				if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, true, actuacionModificada, request, bAplicarRestriccionesActuaciones)) {
 					tx.begin();
 					//actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
 					actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
@@ -1267,7 +1264,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					 " AND "+ScsActuacionDesignaBean.C_ANULACION+"<>1";
 		
 		if (esModificacion)
-			where += " AND "+ScsActuacionDesignaBean.C_IDACREDITACION+"<>"+hashActuacionDesigna.get(ScsActuacionDesignaBean.C_IDACREDITACION);
+			where += " AND "+ScsActuacionDesignaBean.C_NUMEROASUNTO+"<>"+hashActuacionDesigna.get(ScsActuacionDesignaBean.C_NUMEROASUNTO);
 		
 		Vector vActuacionesDesigna = actuacionDesignaAdm.select(where);
 		
