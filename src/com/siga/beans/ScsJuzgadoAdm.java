@@ -233,11 +233,11 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			
 			//Filtro por nombre:
 			if (nombre !=null && !nombre.equals(""))				
-				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"juzgado."+ScsJuzgadoBean.C_NOMBRE);
+				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim().toUpperCase(),"UPPER(juzgado."+ScsJuzgadoBean.C_NOMBRE+")");
 
 			//Filtro por codigoext:
 			if (codigoExt !=null && !codigoExt.equals(""))				
-				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(codigoExt.trim(),"juzgado."+ScsJuzgadoBean.C_CODIGOEXT);
+				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(codigoExt.trim().toUpperCase(),"UPPER(juzgado."+ScsJuzgadoBean.C_CODIGOEXT+")");
 			//Filtro por idPoblacion:
 			if (idPoblacion !=null && !idPoblacion.equals(""))				
 				select += " AND juzgado."+ScsJuzgadoBean.C_IDPOBLACION+"="+idPoblacion;

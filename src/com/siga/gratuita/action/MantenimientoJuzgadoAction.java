@@ -314,6 +314,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			beanJuzgado.setNombre(nombre);
 			beanJuzgado.setCodigoExt(codigoExt);
 			beanJuzgado.setCodigoExt2(codigoExt2);
+			beanJuzgado.setCodProcurador(miForm.getCodProcurador());
 			
 			beanJuzgado.setDireccion(miForm.getDireccion());
 			beanJuzgado.setCodigoPostal(miForm.getCodigoPostal());
