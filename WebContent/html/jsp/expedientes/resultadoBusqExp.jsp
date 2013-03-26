@@ -175,7 +175,7 @@
 				  		String idTipoExpedienteRow = fila.getString("IDTIPOEXPEDIENTE");
 				  		String anioExpedienteRow = fila.getString("ANIOEXPEDIENTE");
 				  		String numeroExpedienteRow = fila.getString("NUMEROEXPEDIENTE");
-				  		String idPersonaRow = fila.getString("IDPERSONA");
+				  		
 				  		if (idInstitucionRow.equals(idInstitucion)){	
 				  			botones="C,E,B";
 				  		}else{
@@ -188,7 +188,7 @@
 					<%
 					
 					String valorCheck =idInstitucionRow+"||"+idInstitucionTipoExpRow+
-						"||"+idTipoExpedienteRow+"||"+anioExpedienteRow+"||"+numeroExpedienteRow+"||"+idPersonaRow;
+						"||"+idTipoExpedienteRow+"||"+anioExpedienteRow+"||"+numeroExpedienteRow;
 					
 							boolean isChecked = false;
 							
@@ -226,7 +226,7 @@
 					
 						<td>
 						
-							<input type="hidden" name="idPersona<%=""+(i+1)%>" value="<%=idPersonaRow%>">
+							
 							<input type="hidden" name="idInstitucion<%=""+(i+1)%>" value="<%=idInstitucionRow%>">
 							<input type="hidden" name="idInstitucionTipoExp<%=""+(i+1)%>" value="<%=idInstitucionTipoExpRow%>">
 							<input type="hidden" name="idTipoExpediente<%=""+(i+1)%>" value="<%=idTipoExpedienteRow%>">
@@ -466,7 +466,7 @@
 		{
 		
 			
-			idPersona = document.getElementById ('idPersona'+fila).value;
+			
 			idInstitucion= document.getElementById ('idInstitucion'+fila).value;
 			idInstitucionTipoExp= document.getElementById ('idInstitucionTipoExp'+fila).value;
 			idTipoExpediente= document.getElementById ('idTipoExpediente'+fila).value;
@@ -474,6 +474,8 @@
 			numeroExpediente= document.getElementById ('numeroExpediente'+fila).value;
 
 		 
+			
+			
 		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
  		   		 +"##numeroExpediente=="+numeroExpediente +"##idTipoInforme==EXP%%%";
@@ -516,6 +518,7 @@
 		
 		for (i = 0; i < ObjArray.length; i++) {
 			var idRegistros = ObjArray[i];
+			
 			index = idRegistros.indexOf('||');
 			idInstitucion  = idRegistros.substring(0,index);
 			idRegistros = idRegistros.substring(index+2);
@@ -527,10 +530,11 @@
 			idRegistros = idRegistros.substring(index+2);
 			index = idRegistros.indexOf('||');
 			anioExpediente  = idRegistros.substring(0,index);
-			idRegistros = idRegistros.substring(index+2);
-			index = idRegistros.indexOf('||');
-			numeroExpediente  = idRegistros.substring(0,index);
-			idPersona = idRegistros.substring(index+2);
+			numeroExpediente = idRegistros.substring(index+2);
+			
+			
+			
+			
  		   	datos = datos +"idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
  		   		 "##idTipoExp==" +idTipoExp+"##anioExpediente=="+anioExpediente 
  		   		 +"##numeroExpediente=="+numeroExpediente  +"##idTipoInforme==EXP%%%";
@@ -587,9 +591,7 @@
 			idRegistros = idRegistros.substring(index+2);
 			index = idRegistros.indexOf('||');
 			anioExpediente  = idRegistros.substring(0,index);
-			idRegistros = idRegistros.substring(index+2);
-			index = idRegistros.indexOf('||');
-			numeroExpediente  = idRegistros.substring(0,index);
+			numeroExpediente = idRegistros.substring(index+2);
  		   	 
  		   	datos = datos +idInstitucion +","+idInstitucionTipoExp +
  		   		 "," +idTipoExp+","+anioExpediente 
