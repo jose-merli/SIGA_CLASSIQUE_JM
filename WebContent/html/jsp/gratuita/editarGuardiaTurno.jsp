@@ -402,6 +402,7 @@
 								<html:optionsCollection name="turnosPrincipales" value="idTurno"
 									label="nombre" />
 							</html:select>
+							
 						</td>
 						<td class="labelText"><siga:Idioma
 								key="gratuita.guardiasTurno.literal.guardiaPrincipal" /></td>
@@ -992,7 +993,15 @@ function init()
 		jQuery("select").attr("readonly","readonly");		
 	<%}%>
 	jQuery("#hayDiasASeparar").attr("disabled","disabled");
-
+	//aalg: INC_08301_SIGA
+	<% String idguardia=(String) hash.get("IDGUARDIA");
+	   if(idguardia==""){%>
+		jQuery("#turnosPrincipales").removeAttr("disabled");
+		jQuery("#guardiasPrincipales").removeAttr("disabled");
+	<%}else{%>
+		jQuery("#turnosPrincipales").attr("disabled","disabled");
+		jQuery("#guardiasPrincipales").attr("disabled","disabled");
+	<%}%>
 }
 
 	//Modifica los checks desde el onload
