@@ -138,50 +138,59 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 	 * @param miHash Hashtable con los campos de búsqueda. De tipo "Hashtable". 
 	 * @return Vector con los resultados del SELECT 
 	 */
-	public Vector select(Hashtable miHash,String lenguaje) throws ClsExceptions {
+	public Vector select(Hashtable miHash, String lenguaje) throws ClsExceptions {
 	
 		Vector datos = new Vector();
-		String sql="SELECT IDRETENCION, " +
-		   " F_SIGA_GETRECURSO(DESCRIPCION, "+lenguaje+") DESCRIPCION"+
-		   ", LETRANIFSOCIEDAD, RETENCION, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES  ";
+		String sql="SELECT " + ScsRetencionesBean.C_IDRETENCION + ", " +
+				" F_SIGA_GETRECURSO(" + ScsRetencionesBean.C_DESCRIPCION + ", " + lenguaje + ") DESCRIPCION, " +
+				ScsRetencionesBean.C_LETRANIFSOCIEDAD + ", " +
+				ScsRetencionesBean.C_RETENCION + ", " +
+				ScsRetencionesBean.C_FECHAMODIFICACION + ", " +
+				ScsRetencionesBean.C_USUMODIFICACION +
+		   " FROM " + ScsRetencionesBean.T_NOMBRETABLA;
 		
 		try { 
 			// Se comprueba si se ha introducido algún criterio de búsqueda ya que sino es así no se creará el where			
-			if ((((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)) != null  &&  ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)).length() > 0) ||
-			   (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length() > 0) 	   ||
-			   (((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0) 		   ||
-			   (((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).length() > 0)) {
+			if ((((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)) != null  && ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)).length() > 0) ||
+			    (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)) != null  && ((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length() > 0) ||
+			    (((String)miHash.get(ScsRetencionesBean.C_RETENCION)) != null  && ((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0) ||
+			    (((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)) != null  && ((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).length() > 0)) {
 			
-				sql += " where (";
-					// Por cada criterio de búsqueda, si se ha introducido, se va anhadiendo al string where esa restricción en 
-					// la búsqueda.
-					if ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION) != null && 
-						((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)).length() > 0){
-						sql += ScsRetencionesBean.C_IDRETENCION + " = " + Integer.parseInt((String)miHash.get(ScsRetencionesBean.C_IDRETENCION));
+				sql += " WHERE ";
+				
+				// Por cada criterio de búsqueda, si se ha introducido, se va anhadiendo al string where esa restricción en 
+				// la búsqueda.
+				if ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION) != null && ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION)).length() > 0) {
+					sql += ScsRetencionesBean.C_IDRETENCION + " = " + Integer.parseInt((String)miHash.get(ScsRetencionesBean.C_IDRETENCION));
+					
+				} else {
+					boolean bwhere = false;
+					if (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION) != null) && ((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length()>0) {
+						
+						sql +=  ComodinBusquedas.prepararSentenciaCompleta(((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).trim().toUpperCase(), "UPPER(F_SIGA_GETRECURSO(" + ScsRetencionesBean.C_DESCRIPCION + ", " + lenguaje + "))");
+						bwhere = true;
+					} 
+					
+					if (((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0) 	{
+						if (bwhere) {
+							sql += " AND ";							
+						} else {
+							bwhere = true;
+						}
+						
+						sql += ScsRetencionesBean.C_RETENCION + " = " + Float.parseFloat((String)miHash.get(ScsRetencionesBean.C_RETENCION));
 					}
-					else {
-						if (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION) != null) &&
-								((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length()>0){
-							sql +=  ComodinBusquedas.prepararSentenciaCompleta(((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).trim(),ScsRetencionesBean.C_DESCRIPCION);
-						} 
-						if (((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0)
-						{
-							if (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)) != null &&
-									((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length()>0){
-								sql += " AND ";
-							}
-							sql += ScsRetencionesBean.C_RETENCION+" = "+Float.parseFloat((String)miHash.get(ScsRetencionesBean.C_RETENCION));
+					
+					if (((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).length() > 0 ){
+						if (bwhere){
+							sql += " AND ";
 						}
-						if (((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).length() > 0 ){
-							if ((((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length()>0) || ((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0){
-								sql += " AND ";
-							}
-							sql += " UPPER (" + ScsRetencionesBean.C_LETRANIFSOCIEDAD+") = '"+((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD))+"'";
-						}
-					}		
-					sql +=")";
+						sql += " UPPER (" + ScsRetencionesBean.C_LETRANIFSOCIEDAD + ") = '" + ((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).toUpperCase() + "'";
+					}
+				}		
 			}		
-			sql +=" ORDER BY PORDEFECTO  DESC, NLSSORT(DESCRIPCION, 'NLS_SORT=BINARY')";
+			
+			sql += " ORDER BY PORDEFECTO  DESC, NLSSORT(DESCRIPCION, 'NLS_SORT=BINARY')";
 			datos = this.selectGenerico(sql);
 		} 
 		catch (ClsExceptions e) {
