@@ -106,11 +106,9 @@ jQuery.noConflict();
 	function activarDesactivarCheck(fechaSolicitud,tipoGuardias){
    		if((!document.InscripcionTGForm.fechaSolicitud || document.InscripcionTGForm.fechaSolicitud.value=='')&&document.InscripcionTGForm.idGuardia.value==''){//alta
    			if(document.InscripcionTGForm.tipoGuardias.value==0){//obligatorias
-   				alert("0");
    				jQuery("#chkGeneral").attr("disabled","disabled");
  	  			marcarTodos();
    			} else if(document.InscripcionTGForm.tipoGuardias.value==1) {
-   				alert("1");
    				jQuery("#chkGeneral").removeAttr("disabled");				 
    				if(document.getElementById("guardiasTodos")){
    					jQuery("#guardiasTodos").removeAttr("disabled");				 
