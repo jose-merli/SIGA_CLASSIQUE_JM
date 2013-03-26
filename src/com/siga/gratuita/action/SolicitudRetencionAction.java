@@ -72,7 +72,7 @@ public class SolicitudRetencionAction extends MasterAction {
 		}catch(Exception e){
 			throwExcp("messages.general.error",e,null);
 		}	
-		return "modificacionOk";
+		return "modificarRetencion";
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class SolicitudRetencionAction extends MasterAction {
 		}catch(Exception e){
 			throwExcp("messages.general.error",e,null);
 		}
-		return "modificacionOk";
+		return "modificarRetencion";
 	}
 
 	/**

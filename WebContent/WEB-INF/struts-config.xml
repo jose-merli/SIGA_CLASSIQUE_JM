@@ -2318,13 +2318,12 @@
 		</action>
 		
 		<!-- ***** Justicia Gratuita / Entrada a Consultar Retenciones ***** -->
-		<action path="/JGR_Retenciones" forward="/html/jsp/gratuita/formularioInicial.jsp"/>
+		<action path="/JGR_Retenciones" forward="/html/jsp/gratuita/busquedaIRPF.jsp"/>
 
 		<!-- ***** Justicia Gratuita / Maestro Consultar Retenciones ***** -->
 		<action path="/SolicitudRetencioAction" type="com.siga.gratuita.action.SolicitudRetencionAction" name="SolicitudRetencionForm" scope="request">
 			<forward name="listarRetenciones" path="/html/jsp/gratuita/listadoRetenciones.jsp"/>
-			<forward name="mostrar" path="/html/jsp/gratuita/opcionConsulta.jsp"/>
-			<forward name="modificacionOk" path="/html/jsp/gratuita/opcionModificar.jsp"/>
+			<forward name="modificarRetencion" path="/html/jsp/gratuita/editarRetencion.jsp"/>
 			<forward name="insertarRetencion" path="/html/jsp/gratuita/insertarRetencion.jsp"/>
 		</action>
 
