@@ -310,7 +310,6 @@ public class InformeCertificadosEspeciales extends MasterReport
 					 getSqlWhereGeneral()+" and it.idinstitucion(+)=c.idinstitucion "+
 					   " and it.idpersona(+)=c.idpersona  "+
 					   " and it.fechavalidacion(+) <=SYSDATE " +
-					   " AND nvl(It.Fechabaja(+), '31/12/2999') > Sysdate" +
 					   
 					   " order by it.fechavalidacion asc";
 		
