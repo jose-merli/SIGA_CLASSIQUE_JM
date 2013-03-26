@@ -33,6 +33,7 @@
 
 <body onload="activarDesactivarCheck();">
 <script>
+jQuery.noConflict();
 	function accionSiguiente() {	
 		sub();
 		var guardiasAlta="";
@@ -62,17 +63,24 @@
 		var ele = document.getElementsByName("chkGuardia");
 		for (i = 0; i < ele.length; i++) {
 			ele[i].checked = o.checked;
+			
 				
 		}
 		if(deshabilitarSinRestriccion){
-		   	jQuery("#chkGuardia").attr("disabled","disabled");
+		   	jQuery("input[name=chkGuardia]").attr("disabled","disabled");
 		} else {
 			if(document.InscripcionTGForm.tipoGuardias.value==0|| document.InscripcionTGForm.tipoGuardias.value==1){ 
-			  jQuery("#chkGuardia").attr("disabled","disabled");
+			  jQuery("input[name=chkGuardia]").attr("disabled","disabled");
 			} else {
-				jQuery("#chkGuardia").removeAttr("disabled");				 
+				jQuery("input[name=chkGuardia]").removeAttr("disabled");				 
 			}
-		}		
+		}	
+		
+		
+		
+		
+		
+		
 	}
 	
    	function marcarTodos(){
@@ -98,9 +106,11 @@
 	function activarDesactivarCheck(fechaSolicitud,tipoGuardias){
    		if((!document.InscripcionTGForm.fechaSolicitud || document.InscripcionTGForm.fechaSolicitud.value=='')&&document.InscripcionTGForm.idGuardia.value==''){//alta
    			if(document.InscripcionTGForm.tipoGuardias.value==0){//obligatorias
+   				alert("0");
    				jQuery("#chkGeneral").attr("disabled","disabled");
  	  			marcarTodos();
    			} else if(document.InscripcionTGForm.tipoGuardias.value==1) {
+   				alert("1");
    				jQuery("#chkGeneral").removeAttr("disabled");				 
    				if(document.getElementById("guardiasTodos")){
    					jQuery("#guardiasTodos").removeAttr("disabled");				 
@@ -112,7 +122,7 @@
    				desmarcarTodos();
    			}
  		} else {
- 			jQuery("#chkGuardia").attr("disabled","disabled");
+ 			jQuery("#chkGeneral").attr("disabled","disabled");
  			if(document.getElementById("guardiasTodos")){
  				jQuery("#guardiasTodos").attr("disabled","disabled");
  				jQuery("#guardiasNinguno").attr("disabled","disabled");
@@ -180,7 +190,7 @@
 						botones=""  clase="listaNonEdit">
 						<td align='center'>
 							<input type="hidden" id="guardia_<%=String.valueOf(index)%>" name="guardia_<%=String.valueOf(index)%>" value="${inscripcionGuardia.guardia.idGuardia}" />
-					   		<input type="checkbox" value="<%=String.valueOf(index)%>" id="chkGuardia" name="chkGuardia"  /> 						
+					   		<input type="checkbox" disabled="" value="<%=String.valueOf(index)%>"  name="chkGuardia"  /> 						
  						</td>
 						<td align='left' ><c:out
 							value="${inscripcionGuardia.guardia.nombre}"></c:out></td>
