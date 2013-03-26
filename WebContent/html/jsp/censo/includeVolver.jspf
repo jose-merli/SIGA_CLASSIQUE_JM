@@ -1,6 +1,8 @@
 <!-- includeVolver.jsp -->
+
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ page import="com.siga.comun.action.SessionForms"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
 
 <%
 	// includeVolver.jsp
@@ -101,55 +103,55 @@
  			if (!busquedaVolver.equals("volverNo")) { 
  				if (busquedaVolver.equals("A")) { 
 %>
-					document.busquedaClientesAvanzadaForm.action = "<%=app%>/CEN_BusquedaClientesAvanzada.do" + "?noReset=true";
+					document.busquedaClientesAvanzadaForm.action = "/SIGA/CEN_BusquedaClientesAvanzada.do" + "?noReset=true";
 					document.busquedaClientesAvanzadaForm.modo.value="buscarPor";
 					document.busquedaClientesAvanzadaForm.avanzada.value="<%=ClsConstants.DB_TRUE %>";
 					document.busquedaClientesAvanzadaForm.submit();	
 <% 				} else if (busquedaVolver.equals("BFN")) {  %>
-					document.mantenimientoFacturacionForm.action = "<%=app%>/CEN_MantenimientoFacturacion.do" + "?noReset=true&buscar=true";
+					document.mantenimientoFacturacionForm.action = "/SIGA/CEN_MantenimientoFacturacion.do" + "?noReset=true&buscar=true";
 					document.mantenimientoFacturacionForm.modo.value="abrir";
 					document.mantenimientoFacturacionForm.submit();	
 <% 				} else if (busquedaVolver.equals("N")) {  %>
-					document.busquedaClientesForm.action = "<%=app%>/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
+					document.busquedaClientesForm.action = "/SIGA/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
 					document.busquedaClientesForm.modo.value="abrirConParametros";
 					document.busquedaClientesForm.submit();	
 <% 				} else if (busquedaVolver.equals("SMG")) {  %>
-					document.SolicitudesModificacionForm.action = "<%=app%>/CEN_SolicitudesModificacionGenericas.do" + "?noReset=true&buscar=true";
+					document.SolicitudesModificacionForm.action = "/SIGA/CEN_SolicitudesModificacionGenericas.do" + "?noReset=true&buscar=true";
 					document.SolicitudesModificacionForm.modo.value="abrir";
 					document.SolicitudesModificacionForm.target="mainWorkArea";
 					document.SolicitudesModificacionForm.submit();	
 <% 				} else if (busquedaVolver.equals("GAA")) {  %>
-					document.GenerarAbonosForm.action = "<%=app%>/FAC_GenerarAbonos.do" + "?noReset=true&buscar=true";
+					document.GenerarAbonosForm.action = "/SIGA/FAC_GenerarAbonos.do" + "?noReset=true&buscar=true";
 					document.GenerarAbonosForm.modo.value="abrir";
 					document.GenerarAbonosForm.submit();	
 <% 				} else if (busquedaVolver.equals("DEV")) {  %>
-					document.DevolucionesForm.action = "<%=app%>/FAC_Devoluciones.do";
+					document.DevolucionesForm.action = "/SIGA/FAC_Devoluciones.do";
 					document.DevolucionesForm.modo.value="abrir";
 					document.DevolucionesForm.submit();
 <% 				} else if (busquedaVolver.equals("DV")) {  %>
-					document.DevolucionesForm.action = "<%=app%>/FAC_Devoluciones.do";
+					document.DevolucionesForm.action = "/SIGA/FAC_Devoluciones.do";
 					document.DevolucionesForm.modo.value="abrir";
 					document.DevolucionesForm.submit();
 <% 				} else if (busquedaVolver.equals("BF")) {  %>
-					document.BusquedaFacturaForm.action = "<%=app%>/FAC_BusquedaFactura.do" + "?noReset=true&botonVolver_Buscar=true";
+					document.BusquedaFacturaForm.action = "/SIGA/FAC_BusquedaFactura.do" + "?noReset=true&botonVolver_Buscar=true";
 					document.BusquedaFacturaForm.modo.value="abrir";
 					document.BusquedaFacturaForm.submit();	
 <% 				} else if (busquedaVolver.equals("SI")) {  %>
 					document.SolicitudIncorporacionForm.modo.value="abrir";
 					document.SolicitudIncorporacionForm.submit();	
 <% 				} else if (busquedaVolver.equals("DEV_MANUAL")) {  %>
-                    document.DevolucionesManualesForm.action = "<%=app%>/FAC_DevolucionesManual.do?noReset=true";
+                    document.DevolucionesManualesForm.action = "/SIGA/FAC_DevolucionesManual.do?noReset=true";
 					document.DevolucionesManualesForm.modo.value="abrirConParametros";
 					document.DevolucionesManualesForm.submit();	
 <% 				} else if (busquedaVolver.equals("BP")) {  %>
 					document.mantenimientoPrevisionesForm.target = "mainWorkArea";
-					document.mantenimientoPrevisionesForm.action = "<%=app%>/FCS_MantenimientoPrevisiones.do" + "?noReset=true&buscar=true";
+					document.mantenimientoPrevisionesForm.action = "/SIGA/FCS_MantenimientoPrevisiones.do" + "?noReset=true&buscar=true";
 					document.mantenimientoPrevisionesForm.modo.value="abrir";
 					document.mantenimientoPrevisionesForm.submit();	
 <% 				} else if (busquedaVolver.equals("NADA")) {  %>
-					top.mainWorkArea.document.location="<%=app%>/html/jsp/general/blank.jsp";
+					top.mainWorkArea.document.location="/SIGA/html/jsp/general/blank.jsp";
 <% 				} else if (busquedaVolver.equals("P")) {	%>
-					document.solicitudCompraForm.action = "<%=app%>/PYS_GenerarSolicitudes.do" + "?noReset=true";					
+					document.solicitudCompraForm.action = "/SIGA/PYS_GenerarSolicitudes.do" + "?noReset=true";					
 					document.solicitudCompraForm.modo.value="abrirAlVolver";	
 					document.solicitudCompraForm.submit();						
 <% 				} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {	%>
@@ -166,11 +168,11 @@
 					document.BusquedaColegiadosForm.accion.value = "buscarAvanzada";
 					document.BusquedaColegiadosForm.submit();	
 <%				} else if (busquedaVolver.equals("DUPLICADOS")) {	%>
-					document.MantenimientoDuplicadosForm.action = "<%=app%>/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 					document.MantenimientoDuplicadosForm.submit();
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
-					document.SolicitudesCertificadosForm.action = "<%=app%>/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
+					document.SolicitudesCertificadosForm.action = "/SIGA/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
 <%				}
 				}%>
