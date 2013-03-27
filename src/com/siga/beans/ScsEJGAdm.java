@@ -379,7 +379,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_PROCURADORNECESARIO,		ScsEJGBean.C_CALIDAD,
 							ScsEJGBean.C_TIPOLETRADO,				ScsEJGBean.C_OBSERVACIONES,
 							ScsEJGBean.C_DELITOS,					ScsEJGBean.C_DICTAMEN,
-							ScsEJGBean.C_FECHADICTAMEN,				ScsEJGBean.C_PROCURADOR,
+							ScsEJGBean.C_FECHADICTAMEN,				
 							ScsEJGBean.C_RATIFICACIONDICTAMEN,		ScsEJGBean.C_FECHARATIFICACION,							
 							ScsEJGBean.C_IDPERSONA,					ScsEJGBean.C_IDINSTITUCION,
 							ScsEJGBean.C_IDTIPOEJG,					ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,
@@ -424,7 +424,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_PROCURADORNECESARIO,		ScsEJGBean.C_CALIDAD,
 							ScsEJGBean.C_TIPOLETRADO,				ScsEJGBean.C_OBSERVACIONES,
 							ScsEJGBean.C_DELITOS,					ScsEJGBean.C_DICTAMEN,
-							ScsEJGBean.C_FECHADICTAMEN,				ScsEJGBean.C_PROCURADOR,
+							ScsEJGBean.C_FECHADICTAMEN,				
 							ScsEJGBean.C_RATIFICACIONDICTAMEN,		ScsEJGBean.C_FECHARATIFICACION,							
 							ScsEJGBean.C_IDPERSONA,					ScsEJGBean.C_IDINSTITUCION,
 							ScsEJGBean.C_IDTIPOEJG,					ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,
@@ -503,7 +503,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setDelitos(UtilidadesHash.getString(hash,ScsEJGBean.C_DELITOS));
 			bean.setDictamen(UtilidadesHash.getString(hash,ScsEJGBean.C_DICTAMEN));
 			bean.setFechaDictamen(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHADICTAMEN));
-			bean.setProcurador(UtilidadesHash.getString(hash,ScsEJGBean.C_PROCURADOR));
 			bean.setRatificacionDictamen(UtilidadesHash.getString(hash,ScsEJGBean.C_RATIFICACIONDICTAMEN));
 			bean.setFechaRatificacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHARATIFICACION));
 //			bean.setAsistencia_anio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_ASISTENCIA_ANIO));
@@ -607,7 +606,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_DELITOS, b.getDelitos());
 			UtilidadesHash.set(htData,ScsEJGBean.C_DICTAMEN, b.getDictamen());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHADICTAMEN, b.getFechaDictamen());
-			UtilidadesHash.set(htData,ScsEJGBean.C_PROCURADOR, b.getProcurador());
 			UtilidadesHash.set(htData,ScsEJGBean.C_RATIFICACIONDICTAMEN, b.getRatificacionDictamen());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHARATIFICACION, b.getFechaRatificacion());
 //			UtilidadesHash.set(htData,ScsEJGBean.C_ASISTENCIA_ANIO, b.getAsistencia_anio());

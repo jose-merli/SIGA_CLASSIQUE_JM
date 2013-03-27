@@ -111,10 +111,17 @@ import com.siga.general.MasterForm;
 	/**
 	 * Almacena en la Hashtable el procurador del EJG 
 	 * 
-	 * @param valor Procurador de la EJG. De tipo "String". 
+	 * @param valor idProcurador de la EJG. De tipo "String". 
 	 * @return void 
 	 */
-	public void setProcurador				(String  procurador)		{ this.datos.put(ScsEJGBean.C_PROCURADOR, procurador);}
+	public void setIdProcurador				(String  idProcurador)		{ this.datos.put(ScsEJGBean.C_IDPROCURADOR, idProcurador);}
+	/**
+	 * Almacena en la Hashtable el procurador del EJG 
+	 * 
+	 * @param valor idInstitucionProcurador de la EJG. De tipo "String". 
+	 * @return void 
+	 */
+	public void setIdInstitucionProcurador				(String  idInstitucionProcurador)		{ this.datos.put(ScsEJGBean.C_IDINSTITUCIONPROCURADOR, idInstitucionProcurador);}
 	/**
 	 * Almacena en la Hashtable la ratifiacion del dictamen del EJG 
 	 * 
@@ -307,9 +314,15 @@ import com.siga.general.MasterForm;
 	/**
 	 * Recupera de la Hashtable el procurador de la EJG
 	 * 
-	 * @return Procurador de la EJG
+	 * @return idProcurador de la EJG
 	 */
-	public String getProcurador				()		{ return this.datos.get(ScsEJGBean.C_PROCURADOR).toString();}
+	public String getIdProcurador				()		{ return this.datos.get(ScsEJGBean.C_IDPROCURADOR).toString();}
+	/**
+	 * Recupera de la Hashtable el procurador de la EJG
+	 * 
+	 * @return idInstitucionProcurador de la EJG
+	 */
+	public String getIdInstitucionProcurador				()		{ return this.datos.get(ScsEJGBean.C_IDINSTITUCIONPROCURADOR).toString();}
 	/**
 	 * Recupera de la Hashtable la ratifiacion del dictamen de la EJG
 	 * 

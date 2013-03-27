@@ -1084,7 +1084,7 @@ public class MaestroDesignasAction extends MasterAction {
 							  " ejgd.aniodesigna AS DESIGNA_ANIO,ejgd.idturno AS DESIGNA_IDTURNO,ejgd.numerodesigna AS DESIGNA_NUMERO," +
 							  "(SELECT ABREVIATURA FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejg.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, " +
 							  "designa.FECHAENTRADA AS FECHAENTRADADESIGNA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejgcolegio.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJGCOLEGIO," +
-							  "ejg.FECHAPRESENTACION, ejg.FECHALIMITEPRESENTACION, ejg.PROCURADORNECESARIO, ejg.PROCURADOR, ejg.OBSERVACIONES, ejg.DELITOS"+
+							  "ejg.FECHAPRESENTACION, ejg.FECHALIMITEPRESENTACION, ejg.PROCURADORNECESARIO, ejg.OBSERVACIONES, ejg.DELITOS"+
 							  ",ejg."+ScsEJGBean.C_IDPROCURADOR+
 							  ",ejg."+ScsEJGBean.C_IDINSTITUCIONPROCURADOR+
 							  ",ejg."+ScsEJGBean.C_NUMERO_CAJG+
@@ -1268,7 +1268,7 @@ public class MaestroDesignasAction extends MasterAction {
 				}
 			catch (Exception e) {}
 			
-			String procurador = idProcurador+","+idInstitucionProcurador;
+//			String procurador = idProcurador+","+idInstitucionProcurador;
 			/*int i = new Integer( (String) miHash.get("NUMERO")).intValue();
 			if(sufijo!=null && !sufijo.trim().equals("")){
 				ejg.put(ScsEJGBean.C_SUFIJO,sufijo);
@@ -1294,8 +1294,8 @@ public class MaestroDesignasAction extends MasterAction {
 			if(nombreSolicita!=null)
 				ejg.put(ScsEJGBean.C_TIPOLETRADO,nombreSolicita);
 
-			if(procurador!=null)	
-				ejg.put(ScsEJGBean.C_PROCURADOR,procurador);
+//			if(procurador!=null)	
+//				ejg.put(ScsEJGBean.C_PROCURADOR,procurador);
 			if(calidad!=null)
 				ejg.put(ScsEJGBean.C_CALIDAD,calidad);
 			if(nproc!=null)

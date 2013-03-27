@@ -203,10 +203,11 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
 
 			//Modificamos el TipoEJGColegio, FechaPresentacion, FechaLimitePresentacion, ProcuradorNecesario, Procurador, Observaciones y Delitos
+			//aalg: INC_10629_SIGA. Sustituir procurador por idprocurador e idInstitucionProcurador
 			String[] campos = {ScsEJGBean.C_IDTIPOEJGCOLEGIO, 			ScsEJGBean.C_FECHAPRESENTACION,
 							   ScsEJGBean.C_FECHALIMITEPRESENTACION,	ScsEJGBean.C_PROCURADORNECESARIO,
 							   ScsEJGBean.C_OBSERVACIONES,
-							   ScsEJGBean.C_DELITOS,					ScsEJGBean.C_PROCURADOR,					   
+							   ScsEJGBean.C_DELITOS,										   
 							   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
 							   ScsEJGBean.C_NUMERO_CAJG,				ScsEJGBean.C_ANIO_CAJG,
 							   //ScsEJGBean.C_JUZGADO, 					ScsEJGBean.C_JUZGADOIDINSTITUCION,
@@ -228,17 +229,18 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			Integer idProcurador, idInstitucionProcurador;
 			idProcurador = null;
 			idInstitucionProcurador = null;			
-			String procurador = (String)hash.get(ScsEJGBean.C_PROCURADOR);
-			if (procurador!=null && !procurador.equals("")){
+			//aalg: INC_10629_SIGA. Sustituir procurador por idprocurador e idInstitucionProcurador
+//			String procurador = (String)hash.get("PROCURADOR");
+//			if (procurador!=null && !procurador.equals("")){
 				try{
-				idProcurador = new Integer(procurador.substring(0,procurador.indexOf(",")));
-				idInstitucionProcurador = new Integer(procurador.substring(procurador.indexOf(",")+1));
+				idProcurador = new Integer(miForm.getIdProcurador());
+				idInstitucionProcurador = new Integer(miForm.getIdInstitucionProcurador());
 				hash.put(ScsEJGBean.C_IDPROCURADOR, idProcurador);
 				hash.put(ScsEJGBean.C_IDINSTITUCIONPROCURADOR, idInstitucionProcurador);
 				}catch (Exception e){
 					;// controlamos la excepcion que se produce cuando no hemos seleccionado ningun procurador y se hace un new Integer de vacío;
 				}
-			}
+//			}
 			
 			if ((hash.containsKey("FECHAPRESENTACION")) && (!hash.get("FECHAPRESENTACION").toString().equals(""))) hash.put("FECHAPRESENTACION",GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getDatos().get("FECHAPRESENTACION").toString()).toString());
 			if ((hash.containsKey("FECHALIMITEPRESENTACION")) && (!hash.get("FECHALIMITEPRESENTACION").toString().equals(""))) hash.put("FECHALIMITEPRESENTACION",GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getDatos().get("FECHALIMITEPRESENTACION").toString()).toString());			 
@@ -374,9 +376,10 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
 
 				//Modificamos el TipoEJGColegio, FechaPresentacion, FechaLimitePresentacion, ProcuradorNecesario, Procurador, Observaciones y Delitos
+				//aalg: INC_10629_SIGA. Sustituir procurador por idprocurador e idInstitucionProcurador
 				String[] campos = {//	ScsEJGBean.C_PROCURADORNECESARIO,
 								   ScsEJGBean.C_CALIDAD,					ScsEJGBean.C_OBSERVACIONES,
-								   ScsEJGBean.C_DELITOS,					ScsEJGBean.C_PROCURADOR,					   
+								   ScsEJGBean.C_DELITOS,										   
 								   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
 								   ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
 								   ScsEJGBean.C_JUZGADO, 					ScsEJGBean.C_JUZGADOIDINSTITUCION,
@@ -394,18 +397,19 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				// Obtengo el idProcurador y la idInstitucion del procurador:
 				Integer idProcurador, idInstitucionProcurador;
 				idProcurador = null;
-				idInstitucionProcurador = null;			
-				String procurador = (String)hash.get(ScsEJGBean.C_PROCURADOR);
-				if (procurador!=null && !procurador.equals("")){
+				idInstitucionProcurador = null;		
+				//aalg: INC_10629_SIGA. Sustituir procurador por idprocurador e idInstitucionProcurador
+//				String procurador = (String)hash.get("PROCURADOR");
+//				if (procurador!=null && !procurador.equals("")){
 					try{
-					idProcurador = new Integer(procurador.substring(0,procurador.indexOf(",")));
-					idInstitucionProcurador = new Integer(procurador.substring(procurador.indexOf(",")+1));
+					idProcurador = new Integer(miForm.getIdProcurador());
+					idInstitucionProcurador = new Integer(miForm.getIdInstitucionProcurador());
 					hash.put(ScsEJGBean.C_IDPROCURADOR, idProcurador);
 					hash.put(ScsEJGBean.C_IDINSTITUCIONPROCURADOR, idInstitucionProcurador);
 					}catch (Exception e){
 						;// controlamos la excepcion que se produce cuando no hemos seleccionado ningun procurador y se hace un new Integer de vacío;
 					}
-				}
+//				}
 				
 //				
 //				String idPersona = request.getParameter("idPersona");
@@ -704,8 +708,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			}
 			catch (Exception e) {}
 			
-			String procurador = idProcurador+","+idInstitucionProcurador;
-			ejg.put(ScsEJGBean.C_PROCURADOR,procurador);
 			
 			// En DATABACKUP se almacenan todos los campos de la consulta para mostralos en la jsp de edición
 			request.getSession().setAttribute("DATABACKUP",ejg);

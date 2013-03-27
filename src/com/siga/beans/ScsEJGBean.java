@@ -29,7 +29,6 @@ public class ScsEJGBean extends MasterBean{
 	private String	delitos;
 	private String	dictamen;
 	private String	fechaDictamen;
-	private String	procurador;
 	private String	ratificacionDictamen;
 	private String	fechaRatificacion;
 	private Integer idTipoDictamenEJG;
@@ -175,7 +174,6 @@ public class ScsEJGBean extends MasterBean{
 	static public final String	C_DELITOS	=					"DELITOS";
 	static public final String	C_DICTAMEN	=					"DICTAMEN";
 	static public final String	C_FECHADICTAMEN	=				"FECHADICTAMEN";
-	static public final String	C_PROCURADOR	=				"PROCURADOR";
 	static public final String	C_RATIFICACIONDICTAMEN	=		"RATIFICACIONDICTAMEN";
 	static public final String	C_FECHARATIFICACION	=			"FECHARATIFICACION";
 	static public final String	C_IDTIPODICTAMENEJG	=			"IDTIPODICTAMENEJG";	
@@ -630,18 +628,6 @@ public class ScsEJGBean extends MasterBean{
 	 */
 	public void setOrigenApertura(String origenApertura) {
 		this.origenApertura = origenApertura;
-	}
-	/**
-	 * @return Returns the procurador.
-	 */
-	public String getProcurador() {
-		return procurador;
-	}
-	/**
-	 * @param procurador The procurador to set.
-	 */
-	public void setProcurador(String procurador) {
-		this.procurador = procurador;
 	}
 	/**
 	 * @return Returns the procuradorNecesario.

@@ -33,8 +33,26 @@ import com.siga.general.MasterForm;
 	String idTipoenCalidad="";
 	String calidadIdinstitucion="";
 	String NIG = "";
+	String idProcurador="";
+	String idInstitucionProcurador="";
 
 	
+
+	public String getIdProcurador() {
+		return idProcurador;
+	}
+
+	public void setIdProcurador(String idProcurador) {
+		this.idProcurador = idProcurador;
+	}
+
+	public String getIdInstitucionProcurador() {
+		return idInstitucionProcurador;
+	}
+
+	public void setIdInstitucionProcurador(String idInstitucionProcurador) {
+		this.idInstitucionProcurador = idInstitucionProcurador;
+	}
 
 	public String getCalidadIdinstitucion() {
 		return calidadIdinstitucion;
@@ -174,14 +192,6 @@ import com.siga.general.MasterForm;
 	public void setProcuradorNecesario		(String procuradorNecesario)	{ this.datos.put(ScsEJGBean.C_PROCURADORNECESARIO, procuradorNecesario);}
 	
 	/**
-	 * Almacena en la Hashtable el nombre del procurador 
-	 * 
-	 * @param valor Nombre del procurador. De tipo "String". 
-	 * @return void 
-	 */
-	public void setProcurador				(String procurador)				{ this.datos.put(ScsEJGBean.C_PROCURADOR, procurador);}
-	
-	/**
 	 * Almacena en la Hashtable las observaciones del EJG 
 	 * 
 	 * @param valor Observaciones de la EJG. De tipo "String". 
@@ -270,11 +280,6 @@ import com.siga.general.MasterForm;
 	 * @return void 
 	 */
 	public String getProcuradorNecesario	()		{ return this.datos.get(ScsEJGBean.C_PROCURADORNECESARIO).toString();	}
-	/**
-	 * Almacena en la Hashtable el nombre del procurador 
-	 * @return String 
-	 */
-	public String getProcurador				()		{ return this.datos.get(ScsEJGBean.C_PROCURADOR).toString();}
 	/**
 	 * Recupera de la Hashtable observaciones de la EJG 
 	 * @return Observaciones de la EJG

@@ -106,7 +106,7 @@
 
 	 	if (hash.containsKey("OBSERVACIONES")) OBSERVACIONES =  hash.get("OBSERVACIONES").toString();
 	 	if (hash.containsKey("DELITOS")) DELITOS =  hash.get("DELITOS").toString();
-	 	if (hash.containsKey("PROCURADOR")) PROCURADOR =  hash.get("PROCURADOR").toString();
+	 	//if (hash.containsKey("PROCURADOR")) PROCURADOR =  hash.get("PROCURADOR").toString();
 	 	
 	 	// Datos del procurador seleccionado:
 	 	if (hash.containsKey("IDPROCURADOR")) idProcurador =  hash.get("IDPROCURADOR").toString();
@@ -336,7 +336,8 @@
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
 		<html:hidden property = "numero" value = "<%=numero%>"/>
 		<html:hidden property = "anio" value = "<%=anio%>"/>		
-		<html:hidden property = "procurador" value="<%=procuradorSel%>"/>
+		<html:hidden property = "idProcurador" value="<%=idProcurador%>"/>
+		<html:hidden property = "idInstitucionProcurador" value="<%=idInstitucionProcurador%>"/>
 		<!--<html:hidden property = "calidad" value="<%=idcalidad%>"/>-->
 	    <html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
 		<html:hidden property = "observaciones" value=""/>
@@ -608,7 +609,7 @@
 								<table  width="100%" border="0">
 									<tr>
 										<td class="labelText">
-											<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/>
+<%-- 											<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/> --%>
 											<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 											<%if (obligatorioProcurador) {%>
 												<%=asterisco %> 
@@ -818,7 +819,8 @@
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
 				document.DefinirMantenimientoEJGForm.target = "submitArea";				
-				document.DefinirMantenimientoEJGForm.procurador.value				=	document.getElementById("procurador").value	;
+				document.DefinirMantenimientoEJGForm.idProcurador.value				=	document.getElementById("idProcurador").value	;
+				document.DefinirMantenimientoEJGForm.idInstitucionProcurador.value				=	document.getElementById("idInstitucionProcurador").value	;
 				document.DefinirMantenimientoEJGForm.idPreceptivo.value				=	document.getElementById("preceptivo2").value	;
 				document.DefinirMantenimientoEJGForm.idSituacion.value				=	document.getElementById("situacion").value	;				
 				document.DefinirMantenimientoEJGForm.idTipoenCalidad.value					=	document.getElementById("calidad2").value	;
@@ -861,7 +863,8 @@
 		{
 			document.getElementById("nombreCompleto").value = '';
 			document.getElementById("nColegiadoProcurador").value     = '';
-			document.getElementById("procurador").value = '';
+			document.getElementById("idProcurador").value = '';
+			document.getElementById("idInstitucionProcurador").value = '';
 			document.getElementById("fechaProc1").value = '';
 			document.getElementById("numDesignaProc").value = '';
 		}
@@ -914,7 +917,9 @@
 		{
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 			if((resultado != undefined) && (resultado[0] != undefined) && (resultado[1] != undefined)) {
-				document.all.DefinirMantenimientoEJGForm.procurador.value     = resultado[0];
+				var procurador = resultado[0].split(",");
+				document.all.DefinirMantenimientoEJGForm.idProcurador.value     = procurador[0];
+				document.all.DefinirMantenimientoEJGForm.idInstitucionProcurador.value     = procurador[1];
 				document.getElementById("nombreCompleto").value = resultado[1];
 				document.getElementById("nColegiadoProcurador").value     = resultado[2];
 				//alert ("Procurador: " + document.all.DefinirMantenimientoEJGForm.procurador.value + ", Nombre: " + document.all.DefinirMantenimientoEJGForm.nombreCompleto.value + ", Ncolegiado: " + document.all.DefinirMantenimientoEJGForm.nColegiadoProcurador.value);

@@ -49,7 +49,7 @@
 	String nombretramidesig = "";
 	boolean designaExiste = false;
 	// Obtenemos el resultado
-	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", PROCURADOR = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
+	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
     String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO="", SUFIJO="", NIG="";
 	String idPretension = "", idPretensionInstitucion = "", pretension = "";
 
@@ -89,8 +89,6 @@
 		calidad = hash.get("CALIDAD").toString();	
 		if (hash.containsKey("IDTIPOEJGCOLEGIO"))
 			IDTIPOEJGCOLEGIO = hash.get("IDTIPOEJGCOLEGIO").toString();
-		if (hash.containsKey("PROCURADOR"))
-			PROCURADOR = hash.get("PROCURADOR").toString();
 		if (hash.containsKey("NOMBRELETRADO"))
 			NOMBRELETRADO = hash.get("NOMBRELETRADO").toString();
 		if (hash.containsKey("APELLIDO1LETRADO"))
@@ -179,8 +177,6 @@
 			OBSERVACIONES = hash.get("OBSERVACIONES").toString();
 		if (hash.containsKey("DELITOS"))
 			DELITOS = hash.get("DELITOS").toString();
-		if (hash.containsKey("PROCURADOR"))
-			PROCURADOR = hash.get("PROCURADOR").toString();
 		if (hash.containsKey("FECHARATIFICACION"))
 			FECHARATIFICACION = hash.get("FECHARATIFICACION")
 					.toString();
@@ -423,18 +419,7 @@
 			document.forms[0].submit();
 			
 		}
-		
-		function buscarProcurador() 
-		{
-			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-			if((resultado != undefined) && (resultado[0] != undefined) && (resultado[1] != undefined)) {
-				document.all.DefinirMantenimientoEJGForm.procurador.value     = resultado[0];
-				document.all.DefinirMantenimientoEJGForm.nombreCompleto.value = resultado[1];
-				document.all.DefinirMantenimientoEJGForm.nColegiadoProcurador.value     = resultado[2];
-//				alert ("Procurador: " + resultado[0] + ", Nombre: " + resultado[1] + ", Ncolegiado: " + resultado[2]);
-			}			 	
-		}
-		
+			
 		function generarExpediente(){
 			if(<%=tipoExpedienteRepetido%>)
 				alert("Tiene repetidos el tipo de Expediente de Insostenibilidad.");
@@ -818,7 +803,7 @@
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 								</td>
 								<td width="20%">
-									<html:hidden property = "procurador" value="<%=procuradorSel%>"/>
+<%-- 									<html:hidden property = "procurador" value="<%=procuradorSel%>"/> --%>
 									<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="15" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
 								</td>
 								<td class="labelText" width="20%">
