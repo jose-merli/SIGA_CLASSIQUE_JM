@@ -1,4 +1,5 @@
 <!-- consultaSolicitudesModificacion.jsp -->
+
 <!-- 
 	 Muestra los resultados de la busqueda de solicitudes de modificacion
 	 VERSIONES:
@@ -8,31 +9,26 @@
  
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> 
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);		
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -56,36 +52,35 @@
 <html>
 <!-- HEAD -->
 	<head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
 		<style type="text/css">
-
-			.especif
-			{
+			.especif {
 				background-color : #<%=src.get("color.titleBar.BG")%>;
 				position:absolute; width:964; height:35; z-index:2; top: 325px; left: 0px
 			}
-
 		</style>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 
 		<!-- SCRIPTS LOCALES -->
 		<script language="JavaScript">
 		
-			function refrescarLocal () 
-			{
+			function refrescarLocal () {
 				parent.buscar();
 			}
 			
 			//Asociada al icono ModificarDato
-			 function modificarDatos(fila) {
+			function modificarDatos(fila) {
 			   var datos;
 			   datos = document.getElementById('tablaDatosDinamicosD');
 			   datos.value = ""; 
@@ -113,7 +108,6 @@
 			   document.forms[0].target="mainWorkArea";
 			   document.forms[0].modo.value = "modificarDatos";
 			   document.forms[0].submit();
-
 			 }					
 			
 			//mhg LLamamos la método editar pasandole un LETRADO como tipo
@@ -130,7 +124,7 @@
 			   	document.busquedaClientesForm.submit();
 			}
 			
-						//mhg LLamamos la método editar pasandole un 1 como tipo
+			//mhg LLamamos la método editar pasandole un 1 como tipo
 			function editarNoColegiado(fila) {
 				document.busquedaClientesForm.filaSelD.value = fila;					
 				var idInst = <%=idInstitucion%>;			   				   	
@@ -141,9 +135,7 @@
 			   	document.busquedaClientesForm.submit();
 			}
 			
-			function enviar(fila)
-			{
-			   	
+			function enviar(fila) {			   	
 			   	var auxSol = 'oculto' + fila + '_3';
 			    var idSolic = document.getElementById(auxSol);			          		
 			   				   	
@@ -170,21 +162,17 @@
 				   	document.DefinirEnviosForm.modo.value='editar';
 				   	//document.DefinirEnviosForm.submit();
 			   	}
-			}
-	
+			}	
 		</script>
-
 	</head>
 
 	<body class="tablaCentralCampos">
 
 		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
+		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_SolicitudesModificacionGenericas.do?noReset=true" method="POST" target="" style="display:none">
-
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" styleId = "modo" value = ""/>
 			<html:hidden property = "idPersona" styleId = "idPersona" value ="<%=idPersona%>"/>
@@ -193,165 +181,151 @@
 			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>
 		
-			<siga:TablaCabecerasFijas 
-		  	      nombre="tablaDatos"
-				  borde="1"
-		   		  clase="tableTitle"
-				  nombreCol="censo.resultadosSolicitudesTextoLibre.literal.validar,censo.busquedaSolicitudesTextoLibre.literal.estado,
-				  			 censo.resultadosSolicitudesTextoLibre.literal.tipoModificacion,censo.resultadosSolicitudesTextoLibre.literal.nColegiado,
-				  			 censo.resultadosSolicitudesTextoLibre.literal.Nombre,censo.resultadosSolicitudesTextoLibre.literal.fecha,
-				  			 censo.resultadosSolicitudesTextoLibre.literal.descripcion,"
-				  tamanoCol="6,10,16,7,18,8,22,13"
-				  alto="100%"
-				  ajusteBotonera="true"		
-				  activarFilaSel="true">
+		<siga:TablaCabecerasFijas 
+	  	    nombre="tablaDatos"
+			borde="1"
+	   		clase="tableTitle"
+			nombreCol="censo.resultadosSolicitudesTextoLibre.literal.validar,censo.busquedaSolicitudesTextoLibre.literal.estado,
+						 censo.resultadosSolicitudesTextoLibre.literal.tipoModificacion,censo.resultadosSolicitudesTextoLibre.literal.nColegiado,
+			  			 censo.resultadosSolicitudesTextoLibre.literal.Nombre,censo.resultadosSolicitudesTextoLibre.literal.fecha,
+			  			 censo.resultadosSolicitudesTextoLibre.literal.descripcion,"
+			tamanoCol="6,10,16,7,18,8,22,13"
+			alto="100%"	
+			activarFilaSel="true">
 
+			<%if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ) {%>
+				<br><br>
+				<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
+				<br>
+			
+			<%} else { 
+		    	Enumeration en = ((Vector)request.getAttribute("container")).elements();
+				int recordNumber=1;
+				int recordPendiente=1;					
+				String botonesMostrados="";	
 
-				<%
-		    	 if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ){
-				%>
-					<br><br>
-					<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
-					<br>
-				<%
-	    		 }	    
-		    	 else { 
-		    		Enumeration en = ((Vector)request.getAttribute("container")).elements();
-					int recordNumber=1;
-					int recordPendiente=1;					
-					String botonesMostrados="";	
-
-					while (en.hasMoreElements())
-					{
-	            		Row row = (Row) en.nextElement(); 
-						FilaExtElement[] elementos=null;
-						if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){
-							//mhg Se comprueba que pertenece a CGAE y es Letrado
-							if (String.valueOf(ClsConstants.INSTITUCION_CGAE).equals(row.getString("IDINSTITUCION")) && row.getString("LETRADO").equals("1")){
-									elementos = new FilaExtElement[2];
-									elementos[0]=new FilaExtElement("editar","editarLetrado",SIGAConstants.ACCESS_FULL);
-									elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+				while (en.hasMoreElements()) {
+            		Row row = (Row) en.nextElement(); 
+					FilaExtElement[] elementos=null;
+					if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){
+						//mhg Se comprueba que pertenece a CGAE y es Letrado
+						if (String.valueOf(ClsConstants.INSTITUCION_CGAE).equals(row.getString("IDINSTITUCION")) && row.getString("LETRADO").equals("1")){
+								elementos = new FilaExtElement[2];
+								elementos[0]=new FilaExtElement("editar","editarLetrado",SIGAConstants.ACCESS_FULL);
+								elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+								
+						} else {
+							//Comprobamos si la persona es no colegiado. En caso de serla podemos modificarla.
+							beanNoCol = noColegiadoAdm.existeNoColegiado(new Long(idPersona));
+							if (beanNoCol != null) {
+								elementos = new FilaExtElement[2];
+ 				 					elementos[0]=new FilaExtElement("editar","editarNoColegiado",SIGAConstants.ACCESS_FULL);
+								elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+								
 							} else {
-								//Comprobamos si la persona es no colegiado. En caso de serla podemos modificarla.
-								beanNoCol = noColegiadoAdm.existeNoColegiado(new Long(idPersona));
-								if (beanNoCol != null) {
-									elementos = new FilaExtElement[2];
-  				 					elementos[0]=new FilaExtElement("editar","editarNoColegiado",SIGAConstants.ACCESS_FULL);
-									elementos[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-								}else{
-									elementos = new FilaExtElement[1];
-  				 					elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-								}
+								elementos = new FilaExtElement[1];
+ 				 					elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 							}
-  			 			} else {
-							elementos = new FilaExtElement[1];
-							elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 						}
-  			 			%>	            		
+						
+ 			 		} else {
+						elementos = new FilaExtElement[1];
+						elementos[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+					}%>	            		
 	            		
-						<siga:FilaConIconos
-							  fila='<%=String.valueOf(recordNumber)%>'
-							  botones='<%=botonesMostrados%>'
-							  elementos='<%=elementos%>'
-							  modo='editar'
-							  visibleConsulta='no'
-							  visibleEdicion='no'
-							  visibleBorrado='no'
-							  pintarEspacio='no'
-							  clase="listaNonEdit">
-							<td align="center">
-								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
-								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
+					<siga:FilaConIconos
+						fila='<%=String.valueOf(recordNumber)%>'
+						botones='<%=botonesMostrados%>'
+						elementos='<%=elementos%>'
+						modo='editar'
+						visibleConsulta='no'
+						visibleEdicion='no'
+						visibleBorrado='no'
+						pintarEspacio='no'
+						clase="listaNonEdit">
+						
+						<td align="center">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
 
-								<!-- ENVIOS 3 idSolicitud, 4 idPersona, 5 descripcion -->
-								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
-								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
-								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%>">
+							<!-- ENVIOS 3 idSolicitud, 4 idPersona, 5 descripcion -->
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDPERSONA)%>">
+							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%>">
 
-								<% if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){%>
-									<input type="checkbox"  id="validado" name="validado" value="1">
-									<input type="hidden" id="solicita_<%=String.valueOf(recordPendiente)%>" name="solicita_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">									
-									<% recordPendiente++; %>
-								<% } else { %>
-									&nbsp;
-								<% } %>									
-							</td>
-							<td>
-								<%=UtilidadesString.mostrarDatoJSP(row.getString("ESTADO"))%>
-							</td>  	
-							<td>
-								<%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%>
-							</td>  															
-							<td>								
-								<% if (!(row.getString("IDPERSONA").equalsIgnoreCase(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO)))){%>
-									<%=UtilidadesString.mostrarDatoJSP(colegiadoAdm.getIdentificadorColegiado(colegiadoAdm.getDatosColegiales(new Long(row.getString("IDPERSONA")),new Integer(row.getString("IDINSTITUCION")))))%>
-								<% } else { %>
-									&nbsp;
-								<% } %>
-							</td>  	
-							<td>
-								<% if (row.getString("IDPERSONA").equalsIgnoreCase(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO))){%>
-									<siga:Idioma key="censo.tipoApunteHistorico.automatico"/>
-								<% } else { %>
-									<%=UtilidadesString.mostrarDatoJSP(personaAdm.obtenerNombreApellidos(row.getString("IDPERSONA")))%>
-								<% } %>
-							</td>  	
-							<td>
-								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString(CenSolicitudesModificacionBean.C_FECHAALTA)))%>
-							</td>  								
-							<td>
-								<%=UtilidadesString.mostrarDatoJSP(row.getString(CenSolicitudesModificacionBean.C_DESCRIPCION))%>
-							</td>  								
-														
-						</siga:FilaConIconos>
-						<% recordNumber++;
-					} 
-				 } %>		
-			</siga:TablaCabecerasFijas>
+							<% if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){%>
+								<input type="checkbox"  id="validado" name="validado" value="1">
+								<input type="hidden" id="solicita_<%=String.valueOf(recordPendiente)%>" name="solicita_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">									
+								<% recordPendiente++; %>
+							<% } else { %>
+								&nbsp;
+							<% } %>									
+						</td>
+						
+						<td><%=UtilidadesString.mostrarDatoJSP(row.getString("ESTADO"))%></td>  	
+						<td><%=UtilidadesString.mostrarDatoJSP(row.getString("MODIFICACION"))%></td>  															
+						<td>								
+							<% if (!(row.getString("IDPERSONA").equalsIgnoreCase(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO)))){%>
+								<%=UtilidadesString.mostrarDatoJSP(colegiadoAdm.getIdentificadorColegiado(colegiadoAdm.getDatosColegiales(new Long(row.getString("IDPERSONA")),new Integer(row.getString("IDINSTITUCION")))))%>
+							<% } else { %>
+								&nbsp;
+							<% } %>
+						</td>  	
+						<td>
+							<% if (row.getString("IDPERSONA").equalsIgnoreCase(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO))){%>
+								<siga:Idioma key="censo.tipoApunteHistorico.automatico"/>
+							<% } else { %>
+								<%=UtilidadesString.mostrarDatoJSP(personaAdm.obtenerNombreApellidos(row.getString("IDPERSONA")))%>
+							<% } %>
+						</td>  	
+						<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString(CenSolicitudesModificacionBean.C_FECHAALTA)))%></td>  								
+						<td><%=UtilidadesString.mostrarDatoJSP(row.getString(CenSolicitudesModificacionBean.C_DESCRIPCION))%></td>  																						
+					</siga:FilaConIconos>
+					
+					<% recordNumber++;
+				} 
+			} %>		
+		</siga:TablaCabecerasFijas>
 							
-				<siga:ConjBotonesAccion botones='<%=botones%>' modo="editar"  clase="botonesDetalle"/>
-	
-
+		<siga:ConjBotonesAccion botones='<%=botones%>' modo="editar"  clase="botonesDetalle"/>
 	 	
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 
-			//Asociada al boton MarcarTodos -->
-			function accionMarcarTodos() 
-			{		
+			//Asociada al boton MarcarTodos
+			function accionMarcarTodos() {		
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
 						for (i = 0; i < dd.length; i++){
 							dd[i].checked=1;		
 						}	
-					}
-					else{
+						
+					} else {
 						dd.checked=1;		
 					}
 				}	
 			}
 		
-			//Asociada al boton DesmarcarTodos -->
-			function accionDesmarcarTodos() 
-			{		
+			//Asociada al boton DesmarcarTodos
+			function accionDesmarcarTodos() {		
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
 						for (i = 0; i < dd.length; i++){
 							dd[i].checked=0;		
 						}
-					}
-					else{
+						
+					} else {
 						dd.checked=0;		
 					}
 				}	
 			}
 		
-			//Asociada al boton ProcesarSolicitud -->
-			function accionProcesarSolicitud() 
-			{	sub();	
+			//Asociada al boton ProcesarSolicitud
+			function accionProcesarSolicitud() {	
+				sub();	
 				var datos = "";
 				var checked=false;
 				if (document.getElementById("solicita_1")!=null){
@@ -366,8 +340,8 @@
 								checked=true;		
 							}	
 						}
-					}	
-					else{
+						
+					} else {
 						if (dd.checked==1){
 							var aux="solicita_1";
 							var solicitado=document.getElementById(aux);
@@ -375,26 +349,29 @@
 							checked=true;		
 						}	
 					}
-				}else{
-				fin();
-				  return false;
+					
+				} else {
+					fin();
+				  	return false;
 				}	
+				
 				if(checked){
 					document.forms[0].solicitudes.value = datos;				
 					document.forms[0].modo.value = "procesarSolicitud";
 					document.forms[0].target = "submitArea";
 					document.forms[0].submit();
-				}else{
+					
+				} else {
 					alert("<siga:Idioma key='general.message.seleccionar'/>");
 					fin();
 					 return false;
 				}
 			}
 
-			//Asociada al boton DenegarSolicitud -->			
-			function accionDenegarSolicitud () 
-			{
+			//Asociada al boton DenegarSolicitud			
+			function accionDenegarSolicitud () {
 				var datos = "";
+				var checked=false;
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
@@ -404,44 +381,47 @@
 								var aux="solicita_"+j;
 								var solicitado=document.getElementById(aux);
 								datos=datos + solicitado.value + "%";
-							}else{
-							  if (datos==""){
-							    return false;
-							  }
+								checked=true;
 							}
 						}
-					}	
-					else{
+						
+					} else {
 						if (dd.checked==1){
 							var aux="solicita_1";
 							var solicitado=document.getElementById(aux);
 							datos=datos + solicitado.value + "%";						
 						}	
 					}
-				}else{
-				 return false;
+					
+				} else {
+					fin();
+				 	return false;
 				}	
-				document.forms[0].solicitudes.value = datos;								
-				document.forms[0].modo.value = "denegarSolicitud";
-				document.forms[0].target = "submitArea";
-				document.forms[0].submit();
-			}
-						
+				
+				if(checked){
+					document.forms[0].solicitudes.value = datos;								
+					document.forms[0].modo.value = "denegarSolicitud";
+					document.forms[0].target = "submitArea";
+					document.forms[0].submit();
+					
+				} else {
+					alert("<siga:Idioma key='general.message.seleccionar'/>");
+					fin();
+					 return false;
+				}				
+			}						
 		</script>
-		<!-- FIN: SCRIPTS BOTONES -->	 	
-	 	
-	 <!-- FIN: LISTA DE VALORES -->
+		<!-- FIN: SCRIPTS BOTONES -->	 		 	
+	 	<!-- FIN: LISTA DE VALORES -->
 	 
 		<!-- Formulario para la creacion de envio -->
 		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
 			<html:hidden property = "actionModal" value = ""/>
 			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-			
+			<html:hidden property = "tablaDatosDinamicosD" value = ""/>			
 			<html:hidden property = "idSolicitud" value = ""/>
 			<html:hidden property = "idPersona" value = ""/>
-			<html:hidden property = "descEnvio" value = ""/>
-			
+			<html:hidden property = "descEnvio" value = ""/>			
 		</html:form>
 		
 		<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea"  style="display:none">
@@ -451,10 +431,10 @@
 			<html:hidden property = "filaSelD" value = ""/>
 			<html:hidden property = "verFichaLetrado" value = ""/>
 		</html:form>
-	<!-- INICIO: SUBMIT AREA -->
-	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->
-
+		
+		<!-- INICIO: SUBMIT AREA -->
+		<!-- Obligatoria en todas las páginas-->
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+		<!-- FIN: SUBMIT AREA -->
 	</body>
 </html>
