@@ -1119,21 +1119,20 @@ function str_replace(search, replace, subject) {
 					<td class="boxConsulta">
 						<%=edad%>
 					</td>
-					<td class="labelText" colspan="4">
-						<% if (!bDatosGeneralesEditables && !esLetrado) { %> 
-							<img src="<%=app%>/html/imagenes/help.gif" 
-								alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
-								onclick="alertaNoEditable();"
-								style="cursor: hand;"/> 
-						<% } %>
+					<% if (!bDatosGeneralesEditables && !esLetrado && !institucionParam[0].equals("2000")) { %> 
+					<td class="labelText">
+						<img src="<%=app%>/html/imagenes/help.gif" 
+							alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
+							onclick="alertaNoEditable();"
+							style="cursor: hand;"/> 
 					</td>
-				</tr>
-				<tr>
-					<td class="labelText" colspan="4">
-						<% if (!bDatosGeneralesEditables && !esLetrado && !institucionParam[0].equals("2000")) { %> 
-							<input type="button" class="button" id="mensaje" name="mensaje"  value='Comunicar CGAE' onClick="solicitarModificacionDatos();">
-						<% } %>
+					<td class="labelText">
+						<input type="button" class="button" id="mensaje" name="mensaje"  value='Comunicar CGAE' onClick="solicitarModificacionDatos();">
 					</td>
+					<% } else { %>
+					<td class="labelText" colspan="2">
+					</td>
+					<% } %>
 				</tr>
 				</table>
 				</siga:ConjCampos>
