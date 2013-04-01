@@ -253,6 +253,10 @@ public class TagBotonesAccion extends TagSupport {
 				case INFORME_RETENCIONES_IRPF:
 					printButton(usrbean, out, abc);
 					break;
+				case CERRAR:
+					//aalg: INC_10631_SIGA. Para que salga el botón volver incluso si es modo consulta
+					printButton(usrbean, out, abc);
+					break;
 				case BA:
 					// tratamiento de botones de acceso rápido
 					// de momento solamente puede haber uno.
