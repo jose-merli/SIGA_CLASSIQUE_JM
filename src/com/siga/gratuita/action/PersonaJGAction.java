@@ -1974,6 +1974,63 @@ public class PersonaJGAction extends MasterAction {
 				}
 			}// continuamos para update
 			
+			//aalg INC_10636
+			if (miform.getIdRepresentanteJG()!=null){
+				Hashtable hash = new Hashtable();
+				hash.put(ScsPersonaJGBean.C_IDINSTITUCION,miform.getIdInstitucionJG());
+				hash.put(ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG());
+				Vector v = perAdm.selectByPK(hash);
+				if (v!=null && v.size()>0) {
+					ScsPersonaJGBean perBean = (ScsPersonaJGBean) v.get(0);
+					// lo guardamos en el databuckup
+					// OJO, utilizo setForCompare porque traspaso beans, y para mi caso, que es luego compararlo
+					// en el update necesito que si me viene un nulo, se escriba el elemento con un blanco.
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDINSTITUCION,perBean.getIdInstitucion().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPERSONA,perBean.getIdPersona().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NIF,perBean.getNif().toString());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NOMBRE,perBean.getNombre());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO1,perBean.getApellido1());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO2,perBean.getApellido2());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCION,perBean.getDireccion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,perBean.getCodigoPostal());						
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,perBean.getFechaNacimiento());			
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,perBean.getIdProfesion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,perBean.getIdMinusvalia());				
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,perBean.getIdPais());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,perBean.getIdProvincia());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,perBean.getIdPoblacion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESTADOCIVIL,perBean.getIdEstadoCivil());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_REGIMENCONYUGAL,perBean.getRegimenConyugal());			 
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_TIPOPERSONAJG,perBean.getTipo());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,perBean.getTipoIdentificacion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,perBean.getEnCalidadDe());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EDAD,perBean.getEdad());				
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_EXISTEDOMICILIO,perBean.getExisteDomicilio());	
+					if(perBean.getCorreoElectronico()!=null)
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico().trim());
+					
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPODIR,perBean.getIdTipoDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NUMERODIR,perBean.getNumeroDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESCALERADIR,perBean.getEscaleraDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,perBean.getPisoDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,perBean.getPuertaDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,perBean.getIdTipoVia());					
+					
+					//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
+					if (miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
+						dataBackup.put("PERSONAPERSONA",hash);
+					} else {
+						dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
+					}
+				}
+			}
+			// fin aalg
+			
 			// INSERTAR PERSONA JG SI PROCEDE
 			request.setAttribute("nuevaPersona", nuevaPersona);
 			// Sacado del if // calculo de la persona anterior, que solo funcionara cuando exista persona anterior
