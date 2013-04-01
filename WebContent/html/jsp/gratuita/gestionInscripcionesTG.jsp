@@ -119,7 +119,6 @@
 				fin();
 				// cambiarCabeceraTabla();
 		
-		
 				var estadoBusqueda = document.getElementById("estadoBusqueda").value;
 				if(estadoBusqueda=='S'){
 					jQuery("#bAccion").attr("disabled","disabled");
@@ -151,7 +150,9 @@
 				var imgs = document.getElementsByTagName ("img");
 				for (var i = 0; i < imgs.length; i++) {   
 		   			var alt = imgs[i].getAttribute("alt");
-		   			if ( alt != "<siga:Idioma key='general.boton.consultaInscripcion'/>" ) {   
+		   			//aalg: INC_10633_SIGA. Tienen que aparecer los botones que no sean de la fila y coge todos. 
+		   			//no consideramos los que no tienen alt
+		   			if ( alt != "<siga:Idioma key='general.boton.consultaInscripcion'/>" && alt != "") {   
 						imgs[i].style.display="none";						
 		   			}  
 				}  
