@@ -596,7 +596,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  " ejgd.aniodesigna AS DESIGNA_ANIO,ejgd.idturno AS DESIGNA_IDTURNO,ejgd.numerodesigna AS DESIGNA_NUMERO," +
 							  "(SELECT ABREVIATURA FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejg.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, " +
 							  "designa.FECHAENTRADA AS FECHAENTRADADESIGNA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejgcolegio.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJGCOLEGIO," +
-							  "ejg.FECHAPRESENTACION, ejg.FECHALIMITEPRESENTACION, ejg.PROCURADORNECESARIO, ejg.PROCURADOR, ejg.OBSERVACIONES, ejg.DELITOS"+
+							  "ejg.FECHAPRESENTACION, ejg.FECHALIMITEPRESENTACION, ejg.PROCURADORNECESARIO, ejg.OBSERVACIONES, ejg.DELITOS"+
 							  ",ejg."+ScsEJGBean.C_IDPROCURADOR+
 							  ",ejg."+ScsEJGBean.C_IDINSTITUCIONPROCURADOR+
 							  ",ejg."+ScsEJGBean.C_NUMERO_CAJG+
