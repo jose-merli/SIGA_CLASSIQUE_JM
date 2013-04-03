@@ -1975,9 +1975,14 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					|| (numDiligencia!=null && asistenciaBBDD.getNumeroDiligencia()!=null && numDiligencia.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroDiligencia().trim())));
 			
 			//mhg - INC_09104_SIGA
-			String idDelito = asistencia.getIdDelito()==null ? "" : asistencia.getIdDelito().toString();
-			isAsistenciaModificada = !((idDelito==null && asistenciaBBDD.getIdDelito()==null)
-					|| (idDelito!=null && asistenciaBBDD.getIdDelito()!=null));
+			if(isAsistenciaModificada) return true;
+			String observaciones = asistencia.getObservaciones()==null ? "" : asistencia.getObservaciones();
+			isAsistenciaModificada = !((observaciones==null && asistenciaBBDD.getObservaciones()==null)
+					|| (observaciones!=null && asistenciaBBDD.getObservaciones()!=null && observaciones.trim().equalsIgnoreCase(asistenciaBBDD.getObservaciones().trim())));
+			
+			if(isAsistenciaModificada) return true;
+			isAsistenciaModificada = !((asistencia.getIdDelito()==null && asistenciaBBDD.getIdDelito()==null)
+					|| (asistencia.getIdDelito()!=null && asistenciaBBDD.getIdDelito()!=null && asistencia.getIdDelito().toString().trim().equalsIgnoreCase(asistenciaBBDD.getIdDelito().toString().trim())));
 			
 			if(isAsistenciaModificada) return true;
 		}else{
@@ -2006,13 +2011,15 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	private void updateAsistenciaVolanteExpress(ScsAsistenciasBean asistencia) throws ClsExceptions 
 	{
 		String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
-		String campos [] = new String[6];
+		String campos [] = new String[7];
 		campos[0] = ScsAsistenciasBean.C_FECHAHORA;
 		campos[1] =  ScsAsistenciasBean.C_JUZGADO;
 		campos[2] =  ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION;
 		campos[3] =  ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO;
 		campos[4] =  ScsAsistenciasBean.C_DELITOSIMPUTADOS;
 		campos[5] =  ScsAsistenciasBean.C_IDPERSONAJG;
+		//mhg - INC_09104_SIGA
+		campos[6] =  ScsAsistenciasBean.C_OBSERVACIONES;
 		if(asistencia.getComisaria()!=null){
 			campos[1] =  ScsAsistenciasBean.C_COMISARIA;
 			campos[2] =  ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION;
