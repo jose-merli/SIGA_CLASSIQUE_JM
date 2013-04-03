@@ -405,6 +405,11 @@ public class RetencionesIRPFAction extends MasterAction {
 				miForm.setCuentasSJCSSociedad(getCuentasList(miForm,sociedad.getIdPersona().toString(), usr));		
 			}
 			
+			String accion = (String)request.getSession().getAttribute("accion");
+			if (accion == null)
+				accion = "";
+			request.setAttribute("accion", accion);
+			
 			request.setAttribute("idInstitucion", idInstitucion);
 			request.setAttribute("resultado",vRete);
 			request.getSession().removeAttribute("fechas");

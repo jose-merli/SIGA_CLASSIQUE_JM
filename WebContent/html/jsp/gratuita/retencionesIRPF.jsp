@@ -66,6 +66,9 @@
 	String letrado = "\'" + UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.retenciones.letrado") + "\'";
 	String parametros[] = {(String) usr.getLocation(),(String) request.getSession().getAttribute("idPersonaTurno"), letrado};
 	String parametros2[] = {(String) usr.getLocation()};
+	
+	//aalg:controlar el acceso en modo consulta
+	String accion = (String)request.getAttribute("accion");
 
 %>
 
@@ -224,13 +227,24 @@
 			String botones = "";
 			String botonesA = "";
 			if (sociedad == null || sociedad.equalsIgnoreCase("null")) {
-				botonesA = "E,B";
-				botones = "IRI,N,G";
+				//aalg:controlar el acceso en modo consulta
+				if (accion.equalsIgnoreCase("ver"))
+					botones = "IRI";
+				else{
+					botones = "IRI,N,G";
+					botonesA = "E,B";
+				}
 			} else {
 				if(bloquea)
-					botones = "IRI,N,G";
+					if (accion.equalsIgnoreCase("ver"))
+						botones = "IRI";
+					else
+						botones = "IRI,N,G";
 				else
-					botones = "IRI,G";
+					if (accion.equalsIgnoreCase("ver"))
+						botones = "IRI";
+					else
+						botones = "IRI,G";
 			}
 			String idInstitucion = (String) request.getAttribute("idInstitucion");
 			String idPersona = (String) request.getAttribute("idPersona");
@@ -326,13 +340,18 @@
 		  					while ((recordNumber) <= obj.size()) {
 		  						Hashtable hash = new Hashtable();
 		  						hash = (Hashtable) obj.get(recordNumber - 1);
-		  						if (sociedad == null
-		  								|| sociedad.equalsIgnoreCase("null")) {
-		  							botonesA = "E,B";
+		  						if (sociedad == null	|| sociedad.equalsIgnoreCase("null")) {
+		  							if (accion.equalsIgnoreCase("ver"))
+		  								botonesA = "";
+		  							else
+		  								botonesA = "E,B";
 		  						} else {
 		  							if (hash.get("FECHAINICIO") != null
 		  									&& !hash.get("FECHAINICIO").equals("")) {
-		  								botonesA = "E,B";
+		  								if (accion.equalsIgnoreCase("ver"))
+		  									botonesA = "";
+		  								else
+		  									botonesA = "E,B";
 		  							} else
 		  								botonesA = "";
 		  						}
