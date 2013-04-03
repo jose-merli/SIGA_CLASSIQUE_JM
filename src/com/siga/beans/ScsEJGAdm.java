@@ -2060,236 +2060,273 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		int contador=0;
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 		// Estos son los campos que devuelve la select
-		String consulta = 
-			"select ejg." + ScsEJGBean.C_ANIO + ", ejg." + ScsEJGBean.C_IDINSTITUCION + ", ejg." + ScsEJGBean.C_IDTIPOEJG + ", ejg." + ScsEJGBean.C_IDFACTURACION +", ejg. " + ScsEJGBean.C_FECHARATIFICACION +
-			", tipoejg." + ScsTipoEJGBean.C_DESCRIPCION +  " as TIPOEJG " +
-			", ejg." + ScsEJGBean.C_NUMEJG + ", ejg." + ScsEJGBean.C_FECHAAPERTURA + 
-			", ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO+", ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA +
-			", '' AS APELLIDO1,'' AS APELLIDO2" +
-			", nvl(mee." + ScsMaestroEstadosEJGBean.C_DESCRIPCION + ", '') AS DESC_ESTADO " + 
-			", ejg."+ScsEJGBean.C_NUMERO+",ejg."+ScsEJGBean.C_FECHAMODIFICACION+", ejg."+ScsEJGBean.C_SUFIJO ;
+		String consulta = "SELECT EJG." + ScsEJGBean.C_ANIO + ", " + 
+			" EJG." + ScsEJGBean.C_IDINSTITUCION + ", " + 
+			" EJG." + ScsEJGBean.C_IDTIPOEJG + ", " + 
+			" EJG." + ScsEJGBean.C_IDFACTURACION + ", " +
+			" EJG." + ScsEJGBean.C_FECHARATIFICACION + ", " + 
+			" TIPOEJG." + ScsTipoEJGBean.C_DESCRIPCION +  " as TIPOEJG, " +
+			" EJG." + ScsEJGBean.C_NUMEJG + ", " +
+			" EJG." + ScsEJGBean.C_FECHAAPERTURA + ", " + 
+			" EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO + ", " +
+			" EJG." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA + ", " +
+			" '' AS APELLIDO1, " +
+			" '' AS APELLIDO2, " +
+			" NVL(MEE." + ScsMaestroEstadosEJGBean.C_DESCRIPCION + ", '') AS DESC_ESTADO, " + 
+			" EJG." + ScsEJGBean.C_NUMERO + ", " +
+			" EJG." + ScsEJGBean.C_FECHAMODIFICACION + ", " +
+			" EJG." + ScsEJGBean.C_SUFIJO;
 
 		// Metemos las tablas implicadas en la select 
-		consulta += " from " + 
-			ScsEJGBean.T_NOMBRETABLA + " ejg,"  + 
-			ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + 
-			CenColegiadoBean.T_NOMBRETABLA + " colegiado" ;
+		consulta += " FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, "  + 
+			ScsTipoEJGBean.T_NOMBRETABLA + " TIPOEJG, " + 
+			CenColegiadoBean.T_NOMBRETABLA + " COLEGIADO ";
 		
 		//aalg: las tablas de estado para la select
-		consulta += ", (select  e2."+ ScsEstadoEJGBean.C_IDINSTITUCION +", e2."+ ScsEstadoEJGBean.C_IDTIPOEJG +", e2."+ ScsEstadoEJGBean.C_ANIO +", e2."+ ScsEstadoEJGBean.C_NUMERO + 
-						", e2."+ ScsEstadoEJGBean.C_IDESTADOEJG + ", e2." + ScsEstadoEJGBean.C_FECHAINICIO +
-					  " from  " + 
-					  " (select "+ ScsEstadoEJGBean.C_IDINSTITUCION +", "+ ScsEstadoEJGBean.C_IDTIPOEJG +", "+ ScsEstadoEJGBean.C_ANIO +", "+ ScsEstadoEJGBean.C_NUMERO +", max("+ ScsEstadoEJGBean.C_FECHAINICIO +") fechainicio " +
-					  " from " + ScsEstadoEJGBean.T_NOMBRETABLA +
-					  " group by "+ ScsEstadoEJGBean.C_IDINSTITUCION +", "+ ScsEstadoEJGBean.C_IDTIPOEJG +", "+ ScsEstadoEJGBean.C_ANIO +", "+ ScsEstadoEJGBean.C_NUMERO +") e1, " + ScsEstadoEJGBean.T_NOMBRETABLA + " e2 " +
-					  " where e1."+ ScsEstadoEJGBean.C_IDINSTITUCION +" = e2."+ ScsEstadoEJGBean.C_IDINSTITUCION +" and " +
-					  " e1."+ ScsEstadoEJGBean.C_IDTIPOEJG +" = e2."+ ScsEstadoEJGBean.C_IDTIPOEJG +" and " +
-					  "  e1."+ ScsEstadoEJGBean.C_ANIO +" = e2."+ ScsEstadoEJGBean.C_ANIO +" and " +
-					  " e1."+ ScsEstadoEJGBean.C_NUMERO +" = e2."+ ScsEstadoEJGBean.C_NUMERO +" and " +
-					  "  e1."+ ScsEstadoEJGBean.C_FECHAINICIO + "= e2."+ ScsEstadoEJGBean.C_FECHAINICIO +  
-					  "  ) estado, " + ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " mee ";
+		consulta += ", " +
+			"(" +
+				"SELECT ESTADO2." + ScsEstadoEJGBean.C_IDINSTITUCION + ", " +
+					" ESTADO2." + ScsEstadoEJGBean.C_IDTIPOEJG + ", " +
+					" ESTADO2." + ScsEstadoEJGBean.C_ANIO + ", " +
+					" ESTADO2." + ScsEstadoEJGBean.C_NUMERO + ", " +
+					" ESTADO2." + ScsEstadoEJGBean.C_IDESTADOEJG + ", " +
+					" ESTADO2." + ScsEstadoEJGBean.C_FECHAINICIO +
+				" FROM " + ScsEstadoEJGBean.T_NOMBRETABLA + " ESTADO2 " +
+				" WHERE ESTADO2.IDESTADOPOREJG = F_SIGA_GET_ULTIMOESTADOPOREJG" +
+					" ( " +
+						" ESTADO2." + ScsEstadoEJGBean.C_IDINSTITUCION + 
+						", ESTADO2." + ScsEstadoEJGBean.C_IDTIPOEJG +
+						", ESTADO2." + ScsEstadoEJGBean.C_ANIO +
+						", ESTADO2." + ScsEstadoEJGBean.C_NUMERO + 
+					" ) " +
+			") ESTADO, " + 
+			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		
 		// Si se filtra por acta necesitamos la tabla
-		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
+		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) || 
 			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
-			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " acta "; 
+			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " ACTA "; 
 		}
 
 		// Se filtra por renuncia
 		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getIdRenuncia());
-			consulta+=	" ,SCS_RENUNCIA  renuncia "+
-						" where renuncia.idrenuncia=ejg.Idrenuncia"+
-						" And renuncia.idrenuncia = :"+contador +
-						" And ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and "+
-						" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
-						" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
+			consulta+=	", SCS_RENUNCIA  RENUNCIA "+
+				" WHERE RENUNCIA.idrenuncia = EJG.Idrenuncia " +
+					" AND RENUNCIA.idrenuncia = :" + contador +
+					" AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = TIPOEJG." + ScsTipoEJGBean.C_IDTIPOEJG + 
+					" AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = COLEGIADO." + CenColegiadoBean.C_IDINSTITUCION + "(+) " +
+					" AND EJG." + ScsEJGBean.C_IDPERSONA + " = COLEGIADO." + CenColegiadoBean.C_IDPERSONA + "(+) ";   
               
 		}else{	
-		// Comenzamos a cruzar tablas
-		consulta +=
-			" where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + 
-			" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
-			" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
+			// 	Comenzamos a cruzar tablas
+			consulta += " WHERE EJG." + ScsEJGBean.C_IDTIPOEJG + " = TIPOEJG." + ScsTipoEJGBean.C_IDTIPOEJG + 
+				" AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = COLEGIADO." + CenColegiadoBean.C_IDINSTITUCION + "(+) " +
+				" AND EJG." + ScsEJGBean.C_IDPERSONA + " = COLEGIADO." + CenColegiadoBean.C_IDPERSONA + "(+) ";   
 		}
 		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
-		consulta +=" and ejg."+ ScsEJGBean.C_IDINSTITUCION +" = estado."+ ScsEstadoEJGBean.C_IDINSTITUCION +"(+) " +
-		   " and ejg."+ ScsEJGBean.C_IDTIPOEJG +" = estado."+ ScsEstadoEJGBean.C_IDTIPOEJG +"(+) " +
-		   " and ejg."+ ScsEJGBean.C_NUMERO +" = estado."+ ScsEstadoEJGBean.C_NUMERO +"(+) " +
-		   " and ejg."+ ScsEJGBean.C_ANIO +" = estado."+ ScsEstadoEJGBean.C_ANIO +"(+) ";
+		consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + "(+) " +
+		   " AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG + "(+) " +
+		   " AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO + "(+) " +
+		   " AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) ";
 		
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
-			consulta +=" AND (estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" NOT IN (7, 8, 9, 10, 11) OR estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" IS NULL) ";			
+			consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (7, 8, 9, 10, 11) OR ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IS NULL) ";
+			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
-			consulta += " AND estado."+ ScsEstadoEJGBean.C_IDESTADOEJG +" IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ")";
+			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
 		}
 		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
-		consulta += " and mee."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = estado."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+		consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
 		
 		// Se filtra por numero cajg
 		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getNumeroCAJG());
-			consulta += " AND LTRIM(ejg.Numero_Cajg,'0')  = LTRIM(:" + contador + ",'0') ";
+			consulta += " AND LTRIM(EJG.Numero_Cajg, '0')  = LTRIM(:" + contador + ", '0') ";
 		}
 		
 		// Se filtra por anio cajg
 		if (miForm.getAnioCAJG()!=null && !miForm.getAnioCAJG().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getAnioCAJG());
-			consulta += " and ejg.Aniocajg = :" + contador;
+			consulta += " AND EJG.Aniocajg = :" + contador;
 		}
 
 
 		// Y ahora concatenamos los criterios de búsqueda
 		if ((miForm.getFechaAperturaDesde() != null && !miForm.getFechaAperturaDesde().equals("")) ||
-				(miForm.getFechaAperturaHasta() != null && !miForm.getFechaAperturaHasta().equals(""))) {
-			Vector v = GstDate.dateBetweenDesdeAndHastaBind("ejg.FECHAAPERTURA", GstDate.getApplicationFormatDate("",miForm.getFechaAperturaDesde()),GstDate.getApplicationFormatDate("",miForm.getFechaAperturaHasta()),contador, codigos);
+			(miForm.getFechaAperturaHasta() != null && !miForm.getFechaAperturaHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAAPERTURA", GstDate.getApplicationFormatDate("",miForm.getFechaAperturaDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaAperturaHasta()), contador, codigos);
 			Integer in = (Integer)v.get(0);
 			String st = (String)v.get(1);
 			contador = in.intValue();
-			consulta += " and " + st;                    
+			consulta += " AND " + st;                    
 		}
 
 		if ((miForm. getfechaDictamenDesde() != null && !miForm.getfechaDictamenDesde().equals("")) ||
-				(miForm.getfechaDictamenHasta() != null && !miForm.getfechaDictamenHasta().equals(""))) {
-			Vector v = GstDate.dateBetweenDesdeAndHastaBind("ejg."+ScsEJGBean.C_FECHADICTAMEN, GstDate.getApplicationFormatDate("",miForm.getfechaDictamenDesde()),GstDate.getApplicationFormatDate("",miForm.getfechaDictamenHasta()),contador,codigos);
+			(miForm.getfechaDictamenHasta() != null && !miForm.getfechaDictamenHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG." + ScsEJGBean.C_FECHADICTAMEN, GstDate.getApplicationFormatDate("", miForm.getfechaDictamenDesde()), GstDate.getApplicationFormatDate("", miForm.getfechaDictamenHasta()), contador, codigos);
 			Integer in = (Integer)v.get(0);
 			String st = (String)v.get(1);
 			contador = in.intValue();
-			consulta += " and " + st;                    
+			consulta += " AND " + st;                    
 		}
 					
 		if ((miForm.getFechaLimitePresentacionDesde() != null && !miForm.getFechaLimitePresentacionDesde().equals("")) ||
-				(miForm.getFechaLimitePresentacionHasta() != null && !miForm.getFechaLimitePresentacionHasta().equals(""))) {
-			Vector v = GstDate.dateBetweenDesdeAndHastaBind("ejg."+ScsEJGBean.C_FECHALIMITEPRESENTACION, GstDate.getApplicationFormatDate("",miForm.getFechaLimitePresentacionDesde()),GstDate.getApplicationFormatDate("",miForm.getFechaLimitePresentacionHasta()),contador,codigos);
+			(miForm.getFechaLimitePresentacionHasta() != null && !miForm.getFechaLimitePresentacionHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG."+ScsEJGBean.C_FECHALIMITEPRESENTACION, GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionHasta()), contador, codigos);
 			Integer in = (Integer)v.get(0);
 			String st = (String)v.get(1);
 			contador = in.intValue();
-			consulta += " and " + st;                    
+			consulta += " AND " + st;                    
 		}
 
 		if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals(""))) {
 			contador++;
-			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDTIPOEJG"));
-			consulta += " and ejg. " + ScsEJGBean.C_IDTIPOEJG + " = :"+contador;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "IDTIPOEJG"));
+			consulta += " AND EJG. " + ScsEJGBean.C_IDTIPOEJG + " = :" + contador;
 		}
 
 		if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
-			consulta += " and ejg.ANIO = :" + contador;
+			consulta += " and EJG.ANIO = :" + contador;
 		}
 		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
 			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
 			
 			// Cruzamos la tabla de actas
-			consulta += " and acta." + ScsActaComisionBean.C_ANIOACTA+ " = ejg."+ ScsEJGBean.C_ANIOACTA;
-			consulta += " and acta." + ScsActaComisionBean.C_IDACTA+ " = ejg." + ScsEJGBean.C_IDACTA;
-			consulta += " and acta." + ScsActaComisionBean.C_IDINSTITUCION+ " = ejg."+ ScsEJGBean.C_IDINSTITUCIONACTA;
+			consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = EJG." + ScsEJGBean.C_ANIOACTA;
+			consulta += " AND ACTA." + ScsActaComisionBean.C_IDACTA + " = EJG." + ScsEJGBean.C_IDACTA;
+			consulta += " AND ACTA." + ScsActaComisionBean.C_IDINSTITUCION + " = EJG." + ScsEJGBean.C_IDINSTITUCIONACTA;
 			
 			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
-				consulta += " and acta." + ScsActaComisionBean.C_ANIOACTA+ " = :"+contador;
+				consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = :" + contador;
 			}
 			
 			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
-				consulta += " and acta." + ScsActaComisionBean.C_NUMEROACTA+ " = :"+contador;
+				consulta += " AND ACTA." + ScsActaComisionBean.C_NUMEROACTA+ " = :"+contador;
 			}
 		}
 
 		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
-			if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) 
-				consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
-			else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
-				consulta += " and (select count(1)";
-				consulta += " from scs_ejgdesigna edes";
-				consulta += " where ejg.idinstitucion = edes.idinstitucion";
-				consulta += " and ejg.numero = edes.numeroejg";
-				consulta +=  " and ejg.anio = edes.anioejg";
-				consulta += " and ejg.idtipoejg = edes.idtipoejg) > 0";
-			}     
-			else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
-				consulta += " and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
-			}
-			else {
-				consulta+= " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))"; 
+			if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) {
+				consulta += " AND (" +
+					" SELECT COUNT(AS.*) " +
+					" FROM SCS_ASISTENCIA AS " + 
+					" WHERE AS.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND AS.EJGNUMERO = EJG.NUMERO " +
+						" AND AS.EJGANIO = EJG.ANIO " +
+						" AND AS.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+			
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
+				consulta += " AND (SELECT count(1) " +
+					" FROM SCS_EJGDESIGNA EDES " +
+					" WHERE EJG.IDINSTITUCION = EDES.IDINSTITUCION " + 
+						" AND EJG.NUMERO = EDES.NUMEROEJG " +
+						" AND EJG.ANIO = EDES.ANIOEJG " +
+						" AND EJG.IDTIPOEJG = EDES.IDTIPOEJG) > 0 ";
+				
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
+				consulta += " AND (SELECT COUNT(SOJ.*) " +
+					" FROM SCS_SOJ SOJ " +
+					" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +  
+						" AND SOJ.EJGNUMERO = EJG.NUMERO " +
+						" AND SOJ.EJGANIO = EJG.ANIO " +
+						" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+				
+			} else {
+				consulta+= " AND (SELECT COUNT(AS.*) " +
+						" FROM SCS_ASISTENCIA AS " +
+						" WHERE AS.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND AS.EJGNUMERO IS NULL) > 0 " +
+						
+					" AND (SELECT COUNT(SOJ.*) " +
+						" FROM SCS_SOJ SOJ " +
+						" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND SOJ.EJGNUMERO IS NULL) > 0"; 
 			}
 		}
 
 		if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDTURNO"));
-			consulta += " and ejg.GUARDIATURNO_IDTURNO = :" + contador;
+			consulta += " AND EJG.GUARDIATURNO_IDTURNO = :" + contador;
 		}
 
 		if ((miHash.containsKey("GUARDIATURNO_IDGUARDIA")) && (!miHash.get("GUARDIATURNO_IDGUARDIA").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDGUARDIA"));
-			consulta += " and ejg.GUARDIATURNO_IDGUARDIA = :" + contador;
+			consulta += " AND EJG.GUARDIATURNO_IDGUARDIA = :" + contador;
 		}
 		
 		if ((miHash.containsKey("IDPERSONA")) && (!miHash.get("IDPERSONA").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDPERSONA"));
-			consulta += " and colegiado.idpersona = :" + contador;
+			consulta += " AND COLEGIADO.IDPERSONA = :" + contador;
 		}
 		
 		if ((miHash.containsKey("DICTAMINADO")) && (!miHash.get("DICTAMINADO").toString().equals(""))) {
 			if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("S")) {
-				consulta += " and ejg.FECHADICTAMEN IS NOT NULL";
+				consulta += " AND EJG.FECHADICTAMEN IS NOT NULL";
 			}
 			else if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("N")) {
-				consulta += " and ejg.FECHADICTAMEN IS NULL";
+				consulta += " AND EJG.FECHADICTAMEN IS NULL";
 			}
 		}
 		
 		if ((miHash.containsKey("IDTIPODICTAMENEJG")) && (!miHash.get("IDTIPODICTAMENEJG").toString().equals(""))){
 			contador++;
-			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPODICTAMENEJG"));
-			consulta += " and ejg.idtipodictamenejg = :" + contador;
+			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPODICTAMENEJG"));
+			consulta += " AND EJG.IDTIPODICTAMENEJG = :" + contador;
 		}
 		
 		if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
 			contador++;
-			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPORATIFICACIONEJG"));
-			consulta += " and ejg.idtiporatificacionejg = :" + contador;
+			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG"));
+			consulta += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
 		}
 
 		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
-			if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash,"NUMEJG"))) {
+			if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash, "NUMEJG"))) {
 				contador++;
-				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)UtilidadesHash.getString(miHash,"NUMEJG")).trim(),"ejg.NUMEJG", contador, codigos );
-			}else {
+				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "EJG.NUMEJG", contador, codigos);
+				
+			} else {
 				contador++;
-			    codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NUMEJG").trim());
-				consulta += " AND LTRIM(ejg.NUMEJG,'0')  = LTRIM(:" + contador + ",'0') ";
+			    codigos.put(new Integer(contador), (String)UtilidadesHash.getString(miHash, "NUMEJG").trim());
+				consulta += " AND LTRIM(EJG.NUMEJG, '0')  = LTRIM(:" + contador + ", '0') ";
 			}
 		}
 
 		if ((miHash.containsKey("IDTIPOEJGCOLEGIO")) && (!miHash.get("IDTIPOEJGCOLEGIO").toString().equals(""))) {
 			contador++;
-			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDTIPOEJGCOLEGIO"));
-			consulta += " and ejg.IDTIPOEJGCOLEGIO = :" + contador;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDTIPOEJGCOLEGIO"));
+			consulta += " AND EJG.IDTIPOEJGCOLEGIO = :" + contador;
 		}
 				
 		if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
 			contador++;
-			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDINSTITUCION"));
-			consulta += " and ejg.IDINSTITUCION = :"+ contador;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
+			consulta += " AND EJG.IDINSTITUCION = :"+ contador;
+			
 		}else{	
 			idInstitucion="";
 			if (idInstitucion.equals("")){			
-			  throw new ClsExceptions("messages.comprueba.noidInstitucion");			
-			}else			
-				consulta += " and ejg.IDINSTITUCION =" + idInstitucion;			
+			  throw new ClsExceptions("messages.comprueba.noidInstitucion");
+			  
+			} else {			
+				consulta += " AND EJG.IDINSTITUCION =" + idInstitucion;
+			}
 		}				
 		
 		// jbd // Consulta para el interesado
@@ -2300,36 +2337,43 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))||
 			((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))){
 			
-			consulta += " and ( select COUNT(1) " + 
-			"	from SCS_UNIDADFAMILIAREJG unidad, SCS_EJG EJG2, scs_personajg PJG " + 
-			"	where  unidad.idinstitucion = pjg.idinstitucion " +
-			"	and unidad.idpersona = pjg.idpersona " +
-			"	and ejg2.IDINSTITUCION = unidad.IDINSTITUCION(+) " +
-			"	and ejg2.ANIO = unidad.ANIO(+) " +
-			"	and ejg2.NUMERO = unidad.NUMERO(+) " +
-			"	and ejg2.IDTIPOEJG = unidad.IDTIPOEJG(+) " +
-			"	and unidad.SOLICITANTE(+) = '1' " +
-			"	and ejg2.IDINSTITUCION = ejg.IDINSTITUCION " +
-			"	and ejg2.ANIO = ejg.ANIO " + 
-			"	and ejg2.NUMERO = ejg.NUMERO " +
-			"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG";
+			consulta += " AND (SELECT COUNT(1) " + 
+					" FROM SCS_UNIDADFAMILIAREJG UNIDAD, " +
+						" SCS_EJG EJG2, " +
+						" SCS_PERSONAJG PJG " + 
+					" WHERE UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION " +
+						" AND UNIDAD.IDPERSONA = PJG.IDPERSONA " +
+						" AND EJG2.IDINSTITUCION = UNIDAD.IDINSTITUCION(+) " +
+						" AND EJG2.ANIO = UNIDAD.ANIO(+) " +
+						" AND EJG2.NUMERO = UNIDAD.NUMERO(+) " +
+						" AND EJG2.IDTIPOEJG = UNIDAD.IDTIPOEJG(+) " +
+						" AND UNIDAD.SOLICITANTE(+) = '1' " +
+						" AND EJG2.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND EJG2.ANIO = EJG.ANIO " + 
+						" AND EJG2.NUMERO = EJG.NUMERO " + 
+						" AND EJG2.IDTIPOEJG = EJG.IDTIPOEJG ";
+			
 			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
 				contador++;
-				codigos.put(new Integer(contador),((String)miHash.get("NIF")).trim()+"%");
-				consulta += " AND LTRIM(upper(pjg.nif),'0') LIKE LTRIM(UPPER(:"+contador+"),'0') ";						 
+				codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim() + "%");
+				consulta += " AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:"+contador+"), '0') ";						 
 			}
+			
 			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
 				contador++;
-    			consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(),"upper(pjg.NOMBRE)",contador,codigos );
+    			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
 			}
+			
 			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
 				contador++; 
-				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(),"upper(pjg.apellido1)",contador,codigos );
+				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
 			}
+			
 			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
 				contador++;
-				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(),"upper(pjg.apellido2)",contador,codigos );
+				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
 			}
+			
 			consulta += ") >0 ";
 		}
 
@@ -2340,24 +2384,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			*/
 			String a[]=((String)miHash.get("JUZGADO")).split(",");
 			contador++;
-			codigos.put(new Integer(contador),a[0]);
-			consulta += " and ejg.JUZGADO=:"+contador;	
+			codigos.put(new Integer(contador), a[0]);
+			consulta += " AND EJG.JUZGADO = :" + contador;	
 		}
 
 		//aalg: INC_08086_SIGA
 		if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals(""))) {
 			contador++;
-			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(),"ejg.observaciones", contador, codigos );
+			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(), "EJG.OBSERVACIONES", contador, codigos);
 		}
 
 		if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals(""))) {
 			contador++;
-			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(),"ejg.numeroprocedimiento", contador, codigos);
+			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(), "EJG.NUMEROPROCEDIMIENTO", contador, codigos);
 		}
 		
 		if ((miHash.containsKey("NIG")) && (!miHash.get("NIG").toString().equals(""))) {
 			contador++;
-			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(),"ejg.NIG", contador, codigos);
+			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(), "EJG.NIG", contador, codigos);
 		}		
 
 		/*if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
@@ -2365,83 +2409,87 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),miForm.getCalidad());		
 			 consulta += " and ejg.Idtipoencalidad = :" + contador;
 		}*/
+		
 		if ((miForm.getFechaPresentacionPonenteDesde() != null && !miForm.getFechaPresentacionPonenteDesde().equals("")) ||
 				(miForm.getFechaPresentacionPonenteHasta() != null && !miForm.getFechaPresentacionPonenteHasta().equals(""))) {
-			Vector v = GstDate.dateBetweenDesdeAndHastaBind("ejg.FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("",miForm.getFechaPresentacionPonenteDesde()),GstDate.getApplicationFormatDate("",miForm.getFechaPresentacionPonenteHasta()),contador, codigos);
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteHasta()), contador, codigos);
 			Integer in = (Integer)v.get(0);
 			String st = (String)v.get(1);
 			contador = in.intValue();
-			consulta += " and " + st;                    
+			consulta += " AND " + st;                    
 		}
 				
 		if ((miHash.containsKey("IDPONENTE")) && (!miHash.get("IDPONENTE").toString().equals(""))){
 			contador++;
 			codigos.put(new Integer(contador), miHash.get("IDPONENTE").toString());
-			consulta += " and " +  ScsEJGBean.C_IDPONENTE + " =:" + contador ; 
+			consulta += " AND " +  ScsEJGBean.C_IDPONENTE + " = :" + contador; 
 		}
 		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
-			consulta += " and estado."+ ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
+			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
 			
 			if ((miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")) ||
-					(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals(""))) {
+				(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals(""))) {
 			  
 			        if(miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")){
 			        	contador++;
 			        	codigos.put(new Integer(contador), miForm.getfechaEstadoDesde());
-			        	consulta +="   and trunc(estado."+ ScsEstadoEJGBean.C_FECHAINICIO + ") >=trunc(TO_DATE( :" + contador+"))";
+			        	consulta += " AND TRUNC(ESTADO."+ ScsEstadoEJGBean.C_FECHAINICIO + ") >= TRUNC(TO_DATE( :" + contador+"))";
 			        }
+			        
 			        if(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals("")){
 			        	contador++;
 			        	codigos.put(new Integer(contador), miForm.getfechaEstadoHasta());
-			        	consulta += "   and trunc(estado."+ ScsEstadoEJGBean.C_FECHAINICIO + ") <= trunc(TO_DATE( :" + contador+"))";
+			        	consulta += " AND TRUNC(ESTADO."+ ScsEstadoEJGBean.C_FECHAINICIO + ") <= TRUNC(TO_DATE( :" + contador+"))";
 			        }
 			} 
+			
 		} else if ((miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),this.usrbean.getLanguage());
-			consulta += " and (select F_SIGA_GETRECURSO(maestroes.DESCRIPCION, :"+contador+") DESCRIPCION " + 
-			" from SCS_ESTADOEJG         estadoejg, " + 
-			" SCS_MAESTROESTADOSEJG maestroes " + 
-			" WHERE estadoejg.IDINSTITUCION = ejg.IDINSTITUCION " + 
-			" and estadoejg.IDTIPOEJG = ejg.IDTIPOEJG " + 
-			" and estadoejg.ANIO = ejg.ANIO " + 
-			" and estadoejg.NUMERO = ejg.NUMERO " + 
-			" and maestroes.IDESTADOEJG = estadoejg.IDESTADOEJG " + 
-			" and estadoejg.IDESTADOPOREJG = " + 
-			" (SELECT MAX(ultimoestado.IDESTADOPOREJG) " + 
-			"      from SCS_ESTADOEJG ultimoestado " + 
-			"     where ultimoestado.IDINSTITUCION = " + 
-			"           estadoejg.IDINSTITUCION " + 
-			"       and ultimoestado.IDTIPOEJG = " + 
-			"           estadoejg.IDTIPOEJG " + 
-			"       and ultimoestado.ANIO = estadoejg.ANIO " + 
-			"       and ultimoestado.NUMERO = estadoejg.NUMERO) "; 
+			consulta += " AND " +
+				" ( " +
+					" SELECT F_SIGA_GETRECURSO(maestroes.DESCRIPCION, :" + contador + ") DESCRIPCION " + 
+					" FROM SCS_ESTADOEJG ESTADOEJG, " + 
+						" SCS_MAESTROESTADOSEJG MAESTROES " + 
+					" WHERE ESTADOEJG.IDINSTITUCION = EJG.IDINSTITUCION " + 
+						" AND ESTADOEJG.IDTIPOEJG = EJG.IDTIPOEJG " + 
+						" AND ESTADOEJG.ANIO = EJG.ANIO " + 
+						" AND ESTADOEJG.NUMERO = EJG.NUMERO " + 
+						" AND MAESTROES.IDESTADOEJG = ESTADOEJG.IDESTADOEJG " + 
+						" AND ESTADOEJG.IDESTADOPOREJG = " +
+							" ( " +
+								" SELECT MAX(ULTIMOESTADO.IDESTADOPOREJG) " + 
+								" FROM SCS_ESTADOEJG ULTIMOESTADO " + 
+								" WHERE ULTIMOESTADO.IDINSTITUCION = ESTADOEJG.IDINSTITUCION " + 
+									" AND ULTIMOESTADO.IDTIPOEJG =  ESTADOEJG.IDTIPOEJG " + 
+									" AND ULTIMOESTADO.ANIO = ESTADOEJG.ANIO " + 
+									" AND ULTIMOESTADO.NUMERO = ESTADOEJG.NUMERO" +
+							" ) " +
+						" AND ROWNUM = 1 " +
+					" ) ";
+			
 			contador++;
-			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"DESCRIPCIONESTADO"));
-			consulta += " and rownum = 1) = :"+contador;
-		}else{
-			if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())){
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "DESCRIPCIONESTADO"));
+			consulta += " = :" + contador;
+			
+		} else if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())) {
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
 				contador++;
 				codigos.put(new Integer(contador), "8");
-				consulta += " and estado."+ ScsEstadoEJGBean.C_IDESTADOEJG + " > :" + contador;
-			}
+				consulta += " AND ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG + " > :" + contador;
 		}
 
-
-		consulta += " ORDER BY to_number(" + ScsEJGBean.C_ANIO + ") desc, to_number("+ ScsEJGBean.C_NUMEJG+") desc";
+		consulta += " ORDER BY TO_NUMBER(" + ScsEJGBean.C_ANIO + ") DESC, " +
+			" TO_NUMBER(" + ScsEJGBean.C_NUMEJG + ") DESC ";
 
 		hashReturn.put(keyBindConsulta,consulta);
 		hashReturn.put(keyBindCodigos,codigos);
 
-
 		return hashReturn;
-
-
 	}
 	
 	private Vector getTurnoEjgSalidaOficio (String idInstitucion, String idTurno,
