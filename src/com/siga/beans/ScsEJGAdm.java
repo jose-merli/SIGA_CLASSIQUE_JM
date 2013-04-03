@@ -2080,26 +2080,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		// Metemos las tablas implicadas en la select 
 		consulta += " FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, "  + 
 			ScsTipoEJGBean.T_NOMBRETABLA + " TIPOEJG, " + 
-			CenColegiadoBean.T_NOMBRETABLA + " COLEGIADO ";
-		
-		//aalg: las tablas de estado para la select
-		consulta += ", " +
-			"(" +
-				"SELECT ESTADO2." + ScsEstadoEJGBean.C_IDINSTITUCION + ", " +
-					" ESTADO2." + ScsEstadoEJGBean.C_IDTIPOEJG + ", " +
-					" ESTADO2." + ScsEstadoEJGBean.C_ANIO + ", " +
-					" ESTADO2." + ScsEstadoEJGBean.C_NUMERO + ", " +
-					" ESTADO2." + ScsEstadoEJGBean.C_IDESTADOEJG + ", " +
-					" ESTADO2." + ScsEstadoEJGBean.C_FECHAINICIO +
-				" FROM " + ScsEstadoEJGBean.T_NOMBRETABLA + " ESTADO2 " +
-				" WHERE ESTADO2.IDESTADOPOREJG = F_SIGA_GET_ULTIMOESTADOPOREJG" +
-					" ( " +
-						" ESTADO2." + ScsEstadoEJGBean.C_IDINSTITUCION + 
-						", ESTADO2." + ScsEstadoEJGBean.C_IDTIPOEJG +
-						", ESTADO2." + ScsEstadoEJGBean.C_ANIO +
-						", ESTADO2." + ScsEstadoEJGBean.C_NUMERO + 
-					" ) " +
-			") ESTADO, " + 
+			CenColegiadoBean.T_NOMBRETABLA + " COLEGIADO, " + 
+			ScsEstadoEJGBean.T_NOMBRETABLA + " ESTADO, " +
 			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		
 		// Si se filtra por acta necesitamos la tabla
@@ -2130,7 +2112,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + "(+) " +
 		   " AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG + "(+) " +
 		   " AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO + "(+) " +
-		   " AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) ";
+		   " AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) " +
+		   " AND ESTADO.IDESTADOPOREJG = " +
+		   		" F_SIGA_GET_ULTIMOESTADOPOREJG ( " +
+		   			"  ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + 
+		   			", ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
+		   			", ESTADO." + ScsEstadoEJGBean.C_ANIO +
+		   			", ESTADO." + ScsEstadoEJGBean.C_NUMERO + 
+		   		" ) ";
 		
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
@@ -2221,12 +2210,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
 			if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) {
 				consulta += " AND (" +
-					" SELECT COUNT(AS.*) " +
-					" FROM SCS_ASISTENCIA AS " + 
-					" WHERE AS.IDINSTITUCION = EJG.IDINSTITUCION " +
-						" AND AS.EJGNUMERO = EJG.NUMERO " +
-						" AND AS.EJGANIO = EJG.ANIO " +
-						" AND AS.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+					" SELECT COUNT(*) " +
+					" FROM SCS_ASISTENCIA ASIST " + 
+					" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND ASIST.EJGNUMERO = EJG.NUMERO " +
+						" AND ASIST.EJGANIO = EJG.ANIO " +
+						" AND ASIST.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
 			
 			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
 				consulta += " AND (SELECT count(1) " +
@@ -2237,7 +2226,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						" AND EJG.IDTIPOEJG = EDES.IDTIPOEJG) > 0 ";
 				
 			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
-				consulta += " AND (SELECT COUNT(SOJ.*) " +
+				consulta += " AND (SELECT COUNT(*) " +
 					" FROM SCS_SOJ SOJ " +
 					" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +  
 						" AND SOJ.EJGNUMERO = EJG.NUMERO " +
@@ -2245,12 +2234,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
 				
 			} else {
-				consulta+= " AND (SELECT COUNT(AS.*) " +
-						" FROM SCS_ASISTENCIA AS " +
-						" WHERE AS.IDINSTITUCION = EJG.IDINSTITUCION " +
-							" AND AS.EJGNUMERO IS NULL) > 0 " +
+				consulta+= " AND (SELECT COUNT(*) " +
+						" FROM SCS_ASISTENCIA ASIST " +
+						" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND ASIST.EJGNUMERO IS NULL) > 0 " +
 						
-					" AND (SELECT COUNT(SOJ.*) " +
+					" AND (SELECT COUNT(*) " +
 						" FROM SCS_SOJ SOJ " +
 						" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +
 							" AND SOJ.EJGNUMERO IS NULL) > 0"; 
