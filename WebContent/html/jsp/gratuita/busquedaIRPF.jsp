@@ -69,8 +69,7 @@
 							<siga:Idioma key="gratuita.retenciones.tipoSociedad"/>
 						</td>
 						<td class="labelText">
-							<!--html:text name="SolicitudRetencionForm" property="letraNifSociedad" size="1" maxlength="1" styleClass="box" value="" /-->
-							<siga:ComboBD nombre="letraNifSociedad" tipo="cmbTipoSociedadAlta" clase="boxCombo"/>
+							<siga:ComboBD nombre="letraNifSociedad" tipo="cmbTipoSociedadAlta" clase="boxCombo" ancho="250"/>
 						</td>
 					</tr>	
 				</html:form>	

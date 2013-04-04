@@ -86,7 +86,7 @@
 											<siga:Idioma key="gratuita.retenciones.tipoSociedad"/>
 										</td>					
 										<td align="left">
-											<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedad" clase="boxCombo" />
+											<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedad" clase="boxCombo" ancho="320"/>
 										</td>
 									</tr>
 								</table>
@@ -115,6 +115,7 @@
 		
 			//Asociada al boton Guardar y Cerrar
 			function accionGuardarCerrar() {	
+				document.SolicitudRetencionForm.retencion.value = document.SolicitudRetencionForm.retencion.value.replace(",", ".");
 				if (validateSolicitudRetencionForm(document.SolicitudRetencionForm)){
 	        		document.forms[0].submit();	        
 					window.top.returnValue="MODIFICADO";				

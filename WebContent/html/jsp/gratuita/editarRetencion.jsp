@@ -120,12 +120,12 @@
 										
 										<td>		
 											<% if (accion.equalsIgnoreCase("ver")) { %>
-												<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedadRO" clase="boxConsulta" elementoSel="<%=alSociedades%>" readonly="true" parametro="<%=sociedad%>" ancho="200"/>
+												<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedadRO" clase="boxConsulta" elementoSel="<%=alSociedades%>" readonly="true" parametro="<%=sociedad%>" ancho="320"/>
 											<% } else {
 												if (accion.equalsIgnoreCase("editar") && !noHayElementos) { %>		
-													<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedadEdit" clase="boxCombo" elementoSel="<%=alSociedades%>" parametro="<%=sociedad%>"/>
+													<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedadEdit" clase="boxCombo" elementoSel="<%=alSociedades%>" parametro="<%=sociedad%>" ancho="320"/>
 												<% } else { %>
-													<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedad" clase="boxCombo"/>				
+													<siga:ComboBD nombre="comboSociedades" tipo="tipoSociedad" clase="boxCombo" ancho="320"/>				
 												<% } %>
 											<% } %>
 										</td>
@@ -160,6 +160,7 @@
 
 	// Asociada al boton Guardar y Cerrar
 	function accionGuardarCerrar() {	
+		document.SolicitudRetencionForm.retencion.value = document.SolicitudRetencionForm.retencion.value.replace(",", ".");
 		if (validateSolicitudRetencionForm(document.SolicitudRetencionForm)) {
        		document.forms[0].submit();				
 		}
