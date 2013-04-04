@@ -2,7 +2,6 @@
 package com.siga.censo.action;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -50,7 +49,6 @@ import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.CenProvinciaBean;
 import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
-import com.siga.beans.CenSolicitudMutualidadBean;
 import com.siga.beans.CenTipoColegiacionAdm;
 import com.siga.beans.CenTipoColegiacionBean;
 import com.siga.beans.CenTipoSolicitudAdm;
@@ -59,15 +57,11 @@ import com.siga.beans.CenTratamientoAdm;
 import com.siga.beans.CenTratamientoBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.SolicitudIncorporacionForm;
-import com.siga.censo.service.MutualidadService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.RetencionesIRPFAction;
-import com.siga.ws.mutualidad.RespuestaMutualidad;
-
-import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -193,7 +187,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 		String forward = "";
 		
 		try {
-			SolicitudIncorporacionForm miFormulario = (SolicitudIncorporacionForm)formulario;
+			SolicitudIncorporacionForm miFormulario = (SolicitudIncorporacionForm)formulario;			
 			
 			Hashtable hash = new Hashtable();
 			CenSolicitudIncorporacionBean bean = null;
@@ -228,8 +222,12 @@ public class SolicitudIncorporacionAction extends MasterAction
 				request.setAttribute("ModoAnterior","VERSINMODAL");
 			else	
 				request.setAttribute("ModoAnterior","VER");
-		}
-		catch (Exception e) {
+			
+		} catch (NumberFormatException exc) {
+			request.setAttribute("errorCodigo", true);
+			forward="inicio";
+			
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 		return forward; 
