@@ -2114,14 +2114,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		   	" AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO + "(+) " +
 		   	" AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) " +
 		   	" AND " +
-		   		"(" + 
-		   			" ESTADO.IDESTADOPOREJG IS NULL OR ESTADO.IDESTADOPOREJG = " +
-		   			" F_SIGA_GET_ULTIMOESTADOPOREJG ( " +
-		   				"  ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + 
-		   				", ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
-		   				", ESTADO." + ScsEstadoEJGBean.C_ANIO +
-		   				", ESTADO." + ScsEstadoEJGBean.C_NUMERO + 
-		   				" )) ";
+		   		" ( " + 
+		   			" ESTADO.IDESTADOPOREJG IS NULL " + 
+		   			" OR ESTADO.IDESTADOPOREJG = " +
+			   			" F_SIGA_GET_ULTIMOESTADOPOREJG ( " +
+			   				"  ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + 
+			   				", ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
+			   				", ESTADO." + ScsEstadoEJGBean.C_ANIO +
+			   				", ESTADO." + ScsEstadoEJGBean.C_NUMERO + 
+			   			" ) " +
+		   		" ) ";
 		
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
