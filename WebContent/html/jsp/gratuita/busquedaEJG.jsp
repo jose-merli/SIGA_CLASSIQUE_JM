@@ -554,7 +554,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />
 				</td>					
 				<td>
-					<siga:ComboBD nombre="identificador" tipo="turnosTramitacion" clase="boxCombo" obligatorio="false" accion="Hijo:guardiaTurnoIdGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>" ancho="355" />
+					<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:guardiaTurnoIdGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>" ancho="355" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
