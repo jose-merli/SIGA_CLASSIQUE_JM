@@ -167,7 +167,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 					boolean bwhere = false;
 					if (((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION) != null) && ((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).length()>0) {
 						
-						sql +=  ComodinBusquedas.prepararSentenciaCompleta(((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).trim().toUpperCase(), "UPPER(F_SIGA_GETRECURSO(" + ScsRetencionesBean.C_DESCRIPCION + ", " + lenguaje + "))");
+						sql +=  ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(((String)miHash.get(ScsRetencionesBean.C_DESCRIPCION)).trim(), "F_SIGA_GETRECURSO(" + ScsRetencionesBean.C_DESCRIPCION + ", " + lenguaje + ")");
 						bwhere = true;
 					} 
 					
