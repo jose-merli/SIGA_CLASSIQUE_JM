@@ -233,11 +233,12 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			
 			//Filtro por nombre:
 			if (nombre !=null && !nombre.equals(""))				
-				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim().toUpperCase(),"UPPER(juzgado."+ScsJuzgadoBean.C_NOMBRE+")");
+				select += " AND "+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(nombre.trim(), "juzgado."+ScsJuzgadoBean.C_NOMBRE);
 
 			//Filtro por codigoext:
 			if (codigoExt !=null && !codigoExt.equals(""))				
-				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(codigoExt.trim().toUpperCase(),"UPPER(juzgado."+ScsJuzgadoBean.C_CODIGOEXT+")");
+				select += " AND "+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(codigoExt.trim(), "juzgado."+ScsJuzgadoBean.C_CODIGOEXT);
+			
 			//Filtro por idPoblacion:
 			if (idPoblacion !=null && !idPoblacion.equals(""))				
 				select += " AND juzgado."+ScsJuzgadoBean.C_IDPOBLACION+"="+idPoblacion;
@@ -245,6 +246,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			//Filtro por idProvincia:
 			if (idProvincia !=null && !idProvincia.equals(""))				
 				select += " AND juzgado."+ScsJuzgadoBean.C_IDPROVINCIA+"="+idProvincia;
+			
 			//ORDER BY
 			select += " ORDER BY juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+", juzgado."+ScsJuzgadoBean.C_NOMBRE;
 			
