@@ -373,11 +373,15 @@
 			}
  		
 			function incluirRegBajaLogica(o) {
-				if (o.checked) {
-					document.DefinirGuardiasLetradoForm.bajaLogica.value = "S";
-				} else {
-					document.DefinirGuardiasLetradoForm.bajaLogica.value = "N";
-				}
+				
+				// JPT: Cambio para controlar la casilla de consulta al pulsar en ver todos
+				document.DefinirGuardiasLetradoForm.bajaLogica.value = "N";
+				<% if (bIncluirBajaLogica.equals("S")) { %>
+					if (o.checked) {
+						document.DefinirGuardiasLetradoForm.bajaLogica.value = "S";
+					}
+				<%}%>
+					
 				// document.DefinirGuardiasLetradoForm.modo.value = "abrirAvanzada";
 				document.DefinirGuardiasLetradoForm.submit();
 			}

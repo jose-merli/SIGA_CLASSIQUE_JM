@@ -648,11 +648,15 @@
 
 			// Funcion que agrega el concepto de baja logica
 			function incluirRegBajaLogica(o) {
-				if (o.checked) {
-					document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
-				} else {
-					document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "N";
-				}
+				
+				// JPT: Cambio para controlar la casilla de consulta al pulsar en ver todos
+				document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "N";				
+				<%if (bIncluirBajaLogica) { %>
+					if (o.checked) {
+						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
+					}
+				<%}%>
+						
 				document.DefinirTurnosLetradoForm.accion.value = "<%=accion%>";
 				document.DefinirTurnosLetradoForm.modo.value = "abrirTurnosLimpiar";
 				document.DefinirTurnosLetradoForm.submit();
