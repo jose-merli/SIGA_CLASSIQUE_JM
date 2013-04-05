@@ -801,11 +801,14 @@ function downloadDocumentoResolucion(docResolucion) {
 					<c:set var="disabledPorCambioLetrado" value="disabled='disabled'" />
 				</c:if>
 				<c:set var="valiDisabled" value="" />
+				<c:set var="checkDisabled" value="" />
 				<c:if
-				test="${InformeJustificacionMasivaForm.fichaColegial==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S' }">
+				test="${InformeJustificacionMasivaForm.fichaColegial==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S'}">
 					<c:set var="valiDisabled" value="disabled='disabled'" />
 				</c:if>
-				
+				<c:if test="${permitirBotones == false}">
+					<c:set var="checkDisabled" value="disabled='disabled'" />
+				</c:if>
 				<c:choose>
 					<c:when test="${status.count%2==0}">
 						<tr id="fila_${status.count}" class="filaTablaPar">
@@ -1207,7 +1210,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																	<td><input name="checkAcreditacion"
 																		id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
 																		onclick="onCheckAcreditacion(this);"
-																		 type="checkbox" /><c:out
+																		 type="checkbox" ${checkDisabled}/><c:out
 																		value="${acreditacion.descripcion}" /> <input
 																		name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
 																		id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
@@ -1261,7 +1264,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																		<td><input name="checkAcreditacion"
 																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
 																			onclick="onCheckAcreditacion(this);"
-																			 type="checkbox" /><c:out
+																			 type="checkbox" ${checkDisabled}/><c:out
 																			value="${acreditacion.descripcion}" /> <input
 																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
 																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
@@ -1310,7 +1313,7 @@ function downloadDocumentoResolucion(docResolucion) {
 															<input name="checkAcreditacion"
 																id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																onclick="onCheckAcreditacion(this);"
-																 type="checkbox" />
+																 type="checkbox" ${checkDisabled}/>
 															<input
 																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
@@ -1333,7 +1336,7 @@ function downloadDocumentoResolucion(docResolucion) {
 														</c:when>
 														<c:otherwise>
 															<c:choose>
-																<c:when test="${designa.baja=='1'}">
+																<c:when test="${designa.baja=='1'  || permitirBotones == false}">
 																	<input type="checkbox" disabled="disabled" />
 																</c:when>
 																<c:otherwise>
@@ -1409,7 +1412,7 @@ function downloadDocumentoResolucion(docResolucion) {
 															<input type="checkbox" disabled="disabled"
 																checked="checked" />
 														</c:when>
-														<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+														<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true || permitirBotones == false}">
 															<input type="checkbox" disabled="disabled" />
 														</c:when>
 														
@@ -1451,7 +1454,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																<input name="checkAcreditacion"
 																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																	onclick="onCheckAcreditacion(this);"
-																	 type="checkbox" />
+																	 type="checkbox" ${checkDisabled}/>
 																<input
 																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
@@ -1473,7 +1476,7 @@ function downloadDocumentoResolucion(docResolucion) {
 															</c:when>
 															<c:otherwise>
 																<c:choose>
-																	<c:when test="${designa.baja=='1'}">
+																	<c:when test="${designa.baja=='1' || permitirBotones == false}">
 																		<input type="checkbox" disabled="disabled" />
 																	</c:when>
 																	<c:otherwise>
@@ -1557,7 +1560,7 @@ function downloadDocumentoResolucion(docResolucion) {
 													<td><input name="checkAcreditacion"
 														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
 														onclick="onCheckAcreditacion(this);"
-														 type="checkbox" /><c:out
+														 type="checkbox" ${checkDisabled}/><c:out
 														value="${acreditacionPte.descripcion}" /> <input
 														name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion"
 														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
