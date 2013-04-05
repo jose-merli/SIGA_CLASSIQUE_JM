@@ -740,12 +740,12 @@ public class CalendarioSJCS
 			log.addLog(new String[] {"Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString()});
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
 				// ... crear un salto cumplido (como si fuera un log)
-				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
+				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Cumplido en dia de guardia " + diasGuardia.get(0));
 			else
 				// ... crear un salto cumplido (como si fuera un log)
-				saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), "",
+				saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), "Cumplido en dia de guardia " + diasGuardia.get(0), "",
 						idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), 
-						idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
+						idCalendarioGuardias.toString(),this.idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
 			return false; // y no seleccionar
 		}
 
@@ -758,7 +758,7 @@ public class CalendarioSJCS
 		// cumpliendo compensacion
 		if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
 			log.addLog(new String[] {"Compensacion cumplida", letradoGuardia.toString()});
-			cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, " - Compensacion cumplida");
+			cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, ":id="+this.idCalendarioGuardias.toString()+":Cumplido en fecha ("+diasGuardia.get(0)+"):finid="+this.idCalendarioGuardias.toString()+":");
 			iteCompensaciones.remove();
 		}
 		else
@@ -783,12 +783,12 @@ public class CalendarioSJCS
 			log.addLog(new String[] {"Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString()});
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
 				// ... crear un salto cumplido (como si fuera un log)
-				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
+				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Cumplido en dia de guardia " + diasGuardia.get(0));
 			else
 				// ... crear un salto cumplido (como si fuera un log)
-				saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), "",
+				saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), "Cumplido en dia de guardia " + diasGuardia.get(0),
 						idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), 
-						idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
+						idCalendarioGuardias.toString(), this.idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
 
 			return false; // y no seleccionar
 		}
@@ -800,7 +800,7 @@ public class CalendarioSJCS
 				log.addLog(new String[] {"Encontrado Salto", letradoGuardia.toString()});
 				
 				// ... compensar uno
-				cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, " - Salto cumplido");
+				cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, ":id="+this.idCalendarioGuardias.toString()+":Cumplido en fecha ("+diasGuardia.get(0)+"):finid="+this.idCalendarioGuardias.toString()+":");
 				alSaltos.remove(0);
 				if (alSaltos.size() == 0)
 					hmPersonasConSaltos.remove(letradoGuardia.getIdPersona());
@@ -809,11 +809,10 @@ public class CalendarioSJCS
 		}
 		else if ((alSaltos = hmPersonasConSaltos.get(new Long(letradoGuardia.getGrupo()))) != null) {
 			log.addLog(new String[] {"Encontrado Salto de grupo"});
-			String motivoCumplimiento = "Salto de grupo cumplido";
 			
 			// ... compensar uno
 			saltosCompenGruposAdm.cumplirSaltoCompensacion(alSaltos.get(0).getIdSaltoCompensacionGrupo(),
-					diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), idTurno.toString(),
+					diasGuardia.get(0), ":id="+this.idCalendarioGuardias.toString()+":Cumplido en fecha ("+diasGuardia.get(0)+"):finid="+this.idCalendarioGuardias.toString()+":", idInstitucion.toString(), idTurno.toString(),
 					idGuardia.toString(), idCalendarioGuardias.toString());
 			alSaltos.remove(0);
 			if (alSaltos.size() == 0)
@@ -824,15 +823,27 @@ public class CalendarioSJCS
 		// si hay incompatibilidad, ...
 		if (isIncompatible(letradoGuardia, diasGuardia)) {
 			log.addLog(new String[] {"Encontrado Incompatibilidad", letradoGuardia.toString(), diasGuardia.toString()});
+			java.util.Date date = new java.util.Date(); 
+			java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("dd/MM/yyyy");
+			String motivo = "Registro automático ("+sdf.format(new Date())+") por incompatibilidad en ";
+			if (diasGuardia.size() > 1){
+				motivo += "días de guardia: ";
+				for(String diaGuardia : diasGuardia){
+					motivo += diaGuardia + ", ";
+				}
+				motivo = motivo.substring(0, motivo.length() - 2);
+			} else {
+				motivo += "día de guardia: "+diasGuardia.get(0);
+			}
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
 				// ... crear compensacion
-				insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,
-						"Compensacion por Incompatibilidad");
+				//BNS INC_07349_SIGA 				
+				insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, motivo);
 			}
 			else {
 				// ... crear compensacion
 				saltosCompenGruposAdm.crearSaltoCompensacion(letradoGuardia.getGrupo().toString(), 
-						diasGuardia.get(0), "", idInstitucion.toString(), idTurno.toString(), 
+						diasGuardia.get(0), motivo, idInstitucion.toString(), idTurno.toString(), 
 						idGuardia.toString(), idCalendarioGuardias.toString(), ClsConstants.COMPENSACIONES);
 			}
 			return false; // y no seleccionar
@@ -888,6 +899,7 @@ public class CalendarioSJCS
 				idInstitucion, idTurno, idGuardia, idCalendarioGuardias,
 				letradoGuardia.getIdPersona(), saltoOCompensacion, "sysdate");
 		
+		saltoCompensacion.setIdCalendarioGuardiasCreacion(this.idCalendarioGuardias);
 		saltoCompensacion.setFechaCumplimiento(GstDate.getApplicationFormatDate("", (String) diasGuardia.get(0)) );
 		saltoCompensacion.setIdCalendarioGuardias(idCalendarioGuardias);
 		
@@ -900,7 +912,7 @@ public class CalendarioSJCS
 			descripcion.append(UtilidadesString.getMensajeIdioma(this.usrBean, CenBajasTemporalesBean.TIPO_DESC_BAJA));
 		descripcion.append(" ");
 		descripcion.append(bajaTemporalBean.getDescripcion());
-		saltoCompensacion.setMotivos(motivo + ": " + descripcion);
+		saltoCompensacion.setMotivos(descripcion + ": " + motivo);
 		
 		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 		scsSaltosCompensacionesAdm.insertarSaltoCompensacion(saltoCompensacion);
@@ -913,7 +925,8 @@ public class CalendarioSJCS
 		ScsSaltosCompensacionesBean saltoCompensacion = new ScsSaltosCompensacionesBean(
 				idInstitucion, idTurno, idGuardia, idCalendarioGuardias,
 				letradoGuardia.getIdPersona(), saltoOCompensacion, "sysdate");
-
+		//BNS INC_07349_SIGA 	
+		saltoCompensacion.setIdCalendarioGuardiasCreacion(this.idCalendarioGuardias);
 		saltoCompensacion.setMotivos(motivo);
 		
 		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
@@ -928,6 +941,7 @@ public class CalendarioSJCS
 				idInstitucion, idTurno, idGuardia,
 				letradoGuardia.getIdPersona(), saltoOCompensacion);
 		
+		//saltoCompensacion.setIdCalendarioGuardiasCreacion(this.idCalendarioGuardias);
 		saltoCompensacion.setFechaCumplimiento((String) diasGuardia.get(0));
 		//saltoCompensacion.setFechaCumplimiento(GstDate.getApplicationFormatDate("", (String) diasGuardia.get(0)) );
 		if(idGuardia!=null)
@@ -2064,13 +2078,9 @@ public class CalendarioSJCS
 		this.idGuardia = idGuardia;
 		this.idCalendarioGuardias = idCalendarioGuardias;
 		this.usrBean = usrBean;
-		
 	}
 	
-	public void borrarCalendario()throws ClsExceptions,SIGAException{
-		
-		
-				
+	public void borrarCalendario() throws ClsExceptions,SIGAException{
 		String idTurnoPrincipal;
 		String idGuardiaPrincipal;
 		String idCalendarioGuardiasPrincipal;

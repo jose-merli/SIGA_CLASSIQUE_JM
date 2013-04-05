@@ -27,6 +27,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	private Integer idCalendarioGuardias_Cumpli;
 	private String	fechaCreacion;
 	private Integer	usuCreacion;
+	private Long	idGrupoGuardiaCreacion;
 	
 	private ArrayList<LetradoInscripcion> letrados;
 	
@@ -52,6 +53,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	static public final String  C_IDCALENDARIOGUARDIAS_CUMPLI	= "IDCALENDARIOGUARDIAS_CUMPLI";
 	static public final String 	C_FECHACREACION					= "FECHACREACION";
 	static public final String 	C_USUCREACION					= "USUCREACION";
+	static public final String  C_IDCALENDARIOGUARDIASCREACION	= "IDCALENDARIOGUARDIASCREACION";
 	
 	
 	// SETTERS
@@ -98,6 +100,12 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public ArrayList<LetradoInscripcion> getLetrados() {return letrados;}
 	
 	
+	public Long getIdGrupoGuardiaCreacion() {
+		return idGrupoGuardiaCreacion;
+	}
+	public void setIdGrupoGuardiaCreacion(Long idGrupoGuardiaCreacion) {
+		this.idGrupoGuardiaCreacion = idGrupoGuardiaCreacion;
+	}
 	public String toString() {
 		return this.saltoCompensacion + " de grupo: " + this.getLetrados();
 	}

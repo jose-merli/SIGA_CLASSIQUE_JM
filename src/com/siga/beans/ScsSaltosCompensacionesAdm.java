@@ -503,6 +503,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append("      , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
 			sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
 			sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_MOTIVOS+"=REGEXP_REPLACE(");
+			sql.append(ScsSaltosCompensacionesBean.C_MOTIVOS+", ':id="+idcalendarioguardias+":.*:finid="+idcalendarioguardias+":',' ')");			
 			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
@@ -1084,6 +1086,16 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			
 			String motivo,String tipoSaltaCompensacion) throws ClsExceptions, SIGAException
 	{
+		crearSaltoCompensacion(idInstitucion, idTurno, idGuardia, idPersona, motivo, null, tipoSaltaCompensacion);
+	}
+	public void crearSaltoCompensacion(String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String idPersona,			
+			String motivo,
+			String idCalendarioGuardiasCreacion,
+			String tipoSaltaCompensacion) throws ClsExceptions, SIGAException
+	{
 
 		
 				// cuando hay que insertar salto
@@ -1097,6 +1109,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				hash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersona);
 				hash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, tipoSaltaCompensacion);
 				hash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, getNuevoIdSaltosTurno	(idInstitucion,idTurno));
+				if (idCalendarioGuardiasCreacion != null)
+					hash.put(ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION, idCalendarioGuardiasCreacion);
 				hash.put(ScsSaltosCompensacionesBean.C_FECHA, "SYSDATE");
 				if (!insert(hash)) {
 					throw new ClsExceptions("Error insertando salto: " + getError());

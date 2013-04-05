@@ -1294,7 +1294,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 		try{
 			if (salto != null&&(salto.equals("on") || salto.equals("1"))) 
-				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaEntrante, motivo,ClsConstants.SALTOS);
+				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaEntrante, motivo, idCalendarioGuardias, ClsConstants.SALTOS);
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e.getMessage());
@@ -1303,7 +1303,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		try{
 			
 			if (compensacion != null&&(compensacion.equals("on") || compensacion.equals("1"))) 
-				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaSaliente, motivo,ClsConstants.COMPENSACIONES);
+				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaSaliente, motivo, idCalendarioGuardias, ClsConstants.COMPENSACIONES);
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e.getMessage());

@@ -193,8 +193,9 @@
 	<link rel="stylesheet"
 		href="<%=app%>/html/js/themes/base/jquery.ui.all.css" />
 	
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp"
 		type="text/javascript"></script>
 	
@@ -234,7 +235,7 @@
 		function postAccionTurno(){
 			
 			accionComboGuardiaPrincipal();
-		}
+		}		
 		</script>
 </head>
 
@@ -836,7 +837,8 @@
 									<%
 							if (!modoPestanha.equalsIgnoreCase("ver")) {
 						%> <html:button property="boton" onclick="marcarTodosLaborables()"
-										styleClass="button" disabled="<%=soloLectura%>">
+										styleId="btnMarcarTodosLaborables" 
+										styleClass="button btnMarcarDesmarcar" disabled="<%=soloLectura%>">
 										<siga:Idioma key="general.boton.marcarTodos" />
 									</html:button> <%
 							}
@@ -877,7 +879,8 @@
 									<%
 							if (!modoPestanha.equalsIgnoreCase("ver")) {
 						%> <html:button property="boton"
-										onclick="desmarcarTodosLaborables()" styleClass="button"
+										styleId="btnDesmarcarTodosLaborables"
+										onclick="desmarcarTodosLaborables()" styleClass="button btnMarcarDesmarcar"
 										disabled="<%=soloLectura%>">
 										<siga:Idioma key="general.boton.desmarcarTodos" />
 									</html:button> <%
@@ -893,7 +896,8 @@
 									<%
 							if (!modoPestanha.equalsIgnoreCase("ver")) {
 						%> <html:button property="boton" onclick="marcarTodosFestivos()"
-										styleClass="button" disabled="<%=soloLectura%>">
+										styleId="btnMarcarTodosFestivos"
+										styleClass="button btnMarcarDesmarcar" disabled="<%=soloLectura%>">
 										<siga:Idioma key="general.boton.marcarTodos" />
 									</html:button> <%
 							}
@@ -939,7 +943,8 @@
 									<%
 							if (!modoPestanha.equalsIgnoreCase("ver")) {
 						%> <html:button property="boton"
-										onclick="desmarcarTodosFestivos()" styleClass="button"
+										onclick="desmarcarTodosFestivos()" styleClass="button btnMarcarDesmarcar"
+										styleId="btnDesmarcarTodosFestivos"
 										disabled="<%=soloLectura%>">
 										<siga:Idioma key="general.boton.desmarcarTodos" />
 									</html:button> <%
@@ -1194,22 +1199,19 @@ function init()
 	}
 	function accionComboGuardiaPrincipal(){
 		if(document.getElementById("idGuardiaPrincipal")){
-			var deshabilitar = document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1';
-			for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
-				if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
-					document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
-				}
+			var deshabilitar = !(document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1');
+			if (deshabilitar){
+				jQuery("form[name=DefinirGuardiasTurnosForm]")
+				.find("input, textarea, select")
+				.not("input[type=hidden],input.inputDisabled,#turnosPrincipales,#guardiasPrincipales,#nombreGuardia,#descripcion,#descripcionFacturacion,#descripcionPago")
+				.attr("disabled","disabled");				
+				jQuery("input.btnMarcarDesmarcar").hide();			
+			}else{
+				jQuery("form[name=DefinirGuardiasTurnosForm]")
+				.find("input, textarea, select").not("input.inputDisabled").removeAttr("disabled");
+				jQuery("input.btnMarcarDesmarcar").show();
 			}
-			jQuery("#turnosPrincipales").removeAttr("disabled");
-			jQuery("#guardiasPrincipales").removeAttr("disabled");
-			jQuery("#nombreGuardia").removeAttr("disabled");
-			jQuery("#descripcion").removeAttr("disabled");
-			jQuery("#descripcionFacturacion").removeAttr("disabled");
-			jQuery("#descripcionPago").removeAttr("disabled");
-			
-
 		}
-		
 	}
 
 	function comprobarPorGrupos(){

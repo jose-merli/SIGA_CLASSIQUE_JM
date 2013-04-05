@@ -260,6 +260,8 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		return resultado;
 	} // getSaltosCompensacionesPendientesGuardia()
 	
+	
+	//BNS: INC_07349_SIGA
 	public void crearSaltoCompensacion(String idGrupoGuardia,
 			String fecha,
 			String motivo,
@@ -267,7 +269,19 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			String idTurno,
 			String idGuardia,
 			String idCalendarioGuardias,
-			String saltoCompensacion) throws ClsExceptions
+			String saltoCompensacion) throws ClsExceptions{
+		crearSaltoCompensacion(idGrupoGuardia, fecha, motivo, idInstitucion, idTurno, idGuardia, idCalendarioGuardias, saltoCompensacion, null);
+	}
+	
+	public void crearSaltoCompensacion(String idGrupoGuardia,
+			String fecha,
+			String motivo,
+			String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String idCalendarioGuardias,
+			String saltoCompensacion,
+			String idCalendarioGuardiasCreacion) throws ClsExceptions
 	{
 		fecha = UtilidadesFecha.getFechaApruebaDeFormato(fecha);
 		
@@ -285,7 +299,10 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		hash.put(ScsSaltoCompensacionGrupoBean.C_USUCREACION, this.usrbean.getUserName());
 		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION, "sysdate");
 		hash.put(ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION, this.usrbean.getUserName());
-
+		//BNS: INC_07349_SIGA
+		if (idCalendarioGuardiasCreacion != null)
+			hash.put(ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIASCREACION, idCalendarioGuardias);
+		
 		this.insert(hash);
 	}
 	
@@ -295,7 +312,19 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			String idInstitucion,
 			String idTurno,
 			String idGuardia,
+			String idCalendarioGuardias,			
+			CenBajasTemporalesBean btBean) throws ClsExceptions{
+		crearSaltoBT(idGrupoGuardia, fecha, motivo, idInstitucion, idTurno, idGuardia, idCalendarioGuardias, null, btBean);
+	}
+	
+	public void crearSaltoBT(String idGrupoGuardia,
+			String fecha,
+			String motivo,
+			String idInstitucion,
+			String idTurno,
+			String idGuardia,
 			String idCalendarioGuardias,
+			String idCalendarioGuardiasCreacion,
 			CenBajasTemporalesBean btBean) throws ClsExceptions
 	{
 		// obtencion de la descripcion de la Baja temporal
@@ -306,8 +335,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			motivoBT.append(UtilidadesString.getMensajeIdioma(this.usrbean, CenBajasTemporalesBean.TIPO_DESC_BAJA));
 		motivoBT.append(" ");
 		motivoBT.append(btBean.getDescripcion());
-		motivo += ": " + motivoBT;
-		
+		motivo = motivoBT + ": " + motivo;
 		Hashtable<String, String> hash = new Hashtable<String, String>();
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO, getNuevoIdSaltoCompensacionGrupo());
 		hash.put(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA, idGrupoGuardia);
@@ -330,6 +358,10 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION, "sysdate");
 		hash.put(ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION, this.usrbean.getUserName());
 
+		if (idCalendarioGuardiasCreacion != null){
+			hash.put(ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIASCREACION, idCalendarioGuardiasCreacion);
+		}
+		
 		this.insert(hash);
 	}
 	
@@ -385,6 +417,8 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + " = null");
 			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION + "= SYSDATE");
 			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION + "=" + this.usuModificacion);
+			sql.append("      , "+ScsSaltoCompensacionGrupoBean.C_MOTIVOCUMPLIMIENTO+"=REGEXP_REPLACE(");
+			sql.append(ScsSaltoCompensacionGrupoBean.C_MOTIVOCUMPLIMIENTO+", ':id=:"+idcalendarioguardias+".*:finid="+idcalendarioguardias+":',' ')");
 			sql.append("  where " + ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI + "=" + idinstitucion);
 			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI + "=" + idturno);
 			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI + "=" + idguardia);

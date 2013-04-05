@@ -793,7 +793,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					
 					if (!numero.equals("NINGUNO")) {
 						//borrando permutas
-						if (admPermutaGuardias.delete(hashPermuta))					
+						if (admPermutaGuardias.delete(hashPermuta))
 							//borrando los dias de la guardia
 							if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))
 								//borrando las cabeceras de la guardia
@@ -839,8 +839,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					idGuardia = miForm.getIdGuardia();
 					idInstitucion = usr.getLocation();
 				}else{
-				
-				
 					idInstitucion = (String)ocultos.get(3);
 					idTurno = (String)ocultos.get(1);
 					idGuardia = (String)ocultos.get(2);
