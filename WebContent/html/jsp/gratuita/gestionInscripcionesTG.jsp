@@ -48,6 +48,7 @@
 	<head>
 		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
 		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>

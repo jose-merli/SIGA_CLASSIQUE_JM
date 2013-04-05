@@ -161,7 +161,7 @@
 					</tr>
 				</table>
 				<hr style="color:black;"></hr>
-		<div name="divScroll" style="overflow:auto;height:520px;">
+		<div name="divScroll" style="overflow:auto;height:500px;">
 				<table width="100%">
 					<tr>
 						<td class="tableTitle" colspan="3">
@@ -364,11 +364,17 @@
 						</td>
 					</tr>
 			</table>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			</div>
 		</c:otherwise>
 	</c:choose>
 
 </div>
-</html>
 	<siga:ConjBotonesAccion botones="A,C" clase="botonesDetalle" />
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -512,8 +518,9 @@
 
 
 	</script>
+	
 	</html:form>
-</body>
-</html>
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+</body>
+</html>
