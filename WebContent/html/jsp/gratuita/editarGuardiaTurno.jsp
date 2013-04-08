@@ -1004,6 +1004,10 @@ function init()
 		jQuery("#turnosPrincipales").removeAttr("disabled");
 		jQuery("#guardiasPrincipales").removeAttr("disabled");
 	<%}else{%>
+		if (jQuery("#turnosPrincipales").val()==-1){
+			jQuery("#turnosPrincipales").parent().parent().hide();			
+		}
+			
 		jQuery("#turnosPrincipales").attr("disabled","disabled");
 		jQuery("#guardiasPrincipales").attr("disabled","disabled");
 	<%}%>
