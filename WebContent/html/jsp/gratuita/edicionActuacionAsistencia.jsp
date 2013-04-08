@@ -712,7 +712,7 @@
 				document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 			}
 			if(document.getElementById("calendario_fechaJustificacion")){
-				document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+				jQuery("#calendario_fechaJustificacion").hide();
 			}
 		} else {
 			document.getElementById('fechaJustificacion').className="box";
@@ -720,7 +720,7 @@
 				document.getElementById("tdValidada").innerHTML = "";
 			}
 			if(document.getElementById("calendario_fechaJustificacion")) {
-				document.getElementById("calendario_fechaJustificacion").style.visibility="visible";
+				jQuery("#calendario_fechaJustificacion").show();
 			}
 		}
 		
@@ -733,7 +733,7 @@
 					habilitarCampos(false);
 					document.getElementById('fechaJustificacion').className="boxConsulta";
 					if(document.getElementById("calendario_fechaJustificacion")){ 
-						document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+						jQuery("#calendario_fechaJustificacion").hide();
 					}
 					jQuery("#checkAnulacion").removeAttr("disabled");
 				} else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
@@ -936,7 +936,7 @@
 			document.ActuacionAsistenciaFormEdicion.validada.value="0";
 			document.getElementById("tdValidada").innerHTML = '';
 			if(document.getElementById("calendario_fechaJustificacion")){ 
-				document.getElementById("calendario_fechaJustificacion").style.visibility="visible";
+				jQuery("#calendario_fechaJustificacion").show();
 			}
 			document.getElementById('fechaJustificacion').value="";			
 		} else {
@@ -944,7 +944,7 @@
 			document.getElementById('fechaJustificacion').className="boxConsulta";
 			document.ActuacionAsistenciaFormEdicion.validada.value="1";
 			if(document.getElementById("calendario_fechaJustificacion")){ 
-				document.getElementById("calendario_fechaJustificacion").style.visibility="hidden";
+				jQuery("#calendario_fechaJustificacion").hide();
 			}
 			document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 			if(document.ActuacionAsistenciaFormEdicion.fechaJustificacion.value==''){
