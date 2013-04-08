@@ -76,7 +76,6 @@
 		//Entrada desde el menu de Censo:
 		if (entrada.equalsIgnoreCase("2")) { 
 			if(bIncluirBajaLogica.equals("S"))
-				botones="";
 		%>
 			<table class="tablaTitulo" cellspacing="0">
 				<tr>
@@ -373,15 +372,11 @@
 			}
  		
 			function incluirRegBajaLogica(o) {
-				
-				// JPT: Cambio para controlar la casilla de consulta al pulsar en ver todos
-				document.DefinirGuardiasLetradoForm.bajaLogica.value = "N";
-				<% if (bIncluirBajaLogica.equals("S")) { %>
-					if (o.checked) {
-						document.DefinirGuardiasLetradoForm.bajaLogica.value = "S";
-					}
-				<%}%>
-					
+				if (o.checked) {
+					document.DefinirGuardiasLetradoForm.bajaLogica.value = "S";
+				} else {
+					document.DefinirGuardiasLetradoForm.bajaLogica.value = "N";
+				}
 				// document.DefinirGuardiasLetradoForm.modo.value = "abrirAvanzada";
 				document.DefinirGuardiasLetradoForm.submit();
 			}

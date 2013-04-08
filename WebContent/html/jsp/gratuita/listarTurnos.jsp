@@ -179,10 +179,7 @@
 		} else {	
 			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.subzona,gratuita.listaTurnosLetrados.literal.fechasolicitud,F. Valor,gratuita.altaTurnos.literal.fsbaja,F. Valor Baja,Estado Inscripción,Estado Turno,";
 			tC="15,15,7,7,8,8,8,8,8,5,10";
-			if(bIncluirBajaLogica)
-				botones="";
-			else
-				botones="C";
+			botones="C";
 			alto="326";
 		}%>
 		
@@ -648,15 +645,11 @@
 
 			// Funcion que agrega el concepto de baja logica
 			function incluirRegBajaLogica(o) {
-				
-				// JPT: Cambio para controlar la casilla de consulta al pulsar en ver todos
-				document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "N";				
-				<%if (bIncluirBajaLogica) { %>
-					if (o.checked) {
-						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
-					}
-				<%}%>
-						
+				if (o.checked) {
+					document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
+				} else {
+					document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "N";
+				}
 				document.DefinirTurnosLetradoForm.accion.value = "<%=accion%>";
 				document.DefinirTurnosLetradoForm.modo.value = "abrirTurnosLimpiar";
 				document.DefinirTurnosLetradoForm.submit();
