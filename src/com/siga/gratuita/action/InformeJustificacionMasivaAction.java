@@ -725,7 +725,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		//aalg: INC_140564_SIGA. controlamos también si es consulta o edición
 		if (isPermisoActualizarDesignas){
 			String accion = f.getAccion();
-			if (accion.equalsIgnoreCase("ver"))
+			if (accion != null && accion.equalsIgnoreCase("ver"))
 				isPermisoActualizarDesignas = false;
 		}
 			
