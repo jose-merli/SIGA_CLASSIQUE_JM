@@ -537,7 +537,7 @@
 	<tr>				
 	<td>
 	<siga:ConjCampos leyenda="factSJCS.datosPagos.leyenda1">
-	<table class="tablaCampos" align="center" border="1">
+	<table class="tablaCampos" align="center" border="0">
 
 	<!-- FILA -->
 	<tr>				
