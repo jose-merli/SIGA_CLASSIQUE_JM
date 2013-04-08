@@ -1,14 +1,14 @@
 <!-- detalleRegistroTablasMaestras.jsp -->
+
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> 
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
@@ -16,7 +16,6 @@
 <%@ page import="com.siga.administracion.*"%>
 
 <% 
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 
@@ -84,102 +83,82 @@
 	request.removeAttribute("tipoCodigoExt");
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
-	
 %>	
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 		
-			
-		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 
-		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-
-			<!-- Asociada al boton Restablecer -->
-			function accionRestablecer() 
-			{		
+			// Asociada al boton Restablecer
+			function accionRestablecer() {		
 				listadoTablasMaestrasForm.reset();
 			}
 		
-			<!-- Asociada al boton GuardarCerrar -->
-			function accionGuardarCerrar() 
-			{
+			// Asociada al boton GuardarCerrar
+			function accionGuardarCerrar() {
 				sub();
 				if (listadoTablasMaestrasForm.descripcionRegistro.value=='') {
 					alert('<siga:Idioma key="messages.consultas.error.descripcion"/>');
 					fin();
 					return false;
-				} else {
 					
-					if (validarCodigo())
-					{
-					//alert("valida codikgo");
-						listadoTablasMaestrasForm.submit();
-						
+				} else {					
+					if (validarCodigo()) {
+						listadoTablasMaestrasForm.submit();						
 						window.top.returnValue="MODIFICADO";
-					}else{
 						
-					
+					}else{											
 						fin();
-						return false;
-					
+						return false;					
 					}
 				}
 			}
 			
-			<!-- Asociada al boton Cerrar -->
-			function accionCerrar() 
-			{		
+			// Asociada al boton Cerrar
+			function accionCerrar()  {		
 				window.top.close();
 			}
-		</script>
-		<!-- FIN: SCRIPTS BOTONES -->
-		
-		<script>
-		function validarCodigo()
-		{
-			if (listadoTablasMaestrasForm.codigoRegistroExt.value!='' && "<%=sTipoCodigoExt%>"=="N")
-			{
-				if(isNaN(listadoTablasMaestrasForm.codigoRegistroExt.value))
-				{
-					var aux1 = '<siga:Idioma key="general.codeext"/>';
-					var aux = '<siga:Idioma key="errors.byte" arg0="' + aux1 + '"/>';
-					alert(aux);
-					return false;
-				}
-			}
-			return true;
-		}
 
- 		function darDeBaja (o) {
- 			if (o.checked) {
- 				listadoTablasMaestrasForm.ponerBajaLogica.value = "S";
-			} else {
-				listadoTablasMaestrasForm.ponerBajaLogica.value = "N";
+			function validarCodigo() {
+				if (listadoTablasMaestrasForm.codigoRegistroExt.value!='' && "<%=sTipoCodigoExt%>"=="N") {
+					if(isNaN(listadoTablasMaestrasForm.codigoRegistroExt.value)) {
+						var aux1 = '<siga:Idioma key="general.codeext"/>';
+						var aux = '<siga:Idioma key="errors.byte" arg0="' + aux1 + '"/>';
+						alert(aux);
+						return false;
+					}
+				}
+				return true;
 			}
- 		}
-		
+
+	 		function darDeBaja (o) {
+	 			if (o.checked) {
+	 				listadoTablasMaestrasForm.ponerBajaLogica.value = "S";
+				} else {
+					listadoTablasMaestrasForm.ponerBajaLogica.value = "N";
+				}
+	 		}		
 		</script>
 	</head>
 
 	<body>
 	
-	<table class="tablaTitulo" align="center" cellspacing="0">
-		<tr>
-			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="administracion.catalogos.titulo"/>
-			</td>
-		</tr>
-	</table>	
+		<table class="tablaTitulo" align="center" cellspacing="0">
+			<tr>
+				<td id="titulo" class="titulitosDatos">
+					<siga:Idioma key="administracion.catalogos.titulo"/>
+				</td>
+			</tr>
+		</table>
+			
 		<div id="camposRegistro" class="posicionModalPeque" align="center">
 			<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="submitArea">
-<%
-				String miModo = ((bNuevo) ? "Insertar" : "Modificar");
-				
-%>
+				<%String miModo = ((bNuevo) ? "Insertar" : "Modificar");%>
 				<html:hidden property = "modo" value = "<%=miModo%>"/>
 				<html:hidden property = "hiddenFrame" value = "1"/>
 				<input type="hidden" name="codigoRegistro" value="<%=codigoAux%>">
@@ -193,8 +172,7 @@
 				<input type="hidden" name="longitudCodigoExt" value="<%=sLongitudCodigoExt%>">
 				<input type="hidden" name="longitudDescripcion" value="<%=sLongitudDescripcion%>">
 				<input type="hidden" name="tipoCodigo" value="<%=sTipoCodigo%>">
-				<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">
-				
+				<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">				
 
 				<table class="tablaCentralCamposPeque" align="center" border="0">
 					<tr>		
@@ -209,72 +187,65 @@
 											<%=sAliasTabla%>
 										</td>
 									</tr>
+									
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="general.codeext"/>
-										</td>
-										
+										</td>									
 										<td class="labelTextValue">
-<%
-										if (bEditable)
-										{
-%>
-											<html:text property="codigoRegistroExt" styleClass="box" value="<%=codigoExternoAux%>" size="<%=sLengthCodigoExt%>" maxlength="<%=sMaxLengthCodigoExt%>"/>
-<%
-										} else {
-%>
-											<%=codigoExternoAux%>
-<%
-										} 
-%>
+											<% if (bEditable) {%>
+												<html:text property="codigoRegistroExt" styleClass="box" value="<%=codigoExternoAux%>" size="<%=sLengthCodigoExt%>" maxlength="<%=sMaxLengthCodigoExt%>"/>
+												
+											<% } else { %>
+												<%=codigoExternoAux%>
+											<% } %>
 										</td>
 									</tr>
+									
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="general.description"/>&nbsp;(*)
 										</td>	
-<%
-										if (bEditable)
-										{
-											if (bNuevo)
-											{
-%>
-										<td class="labelTextValue">
-											<html:text property="descripcionRegistro" styleClass="box" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>"/>
-<%
-											}
-											
-											else
-											{
-%>
-										<td class="labelTextValue">
-											<input type="text" name="descripcionRegistro" class="box" value="<%=descAux%>" styleClass="boxCombo" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>">
-<%
-											}
-%>
-<%
-										}
-										
-										else
-										{
-%>
-										<td class="labelTextValue"">
-											<%=descAux%>
-											<html:hidden property="descripcionRegistro" value="<%=descAux%>"/>
-										</td>
-<%
-										}
-%>
-                                    
+											<% 
+												if (bEditable) {
+													if (bNuevo){
+											%>
+												<td class="labelTextValue">
+													<html:text property="descripcionRegistro" styleClass="box" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>"/>
+												</td>
+												
+											<% 		} else {%>
+												<td class="labelTextValue">
+													<input type="text" name="descripcionRegistro" class="box" value="<%=descAux%>" styleClass="boxCombo" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>">
+												</td>
+												
+											<%		
+													}													
+												} else {
+											%>
+												<td class="labelTextValue"">
+													<%=descAux%>
+													<html:hidden property="descripcionRegistro" value="<%=descAux%>"/>
+												</td>
+											<% } %>                                    
 									</tr>
+									
 									<%if (sDarDeBaja!=null && sDarDeBaja.equals("S")){%>
 										<tr>
 											<td class="labelText">
 												<siga:Idioma key="general.baja"/>
-
 											</td>
 											<td class="labelTextValue">
-												<input type="checkbox" name="ponerBajaLogica" style="" onclick="darDeBaja(this);" <%if (!bEditable && !bNuevo) {%>disabled<%}%> value="<%=ponerBaja%>" <%if (fechaBaja !=null && !fechaBaja.equals("")) {%>checked<%}%>>
+												<input type="checkbox" name="ponerBajaLogica" style="" 
+													onclick="darDeBaja(this);" 
+													<%if (!bEditable && !bNuevo) {%> 
+														disabled 
+													<%}%> 
+													value="<%=ponerBaja%>" 
+													<%if (fechaBaja !=null && !fechaBaja.equals("")) {%>
+														checked
+													<%}%>
+												>
 												<%if (fechaBaja !=null && !fechaBaja.equals("")) {%>
 													&nbsp;&nbsp;&nbsp; Baja desde: <%=fechaBaja%>
 												<%}%>								
@@ -285,7 +256,8 @@
 							</siga:ConjCampos>
 						</td>
 					</tr>
-					<%if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+					
+					<% if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)) {
 							//Para el Combo de dictamen
 							String[] dato={userBean.getLocation()};
 							ArrayList vTipoDictamen = new ArrayList();
@@ -293,47 +265,43 @@
 							//Añadir tipo dictamen
 							vTipoDictamen.add(tipoDictamenEJG);  
 					%>
-					<tr>		
-						<td>
-							<siga:ConjCampos leyenda="Asociado a">
-								<table class="tablaCampos" align="center">
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="Tipo Dictamen"/>
-										</td>
-										<td class="labelTextValue">
-										<%if (bEditable){ %>
-											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false"/>
-										<% } else { %>
-											<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="true"/>	
-										<% } %>
-										</td>
-									</tr>
-							
-								</table>
-							</siga:ConjCampos>
-						</td>
-					</tr>					
-					<%}%>	
+						<tr>		
+							<td>
+								<siga:ConjCampos leyenda="Asociado a">
+									<table class="tablaCampos" align="center">
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="Tipo Dictamen"/>
+											</td>
+											<td class="labelTextValue">
+												<% if (bEditable) { %>
+													<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false" ancho="350"/>
+												<% } else { %>
+													<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="true" ancho="350"/>	
+												<% } %>
+											</td>
+										</tr>							
+									</table>
+								</siga:ConjCampos>
+							</td>
+						</tr>					
+					<% } %>	
 					
-					<%if (sBloqueo!=null && sBloqueo.equals("S") ){%>
-					
-					<tr>
-									<td class="labelText" colspan="6"  >
-									    <siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
-									  </td>
-									</tr>
+					<% if (sBloqueo!=null && sBloqueo.equals("S") ){ %>					
+						<tr>
+							<td class="labelText" colspan="6"  >
+								<siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
+							</td>
+						</tr>
 					<%}%>				
 				</table>
 			</html:form>
 
 			<!-- V Volver, G Guardar, Y GuardaryCerrar, R Restablecer, C Cerrar, X Cancelar -->
-<%
-			String botones = bEditable ? "R,Y,C" : "C";
-%>
+			<%String botones = bEditable ? "R,Y,C" : "C";%>
 			<siga:ConjBotonesAccion botones="<%=botones%>" modal="P"/>
 		</div>	
 		
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	</body>
 </html>
