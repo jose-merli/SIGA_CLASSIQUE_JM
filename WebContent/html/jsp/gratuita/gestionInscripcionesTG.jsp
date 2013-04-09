@@ -148,15 +148,9 @@
 			}
 	
 			function ocultaBotonesFila(){
-				var imgs = document.getElementsByTagName ("img");
-				for (var i = 0; i < imgs.length; i++) {   
-		   			var alt = imgs[i].getAttribute("alt");
-		   			//aalg: INC_10633_SIGA. Tienen que aparecer los botones que no sean de la fila y coge todos. 
-		   			//no consideramos los que no tienen alt
-		   			if ( alt != "<siga:Idioma key='general.boton.consultaInscripcion'/>" && alt != "") {   
-						imgs[i].style.display="none";						
-		   			}  
-				}  
+				
+				//aalg: INC_10633_SIGA
+				jQuery("#tabInscripcionesCabeceras").find('img').hide();
 			}
 			
 			function preAccionColegiado(){
@@ -547,20 +541,14 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaDesde.literal"/>
 						</td>
 						<td colspan = "3">
-							<html:text property="fechaDesde" size="10" readonly="true" styleClass="box" />
-							&nbsp;<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde)">
-								<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> 
-							</a>							
+							<siga:Fecha nombreCampo="fechaDesde"  />							
 						</td>
 		
 						<td class="labelText">
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaHasta.literal"/>
 						</td>
 						<td>
-							<html:text property="fechaHasta" size="10" readonly="true" styleClass="box" />
-							&nbsp;<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta)">
-								<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> 
-							</a>
+							<siga:Fecha nombreCampo="fechaHasta"  />
 						</td>					
 					</tr>
 			
