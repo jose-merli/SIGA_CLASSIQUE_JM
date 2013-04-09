@@ -374,12 +374,12 @@
 										<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.observaciones" />
 									</td>
 									<td class="labelText" colspan="3">
-										<html:textarea
-											cols="95" rows="4" property="observaciones"
-											onKeyDown="cuenta(this,400)" onChange="cuenta(this,400)"
-											styleclass="<%=estilo%>" value="<%=observaciones%>"
+										<html:textarea property="observaciones"
+											onKeyDown="cuenta(this,400)" onChange="cuenta(this,400)"												
+											styleclass="<%=estilo%>" 
+											value="<%=observaciones%>"
 											readonly="<%=lectura%>" 
-											style="overflow-y:auto; overflow-x:hidden; resize:none;"/> 
+											style="overflow-y:auto; overflow-x:hidden; resize:none; width:500px; height:70px;"/> 
 									</td>
 								</tr>
 							</table>
