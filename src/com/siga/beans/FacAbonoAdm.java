@@ -596,6 +596,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" AND A.IDPERORIGEN = PC.IDPERORIGEN ");
 				sql.append(" AND A.IDPERSONA = PC.IDPERDESTINO ");
 				sql.append(" AND A.IDPERORIGEN = " + idPersona);
+				sql.append(" AND A.IDINSTITUCION = " + institucion);
 				if (anyosAbono!=null){		 
 					sql.append(" AND SYSDATE - A.FECHA < ");
 					sql.append(anyosAbono);
