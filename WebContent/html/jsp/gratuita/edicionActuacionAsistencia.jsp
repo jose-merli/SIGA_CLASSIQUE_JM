@@ -547,7 +547,7 @@
 					<td colspan="2"> 
 						<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones"
 							property="observaciones" 
-							style="overflow-y:auto;width:350px;height:45px;"
+							style="overflow-y:auto;width:300px;height:45px;"
 							styleClass="boxCombo"></html:textarea>
 					</td>
 				</tr>
