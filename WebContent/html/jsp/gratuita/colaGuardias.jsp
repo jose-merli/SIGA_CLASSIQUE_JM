@@ -30,6 +30,7 @@
 	String literalNColegiado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.nColegiado");
 	String literalFijarUltimoLetrado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.fijarUltimoLetrado");
 	String literalAnadirFila = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.anadirFila");
+	String accionTurno = (String)request.getSession().getAttribute("accionTurno");
 	boolean porGrupos;
 	String tamanoCol;
 	String nombreCol;
@@ -445,10 +446,12 @@
 							</td>
 			
 							<td id="iconos_<%=i%>" align="center">
-								<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
-								<% if (porGrupos) {	%>
-									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
-								<% } %>	
+								<!-- aalg: INC_10634_SIGA -->
+								<%if (!accionTurno.equalsIgnoreCase("Ver")){%>
+									<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
+									<% if (porGrupos) {	%>
+										<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
+									<% }} %>	
 							</td>
 						</tr>		
 						<!-- FIN REGISTRO -->
