@@ -27,7 +27,10 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 
 	//Modo de la pestanha:
-	String modopestanha = request.getAttribute("modoPestanha")==null?"":(String)request.getAttribute("modoPestanha");
+	//mhg - INC_10635_SIGA
+	//String modopestanha = request.getAttribute("modoPestanha")==null?"":(String)request.getAttribute("modoPestanha");
+	String modopestanha = request.getSession().getAttribute("modo")==null ? "" : 
+	    (String)request.getSession().getAttribute("modo");
 %>
 
 <html>
