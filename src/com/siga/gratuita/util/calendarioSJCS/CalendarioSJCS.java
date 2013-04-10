@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.omg.CosTransactions.Status;
@@ -31,6 +30,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -50,7 +50,6 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaBean;
-import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
@@ -1327,6 +1326,9 @@ public class CalendarioSJCS
 		
 		try {
 			
+			// Crea una copia de la cola de guardias de grupos de un calendario
+			this.crearRegistroGrupoGuardiaColegiadoCalendario();
+			
 			// obteniendo bajas temporales por letrado
 			String primerDia = ((ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(0)).get(0);
 			ArrayList<String> ultimoPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(this.arrayPeriodosDiasGuardiaSJCS.size()-1);
@@ -2173,6 +2175,9 @@ public class CalendarioSJCS
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
+		
+		// Actualizamos la copia de la cola de guardias de grupos de un calendario
+		this.actualizarRegistroGrupoGuardiaColegiadoCalendario();
 
 		if (! admSaltosCompensaciones.updateSaltosCompensacionesCumplidos(calendario))
 			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos y compensaciones");
@@ -2200,11 +2205,12 @@ public class CalendarioSJCS
 			throw new SIGAException("Error en borrado de calendario: al actualizar el ultimo en la cola de guardia");
 	} //borrarGeneracionCalendario()
 
-	private void borrarRegistroCalendario(Hashtable calendario, UsrBean usr)
-	throws ClsExceptions, SIGAException
-	{
+	private void borrarRegistroCalendario(Hashtable calendario, UsrBean usr) throws ClsExceptions, SIGAException {
+		
+		//Borra la copia de la cola de guardias de grupos de un calendario
+		this.borrarRegistroGrupoGuardiaColegiadoCalendario();
+		
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
-
 		if(! admCalendarioGuardia.delete(calendario))
 			throw new SIGAException("Error en borrado de registro de calendario");
 	}
@@ -2217,5 +2223,261 @@ public class CalendarioSJCS
 		public int getValor()			{return this.valor;}
 		public void incValor()			{this.valor++;}
 	}
+	
+	/**
+	 * Crea una copia de la cola de guardias de grupos de un calendario
+	 * No devuelve nada, ya que si no produce errores todo debe haber ido bien
+	 * @throws SIGAException
+	 */
+	private void crearRegistroGrupoGuardiaColegiadoCalendario() throws SIGAException {
+		String sql = "INSERT INTO SCS_GRUPOGUARDIACOLEGIADO_HIST ( " +
+				" IDINSTITUCION, " +
+				" IDTURNO, " +
+				" IDGUARDIA, " +
+				" IDCALENDARIOGUARDIAS, " +
+				" IDGRUPOGUARDIACOLEGIADO, " +
+				" ORDEN, " +				
+				" IDGRUPOGUARDIA, " +
+				" NUMEROGRUPO, " +
+				" FECHACREACION, " +
+				" USUCREACION) " +	
+			" (SELECT " + 
+				" IG.IDINSTITUCION, " +
+				" IG.IDTURNO, " +
+				" IG.IDGUARDIA, " +  
+				this.idCalendarioGuardias + " AS IDCALENDARIOGUARDIAS, " +
+				" GGC.IDGRUPOGUARDIACOLEGIADO, " +
+				" GGC.ORDEN, " +
+				" GG.IDGRUPOGUARDIA, " +
+				" GG.NUMEROGRUPO, " +
+				" GGC.FECHAMODIFICACION AS FECHACREACION, " +
+				" GGC.USUMODIFICACION AS USUCREACION " +
+				
+			" FROM SCS_GUARDIASTURNO GT, " +
+				" SCS_INSCRIPCIONGUARDIA IG, " +
+				" SCS_GRUPOGUARDIACOLEGIADO GGC, " +
+				" SCS_GRUPOGUARDIA GG " +
+				
+			" WHERE GT.IDINSTITUCION = " + this.idInstitucion +
+				" AND GT.IDTURNO = " + this.idTurno +
+				" AND GT.IDGUARDIA = " + this.idGuardia +
+				" AND GT.PORGRUPOS = '1' " +
+				" AND GT.IDINSTITUCION = IG.IDINSTITUCION " +
+				" AND GT.IDTURNO = IG.IDTURNO " +
+				" AND GT.IDGUARDIA = IG.IDGUARDIA " +				
+				" AND IG.IDINSTITUCION = GGC.IDINSTITUCION " +
+				" AND IG.IDTURNO = GGC.IDTURNO " +
+				" AND IG.IDGUARDIA = GGC.IDGUARDIA " +
+				" AND IG.IDPERSONA = GGC.IDPERSONA " +
+				" AND IG.FECHASUSCRIPCION = GGC.FECHASUSCRIPCION " +
+				" AND GGC.IDGRUPOGUARDIA = GG.IDGRUPOGUARDIA " +
+				" AND (IG.FECHAVALIDACION IS NOT NULL AND IG.FECHAVALIDACION <= SYSDATE) " + 
+				" AND (IG.FECHABAJA IS NULL OR IG.FECHABAJA > SYSDATE))";				
+		
+		try {
+			Row fila = new Row();
+			fila.insertSQL(sql);
+			
+		} catch (Exception e) {
+			throw new SIGAException("Error al crear la copia de la cola de guardias de grupos de un calendario");
+		}	
+	}
+	
+	/**
+	 * Actualizar los grupos de guardias del colegiado, al recuperar la copia de la cola de guardias de grupos de un calendario 
+	 * No devuelve nada, ya que si no produce errores todo debe haber ido bien
+	 * Inicialmente puede no actualizar ningún registro, porque hay muchos registros que no tienen relacion con SCS_GRUPOGUARDIACOLEGIADO_HIST, ya que no existia la tabla
+	 * @throws SIGAException
+	 */
+	private void actualizarRegistroGrupoGuardiaColegiadoCalendario() throws SIGAException {
+		
+		// Con esta subselect estoy seleccionando una IDINSTITUCION + IDTURNO + IDGUARDIA + IDCALENDARIOGUARDIAS + IDGRUPOGUARDIACOLEGIADO
+		String subSql = " FROM SCS_GRUPOGUARDIACOLEGIADO_HIST AUX " +
+		
+					" WHERE AUX.IDINSTITUCION = SCS_GRUPOGUARDIACOLEGIADO.IDINSTITUCION " +
+						" AND AUX.IDTURNO = SCS_GRUPOGUARDIACOLEGIADO.IDTURNO " +
+						" AND AUX.IDGUARDIA = SCS_GRUPOGUARDIACOLEGIADO.IDGUARDIA " +
+						" AND AUX.IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias +
+						" AND AUX.IDGRUPOGUARDIACOLEGIADO = SCS_GRUPOGUARDIACOLEGIADO.IDGRUPOGUARDIACOLEGIADO ";
+		
+		// Actualizo el orden dentro del grupo del colegiado
+		String sql = "UPDATE SCS_GRUPOGUARDIACOLEGIADO " +
+		
+			" SET ORDEN = (SELECT AUX.ORDEN " + subSql + "), " +
+				" IDGRUPOGUARDIA = (SELECT AUX.IDGRUPOGUARDIA " + subSql + "), " +
+				" FECHAMODIFICACION = (SELECT AUX.FECHACREACION " + subSql + "), " + // Recupero la fecha de modificacion de la insercion de la tabla
+				" USUMODIFICACION = (SELECT AUX.USUCREACION " + subSql + ") " + // Recupero el usuario de modificacion de la insercion de la tabla
+				
+			" WHERE IDINSTITUCION = " + this.idInstitucion + 
+				" AND IDTURNO = " + this.idTurno + 
+				" AND IDGUARDIA = " + this.idGuardia + 
+				" AND EXISTS ( SELECT * " + subSql + " ) ";
+				
+		try {			
+			Row fila = new Row();
+			int numeroRegistrosActualizados = fila.updateSQL(sql);
+			  
+			/*
+			 * ACTUALIZO LOS NUMEROS DE ORDEN DE NUEVOS COLEGIADOS INCORPORADOS DESDE LA GENERACION DEL CALENDARIO, HASTA EL BORRADO DEL CALENDARIO:
+			 * Para cada grupo, los nuevos registros agregados al grupo se reordenaran para que queden al final.
+			 * 
+			 * Descripcion de la consulta a continuacion:
+			 * UPDATE TABLE
+			 * SET ORDEN = (
+			 *  
+			 * 	(SELECT QUE OBTIENE UN CONTADOR PARA CADA COLEGIADO, EMPEZANDO POR UNO PARA CADA GRUPO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO 
+			 *   + SELECT QUE OBTIENE EL CONTADOR MINIMO POR CADA GRUPO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO ) TABLA_DATOS
+			 *   
+			 *  (SELECT QUE OBTIENE EL MAXIMO ORDEN POR CADA GRUPO, DE LOS COLEGIADOS QUE ESTABAN CUANDO SE GENERO EL CALENDARIO) TABLA_MAXIMOS
+			 *  
+			 *  WHERE OBTENGO EL COLEGIADO Y GRUPO QUE NO ESTABA CUANDO SE GENERO EL CALENDARIO
+			 *   Y OBTENGO EL MAXIMO ORDEN POR CADA GRUPO (PUEDE NO HABER MAXIMO, SI NO HAY DATOS EN EL HISTORICO)
+			 * )
+			 * ...
+			 * WHERE
+			 * ...
+			 * AND NOT EXISTS (SELECT QUE OBTIENE TODOS LOS COLEGIADOS Y GRUPOS, QUE ESTABAN CUANDO SE GENERO EL CALENDARIO)	
+			 */
+			
+			sql = " UPDATE SCS_GRUPOGUARDIACOLEGIADO " +  
+				" SET ORDEN = " +  
+					" ( " + // SELECT QUE SUMA EL CONTADOR DEL COLEGIADO (CALCULADO PARA CADA GRUPO), CON EL CONTADOR MINIMO DE SU GRUPO 
+						" SELECT TABLA_DATOS.ORDEN_FINAL + NVL(TABLA_MAXIMOS.ORDEN, 0) " + 
+				        " FROM " +  
+				            " ( " + // SELECT QUE OBTIENE UN CONTADOR PARA CADA COLEGIADO, EMPEZANDO POR UNO PARA CADA GRUPO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO 
+				                " SELECT AUX2.*, " + 
+				                    " AUX3.ORDEN_MINIMO_GRUPO, " + 
+				                    " 1 + AUX2.ORDEN_TOTAL - AUX3.ORDEN_MINIMO_GRUPO AS ORDEN_FINAL " + 
+				                " FROM " +
+				                    " ( " + // SELECT QUE OBTIENE UN CONTADOR POR CADA GRUPO Y COLEGIADO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO 
+				                        " SELECT AUX1.*, " +
+				                            " ROWNUM AS ORDEN_TOTAL " +   
+				                        " FROM " +  
+				                            " ( " +  
+				                                " SELECT GGC_AUX.* " + // SELECT QUE OBTIENE TODOS LOS GRUPOS Y COLEGIADOS ORDENADOS, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO   
+				                                " FROM SCS_GRUPOGUARDIACOLEGIADO GGC_AUX " +  
+				                                " WHERE GGC_AUX.IDINSTITUCION = " + this.idInstitucion + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDINSTITUCION DA ERROR 
+				                                    " AND GGC_AUX.IDTURNO = " + this.idTurno + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDTURNO DA ERROR 
+				                                    " AND GGC_AUX.IDGUARDIA = " + this.idGuardia +  // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDGUARDIA DA ERROR
+				                                    " AND NOT EXISTS " +  
+				                                        " ( " +  // SELECT QUE OBTIENE TODOS LOS COLEGIADOS Y GRUPOS, QUE ESTABAN CUANDO SE GENERO EL CALENDARIO
+				                                            " SELECT GGCH_AUX.* " +  
+				                                            " FROM SCS_GRUPOGUARDIACOLEGIADO_HIST GGCH_AUX " +  
+				                                            " WHERE GGCH_AUX.IDINSTITUCION = GGC_AUX.IDINSTITUCION " +  
+				                                                " AND GGCH_AUX.IDTURNO = GGC_AUX.IDTURNO " +  
+				                                                " AND GGCH_AUX.IDGUARDIA = GGC_AUX.IDGUARDIA " +  
+				                                                " AND GGCH_AUX.IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias +
+				                                                " AND GGCH_AUX.IDGRUPOGUARDIACOLEGIADO = GGC_AUX.IDGRUPOGUARDIACOLEGIADO " +  
+				                                        " ) " +    
+				                                " ORDER BY GGC_AUX.IDGRUPOGUARDIA ASC, " + 
+				                                    " GGC_AUX.ORDEN ASC " +  
+				                            " ) AUX1 " +
+				                    " ) AUX2, " +
+				                    
+				                    " ( " +
+				                        " SELECT AUX2.IDGRUPOGUARDIA, " + // SELECT QUE OBTIENE EL CONTADOR MINIMO POR CADA GRUPO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO 
+				                            " MIN(AUX2.ORDEN_TOTAL) ORDEN_MINIMO_GRUPO " + 
+				                        " FROM " +
+				                            " ( " +
+				                                " SELECT AUX1.*, " + // SELECT QUE OBTIENE UN CONTADOR POR CADA GRUPO Y COLEGIADO, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO 
+				                                    " ROWNUM AS ORDEN_TOTAL " +   
+				                                " FROM " +  
+				                                    " ( " +    
+				                                        " SELECT GGC_AUX.* " + // SELECT QUE OBTIENE TODOS LOS GRUPOS Y COLEGIADOS ORDENADOS, DE LOS COLEGIADOS QUE NO ESTABAN CUANDO SE GENERO EL CALENDARIO  
+				                                        " FROM SCS_GRUPOGUARDIACOLEGIADO GGC_AUX " +  
+				                                        " WHERE GGC_AUX.IDINSTITUCION = " + this.idInstitucion + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDINSTITUCION DA ERROR
+				                                            " AND GGC_AUX.IDTURNO = " + this.idTurno + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDTURNO DA ERROR 
+				                                            " AND GGC_AUX.IDGUARDIA = " + this.idGuardia +  // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDGUARDIA DA ERROR 
+				                                            " AND NOT EXISTS " +  
+				                                                " ( " +  // SELECT QUE OBTIENE TODOS LOS COLEGIADOS Y GRUPOS, QUE ESTABAN CUANDO SE GENERO EL CALENDARIO
+				                                                    " SELECT GGCH_AUX.* " +  
+				                                                    " FROM SCS_GRUPOGUARDIACOLEGIADO_HIST GGCH_AUX " +  
+				                                                    " WHERE GGCH_AUX.IDINSTITUCION = GGC_AUX.IDINSTITUCION " +  
+				                                                        " AND GGCH_AUX.IDTURNO = GGC_AUX.IDTURNO " +  
+				                                                        " AND GGCH_AUX.IDGUARDIA = GGC_AUX.IDGUARDIA " +  
+				                                                        " AND GGCH_AUX.IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias +
+				                                                        " AND GGCH_AUX.IDGRUPOGUARDIACOLEGIADO = GGC_AUX.IDGRUPOGUARDIACOLEGIADO " +  
+				                                                " ) " +  
+				                                    	" ORDER BY GGC_AUX.IDGRUPOGUARDIA ASC, " + 
+				                                        	" GGC_AUX.ORDEN ASC " +  
+				                                	" ) AUX1 " +
+				                            " ) AUX2 " +      
+				                        " GROUP BY AUX2.IDGRUPOGUARDIA " +          
+				                    " ) AUX3 " +
+				
+				                " WHERE AUX2.IDGRUPOGUARDIA = AUX3.IDGRUPOGUARDIA " +                  
+				                " ORDER BY AUX2.IDGRUPOGUARDIA ASC, " + 
+				                    " ORDEN_FINAL ASC " +
+				            " ) TABLA_DATOS, " +
+				              
+				            " ( " + // SELECT QUE OBTIENE EL MAXIMO ORDEN POR CADA GRUPO, DE LOS COLEGIADOS QUE ESTABAN CUANDO SE GENERO EL CALENDARIO
+				                " SELECT MAX(GGC_AUX.ORDEN) AS ORDEN, " + 
+				                    " GGC_AUX.IDGRUPOGUARDIA " +
+				                " FROM SCS_GRUPOGUARDIACOLEGIADO GGC_AUX " +  
+				                " WHERE GGC_AUX.IDINSTITUCION = " + this.idInstitucion + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDINSTITUCION DA ERROR
+				                    " AND GGC_AUX.IDTURNO = " + this.idTurno + // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDTURNO DA ERROR  
+				                    " AND GGC_AUX.IDGUARDIA = " + this.idGuardia +  // SI CAMBIO ESTE DATO POR SCS_GRUPOGUARDIACOLEGIADO.IDGUARDIA DA ERROR
+				                    " AND EXISTS " +  
+				                        " ( " + // SELECT QUE OBTIENE TODOS LOS COLEGIADOS Y GRUPOS, QUE ESTABAN CUANDO SE GENERO EL CALENDARIO
+				                            " SELECT GGCH_AUX.* " +  
+				                            " FROM SCS_GRUPOGUARDIACOLEGIADO_HIST GGCH_AUX " +  
+				                            " WHERE GGCH_AUX.IDINSTITUCION = GGC_AUX.IDINSTITUCION " +  
+				                                " AND GGCH_AUX.IDTURNO = GGC_AUX.IDTURNO " +  
+				                                " AND GGCH_AUX.IDGUARDIA = GGC_AUX.IDGUARDIA " +  
+				                                " AND GGCH_AUX.IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias + 
+				                                " AND GGCH_AUX.IDGRUPOGUARDIACOLEGIADO = GGC_AUX.IDGRUPOGUARDIACOLEGIADO " +  
+				                        " ) " +  
+				                " GROUP BY  GGC_AUX.IDGRUPOGUARDIA " +                      
+				            " ) TABLA_MAXIMOS " +  
+				        
+				        // OBTENGO EL COLEGIADO Y GRUPO QUE NO ESTABA CUANDO SE GENERO EL CALENDARIO
+				        " WHERE TABLA_DATOS.IDGRUPOGUARDIACOLEGIADO = SCS_GRUPOGUARDIACOLEGIADO.IDGRUPOGUARDIACOLEGIADO " +
+				        
+				        	// OBTENGO EL MAXIMO ORDEN POR CADA GRUPO (PUEDE NO HABER MAXIMO, SI NO HAY DATOS EN EL HISTORICO)
+				            " AND  TABLA_DATOS.IDGRUPOGUARDIA = TABLA_MAXIMOS.IDGRUPOGUARDIA(+) " + 
+				    " ), " +      
+				            
+				    " FECHAMODIFICACION = SYSDATE, " +  
+				    
+					" USUMODIFICACION = " + new Integer(usrBean.getUserName()) + 
+				     
+				" WHERE IDINSTITUCION = " + this.idInstitucion +
+				    " AND IDTURNO = " + this.idTurno + 
+				    " AND IDGUARDIA = " + this.idGuardia +  
+				    " AND NOT EXISTS " +  
+				        " ( " +  // SELECT QUE OBTIENE TODOS LOS COLEGIADOS Y GRUPOS, QUE ESTABAN CUANDO SE GENERO EL CALENDARIO
+				            " SELECT GGCH_AUX.* " +  
+				            " FROM SCS_GRUPOGUARDIACOLEGIADO_HIST GGCH_AUX " +  
+				            " WHERE GGCH_AUX.IDINSTITUCION = SCS_GRUPOGUARDIACOLEGIADO.IDINSTITUCION " +  
+				                " AND GGCH_AUX.IDTURNO = SCS_GRUPOGUARDIACOLEGIADO.IDTURNO " +  
+				                " AND GGCH_AUX.IDGUARDIA = SCS_GRUPOGUARDIACOLEGIADO.IDGUARDIA " +  
+				                " AND GGCH_AUX.IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias +  
+				                " AND GGCH_AUX.IDGRUPOGUARDIACOLEGIADO = SCS_GRUPOGUARDIACOLEGIADO.IDGRUPOGUARDIACOLEGIADO " +  
+				        " ) "; 
+			
+			fila = new Row();
+			fila.updateSQL(sql);
+			
+		} catch (Exception e) {
+			throw new SIGAException("Error al actualizar los grupos de guardias del colegiado, al recuperar la copia de la cola de guardias de grupos de un calendario");
+		}	
+	}	
+	
+	/**
+	 * Borra la copia de la cola de guardias de grupos de un calendario
+	 * Inicialmente puede no eliminar ningún registro, porque hay muchos registros que no tienen relacion con SCS_GRUPOGUARDIACOLEGIADO_HIST, ya que no existia la tabla
+	 * @throws SIGAException
+	 */
+	private void borrarRegistroGrupoGuardiaColegiadoCalendario() throws SIGAException {
+		String sql = "DELETE SCS_GRUPOGUARDIACOLEGIADO_HIST WHERE IDCALENDARIOGUARDIAS = " + this.idCalendarioGuardias;
+		
+		try {
+			Row fila = new Row();
+			fila.deleteSQL(sql);
+			
+		} catch (Exception e) {
+			throw new SIGAException("Error al borrar la copia de la cola de guardias de grupos de un calendario");
+		}	
+	}		
 	
 }
