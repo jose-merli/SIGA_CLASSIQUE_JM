@@ -175,6 +175,8 @@
 							<td id="nuevaActuacion_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.volantesExpres.nuevaActuacion"/>" name="" border="0" onclick="accionNuevaActuacion(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />)"></td>
 							<td id="borrarActuacion_<bean:write name='index'/>"><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt='<siga:Idioma key="general.boton.borrar"/>' name="" border="0" onclick="borrarFila('fila_<bean:write name='index'/>')"></td>
 							<td id="nuevoEjg_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/binsertarestado_on.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.volantesExpres.asociarEjg"/>" name="" border="0" onclick="accionCrearEJG(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/></td>
+							<!-- aalg. INC_09396_SIGA -->
+							<td id="numEjg_<bean:write name='index'/>" style="display:none"><input type="text" id="ejgNumEjg_<bean:write name='index'/>" size="6" style="font-size:8.5px" title="<bean:write name="asistencia" property="ejgNumEjg"/>"  value="<bean:write name="asistencia" property="ejgNumEjg"/>" readOnly="readonly" class="box" /></td>
 						</tr>
 					</table>	
 					<script>
@@ -183,6 +185,9 @@
 						if(${asistencia.ejgAnio!=null} && ${asistencia.ejgAnio!='-1'}){
 							var nuevoEjg = 'nuevoEjg_'+<bean:write name='index'/>;
 							document.getElementById(nuevoEjg).style.display="none";
+							// aalg. INC_09396_SIGA
+							var numEjg = 'numEjg_'+<bean:write name='index'/>;
+							document.getElementById(numEjg).style.display="block";
 							document.getElementById("borrarActuacion_<bean:write name='index'/>").style.display="none";
 						}else if(${asistencia.designaNumero!=null} && ${asistencia.designaNumero!='-1'}){ 
 							document.getElementById("borrarActuacion_<bean:write name='index'/>").style.display="none";
@@ -192,6 +197,7 @@
 						document.getElementById("consultar_<bean:write name='index'/>").style.display="none";
 						document.getElementById("nuevoEjg_<bean:write name='index'/>").style.display="none";
 					}
+
 					 
 					
 					
