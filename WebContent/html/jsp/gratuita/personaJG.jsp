@@ -77,6 +77,8 @@
 	boolean scheck = false;
 	String accion = miform.getAccionE();
 	if(usr.isComision()) accion="ver";
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 
 	if (accion.equals("ver")) {
 		estiloBox = "boxConsulta";

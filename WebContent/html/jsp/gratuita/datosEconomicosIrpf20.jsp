@@ -14,13 +14,14 @@
 
 <%@page import="java.util.List"%>
 <%@page import="org.redabogacia.sigaservices.app.vo.ScsDeIrpf20Extends"%>
-
+<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 <%@ page import="java.util.Properties"%>
 
 <% 	
 	HttpSession ses=request.getSession();
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	if (src==null) {
 	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
@@ -46,6 +47,8 @@
 	String[] tdsNew = (String[]) request.getAttribute("TDS_NEW");
 	
 	String accion = (String)request.getSession().getAttribute("accion");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";	
 	
 	boolean editable = false;				
 	String botones = "V";

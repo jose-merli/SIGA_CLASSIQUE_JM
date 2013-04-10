@@ -41,6 +41,8 @@
 	
 	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) modopestanha="ver";
 	
 	ArrayList estadoSel    = new ArrayList();
 	ArrayList juzgadoSel   = new ArrayList();
@@ -726,6 +728,7 @@
 		    document.forms[3].target = 'resultado1';		
 			document.forms[3].modo.value = "";
 			document.forms[3].submit();
+			
        }
 		// Funcion asociada a boton Nuevo 
 		/*function accionNuevo() 

@@ -31,6 +31,8 @@
 	
 	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
 	String accion = (String)ses.getAttribute("accion");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
 	String dato2[] = new String[2];		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";

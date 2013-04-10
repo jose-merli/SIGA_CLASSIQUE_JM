@@ -37,6 +37,8 @@
 
 	// Validamos si es una consulta o no.
 	String modo = (String) request.getAttribute("MODO");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) modo="ver";
 	String NOMBREESTADO = (String) request.getAttribute("NOMBREESTADO");
 	String[] dato = { usr.getLocation() };
 	String idInstitucion = usr.getLocation();

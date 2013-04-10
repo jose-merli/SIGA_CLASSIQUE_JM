@@ -17,7 +17,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
-
+<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
@@ -29,6 +29,8 @@
 	
 	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUPDICT");
 	String accion = (String)ses.getAttribute("accion");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String modo = (String)request.getAttribute("MODO");
 	String dato[] = {(String)usr.getLocation()};
 	String datos[] = new String[2];
@@ -98,7 +100,8 @@
 			{
 				document.location.reload();
 			}
-		</script>
+			
+	</script>
 	<siga:Titulo titulo="pestana.justiciagratuitaejg.dictamen"
 		localizacion="gratuita.busquedaEJG.localizacion" />
 </head>

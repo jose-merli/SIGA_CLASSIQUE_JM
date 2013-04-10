@@ -31,6 +31,9 @@
 	
 	String botones = "C";
 	String modo = (String)request.getAttribute("modo");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) modo="ver";
+	
 	if (!modo.equalsIgnoreCase("ver")) {
 		botones += ",E,B";
 	}

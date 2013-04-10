@@ -16,13 +16,14 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="org.redabogacia.sigaservices.app.vo.ScsDeBienInmuebleExtends"%>
-
+<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 <%@ page import="java.util.Properties"%>
 
 <% 	
 	HttpSession ses=request.getSession();
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	if (src==null) {
 	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
@@ -49,6 +50,8 @@
 	Hashtable hashTipoInmuebles = (Hashtable) request.getAttribute("HASH_TIPOS_INMUEBLES");	
 	
 	String accion = (String)request.getSession().getAttribute("accion");
+	//aalg: INC_10624
+	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	
 	boolean editable = false;				
 	String botones = "V";
