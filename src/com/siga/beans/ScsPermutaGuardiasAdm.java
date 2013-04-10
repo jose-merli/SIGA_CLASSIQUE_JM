@@ -426,8 +426,13 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 
 		try
 		{
-			consulta =
-				"SELECT CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"," +
+			consulta =	
+				"SELECT " +
+				//mhg ini
+				"		FJG."+FcsFacturacionJGBean.C_NOMBRE+"|| ' (' || TO_CHAR(FJG."+FcsFacturacionJGBean.C_FECHADESDE+", 'DD/MM/YYYY') || '-' ||" +
+				"		TO_CHAR(FJG."+FcsFacturacionJGBean.C_FECHAHASTA+", 'DD/MM/YYYY') || ')' NOMBREFACTURACION," +
+				//mhg fin
+				"		CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"," +
 				"       CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDTURNO+"," +
 				"       CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"," +
 				"       CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDPERSONA+"," +
@@ -451,13 +456,18 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			       "CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,  CABECERAGUARDIAS.IDPERSONA, CABECERAGUARDIAS.FECHAINICIO) AS ACT_VALIDADAS"+
 				"  FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" CABECERAGUARDIAS," +
 				"       "+ScsGuardiasTurnoBean.T_NOMBRETABLA+ " GUARDIA," +
-				"       "+ScsTurnoBean.T_NOMBRETABLA +" TURNO" +
+				"       "+ScsTurnoBean.T_NOMBRETABLA +" TURNO," +
+				"       "+FcsFacturacionJGBean.T_NOMBRETABLA +" FJG" +
 				"" +
 				" WHERE GUARDIA."+ScsGuardiasTurnoBean.C_IDINSTITUCION+" = CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
 				"   AND GUARDIA."+ScsGuardiasTurnoBean.C_IDTURNO+" = CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDTURNO +
 				"   AND GUARDIA."+ScsGuardiasTurnoBean.C_IDGUARDIA+" = CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDGUARDIA +
 				"   AND GUARDIA."+ScsGuardiasTurnoBean.C_IDINSTITUCION+" = TURNO."+ScsTurnoBean.C_IDINSTITUCION +
 				"   AND GUARDIA."+ScsGuardiasTurnoBean.C_IDTURNO+" = TURNO."+ScsTurnoBean.C_IDTURNO +
+				//mhg ini
+				"   AND CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+" = FJG."+FcsFacturacionJGBean.C_IDINSTITUCION + "(+)" +
+				"   AND CABECERAGUARDIAS.IDFACTURACION = FJG."+FcsFacturacionJGBean.C_IDFACTURACION + "(+)" +
+				//mhg fin
 				"   AND CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+" = "+idinstitucion +
 				"   AND CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDPERSONA+" = "+idpersona +
 				"" +

@@ -91,6 +91,8 @@ public class ActaComisionAction extends MasterAction{
 					mapDestino = editar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("edicionMasiva")){
 					mapDestino = edicionMasiva(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("volver")){
+					mapDestino = volver(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("updateMasivo")){
 					mapDestino = updateMasivo(mapping, miForm, request, response);
 				} else {
@@ -130,7 +132,21 @@ public class ActaComisionAction extends MasterAction{
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		ActaComisionForm actaForm = (ActaComisionForm)formulario;
 		actaForm.reset();
-		
+		request.getSession().removeAttribute("DATOSFORMULARIO");
+		return "inicio";
+	}
+	
+	/** 
+	 * Funcion que implementa el modo volver.
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */	
+	private String volver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.setAttribute("buscarLista", "1");
 		return "inicio";
 	}
 	
@@ -309,7 +325,7 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actaAdm=new ScsActaComisionAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ActaComisionForm actaForm =(ActaComisionForm)formulario;
-		HashMap<String, String> miHash= new HashMap<String, String>();
+		HashMap miHash= new HashMap();
 		
 		miHash.put(ScsActaComisionBean.C_ANIOACTA, actaForm.getAnioActa());
 		miHash.put(ScsActaComisionBean.C_NUMEROACTA, actaForm.getNumeroActa());

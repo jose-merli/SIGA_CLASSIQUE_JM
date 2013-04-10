@@ -169,7 +169,7 @@
 			<%if ((obj!= null) && (obj.size()>0)) { 
 				int recordNumber=1;
 				String fechaInicio="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", reserva="";
-				String turno="", guardia="", tipodias="", estado="";
+				String turno="", guardia="", tipodias="", estado="", nomFacturacion="";
 				String validado ;
 				String facturado;
 				String numActuacionesValidadas;
@@ -215,6 +215,7 @@
 						UtilidadesHash.getString(hash,"SELECCIONFESTIVOS"), 
 						usr);
 					estado = UtilidadesHash.getString(hash,"ESTADO");
+					nomFacturacion = UtilidadesHash.getString(hash,"NOMBREFACTURACION");
 
 					//Botones
 					FilaExtElement[] elems=new FilaExtElement[4];
@@ -290,8 +291,12 @@
 								case 6: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado6"; break;
 								default: descripcion=""; break;
 							}
-							if (!descripcion.equals("")) {%> 
-								<siga:Idioma key="<%=descripcion%>" /> 
+							if (!descripcion.equals("")) {
+								if(descripcion.equals("gratuita.inicio_PestanaCalendarioGuardias.literal.estado6")) {%>
+									<siga:Idioma key="<%=descripcion%>" /><%= " - " + nomFacturacion %>
+								<% } else{%>
+									<siga:Idioma key="<%=descripcion%>" />
+								<% } %> 
 							<% } %>
 						</td>
 					</siga:FilaConIconos>
