@@ -18,6 +18,28 @@
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 	String 	dato[] = {(String)usr.getLocation()};
+	
+	//mhg - INC_10639_SIGA
+	ArrayList presidenteA = new ArrayList();
+   	ArrayList secretarioA = new ArrayList();
+	HashMap datosFormulario = new HashMap();
+	String anioActa="", numeroActa="", fechaResolucion="", fechaReunion="", idPresidente="", idSecretario="";
+	if (request.getSession().getAttribute("DATOSFORMULARIO")!=null) {
+		datosFormulario = (HashMap)request.getSession().getAttribute("DATOSFORMULARIO");
+		anioActa = datosFormulario.get("ANIOACTA")==null?"":(String)datosFormulario.get("ANIOACTA");
+		numeroActa = datosFormulario.get("NUMEROACTA")==null?"":(String)datosFormulario.get("NUMEROACTA");
+		fechaResolucion = datosFormulario.get("FECHARESOLUCION")==null?"":(String)datosFormulario.get("FECHARESOLUCION");
+		fechaReunion = datosFormulario.get("FECHAREUNION")==null?"":(String)datosFormulario.get("FECHAREUNION");
+		idPresidente = datosFormulario.get("IDPRESIDENTE")==null?"":(String)datosFormulario.get("IDPRESIDENTE");
+		idSecretario = datosFormulario.get("IDSECRETARIO")==null?"":(String)datosFormulario.get("IDSECRETARIO");
+		
+		presidenteA.add(idPresidente);
+		secretarioA.add(idSecretario);
+	}
+	String buscar = "0";
+	if(request.getAttribute("buscarLista")!= null){
+		buscar = (String)request.getAttribute("buscarLista");
+	}
 %>
 <html>
 
@@ -34,7 +56,7 @@
 </head>
 
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado'); <%if (buscar.equals("1")) {%> buscar() <% } %>">
 
 
 	<html:form action="/JGR_ActasComision?noReset=true" method="POST" target="resultado">
@@ -49,26 +71,26 @@
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /></td>
 							<td class="labelText">
-								<html:text name="ActaComisionForm" property="anioActa" size="4" maxlength="4" styleClass="box"  onkeypress="return soloDigitos(event)"></html:text>
+								<html:text name="ActaComisionForm" property="anioActa" size="4" maxlength="4" styleClass="box"  onkeypress="return soloDigitos(event)" value="<%=anioActa%>"></html:text>
 								&nbsp;/&nbsp;
-								<html:text name="ActaComisionForm" property="numeroActa" size="8" maxlength="8" styleClass="boxNumber"></html:text>
+								<html:text name="ActaComisionForm" property="numeroActa" size="8" maxlength="8" styleClass="boxNumber" value="<%=numeroActa%>"></html:text>
 							</td>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
 							<td>
-								<siga:Fecha nombreCampo="fechaResolucion" /> 
+								<siga:Fecha nombreCampo="fechaResolucion" valorInicial="<%=fechaResolucion%>" /> 
 							</td>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" /></td>
 							<td>
-								<siga:Fecha nombreCampo="fechaReunion" /> 
+								<siga:Fecha nombreCampo="fechaReunion" valorInicial="<%=fechaReunion%>" />
 							</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-							<td class="labelText" colspan="8"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=presidenteA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-							<td class="labelText" colspan="8"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=secretarioA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						</table>
 					</siga:ConjCampos>	
