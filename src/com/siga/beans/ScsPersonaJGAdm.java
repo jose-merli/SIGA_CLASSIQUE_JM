@@ -707,7 +707,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			
 		Vector resultado=new Vector();
 		StringBuffer sql = new StringBuffer();
-		
+		//aalg: INC_10642_SIGA. Añadir lpad en los números para que la comparación al hacer los minus sea correcta
 				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
@@ -760,7 +760,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_asistencia a, scs_personajg per ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -769,7 +769,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, to_char(a.numero) as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),"+longitudNumero+",'0') as numero");
 				sql.append("   from scs_asistencia a, scs_personajg per, scs_contrariosdesigna cont ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
