@@ -76,7 +76,7 @@ public class DuplicadosHelper{
 			// A partir de aqui filtros de la persona
 			if(institucion!=null && !institucion.equalsIgnoreCase("")){
 				buscar=true;
-				sqlPersona.append(" and exists (select 1 from cen_colegiado cole where cole.idpersona=per.idpersona and cole.idinstitucion="+institucion+") union " + 
+				sqlPersona.append(" and exists (select 1 from cen_colegiado cole where cole.idpersona=per.idpersona and cole.idinstitucion="+institucion+" union " + 
 												"select 1 from cen_nocolegiado nocole where nocole.idpersona=per.idpersona and nocole.idinstitucion="+institucion+")");
 			}
 			if(nombre!=null && !nombre.equalsIgnoreCase("")){
