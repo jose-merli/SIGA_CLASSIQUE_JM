@@ -1,6 +1,5 @@
 <!-- colaGuardias.jsp -->
 	 
- 
 <!-- CABECERA JSP -->   
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -10,22 +9,16 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="c.tld" prefix="c"%>
-
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 
 <!-- JSP -->
 <%
-	String app = request.getContextPath();
-
 	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
 	String nListad = request.getAttribute("NLETRADOSINSCRITOS") != null ? (String) request.getAttribute("NLETRADOSINSCRITOS") : "";
 
@@ -52,191 +45,180 @@
 	}
 %>	
 
-
-<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
-
 <!-- HEAD -->
 <html>
+
 	<!-- HEAD -->
 	<head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 		
-			
-		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 		
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaGuardia" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		
-	<SCRIPT>
-		function validaTabla(){
-			  //Ajusto tablas de letrados en cola:
-			  if (document.getElementById("tablaLetrados").clientHeight < document.getElementById("tablaLetradosDiv").clientHeight) {
-				  document.getElementById("tituloTablaLetrados").width='100%';
-				  document.getElementById("tablaLetradosCabeceras").width='100%';
-			  } else {
-				  document.getElementById("tituloTablaLetrados").width='96.5%';
-				  document.getElementById("tablaLetradosCabeceras").width='96.5%';
-			  }
-		
-			  //Ajusto tabla de compensaciones:
-			  if (document.getElementById("tablaCompensaciones").clientHeight < document.getElementById("tablaCompensacionesDiv").clientHeight) {
-				  document.getElementById("tituloTablaCompensaciones").width='100%';
-				  document.getElementById("tablaCompensacionesCabeceras").width='100%';
-			  } else {
-				  document.getElementById("tituloTablaCompensaciones").width='96.5%';
-				  document.getElementById("tablaCompensacionesCabeceras").width='96.5%';
-			  }
-			  
-			  //Ajusto tabla de saltos:
-			  if ( document.getElementById("tablaSaltos").clientHeight <  document.getElementById("tablaSaltosDiv").clientHeight) {
-				  document.getElementById("tituloTablaSaltos").width='100%';
-				  document.getElementById("tablaSaltosCabeceras").width='100%';
-			  } else {
-				  document.getElementById("tituloTablaSaltos").width='96.5%';
-				  document.getElementById("tablaSaltosCabeceras").width='96.5%';
-			  }	  		  
-		}
-
-		function refrescarLocal()
-		{	
-			document.location = document.location;
-		}
+		<script type="text/javascript">
+			function validaTabla(){
+				  //Ajusto tablas de letrados en cola:
+				  if (document.getElementById("tablaLetrados").clientHeight < document.getElementById("tablaLetradosDiv").clientHeight) {
+					  document.getElementById("tituloTablaLetrados").width='100%';
+					  document.getElementById("tablaLetradosCabeceras").width='100%';
+				  } else {
+					  document.getElementById("tituloTablaLetrados").width='96.5%';
+					  document.getElementById("tablaLetradosCabeceras").width='96.5%';
+				  }
 			
-		function buscarLetradoEnColaLetrado()
-		{
-			s = document.getElementById("buscarLetrado").value;
-			if (s) {
-				var ele = document.getElementsByName ("numeroColegiadoBusqueda");
-				for (i = 0; i < ele.length; i++) {
-					var a = ele[i].value.split("_");
-					if (a) {
-						var fila = a[0];
-						var nColegiado = a[1];
-//						alert ("Texto: " + s + " Fila: " + fila + " nColegiado: " + nColegiado);
-						if(nColegiado == s) {
-							selectRowTablaLetrados(eval(fila)+1);
-							return;
+				  //Ajusto tabla de compensaciones:
+				  if (document.getElementById("tablaCompensaciones").clientHeight < document.getElementById("tablaCompensacionesDiv").clientHeight) {
+					  document.getElementById("tituloTablaCompensaciones").width='100%';
+					  document.getElementById("tablaCompensacionesCabeceras").width='100%';
+				  } else {
+					  document.getElementById("tituloTablaCompensaciones").width='96.5%';
+					  document.getElementById("tablaCompensacionesCabeceras").width='96.5%';
+				  }
+				  
+				  //Ajusto tabla de saltos:
+				  if ( document.getElementById("tablaSaltos").clientHeight <  document.getElementById("tablaSaltosDiv").clientHeight) {
+					  document.getElementById("tituloTablaSaltos").width='100%';
+					  document.getElementById("tablaSaltosCabeceras").width='100%';
+				  } else {
+					  document.getElementById("tituloTablaSaltos").width='96.5%';
+					  document.getElementById("tablaSaltosCabeceras").width='96.5%';
+				  }	  		  
+			}
+
+			function refrescarLocal(){	
+				document.location = document.location;
+			}
+			
+			function buscarLetradoEnColaLetrado() {
+				s = document.getElementById("buscarLetrado").value;
+				if (s) {
+					var ele = document.getElementsByName ("numeroColegiadoBusqueda");
+					for (i = 0; i < ele.length; i++) {
+						var a = ele[i].value.split("_");
+						if (a) {
+							var fila = a[0];
+							var nColegiado = a[1];
+	//						alert ("Texto: " + s + " Fila: " + fila + " nColegiado: " + nColegiado);
+							if(nColegiado == s) {
+								selectRowTablaLetrados(eval(fila)+1);
+								return;
+							}
 						}
 					}
 				}
+				selectRowTablaLetrados(-1);
 			}
-			selectRowTablaLetrados(-1);
-		}
 		
-		function selectRowTablaLetrados(fila) 
-		{
-		   var tabla;
-		   tabla = document.getElementById('tablaLetrados');
-		   for (var i = 0; i < tabla.rows.length; i++) {
-		     tabla.rows[i].className = 'listaNonEdit';
-		   }
-		   if (fila >= 0 && fila < tabla.rows.length) {
-			   tabla.rows[fila].className = 'listaNonEditSelected';
-			   //tabla.rows[fila].scrollIntoView(false);
-		   }
-		}
-
-		function limpiarTexto(t, limpiar) 
-		{
-			if (limpiar == 1) {
-				t.value= "";
+			function selectRowTablaLetrados(fila) {
+			   var tabla;
+			   tabla = document.getElementById('tablaLetrados');
+			   for (var i = 0; i < tabla.rows.length; i++) {
+			     tabla.rows[i].className = 'listaNonEdit';
+			   }
+			   if (fila >= 0 && fila < tabla.rows.length) {
+				   tabla.rows[fila].className = 'listaNonEditSelected';
+				   //tabla.rows[fila].scrollIntoView(false);
+			   }
 			}
-			else {
-				if (!t.value) {
-					t.value = "<%=literalNColegiado%>";
+
+			function limpiarTexto(t, limpiar) {
+				if (limpiar == 1) {
+					t.value= "";
+				}
+				else {
+					if (!t.value) {
+						t.value = "<%=literalNColegiado%>";
+					}
 				}
 			}
-		}
 
-	 function fijarUltimoLetrado(fila) 
-	 {
-	 	selectRowTablaLetrados(fila);
-
-		var mensaje = "<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado.pregunta"/>";
-		if(!confirm(mensaje)) {						
-			return;
-		}
-	 	
-		var idPersona = document.getElementById('idPersona_' + fila).value;
-		document.forms[0].idPersona.value = idPersona;
-		var fechaSuscripcion = document.getElementById('fechaSuscripcion_' + fila).value;
-		document.forms[0].fechaSuscripcion.value = fechaSuscripcion;
-		var idGrupoGuardiaColegiado = document.getElementById('idGrupoGuardiaColegiado_' + fila).value;
-		document.forms[0].idGrupoGuardiaColegiado.value = idGrupoGuardiaColegiado;
-		
-		document.forms[0].modo.value = "fijarUltimoLetrado";
-		document.forms[0].target = "submitArea";
-		document.forms[0].submit();
-	 }
-
-	 function anadirFilaLetrado(fila) {
-
-		table = document.getElementById("tablaLetrados");
-		
-		if(table.rows.length>0){			
-			numFila = table.rows.length;
-
-			tr = table.insertRow(numFila);
-			if(numFila % 2 == 0){
-				tr.className = "filaTablaPar";
-			}else{
-				tr.className = "filaTablaImPar";
-			}
-			val = numFila + 1;
+			function fijarUltimoLetrado(fila) {
+				selectRowTablaLetrados(fila);
 			
-			td = tr.insertCell();	
-			td.id = "check_"+numFila;
-			td.innerHTML ='<input type="checkbox" id="checkGrupoOrden" value='+val+' onclick="modificaParametro(this)" checked/>';
-			
-			td = tr.insertCell();	
-			td.id = "grupo_"+numFila;			
-			td.innerHTML ='<input type="text" value="" id=grupo_'+val+' size="1">'+
-						  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';
-
-
-			td = tr.insertCell();	
-			td.id = "orden_"+numFila;
-			td.innerHTML ='<input type="text" value="" id=orden_'+val+' size="1" maxlength="4">'+
-						  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
-
-			td = tr.insertCell();	
-			td.id = "colegiado_"+numFila;			
-			numColBusqueda = document.getElementById("numeroColegiadoBusqueda").value;
-			person = document.getElementById("idPersona_"+(fila+1)).value;
-			fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
-			//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
-			td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-
-			td.innerHTML = td.innerHTML +
-						   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
-						   ' <input name="idPersona_'+val+'" type="hidden" class="box" size="10" value="'+person+'" > '+
-						   ' <input name="fechaSuscripcion_'+val+'" type="hidden" class="box" size="20" value="'+fSuscr+'" > '+
-						   ' <input name="idGrupoGuardiaColegiado_'+val+'" type="hidden" class="box" size="10" value="" >';
-
-			td = tr.insertCell();	
-			td.id = "nombre_"+numFila;
-			td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-
-			td = tr.insertCell();	
-			td.id = "falta_"+numFila;
-			td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-
-			td = tr.insertCell();	
-			td.id = "fbaja_"+numFila;
-			td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-
-			td = tr.insertCell();	
-			td.id = "iconos_"+numFila;
-			td.align="center";
-			td.innerHTML = '<img src=/SIGA/html/imagenes/bcambiarusuario.gif name="bcambiarusuario" onClick="fijarUltimoLetrado('+(numFila+1)+')" style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>" >'+
-			   			   '<img src=/SIGA/html/imagenes/icono+.gif          name="banadirlinea"    onClick="anadirFilaLetrado('+numFila+')"  style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>"         >';
-
-		}
-	 }
+				var mensaje = "<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado.pregunta"/>";
+				if(!confirm(mensaje)) {						
+					return;
+				}
+					
+				var idPersona = document.getElementById('idPersona_' + fila).value;
+				document.forms[0].idPersona.value = idPersona;
+				var fechaSuscripcion = document.getElementById('fechaSuscripcion_' + fila).value;
+				document.forms[0].fechaSuscripcion.value = fechaSuscripcion;
+				var idGrupoGuardiaColegiado = document.getElementById('idGrupoGuardiaColegiado_' + fila).value;
+				document.forms[0].idGrupoGuardiaColegiado.value = idGrupoGuardiaColegiado;
 				
-	</script>
-</head>
+				document.forms[0].modo.value = "fijarUltimoLetrado";
+				document.forms[0].target = "submitArea";
+				document.forms[0].submit();
+			}
+
+			function anadirFilaLetrado(fila) {			
+				table = document.getElementById("tablaLetrados");
+				
+				if(table.rows.length>0){			
+					numFila = table.rows.length;
+				
+					tr = table.insertRow(numFila);
+					if(numFila % 2 == 0){
+						tr.className = "filaTablaPar";
+					}else{
+						tr.className = "filaTablaImPar";
+					}
+					val = numFila + 1;
+					
+					td = tr.insertCell();	
+					td.id = "check_"+numFila;
+					td.innerHTML ='<input type="checkbox" id="checkGrupoOrden" value='+val+' onclick="modificaParametro(this)" checked/>';
+					
+					td = tr.insertCell();	
+					td.id = "grupo_"+numFila;			
+					td.innerHTML ='<input type="text" value="" id=grupo_'+val+' size="1">'+
+								  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';			
+				
+					td = tr.insertCell();	
+					td.id = "orden_"+numFila;
+					td.innerHTML ='<input type="text" value="" id=orden_'+val+' size="1" maxlength="4">'+
+								  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
+				
+					td = tr.insertCell();	
+					td.id = "colegiado_"+numFila;			
+					numColBusqueda = document.getElementById("numeroColegiadoBusqueda").value;
+					person = document.getElementById("idPersona_"+(fila+1)).value;
+					fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
+					//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
+					td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+				
+					td.innerHTML = td.innerHTML +
+								   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
+								   ' <input name="idPersona_'+val+'" type="hidden" class="box" size="10" value="'+person+'" > '+
+								   ' <input name="fechaSuscripcion_'+val+'" type="hidden" class="box" size="20" value="'+fSuscr+'" > '+
+								   ' <input name="idGrupoGuardiaColegiado_'+val+'" type="hidden" class="box" size="10" value="" >';
+				
+					td = tr.insertCell();	
+					td.id = "nombre_"+numFila;
+					td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+				
+					td = tr.insertCell();	
+					td.id = "falta_"+numFila;
+					td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+				
+					td = tr.insertCell();	
+					td.id = "fbaja_"+numFila;
+					td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+				
+					td = tr.insertCell();	
+					td.id = "iconos_"+numFila;
+					td.align="center";
+					td.innerHTML = '<img src=/SIGA/html/imagenes/bcambiarusuario.gif name="bcambiarusuario" onClick="fijarUltimoLetrado('+(numFila+1)+')" style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>" >'+
+					   			   '<img src=/SIGA/html/imagenes/icono+.gif          name="banadirlinea"    onClick="anadirFilaLetrado('+numFila+')"  style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>"         >';
+				
+				}
+			}				
+		</script>
+	</head>
 
 <body class="tablaCentralCampos" onload="validaTabla();">
 
@@ -254,586 +236,589 @@
 		<input type="hidden" name="idTurno" value="<%=idTurno%>">
 		<html:hidden property="fechaConsulta"/>
 	</html:form>	
-
 		
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Ultimo letrado ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
-<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="99%" align="center">
-  	<tr style="display:none">
-	  <td width="59%" style="vertical-align: top"></td>
-	  <td width="1%"  style="vertical-align: top"></td>
-	  <td width="40%" style="vertical-align: top"></td>
-	</tr>
-  	<tr>
-	  <td colspan="3" style="vertical-align: top">
-	  	<siga:ConjCampos leyenda="gratuita.turnos.literal.ultimo">
-		  <table border="0" align="center" width="100%">
-			<tr>
-			  <td class="labelText" nowrap>
-			  	<siga:Idioma key="gratuita.turnos.literal.nColegiado"/>: 
-			  </td>
-			  <td class="labelText" >
-				<html:text name="ColaGuardiasForm" property="NColegiado" styleClass="boxConsulta" />
-			  </td>
-			  <td class="labelText" nowrap >
-			  	<siga:Idioma key="gratuita.turnos.literal.nombreSolo"/>: 
-			  </td>
-			  <td class="labelText" >
-				<html:text name="ColaGuardiasForm" property="nombre" styleClass="boxConsulta" />
-			  </td>
-			  <td class="labelText" nowrap>
-			  	<siga:Idioma key="gratuita.turnos.literal.apellidosSolo"/>: 
-			  </td>
-			  <td class="labelText" >
-				<html:text name="ColaGuardiasForm" property="apellido1" styleClass="boxConsulta" size="50"/>
-			  </td>
-			</tr>
-		  </table>
-	 	</siga:ConjCampos>
-	  </td>
-	</tr>
-  	<tr >
-	  <td rowspan="2" style="vertical-align: top; height:450px">
-	  
+	<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
+  		<tr style="display:none">
+	  		<td width="59%" style="vertical-align: top"></td>
+	  		<td width="1%"  style="vertical-align: top"></td>
+	  		<td width="40%" style="vertical-align: top"></td>
+		</tr>
+		
+  		<tr>
+	  		<td colspan="3" style="vertical-align: top">
+	  			<siga:ConjCampos leyenda="gratuita.turnos.literal.ultimo">
+		  			<table border="0" align="center" width="100%">
+						<tr>
+			  				<td class="labelText" nowrap>
+			  					<siga:Idioma key="gratuita.turnos.literal.nColegiado"/>: 
+			  				</td>
+			  				<td class="labelText" >
+								<html:text name="ColaGuardiasForm" property="NColegiado" styleClass="boxConsulta" />
+			  				</td>
+			  				
+			  				<td class="labelText" nowrap >
+			  					<siga:Idioma key="gratuita.turnos.literal.nombreSolo"/>: 
+			  				</td>
+			  				<td class="labelText" >
+								<html:text name="ColaGuardiasForm" property="nombre" styleClass="boxConsulta" />
+			  				</td>
+			  				
+			  				<td class="labelText" nowrap>
+			  					<siga:Idioma key="gratuita.turnos.literal.apellidosSolo"/>: 
+			  				</td>
+			  				<td class="labelText" >
+								<html:text name="ColaGuardiasForm" property="apellido1" styleClass="boxConsulta" size="50"/>
+			  				</td>
+						</tr>
+		  			</table>
+	 			</siga:ConjCampos>
+	  		</td>
+		</tr>
+		
+  		<tr>
+	  		<td rowspan="2" style="vertical-align: top; height:450px">	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Letrados en Cola ---------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->
 
+				<table id="tituloTablaLetrados" border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom: none">
+					<tr class='tableTitle'>
+						<%
+							if (porGrupos) {
+						%>
+							<td class="tdBotones" width='17%'><input type="button"
+								alt="Guardar" id="idButton" onclick="return accionGuardar();"
+								class="button" name="idButton" value="Guardar"></td>
+						<%
+							}
+						%>
+							<td width='22%'>
+								<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>"
+									onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
+								<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" />
+							</td>
+							
+						<%
+							if (porGrupos) {
+						%>
+							<td align='center' width='61%'>
+						<%
+							} else {
+						%>
+							<td align='center' width='78%'>
+						<%
+							}
+						%>						
+							<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos" />:&nbsp;&nbsp;<%=nListad%>
+						</td>
+					</tr>
+				</table>
 
-		<table id="tituloTablaLetrados" border='1' width='100%'
-			cellspacing='0' cellpadding='0' style="border-bottom: none">
-			<tr class='tableTitle'>
-				<%
-					if (porGrupos) {
-				%>
-				<td class="tdBotones" width='17%'><input type="button"
-					alt="Guardar" id="idButton" onclick="return accionGuardar();"
-					class="button" name="idButton" value="Guardar"></td>
-				<%
-					}
-				%>
-				<td width='22%'>
-					<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>"
-						onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
-					<img src="<%=app%>/html/imagenes/bconsultar_off.gif"
-						style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>"/>
-				</td>
-				<%
-					if (porGrupos) {
-				%>
-				<td align='center' width='61%'>
-				<%
-					} else {
-				%>
-				<td align='center' width='78%'>
-				<%
-					}
-				%>
-					<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos" />:&nbsp;&nbsp;<%=nListad%>
-				</td>
-			</tr>
-		</table>
+				<siga:TablaCabecerasFijas
+		   			nombre="tablaLetrados"
+		   			borde="0"
+		   			clase="tableTitle"
+		   			tamanoCol="<%=tamanoCol%>"
+		   			nombreCol="<%=nombreCol%>"
+		   			alto="100%">
 
-		<siga:TablaCabecerasFijas
-		   nombre="tablaLetrados"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="<%=tamanoCol%>"
-		   nombreCol="<%=nombreCol%>"
-		   alto="70%"
-		   ajusteAlto="">
+					<!-- INICIO: ZONA DE REGISTROS -->
+					<!-- Aqui se iteran los diferentes registros de la lista -->		
 
-			<!-- INICIO: ZONA DE REGISTROS -->
-			<!-- Aqui se iteran los diferentes registros de la lista -->
-		
-
-	<%
-				ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
-					if (letradosColaGuardiaList == null || letradosColaGuardiaList.size() == 0) {
-			%>			
-	 		<tr>
+					<%
+						ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
+						if (letradosColaGuardiaList == null || letradosColaGuardiaList.size() == 0) {
+					%>			
 	 		
-			  <td colspan="4" height="225px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
-<%
-	 			} else {
-	 					// recorro el resultado
-	 					String grupoAnt = "";
-	 					String ordenAnt = "";
-	 					String apellido1 = "";
-	 					String apellido2 = "";
-	 					String nombre = "";
-	 					String ncolegiado = "";
-	 					String idPersona = "";
-	 					String fechaSuscripcion = "";
-	 					String numeroColegiadoBusqueda = "";
-	 					String grupo = "";
-	 					String ordenGrupo = "";
-	 					String idGrupoGuardiaColegiado = "";
-	 					int nFila = 0;
-	 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
-	 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
+	 					<tr>	 		
+			  				<td colspan="4" height="225px">
+	   		 					<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			  				</td>
+	 					</tr>	 		
 
-	 						// calculo de campos
-	 						apellido1 = letradoGuardia.getPersona().getApellido1();
-	 						apellido2 = letradoGuardia.getPersona().getApellido2();
-	 						nombre = letradoGuardia.getPersona().getNombre();
-	 						ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
-	 						idPersona = letradoGuardia.getIdPersona().toString();
-	 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
-	 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-	 						grupo = letradoGuardia.getNumeroGrupo() != null ? letradoGuardia.getNumeroGrupo().toString() : "";
-	 						if (porGrupos) {
-	 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
-	 								nFila++;
-	 								grupoAnt = grupo;
-	 							}
-	 						} else {
-	 							nFila++;
-	 						}
-	 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null ? letradoGuardia.getOrdenGrupo().toString() : "";
-	 						idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado() != null ? letradoGuardia.getIdGrupoGuardiaColegiado()
-	 								.toString() : "";
-	 		%>
+					<%
+	 					} else {
+		 					// recorro el resultado
+		 					String grupoAnt = "";
+		 					String ordenAnt = "";
+		 					String apellido1 = "";
+		 					String apellido2 = "";
+		 					String nombre = "";
+		 					String ncolegiado = "";
+		 					String idPersona = "";
+		 					String fechaSuscripcion = "";
+		 					String numeroColegiadoBusqueda = "";
+		 					String grupo = "";
+		 					String ordenGrupo = "";
+		 					String idGrupoGuardiaColegiado = "";
+		 					int nFila = 0;
+		 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
+		 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
 	
-			<!-- REGISTRO  -->
-  			<tr class="<%=((nFila + 1) % 2 == 0 ? "filaTablaPar" : "filaTablaImpar")%>">
-  				<%
-  					if (porGrupos) {
-  				%>
-  					<td>
-  						<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
-  					</td>
-  					
-					<td>
-						<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1"/>
-						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
-					</td>
-					
-					<td>
-						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4"/>
-						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
-					</td>
-				<%
-					}
-				%>	
-				<td id="colegiado_<%=i%>">
-					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" />
-					<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
-					<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
-					<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
-					<%=ncolegiado%>
-				</td>
-				<td id="nombre_<%=i%>">
-					<%=apellido1 + " " + apellido2 + ", " + nombre%>
-				</td>
-				<td id="falta_<%=i%>">
-				<%
-					if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null
-										&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
-				%>
-					<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
-				<%
-					} else {
-				%>
-					&nbsp;
-				<%
-					}
-				%>
-				</td>
-				<td id="fbaja_<%=i%>">
-				<%
-					if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null
-										&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
-				%>
-					<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
-				<%
-					} else {
-				%>
-					&nbsp;
-				<%
-					}
-				%>
-
-				</td>
+		 						// calculo de campos
+		 						apellido1 = letradoGuardia.getPersona().getApellido1();
+		 						apellido2 = letradoGuardia.getPersona().getApellido2();
+		 						nombre = letradoGuardia.getPersona().getNombre();
+		 						ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+		 						idPersona = letradoGuardia.getIdPersona().toString();
+		 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
+		 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+		 						grupo = letradoGuardia.getNumeroGrupo() != null ? letradoGuardia.getNumeroGrupo().toString() : "";
+		 						if (porGrupos) {
+		 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
+		 								nFila++;
+		 								grupoAnt = grupo;
+		 							}
+		 						} else {
+		 							nFila++;
+		 						}
+		 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null ? letradoGuardia.getOrdenGrupo().toString() : "";
+		 						idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado() != null ? letradoGuardia.getIdGrupoGuardiaColegiado().toString() : "";
+	 				%>
+	
+						<!-- REGISTRO  -->
+  						<tr class="<%=((nFila + 1) % 2 == 0 ? "filaTablaPar" : "filaTablaImpar")%>">
+  							<%
+  								if (porGrupos) {
+  							%>
+	  							<td>
+	  								<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
+	  							</td>
+	  					
+								<td>
+									<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1"/>
+									<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
+								</td>
+						
+								<td>
+									<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4"/>
+									<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
+								</td>
+							<%
+								}
+							%>
+								
+							<td id="colegiado_<%=i%>">
+								<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" />
+								<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
+								<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
+								<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
+								<%=ncolegiado%>
+							</td>
+							
+							<td id="nombre_<%=i%>">
+								<%=apellido1 + " " + apellido2 + ", " + nombre%>
+							</td>
+							
+							<td id="falta_<%=i%>">
+								<%
+									if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null
+														&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
+								%>
+									<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
+								<%
+									} else {
+								%>
+									&nbsp;
+								<%
+									}
+								%>
+							</td>
+							
+							<td id="fbaja_<%=i%>">
+								<%
+									if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null
+														&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
+								%>
+									<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
+								<%
+									} else {
+								%>
+									&nbsp;
+								<%
+									}
+								%>
+							</td>
 			
-				<td id="iconos_<%=i%>" align="center">
-					<img src="<%=app%>/html/imagenes/bcambiarusuario.gif" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
-					<% if (porGrupos) {	%>
-						<img src="<%=app%>/html/imagenes/icono+.gif"  id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
-					<% } %>	
-				</td>
-			</tr>		
-			<!-- FIN REGISTRO -->
-<%
-	} // del for
-%>			
-			<!-- FIN: ZONA DE REGISTROS -->
-<%
-	} // del if
-%>			
-
-		</siga:TablaCabecerasFijas>
-
-
+							<td id="iconos_<%=i%>" align="center">
+								<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
+								<% if (porGrupos) {	%>
+									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
+								<% } %>	
+							</td>
+						</tr>		
+						<!-- FIN REGISTRO -->
+						<!-- FIN: ZONA DE REGISTROS -->
+					<%		
+							} // del for			
+						} // del if
+					%>			
+				</siga:TablaCabecerasFijas>
 	  
 <!-------------------------------------------------------------------------------------------------->	
-	  </td>
+	  		</td>
 
-	  <td rowspan="2"><!--margen--></td>
-	  <td style="vertical-align: top; height:220px">
-	  
+	  		<td rowspan="2"><!--margen--></td>
+	  		
+	  		<td style="vertical-align: top; height:220px">	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Compensaciones ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
-		<table id="tituloTablaCompensaciones" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
-		  <tr class = 'tableTitle'>
-			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
-		  </tr>
-		</table> 
-		
-		 
-		<% if (porGrupos) {	%>
-		 <siga:TablaCabecerasFijas
-		    nombre="tablaCompensaciones"
-		    borde="1"
-		    clase="tableTitle"
-	 		tamanoCol="10,80,10"
-	     	nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
- 		    alto="170"
-		    ajusteAlto="">
+				<table id="tituloTablaCompensaciones" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		  			<tr class = 'tableTitle'>
+						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
+		  			</tr>
+				</table> 
+				 
+				<% if (porGrupos) {	%>
+		 			<siga:TablaCabecerasFijas
+		    			nombre="tablaCompensaciones"
+		    			borde="1"
+		    			clase="tableTitle"
+	 					tamanoCol="10,80,10"
+	     				nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
+ 		    			alto="170"
+		    			ajusteAlto="">
 
-			<!-- INICIO: ZONA DE REGISTROS -->
-			<!-- Aqui se iteran los diferentes registros de la lista -->
+						<!-- INICIO: ZONA DE REGISTROS -->
+						<!-- Aqui se iteran los diferentes registros de la lista -->
 			
-			<%
-				Vector resultado = (Vector) request.getAttribute("vCompensaciones");
-					if (resultado == null || resultado.size() == 0) {
-			%>			
-	 		<tr>
-			  <td colspan="4" height="75px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
-			<%
-	 			} else {
-	 					// recorro el resultado
-	 					for (int i = 0; i < resultado.size(); i++) {
-	 							String  nombre="", ncolegiado="", numero="";
-	 							Hashtable registro = (Hashtable) resultado.get(i);
-								if (registro != null){
-									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
-		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
-		 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
-								}
-
-	 		%>
-			<!-- REGISTRO  -->
-  			<tr class="listaNonEdit">
-				<td align="center">
-					<%=ncolegiado%>
-				</td>
-				<td>
-					<%=nombre%>
-				</td>
-				<td align="center">
-					<%=numero%>
-				</td>
-			</tr>		
-			<!-- FIN REGISTRO -->
-<%
-	} // del for
-%>			
-			<!-- FIN: ZONA DE REGISTROS -->
-<%
-	} // del if
-%>			
-
-		</siga:TablaCabecerasFijas>
+						<%
+							Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+							if (resultado == null || resultado.size() == 0) {
+						%>			
+	 						<tr>
+			  					<td colspan="4" height="75px">
+	   		 						<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			  					</td>
+	 						</tr>	 		
+						<%
+	 						} else {
+	 							// recorro el resultado
+	 							for (int i = 0; i < resultado.size(); i++) {
+	 								String  nombre="", ncolegiado="", numero="";
+	 								Hashtable registro = (Hashtable) resultado.get(i);
+									if (registro != null){
+										nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+		 								ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+		 								numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+									}
+	 					%>
+							<!-- REGISTRO  -->
+  							<tr class="listaNonEdit">
+								<td align="center">
+									<%=ncolegiado%>
+								</td>
+								<td>
+									<%=nombre%>
+								</td>
+								<td align="center">
+									<%=numero%>
+								</td>
+							</tr>		
+							<!-- FIN REGISTRO -->
+							<!-- FIN: ZONA DE REGISTROS -->
+						<%
+								} // del for
+							} // del if
+						%>			
+					</siga:TablaCabecerasFijas>
 		
-	<% } else { %>			
-		
-		<siga:TablaCabecerasFijas
-		    nombre="tablaCompensaciones"
-		    borde="1"
-		    clase="tableTitle"
-			tamanoCol="22,50,28"			
-			nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
-		    alto="170"
-		    ajusteAlto="">
+				<% } else { %>					
+					<siga:TablaCabecerasFijas
+		    			nombre="tablaCompensaciones"
+		    			borde="1"
+		    			clase="tableTitle"
+						tamanoCol="22,50,28"			
+						nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
+		    			alto="170"
+		    			ajusteAlto="">
 
-			<!-- INICIO: ZONA DE REGISTROS -->
-			<!-- Aqui se iteran los diferentes registros de la lista -->
+						<!-- INICIO: ZONA DE REGISTROS -->
+						<!-- Aqui se iteran los diferentes registros de la lista -->
 			
-			<%
-				Vector resultado = (Vector) request.getAttribute("vCompensaciones");
-					if (resultado == null || resultado.size() == 0) {
-			%>			
-	 		<tr>
-			  <td colspan="4" height="75px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
-			<%
-	 			} else {
-	 					// recorro el resultado
-	 					for (int i = 0; i < resultado.size(); i++) {
-	 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+						<%
+							Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+							if (resultado == null || resultado.size() == 0) {
+						%>			
+	 						<tr>
+			  					<td colspan="4" height="75px">
+	   		 						<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			  					</td>
+	 						</tr>
+	 							 		
+						<%
+	 						} else {
+	 							// recorro el resultado
+	 							for (int i = 0; i < resultado.size(); i++) {
+	 								String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
  							
-		 						Row registro = (Row) resultado.elementAt(i);
-		 						// calculo de campos
-		 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-		 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-		 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-		 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-		 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-	 		%>
-			<!-- REGISTRO  -->
-  			<tr class="listaNonEdit">
-				<td>
-					<%=ncolegiado%>
-				</td>
-				<td>
-					<%=nombre + " " + apellido1 + " " + apellido2%>
-				</td>
-				<td>
-					<%=numero%>
-				</td>
-			</tr>		
-			<!-- FIN REGISTRO -->
-		<%
-			} // del for
-		%>			
-					<!-- FIN: ZONA DE REGISTROS -->
-		<%
-			} // del if
-		%>			
-
-		</siga:TablaCabecerasFijas>
-	<% } %>  
+		 							Row registro = (Row) resultado.elementAt(i);
+		 							// calculo de campos
+		 							apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+		 							apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+		 							nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+		 							numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+	 					%>
+							<!-- REGISTRO  -->
+  							<tr class="listaNonEdit">
+								<td>
+									<%=ncolegiado%>
+								</td>
+								<td>
+									<%=nombre + " " + apellido1 + " " + apellido2%>
+								</td>
+								<td>
+									<%=numero%>
+								</td>
+							</tr>		
+							<!-- FIN REGISTRO -->
+							<!-- FIN: ZONA DE REGISTROS -->
+						<%
+								} // del for
+							} // del if
+						%>			
+					</siga:TablaCabecerasFijas>
+				<% } %>  
 <!-------------------------------------------------------------------------------------------------->	
-	  </td>
-	</tr>
-  	<tr>
-	  <td style="vertical-align: top; height:220px">
-	  
+	  		</td>
+		</tr>
+		
+  		<tr>
+	  		<td style="vertical-align: top; height:220px">	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Saltos -------------------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-		<table id="tituloTablaSaltos" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
-		  <tr class = 'tableTitle'>
-			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
-		  </tr>
-		</table>
-		
-		
-		<% if (porGrupos) {	%>		
-		<siga:TablaCabecerasFijas
-		   nombre="tablaSaltos"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="10,80,10"
-	       nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
-		   alto="170"
-		   ajusteAlto="">
-
-			<!-- INICIO: ZONA DE REGISTROS -->
-			<!-- Aqui se iteran los diferentes registros de la lista -->
+				<table id="tituloTablaSaltos" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+			  		<tr class = 'tableTitle'>
+						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
+			  		</tr>
+				</table>		
 			
-			<%
-				Vector resultado = (Vector) request.getAttribute("vSaltos");
-					if (resultado == null || resultado.size() == 0) {
-			%>			
-	 		<tr>
-			  <td colspan="4" height="75px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
-			<%
-	 			} else {
-	 					// recorro el resultado
-	 					for (int i = 0; i < resultado.size(); i++) {
-	 							String  nombre="", ncolegiado="", numero="";
-	 							Hashtable registro = (Hashtable) resultado.get(i);
-								if (registro != null){
-									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
-		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
-		 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
-								}
-
-	 		%>
-			<!-- REGISTRO  -->
-  			<tr class="listaNonEdit">
-				<td align="center">
-					<%=ncolegiado%>
-				</td>
-				<td >
-					<%=nombre%>
-				</td>
-				<td align="center">
-					<%=numero%>
-				</td>
-			</tr>		
-			<!-- FIN REGISTRO -->
-<%
-	} // del for
-%>			
-			<!-- FIN: ZONA DE REGISTROS -->
-<%
-	} // del if
-%>			
-
-		</siga:TablaCabecerasFijas>
-		
-	<%	} else { %>			
-		<siga:TablaCabecerasFijas
-		   nombre="tablaSaltos"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="22,50,28"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
-		   alto="170"
-		   ajusteAlto="">
-
-			<!-- INICIO: ZONA DE REGISTROS -->
-			<!-- Aqui se iteran los diferentes registros de la lista -->
-			
-<%
-				Vector resultado = (Vector) request.getAttribute("vSaltos");
-					if (resultado == null || resultado.size() == 0) {
-			%>			
-	 		<tr>
-			  <td colspan="4" height="75px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
-<%
-	 			} else {
-	 					// recorro el resultado
-	 					for (int i = 0; i < resultado.size(); i++) {
-	 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
-	 							
-		 						Row registro = (Row) resultado.elementAt(i);
-		 						// calculo de campos
-		 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-		 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-		 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-		 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-		 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-	 		%>
-			<!-- REGISTRO  -->
-  			<tr class="listaNonEdit">
-				<td>
-					<%=ncolegiado%>
-				</td>
-				<td>
-					<%=nombre + " " + apellido1 + " " + apellido2%>
-				</td>
-				<td>
-					<%=numero%>
-				</td>
-			</tr>		
-			<!-- FIN REGISTRO -->
-<%
-	} // del for
-%>			
-			<!-- FIN: ZONA DE REGISTROS -->
-<%
-	} // del if
-%>			
-
-		</siga:TablaCabecerasFijas>
-		
-<% } %>
-
-<!-------------------------------------------------------------------------------------------------->	
-	  </td>
-  	</tr>
-  </table>
-  
-  <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-  <script>
-  	function habilitarCambiarUsuario(valor){
-  		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
-  		if(valor)
-  		   	jQuery("#bcambiarusuario").attr("disabled","disabled");
-  		else
-			jQuery("#bcambiarusuario").removeAttr("disabled");
-
-	}
-	habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
-
-	function modificaParametro(o){
-		if (o.checked) {
-			jQuery("#grupo_" + o.value).removeAttr("disabled");
-			jQuery("#orden_" + o.value).removeAttr("disabled");			
-		}
-		else {
-			var mensaje = "<siga:Idioma key="administracion.parametrosGenerales.alert.restaurarValor"/>";
-			if(confirm(mensaje)) {						
-				valorGrupo.value = document.getElementById("grupoOriginal_" + o.value).value;
-				jQuery("#grupoOriginal_" + o.value).attr("disabled","disabled");
-				valorOrden.value = document.getElementById("ordenOriginal_" + o.value).value;
-				jQuery("#ordenOriginal_" + o.value).attr("disabled","disabled");
-				
-			}else{
-				o.checked = true;
-			}
-		}
-	}
+				<% if (porGrupos) {	%>		
+					<siga:TablaCabecerasFijas
+			   			nombre="tablaSaltos"
+			   			borde="1"
+			   			clase="tableTitle"
+			   			tamanoCol="10,80,10"
+		       			nombreCol="Gr,gratuita.turnos.literal.nombreSolo,Nº"
+			   			alto="170"
+		   				ajusteAlto="">
 	
-	function accionGuardar(){
-		var datos = "";
-		var ele = document.getElementsByName("checkGrupoOrden");
-		for (i = 0; i < ele.length; i++) {
-			if (ele[i].checked) {
-					
-					if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
-					   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
-					   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
-						 document.getElementById("orden_" + ele[i].value).value.length<1) ){						 
-							alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
-							 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
-								   "<siga:Idioma key="general.y"/> " + 
-							 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
-							return;
+						<!-- INICIO: ZONA DE REGISTROS -->
+						<!-- Aqui se iteran los diferentes registros de la lista -->
+				
+						<%
+							Vector resultado = (Vector) request.getAttribute("vSaltos");
+							if (resultado == null || resultado.size() == 0) {
+						%>			
+		 					<tr>
+				  				<td colspan="4" height="75px">
+		   		 					<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+				  				</td>
+		 					</tr>	 		
+				
+						<%
+		 					} else {
+		 						// recorro el resultado
+		 						for (int i = 0; i < resultado.size(); i++) {
+		 							String  nombre="", ncolegiado="", numero="";
+		 							Hashtable registro = (Hashtable) resultado.get(i);
+									if (registro != null){
+										nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+			 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+			 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+									}
+		 				%>
+		 				
+							<!-- REGISTRO  -->
+	  						<tr class="listaNonEdit">
+								<td align="center">
+									<%=ncolegiado%>
+								</td>
+								<td >
+									<%=nombre%>
+								</td>
+								<td align="center">
+									<%=numero%>
+								</td>
+							</tr>		
+							<!-- FIN REGISTRO -->
+							<!-- FIN: ZONA DE REGISTROS -->
+						<%
+								} // del for
+							} // del if
+						%>			
+					</siga:TablaCabecerasFijas>
+			
+				<%	} else { %>			
+					<siga:TablaCabecerasFijas
+					   nombre="tablaSaltos"
+					   borde="1"
+					   clase="tableTitle"
+					   tamanoCol="22,50,28"
+					   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
+					   alto="170"
+					   ajusteAlto="">
+	
+						<!-- INICIO: ZONA DE REGISTROS -->
+						<!-- Aqui se iteran los diferentes registros de la lista -->
+				
+						<%
+							Vector resultado = (Vector) request.getAttribute("vSaltos");
+							if (resultado == null || resultado.size() == 0) {
+						%>			
+		 					<tr>
+				  				<td colspan="4" height="75px">
+		   		 					<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+				  				</td>
+		 					</tr>
+		 						 		
+						<%
+		 					} else {
+		 						// recorro el resultado
+		 						for (int i = 0; i < resultado.size(); i++) {
+		 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+		 							
+			 						Row registro = (Row) resultado.elementAt(i);
+			 						// calculo de campos
+			 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+			 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+			 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+			 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+			 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+		 				%>
+		 				
+							<!-- REGISTRO  -->
+				  			<tr class="listaNonEdit">
+								<td>
+									<%=ncolegiado%>
+								</td>
+								<td>
+									<%=nombre + " " + apellido1 + " " + apellido2%>
+								</td>
+								<td>
+									<%=numero%>
+								</td>
+							</tr>		
+							<!-- FIN REGISTRO -->
+							<!-- FIN: ZONA DE REGISTROS -->
+						<%
+								} // del for
+							} // del if
+						%>			
+					</siga:TablaCabecerasFijas>		
+				<% } %>
+<!-------------------------------------------------------------------------------------------------->	
+  			</td>
+		</tr>
+	</table>
+  
+  	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+  
+  	<script>
+	  	function habilitarCambiarUsuario(valor) {
+	  		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
+	  		if(valor)
+	  		   	jQuery("#bcambiarusuario").attr("disabled","disabled");
+	  		else
+				jQuery("#bcambiarusuario").removeAttr("disabled");
+	
+		}
+	  	
+		habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
 
-					}else{
-						
-						if(document.getElementById("orden_" + ele[i].value).value.length>=1 && 
-						   document.getElementById("orden_" + ele[i].value).value<=0){
-							alert ("El orden debe ser un número comprendido entre 1 y 9999");
-							return;					
-						}
-					}
+		function modificaParametro(o) {
+			var valorGrupo = jQuery("#grupo_" + o.value);
+			var valorOrden = jQuery("#orden_" + o.value);
+			
+			if (o.checked) {
+				valorGrupo.removeAttr("disabled");
+				valorOrden.removeAttr("disabled");		
+				
+			} else {
+				var mensaje = "<siga:Idioma key="administracion.parametrosGenerales.alert.restaurarValor"/>";
+				if(confirm(mensaje)) {						
+					valorGrupo.value = document.getElementById("grupoOriginal_" + o.value).value;
+					jQuery("#grupoOriginal_" + o.value).attr("disabled","disabled");
+					valorOrden.value = document.getElementById("ordenOriginal_" + o.value).value;
+					jQuery("#ordenOriginal_" + o.value).attr("disabled","disabled");
 					
-					if (datos.length > 0) datos = datos + "#;;#";
-					datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
-						            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
-						            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
-							        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
-							        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
-
+				} else {
+					o.checked = true;
+				}
 			}
 		}
-		
-		if (datos.length < 1) {
-			alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
-			return;
-		}
-		document.forms[0].datosModificados.value = datos;
-		document.forms[0].modo.value = "modificar";
-		document.forms[0].target = "submitArea";
-		document.forms[0].submit();
-	}	
-  </script>
-					
-  
+	
+		function modificaParametro(o) {
+			valorGrupo = document.getElementById("grupo_" + o.value);
+			valorOrden = document.getElementById("orden_" + o.value);
+			if (o.checked) {
+				valorGrupo.disabled = false;
+				valorOrden.disabled=false;
+			}
+			else {
+				var mensaje = "<siga:Idioma key="administracion.parametrosGenerales.alert.restaurarValor"/>";
+				if(confirm(mensaje)) {						
+					valorGrupo.value = document.getElementById("grupoOriginal_" + o.value).value;
+					valorGrupo.disabled = true;
+					valorOrden.value = document.getElementById("ordenOriginal_" + o.value).value;
+					valorOrden.disabled = true;
+				}else{
+					o.checked = true;
+				}
+			}
+		}	
+	
+		function accionGuardar() {
+			var datos = "";
+			var ele = document.getElementsByName("checkGrupoOrden");
+			for (i = 0; i < ele.length; i++) {
+				if (ele[i].checked) {						
+						if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
+						   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
+						   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
+							 document.getElementById("orden_" + ele[i].value).value.length<1) ){						 
+								alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
+								 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
+									   "<siga:Idioma key="general.y"/> " + 
+								 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
+								return;
+	
+						}else{
+							
+							if(document.getElementById("orden_" + ele[i].value).value.length>=1 && 
+							   document.getElementById("orden_" + ele[i].value).value<=0){
+								alert ("El orden debe ser un número comprendido entre 1 y 9999");
+								return;					
+							}
+						}
+						
+						if (datos.length > 0) datos = datos + "#;;#";
+						datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
+							            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
+							            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
+								        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
+								        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
+				}
+			}
+			
+			if (datos.length < 1) {
+				alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
+				return;
+			}
+			document.forms[0].datosModificados.value = datos;
+			document.forms[0].modo.value = "modificar";
+			document.forms[0].target = "submitArea";
+			document.forms[0].submit();
+		}	
+  	</script>
 </body>
 </html>
