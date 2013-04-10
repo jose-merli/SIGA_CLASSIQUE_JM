@@ -55,11 +55,23 @@
 			document.getElementById('idCosteFijoActuacion').value = document.getElementById('auxIdCosteFijoActuacion').value ;
 			document.getElementById('auxIdCosteFijoActuacion').value = '';
 			if(document.ActuacionAsistenciaForm.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
+				if (jQuery("#idCosteFijoActuacion").length <= 0){
+					jQuery("#tiposCosteFijoActuaciones").after('<input type="hidden" value="" id="idCosteFijoActuacion"/>');
+				}
+				if (jQuery("#tiposCosteFijoActuaciones_txt").lenght <= 0){					
+					jQuery("#tiposCosteFijoActuaciones").after('<input type="text" id="tiposCosteFijoActuaciones_txt" readonly class="boxConsulta" value="" style="width:680px;" />');
+					jQuery("#tiposCosteFijoActuaciones").hide();
+				}
+				if (jQuery("#tiposCosteFijoActuaciones").val() != undefined && jQuery("#tiposCosteFijoActuaciones").val() != "-1"){
+					jQuery("#tiposCosteFijoActuaciones_txt").val(jQuery("#tiposCosteFijoActuaciones").find("option[value="+jQuery("#tiposCosteFijoActuaciones").val()+"]").text());
+				}
+				jQuery("#idCosteFijoActuacion").val(jQuery("#tiposCosteFijoActuaciones").val());
 				jQuery("#idCosteFijoActuacion").attr("disabled","disabled");
 			} else {
 				jQuery("#idCosteFijoActuacion").removeAttr("disabled");
 
 			}
+			/*
 			if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
 				tdTiposCosteFijoAct = document.getElementById('tdSelectTiposCosteFijo');
 				index=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.selectedIndex;
@@ -71,7 +83,8 @@
 					descripcionCosteFijo ="";
 				}
 				tdTiposCosteFijoAct.innerHTML = '<input type="hidden" value="'+idCosteFijoActuacion+'" id="idCosteFijoActuacion"/><input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:600px;" />';
-			}	
+			}
+			*/
 		}	
 		
 		function obtenerJuzgado() { 
@@ -546,7 +559,7 @@
 					</td>
 					<td colspan="2"> 
 						<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones"
-							property="observaciones" 
+							property="observaciones"
 							style="overflow-y:auto;width:300px;height:45px;"
 							styleClass="boxCombo"></html:textarea>
 					</td>
@@ -671,14 +684,14 @@
 		<siga:ConjBotonesAccion botones="${botones}" modal="P" />
 	</html:form>
 	
-	<c:if test="${ActuacionAsistenciaForm.modo != 'ver'}">
-		<ajax:select
-				baseUrl="/SIGA${path}.do?modo=getAjaxTipoCosteFijoActuacion"
-				source="tiposActuacion" target="tiposCosteFijoActuaciones"
-				parameters="idTipoActuacion={tiposActuacion},idTipoAsistencia={idTipoAsistencia},idInstitucion={idInstitucion}"
-				preFunction="preAccionTipoActuacion"
-				postFunction="postAccionTipoActuacion" />
-	</c:if>
+	
+	<ajax:select
+			baseUrl="/SIGA${path}.do?modo=getAjaxTipoCosteFijoActuacion"
+			source="tiposActuacion" target="tiposCosteFijoActuaciones"
+			parameters="idTipoActuacion={tiposActuacion},idTipoAsistencia={idTipoAsistencia},idInstitucion={idInstitucion}"
+			preFunction="preAccionTipoActuacion"
+			postFunction="postAccionTipoActuacion" />
+	
 	
 	<html:form action="/JGR_MantenimientoJuzgados.do" method="POST"
 		target="submitArea">
@@ -701,10 +714,7 @@
 		
 		
 		//Para que se rellene el combo de costes
-		if( document.getElementsByName("ActuacionAsistenciaForm")[0].modo.value != "ver" ) {
-		// if(document.ActuacionAsistenciaForm.modo.value=='ver' && document.ActuacionAsistenciaFormEdicion.validada.value != "1"){	
-			document.getElementById("tiposActuacion").onchange();
-		}
+		document.getElementById("tiposActuacion").onchange();
 		document.getElementById("checkDiaDespues").checked = document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S';
 		document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
 		if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
@@ -737,9 +747,12 @@
 						jQuery("#calendario_fechaJustificacion").hide();
 					}
 					jQuery("#checkAnulacion").removeAttr("disabled");
-				} else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
+				}
+				/*mhg - INC_09789_SIGA
+				else if(document.ActuacionAsistenciaFormEdicion.validada.value=="1") {
 					habilitarCampos(false);						
-				}				
+				}
+				*/
 			} else {
 				if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1" ||document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 					habilitarCampos(false);
@@ -790,15 +803,14 @@
 			tdTiposActuacion.innerHTML = tdTiposActuacion.innerHTML + inputStr;
 			
 			var tdSelectTiposCosteFijo = document.getElementById('tdSelectTiposCosteFijo');
-			index = document.getElementById("tiposCosteFijoActuaciones").selectedIndex;
 			var descripcionCosteFijo;
-			if(index && index != -1){
-				descripcionCosteFijo = document.getElementById("tiposCosteFijoActuaciones").options[index].text;
+			if(jQuery("#tiposCosteFijoActuaciones").find("option:selected").length > 0){
+				descripcionCosteFijo = jQuery("#tiposCosteFijoActuaciones").find("option:selected").text();
 			} else {
 				descripcionCosteFijo ="";
 			}
 			document.getElementById("tiposCosteFijoActuaciones").style.display="none";
-			inputStr = '<input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:680px;" />'
+			inputStr = '<input type="text" id="tiposCosteFijoActuaciones_txt" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:680px;" />'
 			tdSelectTiposCosteFijo.innerHTML = tdSelectTiposCosteFijo.innerHTML + inputStr;
 	
 			var tdSelectComisaria = document.getElementById('tdSelectComisaria');
