@@ -13,6 +13,16 @@
 
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%
+boolean esFichaColegial = false;
+
+String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
+if ((sEsFichaColegial != null)
+		&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true"))  )) {
+	esFichaColegial = true;
+}
+
+%>
 
 <html>
 
@@ -26,7 +36,7 @@
 	src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>"></script>
 <script src="<html:rewrite page="/html/js/SIGA.js"/>"
 	type="text/javascript"></script>
-
+	
 </head>
 
 <body onload="ajustarCabeceraTabla();ponerTitulo()">
@@ -248,9 +258,13 @@ function ponerTitulo(){
 	var siga ="SIGA";
 	var tit ="<siga:Idioma key="gratuita.listadoActuacionesAsistencia.literal.titulo"/>";
 	setTitulo(siga, tit);
-	var loc ="<siga:Idioma key="censo.gratuita.asistencias.actuaciones.literal.localizacion"/>";
+	var esFichaColegial = document.getElementById("fichaColegial").value;
+	var loc = "";
+	if (esFichaColegial == "1")
+		loc ="<siga:Idioma key="censo.gratuita.asistencias.actuaciones.literal.localizacion"/>";
+	else
+		loc = "<siga:Idioma key="gratuita.asistencias.actuaciones.localizacion"/>";
 	setLocalizacion(loc);
-	
 }
 
 function accionNuevo()	{
