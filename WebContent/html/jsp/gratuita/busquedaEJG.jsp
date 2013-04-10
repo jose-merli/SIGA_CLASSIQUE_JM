@@ -245,6 +245,30 @@
 		 <% if (busquedaRealizada.equals("1")) {%>
 		      buscarPaginador();
 		 <%}%>
+			//aalg. INC_10622_SIGA. Que aparezca seleccionado todo lo que estaba seleccionado antes de volver
+			//Solicitante
+		 	var visibleSolicitante = false;
+			jQuery("#gratuitabusquedaEJGliteralsolicitante").find('td input').each(function () {
+				if (jQuery(this).val() != "")
+					visibleSolicitante = true;
+			});	 	
+		 	
+		 	if (visibleSolicitante == true)
+		 		ocultarDIV('gratuitabusquedaEJGliteralsolicitante');
+		 	//Defensa
+		 	var visibleDefensa = false;
+			jQuery("#gratuitabusquedaEJGliteraldefensa").find('td input').each(function () {
+				if (jQuery(this).val() != "")
+					visibleDefensa = true;
+			});
+			if (visibleDefensa == false){
+				jQuery("#gratuitabusquedaEJGliteraldefensa").find('td select').each(function () {
+					if (jQuery(this).val() != "")
+						visibleDefensa = true;
+				});
+			}
+		 	if (visibleDefensa == true)
+		 		ocultarDIV('gratuitabusquedaEJGliteraldefensa');
 		}
 		
 		function seleccionarTodos(pagina) {
