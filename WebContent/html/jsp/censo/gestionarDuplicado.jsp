@@ -408,13 +408,13 @@
 									
 									<tr>
 										<td class="labelText">
-											Poblacion | Provincia
+											Población | Provincia
 										</td>
 									</tr>
 									
 									<tr>
 										<td class="labelText">
-											Pais
+											País
 										</td>
 									</tr>
 									
