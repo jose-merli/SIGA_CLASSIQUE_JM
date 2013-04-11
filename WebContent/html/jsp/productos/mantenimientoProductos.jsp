@@ -494,12 +494,21 @@
 								</td>
 								<td class="labelText"> 					
 									<% if (remitente=="insertar"){%>
-							  			<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>
+							  			<html:textarea property="nombre" styleClass="box" 
+							  				style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
+							  				onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>
+							  				
 							  		<% } else { %>
 										<% if (remitente=="modificar"){ %>
-											<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
+											<html:textarea property="nombre" styleClass="box" 
+												style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
+												onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" 
+												value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
+												
 										<%}else{%>
-											<html:textarea property="nombre" styleClass="boxConsulta" cols="25" rows="4"  maxlength="100" value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"/>
+											<html:textarea property="nombre" styleClass="boxConsulta" 
+												style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
+												value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"/>
 										<% } %>
 							  	<% } %>
 							  	</td>	
