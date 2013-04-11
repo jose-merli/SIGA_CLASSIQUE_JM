@@ -802,7 +802,7 @@
 			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){ 				
 				document.InformeFormEdicion.preseleccionado.value = 'S';
 				document.InformeFormEdicion.ASolicitantes.value = 'S';
-				document.InformeFormEdicion.Acontrarios.value = 'N';				
+				document.InformeFormEdicion.aContrarios.value = 'N';				
 			}
 			
 			document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
