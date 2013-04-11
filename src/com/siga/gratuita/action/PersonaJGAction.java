@@ -813,23 +813,24 @@ public class PersonaJGAction extends MasterAction {
 							if (b.getIdPersonaJG()!=null) {
 								String idPersonaJGSol = b.getIdPersonaJG().toString();
 								// Obtenemos los datos de esta persona
-							ScsPersonaJGAdm personaAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-							Hashtable hPersona = new Hashtable();
-							hPersona.put(ScsPersonaJGBean.C_IDINSTITUCION,idInstitucionEJG);
-							hPersona.put(ScsPersonaJGBean.C_IDPERSONA,idPersonaJGSol);
+								ScsPersonaJGAdm personaAdm = new ScsPersonaJGAdm(this.getUserBean(request));
+								Hashtable hPersona = new Hashtable();
+								hPersona.put(ScsPersonaJGBean.C_IDINSTITUCION,idInstitucionEJG);
+								hPersona.put(ScsPersonaJGBean.C_IDPERSONA,idPersonaJGSol);
 								Vector vPersona = personaAdm.selectByPK(hPersona);
 								ScsPersonaJGBean personaBean = (ScsPersonaJGBean) vPersona.get(0);
 								miform.setDireccion(personaBean.getDireccion());
-								miform.setDireccion(personaBean.getIdTipoDir());
-								miform.setDireccion(personaBean.getNumeroDir());
-								miform.setDireccion(personaBean.getEscaleraDir());
-								miform.setDireccion(personaBean.getPuertaDir());
-								miform.setDireccion(personaBean.getIdTipoVia());
+								miform.setTipoDir(personaBean.getIdTipoDir());
+								miform.setNumeroDir(personaBean.getNumeroDir());
+								miform.setEscaleraDir(personaBean.getEscaleraDir());
+								miform.setPisoDir(personaBean.getPisoDir());
+								miform.setPuertaDir(personaBean.getPuertaDir());
+								miform.setTipoVia(personaBean.getIdTipoVia());
 								miform.setCp(personaBean.getCodigoPostal());
 								miform.setProvincia(personaBean.getIdProvincia());
 								miform.setPoblacion(personaBean.getIdPoblacion());
 								miform.setNacionalidad(personaBean.getIdPais());
-								miform.setExisteDomicilio(personaBean.getExisteDomicilio());
+								miform.setExisteDomicilio(personaBean.getExisteDomicilio());							
 							}
 						}
 					} else
