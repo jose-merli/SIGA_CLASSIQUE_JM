@@ -86,7 +86,7 @@
 	</tr>
 	<tr>
 	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>&nbsp;(*)
+		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>
 	</td>				
 	<td>
 		<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="false" />

@@ -77,7 +77,7 @@
 		</tr>
 		<tr>
 			<td class="labelText" >
-			<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)&nbsp;&nbsp;&nbsp;&nbsp;
+			<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<!-- siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  /-->
 			<siga:ComboBD nombre="idFacturacionFinal"	tipo="cmb_CartaFactColegidados" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false"  />
 			</td>

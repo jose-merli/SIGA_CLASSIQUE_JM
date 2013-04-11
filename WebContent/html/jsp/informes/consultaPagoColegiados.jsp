@@ -72,7 +72,7 @@
 	
 	<tr>
 		<td class="labelText" width="10%">
-			<siga:Idioma key="informes.sjcs.pagos.literal.pagoFin"/>&nbsp;&nbsp;&nbsp;(*)&nbsp;&nbsp;
+			<siga:Idioma key="informes.sjcs.pagos.literal.pagoFin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<bean:define id="parametrosComboPagoFin" name="mantenimientoInformesForm" property="parametrosComboPagoFin"/>
 			<siga:ComboBD nombre="idPagoFinal" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPagoFin%>" clase="boxCombo" obligatorio="false" />
 		</td>
