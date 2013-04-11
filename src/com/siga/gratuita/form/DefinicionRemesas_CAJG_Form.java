@@ -475,15 +475,15 @@ import com.siga.beans.ScsPersonaJGBean;
 		public void setDescripcionEstado		(String descripcion)			{ this.datos.put("DESCRIPCIONESTADO", descripcion);						}
 		
 		public void setTipoFecha(String tipoFecha) {
-	 		TipoFecha = tipoFecha;
+			this.datos.put("TIPOFECHA", tipoFecha);
 	 	}
 		
 		public void setFechaInicioBuscar(String fechaInicioBuscar) {
-			FechaInicioBuscar = fechaInicioBuscar;
+			this.datos.put("FECHAINICIOBUSCAR", fechaInicioBuscar);	
 		}
 		
 		public void setFechaFinBuscar(String fechaFinBuscar) {
-			FechaFinBuscar = fechaFinBuscar;
+			this.datos.put("FECHAFINBUSCAR", fechaFinBuscar);
 		}
 
 		
@@ -926,15 +926,15 @@ import com.siga.beans.ScsPersonaJGBean;
 			}
 			
 			public String getTipoFecha() {
-				return TipoFecha;
+				return UtilidadesHash.getString(this.datos, "TIPOFECHA");
 			}
 			
 			public String getFechaInicioBuscar() {
-				return FechaInicioBuscar;
+				return UtilidadesHash.getString(this.datos, "FECHAINICIOBUSCAR");
 			}
 		
 			public String getFechaFinBuscar() {
-				return FechaFinBuscar;
+				return UtilidadesHash.getString(this.datos, "FECHAFINBUSCAR");
 			}
 
 			public String getSimular() {

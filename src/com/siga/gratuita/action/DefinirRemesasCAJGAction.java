@@ -363,9 +363,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// request.getSession().setAttribute("resultado",v);
 
 			}
-			// En "DATOSFORMULARIO" almacenamos el identificador del letrado
+			// En "DATOSBUSQUEDA" almacenamos el identificador del letrado
 			miHash.put("BUSQUEDAREALIZADA", "1");
-			request.getSession().setAttribute("DATOSFORMULARIO", miHash);
+			request.getSession().setAttribute("DATOSBUSQUEDA", miHash);
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -923,12 +923,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		String volver = request.getParameter("volver");
 		if (volver != null && volver.equalsIgnoreCase("SI")) {
-			request.setAttribute("VOLVER", "1");
+			request.setAttribute("VOLVER", "1");			
 		} else {
 			request.setAttribute("VOLVER", "0");
+			request.getSession().removeAttribute("DATOSBUSQUEDA");
 		}
 		request.getSession().removeAttribute("DATABACKUP");
-		request.getSession().removeAttribute("DATOSFORMULARIO");
+		request.getSession().removeAttribute("DATOSFORMULARIO");		
 		request.getSession().removeAttribute("DATABACKUP");
 		request.getSession().removeAttribute("accion");
 		return "inicio";
