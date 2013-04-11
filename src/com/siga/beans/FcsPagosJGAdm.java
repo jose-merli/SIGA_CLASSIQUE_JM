@@ -1303,9 +1303,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	public Vector getDetallePagoExt(Integer idInstitucion, Integer idPago, String idioma)
 			throws ClsExceptions, Exception
 	{
+		//mhg - INC_08011_SIGA
 		String sql= "select pago.*, " +
 					" cen.APELLIDOS1 || ' ' || cen.APELLIDOS2 || ', ' || cen.NOMBRE AS NOMBREPERSONA, "+
-					" decode(col.ncomunitario, null, col.ncolegiado, col.ncomunitario) as NCOLEGIADO " +
+					" decode(col.ncomunitario, 1, col.ncomunitario, col.ncolegiado) as NCOLEGIADO " +
 					" from (";
 		try {
 			sql += getQueryDetallePagoColegiado(idInstitucion.toString(), idPago
