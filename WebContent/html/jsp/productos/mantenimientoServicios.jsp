@@ -1,4 +1,5 @@
 <!-- mantenimientoServicios.jsp -->
+
 <!-- 
 	 Permite mostrar/editar los distintos productos
 	 VERSIONES:
@@ -8,34 +9,28 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> 
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.lang.*"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.productos.form.MantenimientoServiciosForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 
 <!-- JSP -->
 <%  
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
@@ -114,8 +109,8 @@
 				vSec.add(rowTemp.getString(PysFormaPagoServiciosBean.C_IDFORMAPAGO));				              	
           	}			              	
         }  	
-        
-	}			
+	}	
+	
 	String	botones="G,R";
 	String	botonesPrecio="N,C";	
 	boolean bFechaBaja= true;
@@ -127,62 +122,37 @@
 		fechaBaja = null;
 		bFechaBaja = false;
 	}
+	
 	if (row.getString(PysServiciosInstitucionBean.C_AUTOMATICO)!=null && row.getString(PysServiciosInstitucionBean.C_AUTOMATICO).equals(ClsConstants.DB_TRUE)) {
 		bAutomatico=true;
 	}
+	
    //Parametro para la busqueda:
    String [] parametroCombo = {usr.getLocation()};
    String [] institucionParam = {usr.getLocation()};
 
    String  checkPonderar="";
    if (modo=="consulta"){ 
-    checkPonderar="disabled";
+    	checkPonderar="disabled";
    }
-
 %>
 
 
 <html>
-<!-- HEAD -->
-	<head>
+	<!-- HEAD -->
+	<head>		
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 
-		<style type="text/css">						
-			.labelTextNormal{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						margin: auto; color:#<%=src.get("color.labelText")%>; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; padding-left: 5px;}													
-						
-			.boxComboNormal {
-						font-family: <%=src.get("font.style")%>; 
-						margin: auto; color:#<%=src.get("color.labelText")%>;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent;}
-						
-			.tableTitleEspec {
-						font-family: <%=src.get("font.style")%>; 
-						font-weight: bold; color: #<%=src.get("color.titleBar.font")%>;
-						height: 25px; margin: auto;
-						padding-left: 2px; vertical-align: middle;
-						padding-top: 2px; text-align: center;
-						background-color: #<%=src.get("color.titleBar.BG")%>;
-					}
-
-		</style>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
-		<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
-		<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>			
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  		
 		
 		<script language="JavaScript">
 
@@ -213,47 +183,40 @@
 
 				//LMS 04/09/2006
 				//Si se ha marcado como automático y como única forma de pago domiciliación bancaria, se muestra un mensaje de aviso.
-				if (document.forms[0].automatico.checked)
-				{
+				if (document.forms[0].automatico.checked){
 					var iii;
 					var jjj=0;
 
-					for (iii=0; iii<document.forms[0].formaPagoSecretaria.options.length; iii++)
-					{
-						if(document.forms[0].formaPagoSecretaria.options[iii].selected)
-						{
+					for (iii=0; iii<document.forms[0].formaPagoSecretaria.options.length; iii++){
+						if(document.forms[0].formaPagoSecretaria.options[iii].selected){
 							jjj++;
 						}
 					}
 
-					if (jjj==1 && document.forms[0].formaPagoSecretaria.value==<%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>)
-					{
+					if (jjj==1 && document.forms[0].formaPagoSecretaria.value==<%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>){
 						//alert('<siga:Idioma key="pys.mantenimientoServicios.mensaje.automaticoDomiciliacionBancaria"/>');
-					  men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.automaticoDomiciliacionBancaria"/>';
+					  	men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.automaticoDomiciliacionBancaria"/>';
     					if (!confirm(men)) {	
-						 return;
+						 	return;
 						}
 					}
-				}				
+				}			
+				
 				if (!envio){
 					alert(mensaje);
 				}
 				
-				return envio;
-				
+				return envio;				
 			}	
 			
-			function refrescarLocal()
-			{
+			function refrescarLocal(){
 					document.MantenimientoServiciosForm.target="modal";
 					document.MantenimientoServiciosForm.refresco.value="refresco";
 					document.MantenimientoServiciosForm.modo.value="editar";
 					document.MantenimientoServiciosForm.submit();
-			}			
-				
+			}							
 
-			function nuevaCondicionSuscripcionAutomatica() 
-			{		
+			function nuevaCondicionSuscripcionAutomatica(){		
 					document.forms[0].comprobarCondicion.value = document.forms[0].automatico.checked;
 					document.forms[0].modo.value = 'condicionSuscripcionAutomatica' + '<%=modo%>';
 					document.forms[0].target='submitArea';
@@ -263,32 +226,31 @@
 //					alert (resultadoVentanaCondicion);
 			}
 			
-			function comprobarSiExisteCondicion() {
-		
-				<% String idConsulta = (String) request.getAttribute("idConsulta");
-					if ((idConsulta != null) && (!idConsulta.equals(""))) {	}	
-				  else {%>
-							if (resultadoVentanaCondicion != "SI_HAY_CONDICION") {
-								if (document.forms[0].automatico.checked) {
-									alert("<siga:Idioma key="pys.mantenimientoServicios.suscripcionAutomatica.mensaje.errorSinCondicion"/>");
-									document.forms[0].automatico.checked = false;
-									return;
-								}
-							}
+			function comprobarSiExisteCondicion() {		
+				<% 
+					String idConsulta = (String) request.getAttribute("idConsulta");
+					if ((idConsulta != null) && (!idConsulta.equals(""))) {	
+						
+					} else {
+				%>
+					if (resultadoVentanaCondicion != "SI_HAY_CONDICION") {
+						if (document.forms[0].automatico.checked) {
+							alert("<siga:Idioma key="pys.mantenimientoServicios.suscripcionAutomatica.mensaje.errorSinCondicion"/>");
+							document.forms[0].automatico.checked = false;
+							return;
+						}
+					}
 				<%}%>
 			}
 			
-			function eliminarSuscripcionAutomatica(){
+			function eliminarSuscripcionAutomatica() {
 			  document.forms[0].modo.value = "configurarEliminacion";
 			   document.forms[0].target='submitArea';
 			  ventaModalGeneral(document.forms[0].name,"P");
 			  return;
 			}
-
-
 		</script>		
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
- 	
+		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS --> 	
 	</head>
 
 	<body>
@@ -303,134 +265,154 @@
 			</tr>
 		</table>
 		
-			<!-- INICIO: CAMPOS -->
-			<!-- Zona de campos de busqueda o filtro -->
-			<table  class="tablaCentralCamposGrande"  align="center" border="0">
-				<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="">
-					<html:hidden property="modo" value="<%=modo%>"/>
-					<html:hidden property="precio" value=""/>
-					<html:hidden property="periodicidad" value=""/>
-					<html:hidden property="refresco" value=""/>
-					<html:hidden property="comprobarCondicion" value=""/>
-					<html:hidden property="comprobarCondicionBaja" value="<%=new Boolean(bFechaBaja).toString() %>"/>
-					<% if (modo.equalsIgnoreCase("insertar")){ %>
-						<html:hidden property="idInstitucion" value="<%=usr.getLocation()%>"/>
-						<html:hidden property="idTipoServicios" value=""/>
-						<html:hidden property="idServicio" value=""/>
-						<html:hidden property="idServiciosInstitucion" value=""/>
-					<% } else { %>
-						<html:hidden property="idInstitucion" value="<%=row.getString(PysServiciosInstitucionBean.C_IDINSTITUCION)%>"/>
-						<html:hidden property="idTipoServicios" value="<%=row.getString(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS)%>"/>
-						<html:hidden property="idServicio" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)%>"/>
-						<html:hidden property="idServiciosInstitucion" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION)%>"/>
-					<% } %>
-					<input type="hidden" name="fechaEfectiva"	value="">
-					<tr>				
-						<td  height="300">
-							<siga:ConjCampos leyenda="pys.busquedaServicios.leyenda">					
-						 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
-									<tr>							
-											<html:hidden property="idServInst" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION)%>"/>
-										<td class="labelText"  >
-											<siga:Idioma key="pys.mantenimientoServicios.literal.tipo"/>&nbsp;(*)
-										</td>
-										<td class="labelText">
-											<% if (modo=="insertar"){%>
-												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxCombo" obligatorio="true" accion="Hijo:servicio"/>
-											<% }else{ %>
-												<% vTipoServicios.add(row.getString(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS)); %>
-												<% if (modo=="modificar"){ %>
-													<html:hidden property="servicio" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)%>"/>
-													<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxComboNormal" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
-												<%}else{%>
-													<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxComboNormal" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
-												<% } %>	
-											<% } %>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="pys.mantenimientoServicios.literal.IVA"/>&nbsp;(*)
-										</td>
-										<td class="labelText"> 
-											<% if (modo=="insertar") {%>
-												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" obligatorio="true"/>
-									  		<% } else { %>
-												<% if (modo=="modificar"){ %>
-													<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
-												<%}else{%>
-													<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxComboNormal" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
-												<% } %>
-									  		<% } %>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
-										</td>
-										<td class="labelText">
-											<siga:ComboBD nombre = "sufijo" ancho="175" tipo="cmbSufijos" clase="<%=estiloCombo%>" elementoSel="<%=sufijoSel%>" obligatorio="false" readonly="<%=String.valueOf(lectura)%>"  parametro="<%=institucionParam %>" />
-										</td>									
-									</tr>
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="pys.mantenimientoServicios.literal.categoria"/>&nbsp;(*)
-										</td>
-										<td class="labelText">										
-											<% if (modo=="insertar"){%>
-												<siga:ComboBD nombre = "servicio" ancho="200" tipo="categoriaServicio" parametro="<%=parametroCombo%>" clase="boxCombo" obligatorio="true" hijo="t"/>
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table  class="tablaCentralCamposGrande"  align="center" border="0">
+			<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="">
+				<html:hidden property="modo" value="<%=modo%>"/>
+				<html:hidden property="precio" value=""/>
+				<html:hidden property="periodicidad" value=""/>
+				<html:hidden property="refresco" value=""/>
+				<html:hidden property="comprobarCondicion" value=""/>
+				<html:hidden property="comprobarCondicionBaja" value="<%=new Boolean(bFechaBaja).toString() %>"/>
+				<% if (modo.equalsIgnoreCase("insertar")){ %>
+					<html:hidden property="idInstitucion" value="<%=usr.getLocation()%>"/>
+					<html:hidden property="idTipoServicios" value=""/>
+					<html:hidden property="idServicio" value=""/>
+					<html:hidden property="idServiciosInstitucion" value=""/>
+
+				<% } else { %>
+					<html:hidden property="idInstitucion" value="<%=row.getString(PysServiciosInstitucionBean.C_IDINSTITUCION)%>"/>
+					<html:hidden property="idTipoServicios" value="<%=row.getString(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS)%>"/>
+					<html:hidden property="idServicio" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)%>"/>
+					<html:hidden property="idServiciosInstitucion" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION)%>"/>
+				<% } %>
+
+				<input type="hidden" name="fechaEfectiva"	value="">
+				<tr>				
+					<td  height="300">
+						<siga:ConjCampos leyenda="pys.busquedaServicios.leyenda">					
+					 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+								<tr>							
+									<html:hidden property="idServInst" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION)%>"/>
+									
+									<td class="labelText"  >
+										<siga:Idioma key="pys.mantenimientoServicios.literal.tipo"/>&nbsp;(*)
+									</td>
+									<td class="labelText">
+										<% if (modo=="insertar"){%>
+											<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxCombo" obligatorio="true" accion="Hijo:servicio"/>
+										<% } else { %>  
+											<% vTipoServicios.add(row.getString(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS)); %>  
+											<%if (modo=="modificar"){%> 										
+												<html:hidden property="servicio" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)%>"/>
+												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
+											
 											<% } else { %>
-												<% vServicios.add(row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)); %>
-												<% if (modo=="modificar"){ %>
-													<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true"></html:text>
-												<%}else{%>
-													<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true"></html:text>
-												<% } %>											
-											<% } %>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="pys.mantenimientoServicios.literal.cuenta"/>&nbsp;&nbsp;
-											</td>
-										<td class="labelText" colspan="3">
-											<% if (modo=="insertar"){%>
-									  			<html:text property="cuentaContable" styleClass="box" size="20" value=""></html:text>
-									  		<% } else { %>
-												<% if (modo=="modificar"){ %>
-													<html:text property="cuentaContable" styleClass="box" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>"></html:text>
-												<%}else{%>
-													<html:text property="cuentaContable" styleClass="boxConsulta" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true"></html:text>
-												<% } %>							  						  		
-									  		<% } %>
+												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
+											<% } %>	
+										 <% } %>
+									</td>
+									
+									<td class="labelText">
+										<siga:Idioma key="pys.mantenimientoServicios.literal.IVA"/>&nbsp;(*)
+									</td>
+									<td class="labelText"> 
+										<% if (modo=="insertar") {%>
+											<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" obligatorio="true"/>
+											
+								 		<% } else { %>  
+								 			<%if (modo=="modificar"){%> 
+												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
+												
+											<% } else { %>
+												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
+											<% } %>	
+										 <% } %>
+									</td>
+									
+									<td class="labelText">
+										<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
+									</td>
+									<td class="labelText">
+										<siga:ComboBD nombre = "sufijo" ancho="175" tipo="cmbSufijos" clase="<%=estiloCombo%>" elementoSel="<%=sufijoSel%>" obligatorio="false" readonly="<%=String.valueOf(lectura)%>"  parametro="<%=institucionParam %>" />
+									</td>									
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="pys.mantenimientoServicios.literal.categoria"/>&nbsp;(*)
+									</td>
+									<td class="labelText">										
+										<% if (modo=="insertar"){%>
+											<siga:ComboBD nombre = "servicio" ancho="200" tipo="categoriaServicio" parametro="<%=parametroCombo%>" clase="boxCombo" obligatorio="true" hijo="t"/>
+										<% } else { %>
+											<% vServicios.add(row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)); %>
+											<% if (modo=="modificar"){ %>
+												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true" />
+												
+											<% } else { %>
+												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true" />
+											<% } %>											
+										<% } %>
+									</td>
+									
+									<td class="labelText">
+										<siga:Idioma key="pys.mantenimientoServicios.literal.cuenta"/>&nbsp;&nbsp;
+									</td>
+									<td class="labelText" colspan="3">
+										<% if (modo=="insertar"){%>
+											<html:text property="cuentaContable" styleClass="box" size="20" value="" />
+										<% } else { %>
+											<% if (modo=="modificar"){ %>
+												<html:text property="cuentaContable" styleClass="box" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" />
+												
+											<% } else { %>
+												<html:text property="cuentaContable" styleClass="boxConsulta" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true" />
+											<% } %>							  						  		
+										<% } %>
 										</td>
 									</tr>
+									
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="pys.mantenimientoServicios.literal.servicio"/>&nbsp;(*)
 										</td>
 										<td class="labelText">
 											<% if (modo=="insertar"){%>
-									  			<html:text property="descripcion" styleClass="box" size="30"></html:text>
+									  			<html:text property="descripcion" styleClass="box" size="30" />
+									  			
 									  		<% } else { %>
 												<% if (modo=="modificar"){ %>
-													<html:text property="descripcion" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>"></html:text>
-												<%}else{%>
-													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"></html:text>
+													<html:text property="descripcion" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" />
+													
+												<% } else { %>
+													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readOnly="true" />
 												<% } %>
 									  		<% } %>
 									  	</td>
+									  	
 										<td class="labelText" colspan="2">
 											<% if (modo=="insertar"){%>
 												<siga:Idioma key="pys.mantenimientoServicios.literal.baja"/>&nbsp;&nbsp;
 												<input type="checkbox" name="bajaInternet" value="1"> 
+												
 									  		<% } else { %>
 													<% if (modo=="modificar"){ %>
 										  				<% if (row.getString(PysServiciosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)){%>	
 										  					<siga:Idioma key="pys.mantenimientoServicios.literal.baja"/>&nbsp;&nbsp;
 										  					<input type="checkbox" name="bajaInternet"  value="1" checked>
+										  					
 										  				<% } else { %>			  		
 															<siga:Idioma key="pys.mantenimientoServicios.literal.baja"/>&nbsp;&nbsp;
 															<input type="checkbox" name="bajaInternet" value="1">
 										  				<% } %>
-										  			<% }else{ %>
+										  				
+										  			<% } else { %>
 										  				<% if (row.getString(PysServiciosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)){%>	
 										  					<siga:Idioma key="pys.mantenimientoServicios.literal.baja"/>&nbsp;&nbsp;
 										  					<input type="checkbox" name="bajaInternet"  value="1" checked disabled>
+										  					
 										  				<% } else { %>			  		
 															<siga:Idioma key="pys.mantenimientoServicios.literal.baja"/>&nbsp;&nbsp;
 															<input type="checkbox" name="bajaInternet"  value="1" disabled>
@@ -438,6 +420,7 @@
 										  			<% } %>						  				
 									  		<% } %>							
 										</td>
+										
 										<td class="labelText" colspan="2">
 											<% if (modo=="insertar"){%>
 												<siga:Idioma key="pys.mantenimientoServicios.literal.alta"/>&nbsp;&nbsp;
@@ -447,28 +430,31 @@
 										  				<% if (row.getString(PysServiciosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)){%>	
 										  					<siga:Idioma key="pys.mantenimientoServicios.literal.alta"/>&nbsp;&nbsp;
 										  					<input type="checkbox" name="altaInternet" value="1" checked>
+										  					
 										  				<% } else { %>			  		
 															<siga:Idioma key="pys.mantenimientoServicios.literal.alta"/>&nbsp;&nbsp;
 															<input type="checkbox" name="altaInternet" value="1">
 										  				<% } %>
-										  			<% }else{ %>
+										  				
+										  			<% } else { %>
 										  				<% if (row.getString(PysServiciosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)){%>	
 										  					<siga:Idioma key="pys.mantenimientoServicios.literal.alta"/>&nbsp;&nbsp;
 										  					<input type="checkbox" name="altaInternet" value="1" checked disabled>
+										  					
 										  				<% } else { %>			  		
 															<siga:Idioma key="pys.mantenimientoServicios.literal.alta"/>&nbsp;&nbsp;
 															<input type="checkbox" name="altaInternet" value="1" disabled>
 										  				<% } %>
 										  			<% } %>
-									  		<% } %>		
-									  		
+									  		<% } %>											  		
 										</td>
 									</tr>
 								</table>
+								
 								<table width="100%" border="0">
 									<tr>
 										<td width="40%"  valign="top">
-												<siga:ConjCampos leyenda="pys.mantenimientoServicios.literal.formaPago">					
+											<siga:ConjCampos leyenda="pys.mantenimientoServicios.literal.formaPago">					
 												<table border="0">
 											  		<tr>
 														<td width="10%" class="labelText" align="left">
@@ -477,422 +463,428 @@
 														<td width="40%" class="labelText" align="left">																						
 															<% if (modo=="insertar"){int i=0;%>
 																<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorInternet%>"/>
+																
 															<% } else { %>
 																<%	if (vInt.isEmpty()){int i=0;%>
 																	<% if (modo=="modificar"){ %>
 																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorInternet%>"/>
-																	<%}else{%>
-																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxComboNormal" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
-																	<% } %>																
+																		
+																	<% } else { %>
+																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
+																	<% } %>		
+																															
 																<% } else { %>
 																	<% if (modo=="modificar"){ %>
 																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>"/>
-																	<%}else{%>
-																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxComboNormal" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
+																		
+																	<% } else { %>
+																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
 																	<% } %>																																		
 																<% } %>
 															<% } %>
 														</td>
+														
 														<td width="10%" class="labelText" align="left">
 															<siga:Idioma key="productos.mantenimientoProductos.literal.secretaria"/>&nbsp;(*)
 														</td>
 														<td width="40%"class="labelText" align="left">
 															<% if (modo=="insertar"){int i=0;%>
 																<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorSecretaria%>"/>
+																
 															<% } else { %>													
 																<% if (vSec.isEmpty()){int i=0;%>
 																	<% if (modo=="modificar"){ %>
 																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorSecretaria%>"/>
-																	<%}else{%>
-																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxComboNormal" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
-																	<% } %>																																			
+																		
+																	<% } else { %>
+																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
+																	<% } %>	
+																																																			
 																<% } else { %>
 																	<% if (modo=="modificar"){ %>
 																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>"/>
-																	<%}else{%>
-																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxComboNormal" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
+																		
+																	<% } else { %>
+																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
 																	<% } %>																			
 																<% } %>																													
 															<% } %>
 														</td>														
 											  		</tr>
 												</table>
-												</siga:ConjCampos>					
+											</siga:ConjCampos>					
 												
-												<table width="100%" border="0">
+											<table width="100%" border="0">
 												<tr>
-												<td width="35%">
-												<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.estado">					
-													<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td class="labelText" width="100%">
-																<siga:Idioma key="productos.mantenimientoProductos.literal.bajaLogica"/>&nbsp;&nbsp;
-																<% if (modo=="insertar") {	%>
-																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" disabled >
-																<% } else {
-																	if (fechaBaja!=null) {%>
-																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" checked>
-																<% } else { %>
-																	<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1">
-																<% }} %>
-															</td>
-														</tr>
-													</table>
-												</siga:ConjCampos>
-												</td>
-												<td width="65%">
-												<!-- DCG ini --> 
-												
-												<siga:ConjCampos leyenda="productos.mantenimientoServicios.literal.asginacion">					
-													<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td class="labelText">
-																<siga:Idioma key="productos.mantenimientoServicios.literal.SuscripcionAutomatica"/>&nbsp;&nbsp;
-																<% if (modo=="insertar"){%>
-																	<input type="checkbox" name="automatico" value="1" disabled >
-													  		<% } else { %>
-																	<% if (modo=="modificar"){ %>
-														  				<% if (row.getString(PysServiciosInstitucionBean.C_AUTOMATICO).equals(ClsConstants.DB_TRUE)){%>	
-														  					<input type="checkbox" name="automatico" value="1" checked onClick="return comprobarSiExisteCondicion();">
-														  				<% } else { %>			  		
-																				<input type="checkbox" name="automatico" value="1" onClick="return comprobarSiExisteCondicion();">
-														  				<% } %>
-														  			<% }else{ %>
-														  				<% if (row.getString(PysServiciosInstitucionBean.C_AUTOMATICO).equals(ClsConstants.DB_TRUE)){%>	
-														  					<input type="checkbox" name="automatico" value="1" checked disabled >
-														  				<% } else { %>			  		
-																				<input type="checkbox" name="automatico" value="1" disabled >
-														  				<% } %>
-														  			<% } %>						  				
-													  		<% } %>
-													  	</td>
+													<td width="35%">
+														<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.estado">					
+															<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+																<tr>
+																	<td class="labelText" width="100%">
+																		<siga:Idioma key="productos.mantenimientoProductos.literal.bajaLogica"/>&nbsp;&nbsp;
+																		<% if (modo=="insertar") {	%>
+																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" disabled >
+																		<% } else {%>
+																			<% if (fechaBaja!=null) {%>
+																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" checked>
+																			
+																			<% } else { %>
+																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1">
+																			<% } %>
+																		<% } %>
+																	</td>
+																</tr>
+															</table>
+														</siga:ConjCampos>
+													</td>
+													
+													<td width="65%">
+													<!-- DCG ini --> 												
+														<siga:ConjCampos leyenda="productos.mantenimientoServicios.literal.asginacion">					
+															<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+																<tr>
+																	<td class="labelText">
+																		<siga:Idioma key="productos.mantenimientoServicios.literal.SuscripcionAutomatica"/>&nbsp;&nbsp;
+																		<% if (modo=="insertar"){%>
+																			<input type="checkbox" name="automatico" value="1" disabled >
+																			
+													  					<% } else { %>
+																			<% if (modo=="modificar"){ %>
+														  						<% if (row.getString(PysServiciosInstitucionBean.C_AUTOMATICO).equals(ClsConstants.DB_TRUE)){%>	
+														  							<input type="checkbox" name="automatico" value="1" checked onClick="return comprobarSiExisteCondicion();">
+														  							
+														  						<% } else { %>			  		
+																					<input type="checkbox" name="automatico" value="1" onClick="return comprobarSiExisteCondicion();">
+																  				<% } %>
+																  				
+															  				<% } else { %>
+														  						<% if (row.getString(PysServiciosInstitucionBean.C_AUTOMATICO).equals(ClsConstants.DB_TRUE)){%>	
+														  							<input type="checkbox" name="automatico" value="1" checked disabled >
+														  							
+														  						<% } else { %>			  		
+																					<input type="checkbox" name="automatico" value="1" disabled >
+														  						<% } %>
+														  					<% } %>						  				
+													  					<% } %>
+													  				</td>
 														
-													  	<td align="center">
-															<% if (modo != "insertar") {	%>
-													  		<input type="button" 
-													  					 value="<siga:Idioma key="pys.mantenimientoServicios.boton.condicion"/>" 
-													  					 alt="Poner recurso condicion" 
-													  					 id="idButton"  
-													  					 onclick="return nuevaCondicionSuscripcionAutomatica();" 
-													  					 class="button" >
-													  	<% } %>
-													  		
-															</td>
-														</tr>
-										
-													</table>
-												</siga:ConjCampos>
-												<!-- DCG ini --> 
-												</td>
+													  				<td align="center">
+																		<% if (modo != "insertar") {	%>
+													  						<input type="button" 
+													  					 		value="<siga:Idioma key="pys.mantenimientoServicios.boton.condicion"/>" 
+													  					 		alt="Poner recurso condicion" 
+													  					 		id="idButton"  
+													  					 		onclick="return nuevaCondicionSuscripcionAutomatica();" 
+													  					 		class="button" >
+													  					<% } %>													  		
+																	</td>
+																</tr>										
+															</table>
+														</siga:ConjCampos>
+													<!-- DCG ini --> 
+													</td>
 												</tr>
-												</table>
-												
+											</table>												
 										</td>
+										
 										<td width="50%" valign="top">
-												<siga:ConjCampos leyenda="pys.mantenimientoServicios.literal.ponderacion">	
-											 <table border="0">
-											 
-											  
-												<table width="100%" valign="top" border="0">
-												
+											<siga:ConjCampos leyenda="pys.mantenimientoServicios.literal.ponderacion">	
+												<table width="100%" valign="top" border="0">												
 													<tr>
 														<td class="labelText">
-														<% if (modo=="insertar"){%>
-															<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked>
-															<siga:Idioma key="pys.cambioSituacion.ponderado"/>
-						  								<% } else { 
-						  										if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_PONDERADO)){%>	
-																	<% if (modo=="modificar"){ %>
-																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked>
-																		<siga:Idioma key="pys.cambioSituacion.ponderado"/>
-																	<%}else{%>
-																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked disabled>
-																		<siga:Idioma key="pys.cambioSituacion.ponderado"/>
-																	<% } %>
-						  										<% } else { %>
-																	<% if (modo=="modificar"){ %>
-																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>">
-																		<siga:Idioma key="pys.cambioSituacion.ponderado"/>
-																	<%}else{%>
-																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" disabled>
-																		<siga:Idioma key="pys.cambioSituacion.ponderado"/>
-																	<% } %>
-						  										<% } %>
-						  								<% } %>																											
+															<% if (modo=="insertar"){%>
+																<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked>
+																<siga:Idioma key="pys.cambioSituacion.ponderado"/>
+							  								<% } else { 
+							  										if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_PONDERADO)){%>	
+																		<% if (modo=="modificar"){ %>
+																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked>
+																			<siga:Idioma key="pys.cambioSituacion.ponderado"/>
+																			
+																		<% } else { %>
+																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" checked disabled>
+																			<siga:Idioma key="pys.cambioSituacion.ponderado"/>
+																		<% } %>
+																		
+							  										<% } else { %>
+																		<% if (modo=="modificar"){ %>
+																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>">
+																			<siga:Idioma key="pys.cambioSituacion.ponderado"/>
+																			
+																		<% } else { %>
+																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_PONDERADO%>" disabled>
+																			<siga:Idioma key="pys.cambioSituacion.ponderado"/>
+																		<% } %>
+							  										<% } %>
+							  								<% } %>																											
 														</td>
 													</tr>
+													
 													<tr>
 														<td class="labelText">
 															<% if (modo=="insertar"){%>
 																<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>">
 																<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
-							  								<% } else { 
-							  										if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_INICIO)){%>
-																		<% if (modo=="modificar"){ %>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" checked>
-																			<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
-																		<%}else{%>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" checked disabled>
-																			<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
-																		<% } %>
-							  										<% } else { %>
-																		<% if (modo=="modificar"){ %>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>">
-																			<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
-																		<%}else{%>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" disabled>
-																			<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
-																		<% } %>																		
-							  										<% } %>
+																
+							  								<% } else {%> 
+							  									<% if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_INICIO)){%>
+																	<% if (modo=="modificar"){ %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" checked>
+																		<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
+																			
+																	<% } else { %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" checked disabled>
+																		<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
+																	<% } %>
+																		
+							  									<% } else { %>
+																	<% if (modo=="modificar"){ %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>">
+																		<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
+																			
+																	<% } else { %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_INICIO%>" disabled>
+																		<siga:Idioma key="pys.cambioSituacion.inicioPonderado"/>
+																	<% } %>																		
+							  									<% } %>
 							  								<% } %>
 														</td>
 													</tr>
+													
 													<tr>
 														<td class="labelText">
 															<% if (modo=="insertar"){%>
 																<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>">
 																<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
-							  								<% } else { 
-							  										if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_FINAL)){%>
-																		<% if (modo=="modificar"){ %>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" checked>
-																			<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
-																		<%}else{%>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" checked disabled>
-																			<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
-																		<% } %>
-							  										<% } else { %>
-																		<% if (modo=="modificar"){ %>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>">
-																			<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
-																		<%}else{%>
-																			<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" disabled>
-																			<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
-																		<% } %>																		
-							  										<% } %>
+																
+							  								<% } else {%> 
+							  									<% if (row.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO).equals(ClsConstants.INICIOFINALPONDERADO_FINAL)){%>
+																	<% if (modo=="modificar"){ %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" checked>
+																		<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
+																		
+																	<% } else { %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" checked disabled>
+																		<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
+																	<% } %>
+																	
+							  									<% } else { %>
+																	<% if (modo=="modificar"){ %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>">
+																		<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
+																		
+																	<% } else { %>
+																		<input type="radio" name="cambioSituacion" value="<%=ClsConstants.INICIOFINALPONDERADO_FINAL%>" disabled>
+																		<siga:Idioma key="pys.cambioSituacion.finalPeriodo"/>
+																	<% } %>																		
+							  									<% } %>
 							  								<% } %>
 														</td>
 													</tr>	
 												</table>
-													</siga:ConjCampos>	
+											</siga:ConjCampos>	
 													
-												<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.facturacionPonderada">					
-													<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
-														<tr>
-															<td class="labelText" width="100%">
-																<siga:Idioma key="productos.mantenimientoProductos.literal.noPonderar"/>&nbsp;&nbsp;
-																<% if ((noPondera!=null && noPondera.equals("0")) || noPondera==null) {%>
-																	<input type="checkbox" name="noPondera" value="0" <%=checkPonderar%>>
-																<% } else { %>
-																	<input type="checkbox" name="noPondera" value="1" checked <%=checkPonderar%>>
-																<% } %>
-															</td>
-														</tr>
-													</table>
-												</siga:ConjCampos>
-									    	
-										</td>	
-										
+											<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.facturacionPonderada">					
+												<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<td class="labelText" width="100%">
+															<siga:Idioma key="productos.mantenimientoProductos.literal.noPonderar"/>&nbsp;&nbsp;
+															<% if ((noPondera!=null && noPondera.equals("0")) || noPondera==null) {%>
+																<input type="checkbox" name="noPondera" value="0" <%=checkPonderar%>>
+																
+															<% } else { %>
+																<input type="checkbox" name="noPondera" value="1" checked <%=checkPonderar%>>
+															<% } %>
+														</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>									    	
+										</td>											
 									</tr>
 
 									<tr>
 										<td>	
 											<table width="100%" cellpadding="3" cellspacing="3" border="0">
-											  <tr>
-											  <td width="35%">&nbsp;</td>
-											  
-											    <td  width="100%"  align="left"  >
-												  <% if (modo != "insertar" && modo != "consulta") {	%>
-												  		<input type="button" 
-												  					 value="<siga:Idioma key="pys.mantenimientoServicios.boton.eliminarSuscripcion"/>" 
-												  					 alt="Poner recurso condicion" 
-												  					 id="idButton"  
-												  					 onclick="return eliminarSuscripcionAutomatica();" 
-												  					 class="button" >
-												  	<% } %>
-												</td>
-											  </tr>															
+											  	<tr>
+											  		<td width="35%">
+											  			&nbsp;
+											  		</td>											  
+											    	<td  width="100%"  align="left"  >
+														<% if (modo != "insertar" && modo != "consulta") { %>
+												  			<input type="button" 
+												  				value="<siga:Idioma key="pys.mantenimientoServicios.boton.eliminarSuscripcion"/>" 
+												  				alt="Poner recurso condicion" 
+												  				id="idButton"  
+												  				onclick="return eliminarSuscripcionAutomatica();" 
+												  				class="button" >
+												  		<% } %>
+													</td>
+											 	</tr>															
 										    </table>
 										</td>	
 									</tr>
-
 								</table>	
 							</siga:ConjCampos>
 						</td>
 					</tr>
-		</html:form>						
+				</html:form>						
 			</table>
 
-
-		<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
+			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
 		
-							<% if ((modo.equalsIgnoreCase("editar"))||(modo.equalsIgnoreCase("edicion"))||(modo.equalsIgnoreCase("insertar"))||(modo.equalsIgnoreCase("modificar"))){ %>
-								<siga:TablaCabecerasFijas 
-									   nombre="tablaResultados"
-									   borde="1"
-									   clase="tableTitle"				   
-									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
-									   tamanoCol="20,20,20,20,20"
-									   alto="100%"
-									   ajusteBotonera="true"					   
-									   modal="G">
-									   				   
-									<%
-						    		if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 )
-							    	{
-									%>									
-										<br><br>
-										<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/>
-										</p>
-										<br><br>
-									<%
-							    	}	    
-								    else
-							    	{ %>
-							    		<%
-							    		// RGG 05-10-2005 Primera pasada para saber cuantos hay por defecto.
-							    		Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
-										int contDefecto=0;
-					            		while (en.hasMoreElements())
-										{
-						            		Row rowPrecios = (Row) en.nextElement();
-						            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
-						            			contDefecto ++;
-											}
-						            	}
-						            	
-						            	%>
-						            		
-							    		<%
-							    		en = ((Vector)request.getAttribute("DATESTADO")).elements();
-										int recordNumber=1;
-					            		String iconosFila="";
-										while (en.hasMoreElements())
-										{
-						            		Row rowPrecios = (Row) en.nextElement();
-						            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
-							            		if (contDefecto==1) {
-								            		iconosFila="C,E";
-								            	} else {
-									            	iconosFila="C,E,B";
-								            	}
-						            		}else{
-							            		iconosFila="C,E,B";
-						            		}
-						            		
-						            		//Precio:
-						            		double precio = 0.00;
-											String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
+			<% if ((modo.equalsIgnoreCase("editar"))||(modo.equalsIgnoreCase("edicion"))||(modo.equalsIgnoreCase("insertar"))||(modo.equalsIgnoreCase("modificar"))){ %>
+				<siga:TablaCabecerasFijas 
+				   nombre="tablaResultados"
+				   borde="1"
+				   clase="tableTitle"				   
+				   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
+				   tamanoCol="20,20,20,20,20"
+				   alto="100%"					   
+				   modal="G">
+						   				   
+					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
+						<br><br>
+						<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+						<br><br>
+						
+					<% } else { %>
+						<%
+				    		// RGG 05-10-2005 Primera pasada para saber cuantos hay por defecto.
+				    		Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
+							int contDefecto=0;
+		            		while (en.hasMoreElements()) {
+			            		Row rowPrecios = (Row) en.nextElement();
+			            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
+			            			contDefecto ++;
+								}
+			            	}			            	
 
-											try { 
-												if (sPrecio!=null)
-													precio = Double.parseDouble(sPrecio);
-											} catch(NumberFormatException e){
-												precio = 0.00;
-											}	
-						            	%>
-						            		
-											<siga:FilaConIconos
-												  fila='<%=String.valueOf(recordNumber)%>'
-												  botones='<%=iconosFila%>'
-												  modo='<%=modo%>'
-												  clase="listaNonEdit">												  
-												<td align = "right">
-													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDINSTITUCION)%>">
-													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDTIPOSERVICIOS)%>">
-													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIO)%>">
-													<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION)%>">
-											  		<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPERIODICIDAD)%>">
-											  		<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS)%>">
-													<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formato(precio))%>&nbsp;&euro;
-												</td>
-												<td align = "right">
-													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
-												</td>  	
-												<td align = "right">
-													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
-												</td>  																				
-												<td align = "right">
-													<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
-														<siga:Idioma key="general.yes"/>
-													<% } else { %>
-														<siga:Idioma key="general.no"/>
-													<% } %>
-												</td>  								
-											</siga:FilaConIconos>
-										<% recordNumber++;
-										} 
-									} %>
-								</siga:TablaCabecerasFijas>			
-							<% } else {	%>								
-								<siga:TablaCabecerasFijas 
-									   nombre="tablaResultados"
-									   borde="1"
-									   clase="tableTitleEspec"				   
-									   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
-									   tamanoCol="30,20,30,20"
-									   alto="100%"
-									   ajusteBotonera="true"					   
-									   modal="G">
+		            		en = ((Vector)request.getAttribute("DATESTADO")).elements();
+							int recordNumber=1;
+		            		String iconosFila="";
+							while (en.hasMoreElements()) {
+			            		Row rowPrecios = (Row) en.nextElement();
+			            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
+				            		if (contDefecto==1) {
+					            		iconosFila="C,E";
+					            	} else {
+						            	iconosFila="C,E,B";
+					            	}
+			            		}else{
+				            		iconosFila="C,E,B";
+			            		}
+			            		
+			            		//Precio:
+			            		double precio = 0.00;
+								String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
 
-									<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
-										<tr><br>
-												<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-											<br>
-										</tr>	
+								try { 
+									if (sPrecio!=null)
+										precio = Double.parseDouble(sPrecio);
+									
+								} catch(NumberFormatException e){
+									precio = 0.00;
+								}	
+			            %>
+						            		
+							<siga:FilaConIconos
+							  	fila='<%=String.valueOf(recordNumber)%>'
+							  	botones='<%=iconosFila%>'
+							  	modo='<%=modo%>'
+							  	clase="listaNonEdit">		
+								  										  
+								<td align = "right">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDINSTITUCION)%>">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDTIPOSERVICIOS)%>">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIO)%>">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION)%>">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPERIODICIDAD)%>">
+									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS)%>">
+									<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formato(precio))%>&nbsp;&euro;
+								</td>
+								
+								<td align = "right">
+									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
+								</td>  	
+								
+								<td align = "right">
+									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
+								</td>  																				
+								
+								<td align = "right">
+									<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
+										<siga:Idioma key="general.yes"/>
+										
 									<% } else { %>
-								    	<%Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();								    	
-										while (en.hasMoreElements())
-										{
-						            		Row rowPrecios = (Row) en.nextElement();
-						            		
-						            		//Precio:
-						            		double precio = 0.00;
-											String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
-
-											try { 
-												if (sPrecio!=null)
-													precio = Double.parseDouble(sPrecio);
-											} catch(NumberFormatException e){
-												precio = 0.00;
-											}	
-											%>
-						            		<tr>						            							  
-												<td align = "right" class="listaNonEdit" nowrap>
-													<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>&nbsp;&euro;
-												</td>
-												<td class="listaNonEdit" nowrap>
-													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
-												</td>
-												<td class="listaNonEdit" nowrap>
-													<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
-												</td>													
-												<td class="listaNonEdit" nowrap>
-													<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
-														<siga:Idioma key="general.yes"/>
-													<% } else { %>
-														<siga:Idioma key="general.no"/>
-													<% } %>
-												</td>  								
-												
-											</tr>	
-										<% } %>
+										<siga:Idioma key="general.no"/>
 									<% } %>
-								</siga:TablaCabecerasFijas> 
-							<% } %>
-			
-						<siga:ConjBotonesAccion botones='<%=botonesPrecio%>' modo='<%=modo%>' clase="botonesDetalle" modal="G"/>
-			
-			<!-- DCG  ini -->
-			<% if (modo.equalsIgnoreCase("Consulta"))	{%>
-			<script>
-			    jQuery("#bajaLogica").attr("disabled","disabled");
-			</script>
-			<% } %>
-			<!-- DCG  fin -->
+								</td>  								
+							</siga:FilaConIconos>
+							
+							<% recordNumber++;%>
+						<% } // WHILE %>
+					<% } // ELSE %>					
+				</siga:TablaCabecerasFijas>		
+					
+			<% } else {	%>								
+				<siga:TablaCabecerasFijas 
+					nombre="tablaResultados"
+					borde="1"
+					clase="tableTitle"				   
+					nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
+					tamanoCol="30,20,30,20"
+					alto="100%"				   
+					modal="G">
 
+					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
+						<tr>
+							<br>
+							<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+							<br>
+						</tr>
+							
+					<% } else {
+					   	Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();								    	
+						while (en.hasMoreElements()) {
+					    	Row rowPrecios = (Row) en.nextElement();
+					            		
+					        //Precio:
+					        double precio = 0.00;
+							String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
+
+							try { 
+								if (sPrecio!=null)
+									precio = Double.parseDouble(sPrecio);
+							} catch(NumberFormatException e){
+								precio = 0.00;
+							}	
+					%>
+							<tr>						            							  
+								<td align = "right" class="listaNonEdit" nowrap>
+									<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>&nbsp;&euro;
+								</td>
+								<td class="listaNonEdit" nowrap>
+									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
+								</td>
+								
+								<td class="listaNonEdit" nowrap>
+									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
+								</td>													
+								<td class="listaNonEdit" nowrap>
+									<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
+										<siga:Idioma key="general.yes"/>
+										
+									<% } else { %>
+										<siga:Idioma key="general.no"/>
+									<% } %>
+								</td>  																	
+							</tr>	
+						<% } // WHILE %>
+					<% } // ELSE %>
+				</siga:TablaCabecerasFijas> 
+			<% } // ELSE %>
 			
-			
+			<siga:ConjBotonesAccion botones='<%=botonesPrecio%>' modo='<%=modo%>' clase="botonesDetalle" modal="G"/>
 			<!-- FIN: CAMPOS -->
 
 			<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -901,37 +893,38 @@
 			<!-- INICIO: SCRIPTS BOTONES -->
 			<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 			<script language="JavaScript">
-
-			//Asociada al boton Guardar -->
-			function accionGuardar() 
-			{	
-			sub();
-			if (document.forms[0].automatico.checked || document.forms[0].bajaLogica.checked){		
-			      var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-			      window.top.focus();
-			      if (fecha!=null){				
-     				  	document.forms[0].fechaEfectiva.value=fecha;
-				  } else {				 
+				// DCG  ini
+				<% if (modo.equalsIgnoreCase("Consulta"))	{%>
+			    	jQuery("#bajaLogica").attr("disabled","disabled");
+				<% } %>
+				// DCG  fin			
+			
+			//Asociada al boton Guardar
+			function accionGuardar() {	
+				sub();
+				if (document.forms[0].automatico.checked || document.forms[0].bajaLogica.checked){		
+			      	var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			      	window.top.focus();
+			      	if (fecha!=null) {				
+						document.forms[0].fechaEfectiva.value=fecha;
+     				  	
+				  	} else {				 
 				  		fin();
 				    	return false;
-				  }	  
-			}
+				  	}	  
+				}
 			    			
-			if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){				
+				if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){				
 					if (validacionPosterior()){					
 						<% if (modo.equalsIgnoreCase("modificar")){ %>
 							document.forms[0].modo.value="modificar";
 							document.forms[0].target='submitArea';
-//							document.forms[0].submit();
 							
-						<% }else{ %>
-						    				
-						
+						<% } else { %>						    										
 							// Inserto el precio por defecto
 							var datos = showModalDialog("/SIGA/html/jsp/productos/ventanaPrecioPorDefecto.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
 							window.top.focus(); 
-							if (datos) {
-							  
+							if (datos) {							  
 								if (datos[0] == 1) { // Recibo precio y periodicidad
 									// Asigno valores asociados al servicio en creacion
 									document.forms[0].idTipoServicios.value=document.forms[0].tipoServicio.value;
@@ -946,18 +939,17 @@
 									// Redirigimos al lugar adecuado
 									document.forms[0].modo.value="insertar";
 									document.forms[0].target='submitArea';
-//  								document.forms[0].submit();
 									
-								}else{// por aqui pasa cuando le damos al boton de cerrar sin meter ningún precio.
-								  
+								} else {
+									// por aqui pasa cuando le damos al boton de cerrar sin meter ningún precio.
 								 	fin();
 								 	return false;
 								}
 								
-							}else{//por aqui pasa cuando le damos al aspa para cerrar la ventana y no se ha metido precio.
-							
-							  fin();
-							return false;
+							} else {
+								//por aqui pasa cuando le damos al aspa para cerrar la ventana y no se ha metido precio.							
+							  	fin();
+								return false;
 							}	
 						<% } %>	
 						
@@ -967,8 +959,7 @@
 						if(document.forms[0].bajaLogica.checked) {
 							// RGG comprubo que antes no estaba checked
 							
-							if(!antesBaja) {
-							
+							if(!antesBaja) {							
 								men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.realizarBajaLogica"/>';
 								if (confirm(men)) {
 									// Abro la ventana de las tuercas:
@@ -978,23 +969,17 @@
 								} 
 								
 								fin();
-								return false;
-								
+								return false;								
 							}
-						}
-						else {
-						
-							if((document.forms[0].automatico.checked) && (!document.forms[0].bajaLogica.checked)) {
-							  					   
+							
+						} else {						
+							if((document.forms[0].automatico.checked) && (!document.forms[0].bajaLogica.checked)) {							  					  
 							
 								// RGG comprubo que antes no estaba checked
-								if(!antesAutomatico) {
-								 					  
-							
+								if(!antesAutomatico) {							
 									document.forms[0].comprobarCondicion.value = document.forms[0].automatico.checked;
 									men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.suscripcionAutomaticaATodos"/>';
-								 	if (confirm(men)) {
-									 						   
+								 	if (confirm(men)) {									 						  
 										// Abro la ventana de las tuercas:
 										var f = document.forms[0].name;	
 										var m = "pys.mantenimientoServicios.cabecera.tuercas.suscripcionAutomaticaATodos";
@@ -1006,66 +991,59 @@
 								}
 							}
 						}
-						if (document.forms[0].noPondera.checked){
-						 document.forms[0].noPondera.value="1";
-						}else{
-						 document.forms[0].noPondera.value="0";
+						
+						if (document.forms[0].noPondera.checked) {
+						 	document.forms[0].noPondera.value="1";
+						 	
+						} else {
+						 	document.forms[0].noPondera.value="0";
 						}
 						
  						document.forms[0].submit();
-					}else{
-					
+ 						
+					} else {					
 						fin();
 					    return false;
 					}	
-				}else{
-				
+					
+				} else {				
 					fin();
 				    return false;
 				}	
 			}
 
-			//Asociada al boton Restablecer -->
-			function accionRestablecer() 
-			{		
+			// Asociada al boton Restablecer
+			function accionRestablecer() {		
 				document.forms[0].reset();
 			}
 
-			//Asociada al boton Restablecer -->
-			function accionNuevo() 
-			{		
-			
+			// Asociada al boton Restablecer
+			function accionNuevo() {					
 				if ((document.forms[0].idTipoServicios.value!="")&&(document.forms[0].idServicio.value!="")){
-					document.forms[0].modo.value='nuevoCriterio';
+					document.forms[0].modo.value='nuevoCriterio';					
+					var resultado = ventaModalGeneral(document.forms[0].name,"G");					
+					refrescarLocal();
 					
-					var resultado = ventaModalGeneral(document.forms[0].name,"G");
-					
-					/*if (resultado=="MODIFICADO")
-					{
-						refrescarLocal();
-					}*/
-					refrescarLocal();			
 				} else {					
 					var mensaje='<siga:Idioma key="messages.pys.errorServicioAntesPrecio"/>';
 					alert(mensaje);
 				}		
 			}
 			
-			//Asociada al boton Cerrar -->
-			function accionCerrar() 
-			{		
+			// Asociada al boton Cerrar
+			function accionCerrar() {		
 				top.cierraConParametros("MODIFICADO");
 			}
 
-			</script>
-			<!-- FIN: SCRIPTS BOTONES -->
+		</script>
+		<!-- FIN: SCRIPTS BOTONES -->
 	
-			<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 		<!-- INICIO: SUBMIT AREA -->
 		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
 
 	</body>

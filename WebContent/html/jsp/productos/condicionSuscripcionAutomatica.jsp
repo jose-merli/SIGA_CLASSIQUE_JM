@@ -1,4 +1,5 @@
-<!-- criteriosCliente.jsp -->
+<!-- condicionSuscripcionAutomatica.jsp -->
+
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
 	 VERSIONES:
@@ -14,23 +15,17 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="java.lang.*"%>
 
 <!-- JSP -->
 <%
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	String modo = request.getAttribute("modelo").toString(); 
@@ -74,143 +69,135 @@
 		botonNuevo = "";
 		botones = "C";
 	}
-
 %>	
 
 <html>
-<!-- HEAD -->
+	<!-- HEAD -->
 	<head>
-
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
+	
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
 		
-		<script language="JavaScript">
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 		
+		<script language="JavaScript">		
 			function cambiarTipo(obj){
 				document.forms[0].modo.value="abrirAvanzada";
 				document.forms[0].target="frameOperadorValor";
 				document.forms[0].submit();
-			}
-			
+			}			
 		</script>		
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
- 	
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<!--siga:Titulo 
-			titulo="censo.busquedaHistorico.literal.titulo1" 
-			localizacion="censo.busquedaHistorico.literal.titulo1"/-->
-		<!-- FIN: TITULO Y LOCALIZACION -->
-	
+		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	</head>
 
 	<body onLoad="ajusteAltoBotones('frameResultado');">
 
-			<!-- TITULO -->
-			<!-- Barra de titulo actualizable desde los mantenimientos -->
-			<table class="tablaTitulo" cellspacing="0" heigth="32">
-				<tr>
-					<td id="titulo" class="titulitosDatos">
-						<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.titulo"/>
-					</td>
-				</tr>
-			</table>
+		<!-- TITULO -->
+		<!-- Barra de titulo actualizable desde los mantenimientos -->
+		<table class="tablaTitulo" cellspacing="0" heigth="32">
+			<tr>
+				<td id="titulo" class="titulitosDatos">
+					<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.titulo"/>
+				</td>
+			</tr>
+		</table>
 	
-			<table  class="tablaCentralCamposGrande"  align="center" border="0">
-				<tr>
-					<td>
-						<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">
-							
-							<html:hidden property="modo"                   value= ""/>
-							<html:hidden property="criterios"              value= ""/>
-							<html:hidden property="idInstitucion"          value="<%=idInstitucion%>"/>
-							<html:hidden property="idTipoServicios"        value="<%=idTipoServicio%>"/>
-							<html:hidden property="idServicio"             value="<%=idServicio%>"/>
-							<html:hidden property="idServiciosInstitucion" value="<%=idServicioInstitucion%>"/>
-	
-							<%if (!modo.toLowerCase().endsWith("consulta")) { %>
-								<siga:ConjCampos leyenda="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.leyenda">
+		<table  class="tablaCentralCamposGrande"  align="center" border="0">
+			<tr>
+				<td>
+					<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">							
+						<html:hidden property="modo"                   value= ""/>
+						<html:hidden property="criterios"              value= ""/>
+						<html:hidden property="idInstitucion"          value="<%=idInstitucion%>"/>
+						<html:hidden property="idTipoServicios"        value="<%=idTipoServicio%>"/>
+						<html:hidden property="idServicio"             value="<%=idServicio%>"/>
+						<html:hidden property="idServiciosInstitucion" value="<%=idServicioInstitucion%>"/>
+
+						<%if (!modo.toLowerCase().endsWith("consulta")) { %>
+							<siga:ConjCampos leyenda="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.leyenda">
 								<table class="tablaCampos" border="0">
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.conector"/>&nbsp;&nbsp;
-											
+											<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.conector"/>
+										</td>
+										<td class="labelText">											
 											<% // if ((modo.equalsIgnoreCase("consulta"))||(queryPorDefecto)){
-											if (modo.equalsIgnoreCase("consulta")){											%>
-												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true"></html:text>
-											<%}else{%>
+												if (modo.equalsIgnoreCase("consulta")){	
+											%>
+												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true" />
+												
+											<% } else { %>
 									  			<select name="conector" id="conector" class="boxCombo">
-															<option value=""></option>
-															<option value="Y">Y</option>
-															<option value="O">O</option>
+													<option value=""></option>
+													<option value="Y">Y</option>
+													<option value="O">O</option>
 												</select>
 											<%}%>
 										</td>
+										
 										<td class="labelText">
-											<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.campo"/>&nbsp;&nbsp;
-				
+											<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.campo"/>
+										</td>
+										<td class="labelText">				
 									  		<% // if ((modo.equalsIgnoreCase("consulta"))||(queryPorDefecto)){
 									  			if (modo.equalsIgnoreCase("consulta")){
 									  		%>
-												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true"></html:text>
-											<%}else{%>
+												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true" />
+												
+											<% } else { %>
 												<siga:ComboBD nombre="campo" tipo="cmbCamposConsulta" clase="boxCombo" obligatorio="false" accion="cambiarTipo(this)" />
-									  		<%}%>
+									  		<% } %>
 										</td>
+										
 										<td>
-											<iframe src="<%=app%>/html/jsp/productos/criteriosClienteFrame.jsp"
-														id="frameOperadorValor"
-														name="frameOperadorValor" 
-														scrolling="no"
-														frameborder="0"
-														marginheight="0"
-														marginwidth="0";					 
-														style="width:500; height:40; z-index:2;left: 0px">
+											<iframe src="<html:rewrite page='/html/jsp/productos/criteriosClienteFrame.jsp'/>"
+												id="frameOperadorValor"
+												name="frameOperadorValor" 
+												scrolling="no"
+												frameborder="0"
+												marginheight="0"
+												marginwidth="0"					 
+												style="width:480px; height:30px; z-index:2; left: 0px">
 											</iframe>
 										</td>
 									</tr>
 								</table>	
-								</siga:ConjCampos>
-							<% } %>
+							</siga:ConjCampos>
+						<% } %>
+					</html:form>
+				</td>
+			</tr>	
+		</table>
 
-						</html:form>
-					</td>
-				</tr>	
-			</table>
+		<siga:ConjBotonesAccion botones='<%=botonNuevo%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
 
-			<siga:ConjBotonesAccion botones='<%=botonNuevo%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
+		<iframe src="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado='<%=resultado%>'"
+			id="frameResultado"
+			name="frameResultado"
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"
+			class="frameGeneral"
+			style="height:480;">
+		</iframe>
 
-			<iframe src="<%=app%>/html/jsp/productos/definirCriteriosCliente.jsp?resultado='<%=resultado%>'"
-				id="frameResultado"
-				name="frameResultado"
-				scrolling="no"
-				frameborder="0"
-				marginheight="0"
-				marginwidth="0";
-				class="frameGeneral">
-			</iframe>
-
-			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G"/>
-
-
+		<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G"/>
 		<!-- FIN: CAMPOS -->
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
-
-
 			var global ="<%=resultado%>";
-
 
 			function incluirParentesis() {
 				var mensaje='<siga:Idioma key="messages.pys.consulta.parentesisIncorrectos"/>';
@@ -225,13 +212,16 @@
 				var final=0;
 				while (todos.length>0) {
 					final = todos.indexOf("*",indice);
+					
 					if (final!=-1) {
 						uno = todos.substring(indice,final);
 						todos = todos.substring(final,todos.length);
+						
 					} else {
 						uno = todos.substring(1,todos.length);
 						todos = "";
 					}
+					
 					//tratamiento de uno
 					var abrir ="0";
 					var cerrar="0";
@@ -239,6 +229,7 @@
 						abrir="1";
 						validador=validador+1;
 					}
+					
 					if (checkCerrar[contador].checked) {
 						cerrar="1";
 						validador=validador-1;
@@ -253,17 +244,16 @@
 					contador = contador + 1;
 				}
 				global = nuevo;
+				
 				if (validador!=0) {
 					alert(mensaje);
 					return false;
 				}
 				return true;
-
 			}
 			
-			<!-- Asociada al boton GuardarYCerrar -->
-			function accionGuardarCerrar() 
-			{			
+			// Asociada al boton GuardarYCerrar
+			function accionGuardarCerrar() {			
 				  sub();
 					if (!existeCondicion()){
 						fin();
@@ -282,20 +272,18 @@
 					document.forms[0].submit();
 			}
 	
-			<!-- Asociada al boton Restablecer -->
-			function accionRestablecer() 
-			{		
+			// Asociada al boton Restablecer 
+			function accionRestablecer() {
 				document.forms[0].reset();
 			}
 	
-			<!-- Asociada al boton Restablecer -->
-			function accionNuevo() 
-			{
-				
+			// Asociada al boton Nuevo
+			function accionNuevo() {				
 				if (document.forms[0].campo.selectedIndex>0){
 					if ((global!="")&&(document.forms[0].conector.selectedIndex==0)){
+						
 						alert('<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-					}else{
+					} else {
 					
 						var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 						var operadorT = operador[operador.selectedIndex].text;
@@ -318,9 +306,10 @@
 						global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";
 						
 						global = global.replace("#","$")
-						document.frameResultado.location.href="<%=app%>/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
+						document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 					}
-				}else{
+					
+				} else {
 					alert('<siga:Idioma key="pys.mantenimientoServicios.literal.campo"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
 				}
 			}
@@ -344,18 +333,16 @@
 					contadorCriterio++;
 				}
 				global = auxiliarResultado;
-				document.frameResultado.location.href="<%=app%>/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
+				document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 
 			}
 			
-			<!-- Asociada al boton Cerrar -->
-			function accionCerrar() 
-			{		
+			// Asociada al boton Cerrar 
+			function accionCerrar() {		
 				// esta funcion cierra la ventana y devuelve 
 				// un valor a la ventana padre (USAR SIEMPRE)
 				top.cierraConParametros("MODICADO");
-			}
-			
+			}			
 			
 			function existeCondicion () {
 				var s = "<%=comprobarCondicion%>";
@@ -370,7 +357,6 @@
 				}
 				return true;
 			}
-
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 				
@@ -378,9 +364,7 @@
 			
 		<!-- INICIO: SUBMIT AREA -->
 		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
-
 	</body>
 </html>
-
