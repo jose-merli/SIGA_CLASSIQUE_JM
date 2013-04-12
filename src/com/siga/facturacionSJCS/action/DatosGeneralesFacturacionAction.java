@@ -974,7 +974,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				
 				Vector resultadoConsulta = criterioAdm.select(consulta);
 				if (resultadoConsulta.size()>0)
-					return exitoModalSinRefresco("messages.factSJCS.error.insertarCriterioFacturacion", request);
+					throw new SIGAException("messages.factSJCS.error.insertarCriterioFacturacion"); 
 			}
 			
 			//comprobamos que la facturacion no se solape con otra ya existente
@@ -991,7 +991,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				
 				//si se solapan, paramos la insercion
 				if (solapamiento) 
-					return exitoModalSinRefresco("messages.factSJCS.facturacionMismoPeriodo",request);
+					throw new SIGAException("messages.factSJCS.facturacionMismoPeriodo"); 
 			}
 			
 			//insertamos
