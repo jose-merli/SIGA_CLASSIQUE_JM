@@ -548,7 +548,8 @@
 			<html:text name="datosGeneralesPagoForm" property="nombre" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>" value="<%=nombre%>" />
 		</td>
 		<td class="labelText" colspan="2">
-			<siga:Idioma key="factSJCS.datosPagos.literal.abreviatura"/>&nbsp;(*)&nbsp;<html:text name="datosGeneralesPagoForm" property="abreviatura" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" />
+			<!-- aalg: INC_06366_SIGA -->
+			<siga:Idioma key="factSJCS.datosPagos.literal.abonoBanco"/>&nbsp;(*)&nbsp;<html:text name="datosGeneralesPagoForm" property="abreviatura" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" />
 		</td>
 	</tr>
 

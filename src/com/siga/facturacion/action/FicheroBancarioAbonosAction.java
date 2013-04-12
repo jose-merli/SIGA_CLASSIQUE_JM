@@ -24,6 +24,8 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenInstitucionAdm;
@@ -41,6 +43,7 @@ import com.siga.beans.FacDisqueteAbonosBean;
 import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.FicheroEmisorAbonoBean;
 import com.siga.beans.FicheroReceptorAbonoBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioAbonosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -252,6 +255,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			FacBancoInstitucionAdm adminBancoInst=new FacBancoInstitucionAdm(this.getUserBean(request));
 			CenInstitucionAdm admInstitucion=new CenInstitucionAdm(this.getUserBean(request));
 			CenPersonaAdm admPersona=new CenPersonaAdm(this.getUserBean(request));
+			//aalg INC_06366_SIGA
+			CenPersonaAdm admPersonaEmisor=new CenPersonaAdm(this.getUserBean(request));
+			CenColegiadoAdm admColegiado=new CenColegiadoAdm(this.getUserBean(request));
 			FacDisqueteAbonosAdm admDisqueteAbonos=new FacDisqueteAbonosAdm(this.getUserBean(request));
 			FacAbonoIncluidoEnDisqueteAdm admAbonoDisquete=new FacAbonoIncluidoEnDisqueteAdm(this.getUserBean(request));
 			CenSucursalesAdm admSucursal=new CenSucursalesAdm(this.getUserBean(request));
@@ -315,7 +321,25 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 								receptor.setDomicilio((String)((Hashtable)direccionDespacho.get(0)).get("DOMICILIO_DESPACHO"));
 								receptor.setPoblacion((String)((Hashtable)direccionDespacho.get(0)).get("POBLACION_DESPACHO"));
 							}
-							receptor.setNombrePago((String)temporal.get("NOMBREPAGO"));
+							//aalg INC_06366_SIGA
+							String sacarLetrado="0";
+							String nombrePago;
+							GenParametrosAdm paramAdm = new GenParametrosAdm(this
+									.getUserBean(request));
+							try {
+								sacarLetrado = paramAdm.getValor(idInstitucion, "FCS",
+										"INCLUIR_LETRADO_CONCEPTO_BANCO", "0");
+							} catch (Exception e) {
+							}
+							if (sacarLetrado.equals("0"))
+								nombrePago = (String)temporal.get("NOMBREPAGO");
+							else{
+								CenColegiadoBean beanColegiado =  admColegiado.getDatosColegiales(Long.valueOf((String)temporal.get(FacAbonoBean.C_IDPERORIGEN)), Integer.valueOf(idInstitucion));
+								nombrePago = (String)temporal.get("NOMBREPAGO") + 
+									'-' + ((beanColegiado.getComunitario().equals("0")) ? beanColegiado.getNColegiado() : beanColegiado.getNComunitario()) +
+									'-' + admPersonaEmisor.obtenerNombreApellidos((String)temporal.get(FacAbonoBean.C_IDPERORIGEN));
+							}
+							receptor.setNombrePago(nombrePago);
 							// <<<
 							receptores.addElement(receptor);						
 						}

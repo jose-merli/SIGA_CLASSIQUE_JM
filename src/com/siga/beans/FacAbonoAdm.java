@@ -1331,7 +1331,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE," +
 //	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS IMPORTE" + "," +
 	            			FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " , " +
-	            			FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO" +
+	            			FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO, " +
+	            			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERORIGEN +
 							" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA +
 							" WHERE " +
 							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
