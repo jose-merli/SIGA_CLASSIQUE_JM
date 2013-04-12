@@ -27,6 +27,7 @@ import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsDesignasLetradoBean;
@@ -355,6 +356,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		ScsDesignasLetradoAdm designaLetradoAdm = new ScsDesignasLetradoAdm(usr);
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(usr);
+		ScsActuacionDesignaAdm  actuacionDesignaAdm = new ScsActuacionDesignaAdm(usr);
 		BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(usr);
 
 //		Variables de salida
@@ -494,6 +496,21 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					idPersonaSaliente,  motivoCompensacion,ClsConstants.COMPENSACIONES);			
 			}
 
+			//BNS INC_07532_SIGA Comprobamos si existen actuaciones con fecha igual o posterior a la fecha
+			// de designación del nuevo letrado para cambiarlas de letrado o no permitirle cambiar en caso de
+			// tener actuaciones pagadas.			
+			int numActuacionesDesignaCambioLetrado = actuacionDesignaAdm.getNumActuacionesDesignaCambioLetrado(designaNueva);
+			if (numActuacionesDesignaCambioLetrado > 0){
+				// Existen actuaciones posteriores				
+				if (actuacionDesignaAdm.hayActuacionesDesignaCambioLetradoPagadas(designaNueva)){
+					// Existen actuaciones pagadas, no permitimos el cambio y mostramos el error
+					throw new SIGAException("Existen actuaciones pagadas del letrado anterior. Revíselas para hacer los Movimientos Varios oportunos");
+				} else {
+					// Pasamos las actuaciones al nuevo letrado
+					actuacionDesignaAdm.actualizarActuacionesCambioLetrado(designaNueva);
+				}
+			}
+			
 //			finalizando transaccion
 			tx.commit();		
 

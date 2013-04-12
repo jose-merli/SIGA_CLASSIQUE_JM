@@ -792,7 +792,116 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		}		
 	}
 
-	
+    //BEGIN BNS INC_07532_SIGA
+	public void actualizarActuacionesCambioLetrado(Hashtable entrada) throws ClsExceptions{
+		String consulta = "UPDATE "+ScsActuacionDesignaBean.T_NOMBRETABLA;
+		consulta += " SET "+ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO+" = "+entrada.get(ScsDesignasLetradoBean.C_IDPERSONA);
+		consulta += " WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION+" = "+ entrada.get(ScsDesignasLetradoBean.C_IDINSTITUCION);
+		consulta += " and "+ScsActuacionDesignaBean.C_IDTURNO+" = "+entrada.get(ScsDesignasLetradoBean.C_IDTURNO);
+		consulta += " and "+ScsActuacionDesignaBean.C_ANIO+" = "+entrada.get(ScsDesignasLetradoBean.C_ANIO);
+		consulta += " and "+ScsActuacionDesignaBean.C_NUMERO+" =  "+ entrada.get(ScsDesignasLetradoBean.C_NUMERO);
+		consulta += " and "+ScsActuacionDesignaBean.C_FECHA+ " >= TO_DATE('"+entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA)+"', 'YYYY / MM / DD HH24 :MI :SS')";
+		try{
+			if (!this.updateSQL(consulta)){
+				throw new ClsExceptions (this.getError());
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizarActuacionesCambioLetrado' en B.D.");
+		}
+	}
+		
+	public boolean hayActuacionesDesignaCambioLetradoPagadas(Hashtable entrada) throws ClsExceptions{
+		Boolean bSalida = null;
+		Vector salida=new Vector();
+		String consulta =	"select count(*) AS NUMERO"+
+							" From "+ScsActuacionDesignaBean.T_NOMBRETABLA +
+							" WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION+" = "+ entrada.get("IDINSTITUCION")+
+							" and "+ScsActuacionDesignaBean.C_IDTURNO+" = "+entrada.get("IDTURNO")+
+							" and "+ScsActuacionDesignaBean.C_ANIO+" = "+entrada.get("ANIO")+
+							" and "+ScsActuacionDesignaBean.C_NUMERO+" =  "+ entrada.get("NUMERO")+
+							" and "+ScsActuacionDesignaBean.C_IDFACTURACION+" is not null";
+		
+		if (entrada.containsKey(ScsDesignasLetradoBean.C_FECHADESIGNA) && entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA) != null){
+			consulta += " and "+ScsActuacionDesignaBean.C_FECHA+ " >= TO_DATE('"+entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA)+"', 'YYYY / MM / DD HH24 :MI :SS')";
+		
+			try{
+				salida = this.ejecutaSelect(consulta);
+				if (salida != null && salida.get(0) != null){
+					Integer numActuacionesPagadas = Integer.valueOf(((Hashtable)salida.get(0)).get("NUMERO").toString().trim());
+					bSalida = numActuacionesPagadas > 0;
+				}
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al ejecutar el 'hayActuacionesDesignaCambioLetradoPagadas' en B.D.");
+			}
+		} else {
+			salida = null;
+		}
+		if (bSalida == null){
+			throw new ClsExceptions ("Error al ejecutar el 'hayActuacionesDesignaCambioLetradoPagadas' en B.D.");
+		}
+		return bSalida.booleanValue();
+	}
+	public int getNumActuacionesDesignaCambioLetrado(Hashtable entrada) throws ClsExceptions{
+		Integer NumActuacionesDesignaCambioLetrado = null;
+		String fechaDesde = null;
+		
+		if (entrada.containsKey(ScsDesignasLetradoBean.C_FECHADESIGNA)){
+			fechaDesde = (String) entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA);
+		}
+		if (fechaDesde != null){		
+			Vector salida = getActuacionesDesigna(entrada, fechaDesde, null, true);
+			if (salida != null && salida.get(0) != null){
+				NumActuacionesDesignaCambioLetrado = Integer.valueOf(((Hashtable)salida.get(0)).get("NUMERO").toString().trim());				
+			}
+		}
+		if (NumActuacionesDesignaCambioLetrado == null){
+			throw new ClsExceptions ("Error al ejecutar el 'getNumActuacionesDesignaCambioLetrado' en B.D.");
+		}
+		return NumActuacionesDesignaCambioLetrado;
+	}	
+	public Vector getActuacionesDesignaCambioLetrado(Hashtable entrada) throws ClsExceptions{
+		String fechaDesde = null;
+		
+		if (entrada.containsKey(ScsDesignasLetradoBean.C_FECHADESIGNA)){
+			fechaDesde = (String) entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA);
+		}
+		if (fechaDesde == null){
+			return null;
+		} else
+			return getActuacionesDesigna(entrada, fechaDesde, null, false);
+	}
+	public Vector getActuacionesDesigna(Hashtable entrada) throws ClsExceptions{
+		return getActuacionesDesigna(entrada, null, null, false);
+	}
+	public Vector getActuacionesDesigna(Hashtable entrada, String fechaDesde, Boolean pagadas, boolean count) throws ClsExceptions {
+		Vector salida=new Vector();
+		String consulta =	"Select * ";
+		if (count)
+			consulta =	"Select count(*) AS NUMERO";
+		consulta +=	" From "+ScsActuacionDesignaBean.T_NOMBRETABLA +
+							" WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION+" = "+ entrada.get("IDINSTITUCION")+
+							" and "+ScsActuacionDesignaBean.C_IDTURNO+" = "+entrada.get("IDTURNO")+
+							" and "+ScsActuacionDesignaBean.C_ANIO+" = "+entrada.get("ANIO")+
+							" and "+ScsActuacionDesignaBean.C_NUMERO+" =  "+ entrada.get("NUMERO");
+		if (fechaDesde != null && !fechaDesde.equals("")){
+			consulta += " and "+ScsActuacionDesignaBean.C_FECHA+ " >= TO_DATE('"+fechaDesde+"', 'YYYY / MM / DD HH24 :MI :SS')";
+		}
+		if (pagadas != null){
+			consulta += " and "+ScsActuacionDesignaBean.C_IDFACTURACION;
+			if (pagadas)
+				consulta += " is not null";
+			else
+				consulta += " is null";
+		}
+		consulta += " Order By Idinstitucion, Idturno, Anio, Numeroasunto ";
+		try{
+			salida = this.ejecutaSelect(consulta);
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'getActuacionesDesigna' en B.D.");
+		}
+		return salida;
+	}
+	//END BNS INC_07532_SIGA
 	public List<AcreditacionForm> getAcreditacionesPendientes(String idInstitucion,String idProcedimiento,String idJuzgado,boolean restriccionesActivas, List<ActuacionDesignaForm> actuacionesList) throws ClsExceptions, SIGAException 
 	{
 	    

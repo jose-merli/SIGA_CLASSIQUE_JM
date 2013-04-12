@@ -658,7 +658,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			sql.append(" AND CAG.IDTURNO = CG.IDTURNO ");
 			sql.append(" AND CAG.IDGUARDIA = CG.IDGUARDIA ");
 			sql.append(" AND CAG.IDCALENDARIOGUARDIAS = CG.IDCALENDARIOGUARDIAS) , 0, ");
-			sql.append(ScsCalendarioGuardiasBean.estadoPteManual);
+			sql.append(ScsCalendarioGuardiasBean.estadoError);
 			sql.append(", ");
 			sql.append(ScsCalendarioGuardiasBean.estadoGenerado);
 			sql.append(" ) ESTADO");
@@ -724,29 +724,8 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			sql.append("'");
 			sql.append(etiquetaConjuntoGuardias);
 			sql.append(": '||CG.DESCRIPCION OBSERVACIONES, ");
-			sql.append(" DECODE(PC.ESTADO,NULL,");
-			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
-			sql.append(",");
-			sql.append(ScsHcoConfProgCalendariosBean.estadoProgramado);
-			sql.append(",");
-			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
-			sql.append(",");
-			sql.append(ScsHcoConfProgCalendariosBean.estadoProcesando);
-			sql.append(",");
-			sql.append(ScsCalendarioGuardiasBean.estadoProcesando);
-			sql.append(",");
-			sql.append(ScsHcoConfProgCalendariosBean.estadoError);
-			sql.append(",");
-			sql.append(ScsCalendarioGuardiasBean.estadoError);
-			sql.append(",");
-			sql.append(ScsHcoConfProgCalendariosBean.estadoCancelado);
-			sql.append(",");
-			sql.append(ScsCalendarioGuardiasBean.estadoCancelado);
-			sql.append(",");
-			sql.append(ScsHcoConfProgCalendariosBean.estadoReprogramado);
-			sql.append(",");
-			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);
-			
+			sql.append(" NVL(HPC.ESTADO, ");				
+			sql.append(ScsCalendarioGuardiasBean.estadoProgramado);		
 			sql.append(") ESTADO ");
 			sql.append(",null IDTURNO ");
 			sql.append(",null IDGUARDIA ");
@@ -756,42 +735,26 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			
 			
 			sql.append(" FROM SCS_PROG_CALENDARIOS          PC, ");
+			sql.append(" SCS_HCO_CONF_PROG_CALENDARIOS HPC, ");
 			sql.append(" SCS_CONJUNTOGUARDIAS          CG, ");
-			sql.append(" SCS_CONF_CONJUNTO_GUARDIAS    GG, ");
 			sql.append(" SCS_GUARDIASTURNO             GT, ");
 			sql.append(" SCS_TURNO                     T ");
 			sql.append(" WHERE PC.IDCONJUNTOGUARDIA = CG.IDCONJUNTOGUARDIA ");
-			sql.append(" AND PC.IDINSTITUCION = CG.IDINSTITUCION ");
+			sql.append(" AND PC.IDINSTITUCION = CG.IDINSTITUCION ");			
 
-			sql.append(" AND CG.IDINSTITUCION = GG.IDINSTITUCION(+) ");
-			sql.append(" AND CG.IDCONJUNTOGUARDIA = GG.IDCONJUNTOGUARDIA(+) ");
-
-			sql.append(" AND GG.IDINSTITUCION = GT.IDINSTITUCION(+) ");
-			sql.append(" AND GG.IDTURNO = GT.IDTURNO(+) ");
-			sql.append(" AND GG.IDGUARDIA = GT.IDGUARDIA(+) ");
-			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION(+) ");
-			sql.append(" AND GT.IDTURNO = T.IDTURNO(+) ");
-
-
-			sql.append(" AND PC.ESTADO NOT IN (:");
-			contador++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),ScsProgCalendariosBean.estadoFinalizado);
-			sql.append(") ");
-   
-			sql.append(" AND (SELECT HCO.ESTADO from SCS_HCO_CONF_PROG_CALENDARIOS HCO ");
-			sql.append(" WHERE HCO.IDPROGCALENDARIO = PC.IDPROGCALENDARIO ");
-			sql.append(" AND HCO.IDCONJUNTOGUARDIA = PC.IDCONJUNTOGUARDIA ");
-			sql.append(" AND HCO.IDINSTITUCION = PC.IDINSTITUCION ");
-			sql.append(" AND HCO.IDTURNO = GG.IDTURNO ");
-			sql.append(" AND HCO.IDGUARDIA = GG.IDGUARDIA) NOT IN (:");
-			contador++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),ScsHcoConfProgCalendariosBean.estadoFinalizado);
-			sql.append(") ");
-		
+			sql.append(" AND HPC.IDINSTITUCION = GT.IDINSTITUCION ");
+			sql.append(" AND HPC.IDTURNO = GT.IDTURNO ");
+			sql.append(" AND HPC.IDGUARDIA = GT.IDGUARDIA ");
 			
-			sql.append(" AND GG.IDINSTITUCION = :");
+			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION ");
+			sql.append(" AND GT.IDTURNO = T.IDTURNO ");
+
+			sql.append(" AND HPC.IDINSTITUCION = PC.IDINSTITUCION ");
+			sql.append(" AND HPC.IDPROGCALENDARIO = PC.IDPROGCALENDARIO ");
+			
+			sql.append(" AND not exists (select * from SCS_CALENDARIOGUARDIAS CAL where HPC.IDTURNO = CAL.IDTURNO AND HPC.IDGUARDIA = CAL.IDGUARDIA AND HPC.IDINSTITUCION = CAL.IDINSTITUCION AND PC.Fechacalinicio = CAL.Fechainicio AND PC.Fechacalfin = CAL.Fechafin) ");
+			
+			sql.append(" AND HPC.IDINSTITUCION = :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdInstitucion());
@@ -871,7 +834,8 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 					definirCalendarioGuardiaForm.setGuardia(guardia);
 					definirCalendarioGuardiaForm.setTurno(turno);
 					definirCalendarioGuardiaForm.setEstado(UtilidadesHash.getString(htFila, "ESTADO"));
-					if(definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoGenerado)||definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoPteManual)){
+					//BNS INC_10626_SIGA Incluimos todos los que tienen log.
+					//if(definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoGenerado)||definirCalendarioGuardiaForm.getEstado().equals(ScsCalendarioGuardiasBean.estadoPteManual)){
 						StringBuffer sFicheroLog = new StringBuffer(directorioLogCalendarios);
 						sFicheroLog.append(File.separator);
 						sFicheroLog.append(calendarioGuardiasBean.getIdInstitucion());
@@ -898,7 +862,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 						definirCalendarioGuardiaForm.setElementosFila(elementosFila);
 					
 						
-					}
+					//}
 					
 					
 				}

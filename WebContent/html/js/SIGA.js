@@ -29,7 +29,7 @@ function alert(message, title, acceptText) {
 }
 */
 var alertStop = window.alert;
-
+/*
 window.alert=function (message, estilo) {
 	var returnValue = true;
 	var windowTop=window.top;
@@ -37,6 +37,7 @@ window.alert=function (message, estilo) {
 	windowTop.growl(message,estilo);
 	return returnValue;
 }
+*/
 /*
 function confirm(message, title, acceptText, cancelText) {
 	var returnValue = false;
@@ -69,7 +70,7 @@ try {
 	if( ($.browser.safari) && (window.top.dialogArguments) ){
 		// Only applies to Windows Safari browsers
 		if(/win32/.test(navigator.platform.toLowerCase())){
-			$(document).keydown(function(event) {
+			jQuery(document).keydown(function(event) {
 				// Backspace key works fine
 				if(event.which == 8){
 					return true;
@@ -1452,4 +1453,185 @@ document.getElementById = function(elemIdOrName) {
     return result;
 };
 
+//BNS
+var jQuery = false;
+try{
+	if (window.jQuery){
+		jQuery = window.jQuery;
+	} else if (window.$){
+		jQuery = window.$;
+	} else if (window.parent.jQuery){
+		jQuery = window.parent.jQuery;
+	} else if (window.parent.$){
+		jQuery = window.parent.$;
+	} else if (window.top.jQuery){
+		jQuery = window.top.jQuery;
+	} else if (window.top.$)
+		jQuery = window.top.$;
+} catch(msg){
+	jQuery = false;
+}
+
+if (jQuery){
+	(function(){
+		if(!jQuery.fn.watch){
+			jQuery.fn.watch = function(props, callback, timeout){
+			    if(!timeout)
+			        timeout = 10;
+			    return this.each(function(){
+			        var el         = jQuery(this),
+			            func     = function(){ __check.call(this, el); },
+			            data     = {    props:     props.split(","),
+			                        func:     callback,
+			                        vals:     [] };
+			            jQuery.each(data.props, function(i) { data.vals[i] = el.attr(data.props[i]); });
+			        el.data(data);
+			        if (typeof (this.onpropertychange) == "object"){
+			            el.bind("propertychange", callback);
+			        } else if (jQuery.browser.mozilla){
+			            el.bind("DOMAttrModified", callback);
+			        } else {
+			            setInterval(func, timeout);
+			        }
+			    });
+			    function __check(el) {
+			        var data     = el.data(),
+			            changed = false,
+			            temp    = "";
+			        for(var i=0;i < data.props.length; i++) {
+			            temp = el.attr(data.props[i]);
+			            if(data.vals[i] != temp){
+			                data.vals[i] = temp;
+			                changed = true;
+			                break;
+			            }
+			        }
+			        if(changed && data.func) {
+			            data.func.call(el, data);
+			        }
+			    }
+			};
+			var original_removeAttr = jQuery.fn.removeAttr;
+			jQuery.fn.removeAttr = function(){
+				original_removeAttr.apply(this, arguments);
+				//alert(jQuery(this).attr("id")+".removeAttr("+arguments+")");
+				jQuery(this).each(function(){
+					if (jQuery(this).is("select"))
+						disableSelect(jQuery(this));
+				});
+			};
+			/*
+			var original_attr = jQuery.fn.attr;
+			jQuery.fn.attr = function(attrname, attrvalue){
+				original_attr.apply(this,arguments);
+				//alert(jQuery(this).attr("id")+".attr("+attrname+")");
+				jQuery(this).each(function(){
+					if (jQuery(this).is("select"))
+						disableSelect(jQuery(this));
+				});
+			};
+			*/
+		}
+	})();
+	//var log = "";
+	if (typeof modo != "undefined" && modo.toUpperCase() === "VER"){
+		jQuery(document).ready(function() {	
+		    jQuery(window).load(function (){
+		    	iniInputSelect(false);
+	//	    	if (log != "")
+	//	    		alert(log);
+		    });
+		});
+	}
+	
+	function iniInputSelect(frames){
+		var selects = undefined;
+		if (frames){
+			selects = frames.find("select").not(".inputSelect");
+			frames.addClass("inputSelect");
+		} else
+			selects = jQuery("select").not(".inputSelect");
+		
+		selects.each(function(){
+	    	   var select = jQuery(this);
+	    	   select.addClass("inputSelect");
+	    	   //select.change(function(event){disableSelect(jQuery(this));});
+	    	   if (typeof (this.onpropertychange) == "object"){
+					//alert("voy por onpropertychange");
+					select.bind("propertychange", function(event){disableSelect(jQuery(this));});
+				} else{
+					try{
+						select.watch('disabled', function(){
+							disableSelect(jQuery(this));											
+						});
+						//alert("voy por watch");
+					} catch(msg) {
+						if (this.addEventListener){ 
+				    		   select.bind("DOMAttrModified", function(event){disableSelect(jQuery(this));});
+				    		   //alert("voy por DOMAttrModified");
+			    	   } else {
+			    		   // No hay forma de detectar la modificación del atributo
+			    	   }
+					}
+				}	            
+				disableSelect(select);
+	    });
+		if (frames){
+			if (frames.find("iframe").not("inputSelect").length > 0)
+				iniInputSelect(frames.find("iframe").not("inputSelect").contents());			
+		} else if (jQuery("iframe").not("inputSelect").length > 0)
+				iniInputSelect(jQuery("iframe").not("inputSelect").contents());
+	}
+		
+	var selectId = 0;
+	function disableSelect(select){
+		//alert("BEGIN disableSelect");
+		if (select.length > 0 && select.is("select")){
+			if (select.length > 1){
+				select.each(function(){
+					disableSelect(jQuery(this));
+				});
+			} else {
+				if (select.attr("id") == undefined || select.attr("id") === ""){
+					if (select.attr("name") == undefined || select.attr("name") === ""){				
+						select.attr("id", "select_"+selectId);
+						select.attr("name", "select_"+selectId);
+						selectId++;
+					} else {
+						select.attr("id", select.attr("name"));
+					}
+				}
+				if (select.parent().find("#"+select.attr("id")+"_inputDisabled").length > 0){
+					select.parent().find("#"+select.attr("id")+"_inputDisabled").remove();
+				}
+				if (select.is(":disabled") || select.is("[readonly]") || select.hasClass("boxConsulta")){
+					
+					var inputDisabled = document.createElement("input");
+					inputDisabled.setAttribute("type", "text");
+					if (select.val() != "-1")
+						inputDisabled.setAttribute("value", select.find("option[value="+select.val()+"]").text());					
+					inputDisabled.setAttribute("id", select.attr("id")+"_inputDisabled");
+					if (select.attr("name") == undefined || select.attr("name") === ""){
+						inputDisabled.setAttribute("name", select.attr("name")+"_inputDisabled");
+					} else {
+						inputDisabled.setAttribute("name", select.attr("id")+"_inputDisabled");
+					}
+
+					select.after(jQuery(inputDisabled));
+					select.change(function(){
+						jQuery(jQuery(this).attr("id")+"_inputDisabled").val(select.find("option[value="+jQuery(this).val()+"]").text());
+					});
+					jQuery("#"+select.attr("id")+"_inputDisabled").addClass("boxConsulta");
+					jQuery("#"+select.attr("id")+"_inputDisabled").addClass("inputDisabled");					
+					jQuery("#"+select.attr("id")+"_inputDisabled").attr("readonly","readonly");
+					select.hide();
+				} else {
+					select.show();			
+				}
+				//alert("ENCONTRADO: " + select.attr("id"));
+				//log += select.attr("id") + "; ";
+			}
+		}
+	}
+}
 fin();

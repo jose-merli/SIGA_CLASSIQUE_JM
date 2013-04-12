@@ -18,11 +18,18 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
-
+<%
+String modo = (String) request.getSession().getAttribute("Modo");
+%>
 <html>
 
 <!-- HEAD -->
 <head>
+<c:if test="${ProgrCalendariosFormEdicion.modo=='consultarProgrCalendarios'}">
+	<script type="text/javascript">
+	var modo = "VER";
+	</script>
+</c:if>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
 	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
 		
@@ -179,12 +186,26 @@
 		</tr>
 		<tr>
 				<td class="labelText"><siga:Idioma key='gratuita.calendarios.programacion.conjuntoGuardias'/></td>
-				<td><html:select styleClass="boxCombo" style="width:320px;"
+				<td>
+				<c:choose>
+				<c:when test="${ProgrCalendariosFormEdicion.modo=='consultarProgrCalendarios'}">					
+					<html:select styleClass="boxConsulta" style="width:320px;" readonly="true"
+								property="idConjuntoGuardia" id="idConjuntoGuardia"  onchange="onChangeConjuntoGuardia();" value="${ProgrCalendariosFormEdicion.idConjuntoGuardia}" disabled="disabled">
+						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
+						<html:optionsCollection name="ConjuntoGuardiasForms" value="idConjuntoGuardia"
+									label="descripcion" />
+					</html:select>
+				</c:when>
+				<c:otherwise>
+					<html:select styleClass="boxCombo" style="width:320px;"
 								property="idConjuntoGuardia" id="idConjuntoGuardia"  onchange="onChangeConjuntoGuardia();" value="${ProgrCalendariosFormEdicion.idConjuntoGuardia}" >
 						<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
 						<html:optionsCollection name="ConjuntoGuardiasForms" value="idConjuntoGuardia"
 									label="descripcion" />
 					</html:select>
+				</c:otherwise>
+				</c:choose>
+				 
 				</td>
 				
 				

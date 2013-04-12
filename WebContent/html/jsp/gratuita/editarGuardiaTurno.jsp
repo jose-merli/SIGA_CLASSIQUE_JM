@@ -53,7 +53,9 @@
 	//Modo de las pestanhas anteriores:
 	String modoPestanha = request.getAttribute("MODOPESTANA") == null ? ""
 			: (String) request.getAttribute("MODOPESTANA");
-
+	
+	String modo = modoPestanha.toUpperCase();
+	
 	Hashtable hash = (Hashtable) beanGuardiasTurno.getOriginalHash();
 	String inscripcion = (String) ses.getAttribute("inscripcion");
 	String action = (String) request.getAttribute("action");
@@ -187,7 +189,9 @@
 
 <!-- HEAD -->
 <head>
-
+	<script type="text/javascript">
+	var modo = "<%=modo%>";
+	</script>
 	<link id="default" rel="stylesheet" type="text/css"
 		href="<%=app%>/html/jsp/general/stylesheet.jsp" />
 	<link rel="stylesheet"

@@ -371,6 +371,9 @@
 <!-- HEAD -->
 <head>
 
+	<script type="text/javascript">
+	var modo = "<%=modo%>";
+	</script>
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
 		
 	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
