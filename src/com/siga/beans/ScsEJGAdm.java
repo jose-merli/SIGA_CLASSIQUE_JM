@@ -4364,10 +4364,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("NOMBRE_POBLACION_DEST", "");
 					registro.put("NOMBRE_PROVINCIA_DEST", "");
 					//registro.put("NOMBRE_PAIS_DEST", "");
-					
-					
-					
 				}		
+				
+				// JPT: OBTIENE LA ULTIMA FECHA CON ESTADO 'Remitido Comision': FECHAREMITIDO_COMISION y FECHAREMITIDO_COMISION_LETRA				
+				Hashtable hFechaRemitidoComision = getFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
+				registro.put("FECHAREMITIDO_COMISION", "");
+				registro.put("FECHAREMITIDO_COMISION_LETRA", "");
+				registro.putAll(hFechaRemitidoComision);
+				
+				
+				// JPT: OBTIENE LA FECHA DE REUNION DEL ACTA DEL EJG: FECHAREUNION_ACTA y FECHAREUNION_ACTA_LETRA
+				Hashtable hFechaReunion = getFechaReunionActaEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
+				registro.put("FECHAREUNION_ACTA", "");
+				registro.put("FECHAREUNION_ACTA_LETRA", "");
+				registro.putAll(hFechaReunion);
 				
 				Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
 				Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
@@ -6042,5 +6052,84 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, e.getMessage());
 		}
 		
+	}	
+	
+	/**
+	 * JPT: OBTIENE LA FECHA DE REUNION DEL ACTA DEL EJG: FECHAREUNION_ACTA y FECHAREUNION_ACTA_LETRA
+	 * @param idInstitucion
+	 * @param idTipoEjg
+	 * @param anio
+	 * @param numero
+	 * @param idioma
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable getFechaReunionActaEjg(String idInstitucion, String idTipoEjg, String anio, String numero, String idioma) throws ClsExceptions  {
+		Hashtable salida = new Hashtable();
+		
+		try {
+			String sql = "SELECT TO_CHAR(ACTA.FECHAREUNION, 'dd/mm/yyyy') AS FECHAREUNION_ACTA, " +
+					" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ACTA.FECHAREUNION , 'DMA', " + idioma + ") AS FECHAREUNION_ACTA_LETRA " +
+				" FROM SCS_EJG EJG, SCS_ACTACOMISION ACTA " +				
+				" WHERE EJG.ANIO = " + anio +
+					" AND EJG.NUMERO = " + numero +
+					" AND EJG.IDINSTITUCION = " + idInstitucion + 
+					" AND EJG.IDTIPOEJG = " + idTipoEjg +
+					" AND EJG.IDACTA =  ACTA.IDACTA " +
+					" AND EJG.IDINSTITUCION = ACTA.IDINSTITUCION " +
+					" AND EJG.ANIOACTA = ACTA.ANIOACTA";
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					Row fila = (Row) rc.get(0);
+					salida = fila.getRow();	                  
+				}
+			} 
+				
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion de la fecha de reunión");
+		}
+		
+		return salida;
+	}
+	
+	/**
+	 * JPT: OBTIENE LA ULTIMA FECHA CON ESTADO 'Remitido Comision': FECHAREMITIDO_COMISION y FECHAREMITIDO_COMISION_LETRA
+	 * @param idInstitucion
+	 * @param idTipoEjg
+	 * @param anio
+	 * @param numero
+	 * @param idioma
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable getFechaRemitidoComision(String idInstitucion, String idTipoEjg, String anio, String numero, String idioma) throws ClsExceptions  {
+		Hashtable salida = new Hashtable();
+		
+		try {
+			String sql = "SELECT TO_CHAR(ESTADOS.FECHAINICIO, 'dd/mm/yyyy') AS FECHAREMITIDO_COMISION, " +
+					" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ESTADOS.FECHAINICIO , 'DMA', " + idioma + ") AS FECHAREMITIDO_COMISION_LETRA " +
+				" FROM SCS_ESTADOEJG ESTADOS " +
+				" WHERE ESTADOS.IDINSTITUCION = " + idInstitucion + 
+					" AND ESTADOS.IDTIPOEJG = " + idTipoEjg +
+					" AND ESTADOS.ANIO = " + anio + 
+					" AND ESTADOS.NUMERO = " + numero +
+					" AND ESTADOS.IDESTADOEJG = " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() +
+				" ORDER BY ESTADOS.FECHAMODIFICACION DESC ";
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					Row fila = (Row) rc.get(0);
+					salida = fila.getRow();	                  
+				}
+			} 
+				
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion de la fecha de remitido de comisión");
+		}
+		
+		return salida;
 	}	
 }
