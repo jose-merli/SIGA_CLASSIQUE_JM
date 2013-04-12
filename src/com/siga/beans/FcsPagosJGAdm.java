@@ -1306,7 +1306,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		//mhg - INC_08011_SIGA
 		String sql= "select pago.*, " +
 					" cen.APELLIDOS1 || ' ' || cen.APELLIDOS2 || ', ' || cen.NOMBRE AS NOMBREPERSONA, "+
-					" decode(col.ncomunitario, 1, col.ncomunitario, col.ncolegiado) as NCOLEGIADO " +
+					" decode(col.comunitario, 1, col.ncomunitario, col.ncolegiado) as NCOLEGIADO " +
 					" from (";
 		try {
 			sql += getQueryDetallePagoColegiado(idInstitucion.toString(), idPago
