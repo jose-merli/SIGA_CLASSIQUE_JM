@@ -173,7 +173,8 @@ public class ConfiguracionAbonosAction extends MasterAction{
 		} catch(Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
 		}
-		return exitoModal("messages.updated.success",request);
+		//aalg: INC_10653_SIGA
+		return exito("messages.updated.success",request);
 	}
 
 }
