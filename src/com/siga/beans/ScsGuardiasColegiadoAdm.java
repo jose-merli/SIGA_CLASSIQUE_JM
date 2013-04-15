@@ -1723,6 +1723,17 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			Integer indicePeriodo,
 			String fechaInicio,
 			String fechaFin,
+			UsrBean usr) throws ClsExceptions, SIGAException {
+		insertarGuardiaManual(idInstitucion, idTurno, idGuardia, idPersonaEntrante, null, indicePeriodo, fechaInicio, fechaFin, usr);
+	}
+	public void insertarGuardiaManual(String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String idPersonaEntrante,
+			String sIdCalendarioGuardias,
+			Integer indicePeriodo,
+			String fechaInicio,
+			String fechaFin,
 			UsrBean usr) throws ClsExceptions, SIGAException
 	{
 		// Controles
@@ -1732,21 +1743,30 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 		// Variables
 		Long idPersona = new Long(idPersonaEntrante);// miForm.getIdPersona();
-		Integer idCalendarioGuardias;// miForm.getIdCalendarioGuardias();
+		Integer idCalendarioGuardias = null;// miForm.getIdCalendarioGuardias();
+		if (sIdCalendarioGuardias != null && !sIdCalendarioGuardias.equals("")){
+			try{
+				idCalendarioGuardias = Integer.valueOf(sIdCalendarioGuardias);
+			} catch (Exception e) {
+				idCalendarioGuardias = null;
+			}
+		}
 		String fechaInicioCalendario;
 		String fechaFinCalendario;
 		int indexPeriodo;// Integer.parseInt(miForm.getIndicePeriodo());
 
 		// obteniendo calendario donde se insertara la guardia
-		ScsCalendarioGuardiasBean calendarioGuardiasBean = calAdm.getCalendarioGuardias(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia), (fechaInicio == null) ? fechaFin : fechaInicio); 
-		if (calendarioGuardiasBean == null)
-			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
-		idCalendarioGuardias = calendarioGuardiasBean.getIdCalendarioGuardias();
+		if (idCalendarioGuardias == null){
+			ScsCalendarioGuardiasBean calendarioGuardiasBean = calAdm.getCalendarioGuardias(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia), (fechaInicio == null) ? fechaFin : fechaInicio); 
+			if (calendarioGuardiasBean == null)
+				throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+			idCalendarioGuardias = calendarioGuardiasBean.getIdCalendarioGuardias();
+		}
 
 		// calculando los periodos de guardias
 		CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 		calendarioSJCS.inicializaParaMatriz(new Integer(idInstitucion), new Integer(idTurno),
-				new Integer(idGuardia), new Integer(idCalendarioGuardias), null, usr, null);
+				new Integer(idGuardia), idCalendarioGuardias, null, usr, null);
 		calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 		// Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
 		ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();

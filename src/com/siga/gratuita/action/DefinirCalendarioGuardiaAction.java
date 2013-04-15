@@ -1804,7 +1804,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			indicePeriodo = Integer.parseInt(miForm.getIndicePeriodo());
 
 			guardiasColegiadoAdm.insertarGuardiaManual(idInstitucion,idTurno,
-					idGuardia, idPersona, 
+					idGuardia, idPersona, idCalendarioGuardias,
 					indicePeriodo,fechaInicio,fechaFin, usr);
 			
 
