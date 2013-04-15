@@ -212,7 +212,14 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
 		ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosAdm.getNextProgrCalendario();
-		String textoAutomatico = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.calendarios.generado.automatico") ;
+		//aalg. INC_09393_SIGA
+		String textoAutomatico;
+		if (progCalendariosBean != null){
+			UsrBean usr = UsrBean.UsrBeanAutomatico(progCalendariosBean.getIdInstitucion().toString());
+			textoAutomatico = UtilidadesString.getMensajeIdioma(usr, "gratuita.calendarios.generado.automatico") ;
+		}
+		else
+			textoAutomatico = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.calendarios.generado.automatico") ;
 		if(progCalendariosBean!=null){
 			ScsHcoConfProgCalendariosBean hcoConfProgCalendariosBean = null;
 			try {
