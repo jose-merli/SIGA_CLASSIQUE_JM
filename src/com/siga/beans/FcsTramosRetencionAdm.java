@@ -228,19 +228,15 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		sql.append(",:");
-		htCodigos.put(new Integer(contador),importeSMI);
+		//aalg: INC_10651_SIGA
+		Double totalImporteSMI = Double.valueOf(importeSMI) * Double.valueOf(numMeses);
+		htCodigos.put(new Integer(contador),totalImporteSMI.toString());
 		contador ++;
 		sql.append(contador);
-//		sql.append(",:");
 		htCodigos.put(new Integer(contador),idInstitucion);
-//		contador ++;
-//		sql.append(contador);
-//		htCodigos.put(new Integer(contador),numMeses);
-				
+			
 		sql.append(") AS IMPORTE_RETENCION FROM DUAL ");
-		
-	    
-	
+
 		Double importeRetencion = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
@@ -251,10 +247,6 @@ public class FcsTramosRetencionAdm extends MasterBeanAdministrador {
             	Row fila = (Row) rc.get(0);
         		Hashtable<String, Object> htFila=fila.getRow();
         		importeRetencion = UtilidadesHash.getDouble(htFila,"IMPORTE_RETENCION");
-        		importeRetencion = importeRetencion*Double.valueOf(numMeses);
-            	
-            	
-    			
             }else 
             	throw new SIGAException("FactSJCS.mantRetencionesJ.plAplicarRetencionesJudiciales.error.tramosLEC");
             

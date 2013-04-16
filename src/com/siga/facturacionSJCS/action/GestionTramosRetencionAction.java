@@ -152,23 +152,41 @@ public class GestionTramosRetencionAction extends MasterAction {
 		String numMeses = miForm.getNumeroMeses();
 		String importe = miForm.getImporte();
 		
-		FcsTramosRetencionAdm admFcsTramosRetencionAdm = new FcsTramosRetencionAdm(usr);
-		try {
-			Double importeRetencion = admFcsTramosRetencionAdm.getImporteRetenido(importe,UtilidadesString.replaceAllIgnoreCase(miForm.getSmi(),",",".") ,usr.getLocation(),numMeses);
-			if(importeRetencion==-1)
-				importeRetencion = (double)0;
-			
-			miForm.setImporteRetencion(UtilidadesNumero.formato(importeRetencion));
+		if (esDecimal(importe)){
+			FcsTramosRetencionAdm admFcsTramosRetencionAdm = new FcsTramosRetencionAdm(usr);
+			try {
+				Double importeRetencion = admFcsTramosRetencionAdm.getImporteRetenido(importe,UtilidadesString.replaceAllIgnoreCase(miForm.getSmi(),",",".") ,usr.getLocation(),numMeses);
+				if(importeRetencion==-1)
+					importeRetencion = (double)0;
+	
+				miForm.setImporteRetencion(UtilidadesNumero.formato(importeRetencion));
+				List listaParametros = new ArrayList();
+				listaParametros.add(miForm.getImporteRetencion());
+				respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+			} catch (SIGAException e) {
+				List listaParametros = new ArrayList();
+				listaParametros.add("0");
+				respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+			}
+		}
+		else{
+			miForm.setImporteRetencion("");
 			List listaParametros = new ArrayList();
 			listaParametros.add(miForm.getImporteRetencion());
 			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
-		} catch (SIGAException e) {
-			List listaParametros = new ArrayList();
-			listaParametros.add("0");
-			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
 		}
+			
 	}
 
+	protected boolean esDecimal(String cad){
+		try{
+			Double.parseDouble(cad);
+			return true;
+		}catch(NumberFormatException nfe){
+			return false;
+		}
+	}
+	
 	protected void getAjaxSmi(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 

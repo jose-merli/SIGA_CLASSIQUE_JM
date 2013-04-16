@@ -845,7 +845,13 @@ function replaceAll(text, busca, reemplaza) {
 	return text;
 }
 
-
+//aalg. valida float con coma, no con punto
+function validaFloat(numero){
+  if (!/^([0-9])*[,]?[0-9]*$/.test(numero))
+  	return false;
+  else 
+	return true;
+}
 
 /**
  * Redondea num con dec posiciones decimales

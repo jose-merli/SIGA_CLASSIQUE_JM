@@ -40,7 +40,7 @@
 <siga:TituloExt titulo="menu.fcs.tramosLEC"	localizacion="fcs.tramosLEC.gestion.localizacion" />
 
 <script type="text/javascript">
-	
+//aalg: INC_10652_SIGA. Se añaden validaciones de números en los campos configurables
 	function postAccionAnio(){
 		if(TramosRetencionForm.smi.value=='0')
 			alert('<siga:Idioma key="fcs.tramosLEC.mensaje.error.AñoSinSmi"/>');
@@ -49,24 +49,39 @@
 		
 	}
 	function onChangeNumeroMeses(){
-		if(TramosRetencionForm.numeroMeses.value==0||TramosRetencionForm.numeroMeses.value>12){
-			// TramosRetencionForm.numeroMeses.value = '1';
-			alert('<siga:Idioma key="fcs.tramosLEC.mensaje.aviso.numMesesErroneo"/>');
-			return;
+		if (isNumero(TramosRetencionForm.numeroMeses.value)){
+			if(TramosRetencionForm.numeroMeses.value==0||TramosRetencionForm.numeroMeses.value>12){
+				// TramosRetencionForm.numeroMeses.value = '1';
+				alert('<siga:Idioma key="fcs.tramosLEC.mensaje.aviso.numMesesErroneo"/>');
+				return;
+			}
+			document.getElementById('idImporte').onchange();
+			document.getElementById('idBuscarTramosRetencion').onclick();
 		}
-		document.getElementById('idImporte').onchange();
-		document.getElementById('idBuscarTramosRetencion').onclick();
-		
-		
-		
+		else{
+			alert('<siga:Idioma key="fcs.tramosLEC.mensaje.aviso.numMesesErroneo"/>');
+			TramosRetencionForm.numeroMeses.value = "1";
+			onChangeNumeroMeses();
+		}
 	}
 	function onChangeSmi(){
-		
-		document.getElementById('idImporte').onchange();
-		document.getElementById('idBuscarTramosRetencion').onclick();
-		
-		
-		
+		TramosRetencionForm.smi.value=TramosRetencionForm.smi.value.replace(".",",");
+		if (validaFloat(TramosRetencionForm.smi.value)){
+			document.getElementById('idImporte').onchange();
+			document.getElementById('idBuscarTramosRetencion').onclick();
+		}
+		else{
+			TramosRetencionForm.smi.value="";
+			TramosRetencionForm.importeRetencion.value="";
+			document.getElementById('idBuscarTramosRetencion').onclick();
+		}	
+	}
+	function onChangeImporte(){
+		TramosRetencionForm.importe.value=TramosRetencionForm.importe.value.replace(".",",");
+		if (validaFloat(TramosRetencionForm.importe.value)){
+			document.getElementById('idImporte').onchange();
+			document.getElementById('idBuscarTramosRetencion').onclick();
+		}
 	}
 	function preAccionImporte(){
 		TramosRetencionForm.importe.value=TramosRetencionForm.importe.value.replace(/,/,".");
@@ -81,7 +96,8 @@
 		
 	}
 	function postAccionImporte(){
-		
+		if (TramosRetencionForm.importeRetencion.value=="")
+			TramosRetencionForm.importe.value="";
 	}
 	function postAccionBuscarTramosRetencion(){
 		
