@@ -235,12 +235,14 @@
 										<td class="labelText" width="212">
 											<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 										</td>
-										<td width="230">
+										<td width="300">
 											<%if (accion.equalsIgnoreCase("ver")){%>
 												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
 											<%}else{%>
 												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 											<%}%>
+											<input type="button" alt="abrir"  id="botonAbrirActa" onclick="return abrirActa();" class="button" name="idButton" value='<%=UtilidadesString.getMensajeIdioma(usr,"general.boton.abrirActa")%>' />
+											
 										</td>
 									<%} else {%>
 										<html:hidden property="idActaComp" value ="<%=idActa%>"/>
@@ -249,7 +251,7 @@
 									<td class="labelText" width="220">
 										<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
 									</td>
-									<td width="250">
+									<td width="200">
 										<%if (accion.equalsIgnoreCase("ver")){%>
 											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
 										<%} else {%>
@@ -431,6 +433,16 @@
 		<input type="hidden" name="tablaDatosDinamicosD" value="">
 	</form>
 	
+	<html:form action="/JGR_ActasComision" target="mainWorkArea" method="post">
+		<html:hidden property="modo" value="<%=accion %>"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="anioActa"/>
+		<html:hidden property="idActa"/>
+		<input type='hidden' name='oculto0_1' value='<%=idActa%>'>
+		<input type='hidden' name='oculto0_2' value='<%=usr.getLocation()%>'>
+		<input type='hidden' name='oculto0_3' value='<%=anio%>'>
+	</html:form>
+	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
@@ -507,6 +519,27 @@
 		function resetActa(){
 			jQuery("#idActaComp").val('');
 		}
+		
+		function abrirActa(){
+			if(document.getElementById("idActaComp")&&document.getElementById("idActaComp").value!=""){
+				var actaComp= document.getElementById("idActaComp").value.split(',');
+				document.ActaComisionForm.idInstitucion.value=actaComp[0];
+				document.ActaComisionForm.anioActa.value=actaComp[1];
+				document.ActaComisionForm.idActa.value=actaComp[2];
+				document.ActaComisionForm.submit();
+			}
+		}
+		
+		jQuery(document).ready(function(){
+			// Añadimos un listener al combo del acta para habilitar el boton de "abrir" 
+			jQuery("#idActaComp").change(
+					function() {
+						if(jQuery("#idActaComp option:selected").val()==0)
+							jQuery("#botonAbrirActa").attr('disabled','disabled');
+						else
+							jQuery("#botonAbrirActa").removeAttr('disabled');
+					});
+		});
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

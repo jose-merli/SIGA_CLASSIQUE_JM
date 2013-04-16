@@ -163,7 +163,7 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>&nbsp;(*)
 			</td>
-			<td>
+			<td class="labelText">
 				<%if (accion.equalsIgnoreCase("ver")) {%>
 					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readonly="true"></siga:Fecha>
 				<%}else{%>
@@ -173,7 +173,7 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
 			</td>	
-			<td>
+			<td class="labelText">
 				<%if (accion.equalsIgnoreCase("ver")) {%>
 					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
 				<%}else{%>
@@ -183,37 +183,24 @@
 		</tr>
 
 		<tr>
-			<td class="labelText"><siga:Idioma
-				key="gratuita.EJG.literal.sentidoAuto" /></td>
-			<td>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.EJG.literal.sentidoAuto" />
+			</td>
+			<td class="labelText" colspan="3">
 			<%if (accion.equalsIgnoreCase("ver")) {%> 
 				<siga:ComboBD
 					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
 					clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>"
-					readOnly="true" /> 
+					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" ancho="700"
+					readOnly="true"/> 
 			<%}else{%> 
 				<siga:ComboBD
 					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
 					clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
-					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" /> 
+					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" ancho="700"/> 
 			<%}%>
 			</td>
 			
-			<!-- Inicio Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
-			<td class="labelText">
-				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaPublicacion"/>
-			</td>
-			<td>			
-				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" disabled="true" readonly="true"></siga:Fecha>
-					
-				<%}else{%>
-					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" readonly="true"></siga:Fecha>
-					
-				<%}%>
-			</td>
-			<!-- Fin Código Crear nuevos campos en la pestaña de impugnaciones del EJG -->
 			
 		</tr>
 												
@@ -223,7 +210,7 @@
 			<td class="labelText"  width="300">	
 				<siga:Idioma key='gratuita.operarRatificacion.literal.numeroResolucion'/> 
 			</td>
-	   		<td  class="labelText">	
+	   		<td class="labelText">	
 				<% if (accion.equalsIgnoreCase("ver")) {%>
 			  		<html:text name="DefinirEJGForm"  property="numeroResolucion"  onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="11" maxlength="11"  styleClass="boxConsulta"  value="<%=numeroResolucion%>" readonly="true"></html:text> / 
                 	<html:text name="DefinirEJGForm"  property="anioResolucion"    onkeypress="javascript:return soloDigitos(event)"  onblur="habilitarBisResolucion();" size="4" maxlength="4"    styleClass="boxConsulta"  value="<%=anioResolucion%>" readonly="true"></html:text>
@@ -237,6 +224,19 @@
                 	<input type="Checkbox" name="bisResolucion"  id="bisResolucion"  <%=(requiereBis?"checked":"")%>>
 				<%}%>
 	  		</td>
+	  		<td class="labelText">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaPublicacion"/>
+			</td>
+			<td class="labelText">			
+				<%if (accion.equalsIgnoreCase("ver")) {%>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" disabled="true" readonly="true"></siga:Fecha>
+					
+				<%}else{%>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" readonly="true"></siga:Fecha>
+					
+				<%}%>
+			</td>
+	  		
 	  	</tr>
 
 

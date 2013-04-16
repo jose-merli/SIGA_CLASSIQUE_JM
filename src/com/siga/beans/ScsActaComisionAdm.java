@@ -57,7 +57,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return getCamposBean();
 	}
 	
-	protected String[] getClavesBean() {
+	public String[] getClavesBean() {
 		String[] campos = { 
 				ScsActaComisionBean.C_IDACTA,
 				ScsActaComisionBean.C_ANIOACTA,
@@ -101,7 +101,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 
 	
 
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
@@ -628,5 +628,106 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		} 
 		
 		return datos;			
+	}
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idActa
+	 * @param anioActa
+	 * @return
+	 * @throws ClsExceptions 
+	 * @throws SIGAException 
+	 */
+	public Vector getEJGsRetirados(int idInstitucion, int idActa, int anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		Vector ejgPendientes = new Vector();
+		
+		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa);
+ 		
+		Vector datos = new Vector();
+		try{    	   	    	   			
+			rc = this.find(sql);
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsPendientesPonentes.");	
+		} 
+		
+		return datos;			
+	}
+	
+	public Vector updateEJGsRetirados(int idInstitucion, int idActa, int anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		Vector ejgPendientes = new Vector();
+		
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
+		
+		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa);
+		
+ 		
+		Vector datos = new Vector<Hashtable>();
+		try{    	   	    	   			
+			rc = this.find(sql);
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los EJGs retirados del acta.");	
+		} 
+		
+		StringBuffer update = new StringBuffer();
+		StringBuffer where = new StringBuffer();
+		
+		update.append("update " + ScsEJGBean.T_NOMBRETABLA + " set ");
+		update.append(" " + ScsEJGBean.C_ANIOACTA + " = null, ");
+		update.append(" " + ScsEJGBean.C_IDINSTITUCIONACTA + " = null, ");
+		update.append(" " + ScsEJGBean.C_IDACTA + " = null ");
+
+		where.append(" where ");
+		where.append(ScsEJGBean.C_ANIOACTA + " = " + anioActa);
+		where.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion);
+		where.append(" and " + ScsEJGBean.C_IDACTA + " = " + idActa);
+		where.append(" and " + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " in (4,6)");
+		
+		
+		try {
+			ejgAdm.updateSQL(update.toString()+where.toString());
+		} catch (ClsExceptions e) {
+			datos=new Vector();
+			throw new SIGAException("Error al procesar los EJGs retirados del acta.",e);
+		}
+		
+		return datos;
+	
+	}
+	
+	
+	private String getConsultaEJGsRetirados(int idInstitucion, int idActa, int anioActa){
+		String sql = "select " + 
+		  " ejg."+ScsEJGBean.C_ANIO+"," + 
+		  " ejg."+ScsEJGBean.C_IDINSTITUCION+"," +
+		  " ejg."+ScsEJGBean.C_IDTIPOEJG+"," +
+		  " ejg."+ScsEJGBean.C_NUMERO+"," +
+		  " ejg."+ScsEJGBean.C_NUMEJG+"," +
+		  " ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +
+		  " from "+ScsEJGBean.T_NOMBRETABLA +" ejg" +
+		  " where ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +" in (4,6) " +
+		  " and ejg."+ScsEJGBean.C_IDINSTITUCIONACTA+"="+ idInstitucion+
+		  " and ejg."+ScsEJGBean.C_ANIOACTA+"="+ anioActa+
+		  " and ejg."+ScsEJGBean.C_IDACTA+"="+idActa+
+		  " order by ejg."+ScsEJGBean.C_ANIO+" asc, ejg."+ScsEJGBean.C_NUMEJG;
+		return sql;
 	}
 }

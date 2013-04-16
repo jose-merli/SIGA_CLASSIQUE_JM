@@ -31,7 +31,7 @@
 	
 	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig=""; 
 	String creadoDesde="", fechaApertura="", fechaAperturaHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaEstadoDesde="", fechaEstadoHasta="",  fechaLimiteDesde="", fechaLimiteHasta="", fechaPonenteDesde="", fechaPonenteHasta="";
-	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList();
+	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList();
 	Hashtable miHash = new Hashtable();
 	boolean permisoEejg = false;
 	
@@ -46,7 +46,9 @@
 	String datoTipoOrdinario[] = { idordinario, idordinario };
 	String datos[] = { (String) usr.getLocation() };
 	String dato[] = { (String) usr.getLocation() };
+	String datoIdioma[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
 	String dato2[] = new String[2];
+	String dato3[] = new String[2];
 	String idioma[] = { (String) usr.getLanguage() };
 	String sDictaminado = "I";
 	
@@ -138,9 +140,16 @@
 				if (miHash.get("ESTADOEJG") != null) 
 					idEstado.add(miHash.get("ESTADOEJG").toString());
 				
-				if (miHash.get("IDTIPORATIFICACIONEJG") != null) 
-					idResolucion.add(miHash.get("IDTIPORATIFICACIONEJG").toString());
+				//if (miHash.get("IDTIPORATIFICACIONEJG") != null) 
+				//	idResolucion.add(miHash.get("IDTIPORATIFICACIONEJG").toString());
 				
+				if (miHash.containsKey("IDTIPORATIFICACIONEJG")) {
+					String idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
+					vTipoRatificacion.add(idTipoRatificacionEjg.equals("")? "0,0": idTipoRatificacionEjg);
+					dato3[0]=(String) vTipoRatificacion.get(0);
+					dato3[1]=(String) usr.getLocation();
+				}	
+						
 				if (miHash.get("GUARDIATURNO_IDTURNO") != null) {
 					String identificadorTurno = miHash.get("GUARDIATURNO_IDTURNO").toString();
 					idTurno.add(identificadorTurno.equals("")? "0": (String)usr.getLocation() + "," + identificadorTurno);
@@ -193,6 +202,10 @@
 				if (miHash.get("DICTAMINADO") != null)
 					sDictaminado = miHash.get("DICTAMINADO").toString();				
 								
+				if (miHash.containsKey("IDFUNDAMENTOJURIDICO")) {
+					String idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
+					vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "": idFundamentoJuridico);
+				}	
 			} else {
 				if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
 					idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString());
@@ -468,7 +481,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
 				<td style="vertical-align:middle"> 
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" elementoSel="<%=idResolucion%>" ancho="375" />
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion2" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>
 				</td>
 													
 				<td class="labelText" style="vertical-align:middle" width="140px">
@@ -485,6 +498,17 @@
 					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" /> 
 				</td>			
 			</tr>
+			
+			<%if(esComision){%>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
+					</td>
+					<td colspan="4">
+						<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" elementoSel="<%=vFundamentoJuridico%>" clase="boxCombo" parametro="<%=dato3%>" hijo="t"/>
+					</td>
+				</tr>
+			<%}%>
 			
 			<tr>
 				<td class="labelText" style="vertical-align:middle" width="90px">
@@ -570,8 +594,8 @@
 			</tr>
 		</table>
 	</siga:ConjCampos>
-
-	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.tituloTramitador" desplegable="true" oculto="false">
+	<div id="divTramitador" style="display: none;">
+	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.tituloTramitador" desplegable="true" oculto="false" >
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
 			<tr>
 				<td class="labelText" style="vertical-align:middle">
@@ -596,7 +620,13 @@
 			</tr>
 		</table>
 	</siga:ConjCampos>
-
+	</div>
+	<%if(!esComision){ %>
+		<script language="JavaScript">
+			jQuery('#divTramitador').show();
+		</script>
+	<%} %>
+	
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa"  desplegable="true" oculto="true">
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
 			<tr>

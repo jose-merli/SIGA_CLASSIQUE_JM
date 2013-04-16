@@ -102,8 +102,12 @@
 
 		function accionGuardarCerrar(){
 			sub();
-			
-			if (document.ActaComisionForm.guardaRatificacion.checked && !document.ActaComisionForm.guardaFundamento.checked) {
+			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>10 &&
+				( (!document.ActaComisionForm.guardaRatificacion.checked || jQuery("#idTipoRatificacionEJG option:selected").val()==0)
+				|| (!document.ActaComisionForm.guardaFundamento.checked || jQuery("#idFundamentoJuridico option:selected").val()==0))){
+				alert("<siga:Idioma key='sjcs.actas.checkRatificacionResolucion'/>");
+				fin();
+			}else if (document.ActaComisionForm.guardaRatificacion.checked && !document.ActaComisionForm.guardaFundamento.checked) {
 				alert("<siga:Idioma key='sjcs.actas.checkresolucion'/>");
 				fin();
 			} else {

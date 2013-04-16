@@ -25,7 +25,9 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.AdmInformeAdm;
@@ -33,6 +35,8 @@ import com.siga.beans.ScsActaComisionAdm;
 import com.siga.beans.ScsActaComisionBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEstadoEJGAdm;
+import com.siga.beans.ScsEstadoEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -91,10 +95,10 @@ public class ActaComisionAction extends MasterAction{
 					mapDestino = editar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("edicionMasiva")){
 					mapDestino = edicionMasiva(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("volver")){
-					mapDestino = volver(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("updateMasivo")){
 					mapDestino = updateMasivo(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("procesarRetirados")){
+					mapDestino = procesarRetirados(mapping, miForm, request, response);
 				} else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -118,7 +122,8 @@ public class ActaComisionAction extends MasterAction{
 		} 
 		return mapping.findForward(mapDestino);
 	}	
-	
+
+
 	/** 
 	 * Funcion que implementa el modo abrir
 	 * @param  mapping - Mapeo de los struts
@@ -274,14 +279,25 @@ public class ActaComisionAction extends MasterAction{
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
-		Vector ocultos = actaForm.getDatosTablaOcultos(0);
-		formulario = new MasterForm();
+		String idActa		 = "";
+		String idInstitucion = "";
+		String anioActa		 = "";
 		Hashtable<String, String>  datosActa = null;
 		Vector ejgsRelacionados = null;
-		// Recuperamos la clave del acta
-		String idActa		 = (String) ocultos.get(0);
-		String idInstitucion = (String) ocultos.get(1);
-		String anioActa		 = (String) ocultos.get(2);
+		try{
+			// Si editamos desde la lista los datos vendran en ocultos
+			Vector ocultos = actaForm.getDatosTablaOcultos(0);
+			formulario = new MasterForm();
+			// Recuperamos la clave del acta
+			idActa		 = (String) ocultos.get(0);
+			idInstitucion = (String) ocultos.get(1);
+			anioActa		 = (String) ocultos.get(2);
+		}catch (Exception e) {
+			// Si editamos desde la la pestaña de resolucion los datos vendran en formulario
+			idActa		 	= actaForm.getIdActa();
+			idInstitucion 	= actaForm.getIdInstitucion();
+			anioActa		= actaForm.getAnioActa();
+		}
 		try {
 			// Con la clave recuperamos sus datos
 			datosActa = actaAdm.getDatosActa(idActa,anioActa,idInstitucion);
@@ -325,7 +341,7 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actaAdm=new ScsActaComisionAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ActaComisionForm actaForm =(ActaComisionForm)formulario;
-		HashMap miHash= new HashMap();
+		HashMap<String, String> miHash= new HashMap<String, String>();
 		
 		miHash.put(ScsActaComisionBean.C_ANIOACTA, actaForm.getAnioActa());
 		miHash.put(ScsActaComisionBean.C_NUMEROACTA, actaForm.getNumeroActa());
@@ -617,5 +633,82 @@ public class ActaComisionAction extends MasterAction{
 		}
 		
 		return exitoModal("messages.updated.success", request);
+	}
+	
+	
+	/** 
+	 * Funcion que procesa los EJGs del acta que quedan pendientes y se deben eliminar del acta
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected String procesarRetirados(ActionMapping mapping, MasterForm miForm,
+			HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		ActaComisionForm actaForm = (ActaComisionForm) miForm;
+		ScsActaComisionBean actaBean = new ScsActaComisionBean();
+		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
+		ScsEstadoEJGAdm estadoAdm = new ScsEstadoEJGAdm(usr);
+		Vector listadoEJGs = new Vector<Hashtable>();
+		
+		String listaRetirados = "";
+		UserTransaction tx= null;
+		
+		try {
+
+			// Campos clave
+			actaBean.setIdActa(Integer.parseInt(actaForm.getIdActa()));
+			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
+			actaBean.setAnioActa(Integer.valueOf(actaForm.getAnioActa()));
+			
+			tx = usr.getTransaction ();
+			tx.begin();
+			
+			// Recuperamos la lista de ejgs a retirar y los retiramos del acta
+			listadoEJGs = actaAdm.updateEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa());
+			
+			for (Object element : listadoEJGs) {
+
+				// Recuperamos el EJG de la lista y lo preparamos para añadirle un estado nuevo
+				Hashtable ejg = (Hashtable)element;
+				ejg.put(ScsEstadoEJGBean.C_FECHAINICIO, UtilidadesString.getTimeStamp(ClsConstants.DATE_FORMAT_LONG_ENGLISH));
+				ejg.put(ScsEstadoEJGBean.C_AUTOMATICO,ClsConstants.DB_TRUE);
+				estadoAdm.prepararInsert (ejg);
+				
+				// Como observacion diremos a que acta pertenecia
+				ejg.put(ScsEstadoEJGBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma("sjcs.actas.observacionAlRetirar", usr.getLanguageInstitucion()) + actaForm.getAnioActa()+"/"+actaForm.getNumeroActa());
+				
+				// escribimos el ejg en la lista de retirados
+				listaRetirados+=ejg.get(ScsEJGBean.C_ANIO)+"/"+ejg.get(ScsEJGBean.C_NUMEJG);
+				//para todos menos el ultimo pondremos una coma
+				if(!element.equals(listadoEJGs.lastElement()))
+					listaRetirados+=", ";
+				
+				// Dependiendo de la resolucion/ratificacion añadimos un estado nuevo
+				String ratificacion = (String) ejg.get(ScsEJGBean.C_IDTIPORATIFICACIONEJG);
+				if(ratificacion.equalsIgnoreCase("4")){ //resolucion - Pendiente CAJG - Otros
+					ejg.put(ScsEstadoEJGBean.C_IDESTADOEJG,9); //estado - Remitido Comisión
+				}else if(ratificacion.equalsIgnoreCase("6")){ //resolucion - Devuelto al Colegio
+					ejg.put(ScsEstadoEJGBean.C_IDESTADOEJG,21); // estado - Devuelto al colegio
+				}
+				
+				// insertamos el estado
+				estadoAdm.insert (ejg);
+			}
+			
+			// finalmente añadimos la lista de pendientes al texto que ya existiese y guardamos el acta
+			actaBean.setPendientes(actaForm.getPendientes() + " " + listaRetirados);
+			actaAdm.updateDirect(actaAdm.beanToHashTable(actaBean),actaAdm.getClavesBean() , new String[]{ScsActaComisionBean.C_PENDIENTES});
+			
+			tx.commit();
+			
+		}catch (Exception e){
+			throwExcp("Error al procesar los EJGs retirados del acta.", new String[] {"modulo.gratuita"}, e, tx); 
+		}
+		return exitoRefresco("messages.updated.success", request);
 	}
 }

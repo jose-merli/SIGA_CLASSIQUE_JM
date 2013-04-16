@@ -2281,12 +2281,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			contador++;
 			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPODICTAMENEJG"));
 			consulta += " AND EJG.IDTIPODICTAMENEJG = :" + contador;
-		}
+		}	
 		
 		if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
 			contador++;
-			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG"));
+			String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
+			codigos.put(new Integer(contador),ratificacion[0]);
 			consulta += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
+			
+					if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
+						contador++;
+						codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
+						consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+					}
 		}
 
 		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
@@ -2471,9 +2478,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 		} else if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())) {
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
-				contador++;
-				codigos.put(new Integer(contador), "8");
-				consulta += " AND ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG + " > :" + contador;
+				consulta += " AND MEE.VISIBLECOMISION='1' ";
 		}
 
 		consulta += " ORDER BY TO_NUMBER(" + ScsEJGBean.C_ANIO + ") DESC, " +

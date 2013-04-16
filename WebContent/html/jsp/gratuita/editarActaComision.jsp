@@ -92,7 +92,7 @@
 	
 	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "idInstitucion" value = ""/>
+		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property = "idActa" value = "<%=idActa %>"/>
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property="anioActa" value="<%=anioActa%>"/>
@@ -148,14 +148,21 @@
 				<td class="labelText"><siga:Idioma key="sjcs.actas.ejgsPendientes"/></td>
 				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="pendientes" style="width:700px; height:60px" value="<%=pendientes%>" readonly="<%=readOnly%>"></html:textarea></td>
 			</tr>
+			<tr>
+				<td colspan="6" align="right"><input type="button" alt="Retirar"  id="idButtonRetirar" onclick="return accionRetirarPendientes();" class="button" name="idButton" value="<siga:Idioma key='sjcs.actas.retirarEJGs'/>"></input></td>
+			</tr>
+			
 			</table>
 		</siga:ConjCampos>	
+		
+		<div id="listadoEJGs" style="height:100%">
 		<siga:TablaCabecerasFijas 		   
 			   nombre="listadoActas"
 			   borde="1"
 			   clase="tableTitle"		   
 			   nombreCol="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,"
 			   tamanoCol="8,8,40,14,20,"
+			   alto="100%"
 			   ajusteBotonera="true" >
 		   <%Row fila;%>
 		   <%Hashtable hash;%>
@@ -178,6 +185,7 @@
 			   </siga:FilaConIconos>
 		   <%}%>
 		   </siga:TablaCabecerasFijas>
+		   </div>
 			<%if(readOnly){%>
 				<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		
 			<%}else{%>
@@ -201,6 +209,12 @@
 
 
 	<script language="JavaScript">
+	
+		function refrescarLocal(){
+			document.ActaComisionForm.target="mainWorkArea";
+			document.ActaComisionForm.modo.value="editar";
+			document.ActaComisionForm.submit();
+		}
 	
 		function accionVolver(){
 			document.forms['ActaComisionForm'].action="./JGR_ActasComisionEd.do";
@@ -300,7 +314,15 @@
 			}
 		} 	
 		
-	</script>
+		function accionRetirarPendientes(){
+			if(confirm("<siga:Idioma key='sjcs.actas.confirmacionRetirar'/>")){
+				document.ActaComisionForm.target.value="submitArea";
+				document.ActaComisionForm.modo.value="procesarRetirados";
+				document.ActaComisionForm.submit();
+			}
+		}
+
+		</script>
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	
