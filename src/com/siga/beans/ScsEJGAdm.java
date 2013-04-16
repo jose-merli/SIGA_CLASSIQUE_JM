@@ -3060,33 +3060,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	
-	private Vector getComisariaEjgSalida (String idInstitucion, String idComisaria) throws ClsExceptions  
-	{
-		try {
-			Hashtable htCodigos = new Hashtable();
-			int keyContador = 0;
+	private Vector getComisariaEjgSalida (String idInstitucion, String idComisaria) throws ClsExceptions {
+		try {			
+			String sql = "SELECT COMISARIA.NOMBRE AS COMISARIA_DEFENSA_JURIDICA, " +
+					" COMISARIA.NOMBRE AS COMISARIA_D_J, " +
+					" COMISARIA.DOMICILIO AS DIR_COMISARIA_D_J, " +
+					" COMISARIA.CODIGOPOSTAL AS CP_COMISARIA_D_J, " +
+					" POBL.NOMBRE AS POBLACION_COMISARIA_D_J, " +
+					" PROV.NOMBRE AS PROVINCIA_COMISARIA_D_J " +
+					
+				" FROM SCS_COMISARIA COMISARIA " +
+					" LEFT OUTER JOIN CEN_POBLACIONES POBL on COMISARIA.IDPOBLACION = POBL.IDPOBLACION " +
+					" LEFT OUTER JOIN CEN_PROVINCIAS PROV on COMISARIA.IDPROVINCIA = PROV.IDPROVINCIA " +
+				
+				" WHERE COMISARIA.IDINSTITUCION = " + idInstitucion +
+					" AND COMISARIA.IDCOMISARIA = " + idComisaria;
 			
-		
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" select COMDF.NOMBRE AS COMISARIA_DEFENSA_JURIDICA ");
-			sql.append(" from  SCS_COMISARIA           COMDF ");
+			Vector vComisaria = new Vector();
+			RowsContainer rc = new RowsContainer();
 			
-			sql.append(" WHERE ");
-			
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" COMDF.IDINSTITUCION = :");
-			sql.append(keyContador);
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idComisaria);
-			sql.append("  and COMDF.IDCOMISARIA = :");
-			sql.append(keyContador);
-			
-			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					Row fila = (Row) rc.get(0);
+					Hashtable hDatos = fila.getRow();
+					vComisaria.add(hDatos);					
+				}
+			} 
+	
+			return vComisaria;
 			
 		}
 		catch (Exception e) {
@@ -3340,8 +3341,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			//Aniadimos la comisaria
 			String idComisaria = (String)registro.get("IDCOMISARIA");
-			helperInformes.completarHashSalida(registro,getComisariaEjgSalida(idInstitucion, 
-					idComisaria));
+			helperInformes.completarHashSalida(registro,getComisariaEjgSalida(idInstitucion, idComisaria));
 			
 			//Aniadimos la pretension
 			String idPretension = (String)registro.get("PRETENSION");
@@ -5750,17 +5750,52 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				registro.put("DESC_TIPORATIFICACIONEJG", " ");
 			}				
 	
-			//Aniadimos la comisaria del ejg
+			// Agregamos la comisaria del ejg
 			String idComisariaEjg = (String)registro.get("COMISARIA");
 			String idInstitucionComisariaEjg = (String)registro.get("COMISARIAIDINSTITUCION");
-			helperInformes.completarHashSalida(registro,getComisariaEjgSalida(idInstitucionComisariaEjg, idComisariaEjg));			
+			
+			if(idComisariaEjg!=null && !idComisariaEjg.trim().equals("") && idInstitucionComisariaEjg!=null && !idInstitucionComisariaEjg.trim().equals("")) { 
+				helperInformes.completarHashSalida(registro,getComisariaEjgSalida(idInstitucionComisariaEjg, idComisariaEjg));
+				
+				// Comprobamos nulos
+				if (!registro.containsKey("COMISARIA_D_J") || registro.get("COMISARIA_D_J")==null) {
+					registro.put("COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("COMISARIA_DEFENSA_JURIDICA") || registro.get("COMISARIA_DEFENSA_JURIDICA")==null) {
+					registro.put("COMISARIA_DEFENSA_JURIDICA", " ");
+				}
+				if (!registro.containsKey("CP_COMISARIA_D_J") || registro.get("CP_COMISARIA_D_J")==null) {
+					registro.put("CP_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("DIR_COMISARIA_D_J") || registro.get("DIR_COMISARIA_D_J")==null) {
+					registro.put("DIR_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("POBLACION_COMISARIA_D_J") || registro.get("POBLACION_COMISARIA_D_J")==null) {
+					registro.put("POBLACION_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("PROVINCIA_COMISARIA_D_J") || registro.get("PROVINCIA_COMISARIA_D_J")==null) {
+					registro.put("PROVINCIA_COMISARIA_D_J", " ");
+				}				
+				
+			} else {				
+				registro.put("COMISARIA_D_J", " ");
+				registro.put("COMISARIA_DEFENSA_JURIDICA", " ");
+				registro.put("CP_COMISARIA_D_J", " ");
+				registro.put("DIR_COMISARIA_D_J", " ");
+				registro.put("POBLACION_COMISARIA_D_J", " ");
+				registro.put("PROVINCIA_COMISARIA_D_J", " ");
+			}
+			
+			
 			if(idComisariaEjg!=null && !idComisariaEjg.trim().equalsIgnoreCase("")){
 				registro.put("LUGAR", registro.get("COMISARIA_DEFENSA_JURIDICA"));
+				
 			}else if(idJuzgadoEjg!=null && !idJuzgadoEjg.trim().equalsIgnoreCase("")){
 				registro.put("LUGAR", registro.get("JUZGADO_DEFENSA_JURIDICA"));
+				
 			}else{			
 				registro.put("LUGAR", "");
-			} 
+			} 		
 	
 			/**Datos de la desingacion asociada al Ejg**/
 			String numeroDesigna = (String)registro.get("DES_NUMERO");
