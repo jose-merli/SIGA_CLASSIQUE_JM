@@ -148,10 +148,11 @@
 				<td class="labelText"><siga:Idioma key="sjcs.actas.ejgsPendientes"/></td>
 				<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="pendientes" style="width:700px; height:60px" value="<%=pendientes%>" readonly="<%=readOnly%>"></html:textarea></td>
 			</tr>
-			<tr>
-				<td colspan="6" align="right"><input type="button" alt="Retirar"  id="idButtonRetirar" onclick="return accionRetirarPendientes();" class="button" name="idButton" value="<siga:Idioma key='sjcs.actas.retirarEJGs'/>"></input></td>
-			</tr>
-			
+			<%if(!readOnly){%>
+				<tr>
+					<td colspan="6" align="right"><input type="button" alt="Retirar"  id="idButtonRetirar" onclick="return accionRetirarPendientes();" class="button" name="idButton" value="<siga:Idioma key='sjcs.actas.retirarEJGs'/>"></input></td>
+				</tr>
+			<%}%>
 			</table>
 		</siga:ConjCampos>	
 		
@@ -217,10 +218,10 @@
 		}
 	
 		function accionVolver(){
-			document.forms['ActaComisionForm'].action="./JGR_ActasComisionEd.do";
-			document.forms['ActaComisionForm'].target="mainWorkArea";
-			document.forms['ActaComisionForm'].modo.value="volver";
-			document.forms['ActaComisionForm'].submit();
+			document.ActaComisionForm.action="./JGR_ActasComisionEd.do";
+			document.ActaComisionForm.target="mainWorkArea";
+			document.ActaComisionForm.modo.value="";
+			document.ActaComisionForm.submit();
 		}
 		
 		function accionCerrar(){
