@@ -43,8 +43,13 @@
 		function solicitarbaja(fila) {
 		   	document.FormAValidar.idInstitucion.value = document.getElementById('idInstitucionSolicitud').value;
 		   	document.FormAValidar.idPersona.value = document.getElementById('idPersonaSolicitud').value;
+		   	
 		   	var idTurno = 'oculto' + fila + '_' + 1;		
 		   	document.FormAValidar.idTurno.value = document.getElementById(idTurno).value;
+		   	
+		   	var fSolicitud ='oculto' + fila + '_' + 21;
+		   	document.FormAValidar.fechaSolicitud.value = document.getElementById(fSolicitud).value;
+		   	
 		   	document.FormAValidar.modo.value = "sbtConsultaTurno";
 		   	document.FormAValidar.target="_parent";
 		   	document.FormAValidar.submit();	   	
@@ -98,7 +103,7 @@
                 	fin();
 					return;
 				}
-			}
+			}			
 			document.FormAValidar.idInstitucion.value = document.getElementById('idInstitucionSolicitud').value;
 	   		document.FormAValidar.idPersona.value = document.getElementById('idPersonaSolicitud').value;
 			document.FormAValidar.turnosSel.value=datos;
@@ -244,12 +249,12 @@
 					<td align="center">
 						<input type="checkBox" name="bajaTurno" id="<%="bajaTurno"+String.valueOf(recordNumber)%>" <%=deshabilitarCheck%> >
 					</td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("NOMBRE"))%></td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("AREA"))%></td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("MATERIA"))%></td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("ZONA"))%></td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("SUBZONA"))%></td>
-					<td  ><%=UtilidadesString.mostrarDatoJSP(hash.get("PARTIDOS"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("NOMBRE"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("AREA"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("MATERIA"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("ZONA"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("SUBZONA"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("PARTIDOS"))%></td>
 				</siga:FilaConIconos>
 				<% recordNumber++;
 			} %>
