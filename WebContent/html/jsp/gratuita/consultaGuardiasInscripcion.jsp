@@ -103,7 +103,7 @@ jQuery.noConflict();
 		 marcarDesmarcarTodos(eleGeneral);
 	}
   	
-	function activarDesactivarCheck(fechaSolicitud,tipoGuardias){
+	function activarDesactivarCheck(){
    		if((!document.InscripcionTGForm.fechaSolicitud || document.InscripcionTGForm.fechaSolicitud.value=='')&&document.InscripcionTGForm.idGuardia.value==''){//alta
    			if(document.InscripcionTGForm.tipoGuardias.value==0){//obligatorias
    				jQuery("#chkGeneral").attr("disabled","disabled");
