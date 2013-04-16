@@ -72,30 +72,29 @@
 	<body class="tablaCentralCampos" onload="mostrarFecha();">
 		<bean:define id="bIncluirBajaLogica" property="bajaLogica" name="DefinirGuardiasLetradoForm"></bean:define>
 	
-		<%
-		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { 
-			if(bIncluirBajaLogica.equals("S"))
-		%>
+		<% if (entrada.equalsIgnoreCase("2")) { //Entrada desde el menu de Censo: %>			
 			<table class="tablaTitulo" cellspacing="0">
 				<tr>
-					<td class="titulitosDatos">
+					<td class="titulitosDatos">					
 						<siga:Idioma key="censo.fichaCliente.guardiasInscrito.pestana.titulito" />&nbsp;&nbsp;
 						<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 						<% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-							<%if (estadoColegial!=null && !estadoColegial.equals("")){%> 
+							<% if (estadoColegial!=null && !estadoColegial.equals("")) { %> 
 								<siga:Idioma key="censo.fichaCliente.literal.colegiado" /> 
-								<%= UtilidadesString.mostrarDatoJSP(numeroPestanha)  %>
-								&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}else{%>
+								<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+								&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
+								 
+							<% } else { %>
 								(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
-							<%}%> 
+							<% } %>
+							 
 						<% } else { %> 
 							<siga:Idioma key="censo.fichaCliente.literal.NoColegiado" /> 
 						<% } %>
 					</td>
 				</tr>	
 			</table>
-		<% } %>
+		<% } %>		
 
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
