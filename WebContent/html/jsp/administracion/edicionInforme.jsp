@@ -76,45 +76,48 @@
 		}
 		
 		function inicioTiposIntercambioTelematico() {
-			var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
-			var tiposEnvio = comboEnviosPermitidos.options;
-			var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
 			
-			if(tiposEnvio.options.length>0 && tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+			if(${mostrarTipoIntercambio} == '1'){
 			
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		           type: "POST",
-		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
-		           data: "idTipoEnvio=6",
-		           dataType: "json",
-		           success:  function(json) {
-		       			var tiposIntercambio = json.tiposIntercambio;
-		       			var optionComboTiposIntercambioTelematico = comboTiposIntercambioTelematico.options;
-		       			//Si tiene opciones el valor es el que iene que estar seleccioando
-		       			if(comboTiposIntercambioTelematico){
-		       				var valueComboTiposIntercambioTelematico = comboTiposIntercambioTelematico[0].value;
-		       				//vaciamos la listas
-							comboTiposIntercambioTelematico.length = 0;
-							jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
-		       				jQuery.each(tiposIntercambio, function(i,item2){
-		           				var selected = "";
-		           				if(valueComboTiposIntercambioTelematico !='' && valueComboTiposIntercambioTelematico==item2.idTipoIntercambioTelematico){
-		           					selected = "selected";
-		       					}
-		                        jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
-		                    });
-		       			}       			
-			           			
-		           },
-		           error: function(xml,msg){
-		        	   alert("Error: "+msg);//$("span#ap").text(" Error");
-		           }
-		        });
-		
-			}else{
-				jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+				var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
+				var tiposEnvio = comboEnviosPermitidos.options;
+				var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
+				
+				if(tiposEnvio.options.length>0 && tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+				
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+			           type: "POST",
+			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
+			           data: "idTipoEnvio=6",
+			           dataType: "json",
+			           success:  function(json) {
+			       			var tiposIntercambio = json.tiposIntercambio;
+			       			var optionComboTiposIntercambioTelematico = comboTiposIntercambioTelematico.options;
+			       			//Si tiene opciones el valor es el que iene que estar seleccioando
+			       			if(comboTiposIntercambioTelematico){
+			       				var valueComboTiposIntercambioTelematico = comboTiposIntercambioTelematico[0].value;
+			       				//vaciamos la listas
+								comboTiposIntercambioTelematico.length = 0;
+								jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+			       				jQuery.each(tiposIntercambio, function(i,item2){
+			           				var selected = "";
+			           				if(valueComboTiposIntercambioTelematico !='' && valueComboTiposIntercambioTelematico==item2.idTipoIntercambioTelematico){
+			           					selected = "selected";
+			       					}
+			                        jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
+			                    });
+			       			}       			
+				           			
+			           },
+			           error: function(xml,msg){
+			        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+			           }
+			        });
+			
+				}else{
+					jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+				}
 			}
-		
 		}
 		
 		function onChangeTipoenvio() {
@@ -161,33 +164,37 @@
 		}
 		
 		function onChangeTipoIntercambio() {
-			var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
-			var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
-		
-			if(tipoTelematicoSeleccionado(comboEnviosPermitidos)){
 			
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		           type: "POST",
-		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
-		           data: "idTipoEnvio=6",
-		           dataType: "json",
-		           success:  function(json) {
-		       			var tiposIntercambio = json.tiposIntercambio;
-		        		jQuery("#idTipoIntercambioTelematico").empty();
-		        		jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");   
-		    			jQuery.each(tiposIntercambio, function(i,item2){
-		              		var selected = "";
-		                    jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
-		                });
-		           },
-		           error: function(xml,msg){
-		        	   alert("Error: "+msg);
-		           }
-		        });
-		
-			}else{
-				jQuery("#idTipoIntercambioTelematico").empty();
-				jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+			if(${mostrarTipoIntercambio} == '1'){
+			
+				var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
+				var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
+			
+				if(tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+				
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+			           type: "POST",
+			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
+			           data: "idTipoEnvio=6",
+			           dataType: "json",
+			           success:  function(json) {
+			       			var tiposIntercambio = json.tiposIntercambio;
+			        		jQuery("#idTipoIntercambioTelematico").empty();
+			        		jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");   
+			    			jQuery.each(tiposIntercambio, function(i,item2){
+			              		var selected = "";
+			                    jQuery("#idTipoIntercambioTelematico").append("<option "+selected+" value='"+item2.idTipoIntercambioTelematico+"'>"+item2.nombre+"</option>");
+			                });
+			           },
+			           error: function(xml,msg){
+			        	   alert("Error: "+msg);
+			           }
+			        });
+			
+				}else{
+					jQuery("#idTipoIntercambioTelematico").empty();
+					jQuery("#idTipoIntercambioTelematico").append("<option  value=''>&nbsp;</option>");
+				}
 			}
 		}
 	</script>
@@ -231,6 +238,7 @@
 		<bean:define id="idPlantillaEnvioDef" name="idPlantillaEnvioDef"  scope="request"/>
 		<bean:define id="idTipoIntercambioTelem" name="idTipoIntercambioTelem"  scope="request"/>
 		<bean:define id="intercambioTelematico" name="intercambioTelematico"  scope="request"/>
+		<bean:define id="mostrarTipoIntercambio" name="mostrarTipoIntercambio"  scope="request"/>
 		<input type="hidden" id="comboTipoEnvioHidden" value="${comboTipoEnvio}" />
 		<%  String[] parametrosComboEnvios = (String[])request.getAttribute("parametrosComboEnvios"); 
 			ArrayList idTipoEnvioSeleccionado = (ArrayList)request.getAttribute("idTipoEnvioSeleccionado");
@@ -477,19 +485,30 @@
 							</td>	
 						</tr>
 						
-						<tr>						
-							<td class="labelText" style="vertical-align: middle;">
-								<siga:Idioma key="administracion.informes.literal.tipointercambio" />
-							</td>
-							<td>
-								<select id="idTipoIntercambioTelematico" styleClass="boxCombo" style="width:400px;">
-									<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
-								</select>
-								<script type="text/javascript">
-									inicioTiposIntercambioTelematico();
-								</script>								
-							</td>						
-						</tr>
+						<c:choose>
+							<c:when test="${mostrarTipoIntercambio == '1'}">
+								<tr>						
+									<td class="labelText" style="vertical-align: middle;">
+										<siga:Idioma key="administracion.informes.literal.tipointercambio" />
+									</td>
+									<td>
+										<select id="idTipoIntercambioTelematico" styleClass="boxCombo" style="width:400px;">
+											<option value="${idTipoIntercambioTelem}"><c:out value="${idTipoIntercambioTelem}" /></option>
+										</select>
+										<script type="text/javascript">
+											inicioTiposIntercambioTelematico();
+										</script>								
+									</td>						
+								</tr>
+							</c:when>
+							<c:otherwise>
+								<tr>						
+									<td colspan = "2">&nbsp;
+										<input type="hidden" id="idTipoIntercambioTelematico">								
+									</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
 					</table>
 				</td>
 			</tr>

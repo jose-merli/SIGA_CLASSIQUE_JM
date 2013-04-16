@@ -324,8 +324,10 @@ public class GestionInformesAction extends MasterAction {
 		
 		if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) && !idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
 			comprobarComboSms(request);
+			request.setAttribute("mostrarTipoIntercambio", "0");
 		}else{
 			comprobarComboConTipoTelematico(request);
+			request.setAttribute("mostrarTipoIntercambio", "1");
 		}
 		request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 		
@@ -411,7 +413,19 @@ public class GestionInformesAction extends MasterAction {
 			}else{
 				request.setAttribute("intercambioTelematico", "0");
 			}
-
+			
+			if(idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) || idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
+				request.setAttribute("mostrarTipoIntercambio", "1");
+			}else{
+				if(intercambioTelematico){
+					request.setAttribute("mostrarTipoIntercambio", "1");
+				}else{
+					request.setAttribute("mostrarTipoIntercambio", "0");
+				}				
+			}
+				
+				
+				
 			informeForm.setModo("modificar");
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -489,7 +503,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("comboTipoEnvio", comboTipoEnvio);
 			request.setAttribute("parametrosComboEnvios", new String[]{usrBean.getLocation()});
 				
-				
+			boolean intercambioTelematico = false;	
 			
 			List<EnvTipoEnviosBean> tipoEnviosBeans = informeService.getTiposEnvioPermitidos(informeBean,usrBean);
 			
@@ -507,6 +521,9 @@ public class GestionInformesAction extends MasterAction {
 					if(envTipoEnviosBean.getIdPlantillaDefecto()!=null&&!envTipoEnviosBean.getIdPlantillaDefecto().equals(""))
 						idPlantillaEnvioDefecto = envTipoEnviosBean.getIdPlantillaDefecto();
 				}
+				if(envTipoEnviosBean.getIdTipoEnvios().toString().equals(ClsConstants.TIPO_IDTIPOENVIO_TELEMATICO)){
+					intercambioTelematico = true;
+				}
 				alIdsTipoEnvio.add(usrBean.getLocation()+","+envTipoEnviosBean.getIdTipoEnvios());					
 			}
 			request.setAttribute("idTipoEnvioSeleccionado",alIdsTipoEnvio);
@@ -516,6 +533,15 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("idTipoIntercambioTelem", idTipoIntercambioTelem);	
 			request.setAttribute("intercambioTelematico", "0");
 			
+			if(usrBean.getLocation().equals(String.valueOf(ClsConstants.INSTITUCION_POR_DEFECTO)) || usrBean.getLocation().equals(String.valueOf(ClsConstants.INSTITUCION_CGAE))){
+				request.setAttribute("mostrarTipoIntercambio", "1");
+			}else{
+				if(intercambioTelematico){
+					request.setAttribute("mostrarTipoIntercambio", "1");
+				}else{
+					request.setAttribute("mostrarTipoIntercambio", "0");
+				}				
+			}			
 			
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			informeForm.setModo("consultar");
