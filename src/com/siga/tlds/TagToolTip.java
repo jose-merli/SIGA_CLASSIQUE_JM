@@ -36,8 +36,8 @@ public class TagToolTip extends TagSupport
 
 //			Version 1.0			
 			out.println("<img src=\"" + this.imagen + "\" style=\"cursor:hand;\" " + 
-							 " onmouseenter =\"pintaToolTipDac('on', 'tooltipdac_" + this.id + "')\" " +
-					         " onmouseleave =\"pintaToolTipDac('off', 'tooltipdac_" + this.id + "')\" " + 
+							 " onmouseover =\"pintaToolTipDac('on', 'tooltipdac_" + this.id + "')\" " +
+					         " onmouseout =\"pintaToolTipDac('off', 'tooltipdac_" + this.id + "')\" " + 
 							 "/>" +
 						"<div id='tooltipdac_" + this.id + "' class='tooltipo' style='display:none; position:absolute; z-index=5;' " +
 //					          " onmouseleave =\"pintaToolTipDac('off', 'tooltipdac_" + this.id + "')\" " + 
