@@ -187,6 +187,14 @@ public class GestionTramosRetencionAction extends MasterAction {
 		}
 	}
 	
+	protected boolean esEntero(String cad){
+		try{
+			Integer.parseInt(cad);
+			return true;
+		}catch(NumberFormatException nfe){
+			return false;
+		}
+	}
 	protected void getAjaxSmi(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -196,18 +204,25 @@ public class GestionTramosRetencionAction extends MasterAction {
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		//Sacamos las guardias si hay algo selccionado en el turno
 		String anio = miForm.getAnio();
-		UsrBean usrBean = this.getUserBean(request);
-		FcsTramosRetencionAdm admFcsTramosRetencionAdm = new FcsTramosRetencionAdm(usr);
-		try {
-			Double smi = admFcsTramosRetencionAdm.getSmi(anio);
-			miForm.setSmi(UtilidadesNumero.formato(smi));
+		if (esEntero(anio)){
+			UsrBean usrBean = this.getUserBean(request);
+			FcsTramosRetencionAdm admFcsTramosRetencionAdm = new FcsTramosRetencionAdm(usr);
+			try {
+				Double smi = admFcsTramosRetencionAdm.getSmi(anio);
+				miForm.setSmi(UtilidadesNumero.formato(smi));
+				List listaParametros = new ArrayList();
+				listaParametros.add(miForm.getSmi());
+				respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+			} catch (SIGAException e) {
+				List listaParametros = new ArrayList();
+				listaParametros.add("0");
+	
+				respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+			}
+		}
+		else{
 			List listaParametros = new ArrayList();
-			listaParametros.add(miForm.getSmi());
-			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
-		} catch (SIGAException e) {
-			List listaParametros = new ArrayList();
-			listaParametros.add("0");
-
+			listaParametros.add("");
 			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
 		}
 		

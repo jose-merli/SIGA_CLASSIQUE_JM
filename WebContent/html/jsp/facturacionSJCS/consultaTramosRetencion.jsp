@@ -46,6 +46,8 @@
 			alert('<siga:Idioma key="fcs.tramosLEC.mensaje.error.AñoSinSmi"/>');
 		document.getElementById('idImporte').onchange();
 		document.getElementById('idBuscarTramosRetencion').onclick();
+		if (TramosRetencionForm.smi.value=='')
+			TramosRetencionForm.anio.value = "";
 		
 	}
 	function onChangeNumeroMeses(){
