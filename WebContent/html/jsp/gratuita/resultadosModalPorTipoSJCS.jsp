@@ -109,9 +109,8 @@
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_BusquedaPorTipoSJCS.do" method="POST" target="submitArea"  style="display:none">
-			<html:hidden name="BusquedaPorTipoSJCSForm" property = "modo" value = ""/>
-			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			<html:hidden name="BusquedaPorTipoSJCSForm" property = "modo" value = ""/>
 			<html:hidden name="BusquedaPorTipoSJCSForm" property="idInstitucion" />
 			<html:hidden name="BusquedaPorTipoSJCSForm" property="tipo" />
 		</html:form>	
