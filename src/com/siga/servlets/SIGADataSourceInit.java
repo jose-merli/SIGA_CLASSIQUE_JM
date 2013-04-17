@@ -14,6 +14,8 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
 import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.FacFacturacionProgramadaAdm;
+import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.general.CenVisibilidad;
 
 
@@ -71,6 +73,23 @@ public class SIGADataSourceInit extends ActionServlet {
             ClsLogging.writeFileLogWithoutSession("",1);
             throw new ServletException("Error al cargar la visibilidad Instituciones: "+ e.toString());
         }
+        
+        // BEGIN BNS INC_10644_SIGA 16/04/2013
+        // Relanzar procesos de facturación en ejecución
+        ClsLogging.writeFileLogWithoutSession("",1);
+        ClsLogging.writeFileLogWithoutSession(" > Relanzando procesos de facturación en ejecución.",1);
+        
+        try {
+        	FcsFacturacionJGAdm fcsFacturacionJGAdm = new FcsFacturacionJGAdm(null);
+        	fcsFacturacionJGAdm.relanzarFacturacion();
+            ClsLogging.writeFileLogWithoutSession(" > Procesos de facturación relanzados OK.",1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+        } catch(ClsExceptions e) {
+            ClsLogging.writeFileLogWithoutSession(" > Procesos de facturación relanzados ERROR.\r\n" + e,1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+            throw new ServletException("Error al relanzar procesos de facturación en ejecución: "+ e.toString());
+        }
+        //END BNS INC_10389_SIGA
         
         // BEGIN BNS INC_10389_SIGA 22/02/2013
         // Relanzar envíos en estado procesando

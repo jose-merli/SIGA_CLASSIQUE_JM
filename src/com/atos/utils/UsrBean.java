@@ -33,6 +33,8 @@ import com.siga.general.CenVisibilidad;
 
 public class UsrBean implements Serializable {
 
+	public static String trans = "javax.transaction.UserTransaction";
+	
 	private String idRol="";
 	private long idPersona=-1;
 	private String userName = "";
@@ -44,8 +46,7 @@ public class UsrBean implements Serializable {
 	private String userDescription = "";
 	private String location = "";
 	private int pkiCertificateType = 1;
-	private boolean pki = false;
-	private String trans = "javax.transaction.UserTransaction";
+	private boolean pki = false;	
 	private String descTrans = "";
 	private String strutsTrans = "nothing.do";
 	private boolean letrado = true; // ACG se deberá inicializar a false

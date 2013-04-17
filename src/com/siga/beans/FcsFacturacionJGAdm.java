@@ -25,9 +25,14 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -51,6 +56,7 @@ import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 /**
 * Administrador de Facturacion de justicia gratuita
@@ -572,7 +578,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @return Hashtable con los campos adaptados.
 	 */
 	
-	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
+	public static Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
 	{
 		String values;	
 		RowsContainer rc = null;
@@ -581,7 +587,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
 		
-		String sql ="SELECT (MAX(IDFACTURACION) + 1) AS IDFACTURACION FROM " + nombreTabla + " where " + FcsFacturacionJGBean.C_IDINSTITUCION + "=" + (String)entrada.get("IDINSTITUCION");	
+		String sql ="SELECT (MAX(IDFACTURACION) + 1) AS IDFACTURACION FROM " + FcsFacturacionJGBean.T_NOMBRETABLA + " where " + FcsFacturacionJGBean.C_IDINSTITUCION + "=" + (String)entrada.get("IDINSTITUCION");	
 		try {		
 			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
@@ -4868,5 +4874,187 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
        }
 		
        return aFacturas;		
-	}	
+	}
+
+	/**
+	 * BNS INC_10644_SIGA: RELANZA LAS FACTURACIONES QUE SE HAN QUEDADO EN EJECUCIÓN. BORRA TODOS LOS DATOS RELATIVOS
+	 * 						A LAS FACTURACIONES CON ESTADO 'EN EJECUCIÓN' (INCLUYENDO LOS FICHEROS) PARA VOLVER A INSERTARLAS.
+	 **/
+	public void relanzarFacturacion() throws ClsExceptions {
+		String sql = "SELECT E.*, F."+FcsFacturacionJGBean.C_FECHADESDE+", F."+FcsFacturacionJGBean.C_FECHAHASTA+", F."+FcsFacturacionJGBean.C_NOMBRE+
+				" FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" E JOIN "+FcsFacturacionJGBean.T_NOMBRETABLA+" F"+
+				" ON E."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = F."+FcsFacturacionJGBean.C_IDINSTITUCION+" AND E."+
+				FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = F."+FcsFacturacionJGBean.C_IDFACTURACION+
+				" WHERE E."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" || '_' || E."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+
+				" IN (SELECT EST."+FcsFacturacionJGBean.C_IDINSTITUCION+" || '_' || EST."+FcsFacturacionJGBean.C_IDFACTURACION+" FROM "+
+				FcsFacturacionJGBean.T_NOMBRETABLA+" FAC, "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST WHERE "+
+				"FAC."+FcsFacturacionJGBean.C_IDINSTITUCION+" = EST."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" AND "+
+				"FAC."+FcsFacturacionJGBean.C_IDFACTURACION+" = EST."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" AND "+
+				"EST."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+" = (SELECT MAX(EST2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+
+				") FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 WHERE "+
+				"EST2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = EST."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" AND "+
+				"EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = EST."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+") AND "+
+				"FAC."+FcsFacturacionJGBean.C_PREVISION+" = '0' AND "+
+				"EST."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" = 40) AND "+
+				"E."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" = 40";
+				
+    	try{
+    		RowsContainer rc = null;
+			rc = new RowsContainer();
+			ClsLogging.writeFileLogWithoutSession(" >> Obteniendo facturaciones en ejecución.",1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+			if (rc.query(sql)) {
+				ClsLogging.writeFileLogWithoutSession(" >> "+rc.size()+" facturaciones en ejecución encontradas.",1);
+	            ClsLogging.writeFileLogWithoutSession("",1);
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable FacturacionArelanzar = (Hashtable) fila.getRow(); 
+					if (FacturacionArelanzar != null) {
+						UserTransaction tx = null;
+						String idFacturacion = "";
+						String idInstitucion = "";
+						try{
+							// PARA CADA FACTURACIÓN EN EJECUCIÓN
+							idFacturacion = (String) FacturacionArelanzar.get(FcsFactEstadosFacturacionBean.C_IDFACTURACION);
+							idInstitucion = (String) FacturacionArelanzar.get(FcsFactEstadosFacturacionBean.C_IDINSTITUCION);
+							String usrName = (String) FacturacionArelanzar.get(FcsFactEstadosFacturacionBean.C_USUMODIFICACION);
+							String fechaDeInicio = (String) FacturacionArelanzar.get(FcsFacturacionJGBean.C_FECHADESDE);
+							String fechaDeFin = (String) FacturacionArelanzar.get(FcsFacturacionJGBean.C_FECHAHASTA);
+							Vector criterio = null;
+							
+							ClsLogging.writeFileLogWithoutSession(" >> Relanzando facturación en ejecución idInstitucion="+idInstitucion+" idFacturacion="+idFacturacion+".",1);
+				            ClsLogging.writeFileLogWithoutSession("",1);
+							
+							// 1 - GUARDAMOS EL CRITERIO
+							criterio = FcsFactGrupoFactHitoAdm.guardarCriterio(idFacturacion, idInstitucion);
+							
+							//Obtenemos una transacción pesada 
+							Context ctx = new InitialContext();
+							tx = (UserTransaction) ctx.lookup(UsrBean.trans);
+							tx.begin();
+							try {
+							    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+								tx.setTransactionTimeout(new Integer(rp.returnProperty("siga.jta.timeout.pesada")).intValue());
+							} catch (SystemException se) {
+								ClsLogging.writeFileLogError("Error al establecer JTA timeout PESADA",se,3);
+							}
+							
+							// 2 - BORRAMOS LA FACTURACIÓN Y LOS FICHEROS ASOCIADOS
+							borrarFacturacion(idInstitucion, idFacturacion, null);
+							
+							// 3 - VOLVEMOS A INSERTAR LA FACTURACIÓN
+							Hashtable datos = new Hashtable();						
+							datos.put(FcsFacturacionJGBean.C_IDINSTITUCION, FacturacionArelanzar.get(FcsFactEstadosFacturacionBean.C_IDINSTITUCION));
+							datos.put(FcsFacturacionJGBean.C_IDFACTURACION, FacturacionArelanzar.get(FcsFactEstadosFacturacionBean.C_IDFACTURACION));
+							datos.put(FcsFacturacionJGBean.C_NOMBRE, FacturacionArelanzar.get(FcsFacturacionJGBean.C_NOMBRE));
+							datos.put(FcsFacturacionJGBean.C_FECHADESDE, fechaDeInicio);
+							datos.put(FcsFacturacionJGBean.C_FECHAHASTA, fechaDeFin);
+							datos.put(FcsFacturacionJGBean.C_USUMODIFICACION, FacturacionArelanzar.get(FcsFacturacionJGBean.C_USUMODIFICACION));
+							insertar(datos, null, idInstitucion, fechaDeInicio, fechaDeFin, usrName);
+							
+							// 4 - LA DEJAMOS PROGRAMADA
+							FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(null);
+							FcsFactEstadosFacturacionBean beanEstado = new FcsFactEstadosFacturacionBean();
+							beanEstado.setIdInstitucion(new Integer(idInstitucion));
+							beanEstado.setIdFacturacion(new Integer(idFacturacion));
+							beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()));
+							beanEstado.setFechaEstado("SYSDATE");
+							beanEstado.setIdOrdenEstado(2);
+							beanEstado.setUsuMod(Integer.valueOf((String) FacturacionArelanzar.get(FcsFacturacionJGBean.C_USUMODIFICACION)));
+							fcsFactEstadosFacturacionAdm.insert(beanEstado);
+							
+							ClsLogging.writeFileLogWithoutSession(" >> Facturación en ejecución idInstitucion="+idInstitucion+" idFacturacion="+idFacturacion+" RELANZADO OK.",1);
+				            ClsLogging.writeFileLogWithoutSession("",1);
+							tx.commit();
+						} catch (Exception e) {
+							ClsLogging.writeFileLogWithoutSession(" >> Facturación en ejecución idInstitucion="+idInstitucion+" idFacturacion="+idFacturacion+" RELANZADO ERROR: "+e.getMessage()+".",1);
+				            ClsLogging.writeFileLogWithoutSession("",1);
+				            if (tx != null){
+				            	try{
+				            		tx.rollback();
+				            	} catch (Exception e2) {}
+				            	tx = null;
+				            }
+						}
+					}
+				}
+			} else {
+				ClsLogging.writeFileLogWithoutSession(" >> NINGUNA facturación en ejecución encontrada.",1);
+	            ClsLogging.writeFileLogWithoutSession("",1);
+			}
+    		    	
+	    } catch (Exception e) {
+	    	ClsLogging.writeFileLog(">> Error en relanzarFacturacion "+ e.getMessage(), 3);
+		    ClsExceptions psscEx = new ClsExceptions(e,e.getMessage().substring(0, e.getMessage().length() - 1));
+			psscEx.setErrorType("9");
+			throw psscEx;
+		} finally {
+			// EN CUALQUIER CASO LANZAMOS EL PROCESO DE FACTURACIÓN PARA QUE SE EJECUTEN LAS PROGRAMADAS
+			ClsLogging.writeFileLogWithoutSession(" >> Relanzando servicio de proceso automático rápido para tratar las facturacines programadas (RELANZADAS).",1);
+            ClsLogging.writeFileLogWithoutSession("",1);
+			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+		}
+	}
+	
+	public void borrarFacturacion(String idInstitucion, String idFacturacion, UsrBean usr) throws SIGAException, ClsExceptions {
+		
+		Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), usr);	
+
+		Object[] param_in = new Object[2];
+ 		String resultadoPl[] = new String[2];
+ 		//Parametros de entrada del PL
+		param_in[0] = idInstitucion;
+		param_in[1] = idFacturacion;
+ 		//Ejecucion del PL
+		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
+		
+		if (!((String)resultadoPl[0]).equals("0")) 
+			throw new SIGAException("messages.deleted.error");
+
+		// borrado fisico de ficheros del servidor web
+		UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucion), nombreFicheros, usr);
+	}
+
+	public void insertar(Hashtable datos, UsrBean usr, String idInstitucion, String fechaDeInicio, String fechaDeFin, String usrName) throws ClsExceptions, SIGAException {
+		FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(usr);
+		//calculamos el nuevo idFacturacion
+		datos.put("IDINSTITUCION", idInstitucion);
+		if (usr != null && usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+			datos.put("PREVISION",ClsConstants.DB_TRUE);
+		} else if (usr == null || usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
+			datos.put("PREVISION",ClsConstants.DB_FALSE);	
+		}
+		if(datos.get("IDFACTURACION")==null || datos.get("IDFACTURACION").toString().trim().equalsIgnoreCase("")){
+			prepararInsert(datos);
+		} else{
+			//si el has tambien contenia las keys de FECHADESDE y FECHAHASTA, las convierte al formato correcto para insertar
+			//en otro caso no falla
+			try{
+				datos.put(FcsFacturacionJGBean.C_FECHADESDE, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHADESDE)));
+				datos.put(FcsFacturacionJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHAHASTA)));
+			}catch(Exception e){}
+			
+		}
+		//ponemos el campo regularizacion a false			
+		datos.put(FcsFacturacionJGBean.C_REGULARIZACION,ClsConstants.DB_FALSE);
+		
+		String idfacturacion=((String)datos.get("IDFACTURACION"));
+		
+		//preparamos la insercion en estados fact
+		Hashtable estado = new Hashtable();
+		estado.put(FcsFactEstadosFacturacionBean.C_IDFACTURACION , datos.get("IDFACTURACION"));
+		estado.put(FcsFactEstadosFacturacionBean.C_FECHAESTADO , "sysdate");
+		estado.put(FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION, "sysdate");
+		estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
+		estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, idInstitucion);
+		estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usrName);
+		estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO , "1");//al inicio sera un uno ya que sera el primero
+		
+		if(!this.insert(datos))
+			throw new SIGAException("Error al insertar el elemento en BD");
+		
+		if(!fcsFactEstadosFacturacionAdm.insert(estado))
+			throw new SIGAException("Error al insertar el elemento en BD");
+	}
+	
 }

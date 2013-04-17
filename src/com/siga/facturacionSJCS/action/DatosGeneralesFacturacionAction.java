@@ -545,88 +545,37 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		UserTransaction tx = null;
 		Vector resultadoConsulta = null;
 		try{
-		    
-			// vemos si venimos de previsiones
-		    String prevision = "";
-		    if (usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
-				prevision = "S";
-			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
-				prevision = "N";	
+		    if (!usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+		    	resultadoConsulta = FcsFactGrupoFactHitoAdm.guardarCriterio((String) miform.getIdFacturacion(), (String) usr.getLocation());
 			}
-			
-			// RGG 25/04/2005 Si venimos de prevision no comprobamos esto
-			if (prevision==null || !prevision.equals("S")) {
-				
-				//comprobamos que no exista un criterio igual
-				String consulta = " where "+  
-			    FcsFactGrupoFactHitoBean.C_IDFACTURACION + "=" + (String) miform.getIdFacturacion() +
-				" and " + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + "=" + (String) usr.getLocation();
-				
-				resultadoConsulta = criterioAdm.select(consulta);
-				
-			}
-			
-		} 
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
 		}
 		return resultadoConsulta;
 	}
 	
 	protected String borrarFacturacion(String idFacturacion, String idInstitucionRegistro, String idInstitucionUsuario, MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		
-		String result="error";		
-		boolean correcto=false;		
-		Hashtable hash = new Hashtable();		
-		Vector camposOcultos = new Vector();
 		UserTransaction tx = null;
 		
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
-			// Obtengo los datos del formulario		
-			//MantenimientoFacturacionForm miForm = (MantenimientoFacturacionForm)formulario;		
-
-			
-			//Vector fila = miForm.getDatosTablaOcultos(0);
-
-				
-			FcsFacturacionJGAdm adm = new FcsFacturacionJGAdm(this.getUserBean(request));
-
-			// Recupero el nombre de los ficheros asociados a la facturacion
-			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucionRegistro), new Integer(idFacturacion), this.getUserBean(request));
-
+			FcsFacturacionJGAdm fcsFacturacionJGAdm = new FcsFacturacionJGAdm(usr);
 			// Comienzo control de transacciones 
 			tx = usr.getTransactionPesada();			
 			tx.begin();
-
-			Object[] param_in = new Object[2];
-	 		String resultadoPl[] = new String[2];
-	 		//Parametros de entrada del PL
-	        HttpSession ses = (HttpSession)request.getSession();
-			param_in[0] = idInstitucionRegistro;			
-			param_in[1] = idFacturacion;
-	 		//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
-			correcto = ((String)resultadoPl[0]).equals("0");
-			if (!correcto) 
-				throw new SIGAException("messages.deleted.error");
-
+			
+			fcsFacturacionJGAdm.borrarFacturacion(idInstitucionRegistro, idFacturacion, usr);
+			
 			tx.commit();
 
-			// borrado fisico de ficheros del servidor web
-			UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucionRegistro), nombreFicheros, this.getUserBean(request));
 
 			request.setAttribute("descOperation","messages.deleted.success");				
-		 }
-		 catch (Exception e) {
+		 } catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
 	   	 }
-		 if (correcto) 
-		 	return exitoRefresco("messages.deleted.success",request);
-		 else 
-		 	return exitoRefresco("messages.deleted.error",request);
+		
+		return exitoRefresco("messages.deleted.success",request);
 	}
 
 	
@@ -699,53 +648,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			tx = usr.getTransaction();
 			tx.begin();
 
-			//calculamos el nuevo idFacturacion
-			datos.put("IDINSTITUCION", (String)usr.getLocation());
-			if (usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
-				datos.put("PREVISION",ClsConstants.DB_TRUE);
-			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
-				datos.put("PREVISION",ClsConstants.DB_FALSE);	
-			}
-			if(datos.get("IDFACTURACION")==null || datos.get("IDFACTURACION").toString().trim().equalsIgnoreCase("")){
-				facturacionAdm.prepararInsert(datos);
-			} else{
-				//si el has tambien contenia las keys de FECHADESDE y FECHAHASTA, las convierte al formato correcto para insertar
-				//en otro caso no falla
-				try{
-					datos.put(FcsFacturacionJGBean.C_FECHADESDE, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHADESDE)));
-					datos.put(FcsFacturacionJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate("",(String)datos.get(FcsFacturacionJGBean.C_FECHAHASTA)));
-				}catch(Exception e){}
-				
-			}
-			//ponemos el campo regularizacion a false			
-			datos.put(FcsFacturacionJGBean.C_REGULARIZACION,ClsConstants.DB_FALSE);
-			
-			//comprobamos que la facturacion no se solape con otra ya existente
-			FcsFacturacionJGBean facturaPrueba  = new FcsFacturacionJGBean (); 
-			facturaPrueba.setFechaDesde((String)miform.getFechaInicio());
-			facturaPrueba.setFechaHasta((String)miform.getFechaFin());
-			facturaPrueba.setIdInstitucion(Integer.valueOf((String)usr.getLocation()));
-			facturaPrueba.setIdFacturacion(Integer.valueOf((String)datos.get("IDFACTURACION")));
-
-			
-			String localizacion=usr.getLocation();
-			String idfacturacion=((String)datos.get("IDFACTURACION"));
-			
-			//preparamos la insercion en estados fact
-			Hashtable estado = new Hashtable();
-			estado.put(FcsFactEstadosFacturacionBean.C_IDFACTURACION , datos.get("IDFACTURACION"));
-			estado.put(FcsFactEstadosFacturacionBean.C_FECHAESTADO , "sysdate");
-			estado.put(FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION, "sysdate");
-			estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
-			estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, usr.getLocation());
-			estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usr.getUserName());
-			estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO , "1");//al inicio sera un uno ya que sera el primero
-			
-			if(!facturacionAdm.insert(datos))
-				throw new SIGAException(facturacionAdm.getError());
-			
-			if(!estadosAdm.insert(estado))
-				throw new SIGAException(estadosAdm.getError());
+			facturacionAdm.insertar(datos, usr, usr.getLocation(), miform.getFechaInicio(), miform.getFechaFin(), usr.getUserName());
 			
 			tx.commit();
 			

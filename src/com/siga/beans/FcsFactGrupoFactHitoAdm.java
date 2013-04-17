@@ -8,9 +8,11 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.SIGAException;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_GRUPOFACTURACION
@@ -23,7 +25,11 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 
-
+	private static String[] campos = {	FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION,	FcsFactGrupoFactHitoBean.C_IDFACTURACION,
+			FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,	FcsFactGrupoFactHitoBean.C_IDHITOGENERAL,	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,
+			FcsFactGrupoFactHitoBean.C_USUMODIFICACION};
+	private static String[] claves = {	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,		FcsFactGrupoFactHitoBean.C_IDFACTURACION,
+		FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL};
 	/**
 	 * Constructor de la clase. 
 	 * 
@@ -37,20 +43,15 @@ public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 	 *  @return conjunto de datos con los nombres de todos los campos del bean
 	 * 
 	 */
-	protected String[] getCamposBean() {
-		String[] campos = {	FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION,	FcsFactGrupoFactHitoBean.C_IDFACTURACION,
-							FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,	FcsFactGrupoFactHitoBean.C_IDHITOGENERAL,	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,
-							FcsFactGrupoFactHitoBean.C_USUMODIFICACION};
-		return campos;
+	protected String[] getCamposBean() {		
+		return FcsFactGrupoFactHitoAdm.campos;
 	}
 	/** Funcion getClavesBean ()
 	 *  @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 * 
 	 */
 	protected String[] getClavesBean() {
-		String[] campos = {	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,		FcsFactGrupoFactHitoBean.C_IDFACTURACION,
-							FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL};
-		return campos;
+		return FcsFactGrupoFactHitoAdm.claves;
 	}
 
 	/** Funcion hashTableToBean (Hashtable hash)
@@ -62,18 +63,22 @@ public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 		FcsFactGrupoFactHitoBean bean = null;
 		try{
 			bean = new FcsFactGrupoFactHitoBean();
-			bean.setFechaMod(UtilidadesHash.getString(hash,FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION));
-			bean.setIdFacturacion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDFACTURACION));
-			bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION));
-			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDINSTITUCION));
-			bean.setIdHitoGeneral(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_USUMODIFICACION));
+			setBeanValues(bean, hash);
 		}
 		catch(Exception e){
 			bean = null;
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
 		return bean;
+	}
+	
+	private static void setBeanValues(FcsFactGrupoFactHitoBean bean, Hashtable hash){
+		bean.setFechaMod(UtilidadesHash.getString(hash,FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION));
+		bean.setIdFacturacion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDFACTURACION));
+		bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION));
+		bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDINSTITUCION));
+		bean.setIdHitoGeneral(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL));
+		bean.setUsuMod(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_USUMODIFICACION));
 	}
 
 	/** Funcion beanToHashTable (MasterBean bean)
@@ -203,4 +208,58 @@ public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 
+	public static Vector guardarCriterio(String idFacturacion, String idinstitucion) throws SIGAException{
+		Vector resultadoConsulta = null;
+		try{
+			//comprobamos que no exista un criterio igual
+			String consulta = " where "+  
+		    FcsFactGrupoFactHitoBean.C_IDFACTURACION + "=" + idFacturacion +
+			" and " + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + "=" + idinstitucion;
+			
+			RowsContainer rc = null;
+			try { 
+				rc = new RowsContainer(); 
+				String sql = UtilidadesBDAdm.sqlSelect(FcsFactGrupoFactHitoBean.T_NOMBRETABLA, campos);
+				sql += " " + consulta;
+				sql += UtilidadesBDAdm.sqlOrderBy(FcsFactGrupoFactHitoAdm.claves);
+				if (rc.query(sql)) {
+					resultadoConsulta = new Vector();
+					for (int i = 0; i < rc.size(); i++)	{
+						Row fila = (Row) rc.get(i);
+						FcsFactGrupoFactHitoBean bean = null;
+						try{
+							bean = new FcsFactGrupoFactHitoBean();
+							setBeanValues(bean, fila.getRow());
+						} catch(Exception e){
+							bean = null;
+							resultadoConsulta = null;
+							throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
+						}
+						MasterBean registro=bean;
+						registro.setOriginalHash(fila.getRow());
+						if (registro != null) 
+							resultadoConsulta.add(registro);
+					}
+				}
+			} 
+			catch (Exception e) {
+				resultadoConsulta = null;
+				throw new ClsExceptions (e, e.getMessage()); 
+			}
+		} catch (Exception e) {
+			resultadoConsulta = null;
+			String mensaje = "messages.general.error";
+			String[] params = new String[] {"modulo.facturacionSJCS"};
+			if (e!=null && e instanceof SIGAException) {
+				((SIGAException)e).setParams(params);
+				throw (SIGAException)e; 
+			}
+			if (e!=null) {
+				SIGAException se = new SIGAException(mensaje,e,params);
+				se.setClsException(true);
+				throw se;
+			}
+		}
+		return resultadoConsulta;
+	}
 }
