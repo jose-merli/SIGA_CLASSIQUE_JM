@@ -535,7 +535,7 @@
 	
 	<c:choose>
 		<c:when test="${((InformeFormEdicion.idInstitucion=='0'&&InformeFormEdicion.usrBean.location=='2000')||InformeFormEdicion.idInstitucion==InformeFormEdicion.usrBean.location)&&InformeForm.modo!='consultar'}">		
-			<siga:ConjBotonesAccion botones="Y,C,R" modal="P" />
+			<siga:ConjBotonesAccion botones="G,C,R" modal="P" />
 		</c:when>
 		<c:otherwise>
 			<siga:ConjBotonesAccion botones="C" modal="P" />
@@ -727,9 +727,8 @@
 			}
 		}
 		
-		// Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() 
-		{			
+		// Asociada al boton Guardar
+		function accionGuardar() {			
 			//alert('a ver?'+document.getElementById("comboTipoEnvioPermitidos").options.length);
 			var tiposEnvioSeleccionados = "";
 			if(document.InformeFormEdicion.idTipoInforme.value!='CON'){
