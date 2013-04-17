@@ -3342,11 +3342,40 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			//Aniadimos el Dictamen
 			String idDictamen = (String)registro.get("IDTIPODICTAMENEJG");
 			helperInformes.completarHashSalida(registro,getDictamenCalificacionEjgSalida(idInstitucion,idDictamen,idioma));
-			
-			
-			//Aniadimos la comisaria
-			String idComisaria = (String)registro.get("IDCOMISARIA");
-			helperInformes.completarHashSalida(registro,getComisariaEjgSalida(idInstitucion, idComisaria));
+						
+			// Agregamos la comisaria del ejg
+			String idComisaria = (String)registro.get("IDCOMISARIA");			
+			if(idComisaria!=null && !idComisaria.trim().equals("") && idInstitucion!=null && !idInstitucion.trim().equals("")) { 
+				helperInformes.completarHashSalida(registro, getComisariaEjgSalida(idInstitucion, idComisaria));
+				
+				// Comprobamos nulos
+				if (!registro.containsKey("COMISARIA_D_J") || registro.get("COMISARIA_D_J")==null) {
+					registro.put("COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("COMISARIA_DEFENSA_JURIDICA") || registro.get("COMISARIA_DEFENSA_JURIDICA")==null) {
+					registro.put("COMISARIA_DEFENSA_JURIDICA", " ");
+				}
+				if (!registro.containsKey("CP_COMISARIA_D_J") || registro.get("CP_COMISARIA_D_J")==null) {
+					registro.put("CP_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("DIR_COMISARIA_D_J") || registro.get("DIR_COMISARIA_D_J")==null) {
+					registro.put("DIR_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("POBLACION_COMISARIA_D_J") || registro.get("POBLACION_COMISARIA_D_J")==null) {
+					registro.put("POBLACION_COMISARIA_D_J", " ");
+				}
+				if (!registro.containsKey("PROVINCIA_COMISARIA_D_J") || registro.get("PROVINCIA_COMISARIA_D_J")==null) {
+					registro.put("PROVINCIA_COMISARIA_D_J", " ");
+				}				
+				
+			} else {				
+				registro.put("COMISARIA_D_J", " ");
+				registro.put("COMISARIA_DEFENSA_JURIDICA", " ");
+				registro.put("CP_COMISARIA_D_J", " ");
+				registro.put("DIR_COMISARIA_D_J", " ");
+				registro.put("POBLACION_COMISARIA_D_J", " ");
+				registro.put("PROVINCIA_COMISARIA_D_J", " ");
+			}			
 			
 			//Aniadimos la pretension
 			String idPretension = (String)registro.get("PRETENSION");
