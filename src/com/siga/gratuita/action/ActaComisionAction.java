@@ -680,7 +680,7 @@ public class ActaComisionAction extends MasterAction{
 				estadoAdm.prepararInsert (ejg);
 				
 				// Como observacion diremos a que acta pertenecia
-				ejg.put(ScsEstadoEJGBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma("sjcs.actas.observacionAlRetirar", usr.getLanguageInstitucion()) + actaForm.getAnioActa()+"/"+actaForm.getNumeroActa());
+				ejg.put(ScsEstadoEJGBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguageInstitucion(),"sjcs.actas.observacionAlRetirar") + actaForm.getAnioActa()+"/"+actaForm.getNumeroActa());
 				
 				// escribimos el ejg en la lista de retirados
 				listaRetirados+=ejg.get(ScsEJGBean.C_ANIO)+"/"+ejg.get(ScsEJGBean.C_NUMEJG);
