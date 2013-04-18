@@ -63,28 +63,24 @@ function informeGenerico(){
 	datos = "fichaColegial=="+fichaColegial+"##mostrarTodas=="+mostrarTodas+ "##idInstitucion==" +idInstitucion+ "##idPersona==" +idPersona+ "##anio==" +anio+ "##estado==" +estado+ "##fechaJustificacionDesde==" +fechaJustificacionDesde+ "##fechaJustificacionHasta==" +fechaJustificacionHasta+ "##fechaDesde==" +fechaDesde+ "##fechaHasta==" +fechaHasta+ "##interesadoApellidos==" +interesadoApellidos+ "##interesadoNombre==" +interesadoNombre+ "##incluirEjgNoFavorable==" +incluirEjgNoFavorable+ "##incluirEjgSinResolucion==" +incluirEjgSinResolucion+ "##incluirSinEJG==" +incluirSinEJG+ "##incluirEjgPteCAJG==" +incluirEjgPteCAJG+ "##activarRestriccionesFicha==" +activarRestriccionesFicha+"##idTipoInforme==JUSDE%%%";
 	document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 	document.InformesGenericosForm.datosInforme.value=datos;
-	if(document.getElementById("informeUnico").value=='1'){
-		sub();
-		document.InformesGenericosForm.submit();
-	}else{
-	
-		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-		if (arrayResultado==undefined||arrayResultado[0]==undefined){
-		   		
-	   	} 
-	   	else {
-	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
-	   		if(confirmar){
-	   			var idEnvio = arrayResultado[0];
-			    var idTipoEnvio = arrayResultado[1];
-			    var nombreEnvio = arrayResultado[2];				    
-			    
-			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-			   	document.DefinirEnviosForm.modo.value='editar';
-			   	document.DefinirEnviosForm.submit();
-	   		}
-	   	}
-	}
+
+	//aalg: INC_10641_SIGA: se quita la restricción de único tipo de informe
+	var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+	   		
+   	} 
+   	else {
+   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+   		if(confirmar){
+   			var idEnvio = arrayResultado[0];
+		    var idTipoEnvio = arrayResultado[1];
+		    var nombreEnvio = arrayResultado[2];				    
+		    
+		   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+		   	document.DefinirEnviosForm.modo.value='editar';
+		   	document.DefinirEnviosForm.submit();
+   		}
+   	}
 }
 
 function ajustarCabeceraTabla(){
