@@ -3277,7 +3277,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
 				Vector datosInformeEjg = (Vector) htDatosInformeFinal.get("row");
 				ScsEJGBean ejgBean = new ScsEJGBean();
-				ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
+				if(datosInformeEjg!=null && datosInformeEjg.size()>0)
+					ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
 
 				envio.generarEnvioBean(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(), vDocumentos, ejgBean);
 				

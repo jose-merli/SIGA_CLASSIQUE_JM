@@ -917,7 +917,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, false);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -954,7 +954,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, false);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
 	    	    		}
 	    	    			    	    		
 	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -968,7 +968,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsEJGBean){	    	    			
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable, htDatosEnvio, true);
+	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, true);
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -996,8 +996,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      * @param htDatosEnvio
      * @param bSms
      */
-    public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio, boolean bSms) {    	
-		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
+    public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio, boolean bSms) {
+    	if(ejgHashtable.get("NUMERO_EJG")!=null)
+    		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
 		
 		if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
 			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
