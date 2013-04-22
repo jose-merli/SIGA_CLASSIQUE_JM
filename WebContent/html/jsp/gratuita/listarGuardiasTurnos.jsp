@@ -171,7 +171,6 @@
 		   nombreCol="<%=nC%>"
 		   tamanoCol="<%=tC%>"
 		   alto="<%=alto%>"
-		   ajusteBotonera="true"
 		  >
 		
 		<% if (obj==null || obj.size()==0){%>
