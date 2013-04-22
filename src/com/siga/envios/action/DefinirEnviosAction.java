@@ -93,6 +93,7 @@ import es.satec.businessManager.BusinessManager;
 
 /**
  * Action para la búsqueda de expedientes (simple y avanzada)
+ * aalg: INC_09409_SIGA. Añadidas trazas
  */
 public class DefinirEnviosAction extends MasterAction {
 
@@ -101,75 +102,79 @@ public class DefinirEnviosAction extends MasterAction {
 	{
 		String mapDestino = "exception";
 		MasterForm miForm = null;
-
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		try 
 		{ 
 			miForm = (MasterForm) formulario;
 
-			if (miForm != null) 
-			{
+			if (miForm != null) {
 				String accion = miForm.getModo();
 
-				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir"))
-				{
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:abrir. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = abrir(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("getJQueryTiposEnvioPermitido"))
-				{
+				}else if (accion.equalsIgnoreCase("getJQueryTiposEnvioPermitido")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:getJQueryTiposEnvioPermitido. IdInstitucion:" + userBean.getLocation(), 10);
 					getJQueryTiposEnvioPermitido(mapping, miForm, request, response);
 					return null;
 				} 
-				else if (accion.equalsIgnoreCase("getJQueryPlantillasEnvio"))
-				{
+				else if (accion.equalsIgnoreCase("getJQueryPlantillasEnvio")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:getJQueryPlantillasEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 					getJQueryPlantillasEnvio(mapping, miForm, request, response);
 					return null;
 				
 				} else if (accion.equalsIgnoreCase("getJQueryTiposIntercambioTelematico"))	{
+					ClsLogging.writeFileLog("DefinirEnviosAction:getJQueryTiposIntercambioTelematico. IdInstitucion:" + userBean.getLocation(), 10);
 					getJQueryTiposIntercambioTelematico(mapping, miForm, request, response);
 					return null;
 				
 				} else if (accion.equalsIgnoreCase("envioModal")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:envioModal. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = envioModal(mapping, miForm, request, response);
 				} 
 				
-				else if (accion.equalsIgnoreCase("envioModalCertificado"))
-				{
+				else if (accion.equalsIgnoreCase("envioModalCertificado")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:envioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = envioModalCertificado(mapping, miForm, request, response);
 				} 
-				else if (accion.equalsIgnoreCase("insertarEnvioGenerico"))
-				{
+				else if (accion.equalsIgnoreCase("insertarEnvioGenerico")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioGenerico. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = insertarEnvioGenerico(mapping, miForm, request, response);
 				}
-				else if (accion.equalsIgnoreCase("insertarEnvioModal"))
-				{
+				else if (accion.equalsIgnoreCase("insertarEnvioModal")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioModal. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = insertarEnvioModal(mapping, miForm, request, response);
 				}
 
-				else if (accion.equalsIgnoreCase("insertarEnvioModalCertificado"))
-				{
+				else if (accion.equalsIgnoreCase("insertarEnvioModalCertificado")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = insertarEnvioModalCertificado(mapping, miForm, request, response);
 				}
 
-				else if (accion.equalsIgnoreCase("procesarEnvio"))
-				{
+				else if (accion.equalsIgnoreCase("procesarEnvio")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:procesarEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = procesarEnvio(mapping, miForm, request, response);
 				}
 
-				else if (accion.equalsIgnoreCase("descargarLogErrores"))
-				{
+				else if (accion.equalsIgnoreCase("descargarLogErrores")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:descargarLogErrores. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = descargarLogErrores(mapping, miForm, request, response);
 				}
 
-				else if (accion.equalsIgnoreCase("descargarEstadistica"))
-				{
+				else if (accion.equalsIgnoreCase("descargarEstadistica")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:descargarEstadistica. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = descargarEstadistica(mapping, miForm, request, response);
 				
 				} else if (accion.equalsIgnoreCase("verRelacionEnvio")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:verRelacionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = verRelacionEnvio(mapping, miForm, request, response);
 				
 				} else if (accion.equalsIgnoreCase("editarRelacionEnvio")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:editarRelacionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = editarRelacionEnvio(mapping, miForm, request, response);
 				
 				} else if (accion.equalsIgnoreCase("respuestaTelematica")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:respuestaTelematica. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = respuestaTelematica(mapping, miForm, request, response);
 				}
 				
@@ -259,11 +264,12 @@ public class DefinirEnviosAction extends MasterAction {
 	    	    }
 	    	}
 			 */
-
+			
 		}catch (Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
 		}
-
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin abrir. IdInstitucion:" + userBean.getLocation(), 10);
 		return("inicio");
 	}
 
@@ -285,7 +291,7 @@ public class DefinirEnviosAction extends MasterAction {
 		} catch (Exception e) {
 			// Si no se mete este parametro se controla en la jsp
 		}
-
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin nuevo. IdInstitucion:" + userBean.getLocation(), 10);
 		return "nuevo";
 	}
 
@@ -345,7 +351,8 @@ public class DefinirEnviosAction extends MasterAction {
 		//un %, y los campos visibles separados por comas, todo entre comillas simples
 
 		request.setAttribute("retorno",String.valueOf(id.intValue())+","+form.getIdTipoEnvio()+"%"+form.getNombre());
-		request.setAttribute("modal","1");        
+		request.setAttribute("modal","1");   
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin insertar. IdInstitucion:" + userBean.getLocation(), 10);
 		return "refresh";
 
 	}
@@ -440,7 +447,7 @@ public class DefinirEnviosAction extends MasterAction {
 		ses.setAttribute("DATABACKUP",htBackup);
 
 		request.setAttribute("datos", datos);        
-
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin buscar. IdInstitucion:" + userBean.getLocation(), 10);
 		return "resultado";
 	}
 
@@ -489,12 +496,15 @@ public class DefinirEnviosAction extends MasterAction {
 			this.throwExcp("messages.elementoenuso.error",e,null);
 		}
 
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin borrar. IdInstitucion:" + userBean.getLocation(), 10);
 		return exitoRefresco("messages.deleted.success",request);
 	}
 
 
 	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions{
 
+		HttpSession ses=request.getSession();
+		UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
@@ -521,6 +531,7 @@ public class DefinirEnviosAction extends MasterAction {
 		request.setAttribute("nuevo", "false");	    
 		request.setAttribute("buscarEnvios","true");
 
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin mostrarRegistro. IdInstitucion:" + userBean.getLocation(), 10);
 		return "editar";
 	}
 	
@@ -692,7 +703,8 @@ public class DefinirEnviosAction extends MasterAction {
 		} catch (Exception ex) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},ex,null);
 		}
-
+		
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin envioModal. IdInstitucion:" + userBean.getLocation(), 10);
 		return "envioModal";
 	}
 	protected String envioModalCertificado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
@@ -718,6 +730,7 @@ public class DefinirEnviosAction extends MasterAction {
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin envioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 		return "envioModalCertificado";
 	}
 
@@ -797,9 +810,11 @@ public class DefinirEnviosAction extends MasterAction {
 						request.setAttribute("mensajeDescarga", "Algunos destinatarios no admiten el envío telemático. ¿Desea descargar los documentos asociados? (Desde el módulo de envíos también se pueden descargar)");
 						request.setAttribute("idsInforme",datosEnvio[2]+","+datosEnvio[3]);
 						request.setAttribute("datosInforme",form.getDatosInforme());
+						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.descargarEnvioTelematico", 10);
 						return "descargarEnvioTelematico";	
 					
 					}else{
+						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.Exito. IdInstitucion:" + userBean.getLocation(), 10);
 						return exitoModal("messages.inserted.success",request);
 					}
 				
@@ -811,8 +826,10 @@ public class DefinirEnviosAction extends MasterAction {
 						htEnvio.put(EnvEnviosBean.C_DESCRIPCION,form.getNombre());
 						request.getSession().removeAttribute("EnvEdicionEnvio");
 						request.setAttribute("envio",htEnvio);
+						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.seleccionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 						return "seleccionEnvio";
 					}else{
+						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.errorNoDireccion. IdInstitucion:" + userBean.getLocation(), 10);
 						return exitoModal("messages.envio.errorNoDireccion",request);
 					}
 				}
@@ -823,6 +840,7 @@ public class DefinirEnviosAction extends MasterAction {
 		catch (Exception e){
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.exception. IdInstitucion:" + userBean.getLocation(), 10);
 		return "exception";
 		
 	} 
@@ -1100,8 +1118,10 @@ public class DefinirEnviosAction extends MasterAction {
 			// Asi evitamos ClassCastException
 			if(subModo!=null && (subModo.equalsIgnoreCase("certificadoIRPF")||subModo.equalsIgnoreCase("pagoColegiados")))
 				borrarPaginador(request,this.paginador);
+			ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioModal.seleccionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 			return "seleccionEnvio";
 		} else {
+			ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioModal.exito. IdInstitucion:" + userBean.getLocation(), 10);
 			return exitoModal("messages.inserted.success",request);
 		}
 	} 
@@ -1411,6 +1431,7 @@ public class DefinirEnviosAction extends MasterAction {
 			this.throwExcp("messages.general.error",
 					new String[] { "modulo.envios" }, e, tx);
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 		return exitoModal(mensaje, request);
 	} 
 
@@ -1511,6 +1532,7 @@ public class DefinirEnviosAction extends MasterAction {
 			salida.setIdProvincia(beanSolic.getIdProvincia());
 			salida.setIdInstitucion(beanSolic.getIdInstitucion());
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin tratarSolicitudIncorporacion. IdInstitucion:" + userBean.getLocation(), 10);
 		return salida;
 	}
 
@@ -1530,6 +1552,7 @@ public class DefinirEnviosAction extends MasterAction {
 		Documento doc = new Documento(rutaFichero,desc);
 		Vector vDocs = new Vector();
 		vDocs.add(doc);
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin tratarSolicitudCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 		return vDocs;
 	}
 
@@ -1562,6 +1585,7 @@ public class DefinirEnviosAction extends MasterAction {
 		Vector vDocs = new Vector();
 		vDocs.add(doc);
 
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin tratarFactura. IdInstitucion:" + userBean.getLocation(), 10);
 		return vDocs;
 	}
 
@@ -1623,6 +1647,7 @@ public class DefinirEnviosAction extends MasterAction {
 		}catch (Exception e){
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin procesarEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 		if(idEstadoEnvioFinal!=null && idEstadoEnvioFinal.compareTo(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES))==0)
 			return exitoRefresco("messages.envio.successErrores",request);
 		else
@@ -1681,7 +1706,7 @@ public class DefinirEnviosAction extends MasterAction {
 			
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
-			
+			ClsLogging.writeFileLog("DefinirEnviosAction:fin descargarLogErrores. IdInstitucion:" + user.getLocation(), 10);
 
 		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
@@ -1963,6 +1988,7 @@ public class DefinirEnviosAction extends MasterAction {
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
 		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin descargarEstadistica", 10);
 		return "export";
 	}
 	protected void getJQueryPlantillasEnvio (ActionMapping mapping, 		
