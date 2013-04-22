@@ -2566,6 +2566,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA ");
 			sql.append(" , EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA ");
+			sql.append(" , Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA ");			
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 			
@@ -3316,8 +3317,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				
 				String numProcedDJ = (String)registro.get("NUMPROCED_DEFENSA_JURIDICA");
 				String anioProcedDJ = (String)registro.get("ANIOPROCED_DEFENSA_JURIDICA");
-				if(numProcedDJ!=null && !numProcedDJ.trim().equals("") && anioProcedDJ!=null && !anioProcedDJ.trim().equals("")){
-					registro.put("AUTO", numProcedDJ+"/"+anioProcedDJ);
+				if(numProcedDJ!=null && !numProcedDJ.trim().equals("")){
+					if(anioProcedDJ!=null && !anioProcedDJ.trim().equals("")){
+						registro.put("AUTO", numProcedDJ+"/"+anioProcedDJ);
+					}else{
+						registro.put("AUTO", numProcedDJ);
+					}
 				}
 				String juzgadoDJ = (String)registro.get("JUZGADO_DEFENSA_JURIDICA");
 				registro.put("JUZGADO", juzgadoDJ);
@@ -3430,6 +3435,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, " +
 				" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, " +
 				" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, " +
+				" Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA, " +				
 				" EJG.NIG, " + 
 				" TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR, " +
 				" EJG.NUMERODESIGNAPROC AS NUMDESIGNA_PROCURADOR, " + 

@@ -354,7 +354,7 @@
 		
 		jQuery(function($){
 			var defaultValue = $("#nig2").val();
-			jQuery("#nig2").mask("***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
+			jQuery("#nig2").mask("?***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
 			if($("#nig2").val() == "" || defaultValue.length > 19){
 				$("#nig2").val(defaultValue);
 			}				

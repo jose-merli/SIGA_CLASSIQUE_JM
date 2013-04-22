@@ -2426,8 +2426,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Des.Idjuzgado, " +
 				"       Des.Observaciones As Observaciones, " +
 				"       Des.DELITOS As COMENTARIO_DELITOS, " +
-				"       Des.Numprocedimiento As Autos, " +
+				"       Decode(Des.anioprocedimiento, null, Des.Numprocedimiento, (Des.Numprocedimiento || '/' || Des.anioprocedimiento))  As Autos, " +
 				"       Des.Numprocedimiento As NUMEROPROCEDIMIENTO, " +
+				"       Des.anioprocedimiento As ANIOPROCEDIMIENTO, " +
+				"       Decode(Des.anioprocedimiento, null, Des.Numprocedimiento, (Des.Numprocedimiento || '/' || Des.anioprocedimiento))  As NUMEROANIOPROCEDIMIENTO, " +				
 				"       To_Char(Des.Fechajuicio, 'dd/MM/yyyy') As Fecha_Juicio, " +
 				"       To_Char(Des.Fechajuicio, 'HH24:MI') As Hora_Juicio, " +
 				"       Des.Anio As Anio_Designa, " +
