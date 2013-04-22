@@ -46,48 +46,50 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
     
 	//Global vars
 	public void init() throws ServletException {
-		super.init();
-
-		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
-		ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
-
-	    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String sIntervaloAux = properties.returnProperty("facturacion.procesoRapido.tiempo.ciclo");
-		String sIntervalo = sIntervaloAux;
-
-	    urlSiga = properties.returnProperty("general.urlSIGA");
-	    
-		timer = new Timer();
-		timer.addNotificationListener(this, null, sNombreProceso);
-		if (sIntervalo==null || sIntervalo.trim().equals(""))
-		{
-			sIntervalo="0";
-		}
-		
-		if (sIntervalo.equals("0"))
-		{
-			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" +
-					"" + sNombreProceso + "\" no arrancada. " +
-					"(Este proceso no requiere ser arrancado: requiere llamada directa desde la interfaz)", 3);
-		}
-		
-		else
-		{
-			//Al ser este un proceso automático "rápido" el intervalo se define como segundos
-			//no como minutos, que es lo que se utiliza para el resto de procesos
-			lIntervalo = Long.parseLong(sIntervalo)*1000;
+		try{
+			super.init();
+	
+			ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
+			ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
+	
+		    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String sIntervaloAux = properties.returnProperty("facturacion.procesoRapido.tiempo.ciclo");
+			String sIntervalo = sIntervaloAux;
+	
+		    urlSiga = properties.returnProperty("general.urlSIGA");
+		    
+			timer = new Timer();
+			timer.addNotificationListener(this, null, sNombreProceso);
+			if (sIntervalo==null || sIntervalo.trim().equals("")){
+				sIntervalo="0";
+			}
 			
-			Date timerTriggerAt = new Date((new Date()).getTime() + 60000L);
-			idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt, lIntervalo);
-
-			timer.start();
+			if (sIntervalo.equals("0")){
+				ClsLogging.writeFileLogWithoutSession("    - Notificación \"" +
+						"" + sNombreProceso + "\" no arrancada. " +
+						"(Este proceso no requiere ser arrancado: requiere llamada directa desde la interfaz)", 3);
+			}
 			
-			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
-			ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " segundo(s).", 3);
-		}
-
-		ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX arrancadas.", 3);
-		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
+			else {
+				//Al ser este un proceso automático "rápido" el intervalo se define como segundos
+				//no como minutos, que es lo que se utiliza para el resto de procesos
+				lIntervalo = Long.parseLong(sIntervalo)*1000;
+				
+				Date timerTriggerAt = new Date((new Date()).getTime() + 60000L);
+				idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt, lIntervalo);
+	
+				timer.start();
+				
+				ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
+				ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " segundo(s).", 3);
+			}
+	
+			ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX arrancadas.", 3);
+			ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
+		} catch(Exception e){
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" arrancado ERROR. ", 3);
+			e.printStackTrace();
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -113,6 +115,10 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			//ClsLogging.writeFileLogWithoutSession("", 3);
 			//ClsLogging.writeFileLogWithoutSession("", 3);
 		} catch (InstanceNotFoundException e) {
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" parada Instancia no encontrada. ERROR. ", 3);
+			e.printStackTrace();
+		} catch(Exception e){
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" parada ERROR. ", 3);
 			e.printStackTrace();
 		}
 	}
@@ -127,16 +133,14 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			String proceso = (String) userData;
 			ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 
-			try
-			{
+			try {
 			    // invocamos al servlet
 				URL url = new URL(urlSiga+proceso+".svrl");
 				Object ret = url.getContent();
 				
 				ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 			}
-			catch(Exception e)
-			{
+			catch(Exception e){
 				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
 				e.printStackTrace();
 			}
@@ -145,9 +149,7 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			Hashtable hashUserData = (Hashtable) userData;
             String proceso = (String)hashUserData.get(SIGASvlProcesoAutomaticoRapido.htNombreProceso);
             Hashtable<String, String> datosHashtable= (Hashtable<String, String>) hashUserData.get(SIGASvlProcesoAutomaticoRapido.htNombreDatosHashtable);
-            try
-            {
-               
+            try {
                 // invocamos al servlet
                 StringBuffer urlAndParameters = new StringBuffer();
                 urlAndParameters.append(urlSiga);
@@ -174,8 +176,7 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
                 URL url = new URL(urlAndParameters.toString());
                 Object ret = url.getContent();
 			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con hashtable como parametro no implementada. ", 3);
-            }catch(Exception e)
-			{
+            }catch(Exception e){
 				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
 				e.printStackTrace();
 			}
@@ -197,37 +198,52 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 	 * 
 	 */
 	static public void NotificarAhora(String proceso){
-		if (timer != null){
-			if (!timer.isActive()){
-				timer.start();
+		try{
+			if (timer != null){
+				if (!timer.isActive()){
+					timer.start();
+				}
+				Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
+				//El parametro que se pasa como parametro en tercer lugar(proceso),puede ser cualquier objeto
+				//Este parametro se establece en el atributo UserData del Objeto javax.management.Notification.
+				//Actualmente este atributo es un String con el nombre del proceso. En caso de que se necesitara se podrian
+				//pasar objetos tales como maps o beans que guarden mas informacion
+				timer.addNotification(sNombreProceso, sNombreProceso, proceso, timerTriggerAt);
 			}
-			Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
-			//El parametro que se pasa como parametro en tercer lugar(proceso),puede ser cualquier objeto
-			//Este parametro se establece en el atributo UserData del Objeto javax.management.Notification.
-			//Actualmente este atributo es un String con el nombre del proceso. En caso de que se necesitara se podrian
-			//pasar objetos tales como maps o beans que guarden mas informacion
-			timer.addNotification(sNombreProceso, sNombreProceso, proceso, timerTriggerAt);
+		} catch(Exception e){
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" notificando ERROR. ", 3);
+			e.printStackTrace();
 		}
 	}
 	static public void NotificarAhora(Hashtable htDatos){
-		if (timer != null){
-			if (!timer.isActive()){
-				timer.start();
+		try{
+			if (timer != null){
+				if (!timer.isActive()){
+					timer.start();
+				}
+				Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
+				
+				timer.addNotification(sNombreProceso, sNombreProceso, htDatos, timerTriggerAt);
 			}
-			Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
-			
-			timer.addNotification(sNombreProceso, sNombreProceso, htDatos, timerTriggerAt);
+		} catch(Exception e){
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" notificando ERROR. ", 3);
+			e.printStackTrace();
 		}
 	}
 	static public void NotificarAhora(MasterBean bean){
-		if (timer != null){
-			if (!timer.isActive()){
-				timer.start();
+		try{
+			if (timer != null){
+				if (!timer.isActive()){
+					timer.start();
+				}
+				
+				Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
+				
+				timer.addNotification(sNombreProceso, sNombreProceso, bean, timerTriggerAt);
 			}
-			
-			Date timerTriggerAt = new Date((new Date()).getTime() + 1000L);
-			
-			timer.addNotification(sNombreProceso, sNombreProceso, bean, timerTriggerAt);
+		} catch(Exception e){
+			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" notificando ERROR. ", 3);
+			e.printStackTrace();
 		}
 	}
 	
