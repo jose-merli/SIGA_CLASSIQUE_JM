@@ -419,7 +419,14 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					inscripcionHoy = inscripcionTurnoSeleccionada;
 					
 				}
-				Boolean isPermitidoInscripcionGuardia = inscripcionHoy.equals(inscripcionTurnoSeleccionada)||inscripcionTurnoSeleccionada.getFechaBaja()==null||(inscripcionTurnoSeleccionada.getFechaBaja().compareTo(inscripcionHoy.getFechaValidacion())>0);
+				
+				Boolean isPermitidoInscripcionGuardia = false;				
+				if (inscripcionHoy != null) {
+					isPermitidoInscripcionGuardia = inscripcionHoy.equals(inscripcionTurnoSeleccionada) || 
+						inscripcionTurnoSeleccionada.getFechaBaja() == null || inscripcionTurnoSeleccionada.getFechaBaja().equals("") || 
+						inscripcionTurnoSeleccionada.getFechaBaja().compareTo(inscripcionHoy.getFechaValidacion()) > 0;
+				}
+				
 				request.setAttribute("isPermitidoInscripcionGuardia", isPermitidoInscripcionGuardia);
 				if(resultado!=null && resultado.size()>0){
 					Iterator iteResultado = resultado.iterator();
