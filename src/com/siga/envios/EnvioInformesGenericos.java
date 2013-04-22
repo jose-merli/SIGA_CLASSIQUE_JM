@@ -1776,7 +1776,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							+ idTipoEJG + numero + isSolicitantes+isAContrarios+isGenerarInformesSindireccion;
 					datosInforme.put("aSolicitantes",beanInforme.getASolicitantes());
 					datosInforme.put("aContrarios",	beanInforme.getaContrarios());
-					datosInforme.put("generarInformeSindireccion",	beanInforme.getGenerarInformeSinDireccion());
+					datosInforme.put("generarInformeSinDireccion",	beanInforme.getGenerarInformeSinDireccion());
 					
 					if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
 						// como esto se recorre para cada plantilla (for (int
@@ -8578,11 +8578,10 @@ public class EnvioInformesGenericos extends MasterReport {
 												.getEnvioProgramado());
 							} catch (Exception e) {
 								if (destProgramInfBean.getIdPersona() != null)
-									ClsLogging.writeFileLogWithoutSession(
-											" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
+									ClsLogging.writeFileLogError(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
 													+ destProgramInfBean
 															.getIdPersona()
-													+ " " + e.toString(), 3);
+													+ " ", e, 3);
 							}
 						}
 
