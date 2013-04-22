@@ -16,6 +16,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmLenguajesBean;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
@@ -76,15 +78,30 @@ public class SIGAChangeLanguageAction extends Action {
 		
 		// Verficamos si el idioma del usuario esta traducido
 		CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
-		
+		//aalg. INC_10707_SIGA. 
+		AdmUsuariosAdm admUsu = null;
+		AdmUsuariosBean ub = null;
         
 		try {
-			CenClienteAdm cliAdm=new CenClienteAdm (usrbean);
-	        idiomaUsuario=cliAdm.getLenguaje(usrbean.getLocation(), String.valueOf(usrbean.getIdPersona()));
+			Vector vLen = null;
+			if (usrbean.getIdPersona() == -1){
+				admUsu = new AdmUsuariosAdm(usrbean);
+				Hashtable hash = new Hashtable();
+				UtilidadesHash.set(hash, AdmUsuariosBean.C_IDINSTITUCION, usrbean.getLocation());
+				UtilidadesHash.set(hash, AdmUsuariosBean.C_IDUSUARIO,usrbean.getUserName());
+				Vector v = admUsu.selectByPK(hash);
+				//Vector v = admUsu.getDatosUsuario(usrbean.getUserName(), usrbean.getLocation());
+				ub = (AdmUsuariosBean)v.get(0);
+				idiomaUsuario = ub.getIdLenguaje();
+			}
+			else{
+				CenClienteAdm cliAdm=new CenClienteAdm (usrbean);
+		        idiomaUsuario=cliAdm.getLenguaje(usrbean.getLocation(), String.valueOf(usrbean.getIdPersona()));
+			}
 			Hashtable h = new Hashtable();
 			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, usrbean.getLocation());
 			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE,idiomaUsuario);
-			Vector vLen = admLen.selectByPK(h);
+			vLen = admLen.selectByPK(h);
 			
 			if (vLen == null || vLen.size() != 1) {
 				// El idoma del lenguaje no esta traducido, ponemos el idioma de la institucion
@@ -103,17 +120,23 @@ public class SIGAChangeLanguageAction extends Action {
 				
 			}
 		}
-			tx = usr.getTransaction();
-			tx.begin();	
+		tx = usr.getTransaction();
+		tx.begin();	
 
-			Vector vv = ai.selectByPK(ht);
-			if (vv!=null && vv.size()>0) {
-				CenInstitucionBean bb = (CenInstitucionBean) vv.get(0);
-				bb.setIdLenguaje(opt);
-				ai.updateDirect(bb);
-			}
-			
-			tx.commit();
+		Vector vv = ai.selectByPK(ht);
+		if (vv!=null && vv.size()>0) {
+			CenInstitucionBean bb = (CenInstitucionBean) vv.get(0);
+			bb.setIdLenguaje(opt);
+			ai.updateDirect(bb);
+		}
+		
+		//aalg. INC_10707_SIGA. añadir el update del usuario
+		if (usrbean.getIdPersona() == -1){
+			String idiomaAdmUsuario = (String)request.getParameter("idioma");
+			ub.setIdLenguaje(idiomaAdmUsuario);
+			admUsu.update(ub);
+		}
+		tx.commit();
 			
 		} catch (Exception e) {
 			try { tx.rollback(); } catch (Exception ee) {}

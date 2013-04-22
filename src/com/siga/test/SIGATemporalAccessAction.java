@@ -135,6 +135,8 @@ public class SIGATemporalAccessAction extends Action
 			
 		} 
 		else {
+			//aalg. INC_10707_SIGA. No es cliente, lo obtenemos de la tabla de usuario
+			idLenguaje = usu.getIdLenguaje();
 			// No es cliente, lo obtenemos de la institucion
 //			Hashtable ht2 = new Hashtable();
 //			ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
@@ -146,8 +148,8 @@ public class SIGATemporalAccessAction extends Action
 //				sInsti="(Obtenido de Institucion)";
 //			}
 			
-			idLenguaje = idLenguajeInstitucion;
-			sInsti = "(Obtenido de Institucion)";
+			//idLenguaje = idLenguajeInstitucion;
+			//sInsti = "(Obtenido de Institucion)";
 		}
 
 		{	// Verficamos si el idioma del usuario esta traducido

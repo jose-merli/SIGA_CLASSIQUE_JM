@@ -28,6 +28,7 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	CenInstitucionAdm admIns = new CenInstitucionAdm(usr);
 	Hashtable ht = new Hashtable();
+	String idInstitucion[] = {usr.getLocation()};
 	ht.put(CenInstitucionBean.C_IDINSTITUCION,usr.getLocation());
 	Vector v1 = admIns.selectByPK(ht);
 	if (v1!=null && v1.size()>0) {
@@ -47,7 +48,14 @@
 	CenInstitucionLenguajesAdm cilAdm = new CenInstitucionLenguajesAdm (usr);
 	Vector vLenXInstitucion = cilAdm.select(ht);	
 	
-
+	boolean visibleCombo = false;
+	ArrayList idiomaSel = new ArrayList();
+	if (usr.getIdPersona() == -1){
+		idiomaSel.add((String) usr.getLanguage());
+		visibleCombo = true;
+	}
+		
+	
 	
 	// RGG 26/02/2007 cambio para que esta ventana sea dinámica. Obtiene todos los lenguajes de la base de datos. 
 	// Las imagenes de los lenguajes los obtiene del path de imagenes, llamadas lenguaje_codext.gif
@@ -70,8 +78,11 @@
 	<!-- Asociada al boton Guardar -->
 	function accionGuardar() 
 	{		
-		if(confirm('<siga:Idioma key="messages.confirm.updateData"/>'))
-		document.all.form1.submit();
+		if(confirm('<siga:Idioma key="messages.confirm.updateData"/>')){
+			document.getElementById("idiomaUsuario").value = document.getElementById("idioma").value;
+			document.all.form1.submit();
+		}
+		
 		return false;
 	}
 
@@ -90,6 +101,7 @@
 
 	<br><br><br><br><br><br>
 <form method="POST" name="form1" action="<%=app%>/cambiarLenguaje.do" target="submitArea">
+<input type="hidden" name="idiomaUsuario" id="idiomaUsuario"  value=""  />
 <table width="20%" border="0" align="center" cellpadding="0" cellspacing="0">
 <%   for (int i=0;i<v.size();i++) {
 		AdmLenguajesBean b = (AdmLenguajesBean)v.get(i);
@@ -131,7 +143,7 @@
 
 	</table>
 
-	<br><br><br><br><br><br><br><br><br><br><br><br><br>
+	<br><br>
 
 	<table align="center" > 
 		<tr>
@@ -139,17 +151,21 @@
 			<td class="labelText"><siga:Idioma key="administracion.seleccionarIdioma.idiomaDisponible.literal"/></td>
 		</tr>
 	</table>
-	
-<%--
-	<br><br>
-	<span style="width:100%;text-align:center">
-		<html:button property="submitButton"  onclick="return aceptar();" styleClass="button">
-			<siga:Idioma key="general.submit"/>
-		</html:button>&nbsp;
-		<html:button property="cancelButton" onclick="return cancelar();" styleClass="button">
-			<siga:Idioma key="general.cancel"/>
-		</html:button>
-	</span>--%>
+	<br><br><br><br><br><br><br><br><br><br><br>
+	<% if (visibleCombo) {%>
+	<table align="center" > 
+		<tr>
+			<!-- IDIOMA -->
+			<td class="labelText">
+				<siga:Idioma key="administracion.cambioIdioma.literal.idiomaUsuario"/>&nbsp;(*)
+			</td>
+			<td>
+				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" clase="box" obligatorio="true" elementoSel="<%=idiomaSel %>" obligatorioSinTextoSeleccionar="true" parametro="<%=idInstitucion%>"/>
+			</td>
+		</tr>
+	</table>
+	<%}%>
+
 
 
 </form>
