@@ -437,7 +437,8 @@ public class TagComboBD extends TagSupport {
 							//aux += "window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src=destino_" + this.nombre + contador + ";\r\n";
 							
 							if (this.pestana!=null){
-								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
+								//aalg: INC_10700_SIGA
+								if (UtilidadesString.stringToBoolean(this.pestana)){
 									aux += "window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";
@@ -507,7 +508,8 @@ public class TagComboBD extends TagSupport {
 							//aux += "window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src=destino_" + this.nombre + contador + ";\r\n";
 							
 							if (this.pestana!=null){
-								if(this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true")){
+								//aalg: INC_10700_SIGA
+								if(UtilidadesString.stringToBoolean(this.pestana)){
 									aux += "window.top.frames[0].document.frames[0].document.getElementById('" + sAccionAux2.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux2.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 								}else if(isNumber(this.pestana)){
 									String formulario = ".document.frames[0]";

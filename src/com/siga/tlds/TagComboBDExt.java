@@ -296,7 +296,8 @@ public class TagComboBDExt extends TagSupport {
 							}
 		
 							//aux += "\r\nvar destino_" + this.nombre + contador + "=window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src;\r\n";
-							if (this.pestana!=null && (this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true"))){
+							//aalg: INC_10700_SIGA
+							if (this.pestana!=null && UtilidadesString.stringToBoolean(this.pestana)){
 								aux += "\r\nvar destino_" + this.nombre + contador + "=top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
 							}else{
 								aux += "\r\nvar destino_" + this.nombre + contador + "=top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src;\r\n";
@@ -310,7 +311,8 @@ public class TagComboBDExt extends TagSupport {
 							aux += "destino_" + this.nombre + contador + "=destino_" + this.nombre + contador + ".substring(0,tam_" + this.nombre + contador + ")+'&id='+" + this.nombre+".value;\r\n";
 							//aux += "window.parent.document.all." + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame.src=destino_" + this.nombre + contador + ";\r\n";
 							
-							if (this.pestana!=null && (this.pestana.equalsIgnoreCase("t") || this.pestana.equalsIgnoreCase("true"))){
+							//aalg: INC_10700_SIGA
+							if (this.pestana!=null && UtilidadesString.stringToBoolean(this.pestana)){
 								aux += "top.frames[0].document.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
 							}else{
 								aux += "top.frames[0].document.getElementById('" + sAccionAux.trim().substring(5, iPosFinal>-1 ? iPosFinal : sAccionAux.length()) + "Frame').src=destino_" + this.nombre + contador + ";\r\n";
