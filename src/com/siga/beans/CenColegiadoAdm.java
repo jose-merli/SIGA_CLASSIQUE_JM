@@ -56,7 +56,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 							CenColegiadoBean.C_SITUACIONEJERCICIO, 	CenColegiadoBean.C_SITUACIONEMPRESA,
 							CenColegiadoBean.C_SITUACIONRESIDENTE,	CenColegiadoBean.C_USUMODIFICACION,
 							CenColegiadoBean.C_CUENTACONTABLESJCS,  CenColegiadoBean.C_IDENTIFICADORDS,
-							CenColegiadoBean.C_NMUTUALISTA};
+							CenColegiadoBean.C_NMUTUALISTA,			CenColegiadoBean.C_NUMSOLICITUDCOLEGIACION};
 		return campos;
 	}
 
@@ -94,6 +94,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			bean.setCuentaContableSJCS(UtilidadesHash.getString(hash,CenColegiadoBean.C_CUENTACONTABLESJCS));
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash,CenColegiadoBean.C_IDENTIFICADORDS));
 			bean.setNMutualista(UtilidadesHash.getString(hash,CenColegiadoBean.C_NMUTUALISTA));
+			bean.setNumSolicitudColegiacion(UtilidadesHash.getString(hash,CenColegiadoBean.C_NUMSOLICITUDCOLEGIACION));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -132,6 +133,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set(htData, CenColegiadoBean.C_CUENTACONTABLESJCS, 	b.getCuentaContableSJCS());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_IDENTIFICADORDS,      b.getIdentificadorDS());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_NMUTUALISTA,      	b.getNMutualista());
+			UtilidadesHash.set(htData, CenColegiadoBean.C_NUMSOLICITUDCOLEGIACION,      	b.getNumSolicitudColegiacion());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -368,6 +370,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set(htData, CenColegiadoBean.C_SITUACIONRESIDENTE,bean.getSituacionResidente());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_CUENTACONTABLESJCS,bean.getCuentaContableSJCS());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_NMUTUALISTA,bean.getNMutualista());
+			UtilidadesHash.set(htData, CenColegiadoBean.C_NUMSOLICITUDCOLEGIACION,bean.getNumSolicitudColegiacion());
 		}
 		catch (Exception e) {
 			htData = null;
