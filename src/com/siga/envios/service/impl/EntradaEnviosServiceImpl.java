@@ -32,6 +32,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosKey;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
@@ -256,6 +257,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			}
 			
 			respsolProcsMapper.insert(respsolProc);
+			
 		}
 		
 		//Actualizamos el estado. 
@@ -544,12 +546,15 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				//Se borra el registro del EJG
 				if(entradaEnviosForm.getAnioEJGNew()!=null && !entradaEnviosForm.getAnioEJGNew().equals("")){
 					ScsEjgService ejgService = (ScsEjgService) BusinessManager.getInstance().getService(ScsEjgService.class);
-					Ejg obj = new Ejg();
+					ScsEjg obj = new ScsEjg();
 					obj.setAnio(new Short(entradaEnviosForm.getAnioEJGNew()));
 					obj.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
 					obj.setNumero(new Long(entradaEnviosForm.getNumeroEJGNew()));
 					obj.setIdtipoejg(new Short(entradaEnviosForm.getIdTipoEJGNew()));
-					ejgService.delete(obj);
+					
+					Ejg ejg = new Ejg();
+					ejg.setEjg(obj);
+					ejgService.delete(ejg);
 				}
 
 				//Actualizamos el estado. 
@@ -558,6 +563,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 		} catch (Exception e) {
 			log.error("Se ha producido un error al borrar la relacion con el EJG", e);
+			//Esiste relacion con otro registros
+			throw new BusinessException("messages.error.ora.02292", e);
 		}		
 	}
 	
@@ -593,15 +600,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					Designacion designacion = new Designacion();
 					ScsDesignaService designaService = (ScsDesignaService) BusinessManager.getInstance().getService(ScsDesignaService.class);
 					
-					//Primero se borra la designacion del letrado
-					/*ScsDesignasletrado letradoDesigna = new ScsDesignasletrado();  
-					letradoDesigna.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
-					letradoDesigna.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
-					letradoDesigna.setNumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
-					letradoDesigna.setIdturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
-					designacion.setDesignasletrado(letradoDesigna);
-					
-					//Despues borramos el registro de la designa
+					//Borramos el registro de la designa
 					ScsDesigna obj = new ScsDesigna();
 					obj.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
 					obj.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
@@ -609,29 +608,8 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					obj.setIdturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
 					designacion.setDesignacion(obj);
 					
-					ScsDefendidosdesigna defendidosdesigna = new ScsDefendidosdesigna();
-					defendidosdesigna.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
-					defendidosdesigna.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
-					defendidosdesigna.setNumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
-					defendidosdesigna.setIdturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
-					designacion.setDefendidosdesigna(defendidosdesigna);
-					
-					ScsContrariosdesigna contrariosdesigna = new ScsContrariosdesigna();
-					contrariosdesigna.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
-					contrariosdesigna.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
-					contrariosdesigna.setNumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
-					contrariosdesigna.setIdturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
-					designacion.setContrariosdesigna(contrariosdesigna);
-					
-					ScsDesignaprocurador designaprocurador = new ScsDesignaprocurador();
-					designaprocurador.setAnio(new Short(entradaEnviosForm.getAnioDesignaNew()));
-					designaprocurador.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
-					designaprocurador.setNumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
-					designaprocurador.setIdturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
-					designacion.setDesignaprocurador(designaprocurador);
-					
 					designaService.delete(designacion);
-					*/
+
 				}				
 				
 				//Actualizamos el estado. 
@@ -640,6 +618,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 		} catch (Exception e) {
 			log.error("Se ha producido un error al borrar la relacion con el EJG", e);
+			throw new BusinessException("messages.error.ora.02292", e);
 		}		
 	}
 	

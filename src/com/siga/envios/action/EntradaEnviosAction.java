@@ -45,6 +45,7 @@ import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
+import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
 
 
@@ -194,7 +195,6 @@ public class EntradaEnviosAction extends MasterAction {
 			
 			for (TipoIntercambioEnum tipoIntercambioEnum : TipoIntercambioEnum.values()) {
 				obj = new JSONObject();
-				//Se insertan solamente (en principio) los codigos 4 y 10
 				if(tipoIntercambioEnum.getCodigo().equals("05") || tipoIntercambioEnum.getCodigo().equals("06")){
 					obj.put("idTipoIntercambioTelematico", tipoIntercambioEnum.getCodigo());
 					obj.put("nombre", tipoIntercambioEnum.getDescripcion().split(":")[1]);
@@ -243,7 +243,6 @@ public class EntradaEnviosAction extends MasterAction {
 					entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
 				}
 				
-				
 				listEntradaEnviosForm.add(entradaEnvioFormulario);
 			}
 
@@ -290,8 +289,10 @@ public class EntradaEnviosAction extends MasterAction {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			entradaEnviosService.borrarRelacionEJG(entradaEnviosForm,userBean);
-			return ver(mapping, formulario, request, response);
+			return exitoRefresco("messages.updated.success",request);
 			
+		}catch (BusinessException be){
+			return exito(be.getMessage(),request);
 
 		}catch (Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
@@ -308,8 +309,10 @@ public class EntradaEnviosAction extends MasterAction {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			entradaEnviosService.borrarRelacionDesigna(entradaEnviosForm,userBean);
-			return ver(mapping, formulario, request, response);
+			return exitoRefresco("messages.updated.success",request);
 			
+		}catch (BusinessException be){
+			return exito(be.getMessage(),request);			
 
 		}catch (Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
@@ -378,8 +381,6 @@ public class EntradaEnviosAction extends MasterAction {
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)formulario;
 			String mensaje = "";
-			
-					
 			
 			if(entradaEnviosForm.getCaso()!= null && entradaEnviosForm.getCaso().equals("1")){
 				request.setAttribute("mensajeradio",UtilidadesString.getMensajeIdioma(userBean, "comunicaciones.etiqueta.borrarAsignacionyEjg"));
