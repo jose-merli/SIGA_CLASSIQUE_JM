@@ -825,7 +825,8 @@
 					if(resultado=='BORRAR_RELACION'){ //Solamente se borra la relacion con el EJG
 						document.forms['EntradaEnviosForm'].anioEJGNew.value = "";
 						document.forms['EntradaEnviosForm'].idTipoEJGNew.value = "";
-						document.forms['EntradaEnviosForm'].numeroEJGNew.value = "";						
+						document.forms['EntradaEnviosForm'].numeroEJGNew.value = "";			
+						document.forms['EntradaEnviosForm'].target="submitArea";
 						document.forms['EntradaEnviosForm'].modo.value = 'borrarRelacionEJG';
 						document.forms['EntradaEnviosForm'].submit();
 						
@@ -841,6 +842,10 @@
 					
 					var type = "<bean:message key='comunicaciones.confirma.borrarSoloRelacionEjg' />"
 					if(confirm(type)){
+						document.forms['EntradaEnviosForm'].target="submitArea";
+						document.forms['EntradaEnviosForm'].anioEJGNew.value = "";
+						document.forms['EntradaEnviosForm'].idTipoEJGNew.value = "";
+						document.forms['EntradaEnviosForm'].numeroEJGNew.value = "";	
 						document.forms['EntradaEnviosForm'].modo.value = 'borrarRelacionEJG';
 						document.forms['EntradaEnviosForm'].submit();
 					}
@@ -871,6 +876,9 @@
 					var resultado=ventaModalGeneral(document.forms['EntradaEnviosForm'].name,"XS");
 					if(resultado=='BORRAR_RELACION'){ //Solamente se borra la relacion con la designa
 						document.forms['EntradaEnviosForm'].anioDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].idTurnoDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].numeroDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].target="submitArea";
 						document.forms['EntradaEnviosForm'].modo.value = 'borrarRelacionDesigna';
 						document.forms['EntradaEnviosForm'].submit();
 						
@@ -885,6 +893,10 @@
 				}else{
 					var type = "<bean:message key='comunicaciones.confirma.borrarSoloRelacionDesigna' />"
 					if(confirm(type)){				
+						document.forms['EntradaEnviosForm'].anioDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].idTurnoDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].numeroDesignaNew.value = "";
+						document.forms['EntradaEnviosForm'].target="submitArea";
 						document.forms['EntradaEnviosForm'].modo.value='borrarRelacionDesigna';
 						document.forms['EntradaEnviosForm'].submit();
 					}
