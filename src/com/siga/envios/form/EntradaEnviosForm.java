@@ -1,6 +1,7 @@
 package com.siga.envios.form;
 
 import org.json.JSONArray;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EstadosEntradaEnviosEnum;
 
 import com.atos.utils.ClsConstants;
@@ -261,6 +262,13 @@ public class EntradaEnviosForm extends MasterForm
 					botonesDetalle = "v,d,g"; 
 				}else {
 					botonesDetalle = "v,d";
+				}	
+				
+			}else if(idTipoIntercambioTelematico.equals("08")){ // RESPUESTA SUSPENSION PROCEDIMIENTO
+				if(idEstado.equals("2")){
+					botonesDetalle = "v,d,p"; 
+				}else {
+					botonesDetalle = "v,d";
 				}			
 			}
 		
@@ -286,7 +294,13 @@ public class EntradaEnviosForm extends MasterForm
 	public FilaExtElement[] getElementosFila() {
 		FilaExtElement[] elementosFila = null;
 		if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_ERROR.getCodigo())){
-			elementosFila = null;
+			if(getIdTipoIntercambioTelematico().equals(AppConstants.TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){
+				elementosFila = new FilaExtElement[3];
+				elementosFila[1] = new FilaExtElement("download", "download","general.boton.download",	SIGAConstants.ACCESS_READ);
+				elementosFila[2] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+			}else{
+				elementosFila = null;
+			}
 		}else if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_PENDIENTE_ENVIAR.getCodigo()) && (!preceptivoProcurador ||( this.getProcuradorDesignaSel() != null && !this.getProcuradorDesignaSel().equals("")))){
 			elementosFila = new FilaExtElement[3];
 			elementosFila[1] = new FilaExtElement("download", "download","general.boton.download",	SIGAConstants.ACCESS_READ);

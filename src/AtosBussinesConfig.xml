@@ -42,6 +42,8 @@
    		<service interface="com.siga.envios.service.sigp_ca.SolicitudDesignaProvisionalService" 	implementation="com.siga.envios.service.sigp_ca.impl.SolicitudDesignaProvisionalServiceImpl"/>
    		<service interface="com.siga.envios.service.ca_sigp.DesignaProvisionalService" 				implementation="com.siga.envios.service.ca_sigp.impl.DesignaProvisionalServiceImpl"/>
    		<service interface="com.siga.envios.service.ca_sigp.SolSusProcedimientoService" 			implementation="com.siga.envios.service.ca_sigp.impl.SolSusProcedimientoServiceImpl"/>
+   		<service interface="com.siga.envios.service.ca_sigp.SolImpugnacionResolucionAJGService" 	implementation="com.siga.envios.service.ca_sigp.impl.SolImpugnacionResolucionAJGServiceImpl"/>
+   		<service interface="com.siga.envios.service.ca_sigp.ComResolucionAJGService" 				implementation="com.siga.envios.service.ca_sigp.impl.ComResolucionAJGServiceImpl"/>
    		
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>

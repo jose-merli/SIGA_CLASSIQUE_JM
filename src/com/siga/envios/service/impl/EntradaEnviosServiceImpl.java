@@ -18,11 +18,14 @@ import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EstadosEntradaEnviosEnum;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.mapper.EcomResolucionimpugnacionMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.EcomRespsolsusprocedimientoMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.EcomSoldesignaprovisionalMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.EnvEntradaEnviosMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.ScsEjgMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.autogen.model.EcomResolucionimpugnacion;
+import org.redabogacia.sigaservices.app.autogen.model.EcomResolucionimpugnacionExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomRespsolsusprocedimiento;
 import org.redabogacia.sigaservices.app.autogen.model.EcomRespsolsusprocedimientoKey;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional;
@@ -257,6 +260,34 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			}
 			
 			respsolProcsMapper.insert(respsolProc);
+			
+		}else if(envEntradaEnviosWithBLOBs.getIdtipointercambiotelematico().equals(AppConstants.TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){
+			EcomResolucionimpugnacion resolucionimpugnacion = new EcomResolucionimpugnacion();
+			EcomResolucionimpugnacionMapper resolucionimpugnacionMapper = getMyBatisSqlSessionManager().getMapper(EcomResolucionimpugnacionMapper.class);
+			
+			resolucionimpugnacion.setIdenvio(envEntradaEnviosWithBLOBs.getIdenvio());
+			resolucionimpugnacion.setIdinstitucion(envEntradaEnviosWithBLOBs.getIdinstitucion());
+			resolucionimpugnacion.setFechamodificacion(new Date());
+			resolucionimpugnacion.setUsumodificacion(new Integer (usrBean.getUserName()));
+
+			ecomCola.setIdoperacion(OPERACION.EJIS_PROCESAR_RESOLUCION_IMPUGNACION.getId());
+			if (ecomColaService.insert(ecomCola) != 1) {
+				throw new BusinessException("No se ha podido insertar en la cola de comunicaciones.");
+			}
+			resolucionimpugnacion.setIdecomcola(ecomCola.getIdecomcola());
+			idEstado = EstadosEntradaEnviosEnum.ESTADO_PROCESADO.getCodigo();
+
+			//Se comprueba si existe ya un registro, si es asi se hace un UPDATE si no existe se hace un INSERT
+			EcomResolucionimpugnacionExample resolucionimpugnacionExample = new EcomResolucionimpugnacionExample();
+			org.redabogacia.sigaservices.app.autogen.model.EcomResolucionimpugnacionExample.Criteria crit = resolucionimpugnacionExample.createCriteria();
+			crit.andIdenvioEqualTo(envEntradaEnviosWithBLOBs.getIdenvio());
+			crit.andIdinstitucionEqualTo(envEntradaEnviosWithBLOBs.getIdinstitucion());		
+			List<EcomResolucionimpugnacion> record =resolucionimpugnacionMapper.selectByExample(resolucionimpugnacionExample);
+			if(record != null && record.size() > 0){
+				resolucionimpugnacionMapper.updateByPrimaryKeySelective(resolucionimpugnacion); 
+			}else{
+				resolucionimpugnacionMapper.insert(resolucionimpugnacion);
+			}			
 			
 		}
 		
@@ -563,7 +594,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 		} catch (Exception e) {
 			log.error("Se ha producido un error al borrar la relacion con el EJG", e);
-			//Esiste relacion con otro registros
+			//Existe relacion con otro registros
 			throw new BusinessException("messages.error.ora.02292", e);
 		}		
 	}

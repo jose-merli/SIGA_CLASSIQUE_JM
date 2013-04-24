@@ -17,7 +17,9 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
+import org.redabogacia.sigaservices.app.autogen.model.EcomComunicacionresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomSolimpugresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -2741,6 +2743,66 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        object = new Object[2];
 	                        object[0] =descripcion.toString();
 	                        object[1] = solSusProcedimientoBean;
+	                        listAuxiliar.add(object);
+	                        
+	                    }else if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.CAJG_SGP_SOL_IMP_AJG.getCodigo())){
+	                       
+	                    	//CRM	                    	
+	                        EcomSolimpugresolucionajgWithBLOBs solimpugresolucionajgWithBLOBs = new EcomSolimpugresolucionajgWithBLOBs();
+	                        solimpugresolucionajgWithBLOBs.setIdjuzgado(destProgramInfBean.getIdPersona());               
+	                        solimpugresolucionajgWithBLOBs.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));  
+	                        solimpugresolucionajgWithBLOBs.setIdinstitucion(new Short(idInstitucion));
+	                        solimpugresolucionajgWithBLOBs.setIdtipoejg(new Short(idTipoEJG));                   
+	                        solimpugresolucionajgWithBLOBs.setAnioejg(new Short(anioEJG));
+	                        solimpugresolucionajgWithBLOBs.setNumeroejg(new Long(numeroEJG));
+	                        solimpugresolucionajgWithBLOBs.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
+	                        solimpugresolucionajgWithBLOBs.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
+	                        solimpugresolucionajgWithBLOBs.setIdinstitucionLetrado(UtilidadesHash.getShort(ejgHash,"IDINSTITUCION_LETDESIGNA"));
+	                        solimpugresolucionajgWithBLOBs.setIdpersona(UtilidadesHash.getLong(ejgHash,"IDPERSONA"));
+	                        if(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR")!=null)
+	                            solimpugresolucionajgWithBLOBs.setIdprocurador(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR"));	                        
+                       
+	                        StringBuffer descripcion = new StringBuffer();
+	                        descripcion.append(TipoIntercambioEnum.CAJG_SGP_SOL_IMP_AJG.getDescripcion().split(":")[1]);
+	                        descripcion.append(" - ");
+	                        descripcion.append("Nº EJG:");
+	                        descripcion.append(anioEJG);
+	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                       
+	                        object = new Object[2];
+	                        object[0] =descripcion.toString();
+	                        object[1] = solimpugresolucionajgWithBLOBs;
+	                        listAuxiliar.add(object);
+	                        
+	                    }else if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.CAJG_SGP_COM_RESOL_SOL_AJG.getCodigo())){
+	                       
+	                    	//CRM	                    	
+	                        EcomComunicacionresolucionajgWithBLOBs ecomComunicacionresolucionajgWithBLOBs = new EcomComunicacionresolucionajgWithBLOBs();
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdjuzgado(destProgramInfBean.getIdPersona());               
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdinstitucionJuzg(new Short(destProgramInfBean.getIdInstitucion().shortValue()));  
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdinstitucion(new Short(idInstitucion));
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdtipoejg(new Short(idTipoEJG));                   
+	                        ecomComunicacionresolucionajgWithBLOBs.setAnioejg(new Short(anioEJG));
+	                        ecomComunicacionresolucionajgWithBLOBs.setNumeroejg(new Long(numeroEJG));
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdplantilla(new Integer(beanInforme.getIdPlantilla()));
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdinstitucionPlantilla(new Short(beanInforme.getIdInstitucion().shortValue()));
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdinstitucionLetrado(UtilidadesHash.getShort(ejgHash,"IDINSTITUCION_LETDESIGNA"));
+	                        ecomComunicacionresolucionajgWithBLOBs.setIdpersona(UtilidadesHash.getLong(ejgHash,"IDPERSONA"));
+	                        if(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR")!=null)
+	                            ecomComunicacionresolucionajgWithBLOBs.setIdprocurador(UtilidadesHash.getLong(ejgHash,"IDPROCURADOR"));	                        
+                       
+	                        StringBuffer descripcion = new StringBuffer();
+	                        descripcion.append(TipoIntercambioEnum.CAJG_SGP_COM_RESOL_SOL_AJG.getDescripcion().split(":")[1]);
+	                        descripcion.append(" - ");
+	                        descripcion.append("Nº EJG:");
+	                        descripcion.append(anioEJG);
+	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                       
+	                        object = new Object[2];
+	                        object[0] =descripcion.toString();
+	                        object[1] = ecomComunicacionresolucionajgWithBLOBs;
 	                        listAuxiliar.add(object);
 	                    }
                     }

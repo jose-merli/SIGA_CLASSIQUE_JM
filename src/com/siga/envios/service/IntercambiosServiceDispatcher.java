@@ -3,7 +3,9 @@ package com.siga.envios.service;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 
+import com.siga.envios.service.ca_sigp.ComResolucionAJGService;
 import com.siga.envios.service.ca_sigp.DesignaProvisionalService;
+import com.siga.envios.service.ca_sigp.SolImpugnacionResolucionAJGService;
 import com.siga.envios.service.ca_sigp.SolSusProcedimientoService;
 import com.siga.envios.service.sigp_ca.RespuestaSolSusProcedimientoService;
 import com.siga.envios.service.sigp_ca.SolicitudDesignaProvisionalService;
@@ -30,6 +32,10 @@ public class IntercambiosServiceDispatcher {
 			service = (SolicitudDesignaProvisionalService)bm.getService(SolicitudDesignaProvisionalService.class);
 		}else if(idTipoIntercambio.equals(TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
 			service = (RespuestaSolSusProcedimientoService)bm.getService(RespuestaSolSusProcedimientoService.class);
+		}else if(idTipoIntercambio.equals(TipoIntercambioEnum.CAJG_SGP_SOL_IMP_AJG.getCodigo())){
+			service = (SolImpugnacionResolucionAJGService)bm.getService(SolImpugnacionResolucionAJGService.class);		
+		}else if(idTipoIntercambio.equals(TipoIntercambioEnum.CAJG_SGP_COM_RESOL_SOL_AJG.getCodigo())){
+			service = (ComResolucionAJGService)bm.getService(ComResolucionAJGService.class);				
 		}else {
 			log.error("Tipo de Intercambio desconocido " + idTipoIntercambio);
 		}

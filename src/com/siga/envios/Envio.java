@@ -16,11 +16,13 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.autogen.model.EcomComunicacionresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomSolimpugresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -58,7 +60,9 @@ import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.envios.service.EntradaEnviosService;
+import com.siga.envios.service.ca_sigp.ComResolucionAJGService;
 import com.siga.envios.service.ca_sigp.DesignaProvisionalService;
+import com.siga.envios.service.ca_sigp.SolImpugnacionResolucionAJGService;
 import com.siga.envios.service.ca_sigp.SolSusProcedimientoService;
 import com.siga.general.SIGAException;
 
@@ -827,16 +831,27 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 				SolSusProcedimientoService solSusProcedimientoService = (SolSusProcedimientoService) businessManager.getService(SolSusProcedimientoService.class);
 				solSusProcedimientoService.insertaIntercambioTelematico(ecomSolSusProcedimientoBean,(int)usrBean.getIdPersona());
         		
+        	}else  if(object instanceof EcomSolimpugresolucionajgWithBLOBs){
+        		EcomSolimpugresolucionajgWithBLOBs ecomSolimpugresolucionajgBean = (EcomSolimpugresolucionajgWithBLOBs)object;
+        		ecomSolimpugresolucionajgBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
+        		BusinessManager businessManager =  BusinessManager.getInstance();
+        		SolImpugnacionResolucionAJGService solImpugnacionResoluscionAJGService = (SolImpugnacionResolucionAJGService) businessManager.getService(SolImpugnacionResolucionAJGService.class);
+				solImpugnacionResoluscionAJGService.insertaIntercambioTelematico(ecomSolimpugresolucionajgBean,(int)usrBean.getIdPersona());
         		
-        	}
+        	}else  if(object instanceof EcomComunicacionresolucionajgWithBLOBs){
+        		EcomComunicacionresolucionajgWithBLOBs ecomComResolAJGBean = (EcomComunicacionresolucionajgWithBLOBs)object;
+        		ecomComResolAJGBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
+        		BusinessManager businessManager =  BusinessManager.getInstance();
+        		ComResolucionAJGService comResolucionAJGService = (ComResolucionAJGService) businessManager.getService(ComResolucionAJGService.class);
+				comResolucionAJGService.insertaIntercambioTelematico(ecomComResolAJGBean,(int)usrBean.getIdPersona());
+        		
+        	}//CRM
+        	
         	enviosBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
             envAdm.updateDirect(enviosBean);
-			
 		}
-        envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
         
-                    
-                
+        envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
     }
     
     

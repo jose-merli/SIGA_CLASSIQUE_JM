@@ -130,6 +130,15 @@ public class EntradaEnviosAction extends MasterAction {
 				xslTransform = informe.getPlantillaGenerica(infBean, userBean.getLanguage(), "xsl");
 				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("UTF-8")), xslTransform);
 				entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
+			} else if(entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){				
+				if (entradaEnviosWithBLOBs.getIdestado() == EstadosEntradaEnviosEnum.ESTADO_SIN_LEER.getCodigo() || entradaEnviosWithBLOBs.getIdestado() == EstadosEntradaEnviosEnum.ESTADO_LEIDO.getCodigo()){
+					infBean.setNombreFisico("sgp_cajg_res_sol_imp");
+				}else{
+					infBean.setNombreFisico("sgp_cajg_res_sol_imp_procesado");
+				}
+				xslTransform = informe.getPlantillaGenerica(infBean, userBean.getLanguage(), "xsl");
+				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("UTF-8")), xslTransform);
+				entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
 			}
 			
 			request.setAttribute("entradaEnvio",entradaEnvioFormulario);
@@ -195,7 +204,7 @@ public class EntradaEnviosAction extends MasterAction {
 			
 			for (TipoIntercambioEnum tipoIntercambioEnum : TipoIntercambioEnum.values()) {
 				obj = new JSONObject();
-				if(tipoIntercambioEnum.getCodigo().equals("05") || tipoIntercambioEnum.getCodigo().equals("06")){
+				if(tipoIntercambioEnum.getCodigo().equals("05") || tipoIntercambioEnum.getCodigo().equals("06")|| tipoIntercambioEnum.getCodigo().equals("08")){
 					obj.put("idTipoIntercambioTelematico", tipoIntercambioEnum.getCodigo());
 					obj.put("nombre", tipoIntercambioEnum.getDescripcion().split(":")[1]);
 					tiposIntercambioJsonArray.put(obj);
