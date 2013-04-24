@@ -294,7 +294,7 @@ public class EntradaEnviosForm extends MasterForm
 	public FilaExtElement[] getElementosFila() {
 		FilaExtElement[] elementosFila = null;
 		if(getIdEstado().equals(""+EstadosEntradaEnviosEnum.ESTADO_ERROR.getCodigo())){
-			if(getIdTipoIntercambioTelematico().equals(AppConstants.TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){
+			if(getIdTipoIntercambioTelematico() != null && getIdTipoIntercambioTelematico().equals(AppConstants.TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){
 				elementosFila = new FilaExtElement[3];
 				elementosFila[1] = new FilaExtElement("download", "download","general.boton.download",	SIGAConstants.ACCESS_READ);
 				elementosFila[2] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
