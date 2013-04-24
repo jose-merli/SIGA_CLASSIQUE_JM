@@ -583,7 +583,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			String aContrarios = (String) datosInforme.get("aContrarios");
 			String generarInformeSinDireccion = (String) datosInforme.get("generarInformeSinDireccion");
 			boolean isSolicitantes = aSolicitantes != null
-					&& aSolicitantes.equalsIgnoreCase("S");
+					&& aSolicitantes.equalsIgnoreCase("S")||(String) datosInforme.get("sms")!=null;
 			boolean isAcontrarios = aContrarios != null
 					&& aContrarios.equalsIgnoreCase("S");
 			boolean isGenerarInformeSinDireccion = generarInformeSinDireccion != null
@@ -2974,16 +2974,21 @@ public class EnvioInformesGenericos extends MasterReport {
 				datosInforme.putAll(htClaves);
 				if (programInfBean.getIdTipoInforme().equals(
 						EnvioInformesGenericos.comunicacionesEjg)) {
-					for (int j = 0; j < vPlantillasInforme.size(); j++) {
-						AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(j);
-						datosInforme.put("aContrarios",	beanInforme.getaContrarios());
-						datosInforme.put("generarInformeSinDireccion",	beanInforme.getGenerarInformeSinDireccion());
-						datosInforme.put("aSolicitantes", "N");
-						
-						Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
-						Vector datosInformeEjg = (Vector) htDatosInformeFinal.get("row");
-						ScsEJGBean ejgBean = new ScsEJGBean();
+					datosInforme.put("sms", "S");
+					
+					Hashtable htDatosInformeFinal = getDatosInformeFinal(
+							datosInforme, usrBean);
+					Vector datosInformeEjg = (Vector) htDatosInformeFinal
+							.get("row");
+					ScsEJGBean ejgBean = new ScsEJGBean();
+					if(datosInformeEjg!=null && datosInformeEjg.size()>0)
 						ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
+					for (int j = 0; j < vPlantillasInforme.size(); j++) {
+						AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme
+								.get(j);
+						// boolean isSolicitantes =
+						// beanInforme.getASolicitantes()!=null &&
+						// beanInforme.getASolicitantes().equalsIgnoreCase("S");
 
 						envio.generarEnvio(destProgramInfBean.getIdPersona()
 								.toString(), destProgramInfBean
@@ -8668,10 +8673,11 @@ public class EnvioInformesGenericos extends MasterReport {
 												.getEnvioProgramado());
 							} catch (Exception e) {
 								if (destProgramInfBean.getIdPersona() != null)
-									ClsLogging.writeFileLogError(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
-											+ destProgramInfBean
-													.getIdPersona()
-											+ " ", e, 3);
+									ClsLogging.writeFileLogWithoutSession(
+											" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
+													+ destProgramInfBean
+															.getIdPersona()
+													+ " " + e.toString(), 3);
 							}
 						}
 
