@@ -13,6 +13,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.ConjuntoGuardiasForm;
 import com.siga.gratuita.form.ProgrCalendariosForm;
@@ -174,16 +175,23 @@ public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
  
 		return tipoEnviosBeans;
 	}
-	public List<EnvTipoEnviosBean> getEnviosPermitidos(AdmInformeBean informeBean, String idioma) throws ClsExceptions {
+	public List<EnvTipoEnviosBean> getEnviosPermitidos(AdmInformeBean informeBean, UsrBean usrBean) throws ClsExceptions {
 		StringBuffer sql = new StringBuffer("");
 		sql.append(" SELECT TE.IDTIPOENVIOS,F_SIGA_GETRECURSO(TE.NOMBRE,");
-		sql.append(idioma);
+		sql.append(usrBean.getLanguage());
 		sql.append(" ) NOMBRE,ei.idplantillaenviodef,ei.defecto FROM ENV_TIPOENVIOS TE,adm_envioinforme ei");
 		sql.append(" where ei.idtipoenvios = te.idtipoenvios");
 		sql.append(" AND  ei.idinstitucion =");
 		sql.append(informeBean.getIdInstitucion());
 		sql.append(" and ei.idplantilla =");
 		sql.append(informeBean.getIdPlantilla());
+		
+		//mhg - INC_10698_SIGA Comprobamos el valor del parametro HABILITAR_SMS_BUROSMS y según su valor quitamos o ponemos los SMS en los envios.
+		GenParametrosAdm param = new GenParametrosAdm(usrBean);
+		boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
+		if(!isEnvioSmsConfigurado){
+			sql.append(" and te.idtipoenvios not in (4,5)");
+		}
 		sql.append(" ORDER  BY IDTIPOENVIOS");
 		List<EnvTipoEnviosBean> tipoEnviosBeans = null;
 		
