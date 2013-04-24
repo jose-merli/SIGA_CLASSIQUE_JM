@@ -2974,19 +2974,16 @@ public class EnvioInformesGenericos extends MasterReport {
 				datosInforme.putAll(htClaves);
 				if (programInfBean.getIdTipoInforme().equals(
 						EnvioInformesGenericos.comunicacionesEjg)) {
-					datosInforme.put("aSolicitantes", "N");
-					Hashtable htDatosInformeFinal = getDatosInformeFinal(
-							datosInforme, usrBean);
-					Vector datosInformeEjg = (Vector) htDatosInformeFinal
-							.get("row");
-					ScsEJGBean ejgBean = new ScsEJGBean();
-					ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
 					for (int j = 0; j < vPlantillasInforme.size(); j++) {
-						AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme
-								.get(j);
-						// boolean isSolicitantes =
-						// beanInforme.getASolicitantes()!=null &&
-						// beanInforme.getASolicitantes().equalsIgnoreCase("S");
+						AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(j);
+						datosInforme.put("aContrarios",	beanInforme.getaContrarios());
+						datosInforme.put("generarInformeSinDireccion",	beanInforme.getGenerarInformeSinDireccion());
+						datosInforme.put("aSolicitantes", "N");
+						
+						Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+						Vector datosInformeEjg = (Vector) htDatosInformeFinal.get("row");
+						ScsEJGBean ejgBean = new ScsEJGBean();
+						ejgBean.setOriginalHash((Hashtable) datosInformeEjg.get(0));
 
 						envio.generarEnvio(destProgramInfBean.getIdPersona()
 								.toString(), destProgramInfBean
@@ -8671,11 +8668,10 @@ public class EnvioInformesGenericos extends MasterReport {
 												.getEnvioProgramado());
 							} catch (Exception e) {
 								if (destProgramInfBean.getIdPersona() != null)
-									ClsLogging.writeFileLogWithoutSession(
-											" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
-													+ destProgramInfBean
-															.getIdPersona()
-													+ " " + e.toString(), 3);
+									ClsLogging.writeFileLogError(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "
+											+ destProgramInfBean
+													.getIdPersona()
+											+ " ", e, 3);
 							}
 						}
 
