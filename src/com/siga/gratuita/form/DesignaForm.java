@@ -44,6 +44,7 @@ public class DesignaForm extends MasterForm
 	private String estado;
 	
 	private String cambioLetrado;
+	private String articulo27;
 	boolean permitidoJustificar = false;
 	String tipoResolucionDesigna;
 	
@@ -85,7 +86,7 @@ public class DesignaForm extends MasterForm
 	public void setRowSpan() {
 		
 		rowSpan = 0;
-		if(cambioLetrado==null || cambioLetrado.equals("N")){
+		if((cambioLetrado==null || cambioLetrado.equals("N"))&&(articulo27==null || articulo27.equals("N")) ){
 			if(actuaciones!=null&&actuaciones.size()>0){
 				Iterator<String> itActuacion = actuaciones.keySet().iterator();
 				while (itActuacion.hasNext()) {
@@ -291,6 +292,16 @@ public class DesignaForm extends MasterForm
 	public void setExpedientes(List<DefinirEJGForm> expedientes) {
 		this.expedientes = expedientes;
 	}
+
+	public String getArticulo27() {
+		return articulo27;
+	}
+
+	public void setArticulo27(String articulo27) {
+		this.articulo27 = articulo27;
+	}
+
+	
 
 	
 	

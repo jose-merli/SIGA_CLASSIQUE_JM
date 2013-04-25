@@ -219,6 +219,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
 		sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
+		sql.append(" D.ART27 ART27, ");
 		sql.append(" f_siga_getdefendidosdesigna(:");
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
@@ -692,6 +693,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				designaForm.setFecha((String)registro.get("FECHADESIGNA"));
 				designaForm.setAsunto((String)registro.get("ASUNTO"));
 				designaForm.setClientes((String)registro.get("CLIENTE"));
+				
 
 				String estado = (String)registro.get("ESTADO");
 				designaForm.setEstado(estado);
@@ -710,6 +712,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				String cambioLetrado = (String)registro.get("CAMBIOLETRADO");
 				designaForm.setCambioLetrado(cambioLetrado!=null&&Integer.parseInt(cambioLetrado)>1?"S":"N");
 				
+				designaForm.setArticulo27(registro.get("ART27")!=null && ((String)registro.get("ART27")).equals("1")?"S":"N");
 				
 				
 				designaForm.setIdProcedimiento(idProcedimiento);
@@ -868,7 +871,9 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				designaForm.setActuacionValidarJustificaciones(validarJustificaciones!=null?validarJustificaciones:"S");
 				designaForm.setActuacionRestriccionesActiva((String)designaHashtable.get("ACTIVARRETRICCIONACREDIT"));
 				designaForm.setActuacionPermitidaLetrado(actuacionPermitidaLetrado!=null?actuacionPermitidaLetrado:"0");
+				designaForm.setArticulo27(designaHashtable.get("ART27")!=null && ((String)designaHashtable.get("ART27")).equals("1")?"S":"N");
 				String cambioLetrado = (String)designaHashtable.get("CAMBIOLETRADO");
+				
 				designaForm.setCambioLetrado(cambioLetrado!=null&&Integer.parseInt(cambioLetrado)>1?"S":"N");
 				designaForm.setIdProcedimiento(idProcedimiento);
 				
@@ -1178,6 +1183,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		sql.append(" D.IDTURNO IDTURNO, ");
 		sql.append(" D.ANIO ANIO, ");
 		sql.append(" D.NUMERO NUMERO, ");
+		sql.append(" D.ART27 ART27, ");
 		
 		sql.append(" D.IDJUZGADO IDJUZGADO, ");
 		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");

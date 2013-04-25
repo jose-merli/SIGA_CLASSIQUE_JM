@@ -796,6 +796,11 @@ function downloadDocumentoResolucion(docResolucion) {
 					test="${designa.cambioLetrado=='S'}">
 					<c:set var="disabledPorCambioLetrado" value="disabled='disabled'" />
 				</c:if>
+				<c:set var="disabledPorArt27" value="" />
+				<c:if
+					test="${designa.articulo27=='S'}">
+					<c:set var="disabledPorArt27" value="disabled='disabled'" />
+				</c:if>
 				<c:set var="valiDisabled" value="" />
 				<c:if
 				test="${InformeJustificacionMasivaForm.fichaColegial==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S' }">
@@ -941,6 +946,34 @@ function downloadDocumentoResolucion(docResolucion) {
 									</td>
 									</tr>
 								</c:when>
+								
+								<c:when
+									test="${disabledPorArt27!=''&&disabledPorCambioLetrado==''}">
+									<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+									
+										<siga:Idioma
+										key="gratuita.informeJustificacionMasiva.articulo27" />
+										
+									</td>
+									<td><input type="checkbox"
+										disabled="disabled" /></td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td><c:choose>
+										<c:when test="${designa.baja=='1'}">
+											<input type="checkbox" disabled="disabled" checked="checked" />
+										</c:when>
+										
+										<c:otherwise>
+											<input type="checkbox" disabled="disabled" />
+										</c:otherwise>
+									</c:choose>
+									</td>
+									</tr>
+								</c:when>
+								
+								
+								
 					
 					<c:when test="${designa.permitidoJustificar==false}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
