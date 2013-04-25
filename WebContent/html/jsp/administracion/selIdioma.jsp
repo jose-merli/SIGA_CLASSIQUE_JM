@@ -79,7 +79,6 @@
 	function accionGuardar() 
 	{		
 		if(confirm('<siga:Idioma key="messages.confirm.updateData"/>')){
-			document.getElementById("idiomaUsuario").value = document.getElementById("idioma").value;
 			document.all.form1.submit();
 		}
 		
@@ -101,7 +100,6 @@
 
 	<br><br><br><br><br><br>
 <form method="POST" name="form1" action="<%=app%>/cambiarLenguaje.do" target="submitArea">
-<input type="hidden" name="idiomaUsuario" id="idiomaUsuario"  value=""  />
 <table width="20%" border="0" align="center" cellpadding="0" cellspacing="0">
 <%   for (int i=0;i<v.size();i++) {
 		AdmLenguajesBean b = (AdmLenguajesBean)v.get(i);
