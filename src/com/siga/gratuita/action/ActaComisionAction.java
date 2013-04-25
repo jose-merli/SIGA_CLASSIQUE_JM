@@ -95,6 +95,8 @@ public class ActaComisionAction extends MasterAction{
 					mapDestino = editar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("edicionMasiva")){
 					mapDestino = edicionMasiva(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("volver")){
+					mapDestino = volver(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("updateMasivo")){
 					mapDestino = updateMasivo(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("procesarRetirados")){
@@ -341,7 +343,7 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actaAdm=new ScsActaComisionAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ActaComisionForm actaForm =(ActaComisionForm)formulario;
-		HashMap<String, String> miHash= new HashMap<String, String>();
+		HashMap miHash= new HashMap();
 		
 		miHash.put(ScsActaComisionBean.C_ANIOACTA, actaForm.getAnioActa());
 		miHash.put(ScsActaComisionBean.C_NUMEROACTA, actaForm.getNumeroActa());

@@ -220,7 +220,7 @@
 		function accionVolver(){
 			document.ActaComisionForm.action="./JGR_ActasComisionEd.do";
 			document.ActaComisionForm.target="mainWorkArea";
-			document.ActaComisionForm.modo.value="";
+			document.ActaComisionForm.modo.value="volver";
 			document.ActaComisionForm.submit();
 		}
 		
