@@ -17,6 +17,7 @@ public class GeneraConstantesXSD {
 
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@127.0.0.1:1521:XE";
 		String url = "jdbc:oracle:thin:uscgae2/uscgae2@192.168.11.55:1521:SIGADES";
+		
 //		String url = "jdbc:oracle:thin:angelcpe/angelcpe@10.60.3.79:1526:SIGAPRE";		
 		
 		
@@ -24,7 +25,8 @@ public class GeneraConstantesXSD {
 		
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@192.168.11.55:1521:SIGADES";
 		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
+		
+		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
 		Connection conn = DriverManager.getConnection(url);
 
 		//PCAJG 
@@ -32,11 +34,11 @@ public class GeneraConstantesXSD {
 //				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
-//		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
+		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
 		
 		//SANTIAGO 2064
 //		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
-		String[] vistas = new String[]{"V_WS_JE_2064", "V_WS_JE_2064_ASIS", "V_WS_JE_2064_DESIGNA"};
+//		String[] vistas = new String[]{"V_WS_JE_2064", "V_WS_JE_2064_ASIS", "V_WS_JE_2064_DESIGNA"};
 		
 		//PAIS VASCO GUIPUZKOA
 //		String[] vistas = new String[]{"V_WS_2032_EJG", "V_WS_2032_SOLICITANTES", "V_WS_2032_PROFDESIG"};
