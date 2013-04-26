@@ -104,6 +104,7 @@ public interface PCAJGConstantes {
 	public final String DIR_FAX = "DIR_FAX";
 	public final String DIR_EMAIL = "DIR_EMAIL";
 	public final String DIR_IDPAIS = "DIR_IDPAIS";
+	public final String IS_SOLICITANTE = "IS_SOLICITANTE";
 	public final String IDTIPOTERCERO = "IDTIPOTERCERO";
 	public final String INGRESOSANUALES = "INGRESOSANUALES";
 

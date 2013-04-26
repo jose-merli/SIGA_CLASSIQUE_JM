@@ -456,12 +456,12 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);				
 				
-				Integer in = SIGAServicesHelper.getInteger("tipo solicitante/contrario", map.get(IDTIPOTERCERO));
+				Integer isSolicitante = SIGAServicesHelper.getInteger("es solicitante", map.get(IS_SOLICITANTE));
 				
-				if (in != null && in.intValue() == TIPO_TERCERO_SOLICITANTE) {
+				if (isSolicitante != null && isSolicitante.intValue() == 1) {
 					DtSolicitante datosPersona = dtExpedientes.addNewDtSolicitante();					
-					if (in != null) datosPersona.setIDTipoTercero(in);
-					in = SIGAServicesHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
+					datosPersona.setIDTipoTercero(TIPO_TERCERO_SOLICITANTE);
+					Integer in = SIGAServicesHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
 					String st = map.get(NOMBRE);
 					if (st != null) datosPersona.setNombre(st);
@@ -498,9 +498,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setEmail(st);
 					in = SIGAServicesHelper.getInteger("país", map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
-					if (dtDirecciones.getIDPoblacion() > 0) {
-						dtDirecciones = null;
-					}
+					
 					
 					in = SIGAServicesHelper.getInteger("código estado civil", map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
@@ -528,6 +526,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 										
 				} else {
 					DtIntervinientes datosPersona = dtExpedientes.addNewDtIntervinientes();
+					Integer in = SIGAServicesHelper.getInteger("tipo solicitante/contrario", map.get(IDTIPOTERCERO));
+					
 					if (in != null) datosPersona.setIDTipoTercero(in);
 					in = SIGAServicesHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
@@ -566,9 +566,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					if (st != null) dtDirecciones.setEmail(st);
 					in = SIGAServicesHelper.getInteger("país", map.get(DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
-					if (dtDirecciones.getIDPoblacion() > 0) {
-						dtDirecciones = null;
-					}
+					
 					
 					in = SIGAServicesHelper.getInteger("estado civil", map.get(IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
