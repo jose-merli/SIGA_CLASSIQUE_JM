@@ -29,7 +29,7 @@ function alert(message, title, acceptText) {
 }
 */
 var alertStop = window.alert;
-/*
+
 window.alert=function (message, estilo) {
 	var returnValue = true;
 	var windowTop=window.top;
@@ -37,7 +37,6 @@ window.alert=function (message, estilo) {
 	windowTop.growl(message,estilo);
 	return returnValue;
 }
-*/
 /*
 function confirm(message, title, acceptText, cancelText) {
 	var returnValue = false;
