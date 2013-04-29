@@ -85,6 +85,7 @@
 		   	nombreCol="<%=nombresCol %>"
 		   	tamanoCol="<%=tamanosCol %>"
 		   	alto="100%"
+		   	ajuste="28"
 		>
 
 				<!-- INICIO: ZONA DE REGISTROS -->
