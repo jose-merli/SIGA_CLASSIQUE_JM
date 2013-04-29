@@ -245,8 +245,7 @@
 				document.getElementById("filaNaranja").focus();	// Por problemas de repintado de pantalla
 			}
 			function cargarCombos() {
-			 
-			   
+
 				<% 
 				  //se inicializan estos valores porque cuando cambiamos el tipo de catalogo, cambiamos el combo de productos que debe mostrarse
 				  // y la consulta se ejecuta sin tener todos los valores que necesita, como no necesitamos a priori que muestren nada, los 
@@ -560,6 +559,7 @@
 			
 		function desactivar(valor){
 		
+			try{
 		   var valorAuxp=valor.value;
 		   if (document.getElementById("producto1").style.display=="block"  && valor.name=='productoSel'){
 		    
@@ -582,6 +582,7 @@
 			  jQuery("#nombreProducto").attr("disabled","disabled");
 			}
 		  }	
+			} catch(e){}
 		}
 		
 
