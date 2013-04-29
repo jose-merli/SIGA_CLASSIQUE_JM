@@ -88,6 +88,7 @@
 				<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaDenegacion" />">
 				<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.validarInscripciones" />">
 				<input type="hidden" id="tipoGuardias_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.guardias" />">
+				<input type="hidden" id='estado_<bean:write name="index"/>' value='<bean:write name="inscripcionGuardia" property="estado" />'>
 				
 				<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
 	  				botones="" 
