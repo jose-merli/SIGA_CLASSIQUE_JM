@@ -94,7 +94,9 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
-<!--
+
+
+<!--  Esto solo debe estar comentado en local --> 
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -111,7 +113,9 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
--->
+<!-- Esto solo debe estar comentado en local -->
+
+
 	<!--************ Seguridad de Certificados FIN ************-->
 
 	<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
