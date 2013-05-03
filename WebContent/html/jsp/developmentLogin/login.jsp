@@ -47,7 +47,7 @@
 
 		function entradaDirecta()
 		{
-			frmLogin.location.value="2040";
+			frmLogin.location.value="2045";
 			frmLogin.profile.value="ADG";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
@@ -146,7 +146,7 @@
 
 			<tr>
 				<td colspan="3" valign="middle" align="center" >
-					<input type="button" class="button" value="Colegio León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
+					<input type="button" class="button" value="Colegio Madrid" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
 					&nbsp;
 					<input type="button" class="button" value="GENERAL" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
 				</td>
