@@ -1340,7 +1340,7 @@
 			</td>
 			<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp(*)</td>
 			<td colspan="3"><html:text name="ExpDatosGeneralesForm" styleId="asunto"
-											property="asunto" size="78" maxlength="100"
+											property="asunto" size="78" maxlength="1024"
 											styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>
 		</tr>

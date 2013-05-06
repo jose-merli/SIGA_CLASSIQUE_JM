@@ -280,6 +280,7 @@
 								return false;
 							}
 						}
+						
 						if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 							if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
 								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>'
@@ -797,7 +798,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.asunto"/>&nbsp(*)
 			</td>
 			<td colspan="3">
-				<html:text name="ExpDatosGeneralesForm" property="asunto" size="78" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
+				<html:text name="ExpDatosGeneralesForm" property="asunto" size="78" maxlength="1024" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>
 			</tr>
 
