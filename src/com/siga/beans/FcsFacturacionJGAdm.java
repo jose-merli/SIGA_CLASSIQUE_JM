@@ -463,65 +463,62 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		String consultaGrupos = "";
 		
 		//preparamos las consultas
-
 		//Caso de insertar un nuevo criterio:
 		if (beanCriterio == null) {
-				//la que consulta el número de facturaciones que coinciden en el periodo facturado
-				consultaFact = 	"select count(1) as NFACTURACIONES "+
-								" from " + FcsFacturacionJGBean.T_NOMBRETABLA +
-								" where " + FcsFacturacionJGBean.C_REGULARIZACION + " = '"+ ClsConstants.DB_FALSE + "'" +
-								" AND " + FcsFacturacionJGBean.C_PREVISION + " = '"+ ClsConstants.DB_FALSE + "'" +
-								
-								/**Modificado las condiciones de las fechas para evitar el solapamiento de las mismas**/
-								/*" and TO_DATE('"+fechaHasta+"','DD/MM/YYYY') <= "+ FcsFacturacionJGBean.C_FECHAHASTA + 
-								" and TO_DATE('"+fechaDesde+"','DD/MM/YYYY') >= "+ FcsFacturacionJGBean.C_FECHADESDE +*/
-								" and ((TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHADESDE +" and TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHAHASTA+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHAHASTA+")"+
-								" or (TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHADESDE+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHADESDE+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHAHASTA+"))"+
-								/***************/
-								
-								" AND "+ FcsFacturacionJGBean.C_IDINSTITUCION+"="+beanFacturacion.getIdInstitucion().toString()+
-								" AND "+ FcsFacturacionJGBean.C_IDFACTURACION+"<>"+beanFacturacion.getIdFacturacion().toString();
-				//consulta el numero de grupos de facturacion que facturan el mismo tipo de hitos facturables
-				consultaGrupos =	" select count (h1."+FcsFactGrupoFactHitoBean.C_IDFACTURACION+") NGRUPOS "+
-									" from  " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h, " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h1, " + 
-											    FcsFacturacionJGBean.T_NOMBRETABLA + " fact "+ 
-									" where h1." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = " + beanFacturacion.getIdInstitucion().toString() + " " +
-									" and h1." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " = " + beanFacturacion.getIdFacturacion().toString() + " " +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = h1." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = h1." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " <> h1." + FcsFactGrupoFactHitoBean.C_IDFACTURACION +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " = h1." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " <> " + ClsConstants.HITO_GENERAL_TURNO +
-									" and h1." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION+ " = fact." + FcsFacturacionJGBean.C_IDINSTITUCION +
-									" and h1." + FcsFactGrupoFactHitoBean.C_IDFACTURACION+ " = fact." + FcsFacturacionJGBean.C_IDFACTURACION +
-									" and fact." + FcsFacturacionJGBean.C_PREVISION+ " = 0"+
-									" and fact." + FcsFacturacionJGBean.C_REGULARIZACION+ " = 0";
+			
+			//la que consulta el número de facturaciones que coinciden en el periodo facturado
+			consultaFact = 	" SELECT count(1) as NFACTURACIONES "+
+				" FROM " + FcsFacturacionJGBean.T_NOMBRETABLA +
+				" WHERE " + FcsFacturacionJGBean.C_REGULARIZACION + " = '"+ ClsConstants.DB_FALSE + "'" +
+					" AND " + FcsFacturacionJGBean.C_PREVISION + " = '"+ ClsConstants.DB_FALSE + "'" +								
+					" AND ((TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') >= " + FcsFacturacionJGBean.C_FECHADESDE +
+						" AND TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= " + FcsFacturacionJGBean.C_FECHAHASTA + ")" +
+						" OR (TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= " + FcsFacturacionJGBean.C_FECHADESDE + 
+						" AND TO_DATE('" + fechaHasta +"', 'DD/MM/YYYY') >= " + FcsFacturacionJGBean.C_FECHADESDE + "))" +								
+					" AND "+ FcsFacturacionJGBean.C_IDINSTITUCION+"="+beanFacturacion.getIdInstitucion().toString()+
+					" AND "+ FcsFacturacionJGBean.C_IDFACTURACION+"<>"+beanFacturacion.getIdFacturacion().toString();	
+
+	    	consultaGrupos = " SELECT COUNT(h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + ") NGRUPOS " + 
+				" FROM " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h, " +
+	    			FcsFacturacionJGBean.T_NOMBRETABLA + " fact, " +
+	    			FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h1 " +
+				" WHERE h1." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = " + beanFacturacion.getIdInstitucion().toString() +					
+					" AND h1." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " = " + beanFacturacion.getIdFacturacion().toString() +
+					
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = h1." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " <> h1." + FcsFactGrupoFactHitoBean.C_IDFACTURACION +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = h1." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION +																		
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " = h1." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL +					
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " <> " + ClsConstants.HITO_GENERAL_TURNO +
+					
+					" AND fact." + FcsFacturacionJGBean.C_IDINSTITUCION + " = h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION +
+					" AND fact." + FcsFacturacionJGBean.C_IDFACTURACION + " = h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION +
+					" AND fact." + FcsFacturacionJGBean.C_PREVISION + " = 0 " +
+					" AND fact." + FcsFacturacionJGBean.C_REGULARIZACION + " = 0  " +					
+					
+					" AND ((TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') >= fact." + FcsFacturacionJGBean.C_FECHADESDE +
+						" AND TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= fact." + FcsFacturacionJGBean.C_FECHAHASTA + ")" +
+						" OR (TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= fact." + FcsFacturacionJGBean.C_FECHADESDE + 
+						" AND TO_DATE('" + fechaHasta +"', 'DD/MM/YYYY') >= fact." + FcsFacturacionJGBean.C_FECHADESDE + "))";					
+			
 		//Caso de modificar una facturacion:
 		} else {
-				//consulta el numero de grupos de facturacion que facturan el mismo tipo de hitos facturables
-				/*consultaGrupos =	" select count (h."+FcsFactGrupoFactHitoBean.C_IDFACTURACION+") NGRUPOS "+
-									" from  " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h, " + FcsFacturacionJGBean.T_NOMBRETABLA + " fact "+ 
-									" where h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = " + beanFacturacion.getIdInstitucion().toString() + " " +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " <> " + beanFacturacion.getIdFacturacion().toString() + " " +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = " + beanCriterio.getIdGrupoFacturacion().toString() +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " = " + beanCriterio.getIdHitoGeneral().toString() +									
-									" and h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION+ " = fact." + FcsFacturacionJGBean.C_IDINSTITUCION +
-									" and h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION+ " = fact." + FcsFacturacionJGBean.C_IDFACTURACION +
-									" and fact." + FcsFacturacionJGBean.C_PREVISION+ " = 0"+
-									" and fact." + FcsFacturacionJGBean.C_REGULARIZACION+ " = 0";*/
-		    	consultaGrupos = "select count(h.IDFACTURACION) NGRUPOS " + 
-		    	    			 " from FCS_FACT_GRUPOFACT_HITO h, FCS_FACTURACIONJG fact " +
-		    	    			 " where h.IDINSTITUCION = " +beanFacturacion.getIdInstitucion().toString() +
-	    			 			 "   and h.IDFACTURACION <> "+ beanFacturacion.getIdFacturacion().toString() +
-	    			 			 "   and h.IDGRUPOFACTURACION = " + beanCriterio.getIdGrupoFacturacion().toString() +
-	    			 			 "   and h.IDHITOGENERAL = " + beanCriterio.getIdHitoGeneral().toString() +				
-	    			 			 "   and h.IDINSTITUCION = fact.IDINSTITUCION  " +
-	    			 			 "   and h.IDFACTURACION = fact.IDFACTURACION  " +
-	    			 			 "   and fact.PREVISION = 0  " +
-		    	    		     "   and fact.REGULARIZACION = 0  " +
-		    	    			 "   and ((TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHADESDE +" and TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHAHASTA+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHAHASTA+")"+
-		    	    			 "   or (TO_DATE('"+fechaDesde+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHADESDE+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')>="+FcsFacturacionJGBean.C_FECHADESDE+" and TO_DATE('"+fechaHasta+"', 'DD/MM/YYYY')<="+FcsFacturacionJGBean.C_FECHAHASTA+"))";
-					
+	    	consultaGrupos = " SELECT COUNT(h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + ") NGRUPOS " + 
+				" FROM " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " h, " +	    			
+					FcsFacturacionJGBean.T_NOMBRETABLA + " fact " +
+				" WHERE h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = " +beanFacturacion.getIdInstitucion().toString() +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " <> "+ beanFacturacion.getIdFacturacion().toString() +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = " + beanCriterio.getIdGrupoFacturacion().toString() +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " = " + beanCriterio.getIdHitoGeneral().toString() +
+					" and h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " <> " + ClsConstants.HITO_GENERAL_TURNO +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = fact." + FcsFacturacionJGBean.C_IDINSTITUCION +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " = fact." + FcsFacturacionJGBean.C_IDFACTURACION +
+					" AND fact." + FcsFacturacionJGBean.C_PREVISION + " = 0 " +
+					" AND fact." + FcsFacturacionJGBean.C_REGULARIZACION + " = 0  " +
+					" AND ((TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') >= fact." + FcsFacturacionJGBean.C_FECHADESDE +
+						" AND TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= fact." + FcsFacturacionJGBean.C_FECHAHASTA + ")" +
+						" OR (TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= fact." + FcsFacturacionJGBean.C_FECHADESDE + 
+						" AND TO_DATE('" + fechaHasta +"', 'DD/MM/YYYY') >= fact." + FcsFacturacionJGBean.C_FECHADESDE + "))";				
 		}
 		
 		//hashtable para recoger el resultado de la consulta
