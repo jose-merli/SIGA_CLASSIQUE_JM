@@ -1265,40 +1265,67 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		int totalRegistros=0;
 		
 		
-		
+		//aalg. INC_06694_SIGA. Se modifica la query para hacerla más eficiente
 		try {
-			//String bBusqueda = formulario.getChkBusqueda();
-			consulta=" select des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo||'' codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
+			consulta=" select distinct des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo||'' codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
 			
-			consulta+=" from scs_designa des";
+			consulta+=" from scs_designa des ";
+			
+			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
+				consulta += ", SCS_DESIGNASLETRADO l ";
+			}
+			
+			if (UtilidadesHash.getString(miHash,"CALIDAD") != null && !UtilidadesHash.getString(miHash,"CALIDAD").equalsIgnoreCase("")) {
+				consulta += ", SCS_DEFENDIDOSDESIGNA def ";
+			}
+			
+			boolean tiene_juzg=UtilidadesHash.getString(miHash,"JUZGADOACTU") != null && !UtilidadesHash.getString(miHash,"JUZGADOACTU").equalsIgnoreCase("");
+			boolean tiene_asunto=UtilidadesHash.getString(miHash,"ASUNTOACTUACION") != null && !UtilidadesHash.getString(miHash,"ASUNTOACTUACION").equalsIgnoreCase("");
+			boolean tiene_acreditacion=UtilidadesHash.getString(miHash,"ACREDITACION") != null && !UtilidadesHash.getString(miHash,"ACREDITACION").equalsIgnoreCase("");
+			boolean tiene_modulo=UtilidadesHash.getString(miHash,"MODULO") != null && !UtilidadesHash.getString(miHash,"MODULO").equalsIgnoreCase("");
+			
+			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo){
+				consulta+=	", scs_actuaciondesigna act ";
+			}
+			
+			boolean tiene_interesado=false;
+			if((UtilidadesHash.getString(miHash,"NIF") != null && !UtilidadesHash.getString(miHash,"NIF").equalsIgnoreCase(""))
+					|| (UtilidadesHash.getString(miHash,"NOMBRE") != null && !UtilidadesHash.getString(miHash,"NOMBRE").equalsIgnoreCase(""))
+					|| (UtilidadesHash.getString(miHash,"APELLIDO1") != null && !UtilidadesHash.getString(miHash,"APELLIDO1").equalsIgnoreCase(""))
+					|| (UtilidadesHash.getString(miHash,"APELLIDO2") != null && !UtilidadesHash.getString(miHash,"APELLIDO2").equalsIgnoreCase(""))){
+				tiene_interesado = true;
+			}
+			
+			if (tiene_interesado){
+				consulta += ", SCS_DEFENDIDOSDESIGNA DED, SCS_PERSONAJG PER ";
+			}
+			
 			contador++;
 			codigosBind.put(new Integer(contador),idInstitucion);
 			consulta+=" where des.idinstitucion =:"+contador;
 			
-			 if ((UtilidadesHash.getString(miHash,"IDTURNO") != null)&&(UtilidadesHash.getString(miHash,"IDTURNO") != "-1")&&!UtilidadesHash.getString(miHash,"IDTURNO").equals("")){
-			 	contador++;
-				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTURNO"));
-			 	consulta+=" and des.idTurno = :"+contador;
-			 }
-			 	
-			 	
-
 			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
-				contador++;
-			    codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NCOLEGIADO"));
-			    
-			    consulta += " and :"+contador+"= (select max(L.IDPERSONA) from SCS_DESIGNASLETRADO L where l.idinstitucion =des.idinstitucion ";
+				consulta += " and l.idinstitucion =des.idinstitucion ";
 			    consulta += " and l.idturno =des.idturno ";
 			    consulta += " and l.anio =des.anio "; 
 			    consulta += " and l.numero =des.numero ";
-			    consulta += " and (L.Fechadesigna is null or";
-			    consulta += " L.Fechadesigna = (SELECT MAX(LET2.Fechadesigna) FROM SCS_DESIGNASLETRADO LET2";
-			    consulta += " WHERE L.IDINSTITUCION = LET2.IDINSTITUCION AND L.IDTURNO = LET2.IDTURNO";
-			    consulta += " AND L.ANIO = LET2.ANIO AND L.NUMERO = LET2.NUMERO";
-			    consulta += " AND TRUNC(LET2.Fechadesigna) <= TRUNC(SYSDATE))))";
+			    consulta += " and (l.Fechadesigna is null or";
+			    consulta += " l.Fechadesigna = (SELECT MAX(LET2.Fechadesigna) FROM SCS_DESIGNASLETRADO LET2";
+			    consulta += " WHERE l.IDINSTITUCION = LET2.IDINSTITUCION AND l.IDTURNO = LET2.IDTURNO";
+			    consulta += " AND l.ANIO = LET2.ANIO AND l.NUMERO = LET2.NUMERO";
+			    consulta += " AND TRUNC(LET2.Fechadesigna) <= TRUNC(SYSDATE)))";
 			    
-			    //consulta += " and F_SIGA_GETIDLETRADO_DESIGNA(des.idinstitucion,des.idturno,des.anio,des.numero) = :"+contador;
+			    contador++;
+			    codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NCOLEGIADO"));
+			    consulta += " and l.idPersona = :" + contador + " ";
 			}
+				
+			if ((UtilidadesHash.getString(miHash,"IDTURNO") != null)&&(UtilidadesHash.getString(miHash,"IDTURNO") != "-1")&&!UtilidadesHash.getString(miHash,"IDTURNO").equals("")){
+			 	contador++;
+				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTURNO"));
+			 	consulta+=" and des.idTurno = :"+contador;
+			}
+			 	
 			if (UtilidadesHash.getString(miHash,"ANIO") != null && !UtilidadesHash.getString(miHash,"ANIO").equalsIgnoreCase("")) {
 				
 			    if (UtilidadesHash.getString(miHash,"ANIO").indexOf('*') >= 0){
@@ -1357,8 +1384,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			if (actuacionesPendientes!= null && !actuacionesPendientes.equalsIgnoreCase("")&& (actuacionesPendientes.equalsIgnoreCase("NO")||actuacionesPendientes.equalsIgnoreCase("SI")||actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES"))) {
 				if(actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES")){
 					actuacionesPendientes="";
-					// contador ++;
-				    // codigos.put(new Integer(contador),actuacionesPendientes.trim());
 					consulta += " and upper(F_SIGA_ACTUACIONESDESIG(des.idinstitucion,des.idturno,des.anio,des.numero)) is null";
 				}else{
 				contador++;
@@ -1380,15 +1405,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			if (UtilidadesHash.getString(miHash,"CALIDAD") != null && !UtilidadesHash.getString(miHash,"CALIDAD").equalsIgnoreCase("")) {
 				contador++;
 				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"CALIDAD").trim());
-				consulta += " and (select count(1)"+
-				"    from SCS_DEFENDIDOSDESIGNA def"+
-				" where"+
-				" def.ANIO = des.anio"+
+				consulta += " and def.ANIO = des.anio"+
 				" and def.NUMERO = des.numero"+
 				" and def.IDINSTITUCION = des.idinstitucion"+
 				" and def.IDTURNO = des.idturno"+
-				" and def.idtipoencalidad= :" + contador+ ") > 0";
-				
+				" and def.idtipoencalidad= :" + contador+ " ";
 			}
 			
 			if ((miHash.containsKey("FECHAENTRADAINICIO") && !UtilidadesHash.getString(miHash,"FECHAENTRADAINICIO").equalsIgnoreCase(""))
@@ -1412,68 +1433,43 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				consulta+=" and des.IDTIPODESIGNACOLEGIO =:"+contador;
 			}
 			
-			boolean isFiltrado = false;
-			String subConsulta1="";
-			// jbd // Cambiamos la consulta de la vista por una mas ligera con la tabla de defendidos
-			/*subConsulta1+=" AND (select count(1) from V_SIGA_DEFENDIDOS_DESIGNA VDEF";
-			subConsulta1+=" where VDEF.idInstitucion = des.idinstitucion";
-			subConsulta1+=" and VDEF.anio = des.anio";
-			subConsulta1+=" and VDEF.numero = des.numero";
-			subConsulta1+=" and VDEF.IDTURNO = des.idturno";*/
-			subConsulta1+=" AND (SELECT count(1)";
-			subConsulta1+="   FROM SCS_DEFENDIDOSDESIGNA DEF, SCS_PERSONAJG PER";
-			subConsulta1+="  WHERE DEF.IDINSTITUCION = PER.IDINSTITUCION";
-			subConsulta1+="    AND DEF.IDPERSONA = PER.IDPERSONA";
-			subConsulta1+="    AND DEF.IDINSTITUCION = des.idInstitucion";
-			subConsulta1+="    AND DEF.ANIO = des.ANIO";
-			subConsulta1+="    AND DEF.IDTURNO = des.idTURNO";
-			subConsulta1+="    AND DEF.NUMERO = des.NUMERO";
-			if(UtilidadesHash.getString(miHash,"NIF") != null && !UtilidadesHash.getString(miHash,"NIF").equalsIgnoreCase("")){
-				isFiltrado = true;
-				subConsulta1+=" and ";
-				if (ComodinBusquedas.hasComodin(miHash.get("NIF").toString())){	
-				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NIF").trim(),"PER.NIF",contador,codigosBind);
-				}else{
+			if (tiene_interesado){
+				consulta+=" AND DED.IDINSTITUCION = PER.IDINSTITUCION";
+				consulta+="    AND DED.IDPERSONA = PER.IDPERSONA";
+				consulta+="    AND DED.IDINSTITUCION = des.idInstitucion";
+				consulta+="    AND DED.ANIO = des.ANIO";
+				consulta+="    AND DED.IDTURNO = des.idTURNO";
+				consulta+="    AND DED.NUMERO = des.NUMERO";
+
+				if(UtilidadesHash.getString(miHash,"NIF") != null && !UtilidadesHash.getString(miHash,"NIF").equalsIgnoreCase("")){
+					consulta+=" and ";
+					if (ComodinBusquedas.hasComodin(miHash.get("NIF").toString())){	
 					contador++;
-					subConsulta1 +=ComodinBusquedas.prepararSentenciaNIFBind(miHash.get("NIF").toString(),"PER.NIF",contador, codigosBind);
+					consulta+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NIF").trim(),"PER.NIF",contador,codigosBind);
+					}else{
+						contador++;
+						consulta +=ComodinBusquedas.prepararSentenciaNIFBind(miHash.get("NIF").toString(),"PER.NIF",contador, codigosBind);
+					}
+				}
+				if(UtilidadesHash.getString(miHash,"NOMBRE") != null && !UtilidadesHash.getString(miHash,"NOMBRE").equalsIgnoreCase("")){
+					consulta+=" and ";
+					contador++;
+					consulta+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NOMBRE").trim(),"PER.NOMBRE",contador, codigosBind);
+				}
+				if(UtilidadesHash.getString(miHash,"APELLIDO1") != null && !UtilidadesHash.getString(miHash,"APELLIDO1").equalsIgnoreCase("")){
+					consulta+=" and ";
+					contador++;
+					consulta+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO1").trim(),"PER.APELLIDO1",contador,codigosBind);
+				}
+				if(UtilidadesHash.getString(miHash,"APELLIDO2") != null && !UtilidadesHash.getString(miHash,"APELLIDO2").equalsIgnoreCase("")){
+					consulta+=" and ";
+					contador++;
+					consulta+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO2").trim(),"PER.APELLIDO2",contador,codigosBind);
 				}
 			}
-			if(UtilidadesHash.getString(miHash,"NOMBRE") != null && !UtilidadesHash.getString(miHash,"NOMBRE").equalsIgnoreCase("")){
-				isFiltrado = true;
-				subConsulta1+=" and ";
-				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NOMBRE").trim(),"PER.NOMBRE",contador, codigosBind);
-			}
-			if(UtilidadesHash.getString(miHash,"APELLIDO1") != null && !UtilidadesHash.getString(miHash,"APELLIDO1").equalsIgnoreCase("")){
-				isFiltrado = true;
-				subConsulta1+=" and ";
-				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO1").trim(),"PER.APELLIDO1",contador,codigosBind);
-			}
-			if(UtilidadesHash.getString(miHash,"APELLIDO2") != null && !UtilidadesHash.getString(miHash,"APELLIDO2").equalsIgnoreCase("")){
-				isFiltrado = true;
-				subConsulta1+=" and ";
-				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO2").trim(),"PER.APELLIDO2",contador,codigosBind);
-			}
 			
-			subConsulta1+=" )>0 ";
-			if (isFiltrado){
-				consulta+=subConsulta1;
-			}
-			
-			
-			boolean tiene_juzg=UtilidadesHash.getString(miHash,"JUZGADOACTU") != null && !UtilidadesHash.getString(miHash,"JUZGADOACTU").equalsIgnoreCase("");
-			boolean tiene_asunto=UtilidadesHash.getString(miHash,"ASUNTOACTUACION") != null && !UtilidadesHash.getString(miHash,"ASUNTOACTUACION").equalsIgnoreCase("");
-			boolean tiene_acreditacion=UtilidadesHash.getString(miHash,"ACREDITACION") != null && !UtilidadesHash.getString(miHash,"ACREDITACION").equalsIgnoreCase("");
-			boolean tiene_modulo=UtilidadesHash.getString(miHash,"MODULO") != null && !UtilidadesHash.getString(miHash,"MODULO").equalsIgnoreCase("");
-			String subConsulta2="";
 			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo){
-				subConsulta2+=	" and (des.idinstitucion, des.idturno, des.anio, des.numero) in"+
-									" (select act.idinstitucion, act.idturno, act.anio, act.numero"+
-									" from scs_actuaciondesigna act"+
-									" where des.idinstitucion = act.idinstitucion"+
+				consulta+=	" and des.idinstitucion = act.idinstitucion"+
 									" and des.idturno = act.idturno"+
 									" and des.anio = act.anio"+
 									" and des.numero = act.numero ";
@@ -1481,35 +1477,28 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					String a[]=((String)UtilidadesHash.getString(miHash,"JUZGADOACTU")).split(",");
 					contador++;
 					codigosBind.put(new Integer(contador),a[0].trim());
-					subConsulta2 += " AND act.idjuzgado = :" + contador;
+					consulta += " AND act.idjuzgado = :" + contador;
 				}
 				if (tiene_asunto) {
 					contador++;
 					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"ASUNTOACTUACION").trim());
-					subConsulta2 += " AND act.numeroasunto = :" + contador;
+					consulta += " AND act.numeroasunto = :" + contador;
 				}
 				if (tiene_acreditacion) {
 		        	contador++;
 					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"ACREDITACION").trim());
-					subConsulta2 += " AND act.idacreditacion = :" + contador;
+					consulta += " AND act.idacreditacion = :" + contador;
 				}
 				if (tiene_modulo) {
 					contador++;
 					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"MODULO").trim());
-					subConsulta2 += " AND act.idprocedimiento = :" + contador;
+					consulta += " AND act.idprocedimiento = :" + contador;
 				}
-				subConsulta2+=")";
 			}
-			
-			
-			
-			
-			if (!subConsulta2.equals("")){
-				consulta+=subConsulta2;
-			}
+
 			// jbd // inc7744 // Cambiamos el order by porque parece que afecta a la query cuando se busca por colegiado
 			// consulta+=" order by des.idturno, des.anio desc, des.numero desc";
-			consulta+=" order by des.anio desc, des.codigo desc";
+			consulta+=" order by des.anio desc, codigo desc";
       // No utilizamos la clase Paginador para la busqueda de letrados porque al filtrar por residencia la consulta no devolvia bien los 
       //  datos que eran de tipo varchar (devolvía n veces el mismo resultado), utilizamos el paginador PaginadorCaseSensitive
        // y hacemos a parte el tratamiento de mayusculas y signos de acentuación
