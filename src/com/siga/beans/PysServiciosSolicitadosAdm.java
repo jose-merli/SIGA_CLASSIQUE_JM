@@ -1036,7 +1036,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		sql.append(", "); 
 		sql.append(PysServiciosSolicitadosBean.C_CANTIDAD);
 		sql.append(", ");	
-		sql.append("case when to_date(nvl(FECHAEFEC, sysdate), 'dd/mm/yyyy') > to_date(sysdate, 'dd/mm/yyyy') then 'A' else aceptado end ACEPTADO");
+		sql.append("case when TRUNC(nvl(FECHAEFEC, sysdate)) > TRUNC(sysdate) then 'A' else aceptado end ACEPTADO");
 		sql.append(", ");
 		sql.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 		sql.append(", ");	
@@ -1181,7 +1181,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	   sql.append(" AND   F.IDSUSCRIPCION = S.IDSUSCRIPCION "); 
 	   sql.append(" AND   S.IDINSTITUCION=PYS_PETICIONCOMPRASUSCRIPCION.IDINSTITUCION "); 
 	   sql.append(" AND   S.IDPETICION=PYS_PETICIONCOMPRASUSCRIPCION.IDPETICION "); 
-	   sql.append(" AND   F.NUMEROLINEA=1 "); 
+	   //sql.append(" AND   F.NUMEROLINEA=1 "); 
 	   sql.append(" AND ROWNUM<2) AS ESTAFACTURADO, ");
 
 								// Cuenta
