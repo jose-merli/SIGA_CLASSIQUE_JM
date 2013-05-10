@@ -190,7 +190,7 @@
 					person = document.getElementById("idPersona_"+(fila+1)).value;
 					fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
 					//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
-					td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+					td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
 				
 					td.innerHTML = td.innerHTML +
 								   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
@@ -200,15 +200,15 @@
 				
 					td = tr.insertCell();	
 					td.id = "nombre_"+numFila;
-					td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+					td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
 				
 					td = tr.insertCell();	
 					td.id = "falta_"+numFila;
-					td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+					td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
 				
 					td = tr.insertCell();	
 					td.id = "fbaja_"+numFila;
-					td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
+					td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
 				
 					td = tr.insertCell();	
 					td.id = "iconos_"+numFila;
