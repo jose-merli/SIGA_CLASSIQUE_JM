@@ -177,7 +177,8 @@
 					
 					ATENCION: Las validaciones se hacen en el servidor, al finalizar
 					 - CASO TURNO: La fecha de validacion debe ser superior a la fecha de baja del ultimo turno 
-					 - CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo
+					 - CASO GUARDIA: La fecha de validacion debe ser superior a la fecha de baja de la ultima guardia
+					                                               y superior o igual que la fecha de validacion del turno
 					
 					//  La fecha de validacion debe ser superior a la fecha de baja de la inscripcion anterior	
 					var fechaBajaTurnoAnterior = document.InscripcionTGForm.fechaBajaTurno.value;
@@ -239,6 +240,7 @@
 		- vmigValidar: Insercion de inscripcion de guardia por alta pendiente masiva 
 		- sbgComprobarInsertar: Baja de inscripcion de guardia por baja (puede venir sin validacion) 
 		- vbgComprobarValidar: Baja de inscripcion de guardia por baja pendiente individual
+		- vbgComprobarValidar: Baja de inscripcion de guardia por baja pendiente masivo
 		*/
 		function accionFinalizar() {		
 				//sub();
@@ -287,7 +289,8 @@
 							/*
 							 ATENCION: Las validaciones se hacen en el servidor, al finalizar
 							 - CASO TURNO: La fecha de validacion debe ser superior a la fecha de baja del ultimo turno 
-							 - CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo
+							 - CASO GUARDIA: La fecha de validacion debe ser superior a la fecha de baja de la ultima guardia
+							                                               y superior o igual que la fecha de validacion del turno                                                              
 							 */
 						
 						} else { 
@@ -339,8 +342,9 @@
 							/* JPT: Voy a anular las validaciones temporalmente
 							
 							ATENCION: Las validaciones se hacen en el servidor, al finalizar
-							 - CASO TURNO: La fecha de baja debe ser superior o igual a la fecha de baja de las guardias, 
-							                              y debe ser superior o igual a la fecha de validación del turno. 
+							- CASO TURNO: La fecha de baja debe ser superior o igual a la fecha de validacion del turno
+						 	                                      y superior o igual a la fecha de NVL(baja,alta) de todas sus guardias 
+							- CASO GUARDIA: La fecha de baja debe ser superior o igual a la fecha de validacion de la guardia  
 							
 							if( document.InscripcionTGForm.modo.value != 'sbtComprobarInsertar' &&
 								document.InscripcionTGForm.modo.value != 'vbtComprobarValidar') {
