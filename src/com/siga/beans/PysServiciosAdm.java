@@ -352,7 +352,7 @@ public class PysServiciosAdm extends MasterBeanAdministrador {
 		catch(Exception e) { e.printStackTrace(); }
 		
 		try {		
-			String sql = "SELECT trunc(max(FP."+FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS+")) AS FECHA " + 
+			String sql = "SELECT trunc(max(FS."+FacFacturacionSuscripcionBean.C_FECHAFIN+")) AS FECHA " + 
 						 "	FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA + " FP , " + FacFacturaBean.T_NOMBRETABLA + " F, " +FacFacturacionSuscripcionBean.T_NOMBRETABLA +" FS " +
 						 " WHERE F." + FacFacturaBean.C_IDINSTITUCION + "=FS." + FacFacturacionSuscripcionBean.C_IDINSTITUCION +
 						 "   AND F." + FacFacturaBean.C_IDFACTURA + "=FS." + FacFacturacionSuscripcionBean.C_IDFACTURA +

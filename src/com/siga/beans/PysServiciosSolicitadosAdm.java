@@ -430,10 +430,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						else
 							a.put("ESTADO_BAJA","NO");
 						String estadoPago = (String)a.get("ESTADOPAGO");
-						// JTA segun requeriemiento se puede anular siempre que no este facturado(mirar el procediemineto F_SIGA_ESTADOCOMPRA
-						//ya que cuando esta cobrado con tarjeta no tiene por que estar facturado!) 
-						if(estadoPago==null || estadoPago.equalsIgnoreCase("estados.compra.pendiente"))
-							resultados.add(a);
+						// CRM--> SI SE PUEDE ANULAR LOS SERVICIOS FACTURADOS
+						resultados.add(a);
 					}else{
 						resultados.add(a);
 					}
@@ -1098,37 +1096,13 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 
 								
 		// Fecha Efectiva:
-	    sql.append("(SELECT NVL(" );
+	    sql.append("NVL(" );
 	    sql.append( PysSuscripcionBean.T_NOMBRETABLA); sql.append("."); sql.append(PysSuscripcionBean.C_FECHABAJA  );
 	    sql.append(",");
 	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_FECHASUSCRIPCION );
-	    sql.append(" ) FROM " );
-	    sql.append(PysSuscripcionBean.T_NOMBRETABLA); 
-	    sql.append(" WHERE " );  
-	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);   sql.append(".");  sql.append(PysSuscripcionBean.C_IDINSTITUCION);
-	    sql.append("=");
-	    sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);  sql.append("."); sql.append(PysServiciosSolicitadosBean.C_IDINSTITUCION );
-	    sql.append(" AND " );
-	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);  sql.append(".");  sql.append(PysSuscripcionBean.C_IDPETICION);
-	    sql.append("=");
-	    sql.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);  sql.append(".");  sql.append(PysPeticionCompraSuscripcionBean.C_IDPETICION );
-	    sql.append(" AND " );
-	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDTIPOSERVICIOS);
-	    sql.append("=");
-	    sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS );
-		sql.append(" AND " );
-		sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDSERVICIO);
-		sql.append("=");
-		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDSERVICIO );
-		sql.append(" AND " );
-		sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
-		sql.append("=");
-		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION );
-		sql.append(" AND ROWNUM = 1)" );
-		sql.append(" AS FECHAEFEC, " );
+	    sql.append("  ) AS FECHAEFEC, " );
 
-								
-								// Concepto
+		// Concepto
 		sql.append(	"(SELECT ");sql.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 		sql.append("."); 
 		sql.append(PysServiciosInstitucionBean.C_DESCRIPCION );
@@ -1181,7 +1155,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	   sql.append(" AND   F.IDSUSCRIPCION = S.IDSUSCRIPCION "); 
 	   sql.append(" AND   S.IDINSTITUCION=PYS_PETICIONCOMPRASUSCRIPCION.IDINSTITUCION "); 
 	   sql.append(" AND   S.IDPETICION=PYS_PETICIONCOMPRASUSCRIPCION.IDPETICION "); 
-	   //sql.append(" AND   F.NUMEROLINEA=1 "); 
+	   sql.append(" AND   F.NUMEROLINEA=1 "); 
 	   sql.append(" AND ROWNUM<2) AS ESTAFACTURADO, ");
 
 								// Cuenta
@@ -1199,7 +1173,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE "); 
 		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);	sql.append("."); sql.append(CenCuentasBancariasBean.C_IDCUENTA); 
 		sql.append(" = "); 
-		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);	sql.append("."); sql.append(PysServiciosSolicitadosBean.C_IDCUENTA);
+		sql.append(PysSuscripcionBean.T_NOMBRETABLA);	sql.append("."); sql.append(PysSuscripcionBean.C_IDCUENTA);
 		sql.append(" AND "); 
 		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);	sql.append("."); sql.append(CenCuentasBancariasBean.C_IDINSTITUCION); 
 		sql.append(" = ");
@@ -1210,7 +1184,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		sql.append(" AND "); 
 		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA); sql.append(".");	sql.append(CenCuentasBancariasBean.C_IDPERSONA);
 		sql.append(" = ");
-		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);	sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDPERSONA); 
+		sql.append(PysSuscripcionBean.T_NOMBRETABLA);	sql.append("."); sql.append(PysSuscripcionBean.C_IDPERSONA); 
 		sql.append("),'-') AS NCUENTA ");
 		
 								
@@ -1220,6 +1194,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA );
 		sql.append(", "); 
 		sql.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA); 
+		sql.append(", "); 
+		sql.append(PysSuscripcionBean.T_NOMBRETABLA); 		
 		
 		sql.append(  " WHERE "); 
 		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
@@ -1264,6 +1240,28 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			
 		}
 		
+		// CRM SE INCLUYE PYS_SUSCRIPCION EN EL FROM GLOBAL
+	    sql.append(" AND " );  
+	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);   sql.append(".");  sql.append(PysSuscripcionBean.C_IDINSTITUCION);
+	    sql.append("=");
+	    sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);  sql.append("."); sql.append(PysServiciosSolicitadosBean.C_IDINSTITUCION );
+	    sql.append(" AND " );
+	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);  sql.append(".");  sql.append(PysSuscripcionBean.C_IDPETICION);
+	    sql.append("=");
+	    sql.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);  sql.append(".");  sql.append(PysPeticionCompraSuscripcionBean.C_IDPETICION );
+	    sql.append(" AND " );
+	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDTIPOSERVICIOS);
+	    sql.append("=");
+	    sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS );
+		sql.append(" AND " );
+		sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDSERVICIO);
+		sql.append("=");
+		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDSERVICIO );
+		sql.append(" AND " );
+		sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+		sql.append("=");
+		sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);sql.append(".");sql.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION );
+
 		// MODIFICADO POR MAV PARA INCLUIR NUEVOS FILTROS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (idTipoServicios != null) {																																	//
 			sql.append( " AND ");

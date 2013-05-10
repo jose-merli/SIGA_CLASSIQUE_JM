@@ -479,8 +479,7 @@ public class CuentasBancariasAction extends MasterAction{
 						 " AND "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_ABONOCARGO +" IN ('T','C')";
 			Vector v = cuentaAdm.select(where);
 			
-			if( (abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_ABONO_CARGO)||abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_CARGO)) 
-				 && (beanCuentas.getAbonoCargo().equals(ClsConstants.TIPO_CUENTA_ABONO))){
+			if(!(abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_ABONO) && beanCuentas.getAbonoCargo().equals(ClsConstants.TIPO_CUENTA_ABONO))){
 			  if (v.size() == 0) {//si ya no hay cuenta de cargo o de abonoCargo se pone la forma de pago en metalico
 	
 				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionCuentaBanco(""+miForm.getIdInstitucion(),
