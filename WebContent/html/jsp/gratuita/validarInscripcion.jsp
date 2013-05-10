@@ -1066,11 +1066,6 @@
 <script>
 		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
 			document.getElementById("divGuardiaGrupo").style.display = "block";
-		
-		var sms = "Modo:" + document.InscripcionTGForm.modo.value;
-		sms += "\nValidacion:" + document.InscripcionTGForm.fechaValidacion.value;
-		
-		alert(sms);
 </script>
 
 </body>
