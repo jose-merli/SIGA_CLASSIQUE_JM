@@ -135,7 +135,7 @@
 			borde="1"
 			clase="tableTitle"
 			nombreCol="gratuita.listarGuardias.literal.turno,gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-			tamanoCol="15,15,10,8,6,8,8,8,8,7,8" 
+			tamanoCol="15,14,10,8,6,9,8,8,8,7,8" 
 			alto="100%"
 			ajuste="10">
 			
@@ -164,10 +164,11 @@
 					FilaExtElement[] elems = elems = new FilaExtElement[1];
 					elems[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);				
 					
-					if ((fechaBaja==null || fechaBaja.equals(""))&&(hash.get("VALIDACIONTURNO")==null || ((String)hash.get("VALIDACIONTURNO")).equals(""))){
-					  literalValidar="gratuita.altaTurnos.literal.validarTurno";
-					  
-					}				
+					if ((fechaBaja==null || fechaBaja.equals("")) &&
+						(hash.get("VALIDACIONTURNO")==null || ((String)hash.get("VALIDACIONTURNO")).equals(""))) {
+					  literalValidar = "gratuita.altaTurnos.literal.validarTurno";
+					}
+					
 					String literalDuracion ="gratuita.altaTurnos_2.literal.dias";
 					if(tipoDia.equalsIgnoreCase("D"))
 						literalDuracion = "gratuita.altaTurnos_2.literal.dias";
@@ -254,7 +255,8 @@
 						<td>&nbsp;<%=estado%></td>
 					</siga:FilaConIconos>
 					<%recordNumber++;%>
-				<%}%>
+					
+				<%} // WHILE%>
 				
 			<% } else { %>
 				<br>

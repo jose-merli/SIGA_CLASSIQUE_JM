@@ -93,6 +93,8 @@ public enum ActionButtonsConstants {
 	BUSCAR ("b","general.search","buscar()",80),
 	SOLICITARCOMPRA ("SC","general.boton.solicitarCompra","accionGuardar()",81),
 	ACTUALIZARTARIFA ("AT","general.boton.actualizarTarifa","accionActualizar()",82),
+	SOLICITARALTA ("SA","general.boton.solicitaralta","solicitarAlta()",83),
+	SOLICITARBAJA ("SB","general.boton.solicitarbaja","solicitarBaja()",84),
 	PROCESAR ("p","general.boton.procesar","accionProcesar()",36),
 	
 	;

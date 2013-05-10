@@ -169,69 +169,70 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 			
 			String fecha = miForm.getFechaConsulta();
 			//aalg: INC_8988_SIGA.
-			consulta =  " SELECT "+guardias.getCamposTabla(ScsGuardiasTurnoAdm.CAMPOS_LISTAINSCRIPCIONES)+", "+
-	                    " (select s."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+
-                        "  from "+ScsInscripcionTurnoBean.T_NOMBRETABLA+" s "+
-                        "  where s."+ScsInscripcionTurnoBean.C_IDPERSONA+" = "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+
-                        "   and  s."+ScsInscripcionTurnoBean.C_IDINSTITUCION+" = "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+
-                        "   and s."+ScsInscripcionTurnoBean.C_IDTURNO+" = "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDTURNO+
-						"   and s."+ScsInscripcionTurnoBean.C_FECHABAJA+ " is null and s."+ScsInscripcionTurnoBean.C_FECHADENEGACION+ " is null) validacionTurno"+  		               
-								" FROM SCS_GUARDIASTURNO ,SCS_INSCRIPCIONGUARDIA, SCS_TURNO"+
-								" WHERE SCS_TURNO.IDINSTITUCION = SCS_GUARDIASTURNO.IDINSTITUCION"+
-								" AND SCS_TURNO.IDTURNO = SCS_GUARDIASTURNO.IDTURNO"+
-								" AND SCS_GUARDIASTURNO.IDINSTITUCION = SCS_INSCRIPCIONGUARDIA.IDINSTITUCION"+
-								" AND SCS_GUARDIASTURNO.IDTURNO = SCS_INSCRIPCIONGUARDIA.IDTURNO"+
-								" AND SCS_GUARDIASTURNO.IDGUARDIA  = SCS_INSCRIPCIONGUARDIA.IDGUARDIA"+
-								" AND SCS_INSCRIPCIONGUARDIA.IDINSTITUCION = "+usr.getLocation()+//la de la sesión
-								" AND SCS_INSCRIPCIONGUARDIA.IDPERSONA = "+idPersona; // la del colegiado
-								if(miForm==null || miForm.getBajaLogica()==null ||miForm.getBajaLogica().equals("N")){
-										//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
-										if(fecha==null || fecha.equalsIgnoreCase("sysdate"))
-											fecha = "trunc(sysdate)";
-										else
-											fecha = "'"+fecha+"'";
-										
-										consulta += " AND ( ";
-//										consulta += "   (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL ";
-//										consulta += " AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <> ";
-//										consulta += " NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ";
-//										consulta += " OR ";
-										
-										   //PENDIENTES DE ALTA
-										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NULL ";
-										consulta += " AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
-//										     
-										consulta += " OR ";
-										     //VALIDADOS DE ALTA
-										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL AND ";
-										consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= "+fecha.trim()+" "; 
-										consulta += " AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL ";
-										consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NOT NULL AND ";
-										consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) > "+fecha.trim()+")))" ;
-									  
-										
-										
-										
-//										consulta += " OR ";
-										     // PENDIENTES DE BAJA
-//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL) ";
-										       
-										       //BAJA FUTURA
-//										consulta += " OR TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >"+fecha.trim()+" ";
-										       
-										       // BAJA DENEGADA
-//										consulta += " OR "; 
-//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL) ";
-										consulta += " ) ";
-										
-										
-										
-										
-									
-								}
+			consulta =  " SELECT " + guardias.getCamposTabla(ScsGuardiasTurnoAdm.CAMPOS_LISTAINSCRIPCIONES) + ", " +
+					" (SELECT IT.FECHAVALIDACION  " +
+					" FROM SCS_INSCRIPCIONTURNO IT " +
+					" WHERE IT.IDPERSONA = SCS_INSCRIPCIONGUARDIA.IDPERSONA " +
+						" AND IT.IDINSTITUCION = SCS_INSCRIPCIONGUARDIA.IDINSTITUCION " +
+						" AND IT.IDTURNO = SCS_INSCRIPCIONGUARDIA.IDTURNO " +
+						" AND IT.FECHABAJA IS NULL " +
+						" AND IT.FECHADENEGACION IS NULL) validacionTurno " +					
+                        
+				" FROM SCS_GUARDIASTURNO, " +
+					" SCS_INSCRIPCIONGUARDIA, " +
+					" SCS_TURNO " +
+					
+				" WHERE SCS_TURNO.IDINSTITUCION = SCS_GUARDIASTURNO.IDINSTITUCION"+
+					" AND SCS_TURNO.IDTURNO = SCS_GUARDIASTURNO.IDTURNO"+
+					" AND SCS_GUARDIASTURNO.IDINSTITUCION = SCS_INSCRIPCIONGUARDIA.IDINSTITUCION"+
+					" AND SCS_GUARDIASTURNO.IDTURNO = SCS_INSCRIPCIONGUARDIA.IDTURNO"+
+					" AND SCS_GUARDIASTURNO.IDGUARDIA  = SCS_INSCRIPCIONGUARDIA.IDGUARDIA"+
+					" AND SCS_INSCRIPCIONGUARDIA.IDINSTITUCION = " + usr.getLocation() + //la de la sesión
+					" AND SCS_INSCRIPCIONGUARDIA.IDPERSONA = " + idPersona; // la del colegiado
+					
+			if(miForm==null || miForm.getBajaLogica()==null ||miForm.getBajaLogica().equals("N")){
+					//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
+					if(fecha==null || fecha.equalsIgnoreCase("sysdate"))
+						fecha = "trunc(sysdate)";
+					else
+						fecha = "'"+fecha+"'";
+					
+				consulta += " AND ( ";
+	//										consulta += "   (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL ";
+	//										consulta += " AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <> ";
+	//										consulta += " NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ";
+	//										consulta += " OR ";
+					
+				   //PENDIENTES DE ALTA
+				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NULL ";
+				consulta += " AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
+	//										     
+				consulta += " OR ";
+				     //VALIDADOS DE ALTA
+				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL AND ";
+				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= "+fecha.trim()+" "; 
+				consulta += " AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL ";
+				consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NOT NULL AND ";
+				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) > "+fecha.trim()+")))" ;
+			  
+					
+					
+					
+	//										consulta += " OR ";
+					     // PENDIENTES DE BAJA
+	//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL) ";
+					       
+					       //BAJA FUTURA
+	//										consulta += " OR TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >"+fecha.trim()+" ";
+					       
+					       // BAJA DENEGADA
+	//										consulta += " OR "; 
+	//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL) ";
+				consulta += " ) ";
+			}
 									
 //								" ORDER BY SCS_INSCRIPCIONGUARDIA.FECHABAJA DESC, SCS_TURNO.NOMBRE";
-								consulta+= " ORDER BY GUARDIA ,SCS_INSCRIPCIONGUARDIA.FECHASUSCRIPCION ,SCS_TURNO.NOMBRE, "+ ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_NOMBRE;
+			consulta+= " ORDER BY GUARDIA ,SCS_INSCRIPCIONGUARDIA.FECHASUSCRIPCION ,SCS_TURNO.NOMBRE, "+ ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_NOMBRE;
 			
 			Vector resultado = (Vector)guardias.ejecutaSelect(consulta);
 			request.getSession().setAttribute("resultado",resultado);

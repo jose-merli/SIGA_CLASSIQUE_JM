@@ -405,12 +405,14 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					" ORDER BY SCS_GUARDIASTURNO.NOMBRE ASC";
 				ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
 				String fechaSolicitudTurno = (String)request.getSession().getAttribute("FECHASOLICITUDTURNOSESION");
-				ScsInscripcionTurnoBean inscripcionTurnoSeleccionada = admInsTurno.getInscripcionTurno(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), fechaSolicitudTurno,false);
+				ScsInscripcionTurnoBean inscripcionTurnoSeleccionada = admInsTurno.getInscripcionTurno(new Integer(idInstitucion), new Integer( idTurno), new Long(idPersona), fechaSolicitudTurno, false);				
 				//miramos si tiene fecha de baja para que puedan solictar altas nuevas de inscripciones de guardia
 				//Boolean isFechaBajaInscTurnoActiva = insTurnoBeanActiva!=null && insTurnoBeanActiva.getFechaBaja()!=null && !insTurnoBeanActiva.getFechaBaja().equals("");
+				
 				request.setAttribute("inscripcionTurnoSeleccionada", inscripcionTurnoSeleccionada);
 				request.getSession().setAttribute("IDTURNOSESION",(String)turno.get("IDTURNO"));			
 				Vector resultado = (Vector)guardias.ejecutaSelect(consulta);
+				
 				ScsInscripcionGuardiaAdm admInsGua = new ScsInscripcionGuardiaAdm(usr);
 				ScsInscripcionTurnoBean inscripcionHoy = null;
 				if(inscripcionTurnoSeleccionada.getFechaBaja()!=null&&!inscripcionTurnoSeleccionada.getFechaBaja().equals("")){
@@ -433,32 +435,22 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					while (iteResultado.hasNext()) {
 						Hashtable htGuardia = (Hashtable) iteResultado.next();
 						String idGuardia = (String)htGuardia.get("IDGUARDIA");
+											
+						Hashtable inscripcionGuardia = admInsGua.getInscripcionesGuardiaInscripcionTurno(idInstitucion, idTurno, idPersona, new Integer(idGuardia), inscripcionTurnoSeleccionada);
 						
-						
-						Vector inscripcionGuardia = admInsGua.getRegistrosInscripcionGuardiaPendientes(idInstitucion,
-								idTurno, idPersona, new Integer(idGuardia),fechaConsultaTurno);
-						if(inscripcionGuardia!=null && inscripcionGuardia.size()>0){
-							Hashtable htInscripcionGuardia = (Hashtable)inscripcionGuardia.get(0);
-							
-							htGuardia.put("INSCRIPCIONGUARDIA",htInscripcionGuardia);
-						
-						}else{
-//							if(inscripcionTurnoSeleccionada.getFechaBaja()!=null&&!inscripcionTurnoSeleccionada.getFechaBaja().equals(""))
-//								iteResultado.remove();
+						if (inscripcionGuardia.size() > 0) {
+							htGuardia.put("INSCRIPCIONGUARDIA",inscripcionGuardia);
 						}
-						
-					}
-					
+					}					
 				}
 				
 				request.getSession().setAttribute("resultado",resultado);
 			}
 			
-			
-		}
-		catch(Exception e){
+		} catch(Exception e){
 			throwExcp("error.messages.editar",e,null);
 		}
+		
 		return "listado";
 	} //abrirAvanzada ()
 	

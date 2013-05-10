@@ -300,11 +300,14 @@
 					if(!isEntradaSJCS){
 						elems[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
 						estadoInscripcion= "No aplica";
+						
+						
 						if(fechaValidacion.equals("")){
 							if(fechaSolicitudBaja.equals("")){
 								if(fechaDenegacion.equals("")){
 									estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.pendiente");
-									elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+									elems[1]=new FilaExtElement("borrar","borrar",SIGAConstants.ACCESS_FULL);
+									
 								} else {
 									estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.denegada");
 								}
@@ -313,6 +316,7 @@
 								if(fechaBaja.equals("")){
 									if(fechaDenegacion.equals("")){
 										estadoInscripcion  =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+										
 									} else {
 										elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 										estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
@@ -328,10 +332,12 @@
 							if(fechaSolicitudBaja.equals("")){
 								estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.confirmada");
 								elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+								
 							} else {
 								if(fechaBaja.equals("")){
 									if(fechaDenegacion.equals("")){
 										estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+										
 									} else {
 										elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 										estadoInscripcion =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
@@ -527,6 +533,21 @@
 		}%>
 	
 		<script>		
+			function borrar(fila) {
+				var idTurno = 'oculto' + fila + '_' + 1;				
+				document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
+				
+				var fechaSolicitud = 'oculto' + fila + '_' + 20;				
+				document.FormASolicitarBaja.fechaSolicitud.value = document.getElementById(fechaSolicitud).value;
+				
+				document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
+   				document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
+				
+				document.FormASolicitarBaja.modo.value = "borrarTurno";
+			    document.FormASolicitarBaja.target = "submitArea";
+			   	document.FormASolicitarBaja.submit();
+			}
+		
 			function solicitarbaja(fila) {
 			   	document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
 			   	document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
@@ -542,6 +563,7 @@
 				var fechaDenegacion = 'oculto' + fila + '_' + 28;
 				var observacionesDenegacion = 'oculto' + fila + '_' + 29;
 				var oValbaja = 'oculto' + fila + '_' + 30;
+				
 			   	document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
 			   	document.FormASolicitarBaja.fechaSolicitud.value = document.getElementById(fsoli).value;
 			   	document.FormASolicitarBaja.observacionesSolicitud.value 	= document.getElementById(osoli).value;
@@ -550,15 +572,14 @@
 				document.FormASolicitarBaja.observacionesValidacion.value 	= document.getElementById(ovali).value;
 				document.FormASolicitarBaja.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
 				document.FormASolicitarBaja.observacionesBaja.value 		= document.getElementById(obaja).value;
-		
 			   	document.FormASolicitarBaja.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
 				document.FormASolicitarBaja.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
 			   	document.FormASolicitarBaja.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
-			   	
-			   	
+			   				   	
 			   	document.FormASolicitarBaja.modo.value = "sbtConsultaTurno";
 			    document.FormASolicitarBaja.target = "submitArea";
 			   	// document.FormAValidar.submit();
+			   	
 			   	var resultado = ventaModalGeneral(document.FormASolicitarBaja.name,"G");
 			   	if (resultado=='MODIFICADO') {
 				  	refrescarLocal();

@@ -416,6 +416,7 @@ public class ClsConstants {
 	  public static final String DATE_FORMAT_MEDIUM_SPANISH= "dd/MM/yyyy HH:mm";
 	  public static final String DATE_FORMAT_LONG_ENGLISH =  "dd/MM/yyyy HH:mm:ss";
 	  public static final String DATE_FORMAT_LONG_SPANISH =  "dd/MM/yyyy HH:mm:ss";
+	  public static final int DATE_MORE =  86400000;
 
 /*
 HTML Hyper Text Markup Language

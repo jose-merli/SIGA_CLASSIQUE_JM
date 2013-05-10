@@ -1,4 +1,5 @@
 <!-- listadoTurnosDisponiblesBaja.jsp -->
+
  <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -47,8 +48,12 @@
 		   	var idTurno = 'oculto' + fila + '_' + 1;		
 		   	document.FormAValidar.idTurno.value = document.getElementById(idTurno).value;
 		   	
-		   	var fSolicitud ='oculto' + fila + '_' + 21;
+		   	var fSolicitud = 'oculto' + fila + '_' + 21;
 		   	document.FormAValidar.fechaSolicitud.value = document.getElementById(fSolicitud).value;
+		   	
+		   	var fValidacion = 'oculto' + fila + '_' + 22;
+		   	document.FormAValidar.fechaValidacion.value = document.getElementById(fValidacion).value;
+		   	document.FormAValidar.fechaValidacionTurno.value = document.getElementById(fValidacion).value;
 		   	
 		   	document.FormAValidar.modo.value = "sbtConsultaTurno";
 		   	document.FormAValidar.target="_parent";
@@ -85,8 +90,12 @@
 				  encontrado=true;
 				  var idTurno=  'oculto' + (i+1) + '_'+1 ;
 				  var validar='oculto'+(i+1)+'_'+4;
-				  var fSolicitud ='oculto'+(i+1)+'_'+21;
-				  var datos = datos +","+ document.getElementById (idTurno).value+"##"+document.getElementById (validar).value+"##"+document.getElementById (fSolicitud).value ; 
+				  var fSolicitud ='oculto'+(i+1)+'_'+21;		
+				  var fValidacion = 'oculto' + (i+1) + '_' + 22;	
+				  var datos = datos + "," + document.getElementById(idTurno).value + 
+				  	"##" + document.getElementById(validar).value + 
+				  	"##" + document.getElementById (fSolicitud).value +
+				  	"##" + document.getElementById (fValidacion).value; 
 				}
 			}
 			datos=datos.substring(1);
@@ -137,8 +146,7 @@
 	</table>
 
 
-		<html:form action = "/JGR_SolicitarBajaTurno.do" method="POST" target="_parent" style="display:none" 
-				name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
+		<html:form action = "/JGR_SolicitarBajaTurno.do" method="POST" target="_parent" style="display:none" name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm">
 			<input type="hidden" id="origen" name="origen" value="listarTurnosDisp">
 			<input type="hidden" id="modo" name="modo" value="ver">
 			<input type="hidden" id="paso" name="paso" value="turno"/>
@@ -149,6 +157,8 @@
 			<input type="hidden" id="observacionesSolicitud" name="observacionesSolicitud"/>
 			<input type='hidden' id="turnosSel" name='turnosSel'>
 			<input type='hidden' id="validarTurno" name='validarTurno'>
+			<input type='hidden' id="fechaValidacion" name='fechaValidacion'>
+			<input type='hidden' id="fechaValidacionTurno" name='fechaValidacionTurno'>			
 		</html:form>	
 		
 	<% 	String nC="";
@@ -246,6 +256,7 @@
 					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_19' name='oculto<%=String.valueOf(recordNumber)%>_19' value='<%=hash.get("GRUPOFACTURACION")%>'>
 					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_20' name='oculto<%=String.valueOf(recordNumber)%>_20' value='<%=o6%>'>
 					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_21' name='oculto<%=String.valueOf(recordNumber)%>_21' value='<%=hash.get("FECHASOLICITUD")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_21' name='oculto<%=String.valueOf(recordNumber)%>_22' value='<%=hash.get("FECHAVALIDACION")%>'>
 					<td align="center">
 						<input type="checkBox" name="bajaTurno" id="<%="bajaTurno"+String.valueOf(recordNumber)%>" <%=deshabilitarCheck%> >
 					</td>

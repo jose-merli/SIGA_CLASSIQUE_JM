@@ -54,6 +54,8 @@
 	String idturno = (String) request.getSession().getAttribute("IDTURNOSESION");
 	ScsInscripcionTurnoBean inscripcionTurnoSeleccionada = (ScsInscripcionTurnoBean) request.getAttribute("inscripcionTurnoSeleccionada");
 	String fechaConsultaTurno = (String) request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+	
+	String botonTodasNinguna = "";
 %>
 
 <html>
@@ -150,8 +152,8 @@
 						<input name="materia" type="text" class="boxConsulta" size="30"
 							value="<%=turno.get("MATERIA")%>" readonly="true">
 					</td>
-				</tr
-				>
+				</tr>
+				
 				<tr>
 					<td class="labelText" style="text-align: left">
 						<siga:Idioma key="gratuita.definirTurnosIndex.literal.zona" />
@@ -180,11 +182,13 @@
 		</siga:ConjCampos>
 		
 		<siga:ConjCampos leyenda="gratuita.busquedaSJCS.literal.filtro">
-			<table border="0" align="center">
+			<table border="0" align="left">
 				<tr>
+					<td width="75px">&nbsp;</td>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta" /></td>
-					<td width="75%">
+						<siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta" />
+					</td>
+					<td>
 						<html:text property="fechaConsulta"
 							name="DefinirGuardiasTurnosForm" value="<%=fechaConsultaTurno%>"
 							size="10" maxlength="10" styleClass="boxConsulta" readonly="true" />
@@ -201,7 +205,8 @@
 	<siga:TablaCabecerasFijas nombre="tablaDatos" borde="1"
 		clase="tableTitle"
 		nombreCol="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-		tamanoCol="15,8,10,6,7,8,8,8,6,6" alto="<%=alto%>">
+		tamanoCol="15,8,10,6,7,8,8,8,6,6" 
+		alto="<%=alto%>">
 		
 		<% if (obj == null || obj.size() == 0) { %>
 			<br>
@@ -280,50 +285,52 @@
 					estado = "";
 					
 				} else {
-					if (fechaValidacion.equals("")) {
-						if (fechaSolicitudBaja.equals("")) {
-							if (fechaDenegacion.equals("")) {
-								estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.pendiente");
+					if (fechaBaja.equals("")) {				
+						if (fechaValidacion.equals("")) {
+							if (fechaSolicitudBaja.equals("")) {
+								if (fechaDenegacion.equals("")) {
+									estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.pendiente");
+									
+								} else {
+									estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.denegada");
+								}
 								
 							} else {
-								estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.denegada");
+								if (fechaBaja.equals("")) {
+									if (fechaDenegacion.equals("")) {
+										estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.pendiente");
+										
+									} else {
+										estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
+									}
+									
+								} else {
+									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
+								}
 							}
 							
 						} else {
-							if (fechaBaja.equals("")) {
+							if (fechaSolicitudBaja.equals("")) {
+								estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.alta.confirmada");
+								
+							} else {
 								if (fechaDenegacion.equals("")) {
 									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.pendiente");
 									
 								} else {
 									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
 								}
-								
-							} else {
-								estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
 							}
 						}
 						
 					} else {
-						if (fechaSolicitudBaja.equals("")) {
-							estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.alta.confirmada");
-							
-						} else {
-							if (fechaBaja.equals("")) {
-								if (fechaDenegacion.equals("")) {
-									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.pendiente");
-									
-								} else {
-									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
-								}
-								
-							} else {
-								estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
-							}
-						}
+						estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
 					}
 				}
 				
 				elems[0] = null;
+				
+				String literalValidar="";
 
 				if (isPermitidoInscripcionGuardia) {
 					
@@ -351,16 +358,6 @@
 						- TIENE FECHA DE SOLICITUD
 						- NO TIENE FECHA DE VALIDACION
 						- NO TIENE FECHA DE DENEGACION
-						
-						o
-						
-						ESTADO PENDIENTE TURNO SI SE CUMPLE LOS SIGUIENTES CRITERIOS:
-						- TIENE INSCRIPCION DE TURNO
-						- TIENE FECHA DE SOLICITUD
-						- TIENE FECHA DE VALIDACION
-						- TIENE FECHA DE SOLICITUD DE BAJA
-						- NO TIENE FECHA DE BAJA
-						- NO TIENE FECHA DE DENEGACION
 					*/
 					if (
 						inscripcionTurnoSeleccionada != null && 
@@ -369,17 +366,7 @@
 						(inscripcionTurnoSeleccionada.getFechaDenegacion() == null || inscripcionTurnoSeleccionada.getFechaDenegacion().equals(""))
 					) {
 						estadoPendienteValidacionTurno = true;
-						
-						
-					} else if (
-						inscripcionTurnoSeleccionada != null && 
-						inscripcionTurnoSeleccionada.getFechaSolicitud() != null      && !inscripcionTurnoSeleccionada.getFechaSolicitud().equals("") &&
-						inscripcionTurnoSeleccionada.getFechaValidacion() != null    && !inscripcionTurnoSeleccionada.getFechaValidacion().equals("") &&
-						inscripcionTurnoSeleccionada.getFechaSolicitudBaja() != null && !inscripcionTurnoSeleccionada.getFechaSolicitudBaja().equals("") &&
-						(inscripcionTurnoSeleccionada.getFechaBaja() == null         || inscripcionTurnoSeleccionada.getFechaBaja().equals("")) &&
-						(inscripcionTurnoSeleccionada.getFechaDenegacion() == null   || inscripcionTurnoSeleccionada.getFechaDenegacion().equals("")) 						
-					) {
-						estadoPendienteValidacionTurno = true;
+						literalValidar="gratuita.altaTurnos.literal.validarTurno";
 					}
 					
 					
@@ -430,11 +417,6 @@
 					) {
 						estadoBajaTurno = true;
 					}
-					
-					
-					//compobamos que el turno este validado y no este en baja
-					//if(inscripcionTurnoSeleccionada!=null && inscripcionTurnoSeleccionada.getFechaValidacion()!=null && !inscripcionTurnoSeleccionada.getFechaValidacion().equalsIgnoreCase("")){
-					//&& (inscripcionTurnoSeleccionada.getFechaBaja()==null || inscripcionTurnoSeleccionada.getFechaBaja().equals(""))){
 						
 					// COMPRUEBO QUE NO TENGA QUE VALIDAR EL TURNO, NI QUE ESTE DE BAJA
 					if (!estadoPendienteValidacionTurno && !estadoBajaTurno) {
@@ -447,35 +429,56 @@
 								
 								// COMPRUEBO QUE NO TIENE FECHA DE SOLICITUD (NO HAY INSCRIPCION DE GUARDIA)
 								if (fechaSolicitud.equals("")) {
-									elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
+									
+									// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA"
+									if (obligatoriedad.equals("1")) {
+										botonTodasNinguna = "SA";
+									
+									} else {
+										elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
+									}
 									
 								// COMPRUEBO QUE TIENE FECHA DE SOLICITUD
 								} else {
 									
-									// COMPRUEBO QUE NO TIENE FECHA DE VALIDACION 
-									if (fechaValidacion.equals("")) {
-										
-										// COMPRUEBO QUE NO TIENE FECHA DE DENEGACION <===> ALTA PENDIENTE
-										if (fechaDenegacion.equals("")) {
-											// NO HACEMOS NADA
+									// COMPRUEBO QUE NO TIENE FECHA DE BAJA
+									if (fechaBaja.equals("")) {
+									
+										// COMPRUEBO QUE NO TIENE FECHA DE VALIDACION 
+										if (fechaValidacion.equals("")) {
 											
-										// COMPRUEBO QUE TIENE FECHA DE DENEGACION <===> ALTA DENEGADA
+											// COMPRUEBO QUE NO TIENE FECHA DE DENEGACION <===> ALTA PENDIENTE
+											if (fechaDenegacion.equals("")) {
+												// NO HACEMOS NADA
+												
+											// COMPRUEBO QUE TIENE FECHA DE DENEGACION <===> ALTA DENEGADA
+											} else {
+												
+												// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA"
+												if (obligatoriedad.equals("1")) {
+													botonTodasNinguna = "SA";
+												
+												} else {
+													elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
+												}
+											} // IF FECHA DENEGACION
+	
+										// COMPRUEBO QUE TIENE FECHA DE SOLICITUD Y FECHA DE VALIDACION
 										} else {
-											elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
-										} // IF FECHA DENEGACION
-
-									// COMPRUEBO QUE TIENE FECHA DE SOLICITUD Y FECHA DE VALIDACION
-									} else {
-										
-										// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION, PERO NO FECHA DE SOLICITUD DE BAJA <===> ALTA CONFIRMADA
-										if (fechaSolicitudBaja.equals("")) {
-											elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
 											
-										// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION Y FECHA DE SOLICITUD DE BAJA
-										} else {
-											
-											// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION, FECHA DE SOLICITUD DE BAJA, PERO NO FECHA DE DE BAJA
-											if (fechaBaja.equals("")) {
+											// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION, PERO NO FECHA DE SOLICITUD DE BAJA <===> ALTA CONFIRMADA
+											if (fechaSolicitudBaja.equals("")) {
+														
+												// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA"
+												if (obligatoriedad.equals("1")) {
+													botonTodasNinguna = "SB";
+												
+												} else {
+													elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
+												}
+												
+											// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION Y FECHA DE SOLICITUD DE BAJA
+											} else {
 												
 												// COMPRUEBO QUE NO TIENE FECHA DE DENEGACION <===> BAJA PENDIENTE
 												if (fechaDenegacion.equals("")) {
@@ -483,16 +486,27 @@
 											
 												// COMPRUEBO QUE TIENE FECHA DE DENEGACION <===> BAJA DENEGADA
 												} else {
-													elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
-												} // IF FECHA DENEGACION
-												
-											// COMPRUEBO QUE TIENE FECHA DE SOLICITUD, FECHA DE VALIDACION, FECHA DE SOLICITUD DE BAJA Y FECHA DE DE BAJA <===> BAJA CONFIRMADA
-											} else {
-												request.getSession().setAttribute("esActualizacion", fechaSolicitud);
-												//elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
-											} // IF FECHA BAJA
-										} // IF FECHA SOLICITUD BAJA										
-									} // IF FECHA VALIDACION 
+													
+													// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA"
+													if (obligatoriedad.equals("1")) {
+														botonTodasNinguna = "SB";
+													
+													} else {
+														elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
+													}
+												} // IF FECHA DENEGACION													
+											} // IF FECHA SOLICITUD BAJA										
+										} // IF FECHA VALIDACION
+										
+									} else {
+										request.getSession().setAttribute("esActualizacion", fechaSolicitud);
+										if (obligatoriedad.equals("1")) {
+											botonTodasNinguna = "SA";
+										
+										} else {
+											elems[0] = new FilaExtElement("solicitaralta", "solicitaralta", SIGAConstants.ACCESS_FULL);
+										}										
+									} // IF FECHA BAJA
 								} // IF FECHA SOLICITUD
 								
 							// COMPRUEBO QUE EL COLEGIADO NO ES EJERCIENTE
@@ -505,7 +519,14 @@
 									fechaSolicitudBaja.equals("") &&
 									fechaBaja.equals("")									
 								) {
-									elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
+									
+									// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA"
+									if (obligatoriedad.equals("1")) {
+										botonTodasNinguna = "SB";
+									
+									} else {
+										elems[0] = new FilaExtElement("solicitarbaja", "solicitarbaja", SIGAConstants.ACCESS_FULL);
+									}
 								}
 								
 							} // IF ESTADO DE BAJA
@@ -568,7 +589,7 @@
 				</td>
 				
 				<td>
-					&nbsp;<%=GstDate.getFormatedDateShort("", fechaSolicitud)%>
+					&nbsp;<%=GstDate.getFormatedDateShort("", fechaSolicitud)%><siga:Idioma key="<%=literalValidar%>"/>
 				</td>
 				
 				<td>
@@ -593,6 +614,10 @@
 		} // ELSE 
 		%>		
 	</siga:TablaCabecerasFijas>
+	
+	<% if (!botonTodasNinguna.equals("")) { %>
+		<siga:ConjBotonesAccion botones="<%=botonTodasNinguna%>" clase="botonesDetalle"  />
+	<% } %>	
 	
 	<html:form action="/JGR_InscribirseEnGuardia" name="FormASolicitar" styleId="FormASolicitar" type="com.siga.gratuita.form.InscripcionTGForm">
 		<html:hidden property="modo" />
@@ -654,6 +679,12 @@
 			buscar();
 		}
 		
+		// Funciona a la que llama al pulsar el boton de solicitar alta
+		function solicitarAlta() {
+			// Como es por guardias todas o ninguna y tiene almenos una guardia para dar de alta, solicitamos el alta de la primera, que conllevara el alta de todas las guardias del turno
+			solicitaralta(1);
+		}
+		
 		function solicitarbaja(fila) {
 			var idTurno = 'oculto' + fila + '_' + 1;
 			var idGuardia = 'oculto' + fila + '_' + 2;
@@ -671,6 +702,12 @@
 			if(resultado) {
 				buscar();
 			}			
+		}
+		
+		// Funciona a la que llama al pulsar el boton de solicitar baja
+		function solicitarBaja() {
+			// Como es por guardias todas o ninguna y tiene almenos una guardia para dar de baja, solicitamos la baja de la primera, que conllevara la baja de todas las guardias del turno
+			solicitarbaja(1);
 		}
 		
 		function mostrarFecha()	{		

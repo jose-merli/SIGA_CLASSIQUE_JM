@@ -1,12 +1,12 @@
 <!-- validarInscripcion.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -30,17 +30,22 @@
 	<script src="<html:rewrite page="/html/js/jquery.js"/>" type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>	
 
-	<script type="text/javascript">
-	
+	<script type="text/javascript">	
 		function mostrarFechaSolicitud() {
-			if(document.getElementById("fechaCheck"))
+			if(document.getElementById("fechaCheck")) {
 				document.getElementById("fechaCheck").style.visibility="hidden";
-			if(document.getElementById("fechaSolicitud").value==''||document.getElementById("fechaSolicitudBaja").value=='') {
+				if(document.getElementById("calendario_fechaCheck")) { 
+					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
+				}
+			}
+			
+			if(document.getElementById("fechaSolicitud").value=='' || document.getElementById("fechaSolicitudBaja").value=='') {
 				if(document.getElementById("fechaSol")){
 					fechaActual = getFechaActualDDMMYYYY();
 					document.getElementById("fechaSol").value = fechaActual;
 				}					
 			}
+			
 			if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 				document.getElementById('observacionesValidacion').style.display = "block";
 			}
@@ -48,9 +53,11 @@
 			if(document.getElementById("fechaCheck") && document.InscripcionTGForm.validarInscripciones.value=='N'&&  (document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'||document.InscripcionTGForm.modo.value=='sbgComprobarInsertar')){
 				fechaActual = getFechaActualDDMMYYYY();
 				document.getElementById("fechaCheck").value = fechaActual;
+				
 				if(document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'){
 					document.getElementById("observacionesValidacion").value = "<siga:Idioma key='censo.sjcs.turnos.bajaEnTurnoAutomatico.observacion.literal'/>";
 				}
+				
 				if(document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
 					document.getElementById("observacionesValidacion").value = "<siga:Idioma key='censo.sjcs.turnos.bajaEnGuardiaAutomatico.observacion.literal'/>";
 				}				
@@ -77,6 +84,7 @@
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.InscripcionTGForm.denegar.checked = false;
 					document.getElementById("fechaCheck").style.visibility="visible";
+					document.getElementById("calendario_fechaCheck").style.visibility="visible";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -90,8 +98,10 @@
 				} else {
 					// if(document.getElementById('asterisco'))
 						// document.getElementById('asterisco').innerHTML = '';
+					document.InscripcionTGForm.fechaValidacion.value = "";
 					document.getElementById('fechaCheck').value = "";
 					document.getElementById("fechaCheck").style.visibility="hidden";
+					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -115,6 +125,7 @@
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.getElementById('validar').checked = false;
 					document.getElementById("fechaCheck").style.visibility="visible";
+					document.getElementById("calendario_fechaCheck").style.visibility="visible";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
 	
 						document.InscripcionTGForm.syc[0].checked=false;
@@ -131,6 +142,7 @@
 						// document.getElementById('asterisco').innerHTML = '';
 					document.getElementById('fechaCheck').value = "";
 					document.getElementById("fechaCheck").style.visibility="hidden";
+					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}					
@@ -143,8 +155,13 @@
 			window.top.close();
 		}
 			
+		/* JPT: Informacion de inscripciones de turno y guardia:
+		- sitEditarTelefonosGuardia: Insercion de inscripcion de turno individual (sitInsertar)
+		- smitEditarTelefonosGuardia: Insercion de inscripcion de turno masivo (smitInsertar)
+		*/
 		function accionSiguiente() {	
-			sub();
+			//sub();
+			
 			if(document.getElementById('validar')){
 				if(document.getElementById('validar').checked) {
 					document.InscripcionTGForm.fechaValidacion.value = document.getElementById('fechaCheck').value;
@@ -156,25 +173,31 @@
 						return false;
 					}
 						
-						
-					//La fecha de validacion no puede ser inferior a la fecha de baja de la inscripcion anterior	
+					/* JPT: Voy a anular las validaciones temporalmente
+					
+					ATENCION: Las validaciones se hacen en el servidor, al finalizar
+					 - CASO TURNO: La fecha de validacion debe ser superior a la fecha de baja del ultimo turno 
+					 - CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo
+					
+					//  La fecha de validacion debe ser superior a la fecha de baja de la inscripcion anterior	
 					var fechaBajaTurnoAnterior = document.InscripcionTGForm.fechaBajaTurno.value;
 					if(fechaBajaTurnoAnterior!=''){
-						fechaBajaTurnoAnterior = fechaBajaTurnoAnterior.substring(8,10)+"/"+fechaBajaTurnoAnterior.substring(5,7)+"/"+fechaBajaTurnoAnterior.substring(0,4);
+						fechaBajaTurnoAnterior = fechaBajaTurnoAnterior.substring(8,10) + "/" + fechaBajaTurnoAnterior.substring(5,7) + "/" + fechaBajaTurnoAnterior.substring(0,4);
 						var fechaValidacion = document.InscripcionTGForm.fechaValidacion.value;
-						var comparaFecha = compararFecha(fechaBajaTurnoAnterior,fechaValidacion);
-						// return 0; 	// F1 = F2
-						// return 1; // F1 > F2 
-						// return 2; // F1 < F2 
-						if (comparaFecha==1) {
+						var comparaFecha = compararFecha(fechaBajaTurnoAnterior, fechaValidacion);
+						
+						// return 0: F1 = F2
+						// return 1: F1 > F2 
+						// return 2: F1 < F2 
+						if (comparaFecha < 2) {
 							fin();
 							error = '<siga:Idioma key="gratuita.gestionInscripciones.error.valida.menor.baja.ia"/>';
 							error += ' '+fechaBajaTurnoAnterior;
 							alert(error);
 							return false;
 						}
-					}		
-						
+					}										
+					*/
 				}
 			}
 				
@@ -203,29 +226,46 @@
 			document.InscripcionTGForm.submit();
 		}
 			
+		/* JPT: Informacion de inscripciones de turno y guardia: 
+		- vitValidar: Insercion de inscripcion de turno por alta pendiente individual
+		- vmitValidar: Insercion de inscripcion de turno por alta pendiente masiva
+		- sbtComprobarInsertar: Baja de inscripcion de turno individual (puede venir sin validacion)
+		- smbtInsertarBaja: Baja de inscripcion de turno masiva (puede venir sin validacion)
+		- vbtComprobarValidar: Baja de inscripcion de turno por baja pendiente individual
+		- vmbtComprobarValidar: Baja de inscripcion de turno por baja pendiente masiva
+		
+		- sigInsertar: Insercion de inscripcion de guardia por alta (puede venir sin validacion)
+		- vigValidar: Insercion de inscripcion de guardia por alta pendiente individual 
+		- vmigValidar: Insercion de inscripcion de guardia por alta pendiente masiva 
+		- sbgComprobarInsertar: Baja de inscripcion de guardia por baja (puede venir sin validacion) 
+		- vbgComprobarValidar: Baja de inscripcion de guardia por baja pendiente individual
+		*/
 		function accionFinalizar() {		
-				sub();
+				//sub();
 				
-				// no es obligatoria la fecha en los siguiente casos
-				//sigInsertar -->insercion de guardia
-				//sbgComprobarInsertar --> insercion de la baja de guaadia
-				//sbtComprobarInsertar --> insercion de la baja de turno
+				// No es obligatoria la fecha en los siguiente casos:
+				// - sigInsertar -----------> Alta de guardia
+				// - sbgComprobarInsertar --> Baja de guardia
+				// - sbtComprobarInsertar --> Baja de turno individual
+				// - smbtInsertarBaja ------> Baja de turno masiva
 				if(document.InscripcionTGForm.modo.value!='sigInsertar'
 						&& document.InscripcionTGForm.modo.value!='sbgComprobarInsertar'
 						&& document.InscripcionTGForm.modo.value!='sbtComprobarInsertar'
-						&& document.InscripcionTGForm.modo.value=='smbtInsertarBaja' 
+						&& document.InscripcionTGForm.modo.value!='smbtInsertarBaja' 
 						&& document.getElementById('validar').checked==false 
 						&& document.getElementById('denegar').checked==false) {
 						fin();
 						alert("<siga:Idioma key="gratuita.altaTurno.literal.alert1"/>");
 						return false;
 				}
+				
 				//En el caso de que no sea necesario la validacion no se hace nada mas
 				if(document.getElementById('validar')){
 					// Validamos que exista fecha de validacion y ciones de validacion
 					
 					//cuando se quiere validar habra que diferenciar el alta y la baja
-					//Caso inscripcion
+					
+					//Caso alta de inscripcion
 					if(document.InscripcionTGForm.modo.value=='sigInsertar'
 						||document.InscripcionTGForm.modo.value=='vitValidar'
 						||document.InscripcionTGForm.modo.value=='vigValidar'
@@ -234,6 +274,7 @@
 						
 						if(document.getElementById('validar').checked) {						
 							document.InscripcionTGForm.fechaValidacion.value = document.getElementById('fechaCheck').value;
+							document.InscripcionTGForm.fechaDenegacion.value = "";
 							
 							// La fecha de validacion no puede ser nula
 							if(document.InscripcionTGForm.fechaValidacion.value == "") {
@@ -241,13 +282,17 @@
 								alert("<siga:Idioma key='gratuita.altaTurnos.literal.alerFeVa'/>");
 								document.getElementById('fechaCheck').focus();
 								return false;
-							}						
-							//ATENCION: Existen validaciones adicionales en servidor
-							//	CASO TURNO: La fecha de validacion no puede ser inferior a la fecha de baja de la inscripcion anterior
-							//	CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo	
+							}																	
+							
+							/*
+							 ATENCION: Las validaciones se hacen en el servidor, al finalizar
+							 - CASO TURNO: La fecha de validacion debe ser superior a la fecha de baja del ultimo turno 
+							 - CASO GUARDIA: La fecha de validacion de guardia no puede ser inferior a la fecha de validacion de la inscripcion al turno activo
+							 */
 						
 						} else { 
 							if(document.getElementById('denegar').checked) {
+								document.InscripcionTGForm.fechaValidacion.value = "";
 								document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;
 								
 								if(document.InscripcionTGForm.fechaDenegacion.value == "") {
@@ -270,14 +315,16 @@
 						}			
 						
 				} else {
-				// Este es el caso de las bajas de inscripcion
-				// sbtComprobarInsertar
-	  			// sbgComprobarInsertar
-				// vmbtComprobarValidar
-				// vbgComprobarValidar
-				// vmbgComprobarValidar
-					if(document.getElementById('validar').checked) {
-						document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;	
+					// Este es el caso de las bajas de inscripcion
+					// sbtComprobarInsertar
+		  			// sbgComprobarInsertar
+					// vmbtComprobarValidar
+					// vbgComprobarValidar
+					// vbtComprobarValidar
+					// vmbgComprobarValidar
+					if(document.getElementById('validar').checked) {						
+						document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;
+						document.InscripcionTGForm.fechaDenegacion.value = "";
 						
 						if(document.InscripcionTGForm.fechaBaja.value == "") {
 							fin();
@@ -286,26 +333,40 @@
 							return false;
 						}
 						
+						// JPT: La fecha de baja debe ser superior o igual a la fecha de validacion de la inscripcion de turno	
 						if(document.InscripcionTGForm.fechaValidacionTurno.value!='' ){
-							var fechaValidacion = document.InscripcionTGForm.fechaValidacionTurno.value;
-							fechaValidacion = fechaValidacion.substring(8,10)+"/"+fechaValidacion.substring(5,7)+"/"+fechaValidacion.substring(0,4);
-							var fechaBaja = document.InscripcionTGForm.fechaBaja.value;
-							var comparaFecha = compararFecha(fechaValidacion,fechaBaja);
-							// return 0; 	// F1 = F2
-							// return 1; // F1 > F2 
-							// return 2; // F1 < F2 
-							if (comparaFecha==1) {
-								fin();
-								if(document.InscripcionTGForm.idGuardia.value!=''){
-									error = "<siga:Idioma key='gratuita.gestionInscripciones.error.bajaguardia.menor.validaturno'/>";
-								} else{
-									error = "<siga:Idioma key='gratuita.gestionInscripciones.error.baja.menor.valida'/>";
+							
+							/* JPT: Voy a anular las validaciones temporalmente
+							
+							ATENCION: Las validaciones se hacen en el servidor, al finalizar
+							 - CASO TURNO: La fecha de baja debe ser superior o igual a la fecha de baja de las guardias, 
+							                              y debe ser superior o igual a la fecha de validación del turno. 
+							
+							if( document.InscripcionTGForm.modo.value != 'sbtComprobarInsertar' &&
+								document.InscripcionTGForm.modo.value != 'vbtComprobarValidar') {
+								
+								var fechaValidacion = document.InscripcionTGForm.fechaValidacionTurno.value;
+								fechaValidacion = fechaValidacion.substring(8,10) + "/" + fechaValidacion.substring(5,7) + "/" + fechaValidacion.substring(0,4);
+								var fechaBaja = document.InscripcionTGForm.fechaBaja.value;
+								var comparaFecha = compararFecha(fechaValidacion, fechaBaja);
+								
+								// return 0: F1 = F2
+								// return 1: F1 > F2 
+								// return 2: F1 < F2 
+								if (comparaFecha == 1) {
+									fin();
+									if(document.InscripcionTGForm.idGuardia.value!=''){
+										error = "<siga:Idioma key='gratuita.gestionInscripciones.error.bajaguardia.menor.validaturno'/>";
+									} else{
+										error = "<siga:Idioma key='gratuita.gestionInscripciones.error.baja.menor.valida'/>";
+									}
+									error += ' ' + fechaValidacion;								
+									// alert("La fecha de baja no puede ser inferior a la fecha de solicitud ni de validacion: "+fechaValidacion);
+									alert(error);
+									return false;
 								}
-								error += ' '+fechaValidacion;								
-								// alert("La fecha de baja no puede ser inferior a la fecha de solicitud ni de validacion: "+fechaValidacion);
-								alert(error);
-								return false;
-							}
+							} 
+							 */
 								
 							if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
 									|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar' 
@@ -313,6 +374,7 @@
 									|| document.InscripcionTGForm.modo.value=='smbtInsertarBaja') 
 								&& document.InscripcionTGForm.syc[0].checked==true) {
 								document.getElementById("tipoActualizacionSyC").value="T";	
+								
 							} else if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
 											|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'
 											|| document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'
@@ -322,16 +384,23 @@
 							}								
 						}
 						
-						//validaciones de guardia
+						// JPT: La fecha de baja debe ser superior o igual a la fecha de validacion de la inscripcion de guardia	
 						if(document.InscripcionTGForm.idGuardia.value!=''){
+							
+							/* JPT: Voy a anular las validaciones temporalmente
+							
+							ATENCION: Las validaciones se hacen en el servidor, al finalizar
+							 - CASO GUARDIA: ...
+							 
 							var fechaValidacion = document.InscripcionTGForm.fechaValidacion.value;
-							fechaValidacion = fechaValidacion.substring(8,10)+"/"+fechaValidacion.substring(5,7)+"/"+fechaValidacion.substring(0,4);
+							fechaValidacion = fechaValidacion.substring(8,10) + "/" + fechaValidacion.substring(5,7) + "/" + fechaValidacion.substring(0,4);
 							var fechaBaja = document.InscripcionTGForm.fechaBaja.value;
-							var comparaFecha = compararFecha(fechaValidacion,fechaBaja);
-							// return 0; 	// F1 = F2
-							// return 1; // F1 > F2 
-							// return 2; // F1 < F2 
-							if (comparaFecha==1) {
+							var comparaFecha = compararFecha(fechaValidacion, fechaBaja);
+							
+							// return 0: F1 = F2
+							// return 1: F1 > F2 
+							// return 2: F1 < F2 
+							if (comparaFecha == 1) {
 								fin();
 								error = "<siga:Idioma key='gratuita.gestionInscripciones.error.baja.menor.valida'/>";
 								error += ' '+fechaValidacion;								
@@ -339,11 +408,14 @@
 								alert(error);
 								return false;
 							}	
+							*/
+							
 							if( (document.InscripcionTGForm.modo.value=='vbgComprobarValidar'
 									||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' 
 									||  document.InscripcionTGForm.modo.value=='sbgComprobarInsertar') 
 								&& document.InscripcionTGForm.syc[0].checked==true) {
 								document.getElementById("tipoActualizacionSyC").value="G";	
+								
 							} else if( (document.InscripcionTGForm.modo.value=='vbgComprobarValidar'
 											||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar'
 											||  document.InscripcionTGForm.modo.value=='sbgComprobarInsertar') 
@@ -370,6 +442,7 @@
 						
 					} else {
 						if(document.getElementById('denegar').checked) {
+							document.InscripcionTGForm.fechaBaja.value = "";
 							document.InscripcionTGForm.fechaDenegacion.value = document.getElementById('fechaCheck').value;
 							
 							if(document.InscripcionTGForm.fechaDenegacion.value == "") {
@@ -718,6 +791,7 @@
 										</td>
 										<td>&nbsp;</td>
 									</c:when>
+									
 									<c:when
 										test="${InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
 										<td>
@@ -740,6 +814,7 @@
 											</div>
 										</td>	
 									</c:when>
+									
 									<c:when
 										test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'}">
 										<td>
@@ -759,6 +834,7 @@
 											</div>
 										</td>	
 									</c:when>
+									
 									<c:otherwise>
 										<td>
 											<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
@@ -976,19 +1052,22 @@
 		</c:otherwise>
 	</c:choose>
 
-
-
-
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
+
 <script>
 		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
 			document.getElementById("divGuardiaGrupo").style.display = "block";
+		
+		var sms = "Modo:" + document.InscripcionTGForm.modo.value;
+		sms += "\nValidacion:" + document.InscripcionTGForm.fechaValidacion.value;
+		
+		alert(sms);
 </script>
-</body>
 
+</body>
 </html>

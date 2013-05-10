@@ -368,7 +368,7 @@ public class GstDate {
 		try {
 			String fechaIni = GstDate.getApplicationFormatDate("", fecha);
 			Date d = sdf.parse(fechaIni);
-			d.setTime(d.getTime() + 86399000);
+			d.setTime(d.getTime() + ClsConstants.DATE_MORE);
 			String fechaFin = (sdf.format(d));
 
 			result = nombreColumna + " >= TO_DATE('" + fechaIni + "', '"
@@ -395,7 +395,7 @@ public class GstDate {
 		try {
 			String fechaIni = GstDate.getApplicationFormatDate("", fecha);
 			Date d = sdf.parse(fechaIni);
-			d.setTime(d.getTime() + 86399000);
+			d.setTime(d.getTime() + ClsConstants.DATE_MORE);
 			result = (sdf.format(d));
 
 		} catch (Exception e) {
@@ -417,7 +417,7 @@ public class GstDate {
 		try {
 			String fechaIni = fecha;
 			Date d = sdf.parse(fechaIni);
-			d.setTime(d.getTime() + 86399000 * dias.intValue());
+			d.setTime(d.getTime() + ClsConstants.DATE_MORE * dias.intValue());
 			result = (sdf.format(d));
 
 		} catch (Exception e) {
@@ -489,7 +489,7 @@ public class GstDate {
 			String fechaFin = fechaHasta;
 			if (fechaFin != null && !fechaFin.trim().equals("")) {
 				Date d = sdf.parse(fechaFin);
-				d.setTime(d.getTime() + 86399000);
+				d.setTime(d.getTime() + ClsConstants.DATE_MORE);
 				fechaFin = (sdf.format(d));
 			}
 			boolean existedesde = false;
@@ -533,7 +533,7 @@ public class GstDate {
 			String fechaFin = fechaHasta;
 			if (fechaFin != null && !fechaFin.trim().equals("")) {
 				Date d = sdf.parse(fechaFin);
-				d.setTime(d.getTime() + 86399000);
+				d.setTime(d.getTime() + ClsConstants.DATE_MORE);
 				fechaFin = (sdf.format(d));
 			}
 			boolean existedesde = false;
@@ -579,7 +579,7 @@ public class GstDate {
 
 		try {
 			Date d = sdf.parse(fecha);
-			d.setTime(d.getTime() + 86399000);
+			d.setTime(d.getTime() + ClsConstants.DATE_MORE);
 			String fechaFin = (sdf.format(d));
 
 			result = nombreColumna + " <= TO_DATE('" + fechaFin + "', '"

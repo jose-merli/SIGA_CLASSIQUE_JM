@@ -417,38 +417,51 @@ public class InscripcionTGForm extends MasterForm {
 	public FilaExtElement[] getElementosFila() {
 		//si las guardia no son obligatorias
 		if((tipoGuardias==null || Integer.parseInt(tipoGuardias)!= ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS)){
-			if(fechaBaja!=null && !fechaBaja.equals("")){
+			
+			if(fechaBaja!=null && !fechaBaja.equals("")){ // BAJA CONFIRMADA
 				elementosFila = new FilaExtElement[2];
-				//cambiar fecha efectiva de baja
-				elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaBaja",SIGAConstants.ACCESS_FULL);
+				
+				if((tipoGuardias==null || Integer.parseInt(tipoGuardias)!= ScsTurnoBean.TURNO_GUARDIAS_TODAS0NINGUNA)){
+					//cambiar fecha efectiva de baja
+					elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaBaja",SIGAConstants.ACCESS_FULL);
+				}
 				elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+				
 			}else{
 				if(fechaSolicitudBaja!=null&& !fechaSolicitudBaja.equals("")){
 					elementosFila = new FilaExtElement[2];
-					elementosFila[1]=new FilaExtElement("validar","validarBaja",SIGAConstants.ACCESS_FULL);
-					elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+					if(fechaDenegacion==null || fechaDenegacion.equalsIgnoreCase("")) { //BAJA PENDIENTE
+						elementosFila[1]=new FilaExtElement("validar","validarBaja",SIGAConstants.ACCESS_FULL);
+						elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+						
+					} else { // BAJA DENEGADA
+						elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+					}
 					//validar baja
 					
 				}else{
-					if(fechaValidacion!=null&& !fechaValidacion.equals("")){
+					if(fechaValidacion!=null&& !fechaValidacion.equals("")){ // ALTA CONFIRMADA
 						elementosFila = new FilaExtElement[2];
-						//cambiar fecha efectiva de alta
-						elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaValidacion",SIGAConstants.ACCESS_FULL);
+						
+						if((tipoGuardias==null || Integer.parseInt(tipoGuardias)!= ScsTurnoBean.TURNO_GUARDIAS_TODAS0NINGUNA)){
+							//cambiar fecha efectiva de alta
+							elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaValidacion",SIGAConstants.ACCESS_FULL);
+						}
 						elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
 						
 					}else{
 						elementosFila = new FilaExtElement[2];
-						if(fechaDenegacion!=null && !fechaDenegacion.equalsIgnoreCase("")){
-							elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
-						}else{
+						if(fechaDenegacion==null || fechaDenegacion.equalsIgnoreCase("")){ // ALTA PENDIENTE						
 							elementosFila[1]=new FilaExtElement("validar","validar",SIGAConstants.ACCESS_FULL);
-							elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);	
+							elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+							
+						} else { // ALTA DENEGADA
+							elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
 						}
-						
 					}
-				}
-				
+				}				
 			}
+			
 		}else{
 			elementosFila =  new FilaExtElement[1];
 			elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);

@@ -7,10 +7,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -20,7 +19,6 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
@@ -337,8 +335,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			  
 		  }
 
-	public List<ScsInscripcionTurnoBean> getInscripcionesTurno(InscripcionTGForm inscripcionTurnoForm, boolean isEdicion) throws ClsExceptions
-	{
+	public List<ScsInscripcionTurnoBean> getInscripcionesTurno(InscripcionTGForm inscripcionTurnoForm, boolean isEdicion) throws ClsExceptions {
 		// Variables
 		Hashtable<Integer, Object> htCodigos;
 		int contador;
@@ -428,53 +425,58 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 
 		} else {
 			if (!isEdicion) {
+				// OBTIENE EL ULTIMO TURNO
+				sql.append(" AND I.FECHASOLICITUD = ");
+				sql.append(" (SELECT MAX(IT2.FECHASOLICITUD) ");
+					sql.append(" FROM SCS_INSCRIPCIONTURNO IT2 ");
+					sql.append(" WHERE IT2.IDINSTITUCION = I.IDINSTITUCION ");
+					sql.append(" AND IT2.IDTURNO = I.IDTURNO ");
+					sql.append(" AND IT2.IDPERSONA = I.IDPERSONA) ");
+				
 				if (inscripcionTurnoForm.getTipo().equals("A")) {
 					orderBy.append(campoFecha);
-					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+					
+					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
 						// ORDENAMOS POR ALGO???
+						
 					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
 						sql.append(" AND I.FECHADENEGACION IS NULL ");
 						sql.append(" AND I.FECHAVALIDACION IS NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
 
 					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
 						orderBy.append(",I.FECHAVALIDACION");
 						sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
 						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
 
 					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
-						orderBy.append(",I.FECHAVALIDACION");
+						orderBy.append(",I.FECHADENEGACION");
 						sql.append(" AND I.FECHAVALIDACION IS NULL ");
 						sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
-
 					}
 
 				} else if (inscripcionTurnoForm.getTipo().equals("B")) {
 					orderBy.append(campoFecha);
-					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+					
+					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
+						// ORDENAMOS POR ALGO???
+						
+					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
 						sql.append(" AND I.FECHABAJA IS NULL ");
 						sql.append(" AND I.FECHADENEGACION IS NULL ");
 
 					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
 						orderBy.append(",I.FECHABAJA");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
 						sql.append(" AND I.FECHABAJA IS NOT NULL ");
 						sql.append(" AND I.FECHADENEGACION IS NULL  ");
 
 					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
-						orderBy.append(",I.FECHABAJA");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+						orderBy.append(",I.FECHADENEGACION");
 						sql.append(" AND I.FECHABAJA IS NULL ");
 						sql.append(" AND I.FECHADENEGACION IS NOT NULL  ");
-
 					}
-
 				}
 
 			} else {
@@ -485,11 +487,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 					orderBy.append(" I.FECHABAJA ");
 				} else {
 					orderBy.append(" I.FECHAVALIDACION ");
-
 				}
-
 			}
-
 		}
 
 		if (inscripcionTurnoForm.getFechaDesde() != null && !inscripcionTurnoForm.getFechaDesde().equals("")) {
@@ -499,8 +498,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			contador++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador), inscripcionTurnoForm.getFechaDesde());
-
 		}
+		
 		if (inscripcionTurnoForm.getFechaHasta() != null && !inscripcionTurnoForm.getFechaHasta().equals("")) {
 			sql.append(" AND ");
 			sql.append(campoFecha);
@@ -508,7 +507,6 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			contador++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador), inscripcionTurnoForm.getFechaHasta());
-
 		}
 
 		sql.append(" ORDER BY ");
@@ -533,46 +531,50 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 					inscripcionBean.setFechaValorAlta(UtilidadesHash.getString(htFila, "FECHAVALORALTA"));
 					inscripcionBean.setFechaValorBaja(UtilidadesHash.getString(htFila, "FECHAVALORBAJA"));
 					String estado = "No aplica";
-					if (inscripcionBean.getFechaValidacion().equals("")) {
-						if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
-							if (inscripcionBean.getFechaDenegacion().equals("")) {
-								estado = "Alta Pendiente";
+					
+					if (!inscripcionBean.getFechaBaja().equals("")) {
+						estado = "Baja Confirmada";
+					
+					} else { 						
+						if (inscripcionBean.getFechaValidacion().equals("")) {
+							if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
+								if (inscripcionBean.getFechaDenegacion().equals("")) {
+									estado = "Alta Pendiente";
+									
+								} else {
+									estado = "Alta Denegada";
+								}
+	
 							} else {
-								estado = "Alta Denegada";
-							}
-
-						} else {
-							if (inscripcionBean.getFechaBaja().equals("")) {
 								if (inscripcionBean.getFechaDenegacion().equals("")) {
 									estado = "Baja Pendiente";
+									
 								} else {
 									estado = "Baja Denegada";
 								}
-
-							} else {
-								estado = "Baja Confirmada";
-
 							}
-						}
-					} else {
-
-						if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
-							estado = "Alta Confirmada";
+							
 						} else {
-							if (inscripcionBean.getFechaBaja().equals("")) {
+	
+							if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
+								estado = "Alta Confirmada";
+								
+							} else {
 								if (inscripcionBean.getFechaDenegacion().equals("")) {
 									estado = "Baja Pendiente";
+									
 								} else {
 									estado = "Baja Denegada";
-								}
-							} else {
-								estado = "Baja Confirmada";
-							}
-						}
-					}
+								} // IF FECHA DENEGACION
+							} // IF FECHA SOLICITUD BAJA
+						} // IF FECHA VALIDACION
+					} // IF FECHA BAJA
+					
 					inscripcionBean.setEstado(estado);
+					
 					turno = new ScsTurnoBean();
 					inscripcionBean.setTurno(turno);
+					
 					persona = new CenPersonaBean();
 					colegiado = new CenColegiadoBean();
 					persona.setColegiado(colegiado);
@@ -582,9 +584,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 					turno.setIdTurno(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_IDTURNO));
 					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
 					turno.setAbreviatura(UtilidadesHash.getString(htFila, "ABREVIATURA"));
-					turno
-							.setValidarInscripciones(UtilidadesHash.getString(htFila,
-									ScsTurnoBean.C_VALIDARINSCRIPCIONES));
+					turno.setValidarInscripciones(UtilidadesHash.getString(htFila, ScsTurnoBean.C_VALIDARINSCRIPCIONES));
 					turno.setGuardias(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_GUARDIAS));
 
 					colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenColegiadoBean.C_IDINSTITUCION));
@@ -593,6 +593,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 					persona.setNombre(UtilidadesHash.getString(htFila, CenPersonaBean.C_NOMBRE));
 					persona.setApellido1(UtilidadesHash.getString(htFila, CenPersonaBean.C_APELLIDOS1));
 					persona.setApellido2(UtilidadesHash.getString(htFila, CenPersonaBean.C_APELLIDOS2));
+					
 					alInscripcion.add(inscripcionBean);
 				}
 			}
@@ -839,24 +840,35 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 
 	}
 	
-	public ScsInscripcionTurnoBean getInscripcion(Integer idInstitucion,Integer idTurno,Long idPersona,String fecha)throws ClsExceptions{
-		
-		
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public ScsInscripcionTurnoBean getInscripcion(Integer idInstitucion, Integer idTurno, Long idPersona, String fecha) throws ClsExceptions {
 		StringBuffer sql = new StringBuffer();
 		Hashtable htCodigos = new Hashtable();
-		int contador =0;
+		int contador = 0;
+		
 		sql.append(" select * from scs_inscripcionturno where   SCS_INSCRIPCIONTURNO.idinstitucion = :");
 	    contador ++;
-		sql.append(contador);
+		sql.append(contador);		
 		htCodigos.put(new Integer(contador),idInstitucion);
+		
 		sql.append(" AND SCS_INSCRIPCIONTURNO.idpersona = :");
-	    contador ++;
-		sql.append(contador);
+	    contador ++;	    
+		sql.append(contador);		
 		htCodigos.put(new Integer(contador),idPersona);
-		sql.append(" AND  SCS_INSCRIPCIONTURNO.IDTURNO=:");
-		contador ++;
-		sql.append(contador);
+		
+		sql.append(" AND  SCS_INSCRIPCIONTURNO.IDTURNO = :");
+		contador ++;		
+		sql.append(contador);		
 		htCodigos.put(new Integer(contador),idTurno);
+		
 		// si la fecha es nula es porque queremos la ultima inscripcion CON BAJA
 		if(fecha!=null){
 			sql.append(" AND SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL ");
@@ -872,8 +884,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				sql.append(contador);
 				htCodigos.put(new Integer(contador),fecha);	
 				
-			}
-			
+			}			
 			
 			sql.append(") ");
 			sql.append(" AND (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND ");
@@ -889,23 +900,19 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				
 			}
 			sql.append(") ");
-		}else{
-			sql.append(" AND SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL ");
-			//cogemos las que no se hayan cancelkado el mismo dia
-			sql.append(" AND (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL "); 
-			sql.append(" AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <>  ");
-			sql.append(" NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ");
+			
+		}else{					
+			sql.append(" AND SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL ");
+			sql.append(" AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL ");			
+			sql.append(" AND SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL "); 
+			
+			/* JPT: La siguiente condicion no tiene sentido, ya que un turno se puede dar de alta y baja en el mimo dia
+			 * sql.append(" AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <>  NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ");
+			*/
 			
 			sql.append(" ORDER BY SCS_INSCRIPCIONTURNO.FECHABAJA ");
 			
-		}
-		
-		
-		
-		
-		
-		
-		
+		}		
 			
 		ScsInscripcionTurnoBean inscripcionBean = null;
 		try {
@@ -1422,4 +1429,146 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			"   And Ins.Idpersona = Col.Idpersona ");
 	}
 	
+	/**
+	 * JPT: Obtiene la fecha de inscripciones de guardias que es neceseario comprobar para dar de baja una inscripcion de turno
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String getFechaGuardiasTurno(String idInstitucion, String idTurno, String idPersona) throws ClsExceptions {
+		String fecha = "";
+		
+		String sql = "SELECT NVL(IG.FECHABAJA, IG.FECHAVALIDACION) FECHAGUARDIAS " +
+			" FROM SCS_INSCRIPCIONGUARDIA IG " +
+			" WHERE IG.IDINSTITUCION = " + idInstitucion + 
+				" AND IG.IDTURNO = " + idTurno +
+				" AND IG.IDPERSONA = " + idPersona +
+				" AND (IG.FECHABAJA IS NOT NULL " +
+				" OR (IG.FECHABAJA IS NULL " +
+				" AND IG.FECHAVALIDACION IS NOT NULL)) " +
+			" ORDER BY FECHAGUARDIAS DESC";
+				 			
+		try {
+			RowsContainer rc = new RowsContainer();			
+			rc.query(sql);
+			
+			if (rc.size() > 0) {
+				Row fila = (Row) rc.get(0);
+				fecha = fila.getString("FECHAGUARDIAS");
+			}
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar ScsInscripcionTurnoAdm.getFechaGuardiasTurno.");
+		}
+		
+		return fecha;
+	}
+	
+	/**
+	 * Borrar un turno que está en estado de alta pendiente
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @param FechaSolicitud
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean borrarInscripcionTurnoPendiente(String idInstitucion, String idTurno, String idPersona, String FechaSolicitud) throws ClsExceptions {
+		boolean resultado = false;
+		
+		UserTransaction tx = null;
+	    try {
+	    	tx = usrbean.getTransaction();
+	    	tx.begin();
+	    	
+	    	// Preparamos las fechas:
+	    	// Si provocan excepcione es porque no estan en formato largo sino en corto. En ese caso tomamos directamente su valor del bean:
+	    	String sFechaSolicitud = "";
+	    	try {
+	    		sFechaSolicitud = GstDate.getFormatedDateShort("ES", FechaSolicitud);
+			
+			} catch (Exception e) {
+				sFechaSolicitud = FechaSolicitud;
+			}
+	    	
+	    	// Hay que dar de baja las guardias del mismo dia que la inscripcion de turno
+	    	String sql = "DELETE SCS_INSCRIPCIONGUARDIA IG " +
+	    		" WHERE IG.IDINSTITUCION = " + idInstitucion + 
+					" AND IG.IDTURNO = " + idTurno +
+					" AND IG.IDPERSONA = " + idPersona +
+					" AND IG.FECHASUSCRIPCION >= TO_DATE('" + sFechaSolicitud + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "') "; 	    	
+	    	resultado = deleteSQL(sql);
+	    	
+	    	sql = "DELETE SCS_INSCRIPCIONTURNO IT " +
+	    		" WHERE IT.IDINSTITUCION = " + idInstitucion + 
+					" AND IT.IDTURNO = " + idTurno +
+					" AND IT.IDPERSONA = " + idPersona +
+					" AND IT.FECHASOLICITUD = TO_DATE('" + FechaSolicitud + "', '" + ClsConstants.DATE_FORMAT_SQL + "') "; 	    	
+	    	if (deleteSQL(sql)) {
+	    		resultado = true;
+	    		tx.commit();
+	    		
+	    	} else {
+	    		resultado = false;
+	    		tx.rollback();
+	    	}
+	    	
+		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception e1) {
+			}
+			throw new ClsExceptions("Error al borrarInscripcionTurnoPendiente");
+		}	
+	    
+	    return resultado;
+	}	
+	
+	/**
+	 * Obtiene la inscripcion de turno de la persona, que esta validada y sin dar de baja
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public ScsInscripcionTurnoBean getInscripcionValidadaSinBaja(Integer idInstitucion, Integer idTurno, Long idPersona) throws ClsExceptions {
+
+		String sql = " SELECT I.IDINSTITUCION, " +
+				" I.IDPERSONA, " +
+				" I.IDTURNO, " +
+				" I.FECHASOLICITUD, " +
+				" I.OBSERVACIONESSOLICITUD, " +
+				" I.FECHAVALIDACION, " +
+				" I.OBSERVACIONESVALIDACION, " +
+				" I.FECHASOLICITUDBAJA, " +
+				" I.OBSERVACIONESBAJA, " +
+				" I.FECHABAJA " +
+			" FROM SCS_INSCRIPCIONTURNO I " +
+			" WHERE  I.IDINSTITUCION = " + idInstitucion +
+				" AND I.IDTURNO = " + idTurno +
+				" AND I.IDPERSONA = " + idPersona +
+				" AND I.FECHAVALIDACION IS NOT NULL " +
+				" AND I.FECHABAJA IS NULL";
+				
+		ScsInscripcionTurnoBean inscripcionBean = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					Row fila = (Row) rc.get(0);
+					Hashtable<String, Object> htFila=fila.getRow();
+					inscripcionBean =  (ScsInscripcionTurnoBean) this.hashTableToBean(htFila);
+				}
+			} 
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		
+		return inscripcionBean;
+	}	
 }

@@ -1,9 +1,9 @@
 package com.siga.gratuita;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -17,12 +17,8 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.crystaldecisions.sdk.occa.report.definition.DateFieldFormat;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenBajasTemporalesAdm;
-import com.siga.beans.CenDireccionTipoDireccionAdm;
-import com.siga.beans.CenDireccionTipoDireccionBean;
-import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -30,7 +26,6 @@ import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
-import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
@@ -136,10 +131,17 @@ public class InscripcionTurno
 			
 //			tx.begin();
 			
-			solicitarAlta(new Integer(form.getIdInstitucion()),new Integer(form.getIdTurno()),new Long(form.getIdPersona()),
-					form.getObservacionesSolicitud(),form.getFechaValidacion(),form.getObservacionesValidacion(),
-					form.getValidarInscripciones(),new Integer(form.getTipoGuardias()),
-					form.getGuardiasSel(),form.getIdRetencion(),usr);
+			solicitarAlta(new Integer(form.getIdInstitucion()),
+					new Integer(form.getIdTurno()),
+					new Long(form.getIdPersona()),
+					form.getObservacionesSolicitud(),
+					form.getFechaValidacion(),
+					form.getObservacionesValidacion(),
+					form.getValidarInscripciones(),
+					new Integer(form.getTipoGuardias()),
+					form.getGuardiasSel(),
+					form.getIdRetencion(),
+					usr);
 			
 //			tx.commit();
 			
@@ -329,28 +331,20 @@ public class InscripcionTurno
 		String guardiasSel[];
 		String fv = null;
 		Hashtable miHash = new Hashtable();
-		// Comprobamos si hay que validarinscripciones
-		if(validarInscripciones.equalsIgnoreCase("N"))
-		{
-			miHash.put("FECHAVALIDACION","sysdate");
-			miHash.put("OBSERVACIONESVALIDACION",".");
-		}else{
-
-			if(fechaValidacion!=null && !fechaValidacion.equals(""))
-			{
-				if(fechaValidacion.equals("sysdate")){
-					miHash.put("FECHAVALIDACION",fechaValidacion);
-				}else{
-					miHash.put("FECHAVALIDACION",GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
-				}
-				miHash.put("OBSERVACIONESVALIDACION",observacionesValidacion);
+		
+		// JPT: He eliminado la comprobación de la validacion automatica, ya que se realiza en GestionInscripcionesTGAction.preAltaTurno
+		
+		if(fechaValidacion!=null && !fechaValidacion.equals("")) {
+			if(fechaValidacion.equals("sysdate")){
+				miHash.put("FECHAVALIDACION",fechaValidacion);
+			}else{
+				miHash.put("FECHAVALIDACION",GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
 			}
+			miHash.put("OBSERVACIONESVALIDACION",observacionesValidacion);
 		}
+
 		// Si el campo del turno validarinscripciones = 'n', insertamos en la fechavalidacion y
 		// en la fecha de baja la fecha del sistema.
-
-
-
 
 		// Preparamos la hash
 		miHash.put("IDPERSONA",idPersona);  
@@ -399,14 +393,8 @@ public class InscripcionTurno
 									new Long(idPersona), 
 									"sysdate", 
 									usr, false);
-							if(validarInscripciones.equalsIgnoreCase("N"))
-							{
-								fechaValidacion="sysdate";
-								observacionesValidacion=".";
-							}
 							
-							if(!fechaValidacion.equals(""))
-							{
+							if(!fechaValidacion.equals("")) {
 								inscripcionGuardia.setAltas(observacionesSolicitudAlta,fechaValidacion,observacionesValidacion);
 							}else{
 								inscripcionGuardia.setAltas(observacionesSolicitudAlta,null,null);
@@ -420,11 +408,6 @@ public class InscripcionTurno
 					//if( tipoGuardias.intValue()==2){
 						if( guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
 							guardiasSel=guardiasSeleccionadas.split("@");
-							if(validarInscripciones.equalsIgnoreCase("N"))
-							{
-								fechaValidacion="sysdate";
-								observacionesValidacion=".";
-							}
 
 							Date date = new Date();
 							String fechaInscripcion= formatoFecha.format(date);
@@ -677,20 +660,22 @@ public class InscripcionTurno
 			}
 			throw new ClsExceptions("error.messages.application");
 		}
-			
-			
-
-			
-	
 	} 
 	
-	
-
-	
-	
-	private void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja, String validarInscripciones, UsrBean usr)
-		throws ClsExceptions
-	{
+	/**
+	 * 
+	 * @param fechaSolicitudBaja
+	 * @param observacionesSolicitudBaja
+	 * @param validarInscripciones
+	 * @param usr
+	 * @throws ClsExceptions
+	 */
+	private void solicitarBaja (
+			String fechaSolicitudBaja,
+			String observacionesSolicitudBaja, 
+			String validarInscripciones, 
+			UsrBean usr) throws ClsExceptions {
+		
 		try {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
@@ -708,47 +693,39 @@ public class InscripcionTurno
 			boolean tieneBajaDenegada = false;
 			if (v != null && v.size() == 1) {
 				ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
-				if(validarInscripciones.equalsIgnoreCase("N"))
-				{
-				
-					inscripcionBean.setFechaBaja("sysdate");
-					inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);
-					
-				}else{
-					if(inscripcionBean.getFechaDenegacion()!=null && !inscripcionBean.getFechaDenegacion().equals("")){
-						tieneBajaDenegada = true;
-						String observacionDenegacion = inscripcionBean.getObservacionesDenegacion()==null?"":inscripcionBean.getObservacionesDenegacion();
-						observacionesSolicitudBaja += "[Fecha denegación previa:"+GstDate.getFormatedDateShort("", inscripcionBean.getFechaDenegacion()) +"]";
-						observacionesSolicitudBaja += "[Observaciones denegación previa:"+observacionDenegacion+"]";
-//						inscripcionBean.setFechaDenegacion(null);
-//						inscripcionBean.setObservacionesDenegacion(null								);
-						
-					}
-					inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);
-					String observacionesPrevias = inscripcionBean.getObservacionesBaja()==null||inscripcionBean.getObservacionesBaja().equals("")?"":"{"+inscripcionBean.getObservacionesBaja()+"}";
-					inscripcionBean.setObservacionesBaja(observacionesSolicitudBaja+observacionesPrevias);
-					
+
+				if(inscripcionBean.getFechaDenegacion()!=null && !inscripcionBean.getFechaDenegacion().equals("")){
+					tieneBajaDenegada = true;
+					String observacionDenegacion = inscripcionBean.getObservacionesDenegacion()==null?"":inscripcionBean.getObservacionesDenegacion();
+					observacionesSolicitudBaja += "[Fecha denegación previa:"+GstDate.getFormatedDateShort("", inscripcionBean.getFechaDenegacion()) +"]";
+					observacionesSolicitudBaja += "[Observaciones denegación previa:"+observacionDenegacion+"]";						
 				}
+				
+				inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);
+				String observacionesPrevias = inscripcionBean.getObservacionesBaja()==null||inscripcionBean.getObservacionesBaja().equals("")?"":"{"+inscripcionBean.getObservacionesBaja()+"}";
+				inscripcionBean.setObservacionesBaja(observacionesSolicitudBaja+observacionesPrevias);
+					
 				if (! inscripcionAdm.update(inscripcionBean)) {
 					throw new ClsExceptions("Error al realizar la solicitud de baja en el turno");
 				}
 			}
-			if(tieneBajaDenegada)
-				denegarBajaInscripcionTurno(null, null, usr);
 			
+			if(tieneBajaDenegada)
+				denegarBajaInscripcionTurno(null, null, usr);			
 			
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
 	        
 			
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(this.bean.getIdInstitucion(), 
-					this.bean.getIdTurno(),this.bean.getIdPersona(),null);
-			
+			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
+				this.bean.getIdInstitucion(), 
+				this.bean.getIdTurno(),
+				this.bean.getIdPersona(),
+				null);
 			
 			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 			InscripcionGuardia inscripcionGuardia = null;
-			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
-				for(int x=0;x<vGuardiasTurno.size();x++)
-				{
+			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0) {
+				for(int x=0; x<vGuardiasTurno.size(); x++) {
 					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
 					inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia (
 							this.bean.getIdInstitucion(), 
@@ -758,35 +735,48 @@ public class InscripcionTurno
 							beanInscripcionGuardia.getFechaSuscripcion(), 
 							usr, false);
 					String fechaBaja = null;
-					if(validarInscripciones.equalsIgnoreCase("N"))
-					{
-						fechaBaja="sysdate";
-						
+					if(validarInscripciones.equalsIgnoreCase("N")) {
+						fechaBaja="sysdate";						
 					}
 					inscripcionGuardia.setBajas(observacionesSolicitudBaja,fechaSolicitudBaja,fechaBaja,"-----");
 					inscripcionGuardia.solicitarBaja(usr, null);
 				}
 			}
-					
-
 			
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al solicitar la solicitud de baja en el turno");
 		}
 	} //solicitarBaja ()
 	
-
-	public void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja,String fechaBaja,String observacionesValBaja,String fechaValidacion, String validarInscripciones, String cancelarSyC, UsrBean usr)
-	throws ClsExceptions
-{
+	/**
+	 * 
+	 * @param fechaSolicitudBaja
+	 * @param observacionesSolicitudBaja
+	 * @param fechaBaja
+	 * @param observacionesValBaja
+	 * @param fechaValidacion
+	 * @param validarInscripciones
+	 * @param cancelarSyC
+	 * @param usr
+	 * @throws ClsExceptions
+	 */
+	public void solicitarBaja (
+			String fechaSolicitudBaja, 
+			String observacionesSolicitudBaja,
+			String fechaBaja,
+			String observacionesValBaja,
+			String fechaValidacion, 
+			String validarInscripciones, 
+			String cancelarSyC, 
+			UsrBean usr) throws ClsExceptions {
+		
 		try {
 			solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja,validarInscripciones,  usr);
+			
 			//el proceso de solicitar baja valida las que no es necesario la validacion de las inscripciones
-			if(validarInscripciones.equals("S")){
-				if(fechaBaja!=null&&!fechaBaja.equals(""))
-					validarBaja(fechaBaja,fechaValidacion,observacionesValBaja, null, usr);
-			}
+			if(fechaBaja!=null && !fechaBaja.equals(""))
+				validarBaja(fechaBaja, fechaValidacion, observacionesValBaja, null, usr);
+			
 			if(cancelarSyC!=null && cancelarSyC.equalsIgnoreCase("T")){
 				try {
 					//String actuali = miForm.getTipoActualizacionSyC();
@@ -795,18 +785,23 @@ public class InscripcionTurno
 					ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
 					//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
 					//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
-					saladm.updateSaltosCompensacionesBajaTurno(this.bean.getIdInstitucion(), 
-							this.bean.getIdTurno(),this.bean.getIdPersona(), null, cancelarSyC);
+					saladm.updateSaltosCompensacionesBajaTurno(
+						this.bean.getIdInstitucion(), 
+						this.bean.getIdTurno(),
+						this.bean.getIdPersona(), 
+						null, 
+						cancelarSyC);
 					
-				}catch (Exception e) {
-						throw new ClsExceptions (e, "Error al solicitar la baja en los Saltos y turnos");
-					}
+				} catch (Exception e) {
+					throw new ClsExceptions (e, "Error al solicitar la baja en los Saltos y turnos");
+				}
 			}
 		}
+		
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al solicitar la solicitud de baja en el turno");
 		}
-} //solicitarBaja ()
+	} //solicitarBaja ()
 
 	public void denegarInscripcionTurno (String fechaDenegacion,String observacionesDenegacion, UsrBean usr)
 	throws ClsExceptions
@@ -933,14 +928,26 @@ public class InscripcionTurno
 		throw new ClsExceptions (e, "Error al denegar el alta en el turno");
 	}
 } //validarBaja ()
+	
 	/**
 	 * Confirma la baja de la inscripcion actual del colegiado en el turno
 	 * 
 	 * @TODO falta quizas algo de saltos y compensaciones, o pedir confirmacion por interfaz
+	 * 
+	 * @param fechaBaja
+	 * @param fechaValidacion
+	 * @param obsValBaja
+	 * @param bajaSyC
+	 * @param usr
+	 * @throws ClsExceptions
 	 */
-	public void validarBaja (String fechaBaja,String fechaValidacion,String obsValBaja, String bajaSyC, UsrBean usr)
-		throws ClsExceptions
-	{
+	public void validarBaja (
+		String fechaBaja,
+		String fechaValidacion,
+		String obsValBaja, 
+		String bajaSyC, 
+		UsrBean usr) throws ClsExceptions {
+		
 		try {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();

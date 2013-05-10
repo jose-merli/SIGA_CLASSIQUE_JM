@@ -2,12 +2,9 @@ package com.siga.gratuita;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Vector;
 
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsConstants;
@@ -22,7 +19,6 @@ import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsOrdenacionColasAdm;
-import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
