@@ -596,7 +596,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return "errorConAviso";	
 			}			
 			
+			// Si ya existia, actualiza la inscripcion ... JPT: Pienso que no entra nunca por este codigo
 			if(miForm.getFechaSolicitud()!=null && !miForm.getFechaSolicitud().equals("")){
+				
+				// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
 				InscripcionTurno inscripcion = InscripcionTurno.getInscripcionTurno(
 					new Integer(miForm.getIdInstitucion()), 
 					new Integer(miForm.getIdTurno()), 
@@ -605,18 +608,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					usr, 
 					false);
 				
+				// Introduce los datos de la alta
 				if(miForm.getFechaValidacion() != null && !miForm.getFechaValidacion().equals("") &&
 					(miForm.getFechaBaja() == null || miForm.getFechaBaja().equals(""))) {
 						inscripcion.validarAlta(
-								miForm.getFechaValidacion(),
-								miForm.getObservacionesValidacion(), 
-								usr);
+							miForm.getFechaValidacion(),
+							miForm.getObservacionesValidacion(), 
+							usr);
 				}
-				
-			}else{
+			
+			// Si no existia, crea la inscripcion
+			} else {
 				miForm.setFechaSolicitud("sysdate");
 				InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
 				inscripcion.solicitarAlta(miForm, usr);
+				
 				Hashtable original = (Hashtable) request.getSession ().getAttribute ("ORIGINALDIR");
 				CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);			
 				dirAdm.insertarDireccionGuardia(
@@ -675,6 +681,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return "errorConAviso";					
 			}
 			
+			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
 			InscripcionTurno inscripcion = InscripcionTurno.getInscripcionTurno(
 				new Integer(miForm.getIdInstitucion()), 
 				new Integer(miForm.getIdTurno()), 
@@ -1120,6 +1127,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						return "errorConAviso";	
 					}	
 					
+					// crea la inscripcion
 					InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
 					inscripcion.solicitarAlta(miForm, usr);
 					
