@@ -998,7 +998,7 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println(""); 
 			out.println("function rellenarComboGuardia() {");
 			if (!this.modo.equalsIgnoreCase("ver")) {
-			    out.println("	if("+nombre+"."+campoTurno+".value!='' && "+nombre+"."+campoGuardia+".value!='' && "+nombre+"."+campoFecha+".value!=''){");
+			    out.println("	if("+nombre+"."+campoTurno+".value!='' && "+nombre+"."+campoGuardia+".value!='' && "+nombre+"."+campoFecha+".value!='' && validarFechaRegExp("+nombre+"."+campoFecha+".value)){");
 				out.println("		var vForm=creaForm();");
 				out.println("		vForm.target='submitArea';");
 				out.println("		vForm.modo.value='ver';");
