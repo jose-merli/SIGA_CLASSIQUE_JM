@@ -20,8 +20,6 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.beans.CenClienteAdm"%>
 <%@ page import="java.util.Properties" %>
 <!-- JSP -->
 <% 
@@ -34,11 +32,6 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION");
 	String idPersonaSol=(String)request.getAttribute("IDPERSONASOL");
 	String idTipoSol=(String)request.getAttribute("TIPO");
-	
-	//MHG Incidencia 30
-	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
-	CenClienteAdm clienteAdm = new CenClienteAdm(user);
-	Vector resultado = clienteAdm.getDatosPersonales(idPersona, new Integer(idInstitucion));
 	
 %>	
 	
@@ -69,18 +62,6 @@
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
-
-<%	if (resultado==null || resultado.size()==0) { %>			
-
-	<body class="tablaCentralCampos">
-			<table class="tdMensaje">
-			<tr><td>
-				<br><br>
-				<siga:Idioma key="messages.noRecordFound"/>
-			</td></tr> 
-			</table>
-	
-<% } else { %>
 
 	<body>
 		<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
@@ -191,7 +172,7 @@
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-<%	} // else de "no hay datos" %>
+
 		<!-- INICIO: SUBMIT AREA -->
 		<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
