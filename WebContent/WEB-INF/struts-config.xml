@@ -2785,13 +2785,7 @@
 			<forward name="listadoDocumentos" path="/html/jsp/gratuita/listadoDocumentos.jsp"/>
 		</action>		
 		
-		<!-- ***** Justicia Gratuita / Configurar Dictámenes EJG ***** -->
-		<action path="/JGR_MantenimientoDictamenesEJG" type="com.siga.gratuita.action.DefinirMantenimDictamenesEJGAction" name="DefinirMantenimDictamenesEJGForm" scope="request">
-			<forward name="busqueda" path="/html/jsp/gratuita/busquedaDictamenesEJG.jsp"/>
-			<forward name="listarDictamen" path="/html/jsp/gratuita/listadoDictamenesEJG.jsp"/>		
-			<forward name="modificacionTipoOk" path="/html/jsp/gratuita/operarDictamen.jsp"/>
-			<forward name="insertarDictamen" path="/html/jsp/gratuita/insertarDictamen.jsp"/>
-		</action>				
+				
 
 		<!-- ***** Justicia Gratuita / Configurar Turno / Zonas y Subzonas *****
 -->
