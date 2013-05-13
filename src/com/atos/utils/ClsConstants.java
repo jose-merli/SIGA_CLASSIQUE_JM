@@ -650,7 +650,10 @@ MDB Microsoft Access Database
 	  public static int IDTIPO_RESOLUCIONAUTO_MODYCONCEDER=1;
 	  
 	
-	  public static final String ENVIO="1";  
+	  public static final String ENVIO="1";
+	  
+	  public static final String ERROR_AVISO = "errorConAviso";
+	  public static final String SMS_AVISO_ESTADO = "msjAvisoEstado";
 	  
 	  
   public ClsConstants() {
