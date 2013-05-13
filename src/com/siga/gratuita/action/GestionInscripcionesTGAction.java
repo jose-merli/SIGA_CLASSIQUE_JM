@@ -223,12 +223,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("smbtInsertar")){
 						mapDestino = smbtInsertar(mapping, miForm, request, response);						
 						
-					}else if(accion.equalsIgnoreCase("comprobarBajaEnTodosLosTurnos")){
-						mapDestino =  comprobarBajaEnTodosLosTurnos(mapping,  miForm,  request,  response);
-						
-					}else if(accion.equalsIgnoreCase("solicitarBajaEnTodosLosTurnos")){
-						mapDestino =  solicitarBajaEnTodosLosTurnos(mapping,  miForm,  request,  response);
-						
 					}else if(accion.equalsIgnoreCase("solicitudesMasivas")){
 						mapDestino =  solicitudesMasivas(mapping,  miForm,  request,  response);
 						
@@ -2702,115 +2696,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				}
 				
 			}
-		}
-		
-		
-	}
-	private String comprobarBajaEnTodosLosTurnos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
-	throws SIGAException 
-	{
-//		String forward = "";
-//		try {
-//			//Controles generales
-//			UsrBean usr = this.getUserBean(request);
-//			InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
-//			//obteniendo los turnos
-//			ScsInscripcionTurnoAdm itAdm = new ScsInscripcionTurnoAdm(usr);
-//			List vTurno = itAdm.getInscripcionesTurnoParaBaja(miForm.getIdInstitucion(), miForm.getIdPersona());
-//			if (vTurno != null &&vTurno.size()>0){ 
-//
-//				//comprobando si hay alguna guardia pendiente, si hay alguna pendiente avisamos
-//				for (int i = 0; i < vTurno.size(); i++) {
-//					Hashtable turnoHash = (Hashtable) vTurno.get(i);
-//					Integer idTurno = UtilidadesHash.getInteger(turnoHash, "IDTURNO");
-//					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-//							usr, Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), idTurno,null,null,null,false); 
-//					if(estadoPendientes!=null){
-//						miForm.setEstadoPendientes(estadoPendientes);
-//						break;
-//					}else{
-//						miForm.setEstadoPendientes(null);
-//						
-//					}
-//				}
-//				miForm.setEstadoPendientes(null);
-//				if(miForm.getEstadoPendientes()!=null&&!miForm.getEstadoPendientes().equals("")){
-//					miForm.setModo("solicitarBajaEnTodosLosTurnos");
-//					forward = ClsConstants.SMS_AVISO_ESTADO;
-//				}else{
-//					return solicitarBajaEnTodosLosTurnos(mapping,  formulario,  request,  response);
-//					
-//				}
-//			}else{
-//				forward="exito";
-//				
-//			}
-//			
-//			
-//			
-//
-//			//finalizando transaccion
-//		}
-//		catch (Exception e) 
-//		{
-//			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null);
-//		}
-//
-//		return forward;
-		return solicitarBajaEnTodosLosTurnos(mapping,  formulario,  request,  response);
-	} 
-	
-	private String solicitarBajaEnTodosLosTurnos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
-	throws SIGAException 
-	{
-		String forward = "";
-
-		try {
-			//Controles generales
-			UsrBean usr = this.getUserBean(request);
-			InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
-			String observaciones      = UtilidadesString.getMensajeIdioma(
-					usr, "censo.sjcs.turnos.bajaEnTodosLosTurnos.observacion.literal");
-
-			//obteniendo los turnos
-			ScsInscripcionTurnoAdm itAdm = new ScsInscripcionTurnoAdm(usr);
-			List vTurno = itAdm.getInscripcionesTurnoParaBaja(miForm.getIdInstitucion(), miForm.getIdPersona());
-			
-			if (vTurno != null &&vTurno.size()>0){
-				//dando de baja todos los turnos
-				InscripcionTurno inscripcion;
-				for (int i = 0; i < vTurno.size(); i++) {
-					Hashtable turnoHash = (Hashtable)vTurno.get(i);
-					Integer idTurno = UtilidadesHash.getInteger(turnoHash, "IDTURNO");
-					String validarInscripciones = UtilidadesHash.getString(turnoHash, "VALIDARINSCRIPCIONES");
-//					String tipoGuardias = UtilidadesHash.getString(turnoHash, "GUARDIAS");
-					inscripcion = InscripcionTurno.getInscripcionTurno(
-							new Integer(miForm.getIdInstitucion()), idTurno, Long.valueOf(miForm.getIdPersona()),
-							(String) turnoHash.get("FECHASOLICITUD"), usr, false);
-					
-					miForm.setFechaSolicitudBaja("sysdate");
-					if(validarInscripciones.equals("N"))
-						miForm.setFechaBaja("sysdate");
-					else
-						miForm.setFechaBaja(null);
-					inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),observaciones,miForm.getFechaBaja(),null,(String) turnoHash.get("FECHAVALIDACION"),validarInscripciones, null, usr);
-	
-				}
-				forward = this.exitoRefresco("messages.updated.success", request);
-			}else{
-				forward="exito";
-				
-			} //for
-
-			//finalizando transaccion
-		}
-		catch (Exception e) 
-		{
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null);
-		}
-		return forward;
-		
-
+		}	
 	}
 	
 	/**
