@@ -160,11 +160,21 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		Vector v = new Vector ();
 		Hashtable miHash = new Hashtable();		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");		
+		DefinirDictamenEJGForm miForm = (DefinirDictamenEJGForm)formulario;
+		if(request.getParameter("ANIO")!=null){
+			miHash.put("ANIO",request.getParameter("ANIO").toString());
+			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
+			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
+			miHash.put("IDINSTITUCION",usr.getLocation().toString());
+		}else{
+			miHash.put("ANIO",miForm.getAnio());
+			miHash.put("NUMERO",miForm.getNumero());
+			miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
+			miHash.put("IDINSTITUCION",miForm.getIdInstitucion());
+			
+		}
 		
-		miHash.put("ANIO",request.getParameter("ANIO").toString());
-		miHash.put("NUMERO",request.getParameter("NUMERO").toString());
-		miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION",usr.getLocation().toString());	
+			
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 		

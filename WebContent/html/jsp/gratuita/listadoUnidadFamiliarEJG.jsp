@@ -319,7 +319,8 @@
 		   
 			 
 		  >
-		  
+	<c:set var="disabledPorCambioLetrado" value="" />
+					  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="peticionesEejg">
 	<br>
    		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
@@ -349,11 +350,11 @@
 				<siga:FilaConIconos fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
 					<td align="center">
 						<c:choose>
-							<c:when test="${peticion.idXml!=null}">
-							<input type="checkbox" value="${peticion.idXml}" name="chkPersona">
+							<c:when test="${peticion.idXml!=null&&peticion.personaUnidadFamiliar==true}">
+							<input   type="checkbox" value="${peticion.idXml}" name="chkPersona">
 							</c:when>
 							<c:otherwise>
-							  <input type="checkbox" value="<bean:write name="indice"/>" disabled name="chkPersona">
+							  <input type="checkbox" title="gratuita.personaJG.tooltip.noPerteneceUnidadFam" value="<bean:write name="indice"/>" disabled name="chkPersona">
 							</c:otherwise>
 						</c:choose>
 					

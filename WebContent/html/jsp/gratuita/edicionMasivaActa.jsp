@@ -38,6 +38,7 @@
 		<input type="hidden" name="idInstitucion" 	value="">
 		<input type="hidden" name="idActa" 			value="">
 		<input type="hidden" name="anioActa" 		value="">
+		<input type="hidden" name="idTipoRatificacionEJG" >
 	
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
@@ -73,7 +74,7 @@
 					  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"  accion="Hijo:idFundamentoJuridico"/>
+						<siga:ComboBD nombre="idTipoResolucion" tipo="tipoResolucionActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"  accion="Hijo:idFundamentoJuridico"/>
 					</td>
 				</tr>
 				
@@ -85,7 +86,7 @@
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t"/>
+						<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t"/>
 					</td>
 				</tr>
 			</table>
@@ -120,13 +121,18 @@
 						document.ActaComisionForm.guardaPonente.checked ||
 						document.ActaComisionForm.guardaRatificacion.checked ||
 						document.ActaComisionForm.guardaFundamento.checked){
-		
+						
 						if(document.getElementById("idActaComp").value!=""){
 							var actaComp= document.getElementById("idActaComp").value.split(',');
 							document.ActaComisionForm.idInstitucion.value=actaComp[0];
 							document.ActaComisionForm.anioActa.value=actaComp[1];
 							document.ActaComisionForm.idActa.value=actaComp[2];
 						}
+						if(document.getElementById("idTipoResolucion").value!=""){
+							var tipoRatificacioncmb= document.getElementById("idTipoResolucion").value.split(',');
+							document.ActaComisionForm.idTipoRatificacionEJG.value=tipoRatificacioncmb[0];
+						}
+						
 						document.ActaComisionForm.submit();
 					}else{
 						alert("<siga:Idioma key='sjcs.actas.seleccioneCampos'/>");

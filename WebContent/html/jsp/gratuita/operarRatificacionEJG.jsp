@@ -34,7 +34,8 @@
 	//aalg: INC_10624
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
-	String dato2[] = new String[2];		
+	String datoTipoResolucion[] = new String[3];
+	String datoFundamentosResolucion[] = new String[3];		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "", fechaPresentacionPonente="";
 	String numeroCAJG="", anioCAJG="";
@@ -72,16 +73,37 @@
 		  requiereNotificarProc=true;
 		 }
 		} 
+		
+		datoTipoResolucion[0]=(String) usr.getLocation();
 		if (miHash.containsKey("IDFUNDAMENTOJURIDICO")) {
 			String idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
-			vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "0": idFundamentoJuridico);
-		}		
+			vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "-1": idFundamentoJuridico);
+			datoFundamentosResolucion[2]=(String) vFundamentoJuridico.get(0);
+			datoTipoResolucion[1]=datoFundamentosResolucion[2];
+		}else{
+			datoFundamentosResolucion[2]="-1";
+			datoTipoResolucion[1]="-1";
+			
+		}
+		
+		
+		String resolucionSel = "";
 		if (miHash.containsKey("IDTIPORATIFICACIONEJG")) {
 			String idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
-			vTipoRatificacion.add(idTipoRatificacionEjg.equals("")? "0": idTipoRatificacionEjg + "," + (String)usr.getLocation());
-			dato2[0]=(String) vTipoRatificacion.get(0);
-			dato2[1]=(String) usr.getLocation();
-		}	
+			resolucionSel = idTipoRatificacionEjg.equals("")? "-1": idTipoRatificacionEjg + "," + (String)usr.getLocation()+ ","+datoTipoResolucion[1];
+			vTipoRatificacion.add(resolucionSel);
+			datoTipoResolucion[2]=idTipoRatificacionEjg;
+			datoFundamentosResolucion[0]=idTipoRatificacionEjg;
+			datoFundamentosResolucion[1]=(String) usr.getLocation();
+			
+		}else{
+			datoTipoResolucion[2]="-1";
+			
+			
+		}
+			
+			
+		//datoTipoResolucion[1]=(String)usr.getLocation();
 		if (miHash.containsKey("DOCRESOLUCION") && miHash.get("DOCRESOLUCION") != null) {
 			docResolucion = miHash.get("DOCRESOLUCION").toString();
 		}
@@ -117,7 +139,9 @@
 	<script type="text/javascript">
 		function refrescarLocal()
 		{
-			document.location.reload();
+			document.forms[0].modo.value="abrir";
+			document.forms[0].target="mainPestanas";		   	
+			document.forms[0].submit();
 		}
 
 		function descargar() {
@@ -308,9 +332,9 @@
 					</td>
 					<td  colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucion2" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
+							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucionActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoTipoResolucion%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 						<%} else {%>
-							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucion2" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoRatificacion%>" pestana="t" accion="Hijo:idFundamentoJuridico"/>
+							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucionActivosConParametroBaja" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoTipoResolucion%>" elementoSel="<%=vTipoRatificacion%>" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 						<%}%>
 					</td>
 				</tr>
@@ -321,9 +345,9 @@
 					</td>
 					<td colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>				
-							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato2%>" elementoSel="<%=vFundamentoJuridico%>" hijo="t" pestana="t" readOnly="true" />
+							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentosActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vFundamentoJuridico%>" parametro="<%=datoFundamentosResolucion%>" hijo="t" pestana="t" readOnly="true" />
 						<%} else {%>
-							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" clase="boxCombo"     filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato2%>" elementoSel="<%=vFundamentoJuridico%>" hijo="t" pestana="t" />
+							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentosActivosConParametroBaja" clase="boxCombo"     filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vFundamentoJuridico%>" parametro="<%=datoFundamentosResolucion%>"  hijo="t" pestana="t" />
 						<%}%>
 					</td>
 				</tr>

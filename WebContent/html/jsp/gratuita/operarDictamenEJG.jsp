@@ -32,9 +32,10 @@
 	//aalg: INC_10624
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String modo = (String)request.getAttribute("MODO");
-	String dato[] = {(String)usr.getLocation()};
-	String datos[] = new String[2];
-		
+	String dato[] = new String[2];
+	
+	String datos[] = new String[3];
+	dato[1] = (String)usr.getLocation();
 	String anio= "", numero="", idTipoEJG = "", dictamen = "", fechaDictamen = "";
 	ArrayList vIntFDict = new ArrayList();
 	ArrayList vIntFCalf = new ArrayList();
@@ -58,9 +59,22 @@
 	if (miHash.containsKey("IDFUNDAMENTOCALIF")){
 		try {
 			obj=miHash.get("IDFUNDAMENTOCALIF");
+			if(!obj.toString().equals("")){
 			vIntFCalf.add(obj.equals("")? "0":obj.toString());
+			vIntFDict.add(obj.equals("")? "0":obj.toString());
+			dato[0]=(String) vIntFCalf.get(0);
+			datos[2]=(String) vIntFCalf.get(0);
+			}else{
+				vIntFDict.add("-1");
+				datos[2]="-1";
+				dato[0]="-1";
+			}
 		} catch (Exception e) {		
 		}
+	}else{
+		datos[2]="-1";
+		dato[0]="-1";
+		vIntFDict.add("-1");
 	}
 		
 	int pcajgActivo = 0;
@@ -98,7 +112,9 @@
 	<script type="text/javascript">
 			function refrescarLocal()
 			{
-				document.location.reload();
+				document.forms[0].modo.value="abrir";
+				document.forms[0].target="mainPestanas";		   	
+				document.forms[0].submit();
 			}
 			
 	</script>
@@ -212,13 +228,13 @@
 								if (accion.equalsIgnoreCase("ver")) {
 							%> <siga:ComboBD
 								nombre="idFundamentoCalif" ancho="815"
-								tipo="tipoFundamentos1" pestana="t" parametro="<%=datos%>"  hijo="t" 
+								tipo="tipoFundamentosCalifActivosConParametroBaja" pestana="t" parametro="<%=datos%>"  hijo="t" 
 								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
 								obligatorio="false" elementoSel="<%=vIntFCalf%>" readOnly="true" />
 							<%
 								} else {
 							%> <siga:ComboBD nombre="idFundamentoCalif"
-								ancho="815" tipo="tipoFundamentos1" pestana="t" hijo="t" parametro="<%=datos%>"
+								ancho="815" tipo="tipoFundamentosCalifActivosConParametroBaja" pestana="t" hijo="t" parametro="<%=datos%>"
 								clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
 								obligatorio="false" elementoSel="<%=vIntFCalf%>" /> <%
 							 	}

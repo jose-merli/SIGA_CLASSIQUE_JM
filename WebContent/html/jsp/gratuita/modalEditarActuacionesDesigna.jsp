@@ -71,6 +71,7 @@
 	String filtrarModulos = "N";
 	String comboJuzgados ="", comboModulos="", comboJuzgadosJustificacion="";
 	String[] datoJuzg = null;
+	String dato[] = { (String) usr.getLocation() };
 	if (request.getAttribute("filtrarModulos") != null) {
 		filtrarModulos = (String)request.getAttribute("filtrarModulos");
 	}
@@ -107,7 +108,7 @@
 	idPretensionDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
 	
 	if (idTipoRatificacion!=null && !idTipoRatificacion.equals("")) {
-			vTipoRatificacion.add(idTipoRatificacion);
+			vTipoRatificacion.add(idTipoRatificacion+","+usr.getLocation());
 		}
     anioEJG=(String)hashDesigna.get("ANIOEJG");
 	if (anioEJG!=null && !anioEJG.equals("")){
@@ -736,7 +737,7 @@
 			
 							<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
 								<td>
-									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion" ancho="375" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
+									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="375" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
 								</td>
 			 				<%}%>	
 						</tr>

@@ -481,7 +481,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
 				<td style="vertical-align:middle"> 
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucion2" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>
 				</td>
 													
 				<td class="labelText" style="vertical-align:middle" width="140px">

@@ -114,15 +114,22 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		
 		/* "DATABACKUP" se usa habitualmente así que en primer lugar borramos esta variable */		
 		request.getSession().removeAttribute("DATABACKUP");
-		
+		DefinirEJGForm miForm = (DefinirEJGForm)formulario;
 		Vector v = new Vector ();
 		Hashtable miHash = new Hashtable();		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");		
-		
-		miHash.put("ANIO",request.getParameter("ANIO").toString());
-		miHash.put("NUMERO",request.getParameter("NUMERO").toString());
-		miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION",usr.getLocation().toString());
+		if(request.getParameter("ANIO")!=null){
+			miHash.put("ANIO",request.getParameter("ANIO").toString());
+			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
+			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
+			miHash.put("IDINSTITUCION",usr.getLocation().toString());
+		}else{
+			miHash.put("ANIO",miForm.getAnio());
+			miHash.put("NUMERO",miForm.getNumero());
+			miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
+			miHash.put("IDINSTITUCION",miForm.getIdInstitucion());
+			
+		}
 		
 		// Comprobamos que el usuario tenga acceso a las actas de la comision
 		// Si no lo tiene habra que mostrar la fechaResolucionCAJG
