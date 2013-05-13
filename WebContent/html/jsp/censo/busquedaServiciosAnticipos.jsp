@@ -86,7 +86,7 @@
 
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAltoBotones('resultado');">
 
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
@@ -166,7 +166,8 @@
 
 		function buscar() 
 		{		
-				document.forms[0].modo.value="buscarPor";
+			sub();	
+			document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 		}

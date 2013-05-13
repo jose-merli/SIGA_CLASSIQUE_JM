@@ -122,7 +122,7 @@
 	
 </head>
 
-<body onLoad="<%=funcionOnLoad %>">
+<body>
 
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
@@ -235,9 +235,10 @@
 			   clase="tableTitle"				   
 			   nombreCol="censo.anticipos.literal.nombreServicio,"
 			   tamanoCol="90,10"
-			   alto="67"
+			   
 			   modal="M"
-			   ajusteBotonera="true"
+			   scrollModal = "true"
+			   
 			   >
 
 <% if ((v != null) && (v.size() > 0)) {
@@ -350,6 +351,8 @@
 	    	document.AnticiposClienteForm.modo.value = "borrarServicios";
 			document.AnticiposClienteForm.submit();
 		}
+		
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

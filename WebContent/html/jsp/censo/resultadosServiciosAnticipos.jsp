@@ -115,8 +115,8 @@
 		   clase="tableTitle"
 		   nombreCol="<%=nombresCol %>"
 		   tamanoCol="<%=tamanosCol %>"
-		   alto="275"
-		   ajusteBotonera="true"
+		   modal="M"
+		   scrollModal = "true"
 		  >
 
 			<!-- INICIO: ZONA DE REGISTROS -->
