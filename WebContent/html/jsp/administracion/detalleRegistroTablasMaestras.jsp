@@ -26,15 +26,26 @@
 	String codigoExternoAux ="";
 	String descAux ="";
 	String fechaBaja = "";
-	String tipoDictamenEJG = "";
+	String idRelacionado = "";
+	String textoPlantillas = "";
+	String numeroTextoPlantillas = (String) request.getAttribute("NUMEROTEXTOPLANTILLAS");
 	if (datos!=null) {
 		codigoAux=(String)datos.getString("CODIGO");
 		descAux=(String)datos.getString("DESCRIPCION");
 		codigoExternoAux=(String)datos.getString("CODIGOEXTERNO");
+		if(datos.getString("IDRELACIONADO")!=null && !((String)datos.getString("IDRELACIONADO")).equals("null"))
+			idRelacionado = (String)datos.getString("IDRELACIONADO");
+		
 		if((String)datos.getString("FECHABAJA")!=null && !((String)datos.getString("FECHABAJA")).equals("null"))
 			fechaBaja = GstDate.getFormatedDateShort("", (String)datos.getString("FECHABAJA"));
-		if((String)datos.getString("IDTIPODICTAMENEJG")!=null && !((String)datos.getString("IDTIPODICTAMENEJG")).equals("null"))
-			tipoDictamenEJG = (String)datos.getString("IDTIPODICTAMENEJG");
+		if((String)datos.getString("TEXTOPLANTILLAS")!=null && !((String)datos.getString("TEXTOPLANTILLAS")).equals("null"))
+			textoPlantillas =(String)datos.getString("TEXTOPLANTILLAS");
+		
+		
+		//if((String)datos.getString("IDTIPODICTAMENEJG")!=null && !((String)datos.getString("IDTIPODICTAMENEJG")).equals("null"))
+			//tipoDictamenEJG = (String)datos.getString("IDTIPODICTAMENEJG");
+		//if((String)datos.getString("IDTIPORESOLUCION")!=null && !((String)datos.getString("IDTIPORESOLUCION")).equals("null"))
+			//tipoResolucion = (String)datos.getString("IDTIPORESOLUCION");
 	}
 	String ponerBaja = "N";
 	if(fechaBaja !=null && !fechaBaja.equals("")){
@@ -54,6 +65,9 @@
 	String sTipoCodigo = (String)request.getAttribute("tipoCodigo");
 	String sTipoCodigoExt = (String)request.getAttribute("tipoCodigoExt");
 	String sDarDeBaja = (String)request.getAttribute("darDeBaja");
+	String idTablaRel = (String)request.getAttribute("IDTABLAREL");
+	
+	
 	//Nuevo identificador:
 	//	String codigoNuevo = (String)request.getAttribute("codigoNuevo");
 
@@ -83,6 +97,7 @@
 	request.removeAttribute("tipoCodigoExt");
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	String datoCombo[] = { (String) userBean.getLocation() };
 %>	
 
 <html>
@@ -102,6 +117,19 @@
 			// Asociada al boton GuardarCerrar
 			function accionGuardarCerrar() {
 				sub();
+				var numeroPlantillas = document.getElementById("numeroTextoPlantillas");
+				var textoPlantillas = "";
+				if(numeroPlantillas &&numeroPlantillas.value>0){
+					for ( var j = 0; j < numeroPlantillas.value; j++) {
+						textoi = document.getElementById("numeroTextoPlantilla_"+j).value
+						if(textoi=='')
+							textoi = ' ';
+						textoPlantillas += textoi +"%%";
+					}
+					
+				}
+				listadoTablasMaestrasForm.numeroTextoPlantillas.value = textoPlantillas;
+				
 				if (listadoTablasMaestrasForm.descripcionRegistro.value=='') {
 					alert('<siga:Idioma key="messages.consultas.error.descripcion"/>');
 					fin();
@@ -173,12 +201,20 @@
 				<input type="hidden" name="longitudDescripcion" value="<%=sLongitudDescripcion%>">
 				<input type="hidden" name="tipoCodigo" value="<%=sTipoCodigo%>">
 				<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">				
+				<input type="hidden" id="numeroTextoPlantillas"  name="numeroTextoPlantillas" value="<%=numeroTextoPlantillas%>">
+				
+				
+				
 
 				<table class="tablaCentralCamposPeque" align="center" border="0">
 					<tr>		
 						<td>
 							<siga:ConjCampos leyenda="administracion.catalogos.titulo">
 								<table class="tablaCampos" align="center">
+								<tr>
+											<td width="25%"></td>
+											<td width="75%"> </td>
+										</tr>
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="general.literal.tabla"/>
@@ -257,35 +293,115 @@
 						</td>
 					</tr>
 					
-					<% if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)) {
-							//Para el Combo de dictamen
-							String[] dato={userBean.getLocation()};
-							ArrayList vTipoDictamen = new ArrayList();
-							vTipoDictamen.add(userBean.getLocation());
-							//Añadir tipo dictamen
-							vTipoDictamen.add(tipoDictamenEJG);  
+					<%
+					
+					
+					if (idTablaRel !=null && !idTablaRel.equals("")) {
+							
+							
+							ArrayList vCodigoCampoRel = new ArrayList();
+							
+							vCodigoCampoRel.add(idRelacionado);
+							vCodigoCampoRel.add(userBean.getLocation());
+							
+							String idCampoCodigoRel =(String) request.getAttribute("IDCAMPOCODIGOREL");
+							String descripcionRel =(String) request.getAttribute("DESCRIPCIONREL");
+							String querycombo = (String) request.getAttribute("QUERYTABLAREL");
+							
+							 
+							
 					%>
+					<input type="hidden" id="idTablaRel"  name="idTablaRel" value="<%=idTablaRel%>">
+					<input type="hidden" id="idCampoCodigoRel"  name="idCampoCodigoRel" value="<%=idCampoCodigoRel%>">
+					<input type="hidden" id="descripcionRel"  name="descripcionRel" value="<%=descripcionRel%>">
+					<input type="hidden" id="queryTablaRel"  name="queryTablaRel" value="<%=querycombo%>">
+					
+					
+					
 						<tr>		
 							<td>
 								<siga:ConjCampos leyenda="Asociado a">
 									<table class="tablaCampos" align="center">
 										<tr>
+											<td width="25%"></td>
+											<td width="75%"> </td>
+										</tr>
+										<tr>
 											<td class="labelText">
-												<siga:Idioma key="Tipo Dictamen"/>
+												<siga:Idioma key="<%=descripcionRel%>"/>
 											</td>
 											<td class="labelTextValue">
 												<% if (bEditable) { %>
-													<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxCombo" readonly="false" ancho="320"/>
+													<siga:ComboBD nombre="idRelacionado" tipo="<%=querycombo%>"  obligatorio="false" parametro="<%=datoCombo%>" elementoSel="<%=vCodigoCampoRel%>" clase="boxCombo" readonly="false" ancho="320"/>
 												<% } else { %>
-													<siga:ComboBD nombre="idTipoDictamen" tipo="cmbTipoDictamen" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vTipoDictamen%>" clase="boxConsulta" readonly="true" ancho="320"/>	
+													<siga:ComboBD nombre="idRelacionado" tipo="<%=querycombo%>" obligatorio="false" parametro="<%=datoCombo%>" elementoSel="<%=vCodigoCampoRel%>" clase="boxConsulta" readonly="true" ancho="320"/>	
 												<% } %>
 											</td>
-										</tr>							
+										</tr>	
+										<tr>
+											<td ></td>
+											<td > </td>
+										</tr>						
 									</table>
 								</siga:ConjCampos>
 							</td>
 						</tr>					
-					<% } %>	
+					<%}	%>
+					
+					<% 
+					
+					if(numeroTextoPlantillas!=null  &&!numeroTextoPlantillas.equals("null") &&!numeroTextoPlantillas.equals("") && Integer.parseInt(numeroTextoPlantillas)>0){
+						%><tr>		
+						<td>
+							<siga:ConjCampos leyenda="TextoPlantillas">
+						<%
+						
+						int numeroPlantillas = Integer.parseInt(numeroTextoPlantillas);
+						String[] arrayTextoPlantillas = null;
+						if(textoPlantillas.equals(""))
+							arrayTextoPlantillas = new String[numeroPlantillas];
+						else
+							arrayTextoPlantillas = textoPlantillas.split("%%");
+						
+						for (int i = 0; i < numeroPlantillas; i++) {
+							%>
+							
+									<table class="tablaCampos" align="center">
+										<tr>
+											<td width="25%"></td>
+											<td width="85%"> </td>
+										</tr>
+										<tr>
+											<td class="labelText">
+												Texto Plantilla <%=i%>
+											</td>
+											<td class="labelTextValue">
+												<% if (bEditable) { %>
+												
+													<textarea cols=80 rows=4 id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"  class="box" onKeyDown="cuenta(this,255)"  onChange="cuenta(this,255)"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
+												
+												<% } else { %>
+													<textarea cols=80 rows=4 id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"  class="box" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" readonly="true"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
+												<% } %>
+											</td>
+										</tr>	
+																			
+									</table>
+								
+							
+							
+							
+							
+							<%
+							
+						}%>
+						</siga:ConjCampos>
+						</td>
+						</tr>
+					<%		
+					}
+					%>
+					
 					
 					<% if (sBloqueo!=null && sBloqueo.equals("S") ){ %>					
 						<tr>

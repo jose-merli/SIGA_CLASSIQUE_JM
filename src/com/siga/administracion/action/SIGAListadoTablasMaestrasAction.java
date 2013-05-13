@@ -1,14 +1,31 @@
 package com.siga.administracion.action;
 
-import java.util.*;
-import com.atos.utils.*;
-import com.siga.beans.*;
-import com.siga.general.*;
-import javax.servlet.http.*;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import org.apache.struts.action.*;
-import com.siga.Utilidades.Paginador;
-import com.siga.administracion.form.*;
+
+import org.apache.struts.action.ActionMapping;
+
+import com.atos.utils.CLSAdminLog;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.administracion.form.SIGAListadoTablasMaestrasForm;
+import com.siga.beans.GenRecursosCatalogosAdm;
+import com.siga.beans.GenRecursosCatalogosBean;
+import com.siga.beans.GenTablasMaestrasAdm;
+import com.siga.beans.GenTablasMaestrasBean;
+import com.siga.beans.MasterBean;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class SIGAListadoTablasMaestrasAction extends MasterAction
 {
@@ -105,6 +122,13 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        	form.setPonerBajaLogica("S");
 	        else
 	        	form.setPonerBajaLogica("N");
+	        
+	        form.setIdTablaRel(beanTablaMaestra.getIdTablaRel());
+	        form.setDescripcionRel(beanTablaMaestra.getDescripcionRel());
+	        form.setIdCampoCodigoRel(beanTablaMaestra.getIdCampoCodigoRel());
+	        form.setNumeroTextoPlantillas(beanTablaMaestra.getNumeroTextoPlantillas()!=null?beanTablaMaestra.getNumeroTextoPlantillas().toString():"");
+	        form.setQueryTablaRel(beanTablaMaestra.getQueryTablaRel());
+	        
 	        String sCodigoBusqueda = form.getCodigoBusqueda().trim();
 	        String sDescripcionBusqueda = form.getDescripcionBusqueda().trim();
 	        
@@ -116,6 +140,20 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        
 	        if(beanTablaMaestra.getAceptabaja()==1)
 	        	sSQL += " ,FECHABAJA ";
+	        if(form.getNumeroTextoPlantillas()!=null && !form.getNumeroTextoPlantillas().equals("")&&!form.getNumeroTextoPlantillas().equals("null")){
+	        	int numeroTextoPlantillas = Integer.parseInt(form.getNumeroTextoPlantillas());
+	        	if(numeroTextoPlantillas>0)
+	        		sSQL += ", ";
+		        for (int i = 0; i < numeroTextoPlantillas; i++) {
+		        	sSQL += "NVL(";
+		        	sSQL += i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+		        	sSQL += ",' ')";
+		        	sSQL += i==numeroTextoPlantillas-1?"||'%%'":"||'%%'||";
+					
+				}
+		        if(numeroTextoPlantillas>0)
+	        		sSQL += " TEXTOPLANTILLAS ";
+	        }
 	        
 	        sSQL += " FROM " + idTabla +  " WHERE 1 = 1 "; 
 	                      
@@ -188,7 +226,14 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	        tx = userBean.getTransaction();
+	        String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+	        int tamañoTexto = 0;
 	        
+	        String [] textoPlantillasArray = null;
+	        if(strTextoPlantillas!=null &&!strTextoPlantillas.equals("")){
+	        	textoPlantillasArray = strTextoPlantillas.split("%%");
+	        	tamañoTexto = textoPlantillasArray.length;
+	        }
 	        String sNombreTabla = form.getNombreTablaMaestra();
 	        String sNombreCampoCodigo = form.getNombreCampoCodigo();
 	        String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
@@ -223,11 +268,21 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        vFields.add(MasterBean.C_USUMODIFICACION);
 	        vFields.add(MasterBean.C_FECHAMODIFICACION);
 	        
-	        //En el caso de la tabla SCS_TIPOFUNDAMENTOCALIF se añade el tipo de dictamen escogido
-	    	if (sNombreTabla != null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA) && form.getIdTipoDictamen() != null && !form.getIdTipoDictamen().equals("")){
-	    		row.setValue(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
-	    		vFields.add(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG);
-	    	}	
+	        if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("")){
+	        	row.setValue(form.getIdCampoCodigoRel(), new Integer(form.getIdRelacionado().split(",")[0]));
+	    		vFields.add(form.getIdCampoCodigoRel());
+	        }
+	        
+	        if(textoPlantillasArray!=null){
+	    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+	    			 row.setValue(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1), textoPlantillasArray[i].trim());
+	    			 vFields.add(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1));
+	    			 
+	 				
+	 			}
+	    		
+	    	}
+	        
 	
 	        if (sLocal.equals("S"))
 	        {
@@ -299,6 +354,16 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	        tx = userBean.getTransaction();
+	        String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+	        int tamañoTexto = 0;
+	        
+	        String [] textoPlantillasArray = null;
+	        if(strTextoPlantillas!=null &&!strTextoPlantillas.equals("")){
+	        	textoPlantillasArray = strTextoPlantillas.split("%%");
+	        	tamañoTexto = textoPlantillasArray.length;
+	        }
+	        
+	       
 	        
 	        String sCodigo = form.getCodigoRegistro();
 	        String sCodigoExt = form.getCodigoRegistroExt();
@@ -349,34 +414,66 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	
 		    Object[] campos = null;
 		    if(aceptaBaja == 1){
-		    	campos = new Object[5];
+		    	campos = new Object[5+tamañoTexto];
 		    	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
 		        campos[2] = sFechaModificacion;
 		        campos[3] = sUsuModif;
 		    	campos[4] = sNombreCampoFechaBaja;
-		    	if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
-			    	campos = new Object[6];
+		    	if(textoPlantillasArray!=null){
+		    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+		    			 campos[5+i] = i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+		 				
+		 			}
+		    		
+		    	}
+		    	
+		    	if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("")){
+		    		campos = new Object[6+tamañoTexto];
 			    	campos[0] = sNombreCampoDescripcion;
 			        campos[1] = sNombreCampoCodigoExt;
 			        campos[2] = sFechaModificacion;
 			        campos[3] = sUsuModif;
 			    	campos[4] = sNombreCampoFechaBaja;
-		    		campos[5] = ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG;
+		    		campos[5] = form.getIdCampoCodigoRel();
+		    		if(textoPlantillasArray!=null){
+			    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+			    			 campos[6+i] = i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+			 				
+			 			}
+			    		
+			    	}
+		    		
 		    	}
-	        }else if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
-	        	campos = new Object[5];
+		    	
+		    	
+	        }else if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("")){
+	        	campos = new Object[5+tamañoTexto];
 	        	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
 		        campos[2] = sFechaModificacion;
 		        campos[3] = sUsuModif;
-		        campos[4] = ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG;
+		        campos[4] = form.getIdCampoCodigoRel();
+		        if(textoPlantillasArray!=null){
+		    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+		    			 campos[5+i] = i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+		 				
+		 			}
+		    		
+		    	}
 		    }else{
-	        	campos = new Object[4];
+	        	campos = new Object[4+tamañoTexto];
 	        	campos[0] = sNombreCampoDescripcion;
 		        campos[1] = sNombreCampoCodigoExt;
 		        campos[2] = sFechaModificacion;
 		        campos[3] = sUsuModif;
+		        if(textoPlantillasArray!=null){
+		    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+		    			 campos[4+i] = i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+		 				
+		 			}
+		    		
+		    	}
 	        }
 		    
 	        //Chequeo si existe una descripcion igual:
@@ -412,13 +509,24 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    			}
 	    			
 	    			//En el caso de la tabla SCS_TIPOFUNDAMENTOCALIF se añade el tipo de dictamen escogido
-	    			if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
-	    				if (form.getIdTipoDictamen() == null || form.getIdTipoDictamen().equals("")){
-	    					htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, "");
+	    			
+	    			if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("")){
+	    				if (form.getIdRelacionado() == null || form.getIdRelacionado().equals("")){
+	    					htNew.put(form.getIdCampoCodigoRel(), "");
 	    				} else {
-	    					htNew.put(ScsTipoFundamentosCalifBean.C_IDTIPODICTAMENEJG, new Integer(form.getIdTipoDictamen()));
+	    					htNew.put(form.getIdCampoCodigoRel(), new Integer(form.getIdRelacionado().split(",")[0]));
 	    				}
-	    			}	
+	    				
+	    			}
+	    			
+	    			if(textoPlantillasArray!=null){
+			    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+			    			 htNew.put(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1), textoPlantillasArray[i].trim());
+			 				
+			 			}
+			    		
+			    	}
+	    			
 	    			
 			        row.load(htNew);
 			        if (row.update(sNombreTabla, claves, campos) <= 0) {
@@ -564,6 +672,11 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sLongitudDescripcion = form.getLongitudDescripcion();
 	        String sTipoCodigo = form.getTipoCodigo();
 	        String sTipoCodigoExt = form.getTipoCodigoExt();
+	        
+	        String idTableRel = form.getIdTablaRel();
+	        String idCampoCodigoTablaRel = form.getIdCampoCodigoRel();
+	        
+	        
 	        String sDarDeBaja = "N";
 	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
 	        if(aceptaBaja == 1){
@@ -584,9 +697,39 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			    	sSQL += " ,FECHABAJA ";           
 			    }
 			    
-			    if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
-			    	sSQL += " ,IDTIPODICTAMENEJG"; 
+			    if(form.getNumeroTextoPlantillas()!=null && !form.getNumeroTextoPlantillas().equals("")&&!form.getNumeroTextoPlantillas().equals("null")){
+		        	int numeroTextoPlantillas = Integer.parseInt(form.getNumeroTextoPlantillas());
+		        	if(numeroTextoPlantillas>0)
+		        		sSQL += ", ";
+			        for (int i = 0; i < numeroTextoPlantillas; i++) {
+			        	sSQL += "NVL(";
+			        	sSQL += i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
+			        	sSQL += ",' ')";
+			        	sSQL += i==numeroTextoPlantillas-1?"||'%%'":"||'%%'||";
+						
+					}
+			        if(numeroTextoPlantillas>0)
+		        		sSQL += " TEXTOPLANTILLAS ";
+		        }
+			    
+			    
+			    if(idTableRel!=null && !idTableRel.equals("") && idCampoCodigoTablaRel!=null && !idCampoCodigoTablaRel.equals("")){
+			    	sSQL += " ,"+idCampoCodigoTablaRel +" AS IDRELACIONADO";
+			    	
+			    	//request.setAttribute("IDRELACIONADO",idTableRel);
+		 	        request.setAttribute("IDTABLAREL",idTableRel);
+		 	       request.setAttribute("IDCAMPOCODIGOREL", form.getIdCampoCodigoRel());
+		 	        request.setAttribute("DESCRIPCIONREL", form.getDescripcionRel());
+		 	        
+		 	        request.setAttribute("QUERYTABLAREL", form.getQueryTablaRel());
+			    	
 			    }
+			    
+//			    if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosCalifBean.T_NOMBRETABLA)){
+//			    	sSQL += " ,IDTIPODICTAMENEJG"; 
+//			    }else if (sNombreTabla !=null && sNombreTabla.equals(ScsTipoFundamentosBean.T_NOMBRETABLA)){
+//			    	sSQL += " ,IDTIPORESOLUCION"; 
+//			    } 
 			    
 			    sSQL += "  FROM " + sNombreTabla +
 			    	   " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
@@ -606,6 +749,17 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		        request.setAttribute("bloqueo",sBloqueo);
 		
 	        } else {
+	        	
+	        	if(idTableRel!=null && !idTableRel.equals("") ){
+			    	
+		 	        request.setAttribute("IDTABLAREL",idTableRel);
+		 	        request.setAttribute("DESCRIPCIONREL", form.getDescripcionRel());
+		 	       request.setAttribute("IDCAMPOCODIGOREL", form.getIdCampoCodigoRel());
+		 	        
+		 	        request.setAttribute("QUERYTABLAREL", form.getQueryTablaRel());
+			    	
+			    }
+	        	
 	            //Obtengo el nuevo identificador secuencial:
 	            // RGG ya no obtengo porque no hace falta sugerir 
 	        	//String codigoNuevo = this.getNuevoID(userBean.getLocation(), sNombreCampoCodigo, sNombreTabla, sLocal, sLongitudCodigo, sTipoCodigo);
@@ -626,6 +780,9 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        request.setAttribute("tipoCodigo", sTipoCodigo);
 	        request.setAttribute("tipoCodigoExt", sTipoCodigoExt);
 	        request.setAttribute("darDeBaja", sDarDeBaja);
+	        request.setAttribute("NUMEROTEXTOPLANTILLAS", form.getNumeroTextoPlantillas());
+	        
+	       
 	        
 
 	    return "mostrar";

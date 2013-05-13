@@ -16,7 +16,7 @@
 <%@ page import="com.siga.administracion.*"%>
 
 
-<%@ page import="com.siga.Utilidades.Paginador"%>
+<%@ page import="com.siga.Utilidades.paginadores.Paginador"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 
@@ -104,12 +104,28 @@
 			parent.listadoTablasMaestrasForm.longitudDescripcion.value="<%=beanTablaMaestra.getLongitudDescripcion()%>";
 			parent.listadoTablasMaestrasForm.tipoCodigo.value="<%=beanTablaMaestra.getTipoCodigo()%>";
 			parent.listadoTablasMaestrasForm.tipoCodigoExt.value="<%=beanTablaMaestra.getTipoCodigoExt()%>";
+
+			parent.listadoTablasMaestrasForm.idTablaRel.value="<%=beanTablaMaestra.getIdTablaRel()!=null?beanTablaMaestra.getIdTablaRel():""%>";
+			parent.listadoTablasMaestrasForm.idCampoCodigoRel.value="<%=beanTablaMaestra.getIdCampoCodigoRel()!=null?beanTablaMaestra.getIdCampoCodigoRel():""%>";
+			parent.listadoTablasMaestrasForm.descripcionRel.value="<%=beanTablaMaestra.getDescripcionRel()%>";
+			parent.listadoTablasMaestrasForm.queryTablaRel.value="<%=beanTablaMaestra.getQueryTablaRel()%>";
+			parent.listadoTablasMaestrasForm.numeroTextoPlantillas.value="<%=beanTablaMaestra.getNumeroTextoPlantillas()!=null?beanTablaMaestra.getNumeroTextoPlantillas():""%>";
 		</script>
 
 	</head>
 
 	<body class="tablaCentralCampos">
-
+					
+					
+<% String tamanio = "P";
+if(beanTablaMaestra.getNumeroTextoPlantillas()!=null ){
+	if(beanTablaMaestra.getNumeroTextoPlantillas()==1)
+		 tamanio = "M";
+	else if(beanTablaMaestra.getNumeroTextoPlantillas()>1)
+		tamanio = "G";
+}
+	
+%>
 		<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="submitArea" style="display:none">
 			<html:hidden property = "modo" value = ""/>
 			<input type="hidden" id="nombreTablaMaestra"  name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdTablaMaestra()%>">
@@ -123,6 +139,12 @@
 			<input type="hidden" id="longitudDescripcion"  name="longitudDescripcion" value="<%=beanTablaMaestra.getLongitudDescripcion()%>">
 			<input type="hidden" id="tipoCodigo"  name="tipoCodigo" value="<%=beanTablaMaestra.getTipoCodigo()%>">
 			<input type="hidden" id="tipoCodigoExt"  name="tipoCodigoExt" value="<%=beanTablaMaestra.getTipoCodigoExt()%>">
+			<input type="hidden" id="idTablaRel"  name="idTablaRel" value="<%=beanTablaMaestra.getIdTablaRel()!=null?beanTablaMaestra.getIdTablaRel():""%>">
+			<input type="hidden" id="idCampoCodigoRel"  name="idCampoCodigoRel" value="<%=beanTablaMaestra.getIdCampoCodigoRel()!=null?beanTablaMaestra.getIdCampoCodigoRel():""%>">
+			<input type="hidden" id="descripcionRel"  name="descripcionRel" value="<%=beanTablaMaestra.getDescripcionRel()%>">
+			<input type="hidden" id="queryTablaRel"  name="queryTablaRel" value="<%=beanTablaMaestra.getQueryTablaRel()%>">
+			<input type="hidden" id="numeroTextoPlantillas"  name="numeroTextoPlantillas" value="<%=beanTablaMaestra.getNumeroTextoPlantillas()!=null?beanTablaMaestra.getNumeroTextoPlantillas():""%>">
+			<input type="hidden" id="textoPlantillas"  name="textoPlantillas" value="<%=beanTablaMaestra.getTextoPlantillas()!=null?beanTablaMaestra.getTextoPlantillas():""%>">
 
 		</html:form>	
 		
@@ -143,7 +165,7 @@
 		   		  tamanoCol="<%=ncols%>"
 		   		  alto="100%"
 		   		  ajustePaginador="true"
-		   		  modal="P"
+		   		  modal="<%=tamanio %>"
 		   		  activarFilaSel="true" >
 
 <%				
@@ -216,4 +238,5 @@
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 		
 	</body>
+	
 </html>

@@ -72,7 +72,13 @@
 				else
 				{
 					listadoTablasMaestrasForm.modo.value="nuevo";
-					var resultado=ventaModalGeneral("listadoTablasMaestrasForm","P");
+					var tamanio = "P";
+					if(listadoTablasMaestrasForm.numeroTextoPlantillas.value==1)
+						tamanio = 'M';
+					if(listadoTablasMaestrasForm.numeroTextoPlantillas.value>1)
+						tamanio = 'G';
+					
+					var resultado=ventaModalGeneral("listadoTablasMaestrasForm",tamanio);
 					
 					if (resultado=="MODIFICADO")
 					{
@@ -101,6 +107,18 @@
 					<html:hidden property="longitudDescripcion"/>
 					<html:hidden property="tipoCodigo"/>
 					<html:hidden property="tipoCodigoExt"/>
+					
+					<html:hidden property="idTablaRel"/>
+					<html:hidden property="idCampoCodigoRel"/>
+					<html:hidden property="descripcionRel"/>
+					<html:hidden property="queryTablaRel"/>
+					<html:hidden property="numeroTextoPlantillas"/>
+					<html:hidden property="textoPlantillas"/>
+					
+					
+					
+					
+					
 					<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
 					<tr>				

@@ -33,7 +33,12 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 		        		   GenTablasMaestrasBean.C_LOCAL,
 		        		   GenTablasMaestrasBean.C_FECHAMODIFICACION,
 						   GenTablasMaestrasBean.C_USUMODIFICACION,
-						   GenTablasMaestrasBean.C_ACEPTABAJA,};
+						   GenTablasMaestrasBean.C_ACEPTABAJA,
+						   GenTablasMaestrasBean.C_IDTABLAREL,
+						   GenTablasMaestrasBean.C_IDCAMPOCODIGOREL,
+						   GenTablasMaestrasBean.C_DESCRIPCIONREL,
+						   GenTablasMaestrasBean.C_QUERYTABLAREL,
+						   GenTablasMaestrasBean.C_NUMEROTEXTOPLANTILLAS,};
 
 		return campos;
 	}
@@ -75,6 +80,12 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 			bean.setFechaMod(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, GenTablasMaestrasBean.C_USUMODIFICACION));
 			bean.setAceptabaja(UtilidadesHash.getInteger(hash, GenTablasMaestrasBean.C_ACEPTABAJA));
+			
+			bean.setIdTablaRel(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_IDTABLAREL));
+			bean.setIdCampoCodigoRel(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_IDCAMPOCODIGOREL));
+			bean.setDescripcionRel(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_DESCRIPCIONREL));
+			bean.setQueryTablaRel(UtilidadesHash.getString(hash, GenTablasMaestrasBean.C_QUERYTABLAREL));
+			bean.setNumeroTextoPlantillas(UtilidadesHash.getInteger(hash, GenTablasMaestrasBean.C_NUMEROTEXTOPLANTILLAS));
 		}
 
 		catch (Exception e)
@@ -119,6 +130,12 @@ public class GenTablasMaestrasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_ACEPTABAJA, b.getAceptabaja());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_IDTABLAREL, b.getIdTablaRel());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_IDCAMPOCODIGOREL, b.getIdCampoCodigoRel());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_DESCRIPCIONREL, b.getDescripcionRel());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_QUERYTABLAREL, b.getQueryTablaRel());
+			UtilidadesHash.set(htData, GenTablasMaestrasBean.C_NUMEROTEXTOPLANTILLAS, b.getNumeroTextoPlantillas());
+			
 		}
 
 		catch (Exception e)

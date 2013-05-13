@@ -7,6 +7,7 @@ public class ScsTipoFundamentosBean extends MasterBean{
 	private Integer idFundamento;		
 	private String  codigo;		
 	private String 	descripcion;	
+	private String 	idtipoResolucion;
 	
 	/* Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "SCS_TIPOFUNDAMENTOS";
@@ -15,6 +16,7 @@ public class ScsTipoFundamentosBean extends MasterBean{
 	static public final String	C_IDFUNDAMENTO	="IDFUNDAMENTO"; 
 	static public final String	C_CODIGO 		="CODIGO"; 
 	static public final String  C_DESCRIPCION	="DESCRIPCION";
+	static public final String  C_IDTIPORESOLUCION	="IDTIPORESOLUCION";
 	
 	/*Metodos SET*/
 	public void setIdFundamento	(Integer valor)	{ this.idFundamento = valor;}
@@ -26,5 +28,11 @@ public class ScsTipoFundamentosBean extends MasterBean{
 	public Integer getIdFundamento		()	{ return this.idFundamento;}
 	public String getCodigo				()	{ return this.codigo;}
 	public String getDescripcion		()	{ return this.descripcion;}
+	public String getIdtipoResolucion() {
+		return idtipoResolucion;
+	}
+	public void setIdtipoResolucion(String idtipoResolucion) {
+		this.idtipoResolucion = idtipoResolucion;
+	}
 	
 }

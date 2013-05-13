@@ -1,5 +1,6 @@
 package com.siga.administracion.form;
 
+import com.siga.beans.GenTablasMaestrasBean;
 import com.siga.general.MasterForm;
 
 public class SIGAListadoTablasMaestrasForm extends MasterForm
@@ -23,7 +24,14 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
     private String codigoBusqueda="";
     private String descripcionBusqueda="";
     private String ponerBajaLogica="";
-    private String idTipoDictamen="";
+    private String idRelacionado="";
+    
+    private String idTablaRel;
+    private String idCampoCodigoRel;
+    private String descripcionRel;
+    private String queryTablaRel;
+    private String numeroTextoPlantillas;
+    private String textoPlantillas;
     
     
 //    public String getModo() 
@@ -212,12 +220,64 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
 		this.ponerBajaLogica = ponerBajaLogica;
 	}
 
-	public String getIdTipoDictamen() {
-		return idTipoDictamen;
+	public String getIdRelacionado() {
+		return idRelacionado;
 	}
 
-	public void setIdTipoDictamen(String idTipoDictamen) {
-		this.idTipoDictamen = idTipoDictamen;
+	public void setIdRelacionado(String idRelacionado) {
+		this.idRelacionado = idRelacionado;
 	}
+
+	public String getIdTablaRel() {
+		return idTablaRel;
+	}
+
+	public void setIdTablaRel(String idTablaRel) {
+		this.idTablaRel = idTablaRel;
+	}
+
+	public String getIdCampoCodigoRel() {
+		return idCampoCodigoRel;
+	}
+
+	public void setIdCampoCodigoRel(String idCampoCodigoRel) {
+		this.idCampoCodigoRel = idCampoCodigoRel;
+	}
+
+	
+
+	public String getNumeroTextoPlantillas() {
+		return numeroTextoPlantillas;
+	}
+
+	public void setNumeroTextoPlantillas(String numeroTextoPlantillas) {
+		this.numeroTextoPlantillas = numeroTextoPlantillas;
+	}
+
+	public String getQueryTablaRel() {
+		return queryTablaRel;
+	}
+
+	public void setQueryTablaRel(String queryTablaRel) {
+		this.queryTablaRel = queryTablaRel;
+	}
+
+	public String getDescripcionRel() {
+		return descripcionRel;
+	}
+
+	public void setDescripcionRel(String descripcionRel) {
+		this.descripcionRel = descripcionRel;
+	}
+
+	public String getTextoPlantillas() {
+		return textoPlantillas;
+	}
+
+	public void setTextoPlantillas(String textoPlantillas) {
+		this.textoPlantillas = textoPlantillas;
+	}
+
+	
 	
 }

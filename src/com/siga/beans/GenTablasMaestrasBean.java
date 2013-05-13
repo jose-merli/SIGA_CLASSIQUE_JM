@@ -18,6 +18,12 @@ public class GenTablasMaestrasBean extends MasterBean
 	private String tipoCodigo;
 	private String local;
 	private Integer aceptabaja;
+	private String idTablaRel;
+    private String idCampoCodigoRel;
+    private String descripcionRel;
+    private String queryTablaRel;
+    private Integer numeroTextoPlantillas;
+    private String textoPlantillas;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDTABLAMAESTRA = "IDTABLAMAESTRA";
@@ -36,6 +42,16 @@ public class GenTablasMaestrasBean extends MasterBean
 	static public final String C_LOCAL = "LOCAL";
 	static public final String C_IDCAMPOBLOQUEADO = "IDCAMPODESCRIPCION";
 	static public final String C_ACEPTABAJA = "ACEPTABAJA";
+	
+	static public final String C_IDTABLAREL = "IDTABLAREL";
+	static public final String C_IDCAMPOCODIGOREL = "IDCAMPOCODIGOREL";
+	static public final String C_DESCRIPCIONREL = "DESCRIPCIONREL";
+	static public final String C_NUMEROTEXTOPLANTILLAS = "NUMEROTEXTOPLANTILLAS";
+	static public final String C_QUERYTABLAREL = "QUERYTABLAREL";
+	
+	static public final String C_TEXTOPLANTILLA = "TEXTOPLANTILLA";
+	
+	  
 	
 	// RGG Cambio para codigo ext
 	private String idCampoCodigoExt;
@@ -218,6 +234,43 @@ public class GenTablasMaestrasBean extends MasterBean
 	}
 	public void setAceptabaja(Integer aceptabaja) {
 		this.aceptabaja = aceptabaja;
+	}
+	public String getIdTablaRel() {
+		return idTablaRel;
+	}
+	public void setIdTablaRel(String idTablaRel) {
+		this.idTablaRel = idTablaRel;
+	}
+	public String getIdCampoCodigoRel() {
+		return idCampoCodigoRel;
+	}
+	public void setIdCampoCodigoRel(String idCampoCodigoRel) {
+		this.idCampoCodigoRel = idCampoCodigoRel;
+	}
+	
+	public Integer getNumeroTextoPlantillas() {
+		return numeroTextoPlantillas;
+	}
+	public void setNumeroTextoPlantillas(Integer numeroTextoPlantillas) {
+		this.numeroTextoPlantillas = numeroTextoPlantillas;
+	}
+	public String getDescripcionRel() {
+		return descripcionRel;
+	}
+	public void setDescripcionRel(String descripcionRel) {
+		this.descripcionRel = descripcionRel;
+	}
+	public String getQueryTablaRel() {
+		return queryTablaRel;
+	}
+	public void setQueryTablaRel(String queryTablaRel) {
+		this.queryTablaRel = queryTablaRel;
+	}
+	public String getTextoPlantillas() {
+		return textoPlantillas;
+	}
+	public void setTextoPlantillas(String textoPlantillas) {
+		this.textoPlantillas = textoPlantillas;
 	}
     
     
