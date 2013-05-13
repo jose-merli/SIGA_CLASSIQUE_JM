@@ -857,7 +857,6 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						CenActividadProfesionalAdm adm = new CenActividadProfesionalAdm(this.usrbean);
 						Hashtable h = new Hashtable();
 						UtilidadesHash.set(h , CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL, beanGrupo.getIdActividadProfesional());
-						UtilidadesHash.set(h , CenActividadProfesionalBean.C_IDINSTITUCION, beanGrupo.getIdInstitucionActividad());
 
 						Hashtable hDatos = new Hashtable();
 						UtilidadesHash.set (hDatos, "GRUPOS FIJOS", ((CenActividadProfesionalBean)adm.selectByPK(h).get(0)).getDescripcion());

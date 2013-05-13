@@ -175,7 +175,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 			select += " WHERE grupoCliente."+CenNoColegiadoActividadBean.C_IDINSTITUCION+"="+idInstitucion;
 			select += " AND grupoCliente."+CenNoColegiadoActividadBean.C_IDPERSONA+"="+idPersona;
 			select += " AND grupoCliente."+CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL+"=grupo."+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL;
-			select += " AND grupoCliente."+CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD+"=grupo."+CenActividadProfesionalBean.C_IDINSTITUCION;	
 			
 			//Consulta:
 			datos = this.selectGenerico(select);			

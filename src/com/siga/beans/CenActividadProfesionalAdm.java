@@ -29,8 +29,7 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 	}
 
 	protected String[] getClavesBean() {
-		String [] claves = {CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL,
-							CenActividadProfesionalBean.C_IDINSTITUCION};
+		String [] claves = {CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL};
 		return claves;
 	}
 	
@@ -41,7 +40,6 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 		try {
 			bean = new CenActividadProfesionalBean();
 			bean.setIdActividadProfesional(UtilidadesHash.getInteger(hash, CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL));
-			bean.setIdInstitucion (UtilidadesHash.getInteger(hash, CenActividadProfesionalBean.C_IDINSTITUCION));
 			bean.setDescripcion (UtilidadesHash.getString(hash, CenActividadProfesionalBean.C_DESCRIPCION));
 			bean.setCodigoext (UtilidadesHash.getString(hash, CenActividadProfesionalBean.C_CODIGOEXT));
 			bean.setFechaMod	  (UtilidadesHash.getString(hash, CenActividadProfesionalBean.C_FECHAMODIFICACION));
@@ -62,7 +60,6 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 			htData = new Hashtable();
 			CenActividadProfesionalBean b = (CenActividadProfesionalBean) bean;
 			UtilidadesHash.set(htData, CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL, b.getIdActividadProfesional());
-			UtilidadesHash.set(htData, CenActividadProfesionalBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, CenActividadProfesionalBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(htData, CenActividadProfesionalBean.C_CODIGOEXT, b.getCodigoext());
 			UtilidadesHash.set(htData, CenActividadProfesionalBean.C_FECHAMODIFICACION, b.getFechaMod());
@@ -80,7 +77,7 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 	 * @param criteros para filtrar el select, campo where 
 	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
 	 * */
-	public Paginador busquedaGruposFijos(String nombre, String idInstitucion) throws ClsExceptions 
+	public Paginador busquedaGruposFijos(String nombre) throws ClsExceptions 
 	{
 		/*Vector datos = new Vector();*/
 		String select = null;
@@ -95,25 +92,14 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 			select += " FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+" grupo ,";
 			select += CenInstitucionBean.T_NOMBRETABLA+" i ";
 			
-			//WHERE:
-			if(idInstitucion.equals("2000")){
-				//salen las de todas las instituciones
-				select += " WHERE grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+"= i."+CenInstitucionBean.C_IDINSTITUCION;
-			}else{
-				//salen las de la 2000 y las propias
-				select += " WHERE (grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+"="+idInstitucion;
-				select += "     OR grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+"=2000)";
-				select += "   AND grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+"= i."+CenInstitucionBean.C_IDINSTITUCION;
-			}
-			
 			//Filtro del nombre:
 			if (nombre !=null && !nombre.equals(""))
-				select += " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"grupo."+CenActividadProfesionalBean.C_DESCRIPCION) ;
+				select += " WHERE "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"grupo."+CenActividadProfesionalBean.C_DESCRIPCION) ;
 
 			
 			
 			//ORDER BY:
-			select += " ORDER BY grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+",grupo."+CenActividadProfesionalBean.C_DESCRIPCION;
+			select += " ORDER BY grupo."+CenActividadProfesionalBean.C_DESCRIPCION;
 			
 			//Consulta:
 			//datos = this.selectGenerico(select);
@@ -140,7 +126,7 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 	 * @param criteros para filtrar el select, campo where 
 	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
 	 * */
-	public Vector busquedaGrupofijo(String idInstitucion, String idActividadProfesional) throws ClsExceptions 
+	public Vector busquedaGrupofijo(String idActividadProfesional) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
 		String select = null;
@@ -153,8 +139,7 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 			select += " FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+" grupo";
 
 			//Filtro:
-			select += " WHERE grupo."+CenActividadProfesionalBean.C_IDINSTITUCION+"="+idInstitucion;
-			select += " AND grupo."+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+"="+idActividadProfesional;
+			select += " WHERE grupo."+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+"="+idActividadProfesional;
 			
 			//Consulta:
 			datos = this.selectGenerico(select);			
@@ -233,14 +218,13 @@ public class CenActividadProfesionalAdm extends MasterBeanAdministrador {
 		return sinDuplicar;
 	}
 	
-	public Integer getNuevoIdGrupo(String idInstitucion) throws ClsExceptions {
+	public Integer getNuevoIdGrupo() throws ClsExceptions {
 		Vector datos = new Vector();
 		String select = null;
 		Integer nuevoId;
 		
 		try {
-			select  = "SELECT MAX("+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+")+1 AS ID FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+
-					  " WHERE "+CenActividadProfesionalBean.C_IDINSTITUCION+"="+idInstitucion;			
+			select  = "SELECT MAX("+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+")+1 AS ID FROM "+CenActividadProfesionalBean.T_NOMBRETABLA;			
 			
 			datos = this.selectGenerico(select);
 			String id = (String)((Hashtable)datos.get(0)).get("ID");
