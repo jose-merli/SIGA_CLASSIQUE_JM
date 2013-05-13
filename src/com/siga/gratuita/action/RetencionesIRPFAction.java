@@ -555,6 +555,10 @@ public class RetencionesIRPFAction extends MasterAction {
 		request.setAttribute("resultado",vRete);
 		request.getSession().removeAttribute("fechas");
 		request.getSession().setAttribute("fechas",vRete);
+		String accion = (String)request.getSession().getAttribute("accion");
+		if (accion == null)
+			accion = "";
+		request.setAttribute("accion", accion);
 	}
 	catch (Exception e) 
 	{
