@@ -370,22 +370,7 @@
 									return false;
 								}
 							} 
-							 */
-								
-							if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
-									|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar' 
-									|| document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' 
-									|| document.InscripcionTGForm.modo.value=='smbtInsertarBaja') 
-								&& document.InscripcionTGForm.syc[0].checked==true) {
-								document.getElementById("tipoActualizacionSyC").value="T";	
-								
-							} else if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
-											|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'
-											|| document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'
-											|| document.InscripcionTGForm.modo.value=='smbtInsertarBaja') 
-										&& document.InscripcionTGForm.syc[1].checked==true) {
-								document.getElementById("tipoActualizacionSyC").value="";
-							}								
+							 */							
 						}
 						
 						// JPT: La fecha de baja debe ser superior o igual a la fecha de validacion de la inscripcion de guardia	
@@ -426,7 +411,23 @@
 										&& document.InscripcionTGForm.syc[1].checked==true) {
 								document.getElementById("tipoActualizacionSyC").value="";
 							}
-						}		
+							
+						} else {
+							if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
+								|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar' 
+								|| document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' 
+								|| document.InscripcionTGForm.modo.value=='smbtInsertarBaja') 
+								&& document.InscripcionTGForm.syc[0].checked==true) {
+									document.getElementById("tipoActualizacionSyC").value="T";	
+							
+							} else if( (document.InscripcionTGForm.modo.value=='vbtComprobarValidar'
+								|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'
+								|| document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'
+								|| document.InscripcionTGForm.modo.value=='smbtInsertarBaja') 
+								&& document.InscripcionTGForm.syc[1].checked==true) {
+									document.getElementById("tipoActualizacionSyC").value="";
+							}	
+						}
 						
 						document.InscripcionTGForm.observacionesValBaja.value = document.InscripcionTGForm.observacionesValidacion.value;	
 						
