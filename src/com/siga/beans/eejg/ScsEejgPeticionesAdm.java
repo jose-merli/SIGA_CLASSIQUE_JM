@@ -21,6 +21,7 @@ import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsUnidadFamiliarEJGBean;
 /**
  * 
  * @author jorgeta
@@ -276,8 +277,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		sql.append(" EEJG.ANIO,EEJG.NUMERO, EEJG.IDPERSONA, ");
 		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, ");
 		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
-		sql.append(" FROM SCS_EEJG_PETICIONES EEJG, ADM_USUARIOS USU ");
-		sql.append(" WHERE EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
+		sql.append(" ,UF.IDPERSONA IDPERSONAINIT ");
+		sql.append(" FROM SCS_EEJG_PETICIONES EEJG,SCS_UNIDADFAMILIAREJG UF, ADM_USUARIOS USU ");
+		sql.append(" WHERE ");
+		sql.append("  EEJG.IDPERSONA = UF.IDPERSONA(+)   AND EEJG.IDINSTITUCION = UF.IDINSTITUCION(+) ");
+		sql.append("  AND EEJG.IDTIPOEJG = UF.IDTIPOEJG(+)   AND EEJG.ANIO = UF.ANIO(+) ");
+		sql.append("  AND EEJG.NUMERO = UF.NUMERO(+) "); 
+		sql.append(" AND EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
 		sql.append(" AND EEJG.IDINSTITUCION = USU.IDINSTITUCION(+) ");
 		 
 		sql.append(" AND EEJG.IDINSTITUCION =:");
@@ -309,6 +315,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
            		Row fila = (Row) rc.get(i);
            		Hashtable<String, Object> htFila=fila.getRow();
            		peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+           		peticionEejgOut.setPersonaUnidadFamiliar((htFila.get("IDPERSONAINIT")!=null&&!UtilidadesHash.getString(htFila,"IDPERSONAINIT").equals("")));
            		AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
         		usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
         		usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));

@@ -51,6 +51,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	
 	FilaExtElement[] elementosFila;
 	
+	private boolean personaUnidadFamiliar;
 	
 	/* Nombre de Tabla*/
 	
@@ -145,7 +146,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		this.idTipoEjg = unidadFamiliar.getIdTipoEJG();
 		this.anio = unidadFamiliar.getAnio();
 		this.numero = unidadFamiliar.getNumero();
-		this.idPersona = Long.parseLong(unidadFamiliar.getIdPersona().toString());
+		if(unidadFamiliar.getIdPersona()!=null&&unidadFamiliar.getIdPersona().equals(""))
+			this.idPersona = Long.parseLong(unidadFamiliar.getIdPersona().toString());
 		
 	}
 	public ScsUnidadFamiliarEJGBean getUnidadFamiliar() {
@@ -153,7 +155,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		unidadFamiliar.setIdTipoEJG(idTipoEjg);
 		unidadFamiliar.setAnio(anio);
 		unidadFamiliar.setNumero(numero);
-		unidadFamiliar.setIdPersona(Integer.parseInt(idPersona.toString()));
+		if(idPersona!=null)
+			unidadFamiliar.setIdPersona(Integer.parseInt(idPersona.toString()));
 		return unidadFamiliar;
 	}
 	
@@ -316,6 +319,12 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	}
 	public void setRutaPDF(String rutaPDF) {
 		this.rutaPDF = rutaPDF;
+	}
+	public boolean isPersonaUnidadFamiliar() {
+		return personaUnidadFamiliar;
+	}
+	public void setPersonaUnidadFamiliar(boolean personaUnidadFamiliar) {
+		this.personaUnidadFamiliar = personaUnidadFamiliar;
 	}
 		
 }
