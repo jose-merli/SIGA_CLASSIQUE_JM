@@ -5592,7 +5592,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				datosLista = getIdColegiadosTotal(datosInforme, usrBean);
 			}
 			Iterator e = datosLista.keySet().iterator();
-			Object obj;
+			Object keyListaGuardia;
 
 			if (datosInforme.get("NOMBRE") == null) {
 				datosListaGuardias = new Hashtable();
@@ -5639,11 +5639,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 			while (e.hasNext()) {
 
-				obj = e.next();
+				keyListaGuardia = e.next();
 				// Hashtable aux = (Hashtable) datosLista.get(obj);
 				String idPersona = UtilidadesString
-						.split(obj.toString(), "|||")[1];
-				Vector list = (Vector) datosLista.get(obj);
+						.split(keyListaGuardia.toString(), "|||")[1];
+				Vector list = (Vector) datosLista.get(keyListaGuardia);
 				int tam = 0;
 				CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
 
@@ -6016,10 +6016,14 @@ public class EnvioInformesGenericos extends MasterReport {
 			List guardiasList = null;
 			for (int j = 0; j < datos.size(); j++) {
 				Hashtable lineaGuardia = (Hashtable) datos.get(j);
+//				sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, GUARDIA, POSICION, LETRADO";
+				
 				String key = (GstDate.convertirFecha(
 						(String) lineaGuardia.get("FECHA_INICIO"),
 						"yyyy/MM/dd HH:mm:ss").getTime())
-						+ (String) lineaGuardia.get("ORDEN")
+						+ (String) lineaGuardia.get("ORDEN")+
+						 (String) lineaGuardia.get("GUARDIA")
+						+ (String) lineaGuardia.get("POSICION")
 						+ "|||"
 						+ (String) lineaGuardia.get("IDPERSONA");
 				// Long letrado =new Long().longValue();
