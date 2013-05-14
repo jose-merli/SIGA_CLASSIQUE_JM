@@ -142,9 +142,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -224,31 +227,31 @@
 		if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
 			// cliente colegiado
 			if (esColegio) {
-				tamanosCol = "3,12,6,13,12,11,10,6,13,15";
-				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,";
+				tamanosCol = "3,12,6,13,12,11,10,6,13,10";
+				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,&nbsp;";
 				alto = "200";
 			} else {
-				tamanosCol = "3,12,6,12,11,11,8,8,6,9,15";
-				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+				tamanosCol = "3,12,6,12,11,11,8,8,6,9,10";
+				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,&nbsp;";
 				alto = "200";
 			}
 
 		} else {
 			if (colegiado.equals(ClsConstants.DB_FALSE)) {//no colegiado
-				tamanosCol = "3,10,12,16,16,15,15,16";
-				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.tipo,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
+				tamanosCol = "3,8,12,16,16,15,15,12";
+				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.tipo,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,&nbsp;";
 				alto = "200";
 			} else {//letrado
-				tamanosCol = "3,8,8,19,14,7,19,10";
-				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientes.idPersona,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaNacimiento,Dirección,";
+				tamanosCol = "3,8,8,19,14,7,19,12";
+				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientes.idPersona,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaNacimiento,Dirección,&nbsp;";
 				alto = "250";
 			}
 		}
 %>
+<siga:Table name="tablaDatos"
+	columnNames="<%=nombresCol %>" 
+	columnSizes="<%=tamanosCol %>">
 
-<siga:TablaCabecerasFijas nombre="tablaDatos"
-	nombreCol="<%=nombresCol %>" tamanoCol="<%=tamanosCol %>" 
-	alto="100%" ajustePaginador="true" activarFilaSel="true" ajusteBotonera="true">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -256,11 +259,9 @@
 	<%
 		if (resultado == null || resultado.size() == 0) {
 	%>
-	<br>
-	<br>
-	<p class="titulitos" style="text-align: center"><siga:Idioma key="messages.noRecordFound" /></p>
-	<br>
-	<br>
+	<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	<%
 		} else {
 
@@ -594,7 +595,7 @@
 		} // del if
 	%>
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 	<siga:ConjBotonesAccion botones="GX,COM" />
 
 <!-- FIN: LISTA DE VALORES -->

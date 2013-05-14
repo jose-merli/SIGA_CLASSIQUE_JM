@@ -8,11 +8,7 @@
 
 
 <!-- CABECERA JSP -->
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
-<meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <!-- CABECERA JSP -->
@@ -20,6 +16,7 @@
 <!-- TAGLIBS -->
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 
 <!-- IMPORTS -->
@@ -34,11 +31,20 @@
 <!-- JSP -->
 <%
 	String app = request.getContextPath();
-	HttpSession ses = request.getSession();
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
-	ReadProperties rproperties = new ReadProperties(
-			SIGAReferences.RESOURCE_FILES.SIGA);
+	HttpSession ses = request.getSession();	
+	
+	UsrBean userBean = (UsrBean) ses.getAttribute("USRBEAN");
+	
+	if (userBean == null)
+		response.sendError(response.SC_UNAUTHORIZED);
+	
+	String pathInicio = BotonesMenu.getPathCerrarSesion(userBean.getLocation());
+	String pathAyuda = BotonesMenu.getPathAyuda(userBean.getLocation());
+	String pathVersiones = BotonesMenu.getPathVersiones(userBean.getLocation());
+	
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	ReadProperties rproperties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	
 	//Parte para el Applet:
 	//LMS 19/09/2006
 	//Se detecta si es petición HTTP ó HTTPS.
@@ -48,26 +54,14 @@
 			+ ":" + request.getServerPort();
 	//     String scodebase = queryString + app + "/html/jsp/general";
 	String scodebase = queryString;// + app + "/html/jsp/general";
-%>
 
-<!-- JSP -->
-<%
-	String logo = (String) request.getSession().getAttribute(
-			SIGAConstants.PATH_LOGO);
-	UsrBean userBean = (UsrBean) request.getSession().getAttribute(
-			"USRBEAN");
-
-	String pathInicio = BotonesMenu.getPathCerrarSesion(userBean
-			.getLocation());
-	String pathAyuda = BotonesMenu.getPathAyuda(userBean.getLocation());
-	String pathVersiones = BotonesMenu.getPathVersiones(userBean
-			.getLocation());
+	String logo = (String) ses.getAttribute(SIGAConstants.PATH_LOGO);	
 
 	CenInstitucionAdm admInstitucion = new CenInstitucionAdm(userBean);
 	String nombreInstitucion = admInstitucion
 			.getNombreInstitucion(userBean.getLocation());
 
-	String interfaz = (String) request.getSession().getAttribute(
+	String interfaz = (String) ses.getAttribute(
 			"InterfazInicio");
 	String onLoad = "";
 	if (interfaz != null) {
@@ -75,42 +69,43 @@
 	} else {
 		onLoad = "";
 	}
-	request.getSession().removeAttribute("InterfazInicio");
+	ses.removeAttribute("InterfazInicio");
 %>
 
 <html>
 
 <!-- HEAD -->
 <head>
-<title><siga:Idioma key="index.title" />
-</title>
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	
+	<title><siga:Idioma key="index.title" /></title>
 
-<!-- ESTILOS Y JAVASCRIPT -->
-<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery-ui.css"> 
-<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/jquery.notice.css"> 
-<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-<script src="<%=app%>/html/js/jquery.blockUI.js" type="text/javascript"></script>
-<script src="<%=app%>/html/js/jquery.notice.js" type="text/javascript"></script>
-<script src="<%=app%>/html/js/jquery-ui.js" type="text/javascript"></script>
+	<!-- ESTILOS Y JAVASCRIPT -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
-<style type="text/css">
-.notice-wrap {
-	position: absolute;
-	top: 40px;
-	z-index: 9999;
-	left: 175px;
-	width: 825px;
-}
-.notice-item{
-	left:0px;
-	margin: 0px;
-}
-</style>
+	<style type="text/css">
+	.notice-wrap {
+		position: absolute;
+		top: 40px;
+		z-index: 9999;
+		left: 175px;
+		width: 825px;
+	}
+	.notice-item{
+		left:0px;
+		margin: 0px;
+	}
+	</style>
 
-<script language="JavaScript" type="text/javascript">
+	<script language="JavaScript" type="text/javascript">
 
 			var user, psswd, profile, loc, bloqueado=false;
 			user='<%=userBean.getUserName()%>';

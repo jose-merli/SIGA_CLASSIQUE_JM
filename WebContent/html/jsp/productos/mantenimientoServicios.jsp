@@ -141,11 +141,12 @@
 <html>
 	<!-- HEAD -->
 	<head>		
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
@@ -733,19 +734,19 @@
 			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
 		
 			<% if ((modo.equalsIgnoreCase("editar"))||(modo.equalsIgnoreCase("edicion"))||(modo.equalsIgnoreCase("insertar"))||(modo.equalsIgnoreCase("modificar"))){ %>
-				<siga:TablaCabecerasFijas 
-				   nombre="tablaResultados"
-				   borde="1"
-				   clase="tableTitle"				   
-				   nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
-				   tamanoCol="20,20,20,20,20"
-				   alto="100%"					   
+				<siga:Table 
+				   name="tablaResultados"
+				   border="1"
+				   columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
+				   columnSizes="20,20,20,20,20"
 				   modal="G">
 						   				   
 					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
-						<br><br>
-						<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-						<br><br>
+						<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 						
 					<% } else { %>
 						<%
@@ -824,24 +825,22 @@
 							<% recordNumber++;%>
 						<% } // WHILE %>
 					<% } // ELSE %>					
-				</siga:TablaCabecerasFijas>		
+				</siga:Table>		
 					
 			<% } else {	%>								
-				<siga:TablaCabecerasFijas 
-					nombre="tablaResultados"
-					borde="1"
-					clase="tableTitle"				   
-					nombreCol="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
-					tamanoCol="30,20,30,20"
-					alto="100%"				   
+				<siga:Table 
+					name="tablaResultados"
+					border="1"
+					columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
+					columnSizes="30,20,30,20"
 					modal="G">
 
 					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
-						<tr>
-							<br>
-							<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-							<br>
-						</tr>
+						<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 							
 					<% } else {
 					   	Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();								    	
@@ -881,7 +880,7 @@
 							</tr>	
 						<% } // WHILE %>
 					<% } // ELSE %>
-				</siga:TablaCabecerasFijas> 
+				</siga:Table> 
 			<% } // ELSE %>
 			
 			<siga:ConjBotonesAccion botones='<%=botonesPrecio%>' modo='<%=modo%>' clase="botonesDetalle" modal="G"/>

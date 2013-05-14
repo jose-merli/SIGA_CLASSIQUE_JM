@@ -114,12 +114,12 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -157,7 +157,7 @@
 				<table>
 					<tr>
 						<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
-						<td><siga:Fecha  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/></td>
+						<td><siga:Datepicker  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/></td>
 					</tr>				
 				</table>
 			</siga:ConjCampos>
@@ -205,20 +205,17 @@
 			<input type="hidden" id="actionModal"  name="actionModal" value="">									
 		</html:form>	
 				
-		<siga:TablaCabecerasFijas 
-		   nombre="listarTurnos"
-		   borde="2"
-		   clase="tableTitle"
-		   nombreCol="<%=nC%>"
-		   tamanoCol="<%=tC%>"
-		   alto="100%"
-		   ajuste="<%=altoLista%>"
-		   activarFilaSel="<%=activaSeleccionFila%>">
+		<siga:Table 
+		   name="listarTurnos"
+		   border="2"
+		   fixedHeight="95%"
+		   columnNames="<%=nC%>"
+		   columnSizes="<%=tC%>">
 	
 			<%if (resultado == null || resultado.size() == 0) {%>			
-		 		<br>
-		   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-		 		<br>
+		 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 		 		
 			<%} else {		
 				for (int j = 0; j < resultado.size(); j++) {
@@ -454,7 +451,7 @@
 				<!-- FIN: ZONA DE REGISTROS -->
 				
 			<%} // del if%>		
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	
 		<%if (!isEntradaSJCS){%>
 			<!-- Si hay datos se muestra el paginador -->
@@ -473,7 +470,7 @@
 			
 			
 			<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
-			<div style="position:absolute; left:400px;bottom:50px;z-index:2;">
+			<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
 				<table align="center" border="0">
 					<tr>
 						<td class="labelText">

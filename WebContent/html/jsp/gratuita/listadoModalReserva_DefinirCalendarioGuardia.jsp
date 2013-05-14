@@ -56,11 +56,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<script>
 		function refrescarLocal(){
@@ -101,16 +102,12 @@
 	<siga:ConjBotonesBusqueda botones="N"  titulo="gratuita.listadoModal_DefinirCalendarioGuardia.literal.colegiadosReserva" modo="<%=modoOriginal%>" />
 	<!-- FIN: BOTONES BUSQUEDA -->
 	<% if ((obj!= null) && (obj.size()>0)) { %>
-		<siga:TablaCabecerasFijas 		   
-			   nombre="listado"
-			   borde="2"
-			   clase="tableTitle"		   
-			   nombreCol="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaPermuta,"
-			   tamanoCol="14,14,20,23,15,14"
-		   			alto="100%"
-
-			   modal="P"
-		>
+		<siga:Table 		   
+			   name="listado"
+			   border="2"
+			   columnNames="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaPermuta,"
+			   columnSizes="14,14,20,23,15,14"
+			   modal="P">
 				<%
 				int recordNumber=1;
 				String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
@@ -200,13 +197,16 @@
 			</siga:FilaConIconos>
 				<% 		recordNumber++; %>
 				<% } %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 		<!-- FIN: RESULTADO -->
 	<% } else { %>
-		<html:hidden property = "actionModal" value = "P"/>			
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+					
+	 		<div class="notFound">
+	 		<html:hidden property = "actionModal" value = "P"/>
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	<% } %>
 
 		

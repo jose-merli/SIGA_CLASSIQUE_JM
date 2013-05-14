@@ -232,13 +232,12 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
 	
@@ -438,14 +437,14 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaAperturaDesde" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" /> 
+					<siga:Datepicker nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" /> 
+					<siga:Datepicker nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" /> 
 				</td>
 			</tr>
 			
@@ -465,14 +464,14 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaEstadoDesde" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" /> 
+					<siga:Datepicker nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" /> 
+					<siga:Datepicker nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" /> 
 				</td>
 			</tr>
 			
@@ -488,14 +487,14 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaLimiteDesde" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" /> 
+					<siga:Datepicker nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" /> 
+					<siga:Datepicker nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" /> 
 				</td>			
 			</tr>
 			
@@ -539,14 +538,14 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" /> 
+					<siga:Datepicker nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle"> 
-					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" /> 
+					<siga:Datepicker nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" /> 
 				</td>
 			</tr>
 			
@@ -562,14 +561,14 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.desde" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" />
+					<siga:Datepicker nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" /> 
+					<siga:Datepicker nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" /> 
 				</td>			
 			</tr>				
 

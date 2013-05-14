@@ -55,15 +55,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -178,14 +175,11 @@
 		
 	<!-- FIN: BOTONES BUSQUEDA -->
 	<% if ((obj!= null) && (obj.size()>0)) { %>
-		<siga:TablaCabecerasFijas 		   
-		   	nombre="listado"
-		   	borde="2"
-		   	clase="tableTitle"		   
-		   	nombreCol="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
-		   	tamanoCol="20,20,22,28,10"
-   		 	alto="100%"
-		>
+		<siga:Table 		   
+		   	name="listado"
+		   	border="2"
+		   	columnNames="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
+		   	columnSizes="20,20,22,28,10">
 				<%
 				int recordNumber=1;
 				String fechaInicioConfirmador="", fechaFinConfirmador="", numeroColegiadoConfirmador="", nombreConfirmador="";
@@ -238,7 +232,7 @@
 			</tr>
 				<% 		recordNumber++; %>
 				<% } %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 		<!-- FIN: RESULTADO -->
 	<% } else { %>
 		<html:hidden property = "actionModal" value = "P"/>

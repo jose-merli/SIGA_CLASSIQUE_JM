@@ -70,14 +70,12 @@
 <%@page import="com.siga.administracion.SIGAConstants"%>
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"> </script>
-<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
-<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-
-
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 <!-- INICIO: SCRIPTS BOTONES -->
 <script language="JavaScript">	
 	
@@ -232,17 +230,19 @@
 </table>
 
 
-<siga:TablaCabecerasFijas nombre="tablaResultados" borde="2"
-	clase="tableTitle"
-	nombreCol="facturacion.lineasFactura.literal.Orden,
+<siga:Table 
+	name="tablaResultados" 
+	border="2"
+	columnNames="facturacion.lineasFactura.literal.Orden,
 			   						facturacion.lineasFactura.literal.Descripcion,
 			   						facturacion.lineasFactura.literal.Cantidad,
 			   						facturacion.lineasFactura.literal.Precio,
 			   						facturacion.lineasFactura.literal.IVA,
 										facturacion.lineasFactura.literal.Total,
 			   						facturacion.lineasFactura.literal.Anticipado,"
-	tamanoCol="9,40,7,9,7,9,9" 
-	alto="100%" ajuste="180" modal="M">
+	columnSizes="9,40,7,9,7,9,9" 
+	modal="M"
+	fixedHeight="250">
 
 	<%
 					if ((vLineasFactura != null) && (vLineasFactura.size() > 0)) {
@@ -331,7 +331,7 @@
 	}
 	%>
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 	
 	
 
@@ -341,16 +341,16 @@
 elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_NONE);
 
 	%>
-<siga:TablaCabecerasFijas nombre="tablaResultados2" borde="2"
-	clase="tableTitle"
-	nombreCol="Envio,Fecha Envio,facturacion.consultamorosos.literal.comunicaciones.realizadas,"
-	tamanoCol="10,20,50,10" alto="100%"  modal="M">
+<siga:Table name="tablaResultados2" 
+	border="2"
+	columnNames="Envio,Fecha Envio,facturacion.consultamorosos.literal.comunicaciones.realizadas,"
+	columnSizes="10,20,50,10"
+	modal="M"
+	fixedHeight="250">
 	<logic:empty name="ConsultaMorososForm" property="lineasComunicaciones">
-		<tr>
-			<td colspan="4"><br><br>
-		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br><br></td>
-		</tr>
+		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	</logic:empty>
 	
 		
@@ -391,7 +391,7 @@ elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_NONE);
 
 
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 </div>
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 	style="display: none"></iframe>

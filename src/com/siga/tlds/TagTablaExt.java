@@ -11,7 +11,7 @@ import java.io.*;
 import com.atos.utils.*;
 import javax.servlet.http.*;
 import com.siga.Utilidades.*;
-
+@Deprecated
 public class TagTablaExt extends TagTabla
 {
 	boolean bVariasTablasEnLaMismaPagina=false;

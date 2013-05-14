@@ -250,6 +250,71 @@
 
   <!-- TABLA CON CABECERA FIJA -->
   <tag>
+  	<name>Table</name>
+  	<tag-class>com.siga.tlds.TagTable</tag-class>
+  	<body-content>JSP</body-content>
+  	<attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>border</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>border</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>width</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>columnNames</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>columnSizes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>columnNum</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>showHeader</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>showFooter</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>modalScroll</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>fixedHeight</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>mensajeBorrado</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
     <name>TablaCabecerasFijas</name>
     <tag-class>com.siga.tlds.TagTabla</tag-class>
     <body-content>JSP</body-content>
@@ -973,11 +1038,12 @@
   </tag>
   
    <!-- TextBox de Fecha -->
+   <!-- BNS TagDatepicker con jQuery UI datepicker -->
   <tag>
-    <name>Fecha</name>
-    <tag-class>com.siga.tlds.TagFecha</tag-class>
+    <name>Datepicker</name>
+    <tag-class>com.siga.tlds.TagDatepicker</tag-class>
     <body-content>jsp</body-content>
-    <attribute>
+    <attribute>    
       <name>nombreCampo</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
@@ -1037,8 +1103,72 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
-  </tag>  
-  
+  </tag>
+  <tag>
+    <name>Fecha</name>
+    <tag-class>com.siga.tlds.TagFecha</tag-class>
+    <body-content>jsp</body-content>
+    <attribute>    
+      <name>nombreCampo</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>valorInicial</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>necesario</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
+     <attribute>
+      <name>anchoTextField</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>styleId</name>
+      <required>false</required>
+      <rtexprvalue>fecha</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>campoCargarFechaDesde</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
+    <attribute>
+      <name>readOnly</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue> 
+    </attribute>
+    <attribute>
+        <name>preFunction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+    <name>postFunction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>posicionX</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+    <name>posicionY</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag> 
   
   <!-- Busqueda Persona-->
   <tag>

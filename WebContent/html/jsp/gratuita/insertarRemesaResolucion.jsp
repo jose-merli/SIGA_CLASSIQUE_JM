@@ -42,12 +42,12 @@
 <html>
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<html:javascript formName="DefinicionRemesaResolucionesCAJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
@@ -127,7 +127,7 @@
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucion"/>&nbsp;(*)
 				</td>
 				<td class="labelText">
-					<siga:Fecha nombreCampo="fechaResolucion"   valorInicial="<%=fecha%>" readOnly="true"/>
+					<siga:Datepicker nombreCampo="fechaResolucion"   valorInicial="<%=fecha%>" readOnly="true"/>
 				</td>
 		
 			</tr>

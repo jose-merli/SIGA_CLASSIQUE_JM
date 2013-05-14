@@ -35,8 +35,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="factSJCS.historicoPrecios.cabecera"/></title>
 	<script type="text/javascript">
 		function refrescarLocal(){
@@ -46,14 +50,11 @@
 </head>
 
 <body>
-	<siga:TablaCabecerasFijas 		   
-		   nombre="listadoRetenciones"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="factSJCS.historicoPrecios.literal.turno,factSJCS.historicoPrecios.literal.guardia,factSJCS.historicoPrecios.literal.hitoFacturable,factSJCS.historicoPrecios.literal.importe"
-		   tamanoCol="25,25,25,25"
-		   alto="100%"
-		  >
+	<siga:Table 		   
+		   name="listadoRetenciones"
+		   border="2"
+		   columnNames="factSJCS.historicoPrecios.literal.turno,factSJCS.historicoPrecios.literal.guardia,factSJCS.historicoPrecios.literal.hitoFacturable,factSJCS.historicoPrecios.literal.importe"
+		   columnSizes="25,25,25,25">
 		  <%if (obj.size()>0){%>
   			<%
 	    	int recordNumber=0;
@@ -70,14 +71,12 @@
 			<% recordNumber++;} %>
 		<%}else {%>
 			<tr>
-			<td colspan="4">
-			<br>
-			<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-			<br>
+			<td colspan="4" style="background-color:transparent; text-align:center">
+			<p class="titulitos"><siga:Idioma key="messages.noRecordFound"/></p>
 			</td>
 			</tr>
 		<%}%>
-		</siga:TablaCabecerasFijas>	
+		</siga:Table>	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 </body>	
 </html>

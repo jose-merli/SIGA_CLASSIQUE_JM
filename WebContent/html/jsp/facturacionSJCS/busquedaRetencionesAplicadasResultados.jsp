@@ -33,12 +33,12 @@
 <html>
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
-	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>" type="text/javascript"></script>	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 	<script src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>" type="text/javascript"></script>
 	
 </head>
@@ -62,22 +62,17 @@
 		
 			
 		
-		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="factSJCS.busquedaRetAplicadas.literal.tipoRetencion,factSJCS.busquedaRetAplicadas.literal.letrado,factSJCS.busquedaRetAplicadas.literal.destinatarioRetencion
+		<siga:Table 
+		   name="tablaDatos"
+		   border="1"
+		   columnNames="factSJCS.busquedaRetAplicadas.literal.tipoRetencion,factSJCS.busquedaRetAplicadas.literal.letrado,factSJCS.busquedaRetAplicadas.literal.destinatarioRetencion
 				,factSJCS.busquedaRetAplicadas.literal.fechaDesde,factSJCS.busquedaRetAplicadas.literal.fechaHasta,factSJCS.busquedaRetAplicadas.literal.fechaRetencion
 				,factSJCS.busquedaRetAplicadas.literal.importeRetenido,factSJCS.busquedaRetAplicadas.literal.anyomes,factSJCS.busquedaRetAplicadas.literal.abonoRelacionado,factSJCS.busquedaRetAplicadas.literal.pagoRelacionado,"
-		   tamanoCol="8,16,14,8,8,8,8,6,10,10,4" 
-		   
-		   >
+		   columnSizes="8,16,14,8,8,8,8,6,10,10,4">
 		<logic:empty  name="BusquedaRetencionesAplicadasForm" property="retencionesAplicadas">
-		<tr>
-			<td colspan="11"><br><br>
-		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br><br></td>
-		</tr>
+		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	</logic:empty>
 	
 	<logic:notEmpty name="BusquedaRetencionesAplicadasForm" property="retencionesAplicadas">
@@ -158,7 +153,7 @@
 
 
 
-	</siga:TablaCabecerasFijas>
+	</siga:Table>
 	
 	
 
@@ -174,6 +169,7 @@
  		
  		
 	<script type="text/javascript">
+	/*
 	function selectRow(fila) {
 		    
 	   document.getElementById('filaSelD').value = fila;
@@ -185,6 +181,7 @@
 	   }
 	   tabla.rows[fila].className = 'listaNonEditSelected';
 	 }
+	*/
 	 function consultar(idInstitucion,idPersona,idRetencion,idCobro,fechaDesdePago,fechaHastaPago){
 		 document.BusquedaRetencionesAplicadasForm.modo.value = "consultaLEC";
 		 document.BusquedaRetencionesAplicadasForm.idInstitucion.value = idInstitucion;

@@ -41,8 +41,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -61,9 +65,6 @@
 				localizacion="facturacion.previsionesFacturacion.literal.localizacion"/>
 			<!-- FIN: TITULO Y LOCALIZACION -->
 
-		<!-- Calendario -->
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-		
 		<script>
 			function load()
 			{
@@ -141,14 +142,14 @@
 										<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.fechaInicioProductos"/>&nbsp;(*)
 									</td>
 									<td>
-										<siga:Fecha nombreCampo="fechaInicioProductos"/>
+										<siga:Datepicker nombreCampo="fechaInicioProductos"/>
 									</td>
 									
 									<td class="labelText">
 										<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.fechaFinProductos"/>&nbsp;(*)
 									</td>
 									<td>
-										<siga:Fecha nombreCampo="fechaFinProductos"/>
+										<siga:Datepicker nombreCampo="fechaFinProductos"/>
 									</td>
 								</tr>	
 								<tr> 
@@ -156,14 +157,14 @@
 										<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.fechaInicioServicios"/>&nbsp;(*)
 									</td>
 									<td>
-										<siga:Fecha nombreCampo="fechaInicioServicios"/>
+										<siga:Datepicker nombreCampo="fechaInicioServicios"/>
 									</td>
         								
 									<td class="labelText">
 										<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.fechaFinServicios"/>&nbsp;(*)
 									</td>
 									<td>
-										<siga:Fecha nombreCampo="fechaFinServicios"/>
+										<siga:Datepicker nombreCampo="fechaFinServicios"/>
 									</td>
 								</tr>
 							</table>

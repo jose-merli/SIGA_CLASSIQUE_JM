@@ -40,8 +40,12 @@
 <!-- HEAD -->
 <head  >
  
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->	
 
@@ -111,16 +115,10 @@
 		 </td>
 		 </tr>
 		 </table>
-			<siga:TablaCabecerasFijas 
-			nombre="productosSolicitados"
-			borde=""
-			estilo=""
-	   		clase="tableTitle"
-			nombreCol="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
-			tamanoCol="30,30,23,7,10"
-			alto="100%"
-			ajuste="30"
-			ajusteChrome="45">
+			<siga:Table 
+			name="productosSolicitados"
+			columnNames="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
+			columnSizes="30,30,23,7,10">
 <% 				
 				if(carro == null) 
 				{ 	
@@ -131,9 +129,11 @@
 					if(vArticulos == null || vArticulos.size()<1 ){
 						botones = ""; 
 %> 	
-			  		<br><br>
-				   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-			 		<br><br>  			 						
+			  		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div> 			 						
 <% 
 					}else 
 					{ 						
@@ -168,7 +168,7 @@
 	 					} // else
 	 				} // else
 %>  			
-					</siga:TablaCabecerasFijas>
+					</siga:Table>
 </html:form>
 		  			
 			<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/> 			

@@ -52,7 +52,12 @@
 <html>
 <!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		
 		<style type="text/css">
 			.especif {
@@ -60,10 +65,7 @@
 				position:absolute; width:964; height:35; z-index:2; top: 325px; left: 0px
 			}
 		</style>
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+				
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -181,22 +183,19 @@
 			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>
 		
-		<siga:TablaCabecerasFijas 
-	  	    nombre="tablaDatos"
-			borde="1"
-	   		clase="tableTitle"
-			nombreCol="censo.resultadosSolicitudesTextoLibre.literal.validar,censo.busquedaSolicitudesTextoLibre.literal.estado,
+		<siga:Table 
+	  	    name="tablaDatos"
+			border="1"
+			columnNames="censo.resultadosSolicitudesTextoLibre.literal.validar,censo.busquedaSolicitudesTextoLibre.literal.estado,
 						 censo.resultadosSolicitudesTextoLibre.literal.tipoModificacion,censo.resultadosSolicitudesTextoLibre.literal.nColegiado,
 			  			 censo.resultadosSolicitudesTextoLibre.literal.Nombre,censo.resultadosSolicitudesTextoLibre.literal.fecha,
 			  			 censo.resultadosSolicitudesTextoLibre.literal.descripcion,"
-			tamanoCol="6,10,16,7,18,8,22,13"
-			alto="100%"	
-			activarFilaSel="true">
+			columnSizes="6,10,16,7,18,8,22,13">
 
 			<%if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ) {%>
-				<br><br>
-				<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br>
+				<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 			
 			<%} else { 
 		    	Enumeration en = ((Vector)request.getAttribute("container")).elements();
@@ -285,7 +284,7 @@
 					<% recordNumber++;
 				} 
 			} %>		
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 							
 		<siga:ConjBotonesAccion botones='<%=botones%>' modo="editar"  clase="botonesDetalle"/>
 	 	

@@ -1,4 +1,5 @@
 <!-- exitoInsercion.jsp -->
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
 <HTML>
 <HEAD><TITLE>Paneles</TITLE>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

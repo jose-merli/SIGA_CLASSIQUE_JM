@@ -1,4 +1,4 @@
-	<!-- stylesheet.jsp -->
+<!-- stylesheet -->
 <%@ page contentType="text/css" language="java" errorPage=""%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -50,6 +50,7 @@ h1 {
 
 td {
 	vertical-align: top;
+	word-wrap:break-word;
 }
 
 td.disabled {
@@ -2223,4 +2224,18 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 .success{
 	background: #84F576 url(<%=app%>/html/imagenes/success.png) no-repeat 2px;
+}
+#ui-datepicker-div{
+	display: none;
+	z-index= 99;
+}
+.ui-datepicker-trigger {
+	cursor: pointer;
+}
+tr.notFound{
+	background-color:transparent;
+	text-align:center;
+}
+table.fixedHeaderTable, table.fixedHeaderTable tr, table.fixedHeaderTable td, table.fixedHeaderTable th {
+	border: 0px;
 }

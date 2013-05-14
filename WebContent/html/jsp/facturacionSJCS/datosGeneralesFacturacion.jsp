@@ -197,18 +197,18 @@
 
 <!-- HEAD -->
 <head>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
 		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
 	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
 		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
 	<% }  %>
+
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	
-	<!-- Calendario -->
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 	
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="DatosGeneralesFacturacionForm" staticJavascript="false" />  
@@ -260,15 +260,11 @@
 		function accionNuevo()
 		{
 			document.forms[0].modo.value = "nuevoCriterio";
-			var resultado=ventaModalGeneral(document.forms[0].name,"P");
-			if(resultado=='MODIFICADO') buscarCriterios();
-		}
-		
-		function buscarCriterios()
-		{	
-			document.forms[0].modo.value = "abrirAvanzada";
-			document.forms[0].target = "resultado";
-			document.forms[0].submit();
+            var resultado = showModalDialog("<%=app%>/html/jsp/facturacionSJCS/datosCriteriosFacturacion.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");                   
+            //var resultado=ventaModalGeneral(document.forms[0].name,"P");
+            if(resultado=='MODIFICADO'){
+                   buscar();
+            }
 		}
 		
 		function buscar()
@@ -279,6 +275,7 @@
 		function refrescarLocal(){
 			buscar();
 		}
+		
 		function accionListaConsejo()
 		{
 			sub();
@@ -416,18 +413,59 @@
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
+<% 
+	Vector obj = (Vector)request.getAttribute("vHito");
+	
+	boolean bPrevision = false;
+	if (prevision!=null && prevision.equals("S")) {
+		bPrevision = true;
+		request.getSession().setAttribute("prevision","S");
+	} else {
+		prevision = (String) request.getSession().getAttribute("prevision");
+		if (prevision!=null && prevision.equals("S")) {
+			bPrevision = true;
+		}
+	}
+	String alto = "192";
+	if (bPrevision) {
+		alto = "263";
+	}
+		
+	botones = "";
+	if (idEstado < 20) botones = "B";
+	
+	if ((regularizacion != null) && (regularizacion.equalsIgnoreCase("true"))) botones = "";
+%>	
+		<!-- INICIO TABLA -->
+		
+		<siga:Table 
+			   name="tablaDatos"
+			   border="1"
+			   columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
+			   columnSizes="35,45,10"
+			   modal="P">
+		<% if (obj==null || obj.size()==0){%>
+					<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
+		<%}else{%>
+		
+			<!-- Campo obligatorio -->
+			  <%
+		    	int recordNumber=1;
+				while ((recordNumber) <= obj.size()){	 
+					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+			 	%>	
+				  	<siga:FilaConIconos visibleEdicion='no' visibleConsulta='no' fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
+						<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idFacturacion%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGRUPOFACTURACION")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDHITOGENERAL")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idInstitucion%>'><%=UtilidadesString.mostrarDatoJSP((String)hash.get("NOMBRE"))%></td>
+						<td><siga:Idioma key='<%=(String)hash.get("DESCRIPCION")%>'/></td>
+					</siga:FilaConIconos>	
+				<%recordNumber++;%>
+				<%}%>	
+		<%}%>
+		</siga:Table>
 
-		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
-							id="resultado"
-							name="resultado" 
-							scrolling="no"
-							frameborder="0"
-							marginheight="0"
-							marginwidth="0";					 
-							class="frameGeneral"					
-							style="width:100%;height:35%">
-		</iframe>
-
+<!-- FIN TABLA -->
 		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
 							id="resultado10"
 							name="resultado10" 

@@ -71,8 +71,12 @@
 <!-- HEAD -->
 	<head>
 	
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -108,28 +112,23 @@
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
 			 
-			<siga:TablaCabecerasFijas 
-		   	      nombre="tablaDatos"
-		   		  borde="1"
-		   		  clase="tableTitle"
-		   		  nombreCol="expedientes.auditoria.literal.fecha,
+			<siga:Table 
+		   	      name="tablaDatos"
+		   		  border="1"
+		   		  columnNames="expedientes.auditoria.literal.fecha,
 					expedientes.auditoria.literal.fase,
 		   		  	expedientes.auditoria.literal.estado,
 					expedientes.auditoria.literal.alerta,"
-		   		  tamanoCol="15,20,25,30,10"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-
-		   	>
+		   		  columnSizes="15,20,25,30,10">
 		   		  
 		    <!-- INICIO: ZONA DE REGISTROS -->
 <%
 				if (vDatos==null || vDatos.size()==0)
 				{
 %>
-				<br><br>
-		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br><br>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 <%
 				}
 				
@@ -156,7 +155,7 @@
 				}
 %>
 			<!-- FIN: ZONA DE REGISTROS -->
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 			
 
 		<!-- FIN: LISTA DE VALORES -->

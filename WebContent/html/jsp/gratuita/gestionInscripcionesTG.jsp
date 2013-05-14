@@ -46,17 +46,18 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>				
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-
+		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>		
+		
 
   		<!-- defaults for Autocomplete and displaytag -->
   		<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
@@ -541,14 +542,14 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaDesde.literal"/>
 						</td>
 						<td colspan = "3">
-							<siga:Fecha nombreCampo="fechaDesde"  />							
+							<siga:Datepicker nombreCampo="fechaDesde"  />							
 						</td>
 		
 						<td class="labelText">
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaHasta.literal"/>
 						</td>
 						<td>
-							<siga:Fecha nombreCampo="fechaHasta"  />
+							<siga:Datepicker nombreCampo="fechaHasta"  />
 						</td>					
 					</tr>
 			

@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 * Tag que implementa un textBox para fechas, con funcion de validacion asociada
 * @author JBD
 */
-
+@Deprecated
 public class TagFecha extends TagSupport {
 	
 	/**

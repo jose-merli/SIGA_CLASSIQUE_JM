@@ -104,7 +104,7 @@ public class TagFilaExt extends TagFila {
 				  "onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
 				  "onMouseOut=\"MM_swapImgRestore()\" " +
 				  "onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + icono + "_on.gif',1)\">";
-			out.println(aux);
+			println(out,aux);
 		}
 		else {
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + icono + "_disable.gif\" " +
@@ -115,7 +115,7 @@ public class TagFilaExt extends TagFila {
 				  ">";
 			
 			
-			out.println(aux);
+			println(out,aux);
 		}
 	}
 	protected void pintaButtonExt(PrintWriter out, 
@@ -138,7 +138,7 @@ public class TagFilaExt extends TagFila {
 					" style=\"width:"+width+ "\" " +
 					
 					"onclick=\"selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \"\"/>";
-			out.println(aux);
+			println(out,aux);
 		}
 		else {
 				aux = "<input type=\"button\"  id = \"idButton\" " +
@@ -147,7 +147,7 @@ public class TagFilaExt extends TagFila {
 					"class=\"buttonEnTabla\" " +
 					" style=\"width:"+width+ "\" " +
 					">";
-			out.println(aux);
+			println(out,aux);
 		}
 	}
 	

@@ -64,8 +64,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<html:javascript formName="AnticiposClienteForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
  	
@@ -165,16 +169,12 @@
 	
 <siga:ConjBotonesAccion botones="C" clase="botonesSeguido" titulo="censo.anticipos.titulos.facturas"/>
 
-	<siga:TablaCabecerasFijas 
-			   nombre="tablaResultados"
-			   borde="1"
-			   clase="tableTitle"				   
-			   nombreCol="censo.anticipos.literal.numeroFactura,censo.anticipos.literal.importeUsado,censo.anticipos.literal.fechaFactura"
-			   tamanoCol="60,20,20"
-			   alto="67"
-			   modal="M"
-			   ajusteBotonera="true"
-			   >
+	<siga:Table 
+			   name="tablaResultados"
+			   border="1"
+			   columnNames="censo.anticipos.literal.numeroFactura,censo.anticipos.literal.importeUsado,censo.anticipos.literal.fechaFactura"
+			   columnSizes="60,20,20"
+			   modal="M">
 
 <% if ((v != null) && (v.size() > 0)) {
 		for (int i = 0; i < v.size(); i++) { 
@@ -214,7 +214,7 @@
 			</table>
 <% } %>
 
-	</siga:TablaCabecerasFijas>
+	</siga:Table>
 	 
 
 	

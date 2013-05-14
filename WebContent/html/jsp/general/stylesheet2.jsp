@@ -1,4 +1,4 @@
-	<!-- stylesheet.jsp -->
+<!-- stylesheet -->
 <%@ page contentType="text/css" language="java" errorPage=""%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>

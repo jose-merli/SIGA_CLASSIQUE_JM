@@ -120,11 +120,12 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>		
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>		
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStrutsWithHidden.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>		
@@ -371,13 +372,11 @@
 		
 		<siga:ConjBotonesAccion botones="C,Y,R" modo="<%=accion%>" modal="G" modo="<%=modo%>" titulo="gratuita.mantenimientoTablasMaestra.literal.procedimientos" clase="botonesSeguido"/>
 			
-		<siga:TablaCabecerasFijas 
-			nombre="tablaResultados"
-			borde="1"
-			clase="tableTitle"				   
-			nombreCol="gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion,"
-			tamanoCol="20,22,20,22,16"
-			alto="100%">
+		<siga:Table 
+			name="tablaResultados"
+			border="1"
+			columnNames="gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion,"
+			columnSizes="20,22,20,22,16">
 					
 			<% if (vProcedimientos != null) {
 				for (int i = 0; i < vProcedimientos.size(); i++) { 
@@ -413,7 +412,7 @@
 				<%	}
 				}
 			}%>					
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 		<!-- FIN: CAMPOS -->
 
 		 <% if (!modo.equalsIgnoreCase("nuevo")) {%>

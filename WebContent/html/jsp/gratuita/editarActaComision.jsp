@@ -70,13 +70,12 @@
 <html>
 
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
-	<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>	
 	
@@ -110,7 +109,7 @@
 				<%if(readOnly){%>
 					<html:text property="fechaResolucion" size="10" styleClass="boxConsulta" value="<%=fechaResolucionCAJG%>" disabled="false" readonly="true"></html:text>
 				<%}else{%>
-					<siga:Fecha nombreCampo="fechaResolucion" valorInicial="<%=fechaResolucionCAJG%>"/> 
+					<siga:Datepicker nombreCampo="fechaResolucion" valorInicial="<%=fechaResolucionCAJG%>"/> 
 				<%}%>					
 				</td>
 			</tr>
@@ -120,7 +119,7 @@
 				<%if(readOnly){%>
 					<html:text property="fechaReunion" size="10" styleClass="boxConsulta" value="<%=fechaReunion%>" disabled="false" readonly="true"></html:text>
 				<%}else{%>
-					<siga:Fecha nombreCampo="fechaReunion" valorInicial="<%=fechaReunion%>"/> 
+					<siga:Datepicker nombreCampo="fechaReunion" valorInicial="<%=fechaReunion%>"/> 
 				<%}%>
 				</td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.horaInicio"/></td>
@@ -157,14 +156,11 @@
 		</siga:ConjCampos>	
 		
 		<div id="listadoEJGs" style="height:100%">
-		<siga:TablaCabecerasFijas 		   
-			   nombre="listadoActas"
-			   borde="1"
-			   clase="tableTitle"		   
-			   nombreCol="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,"
-			   tamanoCol="8,8,40,14,20,"
-			   alto="100%"
-			   ajusteBotonera="true" >
+		<siga:Table 		   
+			   name="listadoActas"
+			   border="1"
+			   columnNames="gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,"
+			   columnSizes="8,8,40,14,20,">
 		   <%Row fila;%>
 		   <%Hashtable hash;%>
 		   <%String filaSt; %>
@@ -185,7 +181,7 @@
 				   <td><%=hash.get("SOLICITANTE")%>&nbsp;</td>
 			   </siga:FilaConIconos>
 		   <%}%>
-		   </siga:TablaCabecerasFijas>
+		   </siga:Table>
 		   </div>
 			<%if(readOnly){%>
 				<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		

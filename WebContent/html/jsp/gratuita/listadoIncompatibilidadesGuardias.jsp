@@ -45,11 +45,12 @@
 
 
 <head>
-    <link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+    <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 </head>
 
 
@@ -69,10 +70,10 @@
     int registrosMarcados = 0;
   %>
   
-  <siga:TablaCabecerasFijas nombre="listarAsistencias" borde="2"
-                            clase="tableTitle" nombreCol="<%=nC%>"
-                            tamanoCol="<%=tC%>" alto="100%"
-                            activarFilaSel="true" >
+  <siga:Table name="listarAsistencias" 
+  				border="2"
+  				columnNames="<%=nC%>"
+                            columnSizes="<%=tC%>">
   
     <%
       if (listaResultados != null && listaResultados.size()>0)
@@ -126,7 +127,7 @@
       }
     %>
       
-    </siga:TablaCabecerasFijas>
+    </siga:Table>
     <!-- FIN: CAMPOS DE LINEAS ENCONTRADAS -->
 
     <script>

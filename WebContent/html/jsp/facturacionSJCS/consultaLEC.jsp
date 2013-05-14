@@ -12,8 +12,12 @@
 
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 <!-- INICIO: SCRIPTS BOTONES -->
 <script language="JavaScript">	
@@ -43,11 +47,10 @@
 			key="factSJCS.busquedaRetAplicadas.titulo.importesImplicados" /></td>
 	</tr>
 </table>
-<siga:TablaCabecerasFijas nombre="tablaResultados" borde="2"
-	clase="tableTitle"
-	
-	
-	nombreCol="factSJCS.busquedaRetAplicadas.literal.importeSMI,
+<siga:Table 
+	name="tablaResultados" 
+	border="2"
+	columnNames="factSJCS.busquedaRetAplicadas.literal.importeSMI,
 		factSJCS.busquedaRetAplicadas.literal.colegiado ,
 		factSJCS.busquedaRetAplicadas.literal.pagoRelacionado,
 		factSJCS.busquedaRetAplicadas.literal.anyomes,
@@ -57,7 +60,8 @@
 		factSJCS.busquedaRetAplicadas.literal.importeTotRetener,
 		factSJCS.busquedaRetAplicadas.literal.importeTotRetenido,
 		factSJCS.busquedaRetAplicadas.literal.importeMesRetenido"
-	tamanoCol="10,20,10,8,8,8,8,8,10,10" alto="100%" ajusteBotonera="true" modal="M" >
+	columnSizes="10,20,10,8,8,8,8,8,10,10" 
+	modal="M" >
 
 
 	
@@ -90,7 +94,7 @@
 		
 </c:forEach>
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 <siga:ConjBotonesAccion botones="C" modal="M"/>
 
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>

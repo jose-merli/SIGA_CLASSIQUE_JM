@@ -45,12 +45,12 @@
 <html>
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
 	</head>
 	
@@ -78,15 +78,11 @@
 				"),";
 		%>
 
-		<siga:TablaCabecerasFijas
-		   	nombre="tablaDatos"
-		   	borde="1"
-		   	clase="tableTitle"
-		   	nombreCol="<%=nombresCol %>"
-		   	tamanoCol="<%=tamanosCol %>"
-		   	alto="100%"
-		   	ajuste="28"
-		>
+		<siga:Table
+		   	name="tablaDatos"
+		   	border="1"
+		   	columnNames="<%=nombresCol %>"
+		   	columnSizes="<%=tamanosCol %>">
 
 				<!-- INICIO: ZONA DE REGISTROS -->
 				<!-- Aqui se iteran los diferentes registros de la lista 
@@ -107,13 +103,11 @@
 				if (!seguir) {
 			%>
 			
-				<tr>
-					<td colspan="7">
-						<br><br> 
-						<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-						<br><br>
-					</td>
-				</tr>
+				<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 			
 			<%
 				}else{
@@ -197,7 +191,7 @@
 					<%cont++;%>
 				<%} // WHILE%>
 			<%} // ELSE%>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 		<script language="JavaScript">
 			function borrar(fila){

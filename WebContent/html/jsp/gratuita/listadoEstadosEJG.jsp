@@ -64,11 +64,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="gratuita.listadoSubzonas.literal.listadoSubzonas"/></title>
 	<script type="text/javascript">
 		function refrescarLocal()
@@ -122,17 +123,12 @@
 		</tr>
 		</table>
 	
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoDocumentacion"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="gratuita.operarEJG.literal.fecha,pestana.justiciagratuitaejg.estados,pestana.justiciagratuitaejg.observaciones,pestana.justiciagratuitaejg.automatico,Propietario,"
-		   tamanoCol="10,25,35,10,10,10"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-
-		   modal="P"
-		  >
+		<siga:Table 		   
+		   name="listadoDocumentacion"
+		   border="2"
+		   columnNames="gratuita.operarEJG.literal.fecha,pestana.justiciagratuitaejg.estados,pestana.justiciagratuitaejg.observaciones,pestana.justiciagratuitaejg.automatico,Propietario,"
+		   columnSizes="10,25,35,10,10,10"
+		   modal="P">
   	<%if (obj.size()>0){
 	    	int recordNumber=1;
 			boolean blPropietarioComision = false;
@@ -187,14 +183,16 @@
 	<%
 	}else {
 	%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+	 		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	
 	<%
 	}
 	%>
-	</siga:TablaCabecerasFijas>	
+	</siga:Table>	
 
 	
 	<!-- Obligatoria en todas las páginas-->

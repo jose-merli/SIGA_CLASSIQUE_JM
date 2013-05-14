@@ -23,11 +23,15 @@
 	<meta http-equiv="Pragma" 			content="no-cache">
 	<meta http-equiv="Cache-Control" 	content="no-cache">	
 	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet2.jsp" />
-	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet.jsp" />	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 	<css:css 		relativePath="/html/css/" 				files="ajaxtags.css" />
 	<css:css 	   	relativePath="/html/css/themes/" 		files="default.css,mac_os_x.css" />	
 	<js:javascript 	relativePath="/html/js/overlibmws/"		files="overlibmws.js" />
-	<js:javascript 	relativePath="/html/js/"				files="jquery-1.7.1.js,jquery.custom.js,jquery.msgbox.js,SIGA.js" />
 	<js:javascript 	relativePath="/html/jsp/censo/"			files="busquedaColegiados.js.jsp" />
 	<siga:Titulo titulo="censo.busquedaClientes.colegiados.titulo" localizacion="censo.busquedaClientes.localizacion" />
 	<html:base />

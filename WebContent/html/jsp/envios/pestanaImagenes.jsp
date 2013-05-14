@@ -21,10 +21,12 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>		
-		<script src="<html:rewrite page='/html/js/jquery.js'/>" type="text/javascript"></script>		
-		<script src="<html:rewrite page='/html/js/jquery.custom.js'/>" type="text/javascript"></script>		
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>		
 
 		
 		<!-- INICIO: SCRIPTS BOTONES -->
@@ -130,20 +132,17 @@
 <bean:define id="botones" name="ImagenPlantillaForm" property="botones" type="java.lang.String"/>
 <bean:define id="botonesFila" name="ImagenPlantillaForm" property="botonesFila" type="java.lang.String"/>
 <bean:define id="elementosFila" name="ImagenPlantillaForm" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-			<siga:TablaCabecerasFijas 
-		   	      nombre="tablaDatos"
-		   		  borde="1"
-		   		  clase="tableTitle"
-		   		  nombreCol="envios.imagenes.literal.nombre,envios.imagenes.literal.tipoArchivo,envios.imagenes.literal.incrustado,"
-		   		  tamanoCol="50,15,10,19"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
+			<siga:Table 
+		   	      name="tablaDatos"
+		   		  border="1"
+		   		  columnNames="envios.imagenes.literal.nombre,envios.imagenes.literal.tipoArchivo,envios.imagenes.literal.incrustado,"
+		   		  columnSizes="50,15,10,19"
 		   		  modal="P">
 		   		  
 		   		  <logic:empty name="ImagenPlantillaForm"	property="imagenes">
-		   		  <br><br>
-		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br><br>
+		   		  <tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 		   		  </logic:empty>
 		   		 <logic:notEmpty name="ImagenPlantillaForm"	property="imagenes">
 					<logic:iterate name="ImagenPlantillaForm" property="imagenes" id="imagen" indexId="index">
@@ -164,7 +163,7 @@
 
 					</logic:iterate>
 				</logic:notEmpty>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/>
 

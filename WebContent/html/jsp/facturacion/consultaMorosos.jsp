@@ -39,9 +39,12 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<%=app%>/html/jsp/general/stylesheet.jsp">
-<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 <script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
@@ -49,9 +52,6 @@
 <siga:Titulo titulo="facturacion.consultamorosos.literal.titulo"
 	localizacion="facturacion.localizacion" />
 <!-- FIN: TITULO Y LOCALIZACION -->
-
-<!-- Calendario -->
-<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 </head>
 
@@ -74,12 +74,12 @@
 			<td width ="25%" class="labelText"><siga:Idioma
 				key="facturacion.consultamorosos.literal.fechadesde" /></td>
 			<td>
-			<siga:Fecha nombreCampo="fechaDesde" /> 
+			<siga:Datepicker nombreCampo="fechaDesde" /> 
 			</td>
 			<td width ="10%" class="labelText"><siga:Idioma
 				key="facturacion.consultamorosos.literal.hasta" /></td>
 			<td>
-			 <siga:Fecha nombreCampo="fechaHasta" /> 
+			 <siga:Datepicker nombreCampo="fechaHasta" /> 
 			</td>
 			<td width ="15%" class="labelText"><siga:Idioma
 				key="censo.consultaDatosColegiales.literal.estado" /></td>
@@ -305,8 +305,7 @@
 <!-- INICIO: IFRAME LISTA RESULTADOS -->
 <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 	id="resultado" name="resultado" scrolling="no" frameborder="0"
-	marginheight="0" marginwidth="0" ;					 
-					class="frameGeneral">
+	marginheight="0" marginwidth="0" class="frameGeneral">
 </iframe>
 
 <!-- FIN: IFRAME LISTA RESULTADOS -->

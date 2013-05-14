@@ -72,12 +72,12 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		<link rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery.ui.all.css'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -157,15 +157,12 @@
 			<%tamanioCol = "5,"+tamanioCol; %>
 		</c:if>
 
-		<siga:TablaCabecerasFijas 
-			nombre="listado" 
-			borde="1" 
-			clase="tableTitle"
-			nombreCol="<%=nombreCol%>" 
-			tamanoCol="<%=tamanioCol%>" 
-			alto="100%"
-			ajuste="10">
-			
+		<siga:Table 
+			name="listado" 
+			border="1" 
+			columnNames="<%=nombreCol%>" 
+			columnSizes="<%=tamanioCol%>">
+						
 			<%if ((obj!= null) && (obj.size()>0)) { 
 				int recordNumber=1;
 				String fechaInicio="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", reserva="";
@@ -311,9 +308,9 @@
 				</p>
 				<br>
 			<%}%>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
-		<div style="position: absolute; left: 400px; bottom: 35px; z-index: 2;">
+		<div style="position: absolute; left: 400px; bottom: 2px; z-index: 99;">
 			<table align="center">
 				<tr>
 					<td class="labelText">
@@ -409,7 +406,7 @@
 			// Funcion asociada al boton Cambiar
 			function permutar(fila) {		
 				//Datos del elemento seleccionado:
-				seleccionarFila(fila)			
+				seleccionarFila(fila);
 				
 				//Submito
 				document.forms[0].modo.value = "buscarPor";
@@ -424,7 +421,7 @@
 			// Funcion asociada al boton Cambiar
 			function confirmar(fila) {		
 				//Datos del elemento seleccionado:
-				seleccionarFila(fila)			
+				seleccionarFila(fila);
 	
 				document.forms[0].modo.value = "abrirAvanzada";
 				var salida = ventaModalGeneral(document.forms[0].name,"G"); 			
@@ -435,7 +432,7 @@
 		
 			function sustituir(fila) {		
 				//Datos del elemento seleccionado:
-				seleccionarFila(fila)			
+				seleccionarFila(fila);
 	
 				document.forms[0].modo.value = "sustituir";
 				//document.forms[0].target = "_blank";
@@ -460,33 +457,11 @@
 			}
 		
 			function consultar2(fila, formulario) {
-			   var datos;
-			   datos = formulario.tablaDatosDinamicosD;
-			   datos.value = ""; 
-			   var i, j;
-	
-			   for (i = 0; i < 7; i++) {
-			      var tabla;
-			      tabla = document.getElementById('listado');
-			      if (i == 0) {
-			        var flag = true;
-			        j = 1;
-			        while (flag) {
-			          var aux = 'oculto' + fila + '_' + j;
-			          var oculto = document.getElementById(aux);
-			          if (oculto == null)  { flag = false; }
-			          else { datos.value = datos.value + oculto.value + ','; }
-			          j++;
-			        }
-			        datos.value = datos.value + "%"
-			      } else { j = 2; }
-	
-			      if ((tabla.rows[fila].cells)[i].innerHTML == ""){
-			        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			      } else {
-			        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			      }
-			   }
+				var datos = jQuery(formulario).find("#tablaDatosDinamicosD");
+				if (datos != undefined)
+					preparaDatos(fila, "listado", datos[0]);
+				else
+					preparaDatos(fila, "listado");
 			}		
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

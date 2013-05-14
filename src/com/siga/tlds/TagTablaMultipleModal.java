@@ -14,7 +14,7 @@ import com.atos.utils.*;
 import javax.servlet.http.*;
 
 import com.siga.Utilidades.*;
-
+@Deprecated
 public class TagTablaMultipleModal extends TagTablaExt
 {
 	boolean bVariasTablasEnLaMismaPagina=false;

@@ -93,8 +93,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->	
 
@@ -212,21 +216,17 @@
 			</td>
 		</tr>
 	</table>			
-				<siga:TablaCabecerasFijasExt
-	  				nombre="productos"
-	  				borde="0"	  				
-			   		clase="tableTitle"
-	  				nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"
-					tamanoCol="10,7,15,13,17,6,11,10,6,5"
-			   		alto="37%"
-			   		ajusteAlto="false"
- 					variasTablasEnLaMismaPagina="true">
+				<siga:Table
+	  				name="productos"
+	  				columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"
+					columnSizes="10,7,15,13,17,6,11,10,6,5"
+			   		fixedHeight="37%">
  <% 				if(vProductos == null || vProductos.size()<1 )
  							{  
  	%> 	
-				  		<br>
-					   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-					 		<br>				
+				  		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>			
   <% 
 	 						}else{
 	 							Enumeration en = vProductos.elements();		
@@ -314,7 +314,7 @@
  								} // While  			
 			 				} 
 	%> 
-			</siga:TablaCabecerasFijasExt>
+			</siga:Table>
 	
 		<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 			<tr>
@@ -324,20 +324,18 @@
 			</tr>
 		</table>			
 		
-		<siga:TablaCabecerasFijasExt 
- 			nombre="servicios"
- 			borde="0"	  				
-	   		clase="tableTitle"
- 			nombreCol="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
-			tamanoCol="10,7,15,13,17,6,11,10,6,5"
-	   		alto="37%"
-	   		ajusteAlto="false"
-			variasTablasEnLaMismaPagina="true">
+		<siga:Table 
+ 			name="servicios"
+ 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
+			columnSizes="10,7,15,13,17,6,11,10,6,5"
+	   		fixedHeight="37%">
 			
 			<%if(vServicios == null || vServicios.size()<1 ) {%> 	
-				<br>
-				<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br>
+				<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 							
 			<%} else {
 				Enumeration en = vServicios.elements();		
@@ -426,7 +424,7 @@
  				} // WHILE  			
 			} // ELSE  			 				
 			%> 
-		</siga:TablaCabecerasFijasExt>	
+		</siga:Table>	
 	<%}%>		
 
 <!-- INICIO: SUBMIT AREA -->

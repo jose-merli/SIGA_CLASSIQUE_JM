@@ -19,11 +19,12 @@
 <!-- HEAD -->
 <head>
   
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="gratuita.operarUnidadFamiliar.literal.unidadFamiliar"/></title>
 	<siga:Titulo 
 		titulo="gratuita.busquedaEJG.unidadFamiliar" 
@@ -32,7 +33,7 @@
 
 </head>
 
-<body class="tablaCentralCampos" onload="ajustarCabeceraTabla();">	
+<body class="tablaCentralCampos">	
 			
 
 <bean:define id="modo" name="DefinirUnidadFamiliarEJGForm" property="modo" type="java.lang.String"/>
@@ -89,22 +90,20 @@
 	<tr>
  		<td style="vertical-align: top; height:300px">
 </c:if>
-			<siga:TablaCabecerasFijas 		   
-		   nombre="listadoUnidadFamiliar"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="8,8,25,8,8,8,8,28"
-		   
-		   alto="500"
+			<siga:Table 		   
+		   name="listadoUnidadFamiliar"
+		   border="2"
+		   columnNames="gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
+		   columnSizes="9,8,25,8,8,8,8,28"
 		   modal="G"
-		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
-		  >
+		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado">
 		  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="unidadFamiliar">
-	<br>
-   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
- 		<br>
+	<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
@@ -287,7 +286,7 @@
 		</siga:FilaConIconos>
 	</logic:notEmpty>
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 <c:if test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
 </td></tr>
 <tr >
@@ -308,23 +307,20 @@
 
 
 
-<siga:TablaCabecerasFijas 	
-	   
-		   nombre="listadoPeticiones"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
-		   tamanoCol="4,10,30,30,10,"
-		   alto="500"
-		   
-			 
-		  >
+<siga:Table 	
+		   name="listadoPeticiones"
+		   border="2"
+		   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
+		   columnSizes="5,10,30,30,10,"
+		   fixedHeight="500">
 	<c:set var="disabledPorCambioLetrado" value="" />
 					  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="peticionesEejg">
-	<br>
-   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
- 		<br>
+	<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
@@ -386,7 +382,7 @@
 		
 	</logic:notEmpty>
 
-</siga:TablaCabecerasFijas>
+</siga:Table>
 
 
 </td></tr></table>

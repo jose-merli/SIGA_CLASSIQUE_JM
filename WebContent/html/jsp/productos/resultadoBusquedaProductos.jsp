@@ -42,8 +42,12 @@
 <html>
 <!-- HEAD -->
 	<head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		<style type="text/css">
 
 			.especif
@@ -52,8 +56,7 @@
 				position:absolute; width:964; height:35; z-index:2; top: 285px; left: 0px
 			}
 
-		</style>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		</style>		
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -79,24 +82,22 @@
 			<html:hidden property="modo" styleId="modo" value=""/>				
 		</html:form>	
 		
-			<siga:TablaCabecerasFijas 
-			   nombre="tablaDatos"
-			   borde="1"
-			   clase="tableTitle"
-			   nombreCol="pys.resultadoBusquedaProductos.literal.tipo,pys.resultadoBusquedaProductos.literal.categoria,
+			<siga:Table 
+			   name="tablaDatos"
+			   border="1"
+			   columnNames="pys.resultadoBusquedaProductos.literal.tipo,pys.resultadoBusquedaProductos.literal.categoria,
 			   			  pys.busquedaProductos.literal.producto,pys.resultadoBusquedaProductos.literal.precio,
 			   			  pys.resultadoBusquedaProductos.literal.Estado,"
-			   tamanoCol="20,20,20,10,20,10"
-			   alto="100%"
-			   modal="G" 
-			   activarFilaSel="true" >
+			   columnSizes="20,20,20,10,20,10"
+			   modal="G">
 			   
 			<%
 	    	if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 )
 		    {
 			%>
-				<br><br><br>
-				<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 			<%
 	    	}	    
 		    else
@@ -158,7 +159,7 @@
 					<% recordNumber++;
 				} 
 			} %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
 </html>

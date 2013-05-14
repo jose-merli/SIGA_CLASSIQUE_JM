@@ -67,19 +67,20 @@
 
 <!-- HEAD -->
 <head>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
 	<html:javascript formName="SaltosYCompensacionesForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<!--Step 2 -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -173,7 +174,7 @@
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 			</td>		
 			<td>
-				<siga:Fecha nombreCampo="fecha" posicionY="50" posicionX="50" readOnly="true" ></siga:Fecha>
+				<siga:Datepicker nombreCampo="fecha" posicionY="50" posicionX="50" readOnly="true" ></siga:Datepicker>
 			</td>
 			<td class="labelText" colspan="2">
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				
@@ -245,11 +246,11 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/> (*)
 			</td>
 			<td>
-				<html:text name="SaltosYCompensacionesForm" property="fecha" size="7" styleClass="<%=estilo %>" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" readOnly="true"></html:text>
-				&nbsp;
 				<% if(modo.equalsIgnoreCase("EDITAR")) { %>
-					<a onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
-				<% }  %>
+					<siga:Datepicker nombreCampo="fecha" valorInicial="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" disabled="false" ></siga:Datepicker>
+				<% }  else {%>
+					<siga:Datepicker nombreCampo="fecha" valorInicial="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fecha)%>" disabled="true" ></siga:Datepicker>
+				<%} %>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fechaUso"/>

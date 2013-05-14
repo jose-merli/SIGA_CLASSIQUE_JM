@@ -27,7 +27,7 @@ import com.siga.Utilidades.UtilidadesString;
 /**
  * @author AtosOrigin
  */
-
+@Deprecated
 public class TagTabla extends TagSupport {
 
 	int borde=1;

@@ -34,11 +34,12 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 		<title><siga:Idioma key="gratuita.retenciones.listadoRetenciones"/></title>
 
@@ -56,13 +57,11 @@
 			<input type="hidden" name="hiddenframe" id="hiddenframe" value="1">
 		</html:form>	
 	
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoRetenciones"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="gratuita.retenciones.descripcion,gratuita.retenciones.retencion,gratuita.retenciones.tipoSociedad,"
-		   tamanoCol="60,10,20,10" 
-		   alto="100%"
+		<siga:Table 		   
+		   name="listadoRetenciones"
+		   border="2"
+		   columnNames="gratuita.retenciones.descripcion,gratuita.retenciones.retencion,gratuita.retenciones.tipoSociedad,"
+		   columnSizes="60,10,20,10" 
 		   modal="P" >
 				
 			<%if (obj.size()>0){   
@@ -82,11 +81,13 @@
 				} 
 				
 			} else { %>
-		 		<br>
-		   		<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-		 		<br>				
+		 		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>			
 			<%} %>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 		<!-- INICIO: SUBMIT AREA -->
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>

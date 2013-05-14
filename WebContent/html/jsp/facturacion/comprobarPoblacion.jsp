@@ -39,8 +39,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -77,24 +81,21 @@
 			if (vDatosPobCli==null || vDatosPobCli.size()==0)
 			{
 			%>
-			<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>			
+			<div class="notFound">
+			<br><br>
+	   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+			<br><br>
+			</div>			
 			<%
 			}
 			else
 			{
 			%>
-				<siga:TablaCabecerasFijas 
-	   				nombre="tabladatos"
-		   			borde="1"
-	   				estilo=""
-	   				clase="tabletitle"
-	   				nombreCol="facturacion.comprobarPoblacion.literal.nColegiado,facturacion.comprobarPoblacion.literal.nombreDeCliente"
-	   				tamanoCol="30,70"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-					>
+				<siga:Table 
+	   				name="tabladatos"
+		   			border="1"
+	   				columnNames="facturacion.comprobarPoblacion.literal.nColegiado,facturacion.comprobarPoblacion.literal.nombreDeCliente"
+	   				columnSizes="30,70">
 					
 					<!-- INICIO: ZONA DE REGISTROS -->
 					<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -124,7 +125,7 @@
 
 					<!-- FIN: ZONA DE REGISTROS -->
 
-					</siga:TablaCabecerasFijas>
+					</siga:Table>
 			<%
 			}
 			%>

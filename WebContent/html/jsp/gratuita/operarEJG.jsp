@@ -50,7 +50,7 @@
 	// Obtenemos el resultado
 	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
     String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO="", SUFIJO="", NIG="";
-	String idPretension = "", idPretensionInstitucion = "", pretension = "";
+	String idPretension = "", pretension = "";
 
 	ArrayList TIPOEJGCOLEGIOSEL = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
@@ -62,7 +62,7 @@
 	String DESIGNA_ANIOPROCEDIMIENTO = "";
 	String DESIGNA_IDPROCEDIMIENTO = "";
 	String DESIGNA_IDPRETENSION = "";
-	String DESIGNA_IDPRETENSIONINSTITUCION = "";	
+	String DESIGNA_IDINSTITUCION = "";	
 	
 	try {
 		ESTADO = hash.get("ESTADO").toString();
@@ -137,8 +137,8 @@
 			DESIGNA_IDPROCEDIMIENTO = hash.get("DES_IDPROCEDIMIENTO").toString();
 		if (hash.containsKey("DES_IDPRETENSION"))
 			DESIGNA_IDPRETENSION = hash.get("DES_IDPRETENSION").toString();
-		if (hash.containsKey("DES_IDPRETENSIONINSTITUCION"))
-			DESIGNA_IDPRETENSIONINSTITUCION = hash.get("DES_IDPRETENSIONINSTITUCION").toString();
+		if (hash.containsKey("DES_IDINSTITUCION"))
+			DESIGNA_IDINSTITUCION = hash.get("DES_IDINSTITUCION").toString();
 		
 		if (hash.containsKey("CODIGO"))
 			DESIGNA_CODIGO = hash.get("CODIGO").toString();
@@ -171,9 +171,7 @@
 
 		// Datos pretensiones seleccionado:
 		if (hash.containsKey(ScsEJGBean.C_IDPRETENSION))
-			idPretension = hash.get(ScsEJGBean.C_IDPRETENSION).toString();
-		if (hash.containsKey(ScsEJGBean.C_IDPRETENSIONINSTITUCION))
-			idPretensionInstitucion = hash.get(ScsEJGBean.C_IDPRETENSIONINSTITUCION).toString();
+			idPretension = hash.get(ScsEJGBean.C_IDPRETENSION).toString();		
 
 		// Datos del procurador seleccionado:
 		if (hash.containsKey("IDPROCURADOR"))
@@ -208,8 +206,8 @@
 	String nombreTurnoAsistencia = (String) request.getAttribute("nombreTurnoAsistencia");
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
 
-	if (idPretension != null && idPretensionInstitucion != null)
-		pretensionesSel.add(0, idPretension + "," + idPretensionInstitucion);
+	if (idPretension != null && idInstitucion != null)
+		pretensionesSel.add(0, idPretension + "," + idInstitucion);
 
 	//Obtenemos el letrado tramitador de la designa
 	ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usr);
@@ -338,13 +336,13 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.maskedinput.js'/>"></script>	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>  
 	
@@ -530,11 +528,11 @@
 								<!-- JBD 16/2/2009 INC-5682-SIGA -->
 								<% if (!modo.equalsIgnoreCase("ver")) { %>
 									<td>	
-										<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" />						
+										<siga:Datepicker nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" />						
 									</td >	
 								<%}else{%>
 									<td>	
-										<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" disabled="true" readOnly="true" />						
+										<siga:Datepicker nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" disabled="true" readOnly="true" />						
 									</td>	
 								<%}%>
 								<!-- JBD 16/2/2009 INC-5682-SIGA -->
@@ -572,9 +570,9 @@
 								</td>
 								<td>	
 									<%if (modo.equals("ver")) {%>
-										<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>" disabled="true" readOnly="true" />				
+										<siga:Datepicker nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>" disabled="true" readOnly="true" />				
 									<%} else {%>
-										<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>"/>				
+										<siga:Datepicker nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>"/>				
 									<%}%>
 								</td>
 								<td class="labelText" nowrap>
@@ -582,9 +580,9 @@
 								</td>
 								<td>	
 									<%if (modo.equals("ver")) {%>
-										<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" disabled="true" readOnly="true" />				
+										<siga:Datepicker nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" disabled="true" readOnly="true" />				
 									<%} else {%>
-										<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" />				
+										<siga:Datepicker nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" />				
 									<%}%>
 								</td>
 							</tr>
@@ -964,7 +962,7 @@
 		<html:hidden property ="juzgado"   value = "<%=DESIGNA_IDJUZGADO%>"/>
 		<html:hidden property ="juzgadoInstitucion"   value = "<%= DESIGNA_IDJUZGADOINSTITUCION%>"/>
 		<html:hidden property ="pretension"     value = "<%=DESIGNA_IDPRETENSION%>" />
-		<html:hidden property ="pretensionInstitucion"     value = "<%=DESIGNA_IDPRETENSIONINSTITUCION%>" />
+		<html:hidden property ="pretensionInstitucion"     value = "<%=DESIGNA_IDINSTITUCION%>" />
 		<html:hidden property ="idturnoDesignado"     value = "<%=designaIdTurno%>" />
 		<html:hidden property ="nombreDesignado" value= "<%=t_idpersonaD%>"/>	
 		<html:hidden property ="numColDesignado" value= "<%=numtramidesig%>"/>

@@ -52,8 +52,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -159,7 +163,7 @@
 
 </head>
 
-<body onLoad="validarAncho_tablaDatos();">	
+<body>	
 
 	<table class="tablaTitulo">		
 		<!-- Campo obligatorio -->
@@ -180,30 +184,25 @@
 			<!-- INICIO: LISTA DE VALORES -->
 			<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 	
-				<siga:TablaCabecerasFijas 
-				   	nombre="tablaDatos"
-				   	borde="1"
-		   			estilo=""
-				   	clase="tableTitle"
-				  	nombreCol= "facturacion.ficheroBancarioPagos.literal.fecha,
+				<siga:Table 
+				   	name="tablaDatos"
+				   	border="1"
+				  	columnNames= "facturacion.ficheroBancarioPagos.literal.fecha,
 				  				facturacion.ficheroBancarioPagos.literal.descripcion,
 				  				facturacion.ficheroBancarioPagos.literal.banco,
 				  				facturacion.ficheroBancarioPagos.literal.nRecibos,
 				  				facturacion.ficheroBancarioPagos.literal.Origen,
 				  				facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"
 				  				
-				  	tamanoCol="9,19,23,8,23,10,10"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
-
+				  	columnSizes="9,19,23,8,23,10,10"
 				    modal="M"> 		  
 	 	
 <%	
 						if(vDatos == null || vDatos.size()<1 ) { 
 %>
-		 					<br><br>
-		   		 			<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-		 					<br><br>	 		
+		 					<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 <%		
 		 				}
 		 				else {	 
@@ -256,7 +255,7 @@
 								</siga:FilaConIconos>
 <%						}
 	 					} // While %>  			
-	  		</siga:TablaCabecerasFijas>  			
+	  		</siga:Table>  			
 		
 			<table class="botonesDetalle" align="center" border="0">
 				<tr>

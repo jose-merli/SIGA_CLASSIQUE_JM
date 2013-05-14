@@ -118,11 +118,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		<!-- Calendario -->
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -521,7 +522,7 @@
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body onLoad=validarAncho_cabecera();onLoad=cuentaUnica();>
+<body onLoad="cuentaUnica();">
 
 	<table class="tablaTitulo" align="center" cellspacing="0" height="20">
 		<tr>
@@ -567,23 +568,20 @@
 				   	tamanoCol1="24,19,20,6,8,8,7,8";
 				}%>
 
-   					<siga:TablaCabecerasFijas 
-		  				nombre="cabecera"
-		  				borde="2"
-		  				estilo=""
-				   		clase="tableTitle"
-						nombreCol="<%=nombrecol1%>"
-		  				tamanoCol="<%=tamanoCol1%>"
-		  				ajuste="75" 
-		  				alto="100"
-				   	>
+   					<siga:Table 
+		  				name="cabecera"
+		  				border="2"
+						columnNames="<%=nombrecol1%>"
+		  				columnSizes="<%=tamanoCol1%>">
 
 <% 					if(vArticulos == null || vArticulos.size()<1 ) 					{ 	
   							botones = "V"; 
 %> 	
-			  		<br><br>
-				   		 <p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				 		<br><br>  
+			  		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 				 						
 <% 
  						}else{
@@ -772,14 +770,14 @@
 								String fechaEfectiva="fechaEfectivaCompra" +fila;				
 			  				%>
 				  				<td class="labelText">
-									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
+									<siga:Datepicker nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Datepicker>									
 								</td>
 							<% }%>
 							</siga:FilaConIconos>
 	 <%		}
 	 }
 	%>  			
-	  			</siga:TablaCabecerasFijas>
+	  			</siga:Table>
 				
 
 

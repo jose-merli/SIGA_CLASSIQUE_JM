@@ -24,12 +24,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="/html/js/themes/base/jquery.ui.all.css"/>" />
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -203,19 +203,14 @@ function cancelarGeneracionCalendarios(fila)
 					
 					</td>
 					<td >
-					<html:text property="fechaProgrDesde"
-						size="10" readonly="true" styleClass="box" />&nbsp; 
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaProgrDesde)">
-						<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
-						
+					
+						<siga:Datepicker nombreCampo="fechaProgrDesde"></siga:Datepicker>
 	
 					</td>
 		
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
-					<td><html:text property="fechaProgrHasta"
-						size="10" readonly="true" styleClass="box" />&nbsp; 
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaProgrHasta)">
-						<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
+					<td>
+						<siga:Datepicker nombreCampo="fechaProgrHasta"></siga:Datepicker>
 					</td>
 					
 				</tr>
@@ -254,20 +249,14 @@ function cancelarGeneracionCalendarios(fila)
 					<siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
 					<siga:Idioma key='general.literal.desde'/>
 					</td>
-					<td>
-					<html:text property="fechaCalInicio"
-						size="10" readonly="true" styleClass="box" />&nbsp; 
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaCalInicio)">
-						<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
-						
+					<td>					
+						<siga:Datepicker nombreCampo="fechaCalInicio"></siga:Datepicker>
 	
 					</td>
 		
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
-					<td><html:text property="fechaCalFin"
-						size="10" readonly="true" styleClass="box" />&nbsp; 
-						<a href='javascript://' onClick="return showCalendarGeneral(fechaCalFin)">
-						<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
+					<td>						
+						<siga:Datepicker nombreCampo="fechaCalFin"></siga:Datepicker>
 					</td>
 					
 				</tr>

@@ -35,11 +35,12 @@
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 	<script>
 		<!-- Refrescar -->
@@ -55,21 +56,18 @@
 			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 		</html:form>	
 		
-			<siga:TablaCabecerasFijas 
-			   nombre = "tablaResultados"
-			   borde  = "1"
-			   clase  = "tableTitle"
-			   nombreCol="administracion.auditoria.institucion,
+			<siga:Table 
+			   name = "tablaResultados"
+			   border  = "1"
+			   columnNames="administracion.auditoria.institucion,
 						  gratuita.mantenimientoTablasMaestra.literal.codigoext,
 			   			  gratuita.mantenimientoTablasMaestra.literal.nombre,
 			   			  gratuita.mantenimientoTablasMaestra.literal.direccion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.poblacion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
 			   			  gratuita.mantenimientoTablasMaestra.literal.estado,"
-			   tamanoCol = "10,8,17,17,18,8,12,10"
-			   alto="100%"
-			   modal = "G" 
-			   activarFilaSel="true">
+			   columnSizes = "10,8,17,17,18,8,12,10"
+			   modal = "G">
 
 		<%  if ((vJuzgados != null) && (vJuzgados.size() > 0)){ %>
 	
@@ -122,12 +120,11 @@
 			%>
 	
 	<% } else { %>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
-
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	<% } %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 
 		
 <!-- INICIO: SUBMIT AREA -->

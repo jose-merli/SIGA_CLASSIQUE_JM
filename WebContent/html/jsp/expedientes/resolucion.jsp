@@ -69,8 +69,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -205,9 +209,9 @@
 			</td>			
 			<td>
 				<% if (bEditable){%>
-					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>"/>				
+					<siga:Datepicker  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>"/>				
 				<%} else{%>
-					<siga:Fecha  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>" disabled="true" readOnly="true"/>
+					<siga:Datepicker  nombreCampo="sancionPrescrita" valorInicial="<%=f.getSancionPrescrita()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>
 			
@@ -217,9 +221,9 @@
 			<td>
 				&nbsp&nbsp&nbsp&nbsp&nbsp
 				<% if (bEditable){%>
-					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>"/>
+					<siga:Datepicker  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>" disabled="true" readOnly="true"/>
+					<siga:Datepicker  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>				
 		</tr>
@@ -230,9 +234,9 @@
 			</td>				
 			<td>
 				<% if (bEditable){%>
-					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>"/>
+					<siga:Datepicker  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>" disabled="true" readOnly="true"/>
+					<siga:Datepicker  nombreCampo="actuacionesPrescritas" valorInicial="<%=f.getActuacionesPrescritas()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>			
 		
@@ -242,9 +246,9 @@
 			<td>
 				&nbsp&nbsp&nbsp&nbsp&nbsp
 				<% if (bEditable){%>
-					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>"/>
+					<siga:Datepicker  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>" disabled="true" readOnly="true"/>
+					<siga:Datepicker  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>			
 		</tr>
@@ -254,9 +258,9 @@
 			</td>
 			<td>
 				<% if (bEditable){%>
-					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>"/>
+					<siga:Datepicker  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>"/>
 				<%} else{%>
-					<siga:Fecha  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>" disabled="true" readOnly="true"/>
+					<siga:Datepicker  nombreCampo="fechaResolucion" valorInicial="<%=f.getFechaResolucion()%>" disabled="true" readOnly="true"/>
 				<%}%>
 			</td>
 			

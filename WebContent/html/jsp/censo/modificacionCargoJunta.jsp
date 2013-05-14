@@ -98,11 +98,11 @@
 		</logic:iterate>
 		</logic:notEmpty>
 		 <logic:empty name="BusquedaComisionesForm"	property="comisiones">
-					<div id="vacio">
+					<div id="vacio notFound">
 					<br><br>
 			   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 			 		<br><br>
-			 		</div>
+			 		</div>			 	
 		</logic:empty>	 
 </table>
 

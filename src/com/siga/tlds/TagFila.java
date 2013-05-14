@@ -30,6 +30,7 @@ public class TagFila extends TagSupport
 	static final String accEditar = "editar";
 	static final String accBorrar = "borrar";
 
+	protected boolean bIniCell = false;
 
 	Hashtable botones = new Hashtable();
 	int fila;
@@ -151,7 +152,7 @@ public class TagFila extends TagSupport
 		try {
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
-			out.println("<td name='celda' id='idFilaBotones_"+fila+"' align=\"left\">");
+			//out.println("<td name='celda' id='idFilaBotones_"+fila+"' align=\"left\">");
 			
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			HttpSession session = (HttpSession) request.getSession();
@@ -161,7 +162,10 @@ public class TagFila extends TagSupport
 			
 			printLines(out,usrBean,tipoAcceso,pathAplicacion);
 			
-			out.println("</td>");
+			if (bIniCell){
+				out.println("</td>");
+				bIniCell = false;
+			}
 			out.println("</tr>");
 		}
 		catch (Exception e)
@@ -172,11 +176,26 @@ public class TagFila extends TagSupport
 		return EVAL_PAGE; 			// continua la ejecucion de la pagina
 	}
 
+	//BNS Controlamos si, por permisos o configuración, escribimos algo en la celda
+	//		para escribir un TD o no. En explorer estaba generando una columna vacía
+	//		que descuadraba la tabla (por ejemplo en seleccionInformes.jsp).
+	//		Con esta implementación podría darse el caso de que hubiera una fila con
+	//		columna de iconos pero las demás no tuvieran (ninguno, ni prohibidos). Esto
+	//		es una configuración muy rara pero aún así debería pintarse bien ya que en
+	//		los navegadores modernos no hace falta incluir los colspan.
+	protected void println(PrintWriter out, String text){
+		if (!bIniCell){
+			out.println("<td name='celda' id='idFilaBotones_"+fila+"' align=\"left\">");
+			out.println("&nbsp;");
+			bIniCell = true;
+		}
+		out.println(text);
+	};
 
 	protected void printLines(PrintWriter out,
 			UsrBean usrBean,String tipoAcceso,String pathAplicacion) throws Exception {
 		do {
-			out.println("&nbsp;");
+			//out.println("&nbsp;");
 			if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_NONE)) { // Sin acceso
 				pintaImagen (out, pathAplicacion, TagFila.accConsultar, false, usrBean);
 				pintaImagen (out, pathAplicacion, TagFila.accEditar, false, usrBean);
@@ -325,7 +344,7 @@ public class TagFila extends TagSupport
 			  "onMouseOut=\"MM_swapImgRestore()\" " +
 			  "onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + accion + "_on.gif',1)\">";
 		
-			out.println(aux);
+			this.println(out, aux);
 		}
 		else {
 		 	aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + accion + "_disable.gif\" " +
@@ -337,7 +356,7 @@ public class TagFila extends TagSupport
 //				  "height='27' " +
 				  "border=\"0\"" +
 				  ">";
-			out.println(aux);
+		 	this.println(out, aux);
 		}
 	}
 	
@@ -349,7 +368,7 @@ public class TagFila extends TagSupport
 //		  "height='27' " +
 		  "border=\"0\"" +
 		  ">";
-	   out.println(aux);
+		this.println(out, aux);
 	}
 
 	public String getId() {

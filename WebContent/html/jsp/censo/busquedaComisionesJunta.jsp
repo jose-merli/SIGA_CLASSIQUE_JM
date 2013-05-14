@@ -67,18 +67,19 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" 	type="text/css"	rel="stylesheet" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<link 				type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>"/>
   	<link	 			type="text/css" rel="stylesheet" href="<html:rewrite page='href="/html/css/displaytag.css'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<siga:TituloExt titulo="censo.comisiones.literal.comisiones" localizacion="censo.comisiones.localizacion"/>
 </head>
@@ -137,7 +138,7 @@
 						<siga:Idioma key="censo.busquedaComisiones.literal.fechaCargo"/> (*)
 					</td>
 					<td class="labelText">
-						<siga:Fecha nombreCampo="fechaCargo" valorInicial='<%=UtilidadesBDAdm.getFechaBD("")%>'/>
+						<siga:Datepicker nombreCampo="fechaCargo" valorInicial='<%=UtilidadesBDAdm.getFechaBD("")%>'/>
 					</td>
 				
 					<td>

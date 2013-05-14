@@ -78,8 +78,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo 
@@ -227,15 +231,11 @@
 					</table>
 				</siga:ConjCampos>
 
-				<siga:TablaCabecerasFijas 
-		  				nombre="cabecera"
-		  				borde="2"
-		  				estilo=""
-				   		clase="tableTitle"
-		  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
-		   				tamanoCol="20,15,17,8,8,6,10,11,5"					   
-					   	ajuste="75"					   
-				>
+				<siga:Table 
+		  				name="cabecera"
+		  				border="2"
+		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
+		   				columnSizes="20,15,17,8,8,6,10,11,5">
 
 				
 <% 				
@@ -401,7 +401,7 @@
 						</siga:FilaConIconos>
 	 <%		}
 	 } %>
-	  			</siga:TablaCabecerasFijas>
+	  			</siga:Table>
 
 	<div id="camposRegistro2" style="position:absolute; width:280; height:70; z-index:2; bottom: 70px; left: 550px" align="center">
 	<%

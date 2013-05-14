@@ -53,13 +53,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-
-	<!-- Calendario -->
-	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -77,7 +76,7 @@
 	
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onload="ajusteAlto('resultado')">
 
 
 
@@ -174,14 +173,14 @@
 			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
 		</td>	
 		<td>
-			<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
+			<siga:Datepicker  nombreCampo= "fechaInicioBuscar"/>
 		</td>	
 		
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 		</td>
 		<td>
-			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
+			<siga:Datepicker  nombreCampo= "fechaFinBuscar"/>
 		</td>			
 	</tr>	
 		
@@ -199,14 +198,14 @@
 		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
 		</td>
 		<td>
-		  <siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
+		  <siga:Datepicker  nombreCampo= "fechaInicioArchivada"/>
 		</td>
 		
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
 		</td>
 		<td>
-		  <siga:Fecha  nombreCampo= "fechaFinArchivada"/>
+		  <siga:Datepicker  nombreCampo= "fechaFinArchivada"/>
 		</td>
 	</tr>
 	<%}else{%>
@@ -283,7 +282,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0"					 
+					marginwidth="0"							
 					class="frameGeneral">
 	</iframe>
 

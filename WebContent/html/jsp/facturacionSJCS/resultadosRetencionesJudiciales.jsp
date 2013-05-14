@@ -48,11 +48,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="FactSJCS.mantRetencionesJ.cabecera"/></title>
 	<script type="text/javascript">
 		function refrescarLocal(){
@@ -75,15 +76,12 @@
 		<input type="hidden" id="modo"  name="modo" value="">		
 	</html:form>	
 
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoRetencionesJudiciales"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="FactSJCS.mantRetencionesJ.literal.nColegiado,FactSJCS.mantRetencionesJ.literal.nombre,FactSJCS.mantRetencionesJ.literal.tipoRetencion,FactSJCS.mantRetencionesJ.literal.importe,FactSJCS.mantRetencionesJ.literal.fechaInicioRJ,FactSJCS.mantRetencionesJ.literal.fechaFinNotificacion,FactSJCS.mantRetencionesJ.literal.destinatario,"
-		   tamanoCol="10,15,10,10,10,10,25,10"
-		   alto="360"
-		   modal="M" 
-		   activarFilaSel="true" >
+		<siga:Table 		   
+		   name="listadoRetencionesJudiciales"
+		   border="2"
+		   columnNames="FactSJCS.mantRetencionesJ.literal.nColegiado,FactSJCS.mantRetencionesJ.literal.nombre,FactSJCS.mantRetencionesJ.literal.tipoRetencion,FactSJCS.mantRetencionesJ.literal.importe,FactSJCS.mantRetencionesJ.literal.fechaInicioRJ,FactSJCS.mantRetencionesJ.literal.fechaFinNotificacion,FactSJCS.mantRetencionesJ.literal.destinatario,"
+		   columnSizes="10,15,10,10,10,10,25,10"
+		   modal="M">
 		   
 		  <%if (obj.size()>0){%>
   			<%
@@ -130,16 +128,14 @@
 				</siga:FilaConIconos>		
 			<% recordNumber++;}%>
 		<%}else {%>			
-			<tr>
-			<td colspan="8">
-			<input type="hidden" name="actionModal" value="">
-			<br>
-			<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-			<br>
+			<tr class="notFound">
+			<td colspan="8" class="titulitos">
+				<input type="hidden" name="actionModal" value="">
+				<siga:Idioma key="messages.noRecordFound"/>
 			</td>
-			</tr>			
+			</tr>
 		<%}%> 		
-		</siga:TablaCabecerasFijas>		
+		</siga:Table>		
 
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 </body>	

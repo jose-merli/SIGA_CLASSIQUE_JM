@@ -56,12 +56,12 @@
 <html>
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -123,21 +123,18 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta" />
 						</td>
 						<td>
-							<siga:Fecha  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/>						
+							<siga:Datepicker  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/>						
 						</td>
 					</tr>
 				</table>
 			</siga:ConjCampos>
 		</html:form>
-		
-		<siga:TablaCabecerasFijas 
-			nombre="tablaDatos" 
-			borde="1"
-			clase="tableTitle"
-			nombreCol="gratuita.listarGuardias.literal.turno,gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-			tamanoCol="15,14,10,8,6,9,8,8,8,7,8" 
-			alto="100%"
-			ajuste="10">
+
+		<siga:Table 
+			name="tablaDatos" 
+			border="1"
+			columnNames="gratuita.listarGuardias.literal.turno,gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
+			columnSizes="15,14,10,8,6,9,8,8,8,7,8" >
 			
 			<% if (obj.size()>0) { 
 	    		int recordNumber=1;
@@ -265,10 +262,10 @@
 				</p>
 				<br>
 			<% } %>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 		<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
-		<div style="position: absolute; left: 400px; bottom: 25px; z-index: 2;">
+		<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
 			<table align="center" border="0">
 				<tr>
 					<td class="labelText">

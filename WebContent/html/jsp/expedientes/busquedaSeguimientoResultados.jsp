@@ -33,12 +33,12 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-		
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		<script type="text/javascript">
 			function refrescarLocal() {	
 				parent.refrescarLocal();
@@ -62,27 +62,24 @@
 			<html:hidden property = "editable" />
 		</html:form>
 		
-		<siga:TablaCabecerasFijas 
-	   	 	nombre="tablaDatos"
-	   		borde="1"
-	   		clase="tableTitle"
-	   		nombreCol="expedientes.auditoria.literal.fechaAnotacion,
+		<siga:Table 
+	   	 	name="tablaDatos"
+	   		border="1"
+	   		columnNames="expedientes.auditoria.literal.fechaAnotacion,
 				expedientes.auditoria.literal.usuario,
 				expedientes.auditoria.literal.fase,
 				expedientes.auditoria.literal.fechaInicioEstado,
 				expedientes.auditoria.literal.estado,
 				expedientes.auditoria.literal.automatico,
 				expedientes.auditoria.literal.descripcion,"
-   		  	tamanoCol="8,17,8,8,8,18,23,10"
-	   		alto="100%"	
-	   		ajuste="28"
+   		  	columnSizes="8,17,8,8,8,18,23,10"
    		  	modal="m">
 		   		  
 		    <!-- INICIO: ZONA DE REGISTROS -->
 			<%if (vDatos==null || vDatos.size()==0)	{%>
-				<br><br>
-		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br><br>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 				
 			<%} else {
 		 		for (int i=0; i<vDatos.size(); i++) {
@@ -134,7 +131,7 @@
 			}%>
 			
 		<!-- FIN: ZONA DE REGISTROS -->
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 		<!-- FIN: LISTA DE VALORES -->
 		
 		<html:form action="/EXP_AuditoriaExpedientes.do" method="POST" target="mainWorkArea">

@@ -54,11 +54,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -101,21 +102,18 @@
 		</html:form>	
 		
 
-		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,facturacion.ano,gratuita.busquedaSOJ.literal.numero,gratuita.listarDesignasTurno.literal.fechaEntrada,facturacion.estado,gratuita.listarDesignasTurnos.literal.resumen,gratuita.listarDesignasTurno.literal.actPendValidar,"
-		   tamanoCol="15,20,8,5,8,8,10,10,9"
-		   			alto="100%"
-		   			ajuste="70"		
-
-		  >
+		<siga:Table 
+		   name="tablaDatos"
+		   border="1"
+		   columnNames="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,facturacion.ano,gratuita.busquedaSOJ.literal.numero,gratuita.listarDesignasTurno.literal.fechaEntrada,facturacion.estado,gratuita.listarDesignasTurnos.literal.resumen,gratuita.listarDesignasTurno.literal.actPendValidar,"
+		   columnSizes="15,20,8,5,8,8,10,10,9">
 
 	<%if ((resultado==null)||(resultado.size()==0)){%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+	 		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	<%}else{%>
 	
 		<%
@@ -157,7 +155,7 @@
 		<%	contador++;}%>
 	<%}%>	
 
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	
 	<div style="position:absolute; left:400px;bottom:35px;z-index:3">
 				<table align="center">

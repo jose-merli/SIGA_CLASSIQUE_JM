@@ -1630,6 +1630,7 @@ if (jQuery){
 		jQuery(document).ready(function() {	
 		    jQuery(window).load(function (){
 		    	iniInputSelect(false);
+		    	//alert("entro");
 	//	    	if (log != "")
 	//	    		alert(log);
 		    });
@@ -1725,5 +1726,543 @@ if (jQuery){
 			}
 		}
 	}
+	
+	function scrolify(tblAsJQueryObject, height) {
+    	var oTbl;
+        var newTbl;        
+        oTbl = tblAsJQueryObject;
+        oTbl.css("border-collapse","collapse");
+        var tblId = oTbl.attr("id");
+        var oDiv = jQuery("<div id='"+tblId+"_tblFxHeadr'/>");
+        oTbl.wrap(oDiv);
+        // for very large tables you can remove the four lines below
+        // and wrap the table with <div> in the mark-up and assign
+        // height and overflow property  
+        var oTblDiv = jQuery("<div id='"+tblId+"_BodyDiv'/>");
+        oTblDiv.css('height', height);
+        oTblDiv.css('overflow-y', 'auto');
+        oTblDiv.css('overflow-x', 'hidden');
+        oTblDiv.css('white-space','nowrap');
+        oTblDiv.css('text-overflow','ellipsis');
+        oTblDiv.css('width','100%');
+        oTbl.wrap(oTblDiv);
+
+        // save original width
+        oTbl.attr("data-item-original-width", oTbl.width());
+        oTbl.find('thead tr td').each(function () {
+            jQuery(this).attr("data-item-original-width", jQuery(this).width());
+        });
+        oTbl.find('tbody tr:eq(0) td').each(function () {
+            jQuery(this).attr("data-item-original-width", jQuery(this).width());
+        });
+
+        // clone the original table
+        newTbl = oTbl.clone();
+        
+        newTbl.find("div.notFound").empty();
+        newTbl.find("div.notFound").remove();
+        
+        // remove table header from original table
+        oTbl.find('thead tr').remove();
+        // remove table body from new table
+        newTbl.find('tbody tr').remove();
+
+        oTbl.parent().before(newTbl);
+        newTbl.wrap("<div id='"+tblId+"_HeaderDiv'/>");
+
+        // replace ORIGINAL COLUMN width                
+        newTbl.width(newTbl.attr('data-item-original-width'));        
+        newTbl.find('thead tr th').each(function () {
+            jQuery(this).width(jQuery(this).attr("data-item-original-width"));
+        });
+        oTbl.width(oTbl.attr('data-item-original-width'));
+        oTbl.find('tbody tr:eq(0) td').each(function () {
+            jQuery(this).width(jQuery(this).attr("data-item-original-width"));
+        });
+        oTbl.find('tbody tr').each(function () {
+            jQuery(this).addClass("tableTitle");
+        });
+        
+    }
+	//BNS: Scroll de tablas
+	function loadFixedHeaderTables (tableId, fixedHeight) {
+		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
+    	if (oTable.length > 0){
+    		if (fixedHeight != undefined && !isNaN(fixedHeight)){
+    			scrolify(oTable, fixedHeight);
+    		} else {
+	    		//alert("fixedHeaderTable BEGIN");
+	    		var fixedHeaderTableHeight = 0;
+				var tableContainer = getCurrentIFrame();
+				if (tableContainer == null){
+					tableContainer = oTable;
+				} else {
+					tableContainer = jQuery(tableContainer);
+				}
+				fixedHeaderTableHeight += tableContainer.height();			
+				
+	    		var clonarTablaBotones = true;
+	        	var tablaBotones = undefined;
+	        	if (jQuery('table.botonesDetalle').length > 0) {
+	        		tablaBotones = jQuery('table.botonesDetalle');
+	        		clonarTablaBotones = false;
+	        	} else if (parent && parent.document && parent.document.body){
+	        		//alert("buscando botonesDetalle en parents...");
+					var parentElement = parent;
+					var bKeepLooking = true;
+					while (bKeepLooking && parentElement && parentElement.document && parentElement.document.body && tablaBotones == undefined){					
+						if (jQuery('table.botonesDetalle', parentElement.document.body).length > 0) {
+							tablaBotones = jQuery('table.botonesDetalle', parent.document.body);
+						} else if (window.top.document != parentElement.document){
+							parentElement = parentElement.parent;
+						} else {
+							bKeepLooking = false;
+						}
+						//alert("buscando en parent..." + parentElement);
+					}				
+				}
+	        	// Buscamos paginación
+				//alert("Buscamos paginación ...");
+				var clonarTablaPaginacion = true;
+	        	var tablaPaginacion = undefined;
+				if (jQuery('div.tPaginatorDiv').length > 0){
+					//alert("Encontrado al mismo nivel...");
+					clonarTablaPaginacion = false;
+					tablaPaginacion = jQuery('div.tPaginatorDiv');
+				} else {
+					parentElement = parent;
+					bKeepLooking = true;
+					while (bKeepLooking && parentElement && parentElement.document && parentElement.document.body && tablaBotones == undefined){					
+						if (jQuery('div.tPaginatorDiv', parentElement.document.body).length > 0) {
+							tablaPaginacion = jQuery('div.tPaginatorDiv', parent.document.body);
+						} else if (window.top.document != parentElement.document){
+							parentElement = parentElement.parent;
+						} else {
+							bKeepLooking = false;
+						}
+						//alert("buscando en parent..." + parentElement);
+					}				
+				}
+				
+				var tablaPaginacionLocal = tablaPaginacion;
+				var tablaPaginacionLocalId = undefined;
+				if (tablaPaginacion != undefined){
+					//alert("tiene tablaPaginacion " + tablaPaginacion.offset().top);
+					tablaPaginacionLocalId = tablaPaginacionLocal.attr("id");
+		        	if (tablaPaginacionLocalId == undefined){
+		        		tablaPaginacionLocalId = "tablaPaginacionId";
+		        		tablaPaginacionLocal.attr("id", tablaPaginacionLocalId);
+		        	}
+					if (clonarTablaPaginacion){
+						tablaPaginacionLocal = tablaPaginacion.clone();
+						tablaPaginacionLocalId = "borrarTablaPaginacion";
+		        		tablaPaginacionLocal.attr("id", tablaPaginacionLocalId);
+		        		jQuery('#'+tableId+'_BodyDiv').after(tablaPaginacionLocal);
+		        		//alert("tablaPaginacion clonada" + tablaPaginacionLocal.offset().top);
+					}
+				}
+				var tablaBotonesLocal = tablaBotones;
+				var tablaBotonesLocalId = undefined;
+				if (tablaBotones != undefined){
+					//alert("tiene tablaBotones");
+					tablaBotonesLocalId = tablaBotonesLocal.attr("id");
+		        	if (tablaBotonesLocalId == undefined){
+		        		tablaBotonesLocalId = "tablaBotonesId";
+		        		tablaBotonesLocal.attr("id", tablaBotonesLocalId);
+		        	}
+					if (clonarTablaBotones){
+						tablaBotonesLocal = tablaBotones.clone();
+		        		tablaBotonesLocalId = "borrarTablaBotones";
+		        		tablaBotonesLocal.attr("id", tablaBotonesLocalId);
+		        		jQuery('#'+tableId+'_BodyDiv').after(tablaBotonesLocal);
+					}
+				}									
+				
+				if (tablaPaginacionLocal != undefined){
+					fixedHeaderTableHeight -= tablaPaginacionLocal.outerHeight(true);
+				}
+				if (tablaBotonesLocal != undefined){
+					fixedHeaderTableHeight -= tablaBotonesLocal.outerHeight(true);
+				}
+				if (tablaPaginacionLocal == undefined && tablaBotonesLocal == undefined){
+					var addMargin = true;
+					try{
+						if (fixedHeight != undefined && fixedHeight.substr(fixedHeight.length - 1) == "%"){
+							var percent = fixedHeight.substring(0, fixedHeight.length - 1);
+							if (!isNaN(percent)){							
+								fixedHeaderTableHeight = fixedHeaderTableHeight * percent / 100;
+								addMargin = false;
+							}
+						}
+					} catch(e){}
+					if (addMargin)
+					fixedHeaderTableHeight -= 20;
+				}
+				//alert("scrolify con " + fixedHeaderTableHeight);
+	            scrolify(oTable, fixedHeaderTableHeight);
+	            if (clonarTablaPaginacion)
+            		jQuery("#"+tablaPaginacionLocalId).remove();
+            	if (clonarTablaBotones)
+            		jQuery("#"+tablaBotonesLocalId).remove();
+	            //var td = jQuery("#BodyDiv").find('tbody tr:eq(0) td');
+	            //var th = jQuery("#HeaderDiv").find('thead tr th');
+	            //alert("reajuste");
+	            //alert(tableId + " despues scrolify...");
+	            var nextUpperElement = undefined;
+	            //alert("calculando posicion de body de tabla...");
+	            var tblPosition = getElementAbsolutePos(jQuery('#'+tableId+'_BodyDiv')[0]);
+	            //alert("posicion de body de tabla x:"+tblPosition.x+" y:"+tblPosition.y);
+	            var nextUpperElementPosition = undefined;
+	            if (tablaPaginacion != undefined && tablaBotones != undefined){
+	            	var tablaPaginacionPosition = getElementAbsolutePos(tablaPaginacion[0]);
+	            	var tablaBotonesPosition = getElementAbsolutePos(tablaBotones[0]);
+	            	if (tablaPaginacionPosition.y < tablaBotonesPosition.y){
+	            		//alert("recalculo con tablaPaginacionPosition x:" + tablaPaginacionPosition.x + " y:" + tablaPaginacionPosition.y);
+	            		nextUpperElement = tablaPaginacion;
+	            		nextUpperElementPosition = tablaPaginacionPosition;
+	            	} else {
+	            		//alert("recalculo con tablaBotonesPosition x:" + tablaBotonesPosition.x + " y:" + tablaBotonesPosition.y);
+	            		nextUpperElement = tablaBotones;
+	            		nextUpperElementPosition = tablaBotonesPosition;
+	            	}					
+				} else if (tablaPaginacion != undefined){					
+					nextUpperElement = tablaPaginacion;
+					nextUpperElementPosition = getElementAbsolutePos(tablaPaginacion[0]);
+					//alert("recalculo con tablaPaginacionPosition x:" + nextUpperElementPosition.x + " y:" + nextUpperElementPosition.y);
+				} else if (tablaBotones != undefined){
+					nextUpperElement = tablaBotones;
+					//alert("calculando posicion de tablaBotones");
+					nextUpperElementPosition = getElementAbsolutePos(tablaBotones[0]);
+					//alert("posicion de tablaBotones x:"+nextUpperElementPosition.x+" y:"+nextUpperElementPosition.y);
+					//alert("recalculo con tablaBotonesPosition x:" + nextUpperElementPosition.x + " y:" + nextUpperElementPosition.y);
+				}
+	            //alert("comprobamos si recalculamos...");
+	            //alert("tblPosition.y: " + tblPosition.y + " outerHeight: " + jQuery('#'+tableId+'_BodyDiv').outerHeight(true) + " nextUpperElementPosition.y: " + nextUpperElementPosition.y);
+	            if (nextUpperElementPosition != undefined && (tblPosition.y + jQuery('#'+tableId+'_BodyDiv').outerHeight(true)) > nextUpperElementPosition.y){
+	            	//alert("reajusto a " + (parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y)));
+	            	jQuery('#'+tableId+'_BodyDiv').height(parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y));
+	            }
+    		}    		
+    	}
+    }
+}
+
+function getCurrentIFrame() {
+    var iframes= parent.document.getElementsByTagName('iframe');
+    for (var i= iframes.length; i-->0;) {
+        var iframe= iframes[i];
+        try {
+            var idoc= 'contentDocument' in iframe? iframe.contentDocument : iframe.contentWindow.document;
+        } catch (e) {
+            continue;
+        }
+        if (idoc===document)
+            return iframe;
+    }
+    return null;
+}
+
+function getElementIFrame(element) {
+	var doc= element.ownerDocument;
+	var win= 'defaultView' in doc? doc.defaultView : doc.parentWindow;
+    var iframes= win.parent.document.getElementsByTagName('iframe');
+    for (var i= iframes.length; i-->0;) {
+        var iframe= iframes[i];
+        try {
+            var idoc= 'contentDocument' in iframe? iframe.contentDocument : iframe.contentWindow.document;
+        } catch (e) {
+            continue;
+        }
+        if (idoc===win.document)
+            return iframe;
+    }
+    return null;
+}
+
+function __getIEVersion() {
+    var rv = -1; // Return value assumes failure.
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+        var ua = navigator.userAgent;
+        var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+        if (re.exec(ua) != null)
+            rv = parseFloat(RegExp.$1);
+    }
+    return rv;
+}
+
+function __getOperaVersion() {
+    var rv = 0; // Default value
+    if (window.opera) {
+        var sver = window.opera.version();
+        rv = parseFloat(sver);
+    }
+    return rv;
+}
+
+var __userAgent = navigator.userAgent;
+var __isIE =  navigator.appVersion.match(/MSIE/) != null;
+var __IEVersion = __getIEVersion();
+var __isIENew = __isIE && __IEVersion >= 8;
+var __isIEOld = __isIE && !__isIENew;
+
+var __isFireFox = __userAgent.match(/firefox/i) != null;
+var __isFireFoxOld = __isFireFox && ((__userAgent.match(/firefox\/2./i) != null) || (__userAgent.match(/firefox\/1./i) != null));
+var __isFireFoxNew = __isFireFox && !__isFireFoxOld;
+
+var __isWebKit =  navigator.appVersion.match(/WebKit/) != null;
+var __isChrome =  navigator.appVersion.match(/Chrome/) != null;
+var __isOpera =  window.opera != null;
+var __operaVersion = __getOperaVersion();
+var __isOperaOld = __isOpera && (__operaVersion < 10);
+
+function __parseBorderWidth(width) {
+    var res = 0;
+    if (typeof(width) == "string" && width != null && width != "" ) {
+        var p = width.indexOf("px");
+        if (p >= 0) {
+            res = parseInt(width.substring(0, p));
+        }
+        else {
+     		//do not know how to calculate other values (such as 0.5em or 0.1cm) correctly now
+    		//so just set the width to 1 pixel
+            res = 1; 
+        }
+    }
+    return res;
+}
+
+
+//returns border width for some element
+function __getBorderWidth(element) {
+	var res = new Object();
+	res.left = 0; res.top = 0; res.right = 0; res.bottom = 0;
+	if (window.getComputedStyle) {
+		//for Firefox
+		var elStyle = window.getComputedStyle(element, null);
+		res.left = parseInt(elStyle.borderLeftWidth.slice(0, -2));  
+		res.top = parseInt(elStyle.borderTopWidth.slice(0, -2));  
+		res.right = parseInt(elStyle.borderRightWidth.slice(0, -2));  
+		res.bottom = parseInt(elStyle.borderBottomWidth.slice(0, -2));  
+	}
+	else {
+		//for other browsers
+		res.left = __parseBorderWidth(element.style.borderLeftWidth);
+		res.top = __parseBorderWidth(element.style.borderTopWidth);
+		res.right = __parseBorderWidth(element.style.borderRightWidth);
+		res.bottom = __parseBorderWidth(element.style.borderBottomWidth);
+	}
+   
+	return res;
+}
+
+
+//returns the absolute position of some element within document
+function getElementAbsolutePos(element) {
+	var res = {};
+	res.x = 0; res.y = 0;
+	if (element !== null && element !== undefined) { 
+		//use getBoundingClientRect function available in new browsers
+		if (element.getBoundingClientRect) {
+ 	        var box = element.getBoundingClientRect();
+		    
+ 		    var body = document.body;
+ 		    var docElem = document.documentElement;
+ 		    
+ 		    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+ 		    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+ 		    
+ 		    var clientTop = docElem.clientTop || body.clientTop || 0;
+ 		    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+   	    
+
+		    res.x = Math.round(box.left + scrollLeft - clientLeft);
+		    res.y = Math.round(box.top + scrollTop - clientTop);
+		    
+		}
+		else { //for old browsers
+			res.x = element.offsetLeft;
+			res.y = element.offsetTop;
+			
+			var parentNode = element.parentNode;
+			var borderWidth = null;
+
+			while (offsetParent != null) {
+				res.x += offsetParent.offsetLeft;
+				res.y += offsetParent.offsetTop;
+				
+				var parentTagName = offsetParent.tagName.toLowerCase();	
+
+				if ((__isIEOld && parentTagName != "table") || ((__isFireFoxNew || __isChrome) && parentTagName == "td")) {		    
+					borderWidth = __getBorderWidth(offsetParent);
+					res.x += borderWidth.left;
+					res.y += borderWidth.top;
+				}
+				
+				if (offsetParent != document.body && offsetParent != document.documentElement) {
+					res.x -= offsetParent.scrollLeft;
+					res.y -= offsetParent.scrollTop;
+				}
+
+
+				//next lines are necessary to fix the problem with offsetParent
+				if (!__isIE && !__isOperaOld || __isIENew) {
+					while (offsetParent != parentNode && parentNode !== null) {
+						res.x -= parentNode.scrollLeft;
+						res.y -= parentNode.scrollTop;
+						if (__isFireFoxOld || __isWebKit) {
+							borderWidth = __getBorderWidth(parentNode);
+							res.x += borderWidth.left;
+							res.y += borderWidth.top;
+						}
+						parentNode = parentNode.parentNode;
+					}    
+				}
+
+				parentNode = offsetParent.parentNode;
+				offsetParent = offsetParent.offsetParent;
+			}
+		}
+		var frame = getElementIFrame(element);
+		//alert(element.id + " x: "+res.x+" y:"+res.y);
+		if (frame != null) {			
+			var fp = getElementAbsolutePos(frame);
+			//alert("sumando frame x:"+fp.x+ " y:"+fp.y);
+			res.x += fp.x; 
+			res.y += fp.y; 
+		}
+	}
+	
+    return res;
+}
+jQuery(function(){
+	if (jQuery.datepicker){
+		//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
+	   jQuery.datepicker.regional['es'] = {
+	      closeText: 'Cerrar',
+	      prevText: '<Ant',
+	      nextText: 'Sig>',
+	      currentText: 'Hoy',
+	      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+	      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+	      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+	      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+	      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+	      weekHeader: 'Sm',
+	      dateFormat: 'dd/mm/yy',
+	      firstDay: 1,
+	      isRTL: false,
+	      showMonthAfterYear: false,
+	      yearSuffix: ''};
+	   jQuery.datepicker.setDefaults(jQuery.datepicker.regional['es']);
+	   
+	   var clearText = "Borrar";
+	   var old_fn = jQuery.datepicker._updateDatepicker;
+	   jQuery.datepicker._updateDatepicker = function(inst) {
+		   old_fn.call(this, inst);
+		   var buttonPane = jQuery(this).datepicker("widget").find(".ui-datepicker-buttonpane");
+		   jQuery("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+clearText+"</button>").appendTo(buttonPane).click(function(ev) {
+		   jQuery.datepicker._clearDate(inst.input);
+		   		}) ;
+	   		};
+	}
+	});
+var datepickerBtn = false;
+function setDatepickerClearBtn(btnText){
+	if (!datepickerBtn){
+	var old_fn = jQuery.datepicker._updateDatepicker;
+	jQuery.datepicker._updateDatepicker = function(inst) {
+		   old_fn.call(this, inst);
+		   var buttonPane = jQuery(this).datepicker("widget").find(".ui-datepicker-buttonpane");
+		   if (buttonPane.find(".ui-datepicker-clean").lenght <= 0){
+			   jQuery("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+btnText+"</button>").appendTo(buttonPane).click(function(ev) {
+			   jQuery.datepicker._clearDate(inst.input);
+			   		}) ;
+		   } else {
+			   buttonPane.find(".ui-datepicker-clean").text(btnText);
+		   }
+	   	};
+	   	datepickerBtn = true;
+	}
 }
 fin();
+// *** JQUERY PLUGINS *** //
+/**
+*	jQuery.noticeAdd() and jQuery.noticeRemove()
+*	These functions create and remove growl-like notices
+*		
+*   Copyright (c) 2009 Tim Benniks
+*
+*	Permission is hereby granted, free of charge, to any person obtaining a copy
+*	of this software and associated documentation files (the "Software"), to deal
+*	in the Software without restriction, including without limitation the rights
+*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*	copies of the Software, and to permit persons to whom the Software is
+*	furnished to do so, subject to the following conditions:
+*
+*	The above copyright notice and this permission notice shall be included in
+*	all copies or substantial portions of the Software.
+*
+*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*	THE SOFTWARE.
+*	
+*	@author 	Tim Benniks <tim@timbenniks.com>
+* 	@copyright  2009 timbenniks.com
+*	@version    $Id: SIGA.js,v 1.38 2013-05-14 07:12:50 tf2 Exp $
+**/
+(function(jQuery)
+{
+	jQuery.extend({			
+		noticeAdd: function(options)
+		{	
+			var defaults = {
+				inEffect: 			{opacity: 'show'},	// in effect
+				inEffectDuration: 	600,				// in effect duration in miliseconds
+				stayTime: 			15000,				// time in miliseconds before the item has to disappear
+				text: 				'',					// content of the item
+				stay: 				true,				// should the notice item stay or not?
+				type: 				'notice' 			// could also be error, succes
+			}
+			
+			// declare varaibles
+			var options, noticeWrapAll, noticeItemOuter, noticeItemInner, noticeItemClose;
+								
+			options 		= jQuery.extend({}, defaults, options);
+			noticeWrapAll	= (!jQuery('.notice-wrap').length) ? jQuery('<div></div>').addClass('notice-wrap').appendTo('body') : jQuery('.notice-wrap');
+			noticeItemOuter	= jQuery('<div></div>').addClass('notice-item-wrapper').hover(function() { jQuery.noticeRemove(noticeItemInner) });
+			noticeItemInner	= jQuery('<div></div>').hide().addClass('notice-item ' + options.type).appendTo(noticeWrapAll).html(options.text).animate(options.inEffect, options.inEffectDuration).wrap(noticeItemOuter);
+			//noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner).html('x').hover(function() { jQuery.noticeRemove(noticeItemInner) });
+			noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner);
+			
+			// hmmmz, zucht
+			if(navigator.userAgent.match(/MSIE 6/i)) 
+			{
+		    	noticeWrapAll.css({top: document.documentElement.scrollTop});
+		    }
+			
+			if(!options.stay)
+			{
+				setTimeout(function()
+				{
+					jQuery.noticeRemove(noticeItemInner);
+				},
+				options.stayTime);
+			}
+		},
+		
+		noticeRemove: function(obj)
+		{
+			obj.animate({opacity: '0'}, 600, function()
+			{
+				obj.parent().animate({height: '0px'}, 600, function()
+				{
+					obj.parent().remove();
+				});
+			});
+		}
+	});
+})(jQuery);

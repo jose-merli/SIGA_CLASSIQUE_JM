@@ -62,8 +62,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo 
@@ -115,13 +119,11 @@
 			</tr>
 	</table>						
 	<div  style="position:relative;width=100%;height:200px;">
-					<siga:TablaCabecerasFijas
-	  				nombre="tarjeta"
-	  				borde="2"
-	  				clase="tableTitle"
-	  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-	   				tamanoCol="50,20,20,10"
-	   				alto="100">
+					<siga:Table
+	  				name="tarjeta"
+	  				border="2"
+	  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
+	   				columnSizes="50,20,20,10">
 <%				
  						for (int i = 0; i < vArticulos.size(); i++) {
 							Articulo a = (Articulo) vArticulos.get(i);
@@ -159,7 +161,7 @@
 <%						}
 	 					}
 %>  			
-	  			</siga:TablaCabecerasFijas>		
+	  			</siga:Table>		
 	</div>
 
 	<%
@@ -211,13 +213,12 @@
 							</tr>
 						</table>								
 						
-						<siga:TablaCabecerasFijas
-		  				nombre="otro"
-		  				borde="2"
-				   		clase="tableTitle"
-		  				nombreCol="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-		   				tamanoCol="50,20,20,10"
-		   				alto="100">
+						<siga:Table
+		  				name="otro"
+		  				border="2"
+		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
+		   				columnSizes="50,20,20,10"
+		   				fixedHeight="100">
 	<%				
 	 						for (int i = 0; i < vArticulos.size(); i++) {
 								Articulo a = (Articulo) vArticulos.get(i);		
@@ -258,7 +259,7 @@
 	<%						}
 		 					}
 	%>  			
-		  			</siga:TablaCabecerasFijas>					
+		  			</siga:Table>					
 
 				<div style="position:absolute;bottom:30px;width:100%; height:60; z-index:2;" align="center">
 <%

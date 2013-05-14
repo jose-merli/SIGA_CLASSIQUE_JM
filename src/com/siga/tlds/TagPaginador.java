@@ -177,7 +177,7 @@ public class TagPaginador extends TagSupport {
 				sb.append("</script>").append(INTRO).append(INTRO);
 				
 				//Anhado el div para posicionar el paginador
-				sb.append("<div style=\""+this.divStyle+"\">").append(INTRO);
+				sb.append("<div class=\"tPaginatorDiv\" style=\""+this.divStyle+"\">").append(INTRO);
 				
 				//Anhado la tabla que contiene el paginador
 				sb.append("<table class=\"tPaginator\" cellspacing=\"0\" border=\"0\"><tr>").append("<td width=\"50%\" align=\"left\"").append(" class=\"")
@@ -245,7 +245,7 @@ public class TagPaginador extends TagSupport {
 				sb = new StringBuffer();
 				
 				//Anhado el div para posicionar el paginador
-				sb.append("<div style=\""+this.divStyle+"\">").append(INTRO);
+				sb.append("<div class=\"tPaginatorDiv\" style=\""+this.divStyle+"\">").append(INTRO);
 				
 				//Anhado la tabla que contiene el paginador
 				sb.append("<table class=\"tPaginator\" border=\"0\" ><tr>").append("<td align=\"left\"").append(" class=\"")

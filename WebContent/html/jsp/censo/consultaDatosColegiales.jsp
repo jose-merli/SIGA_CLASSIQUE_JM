@@ -127,11 +127,12 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>			
+			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -197,9 +198,11 @@
 						<siga:ConjCampos leyenda="censo.busquedaClientesAvanzada.literal.titulo2">
 
 						<% if (request.getAttribute("DATCOLEGIAL") == null){%>
-							<br><br>
-								<p class="Title" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
-							<br><br>
+							<div class="notFound">
+				<br><br>
+		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+				<br><br>
+				</div>
 						<% } else { %>						
 							<table align="center" width="100%">
 								<tr>				
@@ -226,13 +229,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>
-											<siga:Fecha  nombreCampo= "fechaPresentacion" disabled="true"/>									 	
+											<siga:Datepicker  nombreCampo= "fechaPresentacion" disabled="true"/>									 	
 											<% }else{ %>	
-											<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"  disabled="true"/>
+											<siga:Datepicker  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"  disabled="true"/>
 											<% } %>
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
-			  								<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"/>
+			  								<siga:Datepicker  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"/>
 			  							<% } %>												
 									</td>
 									<td class="labelText">
@@ -242,13 +245,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>																			
 											<% if (fecha.equalsIgnoreCase("")){ %>	
-												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true"/>														 	
+												<siga:Datepicker  nombreCampo= "fechaIncorporacion" disabled="true"/>														 	
 											<% }else{ %>
-												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true" valorInicial="<%=fecha %>"/>																 										 	
+												<siga:Datepicker  nombreCampo= "fechaIncorporacion" disabled="true" valorInicial="<%=fecha %>"/>																 										 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>
-											<siga:Fecha  nombreCampo= "fechaIncorporacion"  valorInicial="<%=fecha %>"/>		
+											<siga:Datepicker  nombreCampo= "fechaIncorporacion"  valorInicial="<%=fecha %>"/>		
 			  																								
 										<% } %>																							
 									</td>									
@@ -261,13 +264,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>										
 											<% if (fecha.equalsIgnoreCase("")){ %>	
-											<siga:Fecha  nombreCampo= "fechaJura" disabled="true"/>										 	
+											<siga:Datepicker  nombreCampo= "fechaJura" disabled="true"/>										 	
 											<% }else{ %>										 	
-											<siga:Fecha  nombreCampo= "fechaJura" disabled="true" valorInicial="<%=fecha %>"/>		
+											<siga:Datepicker  nombreCampo= "fechaJura" disabled="true" valorInicial="<%=fecha %>"/>		
 											<% } %>	
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>
-											<siga:Fecha  nombreCampo= "fechaJura"  valorInicial="<%=fecha %>"/>	
+											<siga:Datepicker  nombreCampo= "fechaJura"  valorInicial="<%=fecha %>"/>	
 										<% } %>																																		
 									</td>						
 									
@@ -278,13 +281,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>									
 									 		<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>
-											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true"/>										 	
+											<siga:Datepicker  nombreCampo= "fechaTitulacion" disabled="true"/>										 	
 											<% }else{ %>										 								
-											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true" valorInicial="<%=fecha %>"/>			 	
+											<siga:Datepicker  nombreCampo= "fechaTitulacion" disabled="true" valorInicial="<%=fecha %>"/>			 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
-											<siga:Fecha  nombreCampo= "fechaTitulacion"  valorInicial="<%=fecha %>"/>	
+											<siga:Datepicker  nombreCampo= "fechaTitulacion"  valorInicial="<%=fecha %>"/>	
 			  							<% } %>																																													
 									</td>	
 									<td class="labelText">
@@ -294,13 +297,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-													<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true"/>	
+													<siga:Datepicker  nombreCampo= "fechaDeontologia" disabled="true"/>	
 											<% }else{ %>										 										 	
-												<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true" valorInicial="<%=fecha %>"/>	
+												<siga:Datepicker  nombreCampo= "fechaDeontologia" disabled="true" valorInicial="<%=fecha %>"/>	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
-												<siga:Fecha  nombreCampo= "fechaDeontologia" valorInicial="<%=fecha %>"/>	
+												<siga:Datepicker  nombreCampo= "fechaDeontologia" valorInicial="<%=fecha %>"/>	
 			  							<% } %>																																																								
 									</td>											
 								</tr>
@@ -614,25 +617,20 @@
 		<!-- INICIO: LISTA RESULTADOS -->
 
 			<% if ((modo.equalsIgnoreCase("editar"))||(modo.equalsIgnoreCase("edicion"))||(modo.equalsIgnoreCase("insertar"))||(modo.equalsIgnoreCase("modificar"))){ %>
-			<siga:TablaCabecerasFijas 
-				   nombre="tablaResultados"
-				   borde="1"
-				   clase="tableTitle"				   
-				   nombreCol="censo.consultaDatosGenerales.literal.fechaEstado,censo.consultaDatosGenerales.literal.estado,censo.consultaDatosColegiales.literal.observaciones,"
-				   tamanoCol="10,20,60,10"
-		   alto="100%"
-
-	
-
+			<siga:Table 
+				   name="tablaResultados"
+				   border="1"
+				   columnNames="censo.consultaDatosGenerales.literal.fechaEstado,censo.consultaDatosGenerales.literal.estado,censo.consultaDatosColegiales.literal.observaciones,"
+				   columnSizes="10,20,60,10"
 				   modal="P">
 				   				   
 				<%
 	    		if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 )
 		    	{
 				%>
-					<br><br>
-					<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
-					<br><br>
+					<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 				<%
 		    	}	    
 			    else
@@ -677,25 +675,19 @@
 					<% recordNumber++;
 					} 
 				} %>
-			</siga:TablaCabecerasFijas>												
+			</siga:Table>												
 
 			<% } else {	%>
-			<siga:TablaCabecerasFijas 
-				   nombre="tablaResultados"
-				   borde="1"
-				   clase="tableTitle"				   
-				   nombreCol="censo.consultaDatosGenerales.literal.fechaEstado,censo.consultaDatosGenerales.literal.estado,censo.consultaDatosColegiales.literal.observaciones"
-				   tamanoCol="10,20,70"
-		   alto="100%"
-
-
-	
->
+			<siga:Table 
+				   name="tablaResultados"
+				   border="1"
+				   columnNames="censo.consultaDatosGenerales.literal.fechaEstado,censo.consultaDatosGenerales.literal.estado,censo.consultaDatosColegiales.literal.observaciones"
+				   columnSizes="10,20,70">
 				   
 					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
-						<br><br>
-						<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
-						<br><br>
+						<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 					<% } else { %>
 				    	<%Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
 				    	int fila = 1;
@@ -721,7 +713,7 @@
 						<% fila++; 
 						} 
 					} %>
-				</siga:TablaCabecerasFijas>												
+				</siga:Table>												
 			<% } %>
 		
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>

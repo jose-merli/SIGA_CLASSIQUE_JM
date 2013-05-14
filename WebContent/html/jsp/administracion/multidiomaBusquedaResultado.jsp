@@ -31,11 +31,12 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 		
-			
-		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 		<siga:Titulo titulo="administracion.multidioma.etiquetas.titulo" localizacion="administracion.multidioma.etiquetas.localizacion"/>
 		
@@ -111,7 +112,13 @@
 	</head>
 	
 	<body>	
-		<html:form action="/ADM_GestionarMultiidiomaEtiquetas.do" method="POST" target="submitArea">
+	<% String sFormName = "/ADM_GestionarMultiidiomaCatalogos.do";
+				if (bCatalogos) { // Catalogos 
+				sFormName = "/ADM_GestionarMultiidiomaCatalogos.do";
+			 } else { // Etiquetas 
+				sFormName = "/ADM_GestionarMultiidiomaEtiquetas.do";
+			 } %>
+	<html:form action="<%=sFormName%>" method="POST" target="submitArea">
 		
 			<input type="hidden" name="datosModificados" value=""/>
 			<input type="hidden" name="esCatalogo" value="<%=bCatalogos%>"/>
@@ -170,9 +177,9 @@
 				<% }  // for
 			} // if
 			else { %>
-				<br><br>
-		   		 	<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-		 		<br><br>	 		
+				<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>	 		
 			<% } %>
 		   			
 			

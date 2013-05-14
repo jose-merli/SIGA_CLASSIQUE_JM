@@ -77,11 +77,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
 	<script type="text/javascript">
 		function refrescarLocal()
@@ -101,24 +102,16 @@
 		<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
 	</html:form>	
 	
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoActas"
-		   borde="1"
-		   clase="tableTitle"		   
-		   nombreCol="sjcs.actas.numeroActa, sjcs.actas.fechaResolucion, sjcs.actas.fechaReunion, sjcs.actas.presidente, sjcs.actas.secretario,"
-		   tamanoCol="10,15,15,25,25,10"
-		   alto="100%"
-		   ajustePaginador="true"
-		   activarFilaSel="true" >
-		   
+		<siga:Table 		   
+		   name="listadoActas"
+		   border="1"
+		   columnNames="sjcs.actas.numeroActa, sjcs.actas.fechaResolucion, sjcs.actas.fechaReunion, sjcs.actas.presidente, sjcs.actas.secretario,"
+		   columnSizes="10,15,15,25,25,10">
+		   		   
 		<%if (resultado == null || resultado.size() == 0) {%>
-			<br>
-			<br>
-				<p class="titulitos" style="text-align: center">
-					<siga:Idioma key="messages.noRecordFound" />
-				</p>
-			<br>
-			<br>
+			<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 		<%}else{%>
 			<%String fila;%>
 			<%for(int i=0;i<resultado.size();i++){ %>
@@ -137,7 +130,7 @@
 		</siga:FilaConIconos>
 			<%} %>
 		<%} %>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 <%
 	
 	if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){%>

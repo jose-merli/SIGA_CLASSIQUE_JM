@@ -38,7 +38,7 @@
 		pintarAsterisco="&nbsp;(*)";
 		
 	}*/
-	
+	String idInstitucion = usr.getLocation();
 	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	//aalg: INC_10624
@@ -58,7 +58,7 @@
 	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", idcalidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", anioProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
-   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
+   	String idPretension    = "", pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
    	
    	String idRenuncia="", nig = "";
    	String idInstintucion="";
@@ -94,7 +94,6 @@
 	
 	// Datos pretensiones seleccionado:
 		if (hash.containsKey(ScsEJGBean.C_IDPRETENSION)) idPretension					  		=  hash.get(ScsEJGBean.C_IDPRETENSION).toString();
-		if (hash.containsKey(ScsEJGBean.C_IDPRETENSIONINSTITUCION)) idPretensionInstitucion		=  hash.get(ScsEJGBean.C_IDPRETENSIONINSTITUCION).toString();
 
 	// Datos del Juzgado seleccionado:
 		if (hash.containsKey(ScsEJGBean.C_JUZGADO)) juzgadoAsi					  			=  hash.get(ScsEJGBean.C_JUZGADO).toString();
@@ -129,8 +128,8 @@
 	String[] datos={usr.getLocation(),idTurno};
 	String[] datosJuz={usr.getLocation(),idTurno,"-1"};
 
-	if (idPretension!=null && idPretensionInstitucion!=null)
-		pretensionesSel.add(0,idPretension+","+idPretensionInstitucion);	
+	if (idPretension!=null && idInstitucion!=null)
+		pretensionesSel.add(0,idPretension+","+idInstitucion);	
 	
 	if (idcalidad!=null)
 		calidadSel.add(0,idcalidad+","+idInstintucion);	
@@ -219,17 +218,13 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-	<link type="text/css" rel="stylesheet" href="<%=app%>/html/js/themes/base/jquery.ui.all.css"/>		
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-	<script type="text/javascript" src="<%=app%>/html/js/SIGA.js"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.maskedinput.js"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-	<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
-	<script type="text/javascript" src="<%=app%>/html/js/calendarJs.jsp"></script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -644,7 +639,7 @@
 			                             <%   if (modopestanha.equals("ver")) {%>
 				                             <input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
 			                             <%	} else { %>
-			                             <siga:Fecha nombreCampo="fechaProc1" valorInicial="<%=FECHAPROCURADOR%>" readOnly="true"></siga:Fecha>
+			                             <siga:Datepicker nombreCampo="fechaProc1" valorInicial="<%=FECHAPROCURADOR%>" readOnly="true"></siga:Datepicker>
 			                             <%}%>
 			                            </td>
 										<td>

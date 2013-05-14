@@ -24,11 +24,12 @@
 %>
 <html>
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 </head>
 <body class="tablaCentralCampos">
 <%
@@ -50,16 +51,11 @@
 	 	else
 	 		{
 	 %>
-			<siga:TablaCabecerasFijas
-  				nombre="cabecera"
-  				borde="2"
-  				estilo=""
-		   		clase="tableTitle"
-  				nombreCol="administracion.auditoria.institucion,administracion.auditoria.diripservidor,administracion.auditoria.diriplocal,administracion.auditoria.usuario,administracion.auditoria.nif,administracion.auditoria.rol,administracion.auditoria.fechayhora,administracion.auditoria.accion"
-   				tamanoCol="14,9,9,13,8,10,11,19"
-		   			alto="100%"
-
-  				>
+			<siga:Table
+  				name="cabecera"
+  				border="2"
+  				columnNames="administracion.auditoria.institucion,administracion.auditoria.diripservidor,administracion.auditoria.diriplocal,administracion.auditoria.usuario,administracion.auditoria.nif,administracion.auditoria.rol,administracion.auditoria.fechayhora,administracion.auditoria.accion"
+   				columnSizes="14,9,9,13,8,10,11,19">
 	<%
 				List en = (List)request.getAttribute("Resultado");
 				for (int i=0; i<en.size(); i++)
@@ -101,7 +97,7 @@
 					</tr>
 	<%				}
 	%>
-				  </siga:TablaCabecerasFijas>
+				  </siga:Table>
 
 	<%	}
 	}%>

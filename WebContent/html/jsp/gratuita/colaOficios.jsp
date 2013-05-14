@@ -41,44 +41,15 @@
 	<!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaOficio" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		<script>
-		
-		
-		function validaTabla(){
-			  //Ajusto tablas de letrados en cola:
-			  if (document.getElementById("tablaLetrados").clientHeight < document.getElementById("tablaLetradosDiv").clientHeight) {
-				   document.getElementById("tituloTablaLetrados").width='100%';
-				   document.getElementById("tablaLetradosCabeceras").width='100%';
-			  } else {
-				   document.getElementById("tituloTablaLetrados").width='96.5%';
-				   document.getElementById("tablaLetradosCabeceras").width='96.5%';
-			  }
-		
-			  //Ajusto tabla de compensaciones:
-			  if (document.getElementById("tablaCompensaciones").clientHeight < document.getElementById("tablaCompensacionesDiv").clientHeight) {
-				   document.getElementById("tituloTablaCompensaciones").width='100%';
-				   document.getElementById("tablaCompensacionesCabeceras").width='100%';
-			  } else {
-				   document.getElementById("tituloTablaCompensaciones").width='96.5%';
-				   document.getElementById("tablaCompensacionesCabeceras").width='96.5%';
-			  }
-			  
-			  //Ajusto tabla de saltos:
-			  if (document.getElementById("tablaSaltos").clientHeight < document.getElementById("tablaSaltosDiv").clientHeight) {
-				   document.getElementById("tituloTablaSaltos").width='100%';
-				   document.getElementById("tablaSaltosCabeceras").width='100%';
-			  } else {
-				   document.getElementById("tituloTablaSaltos").width='96.5%';
-				   document.getElementById("tablaSaltosCabeceras").width='96.5%';
-			  }	 		  
-		}
-		
 		function refrescarLocal()
 		{	
 			document.location=document.location;
@@ -156,7 +127,7 @@
 
 	</head>
 
-<body onload="validaTabla();">
+<body>
 
 		<html:form action="/JGR_ColaOficio" method="get" >
 		
@@ -236,14 +207,11 @@
 		 
 		</table>
 		
-		<siga:TablaCabecerasFijas
-		   nombre="tablaLetrados"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="16,38,18,18,10";
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
-		   alto="50%"
-		   ajusteAlto="">
+		<siga:Table
+		   name="tablaLetrados"
+		   border="1"
+		   columnSizes="16,38,18,18,10";
+		   columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -254,11 +222,9 @@
 		        
 			if (letradosColaGuardiaList==null || letradosColaGuardiaList.size()==0) {
 		%>			
-	 		<tr>
-			  <td colspan="4" height="265px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr> 		
 <%
 	 			} else { 
 	 				// recorro el resultado
@@ -316,7 +282,7 @@
 			<!-- FIN: ZONA DE REGISTROS -->
 <%	} // del if %>			
 
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
@@ -328,30 +294,26 @@
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Compensaciones ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
-		<table id='tituloTablaCompensaciones' border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		<table id='tituloTablaCompensaciones' border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
 			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
 		  </tr>
 		</table>
-		<siga:TablaCabecerasFijas
-		   nombre="tablaCompensaciones"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="22,50,28"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
-		   alto="170"
-		   ajusteAlto="">
+		<siga:Table
+		   name="tablaCompensaciones"
+		   border="1"
+		   columnSizes="22,50,28"
+		   columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
+		   fixedHeight="170">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
 <%	Vector resultado = (Vector) request.getAttribute("vCompensaciones");
 	if (resultado==null || resultado.size()==0) { %>			
-	 		<tr>
-			  <td colspan="4" height="35px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>	 		
 <%	} else { 
 		// recorro el resultado
 		for (int i=0;i<resultado.size();i++) {
@@ -381,7 +343,7 @@
 			<!-- FIN: ZONA DE REGISTROS -->
 <%	} // del if %>			
 
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	  
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>
@@ -393,30 +355,26 @@
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Saltos -------------------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-		<table id='tituloTablaSaltos' border='1' width='10%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		<table id='tituloTablaSaltos' border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
 			<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
 		  </tr>
 		</table>
-		<siga:TablaCabecerasFijas
-		   nombre="tablaSaltos"
-		   borde="1"
-		   clase="tableTitle"
-		   tamanoCol="22,50,28"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
-		   alto="100%"
-		   ajusteAlto="">
-
+		<siga:Table
+		   name="tablaSaltos"
+		   border="1"
+		   columnSizes="22,50,28"
+		   columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
+		   fixedHeight="170">
+		   
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
 <%	Vector resultado = (Vector) request.getAttribute("vSaltos");
 	if (resultado==null || resultado.size()==0) { %>			
-	 		<tr>
-			  <td colspan="4" height="75px">
-	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-			  </td>
-	 		</tr>	 		
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr> 		
 <%	} else { 
 		// recorro el resultado
 		for (int i=0;i<resultado.size();i++) {
@@ -446,7 +404,7 @@
 			<!-- FIN: ZONA DE REGISTROS -->
 <%	} // del if %>			
 
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 
 <!-------------------------------------------------------------------------------------------------->	

@@ -41,11 +41,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -88,20 +89,16 @@
 	</fieldset>
 
 
-		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="gratuita.listarDesignasTurno.literal.nColegiado,administracion.certificados.literal.nombre,facturacion.ano,gratuita.busquedaSOJ.literal.numero,gratuita.listarDesignasTurno.literal.codigo,gratuita.listarDesignasTurno.literal.fechaEntrada,facturacion.estado,gratuita.listarDesignasTurnos.literal.resumen,"
-		   tamanoCol="10,15,10,10,7,8,15,15,10"
-		   			alto="100%"
-		   			ajuste="100"		
-		  >
+		<siga:Table 
+		   name="tablaDatos"
+		   border="1"
+		   columnNames="gratuita.listarDesignasTurno.literal.nColegiado,administracion.certificados.literal.nombre,facturacion.ano,gratuita.busquedaSOJ.literal.numero,gratuita.listarDesignasTurno.literal.codigo,gratuita.listarDesignasTurno.literal.fechaEntrada,facturacion.estado,gratuita.listarDesignasTurnos.literal.resumen,"
+		   columnSizes="10,15,10,10,7,8,15,15,10">
 
 	<%if ((resultado==null)||(resultado.size()==0)){%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	<% } else{%>
 
 	<!-- FIN INFORMACION DEL TURNO SELECCIONADO-->
@@ -131,13 +128,13 @@
 				</siga:FilaConIconos>
 		<%	contador++;}%>
 	<%}%>	
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	
-	<div style="position:absolute; left:400px;bottom:35px;z-index:3">
+	<div style="position:absolute; left:400px;bottom:3px;z-index:99">
 		<table align="center">
 		<tr>
 			<td class="labelText">
-				<input name="nombre" type="text" class="boxConsulta" size="12" maxlength="12" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.ordenar"/>' readonly="true" >
+				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.ordenar"/>
 				<Select name = "orden1" style = "true" class = "box" onChange="accionOrdenar(this);">
 							<option value="0" <%if ((orden!=null)&&(orden.equalsIgnoreCase("0"))){%>selected<%}%>><siga:Idioma key="gratuita.listarDesignasTurno.literal.nColegiado"/></option>
 							<option value="1" <%if ((orden!=null)&&(orden.equalsIgnoreCase("1"))){%>selected<%}%>><siga:Idioma key="gratuita.listarDesignasTurno.literal.nombre"/></option>

@@ -90,7 +90,12 @@
 <!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>		
 		<style type="text/css">
 
 			.especif
@@ -100,7 +105,6 @@
 			}
 
 		</style>
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -157,24 +161,20 @@
 			<input type="hidden" name="actionModal"  name="actionModal" value="">
 		</html:form>
 		
-			<siga:TablaCabecerasFijas 
-			   nombre="tablaDatos"
-			   borde="1"
-			   clase="tableTitle"
-			   nombreCol="facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
+			<siga:Table 
+			   name="tablaDatos"
+			   border="1"
+			   columnNames="facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
 			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
 			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numFacturaAsociada,"
-			   tamanoCol="10,8,18,23,12,7,9,15"
-			   alto="245"
-			   ajustePaginador="true" 
-			   activarFilaSel="true" >
-		       
+			   columnSizes="10,8,18,23,12,7,9,15">		       
 			<%
 	    	if (resultado == null || resultado.size() < 1 )
 		    {
 			%>
-				<br><br><br>
-				<p class="titulitos" style="text-align:center;"><siga:Idioma key="messages.noRecordFound"/></p>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 			<%
 	    	}	    
 		    else
@@ -253,7 +253,7 @@
 					<% 
 				} 
 			} %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 			
 			<!-- Metemos la paginación-->		
 	 <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>

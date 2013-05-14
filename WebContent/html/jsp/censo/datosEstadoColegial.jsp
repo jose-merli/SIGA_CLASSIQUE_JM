@@ -84,11 +84,12 @@
 <!-- HEAD -->
 	<head>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
-		
-		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
-		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -176,12 +177,12 @@
 										</td>				
 										<td>
 										<% if (nextModo.equalsIgnoreCase("insertar") || nextModo.equalsIgnoreCase("modificar")){%>										
-			  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="120" posicionY="20"/>																																
+			  								<siga:Datepicker  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="120" posicionY="20"/>																																
 										<% } else { %>		
 											<% if (fechaEstado.equalsIgnoreCase("")){ %>	
-											<siga:Fecha  nombreCampo= "fechaEstado"  disabled="true"/>								 	
+											<siga:Datepicker  nombreCampo= "fechaEstado"  disabled="true"/>								 	
 											<% }else{ %>										 										 	
-											<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  disabled="true"/>
+											<siga:Datepicker  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  disabled="true"/>
 											<% } %>																	
 										<% } %>																																																															
 										</td>	

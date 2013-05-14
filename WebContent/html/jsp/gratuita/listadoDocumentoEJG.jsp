@@ -37,11 +37,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<script type="text/javascript">
 		function refrescarLocal()
@@ -59,14 +60,11 @@
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		</html:form>	
 		
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoAreas"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionTipo,censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionDocu,"
-		   tamanoCol="15,30,15,30,10" 
-		   alto="100%" 
-		   activarFilaSel="true">
+		<siga:Table 		   
+		   name="listadoAreas"
+		   border="2"
+		   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionTipo,censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionDocu,"
+		   columnSizes="15,30,15,30,10">
 		   
   			<%
 	    	int recordNumber=1;
@@ -86,24 +84,21 @@
 				recordNumber++; 
 			}
 			%>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 	<%
 	}else {
 	%>
-	<siga:TablaCabecerasFijas 		   
-		   nombre="listadoAreas"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionTipo,gratuita.maestros.documentacionEJG.descripcionDocu,"
-		   tamanoCol="15,35,40,10" 
-		   alto="100%"
-
-  	    >
-  	    </siga:TablaCabecerasFijas>
-	<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+	<siga:Table 		   
+		   name="listadoAreas"
+		   border="2"
+		   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionTipo,gratuita.maestros.documentacionEJG.descripcionDocu,"
+		   columnSizes="15,35,40,10" >
+  	
+			<tr class="notFound">
+	   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+	</siga:Table>
 	<%
 	}
 	%>

@@ -86,8 +86,12 @@ else{
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 </head>
 
 <script>
@@ -130,21 +134,17 @@ else{
 			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 
-			<siga:TablaCabecerasFijas 
-			   nombre = "tablaResultados"
-			   borde  = "1"
-			   clase  = "tableTitle"
-			   nombreCol="facturacion.buscarFactura.literal.NumeroFactura,
+			<siga:Table 
+			   name = "tablaResultados"
+			   border  = "1"
+			   columnNames="facturacion.buscarFactura.literal.NumeroFactura,
 			   						facturacion.buscarFactura.literal.descripcion,
 			   						facturacion.buscarFactura.literal.Fecha,
 			   						facturacion.buscarFactura.literal.Cliente,
 			   						facturacion.buscarFactura.literal.Total,
 			   						facturacion.buscarFactura.literal.Estado,"
 
-			   tamanoCol = "12,18,8,27,10,15,10"
-			   alto  = "250"
-			   ajustePaginador="true" 
-			   activarFilaSel="true">
+			   columnSizes = "12,18,8,27,10,15,10">
 
 		<%if ((resultado != null) && (resultado.size() > 0)){ %>
 
@@ -185,9 +185,9 @@ else{
 									<siga:FilaConIconos fila='<%=""+i%>' elementos="<%=elems%>"  botones="E,C" visibleBorrado="false" pintarEspacio="no"  clase="listaNonEdit"> 
 									<td><!-- Datos ocultos tabla -->
 											<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucion%>">
-											<input type="hidden" id="oculto<%=i%>_2" value="<%=idFactura%>">
-											<%=UtilidadesString.mostrarDatoJSP(numFactura)%>
+											<input type="hidden" id="oculto<%=i%>_2" value="<%=idFactura%>">											
 											<input type="hidden" id="oculto<%=i%>_3" value="<%=idPersona%>">
+											<%=UtilidadesString.mostrarDatoJSP(numFactura)%>
 									</td>
 									<td><%=UtilidadesString.mostrarDatoJSP(descripcion)%></td>
 									<td><%=UtilidadesString.mostrarDatoJSP(fecha)%></td>
@@ -201,11 +201,11 @@ else{
 
 	<% } // if  
 	else {%>
-	 		<br><br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br><br>	 		
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>		
 	<% } %>
-			</siga:TablaCabecerasFijas>
+			</siga:Table>
 
 		
 		<!-- Formulario para la creacion de envio -->

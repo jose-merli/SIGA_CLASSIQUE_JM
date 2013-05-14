@@ -46,7 +46,7 @@ public class TagFilaExtExt extends TagFilaExt
 			  	"onMouseOut=\"MM_swapImgRestore()\" " +
 			  	"onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + accion + "_on.gif',1)\">";
 
-			out.println(aux);
+			println(out, aux);
 		}
 		
 		else
@@ -62,7 +62,7 @@ public class TagFilaExtExt extends TagFilaExt
 				  "border=\"0\"" +
 				  ">";
 		
-			out.println(aux);
+			println(out, aux);
 		}
 	}
 }

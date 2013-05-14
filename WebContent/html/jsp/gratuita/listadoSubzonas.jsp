@@ -50,11 +50,12 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
-		
-	
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<title><siga:Idioma key="gratuita.listadoSubzonas.literal.listadoSubzonas"/></title>
 	<script type="text/javascript">
 		function refrescarLocal()
@@ -70,17 +71,12 @@
 		<input type="hidden" name="accion" value="subzona">
 	</html:form>	
 		
-		<siga:TablaCabecerasFijas 		   
-		   nombre="listadoSubzonas"
-		   borde="1"
-		   clase="tableTitle"		   
-		   nombreCol="gratuita.busquedaZonas.literal.subzona,"
-		   tamanoCol="90,10"
-		   			alto="100%"
-
-
-		   modal="P"
-		  >
+		<siga:Table 		   
+		   name="listadoSubzonas"
+		   border="1"
+		   columnNames="gratuita.busquedaZonas.literal.subzona,"
+		   columnSizes="90,10"
+		   modal="P">
 
 	<%if (obj.size()>0){%>
 
@@ -98,13 +94,15 @@
 	<%
 	}else {
 	%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>		
+	 		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>	
 	<%
 	}
 	%>
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 
 	
 	<!-- Obligatoria en todas las páginas-->

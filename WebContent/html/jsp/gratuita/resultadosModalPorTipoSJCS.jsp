@@ -58,12 +58,12 @@
 
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>" />
-	<link rel="stylesheet" href="<html:rewrite page="html/js/themes/base/jquery.ui.all.css"/>" ></script>
-		
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.js"/>" ></script>
-	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery.custom.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -133,19 +133,18 @@
 		tamCol ="40,27,27,6";
 	}
 %>
-		<siga:TablaCabecerasFijas 
-		   nombre="tablaDatos"
-		   borde="1"
-		   clase="tableTitle"
-		   nombreCol="<%=nombresCol%>"
-		   tamanoCol="<%=tamCol%>"
-		   alto="100%"
-		  >
+		<siga:Table 
+		   name="tablaDatos"
+		   border="1"
+		   columnNames="<%=nombresCol%>"
+		   columnSizes="<%=tamCol%>">
 			
 <%	if (vResultado == null || vResultado.size() == 0) { %>			
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
+	 		<div class="notFound">
+<br><br>
+<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+<br><br>
+</div>
 	 		
 <%	} else { 		
 			String modo = "", anio = "", numero = "", idTipoEJG = "", idTipoSOJ = "", codigo = "", turno= "";
@@ -259,7 +258,7 @@
 
 <%	} // del if %>			
 
-		</siga:TablaCabecerasFijas>
+		</siga:Table>
 	
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
