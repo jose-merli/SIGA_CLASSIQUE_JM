@@ -553,6 +553,9 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 		UserTransaction tx = null;
 
 		try {
+			tx = usr.getTransaction();
+			tx.begin();
+			
 			borrarHitoPrecio(mapping, miForm, request, response);
 
 			// saliendo si no se pudo crear el mapa de hitos
@@ -600,11 +603,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 
 				hash.put("FECHAMODIFICACION", "SYSDATE");
 				hash.put("USUMODIFICACION", usr.getUserName());
-				tx = usr.getTransaction();
-
-				tx.begin();
+				
 				hitoAdm.insert(hash);
-				tx.commit();
 			} // while
 
 			// anhadiendo los ocultos que hay que enviar cuando
@@ -626,11 +626,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 							: "1");
 					hash.put("FECHAMODIFICACION", "SYSDATE");
 					hash.put("USUMODIFICACION", usr.getUserName());
-					tx = usr.getTransaction();
 
-					tx.begin();
 					hitoAdm.insert(hash);
-					tx.commit();
 
 					if (miForm.getChAsist()) {
 						hash.clear();
@@ -645,11 +642,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 								miForm.getChNoPagaGuardiaPorDia() ? "0" : "1");
 						hash.put("FECHAMODIFICACION", "SYSDATE");
 						hash.put("USUMODIFICACION", usr.getUserName());
-						tx = usr.getTransaction();
 
-						tx.begin();
 						hitoAdm.insert(hash);
-						tx.commit();
 					}
 				}
 				// Si NO se ha actividado el check de aplicar tipos para No Paga
@@ -668,11 +662,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 							: "1");
 					hash.put("FECHAMODIFICACION", "SYSDATE");
 					hash.put("USUMODIFICACION", usr.getUserName());
-					tx = usr.getTransaction();
 
-					tx.begin();
 					hitoAdm.insert(hash);
-					tx.commit();
 
 					if (miForm.getChActuacion()) {
 						hash.clear();
@@ -687,11 +678,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 								miForm.getChNoPagaGuardiaPorDia() ? "0" : "1");
 						hash.put("FECHAMODIFICACION", "SYSDATE");
 						hash.put("USUMODIFICACION", usr.getUserName());
-						tx = usr.getTransaction();
-
-						tx.begin();
+						
 						hitoAdm.insert(hash);
-						tx.commit();
 					}
 				}
 			}
@@ -709,11 +697,8 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 				hash.put("PRECIOHITO", "0");
 				hash.put("FECHAMODIFICACION", "SYSDATE");
 				hash.put("USUMODIFICACION", usr.getUserName());
-				tx = usr.getTransaction();
 
-				tx.begin();
 				hitoAdm.insert(hash);
-				tx.commit();
 
 				if (miForm.getChActFG()) {
 					hash.clear();
@@ -726,13 +711,12 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 					hash.put("PRECIOHITO", "0");
 					hash.put("FECHAMODIFICACION", "SYSDATE");
 					hash.put("USUMODIFICACION", usr.getUserName());
-					tx = usr.getTransaction();
-
-					tx.begin();
+					
 					hitoAdm.insert(hash);
-					tx.commit();
+					
 				}
 			}
+			tx.commit();
 		} catch (Exception e) {
 			throwExcp("messages.general.error",
 					new String[] { "modulo.gratuita" }, e, tx);
