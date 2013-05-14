@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -26,11 +27,20 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
-import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.FacDisqueteDevolucionesAdm;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
+import com.siga.beans.FacMotivoDevolucionAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesManualesForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
+import com.siga.informes.form.MantenimientoInformesForm;
 
 
 /**
@@ -40,6 +50,68 @@ import com.siga.facturacion.form.DevolucionesManualesForm;
  */
 public class DevolucionesManualesAction extends MasterAction{
 
+	protected ActionForward executeInternal (ActionMapping mapping,
+			ActionForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response)throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+
+			String accion = miForm.getModo();
+
+			//La primera vez que se carga el formulario 
+			// Abrir
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+				mapDestino = abrir(mapping, miForm, request, response);						
+			}else if (accion.equalsIgnoreCase("abrirConParametros")){
+				mapDestino = abrirConParametros(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("buscar")){
+				mapDestino = buscar(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("download")){
+				mapDestino = download(mapping, miForm, request, response);					
+			}else if (accion.equalsIgnoreCase("insertar")){
+				mapDestino = insertar(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("modificar")){
+				mapDestino = modificar(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("ver")){
+				mapDestino = ver(mapping, miForm, request, response);
+			}else {
+				return super.executeInternal(mapping,
+						formulario,
+						request, 
+						response);
+			}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+				//mapDestino = "exception";
+				if (miForm.getModal().equalsIgnoreCase("TRUE"))
+				{
+					request.setAttribute("exceptionTarget", "parent.modal");
+				}
+
+				//throw new ClsExceptions("El ActionMapping no puede ser nulo");
+				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+
+		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"}); // o el recurso del modulo que sea 
+		} 
+		return mapping.findForward(mapDestino);
+	}
+	
 	/**
 	 * Implementa la accion de mostrar el mantenimiento de devoluciones manuales, con el form inicializado  
 	 */
@@ -409,67 +481,6 @@ public class DevolucionesManualesAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
 		}
 		return "descargaFichero";	
-	}
-	protected ActionForward executeInternal (ActionMapping mapping,
-			ActionForm formulario,
-			HttpServletRequest request, 
-			HttpServletResponse response)throws SIGAException {
-
-		String mapDestino = "exception";
-		MasterForm miForm = null;
-
-		try {
-			miForm = (MasterForm) formulario;
-			if (miForm == null) {
-				return mapping.findForward(mapDestino);
-			}
-
-			String accion = miForm.getModo();
-
-			//La primera vez que se carga el formulario 
-			// Abrir
-			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-				mapDestino = abrir(mapping, miForm, request, response);						
-			}else if (accion.equalsIgnoreCase("abrirConParametros")){
-				mapDestino = abrirConParametros(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("buscar")){
-				mapDestino = buscar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("download")){
-				mapDestino = download(mapping, miForm, request, response);					
-			}else if (accion.equalsIgnoreCase("insertar")){
-				mapDestino = insertar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("modificar")){
-				mapDestino = modificar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("ver")){
-				mapDestino = ver(mapping, miForm, request, response);
-			}else {
-				return super.executeInternal(mapping,
-						formulario,
-						request, 
-						response);
-			}
-
-			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null) 
-			{ 
-				//mapDestino = "exception";
-				if (miForm.getModal().equalsIgnoreCase("TRUE"))
-				{
-					request.setAttribute("exceptionTarget", "parent.modal");
-				}
-
-				//throw new ClsExceptions("El ActionMapping no puede ser nulo");
-				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
-			}
-
-		}
-		catch (SIGAException es) { 
-			throw es; 
-		} 
-		catch (Exception e) { 
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"}); // o el recurso del modulo que sea 
-		} 
-		return mapping.findForward(mapDestino);
 	}
 	
 }

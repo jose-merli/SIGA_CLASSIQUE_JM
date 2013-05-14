@@ -1366,7 +1366,8 @@ public class Row implements Serializable
 		Hashtable htend=new Hashtable();
 		
 		/********** FOR UPDATE ***********/
-		if (this.htorigin==null)
+		//BNS INC_06773_SIGA
+		if (this.htorigin==null || this.htorigin.size() <= 0)
 		{
 			ClsLogging.writeFileLog("(COMPARE) HASH ORIGIN IS EMPTY",this.request,3);
 			ClsExceptions psscExorigin = new ClsExceptions("(COMPARE) HASH ORIGIN IS EMPTY");
@@ -1397,7 +1398,17 @@ public class Row implements Serializable
 				auxst=auxst+", "+ele;
 			}
 		}
-
+		
+		//BNS INC_06773_SIGA
+		if ("".equals(auxst)) {
+			ClsLogging.writeFileLog("(COMPARE) AUXT IS EMPTY",this.request,3);
+			ClsExceptions psscExorigin = new ClsExceptions("(COMPARE) AUXT IS EMPTY");
+			psscExorigin.setErrorType("0");
+			psscExorigin.setMsg("(COMPARE) AUXT IS EMPTY");
+			psscExorigin.setParam("Comparing integrity data");
+			psscExorigin.setErrorCode("UPDCOMPARE");
+			throw psscExorigin;
+		}
 
 		String queryPrev = "SELECT "+auxst+" FROM "+tableName+" "+sqlWhere;
 		ClsLogging.writeFileLog("query de compare: "+ClsMngBBDD.getSQLBindInformation(queryPrev,codigosCompare), request, 10);

@@ -13,6 +13,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.comparator.NameFileComparator;
+
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -105,19 +107,18 @@ public class InfoDirectorio {
 			
 				traza (f.getName(), f.getAbsolutePath(), "d", acceso, fecha, nivel, v);
 				
-				String[] children = f.list();
-				
-				Arrays.sort(children);
-				
-			    ArrayList directorios = new ArrayList();
-				for (int i = 0; i<children.length; i++) {
-				    File aux = new File(f, children[i]);
-				    if (aux.isDirectory()) {
-				        directorios.add(aux);
+				// BNS INC_10694_SIGA Ordenamos los ficheros por nombre
+				ArrayList directorios = new ArrayList();
+				File[] files = f.listFiles();
+				Arrays.sort(files, NameFileComparator.NAME_INSENSITIVE_COMPARATOR);
+				for (File file : files){
+					if (file.isDirectory()) {
+				        directorios.add(file);
 				    } else {
-				        pintaInfoDirectorio(aux, nivel+1, v);
+				        pintaInfoDirectorio(file, nivel+1, v);
 				    }
 				}
+				
 				for (int i = 0; i<directorios.size(); i++) {
 				    File aux2 = (File) directorios.get(i);
 				    //     pintaInfoDirectorio(aux2, nivel, v);

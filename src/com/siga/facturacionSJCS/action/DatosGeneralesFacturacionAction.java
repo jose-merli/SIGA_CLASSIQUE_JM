@@ -343,7 +343,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			
 		//para el iframe de abajo pasamos el modo por session, se borrará en la jsp
 			if (accion!=null)request.getSession().setAttribute("Modo",accion);
-			request.getSession().setAttribute("vHito",vHito);
+			request.setAttribute("vHito",vHito);
 			
 			
 		//comprobando el estado de la facturacion

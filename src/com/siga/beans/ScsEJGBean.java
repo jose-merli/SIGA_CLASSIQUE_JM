@@ -52,7 +52,6 @@ public class ScsEJGBean extends MasterBean{
 	private String anioCAJG;
 	private String	numEJG;
 	private String	idPretension;
-	private String	idPretensionInstitucion;
 	private String	idDictamen;
 	
 	private Double facturado;
@@ -224,7 +223,6 @@ public class ScsEJGBean extends MasterBean{
 	
 	static public final String C_IDPRETENSION   = "IDPRETENSION";
 	static public final String C_IDDICTAMEN   = "IDDICTAMEN";
-	static public final String C_IDPRETENSIONINSTITUCION = "IDPRETENSIONINSTITUCION";
 	static public final String C_REFAUTO   = "REFAUTO";
 	static public final String C_FECHADESIGPROC   = "FECHA_DES_PROC";
 	static public final String C_IDENTIFICADORDS   = "IDENTIFICADORDS";
@@ -279,12 +277,7 @@ public class ScsEJGBean extends MasterBean{
 	public void setIdPretension(String idPretension) {
 		this.idPretension = idPretension;
 	}
-	public String getIdPretensionInstitucion() {
-		return idPretensionInstitucion;
-	}
-	public void setIdPretensionInstitucion(String idPretensionInstitucion) {
-		this.idPretensionInstitucion = idPretensionInstitucion;
-	}
+	
 	/**
 	 * @return Returns the numEJG.
 	 */

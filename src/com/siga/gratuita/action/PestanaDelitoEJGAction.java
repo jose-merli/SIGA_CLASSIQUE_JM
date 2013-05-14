@@ -80,7 +80,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			String consulta="Select (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion, 1)) "+
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
                               "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad,Ejg.calidadidinstitucion as CALIDADIDINSTITUCION, "+                              
-                            " ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, " +
+                            " ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, " +
 					        " ejg.OBSERVACIONES, ejg.DELITOS, ejg.NIG, ejg.IDPROCURADOR, ejg.NUMERODESIGNAPROC, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
 					        " ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO,ejg.ANIOPROCEDIMIENTO ANIOPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 					        " ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +

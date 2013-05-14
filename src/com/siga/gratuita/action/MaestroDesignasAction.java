@@ -1073,7 +1073,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
 			String consulta = "select ejg.ANIO, ejg.NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
-							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
+							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
@@ -1155,7 +1155,7 @@ public class MaestroDesignasAction extends MasterAction {
 			String idjuzgado= "";
 			String idcomiInsti= "";
 			String idjuzgadoInsti= "";
-			String idPretenInsti= "";
+			String idInsti= "";
 			
 			try{
 				ejg = (Hashtable)resultado.get(0);
@@ -1186,13 +1186,13 @@ public class MaestroDesignasAction extends MasterAction {
 			if (!resultado.isEmpty()) {idcomi = (String)((Hashtable)resultado.get(0)).get("COMISARIA");}
 			if (!resultado.isEmpty()) {idjuzgadoInsti = (String)((Hashtable)resultado.get(0)).get("JUZGADOIDINSTITUCION");}
 			if (!resultado.isEmpty()) {idcomiInsti = (String)((Hashtable)resultado.get(0)).get("COMISARIAIDINSTITUCION");}						
-			if (!resultado.isEmpty()) {idPretenInsti = (String)((Hashtable)resultado.get(0)).get("IDPRETENSIONINSTITUCION");}
+			if (!resultado.isEmpty()) {idInsti = (String)((Hashtable)resultado.get(0)).get("IDINSTITUCION");}
 			
 			String pretension = "", comisaria = "",origen ="", juzgado="";
 			if(idpreten!=null && !idpreten.trim().equals("")){
 			
 				String comboPretensiones="SELECT IDPRETENSION AS ID, f_siga_getrecurso (DESCRIPCION,"+lenguaje+") AS DESCRIPCION "+ 
-				"FROM SCS_PRETENSION WHERE IDINSTITUCION = "+idPretenInsti+" AND IDPRETENSION = "+idpreten;
+				"FROM SCS_PRETENSION WHERE IDINSTITUCION = "+idInsti+" AND IDPRETENSION = "+idpreten;
 				resultado.clear();
 				resultado = admBean.selectGenerico(comboPretensiones);
 				

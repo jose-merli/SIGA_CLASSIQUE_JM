@@ -398,7 +398,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_NUMERODILIGENCIA,			ScsEJGBean.C_NUMEROPROCEDIMIENTO,
 							ScsEJGBean.C_COMISARIA,					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 							ScsEJGBean.C_JUZGADO,					ScsEJGBean.C_JUZGADOIDINSTITUCION,
-							ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
+							ScsEJGBean.C_IDPRETENSION,				
 							ScsEJGBean.C_IDDICTAMEN,				ScsEJGBean.C_REFAUTO,
 							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
@@ -443,7 +443,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_NUMERODILIGENCIA,			ScsEJGBean.C_NUMEROPROCEDIMIENTO,
 							ScsEJGBean.C_COMISARIA,					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 							ScsEJGBean.C_JUZGADO,					ScsEJGBean.C_JUZGADOIDINSTITUCION,
-							ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
+							ScsEJGBean.C_IDPRETENSION,				
 							ScsEJGBean.C_IDDICTAMEN,				ScsEJGBean.C_REFAUTO,
 							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
@@ -534,7 +534,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setFechaPresentacionPonente(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAPRESENTACIONPONENTE));
 			
 			bean.setIdPretension(UtilidadesHash.getString(hash,ScsEJGBean.C_IDPRETENSION));
-			bean.setIdPretensionInstitucion(UtilidadesHash.getString(hash,ScsEJGBean.C_IDPRETENSIONINSTITUCION));
 			
 			bean.setJuzgado(UtilidadesHash.getLong(hash,ScsEJGBean.C_JUZGADO));
 			bean.setComisaria(UtilidadesHash.getLong(hash,ScsEJGBean.C_COMISARIA));
@@ -636,7 +635,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_REQUIERENOTIFICARPROC,b.getRequiereNotificarProc());
 			
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDPRETENSION,b.getIdPretension());
-			UtilidadesHash.set(htData,ScsEJGBean.C_IDPRETENSIONINSTITUCION,b.getIdPretensionInstitucion());
 			
 			UtilidadesHash.set(htData, ScsEJGBean.C_JUZGADO, b.getJuzgado());
 			UtilidadesHash.set(htData, ScsEJGBean.C_COMISARIA, b.getComisaria());
@@ -2570,8 +2568,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 			
-			sql.append(" ejg.idpretension AS PRETENSION, ");
-			sql.append(" ejg.idpretensioninstitucion AS PRETENSIONINSTITUCION ");
+			sql.append(" ejg.idpretension AS PRETENSION, ");			
 			
 		       
 			
@@ -3384,8 +3381,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			//Aniadimos la pretension
 			String idPretension = (String)registro.get("PRETENSION");
-			String idPretensionInstitucion = (String)registro.get("PRETENSIONINSTITUCION");
-			helperInformes.completarHashSalida(registro,getPretension(idPretension, idPretensionInstitucion, idioma));
+			helperInformes.completarHashSalida(registro,getPretension(idPretension, idInstitucion, idioma));
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosInformeCalificacion");
@@ -4982,7 +4978,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 
-	public static Vector getPretension (String idPretension, String idPretensionInstitucion,String idioma) throws ClsExceptions  
+	public static Vector getPretension (String idPretension, String idInstitucion,String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -5002,7 +4998,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(keyContador);
 			
 			keyContador++;
-			htCodigos.put(new Integer(keyContador), idPretensionInstitucion);
+			htCodigos.put(new Integer(keyContador), idInstitucion);
 			sql.append("  and PRET.IDINSTITUCION = :");
 			sql.append(keyContador);
 			

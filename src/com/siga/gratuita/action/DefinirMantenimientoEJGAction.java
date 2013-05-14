@@ -381,7 +381,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_CALIDAD,					ScsEJGBean.C_OBSERVACIONES,
 								   ScsEJGBean.C_DELITOS,										   
 								   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
-								   ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
+								   ScsEJGBean.C_IDPRETENSION,				
 								   ScsEJGBean.C_JUZGADO, 					ScsEJGBean.C_JUZGADOIDINSTITUCION,
 								   ScsEJGBean.C_COMISARIA, 					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 								   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
@@ -439,7 +439,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				if (pretension != null && !pretension.equals("")) {
 					String a[] = pretension.split(",");
 					UtilidadesHash.set(hash, ScsEJGBean.C_IDPRETENSION, a[0].trim());
-					UtilidadesHash.set(hash, ScsEJGBean.C_IDPRETENSIONINSTITUCION, usr.getLocation());
 				}
 
 				String comisaria = miForm.getComisaria();
@@ -585,7 +584,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
 			String consulta = "select ejg.ANIO, ejg.NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
-							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
+							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
@@ -619,7 +618,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  ",designa."+ScsDesignaBean.C_ANIOPROCEDIMIENTO+" AS DES_ANIOPROCEDIMIENTO" +
 							  ",designa."+ScsDesignaBean.C_IDPROCEDIMIENTO+" AS DES_IDPROCEDIMIENTO" +
 							  ",designa."+ScsDesignaBean.C_IDPRETENSION+" AS DES_IDPRETENSION" +
-							  ",designa."+ScsDesignaBean.C_IDINSTITUCION+" AS DES_IDPRETENSIONINSTITUCION" +
+							  ",designa."+ScsDesignaBean.C_IDINSTITUCION+" AS DES_IDINSTITUCION" +
 							  ",designa.codigo codigo";
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +

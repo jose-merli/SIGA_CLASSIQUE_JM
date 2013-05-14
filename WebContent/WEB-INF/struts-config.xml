@@ -2024,14 +2024,14 @@
 		</action>
 
 		<!-- ***** Administración / Gestion Multidioma / Etiquetas ***** -->
-		<action path="/ADM_GestionarMultiidiomaEtiquetas" type="com.siga.administracion.action.MultidiomasAction" name="multidiomasForm" scope="request" >
+		<action path="/ADM_GestionarMultiidiomaEtiquetas" type="com.siga.administracion.action.MultidiomasEtiquetasAction" name="multidiomasForm" scope="request" >
 			<forward name="inicio"               path="/html/jsp/administracion/multidiomaBusqueda.jsp"/>
 			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
 		</action>
 
 		<!-- ***** Administración / Gestion Multidioma / Catalogo Maestros *****
 -->
-		<action path="/ADM_GestionarMultiidiomaCatalogos"  forward="/ADM_GestionarMultiidiomaEtiquetas.do?catalogos=true" >
+		<action path="/ADM_GestionarMultiidiomaCatalogos"  type="com.siga.administracion.action.MultidiomasCatalogosAction" name="multidiomasForm" scope="request" >
 			<forward name="inicio"               path="/html/jsp/administracion/multidiomaBusqueda.jsp"/>
 			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
 		</action>
