@@ -119,10 +119,10 @@
 	<!--************ Seguridad de Certificados FIN ************-->
 
 	<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
-
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
+<!-- -->
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
@@ -131,7 +131,7 @@
 	<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
-
+<!-- -->
 
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
@@ -389,7 +389,7 @@
 
 
 	<session-config>
-		<session-timeout>600</session-timeout>
+		<session-timeout>30</session-timeout>
 	</session-config>
 
 	<welcome-file-list>
