@@ -58,6 +58,16 @@ public class UtilidadesString {
 	//static private ResourceBundle bundle = null;
     //static private String lengact="none";
     private static List<String> DIGITOS_COMIENZO_MOVIL = Arrays.asList("6","7");
+    private static final String CONSTANTE_TRUE ="TRUE";
+    private static final String CONSTANTE_T ="T";
+    private static final String CONSTANTE_YES ="YES";
+    private static final String CONSTANTE_Y ="Y";
+    private static final String CONSTANTE_SI ="SI";
+    private static final String CONSTANTE_S ="S";
+    private static final String CONSTANTE_SI_TILDE ="SÍ";
+    private static final String CONSTANTE_ON ="ON";
+    private static final String CONSTANTE_1 ="1";
+    
     
     private static Pattern patternDigitos = Pattern.compile("^[0-9]*$");
 	
@@ -211,11 +221,11 @@ public class UtilidadesString {
 	static public boolean stringToBoolean (String dato) {
 		if (dato != null) {
 			dato = dato.toLowerCase();
-			if (dato.equalsIgnoreCase("true") || dato.equalsIgnoreCase("t") ||  
-				dato.equalsIgnoreCase("yes")  || dato.equalsIgnoreCase("y") ||
-				dato.equalsIgnoreCase("si")   || dato.equalsIgnoreCase("s") ||
-				dato.equalsIgnoreCase("sí")   || dato.equalsIgnoreCase("1") ||
-				dato.equalsIgnoreCase("on")) {
+			if (dato.equalsIgnoreCase(CONSTANTE_TRUE) || dato.equalsIgnoreCase(CONSTANTE_T) ||  
+				dato.equalsIgnoreCase(CONSTANTE_YES)  || dato.equalsIgnoreCase(CONSTANTE_Y) ||
+				dato.equalsIgnoreCase(CONSTANTE_SI)   || dato.equalsIgnoreCase(CONSTANTE_S) ||
+				dato.equalsIgnoreCase(CONSTANTE_SI_TILDE)   || dato.equalsIgnoreCase(CONSTANTE_1) ||
+				dato.equalsIgnoreCase(CONSTANTE_ON)) {
 				return true;
 			}
 		}
