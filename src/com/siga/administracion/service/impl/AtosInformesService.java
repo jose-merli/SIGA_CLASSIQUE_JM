@@ -247,6 +247,12 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		if(!informeOld.getNombreFisico().equals(informeVo.getNombreFisico())){
 			cambiaNombreFiles(getDirectorio(informeForm),informeOld.getNombreFisico(),informeVo.getNombreFisico());
 		}
+		
+		//Por si estuviera relleno el CLOB plantilla
+		if(informeOld.getPlantilla() != null && !informeOld.getPlantilla().equals("")){
+			informeVo.setPlantilla(informeOld.getPlantilla());
+		}
+		
 		informeAdm.updateDirect(informeVo);
 		AdmEnvioInformeAdm envioInformeAdm = new AdmEnvioInformeAdm(usrBean);
 		String idTipoEnvios = informeForm.getIdTiposEnvio();
