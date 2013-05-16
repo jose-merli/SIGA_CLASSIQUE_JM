@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
@@ -21,8 +24,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.ConfConjuntoGuardiasForm;
-import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.ConjuntoGuardiasForm;
+import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.HcoConfProgrCalendarioForm;
 import com.siga.gratuita.form.ProgrCalendariosForm;
 import com.siga.gratuita.service.ProgramacionCalendariosService;
@@ -448,6 +451,14 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosFormEdicion = new ProgrCalendariosForm();
 		progrCalendariosFormEdicion.setModo("insertarProgrCalendarios");
+		
+		//Seteamos la fecha sysdate para la hora de programacion (con horas y minuto)
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		progrCalendariosFormEdicion.setFechaProgramacion(sdf.format(date));
+		progrCalendariosFormEdicion.setHoraProgramacion(String.valueOf(date.getHours()));
+		progrCalendariosFormEdicion.setMinutoProgramacion(String.valueOf(date.getMinutes()));
+		
 		request.setAttribute("ProgrCalendariosFormEdicion",progrCalendariosFormEdicion);
 		return "editarProgrCalendarios";
 		
