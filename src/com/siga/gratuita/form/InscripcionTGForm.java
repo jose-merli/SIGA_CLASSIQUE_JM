@@ -76,7 +76,9 @@ public class InscripcionTGForm extends MasterForm {
 	boolean masivo = false;
 	
 	String  fechaValidacionTurno = null;
+	String  fechaValidacionPrevia = null;
 	String  fechaBajaTurno = null;
+	String  fechaBajaPrevia = null;
 	String  fechaSolicitudTurno = null;
 	private String	fechaValorAlta;
 	private String	fechaValorBaja;
@@ -421,10 +423,8 @@ public class InscripcionTGForm extends MasterForm {
 			if(fechaBaja!=null && !fechaBaja.equals("")){ // BAJA CONFIRMADA
 				elementosFila = new FilaExtElement[2];
 				
-				if((tipoGuardias==null || Integer.parseInt(tipoGuardias)!= ScsTurnoBean.TURNO_GUARDIAS_TODAS0NINGUNA)){
-					//cambiar fecha efectiva de baja
-					elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaBaja",SIGAConstants.ACCESS_FULL);
-				}
+				//cambiar fecha efectiva de baja
+				elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaBaja",SIGAConstants.ACCESS_FULL);				
 				elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
 				
 			}else{
@@ -443,10 +443,8 @@ public class InscripcionTGForm extends MasterForm {
 					if(fechaValidacion!=null&& !fechaValidacion.equals("")){ // ALTA CONFIRMADA
 						elementosFila = new FilaExtElement[2];
 						
-						if((tipoGuardias==null || Integer.parseInt(tipoGuardias)!= ScsTurnoBean.TURNO_GUARDIAS_TODAS0NINGUNA)){
-							//cambiar fecha efectiva de alta
-							elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaValidacion",SIGAConstants.ACCESS_FULL);
-						}
+						//cambiar fecha efectiva de alta
+						elementosFila[1]=new FilaExtElement("cambiarFechaEfectiva","cambiarFechaEfectivaValidacion",SIGAConstants.ACCESS_FULL);
 						elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
 						
 					}else{
@@ -618,12 +616,24 @@ public class InscripcionTGForm extends MasterForm {
 	public void setFechaValidacionTurno(String fechaValidacionTurno) {
 		this.fechaValidacionTurno = fechaValidacionTurno;
 	}
+	public String getFechaValidacionPrevia() {
+		return fechaValidacionPrevia;
+	}
+	public void setFechaValidacionPrevia(String fechaValidacionPrevia) {
+		this.fechaValidacionPrevia = fechaValidacionPrevia;
+	}	
 	public String getFechaBajaTurno() {
 		return fechaBajaTurno;
 	}
 	public void setFechaBajaTurno(String fechaBajaTurno) {
 		this.fechaBajaTurno = fechaBajaTurno;
 	}
+	public String getFechaBajaPrevia() {
+		return fechaBajaPrevia;
+	}
+	public void setFechaBajaPrevia(String fechaBajaPrevia) {
+		this.fechaBajaPrevia = fechaBajaPrevia;
+	}	
 	public String getFechaDenegacion() {
 		return fechaDenegacion;
 	}

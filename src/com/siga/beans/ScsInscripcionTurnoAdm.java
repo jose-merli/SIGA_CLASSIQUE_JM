@@ -1547,7 +1547,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				" I.OBSERVACIONESBAJA, " +
 				" I.FECHABAJA " +
 			" FROM SCS_INSCRIPCIONTURNO I " +
-			" WHERE  I.IDINSTITUCION = " + idInstitucion +
+			" WHERE I.IDINSTITUCION = " + idInstitucion +
 				" AND I.IDTURNO = " + idTurno +
 				" AND I.IDPERSONA = " + idPersona +
 				" AND I.FECHAVALIDACION IS NOT NULL " +
@@ -1571,4 +1571,49 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		
 		return inscripcionBean;
 	}	
+	
+	/**
+	 * Obtiene la ultima inscripcion de turno
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public ScsInscripcionTurnoBean getInscripcionUltima (Integer idInstitucion, Integer idTurno, Long idPersona) throws ClsExceptions {
+		String sql = " SELECT I.IDINSTITUCION, " +
+				" I.IDPERSONA, " +
+				" I.IDTURNO, " +
+				" I.FECHASOLICITUD, " +
+				" I.OBSERVACIONESSOLICITUD, " +
+				" I.FECHAVALIDACION, " +
+				" I.OBSERVACIONESVALIDACION, " +
+				" I.FECHASOLICITUDBAJA, " +
+				" I.OBSERVACIONESBAJA, " +
+				" I.FECHABAJA " +			
+			" FROM SCS_INSCRIPCIONTURNO I " +
+			" WHERE I.IDINSTITUCION = " + idInstitucion +
+				" AND I.IDTURNO = " + idTurno +
+				" AND I.IDPERSONA = " + idPersona +
+				" AND I.FECHAVALIDACION IS NOT NULL " +
+			" ORDER BY FECHAVALIDACION DESC";
+				
+		ScsInscripcionTurnoBean inscripcionBean = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					Row fila = (Row) rc.get(0);
+					Hashtable<String, Object> htFila=fila.getRow();
+					inscripcionBean =  (ScsInscripcionTurnoBean) this.hashTableToBean(htFila);
+				}
+			} 
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		
+		return inscripcionBean;
+	}		
 }
