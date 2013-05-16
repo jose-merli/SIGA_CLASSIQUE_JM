@@ -74,22 +74,25 @@ public class TagDatepicker extends TagSupport {
 				}
 			}
 			String cssClass = " class='datepicker";
-			if (this.disabled != null && this.disabled.equals("true")){
+			if (this.disabled != null && UtilidadesString.stringToBoolean(this.disabled)){
 				bEditable = false;
 				cssClass += " boxConsulta";
+				if (this.readOnly == null || !UtilidadesString.stringToBoolean(this.readOnly)){
+					this.readOnly = "TRUE";
+				}
 			} else {
 				cssClass += " box";
 			}
 			cssClass += "'";
 			sDatepicker += cssClass;
 			
-			/* FORZAMOS A INTRODUCIR LA FECHA POR EL SELECTOR
-			if (this.readOnly != null && this.readOnly.equals("true")){
+			
+			if (this.readOnly != null && UtilidadesString.stringToBoolean(this.readOnly)){
 				bEditable = false;
 				sDatepicker += " readonly = 'readonly'";
 			}
-			*/
-			sDatepicker += " readonly = 'readonly'";
+			
+			//sDatepicker += " readonly = 'readonly'";
 			if(this.preFunction!=null && !this.preFunction.equals("")){
 				sDatepicker += " onfocus=\"return "+	this.preFunction+"\"";
 			}
@@ -105,7 +108,6 @@ public class TagDatepicker extends TagSupport {
 				sJs += "jQuery('#"+this.styleId+"').val(jQuery('#"+this.campoCargarFechaDesde+"').val());";				
 			}
 			if (bEditable){				
-				
 				sJs += "setDatepickerClearBtn('"+UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"general.boton.borrar")+"');";
 				sJs += "jQuery('#"+this.styleId+"').datepicker({";
 				sJs += "changeMonth: true,";
@@ -124,6 +126,13 @@ public class TagDatepicker extends TagSupport {
 				sJs += "return false;";
 				sJs += "}";
 				sJs += "});";
+				// Se aplicará la máscara del campo desde siga.js
+				//sJs += "jQuery.mask.definitions['dd']='99';";
+				//sJs += "jQuery.mask.definitions['mm']='99';";
+				//sJs += "jQuery.mask.definitions['yyyy']='9999';";
+				//sJs += "jQuery('#"+this.styleId+"')";
+				//sJs += ".mask('dd/mm/yyyy',{completed:function(){datepickerMaskChanged(jQuery(this));}});";
+				
 			}
 			sJs += "";
 			sJs += "});";

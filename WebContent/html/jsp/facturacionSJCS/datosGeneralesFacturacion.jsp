@@ -197,13 +197,7 @@
 
 <!-- HEAD -->
 <head>
-	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
-		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
-	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
-		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
-	<% }  %>
-
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
@@ -214,6 +208,12 @@
 	<html:javascript formName="DatosGeneralesFacturacionForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
  	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+
+	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
+		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
+	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
+		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% }  %>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -371,18 +371,12 @@
 						<tr>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
 							<td>
-								<html:text name="DatosGeneralesFacturacionForm" property="fechaInicio" value='<%=fechaInicio%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
-								<%if (!consulta && !bRegularizacion) {%>
-									<a href='javascript://'onClick="return showCalendarGeneral(fechaInicio);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-								<%}%>	
+								<siga:Datepicker nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Datepicker>
 							</td>
 							
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
-							<td class="labelText" >
-								<html:text name="DatosGeneralesFacturacionForm" property="fechaFin" value="<%=fechaFin%>" size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
-								<%if (!consulta && !bRegularizacion) {%>
-									<a href='javascript://'onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-								<%}%>	
+							<td class="labelText" >								
+								<siga:Datepicker nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Datepicker>
 							</td>	
 						</tr>
 						<tr>						
