@@ -489,7 +489,7 @@
 				if(document.getElementById("anioProcedimiento").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento").value))	
 					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
 					
-				if(error!=""){
+				if(error!="" && document.forms[0].estadoOriginal.value != 'F'){
 					alert(error);
 					fin();
 					return false;
@@ -500,7 +500,7 @@
 			if(!validarNig(nigAux)){	
 				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
 				
-				if(error!=""){
+				if(error!="" && document.forms[0].estadoOriginal.value != 'F'){
 					alert(error);
 					fin();
 					return false;
@@ -509,8 +509,6 @@
 			}else{
 				document.getElementById("nig").value = nigAux;
 			}	
-			
-			
 			
 		 <%}%>
 		 	
