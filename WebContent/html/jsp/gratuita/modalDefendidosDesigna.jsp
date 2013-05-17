@@ -309,11 +309,7 @@
 		<siga:Idioma key="gratuita.operarDatosBeneficiario.literal.fechaNacimiento"/>
 	</td>
 	<td class="labelText">
-	<%if (accion.equalsIgnoreCase("ver")){%>
-		<html:text name="DefendidosDesignasForm" property="fechaNacimiento" size="10" styleClass="boxConsulta" value="<%=fechaNacimiento%>" readonly="true"></html:text>&nbsp;&nbsp;
-	<%} else  {%>
-		<html:text name="DefendidosDesignasForm" property="fechaNacimiento" size="10" styleClass="box" value="<%=fechaNacimiento%>" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaNacimiento);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-	<%}%>
+		<siga:Datepicker nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" <% if (accion==null || accion.equalsIgnoreCase("ver")) { %> disabled="true" <%}%>></siga:Datepicker>
 	</td>
 	<td class="labelText" colspan="5">		
 	</td>		

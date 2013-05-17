@@ -102,13 +102,13 @@
 					<siga:Idioma key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>&nbsp;
 				</td>
 				<td>
-					<html:text name="DefinirDocumentacionEJGForm" property="fechaLimitePresentacion" size="10" styleClass="box" value="<%=fechaLimite %>" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaLimitePresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>		
+					<siga:Datepicker nombreCampo="fechaLimitePresentacion" valorInicial="<%=fechaLimite%>"></siga:Datepicker>		
 				</td>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.operarEJG.literal.fechaPresentacion"/>
 				</td>
 				<td>
-					<html:text name="DefinirDocumentacionEJGForm" property="fechaPresentacion" size="10"  styleClass="box" value="" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaPresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+					<siga:Datepicker nombreCampo="fechaPresentacion"></siga:Datepicker>
 				</td>	
 			</tr>
 			<tr>

@@ -112,8 +112,7 @@
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.fechaApertura"/>&nbsp;(*)
 		</td>
 		<td class="labelText">		
-			<html:text name="DefinirSOJForm" property="fechaAperturaSOJ" size="10" maxlength="10" onChange=""  styleClass="box" value="<%=fechaHoy%>" readOnly="true"></html:text>
-			<a onClick=" showCalendarGeneral(fechaAperturaSOJ);actualizarFecha();rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+			<siga:Datepicker nombreCampo="fechaAperturaSOJ" valorInicial="<%=fechaHoy%>" postFunction="actualizarFecha();parent.rellenarComboGuardia();"></siga:Datepicker>
 		</td>
 	</tr>	
 	

@@ -161,9 +161,8 @@
 			<!--siga:Idioma key="gratuita.modalCambioLetradoDesigna.literal.fechaCambio"/-->
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
 		</td>
-		<td>
-			<html:text name="CambiosLetradosDesignasForm" property="fechaDesigna" size="15" maxlength="15" styleClass="box" readonly="true" value=""></html:text>
-			&nbsp;<a onClick="return showCalendarGeneral(fechaDesigna);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		<td>			
+			<siga:Datepicker nombreCampo="fechaDesigna"></siga:Datepicker>
 		</td>
 	</tr>
 	<tr>

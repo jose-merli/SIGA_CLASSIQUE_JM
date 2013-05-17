@@ -497,14 +497,8 @@
 						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/>&nbsp;(*)
 						</td>
-						<td>
-							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
-								<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="box" value="<%=fechaActuacion%>" readonly="true" />
-								&nbsp;
-								<a onClick="return showCalendarGeneral(fechaActuacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-							<% } else { %>
-								<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="boxConsulta" value="<%=fechaActuacion%>" readonly="true"/>
-							<% } %>
+						<td>							
+							<siga:Datepicker nombreCampo="fechaActuacion" valorInicial="<%=fechaActuacion%>" <% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> disabled="true"<%}%>></siga:Datepicker>
 						</td>
 							
 						<td class="labelText" nowrap>
@@ -684,14 +678,8 @@
 						<td class="labelText">	
 							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
 						</td>
-						<td>
-							<%if(!modoAnterior.equals("VER")&&!actuacionValidada.equals("1")&&!deDonde.equals("/JGR_PestanaDesignas")) {%>
-									<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>" />
-									&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key='gratuita.listadoCalendario.literal.seleccionarFecha'/>" border="0"></a>
-							<%}else{%>
-								<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaJustificacion%>" readOnly="true" />									
-								&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key='gratuita.listadoCalendario.literal.seleccionarFecha'/>" border="0"></a>
-							<%}%>		
+						<td>							
+							<siga:Datepicker nombreCampo="fechaJustificacion" valorInicial="<%=fechaJustificacion%>" <% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")) { %> disabled="true"<%}%>></siga:Datepicker>
 						</td>						
 
 						<td>

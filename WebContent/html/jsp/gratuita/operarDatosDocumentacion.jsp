@@ -102,7 +102,7 @@
 		<%if (accion.equalsIgnoreCase("ver")) {%>
 			<html:text name="DatosDocumentacionSOJForm" property="fechaLimite" size="10" styleClass="boxConsulta" value="<%=fechaLimite%>" readonly="true"></html:text>
 		<%} else {%>
-			<html:text name="DatosDocumentacionSOJForm" property="fechaLimite" size="10" styleClass="box" value="<%=fechaLimite%>" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaLimite);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Datepicker nombreCampo="fechaLimite" valorInicial="<%=fechaLimite%>"></siga:Datepicker>
 		<%}%>
 	</td>
 	</tr>
@@ -114,7 +114,7 @@
 		<%if (accion.equalsIgnoreCase("ver")) {%>
 			<html:text name="DatosDocumentacionSOJForm" property="fechaEntrega" size="10" styleClass="boxConsulta" value="<%=fechaEntrega%>" readonly="true"></html:text>
 		<%} else {%>
-			<html:text name="DatosDocumentacionSOJForm" property="fechaEntrega" size="10" styleClass="box" value="<%=fechaEntrega%>" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaEntrega);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Datepicker nombreCampo="fechaEntrega" valorInicial="<%=fechaEntrega%>"></siga:Datepicker>
 		<%}%>
 	</td>
 		</tr>

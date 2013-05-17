@@ -125,12 +125,8 @@
 	<td class="labelText">
 		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
 	</td>
-	<td>
-		<html:textarea property="fechaInicio" styleclass="<%=estilo%>" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
-		<%if (!bReadOnly){%>
-			<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		<%}%>
-		
+	<td>		
+		<siga:Datepicker nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" <%if (bReadOnly){%>disabled="true"<%}%>></siga:Datepicker>
 	</td>
 	</tr>
 	<tr>

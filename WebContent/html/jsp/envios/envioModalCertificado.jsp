@@ -172,12 +172,9 @@
 								<tr>
 									<td class="labelText"><siga:Idioma
 											key="envios.definir.literal.fechaprogramada" /></td>
-									<td colspan="3"><html:text name="DefinirEnviosForm"
-											property="fechaProgramada" size="10" maxlength="10"
-											styleClass="box" readonly="true" /> <a href='javascript://'
-										onClick="return showCalendarGeneral(fechaProgramada);"><img
-											src="<%=app%>/html/imagenes/calendar.gif" border="0">
-									</a></td>
+									<td colspan="3">										
+										<siga:Datepicker nombreCampo="fechaProgramada"></siga:Datepicker>
+									</td>
 								</tr>
 							</table>
 						</siga:ConjCampos></td>

@@ -132,9 +132,8 @@
 					<%	}%>					
 				</select>	
 			<%}else{%>				
-				<%if (fecha){%>
-					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" readonly="true"></input>
-					<a href='javascript://'onClick="return showCalendarGeneral(valor<%=i%>);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%if (fecha){%>					
+					<siga:Datepicker nombreCampo="criteriosDinamicos[<%=i%>].val" styleId="valor<%=i%>"></siga:Datepicker>
 				<%}else if (numerico){%>
 					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" maxlength="<%=max%>"></input>
 				<%}else{%>

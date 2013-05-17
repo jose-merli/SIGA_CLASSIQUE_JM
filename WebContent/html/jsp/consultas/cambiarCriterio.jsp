@@ -142,9 +142,8 @@
 					<%	}%>					
 				</select>	
 			<%}else{%>		
-			<%if (fecha){%>
-				<input type="text" name="valor" class="box" readonly="true" value="<%=valor%>"></input>				
-				<a href='javascript://'onClick="return showCalendarGeneral(valor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+			<%if (fecha){%>				
+				<siga:Datepicker nombreCampo="valor" valorInicial="${valor}"></siga:Datepicker>
 				<input type="hidden" name="numerico" value="false"></input>
 			<%}else if (numerico){%>
 				<input type="text" name="valor" class="box" maxlength="<%=max%>" value="<%=valor%>"></input>

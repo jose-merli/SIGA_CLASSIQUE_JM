@@ -122,14 +122,14 @@
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>
 	</td>
 	<td>
-		<html:text name="mantenimientoPrevisionesForm" property="fechaDesdeB" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaDesdeB);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Datepicker nombreCampo="fechaDesdeB"></siga:Datepicker>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>
 	</td>				
 	<td>
-		<html:text name="mantenimientoPrevisionesForm" property="fechaHastaB" maxlength="10" styleClass="box" readonly="true"/><a href="javascript://" onClick="return showCalendarGeneral(fechaHastaB);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+		<siga:Datepicker nombreCampo="fechaHastaB"></siga:Datepicker>
 	</td>
 
 	</tr>

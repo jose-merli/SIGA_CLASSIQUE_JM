@@ -120,12 +120,9 @@
 <!-- HEAD -->
 	<head>
 	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<link ="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+		
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 		
 		<!-- Validaciones en Cliente -->
 		<html:javascript formName="EditarConsultaForm" staticJavascript="false" />  
@@ -184,8 +181,8 @@
 		  	//var select = document.frames("campoFrame").document.all.item("campoSel");	
 		  
 		  	var tema=document.forms[0].tema;
-		  	var tipoCampo= window.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
-		    var campo= window.frames("campoFrame").document.all.item("campoSel");	
+		  	var tipoCampo= document.getElementById("tipoCampoFrame").contentWindow.document.all.item("tipoCampoSel");
+		    var campo= document.getElementById("campoFrame").contentWindow.document.all.item("campoSel");	
 		    var cabecera=document.forms[0].cabecera.value;
 		    
 		    tipoCampoT = tipoCampo.options[tipoCampo.selectedIndex].text;
@@ -327,15 +324,15 @@
 		  
 		  
 		  function ponerCriterio(refSelect) {
-
-		  	var operacion =  window.frames("frameOperacionValor").document.all.item("operacion");
+			  
+		  	var operacion =  document.getElementById("frameOperacionValor").contentWindow.document.all.item("operacion");
 		  	if (operacion.length==0){
 		  		return;
 		  	}
 		  	operacionT = operacion.options[operacion.selectedIndex].text;
 		  	operacionV = operacion.options[operacion.selectedIndex].value;	
 		  	
-		  	var valor =  window.frames("frameOperacionValor").document.all.item("valor");
+		  	var valor =  document.getElementById("frameOperacionValor").contentWindow.document.all.item("valor");
 
 		  	//Si valor es un combo:
 		  	if (valor.tagName=="SELECT"){
@@ -371,18 +368,18 @@
 				  	valorT = valor.value;
 			  		valorV = valor.value;
 				}		  		
-			  	var numerico =  window.frames("frameOperacionValor").document.all.item("numerico");
+			  	var numerico =  document.getElementById("frameOperacionValor").contentWindow.document.all.item("numerico");
 			  	if (numerico.value=="true"){	  				  	
-			  		var enteros =  window.frames("frameOperacionValor").document.all.item("enteros");
-			  		var decimales =  window.frames("frameOperacionValor").document.all.item("decimales");
+			  		var enteros =  document.getElementById("frameOperacionValor").contentWindow.document.all.item("enteros");
+			  		var decimales =  document.getElementById("frameOperacionValor").contentWindow.document.all.item("decimales");
 		  			if(valorT!='' && !checkFloat(valorT,enteros.value,decimales.value)){
 						return;
 		  			}
 			  	}
 		  	}		  	
 		    
-		    var tipoCampo= window.frames("tipoCampoFrame").document.all.item("tipoCampoSel");
-		    var campo= window.frames("campoFrame").document.all.item("campoSel");	
+		    var tipoCampo= document.getElementById("tipoCampoFrame").contentWindow.document.all.item("tipoCampoSel");
+		    var campo= document.getElementById("campoFrame").contentWindow.document.all.item("campoSel");	
 		    
 		    tipoCampoT = tipoCampo.options[tipoCampo.selectedIndex].text;
 		    tipoCampoV = tipoCampo.options[tipoCampo.selectedIndex].value;
@@ -752,7 +749,7 @@
 					
 		function setCabecera() 
 		{		
-			var select =  window.frames("campoFrame").document.all.item("campoSel");	
+			var select =  document.getElementById("campoFrame").contentWindow.document.all.item("campoSel");	
 			document.forms[0].campo.value=select.options[select.selectedIndex].value;
 			document.forms[0].cabecera.value=select.options[select.selectedIndex].text;
 			if(document.forms[0].campo.value.length!=0){
@@ -762,7 +759,7 @@
 		
 		function setOperacionValor() 
 		{		
-			var select =  window.frames("campoFrame").document.all.item("campoSel");	
+			var select =  document.getElementById("campoFrame").contentWindow.document.all.item("campoSel");	
 			document.forms[0].campo.value=select.options[select.selectedIndex].value;
 			if(document.forms[0].campo.value.length!=0){
 				document.forms[0].target="frameOperacionValor";

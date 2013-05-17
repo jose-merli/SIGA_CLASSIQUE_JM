@@ -99,8 +99,7 @@
 		</td>
 		
 		<td>
-			<html:text name="EstadosRemesaForm" property="fechaEstado" size="10" maxlength="10" styleClass="box" value="<%=fechaEstado%>"  readOnly="true"></html:text>
-			<a onClick="return showCalendarGeneral(fechaEstado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+			<siga:Datepicker nombreCampo="fechaEstado" valorInicial="<%=fechaEstado%>"></siga:Datepicker>
 		</td>
 	</tr>
 	

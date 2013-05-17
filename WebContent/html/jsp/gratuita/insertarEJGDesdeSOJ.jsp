@@ -142,13 +142,8 @@
 	<td class="labelText" style="width:150px;">
 		<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
 	</td>
-	<td >		
-		<html:text name="DefinirEJGForm" property="fechaApertura" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-		<a onClick="showCalendarGeneral(fechaApertura);actualizarFecha();rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-		<img src="<%=app%>/html/imagenes/calendar.gif" 
-		alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  
-		border="0" valign="bottom">
-		</a>
+	<td>		
+		<siga:Datepicker nombreCampo="fechaApertura" valorInicial="<%=fecha%>"></siga:Datepicker>
 	</td>
 	</tr>
 		

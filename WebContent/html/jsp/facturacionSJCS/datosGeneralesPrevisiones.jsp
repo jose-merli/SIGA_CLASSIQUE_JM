@@ -244,17 +244,11 @@
 							</td>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
 							<td>
-								<html:text name="mantenimientoPrevisionesForm" property="fechaDesde" value='<%=fechaInicio%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
-								<%if (!consulta) {%>
-									<a href='javascript://' onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-								<%}%>	
+								<siga:Datepicker nombreCampo="fechaDesde" valorInicial="<%=fechaInicio%>" <%if (consulta) {%>disabled="true"<%}%>></siga:Datepicker>								
 							</td>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
-							<td >
-								<html:text name="mantenimientoPrevisionesForm" property="fechaHasta" value="<%=fechaFin%>" size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
-								<%if (!consulta) {%>
-									<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
-								<%}%>	
+							<td >								
+								<siga:Datepicker nombreCampo="fechaHasta" valorInicial="<%=fechaFin%>" <%if (consulta) {%>disabled="true"<%}%>></siga:Datepicker>
 							</td>	
 						</tr>
 					</table>

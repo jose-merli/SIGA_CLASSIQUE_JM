@@ -97,8 +97,7 @@
 												<siga:Idioma key="pys.mantenimientoServicios.literal.fecha"/>&nbsp;(*)
 										    </td>
 											<td class="labelText">		
-											 <input type="text" name="fechaEfectiva"  value="<%=fecha%>" readOnly="true" class="box"/>
-									   		 <a onClick="return showCalendarGeneral(fechaEfectiva);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+									   		 <siga:Datepicker nombreCampo="fechaEfectiva" valorInicial="<%=fecha%>"></siga:Datepicker>
 											</td>
 										</tr>
 									</table>	

@@ -156,14 +156,14 @@
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>
 	</td>
 	<td>
-		<siga:Datepicker nombreCampo="fechaIni" readOnly="true"></siga:Datepicker>
+		<siga:Datepicker nombreCampo="fechaIni"></siga:Datepicker>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>
 	</td>				
 	<td>
-	<siga:Datepicker nombreCampo="fechaFin" readOnly="true"></siga:Datepicker>
+	<siga:Datepicker nombreCampo="fechaFin"></siga:Datepicker>
 	</td>
 
 	</tr>

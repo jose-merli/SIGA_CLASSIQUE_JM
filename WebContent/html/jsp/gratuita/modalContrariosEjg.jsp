@@ -344,12 +344,8 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.fechaNacimiento"/>:
 		</td>
-		<td>
-			<% if (accion!=null && !accion.equalsIgnoreCase("ver")) { %>
-				<html:text name="ContrariosEjgForm" property="fechaNacimiento" size="10" styleClass="box" value="<%=fechaNacimiento%>" readonly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaNacimiento);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key='gratuita.listadoCalendario.literal.seleccionarFecha'/>"  border="0"></a>
-			<% } else { %>
-				<html:text name="ContrariosEjgForm" property="fechaNacimiento" size="50" maxlength="100" styleClass="boxConsulta"  readOnly="true"  value="<%=fechaNacimiento%>"></html:text>
-			<% } %>
+		<td>			
+			<siga:Datepicker nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" <% if (accion==null || accion.equalsIgnoreCase("ver")) { %> disabled="true"<%}%>></siga:Datepicker>
 		</td>
 		<td class="labelText" colspan="4">		
 		</td>		

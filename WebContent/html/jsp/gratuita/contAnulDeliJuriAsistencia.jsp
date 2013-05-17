@@ -134,15 +134,8 @@
 					<td class="labelText" width="150">	
 						<siga:Idioma key='gratuita.contAnulDeliJuriAsistencia.literal.fanulacion'/>
 					</td>
-					<td>
-						<html:text name="AsistenciasForm" property="fechaAnulacion" styleId="fechaAnulacion" 
-							size="10" maxlength="10" styleClass="box" value="<%=FECHAANULACION%>" readOnly="true">
-						</html:text>
-						&nbsp;&nbsp;
-						<a onClick="return showCalendarGeneral(fechaAnulacion);" onMouseOut="MM_swapImgRestore();" 
-							onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" />
-						</a>
+					<td>						
+						<siga:Datepicker nombreCampo="fechaAnulacion" valorInicial="<%=FECHAANULACION%>"></siga:Datepicker>
 					</td>	
 					<%}else{%>
 					<td class="labelText" width="150">	

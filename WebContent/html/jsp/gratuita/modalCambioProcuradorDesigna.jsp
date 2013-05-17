@@ -199,9 +199,7 @@
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
 		</td>
 		<td>
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaDesigna" size="13" maxlength="13" styleClass="box" readonly="true" value="<%=fecha%>"></html:text>
-			&nbsp;<a onClick="return showCalendarGeneral(fechaDesigna);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-
+			<siga:Datepicker nombreCampo="fechaDesigna" valorInicial="<%=fecha%>"></siga:Datepicker>
 		</td>
 	</tr>
 	<% if (!nuevoProcurador){ %>

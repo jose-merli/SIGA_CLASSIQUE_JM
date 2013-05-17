@@ -76,16 +76,14 @@
 	<td class="labelText">
 		<siga:Idioma key="FactSJCS.listadoRetencionesJ.literal.fechaDesde"/>
 	</td>				
-	<td class="labelText">
-		<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaIniListado" size="10" maxlength="10" styleClass="box" value="" readonly="true"></html:text>
-		&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaIniListado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt=''<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
+	<td class="labelText">		
+		<siga:Datepicker nombreCampo="fechaIniListado"></siga:Datepicker>
 	</td>
 	<td class="labelText">
 		<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin"/>
 	</td>				
-	<td class="labelText">
-		<html:text name="MantenimientoRetencionesJudicialesForm" property="fechaFinListado" size="10" styleClass="box" value="" readonly="true"></html:text>
-		&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinListado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
+	<td class="labelText">		
+		<siga:Datepicker nombreCampo="fechaFinListado"></siga:Datepicker>
 	</td>	
 	</tr>
 	

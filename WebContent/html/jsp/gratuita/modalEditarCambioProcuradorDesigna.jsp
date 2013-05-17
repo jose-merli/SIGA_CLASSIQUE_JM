@@ -147,9 +147,8 @@
 			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="13" maxlength="13" styleClass="boxConsulta" readonly="true"></html:text>
 
 	</logic:notEmpty>
-	<logic:empty name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita">
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="13" maxlength="15" styleClass="box" readonly="true"></html:text>
-			&nbsp;<a onClick="return showCalendarGeneral(fechaRenunciaSolicita);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+	<logic:empty name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita">			
+			<siga:Datepicker nombreCampo="fechaRenunciaSolicita"></siga:Datepicker>
 	</logic:empty>
 		<%}%>
 		</td>

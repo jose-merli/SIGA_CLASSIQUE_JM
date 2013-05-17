@@ -735,9 +735,8 @@
 				<siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura"/>
 			</td>
 			<td>
-				<%if (accion.equals("nuevo")){%>
-					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="box" readonly="true" size="10" value="<%=fechaApertura%>"></html:text>
-					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%if (accion.equals("nuevo")){%>					
+					<siga:Datepicker nombreCampo="fecha" valorInicial="<%=fechaApertura%>"></siga:Datepicker>
 				<%}else{%>
 					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
 				<%}%>

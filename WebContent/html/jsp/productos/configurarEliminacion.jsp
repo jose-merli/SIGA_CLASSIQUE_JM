@@ -152,8 +152,7 @@
 											<siga:Idioma key="pys.busquedaServicios.Fecha"/>
 										</td>	
 										<td align="left" width="140px">
-											 <html:text  name="MantenimientoServiciosForm" property="fechaAlta" styleId="fechaAlta" styleClass="box" size="10" readonly="true" />
-											 <a href='javascript://'onClick="return showCalendarGeneral(fechaAlta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+											 <siga:Datepicker nombreCampo="fechaAlta"></siga:Datepicker>
 										</td>	
 										
 									</tr>				

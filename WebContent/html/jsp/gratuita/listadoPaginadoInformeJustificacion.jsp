@@ -684,16 +684,10 @@ function downloadDocumentoResolucion(docResolucion) {
 			<table width="100%" border="0">
 				<tr>
 					<td width="75%">&nbsp;</td>
-					<td class="labelText"><siga:Idioma
-						key="gratuita.informeJustificacionMasiva.literal.fecha.Justif" />
-					<html:text property="fecha" size="10" styleClass="box"
-						readOnly="true" /> &nbsp; <a id="iconoCalendarioA"
-						onClick="return showCalendarGeneral(fecha);"
-						onMouseOut="MM_swapImgRestore();"
-						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif',1);"/>">
-					<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-						border="0"></a></td>
+					<td class="labelText">
+					<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif" />					
+						<siga:Datepicker nombreCampo="fecha"></siga:Datepicker>
+					</td>
 				</tr>
 
 			</table>

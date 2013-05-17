@@ -1084,9 +1084,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 						</td>				
 						<td>
-							<html:text name="datosGeneralesForm" property="fechaNacimiento" styleId="fechaNacimiento" styleClass="<%=estiloCaja %>" readonly="true" style='width:80px;' value="<%=fechaNacimiento %>" >
-							</html:text>
-							<a id="iconoFecha" href='javascript://onClick="return showCalendarGeneral(fechaNacimiento);"'><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<siga:Datepicker nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Datepicker>
 						</td>
 					
 						<!-- LUGAR NACIMIENTO -->

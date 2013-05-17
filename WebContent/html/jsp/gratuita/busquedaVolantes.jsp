@@ -108,9 +108,13 @@
 	    <html:hidden name="ValidarVolantesGuardiasForm" property="idPersona" ></html:hidden>
 	  </td>
 	  	<td width="140" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaDesde"/></td>
-	  	<td width="140"><html:text styleClass="box" property="buscarFechaDesde" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+	  	<td width="140">
+	  		<siga:Datepicker nombreCampo="buscarFechaDesde"></siga:Datepicker>
+	  	</td>
 	  	<td width="120" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
-	  	<td><html:text styleClass="box" property="buscarFechaHasta" size="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(buscarFechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+	  	<td>
+	  		<siga:Datepicker nombreCampo="buscarFechaHasta"></siga:Datepicker>
+	  	</td>
 	 </tr>				
 
 	<!-- FILA -->

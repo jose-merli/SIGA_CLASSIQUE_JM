@@ -259,8 +259,7 @@
 		<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
 	</td>
 	<td class="labelText">		
-		<html:text name="DefinirEJGForm" property="fechaApertura" size="10" maxlength="10" styleClass="box"  value="<%=fecha%>" readOnly="true"></html:text>
-		<a onClick="return showCalendarGeneral(fechaApertura);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+		<siga:Datepicker nombreCampo="fechaApertura" valorInicial="<%=fecha%>"></siga:Datepicker>
 	</td>
 <!--<td class="labelText" colspan="2">
 		<siga:Idioma key="gratuita.insertarSOJ.literal.demandante"/>

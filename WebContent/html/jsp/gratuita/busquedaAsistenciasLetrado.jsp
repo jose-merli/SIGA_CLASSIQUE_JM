@@ -163,9 +163,9 @@
 			<td class="labelText">	
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>
 				&nbsp;&nbsp;
-				<siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>&nbsp;<html:text name="AsistenciasForm" property="fechaDesde" size="10" styleClass="box" value="<%=fechaDesde%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>&nbsp;<siga:Datepicker nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>"></siga:Datepicker>
 				&nbsp;&nbsp;
-				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>&nbsp;<html:text name="AsistenciasForm" property="fechaHasta" size="10" styleClass="box" value="<%=fechaHasta%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>&nbsp;<siga:Datepicker nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>"></siga:Datepicker>
 			</td>
 		</tr>
 	</table>

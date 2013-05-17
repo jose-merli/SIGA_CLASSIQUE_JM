@@ -626,10 +626,7 @@ function habilitarCampos(isHabilitar) {
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.fechaNacimientoConyuge" /></td>
 			<td>
-				<siga:Datepicker nombreCampo="fechaNacimientoConyuge" valorInicial="${MutualidadForm.fechaNacimientoConyuge}" disabled="${MutualidadForm.modo=='consulta'}"></siga:Datepicker>
-				<c:if test="${MutualidadForm.modo=='insertar'}">
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimientoConyuge);"><img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" border="0"> </a>
-				</c:if>
+				<siga:Datepicker nombreCampo="fechaNacimientoConyuge" valorInicial="${MutualidadForm.fechaNacimientoConyuge}" disabled="${MutualidadForm.modo=='consulta'}"></siga:Datepicker>				
 			</td>
 			<td class="labelText" ><siga:Idioma
 							key="censo.mutualidad.literal.numeroHijos" /></td>

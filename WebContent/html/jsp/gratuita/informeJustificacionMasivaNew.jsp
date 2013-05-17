@@ -146,19 +146,14 @@
 												<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 			
 										</td>
-										<td>
-											<html:text property="fechaJustificacionDesde"  size="10" styleClass="box" readOnly="true" />
-											&nbsp;
-											<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-									
+										<td>											
+											<siga:Datepicker nombreCampo="fechaJustificacionDesde"></siga:Datepicker>
 										</td>
 										<td class="labelText">
 											<siga:Idioma key="general.literal.hasta"/>
 										</td>
 										<td>
-											<html:text property="fechaJustificacionHasta"  size="10" styleClass="box" readOnly="true" />
-												&nbsp;
-												<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+											<siga:Datepicker nombreCampo="fechaJustificacionHasta"></siga:Datepicker>
 										</td>
 										
 										
@@ -234,19 +229,14 @@
 									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 
 								</td>
-								<td>
-									<html:text property="fechaDesde"  size="10" styleClass="box" readOnly="true" />
-									&nbsp;
-									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-						
+								<td>									
+									<siga:Datepicker nombreCampo="fechaDesde"></siga:Datepicker>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
-									<html:text property="fechaHasta"  size="10" styleClass="box" readOnly="true" />
-									&nbsp;
-									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									<siga:Datepicker nombreCampo="fechaHasta"></siga:Datepicker>
 								</td>
 							
 								

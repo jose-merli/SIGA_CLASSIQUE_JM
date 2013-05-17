@@ -102,10 +102,8 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 			</td>		
-			<td>
-				<html:text property="fecha" size="10" styleClass="box" readOnly="true" />
-				&nbsp;
-				<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
+			<td>				
+				<siga:Datepicker nombreCampo="fecha"></siga:Datepicker>
 			</td>
 			<td class="labelText" colspan="2">
 				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				

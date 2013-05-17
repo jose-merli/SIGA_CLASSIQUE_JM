@@ -138,15 +138,15 @@
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>
 	</td>
-	<td>
-		<input class="box" type="text" name="fechaIni" maxlength="10" class="box" readonly="true"><a href='javascript://'onClick="return showCalendarGeneral(fechaIni);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+	<td>		
+		<siga:Datepicker nombreCampo="fechaIni"></siga:Datepicker>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>
 	</td>				
-	<td>
-		<input class="box" type="text" name="fechaFin" maxlength="10" class="box" readonly="true"><a href='javascript://'onClick="return showCalendarGeneral(fechaFin);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+	<td>		
+		<siga:Datepicker nombreCampo="fechaFin"></siga:Datepicker>
 	</td>
 
 	</tr>
