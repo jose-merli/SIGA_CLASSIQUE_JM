@@ -554,6 +554,7 @@
 					}else
 					if(resultado[0]!=null && resultado[2]!=null  && trim(resultado[0])!=""  && trim(resultado[2])!=""){						
 						document.forms[0].tipoId.value = resultado[0];
+						document.forms[0].tipoId.onchange();
 						document.forms[0].NIdentificacion.value = resultado[2]; 
 						
 						//document.forms[0].tipoId.value=	resultado[0];
