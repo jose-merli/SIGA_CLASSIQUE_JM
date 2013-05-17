@@ -282,7 +282,7 @@ public class GestionInformesAction extends MasterAction {
 		request.setAttribute("idPlantillaEnvioDef","");
 		request.setAttribute("idTipoIntercambioTelem", "");	
 		request.setAttribute("intercambioTelematico", "0");
-		
+		request.setAttribute("mostrarTipoIntercambio", "0");
 		
 		InformeForm informeFormEdicion = new InformeForm();
 		informeFormEdicion.setUsrBean(this.getUserBean(request));
@@ -473,7 +473,7 @@ public class GestionInformesAction extends MasterAction {
 				request.setAttribute("idPlantillaEnvioDef","");
 				request.setAttribute("idTipoIntercambioTelem", "");	
 				request.setAttribute("intercambioTelematico", "0");
-				
+				request.setAttribute("mostrarTipoIntercambio", "0");
 			
 			
 			informeForm.setModo("modificar");
@@ -587,6 +587,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("idPlantillaEnvioDef","");
 			request.setAttribute("idTipoIntercambioTelem", "");	
 			request.setAttribute("intercambioTelematico", "0");
+			request.setAttribute("mostrarTipoIntercambio", "0");
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
 			informeForm.setModo("consultar");
 		}catch (Exception e){
