@@ -1159,11 +1159,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		try {			
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean existenErrores = false;
+			boolean existenErrores = false;		
 			
-			miForm.setFechaSolicitud("sysdate");
-			miForm.setTipoGuardias(String.valueOf(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS));
-			miForm.setGuardiasSel(null);			
+			String sFechaValidacion = miForm.getFechaValidacion(); // Guardo la fecha de validacion inicial
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -1179,9 +1177,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				 * - miForm.idPersona...........: viene el formulario con el dato incluido
 				 * - miForm.validarInscripciones: obtiene su valor de los datos masivos
 				 * - miForm.fechaValidacion.....: viene el formulario con el dato incluido para validarInscripciones igual a "S" (para validarInscripciones igual a "N" da igual)
+				 * 
+				 * 					
+				 *  form.getObservacionesSolicitud(),
+					new Integer(form.getTipoGuardias()),
+					form.getGuardiasSel(),
+					form.getIdRetencion(),
+				 * 
 				*/
 				miForm.setIdTurno(idTurnoSel);
 				miForm.setValidarInscripciones(validarInscripciones);
+				miForm.setFechaValidacion(sFechaValidacion); // Copio la fecha de validacion inicial, ya que se puede momdificar en preAltaTurno
 				
 				try {
 					// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
@@ -1232,6 +1238,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
+		
 		return forward;
 	}
 	
@@ -1831,13 +1838,13 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			try {
 				if(clase.equals("T")){
 					ScsInscripcionTurnoAdm inscTurno = new ScsInscripcionTurnoAdm(usrBean);
-					List<ScsInscripcionTurnoBean> alIncripciones = inscTurno.getInscripcionesTurno(validaTurnosForm,false);
+					List<ScsInscripcionTurnoBean> alIncripciones = inscTurno.getInscripcionesTurno(validaTurnosForm);
 					validaTurnosForm.setInscripcionesTurno(alIncripciones);
 					forward = "listadoInscripcionTurnos";
 					
 				}else if(clase.equals("G")){
 					ScsInscripcionGuardiaAdm inscGuardia = new ScsInscripcionGuardiaAdm(usrBean);
-					List<ScsInscripcionGuardiaBean> alIncripciones = inscGuardia.getInscripcionesGuardia(validaTurnosForm,false);
+					List<ScsInscripcionGuardiaBean> alIncripciones = inscGuardia.getInscripcionesGuardia(validaTurnosForm);
 					validaTurnosForm.setInscripcionesGuardia(alIncripciones);
 					forward = "listadoInscripcionGuardias";
 				}				
@@ -2795,6 +2802,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
 			
+			String sFechaBaja = miForm.getFechaBaja(); // Guardo la fecha de baja inicial
+			
 			//dando de baja todos los turnos
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -2820,6 +2829,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setFechaValidacionTurno(fechaValidacionTurno);
 				miForm.setValidarInscripciones(validarInscripciones);
 				
+				miForm.setFechaBaja(sFechaBaja); // Copio la fecha de baja inicial, ya que se puede momdificar en preBajaTurno
+				
 				// Comprobaciones previas a dar de baja una inscripcion de turno
 				String sPreBaja = this.preBajaTurno(miForm, usr, false);
 				
@@ -2844,9 +2855,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				
 				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 					hayEstadosPendientes = true;
-					break;
 				}	
 			}
+			
+			miForm.setFechaBaja(sFechaBaja); // Copio la fecha de baja inicial, ya que se puede momdificar en preBajaTurno
 			
 			if(hayEstadosPendientes){
 				miForm.setModo("smbtInsertar");
@@ -2881,6 +2893,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			boolean existenErrores = false;	
 			
 			miForm.setFechaSolicitudBaja("sysdate");
+			String sFechaBaja = miForm.getFechaBaja(); // Guardo la fecha de baja inicial
 			
 			//dando de baja todos los turnos
 			while (st1.hasMoreTokens()) {
@@ -2909,7 +2922,13 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				 * - fechaValidacionTurno...: obtiene su valor de los datos masivos
 				 * 
 				 * - miForm.fechaSolicitudBaja..: sysdate
-				*/				
+				*/
+				
+				miForm.setIdTurno(idTurnoSel);				
+				miForm.setFechaValidacionTurno(fechaValidacionTurno);
+				miForm.setValidarInscripciones(validarInscripciones);
+				
+				miForm.setFechaBaja(sFechaBaja); // Copio la fecha de baja inicial, ya que se puede momdificar en preBajaTurno
 				
 				try {				
 					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
@@ -2922,7 +2941,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						false);
 					
 					// Compruebo que es un turno con validaciones y bajas de inscripciones automaticas, entonces calculo la fecha de baja
-					if(miForm.getValidarInscripciones().equals("N")) {
+					if(validarInscripciones.equals("N")) {
 						
 						// Calculo la fecha de baja para inscripciones automaticas
 						this.preBajaTurno(miForm, usr, false);
@@ -2957,14 +2976,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
+		
 		return forward;
 	}	
 	
 	/**
 	 * Paso 1 - Alta Inscripción Pendiente Turnos (masivo)
 	 * Paso 1 - Baja Inscripción Pendiente Turnos (masivo)
+	 * 
 	 * Paso 1 - Alta Inscripción Pendiente Guardias (masivo)
 	 * Paso 1 - Baja Inscripción Pendiente Guardias (masivo)
+	 * 
+	 * Paso 1 - Cambio Fecha Efectiva Alta Inscripción Turnos (masivo)
+	 * Paso 1 - Cambio Fecha Efectiva Baja Inscripción Turnos (masivo)
+	 * 
+	 * Paso 1 - Cambio Fecha Efectiva Alta Inscripción Guardias (masivo)
+	 * Paso 1 - Cambio Fecha Efectiva Baja Inscripción Guardias (masivo)
 	 * 
 	 * @param mapping
 	 * @param formulario
@@ -3384,8 +3411,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
 			
-			miForm.setEstadoPendientes(null);
-			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
@@ -3455,7 +3480,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				
 				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 					hayEstadosPendientes = true;
-					break;
 				}
 			}
 			
@@ -3489,7 +3513,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		try {			
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean existenErrores = false;			
+			boolean existenErrores = false;		
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3657,7 +3681,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 						hayEstadosPendientes = true;
-						break;
 					}
 				}
 			}
@@ -3767,198 +3790,227 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		return forward;		
 	}
 	
+	/**
+	 * Paso 2 - Cambio Fecha Efectiva Alta Inscripción Turnos (masivo)	
+	 * 
+	 * @param mapping
+	 * @param formulario (idInstitucion + idTurno + idPersona + idGuardia + validarInscripciones + tipoGuardias + fechaSolicitud + fechaValidacion + observacionesValidacion + fechaValidacionPrevia)
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String comprobarAmfvtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		String forward = "error";
 		
-		try {
-			UsrBean usr = this.getUserBean(request);
+		try {			
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean hayEstadosPendientes = false;
+			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
+				
 				String idInstitucion = d[0];
 				String idPersona= d[1];
 				String idTurno= d[2];
-//				String idGuardia= d[3];
-				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
-//				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
-				try {
-					comprobarActualizacionFechaValidacionTurno(miForm,inscripcion,usr);
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-						hayEstadosPendientes = true;
-						break;
-					}
-					
-				}
-			}
+				// String idGuardia= d[3];
+				// String fechaSolicitud= d[4];
+				// String validarInscripciones = d[5];
+				// String tipoGuardias = d[6];
+				String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];				
+				
+				 /* Datos necesarios para preAltaTurno:
+				 * - miForm.idInstitucion.......: obtiene su valor de los datos masivos
+				 * - miForm.idTurno.............: obtiene su valor de los datos masivos
+				 * - miForm.idPersona...........: obtiene su valor de los datos masivos
+				 * - miForm.fechaValidacion.....: viene el formulario con el dato incluido
+				 * - miForm.validarInscripciones: "S"
+				 * 
+				 * Otros:
+				 * - miForm.fechaValidacionPrevia: obtiene su valor de los datos masivos 
+				*/		
+				
+				miForm.setIdInstitucion(idInstitucion);
+				miForm.setIdTurno(idTurno);
+				miForm.setIdPersona(idPersona);
+				miForm.setFechaValidacionPrevia(GstDate.getFormatedDateShort("", fechaValidacion));
+				
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				
+				// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
+				String sPreAlta = this.preAltaTurno(miForm, usr);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sPreAlta != "") {
+					request.setAttribute("mensaje", sPreAlta);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+	
+				String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
+				String sFechaValidacionTurnoPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
+				
+				// Resultado de la comparacion de la fecha de validacion, con la fecha de validacion del turno					
+				int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionTurnoPrevia);
+				
+				// Si la fecha de validacion es mayor que la fecha de validacion del turno, muestro un error 
+				if (comparacion > 0) {
+					sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionTurnoPrevia; 
+					request.setAttribute("mensaje", sPreAlta);
+					return ClsConstants.ERROR_AVISO;	
+				}					
+			}			
 			
-			if(hayEstadosPendientes){
-				miForm.setModo("amfvtModificar");
-				return ClsConstants.SMS_AVISO_ESTADO;
-			}else{
-				return amfvtModificar(mapping, formulario, request, response);
-								
-			}
-			
-			
-		} 
-		catch (Exception e) 
-		{
+			return amfvtModificar(mapping, formulario, request, response);							
+						
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-		
+		} 		
 	}
 	
+	/**
+	 * Paso 3 (FINAL) - Cambio Fecha Efectiva Alta Inscripción Turnos (masivo)	
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String amfvtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
+		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
 		try {
-			UsrBean usr = this.getUserBean(request);
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;
+			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
-				String idInstitucion = d[0];
+				
+				String idInstitucion = d[0];				
 				String idPersona= d[1];
 				String idTurno= d[2];
 				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
-//				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
+				// String validarInscripciones = d[5];
+				// String tipoGuardias = d[6];
+				String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];			
+				
 				try {
-					comprobarActualizacionFechaValidacionTurno(miForm,inscripcion,this.getUserBean(request));
-					InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
-							new Integer(idInstitucion), new Integer(idTurno), Long.valueOf(idPersona),
-							fechaSolicitud, usr, false);
-					inscripcionTurno.modificarFechaValidacion(miForm.getFechaValidacion(),
-								miForm.getObservacionesValidacion(), usr);
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()==null || miForm.getEstadoPendientes().equals("")){
-						existenErrores = true;
-					}else{
-						InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
-								new Integer(idInstitucion), new Integer(idTurno), Long.valueOf(idPersona),
-								fechaSolicitud, usr, false);
-						inscripcionTurno.modificarFechaValidacion(miForm.getFechaValidacion(),
-									miForm.getObservacionesValidacion(), usr);
-					}
+					ScsInscripcionTurnoBean insTurnoBean = new ScsInscripcionTurnoBean();
+					insTurnoBean.setIdInstitucion(new Integer(idInstitucion));
+					insTurnoBean.setIdTurno(new Integer(idTurno));
+					insTurnoBean.setIdPersona(Long.valueOf(idPersona));
+					insTurnoBean.setFechaSolicitud(fechaSolicitud);
+					insTurnoBean.setFechaValidacion(GstDate.getFormatedDateShort("", fechaValidacion)); // Fecha de validacion previa
 					
-				}
-			}
-			
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaValidacionPrevia
+					InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
+					inscripcion.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
+					
+				} catch (Exception e) {
+					existenErrores = true;
+				}					
+			}			
 			
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				
 			}else{
 				request.setAttribute("mensaje","messages.updated.success");				
 			}
-			
-			
+						
 			forward = "exito";
 			request.setAttribute("modal", "1");
 
-
-		} 
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
-		return forward;
 		
+		return forward;		
 	}
+	
+	/**
+	 * Paso 3 (FINAL) - Cambio Fecha Efectiva Alta Inscripción Guardias (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String amfvgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
+		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
 		try {
-			UsrBean usr = this.getUserBean(request);
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;
+			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
+				
 				String idInstitucion = d[0];
 				String idPersona= d[1];
 				String idTurno= d[2];
 				String idGuardia= d[3];
 				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
+				// String validarInscripciones = d[5];
 				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setIdGuardia(idGuardia);
-				inscripcion.setTipoGuardias(tipoGuardias);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
+				// String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];
+				
+				Integer intGuardia = null;
+				if(Integer.parseInt(tipoGuardias) == ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+					intGuardia = new Integer(idGuardia);
 				
 				try {
-					comprobarActualizacionFechaValidacionGuardia(miForm,inscripcion,this.getUserBean(request));
-					InscripcionGuardia inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia(
-							new Integer(idInstitucion), new Integer(idTurno),new Integer(idGuardia)
-									, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
-					inscripcionGuardia.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
+					ScsInscripcionGuardiaBean insGuardiaBean = new ScsInscripcionGuardiaBean();
+					insGuardiaBean.setIdInstitucion(new Integer(idInstitucion));
+					insGuardiaBean.setIdTurno(new Integer(idTurno));
+					insGuardiaBean.setIdGuardia(intGuardia);
+					insGuardiaBean.setIdPersona(Long.valueOf(idPersona));
+					insGuardiaBean.setFechaSuscripcion(fechaSolicitud);
 					
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()==null || miForm.getEstadoPendientes().equals("")){
-						existenErrores = true;
-					}else{
-						InscripcionGuardia inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia(
-								new Integer(idInstitucion), new Integer(idTurno),new Integer(idGuardia)
-										, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
-						inscripcionGuardia.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
-					}
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud
+					InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);							
+					inscripcion.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
 					
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-			}
-			
+				} catch (Exception e) {
+					existenErrores = true;
+				}		
+			}			
 			
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				
 			}else{
 				request.setAttribute("mensaje","messages.updated.success");				
-			}
-			
+			}			
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
 
-
-		} 
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
-		return forward;
 		
+		return forward;		
 	}
 	
 	/**
@@ -4010,22 +4062,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return ClsConstants.ERROR_AVISO;	
 			}				
 			
-			/*
-			try {
-				comprobarActualizacionFechaValidacionGuardia(miForm, miForm, usr);
-				
-			} catch (SIGAException e) {
-				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-					miForm.setModo("afvgModificar");
-					return ClsConstants.SMS_AVISO_ESTADO;
-					
-				}else{
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, e.getLiteral()));
-					return ClsConstants.ERROR_AVISO;
-				}
-			}
-			*/
-			
 			return afvgModificar(mapping, formulario, request, response);
 		
 		// Compruebo si es un cambio de fecha efectiva de turno
@@ -4055,20 +4091,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				request.setAttribute("mensaje", sPreAlta);
 				return ClsConstants.ERROR_AVISO;	
 			}	
-			
-			/* 
-			try {
-				comprobarActualizacionFechaValidacionTurno(miForm,miForm,this.getUserBean(request));
-			} catch (SIGAException e) {
-				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-					miForm.setModo("afvtModificar");
-					return ClsConstants.SMS_AVISO_ESTADO;
-				}else{
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(this.getUserBean(request), e.getLiteral()));
-					return ClsConstants.ERROR_AVISO;
-				}
-			}
-			 */ 
 			
 			return afvtModificar(mapping, formulario, request, response);
 		}	
@@ -4148,23 +4170,32 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				}	
 			}
 			
-			/*
-			try {
-				comprobarActualizacionFechaBajaGuardia(miForm, miForm, usr);
+			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
 				
-			} catch (SIGAException e) {				
+				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+				  usr, 
+				  Long.valueOf(miForm.getIdPersona()), 
+				  new Integer(miForm.getIdInstitucion()), 
+				  new Integer(miForm.getIdTurno()),
+				  null,
+				  null,
+				  miForm.getFechaBaja(),
+				  false,
+				  this.tipoActualizacionBaja); 
+				
+				miForm.setEstadoPendientes(estadoPendientes);				
+				
 				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 					miForm.setModo("afbgModificar");
 					return ClsConstants.SMS_AVISO_ESTADO;
 					
-				}else{
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, e.getLiteral()));
-					return ClsConstants.ERROR_AVISO;
+				} else {
+					return afbgModificar(mapping,  formulario,  request,  response);
 				}
+				
+			} else {				
+				return afbgModificar(mapping,  formulario,  request,  response);				
 			}
-			*/
-			
-			return afbgModificar(mapping, formulario, request, response);
 			
 		// Compruebo si es un cambio de fecha efectiva de turno	
 		} else {
@@ -4194,22 +4225,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return ClsConstants.ERROR_AVISO;	
 			}	
 			
-			/*
-			try {
-				comprobarActualizacionFechaBajaTurno(miForm, miForm, usr);
-				
-			} catch (SIGAException e) {
-				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-					miForm.setModo("afbtModificar");
-					return ClsConstants.SMS_AVISO_ESTADO;
-					
-				} else {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, e.getLiteral()));
-					return ClsConstants.ERROR_AVISO;
-				}
-			}
-			*/
-			
 			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
 				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
@@ -4229,305 +4244,12 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					miForm.setModo("afbtModificar");
 					return ClsConstants.SMS_AVISO_ESTADO;
 					
-				}else{
+				} else {
 					return afbtModificar(mapping,  formulario,  request,  response);
 				}
 				
-			}else{				
+			} else {				
 				return afbtModificar(mapping,  formulario,  request,  response);				
-			}
-		}
-		
-	}
-	protected void comprobarActualizacionFechaBajaGuardia(InscripcionTGForm formulario,InscripcionTGForm inscripcionActual,UsrBean usr)throws ClsExceptions,SIGAException,Exception{
-		inscripcionActual.setTipo("B");
-		ScsInscripcionGuardiaAdm admInsGuardia = new ScsInscripcionGuardiaAdm(usr);
-		//Sacamios el idguardia para comprobar las guardias pendientes
-		Integer idGuardia = null; 
-		if(inscripcionActual.getTipoGuardias()!=null &&Integer.parseInt(inscripcionActual.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-			idGuardia = new Integer(inscripcionActual.getIdGuardia());
-		}
-		
-		
-		//hay que traerse el tipo de gurdias ya que si es todas o ninguna se modificarar a la vez
-		
-		List<ScsInscripcionGuardiaBean> inscripcionesList =  admInsGuardia.getInscripcionesGuardia(inscripcionActual,true);
-		int orden =0;
-		ScsInscripcionGuardiaBean inscripcion=null;
-		for(ScsInscripcionGuardiaBean inscripcionBean:inscripcionesList){
-			if(inscripcionBean.getFechaSuscripcion().equals(inscripcionActual.getFechaSolicitud())){
-				inscripcion = inscripcionBean;
-				break;
-			}
-			orden++;
-		}
-		//comprobamos que la fecha de baja es mayor que su fecha de validacion
-		Date fechaBaja = GstDate.convertirFecha(formulario.getFechaBaja(),"dd/MM/yyyy");
-		Date fechaValidacion= GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-		
-		
-		if(fechaBaja.compareTo(fechaValidacion)<0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-			
-		}
-		//En el caso de que haya una inscripcion posterior, la fecha de baja debe ser anterior
-		//a la fecha de validacion
-		ScsInscripcionGuardiaBean inscripcionPosterior = null;
-		try {
-			inscripcionPosterior = inscripcionesList.get(orden+1);	
-		} catch (Exception e) {
-			//solo se comprueba si hay inscripcion porterior
-			Date fechaBajaOld =GstDate.convertirFechaHora(inscripcion.getFechaBaja());
-			if(fechaBajaOld.compareTo(fechaBaja)>0){
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-					inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), idGuardia, 
-					formulario.getFechaBaja(),GstDate.getFormatedDateShort("",inscripcion.getFechaBaja()),true,this.tipoActualizacionBaja);
-				if(estadoPendientes!=null && !estadoPendientes.equals("")){
-					formulario.setEstadoPendientes(estadoPendientes);
-					throw new SIGAException(estadoPendientes);
-				}
-			}
-			
-			return;
-		}
-			Date fechaValidacionInscripcionPosterior = GstDate.convertirFechaHora(inscripcionPosterior.getFechaValidacion());
-			if(fechaBaja.compareTo(fechaValidacionInscripcionPosterior)>0){
-				throw new SIGAException("gratuita.gestionInscripciones.error.baja.mayor.valida.ip");
-				
-			}
-			Date fechaBajaOld =GstDate.convertirFechaHora(inscripcion.getFechaBaja());
-			if(fechaBajaOld.compareTo(fechaBaja)>0){
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-					inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), idGuardia, 
-					formulario.getFechaBaja(),GstDate.getFormatedDateShort("",inscripcion.getFechaBaja()),true,this.tipoActualizacionBaja);
-				if(estadoPendientes!=null && !estadoPendientes.equals("")){
-					formulario.setEstadoPendientes(estadoPendientes);
-					throw new SIGAException(estadoPendientes);
-				}
-			}
-		
-		
-		
-		
-	}
-	protected void comprobarActualizacionFechaValidacionGuardia(InscripcionTGForm formulario,InscripcionTGForm inscripcionActual,UsrBean usr)throws ClsExceptions,SIGAException,Exception{
-		inscripcionActual.setTipo("A");
-		ScsInscripcionGuardiaAdm admInsGuardia = new ScsInscripcionGuardiaAdm(usr);
-		Integer idGuardia = null; 
-		if(inscripcionActual.getTipoGuardias()!=null &&Integer.parseInt(inscripcionActual.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-			idGuardia = new Integer(inscripcionActual.getIdGuardia());
-		}
-
-		
-		
-		
-		List<ScsInscripcionGuardiaBean> inscripcionesList =  admInsGuardia.getInscripcionesGuardia(inscripcionActual,true);
-		int orden =0;
-		ScsInscripcionGuardiaBean inscripcion=null;
-		for(ScsInscripcionGuardiaBean inscripcionBean:inscripcionesList){
-			if(inscripcionBean.getFechaSuscripcion().equals(inscripcionActual.getFechaSolicitud())){
-				inscripcion = inscripcionBean;
-				break;
-			}
-			orden++;
-		}
-		//comprobamos que la fecha de baja es mayor que su fecha de validacion
-		Date fechaValidacion = GstDate.convertirFecha(formulario.getFechaValidacion(),"dd/MM/yyyy");
-		if(inscripcionActual.getIdGuardia()!=null||!inscripcionActual.getIdGuardia().equals("")){
-			ScsInscripcionTurnoAdm itAdm = new ScsInscripcionTurnoAdm(usr);
-			ScsInscripcionTurnoBean inscTurno = itAdm.getInscripcionSinBaja(new Integer(inscripcionActual.getIdInstitucion()),new Integer(inscripcionActual.getIdTurno()),new Long(inscripcionActual.getIdPersona()));
-			inscripcionActual.setFechaValidacionTurno(inscTurno.getFechaValidacion());
-		}
-		
-
-		Date fechaValidacionTurno= GstDate.convertirFecha(GstDate.getFormatedDateShort("",inscripcionActual.getFechaValidacionTurno()),"dd/MM/yyyy");
-		if(fechaValidacion.compareTo(fechaValidacionTurno)<0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.validaGuardia.menor.validaTurno");
-			
-		}
-	//En el caso de que haya una inscripcion anterior, la fecha de validacion debe ser anterior
-	//a la fecha de baja
-	
-
-		ScsInscripcionGuardiaBean inscripcionAnterior = null;
-		try {
-			inscripcionAnterior = inscripcionesList.get(orden-1);	
-		} catch (Exception e) {
-			Date fechaValidacionOld =GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-			if(fechaValidacion.compareTo(fechaValidacionOld)>0){
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-					inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), idGuardia, GstDate.getFormatedDateShort("",inscripcion.getFechaValidacion()),formulario.getFechaValidacion(),true,this.tipoActualizacionBaja);
-				if(estadoPendientes!=null && !estadoPendientes.equals("")){
-					formulario.setEstadoPendientes(estadoPendientes);
-					throw new SIGAException(estadoPendientes);
-					
-				}
-			}
-			return;
-		}
-		
-		
-		Date fechaBajaInscripcionAnterior = GstDate.convertirFechaHora(inscripcionAnterior.getFechaBaja());
-		if(fechaValidacion.compareTo(fechaBajaInscripcionAnterior)<0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.valida.menor.baja.ia");
-			
-		}
-		Date fechaValidacionOld =GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-		if(fechaValidacion.compareTo(fechaValidacionOld)>0){
-			String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-				inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), idGuardia, GstDate.getFormatedDateShort("",inscripcion.getFechaValidacion()),formulario.getFechaValidacion(),true,this.tipoActualizacionEdicion);
-			if(estadoPendientes!=null && !estadoPendientes.equals("")){
-				formulario.setEstadoPendientes(estadoPendientes);
-				throw new SIGAException(estadoPendientes);
-				
-			}
-		}
-		
-	}
-	
-	
-	protected void comprobarActualizacionFechaBajaTurno(InscripcionTGForm formulario,InscripcionTGForm inscripcionActual,UsrBean usr)throws ClsExceptions,SIGAException,Exception{
-		
-		inscripcionActual.setTipo("B");
-		ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
-		
-		
-		
-		List<ScsInscripcionTurnoBean> inscripcionesList =  admInsTurno.getInscripcionesTurno(inscripcionActual,true);
-		int orden =0;
-		ScsInscripcionTurnoBean inscripcion=null;
-		for(ScsInscripcionTurnoBean inscripcionBean:inscripcionesList){
-			if(inscripcionBean.getFechaSolicitud().equals(inscripcionActual.getFechaSolicitud())){
-				inscripcion = inscripcionBean;
-				break;
-			}
-			orden++;
-		}
-		//comprobamos que la fecha de baja es mayor que su fecha de validacion
-		Date fechaBaja = GstDate.convertirFecha(formulario.getFechaBaja(),"dd/MM/yyyy");
-		Date fechaValidacion= GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-		
-		
-		if(fechaBaja.compareTo(fechaValidacion)<=0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-			
-		}
-		//En el caso de que haya una inscripcion posterior, la fecha de baja debe ser anterior
-		//a la fecha de validacion
-		Date fechaBajaOld =GstDate.convertirFechaHora(inscripcion.getFechaBaja());
-		ScsInscripcionTurnoBean inscripcionPosterior = null;
-		try {
-			inscripcionPosterior = inscripcionesList.get(orden+1);	
-		} catch (Exception e) {
-			
-			if(fechaBajaOld.compareTo(fechaBaja)>0){
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-						inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), null, formulario.getFechaBaja(),GstDate.getFormatedDateShort("",inscripcion.getFechaBaja()),false,this.tipoActualizacionEdicion);
-					if(estadoPendientes!=null && !estadoPendientes.equals("")){
-						formulario.setEstadoPendientes(estadoPendientes);
-						throw new SIGAException(estadoPendientes);
-						
-					}
-			}
-			
-			
-			
-			return;
-		}
-		
-		
-		Date fechaValidacionInscripcionPosterior = GstDate.convertirFechaHora(inscripcionPosterior.getFechaValidacion());
-		if(fechaBaja.compareTo(fechaValidacionInscripcionPosterior)>0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.baja.mayor.valida.ip");
-			
-		}
-		
-			
-			
-			
-			
-			
-			if(fechaBajaOld.compareTo(fechaBaja)>0){
-				ScsInscripcionGuardiaAdm admInsGuardia = new ScsInscripcionGuardiaAdm(usr);
-				boolean existenInscripcionesGuardiaActivas = admInsGuardia.existenInscripcionesGuardiaActivas(
-						inscripcion.getIdInstitucion(), inscripcion.getIdTurno(),
-						inscripcion.getIdPersona(), formulario.getFechaBaja(),  GstDate.getFormatedDateShort("",inscripcion.getFechaBaja()));
-				if(existenInscripcionesGuardiaActivas){
-					throw new SIGAException("gratuita.gestionInscripciones.error.masivo.bajaguardia.mayor.bajaturno");
-				}
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-					inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), null, formulario.getFechaBaja(),GstDate.getFormatedDateShort("",inscripcion.getFechaBaja()),false,this.tipoActualizacionEdicion);
-				if(estadoPendientes!=null && !estadoPendientes.equals("")){
-					formulario.setEstadoPendientes(estadoPendientes);
-					throw new SIGAException(estadoPendientes);
-					
-				}
-			}
-			
-	}
-	
-	protected void comprobarActualizacionFechaValidacionTurno(InscripcionTGForm formulario, InscripcionTGForm inscripcionActual, UsrBean usr)throws ClsExceptions,SIGAException,Exception{
-		ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
-		inscripcionActual.setTipo("A");
-		
-		
-		// Obtiene las inscripciones igual que getAjaxBusqueda
-		List<ScsInscripcionTurnoBean> inscripcionesList =  admInsTurno.getInscripcionesTurno(inscripcionActual, false);
-		
-		// Busca dentro de las inscripciones la que queremos cambiar la fecha efectiva
-		int orden=0;
-		ScsInscripcionTurnoBean inscripcion=null;
-		for(ScsInscripcionTurnoBean inscripcionBean:inscripcionesList){
-			if(inscripcionBean.getFechaSolicitud().equals(inscripcionActual.getFechaSolicitud())){
-				inscripcion = inscripcionBean;
-				break;
-			}
-			orden++;
-		}
-
-		Date fechaValidacion = GstDate.convertirFecha(formulario.getFechaValidacion(),"dd/MM/yyyy");
-
-		//		Date fechaSolicitud= GstDate.convertirFecha(GstDate.getFormatedDateShort("",inscripcionActual.getFechaSolicitud()),"dd/MM/yyyy");
-//		if(fechaSolicitud.compareTo(fechaValidacion)>0){
-//			throw new SIGAException("gratuita.gestionInscripciones.error.fValMayorfSol");
-//			
-//		}
-		//En el caso de que haya una inscripcion posterior, la fecha de baja debe ser anterior
-		//a la fecha de validacion
-			
-		ScsInscripcionTurnoBean inscripcionAnterior = null;
-		try {
-			
-			inscripcionAnterior = inscripcionesList.get(orden-1);
-			
-		} catch (Exception e) {
-			Date fechaValidacionOld =GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-			if(fechaValidacion.compareTo(fechaValidacionOld)>0){
-				String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-					inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), null, GstDate.getFormatedDateShort("",inscripcion.getFechaValidacion()),formulario.getFechaValidacion(),false,this.tipoActualizacionEdicion);
-				if(estadoPendientes!=null && !estadoPendientes.equals("")){
-					formulario.setEstadoPendientes(estadoPendientes);
-					throw new SIGAException(estadoPendientes);
-					
-				}
-			}
-			 
-			return;
-		}
-		
-		Date fechaBajaInscripcionAnterior = GstDate.convertirFechaHora(inscripcionAnterior.getFechaBaja());
-		if(fechaValidacion.compareTo(fechaBajaInscripcionAnterior)<0){
-			throw new SIGAException("gratuita.gestionInscripciones.error.valida.menor.baja.ia");
-			
-		}
-		Date fechaValidacionOld =GstDate.convertirFechaHora(inscripcion.getFechaValidacion());
-		if(fechaValidacion.compareTo(fechaValidacionOld)>0){
-			String estadoPendientes = getEstadoGuardiasDesignasPendientes(usr, inscripcion.getIdPersona(),
-				inscripcion.getIdInstitucion(), inscripcion.getIdTurno(), null, GstDate.getFormatedDateShort("",inscripcion.getFechaValidacion()),formulario.getFechaValidacion(),false,this.tipoActualizacionEdicion);
-			if(estadoPendientes!=null && !estadoPendientes.equals("")){
-				formulario.setEstadoPendientes(estadoPendientes);
-				throw new SIGAException(estadoPendientes);
-				
 			}
 		}		
 	}
@@ -4685,9 +4407,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insTurnoBean.setIdTurno(new Integer(miForm.getIdTurno()));
 			insTurnoBean.setIdPersona(Long.valueOf(miForm.getIdPersona()));
 			insTurnoBean.setFechaSolicitud(miForm.getFechaSolicitud());
-			insTurnoBean.setFechaValidacion(miForm.getFechaValidacionPrevia());
+			insTurnoBean.setFechaValidacion(miForm.getFechaValidacionPrevia()); // Fecha de validacion previa
 			
-			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaValidacionTurno
+			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaValidacionPrevia
 			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
 				
 			inscripcion.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
@@ -4704,57 +4426,88 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		return forward;
 	}
 	
+	/**
+	 * Paso 2 - Cambio Fecha Efectiva Alta Inscripción Guardias (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String comprobarAmfvgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		String forward = "error";
 		
 		try {
-			UsrBean usr = this.getUserBean(request);
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean hayEstadosPendientes = false;
+
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
+				
 				String idInstitucion = d[0];
 				String idPersona= d[1];
 				String idTurno= d[2];
 				String idGuardia= d[3];
-				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
-				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
-				inscripcion.setIdGuardia(idGuardia);
-				inscripcion.setTipoGuardias(tipoGuardias);
-				try {
-					comprobarActualizacionFechaValidacionGuardia(miForm,inscripcion,usr);
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-						hayEstadosPendientes = true;
-						break;
-					}
-					
-				}
+				//String fechaSolicitud= d[4];
+				//String validarInscripciones = d[5];
+				//String tipoGuardias = d[6];
+				String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];	
+				
+				 /* Datos necesarios para preAltaGuardia: 
+				 * - miForm.idInstitucion.......: obtiene su valor de los datos masivos
+				 * - miForm.idTurno.............: obtiene su valor de los datos masivos
+				 * - miForm.idGuardia...........: obtiene su valor de los datos masivos
+				 * - miForm.idPersona...........: obtiene su valor de los datos masivos
+				 * - miForm.fechaValidacion.....: viene el formulario con el dato incluido
+				 * - miForm.validarInscripciones: "S"
+				 * 
+				 * Otros:
+				 * - miForm.fechaValidacionPrevia: obtiene su valor de los datos masivos 
+				*/		
+				
+				miForm.setIdInstitucion(idInstitucion);
+				miForm.setIdTurno(idTurno);
+				miForm.setIdPersona(idPersona);
+				miForm.setIdGuardia(idGuardia);
+				miForm.setFechaValidacionPrevia(GstDate.getFormatedDateShort("", fechaValidacion));
+				
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				
+				// Hago una serie de comprobaciones previas al alta de la inscripcion de guardia
+				String sPreAlta = this.preAltaGuardia(miForm, usr);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sPreAlta != "") {
+					request.setAttribute("mensaje", sPreAlta);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+	
+				String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
+				String sFechaValidacionTurnoPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
+				
+				// Resultado de la comparacion de la fecha de validacion, con la fecha de validacion previa				
+				int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionTurnoPrevia);
+				
+				// Si la fecha de validacion es mayor que la fecha de validacion previa, muestro un error 
+				if (comparacion > 0) {
+					sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionTurnoPrevia; 
+					request.setAttribute("mensaje", sPreAlta);
+					return ClsConstants.ERROR_AVISO;	
+				}		
 			}
 			
-			if(hayEstadosPendientes){
-				miForm.setModo("amfvgModificar");
-				return ClsConstants.SMS_AVISO_ESTADO;
-			}else{
-				return amfvgModificar(mapping, formulario, request, response);
-								
-			}
+			return amfvgModificar(mapping, formulario, request, response);
 			
-			
-		} 
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-		
+		} 		
 	}
 	
 	/**
@@ -4822,7 +4575,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insTurnoBean.setFechaSolicitud(miForm.getFechaSolicitud());
 			insTurnoBean.setFechaBaja(miForm.getFechaBajaPrevia());
 			
-			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaBajaTurno
+			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaBajaPrevia
 			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
 				
 			inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
@@ -4881,235 +4634,163 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		return forward;		
 	}
 	
+	/**
+	 * Paso 2 - Cambio Fecha Efectiva Baja Inscripción Turnos (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String comprobarAmfbtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		String forward = "error";
 		
 		try {
-			UsrBean usr = this.getUserBean(request);
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
+				
 				String idInstitucion = d[0];
 				String idPersona= d[1];
 				String idTurno= d[2];
-				String fechaSolicitud= d[4];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
-				try {
-					comprobarActualizacionFechaBajaTurno(miForm,inscripcion,usr);
-				} catch (SIGAException e) {
+				// String idGuardia= d[3];
+				// String fechaSolicitud= d[4];
+				// String validarInscripciones = d[5];
+				// String tipoGuardias = d[6];
+				String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];
+				String fechaBaja = d[9];
+				
+				miForm.setIdInstitucion(idInstitucion);
+				miForm.setIdTurno(idTurno);
+				miForm.setIdPersona(idPersona);
+				miForm.setFechaValidacionTurno(fechaValidacion);
+				miForm.setFechaBajaPrevia(GstDate.getFormatedDateShort("", fechaBaja));
+				
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				
+				// Hago una serie de comprobaciones previas al alta de la inscripcion de turno
+				String sPreBaja = this.preBajaTurno(miForm, usr, true);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sPreBaja != "") {
+					request.setAttribute("mensaje", sPreBaja);
+					return ClsConstants.ERROR_AVISO;	
+				}
+				
+				String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
+				String sFechaBajaTurno = miForm.getFechaBajaPrevia(); // Fecha con formato dd/MM/yyyy
+				
+				// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa				
+				int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+				
+				// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
+				if (comparacion < 0) {
+					sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaTurno; 
+					request.setAttribute("mensaje", sPreBaja);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+				
+				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+					
+					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+					  usr, 
+					  Long.valueOf(miForm.getIdPersona()), 
+					  new Integer(miForm.getIdInstitucion()), 
+					  new Integer(miForm.getIdTurno()),
+					  null,
+					  null,
+					  miForm.getFechaBaja(),
+					  false,
+					  this.tipoActualizacionBaja); 
+					
+					miForm.setEstadoPendientes(estadoPendientes);			
+					
 					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 						hayEstadosPendientes = true;
-						break;
-					}
-					
+					}								
 				}
 			}
-			
+				
 			if(hayEstadosPendientes){
 				miForm.setModo("amfbtModificar");
 				return ClsConstants.SMS_AVISO_ESTADO;
-			}else{
-				return amfbtModificar(mapping, formulario, request, response);
-								
-			}
+				
+			} else {
+				return amfbtModificar(mapping, formulario, request, response);							
+			}								
 			
-			
-		} 
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-		
+		} 		
 	}
 	
+	/**
+	 * Paso 3 (FINAL) - Cambio Fecha Efectiva Baja Inscripción Turnos (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	private String amfbtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		
+		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+
 		try {
-			UsrBean usr = this.getUserBean(request);
 			String turnosSel = miForm.getTurnosSel();
-			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
+			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");			
 			boolean existenErrores = false;
+			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
+				
 				String idInstitucion = d[0];
 				String idPersona= d[1];
 				String idTurno= d[2];
+				// String idGuardia= d[3];
 				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
-//				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
+				// String validarInscripciones = d[5];
+				// String tipoGuardias = d[6];
+				// String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];
+				String fechaBaja = d[9];
 				
-				
-				try {
-					comprobarActualizacionFechaBajaTurno(miForm,inscripcion,this.getUserBean(request));
-					InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
-							new Integer(idInstitucion), new Integer(idTurno), Long.valueOf(idPersona),
-							fechaSolicitud, usr, false);
-					inscripcionTurno.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()==null || miForm.getEstadoPendientes().equals("")){
-						existenErrores = true;
-					}else{
-						InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
-								new Integer(idInstitucion), new Integer(idTurno), Long.valueOf(idPersona),
-								fechaSolicitud, usr, false);
-						inscripcionTurno.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
-					}
-				}
-			}
-			
-			
-			miForm.reset(true,true);
-			if(existenErrores){
-				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
-			}else{
-				request.setAttribute("mensaje","messages.updated.success");				
-			}
-			
-			
-			forward = "exito";
-			request.setAttribute("modal", "1");
-
-
-		} 
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-		return forward;
-		
-	}
-	private String comprobarAmfbgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		
-		try {
-			UsrBean usr = this.getUserBean(request);
-			String turnosSel = miForm.getTurnosSel();
-			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean hayEstadosPendientes = false;
-			while (st1.hasMoreTokens()) {
-				String registro = st1.nextToken();
-				String d[]= registro.split("##");
-				String idInstitucion = d[0];
-				String idPersona= d[1];
-				String idTurno= d[2];
-				String idGuardia= d[3];
-				String fechaSolicitud= d[4];
-				String tipoGuardias = d[6];
-				
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
-				inscripcion.setTipoGuardias(tipoGuardias);
-				inscripcion.setIdGuardia(idGuardia);
-				
-				try {
-					comprobarActualizacionFechaBajaGuardia(miForm,inscripcion,usr);
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-						hayEstadosPendientes = true;
-						break;
-					}
+				try {				
+					ScsInscripcionTurnoBean insTurnoBean = new ScsInscripcionTurnoBean();
+					insTurnoBean.setIdInstitucion(new Integer(idInstitucion));
+					insTurnoBean.setIdTurno(new Integer(idTurno));
+					insTurnoBean.setIdPersona(Long.valueOf(idPersona));
+					insTurnoBean.setFechaSolicitud(fechaSolicitud);
+					insTurnoBean.setFechaBaja(GstDate.getFormatedDateShort("", fechaBaja));
 					
-				}
-			}
-			
-			if(hayEstadosPendientes){
-				miForm.setModo("amfbgModificar");
-				return ClsConstants.SMS_AVISO_ESTADO;
-			}else{
-				return amfbgModificar(mapping, formulario, request, response);
-								
-			}
-			
-			
-		} 
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-		
-	}
-	
-	private String amfbgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		
-		String forward = "error";
-		try {
-			UsrBean usr = this.getUserBean(request);
-			String turnosSel = miForm.getTurnosSel();
-			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
-			boolean existenErrores = false;
-			while (st1.hasMoreTokens()) {
-				String registro = st1.nextToken();
-				String d[]= registro.split("##");
-				String idInstitucion = d[0];
-				String idPersona= d[1];
-				String idTurno= d[2];
-				String idGuardia= d[3];
-				String fechaSolicitud= d[4];
-//				String validarInscripciones = d[5];
-				String tipoGuardias = d[6];
-				InscripcionTGForm inscripcion = new InscripcionTGForm();
-				inscripcion.setIdTurno(idTurno);
-				inscripcion.setIdPersona(idPersona);
-				inscripcion.setIdInstitucion(idInstitucion);
-				inscripcion.setIdGuardia(idGuardia);
-				inscripcion.setFechaSolicitud(fechaSolicitud);
-				inscripcion.setTipoGuardias(tipoGuardias);
-								
-				try {
-					comprobarActualizacionFechaBajaGuardia(miForm,inscripcion,this.getUserBean(request));
-
-					InscripcionGuardia inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia(
-							new Integer(idInstitucion), 
-							new Integer(idTurno),
-							new Integer(idGuardia), 
-							Long.valueOf(idPersona),	
-							fechaSolicitud, 
-							usr, 
-							false);
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaBajaPrevia
+					InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
 					
-					inscripcionGuardia.modificarFechaBaja(miForm.getFechaBaja(),miForm.getObservacionesValBaja(), usr);
+					inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
 					
-				} catch (SIGAException e) {
-					if(miForm.getEstadoPendientes()==null || miForm.getEstadoPendientes().equals("")){
-						existenErrores = true;
-					}else{
-
-						InscripcionGuardia inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia(
-							new Integer(idInstitucion), 
-							new Integer(idTurno),
-							new Integer(idGuardia), 
-							Long.valueOf(idPersona),	
-							fechaSolicitud, 
-							usr, 
-							false);						
+				} catch (Exception e) {
+					existenErrores = true;
+				}	
+			}
 						
-						inscripcionGuardia.modificarFechaBaja(miForm.getFechaBaja(),miForm.getObservacionesValBaja(), usr);
-					}
-				}
-			}			
-			
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				
 			}else{
 				request.setAttribute("mensaje","messages.updated.success");				
 			}
@@ -5120,6 +4801,214 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
+		
+		return forward;		
+	}
+	
+	/**
+	 * Paso 2 - Cambio Fecha Efectiva Baja Inscripción Guardias (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String comprobarAmfbgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		String forward = "error";
+		
+		try {
+			String turnosSel = miForm.getTurnosSel();
+			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
+			boolean hayEstadosPendientes = false;
+			
+			while (st1.hasMoreTokens()) {
+				String registro = st1.nextToken();
+				String d[]= registro.split("##");
+				
+				String idInstitucion = d[0];
+				String idPersona= d[1];
+				String idTurno= d[2];
+				String idGuardia= d[3];
+				// String fechaSolicitud= d[4];
+				// String validarInscripciones = d[5];
+				// String tipoGuardias = d[6];
+				// String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];
+				String fechaBaja = d[9];
+				
+				miForm.setIdInstitucion(idInstitucion);
+				miForm.setIdTurno(idTurno);
+				miForm.setIdPersona(idPersona);
+				miForm.setFechaBajaPrevia(GstDate.getFormatedDateShort("", fechaBaja));
+				
+				if(idGuardia!=null && idGuardia.equals("-1"))
+					miForm.setIdGuardia("");
+				else
+					miForm.setIdGuardia(idGuardia);
+				
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+			
+				// Hago una serie de comprobaciones previas a la baja de la inscripcion de la guardia
+				String sPreBaja = this.preBajaGuardia(miForm, usr, true);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sPreBaja != "") {
+					request.setAttribute("mensaje", sPreBaja);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+
+				String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
+			
+				// Obtiene la fecha de baja previa de la guardia (no es el de la guardia anterior) 
+				String sFechaBajaGuardia = miForm.getFechaBajaPrevia(); // Fecha con formato dd/MM/yyyy
+			
+				// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa de la guardia				
+				int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaGuardia);
+			
+				// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
+				if (comparacion < 0) {
+					sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaGuardia; 
+					request.setAttribute("mensaje", sPreBaja);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+			
+				// Obtengo los datos del turno actual
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionUltima(
+					new Integer(miForm.getIdInstitucion()),
+					new Integer(miForm.getIdTurno()), 
+					new Long(miForm.getIdPersona()));
+				
+				// Controlo que no supere la fecha de baja del turno actual					
+				if (insTurno!=null && insTurno.getFechaBaja()!=null && !insTurno.getFechaBaja().equals("")) { 
+					String sFechaBajaTurno = insTurno.getFechaBaja();				
+					
+					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+					Date dFechaBajaTurno = GstDate.convertirFechaHora(sFechaBajaTurno);
+					sFechaBajaTurno = sdf.format(dFechaBajaTurno);
+					
+					// Resultado de la comparacion de la fecha de baja, con la fecha de baja del turno					
+					comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+					
+					// Si la fecha de baja es mayor que la fecha de baja del turno, muestro un error 
+					if (comparacion > 0) {
+						sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.menorigual") + " " + sFechaBajaTurno; 
+						request.setAttribute("mensaje", sPreBaja);
+						return ClsConstants.ERROR_AVISO;	
+					}	
+				}
+				
+				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+					
+					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+					  usr, 
+					  Long.valueOf(miForm.getIdPersona()), 
+					  new Integer(miForm.getIdInstitucion()), 
+					  new Integer(miForm.getIdTurno()),
+					  null,
+					  null,
+					  miForm.getFechaBaja(),
+					  false,
+					  this.tipoActualizacionBaja); 
+					
+					miForm.setEstadoPendientes(estadoPendientes);				
+					
+					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+						hayEstadosPendientes = true;
+					}
+				}				
+			}
+			
+			if(hayEstadosPendientes){
+				miForm.setModo("amfbgModificar");
+				return ClsConstants.SMS_AVISO_ESTADO;
+				
+			} else {
+				return amfbgModificar(mapping, formulario, request, response);							
+			}	
+			
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 		
+	}
+	
+	/**
+	 * Paso 3 (FINAL) - Cambio Fecha Efectiva Baja Inscripción Guardias (masivo)
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String amfbgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		String forward = "error";
+		
+		try {
+			String turnosSel = miForm.getTurnosSel();
+			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
+			boolean existenErrores = false;
+			
+			while (st1.hasMoreTokens()) {
+				String registro = st1.nextToken();
+				String d[]= registro.split("##");
+				
+				String idInstitucion = d[0];
+				String idPersona= d[1];
+				String idTurno= d[2];
+				String idGuardia= d[3];
+				String fechaSolicitud= d[4];
+				// String validarInscripciones = d[5];
+				String tipoGuardias = d[6];
+				// String fechaValidacion = d[7];
+				// String fechaSolicitudBaja = d[8];
+				// String fechaBaja = d[9];
+				
+				Integer intGuardia = null;
+				if(Integer.parseInt(tipoGuardias) == ScsTurnoBean.TURNO_GUARDIAS_ELEGIR &&
+					idGuardia!=null && !idGuardia.equals("-1") && !idGuardia.equals(""))
+						intGuardia = new Integer(idGuardia);
+				
+				try {
+					ScsInscripcionGuardiaBean insGuardiaBean = new ScsInscripcionGuardiaBean();
+					insGuardiaBean.setIdInstitucion(new Integer(idInstitucion));
+					insGuardiaBean.setIdTurno(new Integer(idTurno));
+					insGuardiaBean.setIdGuardia(intGuardia);
+					insGuardiaBean.setIdPersona(Long.valueOf(idPersona));
+					insGuardiaBean.setFechaSuscripcion(fechaSolicitud);
+					
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud
+					InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);					
+					inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
+					
+				} catch (Exception e) {
+					existenErrores = true;
+				}
+			}			
+			
+			miForm.reset(true,true);
+			if(existenErrores){
+				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				
+			} else {
+				request.setAttribute("mensaje","messages.updated.success");				
+			}
+						
+			forward = "exito";
+			request.setAttribute("modal", "1");
+
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		
 		return forward;		
 	}
 	

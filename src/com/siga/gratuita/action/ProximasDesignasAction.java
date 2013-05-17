@@ -113,7 +113,7 @@ public class ProximasDesignasAction extends MasterAction {
 			inscripcionTurnoForm.setTipo("A");
 			
 			
-			List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
+			List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm);
 			if(inscripcionTurnoList!=null ){
 				for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
 					
@@ -180,7 +180,7 @@ public class ProximasDesignasAction extends MasterAction {
 		//activas a feccha
 		inscripcionTurnoForm.setFechaActiva("sysdate");
 		
-		List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
+		List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm);
 		
 		for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
 			insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));

@@ -335,7 +335,14 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			  
 		  }
 
-	public List<ScsInscripcionTurnoBean> getInscripcionesTurno(InscripcionTGForm inscripcionTurnoForm, boolean isEdicion) throws ClsExceptions {
+	/**
+	 * Busca inscripciones de turno
+	 * 
+	 * @param inscripcionTurnoForm
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<ScsInscripcionTurnoBean> getInscripcionesTurno(InscripcionTGForm inscripcionTurnoForm) throws ClsExceptions {
 		// Variables
 		Hashtable<Integer, Object> htCodigos;
 		int contador;
@@ -346,36 +353,51 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		contador = 0;
 		sql = new StringBuffer();
 		sql.append(" SELECT ");
-		sql.append("        T.NOMBRE NOMBRETURNO, T.ABREVIATURA ABREVIATURA, ");
-		sql.append("        T.VALIDARINSCRIPCIONES, ");
-		sql.append("        T.GUARDIAS, ");
-		sql.append("        DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
-		sql.append("        PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
-		sql.append("        I.IDINSTITUCION, I.IDPERSONA, I.IDTURNO, ");
-		sql.append("        I.FECHASOLICITUD, I.OBSERVACIONESSOLICITUD, ");
-		sql.append("        I.FECHAVALIDACION, I.OBSERVACIONESVALIDACION, ");
-		sql.append("        I.FECHASOLICITUDBAJA, I.OBSERVACIONESBAJA, I.FECHABAJA, I.OBSERVACIONESVALBAJA, ");
-		sql.append("        I.FECHADENEGACION, I.OBSERVACIONESDENEGACION, ");
-		sql.append("        TO_CHAR(NVL(I.FECHADENEGACION,I.FECHAVALIDACION),'dd/mm/yyyy') FECHAVALORALTA, ");
-		sql.append("        TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
-
-		sql.append("   FROM SCS_INSCRIPCIONTURNO I, CEN_COLEGIADO COL, CEN_PERSONA PER, SCS_TURNO T ");
-		sql.append("  WHERE I.IDINSTITUCION = COL.IDINSTITUCION ");
-		sql.append("    AND I.IDPERSONA = COL.IDPERSONA ");
-		sql.append("    AND COL.IDPERSONA = PER.IDPERSONA ");
-		sql.append("    AND I.IDINSTITUCION = T.IDINSTITUCION ");
-		sql.append("    AND I.IDTURNO = T.IDTURNO ");
-		sql.append("    AND I.IDINSTITUCION = :");
+			sql.append(" T.NOMBRE NOMBRETURNO, ");
+			sql.append(" T.ABREVIATURA ABREVIATURA, ");
+			sql.append(" T.VALIDARINSCRIPCIONES, ");
+			sql.append(" T.GUARDIAS, ");
+			sql.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
+			sql.append(" PER.NOMBRE, ");
+			sql.append(" PER.APELLIDOS1, ");
+			sql.append(" PER.APELLIDOS2, ");
+			sql.append(" I.IDINSTITUCION, ");
+			sql.append(" I.IDPERSONA, ");
+			sql.append(" I.IDTURNO, ");
+			sql.append(" I.FECHASOLICITUD, ");
+			sql.append(" I.OBSERVACIONESSOLICITUD, ");
+			sql.append(" I.FECHAVALIDACION, ");
+			sql.append(" I.OBSERVACIONESVALIDACION, ");
+			sql.append(" I.FECHASOLICITUDBAJA, ");
+			sql.append(" I.OBSERVACIONESBAJA, ");
+			sql.append(" I.FECHABAJA, ");
+			sql.append(" I.OBSERVACIONESVALBAJA, ");
+			sql.append(" I.FECHADENEGACION, ");
+			sql.append(" I.OBSERVACIONESDENEGACION, ");
+			sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHAVALIDACION), 'dd/mm/yyyy') FECHAVALORALTA, ");
+			sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
+		sql.append(" FROM SCS_INSCRIPCIONTURNO I, ");
+			sql.append(" CEN_COLEGIADO COL, ");
+			sql.append(" CEN_PERSONA PER, ");
+			sql.append(" SCS_TURNO T ");
+		sql.append(" WHERE I.IDINSTITUCION = COL.IDINSTITUCION ");
+			sql.append(" AND I.IDPERSONA = COL.IDPERSONA ");
+			sql.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
+			sql.append(" AND I.IDINSTITUCION = T.IDINSTITUCION ");
+			sql.append(" AND I.IDTURNO = T.IDTURNO ");
+			
+		sql.append(" AND I.IDINSTITUCION = :");
 		contador++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador), inscripcionTurnoForm.getIdInstitucion());
-		if (inscripcionTurnoForm.getIdTurno() != null && !inscripcionTurnoForm.getIdTurno().equalsIgnoreCase("")
-				&& !inscripcionTurnoForm.getIdTurno().equalsIgnoreCase("-1")) {
+		
+		if (inscripcionTurnoForm.getIdTurno() != null && !inscripcionTurnoForm.getIdTurno().equalsIgnoreCase("") && !inscripcionTurnoForm.getIdTurno().equalsIgnoreCase("-1")) {
 			sql.append(" AND I.IDTURNO = :");
 			contador++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador), inscripcionTurnoForm.getIdTurno());
 		}
+		
 		if (inscripcionTurnoForm.getIdPersona() != null && !inscripcionTurnoForm.getIdPersona().equalsIgnoreCase("")) {
 			sql.append(" AND I.IDPERSONA = :");
 			contador++;
@@ -387,6 +409,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		StringBuffer orderBy = new StringBuffer();
 		if (inscripcionTurnoForm.getTipo().equals("A"))
 			campoFecha = "I.FECHASOLICITUD";
+		
 		else if (inscripcionTurnoForm.getTipo().equals("B"))
 			campoFecha = "I.FECHASOLICITUDBAJA";
 
@@ -424,69 +447,57 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			orderBy.append(" I.FECHABAJA ");
 
 		} else {
-			if (!isEdicion) {
-				// OBTIENE EL ULTIMO TURNO
-				sql.append(" AND I.FECHASOLICITUD = ");
-				sql.append(" (SELECT MAX(IT2.FECHASOLICITUD) ");
-					sql.append(" FROM SCS_INSCRIPCIONTURNO IT2 ");
-					sql.append(" WHERE IT2.IDINSTITUCION = I.IDINSTITUCION ");
-					sql.append(" AND IT2.IDTURNO = I.IDTURNO ");
-					sql.append(" AND IT2.IDPERSONA = I.IDPERSONA) ");
+			// OBTIENE EL ULTIMO TURNO
+			sql.append(" AND I.FECHASOLICITUD = ");
+			sql.append(" (SELECT MAX(IT2.FECHASOLICITUD) ");
+				sql.append(" FROM SCS_INSCRIPCIONTURNO IT2 ");
+				sql.append(" WHERE IT2.IDINSTITUCION = I.IDINSTITUCION ");
+				sql.append(" AND IT2.IDTURNO = I.IDTURNO ");
+				sql.append(" AND IT2.IDPERSONA = I.IDPERSONA) ");
+			
+			if (inscripcionTurnoForm.getTipo().equals("A")) {
+				orderBy.append(campoFecha);
+				sql.append(" AND I.FECHABAJA IS NULL ");
+				sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
 				
-				if (inscripcionTurnoForm.getTipo().equals("A")) {
-					orderBy.append(campoFecha);
-					sql.append(" AND I.FECHABAJA IS NULL ");
-					sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+				if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
+					// ORDENAMOS POR ALGO???
 					
-					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
-						// ORDENAMOS POR ALGO???
-						
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						sql.append(" AND I.FECHAVALIDACION IS NULL ");
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
 
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
-						orderBy.append(",I.FECHAVALIDACION");
-						sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHAVALIDACION");
+					sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
 
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
-						orderBy.append(",I.FECHADENEGACION");
-						sql.append(" AND I.FECHAVALIDACION IS NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-					}
-
-				} else if (inscripcionTurnoForm.getTipo().equals("B")) {
-					orderBy.append(campoFecha);
-					sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
-					
-					if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
-						// ORDENAMOS POR ALGO???
-						
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
-						orderBy.append(",I.FECHABAJA");
-						sql.append(" AND I.FECHABAJA IS NOT NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NULL  ");
-
-					} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
-						orderBy.append(",I.FECHADENEGACION");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NOT NULL  ");
-					}
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHADENEGACION");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
 				}
 
-			} else {
-				// TODAS LAS QUE NO SEAN ALTAS DENEGADAS
-				sql.append(" AND I.FECHAVALIDACION IS NOT NULL AND I.FECHADENEGACION IS NULL  ");
-				if (inscripcionTurnoForm.getTipo().equals("A")) {
+			} else if (inscripcionTurnoForm.getTipo().equals("B")) {
+				orderBy.append(campoFecha);
+				sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+				
+				if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("S")) {						
+					// ORDENAMOS POR ALGO???
+					
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
 
-					orderBy.append(" I.FECHABAJA ");
-				} else {
-					orderBy.append(" I.FECHAVALIDACION ");
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHABAJA");
+					sql.append(" AND I.FECHABAJA IS NOT NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NULL  ");
+
+				} else if (inscripcionTurnoForm.getEstado() != null && inscripcionTurnoForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHADENEGACION");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL  ");
 				}
 			}
 		}
@@ -510,9 +521,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		}
 
 		sql.append(" ORDER BY ");
-		sql.append(orderBy);
-		if (!isEdicion)
-			sql.append(" DESC ");
+		//sql.append(orderBy);
+		sql.append(" NOMBRETURNO ");
 
 		List<ScsInscripcionTurnoBean> alInscripcion = new ArrayList<ScsInscripcionTurnoBean>();
 		try {
