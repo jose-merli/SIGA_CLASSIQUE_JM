@@ -34,6 +34,7 @@ public class TagDatepicker extends TagSupport {
 	private String postFunction;
 	private String posicionX;
 	private String posicionY;
+	private String atributos;
 	
 	
 	@Override
@@ -59,6 +60,9 @@ public class TagDatepicker extends TagSupport {
 				this.styleId = this.nombreCampo;
 			}			
 			String sDatepicker = "<input type='text' id='"+this.styleId+"' name='"+this.nombreCampo+"' maxlength='10'";
+			if (this.atributos != null && !this.atributos.equals("")){
+				sDatepicker += " " + this.atributos;
+			}
 			if(this.anchoTextField!=null && !this.anchoTextField.equals("")){
 				sDatepicker += " size='"+anchoTextField+"'";
 			} else {
@@ -77,20 +81,26 @@ public class TagDatepicker extends TagSupport {
 			if (this.disabled != null && UtilidadesString.stringToBoolean(this.disabled)){
 				bEditable = false;
 				cssClass += " boxConsulta";
+				sDatepicker += " readonly = 'readonly'";
+				/*
 				if (this.readOnly == null || !UtilidadesString.stringToBoolean(this.readOnly)){
 					this.readOnly = "TRUE";
-				}
+				}				
+				*/
 			} else {
 				cssClass += " box";
 			}
 			cssClass += "'";
 			sDatepicker += cssClass;
 			
-			
+			/* Hablado con Adrian, ningún campo de fecha debería ser readonly si es editable para
+			 * permitir la entrada por teclado (si se quiere tener un campo de fecha no editable 
+			 * se debe poner disable="true"
 			if (this.readOnly != null && UtilidadesString.stringToBoolean(this.readOnly)){
 				bEditable = false;
 				sDatepicker += " readonly = 'readonly'";
 			}
+			*/
 			
 			//sDatepicker += " readonly = 'readonly'";
 			if(this.preFunction!=null && !this.preFunction.equals("")){
