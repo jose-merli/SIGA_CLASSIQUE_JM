@@ -474,7 +474,7 @@
 				<table align="center" border="0">
 					<tr>
 						<td class="labelText">
-							<siga:Idioma key="gratuita.gestionInscripciones.vertodas"/>
+							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 							
 							<%if (bIncluirBajaLogica) { %>
 								<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked/>
