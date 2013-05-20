@@ -189,6 +189,13 @@
 			document.forms[0].reset();
 		}
 		
+		function growl(msg,type){
+			//jQuery('.notice-item-wrapper').remove();
+			jQuery.noticeAdd({
+				text: msg,
+				type: type
+			});
+		}
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
