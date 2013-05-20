@@ -981,6 +981,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
 			final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
 			
+			//NUEVOS TIPOS DE RESOLUCION
+			final String TIPO_RESOLUCION_DEVUELTO_COLEGIO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.devuelto");
+			final String TIPO_RESOLUCION_MODIFICADO_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modificadoydenegado");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_connombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_sinnombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_connombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_sinnombramiento");
+			
 			sql.append(", (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
 			sql.append("        FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
 			sql.append("        WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
@@ -991,6 +999,10 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
+			sql.append(" , ");			
+			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
 			sql.append(" ) ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
@@ -1000,6 +1012,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);			
 			sql.append(" ) ");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
@@ -1030,6 +1050,15 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
 			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
 			
+			//NUEVOS TIPOS DE RESOLUCION
+			final String TIPO_RESOLUCION_DEVUELTO_COLEGIO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.devuelto");
+			final String TIPO_RESOLUCION_MODIFICADO_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modificadoydenegado");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_connombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_sinnombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_connombramiento");
+			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_sinnombramiento");
+			
+			
 			sql.append(" , (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
 			sql.append("         FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
 			sql.append("         WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
@@ -1040,6 +1069,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
 			sql.append(",");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);				
 			sql.append(",");
 			sql.append(TIPO_RESOLUCION_PTE_CAJG);
 			sql.append(")");
@@ -1051,6 +1088,10 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(",");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
+			sql.append(" , ");			
+			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
 			
 			sql.append(")");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
@@ -1061,6 +1102,10 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
+			sql.append(" , ");			
+			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);				
 			sql.append(" ) ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
@@ -1070,6 +1115,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);				
 			sql.append(" ) ");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
