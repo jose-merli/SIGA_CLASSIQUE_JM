@@ -2,25 +2,53 @@
 package com.siga.censo.action;
 
 
-import javax.servlet.http.*;
-import javax.transaction.*;
-
-import org.apache.struts.action.*;
-
-import com.atos.utils.*;
-import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesHash;
-
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
-import com.siga.gratuita.InscripcionTurno;
-import com.siga.censo.form.HistoricoForm;
-import com.siga.censo.form.DatosColegialesForm;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmCertificadosAdm;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColaCambioLetradoAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDatosColegialesEstadoAdm;
+import com.siga.beans.CenDatosColegialesEstadoBean;
+import com.siga.beans.CenDireccionTipoDireccionAdm;
+import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenEstadoColegialBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenTiposSeguroAdm;
+import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsInscripcionTurnoBean;
+import com.siga.censo.form.DatosColegialesForm;
+import com.siga.censo.form.HistoricoForm;
+import com.siga.general.EjecucionPLs;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
+import com.siga.gratuita.action.GestionInscripcionesTGAction;
+import com.siga.gratuita.form.InscripcionTGForm;
 
 
 /**
@@ -947,7 +975,7 @@ public class DatosColegialesAction extends MasterAction {
 
 		// 2. revisando suscripciones a servicios
 		try {
-			fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_ENGLISH);
+			fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		} catch (Exception e1) {
 			// La fecha esta bien formada como dia/mes/ano
 		}
@@ -965,23 +993,62 @@ public class DatosColegialesAction extends MasterAction {
 			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idinstitucion);
 			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDPERSONA, idpersona);
 			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_FECHABAJA, "");
-			// TODO: tambien hay que dar de baja si la fecha es posterior a la nueva fecha. Supongo que habra que
-			// utilizar una busqueda especial
+			
+			// TODO: tambien hay que dar de baja si la fecha es posterior a la nueva fecha. Supongo que habra que utilizar una busqueda especial
 			Vector<ScsInscripcionTurnoBean> vTurnos = new ScsInscripcionTurnoAdm(usr).select(turnoHash);
 
-			InscripcionTurno inscripcionTurno;
 			for (int x = 0; x < vTurnos.size(); x++) {
-				ScsInscripcionTurnoBean c = (ScsInscripcionTurnoBean) vTurnos.get(x);
-				inscripcionTurno = InscripcionTurno.getInscripcionTurno(c.getIdInstitucion(), c.getIdTurno(), c
-						.getIdPersona(), c.getFechaSolicitud(), usr, false);
-				// jbd // inc7718 //Esta fecha tiene que ser larga
+				ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) vTurnos.get(x);
+				
+				// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
+				InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
+					insTurno.getIdInstitucion(), 
+					insTurno.getIdTurno(), 
+					insTurno.getIdPersona(), 
+					insTurno.getFechaSolicitud(), 
+					usr, 
+					false);
+				
+				/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno y guardia del colegiado */
+				
+				InscripcionTGForm miForm = new InscripcionTGForm();
+				GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
+				
+				// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
+				miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
+				miForm.setIdTurno(insTurno.getIdTurno().toString());
+				miForm.setIdPersona(insTurno.getIdPersona().toString());
+				miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());
+				
+				// Obtengo la fecha de baja minima para la inscripcion de turno
+				String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, usr);		
+				
+				// Comparo la fecha minima de baja del turno, con la fecha que ha indicado el usuario para el cambio de estado del colegiado
+				int comparacion = GstDate.compararFechas(fechaBajaInscripciones, fechaEstado);
+					
+				// Obtenemos la fecha mayor
+				if (comparacion < 0) {
+					fechaBajaInscripciones = fechaEstado;
+				}					
+				
+				/* JPT: FIN - Calculo la fecha de baja para las inscripciones de turno y guardia del colegiado */
+				
 				try {
+					// jbd // inc7718 //Esta fecha tiene que ser larga
 					fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);
 				} catch (Exception e) {
 					// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
-				}
-				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,observacionesBaja,c.getFechaValidacion(),"N",null, usr);
-				//inscripcionTurno.validarBaja(fechaEstado, observacionesBaja, usr);
+				}				
+				
+				inscripcionTurno.solicitarBaja(
+					fechaEstado, 
+					observacionesBaja,
+					fechaBajaInscripciones,
+					observacionesBaja,
+					insTurno.getFechaValidacion(),
+					"N",
+					null, 
+					usr);
 			}
 		}
 

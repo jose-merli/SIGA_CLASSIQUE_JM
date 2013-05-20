@@ -786,7 +786,7 @@ public class InscripcionTurno
 			UsrBean usr) throws ClsExceptions {
 		
 		try {
-			solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja,validarInscripciones,  usr);
+			solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja, validarInscripciones, usr);
 			
 			//el proceso de solicitar baja valida las que no es necesario la validacion de las inscripciones
 			if(fechaBaja!=null && !fechaBaja.equals(""))
@@ -1026,7 +1026,7 @@ public class InscripcionTurno
 			Hashtable<String, Object> inscripcionHash = new Hashtable<String, Object>();
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDTURNO, idTurno);
-			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);
+			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);			
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());
 			ScsInscripcionTurnoAdm inscripcionAdm = new ScsInscripcionTurnoAdm(usr);
 			Vector<ScsInscripcionTurnoBean> v = inscripcionAdm.selectByPKForUpdate(inscripcionHash);
@@ -1034,9 +1034,9 @@ public class InscripcionTurno
 			if (v != null && v.size() == 1) {
 				ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
 				
-				if(!fechaBaja.equalsIgnoreCase("sysdate")){
-					inscripcionBean.setFechaBaja(GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
-				}else{
+				if(!fechaBaja.equalsIgnoreCase("sysdate") && fechaBaja.length()==10) {
+					inscripcionBean.setFechaBaja(GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
+				} else {
 					inscripcionBean.setFechaBaja(fechaBaja);
 				}
 				

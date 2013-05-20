@@ -966,11 +966,11 @@ public class InscripcionGuardia
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
 			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
-			if(!fechaBaja.equalsIgnoreCase("sysdate"))
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
+			if(!fechaBaja.equalsIgnoreCase("sysdate") && fechaBaja.length()==10)
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
 			else
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,fechaBaja);			
-			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,this.bean.getObservacionesValBaja());
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, fechaBaja);			
+			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, this.bean.getObservacionesValBaja());
 			
 			String[] claves = null;
 			if(idGuardia!=null){

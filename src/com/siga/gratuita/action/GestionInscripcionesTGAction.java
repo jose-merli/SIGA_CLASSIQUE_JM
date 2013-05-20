@@ -5164,38 +5164,12 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		
 		try {
-			
-			// 1. Obtiene la fecha de inscripciones de guardias que es neceseario comprobar para dar de baja una inscripcion de turno (yyyy/MM/dd HH:mm:ss)
-			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
-			String sfechaBajaUltimaInscripcionGuardia = admInsTurno.getFechaGuardiasTurno( 	
-					miForm.getIdInstitucion(), 
-					miForm.getIdTurno(), 
-					miForm.getIdPersona());
-			
-			// 2. Obtengo la fecha de validación del turno (yyyy/MM/dd HH:mm:ss)
-			Date dFechaValidacionTurno = GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
-			String sFechaFinal = sdf.format(dFechaValidacionTurno); // Fecha con formato dd/MM/yyyy		
-			
-			// Compruebo que tiene alguna inscripcion con fecha de baja
-			if (sfechaBajaUltimaInscripcionGuardia != null && !sfechaBajaUltimaInscripcionGuardia.equals("")) {
-				
-				// Convierto la fecha de baja de las guardias en el formato adecuado
-				Date dFechaBajaGuardias = GstDate.convertirFechaHora(sfechaBajaUltimaInscripcionGuardia);
-				String sFechaBajaGuardias = sdf.format(dFechaBajaGuardias); // Fecha con formato dd/MM/yyyy			
-				
-				// Comparo la fecha de validacion del turno, con la fecha de baja de guardias
-				int comparacion = GstDate.compararFechas(sFechaFinal, sFechaBajaGuardias);
-				
-				// Obtengo la mayor
-				if (comparacion < 0) {
-					sFechaFinal = sFechaBajaGuardias;
-				}	
-			}
+			String sFechaFinal = this.calcularFechaBajaInscripcionTurno(miForm, usr);
 			
 			// Compruebo que es un turno con validaciones y bajas de inscripciones automaticas
 			if(miForm.getValidarInscripciones().equals("N")) {
 				
-				// 3. Obtengo la fecha actual y la convierto en el formato adecuado
+				// Obtengo la fecha actual y la convierto en el formato adecuado
 				Date dFechaHoy = new Date(); 										
 				String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy		
 				
@@ -5242,6 +5216,61 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 		return resultado;
 	}			
+	
+	/**
+	 * JPT: Comprobaciones previas a dar de baja una inscripcion de turno
+	 * 
+	 * Controles:
+	 * 1. si automatico, entonces calculo la fecha de baja: fechaValidación = MAX(fechaBajaUltimaGuardia, fechaValidacionTurno, SYSDATE)
+	 * 2. sino fechaBaja >= MAX(fechaBajaUltimaGuardia, fechaValidacionTurno)
+	 * 
+	 * @param miForm
+	 * @param usr
+	 * @return
+	 * @throws SIGAException
+	 */
+	public String calcularFechaBajaInscripcionTurno(InscripcionTGForm miForm, UsrBean usr) throws SIGAException {
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		String sFechaFinal = null;
+		
+		try {
+		
+			// 1. Obtiene la fecha de inscripciones de guardias que es neceseario comprobar para dar de baja una inscripcion de turno (yyyy/MM/dd HH:mm:ss)
+			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+			String sfechaBajaUltimaInscripcionGuardia = admInsTurno.getFechaGuardiasTurno( 	
+					miForm.getIdInstitucion(), 
+					miForm.getIdTurno(), 
+					miForm.getIdPersona());
+			
+			// 2. Obtengo la fecha de validación del turno (yyyy/MM/dd HH:mm:ss)
+			Date dFechaValidacionTurno = GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
+			sFechaFinal = sdf.format(dFechaValidacionTurno); // Fecha con formato dd/MM/yyyy		
+			
+			// Compruebo que tiene alguna inscripcion con fecha de baja
+			if (sfechaBajaUltimaInscripcionGuardia != null && !sfechaBajaUltimaInscripcionGuardia.equals("")) {
+				
+				// Convierto la fecha de baja de las guardias en el formato adecuado
+				Date dFechaBajaGuardias = GstDate.convertirFechaHora(sfechaBajaUltimaInscripcionGuardia);
+				String sFechaBajaGuardias = sdf.format(dFechaBajaGuardias); // Fecha con formato dd/MM/yyyy			
+				
+				// Comparo la fecha de validacion del turno, con la fecha de baja de guardias
+				int comparacion = GstDate.compararFechas(sFechaFinal, sFechaBajaGuardias);
+				
+				// Obtengo la mayor
+				if (comparacion < 0) {
+					sFechaFinal = sFechaBajaGuardias;
+				}	
+			}
+			
+		} catch (SIGAException e) {
+			throw new SIGAException(e.getLiteral(), e, new String[] {"modulo.gratuita"});	
+			
+		} catch (Exception e){
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		
+		return sFechaFinal;
+	}
 	
 	/**
 	 * JPT: Comprobaciones previas a dar de alta una inscripcion de guardia
