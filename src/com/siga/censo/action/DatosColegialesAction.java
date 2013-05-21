@@ -1000,14 +1000,8 @@ public class DatosColegialesAction extends MasterAction {
 			for (int x = 0; x < vTurnos.size(); x++) {
 				ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) vTurnos.get(x);
 				
-				// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
-				InscripcionTurno inscripcionTurno = InscripcionTurno.getInscripcionTurno(
-					insTurno.getIdInstitucion(), 
-					insTurno.getIdTurno(), 
-					insTurno.getIdPersona(), 
-					insTurno.getFechaSolicitud(), 
-					usr, 
-					false);
+				// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 				
+				InscripcionTurno inscripcion = new InscripcionTurno(insTurno);				
 				
 				/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno y guardia del colegiado */
 				
@@ -1040,15 +1034,24 @@ public class DatosColegialesAction extends MasterAction {
 					// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
 				}				
 				
-				inscripcionTurno.solicitarBaja(
-					fechaEstado, 
-					observacionesBaja,
-					fechaBajaInscripciones,
-					observacionesBaja,
-					insTurno.getFechaValidacion(),
-					"N",
-					null, 
-					usr);
+				if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
+					inscripcion.validarBaja(
+						fechaBajaInscripciones, 
+						insTurno.getFechaValidacion(),
+						observacionesBaja,
+						null, 
+						usr);
+					
+				} else {
+					inscripcion.solicitarBaja(
+						fechaEstado, 
+						observacionesBaja,
+						fechaBajaInscripciones,
+						observacionesBaja,
+						insTurno.getFechaValidacion(),
+						null, 
+						usr);	
+				}						
 			}
 		}
 

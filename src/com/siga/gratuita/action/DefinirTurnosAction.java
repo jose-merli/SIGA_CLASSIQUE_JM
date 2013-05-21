@@ -1,5 +1,7 @@
 package com.siga.gratuita.action;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -11,12 +13,13 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -24,11 +27,10 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.DefinirTurnosForm;
-import com.siga.gratuita.form.*;
+import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.ws.CajgConfiguracion;
-
-import java.util.*;
 
 /**
  * @author ruben.fernandez
@@ -394,13 +396,12 @@ public class DefinirTurnosAction extends MasterAction {
 			Hashtable turnoElegido = (Hashtable)request.getSession().getAttribute("turnoElegido");
 			String idturno =(String)turnoElegido.get("IDTURNO");
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			DefinirTurnosForm form = (DefinirTurnosForm) formulario;
 			ScsTurnoAdm turno = new ScsTurnoAdm(usr);
 			Hashtable hashBusq = new Hashtable();
 			hashBusq.put("IDTURNO",idturno);
 			hashBusq.put("IDINSTITUCION",usr.getLocation());
 			ScsTurnoBean tAnt = (ScsTurnoBean)((Vector)turno.select(hashBusq)).get(0);
-			Hashtable hash = (Hashtable)form.getDatos();
+			Hashtable hash = (Hashtable)miform.getDatos();
 			Hashtable haux = new Hashtable();
 			Vector v = new Vector();
 			String where =" where "+
@@ -410,24 +411,24 @@ public class DefinirTurnosAction extends MasterAction {
 			ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+(String)hash.get("ANTIGUEDAD")+" ";
 			ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(this.getUserBean(request));
 			
-			if (form.getActivarRestriccionActuacion() != null && UtilidadesString.stringToBoolean(form.getActivarRestriccionActuacion())) {
+			if (miform.getActivarRestriccionActuacion() != null && UtilidadesString.stringToBoolean(miform.getActivarRestriccionActuacion())) {
 				hash.put(ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT, ClsConstants.DB_TRUE);
-			}
-			else { 
+				
+			} else { 
 				hash.put (ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT, ClsConstants.DB_FALSE);
 			}
 			
 			if (miform.getActivarActuacionesLetrado() != null && UtilidadesString.stringToBoolean(miform.getActivarActuacionesLetrado())) {
 				hash.put(ScsTurnoBean.C_LETRADOACTUACIONES, ClsConstants.DB_TRUE);
-			}
-			else { 
+				
+			} else { 
 				hash.put (ScsTurnoBean.C_LETRADOACTUACIONES, ClsConstants.DB_FALSE);
 			}
 
 			if (miform.getActivarAsistenciasLetrado() != null && UtilidadesString.stringToBoolean(miform.getActivarAsistenciasLetrado())) {
 				hash.put(ScsTurnoBean.C_LETRADOASISTENCIAS, ClsConstants.DB_TRUE);
-			}
-			else { 
+				
+			} else { 
 				hash.put (ScsTurnoBean.C_LETRADOASISTENCIAS, ClsConstants.DB_FALSE);
 			}
 
@@ -437,8 +438,8 @@ public class DefinirTurnosAction extends MasterAction {
 			
 			if (miform.getVisibilidad() != null && UtilidadesString.stringToBoolean(miform.getVisibilidad())) {
 				hash.put(ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_TRUE);
-			}
-			else { 
+				
+			} else { 
 				hash.put (ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_FALSE);
 			}
 			
@@ -454,7 +455,8 @@ public class DefinirTurnosAction extends MasterAction {
 			if (v.size()>0){
 				ScsOrdenacionColasBean b = (ScsOrdenacionColasBean)v.get(0);
 				hash.put("IDORDENACIONCOLAS",((Integer)b.getIdOrdenacionColas()).toString());
-			}else{
+				
+			} else {
 				ordenacion.prepararInsert(hash);
 				paso = true;
 //				haux.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,(String)hash.get("ALFABETICOAPELLIDOS"));
@@ -473,8 +475,7 @@ public class DefinirTurnosAction extends MasterAction {
 			}
 			hash.put("USUMODIFICACION",usr.getUserName());
 			hash.put("IDINSTITUCION",usr.getLocation());
-			hash.put("IDTURNO",idturno);
-			
+			hash.put("IDTURNO",idturno);			
 
 			if (usr==null) throw new ClsExceptions("Sesión no válida.");
 			tx = usr.getTransaction();
@@ -486,25 +487,89 @@ public class DefinirTurnosAction extends MasterAction {
 		    // Si validarAltasBajas=1 validamos las altas y bajas en el turno que están pendientes
 		    
 		    // validacion de Altas
-		    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){
-		   
-			ScsInscripcionTurnoAdm insTurnoAdm=new ScsInscripcionTurnoAdm(this.getUserBean(request));
-			insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(),idturno);
-			
-			
-			
+		    ScsInscripcionTurnoAdm insTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+		    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){		   		    	
+				insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(),idturno);
 		    }
+		    
+		    // Compruebo que se ha modificado la configuracion del turno de alta a baja
+		    String visibilidadOld = tAnt.getVisibilidad();
+		    String visibilidadNew = UtilidadesHash.getString(hash, ScsTurnoBean.C_VISIBILIDAD);
+		    if (visibilidadNew.equalsIgnoreCase(ClsConstants.DB_FALSE) && visibilidadOld.equalsIgnoreCase(ClsConstants.DB_TRUE)) {
+		    	
+		    	// Obtengo una lista de inscripciones de turno, del turno modificado
+		    	Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = insTurnoAdm.getInscripcionesTurnoSinBaja(usr.getLocation(), idturno);
+		    	
+		    	// Recorro la lista de inscripciones de turno
+		    	for (int i = 0; i < listaInscripcionesTurno.size(); i++) {
+		    		
+		    		// Obtengo la inscripcion de turno
+		    		ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) listaInscripcionesTurno.get(i);
+		    		
+					/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno */
+					
+					InscripcionTGForm miForm = new InscripcionTGForm();
+					GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
+					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+					
+					// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
+					miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
+					miForm.setIdTurno(insTurno.getIdTurno().toString());
+					miForm.setIdPersona(insTurno.getIdPersona().toString());
+					miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());
+					
+					// Obtengo la fecha de baja minima para la inscripcion de turno
+					String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, usr);		
+					
+					// Obtengo la fecha actual y la convierto en el formato adecuado
+					Date dFechaHoy = new Date(); 										
+					String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy							
+					
+					// Comparo la fecha minima de baja del turno, con la fecha actual
+					int comparacion = GstDate.compararFechas(fechaBajaInscripciones, sFechaHoy);
+						
+					// Obtenemos la fecha mayor
+					if (comparacion < 0) {
+						fechaBajaInscripciones = sFechaHoy;
+					}					
+					
+					/* JPT: FIN - Calculo la fecha de baja para las inscripciones de turno */
+					
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
+					InscripcionTurno inscripcion = new InscripcionTurno(insTurno);
+					
+					String motivo = "Baja de turno";		
+					
+					if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
+						inscripcion.validarBaja(
+							fechaBajaInscripciones, 
+							insTurno.getFechaValidacion(),
+							motivo,
+							null, 
+							usr);
+						
+					} else {
+						inscripcion.solicitarBaja(
+							"sysdate",
+							motivo,
+							fechaBajaInscripciones,
+							motivo,
+							insTurno.getFechaValidacion(),
+							null, 
+							usr);	
+					}						
+		    	}		    	
+		    }
+		    
 		    tx.commit();
 		    
 		    forward = exitoRefresco("messages.updated.success",request);
 
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
 		}
 		
-		return forward;
-			
+		return forward;			
 	}
 	
 	protected String borrar(ActionMapping mapping, 

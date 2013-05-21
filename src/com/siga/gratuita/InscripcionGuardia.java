@@ -22,8 +22,7 @@ import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
-public class InscripcionGuardia
-{
+public class InscripcionGuardia {
 	////////////////////
 	// ATRIBUTOS
 	////////////////////
@@ -43,8 +42,7 @@ public class InscripcionGuardia
 								Integer idTurno,
 								Integer idGuardia,
 								Long idPersona,
-								String fechaSolicitudAlta)
-	{
+								String fechaSolicitudAlta) {
 		this.bean = new ScsInscripcionGuardiaBean();
 		this.bean.setIdInstitucion(idInstitucion);
 		this.bean.setIdTurno(idTurno);
@@ -53,34 +51,32 @@ public class InscripcionGuardia
 		this.bean.setFechaSuscripcion(fechaSolicitudAlta);
 	} //InscripcionGuardia ()
 	
-	public void setBajas(String obsSolicitudBaja,String fechaSolicitudBaja,
-			String fechaBaja,String observacionesValBaja){
+	public InscripcionGuardia (ScsInscripcionGuardiaBean bean) {
+		this.bean = bean;
+	} //InscripcionGuardia ()	
+	
+	public void setBajas(String obsSolicitudBaja,String fechaSolicitudBaja, String fechaBaja,String observacionesValBaja){
 		this.bean.setObservacionesBaja(obsSolicitudBaja);
 		this.bean.setObservacionesValBaja(observacionesValBaja);
 		this.bean.setFechaSolicitudBaja(fechaSolicitudBaja);
-		this.bean.setFechaBaja(fechaBaja);
-		
+		this.bean.setFechaBaja(fechaBaja);		
 	}
-	public void setDenegacion(String obsDenegacion,String fechaDenegacion){
+	
+	public void setDenegacion(String obsDenegacion,String fechaDenegacion) {
 		this.bean.setObservacionesDenegacion(obsDenegacion);
 		this.bean.setFechaDenegacion(fechaDenegacion);		
 	}
 	
-	public void setAltas(String obsSolicitud, String fechaValidacion, String observacionesValidacion){
+	public void setAltas(String obsSolicitud, String fechaValidacion, String observacionesValidacion) {
 		this.bean.setObservacionesSuscripcion(obsSolicitud);
 		this.bean.setFechaValidacion(fechaValidacion);
 		this.bean.setObservacionesValidacion(observacionesValidacion);		
 	}
 	
-	public void setDatosGrupo(String numeroGrupo, Integer ordenGrupo){
+	public void setDatosGrupo(String numeroGrupo, Integer ordenGrupo) {
 		this.bean.setNumeroGrupo(numeroGrupo);
 		this.bean.setOrdenGrupo(ordenGrupo);		
 	}
-		
-	public InscripcionGuardia (ScsInscripcionGuardiaBean bean) {
-		this.bean = bean;
-	} //InscripcionGuardia ()
-	
 	
 	////////////////////
 	// GETTERS Y SETTERS
@@ -324,9 +320,6 @@ public class InscripcionGuardia
 		return existe;
 	}
 	
-	
-	
-	
 	////////////////////
 	// METODOS
 	////////////////////
@@ -358,7 +351,11 @@ public class InscripcionGuardia
 			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
 			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechSubscripcion);
-			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION, observacionesSuscripcion);
+			
+			if (observacionesSuscripcion!=null)
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION, observacionesSuscripcion);
+			else
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION, "");
 			
 			if(fechaValidacion!=null && !fechaValidacion.equals("")){
 				if(!fechaValidacion.equalsIgnoreCase("sysdate"))
@@ -438,6 +435,7 @@ public class InscripcionGuardia
 	
 	/**
 	 * Valida la inscripcion de un colegiado a una guardia
+	 * 
 	 * @param usr
 	 * @throws ClsExceptions
 	 */
@@ -454,20 +452,23 @@ public class InscripcionGuardia
 			Long idPersona = this.bean.getIdPersona();
 			String fechaSuscripcion = this.bean.getFechaSuscripcion();
 			String fechaValidacion = this.bean.getFechaValidacion();
-			String observacionesValidacion = this.bean.getObservacionesValidacion();
-			Hashtable laHash = new Hashtable();				
+			String observacionesValidacion = this.bean.getObservacionesValidacion();					
 					
-			// solamente para el caso en el que se solicita y valida el alta de una guardia
-			//en fecha con inscripcon en turno con fecha de baja
+			// solamente para el caso en el que se solicita y valida el alta de una guardia en fecha con inscripcon en turno con fecha de baja
 			String fechaBaja = this.bean.getFechaBaja();
-					
+				
+			Hashtable laHash = new Hashtable();		
 			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
 			if(idGuardia!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
 			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
-			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+			
+			if (observacionesValidacion!=null)
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+			else
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
 			
 			if(fechaValidacion.equals("sysdate")){
 				laHash.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION,fechaValidacion);
@@ -489,26 +490,12 @@ public class InscripcionGuardia
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 			}
+
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
+					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			if(fechaBaja!=null&&!fechaBaja.equals("")){
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,"sysdate");
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
-				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-						ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
-						ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
-						ScsInscripcionGuardiaBean.C_FECHABAJA,
-						ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
-						ScsInscripcionGuardiaBean.C_USUMODIFICACION};
-				insguardia.updateDirect(laHash,claves,campos);
-				
-			} else {
-				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-						ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
-						ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
-						ScsInscripcionGuardiaBean.C_USUMODIFICACION};
-				insguardia.updateDirect(laHash,claves,campos);
-			}
+			insguardia.updateDirect(laHash,claves,campos);
 			
 			if(this.getBean().getNumeroGrupo()!=null){
 				ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);								
@@ -581,9 +568,9 @@ public class InscripcionGuardia
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
 			
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
-			if (observacionesValidacion!=null && !observacionesValidacion.equals("")) {
+			
+			if (observacionesValidacion!=null) {
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
-				
 			} else {
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
 			}
@@ -641,9 +628,9 @@ public class InscripcionGuardia
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
 			
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
-			if (observacionesBaja!=null && !observacionesBaja.equals("")) {
+			
+			if (observacionesBaja!=null) {
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, observacionesBaja);
-				
 			} else {
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, "");
 			}			
@@ -658,6 +645,7 @@ public class InscripcionGuardia
 	
 	/**
 	 * Solicita la baja de una inscripcion de guardia de un colegiado
+	 * 
 	 * @param usr
 	 * @param bajaSyC
 	 * @throws ClsExceptions
@@ -665,7 +653,7 @@ public class InscripcionGuardia
 	public void solicitarBaja (UsrBean usr, String bajaSyC) throws ClsExceptions {
 		this.solicitaBaja(usr);
 		
-		if(this.bean.getFechaBaja()!=null&&!this.bean.getFechaBaja().equals("")){
+		if(this.bean.getFechaBaja()!=null && !this.bean.getFechaBaja().equals("")){
 			
 			if(this.bean.getIdGuardia()==null){
 				
@@ -686,10 +674,10 @@ public class InscripcionGuardia
 					Hashtable htGuardia = (Hashtable)vTurno.get(x);
 					this.bean.setIdGuardia(new Integer((String)htGuardia.get("IDGUARDIA")));
 					this.bean.setFechaSuscripcion((String)htGuardia.get("FECHASUSCRIPCION"));
-					validarBaja(usr,bajaSyC);
+					validarBaja(usr, bajaSyC);
 				}
 				
-			}else{
+			} else {
 				validarBaja(usr, bajaSyC);
 			}
 		}
@@ -767,134 +755,138 @@ public class InscripcionGuardia
 		insguardia.updateDirect(laHash,claves,campos);
 	} 
 	
-	public void denegarAltaGuardia(UsrBean usr)
-	throws ClsExceptions
-{
-	try {
-		Integer idInstitucion = this.bean.getIdInstitucion();
-		Integer idTurno = this.bean.getIdTurno();
-		Integer idGuardia = this.bean.getIdGuardia();
-		Long idPersona = this.bean.getIdPersona();
-		String fechaSuscripcion = this.bean.getFechaSuscripcion();
-		String fechaDenegacion = this.bean.getFechaDenegacion();
-		String observacionesDenegacion = this.bean.getObservacionesDenegacion();
-		
-		//obteniendo ultimo indicado en la cola
-		Hashtable<String, Object> hashGuardia = new Hashtable<String, Object>();
-		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
-		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
-		if(idGuardia!=null)
-			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
-	
+	/**
+	 * Deniega la inscripcion de un colegiado a una guardia
+	 * 
+	 * @param usr
+	 * @throws ClsExceptions
+	 */
+	public void denegarAltaGuardia(UsrBean usr) throws ClsExceptions {
+		try {
+			Integer idInstitucion = this.bean.getIdInstitucion();
+			Integer idTurno = this.bean.getIdTurno();
+			Integer idGuardia = this.bean.getIdGuardia();
+			Long idPersona = this.bean.getIdPersona();
+			String fechaSuscripcion = this.bean.getFechaSuscripcion();
+			String fechaDenegacion = this.bean.getFechaDenegacion();
+			String observacionesDenegacion = this.bean.getObservacionesDenegacion();
 
-		Hashtable laHash = new Hashtable();
-		laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION	,idInstitucion);
-		laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO			,idTurno);
-		if(idGuardia!=null)
-			laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA			,idGuardia);
-		laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA		,idPersona);
-		laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,fechaSuscripcion);
-		if(!fechaDenegacion.equalsIgnoreCase("sysdate")){
-//			laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
-		}
-		else{
-//			laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,fechaDenegacion);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION,fechaDenegacion);
-		}
-		laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,observacionesDenegacion);
-		
-		String[] claves = null;
-		if(idGuardia!=null){
-			claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-					ScsInscripcionGuardiaBean.C_IDPERSONA, 
-					ScsInscripcionGuardiaBean.C_IDTURNO, 
-					ScsInscripcionGuardiaBean.C_IDGUARDIA,
-					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-		}else{
-			claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-					ScsInscripcionGuardiaBean.C_IDPERSONA, 
-					ScsInscripcionGuardiaBean.C_IDTURNO, 
-					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-		
+			Hashtable laHash = new Hashtable();
+			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
+			if(idGuardia!=null)
+				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
 			
-		}
-
-
-		String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
-		ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-		insguardia.updateDirect(laHash,claves,campos);
-		
-	}
-	catch (Exception e) {
-		throw new ClsExceptions (e, "Error al denegar la guardia");
-	}
-} 
-	public void denegarBajaGuardia(UsrBean usr)
-	throws ClsExceptions
-{
-	try {
-		Integer idInstitucion = this.bean.getIdInstitucion();
-		Integer idTurno = this.bean.getIdTurno();
-		Integer idGuardia = this.bean.getIdGuardia();
-		Long idPersona = this.bean.getIdPersona();
-		String fechaSuscripcion = this.bean.getFechaSuscripcion();
-		String fechaDenegacion = this.bean.getFechaDenegacion();
-		String observacionesDenegacion = this.bean.getObservacionesDenegacion();
-		
-		//obteniendo ultimo indicado en la cola
-		Hashtable<String, Object> hashGuardia = new Hashtable<String, Object>();
-		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
-		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
-		if(idGuardia!=null)
-			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
-		
-		//cambiando el ultimo de la cola si es necesario
-	
-
-		Hashtable laHash = new Hashtable();
-		laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION	,idInstitucion);
-		laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO			,idTurno);
-		if(idGuardia!=null)
-			laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA			,idGuardia);
-		laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA		,idPersona);
-		laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,fechaSuscripcion);
-		if(fechaDenegacion!=null){
 			if(!fechaDenegacion.equalsIgnoreCase("sysdate")){
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaDenegacion));				
+			} else {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, fechaDenegacion);
 			}
-			else{
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION,fechaDenegacion);
-			}
-			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,observacionesDenegacion);
-		}
-		
-		String[] claves = null;
-		if(idGuardia!=null){
-			claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+			
+			if (observacionesDenegacion!=null)
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, observacionesDenegacion);
+			else
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, "");
+			
+			String[] claves = null;
+			if(idGuardia!=null){
+				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-		}else{
-			claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				
+			} else {
+				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-		
+			}
+	
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION};
 			
+			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+			insguardia.updateDirect(laHash,claves,campos);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al denegar la guardia");
 		}
-
-
-		String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
-		ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-		insguardia.updateDirect(laHash,claves,campos);
+	} 
+	
+	/**
+	 * Deniega la baja de una inscripcion pendiente de una guardia
+	 * 
+	 * @param usr
+	 * @throws ClsExceptions
+	 */
+	public void denegarBajaGuardia(UsrBean usr) throws ClsExceptions {
+		try {
+			Integer idInstitucion = this.bean.getIdInstitucion();
+			Integer idTurno = this.bean.getIdTurno();
+			Integer idGuardia = this.bean.getIdGuardia();
+			Long idPersona = this.bean.getIdPersona();
+			String fechaSuscripcion = this.bean.getFechaSuscripcion();
+			String fechaDenegacion = this.bean.getFechaDenegacion();
+			String observacionesDenegacion = this.bean.getObservacionesDenegacion();
+			
+			//obteniendo ultimo indicado en la cola
+			Hashtable<String, Object> hashGuardia = new Hashtable<String, Object>();
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
+			if(idGuardia!=null)
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
+			
+			//cambiando el ultimo de la cola si es necesario
 		
-	}
-	catch (Exception e) {
-		throw new ClsExceptions (e, "Error al denegar la guardia");
-	}
-} 
+	
+			Hashtable laHash = new Hashtable();
+			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
+			if(idGuardia!=null)
+				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
+			
+			if(fechaDenegacion!=null){
+				if(!fechaDenegacion.equalsIgnoreCase("sysdate")){
+					laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
+				} else {
+					laHash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, fechaDenegacion);
+				}
+				
+				if (observacionesDenegacion!=null)
+					laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, observacionesDenegacion);
+				else
+					laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, "");
+			}
+			
+			String[] claves = null;
+			if(idGuardia!=null){
+				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+						ScsInscripcionGuardiaBean.C_IDPERSONA, 
+						ScsInscripcionGuardiaBean.C_IDTURNO, 
+						ScsInscripcionGuardiaBean.C_IDGUARDIA,
+						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+			}else{
+				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+						ScsInscripcionGuardiaBean.C_IDPERSONA, 
+						ScsInscripcionGuardiaBean.C_IDTURNO, 
+						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+			}
+	
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,
+					ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION};
+			
+			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+			insguardia.updateDirect(laHash,claves,campos);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al denegar la guardia");
+		}
+	} 
 	
 	/**
 	 * Valida la baja de la inscripcion del colegiado en la guardia
