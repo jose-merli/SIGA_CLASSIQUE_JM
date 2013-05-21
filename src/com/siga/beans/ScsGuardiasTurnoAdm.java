@@ -1610,58 +1610,75 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		return alGuardias;
 	}
 
-	public List<ScsGuardiasTurnoBean> getGuardiasTurnos(Integer idTurno, Integer idInstitucion, boolean isCombo) throws ClsExceptions
-	{
+	/**
+	 * Obtiene las guardias de un turno
+	 * 
+	 * @param idTurno
+	 * @param idInstitucion
+	 * @param isCombo
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<ScsGuardiasTurnoBean> getGuardiasTurnos(Integer idTurno, Integer idInstitucion, boolean isCombo) throws ClsExceptions {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 
-		sql.append(" SELECT IDGUARDIA, NOMBRE,IDTURNO,IDINSTITUCION FROM SCS_GUARDIASTURNO ");
+		sql.append(" SELECT IDGUARDIA, "); 
+		sql.append(" NOMBRE, ");
+		sql.append(" IDTURNO, ");
+		sql.append(" IDINSTITUCION "); 
+		sql.append(" FROM SCS_GUARDIASTURNO ");
+		
 		sql.append(" WHERE IDINSTITUCION =:");
 		contador++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador), idInstitucion);
+		
 		sql.append(" AND IDTURNO = :");
 		contador++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador), idTurno);
+		
 		sql.append(" ORDER BY NOMBRE ");
 
 		List<ScsGuardiasTurnoBean> alGuardias = null;
 		try {
 			RowsContainer rc = new RowsContainer();
-
 			if (rc.findBind(sql.toString(), htCodigos)) {
+				
 				alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
 				ScsGuardiasTurnoBean guardiaBean = null;
 				if (isCombo) {
 					if (rc.size() > 1) {
 						guardiaBean = new ScsGuardiasTurnoBean();
 						guardiaBean.setIdGuardia(new Integer(-1));
-						guardiaBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean,
-								"general.combo.seleccionar"));
+						guardiaBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
 						alGuardias.add(guardiaBean);
 					}
 				}
+				
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
 
 					guardiaBean = new ScsGuardiasTurnoBean();
-					guardiaBean.setIdInstitucion(UtilidadesHash
-							.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
+					guardiaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
 					guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDTURNO));
 					guardiaBean.setNombre(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_NOMBRE));
 					guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDGUARDIA));
+					
 					alGuardias.add(guardiaBean);
 				}
 			}
+			
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al ejecutar consulta.");
 		}
+		
 		return alGuardias;
-
 	}	
+	
 	public List<ScsGuardiasTurnoBean> getGuardiasTurnosVinculadas(Integer idTurno,Integer idGuardia, Integer idInstitucion) throws ClsExceptions
 	{
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
