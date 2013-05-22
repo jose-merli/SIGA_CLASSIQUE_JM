@@ -2461,6 +2461,7 @@
 			<forward name="buscarModalReserva" path="/html/jsp/gratuita/listadoModalReserva_DefinirCalendarioGuardia.jsp"/>
 			<forward name="modalRegistro" path="/html/jsp/gratuita/modalRegistro_DefinirCalendarioGuardia.jsp"/>
 			<forward name="modalConsulta" path="/html/jsp/gratuita/modalConsulta_DefinirCalendarioGuardia.jsp"/>
+			<forward name="anular" path="/html/jsp/gratuita/modalAnularValidacionCabeceraGuardia.jsp"/>
 		</action>
 
 		<!-- ***** Justicia Gratuita / Definir Lista de Guardias ***** -->
@@ -3282,7 +3283,6 @@
 			<forward name="editar" path="/html/jsp/gratuita/editarActaComision.jsp"/>
 			<forward name="resultado" path="/html/jsp/gratuita/listadoActasComision.jsp"/>
 			<forward name="edicionMasiva" path="/html/jsp/gratuita/edicionMasivaActa.jsp"/>
-			<forward name="edicionMasivaModal" path="/html/jsp/gratuita/edicionMasivaActaModal.jsp"/>
 		</action>
 		
 		<action path="/JGR_ActasComisionEd" type="com.siga.gratuita.action.ActaComisionAction" input="/html/jsp/general/errorActionErrors.jsp" name="ActaComisionForm" scope="session" validate="true">
@@ -3291,7 +3291,6 @@
 			<forward name="editar" path="/html/jsp/gratuita/editarActaComision.jsp"/>
 			<forward name="resultado" path="/html/jsp/gratuita/listadoActasComision.jsp"/>
 			<forward name="edicionMasiva" path="/html/jsp/gratuita/edicionMasivaActa.jsp"/>
-			<forward name="edicionMasivaModal" path="/html/jsp/gratuita/edicionMasivaActaModal.jsp"/>
 		</action>
 		
 		<action path="/JGR_CaracteristicasAsistenciaLetrado" type="com.siga.gratuita.action.CaracteristicasAsistenciaAction" name="CaracteristicasForm">

@@ -31,6 +31,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public Integer  usuAlta;
 	private Integer posicion;
 	private Integer numeroGrupo;
+	private String observacionesAnulacion;
 	
 	/* Nombre de Tabla */
 	
@@ -49,15 +50,16 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	static public final String	C_SUSTITUTO = 			"SUSTITUTO";
 	static public final String	C_FACTURADO = 			"FACTURADO";
 	static public final String	C_PAGADO = 				"PAGADO";
-	static public final String	C_VALIDADO = 				"VALIDADO";
-	static public final String 	C_LETRADOSUSTITUIDO =		"LETRADOSUSTITUIDO";
-	static public final String  C_FECHASUSTITUCION = 		"FECHASUSTITUCION";
-	static public final String  C_COMENSUSTITUCION = 		"COMENSUSTITUCION";
-	static public final String  C_FECHAALTA = 		"FECHAALTA";
-	static public final String  C_FECHAVALIDACION = 		"FECHAVALIDACION";
-	static public final String  C_POSICION = 		"POSICION";
+	static public final String	C_VALIDADO = 			"VALIDADO";
+	static public final String 	C_LETRADOSUSTITUIDO =	"LETRADOSUSTITUIDO";
+	static public final String  C_FECHASUSTITUCION = 	"FECHASUSTITUCION";
+	static public final String  C_COMENSUSTITUCION = 	"COMENSUSTITUCION";
+	static public final String  C_FECHAALTA = 			"FECHAALTA";
+	static public final String  C_FECHAVALIDACION = 	"FECHAVALIDACION";
+	static public final String  C_POSICION = 			"POSICION";
 	static public final String  C_NUMEROGRUPO = 		"NUMEROGRUPO";
-	static public final String  C_USUALTA = 		"USUALTA";
+	static public final String  C_USUALTA = 			"USUALTA";
+	static public final String  C_OBSERVACIONESANULACION ="OBSERVACIONESANULACION";
 	
 	public String getComenSustitucion() {
 		return comenSustitucion;
@@ -214,6 +216,12 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	}
 	public void setNumeroGrupo(Integer numeroGrupo) {
 		this.numeroGrupo = numeroGrupo;
+	}
+	public String getObservacionesAnulacion() {
+		return observacionesAnulacion;
+	}
+	public void setObservacionesAnulacion(String observacionesAnulacion) {
+		this.observacionesAnulacion = observacionesAnulacion;
 	}
 	
 }

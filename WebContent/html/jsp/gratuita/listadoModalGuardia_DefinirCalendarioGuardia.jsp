@@ -200,19 +200,20 @@
 		<siga:Table 		   
 			   name="listado"
 			   border="2"
-			   columnNames="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,
+			   columnNames="gratuita.listadoModal_DefinirCalendarioGuardia.literal.validada,
+			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,
 			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,
 			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,
 			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,
 			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaOriginal,
 			   		gratuita.guardiasTurno.literal.porGrupos.orden,"
-			   columnSizes="11,11,11,28,11,11,17"
+			   columnSizes="7,10,10,10,28,10,10,15"
 			   modal="M">
 				<%
 				int recordNumber=1;
 				String fechaInicio="",fechaInicioPK="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-				String pl = "", orden="";
+				String pl = "", orden="", validado="",activarCheck="";
 				boolean facturada= false;
 				int i=0;
 				while ((recordNumber) <= obj.size())
@@ -254,10 +255,13 @@
 				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
 				orden = (hash.get("ORDEN")==null||((String)hash.get("ORDEN")).equals(""))?"&nbsp;":(String)hash.get("ORDEN");
+				validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
+				if(validado.equals("1"))
+					activarCheck="checked";
 				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
-				elems = new FilaExtElement[2];	
+				elems = new FilaExtElement[3];	
 				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
 				
 				if (!modoOriginal.equalsIgnoreCase("VER") && (pl!=null && pl.equals("5"))) {
@@ -267,6 +271,9 @@
 				//if (!modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
 				if (!facturada && !modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
 					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
+				
+				elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
+				
 				String numeroColegiadoBusqueda = "" + recordNumber + "_" + numerocolegiado;
 				String botones="C";
 				String visibleBorrado="";
@@ -281,6 +288,9 @@
 
 			%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit" modo="<%=modoOriginal%>" visibleEdicion="no" visibleBorrado="<%=visibleBorrado%>" pintarEspacio="no">
+				<td align="center">
+					<input type=checkbox id="checkValidada_<%=String.valueOf(recordNumber)%>" value="<%=validado%>" <%=activarCheck%> disabled="disabled"/>
+				</td>
 				<td align="center">
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
@@ -382,6 +392,17 @@
 			if (salida == "MODIFICADO") 
 				refrescarLocal();	
 			document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";			
+		}
+		
+		function anular(fila)	{				
+			//Datos del elemento seleccionado:
+			seleccionarFila(fila);	
+			
+			document.forms[0].modo.value = "anular";
+			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
+			
+			if (salida == "MODIFICADO") 
+				refrescarLocal();	
 		}
 
 	</script>

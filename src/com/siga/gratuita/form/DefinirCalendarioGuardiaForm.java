@@ -74,7 +74,8 @@ public class DefinirCalendarioGuardiaForm extends MasterForm
 	public void setDatosPersSolicitante(String valor)	{ this.datos.put("DATOSPERSSOLICITANTE",valor); 	}
 	public void setFechaSolicitud(String valor)			{ this.datos.put("FECHASOLICITUD",valor);			}
 	public void setFlagConfirmacion(String valor)		{ this.datos.put("FLAGCONFIRMACION", valor);		}
-	public void setPermutaGuardias(DefinirPermutaGuardiasForm valor) {this.permutaGuardias = valor;}
+	public void setPermutaGuardias(DefinirPermutaGuardiasForm valor) {this.permutaGuardias = valor;			}
+	public void setComenAnulacion(String valor)			{ this.datos.put("COMENANULACION", valor);			} 
 
 
 	// Getters
@@ -126,6 +127,7 @@ public class DefinirCalendarioGuardiaForm extends MasterForm
 	public String getDatosPersSolicitante ()	{ return ((String)this.datos.get("DATOSPERSSOLICITANTE"));	}
 	public String getFechaSolicitud ()			{ return ((String)this.datos.get("FECHASOLICITUD"));		}
 	public String getFlagConfirmacion()			{ return ((String)this.datos.get("FLAGCONFIRMACION"));		}
+	public String getComenAnulacion()			{ return ((String)this.datos.get("COMENANULACION"));			}
 	public DefinirPermutaGuardiasForm getPermutaGuardias() {return permutaGuardias;}
 	private DefinirTurnosForm turno;
 	private DefinirGuardiasTurnosForm guardia;

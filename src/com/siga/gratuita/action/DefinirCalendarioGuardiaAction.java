@@ -102,6 +102,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				mapDestino = modalNuevoCalendario(mapping, miForm, request, response);				
 			} else if (accion.equalsIgnoreCase("modalNuevaGuardia")){
 				mapDestino = modalNuevaGuardia(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("anular")){
+				mapDestino = anular(mapping, miForm, request, response);	
+			} else if (accion.equalsIgnoreCase("realizarAnulacion")){
+				mapDestino = realizarAnulacion(mapping, miForm, request, response);						
 			} else if (accion.equalsIgnoreCase("descargarLog")){
 				mapDestino = descargarLog(mapping, miForm, request, response);
 			} else {			
@@ -1112,7 +1116,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
 					String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
 					orden = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
-					String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK); 
+					String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK);
+					
+					//Se añaden los campos de validacion
+					String validado = (String)registro.get(ScsCabeceraGuardiasBean.C_VALIDADO);
 
 					Hashtable htCodigo = new Hashtable();
 					htCodigo.put(new Integer(1), idinstitucion);
@@ -1260,6 +1267,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					nueva.put("PL",pl);
 					nueva.put("GUARDIAFACTURADA",guardiaFacturada);
 					nueva.put("ORDEN", orden);
+					nueva.put("VALIDADO", validado);
+				
 					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idcalendarioguardias,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
 						nueva.put("PINTARBOTONBORRAR", "1");
@@ -1299,6 +1308,9 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					orden = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
 
 					String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK); 
+					
+					//Se añaden los campos de validacion
+					String validado = (String)registro.get(ScsCabeceraGuardiasBean.C_VALIDADO);
 
 					Hashtable htCodigo = new Hashtable();
 					htCodigo.put(new Integer(1), idinstitucion);
@@ -1447,6 +1459,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					nueva.put("OBSERVACIONES",observaciones);
 					nueva.put("PL",pl);
 					nueva.put("ORDEN", orden);
+					nueva.put("VALIDADO", validado);
 
 					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idcalendarioguardias,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
@@ -1740,7 +1753,83 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		}
 		return "modalRegistro";
 	}
+	
+	protected String anular(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		
+		UsrBean usr = (UsrBean) this.getUserBean(request);
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		ScsCabeceraGuardiasAdm admCabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);
+		String idInstitucion, idTurno, idGuardia, idCalendarioGuardias,fechaInicio, idPersona;
+		String observaciones = "";
+		
+		try {
+			idInstitucion = miForm.getIdInstitucion();
+			idTurno = miForm.getIdTurno();
+			idGuardia = miForm.getIdGuardia();
+			idCalendarioGuardias = miForm.getIdCalendarioGuardias();
+			fechaInicio = UtilidadesString.formatoFecha(miForm.getFechaInicio(), "yyyy/MM/dd hh:mm:ss", "dd/MM/yyyy");
+			idPersona = miForm.getIdPersona();
+			
+			String select = "SELECT * FROM " + ScsCabeceraGuardiasBean.T_NOMBRETABLA 
+						  + " WHERE " + ScsCabeceraGuardiasBean.C_IDINSTITUCION 		+ "=" + idInstitucion 
+						  + "   AND " + ScsCabeceraGuardiasBean.C_IDTURNO 				+ "=" + idTurno
+						  + "   AND " + ScsCabeceraGuardiasBean.C_IDGUARDIA				+ "=" + idGuardia
+						  + "   AND " + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS 	+ "=" + idCalendarioGuardias
+						  + "   AND " + ScsCabeceraGuardiasBean.C_IDPERSONA 			+ "=" + idPersona
+						  +	"   AND trunc("+ScsCabeceraGuardiasBean.C_FECHA_INICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
+			
+			Vector result = admCabeceraGuardiasAdm.selectGenerico(select);	
+			Hashtable cabecera = new Hashtable();
 
+			if (result!=null && !result.isEmpty()) {
+				cabecera = (Hashtable)result.firstElement();
+				observaciones = (String)cabecera.get("OBSERVACIONESANULACION");
+				miForm.setComenAnulacion(observaciones);
+			}
+			
+			request.setAttribute("DefinirCalendarioGuardiaForm", miForm);
+			
+		} catch (Exception e) {
+			throwExcp("messages.select.error", e, null);
+		}
+		return "anular";
+	}	
+
+	private String realizarAnulacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{		
+		UsrBean usr = (UsrBean) this.getUserBean(request);
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		ScsCabeceraGuardiasAdm admCabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);		
+		Hashtable cabecera = new Hashtable();
+		
+		try {
+			//CLAVES
+			cabecera.put("IDINSTITUCION",miForm.getIdInstitucion());
+			cabecera.put("IDTURNO",miForm.getIdTurno());
+			cabecera.put("IDGUARDIA",miForm.getIdGuardia());			
+			cabecera.put("IDCALENDARIOGUARDIAS",miForm.getIdCalendarioGuardias());
+			cabecera.put("FECHAINICIO",miForm.getFechaInicio());
+			cabecera.put("IDPERSONA",miForm.getIdPersona());
+			
+			//CAMPOS ACTUALIZABLES
+			cabecera.put("VALIDADO",ClsConstants.DB_FALSE);
+			cabecera.put("FECHAVALIDACION","");
+			cabecera.put("OBSERVACIONESANULACION",miForm.getComenAnulacion());
+			
+			String claves[] = {"IDINSTITUCION","IDTURNO","IDCALENDARIOGUARDIAS","IDGUARDIA","IDPERSONA","FECHAINICIO"};
+			String campos[] = {"VALIDADO", "FECHAVALIDACION", "OBSERVACIONESANULACION","USUMODIFICACION","FECHAMODIFICACION"};
+				
+			admCabeceraGuardiasAdm.updateDirect(cabecera, claves, campos);
+			 
+		} catch (Exception e) {
+			throwExcp("messages.select.error", e, null); 
+		}
+
+		return exitoModal("messages.updated.success",request);
+	}	
+	
 	/**
 	 * Contempla el siguiente caso: 
 	 * Pulso guardar en la modal para insertar una/s guardia/s de forma manual para el periodo y letrado seleccionado. 

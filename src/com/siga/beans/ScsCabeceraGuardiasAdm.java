@@ -55,7 +55,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				ScsCabeceraGuardiasBean.C_FECHAVALIDACION,
 				ScsCabeceraGuardiasBean.C_USUALTA,
 				ScsCabeceraGuardiasBean.C_POSICION,
-				ScsCabeceraGuardiasBean.C_NUMEROGRUPO
+				ScsCabeceraGuardiasBean.C_NUMEROGRUPO,
+				ScsCabeceraGuardiasBean.C_OBSERVACIONESANULACION
 		};
 		return campos;
 	}
@@ -94,9 +95,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			bean.setUsuAlta(UtilidadesHash.getInteger (hash, ScsCabeceraGuardiasBean.C_USUALTA));
 			bean.setPosicion(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_POSICION));
 			bean.setNumeroGrupo(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_NUMEROGRUPO));
-			
-			
-			
+			bean.setObservacionesAnulacion(UtilidadesHash.getString(hash, ScsCabeceraGuardiasBean.C_OBSERVACIONESANULACION));
 			
 		}
 		catch(Exception e){
@@ -134,10 +133,9 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_NUMEROGRUPO, b.getNumeroGrupo());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAMODIFICACION, "SYSDATE");
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_USUMODIFICACION, usuModificacion);
+			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_OBSERVACIONESANULACION, b.getObservacionesAnulacion());
 			
-			
-		}
-		catch (Exception e){
+		} catch (Exception e){
 			hash = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
