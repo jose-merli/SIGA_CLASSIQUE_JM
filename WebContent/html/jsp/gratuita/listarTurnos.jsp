@@ -46,11 +46,9 @@
 	String accion = String.valueOf(request.getSession().getAttribute("modoPestanha"));
 	//Si entrada=2 venimos de la pestanha de SJCS:
 	String entrada = (String)ses.getAttribute("entrada");
-	String activaSeleccionFila = "true";
 	
 	if (entrada.equalsIgnoreCase("2")){
 		elTarget="mainPestanas";
-		activaSeleccionFila = "false";
 	}
 	String mantTurnos=(String)request.getAttribute("mantTurnos");
 	String turnosBajaLogica = (String)request.getAttribute("BAJALOGICATURNOS");
@@ -108,18 +106,16 @@
 		action="/SIGA/JGR_DefinirTurnosLetrado.do?noReset=true&bIncluirRegistrosConBajaLogica="+(String)request.getAttribute("bIncluirRegistrosConBajaLogica");
 		modo = 	(String)ses.getAttribute("MODO");
 	}
-	
-	String altoLista = entrada.equalsIgnoreCase("1")?"0":"10";
 %>
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -157,7 +153,7 @@
 				<table>
 					<tr>
 						<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
-						<td><siga:Datepicker  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/></td>
+						<td><siga:Fecha  nombreCampo= "fechaConsulta" postFunction="accionCalendario();"/></td>
 					</tr>				
 				</table>
 			</siga:ConjCampos>
@@ -204,18 +200,18 @@
 			<input type="hidden" id="turnosBajaLogica"  name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
 			<input type="hidden" id="actionModal"  name="actionModal" value="">									
 		</html:form>	
-				
+		
 		<siga:Table 
 		   name="listarTurnos"
 		   border="2"
 		   fixedHeight="95%"
 		   columnNames="<%=nC%>"
-		   columnSizes="<%=tC%>">
+		   columnSizes="<%=tC%>">		
 	
-			<%if (resultado == null || resultado.size() == 0) {%>			
+			<%if (resultado == null || resultado.size() == 0) {%>
 		 		<tr class="notFound">
 			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
+				</tr>			
 		 		
 			<%} else {		
 				for (int j = 0; j < resultado.size(); j++) {
@@ -376,7 +372,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_26' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_27' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_28' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'/>
-						<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value=''/>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value='<%=registro.get("OBSERVACIONESDENEGACION")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'/>
 						
 						<%if (!isEntradaSJCS){%>
