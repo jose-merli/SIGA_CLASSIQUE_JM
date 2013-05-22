@@ -1,4 +1,5 @@
 <!-- abrirEjecucionSancion.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -18,9 +19,9 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="java.util.Properties"%>
+
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
@@ -32,36 +33,29 @@
 <html>
 	<!-- HEAD -->
 	<head>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	<script>
+		<script>
 			function abrirModal() {
 				<%if (nuevo){%>
 					alert('<%=insertado%>');
 				<%}else{%>
 					alert('<%=actualizado%>');
 				<%}%>
-				var result=ventaModalGeneral("EjecucionSancionForm","P");
+				var result=ventaModalGeneral("EjecucionSancionForm", "P");
 				parent.refrescarLocal();
 			}
 		</script>
-
 	</head>
 
-
-<body onLoad="abrirModal();" >
-
-	<html:form action="/EXP_Auditoria_EjecucionSancion.do" method="POST" target="submitArea" type="">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="">
-	</html:form>
-
+	<body onLoad="abrirModal();" >
+		<html:form action="/EXP_Auditoria_EjecucionSancion.do" method="POST" target="submitArea" type="">
+			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="modo" value="">
+		</html:form>
 </body>
-
 </html>
-
