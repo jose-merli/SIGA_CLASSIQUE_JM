@@ -43,7 +43,7 @@
 		<input type="hidden" name="anioActa" 		value="">
 		<input type="hidden" name="idTipoRatificacionEJG" >
 	
-		<siga:ConjCampos leyenda="general.criterios">	
+		<siga:ConjCampos >	
 			<table class="tablaCampos" border="0" align="left">
 				<tr>
 					<td style="vertical-align:middle" width="20px">
