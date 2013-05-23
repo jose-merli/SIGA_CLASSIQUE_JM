@@ -131,21 +131,6 @@ public class ActaComisionForm extends MasterForm {
 			if (this.anioActa==null || this.anioActa.equalsIgnoreCase(""))
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.anio"),new ActionMessage("errors.required"));
 			
-			/*if (this.fechaResolucion!=null && !this.fechaResolucion.equalsIgnoreCase("") && this.fechaReunion!=null && !this.fechaReunion.equalsIgnoreCase("")) {
-				Validaciones validator = new Validaciones();				
-				String msg = "";
-				if (!validator.validaFecha(this.fechaResolucion, msg, true) || !validator.validaFecha(this.fechaReunion, msg, true)) 
-					errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("sjcs.actas.fechasErroneas"));
-				else {
-					Locale locale = new Locale(user.getLanguage());
-					GstDate gstDate = new GstDate();					
-					Date dFechaResolucion = gstDate.parseStringToDate(this.fechaResolucion, "dd/MM/yyyy", locale);
-					Date dFechaReunion = gstDate.parseStringToDate(this.fechaReunion, "dd/MM/yyyy", locale);
-					if (!dFechaResolucion.after(dFechaReunion))
-						errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.fechaResolucion"),new ActionMessage("sjcs.actas.fechasErroneas"));
-				}
-			}*/
-			
 			if (this.horaIni!=null && !this.horaIni.equalsIgnoreCase("") && Integer.parseInt(this.horaIni,10)>23) 
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.horaInicio"),new ActionMessage("sjcs.actas.horaInicioError01"));
 			

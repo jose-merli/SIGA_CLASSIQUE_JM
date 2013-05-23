@@ -107,14 +107,7 @@
 			   document.ActaComisionForm.anioActa.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
-			/*
-			}if (document.ActaComisionForm.fechaResolucion.value==""){
-				error = true;
-				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaResolucion'/>"+ '\n';
-			*/
-			}if (document.ActaComisionForm.fechaResolucion.value!=""&&document.ActaComisionForm.fechaReunion.value!=""&&validarFecha(document.ActaComisionForm.fechaReunion.value)&&validarFecha(document.ActaComisionForm.fechaResolucion.value)){
-				error = true;
-				errores += "<siga:Idioma key='sjcs.actas.fechasErroneas'/>"+ '\n';
+			
 			}
 			
 			if(document.ActaComisionForm.horaIni.value!=""){
