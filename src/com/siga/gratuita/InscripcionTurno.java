@@ -692,26 +692,6 @@ public class InscripcionTurno {
 			Integer idTurno = this.bean.getIdTurno();
 			Long idPersona = this.bean.getIdPersona();
 			
-			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
-			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
-				this.bean.getIdInstitucion(), 
-				this.bean.getIdTurno(),
-				this.bean.getIdPersona(),
-				null);
-				
-			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
-				for(int x=0; x<vGuardiasTurno.size(); x++) {
-					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean) vGuardiasTurno.get(x);
-					
-					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + Observaciones Denegacion + FechaDenegacion
-					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);							
-					inscripcionGuardia.setDenegacion(observacionesDenegacion, fechaDenegacion);
-					
-					inscripcionGuardia.denegarAltaGuardia(usr);
-				}
-			}
-			
 			//insertando baja
 			Hashtable<String, Object> inscripcionHash = new Hashtable<String, Object>();
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
@@ -736,6 +716,27 @@ public class InscripcionTurno {
 				if (! inscripcionAdm.update(inscripcionBean)) {
 					throw new ClsExceptions("Error al denegar el alta en el turno");
 				}
+				
+				
+				// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
+				ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+				List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
+					this.bean.getIdInstitucion(), 
+					this.bean.getIdTurno(),
+					this.bean.getIdPersona(),
+					null);
+					
+				if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
+					for(int x=0; x<vGuardiasTurno.size(); x++) {
+						ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean) vGuardiasTurno.get(x);
+						
+						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + Observaciones Denegacion + FechaDenegacion
+						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);							
+						inscripcionGuardia.setDenegacion(observacionesDenegacion, fechaDenegacion);
+						
+						inscripcionGuardia.denegarAltaGuardia(usr);
+					}
+				}				
 			}
 			
 		} catch (Exception e) {
@@ -756,26 +757,6 @@ public class InscripcionTurno {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
 			Long idPersona = this.bean.getIdPersona();
-			
-			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
-			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
-				this.bean.getIdInstitucion(), 
-				this.bean.getIdTurno(),
-				this.bean.getIdPersona(),
-				null);
-	
-			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
-				for(int x=0; x<vGuardiasTurno.size(); x++) {
-					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
-					
-					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
-					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);	
-					
-					inscripcionGuardia.setDenegacion(observacionesDenegacion,fechaDenegacion);
-					inscripcionGuardia.denegarBajaGuardia(usr);
-				}
-			}
 			
 			//denegando baja turno
 			String[] claves = new String[]{ScsInscripcionTurnoBean.C_IDINSTITUCION,
@@ -804,10 +785,34 @@ public class InscripcionTurno {
 				}	
 			}			
 	
-			String[] campos = {ScsInscripcionTurnoBean.C_FECHADENEGACION,
-					ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION};
+			String[] campos = {ScsInscripcionTurnoBean.C_FECHADENEGACION, ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION};
+			
 			ScsInscripcionTurnoAdm insturno = new ScsInscripcionTurnoAdm(usr);
 			insturno.updateDirect(inscripcionHash,claves,campos);
+			
+			/*
+			 * JPT: Al denegar una baja pendiente de turno, no se deniegan las guardias del turno 
+
+			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
+			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
+				this.bean.getIdInstitucion(), 
+				this.bean.getIdTurno(),
+				this.bean.getIdPersona(),
+				null);
+	
+			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
+				for(int x=0; x<vGuardiasTurno.size(); x++) {
+					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
+					
+					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
+					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);	
+					
+					inscripcionGuardia.setDenegacion(observacionesDenegacion,fechaDenegacion);
+					inscripcionGuardia.denegarBajaGuardia(usr);
+				}
+			}
+			*/
 		
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar denegarBajaInscripcionTurno()");
