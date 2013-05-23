@@ -115,6 +115,12 @@ public class UtilidadesNumero {
 		numero = UtilidadesString.replaceAllIgnoreCase(numero, ",", ".");
 		return Double.parseDouble(numero);
 	}
+	static public BigDecimal getBigDecimal (String numero) 
+	{
+		numero = UtilidadesString.replaceAllIgnoreCase(numero, ".", "");
+		numero = UtilidadesString.replaceAllIgnoreCase(numero, ",", ".");
+		return new BigDecimal(numero);
+	}
 	
 	/**
 	 * Redondea el numero <code>d</code> a <code>dec</code> decimales.

@@ -68,6 +68,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposViviendasService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposViviendasServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgUnidadesFamiliaresService"									implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgUnidadesFamiliaresServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService"									implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosTextoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService"									implementation="org.redabogacia.sigaservices.app.services.fac.impl.CuentasBancariasServiceImpl"/>
 		
 
 <service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>

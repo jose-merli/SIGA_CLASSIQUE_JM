@@ -325,6 +325,7 @@
 		<form-bean name="ConjuntoGuardiasForm" type="com.siga.gratuita.form.ConjuntoGuardiasForm"/>
 		<form-bean name="ConfConjuntoGuardiasForm" type="com.siga.gratuita.form.ConfConjuntoGuardiasForm"/>
 		<form-bean name="ActaComisionForm" type="com.siga.gratuita.form.ActaComisionForm"/>
+		<form-bean name="CuentasBancariasForm" type="com.siga.facturacion.form.CuentasBancariasForm"/>
 		
 		
 		
@@ -3313,7 +3314,15 @@
 			<forward name="bienmueble" path="/html/jsp/gratuita/datosEconomicosBienMueble.jsp"/>
 			<forward name="cargaeconomica" path="/html/jsp/gratuita/datosEconomicosCargaEconomica.jsp"/>
 			<forward name="irpf20" path="/html/jsp/gratuita/datosEconomicosIrpf20.jsp"/>	
-		</action>				
+		</action>	
+		
+		<action path="/FAC_CuentasBancarias" type="com.siga.facturacion.action.GestionCuentasBancariasAction" name="CuentasBancariasForm" scope="request">
+		
+			<forward name="inicio" path="/html/jsp/facturacion/cuentasBancarias/busquedaCuentasBancarias.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/cuentasBancarias/listadoCuentasBancarias.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/cuentasBancarias/editarCuentaBancaria.jsp"/>
+			
+		</action>			
 		
 		<action path="/CEN_SJCS_NoColegiado" forward="/html/jsp/gratuita/pestanasCenSJCSNoColegiado.jsp"/>
 		<action path="/CEN_SJCS_RET_NoColegiado" forward="/html/jsp/gratuita/pestanasCenSJCSRetNoColegiado.jsp"/>
