@@ -11,14 +11,28 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InscripcionTGForm;
 
 /**
  * Implementa las operaciones sobre la base de datos a la tabla SCS_INSCRIPCIONGUARDIA
  */
-public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
-{
+public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
+	
+	private static final String camposSelect =  ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA + ", " +
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDINSTITUCION + ", " +
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDTURNO + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDGUARDIA + ", " +
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION + ", " +
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHABAJA + ", " +
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION + ", " +												
+												ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA;
+
 	/**
 	 * Constructor 
 	 * @param usuario Usuario "logado" en la aplicación. De tipo "Integer".  
@@ -28,58 +42,47 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	}
 
 	/**
-	 * Funcion getCamposBean ()
 	 * @return conjunto de datos con los nombres de todos los campos del bean
 	 */
-	protected String[] getCamposBean()
-	{
-		String[] campos =
-		{
-				ScsInscripcionGuardiaBean.C_IDPERSONA,
-				ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-				ScsInscripcionGuardiaBean.C_IDTURNO,
-				ScsInscripcionGuardiaBean.C_IDGUARDIA,
-				ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,
-				ScsInscripcionGuardiaBean.C_FECHABAJA,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
-				ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-				ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
-				ScsInscripcionGuardiaBean.C_USUMODIFICACION,
-				ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
-				ScsInscripcionGuardiaBean.C_FECHADENEGACION,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA
-		};
+	protected String[] getCamposBean() {
+		String[] campos = {	ScsInscripcionGuardiaBean.C_IDPERSONA,
+							ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+							ScsInscripcionGuardiaBean.C_IDTURNO,
+							ScsInscripcionGuardiaBean.C_IDGUARDIA,
+							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,
+							ScsInscripcionGuardiaBean.C_FECHABAJA,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
+							ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
+							ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
+							ScsInscripcionGuardiaBean.C_USUMODIFICACION,
+							ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
+							ScsInscripcionGuardiaBean.C_FECHADENEGACION,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};		
 		return campos;
 	}
 	
 	/**
-	 * Funcion getClavesBean ()
 	 * @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 */
 	protected String[] getClavesBean() {
-		String[] campos =
-		{
-				ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-				ScsInscripcionGuardiaBean.C_IDPERSONA,
-				ScsInscripcionGuardiaBean.C_IDTURNO,
-				ScsInscripcionGuardiaBean.C_IDGUARDIA,
-				ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION
-		};
+		String[] campos = {	ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+							ScsInscripcionGuardiaBean.C_IDPERSONA,
+							ScsInscripcionGuardiaBean.C_IDTURNO,
+							ScsInscripcionGuardiaBean.C_IDGUARDIA,
+							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 		return campos;
 	}
 	
 	/**
-	 * Funcion hashTableToBean (Hashtable hash)
 	 * @param hash Hashtable para crear el bean
 	 * @return bean con la información de la hashtable
 	 */
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
-		ScsInscripcionGuardiaBean bean = null;
-		try{
-			bean = new ScsInscripcionGuardiaBean();
+	protected ScsInscripcionGuardiaBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+		try {
+			ScsInscripcionGuardiaBean bean = new ScsInscripcionGuardiaBean();
 			bean.setIdInstitucion(Integer.valueOf((String)hash.get(ScsInscripcionGuardiaBean.C_IDINSTITUCION)));
 			bean.setIdPersona(Long.valueOf((String)hash.get(ScsInscripcionGuardiaBean.C_IDPERSONA)));
 			bean.setIdTurno(Integer.valueOf((String)hash.get(ScsInscripcionGuardiaBean.C_IDTURNO)));
@@ -87,51 +90,19 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			bean.setFechaSuscripcion((String)hash.get(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
 			bean.setFechaBaja((String)hash.get(ScsInscripcionTurnoBean.C_FECHABAJA));
 			bean.setObservacionesSuscripcion((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION));
-			bean.setObservacionesBaja((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA));
-			
+			bean.setObservacionesBaja((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA));			
 			bean.setFechaValidacion((String)hash.get(ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
 			bean.setFechaSolicitudBaja((String)hash.get(ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA));
 			bean.setObservacionesValidacion((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION));
 			bean.setObservacionesDenegacion((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION));
 			bean.setFechaDenegacion((String)hash.get(ScsInscripcionGuardiaBean.C_FECHADENEGACION));
 			bean.setObservacionesValBaja((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA));
+		
+			return bean;
 			
-		}
-		catch(Exception e){
-			bean = null;
-			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
-		}
-		return bean;
-	}
-	
-	/** Esta funcion habria que borrarla de aqui:
-	 * pero hay que tener en cuenta que se usa desde una JSP
-	 */
-	public Hashtable obtenerNumCuenta(Long idpersona,Integer idInstitucion) throws SIGAException, ClsExceptions {
-		try{
-			String consulta="select count(C.IDCUENTA)AS NUM from cen_cuentasbancarias C where C.IDPERSONA = "+ idpersona+" AND C.IDINSTITUCION = "+idInstitucion+" AND (c.ABONOCARGO = 'C' OR c.ABONOCARGO = 'T') and c.fechabaja IS NULL";
-			
-			Vector vector=null;
-			vector=(Vector)ejecutaSelect(consulta);
-			String numcuentas=(String)((Hashtable)vector.get(0)).get("NUM");
-			Hashtable cuentaelegida=new Hashtable();
-			
-			if(numcuentas.equals("1")){
-				
-				consulta="select (C.CBO_CODIGO || '-' ||C.CODIGOSUCURSAL || '-' || C.DIGITOCONTROL || '-' ||LPAD(SUBSTR(C.NUMEROCUENTA, 7), 10, '*')) as DESCRIPCION, C.IDCUENTA A from cen_cuentasbancarias C where C.IDPERSONA = "+idpersona+" AND C.IDINSTITUCION = "+idInstitucion+" AND (c.ABONOCARGO = 'C' OR c.ABONOCARGO = 'T') and c.fechabaja IS NULL";
-				vector=(Vector)ejecutaSelect(consulta);
-				cuentaelegida.put("NUMCUENTA",(String)((Hashtable)vector.get(0)).get("DESCRIPCION"));
-				cuentaelegida.put("IDCUENTA",(String)((Hashtable)vector.get(0)).get("A"));
-			}
-			else{
-				cuentaelegida.put("NUMCUENTA","");
-				cuentaelegida.put("IDCUENTA","");
-			}
-			
-			return (cuentaelegida);
-		}catch(Exception e){
-			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
-		}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar hashTableToBean()");
+		}		
 	}
 	
 	/**
@@ -140,9 +111,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return hashtable con la información del bean
 	 */
 	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
-		Hashtable hash = null;
-		try{
-			hash = new Hashtable();
+		try {
+			Hashtable hash = new Hashtable();
 			ScsInscripcionGuardiaBean b = (ScsInscripcionGuardiaBean) bean;
 			hash.put(ScsInscripcionGuardiaBean.C_IDPERSONA,String.valueOf(b.getIdPersona()));
 			hash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION,String.valueOf(b.getIdInstitucion()));
@@ -158,37 +128,32 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, b.getObservacionesDenegacion());
 			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, b.getObservacionesValBaja());
 			hash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, b.getFechaDenegacion());
-		}
-		catch (Exception e){
-			hash = null;
-			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
-		}
-		return hash;
+			
+			return hash;
+			
+		} catch (Exception e){
+			throw new ClsExceptions (e, "Error al ejecutar beanToHashTable()");			
+		}		
 	}
 	
 	/**
-	 * Funcion getOrdenCampos ()
-	 * @return String[] conjunto de valores con los campos por los que se deberá ordenar la select
-	 * que se ejecute sobre esta tabla
+	 * @return String[] conjunto de valores con los campos por los que se deberá ordenar la select que se ejecute sobre esta tabla
 	 */
 	protected String[] getOrdenCampos(){
 		return null;
 	}
 	
 	/**
-	 * Funcion ejecutaSelect(String select)
 	 * @param select sentencia "select" sql valida, sin terminar en ";"
 	 * @return Vector todos los registros que se seleccionen 
 	 * en BBDD debido a la ejecucion de la sentencia select
 	 */
-	public Vector ejecutaSelect(String select) throws ClsExceptions 
-	{
-		Vector datos = new Vector();
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer(); 
+	public Vector ejecutaSelect(String select) throws ClsExceptions {
+		try {
+			Vector datos = new Vector();
+			
+			// Acceso a BBDD
+			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(select)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -197,94 +162,50 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 						datos.add(registro);
 				}
 			}
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		return datos;
-	}
-
-	public ScsInscripcionGuardiaBean getSiguienteInscripcion(String idInstitucion,
-			String idTurno,
-			String idPersona,
-			Integer idGuardia,
-			String fechaBajaTurno,
-			String fechaValGuardia) throws ClsExceptions
-	{
-
-		Vector datos = new Vector();
-		StringBuffer sql = new StringBuffer();
-		Hashtable htCodigos = new Hashtable();
-		int contador = 0;
-		sql.append(" SELECT * ");
-
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-		sql.append(" WHERE I.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idInstitucion);
-		sql.append(" AND I.IDTURNO = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idTurno);
-		sql.append(" AND I.IDPERSONA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idPersona);
-		if (idGuardia != null) {
-			sql.append(" AND I.IDGUARDIA = :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(contador, idGuardia);
-		}
-		
-		
-		// NO SACAR LAS CANCELADAS
-		sql.append(" AND ( ");
-		sql.append(" I.FECHABAJA IS NULL "); 
-		sql.append(" OR  ");
-		sql.append(" (I.FECHABAJA IS NOT NULL AND  TRUNC(I.FECHAVALIDACION) <> TRUNC(I.FECHABAJA)) ");
-		sql.append(" ) ");
-		
-		sql.append(" AND  ");
-		// VALIDADOS DE ALTA
-		sql.append(" I.FECHAVALIDACION IS NOT NULL AND ");
-		sql.append(" TRUNC(I.FECHAVALIDACION) >= :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, fechaValGuardia);
-		if (fechaBajaTurno != null && !fechaBajaTurno.equals("")) {
-			sql.append(" AND TRUNC(I.FECHAVALIDACION)< :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(contador, fechaBajaTurno);
-		}
-
-		// BAJA DENEGADA
-
-		sql.append(" ORDER BY I.FECHAVALIDACION ");
-
-		ScsInscripcionGuardiaBean inscripcionBean = null;
-		try {
-			RowsContainer rc = new RowsContainer();
-
-			if (rc.findBind(sql.toString(), htCodigos)) {
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable<String, Object> htFila = fila.getRow();
-					inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
-					break;
-
-				}
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		return inscripcionBean;
+			
+			return datos;
+			
+		} catch (Exception e){
+			throw new ClsExceptions (e, "Error al ejecutar ejecutaSelect()");			
+		}			
 	}
 	
+	/** 
+	 * @param idpersona
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable obtenerNumCuenta(Long idpersona,Integer idInstitucion) throws ClsExceptions {
+		try {
+			String consulta = "select count(C.IDCUENTA)AS NUM from cen_cuentasbancarias C where C.IDPERSONA = "+ idpersona+" AND C.IDINSTITUCION = "+idInstitucion+" AND (c.ABONOCARGO = 'C' OR c.ABONOCARGO = 'T') and c.fechabaja IS NULL";
+			
+			Vector vector = (Vector)ejecutaSelect(consulta);
+			String numcuentas=(String)((Hashtable)vector.get(0)).get("NUM");
+			Hashtable cuentaelegida=new Hashtable();
+			
+			if(numcuentas.equals("1")){
+				
+				consulta="select (C.CBO_CODIGO || '-' ||C.CODIGOSUCURSAL || '-' || C.DIGITOCONTROL || '-' ||LPAD(SUBSTR(C.NUMEROCUENTA, 7), 10, '*')) as DESCRIPCION, C.IDCUENTA A from cen_cuentasbancarias C where C.IDPERSONA = "+idpersona+" AND C.IDINSTITUCION = "+idInstitucion+" AND (c.ABONOCARGO = 'C' OR c.ABONOCARGO = 'T') and c.fechabaja IS NULL";
+				vector=(Vector)ejecutaSelect(consulta);
+				cuentaelegida.put("NUMCUENTA",(String)((Hashtable)vector.get(0)).get("DESCRIPCION"));
+				cuentaelegida.put("IDCUENTA",(String)((Hashtable)vector.get(0)).get("A"));
+				
+			} else {
+				cuentaelegida.put("NUMCUENTA","");
+				cuentaelegida.put("IDCUENTA","");
+			}
+			
+			return (cuentaelegida);
+			
+		} catch(Exception e){
+			throw new ClsExceptions (e, "Error al ejecutar obtenerNumCuenta()");
+		}
+	}	
+	
 	/**
-	 * Obtiene la inscripciones de guardia de la inscriocion de turno
+	 * Obtiene la inscripciones de guardia de la inscripcion de turno
+	 * 
 	 * @param idInstitucion
 	 * @param idTurno
 	 * @param idPersona
@@ -293,274 +214,83 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Hashtable getInscripcionesGuardiaInscripcionTurno(String idInstitucion, String idTurno, String idPersona, Integer idGuardia, ScsInscripcionTurnoBean inscripcionTurno) throws ClsExceptions {		
-		Hashtable datos = new Hashtable();
-		StringBuffer sql = new StringBuffer();
-		Hashtable htCodigos = new Hashtable();
-		int contador = 0;
-		
-		sql.append(" SELECT I.IDINSTITUCION, ");
-			sql.append(" I.IDPERSONA, ");
-			sql.append(" I.IDTURNO, ");
-			sql.append(" I.IDGUARDIA, ");
-			sql.append(" I.FECHASUSCRIPCION, ");
-			sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHAVALIDACION, ");
-			sql.append(" I.OBSERVACIONESVALIDACION, ");
-			sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHASOLICITUDBAJA, ");
-			sql.append(" I.OBSERVACIONESBAJA, ");
-			sql.append(" I.FECHABAJA, ");
-			sql.append(" I.OBSERVACIONESVALBAJA, ");
-			sql.append(" I.OBSERVACIONESDENEGACION, ");
-			sql.append(" I.FECHADENEGACION, ");
-			sql.append(" NVL(I.FECHADENEGACION, I.FECHAVALIDACION) FECHAVALOR ");			
-		//Sacamos este campo, ya que solo se podran incribie en guardia cuando la incripcion en el turno este validado
-		//Esto es para los turnos con guardia a elegir y todas-ninguna.
-		
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-		
-		contador++;
-		sql.append(" WHERE I.IDINSTITUCION = :" + contador);
-		htCodigos.put(contador, idInstitucion);
-		
-		contador++;
-		sql.append(" AND I.IDTURNO = :" + contador);		
-		htCodigos.put(contador, idTurno);
-		
-		contador++;
-		sql.append(" AND I.IDPERSONA = :" + contador);		
-		htCodigos.put(contador, idPersona);
-		
-		contador++;
-		sql.append(" AND I.IDGUARDIA = :" + contador);
-		htCodigos.put(contador, idGuardia);
-		
-		if (inscripcionTurno.getFechaValidacion() != null && !inscripcionTurno.getFechaValidacion().equals("")) {
-			sql.append(" AND ((FECHAVALIDACION IS NULL ");
-			sql.append(" AND FECHADENEGACION IS NULL) ");
-			sql.append(" OR TRUNC(I.FECHAVALIDACION) >= TRUNC(TO_DATE('" + inscripcionTurno.getFechaValidacion() + "', '" + ClsConstants.DATE_FORMAT_SQL + "'))) ");
+	public Hashtable getInscripcionGuardiaInscripcionTurno(String idInstitucion, String idTurno, String idPersona, Integer idGuardia, ScsInscripcionTurnoBean inscripcionTurno) throws ClsExceptions {
+		try {
+			Hashtable datos = new Hashtable();
+			StringBuffer sql = new StringBuffer();
+			Hashtable htCodigos = new Hashtable();
+			int contador = 0;
 			
-		} else {
-			if (inscripcionTurno.getFechaDenegacion() != null && !inscripcionTurno.getFechaDenegacion().equals("")) {
-				sql.append(" AND TRUNC(I.FECHADENEGACION) = TRUNC(TO_DATE('" + inscripcionTurno.getFechaDenegacion() + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ");			
+			sql.append(" SELECT " + camposSelect);
+				sql.append(", NVL(FECHADENEGACION, FECHAVALIDACION) FECHAVALOR ");			
+			//Sacamos este campo, ya que solo se podran incribie en guardia cuando la incripcion en el turno este validado
+			//Esto es para los turnos con guardia a elegir y todas-ninguna.
+			
+			sql.append(" FROM SCS_INSCRIPCIONGUARDIA ");
+			
+			contador++;
+			sql.append(" WHERE IDINSTITUCION = :" + contador);
+			htCodigos.put(contador, idInstitucion);
+			
+			contador++;
+			sql.append(" AND IDTURNO = :" + contador);		
+			htCodigos.put(contador, idTurno);
+			
+			contador++;
+			sql.append(" AND IDPERSONA = :" + contador);		
+			htCodigos.put(contador, idPersona);
+			
+			contador++;
+			sql.append(" AND IDGUARDIA = :" + contador);
+			htCodigos.put(contador, idGuardia);
+			
+			if (inscripcionTurno.getFechaValidacion() != null && !inscripcionTurno.getFechaValidacion().equals("")) {
+				sql.append(" AND ((FECHAVALIDACION IS NULL ");
+				sql.append(" AND FECHADENEGACION IS NULL) ");
+				sql.append(" OR TRUNC(FECHAVALIDACION) >= TRUNC(TO_DATE('" + inscripcionTurno.getFechaValidacion() + "', '" + ClsConstants.DATE_FORMAT_SQL + "'))) ");
+				
+			} else {
+				if (inscripcionTurno.getFechaDenegacion() != null && !inscripcionTurno.getFechaDenegacion().equals("")) {
+					sql.append(" AND TRUNC(FECHADENEGACION) = TRUNC(TO_DATE('" + inscripcionTurno.getFechaDenegacion() + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ");			
+				}
 			}
-		}
-		
-		if (inscripcionTurno.getFechaBaja() != null && !inscripcionTurno.getFechaBaja().equals("")) {
-			sql.append(" AND TRUNC(I.FECHABAJA) <= TRUNC(TO_DATE('" + inscripcionTurno.getFechaBaja() + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ");
-		}
-
-		// OBTENGO LA ULTIMA FECHA DE SUSCRIPCION Y VALIDACION
-		sql.append(" ORDER BY I.FECHASUSCRIPCION DESC, FECHAVALIDACION DESC ");
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer(); 
+			
+			if (inscripcionTurno.getFechaBaja() != null && !inscripcionTurno.getFechaBaja().equals("")) {
+				sql.append(" AND TRUNC(FECHABAJA) <= TRUNC(TO_DATE('" + inscripcionTurno.getFechaBaja() + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ");
+			}
+	
+			// OBTENGO LA ULTIMA FECHA DE SUSCRIPCION Y VALIDACION
+			sql.append(" ORDER BY FECHASUSCRIPCION DESC, FECHAVALIDACION DESC ");
+			
+			// Acceso a BBDD
+			RowsContainer rc = new RowsContainer(); 
 			if (rc.queryBind(sql.toString(), htCodigos)) {
 				if(rc!=null && rc.size()>0){
 					Row fila = (Row) rc.get(0);
 					datos = (Hashtable) fila.getRow(); 
 				}
 			}
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		return datos;
+			
+			return datos;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardiaInscripcionTurno()");
+		}				
 	}	
 	
 	/**
-	 * Obtiene los registros de inscripciones de guardia con los que se puede hacer algo.
-	 * Es decir, practicamente todos los estados menos Baja
 	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idPersona
-	 * @param idGuardia
+	 * @param institucion
+	 * @param turno
+	 * @param idguardia
 	 * @param fecha
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector getRegistrosInscripcionGuardiaPendientes(String idInstitucion,String idTurno, String idPersona, Integer idGuardia, String fecha) throws ClsExceptions 
-	{
-		
-		Vector datos = new Vector();
-		StringBuffer sql = new StringBuffer();
-		Hashtable htCodigos = new Hashtable();
-		int contador =0;
-		sql.append(" SELECT I.IDINSTITUCION, ");
-			sql.append(" I.IDPERSONA, ");
-			sql.append(" I.IDTURNO, ");
-			sql.append(" I.IDGUARDIA, ");
-			sql.append(" I.FECHASUSCRIPCION, ");
-			sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHAVALIDACION, ");
-			sql.append(" I.OBSERVACIONESVALIDACION, ");
-			sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHASOLICITUDBAJA, ");
-			sql.append(" I.OBSERVACIONESBAJA, ");
-			sql.append(" I.FECHABAJA, ");
-			sql.append(" I.OBSERVACIONESVALBAJA, ");
-			sql.append(" I.OBSERVACIONESDENEGACION, ");
-			sql.append(" I.FECHADENEGACION, ");
-			sql.append(" NVL(I.FECHADENEGACION, I.FECHAVALIDACION) FECHAVALOR ");			
-		//Sacamos este campo, ya que solo se podran incribie en guardia cuando la incripcion en el turno este validado
-		//Esto es para los turnos con guardia a elegir y todas-ninguna.
-		
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-		
-		sql.append(" WHERE I.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);		
-		htCodigos.put(contador, idInstitucion);
-		
-		sql.append(" AND I.IDTURNO = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idTurno);
-		
-		sql.append(" AND I.IDPERSONA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idPersona);
-		
-		if(idGuardia!=null){
-			sql.append(" AND I.IDGUARDIA = :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(contador, idGuardia);
-		}
-		
-		if(fecha!=null){
-			//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
-			if(fecha.equalsIgnoreCase("sysdate"))
-				fecha = "trunc(sysdate)";
-			else
-				fecha = "'"+fecha+"'";
-		}else{
-			fecha = "trunc(sysdate)";
-		}
-			
-		//NO SACAR LAS CANCELADAS		   
-		sql.append( " AND ( ");
-		
-			//PENDIENTES DE ALTA
-			sql.append( " (I.FECHAVALIDACION IS NULL ");
-			sql.append( "  AND I.FECHASOLICITUDBAJA IS NULL ");
-			sql.append( "  AND I.FECHADENEGACION IS NULL) ");
-			     
-			// VALIDADOS DE ALTA
-			sql.append( " OR ");		
-			sql.append( " (I.FECHAVALIDACION IS NOT NULL ");
-			sql.append( " AND TRUNC(I.FECHAVALIDACION) <= "); 
-			sql.append(fecha);
-			sql.append( " AND (I.FECHABAJA IS NULL ");
-			sql.append( " OR (I.FECHABAJA IS NOT NULL ");
-			sql.append( " AND TRUNC(I.FECHABAJA) >= ");
-			sql.append(fecha);
-			sql.append( ")))" );
-		  
-			// PENDIENTES DE BAJA
-			sql.append( " OR ");	     
-			sql.append( " (I.FECHASOLICITUDBAJA IS NOT NULL ");
-			sql.append( " AND I.FECHABAJA IS NULL ");
-			sql.append( " AND I.FECHADENEGACION IS NULL) ");
-			       
-			// BAJA DENEGADA
-			sql.append( " OR "); 
-			sql.append( " (I.FECHASOLICITUDBAJA IS NOT NULL ");
-			sql.append( "  AND I.FECHADENEGACION IS NOT NULL) ");
-		
-		sql.append( " ) ");
-		
-		sql.append(" ORDER BY I.FECHASUSCRIPCION DESC ");
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer(); 
-			if (rc.queryBind(sql.toString(),htCodigos)) {
-				if(rc!=null && rc.size()>0){
-					Row fila = (Row) rc.get(0);
-					Hashtable registro = (Hashtable) fila.getRow(); 
-					if (registro != null) {
-						datos.add(registro);
-					}
-				}
-			}
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		return datos;
-	}
-	
-	public boolean existenInscripcionesGuardiaActivas(Integer idInstitucion,Integer idTurno, Long idPersona, String fechaDesde,String fechaHasta) throws ClsExceptions 
-	{
-		
-		StringBuffer sql = new StringBuffer();
-		Hashtable htCodigos = new Hashtable();
-		int contador =0;
-		sql.append(" SELECT COUNT(*) NUMINSCRIPCIONES ");
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-		sql.append(" WHERE I.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idInstitucion);
-		sql.append(" AND I.IDTURNO = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idTurno);
-		sql.append(" AND I.IDPERSONA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(contador, idPersona);
-		
-		sql.append(" AND I.FECHABAJA IS NOT NULL AND ");
-		
-		sql.append(" TRUNC(I.FECHABAJA) between ");
-		
-		contador ++;
-		sql.append(":");
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),fechaDesde);	
-		
-		sql.append(" AND ");
-		
-		contador ++;
-		sql.append(":");
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),fechaHasta);
-		
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		boolean isInscripcionesActivas = false;
-		try { 
-			rc = new RowsContainer(); 
-			if (rc.queryBind(sql.toString(),htCodigos)) {
-				if(rc!=null && rc.size()>0){
-					Row fila = (Row) rc.get(0);
-					Hashtable registro = (Hashtable) fila.getRow();
-					isInscripcionesActivas = Integer.parseInt((String)registro.get("NUMINSCRIPCIONES"))>0;
-				}
-			}
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		return isInscripcionesActivas;
-	}
-	
-	public String getQueryNumeroColegiadosIncritos(String institucion, String turno, String idguardia, String fecha) throws ClsExceptions
-	{
-
-		String consulta = "";
+	public String getQueryNumeroColegiadosIncritos(String institucion, String turno, String idguardia, String fecha) throws ClsExceptions {
 		try {
-			consulta = " select count(*) as NLETRADOSINSCRITOS from " + ScsInscripcionGuardiaBean.T_NOMBRETABLA
-					+ " where idinstitucion =" + institucion + " and idturno=" + turno + " and idguardia=" + idguardia;
+			String consulta = " select count(*) as NLETRADOSINSCRITOS from " + ScsInscripcionGuardiaBean.T_NOMBRETABLA
+				+ " where idinstitucion =" + institucion + " and idturno=" + turno + " and idguardia=" + idguardia;
 
 			if (fecha == null) {
 				// consulta += " and FECHABAJA IS NULL";
@@ -576,13 +306,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 						+ ") and (FECHABAJA IS NULL or trunc(FECHABAJA)>" + fecha + ")";
 
 			}
+
+			return consulta;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e,
-					"Excepcion en ScsInscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos() Consulta SQL:" + consulta);
-		}
-
-		return consulta;
-
+			throw new ClsExceptions (e, "Error al ejecutar getQueryNumeroColegiadosIncritos()");
+		}			
 	}
 	
 	/**
@@ -593,176 +322,175 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public List<ScsInscripcionGuardiaBean> getInscripcionesGuardia(InscripcionTGForm inscripcionguardiaForm) throws ClsExceptions {
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT  ");
-			sql.append(" GT.NOMBRE NOMBREGUARDIA, ");
-			sql.append(" T.NOMBRE NOMBRETURNO, ");
-			sql.append(" T.ABREVIATURA ABREVIATURATURNO, ");
-			sql.append(" T.VALIDARINSCRIPCIONES, ");
-			sql.append(" T.GUARDIAS, ");
-			sql.append(" DECODE(COL.COMUNITARIO,'1', COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
-			sql.append(" PER.NOMBRE, ");
-			sql.append(" PER.APELLIDOS1, ");
-			sql.append(" PER.APELLIDOS2, ");
-			sql.append(" I.IDINSTITUCION, ");
-			sql.append(" I.IDPERSONA, ");
-			sql.append(" I.IDTURNO, ");
-			sql.append(" I.IDGUARDIA, ");
-			sql.append(" I.FECHASUSCRIPCION, ");
-			sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHAVALIDACION, ");
-			sql.append(" I.OBSERVACIONESVALIDACION, ");
-			sql.append(" I.FECHASOLICITUDBAJA, ");
-			sql.append(" I.OBSERVACIONESBAJA, ");
-			sql.append(" I.FECHABAJA, ");
-			sql.append(" I.OBSERVACIONESVALBAJA, ");
-			sql.append(" I.FECHADENEGACION, ");
-			sql.append(" I.OBSERVACIONESDENEGACION, ");
-			sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHAVALIDACION), 'dd/mm/yyyy') FECHAVALORALTA, ");
-			sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
-			
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I, ");
-			sql.append(" CEN_COLEGIADO COL, ");
-			sql.append(" CEN_PERSONA PER, ");
-			sql.append(" SCS_GUARDIASTURNO GT, ");
-			sql.append(" SCS_TURNO T ");
-			
-		sql.append(" WHERE I.IDINSTITUCION = GT.IDINSTITUCION ");
-			sql.append(" AND I.IDTURNO = GT.IDTURNO ");
-			sql.append(" AND I.IDGUARDIA = GT.IDGUARDIA ");
-			sql.append(" AND I.IDINSTITUCION = COL.IDINSTITUCION ");
-			sql.append(" AND I.IDPERSONA = COL.IDPERSONA ");
-			sql.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
-			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION ");
-			sql.append(" AND GT.IDTURNO = T.IDTURNO ");
-		
-		
-		// Sacamos las guardias en potencia de ser validadas(excepto las obligatorias)
-		// sql.append(" AND T.GUARDIAS!=");
-		// sql.append(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS);
-
-		sql.append(" AND I.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdInstitucion());
-		
-		if (inscripcionguardiaForm.getIdTurno() != null && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("") && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("-1")) {
-			sql.append(" AND I.IDTURNO = :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdTurno());
-		}
-		
-		if (inscripcionguardiaForm.getIdPersona() != null && !inscripcionguardiaForm.getIdPersona().equalsIgnoreCase("")) {
-			sql.append(" AND I.IDPERSONA = :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdPersona());
-		}
-		
-		if (inscripcionguardiaForm.getIdGuardia() != null && !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("") && !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("-1")) {
-			sql.append(" AND I.IDGUARDIA = :");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdGuardia());
-		}
-
-		String campoFecha = null;
-		StringBuffer orderBy = new StringBuffer();
-		
-		// OBTIENE LA ULTIMA GUARDIA
-		sql.append(" AND I.FECHASUSCRIPCION = ");
-		sql.append(" (SELECT MAX(IG2.FECHASUSCRIPCION) ");
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA IG2 ");
-		sql.append(" WHERE IG2.IDINSTITUCION = I.IDINSTITUCION ");
-			sql.append(" AND IG2.IDTURNO = I.IDTURNO ");
-			sql.append(" AND IG2.IDGUARDIA = I.IDGUARDIA ");
-			sql.append(" AND IG2.IDPERSONA = I.IDPERSONA) ");
-		
-		if (inscripcionguardiaForm.getTipo().equals("A")) {
-			campoFecha = "I.FECHASUSCRIPCION";
-			orderBy.append(campoFecha);
-			sql.append(" AND I.FECHABAJA IS NULL ");
-			sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
-			
-			// TIENEN QUE TENER LA INSCRIPCION AL TURNO VALIDADAS
-			sql.append(" AND (SELECT count(*) ");
-			sql.append(" FROM SCS_INSCRIPCIONTURNO IT ");
-			sql.append(" WHERE IT.IDINSTITUCION = I.IDINSTITUCION ");
-			sql.append(" AND IT.IDTURNO = I.IDTURNO ");
-			sql.append(" AND IT.IDPERSONA = I.IDPERSONA ");
-			sql.append(" AND IT.FECHAVALIDACION IS NULL ");
-			sql.append(" AND IT.FECHABAJA IS NULL ");
-			sql.append(" AND IT.FECHASOLICITUDBAJA IS NULL ");
-			sql.append(" AND IT.FECHADENEGACION IS NULL) = 0 ");
-			
-			if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("S")) {
-				
-				
-			} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
-				sql.append(" AND I.FECHADENEGACION IS NULL ");
-				sql.append(" AND I.FECHAVALIDACION IS NULL ");
-
-			} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
-				orderBy.append(",I.FECHAVALIDACION");
-				sql.append(" AND I.FECHADENEGACION IS NULL ");
-				sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
-
-			} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
-				orderBy.append(",I.FECHADENEGACION");
-				sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-				sql.append(" AND I.FECHAVALIDACION IS NULL ");
-			}
-
-		} else if (inscripcionguardiaForm.getTipo().equals("B")) {
-			campoFecha = "I.FECHASOLICITUDBAJA";
-			orderBy.append(campoFecha);
-			sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
-			
-			if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
-				sql.append(" AND I.FECHADENEGACION IS NULL ");
-				sql.append(" AND I.FECHABAJA IS NULL ");
-
-			} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
-				orderBy.append(",I.FECHABAJA");
-				sql.append(" AND I.FECHABAJA IS NOT NULL ");
-				sql.append(" AND I.FECHADENEGACION IS NULL ");
-
-			} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
-				orderBy.append(",I.FECHADENEGACION");
-				sql.append(" AND I.FECHABAJA IS NULL ");
-				sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-			}
-		}
-		
-		if (inscripcionguardiaForm.getFechaDesde() != null && !inscripcionguardiaForm.getFechaDesde().equals("")) {
-			sql.append(" AND ");
-			sql.append(campoFecha);
-			sql.append(">=:");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaDesde());
-		}
-		
-		if (inscripcionguardiaForm.getFechaHasta() != null && !inscripcionguardiaForm.getFechaHasta().equals("")) {
-			sql.append(" AND ");
-			sql.append(campoFecha);
-			sql.append("<=:");
-			contador++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaHasta());
-		}
-
-		sql.append(" ORDER BY ");		
-		//sql.append(orderBy);
-		sql.append(" NOMBRETURNO, NOMBREGUARDIA ");
-
-		List<ScsInscripcionGuardiaBean> alInscripcion = null;
+	public List<ScsInscripcionGuardiaBean> getInscripcionesGuardias(InscripcionTGForm inscripcionguardiaForm) throws ClsExceptions {
 		try {
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			int contador = 0;
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT  ");
+				sql.append(" GT.NOMBRE NOMBREGUARDIA, ");
+				sql.append(" T.NOMBRE NOMBRETURNO, ");
+				sql.append(" T.ABREVIATURA ABREVIATURATURNO, ");
+				sql.append(" T.VALIDARINSCRIPCIONES, ");
+				sql.append(" T.GUARDIAS, ");
+				sql.append(" DECODE(COL.COMUNITARIO,'1', COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
+				sql.append(" PER.NOMBRE, ");
+				sql.append(" PER.APELLIDOS1, ");
+				sql.append(" PER.APELLIDOS2, ");
+				sql.append(" I.IDINSTITUCION, ");
+				sql.append(" I.IDPERSONA, ");
+				sql.append(" I.IDTURNO, ");
+				sql.append(" I.IDGUARDIA, ");
+				sql.append(" I.FECHASUSCRIPCION, ");
+				sql.append(" I.OBSERVACIONESSUSCRIPCION, ");
+				sql.append(" I.FECHAVALIDACION, ");
+				sql.append(" I.OBSERVACIONESVALIDACION, ");
+				sql.append(" I.FECHASOLICITUDBAJA, ");
+				sql.append(" I.OBSERVACIONESBAJA, ");
+				sql.append(" I.FECHABAJA, ");
+				sql.append(" I.OBSERVACIONESVALBAJA, ");
+				sql.append(" I.FECHADENEGACION, ");
+				sql.append(" I.OBSERVACIONESDENEGACION, ");
+				sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHAVALIDACION), 'dd/mm/yyyy') FECHAVALORALTA, ");
+				sql.append(" TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
+				
+			sql.append(" FROM SCS_INSCRIPCIONGUARDIA I, ");
+				sql.append(" CEN_COLEGIADO COL, ");
+				sql.append(" CEN_PERSONA PER, ");
+				sql.append(" SCS_GUARDIASTURNO GT, ");
+				sql.append(" SCS_TURNO T ");
+				
+			sql.append(" WHERE I.IDINSTITUCION = GT.IDINSTITUCION ");
+				sql.append(" AND I.IDTURNO = GT.IDTURNO ");
+				sql.append(" AND I.IDGUARDIA = GT.IDGUARDIA ");
+				sql.append(" AND I.IDINSTITUCION = COL.IDINSTITUCION ");
+				sql.append(" AND I.IDPERSONA = COL.IDPERSONA ");
+				sql.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
+				sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION ");
+				sql.append(" AND GT.IDTURNO = T.IDTURNO ");
+			
+			
+			// Sacamos las guardias en potencia de ser validadas(excepto las obligatorias)
+			// sql.append(" AND T.GUARDIAS!=");
+			// sql.append(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS);
+	
+			sql.append(" AND I.IDINSTITUCION = :");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdInstitucion());
+			
+			if (inscripcionguardiaForm.getIdTurno() != null && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("") && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("-1")) {
+				sql.append(" AND I.IDTURNO = :");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdTurno());
+			}
+			
+			if (inscripcionguardiaForm.getIdPersona() != null && !inscripcionguardiaForm.getIdPersona().equalsIgnoreCase("")) {
+				sql.append(" AND I.IDPERSONA = :");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdPersona());
+			}
+			
+			if (inscripcionguardiaForm.getIdGuardia() != null && !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("") && !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("-1")) {
+				sql.append(" AND I.IDGUARDIA = :");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdGuardia());
+			}
+	
+			String campoFecha = null;
+			StringBuffer orderBy = new StringBuffer();
+			
+			// OBTIENE LA ULTIMA GUARDIA
+			sql.append(" AND I.FECHASUSCRIPCION = ");
+			sql.append(" (SELECT MAX(IG2.FECHASUSCRIPCION) ");
+			sql.append(" FROM SCS_INSCRIPCIONGUARDIA IG2 ");
+			sql.append(" WHERE IG2.IDINSTITUCION = I.IDINSTITUCION ");
+				sql.append(" AND IG2.IDTURNO = I.IDTURNO ");
+				sql.append(" AND IG2.IDGUARDIA = I.IDGUARDIA ");
+				sql.append(" AND IG2.IDPERSONA = I.IDPERSONA) ");
+			
+			if (inscripcionguardiaForm.getTipo().equals("A")) {
+				campoFecha = "I.FECHASUSCRIPCION";
+				orderBy.append(campoFecha);
+				sql.append(" AND I.FECHABAJA IS NULL ");
+				sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+				
+				// TIENEN QUE TENER LA INSCRIPCION AL TURNO VALIDADAS
+				sql.append(" AND (SELECT count(*) ");
+				sql.append(" FROM SCS_INSCRIPCIONTURNO IT ");
+				sql.append(" WHERE IT.IDINSTITUCION = I.IDINSTITUCION ");
+				sql.append(" AND IT.IDTURNO = I.IDTURNO ");
+				sql.append(" AND IT.IDPERSONA = I.IDPERSONA ");
+				sql.append(" AND IT.FECHAVALIDACION IS NULL ");
+				sql.append(" AND IT.FECHABAJA IS NULL ");
+				sql.append(" AND IT.FECHASOLICITUDBAJA IS NULL ");
+				sql.append(" AND IT.FECHADENEGACION IS NULL) = 0 ");
+				
+				if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("S")) {
+					
+					
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
+	
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHAVALIDACION");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
+	
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHADENEGACION");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
+				}
+	
+			} else if (inscripcionguardiaForm.getTipo().equals("B")) {
+				campoFecha = "I.FECHASOLICITUDBAJA";
+				orderBy.append(campoFecha);
+				sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+				
+				if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+	
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHABAJA");
+					sql.append(" AND I.FECHABAJA IS NOT NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+	
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHADENEGACION");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
+				}
+			}
+			
+			if (inscripcionguardiaForm.getFechaDesde() != null && !inscripcionguardiaForm.getFechaDesde().equals("")) {
+				sql.append(" AND ");
+				sql.append(campoFecha);
+				sql.append(">=:");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaDesde());
+			}
+			
+			if (inscripcionguardiaForm.getFechaHasta() != null && !inscripcionguardiaForm.getFechaHasta().equals("")) {
+				sql.append(" AND ");
+				sql.append(campoFecha);
+				sql.append("<=:");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaHasta());
+			}
+	
+			sql.append(" ORDER BY ");		
+			//sql.append(orderBy);
+			sql.append(" NOMBRETURNO, NOMBREGUARDIA ");
+	
+			List<ScsInscripcionGuardiaBean> alInscripcion = null;
 			RowsContainer rc = new RowsContainer();
 
 			if (rc.findBind(sql.toString(), htCodigos)) {
@@ -853,10 +581,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					alInscripcion.add(inscripcionBean);
 				}
 			}
+			
+			return alInscripcion;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		return alInscripcion;
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardia()");
+		}				
 	}
 	
 	/**
@@ -870,35 +600,35 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public List<ScsInscripcionGuardiaBean> getGuardiasTurnoFechaEfectiva (Integer idInstitucion, Integer idTurno, Long idPersona, String fecha, boolean esAlta) throws ClsExceptions {
-		String sql = " SELECT I.IDINSTITUCION, " +
-				" I.IDPERSONA, " +
-				" I.IDTURNO, " +
-				" I.IDGUARDIA, " +				
-				" I.FECHASUSCRIPCION, " +				
-				" I.OBSERVACIONESSUSCRIPCION, " +				
-				" I.FECHAVALIDACION, " +
-				" I.OBSERVACIONESVALIDACION, " +				
-				" I.FECHASOLICITUDBAJA, " +
-				" I.OBSERVACIONESBAJA, " +
-				" I.FECHABAJA, " +
-				" I.OBSERVACIONESVALBAJA, " +
-				" I.FECHADENEGACION, " +
-				" I.OBSERVACIONESDENEGACION " +				
-			" FROM SCS_INSCRIPCIONGUARDIA I " +
-			" WHERE I.IDINSTITUCION = " + idInstitucion +
-				" AND I.IDTURNO = " + idTurno +
-				" AND I.IDPERSONA = " + idPersona;
-		
-		if (esAlta) {
-			sql += " AND TRUNC(I.FECHAVALIDACION) = TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";
+	public List<ScsInscripcionGuardiaBean> getInscripcionesGuardiasTurnoFechaEfectiva (Integer idInstitucion, Integer idTurno, Long idPersona, String fecha, boolean esAlta) throws ClsExceptions {
+		try {
+			String sql = " SELECT I.IDINSTITUCION, " +
+					" I.IDPERSONA, " +
+					" I.IDTURNO, " +
+					" I.IDGUARDIA, " +				
+					" I.FECHASUSCRIPCION, " +				
+					" I.OBSERVACIONESSUSCRIPCION, " +				
+					" I.FECHAVALIDACION, " +
+					" I.OBSERVACIONESVALIDACION, " +				
+					" I.FECHASOLICITUDBAJA, " +
+					" I.OBSERVACIONESBAJA, " +
+					" I.FECHABAJA, " +
+					" I.OBSERVACIONESVALBAJA, " +
+					" I.FECHADENEGACION, " +
+					" I.OBSERVACIONESDENEGACION " +				
+				" FROM SCS_INSCRIPCIONGUARDIA I " +
+				" WHERE I.IDINSTITUCION = " + idInstitucion +
+					" AND I.IDTURNO = " + idTurno +
+					" AND I.IDPERSONA = " + idPersona;
 			
-		} else {
-			sql += " AND TRUNC(I.FECHABAJA) = TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";
-		}
-			
-		List<ScsInscripcionGuardiaBean> alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
-		try {			
+			if (esAlta) {
+				sql += " AND TRUNC(I.FECHAVALIDACION) = TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";
+				
+			} else {
+				sql += " AND TRUNC(I.FECHABAJA) = TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";
+			}
+				
+			List<ScsInscripcionGuardiaBean> alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();			
 			RowsContainer rc = new RowsContainer(); 
 
 			if (rc.find(sql)) {				
@@ -910,11 +640,11 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				}
 			} 
 			
+			return alInscripcion;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta.");
-		}
-		
-		return alInscripcion;
+			throw new ClsExceptions (e, "Error al ejecutar getGuardiasTurnoFechaEfectiva()");
+		}				
 	}		
 
 	/**
@@ -929,59 +659,58 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public List<ScsInscripcionGuardiaBean> getGuardiasInscripcion(Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-
-		sql.append(" SELECT GT.IDINSTITUCION, ");
-			sql.append(" GT.IDTURNO, ");
-			sql.append(" GT.IDGUARDIA, ");
-			sql.append(" GT.NOMBRE, ");
-			sql.append(" GT.NUMEROLETRADOSGUARDIA, ");
-			sql.append(" GT.NUMEROSUSTITUTOSGUARDIA, ");
-			sql.append(" GT.SELECCIONLABORABLES, ");
-			sql.append(" GT.SELECCIONFESTIVOS, ");
-			sql.append(" GT.TIPODIASGUARDIA, ");
-			sql.append(" GT.DIASGUARDIA, ");
-			sql.append(" GT.DIASPAGADOS, ");
-			sql.append(" GT.DIASSEPARACIONGUARDIAS, ");
-			sql.append(" GT.PORGRUPOS, ");
-			sql.append(" IG.FECHASUSCRIPCION, ");
-			sql.append(" IG.IDPERSONA ");
-		sql.append(" FROM SCS_GUARDIASTURNO GT, ");
-			sql.append(" SCS_INSCRIPCIONGUARDIA IG ");
-		sql.append(" WHERE GT.IDINSTITUCION = IG.IDINSTITUCION ");
-			sql.append(" AND GT.IDTURNO = IG.IDTURNO ");
-			sql.append(" AND GT.IDGUARDIA = IG.IDGUARDIA ");
-		
-		contador++;
-			sql.append(" AND IG.IDINSTITUCION = :" + contador);
-		htCodigos.put(new Integer(contador), idInstitucion);
-		
-		contador++;
-			sql.append(" AND IG.IDTURNO = :" + contador);
-		htCodigos.put(new Integer(contador), idTurno);
-		
-		contador++;
-			sql.append(" AND IG.IDPERSONA = :" + contador);		
-		htCodigos.put(new Integer(contador), idPersona);
-		
-			sql.append(" AND IG.FECHABAJA IS NULL ");
-			sql.append(" AND (IG.FECHADENEGACION IS NULL ");
-				sql.append(" OR IG.FECHAVALIDACION IS NOT NULL) ");
-
-		if (idGuardia != null) {
-			contador++;
-			sql.append(" AND IG.IDGUARDIA = :" + contador);
-			htCodigos.put(new Integer(contador), idGuardia);
-		}
-
-		sql.append(" ORDER BY GT.NOMBRE ");
-
-		List<ScsInscripcionGuardiaBean> alInscripcion = null;
+	public List<ScsInscripcionGuardiaBean> getInscripcionesGuardias(Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
 		try {
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			int contador = 0;
+			StringBuffer sql = new StringBuffer();
+	
+			sql.append(" SELECT GT.IDINSTITUCION, ");
+				sql.append(" GT.IDTURNO, ");
+				sql.append(" GT.IDGUARDIA, ");
+				sql.append(" GT.NOMBRE, ");
+				sql.append(" GT.NUMEROLETRADOSGUARDIA, ");
+				sql.append(" GT.NUMEROSUSTITUTOSGUARDIA, ");
+				sql.append(" GT.SELECCIONLABORABLES, ");
+				sql.append(" GT.SELECCIONFESTIVOS, ");
+				sql.append(" GT.TIPODIASGUARDIA, ");
+				sql.append(" GT.DIASGUARDIA, ");
+				sql.append(" GT.DIASPAGADOS, ");
+				sql.append(" GT.DIASSEPARACIONGUARDIAS, ");
+				sql.append(" GT.PORGRUPOS, ");
+				sql.append(" IG.FECHASUSCRIPCION, ");
+				sql.append(" IG.IDPERSONA ");
+			sql.append(" FROM SCS_GUARDIASTURNO GT, ");
+				sql.append(" SCS_INSCRIPCIONGUARDIA IG ");
+			sql.append(" WHERE GT.IDINSTITUCION = IG.IDINSTITUCION ");
+				sql.append(" AND GT.IDTURNO = IG.IDTURNO ");
+				sql.append(" AND GT.IDGUARDIA = IG.IDGUARDIA ");
+			
+			contador++;
+				sql.append(" AND IG.IDINSTITUCION = :" + contador);
+			htCodigos.put(new Integer(contador), idInstitucion);
+			
+			contador++;
+				sql.append(" AND IG.IDTURNO = :" + contador);
+			htCodigos.put(new Integer(contador), idTurno);
+			
+			contador++;
+				sql.append(" AND IG.IDPERSONA = :" + contador);		
+			htCodigos.put(new Integer(contador), idPersona);
+			
+				sql.append(" AND IG.FECHABAJA IS NULL ");
+				sql.append(" AND (IG.FECHADENEGACION IS NULL ");
+					sql.append(" OR IG.FECHAVALIDACION IS NOT NULL) ");
+	
+			if (idGuardia != null) {
+				contador++;
+				sql.append(" AND IG.IDGUARDIA = :" + contador);
+				htCodigos.put(new Integer(contador), idGuardia);
+			}
+	
+			sql.append(" ORDER BY GT.NOMBRE ");
+	
+			List<ScsInscripcionGuardiaBean> alInscripcion = null;
 			RowsContainer rc = new RowsContainer();
 
 			if (rc.findBind(sql.toString(), htCodigos)) {
@@ -1035,11 +764,11 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				}
 			}
 			
+			return alInscripcion;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		
-		return alInscripcion;
+			throw new ClsExceptions (e, "Error al ejecutar getGuardiasInscripcion()");
+		}			
 	}
 	
 	/**
@@ -1053,46 +782,45 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @throws ClsExceptions
 	 */
 	public List<ScsInscripcionGuardiaBean> getGuardiasParaInscripcion (Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-
-		sql.append(" SELECT GT.IDINSTITUCION, ");
-			sql.append(" GT.IDGUARDIA, ");
-			sql.append(" GT.NOMBRE, ");
-			sql.append(" GT.NUMEROLETRADOSGUARDIA, ");
-			sql.append(" GT.NUMEROSUSTITUTOSGUARDIA, ");
-			sql.append(" GT.SELECCIONLABORABLES, ");
-			sql.append(" GT.SELECCIONFESTIVOS, ");
-			sql.append(" GT.TIPODIASGUARDIA, ");
-			sql.append(" GT.DIASGUARDIA, ");
-			sql.append(" GT.DIASPAGADOS, ");
-			sql.append(" GT.DIASSEPARACIONGUARDIAS, ");
-			sql.append(" GT.PORGRUPOS  ");
-		sql.append(" FROM SCS_GUARDIASTURNO GT ");
-		
-		sql.append(" WHERE GT.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), idInstitucion);
-		
-		sql.append(" AND GT.IDTURNO = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), idTurno);
-		
-		if (idGuardia != null) {
-			sql.append(" AND GT.IDGUARDIA = :");
+		try {
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			int contador = 0;
+			StringBuffer sql = new StringBuffer();
+	
+			sql.append(" SELECT GT.IDINSTITUCION, ");
+				sql.append(" GT.IDGUARDIA, ");
+				sql.append(" GT.NOMBRE, ");
+				sql.append(" GT.NUMEROLETRADOSGUARDIA, ");
+				sql.append(" GT.NUMEROSUSTITUTOSGUARDIA, ");
+				sql.append(" GT.SELECCIONLABORABLES, ");
+				sql.append(" GT.SELECCIONFESTIVOS, ");
+				sql.append(" GT.TIPODIASGUARDIA, ");
+				sql.append(" GT.DIASGUARDIA, ");
+				sql.append(" GT.DIASPAGADOS, ");
+				sql.append(" GT.DIASSEPARACIONGUARDIAS, ");
+				sql.append(" GT.PORGRUPOS  ");
+			sql.append(" FROM SCS_GUARDIASTURNO GT ");
+			
+			sql.append(" WHERE GT.IDINSTITUCION = :");
 			contador++;
 			sql.append(contador);
-			htCodigos.put(new Integer(contador), idGuardia);
-		}
-
-		sql.append(" ORDER BY GT.NOMBRE ");
-
-		List<ScsInscripcionGuardiaBean> alInscripcion = null;
-		try {
+			htCodigos.put(new Integer(contador), idInstitucion);
+			
+			sql.append(" AND GT.IDTURNO = :");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), idTurno);
+			
+			if (idGuardia != null) {
+				sql.append(" AND GT.IDGUARDIA = :");
+				contador++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador), idGuardia);
+			}
+	
+			sql.append(" ORDER BY GT.NOMBRE ");
+	
+			List<ScsInscripcionGuardiaBean> alInscripcion = null;
 			RowsContainer rc = new RowsContainer();
 			if (rc.findBind(sql.toString(), htCodigos)) {
 				alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
@@ -1144,11 +872,11 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				}
 			}
 			
+			return alInscripcion;
+
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		
-		return alInscripcion;
+			throw new ClsExceptions (e, "Error al ejecutar getGuardiasParaInscripcion()");
+		}				
 	}
 	
 	/**
@@ -1156,214 +884,197 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * Importante: obtiene todas las inscripciones, no solo las que estan de alta, ya que luego 
 	 * hay que ordenarlas segun el puntero, que puede estar apuntando a una inscripcion de baja
 	 */
-	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(
-			String idinstitucion,
-			String idturno,
-			String idguardia,
-			String fechaInicio,
-			String fechaFin,
-			boolean porGrupos,
-			String order) throws ClsExceptions
-	{
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return null;
-		if (idturno == null || idturno.equals(""))
-			return null;
-		if (idguardia == null || idguardia.equals(""))
-			return null;
-		if (fechaInicio == null || fechaInicio.equals(""))
-			fechaInicio = "null";
-		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
-			fechaInicio = "'" + fechaInicio.trim() + "'";
-		if (fechaFin == null || fechaFin.equals(""))
-			fechaFin = "null";
-		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
-			fechaFin = "'" + fechaFin.trim() + "'";
-		
-		StringBuffer consulta = new StringBuffer();
-		consulta.append("Select ");
-		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
-		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
-		consulta.append("              And (Ins.Fechabaja Is Null Or ");
-		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
-		consulta.append("             then '1' ");
-		consulta.append("             else '0' ");
-		consulta.append("        end) Activo, ");
-		consulta.append(getBaseConsultaInscripciones());
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   And Gua.Idturno = "+idturno+" ");
-		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
-		
-		if (! (order == null || order.equals("")))
-			consulta.append(" order by " + order);
-		else
-			consulta.append(" order by Ins.FechaValidacion ");
-		
-		Vector<ScsInscripcionGuardiaBean> datos = null;
+	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(String idinstitucion, String idturno, String idguardia, String fechaInicio, String fechaFin, boolean porGrupos, String order) throws ClsExceptions {
 		try {
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return null;
+			if (idturno == null || idturno.equals(""))
+				return null;
+			if (idguardia == null || idguardia.equals(""))
+				return null;
+			if (fechaInicio == null || fechaInicio.equals(""))
+				fechaInicio = "null";
+			else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+				fechaInicio = "'" + fechaInicio.trim() + "'";
+			if (fechaFin == null || fechaFin.equals(""))
+				fechaFin = "null";
+			else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+				fechaFin = "'" + fechaFin.trim() + "'";
+			
+			StringBuffer consulta = new StringBuffer();
+			consulta.append("Select ");
+			consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+			consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+			consulta.append("              And (Ins.Fechabaja Is Null Or ");
+			consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+			consulta.append("             then '1' ");
+			consulta.append("             else '0' ");
+			consulta.append("        end) Activo, ");
+			consulta.append(getBaseConsultaInscripciones());
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   And Gua.Idturno = "+idturno+" ");
+			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+			
+			if (! (order == null || order.equals("")))
+				consulta.append(" order by " + order);
+			else
+				consulta.append(" order by Ins.FechaValidacion ");
+			
+			Vector<ScsInscripcionGuardiaBean> datos = null;
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				datos = new Vector<ScsInscripcionGuardiaBean>();
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
-					datos.add(getInscripcionDesdeHashCola(htFila));
+					datos.add(beanToHashCola(htFila));
 				}
 			}
+			return datos;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
+			throw new ClsExceptions (e, "Error al ejecutar getColaGuardia()");
+		}				
 	} //getColaGuardia()
 	
-	public boolean getOrdenGuardia(
-			String idinstitucion,
-			String idturno,
-			String idguardia,
-			String fecha) throws ClsExceptions
-	{
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return false;
-		if (idturno == null || idturno.equals(""))
-			return false;
-		if (idguardia == null || idguardia.equals(""))
-			return false;
-		if (fecha == null || fecha.equals(""))
-			fecha = "null";
-		else if (!fecha.trim().equalsIgnoreCase("sysdate"))
-			fecha = "'" + fecha.trim() + "'";
-		
-		StringBuffer consulta = new StringBuffer();
-		boolean existeOrdenEnGrupoGuardia = false;
-		consulta.append("Select grupo, ordengrupo, count(*) from "); 
-		consulta.append("	(select " );
-
-		consulta.append(getBaseConsultaInscripciones());
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   And Gua.Idturno = "+idturno+" ");
-		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
-		consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
-		consulta.append("   And gru.idgrupoguardia is not null ");	
-		consulta.append(" ) ");	
-		consulta.append(" group by grupo, ordengrupo having count(*) > 1");
-		
-		try {
+	public boolean getOrdenGuardia(String idinstitucion, String idturno, String idguardia, String fecha) throws ClsExceptions {
+		try  {
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return false;
+			if (idturno == null || idturno.equals(""))
+				return false;
+			if (idguardia == null || idguardia.equals(""))
+				return false;
+			if (fecha == null || fecha.equals(""))
+				fecha = "null";
+			else if (!fecha.trim().equalsIgnoreCase("sysdate"))
+				fecha = "'" + fecha.trim() + "'";
+			
+			StringBuffer consulta = new StringBuffer();
+			boolean existeOrdenEnGrupoGuardia = false;
+			consulta.append("Select grupo, ordengrupo, count(*) from "); 
+			consulta.append("	(select " );
+	
+			consulta.append(getBaseConsultaInscripciones());
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   And Gua.Idturno = "+idturno+" ");
+			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
+			consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
+			consulta.append("   And gru.idgrupoguardia is not null ");	
+			consulta.append(" ) ");	
+			consulta.append(" group by grupo, ordengrupo having count(*) > 1");
+			
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				if(rc.size() > 0) {
 					existeOrdenEnGrupoGuardia = true;
 				}
 			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return existeOrdenEnGrupoGuardia;
-	} //getOrdenGuardia()
-	
-	public boolean getGrupoGuardia(
-			String idinstitucion,
-			String idturno,
-			String idguardia,
-			String fecha) throws ClsExceptions
-	{
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return false;
-		if (idturno == null || idturno.equals(""))
-			return false;
-		if (idguardia == null || idguardia.equals(""))
-			return false;
-		if (fecha == null || fecha.equals(""))
-			fecha = "null";
-		else if (!fecha.trim().equalsIgnoreCase("sysdate"))
-			fecha = "'" + fecha.trim() + "'";
-		
-		StringBuffer consulta = new StringBuffer();
-		boolean existePersonaEnGrupoGuardia = false;
-		consulta.append("Select grupo, idpersona, fechasuscripcion, count(*) from "); 
-		consulta.append("	(select " );
 
-		consulta.append(getBaseConsultaInscripciones());
+			return existeOrdenEnGrupoGuardia;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getOrdenGuardia()");
+		}				
+	} //getOrdenGuardia()
 		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   And Gua.Idturno = "+idturno+" ");
-		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
-		consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
-		consulta.append("   And gru.idgrupoguardia is not null ");	
-		consulta.append(" ) ");	
-		consulta.append(" group by grupo, idpersona, fechasuscripcion having count(*) > 1");
-		
+	public boolean getGrupoGuardia(String idinstitucion, String idturno, String idguardia, String fecha) throws ClsExceptions {
 		try {
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return false;
+			if (idturno == null || idturno.equals(""))
+				return false;
+			if (idguardia == null || idguardia.equals(""))
+				return false;
+			if (fecha == null || fecha.equals(""))
+				fecha = "null";
+			else if (!fecha.trim().equalsIgnoreCase("sysdate"))
+				fecha = "'" + fecha.trim() + "'";
+			
+			StringBuffer consulta = new StringBuffer();
+			boolean existePersonaEnGrupoGuardia = false;
+			consulta.append("Select grupo, idpersona, fechasuscripcion, count(*) from "); 
+			consulta.append("	(select " );
+	
+			consulta.append(getBaseConsultaInscripciones());
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   And Gua.Idturno = "+idturno+" ");
+			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Trunc(Ins.Fechavalidacion) <= "+fecha);
+			consulta.append("   And (Ins.Fechabaja Is Null Or  Trunc(Ins.Fechabaja) > "+ fecha +" ) ");
+			consulta.append("   And gru.idgrupoguardia is not null ");	
+			consulta.append(" ) ");	
+			consulta.append(" group by grupo, idpersona, fechasuscripcion having count(*) > 1");
+			
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				if(rc.size() > 0) {
 					existePersonaEnGrupoGuardia = true;
 				}
 			}
+
+			return existePersonaEnGrupoGuardia;
+		
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return existePersonaEnGrupoGuardia;
+			throw new ClsExceptions (e, "Error al ejecutar getGrupoGuardia()");
+		}				
 	} //getgrupoGuardia()
 	
 	/**
 	 * Obtiene las inscripcion activa de la persona en la guardia en la fecha dada
 	 */
-	public ScsInscripcionGuardiaBean getInscripcionActiva(
-			String idinstitucion,
-			String idturno,
-			String idguardia,
-			String idpersona,
-			String fecha) throws ClsExceptions
-	{
-		if (idinstitucion == null || idinstitucion.equals(""))		return null;
-		if (idturno == null || idturno.equals(""))					return null;
-		if (idguardia == null || idguardia.equals(""))				return null;
-		if (idpersona == null || idpersona.equals(""))				return null;
-		if (fecha == null || fecha.equals(""))						return null;
-		if(!fecha.equals("sysdate"))
-			fecha = "'"+fecha+"'";
-		String consulta = 
-			"Select " +
-			getBaseConsultaInscripciones() +
-			
-			"   And Ins.Fechavalidacion Is Not Null " +
-			"   And Gua.Idinstitucion = "+idinstitucion+" " +
-			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" " +
-			
-		    "   And Ins.Fechavalidacion Is Not Null " +
-			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
-			"   And (Ins.Fechabaja Is Null Or " +
-			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) "+
-			"    and Ins.idpersona ="+idpersona;
-		
-		Vector<ScsInscripcionGuardiaBean> datos = null;
+	public ScsInscripcionGuardiaBean getInscripcionGuardiaActiva(String idinstitucion, String idturno, String idguardia, String idpersona, String fecha) throws ClsExceptions {
 		try {
+			if (idinstitucion == null || idinstitucion.equals(""))		return null;
+			if (idturno == null || idturno.equals(""))					return null;
+			if (idguardia == null || idguardia.equals(""))				return null;
+			if (idpersona == null || idpersona.equals(""))				return null;
+			if (fecha == null || fecha.equals(""))						return null;
+			if(!fecha.equals("sysdate"))
+				fecha = "'"+fecha+"'";
+			String consulta = 
+				"Select " +
+				getBaseConsultaInscripciones() +
+				
+				"   And Ins.Fechavalidacion Is Not Null " +
+				"   And Gua.Idinstitucion = "+idinstitucion+" " +
+				"   And Gua.Idturno = "+idturno+" " +
+				"   And Gua.Idguardia = "+idguardia+" " +
+				
+			    "   And Ins.Fechavalidacion Is Not Null " +
+				"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
+				"   And (Ins.Fechabaja Is Null Or " +
+				"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) "+
+				"    and Ins.idpersona ="+idpersona;
+			
+			Vector<ScsInscripcionGuardiaBean> datos = null;
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta)) {
 				datos = new Vector<ScsInscripcionGuardiaBean>();
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
-					datos.add(getInscripcionDesdeHashCola(htFila));
+					datos.add(beanToHashCola(htFila));
 				}
 			}else
 				return null;
+				
+			return datos.get(0);
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos.get(0);
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionActiva()");
+		}				
 	}
 	
 	/**
@@ -1376,16 +1087,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return Vector<Hashtable>
 	 * @throws ClsExceptions
 	 */
-	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idInstitucion,
-			String idTurno,
-			String idGuardia,
-			String idGrupoGuardia, String fechaGuardia) throws ClsExceptions
-	{
-		if (idGrupoGuardia == null || idGrupoGuardia.equals(""))
-			return null;
-		
-		String consulta =
-			"Select " ;
+	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idInstitucion, String idTurno, String idGuardia, String idGrupoGuardia, String fechaGuardia) throws ClsExceptions {
+		try  {
+			if (idGrupoGuardia == null || idGrupoGuardia.equals(""))
+				return null;
+			
+			String consulta ="Select " ;
 			if(fechaGuardia!=null && !fechaGuardia.equals("")){
 				consulta+=" (case "+
 			         " when Ins.Fechavalidacion Is Not Null And "+
@@ -1400,15 +1107,14 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			}else{
 				consulta+="'1' Activo,";
 			}
-		consulta+=getBaseConsultaInscripciones() +
-			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
-			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
-			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
-		consulta+=" ORDER BY ORDENGRUPO ";
-		Vector<ScsInscripcionGuardiaBean> datos = null;
-		Hashtable hashGrupo;
-		try {
+			consulta+=getBaseConsultaInscripciones() +
+				"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
+				"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
+				"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
+				"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
+			consulta+=" ORDER BY ORDENGRUPO ";
+			Vector<ScsInscripcionGuardiaBean> datos = null;
+			Hashtable hashGrupo;
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta)) {
 				datos = new Vector<ScsInscripcionGuardiaBean>();
@@ -1416,161 +1122,50 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
 					if(((String)htFila.get("ACTIVO"))!=null && ((String)htFila.get("ACTIVO")).equals("1") )
-						datos.add(getInscripcionDesdeHashCola(htFila));
+						datos.add(beanToHashCola(htFila));
 				}
 			}
+			
+			return datos;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
+			throw new ClsExceptions (e, "Error al ejecutar getLetradosGrupo()");
+		}				
 	}
 	
-	private ScsInscripcionGuardiaBean getInscripcionDesdeHashCola(Hashtable hash) {
-		ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
-		
-		inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
-		inscripcionBean.setIdTurno(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDTURNO));
-		inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDGUARDIA));
-		inscripcionBean.setIdPersona(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDPERSONA));
-		inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
-		inscripcionBean.setFechaValidacion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
-		inscripcionBean.setFechaBaja(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHABAJA));
-		inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
-		inscripcionBean.setGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_GRUPO));
-		inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
-		inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(hash, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
-		inscripcionBean.setEstado(UtilidadesHash.getString(hash, "ACTIVO"));
-		CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) hash
-				.get(CenPersonaBean.C_NOMBRE), (String) hash.get(CenPersonaBean.C_APELLIDOS1),
-				(String) hash.get(CenPersonaBean.C_APELLIDOS2), (String) hash
-						.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
-		personaBean.setNIFCIF(UtilidadesHash.getString(hash, CenPersonaBean.C_NIFCIF));
-		inscripcionBean.setPersona(personaBean);
-		return inscripcionBean;
-	}
-	
-	/**
-	 * Obtiene los grupos de una guardia dada, junto con el numero de componentes de cada uno
-	 * 
-	 * @param idinstitucion
-	 * @param idturno
-	 * @param idguardia
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public Vector<Hashtable> getNumLetradosGrupos(
-			String idinstitucion,
-			String idturno,
-			String idguardia) throws ClsExceptions
-	{
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return null;
-		if (idturno == null || idturno.equals(""))
-			return null;
-		if (idguardia == null || idguardia.equals(""))
-			return null;
-		
-		String consulta =
-			" Select "+ScsInscripcionGuardiaBean.C_GRUPO+", Count(*) As Numero from " +
-			" ( Select " +
-			getBaseConsultaInscripciones() +
-			
-			"      And Gua.Idinstitucion = "+idinstitucion+" " +
-			"      And Gua.Idturno = "+idturno+" " +
-			"      And Gua.Idguardia = "+idguardia+" " +
-			
-			" ) " +
-			"  Where "+ScsInscripcionGuardiaBean.C_GRUPO+" Is Not Null " +
-			"  Group By "+ScsInscripcionGuardiaBean.C_GRUPO+" ";
-		
-		Vector<Hashtable> datos = null;
-		Hashtable hashGrupo;
+	protected ScsInscripcionGuardiaBean beanToHashCola(Hashtable hash) throws ClsExceptions {
 		try {
-			RowsContainer rc = new RowsContainer();
-			if (rc.find(consulta)) {
-				datos = new Vector<Hashtable>();
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable<String, Object> htFila = fila.getRow();
-					
-					hashGrupo = new Hashtable<Integer, Integer>();
-					hashGrupo.put(ScsInscripcionGuardiaBean.C_GRUPO, UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
-					hashGrupo.put("NUMERO", UtilidadesHash.getInteger(htFila, "NUMERO"));
-					datos.add(hashGrupo);
-				}
-			}
+			ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
+			
+			inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
+			inscripcionBean.setIdTurno(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDTURNO));
+			inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDGUARDIA));
+			inscripcionBean.setIdPersona(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDPERSONA));
+			inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
+			inscripcionBean.setFechaValidacion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
+			inscripcionBean.setFechaBaja(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHABAJA));
+			inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
+			inscripcionBean.setGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_GRUPO));
+			inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
+			inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(hash, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
+			inscripcionBean.setEstado(UtilidadesHash.getString(hash, "ACTIVO"));
+			
+			CenPersonaBean personaBean = new CenPersonaBean(
+				inscripcionBean.getIdPersona(), 
+				(String) hash.get(CenPersonaBean.C_NOMBRE), 
+				(String) hash.get(CenPersonaBean.C_APELLIDOS1),
+				(String) hash.get(CenPersonaBean.C_APELLIDOS2), 
+				(String) hash.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
+			
+			personaBean.setNIFCIF(UtilidadesHash.getString(hash, CenPersonaBean.C_NIFCIF));
+			
+			inscripcionBean.setPersona(personaBean);
+			
+			return inscripcionBean;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
-	} //getNumLetradosGrupos()
-	
-	/**
-	 * Obtiene las inscripciones que se pueden dar de baja, dada una persona y un turno.
-	 *  Este metodo se usa cuando hay que saber que inscripciones dar de baja en el caso
-	 * de que se de de baja las guardias de un turno configurado como todas o ninguna
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idPersona
-	 * @return Vector<Hashtable>
-	 * @throws ClsExceptions
-	 */
-	public Vector<ScsInscripcionGuardiaBean> getInscripcionesParaBajaDeTodasoNinguna(Integer idInstitucion,
-			Integer idTurno,
-			Long idPersona, 
-			Integer idGuardia) throws ClsExceptions
-	{
-		if (idInstitucion == null || idInstitucion.equals(""))
-			return null;
-		if (idTurno == null || idTurno.equals(""))
-			return null;
-		if (idPersona == null || idPersona.equals(""))
-			return null;
-		
-		String consulta =
-			"Select " +
-			getBaseConsultaInscripciones() +
-			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
-			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDPERSONA+" = "+idPersona+" " +
-//			--altas pendientes de validar
-		    " AND ((Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" IS NULL and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NULL AND" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" IS NULL" +
-			" ) OR" +
-//		        --altas validadas
-			" (Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" IS NOT NULL AND" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NULL AND" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" is null) OR" +
-//		        --bajas denegadas
-			" (Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" is not null and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NOT NULL and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
-			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" IS NOT NULL))";
-		if(idGuardia!=null)
-			consulta +="   And Ins."+ScsInscripcionGuardiaBean.C_IDGUARDIA+" = "+idGuardia;
-					
-		consulta +="   order by Ins."+ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION;
-		
-		Vector<ScsInscripcionGuardiaBean> datos = null;
-		Hashtable hashGrupo;
-		try {
-			RowsContainer rc = new RowsContainer();
-			if (rc.find(consulta)) {
-				datos = new Vector<ScsInscripcionGuardiaBean>();
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable<String, Object> htFila = fila.getRow();
-					datos.add(getInscripcionDesdeHashCola(htFila));
-				}
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionDesdeHashCola()");
+		}					
 	}
 	
 	public String getBaseConsultaInscripciones() {
@@ -1615,113 +1210,51 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) " +
 			"   And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
 	}
-	public ScsInscripcionGuardiaBean getUltimaInscripcionInsertada(Hashtable inscripcionGuardiaHashtable) throws ClsExceptions
-	{
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT ");
-		sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
-		sql.append(" I.IDGUARDIA,  I.FECHASUSCRIPCION   ");
-		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-		sql.append(" WHERE  ");
-
-		sql.append(" I.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDINSTITUCION) );
-		
-		sql.append(" AND I.IDTURNO = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDTURNO) );
-		
 	
-	
-		sql.append(" AND I.IDPERSONA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), (Long)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDPERSONA) );
-	
-		
-		sql.append(" AND I.IDGUARDIA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDGUARDIA) );
-		
-		sql.append(" AND I.FECHABAJA IS NULL");
-		
-		sql.append(" ORDER BY I.FECHAMODIFICACION DESC ");
-
-		
-		ScsInscripcionGuardiaBean inscripcionBean = null;
-		try {
-			RowsContainer rc = new RowsContainer();
-
-			if (rc.findBind(sql.toString(), htCodigos)) {
-				Row fila = (Row) rc.get(0);
-				Hashtable<String, Object> htFila = fila.getRow();
-				inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
-			}else{
-				throw new SIGAException("No se ha encontrado ninguna inscripcion");
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		return inscripcionBean;
-
-	}
-	
-	
-	
-	public Vector<ScsInscripcionGuardiaBean> getColegiadosInscritosRepetidos(String idinstitucion, String idturno, String idguardia,
-			String fechaInicio, String fechaFin) throws ClsExceptions {
-
-		
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return null;
-		if (idturno == null || idturno.equals(""))
-			return null;
-		if (idguardia == null || idguardia.equals(""))
-			return null;
-		if (fechaInicio == null || fechaInicio.equals(""))
-			fechaInicio = "null";
-		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
-			fechaInicio = "'" + fechaInicio.trim() + "'";
-		if (fechaFin == null || fechaFin.equals(""))
-			fechaFin = "null";
-		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
-			fechaFin = "'" + fechaFin.trim() + "'";
-		
-				
-		StringBuffer consulta = new StringBuffer();
-		consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
-		consulta.append("  FROM ( ");
-		consulta.append("Select ");
-		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
-		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
-		consulta.append("              And (Ins.Fechabaja Is Null Or ");
-		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
-		consulta.append("             then '1' ");
-		consulta.append("             else '0' ");
-		consulta.append("        end) Activo, ");
-		consulta.append(getBaseConsultaInscripciones());
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   And Gua.Idturno = "+idturno+" ");
-		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
-		consulta.append(" order by Ins.FechaValidacion ");
-		
-		
-		consulta.append(" ) datos  ");
-		consulta.append(" WHERE datos.activo = 1  ");
-		consulta.append(" GROUP BY  datos.Nombre, datos.Apellidos1, datos.apellidos2, datos.NUMEROCOLEGIADO HAVING COUNT(*) > 1  ");
-		consulta.append(" ORDER BY datos.Apellidos1 ");
-		
-		Vector datos = null;
-		try {
+	public Vector<ScsInscripcionGuardiaBean> getColegiadosInscritosRepetidos(String idinstitucion, String idturno, String idguardia, String fechaInicio, String fechaFin) throws ClsExceptions {
+		try {	
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return null;
+			if (idturno == null || idturno.equals(""))
+				return null;
+			if (idguardia == null || idguardia.equals(""))
+				return null;
+			if (fechaInicio == null || fechaInicio.equals(""))
+				fechaInicio = "null";
+			else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+				fechaInicio = "'" + fechaInicio.trim() + "'";
+			if (fechaFin == null || fechaFin.equals(""))
+				fechaFin = "null";
+			else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+				fechaFin = "'" + fechaFin.trim() + "'";
+			
+					
+			StringBuffer consulta = new StringBuffer();
+			consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
+			consulta.append("  FROM ( ");
+			consulta.append("Select ");
+			consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+			consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+			consulta.append("              And (Ins.Fechabaja Is Null Or ");
+			consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+			consulta.append("             then '1' ");
+			consulta.append("             else '0' ");
+			consulta.append("        end) Activo, ");
+			consulta.append(getBaseConsultaInscripciones());
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   And Gua.Idturno = "+idturno+" ");
+			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+			consulta.append(" order by Ins.FechaValidacion ");
+			
+			
+			consulta.append(" ) datos  ");
+			consulta.append(" WHERE datos.activo = 1  ");
+			consulta.append(" GROUP BY  datos.Nombre, datos.Apellidos1, datos.apellidos2, datos.NUMEROCOLEGIADO HAVING COUNT(*) > 1  ");
+			consulta.append(" ORDER BY datos.Apellidos1 ");
+			
+			Vector datos = null;
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				datos = new Vector();
@@ -1731,68 +1264,66 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					datos.add(htFila);
 				}
 			}
+
+			return datos;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
+			throw new ClsExceptions (e, "Error al ejecutar getColegiadosInscritosRepetidos()");
+		}				
 	}
 	
 	
-	public Vector<ScsInscripcionGuardiaBean> getListadoColegiadosInscritosRepetidosOrden(String idinstitucion, String idturno, String idguardia,
-			String fechaInicio, String fechaFin) throws ClsExceptions {
-
-		
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return null;
-		if (idturno == null || idturno.equals(""))
-			return null;
-		if (idguardia == null || idguardia.equals(""))
-			return null;
-		if (fechaInicio == null || fechaInicio.equals(""))
-			fechaInicio = "null";
-		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
-			fechaInicio = "'" + fechaInicio.trim() + "'";
-		if (fechaFin == null || fechaFin.equals(""))
-			fechaFin = "null";
-		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
-			fechaFin = "'" + fechaFin.trim() + "'";
-		
-				
-		StringBuffer consulta = new StringBuffer();
-		consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
-		consulta.append("  ,datos.numeroGrupo AS GRUPO_REP,datos.ordenGrupo AS ORDENGRUPO_REP");
-		consulta.append("  FROM ( ");
-		consulta.append("Select ");
-		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
-		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
-		consulta.append("              And (Ins.Fechabaja Is Null Or ");
-		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
-		consulta.append("             then '1' ");
-		consulta.append("             else '0' ");
-		consulta.append("        end) Activo, ");
-		consulta.append(getBaseConsultaInscripciones());
-		
-		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
-		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   And Gua.Idturno = "+idturno+" ");
-		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
-		consulta.append("   AND (ins.idinstitucion, ins.idturno, ins.idguardia, ins.idpersona,  ");
-		consulta.append("   ins.fechasuscripcion) IN ");
-		consulta.append("   (SELECT ins2.idinstitucion,	");
-		consulta.append("   ins2.idturno, ");
-		consulta.append("   ins2.idguardia, ");
-		consulta.append("   ins2.idpersona, ");
-		consulta.append("   ins2.fechasuscripcion ");
-		consulta.append("   FROM scs_grupoguardiacolegiado ins2 ");
-		consulta.append("   GROUP BY ins2.idinstitucion, ");
-		consulta.append("   ins2.idturno, ins2.idguardia, ins2.idpersona, ins2.fechasuscripcion ");
-		consulta.append("   HAVING COUNT(*) > 1)  ");		           		
-		consulta.append(" ) datos  ");
-		consulta.append(" WHERE datos.activo = 1  ");
-		consulta.append(" ORDER BY datos.Apellidos1,datos.numeroGrupo  ");
-		
-		Vector datos = null;
-		try {
+	public Vector<ScsInscripcionGuardiaBean> getListadoColegiadosInscritosRepetidosOrden(String idinstitucion, String idturno, String idguardia, String fechaInicio, String fechaFin) throws ClsExceptions {
+		try {		
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return null;
+			if (idturno == null || idturno.equals(""))
+				return null;
+			if (idguardia == null || idguardia.equals(""))
+				return null;
+			if (fechaInicio == null || fechaInicio.equals(""))
+				fechaInicio = "null";
+			else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+				fechaInicio = "'" + fechaInicio.trim() + "'";
+			if (fechaFin == null || fechaFin.equals(""))
+				fechaFin = "null";
+			else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+				fechaFin = "'" + fechaFin.trim() + "'";
+							
+			StringBuffer consulta = new StringBuffer();
+			consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
+			consulta.append("  ,datos.numeroGrupo AS GRUPO_REP,datos.ordenGrupo AS ORDENGRUPO_REP");
+			consulta.append("  FROM ( ");
+			consulta.append("Select ");
+			consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+			consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+			consulta.append("              And (Ins.Fechabaja Is Null Or ");
+			consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+			consulta.append("             then '1' ");
+			consulta.append("             else '0' ");
+			consulta.append("        end) Activo, ");
+			consulta.append(getBaseConsultaInscripciones());
+			
+			consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+			consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   And Gua.Idturno = "+idturno+" ");
+			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+			consulta.append("   AND (ins.idinstitucion, ins.idturno, ins.idguardia, ins.idpersona,  ");
+			consulta.append("   ins.fechasuscripcion) IN ");
+			consulta.append("   (SELECT ins2.idinstitucion,	");
+			consulta.append("   ins2.idturno, ");
+			consulta.append("   ins2.idguardia, ");
+			consulta.append("   ins2.idpersona, ");
+			consulta.append("   ins2.fechasuscripcion ");
+			consulta.append("   FROM scs_grupoguardiacolegiado ins2 ");
+			consulta.append("   GROUP BY ins2.idinstitucion, ");
+			consulta.append("   ins2.idturno, ins2.idguardia, ins2.idpersona, ins2.fechasuscripcion ");
+			consulta.append("   HAVING COUNT(*) > 1)  ");		           		
+			consulta.append(" ) datos  ");
+			consulta.append(" WHERE datos.activo = 1  ");
+			consulta.append(" ORDER BY datos.Apellidos1,datos.numeroGrupo  ");
+			
+			Vector datos = null;
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				datos = new Vector();
@@ -1802,64 +1333,63 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					datos.add(htFila);
 				}
 			}
+				
+			return datos;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return datos;
+			throw new ClsExceptions (e, "Error al ejecutar getListadoColegiadosInscritosRepetidosOrden()");
+		}				
 	}
 	
-	public String getCantidadGrupos(String idinstitucion, String idturno, String idguardia,
-			String fechaInicio, String fechaFin, String numeroGrupo) throws ClsExceptions {
-
-		String cantidad="0";
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return "0";
-		if (idturno == null || idturno.equals(""))
-			return "0";
-		if (idguardia == null || idguardia.equals(""))
-			return "0";
-		if (fechaInicio == null || fechaInicio.equals(""))
-			fechaInicio = "null";
-		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
-			fechaInicio = "'" + fechaInicio.trim() + "'";
-		if (fechaFin == null || fechaFin.equals(""))
-			fechaFin = "null";
-		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
-			fechaFin = "'" + fechaFin.trim() + "'";
-		
-				
-		StringBuffer consulta = new StringBuffer();
-		consulta.append("SELECT count(*) AS CANTIDAD");
-		consulta.append("  FROM ( ");
-		consulta.append("Select ");
-		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
-		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
-		consulta.append("              And (Ins.Fechabaja Is Null Or ");
-		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
-		consulta.append("             then '1' ");
-		consulta.append("             else '0' ");
-		consulta.append("        end) Activo ");
-		consulta.append("   FROM Scs_Guardiasturno         Gua, ");
-		consulta.append("  		 Scs_Inscripcionguardia    Ins,  ");
-		consulta.append("  		 SCS_GRUPOGUARDIACOLEGIADO Gru,  ");
-		consulta.append(" 		 SCS_GRUPOGUARDIA          Grg   ");
-		consulta.append("  WHERE Ins.Idinstitucion = Gua.Idinstitucion  ");
-		consulta.append("  		AND Ins.Idturno = Gua.Idturno  ");
-		consulta.append("  		AND Ins.Idguardia = Gua.Idguardia  ");
-		consulta.append("  		AND Ins.Idinstitucion = Gru.Idinstitucion(+)  ");
-		consulta.append("  		AND Ins.Idturno = Gru.Idturno(+)  ");
-		consulta.append("  		AND Ins.Idguardia = Gru.Idguardia(+)  ");
-		consulta.append(" 		AND Ins.Idpersona = Gru.Idpersona(+)   ");
-		consulta.append("  		AND Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)  ");
-		consulta.append("   	AND Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
-		consulta.append("   	And Grg.NUMEROGRUPO = "+numeroGrupo+" ");
-		consulta.append("  		And Gua.Idinstitucion = "+idinstitucion+" ");
-		consulta.append("   	And Gua.Idturno = "+idturno+" ");
-		consulta.append("   	And Gua.Idguardia = "+idguardia+" ");
-		consulta.append(" ) datos ");
-		consulta.append(" WHERE datos.activo = 1  ");
-		
+	public String getCantidadGrupos(String idinstitucion, String idturno, String idguardia, String fechaInicio, String fechaFin, String numeroGrupo) throws ClsExceptions {
 		try {
+			String cantidad="0";
+			if (idinstitucion == null || idinstitucion.equals(""))
+				return "0";
+			if (idturno == null || idturno.equals(""))
+				return "0";
+			if (idguardia == null || idguardia.equals(""))
+				return "0";
+			if (fechaInicio == null || fechaInicio.equals(""))
+				fechaInicio = "null";
+			else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+				fechaInicio = "'" + fechaInicio.trim() + "'";
+			if (fechaFin == null || fechaFin.equals(""))
+				fechaFin = "null";
+			else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+				fechaFin = "'" + fechaFin.trim() + "'";
+				
+			StringBuffer consulta = new StringBuffer();
+			consulta.append("SELECT count(*) AS CANTIDAD");
+			consulta.append("  FROM ( ");
+			consulta.append("Select ");
+			consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+			consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+			consulta.append("              And (Ins.Fechabaja Is Null Or ");
+			consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+			consulta.append("             then '1' ");
+			consulta.append("             else '0' ");
+			consulta.append("        end) Activo ");
+			consulta.append("   FROM Scs_Guardiasturno         Gua, ");
+			consulta.append("  		 Scs_Inscripcionguardia    Ins,  ");
+			consulta.append("  		 SCS_GRUPOGUARDIACOLEGIADO Gru,  ");
+			consulta.append(" 		 SCS_GRUPOGUARDIA          Grg   ");
+			consulta.append("  WHERE Ins.Idinstitucion = Gua.Idinstitucion  ");
+			consulta.append("  		AND Ins.Idturno = Gua.Idturno  ");
+			consulta.append("  		AND Ins.Idguardia = Gua.Idguardia  ");
+			consulta.append("  		AND Ins.Idinstitucion = Gru.Idinstitucion(+)  ");
+			consulta.append("  		AND Ins.Idturno = Gru.Idturno(+)  ");
+			consulta.append("  		AND Ins.Idguardia = Gru.Idguardia(+)  ");
+			consulta.append(" 		AND Ins.Idpersona = Gru.Idpersona(+)   ");
+			consulta.append("  		AND Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)  ");
+			consulta.append("   	AND Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
+			consulta.append("   	And Grg.NUMEROGRUPO = "+numeroGrupo+" ");
+			consulta.append("  		And Gua.Idinstitucion = "+idinstitucion+" ");
+			consulta.append("   	And Gua.Idturno = "+idturno+" ");
+			consulta.append("   	And Gua.Idguardia = "+idguardia+" ");
+			consulta.append(" ) datos ");
+			consulta.append(" WHERE datos.activo = 1  ");
+			
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(consulta.toString())) {
 				for (int i = 0; i < rc.size(); i++) {
@@ -1868,11 +1398,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					cantidad = (String)(htFila.get("CANTIDAD"));
 				}
 			}
+			
+			return cantidad;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
-		}
-		
-		return cantidad;
+			throw new ClsExceptions (e, "Error al ejecutar getCantidadGrupos()");
+		}				
 	}
 	
 	/**
@@ -1887,32 +1418,19 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public ScsInscripcionGuardiaBean getInscripcionBaja (Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
-		String sql = " SELECT I.IDINSTITUCION, " +
-				" I.IDPERSONA, " +
-				" I.IDTURNO, " +
-				" I.IDGUARDIA, " +				
-				" I.FECHASUSCRIPCION, " +				
-				" I.OBSERVACIONESSUSCRIPCION, " +				
-				" I.FECHAVALIDACION, " +
-				" I.OBSERVACIONESVALIDACION, " +				
-				" I.FECHASOLICITUDBAJA, " +
-				" I.OBSERVACIONESBAJA, " +
-				" I.FECHABAJA, " +
-				" I.OBSERVACIONESVALBAJA, " +
-				" I.FECHADENEGACION, " +
-				" I.OBSERVACIONESDENEGACION " +				
-			" FROM SCS_INSCRIPCIONGUARDIA I " +
-			" WHERE  I.IDINSTITUCION = " + idInstitucion +
-				" AND I.IDTURNO = " + idTurno +
-				" AND I.IDPERSONA = " + idPersona +
-				" AND I.IDGUARDIA = " + idGuardia + 
-				" AND I.FECHAVALIDACION IS NOT NULL " +
-				" AND I.FECHABAJA IS NOT NULL " +
-			" ORDER BY FECHABAJA DESC";
-				
-		ScsInscripcionGuardiaBean inscripcionBean = null;
+	public ScsInscripcionGuardiaBean getInscripcionGuardiaUltimaBaja (Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
 		try {
+			String sql = " SELECT " + camposSelect +				
+				" FROM SCS_INSCRIPCIONGUARDIA " +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+					" AND IDTURNO = " + idTurno +
+					" AND IDPERSONA = " + idPersona +
+					" AND IDGUARDIA = " + idGuardia + 
+					" AND FECHAVALIDACION IS NOT NULL " +
+					" AND FECHABAJA IS NOT NULL " +
+				" ORDER BY FECHABAJA DESC";
+					
+			ScsInscripcionGuardiaBean inscripcionBean = null;
 			RowsContainer rc = new RowsContainer(); 
 
 			if (rc.find(sql)) {
@@ -1923,15 +1441,16 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				}
 			} 
 			
+			return inscripcionBean;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta.");
-		}
-		
-		return inscripcionBean;
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionBaja()");
+		}				
 	}		
 	
 	/**
-	 * Obtiene la ultima inscripcion de la guardia
+	 * Obtiene la ultima inscripcion de la guardia de alta
+	 * 
 	 * @param idInstitucion
 	 * @param idTurno
 	 * @param idPersona
@@ -1939,32 +1458,19 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public ScsInscripcionGuardiaBean getInscripcionUltima (Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
-		String sql = " SELECT I.IDINSTITUCION, " +
-				" I.IDPERSONA, " +
-				" I.IDTURNO, " +
-				" I.IDGUARDIA, " +				
-				" I.FECHASUSCRIPCION, " +				
-				" I.OBSERVACIONESSUSCRIPCION, " +				
-				" I.FECHAVALIDACION, " +
-				" I.OBSERVACIONESVALIDACION, " +				
-				" I.FECHASOLICITUDBAJA, " +
-				" I.OBSERVACIONESBAJA, " +
-				" I.FECHABAJA, " +
-				" I.OBSERVACIONESVALBAJA, " +
-				" I.FECHADENEGACION, " +
-				" I.OBSERVACIONESDENEGACION " +				
-			" FROM SCS_INSCRIPCIONGUARDIA I " +
-			" WHERE  I.IDINSTITUCION = " + idInstitucion +
-				" AND I.IDTURNO = " + idTurno +
-				" AND I.IDPERSONA = " + idPersona +
-				" AND I.IDGUARDIA = " + idGuardia + 
-				" AND I.FECHAVALIDACION IS NOT NULL " +
-				" AND I.FECHABAJA IS NULL " +
-			" ORDER BY FECHAVALIDACION DESC";
-				
-		ScsInscripcionGuardiaBean inscripcionBean = null;
+	public ScsInscripcionGuardiaBean getInscripcionGuardiaUltimaSinBaja (Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions {
 		try {
+			String sql = " SELECT " + camposSelect +			
+				" FROM SCS_INSCRIPCIONGUARDIA " +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+					" AND IDTURNO = " + idTurno +
+					" AND IDPERSONA = " + idPersona +
+					" AND IDGUARDIA = " + idGuardia + 
+					" AND FECHABAJA IS NULL " +
+					" AND (FECHADENEGACION IS NULL OR FECHAVALIDACION IS NOT NULL) " +
+				" ORDER BY FECHAVALIDACION DESC";
+					
+			ScsInscripcionGuardiaBean inscripcionBean = null;
 			RowsContainer rc = new RowsContainer(); 
 
 			if (rc.find(sql)) {
@@ -1975,10 +1481,55 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				}
 			} 
 			
+			return inscripcionBean;
+			
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta.");
-		}
-		
-		return inscripcionBean;
-	}			
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionUltima()");
+		}					
+	}
+	
+	/**
+	 * Obtiene las inscripciones de guardia pendientes de validar
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param isValidacionInscripcion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<ScsInscripcionGuardiaBean> getInscripcionesGuardiasPendientesValidar(String idInstitucion, String idTurno, boolean bAltaInscripcion) throws ClsExceptions {
+		try {
+			String sql = " SELECT " + camposSelect +
+				" FROM SCS_INSCRIPCIONGUARDIA " +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+					" AND IDTURNO = " + idTurno +
+					" AND FECHADENEGACION IS NULL " + 
+					" AND FECHABAJA IS NULL ";
+			
+			if (bAltaInscripcion)
+				sql += " AND FECHAVALIDACION IS NULL ";
+			else
+				sql += " AND FECHASOLICITUDBAJA IS NOT NULL ";
+			
+			Vector<ScsInscripcionGuardiaBean> datos = null;
+			RowsContainer rc = new RowsContainer(); 												
+			if (rc.find(sql)) {
+        	   
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+    			for (int i = 0; i < rc.size(); i++){
+
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					ScsInscripcionGuardiaBean inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
+					
+					datos.add(inscripcionBean);
+				}
+            }
+			
+	       return datos;		
+	       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardiaPendientesValidar()");
+		}		       
+	}		
 }

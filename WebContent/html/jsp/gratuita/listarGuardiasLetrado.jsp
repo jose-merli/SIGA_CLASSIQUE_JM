@@ -177,45 +177,53 @@
 									 literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";				
 					String estado = "No aplica";
 					
-					if(fechaValidacion.equals("")){
-						if(fechaSolicitudBaja.equals("")){
-							if(fechaDenegacion.equals("")){
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.pendiente");
-								// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-							}else{
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.denegada");
+					if (fechaSolicitud.equals("")) {
+						estado = "";
+						
+					} else {
+						if (fechaBaja.equals("")) {				
+							if (fechaValidacion.equals("")) {
+								if (fechaSolicitudBaja.equals("")) {
+									if (fechaDenegacion.equals("")) {
+										estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.pendiente");
+										
+									} else {
+										estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.denegada");
+									}
+									
+								} else {
+									if (fechaBaja.equals("")) {
+										if (fechaDenegacion.equals("")) {
+											estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.pendiente");
+											
+										} else {
+											estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
+										}
+										
+									} else {
+										estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
+									}
+								}
+								
+							} else {
+								if (fechaSolicitudBaja.equals("")) {
+									estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.alta.confirmada");
+									
+								} else {
+									if (fechaDenegacion.equals("")) {
+										estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.pendiente");
+										
+									} else {
+										estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
+									}
+								}
 							}
 							
-						}else{
-							if(fechaBaja.equals("")){
-								if(fechaDenegacion.equals("")){
-									estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
-								}else{
-									// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-									estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
-								}							
-							}else{
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");							
-							}						
+						} else {
+							estado = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.confirmada");
 						}
-						
-					}else{					
-						if(fechaSolicitudBaja.equals("")){
-							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.confirmada");;
-							// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-						}else{
-							if(fechaBaja.equals("")){
-								if(fechaDenegacion.equals("")){
-									estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
-								}else{
-									// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-									estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
-								}						
-							}else{
-								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");							
-							}						
-						}				
-					}%>
+					}
+					%>
 					
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
 						botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="false"

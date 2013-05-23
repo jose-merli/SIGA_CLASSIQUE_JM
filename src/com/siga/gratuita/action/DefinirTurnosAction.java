@@ -484,89 +484,38 @@ public class DefinirTurnosAction extends MasterAction {
 		    if (paso)ok = ordenacion.insert(haux);
 		    ok = turno.update(this.prepararHash(hash),tAnt.getOriginalHash());
 		    
-		    // Si validarAltasBajas=1 validamos las altas y bajas en el turno que están pendientes
-		    
-		    // validacion de Altas
 		    ScsInscripcionTurnoAdm insTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-		    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){		   		    	
-				insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(),idturno);
-		    }
 		    
-		    // Compruebo que se ha modificado la configuracion del turno de alta a baja
+		    /* Compruebo que se ha modificado la configuracion del turno de alta a baja
+		     * Pone todas las inscripciones de turno y guardia (toda inscripcion que no este confirmada de baja o alta denegada), como confirmadas de baja 
+		     */
 		    String visibilidadOld = tAnt.getVisibilidad();
 		    String visibilidadNew = UtilidadesHash.getString(hash, ScsTurnoBean.C_VISIBILIDAD);
 		    if (visibilidadNew.equalsIgnoreCase(ClsConstants.DB_FALSE) && visibilidadOld.equalsIgnoreCase(ClsConstants.DB_TRUE)) {
 		    	
-		    	// Obtengo una lista de inscripciones de turno, del turno modificado
-		    	Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = insTurnoAdm.getInscripcionesTurnoSinBaja(usr.getLocation(), idturno);
-		    	
-		    	// Recorro la lista de inscripciones de turno
-		    	for (int i = 0; i < listaInscripcionesTurno.size(); i++) {
-		    		
-		    		// Obtengo la inscripcion de turno
-		    		ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) listaInscripcionesTurno.get(i);
-		    		
-					/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno */
-					
-					InscripcionTGForm miForm = new InscripcionTGForm();
-					GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
-					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-					
-					// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
-					miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
-					miForm.setIdTurno(insTurno.getIdTurno().toString());
-					miForm.setIdPersona(insTurno.getIdPersona().toString());
-					miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());
-					
-					// Obtengo la fecha de baja minima para la inscripcion de turno
-					String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, usr);		
-					
-					// Obtengo la fecha actual y la convierto en el formato adecuado
-					Date dFechaHoy = new Date(); 										
-					String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy							
-					
-					// Comparo la fecha minima de baja del turno, con la fecha actual
-					int comparacion = GstDate.compararFechas(fechaBajaInscripciones, sFechaHoy);
-						
-					// Obtenemos la fecha mayor
-					if (comparacion < 0) {
-						fechaBajaInscripciones = sFechaHoy;
-					}					
-					
-					/* JPT: FIN - Calculo la fecha de baja para las inscripciones de turno */
-					
-					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
-					InscripcionTurno inscripcion = new InscripcionTurno(insTurno);
-					
-					String motivo = "Baja de turno";		
-					
-					if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
-						inscripcion.validarBaja(
-							fechaBajaInscripciones, 
-							insTurno.getFechaValidacion(),
-							motivo,
-							null, 
-							usr);
-						
-					} else {
-						inscripcion.solicitarBaja(
-							"sysdate",
-							motivo,
-							fechaBajaInscripciones,
-							motivo,
-							insTurno.getFechaValidacion(),
-							null, 
-							usr);	
-					}						
-		    	}		    	
+		    	// Cancela todas las inscripciones de turno de un turno que no estan de baja
+		    	insTurnoAdm.cancelarInscripcionesTurnosTurno(usr.getLocation(), idturno);					
+		    } else {
+		    
+			    /* Compruebo que el turno previamente y posteriormente este en estado de alta,
+			     * - Si estaba de baja, debe tener todas las inscripciones de turno y guardia confirmadas de baja o alta denegada
+			     * - Si estaba de alta y pasa a baja, pone todas las inscripciones de turno y guardia (toda inscripcion que no este confirmada de baja o alta denegada), como confirmadas de baja 
+			     */
+			    if (visibilidadOld.equalsIgnoreCase(ClsConstants.DB_TRUE) && visibilidadNew.equalsIgnoreCase(ClsConstants.DB_TRUE)) {
+			    	
+				    // Si validarAltasBajas=1 validamos las altas y bajas de las inscripciones de turno y guardia pendientes				    				    
+				    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){		   		    	
+						insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(), idturno);
+				    }		    			    	
+			    }
 		    }
 		    
 		    tx.commit();
 		    
-		    forward = exitoRefresco("messages.updated.success",request);
+		    forward = exitoRefresco("messages.updated.success", request);
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx);
 		}
 		
 		return forward;			

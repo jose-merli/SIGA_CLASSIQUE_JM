@@ -935,7 +935,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
 					if( idGuardia!=null ){
 						ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(this.usrbean);
-						ScsInscripcionGuardiaBean inscripcionGuardia; inscripcionGuardia = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(), idTurno.toString(),
+						ScsInscripcionGuardiaBean inscripcionGuardia; inscripcionGuardia = inscripcionAdm.getInscripcionGuardiaActiva(idInstitucion.toString(), idTurno.toString(),
 								idGuardia.toString(), idPersona, fecha);
 						if(inscripcionGuardia == null)
 							continue;
@@ -944,7 +944,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 						alLetradosCompensados.add(letradoSeleccionado);
 					}else{
 						ScsInscripcionTurnoAdm inscripcionAdm = new ScsInscripcionTurnoAdm(this.usrbean);
-						ScsInscripcionTurnoBean inscripcionTurno = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(), idTurno.toString(), idPersona, fecha);
+						ScsInscripcionTurnoBean inscripcionTurno = inscripcionAdm.getInscripcionTurnoActiva(idInstitucion.toString(), idTurno.toString(), idPersona, fecha);
 						if(inscripcionTurno == null)
 							continue;
 						letradoSeleccionado = new LetradoInscripcion(inscripcionTurno);
@@ -1049,7 +1049,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 					htFila = ((Row) rc.get(i)).getRow();
 
 					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
-					inscripcionTurno = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(),
+					inscripcionTurno = inscripcionAdm.getInscripcionTurnoActiva(idInstitucion.toString(),
 							idTurno.toString(), idPersona, fecha);
 					if(inscripcionTurno==null)
 						continue;

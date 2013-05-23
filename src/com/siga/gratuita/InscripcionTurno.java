@@ -1,6 +1,5 @@
 package com.siga.gratuita;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,8 +8,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
-import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -30,26 +27,26 @@ import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
-public class InscripcionTurno
-{
+public class InscripcionTurno {
 	////////////////////
 	// ATRIBUTOS
 	////////////////////
 	private ScsInscripcionTurnoBean bean = null;
-	
-	private static SimpleDateFormat formatoFecha = 
-		new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
-	
+	private static SimpleDateFormat formatoFecha = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
 	
 	////////////////////
 	// CONSTRUCTORES
 	////////////////////
 	/**
-	 * Constructor
+	 * Constructor 
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @param fechaSolicitudAlta
 	 */
 	private InscripcionTurno (Integer idInstitucion, Integer idTurno, Long idPersona,  String fechaSolicitudAlta) {
 		this.bean = new ScsInscripcionTurnoBean();
@@ -59,84 +56,44 @@ public class InscripcionTurno
 		this.bean.setFechaSolicitud(fechaSolicitudAlta);
 	} //InscripcionTurno ()
 	
-	public InscripcionTurno (ScsInscripcionTurnoBean bean)
-	{
+	/**
+	 * Constructor
+	 * 
+	 * @param bean
+	 */
+	public InscripcionTurno (ScsInscripcionTurnoBean bean) {
 		this.bean = bean;
 	} //InscripcionTurno ()
-	
-	
+		
 	////////////////////
 	// GETTERS Y SETTERS
 	////////////////////
 	public ScsInscripcionTurnoBean getBean() { return bean; }
 	public void setBean(ScsInscripcionTurnoBean bean) { this.bean = bean; }
 	
-	
 	////////////////////
 	// METODOS DE CLASE
 	////////////////////
-	/**
-	 * Devuelve un objeto que representa la inscripcion de un colegiado a un turno. 
-	 * Este metodo comprueba si existe realmente la inscripcion. 
-	 * Sin embargo, es posible evitar la comprobacion con el parametro comprobarQueExiste=false
-	 */
-	public static InscripcionTurno getInscripcionTurno (Integer idInstitucion, Integer idTurno, Long idPersona, String fechaSolicitudAlta, UsrBean usr, boolean comprobarQueExiste) throws ClsExceptions, ParseException {
-		InscripcionTurno inscripcion = null;
-		
-		if (!comprobarQueExiste)
-			return new InscripcionTurno (idInstitucion, idTurno, idPersona, fechaSolicitudAlta);
-		
-		else {
-			//preparando datos
-			Hashtable<String, Object> hash = new Hashtable<String, Object>();
-			hash.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
-			hash.put(ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);
-			hash.put(ScsInscripcionTurnoBean.C_IDTURNO, idTurno);
-			hash.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, formatoFecha.format(formatoFecha.parse(fechaSolicitudAlta)));
-			
-			//obteniendo datos
-			ScsInscripcionTurnoAdm admInscripcion = new ScsInscripcionTurnoAdm(usr);
-			Vector<ScsInscripcionTurnoBean> inscripciones = admInscripcion.select(hash);
-			
-			if (inscripciones == null)
-				throw new ClsExceptions("Error: no se ha encontrado la inscripcion al turno");
-			
-			if (inscripciones.size() < 1)
-				throw new ClsExceptions("Error: no se ha encontrado la inscripcion al turno");
-			
-			if (inscripciones.size() > 1)
-				throw new ClsExceptions("Error: se ha encontrado mas de una inscripcion al turno");
-			
-			inscripcion = new InscripcionTurno ((ScsInscripcionTurnoBean) inscripciones.get(0));
-		}
-		
-		return inscripcion;
-	} //getInscripcionTurno ()	
 	
 	/**
 	 * Solicita el alta de una inscripcion de turno de un colegiado
 	 * 
 	 * @param form
 	 * @param usr
-	 * @throws Exception
+	 * @throws ClsExceptions
 	 */
-	public void solicitarAlta(InscripcionTGForm form, UsrBean usr) throws Exception{
-		try {		
-			this.solicitarAlta(
-				new Integer(form.getIdInstitucion()),
-				new Integer(form.getIdTurno()),
-				new Long(form.getIdPersona()),
-				form.getObservacionesSolicitud(),
-				form.getFechaValidacion(),
-				form.getObservacionesValidacion(),
-				new Integer(form.getTipoGuardias()),
-				form.getGuardiasSel(),
-				form.getIdRetencion(),
-				usr);
-			
-		} catch (Exception e) {
-			throw e;	
-		}			
+	public void solicitarAlta(InscripcionTGForm form, UsrBean usr) throws ClsExceptions {
+		this.solicitarAlta(
+			new Integer(form.getIdInstitucion()),
+			new Integer(form.getIdTurno()),
+			new Long(form.getIdPersona()),
+			form.getObservacionesSolicitud(),
+			form.getFechaValidacion(),
+			form.getObservacionesValidacion(),
+			new Integer(form.getTipoGuardias()),
+			form.getGuardiasSel(),
+			form.getIdRetencion(),
+			usr);
 	}
 	
 	/**
@@ -150,137 +107,131 @@ public class InscripcionTurno
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static List<LetradoInscripcion> getColaTurno(Integer idInstitucion,
-														 Integer idTurno,
-														 String fecha,
-														 boolean quitarSaltos,
-														 UsrBean usr)
-			throws ClsExceptions
-	{
-		ScsTurnoAdm turadm = new ScsTurnoAdm(usr);
-		Hashtable hashTurno = new Hashtable();
-		ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
-		ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
-		ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
-		
-		
-		// obteniendo la guardia
-		hashTurno.put(ScsTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
-		hashTurno.put(ScsTurnoBean.C_IDTURNO, idTurno.toString());
-		Vector vTurno= turadm.select(hashTurno);
-		
-		ScsTurnoBean beanTurno = (ScsTurnoBean) vTurno.get(0);
-		
-		Integer idOrdenacionColas = beanTurno.getIdOrdenacionColas();
-		if(idOrdenacionColas==null)
-			throw new ClsExceptions("messages.general.error");
-		
-		Long idPersonaUltimo = beanTurno.getIdPersonaUltimo();
-		String fechaUltimo = beanTurno.getFechaSolicitudUltimo();
-		ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
-		// obteniendo ordenacion de la guardia
-		String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr);
-		
-		ScsInscripcionTurnoBean ultimoAnterior;
-		
-		// obteniendo ultimo apuntado de la guardia
-		if (idPersonaUltimo == null)
-			ultimoAnterior = null;
-		else
-			ultimoAnterior = new ScsInscripcionTurnoBean(idInstitucion, idTurno, idPersonaUltimo, fechaUltimo);
-		
-//		obteniendo lista de letrados (ordenada)
-		Vector<ScsInscripcionTurnoBean> listaLetrados = insadm.getColaTurno(idInstitucion.toString(), idTurno.toString(), fecha, orden);
-		if (listaLetrados == null || listaLetrados.size()==0)
-			return colaLetrados;
-		
-		/* FORMA ANTIGUA DE RELLENAR LA COLA DE TURNOS */
-		 
-		/*ScsInscripcionTurnoBean inscripcionTurno = null;
-		boolean foundUltimo = false;
-		Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
-		LetradoInscripcion letradoTurno;
-		if(idPersonaUltimo!=null){
-			for (int i = 0; i < listaLetrados.size(); i++) {
-				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoInscripcion(inscripcionTurno);
-				if(foundUltimo){
-					//El primero que se añade es el ultimo. Depues habra que moverlo
-					colaLetrados.add(letradoTurno);
-				}else{
-					colaAuxiliar.add(letradoTurno);
-				}
-				if(!foundUltimo && inscripcionTurno.getIdPersona().compareTo(idPersonaUltimo)==0){
-					foundUltimo = true;
-					//indexUltimo = i;
-				}
-			}
-			colaLetrados.addAll(colaAuxiliar);
-			}else{
-		
-		   // el idpersona ultimo es nulo con el orden que traian
-			for (int i = 0; i < listaLetrados.size(); i++) {
-				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoInscripcion(inscripcionTurno);
-				colaLetrados.add(letradoTurno);
-			}
-		}*/
-		
-		ScsInscripcionTurnoBean punteroInscripciones = null;
-		boolean foundUltimo;
-		LetradoInscripcion letradoTurno;
-		if (ultimoAnterior == null) {
-			// si no existe ultimo colegiado, se empieza la cola desde el
-			// primero en la lista
-			for (int i = 0; i < listaLetrados.size(); i++) {
-				punteroInscripciones = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
-					colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
-			}
-		} else {
-			// ordenando la cola en funcion del idPersonaUltimo guardado
+	public static List<LetradoInscripcion> getColaTurno(Integer idInstitucion, Integer idTurno, String fecha, boolean quitarSaltos, UsrBean usr) throws ClsExceptions {
+		try {
+			ScsTurnoAdm turadm = new ScsTurnoAdm(usr);
+			Hashtable hashTurno = new Hashtable();
+			ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
+			ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
+			ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
+			CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
+			
+			
+			// obteniendo la guardia
+			hashTurno.put(ScsTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
+			hashTurno.put(ScsTurnoBean.C_IDTURNO, idTurno.toString());
+			Vector vTurno= turadm.select(hashTurno);
+			
+			ScsTurnoBean beanTurno = (ScsTurnoBean) vTurno.get(0);
+			
+			Integer idOrdenacionColas = beanTurno.getIdOrdenacionColas();
+			if(idOrdenacionColas==null)
+				throw new ClsExceptions("messages.general.error");
+			
+			Long idPersonaUltimo = beanTurno.getIdPersonaUltimo();
+			String fechaUltimo = beanTurno.getFechaSolicitudUltimo();
+			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
+			// obteniendo ordenacion de la guardia
+			String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr);
+			
+			ScsInscripcionTurnoBean ultimoAnterior;
+			
+			// obteniendo ultimo apuntado de la guardia
+			if (idPersonaUltimo == null)
+				ultimoAnterior = null;
+			else
+				ultimoAnterior = new ScsInscripcionTurnoBean(idInstitucion, idTurno, idPersonaUltimo, fechaUltimo);
+			
+	//		obteniendo lista de letrados (ordenada)
+			Vector<ScsInscripcionTurnoBean> listaLetrados = insadm.getColaTurno(idInstitucion.toString(), idTurno.toString(), fecha, orden);
+			if (listaLetrados == null || listaLetrados.size()==0)
+				return colaLetrados;
+			
+			/* FORMA ANTIGUA DE RELLENAR LA COLA DE TURNOS */
+			 
+			/*ScsInscripcionTurnoBean inscripcionTurno = null;
+			boolean foundUltimo = false;
 			Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
-			foundUltimo = false;
-			for (int i = 0; i < listaLetrados.size(); i++) {
-				punteroInscripciones = listaLetrados.get(i);
-
-				// insertando en la cola si la inscripcion esta activa
-				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
-					// El primero que se anyade es el siguiente al ultimo
-					if (foundUltimo) {
-						colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
-					} else {
-						colaAuxiliar.add(new LetradoInscripcion(punteroInscripciones));
+			LetradoInscripcion letradoTurno;
+			if(idPersonaUltimo!=null){
+				for (int i = 0; i < listaLetrados.size(); i++) {
+					inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
+					letradoTurno = new LetradoInscripcion(inscripcionTurno);
+					if(foundUltimo){
+						//El primero que se añade es el ultimo. Depues habra que moverlo
+						colaLetrados.add(letradoTurno);
+					}else{
+						colaAuxiliar.add(letradoTurno);
+					}
+					if(!foundUltimo && inscripcionTurno.getIdPersona().compareTo(idPersonaUltimo)==0){
+						foundUltimo = true;
+						//indexUltimo = i;
 					}
 				}
-
-				// revisando si se encontro ya al ultimo
-				if (!foundUltimo && punteroInscripciones.equals(ultimoAnterior))
-					foundUltimo = true;
-			}
-			colaLetrados.addAll(colaAuxiliar);
-		}
-		
-		
-		// quitando letrados de la cola si tienen saltos
-		if (quitarSaltos) {
-			HashMap<Long, ArrayList<LetradoInscripcion>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
-			ArrayList<LetradoInscripcion> alSaltos;
-			for (Iterator iter = colaLetrados.iterator(); iter.hasNext(); ) {
-				letradoTurno = (LetradoInscripcion) iter.next();
-				if ( (alSaltos = personasConSaltos.get(letradoTurno.getIdPersona())) != null )
-					iter.remove();
-			}
-		}
-		
-		return colaLetrados;
-	} //getColaTurno()
-
+				colaLetrados.addAll(colaAuxiliar);
+				}else{
+			
+			   // el idpersona ultimo es nulo con el orden que traian
+				for (int i = 0; i < listaLetrados.size(); i++) {
+					inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
+					letradoTurno = new LetradoInscripcion(inscripcionTurno);
+					colaLetrados.add(letradoTurno);
+				}
+			}*/
+			
+			ScsInscripcionTurnoBean punteroInscripciones = null;
+			boolean foundUltimo;
+			LetradoInscripcion letradoTurno;
+			if (ultimoAnterior == null) {
+				// si no existe ultimo colegiado, se empieza la cola desde el
+				// primero en la lista
+				for (int i = 0; i < listaLetrados.size(); i++) {
+					punteroInscripciones = (ScsInscripcionTurnoBean) listaLetrados.get(i);
+					if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
+						colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
+				}
+			} else {
+				// ordenando la cola en funcion del idPersonaUltimo guardado
+				Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
+				foundUltimo = false;
+				for (int i = 0; i < listaLetrados.size(); i++) {
+					punteroInscripciones = listaLetrados.get(i);
 	
-	////////////////////
-	// METODOS
-	////////////////////
+					// insertando en la cola si la inscripcion esta activa
+					if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
+						// El primero que se anyade es el siguiente al ultimo
+						if (foundUltimo) {
+							colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
+						} else {
+							colaAuxiliar.add(new LetradoInscripcion(punteroInscripciones));
+						}
+					}
+	
+					// revisando si se encontro ya al ultimo
+					if (!foundUltimo && punteroInscripciones.equals(ultimoAnterior))
+						foundUltimo = true;
+				}
+				colaLetrados.addAll(colaAuxiliar);
+			}
+			
+			
+			// quitando letrados de la cola si tienen saltos
+			if (quitarSaltos) {
+				HashMap<Long, ArrayList<LetradoInscripcion>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
+				ArrayList<LetradoInscripcion> alSaltos;
+				for (Iterator iter = colaLetrados.iterator(); iter.hasNext(); ) {
+					letradoTurno = (LetradoInscripcion) iter.next();
+					if ( (alSaltos = personasConSaltos.get(letradoTurno.getIdPersona())) != null )
+						iter.remove();
+				}
+			}
+			
+			return colaLetrados;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getColaTurno()");
+		}			
+	} //getColaTurno()
 	
 	/**
 	 * Solicita el alta de una inscripcion de turno de un colegiado
@@ -296,166 +247,158 @@ public class InscripcionTurno
 	 * @param idRetencion
 	 * @param usr
 	 * @throws ClsExceptions
-	 * @throws SIGAException
 	 */
-	private void solicitarAlta (Integer idInstitucion,
-			Integer idTurno,
-			Long idPersona,
-			String observacionesSolicitudAlta,
-			String fechaValidacion,
-			String observacionesValidacion,
-			Integer tipoGuardias,
-			String guardiasSeleccionadas,			
-			String idRetencion,
-			UsrBean usr) throws ClsExceptions, SIGAException {
-
-		String resultado = "messages.inserted.error";
-		RowsContainer rc=null;
-		boolean existe=false;
-
-		String fValidacion = null;
-		if (guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("") && guardiasSeleccionadas.indexOf("@")>=0){
-			guardiasSeleccionadas=guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
-		}  
-		
-		String guardiasSel[];
-		String fv = null;
-		Hashtable miHash = new Hashtable();
-
-		// Preparamos la hash
-		if(fechaValidacion!=null && !fechaValidacion.equals("")) {
-			if(fechaValidacion.equals("sysdate")){
-				miHash.put("FECHAVALIDACION", fechaValidacion);
+	private void solicitarAlta (Integer idInstitucion, Integer idTurno, Long idPersona, String observacionesSolicitudAlta, String fechaValidacion, String observacionesValidacion, 
+			Integer tipoGuardias, String guardiasSeleccionadas, String idRetencion, UsrBean usr) throws ClsExceptions {
+		try {
+			RowsContainer rc=null;
+			boolean existe=false;
+	
+			String fValidacion = null;
+			if (guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("") && guardiasSeleccionadas.indexOf("@")>=0){
+				guardiasSeleccionadas=guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
+			}  
+			
+			String guardiasSel[];
+			String fv = null;
+			Hashtable miHash = new Hashtable();
+	
+			// Preparamos la hash
+			if(fechaValidacion!=null && !fechaValidacion.equals("")) {
+				if(!fechaValidacion.equalsIgnoreCase("sysdate") && fechaValidacion.length()==10) {
+					miHash.put("FECHAVALIDACION", GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
+				} else {
+					miHash.put("FECHAVALIDACION", fechaValidacion);
+				}			
 				
-			} else {
-				miHash.put("FECHAVALIDACION", GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
-			}
-			
-			if(observacionesValidacion!=null) {
-				miHash.put("OBSERVACIONESVALIDACION", observacionesValidacion);
-				
-			} else {
-				miHash.put("OBSERVACIONESVALIDACION", "");
-			}
-		}
-		
-		miHash.put("IDPERSONA", idPersona);  
-		miHash.put("IDINSTITUCION", usr.getLocation());
-		miHash.put("IDTURNO", idTurno.toString());
-		miHash.put("FECHASOLICITUD", "sysdate");
-		
-		if(observacionesSolicitudAlta!=null) {
-			miHash.put("OBSERVACIONESSOLICITUD", observacionesSolicitudAlta);
-			
-		} else {
-			miHash.put("OBSERVACIONESSOLICITUD", "");
-		}
-
-		// Realiza el alta de la inscripcion de turno
-		ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);		
-		boolean result = inscripcionTurnoAdm.insert(miHash);
-		
-		Hashtable hash = null;
-		
-		// Comprueba que se ha realizado el alta de turno y tiene guardias
-		if(result && tipoGuardias!=null ){
-			
-			// Indica que son guardias obligatorias
-			if ( tipoGuardias.intValue()==0){
+				if(observacionesValidacion!=null) {
+					miHash.put("OBSERVACIONESVALIDACION", observacionesValidacion);
 					
-				// Obtiene las guardias del turno
-				ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(usr);
-				List<ScsGuardiasTurnoBean> lGuardias = admGuardiasTurno.getGuardiasTurnos(idTurno, idInstitucion, false);
-				
-				// Recorre las guardias
-				if(lGuardias!=null && lGuardias.size()>0){
-					for(int x=0; x<lGuardias.size(); x++) {						
-						ScsGuardiasTurnoBean beanGuardia = lGuardias.get(x);
-						
-						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 					
-						ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
-						beanInscripcionGuardia.setIdInstitucion(new Integer(idInstitucion));					
-						beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
-						beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
-						beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
-						beanInscripcionGuardia.setFechaSuscripcion("sysdate");
-						
-						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
-						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
-						
-						// Introduce los datos del alta
-						if (!fechaValidacion.equals("")) {
-							inscripcionGuardia.setAltas(observacionesSolicitudAlta, fechaValidacion, observacionesValidacion);
-							
-						} else {
-							inscripcionGuardia.setAltas(observacionesSolicitudAlta, null, null);															
-						}
-						
-						// Realiza el alta de la inscripcion de guardia
-						inscripcionGuardia.solicitarAlta(usr);
-					}
+				} else {
+					miHash.put("OBSERVACIONESVALIDACION", "");
 				}
+			}
+			
+			miHash.put("IDPERSONA", idPersona);  
+			miHash.put("IDINSTITUCION", usr.getLocation());
+			miHash.put("IDTURNO", idTurno.toString());
+			miHash.put("FECHASOLICITUD", "sysdate");
+			
+			if(observacionesSolicitudAlta!=null) {
+				miHash.put("OBSERVACIONESSOLICITUD", observacionesSolicitudAlta);
 				
-			// Si no son obligatorias	
 			} else {
+				miHash.put("OBSERVACIONESSOLICITUD", "");
+			}
+	
+			// Realiza el alta de la inscripcion de turno
+			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);		
+			boolean result = inscripcionTurnoAdm.insert(miHash);
+			
+			Hashtable hash = null;
+			
+			// Comprueba que se ha realizado el alta de turno y tiene guardias
+			if(result && tipoGuardias!=null ){
 				
-				// Comprueba que tenga guardias seleccionadas
-				if( guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
-					guardiasSel=guardiasSeleccionadas.split("@");
-
-					Date date = new Date();
-					String fechaInscripcion= formatoFecha.format(date);
-
-					// Recorre las guardias seleccionadas
-					for (int i=0; i<guardiasSel.length;i++){
-						try {
-							fechaInscripcion = formatoFecha.format(formatoFecha.parse(fechaInscripcion));
+				// Indica que son guardias obligatorias
+				if ( tipoGuardias.intValue()==0){
+						
+					// Obtiene las guardias del turno
+					ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(usr);
+					List<ScsGuardiasTurnoBean> lGuardias = admGuardiasTurno.getGuardiasTurnos(idTurno, idInstitucion, false);
+					
+					// Recorre las guardias
+					if(lGuardias!=null && lGuardias.size()>0){
+						for(int x=0; x<lGuardias.size(); x++) {						
+							ScsGuardiasTurnoBean beanGuardia = lGuardias.get(x);
 							
-						} catch (Exception e) {
-							fechaInscripcion = "sysdate";
-						} 
-						
-						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 					
-						ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
-						beanInscripcionGuardia.setIdInstitucion(new Integer(idInstitucion));					
-						beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
-						beanInscripcionGuardia.setIdGuardia(new Integer(guardiasSel[i]));					
-						beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
-						beanInscripcionGuardia.setFechaSuscripcion(fechaInscripcion);
-						
-						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
-						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
+							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 					
+							ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
+							beanInscripcionGuardia.setIdInstitucion(new Integer(idInstitucion));					
+							beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
+							beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
+							beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
+							beanInscripcionGuardia.setFechaSuscripcion("sysdate");
+							
+							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
+							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
+							
+							// Introduce los datos del alta
+							if (!fechaValidacion.equals("")) {
+								inscripcionGuardia.setAltas(observacionesSolicitudAlta, fechaValidacion, observacionesValidacion);
 								
-						// Introduce los datos del alta
-						if(!fechaValidacion.equals("")) {
-							inscripcionGuardia.setAltas(observacionesSolicitudAlta, fechaValidacion, observacionesValidacion);
+							} else {
+								inscripcionGuardia.setAltas(observacionesSolicitudAlta, null, null);															
+							}
 							
-						}else{
-							inscripcionGuardia.setAltas(observacionesSolicitudAlta, null, null);														
+							// Realiza el alta de la inscripcion de guardia
+							inscripcionGuardia.solicitarAlta(usr);
 						}
+					}
+					
+				// Si no son obligatorias	
+				} else {
+					
+					// Comprueba que tenga guardias seleccionadas
+					if( guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
+						guardiasSel=guardiasSeleccionadas.split("@");
+	
+						Date date = new Date();
+						String fechaInscripcion= formatoFecha.format(date);
+	
+						// Recorre las guardias seleccionadas
+						for (int i=0; i<guardiasSel.length;i++){
+							try {
+								fechaInscripcion = formatoFecha.format(formatoFecha.parse(fechaInscripcion));							
+							} catch (Exception e) {
+								fechaInscripcion = "sysdate";
+							} 
+							
+							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 					
+							ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
+							beanInscripcionGuardia.setIdInstitucion(new Integer(idInstitucion));					
+							beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
+							beanInscripcionGuardia.setIdGuardia(new Integer(guardiasSel[i]));					
+							beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
+							beanInscripcionGuardia.setFechaSuscripcion(fechaInscripcion);
+							
+							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
+							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
+									
+							// Introduce los datos del alta
+							if(!fechaValidacion.equals("")) {
+								inscripcionGuardia.setAltas(observacionesSolicitudAlta, fechaValidacion, observacionesValidacion);
 								
-						inscripcionGuardia.solicitarAlta(usr);
+							}else{
+								inscripcionGuardia.setAltas(observacionesSolicitudAlta, null, null);														
+							}
+									
+							inscripcionGuardia.solicitarAlta(usr);
+						}
 					}
 				}
 			}
-		}
+				
+			// Si se ha incluido retencion, se da de alta.
+			if(idRetencion != null) {
+				ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(usr);
+				miHash = new Hashtable();
+				miHash.put("IDINSTITUCION",usr.getLocation());
+				miHash.put("IDPERSONA",idPersona);
+				miHash.put("IDRETENCION",idRetencion);
+				miHash.put("DESCRIPCION",".");
+				miHash.put("FECHAINICIO",GstDate.getApplicationFormatDate(usr.getLanguage(),"01/01/2005"));
+				result = scsRetencionesIRPFAdm.insert(miHash);
+				idRetencion=null;
+			}
+				
+			if (!result) {
+				throw new ClsExceptions("messages.inserted.error");
+			}		
 			
-		// Si se ha incluido retencion, se da de alta.
-		if(idRetencion != null) {
-			ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(usr);
-			miHash = new Hashtable();
-			miHash.put("IDINSTITUCION",usr.getLocation());
-			miHash.put("IDPERSONA",idPersona);
-			miHash.put("IDRETENCION",idRetencion);
-			miHash.put("DESCRIPCION",".");
-			miHash.put("FECHAINICIO",GstDate.getApplicationFormatDate(usr.getLanguage(),"01/01/2005"));
-			result = scsRetencionesIRPFAdm.insert(miHash);
-			idRetencion=null;
-		}
-			
-		if (!result) {
-			throw new SIGAException("messages.inserted.error");
-		}		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar solicitarAlta()");
+		}				
 	} //solicitarAlta ()
 	
 	/**
@@ -466,45 +409,43 @@ public class InscripcionTurno
 	 * @param usr
 	 * @throws ClsExceptions
 	 */
-	public void validarAlta (String fechaValidacion, String observacionesValidacion, UsrBean usr) throws ClsExceptions{
-		
-		String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION, 
-			ScsInscripcionTurnoBean.C_IDPERSONA, 
-			ScsInscripcionTurnoBean.C_IDTURNO,
-			ScsInscripcionTurnoBean.C_FECHASOLICITUD};
-		
-		String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
-				ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
-		
-		// Preparamos la hash
-		Hashtable htInscTurno = new Hashtable();
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA,this.bean.getIdPersona());  
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION,this.bean.getIdInstitucion());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO,this.bean.getIdTurno());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD,this.bean.getFechaSolicitud());
-		
-		if (observacionesValidacion!=null) {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+	public void validarAlta (String fechaValidacion, String observacionesValidacion, UsrBean usr) throws ClsExceptions {
+		try {
+			String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION, 
+				ScsInscripcionTurnoBean.C_IDPERSONA, 
+				ScsInscripcionTurnoBean.C_IDTURNO,
+				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
 			
-		} else {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
-		}
-
-		if(fechaValidacion.equals("sysdate")){
-			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,fechaValidacion);
+			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
+					ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
 			
-		} else {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
-		}		
-						
-		try {			
+			// Preparamos la hash
+			Hashtable htInscTurno = new Hashtable();
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA,this.bean.getIdPersona());  
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION,this.bean.getIdInstitucion());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO,this.bean.getIdTurno());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD,this.bean.getFechaSolicitud());
+			
+			if (observacionesValidacion!=null) {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+				
+			} else {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
+			}
+			
+			if(!fechaValidacion.equalsIgnoreCase("sysdate") && fechaValidacion.length()==10) {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
+			} else {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION, fechaValidacion);
+			}			
+									
 			// Actualiza el turno
 			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 			scsInscripcionTurnoAdm.updateDirect(htInscTurno,clavesTurno,camposTurno);
 			
 			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
+			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
 				this.bean.getIdInstitucion(), 
 				this.bean.getIdTurno(),
 				this.bean.getIdPersona(),
@@ -519,16 +460,14 @@ public class InscripcionTurno
 					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);							
 					inscripcionGuardia.setAltas(null, fechaValidacion, observacionesValidacion);
 					
+					// JPT: Al crear el alta del turno, crea el alta de todas sus guardias
 					inscripcionGuardia.validarAlta(usr);
 				}
 			}
 			
-		} catch (ClsExceptions e) {
-			throw e;
-			
 		} catch (Exception e) {
-			throw new ClsExceptions("error.messages.application");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar validarAlta()");
+		}				
 	} 
 	
 	/**
@@ -540,47 +479,41 @@ public class InscripcionTurno
 	 * @throws ClsExceptions
 	 */
 	public void modificarFechaValidacion(String fechaValidacion, String observacionesValidacion, UsrBean usr) throws ClsExceptions {
-		
-		// Preparamos los datos para la inscripcion de turno
-		String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
-				ScsInscripcionTurnoBean.C_IDPERSONA, 
-				ScsInscripcionTurnoBean.C_IDTURNO,
-				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
-		
-		String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
-				ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
-		
-		Hashtable htInscTurno = new Hashtable();
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, this.bean.getIdInstitucion());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO, this.bean.getIdTurno());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());		
-		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
-		
-		if (observacionesValidacion!=null) {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
-			
-		} else {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
-		}
-		
-		// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
-		ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
-		List vGuardiasTurno = (List) admInscripcionGuardia.getGuardiasTurnoFechaEfectiva(
-				this.bean.getIdInstitucion(), 
-				this.bean.getIdTurno(),
-				this.bean.getIdPersona(),
-				this.bean.getFechaValidacion(),
-				true);	
-		
-		ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);				
-		UserTransaction tx = null;
-		
 		try {
-			tx = usr.getTransaction();
-			tx.begin();
+			// Preparamos los datos para la inscripcion de turno
+			String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
+					ScsInscripcionTurnoBean.C_IDPERSONA, 
+					ScsInscripcionTurnoBean.C_IDTURNO,
+					ScsInscripcionTurnoBean.C_FECHASOLICITUD};
 			
+			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
+					ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
+			
+			Hashtable htInscTurno = new Hashtable();
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, this.bean.getIdInstitucion());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO, this.bean.getIdTurno());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());		
+			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
+			
+			if (observacionesValidacion!=null) {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+				
+			} else {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
+			}
+			
+			// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
+			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
+			List vGuardiasTurno = (List) admInscripcionGuardia.getInscripcionesGuardiasTurnoFechaEfectiva(
+					this.bean.getIdInstitucion(), 
+					this.bean.getIdTurno(),
+					this.bean.getIdPersona(),
+					this.bean.getFechaValidacion(),
+					true);	
+									
 			// Actualiza la inscripcio de turno
+			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);
 			
 			// Recorre y actualiza las guardias
@@ -620,39 +553,21 @@ public class InscripcionTurno
 				}
 			}
 			
-			tx.commit();
-			
-		} catch (ClsExceptions e) {
-			try {
-				tx.rollback();
-				
-			} catch (Exception ex) {
-				throw new ClsExceptions("error.messages.application");
-			}
-			
-			throw e;
-			
 		} catch (Exception e) {
-			try {
-				tx.rollback();
-				
-			} catch (Exception ex) {
-				throw new ClsExceptions("error.messages.application");
-			}
-			
-			throw new ClsExceptions("error.messages.application");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar modificarFechaValidacion()");
+		}				
 	} 
 	
 	/**
 	 * Solicita la baja de una inscripcion de turno de un colegiado
+	 * 
 	 * @param fechaSolicitudBaja
 	 * @param observacionesSolicitudBaja
 	 * @param usr
+	 * @param tieneFechaBaja
 	 * @throws ClsExceptions
 	 */
-	private void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja, UsrBean usr) throws ClsExceptions {
-		
+	private void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja, UsrBean usr, boolean tieneFechaBaja) throws ClsExceptions {
 		try {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
@@ -670,7 +585,7 @@ public class InscripcionTurno
 			boolean tieneBajaDenegada = false;
 			if (v != null && v.size() == 1) {
 				ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
-
+	
 				if(inscripcionBean.getFechaDenegacion()!=null && !inscripcionBean.getFechaDenegacion().equals("")){
 					tieneBajaDenegada = true;
 					String observacionDenegacion = inscripcionBean.getObservacionesDenegacion()==null?"":inscripcionBean.getObservacionesDenegacion();
@@ -678,7 +593,7 @@ public class InscripcionTurno
 					observacionesSolicitudBaja += "[Observaciones denegación previa:"+observacionDenegacion+"]";						
 				}
 				
-				inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);
+				inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);							
 				String observacionesPrevias = inscripcionBean.getObservacionesBaja()==null || inscripcionBean.getObservacionesBaja().equals("") ? "" : "{" + inscripcionBean.getObservacionesBaja() + "}";
 				inscripcionBean.setObservacionesBaja(observacionesSolicitudBaja+observacionesPrevias);
 					
@@ -687,32 +602,37 @@ public class InscripcionTurno
 				}
 			}
 			
+			// Anula la denegacion del turno
 			if(tieneBajaDenegada)
-				denegarBajaInscripcionTurno(null, null, usr);			
+				denegarBajaInscripcionTurno(null, null, usr);
 			
-			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
-			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
-				this.bean.getIdInstitucion(), 
-				this.bean.getIdTurno(),
-				this.bean.getIdPersona(),
-				null);
-			
-			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0) {
-				for(int x=0; x<vGuardiasTurno.size(); x++) {
-					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
-					
-					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaSolicitudBaja + observacionesFechaSolicitudBaja
-					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);						
-					inscripcionGuardia.setBajas(observacionesSolicitudBaja, fechaSolicitudBaja, null, "-----");
-					
-					inscripcionGuardia.solicitarBaja(usr, null);
+			// Solo hacemos la solicitud de baja de las guardias del turno activas, si tiene fecha de baja
+			if (tieneFechaBaja) {
+				
+				// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
+				ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+				List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
+					this.bean.getIdInstitucion(), 
+					this.bean.getIdTurno(),
+					this.bean.getIdPersona(),
+					null);
+				
+				if(vGuardiasTurno!=null && vGuardiasTurno.size()>0) {
+					for(int x=0; x<vGuardiasTurno.size(); x++) {
+						ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
+						
+						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaSolicitudBaja + observacionesFechaSolicitudBaja
+						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);						
+						inscripcionGuardia.setBajas(observacionesSolicitudBaja, fechaSolicitudBaja, null, "-----");
+						
+						inscripcionGuardia.solicitarBaja(usr, null);
+					}
 				}
 			}
 			
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al solicitar la solicitud de baja en el turno");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar solicitarBaja()");
+		}				
 	} //solicitarBaja ()
 	
 	/**
@@ -726,46 +646,36 @@ public class InscripcionTurno
 	 * @param usr
 	 * @throws ClsExceptions
 	 */
-	public void solicitarBaja (
-			String fechaSolicitudBaja, 
-			String observacionesSolicitudBaja,
-			String fechaBaja,
-			String observacionesValBaja,
-			String fechaValidacion, 
-			String cancelarSyC, 
-			UsrBean usr) throws ClsExceptions {
-		
+	public void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja, String fechaBaja, String observacionesValBaja, String fechaValidacion, String cancelarSyC, UsrBean usr) throws ClsExceptions {
 		try {
-			solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja, usr);
 			
 			//el proceso de solicitar baja valida las que no es necesario la validacion de las inscripciones
-			if(fechaBaja!=null && !fechaBaja.equals(""))
-				validarBaja(fechaBaja, fechaValidacion, observacionesValBaja, null, usr);
+			if(fechaBaja!=null && !fechaBaja.equals("")) {
+				this.solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja, usr, true);
+				this.validarBaja(fechaBaja, fechaValidacion, observacionesValBaja, null, usr);
+				
+			} else {
+				this.solicitarBaja(fechaSolicitudBaja, observacionesSolicitudBaja, usr, false);
+			}
 			
 			if(cancelarSyC!=null && cancelarSyC.equalsIgnoreCase("T")){
-				try {
-					//String actuali = miForm.getTipoActualizacionSyC();
+				//String actuali = miForm.getTipoActualizacionSyC();
 					
-					//saltos y compensaciones
-					ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-					//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
-					//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
-					saladm.updateSaltosCompensacionesBajaTurno(
-						this.bean.getIdInstitucion(), 
-						this.bean.getIdTurno(),
-						this.bean.getIdPersona(), 
-						null, 
-						cancelarSyC);
-					
-				} catch (Exception e) {
-					throw new ClsExceptions (e, "Error al solicitar la baja en los Saltos y turnos");
-				}
+				//saltos y compensaciones
+				ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
+				//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
+				//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
+				saladm.updateSaltosCompensacionesBajaTurno(
+					this.bean.getIdInstitucion(), 
+					this.bean.getIdTurno(),
+					this.bean.getIdPersona(), 
+					null, 
+					cancelarSyC);
 			}
-		}
-		
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al solicitar la solicitud de baja en el turno");
-		}
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar solicitarBaja()");
+		}				
 	} //solicitarBaja ()
 
 	/**
@@ -784,7 +694,7 @@ public class InscripcionTurno
 			
 			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
+			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
 				this.bean.getIdInstitucion(), 
 				this.bean.getIdTurno(),
 				this.bean.getIdPersona(),
@@ -814,12 +724,12 @@ public class InscripcionTurno
 			
 			if (v != null && v.size() == 1) {
 				ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
-				if(!fechaDenegacion.equalsIgnoreCase("sysdate")){
-					inscripcionBean.setFechaDenegacion(GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
-					
+				
+				if(!fechaDenegacion.equalsIgnoreCase("sysdate") && fechaDenegacion.length()==10) {
+					inscripcionBean.setFechaDenegacion(GstDate.getApplicationFormatDate(usr.getLanguage(), fechaDenegacion));
 				} else {
 					inscripcionBean.setFechaDenegacion(fechaDenegacion);
-				}
+				}					
 				
 				inscripcionBean.setObservacionesDenegacion(observacionesDenegacion);
 				
@@ -829,8 +739,8 @@ public class InscripcionTurno
 			}
 			
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al denegar el alta en el turno");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar denegarInscripcionTurno()");
+		}				
 	} //denegarInscripcionTurno ()
 	
 	/**
@@ -849,7 +759,7 @@ public class InscripcionTurno
 			
 			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
+			List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
 				this.bean.getIdInstitucion(), 
 				this.bean.getIdTurno(),
 				this.bean.getIdPersona(),
@@ -880,12 +790,11 @@ public class InscripcionTurno
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());
 			
 			if(fechaDenegacion!=null){
-				if(!fechaDenegacion.equalsIgnoreCase("sysdate")){
-					UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHADENEGACION, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaDenegacion));
-					
+				if(!fechaDenegacion.equalsIgnoreCase("sysdate") && fechaDenegacion.length()==10) {
+					UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHADENEGACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaDenegacion));
 				} else {
 					UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHADENEGACION, fechaDenegacion);
-				}
+				}	
 				
 				if (observacionesDenegacion!=null) {
 					UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION, observacionesDenegacion);
@@ -899,10 +808,10 @@ public class InscripcionTurno
 					ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION};
 			ScsInscripcionTurnoAdm insturno = new ScsInscripcionTurnoAdm(usr);
 			insturno.updateDirect(inscripcionHash,claves,campos);
-			
+		
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al denegar el alta en el turno");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar denegarBajaInscripcionTurno()");
+		}			
 	} //denegarBajaInscripcionTurno ()
 	
 	/**
@@ -916,14 +825,10 @@ public class InscripcionTurno
 	 * @throws ClsExceptions
 	 */
 	public void validarBaja (String fechaBaja, String fechaValidacion, String obsValBaja, String bajaSyC, UsrBean usr) throws ClsExceptions {
-		
 		try {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
 			Long idPersona = this.bean.getIdPersona();
-//			if(!fechaBaja.equalsIgnoreCase("sysdate")){
-//				fechaBaja = GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja);
-//			}
 			
 			//comprobando si es el siguiente de la cola
 			//Solo se comprueba lo de la cola cuando no sea una denegacion de alta, esto es cuando no haya estado validado
@@ -962,26 +867,6 @@ public class InscripcionTurno
 				}
 			}
 			
-			// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
-			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(
-					this.bean.getIdInstitucion(), 
-					this.bean.getIdTurno(), 
-					this.bean.getIdPersona(), 
-					null);			
-			
-			if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
-				for(int x=0; x<vGuardiasTurno.size(); x++) {
-					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
-					
-					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaBaja + observacionesBaja
-					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);											
-					inscripcionGuardia.setBajas(null, null, fechaBaja, obsValBaja);
-					
-					inscripcionGuardia.validarBaja(usr, null);
-				}
-			}
-			
 			//insertando baja
 			Hashtable<String, Object> inscripcionHash = new Hashtable<String, Object>();
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
@@ -989,43 +874,65 @@ public class InscripcionTurno
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);			
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());
 			
-			ScsInscripcionTurnoAdm inscripcionAdm = new ScsInscripcionTurnoAdm(usr);
-			Vector<ScsInscripcionTurnoBean> v = inscripcionAdm.selectByPKForUpdate(inscripcionHash);
+			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+			Vector<ScsInscripcionTurnoBean> v = inscripcionTurnoAdm.selectByPKForUpdate(inscripcionHash);
 			
 			if (v != null && v.size() == 1) {
-				ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
+				ScsInscripcionTurnoBean inscripcionTurno = (ScsInscripcionTurnoBean) v.get(0);
 				
 				if(!fechaBaja.equalsIgnoreCase("sysdate") && fechaBaja.length()==10) {
-					inscripcionBean.setFechaBaja(GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
+					inscripcionTurno.setFechaBaja(GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
 				} else {
-					inscripcionBean.setFechaBaja(fechaBaja);
+					inscripcionTurno.setFechaBaja(fechaBaja);
 				}
 				
-				inscripcionBean.setObservacionesValBaja(obsValBaja);
+				inscripcionTurno.setObservacionesValBaja(obsValBaja);
 				
-				if (!inscripcionAdm.update(inscripcionBean)) {
+				if (!inscripcionTurnoAdm.update(inscripcionTurno)) {
 					throw new ClsExceptions("Error al realizar la baja en el turno");
 				}
+				
+				
+				// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
+				ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+				List vGuardiasTurno =  (List) admInscripcionGuardia.getInscripcionesGuardias(
+						this.bean.getIdInstitucion(), 
+						this.bean.getIdTurno(), 
+						this.bean.getIdPersona(), 
+						null);			
+				
+				if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
+					for(int x=0; x<vGuardiasTurno.size(); x++) {
+						ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
+						
+						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaBaja + observacionesBaja
+						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);																
+						
+						if (beanInscripcionGuardia.getFechaSolicitudBaja() != null && !beanInscripcionGuardia.getFechaSolicitudBaja().equals("")) {
+							inscripcionGuardia.setBajas(null, null, fechaBaja, obsValBaja);
+							inscripcionGuardia.validarBaja(usr, null);
+							
+						} else {
+							inscripcionGuardia.setBajas(inscripcionTurno.getObservacionesBaja(), inscripcionTurno.getFechaSolicitudBaja(), fechaBaja, obsValBaja);						
+							inscripcionGuardia.solicitarBaja(usr, null);
+						}											
+					}
+				}				
 			}
-
+	
 			if(bajaSyC!=null && bajaSyC.equalsIgnoreCase("T")){
-				try {
-					//String actuali = miForm.getTipoActualizacionSyC();
-					
-					//saltos y compensaciones
-					ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-					//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
-					//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
-					saladm.updateSaltosCompensacionesBajaTurno(this.bean.getIdInstitucion(), this.bean.getIdTurno(),this.bean.getIdPersona(), null, bajaSyC);
-					
-				} catch (Exception e) {
-					System.out.println( "Error al solicitar la baja en los Saltos y turnos");
-				}
+				//String actuali = miForm.getTipoActualizacionSyC();
+				
+				//saltos y compensaciones
+				ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
+				//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
+				//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
+				saladm.updateSaltosCompensacionesBajaTurno(this.bean.getIdInstitucion(), this.bean.getIdTurno(),this.bean.getIdPersona(), null, bajaSyC);
 			}
 			
-		} catch (Exception e) { 
-			throw new ClsExceptions (e, "Error al solicitar la baja en el turno");
-		}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar validarBaja()");
+		}			
 	} //validarBaja ()
 	
 	/**
@@ -1035,46 +942,41 @@ public class InscripcionTurno
 	 * @throws ClsExceptions
 	 */
 	public void modificarFechaBaja (String fechaBaja, String observacionesBaja, UsrBean usr) throws ClsExceptions {
-				// Preparamos los datos para la inscripcion de turno
-		String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
-				ScsInscripcionTurnoBean.C_IDPERSONA, 
-				ScsInscripcionTurnoBean.C_IDTURNO,
-				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
-		
-		String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHABAJA,
-				ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA};
-		
-		Hashtable htInscTurno = new Hashtable();
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, this.bean.getIdInstitucion());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO, this.bean.getIdTurno());
-		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());		
-		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
-		
-		if (observacionesBaja!=null) {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, observacionesBaja);
-			
-		} else {
-			htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, "");
-		}
-		
-		// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
-		ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
-		List vGuardiasTurno = (List) admInscripcionGuardia.getGuardiasTurnoFechaEfectiva(
-				this.bean.getIdInstitucion(), 
-				this.bean.getIdTurno(),
-				this.bean.getIdPersona(),
-				this.bean.getFechaBaja(),
-				false);	
-		
-		ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);				
-		UserTransaction tx = null;
-		
 		try {
-			tx = usr.getTransaction();
-			tx.begin();
+			// Preparamos los datos para la inscripcion de turno
+			String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
+					ScsInscripcionTurnoBean.C_IDPERSONA, 
+					ScsInscripcionTurnoBean.C_IDTURNO,
+					ScsInscripcionTurnoBean.C_FECHASOLICITUD};
+			
+			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHABAJA,
+					ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA};
+			
+			Hashtable htInscTurno = new Hashtable();
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, this.bean.getIdInstitucion());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_IDTURNO, this.bean.getIdTurno());
+			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());		
+			htInscTurno.put(ScsInscripcionTurnoBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
+			
+			if (observacionesBaja!=null) {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, observacionesBaja);
+				
+			} else {
+				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, "");
+			}
+			
+			// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
+			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
+			List vGuardiasTurno = (List) admInscripcionGuardia.getInscripcionesGuardiasTurnoFechaEfectiva(
+					this.bean.getIdInstitucion(), 
+					this.bean.getIdTurno(),
+					this.bean.getIdPersona(),
+					this.bean.getFechaBaja(),
+					false);					
 			
 			// Actualiza la inscripcio de turno
+			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);
 			
 			// Recorre y actualiza las guardias
@@ -1114,28 +1016,9 @@ public class InscripcionTurno
 					scsInscripcionGuardiaAdm.updateDirect(htInscGuardia, clavesGuardia, camposGuardia);
 				}
 			}
-			
-			tx.commit();
-			
-		} catch (ClsExceptions e) {
-			try {
-				tx.rollback();
-				
-			} catch (Exception ex) {
-				throw new ClsExceptions("error.messages.application");
-			}
-			
-			throw e;
-			
+		
 		} catch (Exception e) {
-			try {
-				tx.rollback();
-				
-			} catch (Exception ex) {
-				throw new ClsExceptions("error.messages.application");
-			}
-			
-			throw new ClsExceptions("error.messages.application");
-		}
+			throw new ClsExceptions (e, "Error al ejecutar modificarFechaBaja()");
+		}			
 	}
 }

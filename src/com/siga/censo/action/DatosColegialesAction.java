@@ -18,7 +18,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -39,16 +38,12 @@ import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenTiposSeguroAdm;
 import com.siga.beans.ScsInscripcionTurnoAdm;
-import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.censo.form.DatosColegialesForm;
 import com.siga.censo.form.HistoricoForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.InscripcionTurno;
-import com.siga.gratuita.action.GestionInscripcionesTGAction;
-import com.siga.gratuita.form.InscripcionTGForm;
 
 
 /**
@@ -504,8 +499,7 @@ public class DatosColegialesAction extends MasterAction {
 
 			// 1 y 2. guardando estado e historico
 			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE)) {
-				revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm
-						.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
+				revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
 
 				// terminando transaccion
 				tx.commit();
@@ -948,6 +942,8 @@ public class DatosColegialesAction extends MasterAction {
 	 *  3. Dar de baja en las colas de guardia y turno si el nuevo estado no es ejerciente
 	 *  4. Revocar certificados si el nuevo estado es de baja
 	 *  
+	 *  Hay una transaccion que se realiza por encima [this.borrar(), this.insertar()]
+	 *  
 	 * @param idinstitucion
 	 * @param idpersona
 	 * @param estado
@@ -957,12 +953,7 @@ public class DatosColegialesAction extends MasterAction {
 	 * @throws ParseException
 	 * @throws SIGAException
 	 */
-	protected void revisionesPorCambioEstadoColegial(String idinstitucion,
-			String idpersona,
-			String estado,
-			String fechaEstado,
-			UsrBean usr) throws ClsExceptions, ParseException, SIGAException
-	{
+	protected void revisionesPorCambioEstadoColegial(String idinstitucion, String idpersona, String estado, String fechaEstado, UsrBean usr) throws ClsExceptions, ParseException, SIGAException {
 		// Controles generales
 		CenPersonaAdm admPersona = new CenPersonaAdm(usr);
 		AdmCertificadosAdm admCertif = new AdmCertificadosAdm(usr);
@@ -979,80 +970,25 @@ public class DatosColegialesAction extends MasterAction {
 		} catch (Exception e1) {
 			// La fecha esta bien formada como dia/mes/ano
 		}
-		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona,
-				fechaEstado, usuario);
+		
+		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona, fechaEstado, usuario);
 		if ((resultado == null) || (!resultado[0].equals("0")))
 			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
 
 		// 3. Dar de baja en las colas de guardia y turno si el nuevo estado es de baja
-		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {
-			// TODO: mover a recurso
-			String observacionesBaja = "Baja por cambio de estado colegial";
-
-			Hashtable<String, Object> turnoHash = new Hashtable<String, Object>();
-			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idinstitucion);
-			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDPERSONA, idpersona);
-			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_FECHABAJA, "");
-			
-			// TODO: tambien hay que dar de baja si la fecha es posterior a la nueva fecha. Supongo que habra que utilizar una busqueda especial
-			Vector<ScsInscripcionTurnoBean> vTurnos = new ScsInscripcionTurnoAdm(usr).select(turnoHash);
-
-			for (int x = 0; x < vTurnos.size(); x++) {
-				ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) vTurnos.get(x);
-				
-				// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 				
-				InscripcionTurno inscripcion = new InscripcionTurno(insTurno);				
-				
-				/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno y guardia del colegiado */
-				
-				InscripcionTGForm miForm = new InscripcionTGForm();
-				GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
-				
-				// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
-				miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
-				miForm.setIdTurno(insTurno.getIdTurno().toString());
-				miForm.setIdPersona(insTurno.getIdPersona().toString());
-				miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());
-				
-				// Obtengo la fecha de baja minima para la inscripcion de turno
-				String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, usr);		
-				
-				// Comparo la fecha minima de baja del turno, con la fecha que ha indicado el usuario para el cambio de estado del colegiado
-				int comparacion = GstDate.compararFechas(fechaBajaInscripciones, fechaEstado);
-					
-				// Obtenemos la fecha mayor
-				if (comparacion < 0) {
-					fechaBajaInscripciones = fechaEstado;
-				}					
-				
-				/* JPT: FIN - Calculo la fecha de baja para las inscripciones de turno y guardia del colegiado */
-				
-				try {
-					// jbd // inc7718 //Esta fecha tiene que ser larga
-					fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);
-				} catch (Exception e) {
-					// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
-				}				
-				
-				if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
-					inscripcion.validarBaja(
-						fechaBajaInscripciones, 
-						insTurno.getFechaValidacion(),
-						observacionesBaja,
-						null, 
-						usr);
-					
-				} else {
-					inscripcion.solicitarBaja(
-						fechaEstado, 
-						observacionesBaja,
-						fechaBajaInscripciones,
-						observacionesBaja,
-						insTurno.getFechaValidacion(),
-						null, 
-						usr);	
-				}						
-			}
+		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {			
+						
+			/* JPT: Me ha costado llegar hasta aqui.
+	 		1. Expedientes > Tipos Expedientes: Crear un tipo de expediente con fase, clasificación, estados y permiso de acceso.
+	 		2. Expedientes > Gestionar Expedientes: Introducir colegiado, estado y datos obligatorios.
+	 		3. Cada vez que cambias el estado, sale una pantalla con una serie de checks:
+	 		- Baja Turno de Oficio: Da de baja al colegiado del turno de oficio.
+	 		- Baja Colegial: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Baja en ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Inhabilitación perpetua: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Suspensión ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.*/			
+			ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(usr);
+			tAdm.cancelarInscripcionesTurnosPersona(idpersona, idinstitucion, "Baja por cambio de estado colegial", fechaEstado);
 		}
 
 		// 4. revocando certificados

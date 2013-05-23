@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
@@ -68,7 +69,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					String accion = miForm.getModo();
 					String modo = request.getParameter("modo");
 						
-						System.out.println(" SESSION: " + request.getSession().getAttributeNames()); 
+					System.out.println(" SESSION: " + request.getSession().getAttributeNames()); 
 					if(modo!=null)
 						accion = modo;
 					
@@ -583,6 +584,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {
 			// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
@@ -593,6 +595,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				request.setAttribute("mensaje", sPreAlta);
 				return ClsConstants.ERROR_AVISO;	
 			}			
+			
+			tx = usr.getTransaction();
+			tx.begin();
 			
 			// Solicito el alta de la inscripcion de turno
 			InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
@@ -609,18 +614,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.getMovil(),
 				miForm.getTelefono1(),
 				miForm.getTelefono2(),
-				original);				
+				original);
+			
+			tx.commit();
 			
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        request.getSession().removeAttribute("ORIGINALDIR");
-	        
-		} catch (SIGAException e) {
-			throw new SIGAException(e.getLiteral(),e,new String[] {"modulo.gratuita"});	
 			
 		} catch (Exception e){
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}
+			throw new SIGAException("messages.general.error", e, new String[] {"modulo.gratuita"});
 		} 
 		
 		return forward;
@@ -639,6 +647,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		// Para inscripciones automaticas, se realiza como si no lo fueran
 		miForm.setValidarInscripciones("S");
@@ -666,7 +675,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insTurnoBean.setIdPersona(Long.valueOf(miForm.getIdPersona()));
 			insTurnoBean.setFechaSolicitud(miForm.getFechaSolicitud());
 			
-			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);			
+			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);		
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 		
 			if(miForm.getFechaDenegacion() != null && !miForm.getFechaDenegacion().equals("")) {
 				inscripcion.denegarInscripcionTurno(
@@ -681,11 +693,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					usr);
 			}
 			
+			tx.commit();
+			
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}				
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -705,6 +723,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		/* Datos necesarios:
 		 * - miForm.idInstitucion..........: viene el formulario con el dato incluido
@@ -727,7 +746,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insTurnoBean.setIdPersona(Long.valueOf(miForm.getIdPersona()));
 			insTurnoBean.setFechaSolicitud(miForm.getFechaSolicitud());
 			
-			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);			
+			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);		
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 			
 			if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals("")){
 				inscripcion.denegarBajaInscripcionTurno(
@@ -744,11 +766,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					usr);
 			}
 			
+			tx.commit();
+			
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -880,14 +908,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			//si nos encontramos con con guardias que son de tipo todas o ninguna tendremos que validar todas sus guardias no de forma independiente
 			if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("") && 
 					miForm.getTipoGuardias()!=null && Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
 					new Integer(miForm.getIdGuardia()));
 				
 			} else {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -1001,6 +1029,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		/* La baja de inscripcion se realiza desde la ficha de un colegiado.
 		 * 
@@ -1030,7 +1059,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);			
 			
-			miForm.setFechaSolicitudBaja("sysdate");				
+			miForm.setFechaSolicitudBaja("sysdate");	
+			
+			tx = usr.getTransaction();
+			tx.begin();
 			
 			inscripcion.solicitarBaja(
 				miForm.getFechaSolicitudBaja(),
@@ -1041,11 +1073,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.getTipoActualizacionSyC(), 
 				usr);
 			
+			tx.commit();
+			
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -1136,6 +1174,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {			
 			String turnosSel = miForm.getTurnosSel();
@@ -1145,6 +1184,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String sFechaValidacion = miForm.getFechaValidacion(); // Guardo la fecha de validacion inicial
 			miForm.setTipoGuardias(String.valueOf(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS)); // Las masivas solo pueden ser guardias obligatorias
 			miForm.setGuardiasSel(null);
+			
+			tx = usr.getTransaction();
+			tx.begin();			
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -1180,11 +1222,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					if (sPreAlta != "") {
 						request.setAttribute("mensaje", sPreAlta);
 						return ClsConstants.ERROR_AVISO;	
-					}	
+					}						
 					
 					// crea la inscripcion
 					InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
-					inscripcion.solicitarAlta(miForm, usr);
+					inscripcion.solicitarAlta(miForm, usr);									
 					
 				} catch (Exception e) {
 					existenErrores = true;
@@ -1206,19 +1248,23 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 			if(existenErrores){
 				request.setAttribute("mensaje", UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.masivo.solapamiento"));
+				//tx.rollback();
+				tx.commit();
 				
 			}else{
-				request.setAttribute("mensaje","messages.updated.success");				
+				request.setAttribute("mensaje","messages.updated.success");		
+				tx.commit();
 			}
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
 			request.getSession().removeAttribute("ORIGINALDIR");
-		
-		}catch (SIGAException e) {
-			throw new SIGAException(e.getLiteral(),e,new String[] {"modulo.gratuita"});
 			
-		}catch (Exception e){
+		} catch (Exception e){
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}			
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -1300,6 +1346,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 
 		try {	
 			Integer idGuardia = null;
@@ -1418,6 +1466,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
+		
 		try {		
 			Integer idGuardia = null;
 			if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
@@ -1470,6 +1520,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		try {
 			// Hago una serie de comprobaciones previas al alta de la inscripcion de guardia
@@ -1534,6 +1586,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		// Para inscripciones automaticas, se realiza como si no lo fueran
 		miForm.setValidarInscripciones("S");
@@ -1700,7 +1754,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 				}else if(clase.equals("G")){
 					ScsInscripcionGuardiaAdm inscGuardia = new ScsInscripcionGuardiaAdm(usrBean);
-					List<ScsInscripcionGuardiaBean> alIncripciones = inscGuardia.getInscripcionesGuardia(validaTurnosForm);
+					List<ScsInscripcionGuardiaBean> alIncripciones = inscGuardia.getInscripcionesGuardias(validaTurnosForm);
 					validaTurnosForm.setInscripcionesGuardia(alIncripciones);
 					forward = "listadoInscripcionGuardias";
 				}				
@@ -1958,14 +2012,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			List <ScsInscripcionGuardiaBean> alInscripcionGuardia = null;
 			if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("") && !miForm.getIdGuardia().equals("-1") && 
 					miForm.getInscripcionTurno().getTurno().getGuardias()!=null && miForm.getInscripcionTurno().getTurno().getGuardias().intValue()==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR) {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
 					new Integer(miForm.getIdGuardia()));
 				
 			} else {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -2296,14 +2350,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			//si nos encontramos con con guardias que son de tipo todas o ninguna tendremos que validar todas sus guardias no de forma independiente
 			if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("") && 
 					miForm.getTipoGuardias()!=null && Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
 					new Integer(miForm.getIdGuardia()));
 				
 			} else {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -2342,14 +2396,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			//si nos encontramos con con guardias que son de tipo todas o ninguna tendremos que validar todas sus guardias no de forma independiente
 			if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("") && 
 					miForm.getTipoGuardias()!=null && Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
 					new Integer(miForm.getIdGuardia()));
 				
 			} else {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -2563,14 +2617,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			//si nos encontramos con con guardias que son de tipo todas o ninguna tendremos que validar todas sus guardias no de forma independiente
 			if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("") && 
 					miForm.getTipoGuardias()!=null && Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR ){
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
 					new Integer(miForm.getIdGuardia()));
 				
 			} else {
-				alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasInscripcion(
+				alInscripcionGuardia = inscripcionGuardiaAdm.getInscripcionesGuardias(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -2757,6 +2811,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -2765,6 +2820,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			miForm.setFechaSolicitudBaja("sysdate");
 			String sFechaBaja = miForm.getFechaBaja(); // Guardo la fecha de baja inicial
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 			
 			//dando de baja todos los turnos
 			while (st1.hasMoreTokens()) {
@@ -2835,15 +2893,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje", "gratuita.gestionInscripciones.error.solapamiento");
+				//tx.rollback();
+				tx.commit();
 				
 			} else {
-				request.setAttribute("mensaje", "messages.updated.success");				
+				request.setAttribute("mensaje", "messages.updated.success");		
+				tx.commit();
 			}				
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
 			
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -2994,11 +3059,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {			
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3074,15 +3143,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				//tx.rollback();
+				tx.commit();
 				
 			} else {
-				request.setAttribute("mensaje","messages.updated.success");				
+				request.setAttribute("mensaje","messages.updated.success");			
+				tx.commit();
 			}
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
 
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}				
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -3102,6 +3178,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		try {	
 			String turnosSel = miForm.getTurnosSel();
@@ -3333,11 +3411,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);		
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {			
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;		
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3402,15 +3484,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje", "gratuita.gestionInscripciones.error.solapamiento");
+				//tx.rollback();
+				tx.commit();
 				
 			} else {
-				request.setAttribute("mensaje", "messages.updated.success");				
+				request.setAttribute("mensaje", "messages.updated.success");
+				tx.commit();
 			}				
 			
 			forward = "exito";
 			request.setAttribute("modal", "1");
 			
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		return forward;		
@@ -3535,6 +3624,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);		
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		try {					
 			String turnosSel = miForm.getTurnosSel();
@@ -3713,11 +3804,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3752,15 +3847,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				//tx.rollback();
+				tx.commit();
 				
 			}else{
-				request.setAttribute("mensaje","messages.updated.success");				
+				request.setAttribute("mensaje","messages.updated.success");			
+				tx.commit();
 			}
 						
 			forward = "exito";
 			request.setAttribute("modal", "1");
 
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -3781,6 +3883,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -3973,7 +4077,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			// Obtengo los datos del turno actual
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-			ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionUltima(
+			ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
 				new Integer(miForm.getIdInstitucion()),
 				new Integer(miForm.getIdTurno()), 
 				new Long(miForm.getIdPersona()));
@@ -4227,6 +4331,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {
 			ScsInscripcionTurnoBean insTurnoBean = new ScsInscripcionTurnoBean();
@@ -4238,8 +4343,13 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaValidacionPrevia
 			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
+			
+			tx = usr.getTransaction();
+			tx.begin();	
 				
 			inscripcion.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
+			
+			tx.commit();
 			
 			miForm.reset(true,true);				
 			request.setAttribute("mensaje","messages.updated.success");
@@ -4247,6 +4357,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	        request.setAttribute("modal", "1");
 	        
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -4352,6 +4466,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
+		
 		Integer idGuardia = null;
 		if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
 			idGuardia = new Integer(miForm.getIdGuardia());
@@ -4393,6 +4509,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 		
 		try {			
 			ScsInscripcionTurnoBean insTurnoBean = new ScsInscripcionTurnoBean();
@@ -4405,13 +4522,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaBajaPrevia
 			InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
 				
+			tx = usr.getTransaction();
+			tx.begin();
 			inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
+			tx.commit();
 			
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
 	        
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}
+			
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -4432,6 +4557,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
 		
 		Integer idGuardia = null;
 		if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
@@ -4575,11 +4702,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		UserTransaction tx = null;
 
 		try {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");			
 			boolean existenErrores = false;
+			
+			tx = usr.getTransaction();
+			tx.begin();
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -4605,11 +4736,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					insTurnoBean.setFechaBaja(GstDate.getFormatedDateShort("", fechaBaja));
 					
 					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud + fechaBajaPrevia
-					InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);
+					InscripcionTurno inscripcion = new InscripcionTurno(insTurnoBean);					
 					
-					inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
+					inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);					
 					
-				} catch (Exception e) {
+				} catch (Exception e) {					
 					existenErrores = true;
 				}	
 			}
@@ -4617,15 +4748,22 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.reset(true,true);
 			if(existenErrores){
 				request.setAttribute("mensaje","gratuita.gestionInscripciones.error.masivo.solapamiento");
+				//tx.rollback();
+				tx.commit();
 				
 			}else{
-				request.setAttribute("mensaje","messages.updated.success");				
+				request.setAttribute("mensaje","messages.updated.success");	
+				tx.commit();
 			}
 						
 			forward = "exito";
 			request.setAttribute("modal", "1");
 
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
@@ -4706,7 +4844,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 				// Obtengo los datos del turno actual
 				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-				ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionUltima(
+				ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()));
@@ -4779,6 +4917,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		
+		// JPT: No hacen falta transaccion para las funcionalidades de guardias
+		
 		try {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
@@ -4849,21 +4989,32 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	 * @throws SIGAException
 	 */
 	private String borrarTurno(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try{
+		UserTransaction tx = null;
+		
+		try {
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			UsrBean usr = this.getUserBean(request);
 			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+			
+			tx = usr.getTransaction();
+			tx.begin();				
 			
 			boolean resultado = admInsTurno.borrarInscripcionTurnoPendiente(miForm.getIdInstitucion(), miForm.getIdTurno(), miForm.getIdPersona(), miForm.getFechaSolicitud());
 			
 			if(!resultado){
 				request.setAttribute("mensaje", "messages.updated.error");
+				tx.rollback();
 				
-			}else{
-				request.setAttribute("mensaje", "messages.updated.success");				
+			} else {
+				request.setAttribute("mensaje", "messages.updated.success");
+				tx.commit();
 			}
 
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception ex) {
+			}	
 			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 		}
 
@@ -4889,7 +5040,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		try {			
 			// Obtengo la ultima inscripcion de turno
 			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
-			ScsInscripcionTurnoBean insTurnoUltimaConBaja = admInsTurno.getInscripcion(
+			ScsInscripcionTurnoBean insTurnoUltimaConBaja = admInsTurno.getInscripcionTurno(
 					new Integer(miForm.getIdInstitucion()), 
 					new Integer( miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()), 
@@ -5117,7 +5268,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		try {						
 			// Obtiene los datos de la guardia, que han sido dados de baja por ultima vez			
 			ScsInscripcionGuardiaAdm inscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(usr);
-			ScsInscripcionGuardiaBean insGuardiaBaja = inscripcionGuardiaAdm.getInscripcionBaja(
+			ScsInscripcionGuardiaBean insGuardiaBaja = inscripcionGuardiaAdm.getInscripcionGuardiaUltimaBaja(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), 
 					new Long(miForm.getIdPersona()),
@@ -5135,7 +5286,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			// Obtiene la inscripcion de turno de la persona, que esta validada y sin dar de baja
 			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
-			ScsInscripcionTurnoBean insTurno = admInsTurno.getInscripcionValidadaSinBaja(
+			ScsInscripcionTurnoBean insTurno = admInsTurno.getInscripcionTurnoValidadaSinBaja(
 				new Integer(miForm.getIdInstitucion()),
 				new Integer( miForm.getIdTurno()), 
 				new Long(miForm.getIdPersona()));
@@ -5224,7 +5375,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 		try {																			
 			ScsInscripcionGuardiaAdm inscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(usr);
-			ScsInscripcionGuardiaBean insGuardia = inscripcionGuardiaAdm.getInscripcionUltima(
+			ScsInscripcionGuardiaBean insGuardia = inscripcionGuardiaAdm.getInscripcionGuardiaUltimaSinBaja(
 				new Integer(miForm.getIdInstitucion()),
 				new Integer(miForm.getIdTurno()), 
 				new Long(miForm.getIdPersona()),
@@ -5281,5 +5432,5 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		} 
 		
 		return resultado;
-	}				
+	}					
 }

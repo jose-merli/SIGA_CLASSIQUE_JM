@@ -416,7 +416,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				ScsInscripcionGuardiaAdm admInsGua = new ScsInscripcionGuardiaAdm(usr);
 				ScsInscripcionTurnoBean inscripcionHoy = null;
 				if(inscripcionTurnoSeleccionada.getFechaBaja()!=null&&!inscripcionTurnoSeleccionada.getFechaBaja().equals("")){
-					inscripcionHoy = admInsTurno.getInscripcion(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), "sysdate");
+					inscripcionHoy = admInsTurno.getInscripcionTurno(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), "sysdate");
 				}else{
 					inscripcionHoy = inscripcionTurnoSeleccionada;
 					
@@ -436,7 +436,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 						Hashtable htGuardia = (Hashtable) iteResultado.next();
 						String idGuardia = (String)htGuardia.get("IDGUARDIA");
 											
-						Hashtable inscripcionGuardia = admInsGua.getInscripcionesGuardiaInscripcionTurno(idInstitucion, idTurno, idPersona, new Integer(idGuardia), inscripcionTurnoSeleccionada);
+						Hashtable inscripcionGuardia = admInsGua.getInscripcionGuardiaInscripcionTurno(idInstitucion, idTurno, idPersona, new Integer(idGuardia), inscripcionTurnoSeleccionada);
 						
 						if (inscripcionGuardia.size() > 0) {
 							htGuardia.put("INSCRIPCIONGUARDIA",inscripcionGuardia);
