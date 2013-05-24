@@ -1,4 +1,5 @@
 <!-- maestroTurnos.jsp -->
+
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -36,8 +37,7 @@
 	int pcajgActivo = 0;
     boolean obligatorioCodigoExterno = false;
 	if (request.getAttribute("pcajgActivo") != null) {
-		pcajgActivo = Integer.parseInt(request.getAttribute(
-				"pcajgActivo").toString());		
+		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());		
 	}
 	
 	if (pcajgActivo == 4){		
@@ -84,11 +84,9 @@
 	String localiz="";
 	if (accion.equalsIgnoreCase("Editar")){
 		siguienteAccion="modificar";
-	}
-	else {
+	} else {
 		siguienteAccion="insertar";
-	}
-	
+	}	
 	if(accion.equalsIgnoreCase("ver")){
 		classTipo="boxConsulta";
 		classCombo="boxConsulta";
@@ -112,223 +110,227 @@
 %>
 
 <html>
-<head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	<!-- Validaciones en Cliente -->
-	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="DefinirTurnosFormNuevo" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	  	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	 	
-	
- 	
-<script language="JavaScript">
-
-	var validarNew='';
-	function refrescarLocal()
-	{	document.location=document.location;
-		/*document.forms[0].modo.value="abrir";
-		document.forms[0].submit();*/
-	}
-	
-		//Asociada al boton Volver -->
-		function accionVolver() 
-		{		
-			document.forms[0].action="JGR_DefinirTurnos.do";
-			document.forms[0].target="mainWorkArea";
-			document.forms[0].modo.value="abrirAvanzada";
-			document.forms[0].submit();
-		}
-
-		//Asociada al boton Cancelar -->
-		function accionCancelar() 
-		{		
-			document.forms[0].reset();
-		}
+	<head>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
 		
-		//Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
-			document.forms[0].reset();
-		}
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 		
-		//Asociada al boton Guardar -->
-		function accionGuardar() 
-		{
-		   	
-		   sub();
+		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+		<!-- Validaciones en Cliente -->
+		<!-- El nombre del formulario se obtiene del struts-config -->
+			<html:javascript formName="DefinirTurnosFormNuevo" staticJavascript="false" />  
+		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+		  	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	 	
+	
+		<script language="JavaScript">
 
-		   
-		   if (document.forms[0].validacionInscripcion.checked){
-		     
-		       validarNew="S";
-		    }else{
-			   
-			   validarNew="N";
+			var validarNew='';
+			function refrescarLocal(){	
+				document.location=document.location;
+				/*document.forms[0].modo.value="abrir";
+				document.forms[0].submit();*/
 			}
-			
-			<%
-				String mensaje = UtilidadesString.getMensajeIdioma(usr, "messages.subzona.obligatoria");
-			%>
-			var mensaje="<%=mensaje%>";
-			var f=document.getElementById("DefinirTurnosForm");
-		
-			if (<%=obligatorioCodigoExterno%> && document.forms[0].codigoExterno.value.length<1) {
-				<%
-				String mensajecodigoexterno = UtilidadesString.getMensajeIdioma(usr, "messages.codigoExterno.obligatoria");
-				%>
-				var error = "<%= mensajecodigoexterno%>";
-				alert(error);
-				fin();
-				return false;	
-				}			
-			
+	
+			//Asociada al boton Volver
+			function accionVolver() {		
+				document.forms[0].action="JGR_DefinirTurnos.do";
+				document.forms[0].target="mainWorkArea";
+				document.forms[0].modo.value="abrirAvanzada";
+				document.forms[0].submit();
+			}
 
-			if (document.forms[0].subzona.value=="") {
-				alert(mensaje);
-				fin();
-				return false;
-			} else {
-				if (document.forms[0].grupoFacturacion.value==''){
-					alert('<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
+			//Asociada al boton Cancelar
+			function accionCancelar() {		
+				document.forms[0].reset();
+			}
+		
+			//Asociada al boton Restablecer
+			function accionRestablecer() {		
+				document.forms[0].reset();
+			}
+		
+			//Asociada al boton Guardar
+			function accionGuardar() {		   	
+			   sub();
+			   
+			   if (document.forms[0].validacionInscripcion.checked){			     
+			       validarNew="S";
+			    }else{				   
+				   validarNew="N";
+				}
+				
+				<%String mensaje = UtilidadesString.getMensajeIdioma(usr, "messages.subzona.obligatoria");%>
+				var mensaje="<%=mensaje%>";
+				var f=document.getElementById("DefinirTurnosForm");
+			
+				if (<%=obligatorioCodigoExterno%> && document.forms[0].codigoExterno.value.length<1) {
+					<%String mensajecodigoexterno = UtilidadesString.getMensajeIdioma(usr, "messages.codigoExterno.obligatoria");%>
+					var error = "<%= mensajecodigoexterno%>";
+					alert(error);
+					fin();
+					return false;	
+				}			
+				
+	
+				if (document.forms[0].subzona.value=="") {
+					alert(mensaje);
 					fin();
 					return false;
-				}else {
+					
+				} else {
+					if (document.forms[0].grupoFacturacion.value==''){
+						alert('<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
+						fin();
+						return false;
+						
+					} else {
 						if (document.forms[0].validarOld.value=="S" && (document.forms[0].validarOld.value!=validarNew)){// Si el check de validarInscripcion estaba activado y se desactiva
-						  men = '<siga:Idioma key="gratuita.definirTurnosIndex.literal.validarInscripcion"/>';
-						  if (confirm(men)) {
-    					   document.forms[0].validarAltas.value="1";
-    					  }else{
-						    document.forms[0].validarAltas.value="0";
-						  }
-						 }					
+						  	men = '<siga:Idioma key="gratuita.definirTurnosIndex.literal.validarInscripcion"/>';
+						  	if (confirm(men)) {
+    					   		document.forms[0].validarAltas.value="1";
+    					  	} else {
+						    	document.forms[0].validarAltas.value="0";
+						  	}
+						}	
+						
+						var tiposGuardiasOld = -1;
+						<% if((((String)turno.get("GUARDIAS")).equalsIgnoreCase("0"))||(accion.equalsIgnoreCase("nuevo"))){ %> 
+							tiposGuardiasOld = 0;
+							
+						<% } else if(((String)turno.get("GUARDIAS")).equalsIgnoreCase("1")){ %>
+							tiposGuardiasOld = 1;
+							
+						<% } else if(((String)turno.get("GUARDIAS")).equalsIgnoreCase("2")){ %>
+							tiposGuardiasOld = 2;
+						<% } %>					
+						
+						var tiposGuardiasNew = -1
+						if (document.forms[0].guardias[0].checked) {
+							tiposGuardiasNew = 0;
+							
+						} else if (document.forms[0].guardias[1].checked) {
+							tiposGuardiasNew = 1;
+						
+						} else if (document.forms[0].guardias[2].checked) {
+							tiposGuardiasNew = 2;
+						}
+						
+						if (tiposGuardiasOld != tiposGuardiasNew) {						
+							men = '<siga:Idioma key="gratuita.definirTurnosIndex.literal.tiposGuardias"/>';
+							
+					  		if (!confirm(men)) {
+					  			document.forms[0].guardias[tiposGuardiasNew].checked = false;
+					  			document.forms[0].guardias[tiposGuardiasOld].checked = true
+					  		}			
+						}
+						
 						document.forms[0].target="submitArea";
 						document.forms[0].modo.value="modificar";
-						document.forms[0].submit();
-						
-				 }
+						document.forms[0].submit();							
+					 }
 				}
-		}
-
-		//Asociada al boton Siguiente -->
-		function accionSiguiente() 
-		{		
-			document.forms[0].target="_self";
-			document.forms[0].action="JGR_AltaTurnosGuardias.do";
-			document.forms[0].modo.value="nuevo";
-			document.forms[0].submit();
-		}
-
-
-</script>
-<!-- script de salto a partidos -->
-<script language="JavaScript">
-		function mostrarPartido(obj)
-		{
-			if (document.partidosJud) {
-				document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
-				document.partidosJud.idzona.value=document.forms[0].zona.value;
-				document.partidosJud.idsubzona.value=obj.value;
-				document.partidosJud.submit();
 			}
-			return true;
-		}
 
-		function mostrarPartidoVer()
-		{
-			if (document.partidosJud) {
-				document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
-				document.partidosJud.idzona.value="<%=(String)turno.get("IDZONA")%>";
-				document.partidosJud.idsubzona.value="<%=(String)turno.get("IDSUBZONA")%>";
-				document.partidosJud.submit();
+			//Asociada al boton Siguiente
+			function accionSiguiente() {		
+				document.forms[0].target="_self";
+				document.forms[0].action="JGR_AltaTurnosGuardias.do";
+				document.forms[0].modo.value="nuevo";
+				document.forms[0].submit();
 			}
-			return true;
-		}
-</script>
 
-	<siga:Titulo
-		titulo="censo.fichaCliente.sjcs.turnos.datosGenerales.cabecera" 
-		localizacion="<%=localiz%>"/>
+			function mostrarPartido(obj) {
+				if (document.partidosJud) {
+					document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
+					document.partidosJud.idzona.value=document.forms[0].zona.value;
+					document.partidosJud.idsubzona.value=obj.value;
+					document.partidosJud.submit();
+				}
+				return true;
+			}
 
-	<script language="JavaScript">
+			function mostrarPartidoVer() {
+				if (document.partidosJud) {
+					document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
+					document.partidosJud.idzona.value="<%=(String)turno.get("IDZONA")%>";
+					document.partidosJud.idsubzona.value="<%=(String)turno.get("IDSUBZONA")%>";
+					document.partidosJud.submit();
+				}
+				return true;
+			}
 	
-		function recargarCombos()
-		{   
-			<%if(accion.equalsIgnoreCase("Editar")){%>
-				var tmp1 = document.getElementsByName("area");
-				var tmp2 = tmp1[0];			 
-				tmp2.onchange();
-				var tmp3 = document.getElementsByName("zona");
-				var tmp4 = tmp3[0];
-				tmp4.onchange();
-			<%}%>
-		}
-		
-	</script>
-
+			function recargarCombos() {   
+				<%if(accion.equalsIgnoreCase("Editar")){%>
+					var tmp1 = document.getElementsByName("area");
+					var tmp2 = tmp1[0];			 
+					tmp2.onchange();
+					var tmp3 = document.getElementsByName("zona");
+					var tmp4 = tmp3[0];
+					tmp4.onchange();
+				<%}%>
+			}		
+		</script>
+	
+		<siga:Titulo titulo="censo.fichaCliente.sjcs.turnos.datosGenerales.cabecera" localizacion="<%=localiz%>"/>
 </head>
 
 <body onLoad="recargarCombos();<%if (accion.equalsIgnoreCase("ver")){%>mostrarPartidoVer();<%}%>" class="tablaCentralCampos">
 	
 	<html:form action = "/DefinirTurnosAction.do" method="POST" target="submitArea" enctype="multipart/form-data">
-	<input type="hidden" name="paso" value="0">
-	<input type="hidden" name="modo" value="modificar">
-	<input type="hidden" name="validarAltas" value="0">
-	<input type="hidden" name="validarOld" value="<%=validarInscripciones%>">
-	<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
+		<input type="hidden" name="paso" value="0">
+		<input type="hidden" name="modo" value="modificar">
+		<input type="hidden" name="validarAltas" value="0">
+		<input type="hidden" name="validarOld" value="<%=validarInscripciones%>">
+		<input type="hidden" name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
 	
 		<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.estado">
-		<%if (accion.equalsIgnoreCase("editar")){%>
-
-			<table width="30%" border="0" align="left" class="labelText" >
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1"))||(accion.equalsIgnoreCase("nuevo"))){ %> checked <% } %> > <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
-				</td>
-
-				<td>
-					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("0"))){ %> checked <% } %>> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
-				</td>
-			</table>
-			<%}else{
-				String estadoVisibilidad = "";
-				if(((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1")){
-					estadoVisibilidad="ALTA";
-				}else{
-					estadoVisibilidad="BAJA";
-				}
-					%>
-			<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<html:text name="DefinirTurnosForm" property="visibilidad" size="50" maxlength="50" styleClass="boxConsulta" value='<%=estadoVisibilidad%>' readOnly="true"></html:text></td>
+			<%if (accion.equalsIgnoreCase("editar")){%>
+				<table width="30%" border="0" align="left" class="labelText" >
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1"))||(accion.equalsIgnoreCase("nuevo"))){ %> checked <% } %> > <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
+					</td>	
+					<td>
+						<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("0"))){ %> checked <% } %>> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
+					</td>
+				</table>
+				
+			<%} else {
+					String estadoVisibilidad = "";
+					if(((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1")){
+						estadoVisibilidad="ALTA";
+					}else{
+						estadoVisibilidad="BAJA";
+					}%>
+				<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<html:text name="DefinirTurnosForm" property="visibilidad" size="50" maxlength="50" styleClass="boxConsulta" value='<%=estadoVisibilidad%>' readOnly="true" /></td>
 			<%}%>
 		</siga:ConjCampos>
 
 		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.datosGenerales">
-		<table width="100%" border="0" align="center" >
-			<tr>
-
-			<td class="labelText">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>&nbsp;(*)
-			</td>
-			<td>
-				<input name="abreviatura" type="text" class="<%=classTipo%>" maxlength="30" <% if (!accion.equalsIgnoreCase("nuevo")){%>value='<%=(String)turno.get("ABREVIATURA")%>'<%}%> <%=valida%> style="width:300" >
-			</td>
-			<td class="labelText">
-				<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/> &nbsp;(*)</td>
-			<td>
-				<input name="nombre" type="text" class="<%=classTipo%>" maxlength="100" <% if (!accion.equalsIgnoreCase("nuevo")){%>value="<%=(String)turno.get("NOMBRE")%>"<%}%> <%=valida%> style="width:300" >
-			</td>
-		</tr>
+			<table width="100%" border="0" align="center" >
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>&nbsp;(*)
+					</td>
+					<td>
+						<input name="abreviatura" type="text" class="<%=classTipo%>" maxlength="30" <% if (!accion.equalsIgnoreCase("nuevo")){%>value='<%=(String)turno.get("ABREVIATURA")%>'<%}%> <%=valida%> style="width:300" >
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/> &nbsp;(*)</td>
+					<td>
+						<input name="nombre" type="text" class="<%=classTipo%>" maxlength="100" <% if (!accion.equalsIgnoreCase("nuevo")){%>value="<%=(String)turno.get("NOMBRE")%>"<%}%> <%=valida%> style="width:300" >
+					</td>
+				</tr>
+			
 		<tr>
 			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/>  &nbsp;(*) </td>
 			<td style="text-align:left">
 				<%if (accion.equalsIgnoreCase("ver")){%>
-					<html:text name="DefinirTurnosForm" property="area" size="50" maxlength="50" styleClass="boxConsulta" value='<%=(String)turno.get("AREA")%>' readOnly="true"></html:text>
+					<html:text name="DefinirTurnosForm" property="area" size="50" maxlength="50" styleClass="boxConsulta" value='<%=(String)turno.get("AREA")%>' readOnly="true" />
+					
 				<%}else {
 					ArrayList vArea = new ArrayList();
 						try {
@@ -347,8 +349,9 @@
 					%>
 					<siga:ComboBD nombre="area" tipo="area" pestana="t" estilo="true" clase="boxCombo" parametro="<%=dato1%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vArea%>" obligatorio="false" accion="Hijo:materia"/>
 					<%if  (accion.equals("nuevo")) {%>
-						<script>document.forms[0].area[0].text="Seleccionar                                                  ";
-								document.forms[0].area[0].value="-1";
+						<script>
+							document.forms[0].area[0].text="Seleccionar                                                  ";
+							document.forms[0].area[0].value="-1";
 						</script>
 					<%}%>
 				<%}%>
@@ -356,23 +359,22 @@
 			</td>
 			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/> &nbsp;(*)</td>
 			<td style="text-align:left">
-						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:text name="DefinirTurnosForm" property="materia" size="50" maxlength="15" styleClass="boxConsulta" value='<%=(String)turno.get("MATERIA")%>' readOnly="true"></html:text>
-						<%}else{ArrayList vMateria = new ArrayList();
-						try {
-							 
-							if ((String)turno.get("IDMATERIA") == "-1") { 
-								vMateria.add("0");
-							}
-							else {
-								vMateria.add((String)turno.get("IDMATERIA")); 
-							}
-						} catch (Exception e) {
+				<%if (accion.equalsIgnoreCase("ver")){%>
+					<html:text name="DefinirTurnosForm" property="materia" size="50" maxlength="15" styleClass="boxConsulta" value='<%=(String)turno.get("MATERIA")%>' readOnly="true" />
+				<%}else{ArrayList vMateria = new ArrayList();
+					try {							 
+						if ((String)turno.get("IDMATERIA") == "-1") { 
 							vMateria.add("0");
 						}
-						%>
-						<siga:ComboBD nombre="materia" pestana="t" tipo="materia" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vMateria%>" hijo="t"/>
-						<%}%>
+						else {
+							vMateria.add((String)turno.get("IDMATERIA")); 
+						}
+					} catch (Exception e) {
+						vMateria.add("0");
+					}
+				%>
+					<siga:ComboBD nombre="materia" pestana="t" tipo="materia" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vMateria%>" hijo="t"/>
+				<%}%>
 			</td>
 		</tr><tr>
 			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/> &nbsp;(*)</td>
@@ -435,17 +437,14 @@
  					}
  				%>
 		  </td>
-		  <td >
+		  <td>
 		  <%if (accion.equalsIgnoreCase("ver")){%>
-		    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readOnly="true" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>			
+		    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readOnly="true" value='<%=(String)turno.get("CODIGOEXT")%>' />			
 		<%}else{%>				
-			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>
+			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' />
 		<%}%>	
-		  </td>
-			
+		  </td>		
 	   </tr>
-	   
-	  
 		
 		<tr>
 			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/> &nbsp;(*)</td>

@@ -1,7 +1,5 @@
 package com.siga.gratuita.action;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -13,13 +11,11 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
-import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -27,9 +23,7 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.DefinirTurnosForm;
-import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.ws.CajgConfiguracion;
 
 /**
@@ -486,7 +480,7 @@ public class DefinirTurnosAction extends MasterAction {
 		    
 		    ScsInscripcionTurnoAdm insTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 		    
-		    /* Compruebo que se ha modificado la configuracion del turno de alta a baja
+		    /* 1. Compruebo que se ha modificado la configuracion del turno de alta a baja
 		     * Pone todas las inscripciones de turno y guardia (toda inscripcion que no este confirmada de baja o alta denegada), como confirmadas de baja 
 		     */
 		    String visibilidadOld = tAnt.getVisibilidad();
@@ -497,7 +491,7 @@ public class DefinirTurnosAction extends MasterAction {
 		    	insTurnoAdm.cancelarInscripcionesTurnosTurno(usr.getLocation(), idturno);					
 		    } else {
 		    
-			    /* Compruebo que el turno previamente y posteriormente este en estado de alta,
+			    /* 2. Compruebo que el turno previamente y posteriormente este en estado de alta,
 			     * - Si estaba de baja, debe tener todas las inscripciones de turno y guardia confirmadas de baja o alta denegada
 			     * - Si estaba de alta y pasa a baja, pone todas las inscripciones de turno y guardia (toda inscripcion que no este confirmada de baja o alta denegada), como confirmadas de baja 
 			     */
@@ -507,6 +501,50 @@ public class DefinirTurnosAction extends MasterAction {
 				    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){		   		    	
 						insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(), idturno);
 				    }		    			    	
+			    }
+			    
+			    // 3. Tratamiento por el cambio de configuracion de un turno, en sus tipos de guardias
+			    Integer iTipoGuardiasOld = tAnt.getGuardias();
+			    Integer iTipoGuardiasNew = UtilidadesHash.getInteger(hash, ScsTurnoBean.C_GUARDIAS);			
+			    
+			    /*
+			     * iTipoGuardias=0 Obligatorias
+			     * iTipoGuardias=1 Todas o Ninguna
+			     * iTipoGuardias=2 Eleccion
+			     * 
+			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=0) entonces no cambia de tipo
+			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento principal
+			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=2) entonces no hace falta modificar las guardias (ya que los turnos por eleccion, no obligan a cumplir unos requisitos en sus guardias)
+			     *  
+			     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=0) entonces hacemos el tratamiento principal 
+			     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=1) entonces no cambia de tipo
+			     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=2) entonces no hace falta modificar las guardias (ya que los turnos por eleccion, no obligan a cumplir unos requisitos en sus guardias)
+			     *  
+			     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=0) entonces hacemos el tratamiento principal
+			     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento secundario
+			     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=2) entonces no cambia de tipo
+			     *  
+			     *  Tratamiento principal:
+			     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
+			     *  b. Si no se cumple la opciona a:
+			     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
+			     *  b.2. Doy de alta todas las guardias del turno.
+			     *  
+			     *  Tratamiento secundario:
+			     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
+			     *  b. Si no se cumple la opciona a:
+			     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
+			     *  b.2. Si he borrado alguna guardia, doy de alta todas las guardias del turno.
+			     *  
+			     */
+			    
+			    if ((iTipoGuardiasOld==0 && iTipoGuardiasNew==1) || (iTipoGuardiasOld==1 && iTipoGuardiasNew==0) || (iTipoGuardiasOld==2 && iTipoGuardiasNew==0)) {
+			    	// Tratamiento principal
+			    	insTurnoAdm.cambiarConfiguracionTiposGuardias(true, usr.getLocation(), idturno);
+			    	
+			    } else if (iTipoGuardiasOld==2 && iTipoGuardiasNew==1) {
+			    	// Tratamiento secundario
+			    	insTurnoAdm.cambiarConfiguracionTiposGuardias(false, usr.getLocation(), idturno);
 			    }
 		    }
 		    

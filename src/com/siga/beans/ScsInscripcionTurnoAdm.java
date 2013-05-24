@@ -1604,14 +1604,19 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<ScsInscripcionTurnoBean> getInscripcionesTurnosSinBajaTurno(String idInstitucion, String idTurno) throws ClsExceptions {
+	public Vector<ScsInscripcionTurnoBean> getInscripcionesTurnosSinBajaTurno(String idInstitucion, String idTurno, boolean bValidada) throws ClsExceptions {
 		try {
 			String sql = " SELECT " + camposSelect +
 				" FROM SCS_INSCRIPCIONTURNO " +
 				" WHERE IDINSTITUCION = " + idInstitucion +
 					" AND IDTURNO = " + idTurno +
-					" AND FECHABAJA IS NULL " +
-					" AND (FECHADENEGACION IS NULL OR FECHAVALIDACION IS NOT NULL)";
+					" AND FECHABAJA IS NULL ";
+			
+			if (bValidada) {
+				sql += " AND FECHAVALIDACION IS NOT NULL ";
+			} else {
+				sql += " AND (FECHADENEGACION IS NULL OR FECHAVALIDACION IS NOT NULL) ";
+			}
 			
 			Vector<ScsInscripcionTurnoBean> datos = null;					
 			RowsContainer rc = new RowsContainer(); 
@@ -1729,7 +1734,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 	public void cancelarInscripcionesTurnosTurno(String idInstitucion, String idTurno) throws ClsExceptions {
 		try {					
 			// Obtiene las inscripciones de turno de un turno, que no estan dadas de baja
-			Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = this.getInscripcionesTurnosSinBajaTurno(idInstitucion, idTurno);
+			Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = this.getInscripcionesTurnosSinBajaTurno(idInstitucion, idTurno, false);
 			    	
 	    	// Recorro la lista de inscripciones de turno
 	    	for (int i = 0; i < listaInscripcionesTurno.size(); i++) {
@@ -1881,5 +1886,176 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar cancelarInscripcionesTurnosPersona()");
 		}		    	
-	}		
+	}
+	
+	/**
+	 * Cambia la configuracion de un turno, modificando sus tipos de guardias
+	 * 
+	 * iTipoGuardias=0 Obligatorias
+     * iTipoGuardias=1 Todas o Ninguna
+     * iTipoGuardias=2 Eleccion
+     * 
+     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=0) entonces no cambia de tipo
+     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento principal
+     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=2) entonces no hace falta modificar las guardias (ya que los turnos por eleccion, no obligan a cumplir unos requisitos en sus guardias)
+     *  
+     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=0) entonces hacemos el tratamiento principal 
+     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=1) entonces no cambia de tipo
+     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=2) entonces no hace falta modificar las guardias (ya que los turnos por eleccion, no obligan a cumplir unos requisitos en sus guardias)
+     *  
+     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=0) entonces hacemos el tratamiento principal
+     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento secundario
+     *  Si (iTipoGuardiasOld=2) y (iTipoGuardiasNew=2) entonces no cambia de tipo
+	 *
+	 *  Tratamiento principal:
+     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
+     *  b. Si no se cumple la opciona a:
+     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
+     *  b.2. Doy de alta todas las guardias del turno.
+     *  
+     *  Tratamiento secundario:
+     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
+     *  b. Si no se cumple la opciona a:
+     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
+     *  b.2. Si he borrado alguna guardia, doy de alta todas las guardias del turno.
+	 * 
+	 * @param bPrincipal
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @throws ClsExceptions
+	 */
+	public void cambiarConfiguracionTiposGuardias(boolean bPrincipal, String idInstitucion, String idTurno) throws ClsExceptions {
+		String sMotivo = "Cambios de configuración del turno, modificando el tipo de guardias del turno";		
+		
+		try {					
+			/*
+			 * A. Obtiene las inscripciones de turno de un turno, que no estan dadas de baja
+			 */
+			Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = this.getInscripcionesTurnosSinBajaTurno(idInstitucion, idTurno, true);
+			    	
+	    	// Recorro la lista de inscripciones de turno
+	    	for (int i = 0; i < listaInscripcionesTurno.size(); i++) {
+	    		
+	    		// Obtengo la inscripcion de turno
+	    		ScsInscripcionTurnoBean beanInscripcionTurno = (ScsInscripcionTurnoBean) listaInscripcionesTurno.get(i);	    		
+	    		
+				/* JPT: INICIO - Calculo la fecha de baja para las inscripciones de turno */
+				
+				InscripcionTGForm miForm = new InscripcionTGForm();
+				GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				
+				// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
+				miForm.setIdInstitucion(beanInscripcionTurno.getIdInstitucion().toString());
+				miForm.setIdTurno(beanInscripcionTurno.getIdTurno().toString());
+				miForm.setIdPersona(beanInscripcionTurno.getIdPersona().toString());
+				miForm.setFechaValidacionTurno(beanInscripcionTurno.getFechaValidacion());
+				
+				// Obtengo la fecha de baja minima para la inscripcion de turno
+				String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, this.usrbean);		
+				
+				// Obtengo la fecha actual y la convierto en el formato adecuado
+				Date dFechaHoy = new Date(); 										
+				String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy							
+				
+				// Comparo la fecha minima de baja del turno, con la fecha actual
+				int comparacion = GstDate.compararFechas(fechaBajaInscripciones, sFechaHoy);
+					
+				// Obtenemos la fecha mayor
+				if (comparacion < 0) {
+					fechaBajaInscripciones = sFechaHoy;
+				}					
+				
+				String fechaBajaInscripcionesLarga = fechaBajaInscripciones;
+				if(fechaBajaInscripcionesLarga.length()==10) {
+					try {
+						fechaBajaInscripcionesLarga = UtilidadesString.formatoFecha(fechaBajaInscripcionesLarga, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);						
+					} catch (Exception e) {
+						// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
+					}					
+				}				
+				
+				/* JPT: FIN - Calculo la fecha de baja para las inscripciones de turno */	    		
+	    		
+	    		/* 
+	    		 * B.1. Doy de abaja todas las guardias que no esten canceladas o denegadas de alta 
+	    		 */			   
+	    			    		
+				ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(this.usrbean);
+				List<ScsInscripcionGuardiaBean> vInscripcionesGuardiasTurno = admInscripcionGuardia.getInscripcionesGuardias(beanInscripcionTurno.getIdInstitucion(), beanInscripcionTurno.getIdTurno(), beanInscripcionTurno.getIdPersona(), null);	
+	    		
+				if(vInscripcionesGuardiasTurno!=null && vInscripcionesGuardiasTurno.size()>0){
+					for(int x=0; x<vInscripcionesGuardiasTurno.size(); x++) {
+						
+						// Obtengo la inscripcion de guardia
+						ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vInscripcionesGuardiasTurno.get(x);
+						
+						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaBaja + observacionesBaja
+						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);																
+						
+						if (beanInscripcionGuardia.getFechaSolicitudBaja()!=null && !beanInscripcionGuardia.getFechaSolicitudBaja().equals("")) {
+							inscripcionGuardia.setBajas(null, null, fechaBajaInscripciones, sMotivo);
+							inscripcionGuardia.validarBaja(this.usrbean, null);
+							
+						} else {
+							inscripcionGuardia.setBajas(sMotivo, fechaBajaInscripcionesLarga, fechaBajaInscripciones, sMotivo);						
+							inscripcionGuardia.solicitarBaja(this.usrbean, null);
+						}											
+					}
+				}
+				
+				// Compruebo si es el tratamiento principal o tenia alguna guardia para borrar
+				if (bPrincipal || (vInscripcionesGuardiasTurno!=null && vInscripcionesGuardiasTurno.size()>0)) {
+				
+		    		/* 
+		    		 * B.2. Doy de alta todas las guardias del turno.
+		    		 */						
+					
+					// Le sumo un dia a la baja
+					Date dFechaAltaGuardias = GstDate.convertirFechaHora(fechaBajaInscripcionesLarga);
+					dFechaAltaGuardias.setTime(dFechaAltaGuardias.getTime() + ClsConstants.DATE_MORE);				
+					String sFechaAltaGuardias = sdf.format(dFechaAltaGuardias);			
+					
+					String fechaAltaInscripcionesLarga = sFechaAltaGuardias;
+					if(fechaAltaInscripcionesLarga.length()==10) {
+						try {
+							fechaAltaInscripcionesLarga = UtilidadesString.formatoFecha(fechaAltaInscripcionesLarga, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);						
+						} catch (Exception e) {
+							// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
+						}					
+					}						
+					
+					// Obtengo las guardias del turno
+					ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrbean);
+					List<ScsGuardiasTurnoBean> vGuardiasTurno = admGuardiasTurno.getGuardiasTurnos(beanInscripcionTurno.getIdTurno(), beanInscripcionTurno.getIdInstitucion(), false);
+					
+					if(vGuardiasTurno!=null && vGuardiasTurno.size()>0){
+						for(int x=0; x<vGuardiasTurno.size(); x++) {
+							
+							// Obtengo los datos de la guardia
+							ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) vGuardiasTurno.get(x);
+							
+							// Transformo el objeto guardia al objeto inscripcion de guardia
+							ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
+							beanInscripcionGuardia.setIdInstitucion(beanInscripcionTurno.getIdInstitucion());					
+							beanInscripcionGuardia.setIdTurno(beanInscripcionTurno.getIdTurno());					
+							beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
+							beanInscripcionGuardia.setIdPersona(beanInscripcionTurno.getIdPersona());
+							beanInscripcionGuardia.setFechaSuscripcion(fechaAltaInscripcionesLarga);
+							
+							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSubscripcion 
+							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);									
+							
+							// Realiza el alta de la inscripcion de guardia
+							inscripcionGuardia.setAltas(sMotivo, sFechaAltaGuardias, sMotivo);
+							inscripcionGuardia.solicitarAlta(this.usrbean);																
+						}
+					}					
+				}
+	    	}	
+	    	
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar cambiarConfiguracionTiposGuardias()");
+		}		    	
+	}	
 }
