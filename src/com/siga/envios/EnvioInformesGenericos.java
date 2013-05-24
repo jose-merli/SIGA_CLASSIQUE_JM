@@ -3921,8 +3921,15 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (!crear.exists())
 			crear.mkdirs();
 
-		MasterWords masterWord = new MasterWords(rutaPl + nombrePlantilla);
-		Document documento = masterWord.nuevoDocumento();
+		MasterWords masterWord;
+		Document documento;
+		try {
+			masterWord = new MasterWords(rutaPl + nombrePlantilla);
+			documento = masterWord.nuevoDocumento();
+		} catch (Exception fe) {
+			String recurso = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "messages.informes.noPlantillas");
+			throw new SIGAException(recurso+" La plantilla es: " +nombrePlantilla);
+		}
 
 		Iterator iteDatos = htDatosInforme.keySet().iterator();
 		while (iteDatos.hasNext()) {

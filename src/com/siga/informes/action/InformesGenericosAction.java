@@ -301,8 +301,11 @@ public class InformesGenericosAction extends MasterAction {
 			isAlgunRepresentanteLegal = informeGenerico.isAlgunRepresentanteLegal();
 			isAlgunInformeoNoGenerado = informeGenerico.isAlgunInformeNoGenerado();
 			
-		}
-		catch (Exception e) {
+			
+		} catch (SIGAException se) {
+			throw new SIGAException(se.getLiteral());
+		
+		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.informes"}, e, null);
 		}
 		
