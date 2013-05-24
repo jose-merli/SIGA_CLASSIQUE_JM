@@ -305,27 +305,10 @@
 	<form name="formularioOcultoCerrarSesion" target="submitApplet"
 		action="<%=app%>/html/jsp/general/cerrarSesion.jsp"></form>
 
-	<iframe name="frmAppletIP" src="<%=app%>/html/jsp/general/appletIP.jsp"
-		style="display: none"></iframe>
-
-	<form name="formularioOcultoParaIP" target="submitApplet"
-		action="/SIGA/SIGADireccionIP.svrl">
-		<input type="hidden" name="IPCLIENTE" value="">
-	</form>
-
 
 	<iframe name="submitApplet" src="<%=app%>/html/jsp/general/blank.jsp"
 		style="display: none"> </iframe>
 
-	<!-- APPLET IP -->
-	<object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" width="0"
-		height="0" codebase="<%=scodebase%>">
-		<param name="archive" value="AppletDireccionIP.jar">
-		<param name="code" value="com.siga.Utilidades.AppletDireccionIP.class">
-		<param name="codebase" value="<%=scodebase%>">
-		<param name="mayscript" value="true">
-	</object>
-	<!-- APPLET IP -->
 
 
 	<div id="dialog-message" title="SIGA" style="vertical-align: center;"></div>

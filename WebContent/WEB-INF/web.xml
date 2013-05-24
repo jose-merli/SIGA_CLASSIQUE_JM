@@ -95,8 +95,6 @@
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
 
-
-<!--  Esto solo debe estar comentado en local --> 
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -113,7 +111,6 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
-<!-- Esto solo debe estar comentado en local -->
 
 
 	<!--************ Seguridad de Certificados FIN ************-->
@@ -246,11 +243,6 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
-	<servlet>
-		<servlet-name>SIGADireccionIP</servlet-name>
-		<servlet-class>com.siga.servlets.SIGADireccionIP</servlet-class>
-	</servlet>
 	<servlet>
 		<servlet-name>Ajaxsourceloader</servlet-name>
 		<servlet-class>net.sourceforge.ajaxtags.servlets.SourceLoader</servlet-class>
@@ -381,12 +373,6 @@
 		<servlet-name>ServletFicherosInfoDirectorio</servlet-name>
 		<url-pattern>ServletFicherosInfoDirectorio.svrl</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGADireccionIP</servlet-name>
-		<url-pattern>SIGADireccionIP.svrl</url-pattern>
-	</servlet-mapping>
-
 
 	<session-config>
 		<session-timeout>30</session-timeout>

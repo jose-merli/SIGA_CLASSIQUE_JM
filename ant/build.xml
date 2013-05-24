@@ -21,7 +21,6 @@
 	<property name="html.deploy.home"   		value="${web.deploy.home}/html"/>			
 
 	<property name="destinoapplet" value="${home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
-	<property name="destinoappletIP" value="${home}/html/jsp/general/AppletDireccionIP.jar"/>
 	<property name="destinoIIS" value="${htm.deploy.home}"/>
 	<property name="origenIIS" value="${descriptors.home}/iis"/>
 	
@@ -54,12 +53,6 @@
 					<zipfileset file="${bin.home}/com/siga/administracion/SIGAConstants.class" prefix="com/siga/administracion"/>
 				</jar>
 			</target>
-		<target name="03.CreaAppletIP" >
-			<echo message="Compilando applet de IP ..."/>
-			<jar destfile="${destinoappletIP}">
-				<zipfileset file="${bin.home}/com/siga/Utilidades/AppletDireccionIP.class" prefix="com/siga/Utilidades"/>
-			</jar>
-		</target>
 
 	<!-- Desplegar toda la aplicación -->
 		<target name="04.ActualizacionDescriptores">
@@ -158,8 +151,6 @@
 					Actualiza recursos FrontEnd
 						- - - - - - - - - - - - - - - - - -->
 			<echo message="Copiando recursos web de front-end ..."/>		
-				<copy file="${destinoappletIP}" todir="${destinoIIS}" overwrite="yes">
-				</copy>
 				<copy file="${origenIIS}/certificadoNoValido.htm" todir="${destinoIIS}" overwrite="yes">
 				</copy>
 				<copy file="${origenIIS}/certificadoRevocado.htm" todir="${destinoIIS}" overwrite="yes">
@@ -183,7 +174,6 @@
 
 			<antcall target="01.CrearEstructuraAplicacion" />
 			<antcall target="02.CreaAppletPermisos" />
-			<antcall target="03.CreaAppletIP" />
 			<antcall target="04.ActualizacionDescriptores" />
 			<antcall target="05.ActualizacionProperties" />
 			<antcall target="06.ActualizacionClases" />

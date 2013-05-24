@@ -129,15 +129,6 @@ public class CLSAdminLog {
 				
 				printer = new PrintWriter(new BufferedWriter(new FileWriter(ficLog, true)));
 				//
-				//Tratamiento de la direccion IP: CLIENTE
-				//Nota: Si no esta la IP en sesion la toma del request
-				String sIP = "";
-				if (req.getSession().getAttribute("IPCLIENTE")==null)
-//					sIP = UtilidadesString.obtenerIPServidor(req);
-					// RGG 17/01/2007 para tener constancia de que no se ha podido obtener la cliente.
-					sIP = "NO ENCONTRADA";
-				else
-					sIP = (String)req.getSession().getAttribute("IPCLIENTE");
 				
 				//Tratamiento de la direccion IP: SERVIDOR
 				//Nota: Si no esta la IP en sesion la toma del request
@@ -171,7 +162,6 @@ public class CLSAdminLog {
 				
 				printer.print(idInstitucion + "; ");
 				printer.print(sIPS + "; ");
-				printer.print(sIP + "; ");
 				printer.print(sUsuario + "; ");
 				printer.print(sNIF + "; ");
 				printer.print(sRol + "; ");
