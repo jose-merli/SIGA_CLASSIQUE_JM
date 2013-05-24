@@ -215,7 +215,7 @@
 			</table>			
 		</siga:ConjCampos>
 		
-		<html:form action="/INF_FichaFacturacion.do" method="POST" target="submitArea">
+		<html:form action="/INF_CertificadoPago.do" method="POST" target="submitArea">
 			<html:hidden name="mantenimientoInformesForm" property="modo" value="" />
 			<html:hidden property="idInstitucion" value="<%=sInstitucion%>"/>
 			<html:hidden property="idGrupo" value=""/>
