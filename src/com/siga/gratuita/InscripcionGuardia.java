@@ -3,6 +3,7 @@ package com.siga.gratuita;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -17,7 +18,6 @@ import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
-import com.siga.beans.ScsTurnoAdm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 public class InscripcionGuardia {
@@ -317,28 +317,27 @@ public class InscripcionGuardia {
 			}
 			
 			if(fechaBaja!=null && !fechaBaja.equals("")){
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,"sysdate");
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));				
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA, "sysdate");
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));				
 			}			
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			
 			if(idGuardia==null){
 				
-				StringBuffer sql=  new StringBuffer("SELECT IDGUARDIA ");
-				sql.append(" FROM SCS_GUARDIASTURNO  ");
-		        sql.append(" WHERE IDINSTITUCION = ");
-		        sql.append(this.bean.getIdInstitucion());
-		        sql.append(" AND IDTURNO = ");
-		        sql.append(this.bean.getIdTurno());
-		        
-		        ScsTurnoAdm turno = new ScsTurnoAdm(usr);
-		        Vector vTurno =  turno.ejecutaSelect(sql.toString());
-		        
-				for(int x=0; x<vTurno.size(); x++) {					
-					Hashtable htGuardia = (Hashtable)vTurno.get(x);
-					laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, new Integer((String)htGuardia.get("IDGUARDIA")));
-					insguardia.insert(laHash);					
+				// Obtiene las guardias del turno
+				ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(usr);
+				List<ScsGuardiasTurnoBean> lGuardias = admGuardiasTurno.getGuardiasTurnos(idTurno, idInstitucion, false);
+				
+				// Recorre las guardias
+				if (lGuardias!=null && lGuardias.size()>0){
+					for (int g=0; g<lGuardias.size(); g++) {						
+						ScsGuardiasTurnoBean beanGuardia = lGuardias.get(g);
+						
+						Hashtable htGuardia = admGuardiasTurno.beanToHashTable(beanGuardia);
+						laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, new Integer((String)htGuardia.get(ScsInscripcionGuardiaBean.C_IDGUARDIA)));
+						insguardia.insert(laHash);
+					}
 				}
 				
 			} else {
@@ -578,28 +577,28 @@ public class InscripcionGuardia {
 		try {
 			this.solicitaBaja(usr);
 			
-			if(this.bean.getFechaBaja()!=null && !this.bean.getFechaBaja().equals("")){
+			if (this.bean.getFechaBaja()!=null && !this.bean.getFechaBaja().equals("")){
 				
-				if(this.bean.getIdGuardia()==null){
+				if (this.bean.getIdGuardia()==null){
 					
-					StringBuffer sql=  new StringBuffer("SELECT I.IDGUARDIA,I.FECHASUSCRIPCION ");
-			        sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
-			        sql.append(" WHERE I.IDINSTITUCION = ");
-			        sql.append(this.bean.getIdInstitucion());
-			        sql.append(" AND I.IDTURNO = ");
-			        sql.append(this.bean.getIdTurno());
-			        sql.append(" AND I.IDPERSONA = ");
-			        sql.append(this.bean.getIdPersona());
-			        sql.append(" AND FECHABAJA IS NULL");
-			        
-			        ScsTurnoAdm turno = new ScsTurnoAdm(usr);
-			        Vector vTurno =  turno.ejecutaSelect(sql.toString());
-					        
-					for(int x=0; x<vTurno.size(); x++) {
-						Hashtable htGuardia = (Hashtable)vTurno.get(x);
-						this.bean.setIdGuardia(new Integer((String)htGuardia.get("IDGUARDIA")));
-						this.bean.setFechaSuscripcion((String)htGuardia.get("FECHASUSCRIPCION"));
-						validarBaja(usr, bajaSyC);
+					// Obtiene las inscripciones de guardia de una inscripcion de turno que no estan de baja
+					ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+					List<ScsInscripcionGuardiaBean> vGuardiasTurno = admInscripcionGuardia.getInscripcionesGuardias(
+						this.bean.getIdInstitucion(), 
+						this.bean.getIdTurno(),
+						this.bean.getIdPersona(),
+						null);	
+					
+					// Recorre las guardias
+					if (vGuardiasTurno!=null && vGuardiasTurno.size()>0){
+						for (int g=0; g<vGuardiasTurno.size(); g++) {						
+							ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean) vGuardiasTurno.get(g);
+							
+							this.bean.setIdGuardia(beanInscripcionGuardia.getIdGuardia());
+							this.bean.setFechaSuscripcion(beanInscripcionGuardia.getFechaSuscripcion());
+							
+							validarBaja(usr, bajaSyC);
+						}
 					}
 					
 				} else {
