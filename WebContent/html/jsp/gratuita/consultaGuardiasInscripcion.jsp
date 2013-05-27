@@ -185,27 +185,25 @@ jQuery.noConflict();
 					property="inscripcionesGuardia" id="inscripcionGuardia"
 					indexId="index">
 					
-					<tr>
 					<siga:FilaConIconos fila='<%=String.valueOf(index.intValue())%>'
 						botones=""  clase="listaNonEdit" pintarEspacio="false">
-						<td>
+						<td align="center">
 							<input type="hidden" id="guardia_<%=String.valueOf(index)%>" name="guardia_<%=String.valueOf(index)%>" value="${inscripcionGuardia.guardia.idGuardia}" />
 					   		<input type="checkbox" disabled="" value="<%=String.valueOf(index)%>"  name="chkGuardia" /> 						
  						</td>
 						<td><c:out
 							value="${inscripcionGuardia.guardia.nombre}"></c:out></td>
-						<td><c:out
+						<td align="center"><c:out
 							value="${inscripcionGuardia.guardia.numeroLetradosGuardia}"></c:out></td>
-						<td><c:out
+						<td align="center"><c:out
 							value="${inscripcionGuardia.guardia.seleccionTiposDia}"></c:out>
 						</td>
-						<td><c:out
+						<td align="center"><c:out
 							value="${inscripcionGuardia.guardia.diasGuardia}"></c:out>&nbsp;<siga:Idioma
 							key="${inscripcionGuardia.guardia.descripcionTipoDiasGuardia}" />							
 						</td>
 
 					</siga:FilaConIconos>
-					</tr>
 				</logic:iterate>
 			</logic:notEmpty>
 		</siga:Table>
@@ -244,7 +242,7 @@ jQuery.noConflict();
 
 
 
-<div style="position:absolute;bottom:-5px;left: 150px;width:600px;z-index: 10">
+<div style="position:absolute;bottom:0px;left: 150px;width:600px;z-index: 10">
 
 		<c:choose>
 			<c:when test="${InscripcionTGForm.modo=='sitDatos'||InscripcionTGForm.modo=='sigDatos'||InscripcionTGForm.modo=='vitDatos'||InscripcionTGForm.modo=='vigDatos'}">
