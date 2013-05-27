@@ -5054,9 +5054,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Compruebo que es un turno con validacion de inscripciones automaticas
 			if(miForm.getValidarInscripciones().equals("N")) {
 				
-				// Es cecesario unas observaciones (antes estaba en InscripcionTurno.solicitarAlta)
-				miForm.setObservacionesValidacion(".");
-				
 				// Obtengo la fecha actual y la convierto en el formato adecuado
 				Date dFechaValidacion = new Date(); 										
 				String sFechaValidacion = sdf.format(dFechaValidacion); // Fecha con formato dd/MM/yyyy				
@@ -5311,9 +5308,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			// Compruebo que es un turno con validacion de inscripciones automaticas
 			if(miForm.getValidarInscripciones().equals("N")) {
-				
-				// Es cecesario unas observaciones (antes estaba en InscripcionTurno.solicitarAlta)
-				miForm.setObservacionesValidacion(".");
 				
 				// Obtengo la fecha actual y la convierto en el formato adecuado
 				Date dFechaHoy = new Date(); 										
