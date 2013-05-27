@@ -561,7 +561,7 @@
   				int var=1;
 
   				if(!user.isLetrado()&&aprobarSolicitud.equals("S"))  { 
-  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
+  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva";  
   					tamanoCol1="10,19,20,6,8,8,7,14,8";
 				}else{
 				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
@@ -577,11 +577,9 @@
 <% 					if(vArticulos == null || vArticulos.size()<1 ) 					{ 	
   							botones = "V"; 
 %> 	
-			  		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+			  		<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 				 						
 <% 
  						}else{
@@ -701,7 +699,7 @@
 			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
 			  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 			  				</td>
-			  				<td>	
+			  				<td align="center">	
 	<%
 	 								formaPago[3] = String.valueOf((Integer)a.getIdTipo());
 	 								formaPago[4] = String.valueOf((Long)a.getIdArticulo());
@@ -724,7 +722,7 @@
 	<%								}	
 								}%>				
 			  				</td>
-							<td>								
+							<td align="center">								
 	<%							String parametro[] = new String[2];
 	   						 	parametro[0] = carro.getIdPersona().toString();
 	   						 	parametro[1] = idInstitucion.toString(); 
@@ -743,10 +741,10 @@
 									<%} 
 								}%>
 							</td>
-			  				<td align="right">
+			  				<td align="center">
 								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
 			  				</td>
-			  				<td align="right">
+			  				<td align="center">
 								<% // Producto
 								   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
 										<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
@@ -762,7 +760,7 @@
 			  				<td>
 			  					<%=sPeriodicidad%>
 			  				</td>
-			  				<td align="right">
+			  				<td align="center">
 			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
 			  				</td>
 			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ 

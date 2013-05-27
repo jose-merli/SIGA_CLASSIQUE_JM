@@ -40,19 +40,23 @@
 			<siga:Idioma key="general.ventana.cgae"/>
 		</title>
 
-		
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		
-		<script type="text/javascript">
-		
-			jQuery.noConflict();
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	
+	<script type="text/javascript">
 			var bloqueado=false;
 			
+			function growl(msg,type){
+				jQuery('.notice-item-wrapper').remove();
+				if(jQuery.fn.noticeAdd){
+					jQuery.noticeAdd({
+						text: msg,
+						type: type
+					});
+				}
+			}
 		
 			function cargaContenidoModal() {
 				var datos = window.top.dialogArguments;
@@ -101,15 +105,6 @@
 					bloqueado=false; 
 				} 
 			}
-			
-			function growl(msg,type){
-				jQuery('.notice-item-wrapper').remove();
-				jQuery.noticeAdd({
-					text: msg,
-					type: type
-				});
-			}
-			
 		</script>
 	</head>
 

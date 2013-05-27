@@ -104,7 +104,7 @@
 	 				var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.compraRealizada"/>";						
 					alert(mensaje);	
 					f.modo.value="Imprimir";
-					validarAncho_cabecera();
+					//validarAncho_cabecera();
 				  }
 	 			}
 			}

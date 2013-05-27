@@ -1796,10 +1796,17 @@ if (jQuery){
         });
         
     }
+	function setBodyTdsWidthLikeHeaderTds (table){
+		jQuery.each( table.find("thead th"), function(columnIndex, value){
+			console.log("columnIndex: " + columnIndex + " set width from "+table.find("tbody td:eq("+columnIndex+")").width() +" to "+jQuery(value).width());
+			table.find("tbody td:eq("+columnIndex+")").width(jQuery(value).width());
+		});		
+	}
 	//BNS: Scroll de tablas
 	function loadFixedHeaderTables (tableId, fixedHeight) {
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){
+    		//setBodyTdsWidthLikeHeaderTds(oTable);
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			scrolify(oTable, fixedHeight);
     		} else {
@@ -2159,7 +2166,7 @@ function datepickerMaskValueChanged(datepickerInput){
 	}
 }
 
-jQuery(function(){
+(function(jQuery){
 	if (jQuery.datepicker){
 		//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
 	   jQuery.datepicker.regional['es'] = {
@@ -2190,7 +2197,7 @@ jQuery(function(){
 		   		}) ;
 	   		};
 	}
-	});
+})(jQuery);
 var datepickerBtn = false;
 function setDatepickerClearBtn(btnText){
 	if (!datepickerBtn){
@@ -2237,7 +2244,7 @@ fin();
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.41 2013-05-27 12:20:19 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.42 2013-05-27 16:54:53 tf2 Exp $
 **/
 (function(jQuery)
 {

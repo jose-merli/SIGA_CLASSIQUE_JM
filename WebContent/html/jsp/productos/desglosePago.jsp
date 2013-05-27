@@ -91,7 +91,7 @@
 	</script>	
 </head>
 
-<body onLoad=validarAnchos();>
+<body>
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
