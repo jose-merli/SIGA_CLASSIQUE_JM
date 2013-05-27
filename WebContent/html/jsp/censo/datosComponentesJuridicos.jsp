@@ -66,7 +66,6 @@
 	String idInstitucion ="";
 	String tipo="";
 	String capitalSocial="";
-	String idInstitucionTipoColegio ="";
 	
 	ArrayList idBanco = new ArrayList();
 	ArrayList idtipocolegio = new ArrayList();
@@ -91,7 +90,6 @@
 			idBanco.add (String.valueOf(htData.get(CenComponentesBean.C_IDCUENTA)));
 			idtipocolegio.add (String.valueOf(htData.get(CenComponentesBean.C_IDTIPOCOLEGIO)));
 			idtipocolegioaux=String.valueOf(htData.get(CenComponentesBean.C_IDTIPOCOLEGIO));
-			idInstitucionTipoColegio = String.valueOf(htData.get(CenComponentesBean.C_IDINSTITUCION_TIPOCOLEGIO));
 			idtipoprovincia.add (String.valueOf(htData.get(CenComponentesBean.C_IDPROVINCIA)));
 			idInstitucionCli.add (String.valueOf(htData.get(CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION)));
 			idcargo.add (String.valueOf(htData.get(CenComponentesBean.C_IDCARGO)));
@@ -115,7 +113,7 @@
 			idInstitucion = String.valueOf((Integer)request.getAttribute("idInstitucion"));
 		}
 	}
-	String[] param = {idInstitucion, idInstitucion};	
+	//String[] param = {idInstitucion, idInstitucion};	
 %>	
 <html>
 
@@ -502,14 +500,15 @@
 					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.tipocolegio"/>
 				</td>
 				<% ArrayList elementoSelTipoColegio = new ArrayList(); 
-					elementoSelTipoColegio.add(idtipocolegioaux+"#"+idInstitucionTipoColegio);
+					elementoSelTipoColegio.add(idtipocolegioaux);
 					 %>
 				<td id="colegiadoabogacia" style="display:none">
-					<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" parametro="<%=param%>" accion="cambiar()"  /> 
+				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.tipocolegio"/>
+					<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 
 					
 				</td>
 				<td id="colegiadonoabogacia" style="display:none">
-					<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" parametro="<%=param%>"  />
+					<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" />
 					
 				</td>
 				

@@ -45,8 +45,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 				CenComponentesBean.C_IDTIPOCOLEGIO,		CenComponentesBean.C_NUMCOLEGIADO,
 				CenComponentesBean.C_CAPITALSOCIAL,		CenComponentesBean.C_IDCARGO,
 				CenComponentesBean.C_IDPROVINCIA,     
-				CenComponentesBean.C_FECHAMODIFICACION,	CenComponentesBean.C_USUMODIFICACION,
-				CenComponentesBean.C_IDINSTITUCION_TIPOCOLEGIO};
+				CenComponentesBean.C_FECHAMODIFICACION,	CenComponentesBean.C_USUMODIFICACION};
 		return campos;
 	}
 
@@ -93,7 +92,6 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 			bean.setIdProvincia(UtilidadesHash.getString(hash, CenComponentesBean.C_IDPROVINCIA));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenComponentesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenComponentesBean.C_USUMODIFICACION));
-			bean.setIdInstitucionTipoColegio(UtilidadesHash.getInteger(hash, CenComponentesBean.C_IDINSTITUCION_TIPOCOLEGIO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -124,7 +122,6 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CenComponentesBean.C_SOCIEDAD, b.getSociedad());	
 			UtilidadesHash.set(hash, CenComponentesBean.C_IDCUENTA, b.getIdCuenta());
 			UtilidadesHash.set(hash, CenComponentesBean.C_IDTIPOCOLEGIO, b.getIdTipoColegio());
-			UtilidadesHash.set(hash, CenComponentesBean.C_IDINSTITUCION_TIPOCOLEGIO, b.getIdInstitucionTipoColegio());
 			UtilidadesHash.set(hash, CenComponentesBean.C_NUMCOLEGIADO, b.getNumColegiado());
 	
 			if (b.getCapitalSocial()!=null && b.getCapitalSocial().doubleValue()!=0.0){
@@ -160,7 +157,6 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_SOCIEDAD,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDCUENTA,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDTIPOCOLEGIO,
-							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION_TIPOCOLEGIO,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_NUMCOLEGIADO,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CAPITALSOCIAL,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDCARGO,

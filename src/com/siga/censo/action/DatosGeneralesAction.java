@@ -2054,7 +2054,6 @@ public class DatosGeneralesAction extends MasterAction {
 			CenNoColegiadoActividadBean bean = new CenNoColegiadoActividadBean();
 			bean.setIdActividadProfesional(new Integer(1));
 			bean.setIdInstitucion(new Integer(idInstitucion));
-			bean.setidInstitucionActividad(new Integer(2000));
 			bean.setIdPersona(beanCli.getIdPersona());
 
 			CenNoColegiadoActividadAdm admGrupos = new CenNoColegiadoActividadAdm(usr);

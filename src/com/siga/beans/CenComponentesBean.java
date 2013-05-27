@@ -15,7 +15,7 @@ package com.siga.beans;
 public class CenComponentesBean extends MasterBean {
 
 	/* Variables */
-	private Integer	idInstitucion, idComponente, cen_Cliente_IdInstitucion, idCuenta, idInstitucionTipoColegio; 
+	private Integer	idInstitucion, idComponente, cen_Cliente_IdInstitucion, idCuenta; 
 	private Long	idPersona;
 	private Float capitalSocial;
 	
@@ -39,7 +39,6 @@ public class CenComponentesBean extends MasterBean {
 	static public final String C_CAPITALSOCIAL				= "CAPITALSOCIAL";
 	static public final String C_IDCARGO					= "IDCARGO";
 	static public final String C_IDPROVINCIA				= "IDPROVINCIA";
-	static public final String C_IDINSTITUCION_TIPOCOLEGIO	= "IDINSTITUCION_TIPOCOLEGIO";
 	
 //	 Metodos GET
 	
@@ -61,7 +60,6 @@ public class CenComponentesBean extends MasterBean {
 	public Float getCapitalSocial() {return capitalSocial;}
 	public String getIdCargo() {return idCargo;}
 	public String getIdProvincia() {return idProvincia;}
-	public Integer getIdInstitucionTipoColegio() {return idInstitucionTipoColegio;	}
 	
 	//	 Metodos SET
 	public void setNumeroCuenta(String numeroCuenta) {
@@ -81,5 +79,4 @@ public class CenComponentesBean extends MasterBean {
 	public void setCapitalSocial(Float capitalSocial){this.capitalSocial=capitalSocial;}
 	public void setIdCargo(String idCargo) {this.idCargo = idCargo;}
 	public void setIdProvincia(String idProvincia) {this.idProvincia = idProvincia;}
-	public void setIdInstitucionTipoColegio(Integer idInstitucionTipoColegio) {this.idInstitucionTipoColegio = idInstitucionTipoColegio;}
 }

@@ -11,7 +11,6 @@ public class CenNoColegiadoActividadBean extends MasterBean{
 	/* Variables */
 	private Long 	idPersona;
 	private Integer	idInstitucion;
-	private Integer	idInstitucionActividad;
 	private Integer idActividadProfesional;
 	
 	/* Nombre tabla */
@@ -20,7 +19,6 @@ public class CenNoColegiadoActividadBean extends MasterBean{
 	/* Nombre campos de la tabla */
 	static public final String C_IDPERSONA				= "IDPERSONA";
 	static public final String C_IDINSTITUCION			= "IDINSTITUCION";
-	static public final String C_IDINSTITUCION_ACTIVIDAD= "IDINSTITUCION_ACTIVIDAD";
 	static public final String C_IDACTIVIDADPROFESIONAL	= "IDACTIVIDADPROFESIONAL";
 
 	// Metodos SET
@@ -32,10 +30,4 @@ public class CenNoColegiadoActividadBean extends MasterBean{
 	public Long getIdPersona  ()	{ return this.idPersona; }
 	public Integer getIdInstitucion  ()	{ return this.idInstitucion; }
 	public Integer getIdActividadProfesional  ()	{ return this.idActividadProfesional; }
-	public Integer getIdInstitucionActividad() {
-		return idInstitucionActividad;
-	}
-	public void setidInstitucionActividad(Integer idInstitucionActividad) {
-		this.idInstitucionActividad = idInstitucionActividad;
-	}
 }

@@ -46,7 +46,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 	protected String[] getCamposBean() {
 		String [] campos = {CenNoColegiadoActividadBean.C_IDPERSONA, 		
 							CenNoColegiadoActividadBean.C_IDINSTITUCION,
-							CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD,
 							CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL,
 							CenNoColegiadoActividadBean.C_FECHAMODIFICACION,
 							CenNoColegiadoActividadBean.C_USUMODIFICACION};
@@ -60,7 +59,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 	protected String[] getClavesBean() {
 		String [] claves = {CenNoColegiadoActividadBean.C_IDPERSONA, 
 							CenNoColegiadoActividadBean.C_IDINSTITUCION,
-							CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD,
 							CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL};
 		return claves;
 	}
@@ -78,7 +76,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 			bean = new CenNoColegiadoActividadBean();
 			bean.setIdPersona		   (UtilidadesHash.getLong(hash, CenNoColegiadoActividadBean.C_IDPERSONA));
 			bean.setIdInstitucion	   (UtilidadesHash.getInteger(hash, CenNoColegiadoActividadBean.C_IDINSTITUCION));
-			bean.setidInstitucionActividad (UtilidadesHash.getInteger(hash, CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD));
 			bean.setIdActividadProfesional (UtilidadesHash.getInteger(hash, CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL));
 			bean.setFechaMod		   (UtilidadesHash.getString(hash, CenNoColegiadoActividadBean.C_FECHAMODIFICACION));
 			bean.setUsuMod			   (UtilidadesHash.getInteger(hash, CenNoColegiadoActividadBean.C_USUMODIFICACION));
@@ -104,7 +101,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 			CenNoColegiadoActividadBean b = (CenNoColegiadoActividadBean) bean;
 			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_IDINSTITUCION, b.getIdInstitucion());
-			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD, b.getIdInstitucionActividad());
 			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL, b.getIdActividadProfesional());
 			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, CenNoColegiadoActividadBean.C_USUMODIFICACION, b.getUsuMod());
@@ -165,7 +161,6 @@ public class CenNoColegiadoActividadAdm extends MasterBeanAdmVisible {
 			select  = " SELECT f_siga_getrecurso(grupo."+CenActividadProfesionalBean.C_DESCRIPCION+","+this.usrbean.getLanguage()+") AS NOMBRE";
 			select += " , grupo."+CenActividadProfesionalBean.C_DESCRIPCION+"";
 			select += " , grupoCliente."+CenNoColegiadoActividadBean.C_IDACTIVIDADPROFESIONAL;
-			select += " , grupoCliente."+CenNoColegiadoActividadBean.C_IDINSTITUCION_ACTIVIDAD+" AS IDINSTITUCION_GRUPO ";
 			
 			//FROM:
 			select += " FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+" grupo,";

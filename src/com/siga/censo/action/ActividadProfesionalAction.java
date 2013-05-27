@@ -92,7 +92,7 @@ public class ActividadProfesionalAction extends MasterAction {
 	 */
 	protected String guardarGrupoFijo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
-		String idPersona=null, idInstitucion=null, idActividadProfesional=null, idInstitucionActividad=null, grupos=null;
+		String idPersona=null, idInstitucion=null, idActividadProfesional=null, grupos=null;
 		UsrBean user = null;
 		UserTransaction tx = null;
 		
@@ -103,14 +103,11 @@ public class ActividadProfesionalAction extends MasterAction {
 			
 			idInstitucion = miform.getIdInstitucion();
 			idPersona = miform.getIdPersona();
-			grupos = miform.getGrupos();
-			idActividadProfesional = grupos.substring(0, grupos.indexOf("#"));
-			idInstitucionActividad = grupos.substring(grupos.indexOf("#")+1);
-			
+			idActividadProfesional = miform.getGrupos();
+									
 			CenNoColegiadoActividadBean bean = new CenNoColegiadoActividadBean();
 			bean.setIdActividadProfesional(new Integer(idActividadProfesional));
 			bean.setIdInstitucion(new Integer(idInstitucion));
-			bean.setidInstitucionActividad(new Integer(idInstitucionActividad));
 			bean.setIdPersona(new Long(idPersona));
 
 			CenNoColegiadoActividadAdm admGrupos = new CenNoColegiadoActividadAdm(this.getUserBean(request));
@@ -220,7 +217,6 @@ public class ActividadProfesionalAction extends MasterAction {
 			CenNoColegiadoActividadBean bean = new CenNoColegiadoActividadBean();
 			bean.setIdActividadProfesional(new Integer(idGrupoFijo));
 			bean.setIdInstitucion(new Integer(idInstitucion));
-			bean.setidInstitucionActividad(new Integer(idInstitucionGrupo));
 			bean.setIdPersona(new Long(idPersona));
 
 			CenNoColegiadoActividadAdm admGrupos = new CenNoColegiadoActividadAdm(this.getUserBean(request));

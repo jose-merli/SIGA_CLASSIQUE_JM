@@ -47,12 +47,6 @@ import com.siga.general.MasterForm;
 	public void setIdActividadProfesional(String dato) { 
 		UtilidadesHash.set(this.datos,"ACTIVIDADPROFESIONAL", dato);
 	}
-	public String getIdIdActividadProfesional() 	{ 
-		return UtilidadesHash.getString(this.datos, "IDINSTITUCIONACTIVIDADPROFESIONAL");		
-	}
-	public void setIdIdActividadProfesional(String dato) { 
-		UtilidadesHash.set(this.datos,"IDINSTITUCIONACTIVIDADPROFESIONAL", dato);
-	}
 	public String getModoAnterior() 	{ 
 		return UtilidadesHash.getString(this.datos, "MODOANTERIOR");		
 	}

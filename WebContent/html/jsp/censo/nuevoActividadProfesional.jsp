@@ -27,7 +27,7 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	
 	ActividadProfesionalForm miform = (ActividadProfesionalForm)request.getAttribute("ActividadProfesionalForm");
-	String[] param = { miform.getIdInstitucion(), miform.getIdInstitucion()}; 
+	//String[] param = { miform.getIdInstitucion(), miform.getIdInstitucion()}; 
 %>
 
 <html>
@@ -72,7 +72,7 @@
 		</td>
 		<td align="left">
 			
-			<siga:ComboBD nombre="grupos" tipo="cmbActividadProfesional" clase="boxCombo" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="false" parametro="<%=param%>"  />
+			<siga:ComboBD nombre="grupos" tipo="cmbActividadProfesional" clase="boxCombo" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="false" />
 			
 		</td>
 	</tr>

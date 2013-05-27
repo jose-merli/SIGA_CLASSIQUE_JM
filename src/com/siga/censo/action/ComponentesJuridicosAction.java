@@ -431,8 +431,7 @@ public class ComponentesJuridicosAction extends MasterAction{
 				beanComponentes.setIdCuenta(null);
 			}
 			if (miForm.getIdTipoColegio()!=null && !miForm.getIdTipoColegio().equals("")){
-				beanComponentes.setIdTipoColegio(miForm.getIdTipoColegio().substring(0, miForm.getIdTipoColegio().indexOf("#")));
-				beanComponentes.setIdInstitucionTipoColegio(Integer.valueOf(miForm.getIdTipoColegio().substring(miForm.getIdTipoColegio().indexOf("#")+1)));
+				beanComponentes.setIdTipoColegio(miForm.getIdTipoColegio());
 			}
 			beanComponentes.setNumColegiado(miForm.getNumColegiado());
 			
@@ -519,11 +518,9 @@ public class ComponentesJuridicosAction extends MasterAction{
 				beanComponentes.setIdCuenta(null);
 			}
 			if (miForm.getIdTipoColegio()!=null && !miForm.getIdTipoColegio().equals("")){
-				beanComponentes.setIdTipoColegio(miForm.getIdTipoColegio().substring(0, miForm.getIdTipoColegio().indexOf("#")));
-				beanComponentes.setIdInstitucionTipoColegio(Integer.valueOf(miForm.getIdTipoColegio().substring(miForm.getIdTipoColegio().indexOf("#")+1)));
+				beanComponentes.setIdTipoColegio(miForm.getIdTipoColegio());
 			}else{
 				beanComponentes.setIdTipoColegio("");
-				beanComponentes.setIdInstitucionTipoColegio(null);
 			}
 			beanComponentes.setNumColegiado(miForm.getNumColegiado());
 			beanComponentes.setIdCargo(miForm.getIdCargo());
