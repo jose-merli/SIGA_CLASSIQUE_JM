@@ -21,11 +21,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>" type="text/javascript"></script>	
 	
 	
@@ -147,13 +147,13 @@
 			
 										</td>
 										<td>											
-											<siga:Datepicker nombreCampo="fechaJustificacionDesde"></siga:Datepicker>
+											<siga:Fecha nombreCampo="fechaJustificacionDesde"></siga:Fecha>
 										</td>
 										<td class="labelText">
 											<siga:Idioma key="general.literal.hasta"/>
 										</td>
 										<td>
-											<siga:Datepicker nombreCampo="fechaJustificacionHasta"></siga:Datepicker>
+											<siga:Fecha nombreCampo="fechaJustificacionHasta"></siga:Fecha>
 										</td>
 										
 										
@@ -230,13 +230,13 @@
 
 								</td>
 								<td>									
-									<siga:Datepicker nombreCampo="fechaDesde"></siga:Datepicker>
+									<siga:Fecha nombreCampo="fechaDesde"></siga:Fecha>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
-									<siga:Datepicker nombreCampo="fechaHasta"></siga:Datepicker>
+									<siga:Fecha nombreCampo="fechaHasta"></siga:Fecha>
 								</td>
 							
 								

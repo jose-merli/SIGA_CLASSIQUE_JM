@@ -117,11 +117,11 @@
 	<head>
 	
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
 		<!--Step 2 -->
@@ -670,9 +670,9 @@
 									</td>
 									<td style="width:60%;">
 										<% if (!breadonly) { %>
-										<siga:Datepicker nombreCampo= "fechaConstitucion" valorInicial="<%=fechaConstitucion%>"/>
+										<siga:Fecha nombreCampo= "fechaConstitucion" valorInicial="<%=fechaConstitucion%>"/>
 										<% }else{ %>
-										<siga:Datepicker nombreCampo= "fechaConstitucion" disabled="true" valorInicial="<%=fechaConstitucion%>"/>
+										<siga:Fecha nombreCampo= "fechaConstitucion" disabled="true" valorInicial="<%=fechaConstitucion%>"/>
 										<% } %>
 									</td>
 									<!-- FECHA FIN -->
@@ -681,9 +681,9 @@
 									</td>
 									<td colspan="1" style="width:auto;">
 										<% if (!breadonly) { %>
-										<siga:Datepicker  nombreCampo= "fecha_fin" valorInicial="<%=fechaFin%>"/>
+										<siga:Fecha  nombreCampo= "fecha_fin" valorInicial="<%=fechaFin%>"/>
 										<% }else{ %>
-										<siga:Datepicker  nombreCampo= "fecha_fin" disabled="true" valorInicial="<%=fechaFin%>"/>
+										<siga:Fecha  nombreCampo= "fecha_fin" disabled="true" valorInicial="<%=fechaFin%>"/>
 										<% } %>
 									</td>
 								</tr>

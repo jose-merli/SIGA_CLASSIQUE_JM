@@ -23,11 +23,11 @@
 <!-- HEAD -->
 <head>
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
 
@@ -429,7 +429,7 @@
 
 							</c:when>
 							<c:otherwise>
-								<siga:Datepicker  nombreCampo= "fecha" valorInicial="${ActuacionAsistenciaFormEdicion.fecha}" readonly="true" postFunction="compruebaDiaDespues('${asistencia.fechaHora}');"/>
+								<siga:Fecha  nombreCampo= "fecha" valorInicial="${ActuacionAsistenciaFormEdicion.fecha}" readonly="true" postFunction="compruebaDiaDespues('${asistencia.fechaHora}');"/>
 							</c:otherwise>
 						</c:choose>
 					</td>
@@ -628,7 +628,7 @@
 								<siga:Idioma key='gratuita.mantActuacion.literal.fecha' />
 							</td>
 							<td class="labelTextValor">
-								<siga:Datepicker nombreCampo="fechaJustificacion" valorInicial="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" readOnly="true" postFunction="volverJustificacion();"></siga:Datepicker>
+								<siga:Fecha nombreCampo="fechaJustificacion" valorInicial="${ActuacionAsistenciaFormEdicion.fechaJustificacion}" readOnly="true" postFunction="volverJustificacion();"></siga:Fecha>
 							</td>
 
 							<td>

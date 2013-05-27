@@ -39,11 +39,11 @@
 	<!-- HEAD -->
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo titulo="expedientes.auditoria.seguimiento.cabecera" localizacion="expedientes.auditoria.localizacion" />
@@ -112,14 +112,14 @@
 						<td class="labelText"><siga:Idioma key="expedientes.auditoria.literal.fechainicial" />
 						</td>
 						<td>
-							<siga:Datepicker nombreCampo="fechaDesde" valorInicial="<%=form.getFechaDesde()%>" />
+							<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=form.getFechaDesde()%>" />
 						</td>
 						
 						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.fechafinal" />
 						</td>
 						<td>
-							<siga:Datepicker nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" />
+							<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" />
 						</td>
 					</tr>
 				</table>

@@ -86,11 +86,11 @@
 	<head>
 
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -186,15 +186,15 @@
 										</td>
 										<td width="25%">							
 											<% if (remitente.equalsIgnoreCase("insertar")){ %>
-												<siga:Datepicker  nombreCampo= "fechaEntrada"  posicionX="150" posicionY="50"/>
+												<siga:Fecha  nombreCampo= "fechaEntrada"  posicionX="150" posicionY="50"/>
 											<% } else { %>
 					  							<% if (remitente.equalsIgnoreCase("modificar")){ %>
 			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
-			  										<siga:Datepicker  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
+			  										<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
 			  															
 						  					 	<% } else { %>
 											 		<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA));%>	
-													<siga:Datepicker  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
+													<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
 											 	<% } %>				  					 
 							  				<% } %>														
 										</td>
@@ -205,16 +205,16 @@
 										</td>
 										<td width="25%">							
 											<% if (remitente.equalsIgnoreCase("insertar")){%>
-												<siga:Datepicker  nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
+												<siga:Fecha  nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
 																		
 						  					<% } else { %>
 			  									<% if (remitente.equalsIgnoreCase("modificar")){ %>
 			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>
-			  										<siga:Datepicker  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
+			  										<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
 			  																
 				  							 	<% }else{ %>
 									 				<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>	
-													<siga:Datepicker  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
+													<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
 												 <% } %>				  					 				  					 
 				  							<% } %>														
 										</td>

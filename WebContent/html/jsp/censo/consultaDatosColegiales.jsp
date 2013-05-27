@@ -128,11 +128,11 @@
 	<head>
 
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>			
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -229,13 +229,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>
-											<siga:Datepicker  nombreCampo= "fechaPresentacion" disabled="true"/>									 	
+											<siga:Fecha  nombreCampo= "fechaPresentacion" disabled="true"/>									 	
 											<% }else{ %>	
-											<siga:Datepicker  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"  disabled="true"/>
+											<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"  disabled="true"/>
 											<% } %>
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaPresentacion());%>
-			  								<siga:Datepicker  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"/>
+			  								<siga:Fecha  nombreCampo= "fechaPresentacion" valorInicial="<%=fecha %>"/>
 			  							<% } %>												
 									</td>
 									<td class="labelText">
@@ -245,13 +245,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>																			
 											<% if (fecha.equalsIgnoreCase("")){ %>	
-												<siga:Datepicker  nombreCampo= "fechaIncorporacion" disabled="true"/>														 	
+												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true"/>														 	
 											<% }else{ %>
-												<siga:Datepicker  nombreCampo= "fechaIncorporacion" disabled="true" valorInicial="<%=fecha %>"/>																 										 	
+												<siga:Fecha  nombreCampo= "fechaIncorporacion" disabled="true" valorInicial="<%=fecha %>"/>																 										 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaIncorporacion());%>
-											<siga:Datepicker  nombreCampo= "fechaIncorporacion"  valorInicial="<%=fecha %>"/>		
+											<siga:Fecha  nombreCampo= "fechaIncorporacion"  valorInicial="<%=fecha %>"/>		
 			  																								
 										<% } %>																							
 									</td>									
@@ -264,13 +264,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>										
 											<% if (fecha.equalsIgnoreCase("")){ %>	
-											<siga:Datepicker  nombreCampo= "fechaJura" disabled="true"/>										 	
+											<siga:Fecha  nombreCampo= "fechaJura" disabled="true"/>										 	
 											<% }else{ %>										 	
-											<siga:Datepicker  nombreCampo= "fechaJura" disabled="true" valorInicial="<%=fecha %>"/>		
+											<siga:Fecha  nombreCampo= "fechaJura" disabled="true" valorInicial="<%=fecha %>"/>		
 											<% } %>	
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaJura());%>
-											<siga:Datepicker  nombreCampo= "fechaJura"  valorInicial="<%=fecha %>"/>	
+											<siga:Fecha  nombreCampo= "fechaJura"  valorInicial="<%=fecha %>"/>	
 										<% } %>																																		
 									</td>						
 									
@@ -281,13 +281,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>									
 									 		<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>
-											<siga:Datepicker  nombreCampo= "fechaTitulacion" disabled="true"/>										 	
+											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true"/>										 	
 											<% }else{ %>										 								
-											<siga:Datepicker  nombreCampo= "fechaTitulacion" disabled="true" valorInicial="<%=fecha %>"/>			 	
+											<siga:Fecha  nombreCampo= "fechaTitulacion" disabled="true" valorInicial="<%=fecha %>"/>			 	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaTitulacion());%>
-											<siga:Datepicker  nombreCampo= "fechaTitulacion"  valorInicial="<%=fecha %>"/>	
+											<siga:Fecha  nombreCampo= "fechaTitulacion"  valorInicial="<%=fecha %>"/>	
 			  							<% } %>																																													
 									</td>	
 									<td class="labelText">
@@ -297,13 +297,13 @@
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
 										 	<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
 											<% if (fecha.equalsIgnoreCase("")){ %>									 	
-													<siga:Datepicker  nombreCampo= "fechaDeontologia" disabled="true"/>	
+													<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true"/>	
 											<% }else{ %>										 										 	
-												<siga:Datepicker  nombreCampo= "fechaDeontologia" disabled="true" valorInicial="<%=fecha %>"/>	
+												<siga:Fecha  nombreCampo= "fechaDeontologia" disabled="true" valorInicial="<%=fecha %>"/>	
 											<% } %>											
 										<% } else { %>
 											<% fecha=GstDate.getFormatedDateShort("",datosCol.getFechaDeontologia());%>
-												<siga:Datepicker  nombreCampo= "fechaDeontologia" valorInicial="<%=fecha %>"/>	
+												<siga:Fecha  nombreCampo= "fechaDeontologia" valorInicial="<%=fecha %>"/>	
 			  							<% } %>																																																								
 									</td>											
 								</tr>

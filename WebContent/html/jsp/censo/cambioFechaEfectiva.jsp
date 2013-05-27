@@ -73,11 +73,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 
 
@@ -147,7 +147,7 @@
 		<siga:Idioma key="pys.solicitarBaja.literal.fechaEfectiva"/> (*)
 	</td>				
 	<td>
-			<siga:Datepicker  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva %>" posicionX="50" posicionY="10"/>
+			<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva %>" posicionX="50" posicionY="10"/>
 	</td>
 	
 

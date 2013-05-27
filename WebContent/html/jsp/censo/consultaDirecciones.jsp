@@ -71,11 +71,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 <!-- SCRIPTS LOCALES -->
 <script language="JavaScript">
@@ -178,7 +178,7 @@
 	<siga:Table 
 		name="tablaDatos" 
 		border="1"
-		columnNames=",censo.consultaDirecciones.literal.tipoDireccion,censo.consultaDirecciones.literal.direccion,censo.datosDireccion.literal.cp,censo.consultaDirecciones.literal.poblacion,censo.consultaDirecciones.literal.telefono1,censo.datosDireccion.literal.fax1,censo.datosDireccion.literal.movil,censo.consultaDirecciones.literal.correo,censo.consultaDirecciones.literal.preferente,"
+		columnNames="censo.consultaDirecciones.literal.tipoDireccion,censo.consultaDirecciones.literal.direccion,censo.datosDireccion.literal.cp,censo.consultaDirecciones.literal.poblacion,censo.consultaDirecciones.literal.telefono1,censo.datosDireccion.literal.fax1,censo.datosDireccion.literal.movil,censo.consultaDirecciones.literal.correo,censo.consultaDirecciones.literal.preferente,"
 		columnSizes="10,13,5,12,8,8,8,16,7,14" 
 		modal="G">
 		<%	 		

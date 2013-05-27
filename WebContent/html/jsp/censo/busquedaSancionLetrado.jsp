@@ -54,11 +54,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -173,14 +173,14 @@
 			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
 		</td>	
 		<td>
-			<siga:Datepicker  nombreCampo= "fechaInicioBuscar"/>
+			<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
 		</td>	
 		
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 		</td>
 		<td>
-			<siga:Datepicker  nombreCampo= "fechaFinBuscar"/>
+			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
 		</td>			
 	</tr>	
 		
@@ -198,14 +198,14 @@
 		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
 		</td>
 		<td>
-		  <siga:Datepicker  nombreCampo= "fechaInicioArchivada"/>
+		  <siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
 		</td>
 		
 		<td class="labelText">
 		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
 		</td>
 		<td>
-		  <siga:Datepicker  nombreCampo= "fechaFinArchivada"/>
+		  <siga:Fecha  nombreCampo= "fechaFinArchivada"/>
 		</td>
 	</tr>
 	<%}else{%>

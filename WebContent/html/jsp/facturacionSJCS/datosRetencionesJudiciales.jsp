@@ -90,11 +90,11 @@
 	<!-- HEAD -->
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
@@ -306,7 +306,7 @@
 										<% // Si se entra en modo consulta, los botones del calendario desaparecen
 											if (!accion.equalsIgnoreCase("ver") && !accion.equalsIgnoreCase("modificar")) {
 										%>
-											<siga:Datepicker nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" readonly="true" />
+											<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" readonly="true" />
 										
 										<%} else {%>
 											<input type="text" name="fechaInicio" class="boxConsulta" readonly="true" value="<%=fechaInicio%>" /> 
@@ -319,7 +319,7 @@
 									
 									<td class="labelText">
 										<%if (!accion.equalsIgnoreCase("ver")) {%> 
-											<siga:Datepicker nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" readonly="true" />
+											<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" readonly="true" />
 											 
 										<%} else {%> 
 											<input type="text" name="fechaFin" class="boxConsulta" readonly="true" value="<%=fechaFin%>" /> 

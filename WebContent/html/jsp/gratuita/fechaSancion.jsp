@@ -77,11 +77,11 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<html:javascript formName="SancionesLetradoForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>		
 	
@@ -136,7 +136,7 @@
 	<td>
 		
 		<%if (automatico!=null && !automatico.equals("1")){%>
-		 	<siga:Datepicker nombreCampo="fechaArchivada" posicionX="30" posicionY="30"></siga:Datepicker>
+		 	<siga:Fecha nombreCampo="fechaArchivada" posicionX="30" posicionY="30"></siga:Fecha>
 		<%}else{%>
 		<html:textarea property="fechaArchivada" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
 		<%}%>

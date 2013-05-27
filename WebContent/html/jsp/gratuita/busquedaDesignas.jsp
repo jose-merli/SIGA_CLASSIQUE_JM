@@ -110,11 +110,11 @@ String[] getdatos = { usr.getLocation() };
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>
 	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>
 	
@@ -265,14 +265,14 @@ String[] getdatos = { usr.getLocation() };
 			 &nbsp;  <siga:Idioma key="gratuita.busquedaDesignas.literal.entre"/>
 		</td>
 		<td>
-			<siga:Datepicker nombreCampo="fechaAperturaInicio" valorInicial="<%=fechaAperturaInicio%>" />
+			<siga:Fecha nombreCampo="fechaAperturaInicio" valorInicial="<%=fechaAperturaInicio%>" />
 			
 		</td>
 		<td class="labelText" width="10">	
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.y"/>
 		</td>	
 		<td>	
-			<siga:Datepicker nombreCampo="fechaAperturaFin" valorInicial="<%=fechaAperturaFin%>" />
+			<siga:Fecha nombreCampo="fechaAperturaFin" valorInicial="<%=fechaAperturaFin%>" />
 			
 		</td>	
 	</tr>

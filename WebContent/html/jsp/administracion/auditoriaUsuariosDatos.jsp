@@ -41,11 +41,11 @@
 
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+		<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
@@ -115,9 +115,9 @@
 				<td class="labelTextValue">
 					<% String fechaEntrada = GstDate.getFormatedDateShort("", UtilidadesHash.getString(h, CenHistoricoBean.C_FECHAENTRADA)); %>
 					<% if (estilo.equals("box")) {%>
-						<siga:Datepicker  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>"/>
+						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>"/>
 					<% }else{ %>
-						<siga:Datepicker  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>" disabled="true" readOnly="true"/>
+						<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fechaEntrada%>" disabled="true" readOnly="true"/>
 					<% } %>						
 				</td>
 			</tr>
@@ -131,9 +131,9 @@
 				<td class="labelTextValue">
 					<% String fechaEfectiva = GstDate.getFormatedDateShort("", UtilidadesHash.getString(h, CenHistoricoBean.C_FECHAEFECTIVA)); %>
 					<% if (estilo.equals("box")) {%>
-					<siga:Datepicker  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>"/>
+					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>"/>
 					<% }else{ %>
-					<siga:Datepicker  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>" disabled="true"  readOnly="true"/>
+					<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva%>" disabled="true"  readOnly="true"/>
 					<% } %>
 				</td>
 			</tr>

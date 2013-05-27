@@ -31,11 +31,11 @@ String modo = (String) request.getSession().getAttribute("Modo");
 	</script>
 </c:if>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
@@ -153,7 +153,7 @@ String modo = (String) request.getSession().getAttribute("Modo");
 				<c:when test="${ProgrCalendariosFormEdicion.modo!='consultarProgrCalendarios'}">
 					<td class="labelText"  style="align:left"><siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/></td>
 					<td>						
-						<siga:Datepicker nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}"></siga:Fecha>
 						<html:text property="horaProgramacion" size="2" maxlength="2" styleClass="box" value="${ProgrCalendariosFormEdicion.horaProgramacion}" style="text-align:center"></html:text>					
 						:
 						<html:text property="minutoProgramacion"  size="2" maxlength="2" styleClass="box" value="${ProgrCalendariosFormEdicion.minutoProgramacion}" style="text-align:center"></html:text>	
@@ -165,7 +165,7 @@ String modo = (String) request.getSession().getAttribute("Modo");
 				<c:otherwise>
 					<td class="labelText"><siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/></td>
 					<td>
-						<siga:Datepicker nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}" disabled="true"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}" disabled="true"></siga:Fecha>
 						<html:text property="horaProgramacion" size="2" maxlength="2" styleClass="boxConsulta" readonly="true" value="${ProgrCalendariosFormEdicion.horaProgramacion}" style="text-align:center"></html:text>					
 						:
 						<html:text property="minutoProgramacion"  size="2" maxlength="2" styleClass="boxConsulta" readonly="true" value="${ProgrCalendariosFormEdicion.minutoProgramacion}" style="text-align:center"></html:text>
@@ -217,11 +217,11 @@ String modo = (String) request.getSession().getAttribute("Modo");
 					<td class="labelText"  style="align:left"><siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
 					<siga:Idioma key='general.literal.desde'/></td>
 					<td>
-						<siga:Datepicker nombreCampo="fechaCalInicio" valorInicial="${ProgrCalendariosFormEdicion.fechaCalInicio}"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaCalInicio" valorInicial="${ProgrCalendariosFormEdicion.fechaCalInicio}"></siga:Fecha>
 					</td>
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
 					<td>
-						<siga:Datepicker nombreCampo="fechaCalFin" valorInicial="${ProgrCalendariosFormEdicion.fechaCalFin}"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaCalFin" valorInicial="${ProgrCalendariosFormEdicion.fechaCalFin}"></siga:Fecha>
 					</td>
 
 				</c:when>

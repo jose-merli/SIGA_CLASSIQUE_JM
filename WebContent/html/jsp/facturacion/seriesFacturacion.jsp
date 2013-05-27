@@ -144,11 +144,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
   <script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -484,9 +484,9 @@ function IsNum( numstr ) {
 								</td>
 								<td>
 									<% if (bEditable) { %>
-										<siga:Datepicker  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>"/>
+										<siga:Fecha  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>"/>
 									<% } else { %>
-										<siga:Datepicker  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>" disabled="true" readOnly="true"/>
+										<siga:Fecha  nombreCampo="fechaInicialProducto" valorInicial="<%=sFInicialProducto%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText"  width="100px">
@@ -494,9 +494,9 @@ function IsNum( numstr ) {
 								</td>
 								<td>									
 								<% if (bEditable) { %>
-									<siga:Datepicker  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>"/>
+									<siga:Fecha  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>"/>
 								<% } else { %>
-									<siga:Datepicker  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>" disabled="true" readOnly="true"/>
+									<siga:Fecha  nombreCampo="fechaFinalProducto" valorInicial="<%=sFFinalProducto%>" disabled="true" readOnly="true"/>
 								<% }  %>
 								</td>
 							</tr>
@@ -510,9 +510,9 @@ function IsNum( numstr ) {
 								</td>	
 								<td width="120px">
 									<% if (bEditable) { %>
-										<siga:Datepicker  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>"/>
+										<siga:Fecha  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>"/>
 									<% } else { %>
-										<siga:Datepicker  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>" disabled="true" readOnly="true"/>
+										<siga:Fecha  nombreCampo="fechaInicialServicio" valorInicial="<%=sFInicialServicio%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText">
@@ -520,9 +520,9 @@ function IsNum( numstr ) {
 								</td>
 								<td  width="120px">
 								<% if (bEditable) { %>
-									<siga:Datepicker  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>"/>
+									<siga:Fecha  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>"/>
 								<% } else { %>
-									<siga:Datepicker  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>" disabled="true" readOnly="true"/>
+									<siga:Fecha  nombreCampo="fechaFinalServicio" valorInicial="<%=sFFinalServicio%>" disabled="true" readOnly="true"/>
 								<% }  %>
 								</td>
 							</tr>
@@ -539,9 +539,9 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 									<% if (bEditable) { %>
-										<siga:Datepicker  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>"/>
+										<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>"/>
 									<% } else { %>
-										<siga:Datepicker  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
+										<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
 									<% }  %>
 								</td>
 								<td class="labelText"   width="40px">
@@ -573,9 +573,9 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 								<% if (modoAction.equals("editar")) { %>
-									<siga:Datepicker  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>"/>
+									<siga:Fecha  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>"/>
 								<% } else { %>
-										<siga:Datepicker  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
+										<siga:Fecha  nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
 								<%}%>
 								</td>
 								<td class="labelText"  width="40px">
@@ -601,9 +601,9 @@ function IsNum( numstr ) {
 								</td>
 								<td   width="120px">
 								<% if (modoAction.equals("editar")) { %>
-										<siga:Datepicker  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>"/>
+										<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>"/>
 								<% } else { %>
-										<siga:Datepicker  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>" disabled="true" readOnly="true"/>
+										<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>" disabled="true" readOnly="true"/>
 								<% } %>
 								</td>					
 							</tr>

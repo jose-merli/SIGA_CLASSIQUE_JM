@@ -168,11 +168,11 @@
 	<!-- HEAD -->
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+		<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>	
 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -384,14 +384,14 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoDesde"/>
 									</td>				
 									<td>
-										<siga:Datepicker nombreCampo= "fechaNacimientoDesde" valorInicial="<%=fechaNacimientoDesde%>"/>										
+										<siga:Fecha nombreCampo= "fechaNacimientoDesde" valorInicial="<%=fechaNacimientoDesde%>"/>										
 									</td>
 									
 							        <td class="labelText">
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
 									</td>													
 									<td>
-										<siga:Datepicker  nombreCampo= "fechaNacimientoHasta" valorInicial="<%=fechaNacimientoHasta%>"/>										
+										<siga:Fecha  nombreCampo= "fechaNacimientoHasta" valorInicial="<%=fechaNacimientoHasta%>"/>										
 									</td>
 								</tr>
 								
@@ -567,14 +567,14 @@
 												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionDesde"/>
 											</td>
 											<td>
-												<siga:Datepicker nombreCampo= "fechaIncorporacionDesde" valorInicial="<%=fechaIncorporacionDesde%>"/>
+												<siga:Fecha nombreCampo= "fechaIncorporacionDesde" valorInicial="<%=fechaIncorporacionDesde%>"/>
 											</td>
 											
 											<td class="labelText" >
 												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
 											</td>
 											<td>
-												<siga:Datepicker nombreCampo= "fechaIncorporacionHasta" valorInicial="<%=fechaIncorporacionHasta%>"/>
+												<siga:Fecha nombreCampo= "fechaIncorporacionHasta" valorInicial="<%=fechaIncorporacionHasta%>"/>
 											</td>
 										</tr>
 														
@@ -625,14 +625,14 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaDesde"/>
 									</td>
 									<td>
-										<siga:Datepicker nombreCampo= "fechaAltaDesde" valorInicial="<%=fechaAltaDesde%>"/>
+										<siga:Fecha nombreCampo= "fechaAltaDesde" valorInicial="<%=fechaAltaDesde%>"/>
 									</td>
 									
 									<td class="labelText" >
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
 									</td>
 									<td>
-										<siga:Datepicker nombreCampo= "fechaAltaHasta" valorInicial="<%=fechaAltaHasta%>"/>
+										<siga:Fecha nombreCampo= "fechaAltaHasta" valorInicial="<%=fechaAltaHasta%>"/>
 									</td>
 								</tr>
 							</table>

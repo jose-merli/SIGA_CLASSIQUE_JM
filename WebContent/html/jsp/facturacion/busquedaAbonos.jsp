@@ -84,11 +84,11 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 	<head>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -158,9 +158,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 									</td>
 									<td class="labelText" colspan="2" style="text-align: right">	
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoEntre"/>
-										<siga:Datepicker  nombreCampo="fechaAbonoDesde" valorInicial="<%=formSession.getFechaAbonoDesde()%>"/>&nbsp;&nbsp;																											
+										<siga:Fecha  nombreCampo="fechaAbonoDesde" valorInicial="<%=formSession.getFechaAbonoDesde()%>"/>&nbsp;&nbsp;																											
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<siga:Datepicker  nombreCampo="fechaAbonoHasta" valorInicial="<%=formSession.getFechaAbonoHasta()%>"/>										
+										<siga:Fecha  nombreCampo="fechaAbonoHasta" valorInicial="<%=formSession.getFechaAbonoHasta()%>"/>										
 										</a>
 									</td>
 								</tr>
@@ -176,9 +176,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 									</td>
 									<td class="labelText" colspan="2" style="text-align: right">	
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaEntre"/>
-										<siga:Datepicker  nombreCampo="fechaFacturaDesde" valorInicial="<%=formSession.getFechaFacturaDesde()%>"/>&nbsp;&nbsp;
+										<siga:Fecha  nombreCampo="fechaFacturaDesde" valorInicial="<%=formSession.getFechaFacturaDesde()%>"/>&nbsp;&nbsp;
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<siga:Datepicker  nombreCampo="fechaFacturaHasta" valorInicial="<%=formSession.getFechaFacturaHasta()%>"/>										
+										<siga:Fecha  nombreCampo="fechaFacturaHasta" valorInicial="<%=formSession.getFechaFacturaHasta()%>"/>										
 									</td>
 								</tr>
 								<tr>

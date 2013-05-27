@@ -64,8 +64,9 @@ public class TagFecha extends TagSupport {
 			PrintWriter out = pageContext.getResponse().getWriter();
 			
 			out.println("<!-- input de fecha con validacion -->");
-			out.println("<script language=\"JavaScript\">");
-			
+			out.println("<script>window.showCalendarGeneral || document.write('<script src=\"SIGA/html/js/calendarJs.jsp\"><\\/script>')</script>");
+			out.println("<script type='text/javascript'>");
+			//BNS INCLUIR EL SCRIPT SI NO ESTABA INCLUIDO			
 			out.println("function validaFecha"+ this.nombreCampo +"(field){ ");
 			
 			out.println("	var checkstr = \"0123456789\";");

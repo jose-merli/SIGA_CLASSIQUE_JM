@@ -63,11 +63,11 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+		<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -196,7 +196,7 @@
 						<siga:Idioma key="certificados.solicitudes.literal.fechaEstado"/>&nbsp;(*)
 				    </td>
 					<td>
-						<siga:Datepicker nombreCampo="fechaEstado" valorInicial="<%=fecha%>"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaEstado" valorInicial="<%=fecha%>"></siga:Fecha>
 					</td>
 				</tr>
 	             </table>

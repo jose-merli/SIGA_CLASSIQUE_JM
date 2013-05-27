@@ -198,11 +198,11 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="DatosGeneralesFacturacionForm" staticJavascript="false" />  
@@ -371,12 +371,12 @@
 						<tr>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
 							<td>
-								<siga:Datepicker nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Datepicker>
+								<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Fecha>
 							</td>
 							
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
 							<td class="labelText" >								
-								<siga:Datepicker nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Datepicker>
+								<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Fecha>
 							</td>	
 						</tr>
 						<tr>						

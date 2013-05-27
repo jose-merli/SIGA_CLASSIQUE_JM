@@ -139,11 +139,11 @@
 <head>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -335,9 +335,9 @@
 							</td>
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
-								<siga:Datepicker  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>"/>
+								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>"/>
 								<% }else{ %>
-								<siga:Datepicker  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>" disabled="true"/>
+								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>" disabled="true"/>
 								<% } %>
 							</td>
 							<td class="labelText">
@@ -353,9 +353,9 @@
 							</td>
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
-									 <siga:Datepicker  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" />
+									 <siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" />
 								<% }else{ %>
-									<siga:Datepicker  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" disabled="true"/>
+									<siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" disabled="true"/>
 								<% } %>									
 							</td>
 							<td class="labelText">
@@ -363,9 +363,9 @@
 							</td>
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
-								 <siga:Datepicker  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" />
+								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" />
 								<% }else{ %>
-								 <siga:Datepicker  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" disabled="true"/>
+								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" disabled="true"/>
 								<% } %>
 								
 							</td>
@@ -394,9 +394,9 @@
 							</td>
 							<td style="padding-left:25px;">
 								<% if (!formulario.getModo().equals("Ver")) { %>
-								 <siga:Datepicker  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" />
+								 <siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" />
 								<% }else{ %>
-								<siga:Datepicker  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" disabled="true"/>
+								<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" disabled="true"/>
 								<% } %>
 							</td>
 							<td class="labelText">
@@ -404,9 +404,9 @@
 							</td>
 							<td style="padding-left:25px;">
 							<% if (!formulario.getModo().equals("Ver")) { %>
-								<siga:Datepicker  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" />
+								<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" />
 								<% }else{ %>
-								<siga:Datepicker  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" disabled="true"/>
+								<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" disabled="true"/>
 								<% } %>
 							</td>
 						</tr>
@@ -418,10 +418,10 @@
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
 								<input type="checkbox" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<siga:Datepicker  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>"/>
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>"/>
 								<% }else { %>
 								<input type="checkbox" disabled="disabled" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<siga:Datepicker  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>" disabled="true"/>
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>" disabled="true"/>
 								<%} %>
 								
 							</td>
@@ -431,10 +431,10 @@
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
 									<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<siga:Datepicker  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>"/>								
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>"/>								
 								<% }else {%>	
 									<input type="checkbox" disabled="disabled"  name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<siga:Datepicker  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>" disabled="true"/>								
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>" disabled="true"/>								
 								<%}%>
 							</td>
 						</tr>
@@ -447,10 +447,10 @@
 								
 								<% if (!formulario.getModo().equals("Ver")) { %>
 									<input type="checkbox" name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<siga:Datepicker  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>"/>			
+									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>"/>			
 								<% }else {%>														
 									<input type="checkbox" disabled="disabled"  name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<siga:Datepicker  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>" disabled="true"/>			
+									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>" disabled="true"/>			
 								<%}%>
 							</td>							
 					   </tr>	

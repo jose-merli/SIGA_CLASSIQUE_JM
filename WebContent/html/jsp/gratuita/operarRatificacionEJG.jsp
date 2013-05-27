@@ -129,11 +129,11 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -277,9 +277,9 @@
 									</td>
 									<td width="200">
 										<%if (accion.equalsIgnoreCase("ver")){%>
-											<siga:Datepicker nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Datepicker>
+											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
 										<%} else {%>
-											<siga:Datepicker nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Datepicker>
+											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Fecha>
 										<%}%>
 									</td>
 									
@@ -319,9 +319,9 @@
 					</td>
 					<td width="300">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:Datepicker nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Fecha>
 						<%} else {%>
-							<siga:Datepicker nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readonly="true"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readonly="true"></siga:Fecha>
 						<%}%>
 					</td>
 				</tr>
@@ -358,9 +358,9 @@
 					</td>
 					<td>
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:Datepicker nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" disabled="true" readonly="true"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" disabled="true" readonly="true"></siga:Fecha>
 						<%} else {%>
-							<siga:Datepicker nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Fecha>
 						<%}%>
 					</td>
 					
@@ -382,9 +382,9 @@
 					</td>	
 					<td colspan="3">
 					<%if (accion.equalsIgnoreCase("ver")){%>
-						<siga:Datepicker nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" disabled="true" readonly="true"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" disabled="true" readonly="true"></siga:Fecha>
 					<%} else {%>
-						<siga:Datepicker nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" readonly="true"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" readonly="true"></siga:Fecha>
 					<%}%>
 					</td>	
 				</tr>

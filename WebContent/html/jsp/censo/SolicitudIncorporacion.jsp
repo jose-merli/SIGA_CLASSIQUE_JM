@@ -44,11 +44,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
 	
@@ -1030,7 +1030,7 @@
 										value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
 								</td>
 								<td>
-									<siga:Datepicker nombreCampo="fechaEstadoColegial" valorInicial=""/>
+									<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial=""/>
 								</td>
 							</tr>
 						</table>
@@ -1111,7 +1111,7 @@
 										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
 								</td>						
 								<td>
-									<siga:Datepicker nombreCampo="fechaNacimiento" valorInicial=""/>
+									<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""/>
 								</td>		
 								
 								<td style="width:13px">&nbsp;</td>												

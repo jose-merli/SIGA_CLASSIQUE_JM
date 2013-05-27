@@ -375,11 +375,11 @@
 	var modo = "<%=modo%>";
 	</script>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="gratuita.editarDesigna.literal.titulo" localizacion="gratuita.editarDesigna.literal.location"/>
@@ -830,11 +830,11 @@
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 						<% if (!modo.equalsIgnoreCase("ver")) { %>
 							<td>
-								<siga:Datepicker nombreCampo="fecha"   valorInicial="<%=fechaApertura%>"/>															
+								<siga:Fecha nombreCampo="fecha"   valorInicial="<%=fechaApertura%>"/>															
 							</td>
 						<%}else{%>
 							<td>
-								<siga:Datepicker nombreCampo="fecha"   valorInicial="<%=fechaApertura%>" disabled="true" readOnly="true" />								
+								<siga:Fecha nombreCampo="fecha"   valorInicial="<%=fechaApertura%>" disabled="true" readOnly="true" />								
 							</td>
 						<%}%>
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
@@ -941,9 +941,9 @@
 						
 						<td>
 							<% if (!modo.equalsIgnoreCase("ver")) {%> 
-								<siga:Datepicker nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" />							 
+								<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" />							 
 							<%} else { %>
-								<siga:Datepicker nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" disabled="true" readOnly="true" />  							
+								<siga:Fecha nombreCampo="fechaCierre"   valorInicial="<%=fecha%>" disabled="true" readOnly="true" />  							
  							<%}%>
 						</td>
 					</tr>
@@ -1131,9 +1131,9 @@
 							key="gratuita.editarDesigna.literal.fechaJuicio" /></td>
 						<td class="labelText" style="width: 150px">
 						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<siga:Datepicker nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>"/>														 
+							<siga:Fecha nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>"/>														 
 						<% } else { %> 
-							<siga:Datepicker nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>" disabled="true" readOnly="true" />							 
+							<siga:Fecha nombreCampo="fechaJuicio"   valorInicial="<%=sFechaJuicio%>" disabled="true" readOnly="true" />							 
 						<% } %>
 						</td>
 						<td class="labelText" style="width: 80px">
@@ -1158,7 +1158,7 @@
 						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(fechaOficioJuzgado)%></td>
 					<%}else{%>										
 					<td>
-						<siga:Datepicker nombreCampo="fechaOficioJuzgado" valorInicial="<%=fechaOficioJuzgado%>"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaOficioJuzgado" valorInicial="<%=fechaOficioJuzgado%>"></siga:Fecha>
 						
 					</td>
 					<%} %>
@@ -1169,7 +1169,7 @@
 						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(fechaRecepcionColegio)%></td>
 					<%}else{%>								
 					<td>
-						<siga:Datepicker nombreCampo="fechaRecepcionColegio" valorInicial="<%=fechaRecepcionColegio%>"></siga:Datepicker>
+						<siga:Fecha nombreCampo="fechaRecepcionColegio" valorInicial="<%=fechaRecepcionColegio%>"></siga:Fecha>
 						
 					</td>
 					<%}%>

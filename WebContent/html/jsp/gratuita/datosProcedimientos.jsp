@@ -73,11 +73,11 @@
 <head>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<html:javascript formName="MantenimientoProcedimientosForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
@@ -157,13 +157,13 @@
 						<td class="labelText"><siga:Idioma
 							key="gratuita.procedimientos.literal.fechainicio" />&nbsp;(*)</td>
 						<td class="labelText">
-							<siga:Datepicker nombreCampo="fechaDesdeVigor" valorInicial="<%=fechaInicio%>" posicionX="100" posicionY="100"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaDesdeVigor" valorInicial="<%=fechaInicio%>" posicionX="100" posicionY="100"></siga:Fecha>
 							
 						</td>
 						
 						<td class="labelText"><siga:Idioma
 							key="gratuita.procedimientos.literal.fechafin" />&nbsp;
-							<siga:Datepicker nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Datepicker>
+							<siga:Fecha nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Fecha>
 						</td>
 
 					</tr>

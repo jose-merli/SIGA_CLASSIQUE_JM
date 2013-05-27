@@ -62,11 +62,11 @@
 	<!-- HEAD -->
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -207,15 +207,15 @@
 		border="1"
 		columnNames="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
 		columnSizes="15,8,10,6,7,8,8,8,6,6" 
-		fixedHeight="<%=alto%>">
+		fixedHeight="70%">
 		
 		<% if (obj == null || obj.size() == 0) { %>
-			<br>
-			<p class="titulitos" style="text-align: center">
-				<siga:Idioma key="messages.noRecordFound" />
-			</p>
-			<br>
-			
+			<tr class ='titulitos' id="noRecordFound">
+				<td class="titulitos" style="background-color:transparent; text-align:center;" colspan = "4">
+					<siga:Idioma key="messages.noRecordFound"/>
+   		 		
+   		 		</td>
+ 			</tr>
 		<% } else {
 			// consultamos si el colegiado esta dado de baja
 			String idper = (String) request.getSession().getAttribute("idPersonaTurno");

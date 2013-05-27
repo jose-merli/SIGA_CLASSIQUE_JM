@@ -337,11 +337,11 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/>
+	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script>	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>  
 	
@@ -527,11 +527,11 @@
 								<!-- JBD 16/2/2009 INC-5682-SIGA -->
 								<% if (!modo.equalsIgnoreCase("ver")) { %>
 									<td>	
-										<siga:Datepicker nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" />						
+										<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" />						
 									</td >	
 								<%}else{%>
 									<td>	
-										<siga:Datepicker nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" disabled="true" readOnly="true" />						
+										<siga:Fecha nombreCampo="fechaAperturaEJG"   valorInicial="<%=FECHAAPERTURA%>" disabled="true" readOnly="true" />						
 									</td>	
 								<%}%>
 								<!-- JBD 16/2/2009 INC-5682-SIGA -->
@@ -569,9 +569,9 @@
 								</td>
 								<td>	
 									<%if (modo.equals("ver")) {%>
-										<siga:Datepicker nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>" disabled="true" readOnly="true" />				
+										<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>" disabled="true" readOnly="true" />				
 									<%} else {%>
-										<siga:Datepicker nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>"/>				
+										<siga:Fecha nombreCampo="fechaPresentacion"   valorInicial="<%=FECHAPRESENTACION%>"/>				
 									<%}%>
 								</td>
 								<td class="labelText" nowrap>
@@ -579,9 +579,9 @@
 								</td>
 								<td>	
 									<%if (modo.equals("ver")) {%>
-										<siga:Datepicker nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" disabled="true" readOnly="true" />				
+										<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" disabled="true" readOnly="true" />				
 									<%} else {%>
-										<siga:Datepicker nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" />				
+										<siga:Fecha nombreCampo="fechaLimitePresentacion"   valorInicial="<%=FECHALIMITEPRESENTACION%>" />				
 									<%}%>
 								</td>
 							</tr>
