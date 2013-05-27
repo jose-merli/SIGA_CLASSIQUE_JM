@@ -212,12 +212,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
 				if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
 					// Preparo para obtener la informacion del colegiado:
+					CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+					
 					try {
 						Long idPers = new Long(request.getParameter("idPersonaPestanha"));
 						Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
 						CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-						CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-						CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			
 						// Obtengo la informacion del colegiado:
 						nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
@@ -227,7 +228,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 					} catch (Exception e1){
 						nombre = miForm.getNombreColegiadoPestanha();
 						numero = miForm.getNumeroColegiadoPestanha();
-						estado = "";
+						estado = clienteAdm.getEstadoColegial(miForm.getIdPersona(), miForm.getIdInstitucion());
 					}
 				}
 				// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
