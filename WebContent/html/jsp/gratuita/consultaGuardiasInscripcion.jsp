@@ -174,9 +174,10 @@ jQuery.noConflict();
 
 	<siga:Table 
 			name="altaTurno" 
-			border="2"
-			columnNames="<input type='checkbox' id='chkGeneral' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,gratuita.altaTurnos_2.literal.nombre,gratuita.altaTurnos_2.literal.nletrados,gratuita.altaTurnos_2.literal.tipodias,gratuita.altaTurnos_2.literal.diasguardia,Acciones"
-			columnSizes="5,30,15,20,15,20">
+			border="1"
+			columnNames="<input type='checkbox' id='chkGeneral' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,gratuita.altaTurnos_2.literal.nombre,gratuita.altaTurnos_2.literal.nletrados,gratuita.altaTurnos_2.literal.tipodias,gratuita.altaTurnos_2.literal.diasguardia,"
+			columnSizes="5,30,15,15,15,20"
+			modal="G">
 
 			<logic:notEmpty name="InscripcionTGForm"
 				property="inscripcionesGuardia">
@@ -187,21 +188,20 @@ jQuery.noConflict();
 					<tr>
 					<siga:FilaConIconos fila='<%=String.valueOf(index.intValue())%>'
 						botones=""  clase="listaNonEdit" pintarEspacio="false">
-						<td align="center">
+						<td>
 							<input type="hidden" id="guardia_<%=String.valueOf(index)%>" name="guardia_<%=String.valueOf(index)%>" value="${inscripcionGuardia.guardia.idGuardia}" />
 					   		<input type="checkbox" disabled="" value="<%=String.valueOf(index)%>"  name="chkGuardia" /> 						
  						</td>
-						<td  ><c:out
+						<td><c:out
 							value="${inscripcionGuardia.guardia.nombre}"></c:out></td>
-						<td ><c:out
+						<td><c:out
 							value="${inscripcionGuardia.guardia.numeroLetradosGuardia}"></c:out></td>
-						<td ><c:out
+						<td><c:out
 							value="${inscripcionGuardia.guardia.seleccionTiposDia}"></c:out>
 						</td>
 						<td><c:out
 							value="${inscripcionGuardia.guardia.diasGuardia}"></c:out>&nbsp;<siga:Idioma
-							key="${inscripcionGuardia.guardia.descripcionTipoDiasGuardia}" />
-							
+							key="${inscripcionGuardia.guardia.descripcionTipoDiasGuardia}" />							
 						</td>
 
 					</siga:FilaConIconos>
@@ -210,7 +210,7 @@ jQuery.noConflict();
 			</logic:notEmpty>
 		</siga:Table>
 </html:form>
-<div style="position: absolute; bottom: 5px; left: 0px; width: 100%; z-index: 99;">
+<div style="position: absolute; bottom: 5px; left: 0px; width: 200px; z-index: 50;">
 <table width="100%">
 	<tr>
 
@@ -244,7 +244,7 @@ jQuery.noConflict();
 
 
 
-<div style="position:absolute;bottom:10px;left: 0px;width:100%;">
+<div style="position:absolute;bottom:-5px;left: 150px;width:600px;z-index: 10">
 
 		<c:choose>
 			<c:when test="${InscripcionTGForm.modo=='sitDatos'||InscripcionTGForm.modo=='sigDatos'||InscripcionTGForm.modo=='vitDatos'||InscripcionTGForm.modo=='vigDatos'}">
