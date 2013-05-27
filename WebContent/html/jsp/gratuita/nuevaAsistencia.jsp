@@ -72,9 +72,11 @@
 	if (juzgado!=null && !juzgado.equalsIgnoreCase("")) {
 		juzgadoSel.add(0,juzgado);
 	}
-	if (turno!=null && !turno.equalsIgnoreCase("")) idTurno.add(0,usr.getLocation()+","+turno);
-	if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
-	if (tipoAsistenciaColegio!=null && !tipoAsistenciaColegio.equalsIgnoreCase("")) tAsistenciaColegio.add(0,tipoAsistenciaColegio);
+	if(bEsClonacion){
+		if (turno!=null && !turno.equalsIgnoreCase("")) idTurno.add(0,usr.getLocation()+","+turno);
+		if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
+		if (tipoAsistenciaColegio!=null && !tipoAsistenciaColegio.equalsIgnoreCase("")) tAsistenciaColegio.add(0,tipoAsistenciaColegio);
+	}
 %>
 <!-- JSP -->
 <script>
@@ -92,6 +94,7 @@
 			var tmp1 = document.getElementsByName("turnos");
 			var tmp2 = tmp1[0]; 
 			tmp2.onchange();
+			jQuery('#turnos').change();
 		<%}%>
 	}
 
@@ -467,6 +470,8 @@
 		fLoad();
 
 		cargarColegiado();
+		
+
 	</script>
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<siga:ConjBotonesAccion botones="y,c" modal="M"  />	
