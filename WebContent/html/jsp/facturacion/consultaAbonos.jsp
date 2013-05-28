@@ -227,7 +227,8 @@
 
 							<!-- ENVIOS 1 idAbono, 3 idPersona, 4 descripcion -->
 							<input type="hidden" name="oculto<%=(i+1)%>_3" value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
-							<input type="hidden" name="oculto<%=(i+1)%>_4" value=" ">
+							<input type="hidden" name="oculto<%=(i+1)%>_4" value="<%=row.getString(FacAbonoBean.C_IDFACTURA)%>">
+							<input type="hidden" name="oculto<%=(i+1)%>_5" value=" ">
 
 							<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_NUMEROABONO))%>
 						</td>

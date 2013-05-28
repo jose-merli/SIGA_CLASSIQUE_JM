@@ -44,7 +44,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.C_IDFACTURA,
 							FacAbonoBean.C_IDCUENTA,
 							FacAbonoBean.C_IDPAGOSJG,
-							FacAbonoBean.C_IMPEXCESIVO,
 							FacAbonoBean.C_FECHAMODIFICACION,
 							FacAbonoBean.C_USUMODIFICACION,
 							FacAbonoBean.C_NUMEROABONO,
@@ -101,7 +100,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash,FacAbonoBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacAbonoBean.C_USUMODIFICACION));	
 			bean.setNumeroAbono(UtilidadesHash.getString(hash,FacAbonoBean.C_NUMEROABONO));
-			bean.setImpExcesivo(UtilidadesHash.getString(hash,FacAbonoBean.C_IMPEXCESIVO));
 			bean.setEstado(UtilidadesHash.getInteger(hash,FacAbonoBean.C_ESTADO));
 			bean.setImpPendientePorAbonar(UtilidadesHash.getDouble(hash,FacAbonoBean.C_IMPPENDIENTEPORABONAR));
 			bean.setImpTotal(UtilidadesHash.getDouble(hash,FacAbonoBean.C_IMPTOTAL));
@@ -144,7 +142,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacAbonoBean.C_IDPAGOSJG ,b.getIdPagosJG());
 			UtilidadesHash.set(htData,FacAbonoBean.C_FECHAMODIFICACION,b.getFechaMod());
 			UtilidadesHash.set(htData,FacAbonoBean.C_USUMODIFICACION,b.getUsuMod());
-			UtilidadesHash.set(htData,FacAbonoBean.C_IMPEXCESIVO,b.getImpExcesivo());
 			UtilidadesHash.set(htData,FacAbonoBean.C_ESTADO,b.getEstado());
 			UtilidadesHash.set(htData,FacAbonoBean.C_IMPPENDIENTEPORABONAR,b.getImpPendientePorAbonar());
 			UtilidadesHash.set(htData,FacAbonoBean.C_IMPTOTAL,b.getImpTotal());
@@ -288,7 +285,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	            			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPEXCESIVO + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CONTABILIZADA+ " AS FACTURACONTABILIZADA," +
@@ -458,7 +454,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_CONTABILIZADA + "," +
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA + "," +
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPEXCESIVO + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_ESTADO + " AS ESTADO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALNETO + " AS TOTALNETO," +
@@ -528,7 +523,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + "," +
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_CONTABILIZADA + "," +
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA + "," +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPEXCESIVO + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_ESTADO + " AS ESTADO," +
@@ -581,7 +575,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			if(destinatarioAbono==DESTINATARIOABONO_SOCIEDAD || destinatarioAbono==DESTINATARIOABONO_SJCS){
 				sql.append(" (SELECT A.IDABONO, A.NUMEROABONO, A.IDINSTITUCION, ");
 				sql.append(" A.OBSERVACIONES,A.MOTIVOS,  A.FECHA, ");
-				sql.append(" A.CONTABILIZADA, A.IDFACTURA, A.IMPEXCESIVO, ");
+				sql.append(" A.CONTABILIZADA, A.IDFACTURA, ");
 				sql.append(" A.IDPERSONA, A.IDCUENTA, A.IDPAGOSJG, ");
 				sql.append(" F_SIGA_ESTADOSABONO(A.IDINSTITUCION, A.IDABONO) AS ESTADO, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALNETO(A.IDINSTITUCION, A.IDABONO) AS TOTALNETO, ");
@@ -611,7 +605,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			
 				sql.append(" (SELECT A.IDABONO, A.NUMEROABONO, A.IDINSTITUCION, "); 
 				sql.append(" A.OBSERVACIONES,A.MOTIVOS,  A.FECHA, ");
-				sql.append(" A.CONTABILIZADA, A.IDFACTURA, A.IMPEXCESIVO, ");
+				sql.append(" A.CONTABILIZADA, A.IDFACTURA, ");
 				sql.append(" A.IDPERSONA, A.IDCUENTA, A.IDPAGOSJG, ");
 				sql.append(" F_SIGA_ESTADOSABONO(A.IDINSTITUCION, A.IDABONO) AS ESTADO, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALNETO(A.IDINSTITUCION, A.IDABONO) AS TOTALNETO, ");

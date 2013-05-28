@@ -32,6 +32,7 @@ public class AbonosDatosGeneralesForm extends MasterForm{
 	private String total="";
 	private String numeroAbono="";
 	private String observaciones="";
+	private String idFactura="";
 	
 				
 	/**
@@ -185,4 +186,10 @@ public class AbonosDatosGeneralesForm extends MasterForm{
 	public void setObservaciones(String valor) {
 		this.observaciones = valor;
 	}
+	public String getIdFactura() {
+		return idFactura;
+	}
+	public void setIdFactura(String idFactura) {
+		this.idFactura = idFactura;
+	}	
 }

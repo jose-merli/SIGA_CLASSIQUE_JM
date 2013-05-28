@@ -46,6 +46,7 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			String accion = (String)request.getParameter("accion");
 			String idAbono = (String)request.getParameter("idAbono");
 			String idInstitucionAbono = (String)request.getParameter("idInstitucion");
+			String idFactura = (String)request.getParameter("idfactura");
 			String volver = null;
 			if (request.getParameter("botonVolver")!=null )
 				volver = (String)request.getParameter("botonVolver");
@@ -66,6 +67,7 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			// Paso de parametros empleando request
 			request.setAttribute("IDABONO", idAbono);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
+			request.setAttribute("IDFACTURA", idFactura);
 			request.setAttribute("ACCION", accion);
 			request.setAttribute("container", datosAbono);
 			request.getSession().setAttribute("DATABACKUP", datosAbono);

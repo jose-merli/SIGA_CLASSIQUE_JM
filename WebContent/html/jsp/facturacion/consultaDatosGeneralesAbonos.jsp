@@ -45,7 +45,8 @@ String path = actionMapping.getPath();
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
 	String numeroAbono=(String)request.getAttribute("NUMEROABONO"); // Obtengo el número del abono
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
-	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
+	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
+	String idFactura = (String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la factura 
 	Hashtable datosAbono= new Hashtable();
 
 	
@@ -68,7 +69,7 @@ String path = actionMapping.getPath();
 		total=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTAL")).doubleValue(),2)).toString();
 	}
 
-	String idFactura = (String)datosAbono.get(FacAbonoBean.C_IDFACTURA);
+	//String idFactura = (String)datosAbono.get(FacAbonoBean.C_IDFACTURA);
 
 	// Gestion de Volver
 	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
@@ -129,7 +130,8 @@ String path = actionMapping.getPath();
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property="idAbono" value="<%=idAbono%>"/> 				
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>	
-				<html:hidden property="idPersona" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDPERSONA)%>"/>	
+				<html:hidden property="idPersona" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDPERSONA)%>"/>
+				<html:hidden property="idFactura" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDFACTURA)%>"/>		
 
 				<tr>				
 					<td width="100%" align="center">

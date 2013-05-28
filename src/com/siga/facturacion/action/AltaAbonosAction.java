@@ -216,7 +216,7 @@ public class AltaAbonosAction extends MasterAction {
 			Hashtable contadorTablaHash= null;
 			
 			// Comienzo control de transacciones
-			tx = usr.getTransaction();
+			tx = usr.getTransactionPesada();
 			//BNS: INC_10519_SIGA Comenzamos la transacción antes de las comprobaciones y bloqueamos las tablas implicadas
 			// para que nadie pueda insertar entre medias
 			tx.begin();
@@ -269,7 +269,6 @@ public class AltaAbonosAction extends MasterAction {
 			contadorTablaHash=gc.getContador(new Integer(usr.getLocation()),ClsConstants.FAC_ABONOS);
 			String numeroAbono=gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
-			hash.put(FacAbonoBean.C_IMPEXCESIVO,"0");
 			hash.put(FacAbonoBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguage(),"messages.informes.abono.mensajeFactura")+" "+numfactura);
 			
 			

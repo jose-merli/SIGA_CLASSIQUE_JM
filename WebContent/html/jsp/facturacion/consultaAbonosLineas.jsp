@@ -47,6 +47,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
 	String contabilizado=(String)request.getAttribute("contabilizado"); // Obtengo si esta o no contabilizado
+	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo si esta o no contabilizado
 	Vector datosDesglose= new Vector();
 	String iconos="";
 
@@ -146,7 +147,8 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
 				<html:hidden property ="modo"  styleId ="modo" value = ""/>
 				<html:hidden property="idAbono"  styleId="idAbono"  value="<%=idAbono%>"/> 				
-				<html:hidden property="idInstitucion"  styleId="idInstitucion"  value="<%=idInstitucion%>"/>	
+				<html:hidden property="idInstitucion"  styleId="idInstitucion"  value="<%=idInstitucion%>"/>
+				<html:hidden property="idFactura"  styleId="idFactura"  value="<%=idFactura%>"/>	
 			<!-- RGG: cambio a formularios ligeros -->
 		</html:form>
 
@@ -197,6 +199,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=idAbono%>">
 										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(FacLineaAbonoBean.C_NUMEROLINEA)%>">
+										<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=idFactura%>">
 										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_CANTIDAD))%>
 									</td>
 									<td>

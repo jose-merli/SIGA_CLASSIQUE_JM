@@ -26,7 +26,6 @@ public class FacAbonoBean extends MasterBean{
 	private String 	contabilizada;
 	private String idFactura;
 	private String numeroAbono;
-	private String impExcesivo;
 	private String observaciones;
 	
 	private Integer estado;
@@ -52,7 +51,6 @@ public class FacAbonoBean extends MasterBean{
 	static public final String C_CONTABILIZADA	= "CONTABILIZADA";
 	static public final String C_IDFACTURA		= "IDFACTURA";	
 	static public final String C_NUMEROABONO	= "NUMEROABONO";
-	static public final String C_IMPEXCESIVO	= "IMPEXCESIVO";
 	static public final String C_OBSERVACIONES	= "OBSERVACIONES";
 	static public final String C_IDPERSONADEUDOR= "IDPERSONADEUDOR";	
 	static public final String C_IDCUENTADEUDOR	= "IDCUENTADEUDOR";
@@ -78,7 +76,6 @@ public class FacAbonoBean extends MasterBean{
 	public void setIdFactura (String id) 	{ this.idFactura = id; }	
 	public void setContabilizada (String s) 	{ this.contabilizada = s; }
 	public void setNumeroAbono (String id) 	{ this.numeroAbono = id; }
-	public void setImpExcesivo (String id) 	{ this.impExcesivo = id; }
 	public void setObservaciones (String id) 	{ this.observaciones = id; }
 
 	public void setEstado (Integer id) 	{ this.estado = id; }
@@ -101,7 +98,6 @@ public class FacAbonoBean extends MasterBean{
 	public String getIdFactura () 	{ return this.idFactura; }	
 	public String getContabilizada () 	{ return this.contabilizada; }	
 	public String getNumeroAbono () 	{ return this.numeroAbono; }	
-	public String getImpExcesivo() 	{ return this.impExcesivo; }	
 	public String getObservaciones() 	{ return this.observaciones; }	
 
 	public Integer getEstado () 	{ return this.estado; }

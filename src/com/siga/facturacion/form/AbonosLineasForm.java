@@ -27,6 +27,7 @@ public class AbonosLineasForm extends MasterForm{
 	private String precio="";
 	private String iva="";
 	private String importeTotal="";
+	private String idFactura="";	
 	
 	
 				
@@ -126,4 +127,11 @@ public class AbonosLineasForm extends MasterForm{
 	public void setImporteTotal(String importeTotal) {
 		this.importeTotal = importeTotal;
 	}
+	public String getIdFactura() {
+		return idFactura;
+	}
+	public void setIdFactura(String idFactura) {
+		this.idFactura = idFactura;
+	}
+		
 }

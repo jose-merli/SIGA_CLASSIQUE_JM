@@ -25,6 +25,7 @@ public class AbonosPagosForm extends MasterForm{
 	private String pagoPendiente="";		
 	private String importe="";	
 	private String numeroCuenta="";
+	private String idFactura="";	
 	
 	private String idFacturaCompensadora="";
 	private String numFacturaCompensadora="";
@@ -130,5 +131,10 @@ public class AbonosPagosForm extends MasterForm{
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
 	}
-	
+	public String getIdFactura() {
+		return idFactura;
+	}
+	public void setIdFactura(String idFactura) {
+		this.idFactura = idFactura;
+	}	
 }

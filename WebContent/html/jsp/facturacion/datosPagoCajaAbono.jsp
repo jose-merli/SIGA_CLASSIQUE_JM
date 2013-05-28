@@ -37,7 +37,8 @@
 	// Datos del cliente a visualizar
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
-	String importePendiente=(String)request.getAttribute("PAGOPENDIENTE"); // Obtengo el importe pendiente	
+	String importePendiente=(String)request.getAttribute("PAGOPENDIENTE"); // Obtengo el importe pendiente
+	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el importe pendiente
 	
 	String campo = UtilidadesString.getMensajeIdioma(userBean.getLanguage(),"facturacion.abonosPagos.datosPagoAbono.importePago");
 	String[] campos = {campo};
@@ -149,6 +150,7 @@
 	<html:form action="/FAC_AbonosPagos.do" method="POST" target="submitArea">
 		<html:hidden property ="modo" value = "pagarCaja"/>
 		<html:hidden property="idAbono" value="<%=idAbono%>"/>
+		<html:hidden property="idFactura" value="<%=idFactura%>"/>
 		<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
 		<html:hidden property="pagoPendiente" value="<%=importePendiente%>"/>
 		<html:hidden property="numeroCuenta" value=""/>

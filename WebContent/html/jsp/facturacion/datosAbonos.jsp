@@ -36,6 +36,7 @@
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono provisional
 	String fechaA=(String)request.getAttribute("FECHA"); // Obtengo la fechaActual
 	String numeroAbono=(String)request.getAttribute("NUMEROABONO"); // Obtengo el numero del abono provisional
+	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
 
     // Botones a mostrar
 	String botones = "Y,C";
@@ -111,6 +112,7 @@
 								<html:hidden property = "idPersona" value = ""/>
 								<html:hidden property = "idPersonaFactura" value = ""/>
 								<html:hidden property = "idAbono" value ="<%=idAbono%>"/>
+								<html:hidden property = "idFactura" value ="<%=idFactura%>"/>
 								<tr>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>

@@ -46,7 +46,9 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	// Datos del cliente a visualizar
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
-	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
+	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
+	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
+	
 	Vector datosPagos= new Vector();
 	Hashtable datosTotales= new Hashtable();
 	
@@ -191,6 +193,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 				<html:hidden property="idAbono" value="<%=idAbono%>"/>
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
 				<html:hidden property="pagoPendiente" value="<%=pendiente%>"/>
+				<html:hidden property="idFactura" value="<%=idFactura%>"/>
 
 		</html:form>
 		
@@ -241,6 +244,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=idAbono%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value='<%=row.getString("IDENTIFICADOR")%>'>
+										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=idFactura%>">
 									 	<% fecha=GstDate.getFormatedDateShort("",row.getString("FECHA"));%>
 										<%=UtilidadesString.mostrarDatoJSP(fecha)%>
 									</td>
