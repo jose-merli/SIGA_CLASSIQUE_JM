@@ -2236,6 +2236,13 @@ tr.notFound{
 	background-color:transparent;
 	text-align:center;
 }
-table.fixedHeaderTable, table.fixedHeaderTable tr, table.fixedHeaderTable td, table.fixedHeaderTable th {
-	border: 0px;
+
+table.fixedHeaderTable thead th {
+	display: table-cell;
+	border-bottom: 2px groove;	
+}
+
+table.fixedHeaderTable tbody td {
+	display: table-cell;
+	border: 2px groove;
 }

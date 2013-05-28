@@ -227,11 +227,11 @@
 		if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
 			// cliente colegiado
 			if (esColegio) {
-				tamanosCol = "3,12,6,13,12,11,10,6,13,10";
+				tamanosCol = "3,12,7,13,12,11,10,7,13,10";
 				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,&nbsp;";
 				alto = "200";
 			} else {
-				tamanosCol = "3,12,6,12,11,11,8,8,6,9,10";
+				tamanosCol = "3,12,7,12,11,11,8,8,7,9,10";
 				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,&nbsp;";
 				alto = "200";
 			}

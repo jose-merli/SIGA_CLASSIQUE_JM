@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.43 2013-05-28 09:41:15 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.44 2013-05-28 12:29:52 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -1849,6 +1849,9 @@ if (jQuery){
         oTbl.css("border-collapse","collapse");
         var tblId = oTbl.attr("id");
         var oDiv = jQuery("<div id='"+tblId+"_tblFxHeadr'/>");
+        oDiv.css('white-space','break-word');
+        oTbl.css('white-space','break-word');
+        //oDiv.css('text-overflow','ellipsis');
         oTbl.wrap(oDiv);
         // for very large tables you can remove the four lines below
         // and wrap the table with <div> in the mark-up and assign
@@ -1857,7 +1860,7 @@ if (jQuery){
         oTblDiv.css('height', height);
         oTblDiv.css('overflow-y', 'auto');
         oTblDiv.css('overflow-x', 'hidden');
-        oTblDiv.css('white-space','nowrap');
+        oTblDiv.css('white-space','break-word');
         oTblDiv.css('text-overflow','ellipsis');
         oTblDiv.css('width','100%');
         oTbl.wrap(oTblDiv);
