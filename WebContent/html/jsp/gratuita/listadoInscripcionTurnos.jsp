@@ -51,7 +51,7 @@
 			<td align='center' width='19%'>
 				<siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado"/>
 			</td>
-			<td align='center' width='20%'>
+			<td align='center' width='19%'>
 				<siga:Idioma key="gratuita.listaTurnosLetrados.literal.turno"/>
 			</td>				
 			<td align='center' width='8%'>
@@ -69,7 +69,7 @@
 			<td align='center'  width='10%'>
 				<siga:Idioma key="gratuita.gestionInscripciones.estado"/>
 			</td>
-			<td align='center' width='7%'>
+			<td align='center' width='8%'>
 				&nbsp;
 			</td>
 		</tr>
@@ -117,7 +117,7 @@
 						<td align='center' width='19%'>
 							<c:out value="${inscripcionForm.colegiadoNombre}"></c:out>
 						</td>
-						<td align='center' width='20%'>
+						<td align='center' width='19%'>
 							<c:out value="${inscripcionTurno.turno.abreviatura}"></c:out>
 						</td>
 						<td align='center' width='8%'>
@@ -160,10 +160,10 @@
 			
 			<logic:empty name="InscripcionTGForm"	property="inscripcionesTurno">
 				<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+					<br><br>
+					<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
+					<br><br>
+					</div>
 			</logic:empty>
 		</table>
 	</div>

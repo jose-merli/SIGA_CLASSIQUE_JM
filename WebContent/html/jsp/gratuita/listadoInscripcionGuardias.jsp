@@ -42,15 +42,15 @@
 		<tr class = 'tableTitle'>
 			<td align='center' width='4%'><input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/></td>
 			<td align='center' width='8%'><siga:Idioma key="gratuita.listaTurnosLetrados.literal.numeroletrado"/></td>
-			<td align='center' width='13%'><siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado"/></td>
-			<td align='center' width='13%'><siga:Idioma key="gratuita.listaTurnosLetrados.literal.turno"/></td>
-			<td align='center' id="columnaGuardia" width='13%'><siga:Idioma key="gratuita.listarTurnos.literal.guardias"/></td>
+			<td align='center' width='14%'><siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado"/></td>
+			<td align='center' width='12%'><siga:Idioma key="gratuita.listaTurnosLetrados.literal.turno"/></td>
+			<td align='center' id="columnaGuardia" width='12%'><siga:Idioma key="gratuita.listarTurnos.literal.guardias"/></td>
 			<td align='center' width='8%'><siga:Idioma key="gratuita.gestionInscripciones.fecha.solicitud.alta"/></td>
 			<td align='center' width='8%'><siga:Idioma key="gratuita.gestionInscripciones.fecha.estado.alta"/></td>
 			<td align='center' width='8%'><siga:Idioma key="gratuita.gestionInscripciones.solicitud.baja"/></td>
 			<td align='center' width='8%'><siga:Idioma key="gratuita.gestionInscripciones.estado.baja"/></td>
 			<td align='center'  width='10%'><siga:Idioma key="gratuita.gestionInscripciones.estado"/></td>
-			<td align='center' width='7%'>&nbsp;</td>
+			<td align='center' width='8%'>&nbsp;</td>
 		</tr>
 	</table>
 	
@@ -117,9 +117,9 @@
 							</c:choose>
 						</td>
 						
-						<td align='center' width='13%'><c:out value="${inscripcionForm.colegiadoNombre}"></c:out></td>
-						<td align='center' width='13%'><c:out value="${inscripcionGuardia.turno.abreviatura}"></c:out> </td>
-						<td align='center' width='13%'><c:out value="${inscripcionGuardia.guardia.nombre}"></c:out></td>						
+						<td align='center' width='14%'><c:out value="${inscripcionForm.colegiadoNombre}"></c:out></td>
+						<td align='center' width='12%'><c:out value="${inscripcionGuardia.turno.abreviatura}"></c:out> </td>
+						<td align='center' width='12%'><c:out value="${inscripcionGuardia.guardia.nombre}"></c:out></td>						
 						<td align='center' width='8%'><c:out value="${inscripcionForm.fechaSolicitud}"></c:out></td>
 						
 						<td align='center' width='8%'>
@@ -175,5 +175,5 @@
 
 <script>
 	marcarDesmarcarTodos(document.getElementById("chkGeneral"));
-	//calcularAltura();
+	calcularAltura();
 </script>
