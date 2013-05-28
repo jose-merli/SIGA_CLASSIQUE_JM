@@ -163,7 +163,7 @@ if(beanTablaMaestra.getNumeroTextoPlantillas()!=null ){
 		   		  border="1"
 		   		  columnNames="<%=nombrecols%>"
 		   		  columnSizes="<%=ncols%>"
-		   		  modal="P">
+		   		  modal="<%=tamanio %>">
 
 <%				
 				if (resultado==null || resultado.size()==0) { %>	
