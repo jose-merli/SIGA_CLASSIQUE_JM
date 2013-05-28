@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.45 2013-05-28 15:29:45 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.46 2013-05-28 15:42:21 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -2103,7 +2103,7 @@ if (jQuery){
 	            	jQuery('#'+tableId+'_BodyDiv').height(parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y));
 	            }
     		}
-    		fixCellBorders(oTable);
+    		//fixCellBorders(oTable);
     	}
     }
 }

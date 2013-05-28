@@ -2239,7 +2239,7 @@ tr.notFound{
 
 table.fixedHeaderTable thead th {
 	display: table-cell;
-	border: 2px groove;	
+	border-bottom: 2px groove;	
 }
 
 table.fixedHeaderTable tbody td {
