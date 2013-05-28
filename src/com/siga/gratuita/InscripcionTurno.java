@@ -15,6 +15,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.MasterBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -419,7 +420,9 @@ public class InscripcionTurno {
 				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
 			
 			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
-					ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
+				ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			// Preparamos la hash
 			Hashtable htInscTurno = new Hashtable();
@@ -561,12 +564,14 @@ public class InscripcionTurno {
 		try {
 			// Preparamos los datos para la inscripcion de turno
 			String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
-					ScsInscripcionTurnoBean.C_IDPERSONA, 
-					ScsInscripcionTurnoBean.C_IDTURNO,
-					ScsInscripcionTurnoBean.C_FECHASOLICITUD};
+				ScsInscripcionTurnoBean.C_IDPERSONA, 
+				ScsInscripcionTurnoBean.C_IDTURNO,
+				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
 			
 			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHAVALIDACION,
-					ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION};
+				ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			Hashtable htInscTurno = new Hashtable();
 			htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
@@ -600,13 +605,15 @@ public class InscripcionTurno {
 				
 				// Preparamos los datos para la inscripcion de guardia
 				String[] clavesGuardia = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA, 
-						ScsInscripcionGuardiaBean.C_IDTURNO,
-						ScsInscripcionGuardiaBean.C_IDGUARDIA,
-						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+					ScsInscripcionGuardiaBean.C_IDPERSONA, 
+					ScsInscripcionGuardiaBean.C_IDTURNO,
+					ScsInscripcionGuardiaBean.C_IDGUARDIA,
+					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 				String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-						ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
+					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
+					MasterBean.C_USUMODIFICACION,
+					MasterBean.C_FECHAMODIFICACION};
 				
 				Hashtable htInscGuardia = new Hashtable();
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, this.bean.getIdInstitucion());
@@ -838,10 +845,16 @@ public class InscripcionTurno {
 			Long idPersona = this.bean.getIdPersona();
 			
 			//denegando baja turno
-			String[] claves = new String[]{ScsInscripcionTurnoBean.C_IDINSTITUCION,
-					ScsInscripcionTurnoBean.C_IDPERSONA, 
-					ScsInscripcionTurnoBean.C_IDTURNO, 
-					ScsInscripcionTurnoBean.C_FECHASOLICITUD};
+			String[] claves = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
+				ScsInscripcionTurnoBean.C_IDPERSONA, 
+				ScsInscripcionTurnoBean.C_IDTURNO, 
+				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
+			
+			String[] campos = {
+				ScsInscripcionTurnoBean.C_FECHADENEGACION, 
+				ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};			
 							
 			Hashtable<String, Object> inscripcionHash = new Hashtable<String, Object>();
 			UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
@@ -863,8 +876,6 @@ public class InscripcionTurno {
 					UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION, "");
 				}	
 			}			
-	
-			String[] campos = {ScsInscripcionTurnoBean.C_FECHADENEGACION, ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION};
 			
 			ScsInscripcionTurnoAdm insturno = new ScsInscripcionTurnoAdm(usr);
 			insturno.updateDirect(inscripcionHash,claves,campos);
@@ -1029,12 +1040,14 @@ public class InscripcionTurno {
 		try {
 			// Preparamos los datos para la inscripcion de turno
 			String[] clavesTurno = {ScsInscripcionTurnoBean.C_IDINSTITUCION,
-					ScsInscripcionTurnoBean.C_IDPERSONA, 
-					ScsInscripcionTurnoBean.C_IDTURNO,
-					ScsInscripcionTurnoBean.C_FECHASOLICITUD};
+				ScsInscripcionTurnoBean.C_IDPERSONA, 
+				ScsInscripcionTurnoBean.C_IDTURNO,
+				ScsInscripcionTurnoBean.C_FECHASOLICITUD};
 			
 			String[] camposTurno = {ScsInscripcionTurnoBean.C_FECHABAJA,
-					ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA};
+				ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			Hashtable htInscTurno = new Hashtable();
 			htInscTurno.put(ScsInscripcionTurnoBean.C_IDPERSONA, this.bean.getIdPersona());  
@@ -1068,13 +1081,15 @@ public class InscripcionTurno {
 				
 				// Preparamos los datos para la inscripcion de guardia
 				String[] clavesGuardia = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA, 
-						ScsInscripcionGuardiaBean.C_IDTURNO,
-						ScsInscripcionGuardiaBean.C_IDGUARDIA,
-						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+					ScsInscripcionGuardiaBean.C_IDPERSONA, 
+					ScsInscripcionGuardiaBean.C_IDTURNO,
+					ScsInscripcionGuardiaBean.C_IDGUARDIA,
+					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 				String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHABAJA,
-						ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};
+					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,
+					MasterBean.C_USUMODIFICACION,
+					MasterBean.C_FECHAMODIFICACION};
 				
 				Hashtable htInscGuardia = new Hashtable();
 				htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, this.bean.getIdInstitucion());

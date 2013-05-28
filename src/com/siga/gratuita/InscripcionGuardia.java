@@ -11,6 +11,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.MasterBean;
 import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
@@ -409,21 +410,23 @@ public class InscripcionGuardia {
 		
 			String[] claves = null;
 			if(idGuardia!=null){
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 			}
 	
 			String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
@@ -466,21 +469,23 @@ public class InscripcionGuardia {
 			String[] clavesGuardia = null;
 			
 			if(idGuardia!=null){
-				clavesGuardia = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
+				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				clavesGuardia = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
+				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};		
 			}
 			
 			String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};		
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};		
 			
 			Hashtable htInscGuardia = new Hashtable();
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
@@ -526,21 +531,23 @@ public class InscripcionGuardia {
 			String[] clavesGuardia = null;
 			
 			if(idGuardia!=null){
-				clavesGuardia = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
+				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				clavesGuardia = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
+				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};		
 			}	
 			
 			String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHABAJA,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};				
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};				
 			
 			Hashtable htInscGuardia = new Hashtable();
 			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
@@ -635,18 +642,23 @@ public class InscripcionGuardia {
 			
 			String[] claves = null;
 			if(idGuardia!=null){
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};	
 				
 			} else {
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};			
 			}
+			
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};			
 			
 			ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(usr);		
 			Vector<ScsInscripcionGuardiaBean> v = inscripcionAdm.select(laHash);
@@ -674,9 +686,6 @@ public class InscripcionGuardia {
 				this.bean.setObservacionesDenegacion(null);
 				denegarBajaGuardia(usr);
 			}
-			
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
@@ -723,21 +732,23 @@ public class InscripcionGuardia {
 			
 			String[] claves = null;
 			if(idGuardia!=null){
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
 					ScsInscripcionGuardiaBean.C_IDPERSONA, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 			}
 	
 			String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,
-				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION};
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
@@ -796,20 +807,23 @@ public class InscripcionGuardia {
 			
 			String[] claves = null;
 			if(idGuardia!=null){
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA, 
-						ScsInscripcionGuardiaBean.C_IDTURNO, 
-						ScsInscripcionGuardiaBean.C_IDGUARDIA,
-						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+					ScsInscripcionGuardiaBean.C_IDPERSONA, 
+					ScsInscripcionGuardiaBean.C_IDTURNO, 
+					ScsInscripcionGuardiaBean.C_IDGUARDIA,
+					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+				
 			}else{
-				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA, 
-						ScsInscripcionGuardiaBean.C_IDTURNO, 
-						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+					ScsInscripcionGuardiaBean.C_IDPERSONA, 
+					ScsInscripcionGuardiaBean.C_IDTURNO, 
+					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 			}
 	
 			String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION};
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
@@ -910,7 +924,9 @@ public class InscripcionGuardia {
 			}
 	
 			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,
+				MasterBean.C_USUMODIFICACION,
+				MasterBean.C_FECHAMODIFICACION};
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
