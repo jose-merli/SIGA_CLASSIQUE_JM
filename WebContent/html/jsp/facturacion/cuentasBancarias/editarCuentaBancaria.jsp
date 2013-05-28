@@ -218,7 +218,7 @@
 
 						<div>
 							<table id='tabCuentasBancarias' border='1' width='100%'
-								cellspacing='0' cellpadding='0'>
+								cellspacing='0' cellpadding='0' style= "table-layout: fixed;" >
 								<tr class='tableTitle'>
 									<td align='center' width='50%'>Serie</td>
 									<td align='center' width='50%'>Descripción</td>
@@ -228,7 +228,7 @@
 						<div id="divListadoSeriesFacturacion"
 							style='position: absolute; width: 100%; overflow-y: auto;'>
 						<table class="tablaCampos" id='seriesFacturacion' border='1'
-							align='center' width='100%' cellspacing='0' cellpadding='0'>
+							align='center' width='100%' cellspacing='0' cellpadding='0' style= "table-layout: fixed;">
 
 							<c:choose>
 								<c:when test="${empty seriesFacturacion}">
@@ -253,7 +253,7 @@
 										</c:choose>
 										<td align='left'><c:out
 												value="${serieFacturacion.nombreabreviado}" /></td>
-										<td align='left'><c:out
+										<td align='left' style="white-space: pre-line;"><c:out
 												value="${serieFacturacion.descripcion}" /></td>
 										</tr>
 									</c:forEach>
