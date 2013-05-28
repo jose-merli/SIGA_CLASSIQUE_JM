@@ -73,7 +73,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					if(modo!=null)
 						accion = modo;
 					
-					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					if (accion == null || accion.equals("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
 						getAjaxGuardias (mapping, miForm, request, response);
@@ -817,8 +817,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return ClsConstants.ERROR_AVISO;					
 			}
 						
-			if ((miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")) && 
-					miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
+			if (miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
 				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 					usr, 
@@ -983,7 +982,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return ClsConstants.ERROR_AVISO;	
 			}
 			
-			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 				  usr, 
@@ -1301,7 +1300,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				idGuardia = new Integer(miForm.getIdGuardia());			
 			}
 			
-			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")){
+			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 						usr, 
 						Long.valueOf(miForm.getIdPersona()), 
@@ -1423,7 +1422,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
 				idGuardia = new Integer(miForm.getIdGuardia());
 
-			if(miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")){				
+			if (miForm.getFechaBaja() != null && !miForm.getFechaBaja().equals("")) {				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 					  usr, 
 					  Long.valueOf(miForm.getIdPersona()), 
@@ -1438,7 +1437,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setEstadoPendientes(estadoPendientes);
 			}
 			
-			if(miForm.getEstadoPendientes()!=null&&!miForm.getEstadoPendientes().equals("")){
+			if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
 					miForm.setModo("vbgValidar");
 					forward = ClsConstants.SMS_AVISO_ESTADO;
 					return forward;
@@ -1552,9 +1551,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + Observaciones Solicitud + FechaValidacion + ObservacionesValidacion
 			InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);
 			
-			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("") &&
-				(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals(""))) {
-				
+			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")) {				
 				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")) {
 					inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
 				}
@@ -1622,8 +1619,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);			
 				
-			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("") &&
-				(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals(""))) {
+			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")) {
 				
 				inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
 				
@@ -3257,8 +3253,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);					
 						
-					if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("") &&
-						(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals(""))) {
+					if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")) {
 						
 						inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());					
 						
@@ -3365,8 +3360,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					return ClsConstants.ERROR_AVISO;					
 				}
 				
-				if ((miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")) && 
-					miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
+				if (miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")){
 				
 					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 						usr, 
@@ -4104,7 +4098,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				}	
 			}
 			
-			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 				  usr, 
@@ -4159,7 +4153,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return ClsConstants.ERROR_AVISO;	
 			}	
 			
-			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 				
 				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 				  usr, 
@@ -4658,7 +4652,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					return ClsConstants.ERROR_AVISO;	
 				}	
 				
-				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 					
 					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 					  usr, 
@@ -4873,7 +4867,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}	
 				}
 				
-				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equalsIgnoreCase("")) {								
+				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 					
 					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
 					  usr, 
