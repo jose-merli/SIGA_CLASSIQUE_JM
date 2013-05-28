@@ -2726,6 +2726,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			String sHayEstadosPendientes = "";
 			
 			String sFechaBaja = miForm.getFechaBaja(); // Guardo la fecha de baja inicial
 			
@@ -2774,11 +2775,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					null,
 					miForm.getFechaBaja(),
 					false,
-					this.tipoActualizacionBaja); 
+					this.tipoActualizacionBaja); 								
 				
-				miForm.setEstadoPendientes(estadoPendientes);
-				
-				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+				if(estadoPendientes!=null && !estadoPendientes.equals("")){
+					sHayEstadosPendientes = estadoPendientes;
 					hayEstadosPendientes = true;
 				}	
 			}
@@ -2786,6 +2786,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.setFechaBaja(sFechaBaja); // Copio la fecha de baja inicial, ya que se puede momdificar en preBajaTurno
 			
 			if(hayEstadosPendientes){
+				miForm.setEstadoPendientes(sHayEstadosPendientes);
 				miForm.setModo("smbtInsertar");
 				return ClsConstants.SMS_AVISO_ESTADO;
 				
@@ -3312,6 +3313,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			String sHayEstadosPendientes = "";
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3377,15 +3379,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						false,
 						this.tipoActualizacionBaja); 
 					
-					miForm.setEstadoPendientes(estadoPendientes);
-				}
-				
-				if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-					hayEstadosPendientes = true;
+					if(estadoPendientes!=null && !estadoPendientes.equals("")){
+						sHayEstadosPendientes = estadoPendientes;
+						hayEstadosPendientes = true;
+					}					
 				}
 			}
 			
 			if(hayEstadosPendientes){
+				miForm.setEstadoPendientes(sHayEstadosPendientes);
 				miForm.setModo("vmbtValidar");
 				return ClsConstants.SMS_AVISO_ESTADO;
 				
@@ -3523,6 +3525,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			String sHayEstadosPendientes = "";
 
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -3590,15 +3593,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						true,
 						this.tipoActualizacionBaja);
 					
-					miForm.setEstadoPendientes(estadoPendientes);
-					
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+					if(estadoPendientes!=null && !estadoPendientes.equals("")){
+						sHayEstadosPendientes = estadoPendientes;
 						hayEstadosPendientes = true;
-					}
+					}	
 				}
 			}
 			
 			if(hayEstadosPendientes){
+				miForm.setEstadoPendientes(sHayEstadosPendientes);
 				miForm.setModo("vmbgValidar");
 				return ClsConstants.SMS_AVISO_ESTADO;
 				
@@ -4607,6 +4610,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			String sHayEstadosPendientes = "";
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -4667,15 +4671,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					  false,
 					  this.tipoActualizacionBaja); 
 					
-					miForm.setEstadoPendientes(estadoPendientes);			
-					
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+					if(estadoPendientes!=null && !estadoPendientes.equals("")){
+						sHayEstadosPendientes = estadoPendientes;
 						hayEstadosPendientes = true;
 					}								
 				}
 			}
 				
 			if(hayEstadosPendientes){
+				miForm.setEstadoPendientes(sHayEstadosPendientes);
 				miForm.setModo("amfbtModificar");
 				return ClsConstants.SMS_AVISO_ESTADO;
 				
@@ -4784,6 +4788,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		String sHayEstadosPendientes = "";
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -4883,13 +4888,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					miForm.setEstadoPendientes(estadoPendientes);				
 					
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+					if(estadoPendientes!=null && !estadoPendientes.equals("")){
+						sHayEstadosPendientes = estadoPendientes;
 						hayEstadosPendientes = true;
-					}
+					}	
 				}				
 			}
 			
 			if(hayEstadosPendientes){
+				miForm.setEstadoPendientes(sHayEstadosPendientes);
 				miForm.setModo("amfbgModificar");
 				return ClsConstants.SMS_AVISO_ESTADO;
 				
