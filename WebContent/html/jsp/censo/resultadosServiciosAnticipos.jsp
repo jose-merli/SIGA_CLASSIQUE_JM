@@ -115,11 +115,13 @@
 		<siga:Table 
 		   name="tablaDatos"
 		   border="1"
-		   clase="tableTitle"
+		    
+		   fixedHeight="243"	  
 		   columnNames="<%=nombresCol %>"
 		   columnSizes="<%=tamanosCol %>"
 		   modal="M"
-		   scrollModal = "true">
+		   modalScroll = "true"
+		  >
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -148,7 +150,7 @@
 			<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
 				 que la lista contiene realmente 3 columnas: Las de datos mas 
 				 la de botones de acción sobre los registos  -->
-
+			
 		   <tr class="listaNonEdit">
 				<td>
 
