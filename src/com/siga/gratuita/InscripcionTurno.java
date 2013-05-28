@@ -385,7 +385,9 @@ public class InscripcionTurno {
 					miHash.put("IDPERSONA", idPersona);
 					miHash.put("IDRETENCION", idRetencion);
 					miHash.put("DESCRIPCION", ".");
-					miHash.put("FECHAINICIO", GstDate.getApplicationFormatDate(usr.getLanguage(),"01/01/2005"));
+					
+					miHash.put("FECHAINICIO", "sysdate");
+					// Antes estaba esta linea de codigo con una fecha fija: miHash.put("FECHAINICIO", GstDate.getApplicationFormatDate(usr.getLanguage(),"01/01/2005"));
 					
 				ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(usr);
 				result = scsRetencionesIRPFAdm.insert(miHash);
@@ -509,7 +511,7 @@ public class InscripcionTurno {
 								ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean) vGuardiasTurno.get(ig);
 								
 								// Comparo si es la misma que la guardia del turno
-								if (beanInscripcionGuardia.getIdGuardia() == beanGuardia.getIdGuardia()) {
+								if (beanInscripcionGuardia.getIdGuardia().equals(beanGuardia.getIdGuardia())) {
 									bTieneInscripcionGuardia = true;
 								}
 							}
