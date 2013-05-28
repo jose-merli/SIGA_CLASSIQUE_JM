@@ -162,7 +162,8 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setIntervencionMedicoForense(b.getIntervencionMedicoForense());
 				miform.setJudicial(b.getJudicial());
 				miform.setLetradoDesignadoContiActuJudi(b.getLetradoDesignadoContiActuJudi());
-				miform.setMalosTratos(b.getMalosTratos());
+				miform.setViolenciaDomestica(b.getViolenciaDomestica());
+				miform.setViolenciaGenero(b.getViolenciaGenero());
 				miform.setMedidasProvisionales(b.getMedidasProvisionales());
 				miform.setNig(b.getNig());
 				miform.setNumero(b.getNumero().toString());
@@ -215,7 +216,8 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setIntervencionMedicoForense("");
 				miform.setJudicial("");
 				miform.setLetradoDesignadoContiActuJudi("");
-				miform.setMalosTratos("");
+				miform.setViolenciaDomestica("");
+				miform.setViolenciaGenero("");
 				miform.setMedidasProvisionales("");
 				miform.setNig("");
 				miform.setNumero(numeroAsistencia);
@@ -374,7 +376,8 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setIntervencionMedicoForense(miform.getIntervencionMedicoForense());
 			b.setJudicial(miform.getJudicial());
 			b.setLetradoDesignadoContiActuJudi(miform.getLetradoDesignadoContiActuJudi());
-			b.setMalosTratos(miform.getMalosTratos());
+			b.setViolenciaDomestica(miform.getViolenciaDomestica());
+			b.setViolenciaGenero(miform.getViolenciaGenero());
 			b.setMedidasProvisionales(miform.getMedidasProvisionales());
 			b.setNig(miform.getNig());
 			b.setNumero(new Double (miform.getNumero()));

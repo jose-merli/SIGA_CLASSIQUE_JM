@@ -53,7 +53,8 @@ String		numero="";
 String		idInstitucionJuzgado="";		
 String		idOrigenContacto="";
 String		otroDescripcionOrigenContacto="";
-String		malosTratos="";
+String		violenciaGenero="";
+String		violenciaDomestica="";
 String		contraLibertadSexual="";
 String		judicial="";
 String		civil="";
@@ -104,7 +105,8 @@ if(miform!=null)
 		 conectadoLetradoSel.add(0,idOrigenContacto);
 	 
 	 otroDescripcionOrigenContacto = miform.getOtroDescripcionOrigenContacto();
-	 malosTratos = miform.getMalosTratos();
+	 violenciaDomestica = miform.getViolenciaDomestica();
+	 violenciaGenero = miform.getViolenciaGenero();
 	 contraLibertadSexual = miform.getContraLibertadSexual();
 	 judicial = miform.getJudicial();
 	 civil = miform.getCivil();
@@ -287,15 +289,27 @@ function buscarColegiado()
 	}
 }
 
-function fMalosTratos(o) 
+function fViolenciaGenero(o) 
 {
 	if (o.checked)
 	{		
-		document.CaracteristicasForm.malosTratos.value = "1";
+		document.CaracteristicasForm.violenciaGenero.value = "1";
 	}	 
 	else
 	{			 	
-		document.CaracteristicasForm.malosTratos.value = "0";
+		document.CaracteristicasForm.violenciaGenero.value = "0";
+	}	
+}
+
+function fViolenciaDomestica(o) 
+{
+	if (o.checked)
+	{		
+		document.CaracteristicasForm.violenciaDomestica.value = "1";
+	}	 
+	else
+	{			 	
+		document.CaracteristicasForm.violenciaDomestica.value = "0";
 	}	
 }
 
@@ -556,7 +570,8 @@ function bloquearDesbloquear(o)
 <html:form action="/JGR_CaracteristicasAsistenciaLetrado" method="POST" target="mainWorkArea">
 
 <!-- VARIABLES HIDDEN -->
-<input type="hidden" name="malosTratos" value="<%=malosTratos%>">
+<input type="hidden" name="violenciaDomestica" value="<%=violenciaDomestica%>">
+<input type="hidden" name="violenciaGenero" value="<%=violenciaGenero%>">
 <input type="hidden" name="contraLibertadSexual" value="<%=contraLibertadSexual%>">
 <input type="hidden" name="judicial" value="<%=judicial%>">
 <input type="hidden" name="asesoramiento" value="<%=asesoramiento%>">
@@ -603,8 +618,11 @@ function bloquearDesbloquear(o)
 		<td colspan ="4" class="labelText">
 			<siga:Idioma key="gratuita.caracteristicas.literal.temasActuaciones"/>:&nbsp;
 			
-			<input type="checkbox" name="cMalosTratos" onclick="fMalosTratos(this);" <%=(malosTratos.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>															
-			<siga:Idioma key="gratuita.caracteristicas.literal.malosTratos"/>&nbsp;
+			<input type="checkbox" name="cViolenciaDomestica" onclick="fViolenciaDomestica(this);" <%=(violenciaDomestica.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>															
+			<siga:Idioma key="gratuita.caracteristicas.literal.violenciadomestica"/>&nbsp;
+			
+			<input type="checkbox" name="cViolenciaGenero" onclick="fViolenciaGenero(this);" <%=(violenciaGenero.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>															
+			<siga:Idioma key="gratuita.caracteristicas.literal.violenciagenero"/>&nbsp;			
 			
 			<input type="checkbox" name="cContraLibertadSexual" onclick="fContraLibertadSexual(this);" <%=(contraLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;

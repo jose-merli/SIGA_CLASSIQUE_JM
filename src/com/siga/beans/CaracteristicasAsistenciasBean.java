@@ -14,7 +14,6 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private Integer		idOrigenContacto;
 	private	String		descripcionContacto;
 	private String		otroDescripcionOrigenContacto;
-	private	String		malosTratos;
 	private String		contraLibertadSexual;
 	private String		judicial;
 	private String		civil;
@@ -43,6 +42,8 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private	String		nig;
 	private Integer		idPretension;
 	private	String		descripcionPretension;
+	private	String		violenciaGenero;
+	private	String		violenciaDomestica;
 	
 	
 	static public final String T_NOMBRETABLA = "SCS_CARACTASISTENCIA";
@@ -57,7 +58,6 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_IDINSTITUCION = 						"IDINSTITUCION";
 	static public final String 	C_IDINSTITUCION_JUZGADO = 				"IDINSTITUCION_JUZGADO";
 	static public final String 	C_OTRODESCRIPCIONORIGENCONTACTO =		"OTRODESCRIPCIONORIGENCONTACTO";
-	static public final String 	C_MALOSTRATOS =							"MALOSTRATOS";
 	static public final String 	C_CONTRALIBERTADSEXUAL =				"CONTRALIBERTADSEXUAL";
 	static public final String 	C_JUDICIAL =							"JUDICIAL";
 	static public final String 	C_CIVIL =								"CIVIL";
@@ -86,6 +86,8 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_IDPRETENSION =						"IDPRETENSION";
 	static public final String 	C_DESCRIPCIONPRETENSION =			 	"DESCRIPCIONPRETENSION";
 	static public final String 	C_NIG =									"NIG";
+	static public final String 	C_VIOLENCIAGENERO =						"VIOLENCIAGENERO";
+	static public final String 	C_VIOLENCIADOMESTICA =					"VIOLENCIADOMESTICA";
 	
 	
 	public Integer getIdInstitucion() {
@@ -124,12 +126,6 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setOtroDescripcionOrigenContacto(
 			String otroDescripcionOrigenContacto) {
 		this.otroDescripcionOrigenContacto = otroDescripcionOrigenContacto;
-	}
-	public String getMalosTratos() {
-		return malosTratos;
-	}
-	public void setMalosTratos(String malosTratos) {
-		this.malosTratos = malosTratos;
 	}
 	public String getContraLibertadSexual() {
 		return contraLibertadSexual;
@@ -306,5 +302,18 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setDescripcionPretension(String descripcionPretension) {
 		this.descripcionPretension = descripcionPretension;
 	}
+	public String getViolenciaGenero() {
+		return violenciaGenero;
+	}
+	public void setViolenciaGenero(String violenciaGenero) {
+		this.violenciaGenero = violenciaGenero;
+	}
+	public String getViolenciaDomestica() {
+		return violenciaDomestica;
+	}
+	public void setViolenciaDomestica(String violenciaDomestica) {
+		this.violenciaDomestica = violenciaDomestica;
+	}
+
 }
 

@@ -22,7 +22,8 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 				CaracteristicasAsistenciasBean.C_DESCRIPCIONCONTACTO,CaracteristicasAsistenciasBean.C_DESCRIPCIONJUZGADO,
 				CaracteristicasAsistenciasBean.C_OTRODESCRIPCIONORIGENCONTACTO, CaracteristicasAsistenciasBean.C_USUMODIFICACION,
 				CaracteristicasAsistenciasBean.C_JUDICIAL,CaracteristicasAsistenciasBean.C_DESCRIPCIONPRETENSION,
-				CaracteristicasAsistenciasBean.C_MALOSTRATOS,CaracteristicasAsistenciasBean.C_CONTRALIBERTADSEXUAL,
+				CaracteristicasAsistenciasBean.C_VIOLENCIADOMESTICA,CaracteristicasAsistenciasBean.C_VIOLENCIAGENERO,
+				CaracteristicasAsistenciasBean.C_CONTRALIBERTADSEXUAL,
 				CaracteristicasAsistenciasBean.C_CIVIL,CaracteristicasAsistenciasBean.C_PENAL,
 				CaracteristicasAsistenciasBean.C_INTERPOSICIONDENUNCIA,CaracteristicasAsistenciasBean.C_SOLICITUDMEDIDASCAUTELARES,
 				CaracteristicasAsistenciasBean.C_ASISTENCIADECLARACION,CaracteristicasAsistenciasBean.C_MEDIDASPROVISIONALES,
@@ -79,7 +80,8 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			bean.setIntervencionMedicoForense(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_INTERVENCIONMEDICOFORENSE));
 			bean.setJudicial(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_JUDICIAL));
 			bean.setLetradoDesignadoContiActuJudi(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_LETRADODESIGNADOCONTIACTUJUDI));
-			bean.setMalosTratos(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_MALOSTRATOS));
+			bean.setViolenciaDomestica(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIADOMESTICA));
+			bean.setViolenciaGenero(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAGENERO));
 			bean.setMedidasProvisionales(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_MEDIDASPROVISIONALES));
 			bean.setNig(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_NIG));
 			bean.setNumero(UtilidadesHash.getDouble(hash, CaracteristicasAsistenciasBean.C_NUMERO));
@@ -133,7 +135,8 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_INTERPOSICIONMINISTFISCAL, b.getInterposicionMinistFiscal());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_INTERVENCIONMEDICOFORENSE, b.getIntervencionMedicoForense());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_LETRADODESIGNADOCONTIACTUJUDI, b.getLetradoDesignadoContiActuJudi());
-			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_MALOSTRATOS, b.getMalosTratos());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIADOMESTICA,b.getViolenciaDomestica());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAGENERO,b.getViolenciaGenero());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_MEDIDASPROVISIONALES, b.getMedidasProvisionales());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_NIG, b.getNig());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_NUMERO, b.getNumero());

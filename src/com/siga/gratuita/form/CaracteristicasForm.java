@@ -18,7 +18,6 @@ public class CaracteristicasForm extends MasterForm
 	private String		idOrigenContacto;
 	private	String		descripcionContacto;
 	private String		otroDescripcionOrigenContacto;
-	private	String		malosTratos;
 	private String		contraLibertadSexual;
 	private String		judicial;
 	private String		civil;
@@ -49,6 +48,8 @@ public class CaracteristicasForm extends MasterForm
 	private	String		descripcionPretension;
 	private String		colegiado;
 	private String 		nombrePersona;
+	private String 		violenciaGenero;
+	private String 		violenciaDomestica;
 	
 	private String colegiadoNumero;
 	private String colegiadoNombre;
@@ -139,12 +140,6 @@ public class CaracteristicasForm extends MasterForm
 	public void setOtroDescripcionOrigenContacto(
 			String otroDescripcionOrigenContacto) {
 		this.otroDescripcionOrigenContacto = otroDescripcionOrigenContacto;
-	}
-	public String getMalosTratos() {
-		return malosTratos;
-	}
-	public void setMalosTratos(String malosTratos) {
-		this.malosTratos = malosTratos;
 	}
 	public String getContraLibertadSexual() {
 		return contraLibertadSexual;
@@ -329,6 +324,17 @@ public class CaracteristicasForm extends MasterForm
 	public void setDescripcionPretension(String descripcionPretension) {
 		this.descripcionPretension = descripcionPretension;
 	}
-	
+	public String getViolenciaGenero() {
+		return violenciaGenero;
+	}
+	public void setViolenciaGenero(String violenciaGenero) {
+		this.violenciaGenero = violenciaGenero;
+	}
+	public String getViolenciaDomestica() {
+		return violenciaDomestica;
+	}
+	public void setViolenciaDomestica(String violenciaDomestica) {
+		this.violenciaDomestica = violenciaDomestica;
+	}
 	
 }
