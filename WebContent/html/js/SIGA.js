@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.44 2013-05-28 12:29:52 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.45 2013-05-28 15:29:45 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -118,6 +118,17 @@ jQuery(document).ready(function(){
 });
 
 //*** END JQUERY PLUGINS *** //
+
+var ie = (function(){
+    var undef, v = 3, div = document.createElement('div');
+
+    while (
+        div.innerHTML = '<!--[if gt IE '+(++v)+']><i></i><![endif]-->',
+        div.getElementsByTagName('i')[0]
+    );
+
+    return v> 4 ? v : undef;
+}());
 
 /*  METODO OBLIGATORIO EN EVENTO onLoad DE TODAS LAS PÁGINAS
 	Inicia estilos para todas las páginas que importen este fichero
@@ -1902,17 +1913,41 @@ if (jQuery){
         });
         
     }
-	function setBodyTdsWidthLikeHeaderTds (table){
-		jQuery.each( table.find("thead th"), function(columnIndex, value){
-			console.log("columnIndex: " + columnIndex + " set width from "+table.find("tbody td:eq("+columnIndex+")").width() +" to "+jQuery(value).width());
-			table.find("tbody td:eq("+columnIndex+")").width(jQuery(value).width());
-		});		
+	function fixCellBorders (table){
+		var tableId = table.attr("id");
+		if (jQuery("#"+tableId+"_tblFxHeadr").find("tr.notFound").length <= 0){
+			jQuery.each( jQuery("#"+tableId+"_tblFxHeadr").find("th"), function(columnIndex, value){
+				var headerCell = jQuery(value);
+				var dataColumn = jQuery("#"+tableId+"_tblFxHeadr").find("td:eq("+columnIndex+")");
+				/*
+				if (ie === undefined){
+					dataColumn.width(headerCell.width());
+				} else {
+					dataColumn.width(headerCell.outerWidth(true));
+				}
+				*/
+				if (ie === undefined){
+					//headerCell.width(dataColumn.width());
+				} else {
+					headerCell.width(dataColumn.outerWidth(true));
+				}
+				//dataColumn.css("width", headerCell.css("width"));
+				/*
+				var headerColumnOuterWidth = jQuery(value).outerWidth();
+				var dataColumn = jQuery("#"+tableId+"_tblFxHeadr").find("td:eq("+columnIndex+")");
+				var dataColumnMPB = dataColumn.outerWidth() - dataColumn.width();
+				dataColumn.width(headerColumnOuterWidth - dataColumnMPB);
+				console.log("fixCellBorders >> SETEO A " + (headerColumnOuterWidth - dataColumnMPB));
+				console.log("fixCellBorders >> DESPUES: " + jQuery(value).outerWidth() + " === " + dataColumn.outerWidth());
+				*/
+				//jQuery("#"+tableId+"_tblFxHeadr").find("td:eq("+columnIndex+")").width(width);
+			});
+		}
 	}
 	//BNS: Scroll de tablas
 	function loadFixedHeaderTables (tableId, fixedHeight) {
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
-    	if (oTable.length > 0){
-    		//setBodyTdsWidthLikeHeaderTds(oTable);
+    	if (oTable.length > 0){  		
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			scrolify(oTable, fixedHeight);
     		} else {
@@ -2067,7 +2102,8 @@ if (jQuery){
 	            	//alert("reajusto a " + (parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y)));
 	            	jQuery('#'+tableId+'_BodyDiv').height(parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y));
 	            }
-    		}    		
+    		}
+    		fixCellBorders(oTable);
     	}
     }
 }

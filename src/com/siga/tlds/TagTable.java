@@ -60,7 +60,7 @@ public class TagTable extends TagSupport {
 			}
 			//out.println("<div id='"+this.name+"_div' style='width: "+this.width+"; heigh=100%'>");
 			//out.println("<table id='"+this.name+"' name='"+this.name+"' border='" + this.border + "' width='"+this.width+"' class='fixedHeaderTable dataScroll' style='table-layout: fixed;'>");
-			out.println("<table id='"+this.name+"' name='"+this.name+"' width='"+this.width+"' class='fixedHeaderTable dataScroll' style='table-layout: fixed;'>");
+			out.println("<table id='"+this.name+"' name='"+this.name+"' width='"+this.width+"' class='fixedHeaderTable dataScroll' style='table-layout: fixed; border-spacing: 0px;'>");
 			
 			if (this.columnNames != null || this.columnNum > 0){
 				if (this.columnNum <= 0){

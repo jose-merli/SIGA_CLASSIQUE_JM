@@ -435,7 +435,7 @@
 	<siga:FilaConIconos fila="<%=cont %>" botones="<%=permisos %>"
 		modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no"
 		clase="listaNonEdit" pintarEspacio="no">
-		<td>
+		<td align="center">
 		<%
 			String valorCheck = idInstitucion + "||" + idPersona;
 
