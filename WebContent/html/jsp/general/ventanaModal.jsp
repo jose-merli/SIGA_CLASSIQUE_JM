@@ -42,7 +42,7 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<script type="text/javascript">
@@ -50,11 +50,13 @@
 			
 			function growl(msg,type){
 				jQuery('.notice-item-wrapper').remove();
-				if(jQuery.fn.noticeAdd){
+				try{
 					jQuery.noticeAdd({
 						text: msg,
 						type: type
 					});
+				} catch(e){
+					alert(msg);
 				}
 			}
 		

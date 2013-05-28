@@ -1,3 +1,124 @@
+var jQuery = false;
+try{
+	if (window.jQuery){
+		jQuery = window.jQuery;
+	} else if (window.$){
+		jQuery = window.$;
+	} else if (window.parent && window.parent.jQuery){
+		jQuery = window.parent.jQuery;
+	} else if (window.parent && window.parent.$){
+		jQuery = window.parent.$;
+	} else if (window.top && window.top.jQuery){
+		jQuery = window.top.jQuery;
+	} else if (window.top && window.top.$)
+		jQuery = window.top.$;
+} catch(msg){
+	jQuery = false;
+}
+if (!jQuery)
+	document.write('<script src="/SIGA/html/js/jquery.ui/js/jquery-1.8.3.js"><\/script>');
+
+// *** BEGIN JQUERY PLUGINS *** //
+/**
+*	jQuery.noticeAdd() and jQuery.noticeRemove()
+*	These functions create and remove growl-like notices
+*		
+*   Copyright (c) 2009 Tim Benniks
+*
+*	Permission is hereby granted, free of charge, to any person obtaining a copy
+*	of this software and associated documentation files (the "Software"), to deal
+*	in the Software without restriction, including without limitation the rights
+*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*	copies of the Software, and to permit persons to whom the Software is
+*	furnished to do so, subject to the following conditions:
+*
+*	The above copyright notice and this permission notice shall be included in
+*	all copies or substantial portions of the Software.
+*
+*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*	THE SOFTWARE.
+*	
+*	@author 	Tim Benniks <tim@timbenniks.com>
+* 	@copyright  2009 timbenniks.com
+*	@version    $Id: SIGA.js,v 1.43 2013-05-28 09:41:15 tf2 Exp $
+**/
+(function(jQuery)
+{
+	jQuery.extend({			
+		noticeAdd: function(options)
+		{	
+			var defaults = {
+				inEffect: 			{opacity: 'show'},	// in effect
+				inEffectDuration: 	600,				// in effect duration in miliseconds
+				stayTime: 			15000,				// time in miliseconds before the item has to disappear
+				text: 				'',					// content of the item
+				stay: 				true,				// should the notice item stay or not?
+				type: 				'notice' 			// could also be error, succes
+			}
+			
+			// declare varaibles
+			var options, noticeWrapAll, noticeItemOuter, noticeItemInner, noticeItemClose;
+								
+			options 		= jQuery.extend({}, defaults, options);
+			noticeWrapAll	= (!jQuery('.notice-wrap').length) ? jQuery('<div></div>').addClass('notice-wrap').appendTo('body') : jQuery('.notice-wrap');
+			noticeItemOuter	= jQuery('<div></div>').addClass('notice-item-wrapper').hover(function() { jQuery.noticeRemove(noticeItemInner) });
+			noticeItemInner	= jQuery('<div></div>').hide().addClass('notice-item ' + options.type).appendTo(noticeWrapAll).html(options.text).animate(options.inEffect, options.inEffectDuration).wrap(noticeItemOuter);
+			//noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner).html('x').hover(function() { jQuery.noticeRemove(noticeItemInner) });
+			noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner);
+			
+			// hmmmz, zucht
+			if(navigator.userAgent.match(/MSIE 6/i)) 
+			{
+		    	noticeWrapAll.css({top: document.documentElement.scrollTop});
+		    }
+			
+			if(!options.stay)
+			{
+				setTimeout(function()
+				{
+					jQuery.noticeRemove(noticeItemInner);
+				},
+				options.stayTime);
+			}
+		},
+		
+		noticeRemove: function(obj)
+		{
+			obj.animate({opacity: '0'}, 600, function()
+			{
+				obj.parent().animate({height: '0px'}, 600, function()
+				{
+					obj.parent().remove();
+				});
+			});
+		}
+	});
+})(jQuery);
+
+/*
+Masked Input plugin for jQuery
+Copyright (c) 2007-2013 Josh Bush (digitalbush.com)
+Licensed under the MIT license (http://digitalbush.com/projects/masked-input-plugin/#license)
+Version: 1.3.1
+*/
+(function(e){function t(){var e=document.createElement("input"),t="onpaste";return e.setAttribute(t,""),"function"==typeof e[t]?"paste":"input"}var n,a=t()+".mask",r=navigator.userAgent,i=/iphone/i.test(r),o=/android/i.test(r);e.mask={definitions:{9:"[0-9]",a:"[A-Za-z]","*":"[A-Za-z0-9]"},dataName:"rawMaskFn",placeholder:"_"},e.fn.extend({caret:function(e,t){var n;if(0!==this.length&&!this.is(":hidden"))return"number"==typeof e?(t="number"==typeof t?t:e,this.each(function(){this.setSelectionRange?this.setSelectionRange(e,t):this.createTextRange&&(n=this.createTextRange(),n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select())})):(this[0].setSelectionRange?(e=this[0].selectionStart,t=this[0].selectionEnd):document.selection&&document.selection.createRange&&(n=document.selection.createRange(),e=0-n.duplicate().moveStart("character",-1e5),t=e+n.text.length),{begin:e,end:t})},unmask:function(){return this.trigger("unmask")},mask:function(t,r){var c,l,s,u,f,h;return!t&&this.length>0?(c=e(this[0]),c.data(e.mask.dataName)()):(r=e.extend({placeholder:e.mask.placeholder,completed:null},r),l=e.mask.definitions,s=[],u=h=t.length,f=null,e.each(t.split(""),function(e,t){"?"==t?(h--,u=e):l[t]?(s.push(RegExp(l[t])),null===f&&(f=s.length-1)):s.push(null)}),this.trigger("unmask").each(function(){function c(e){for(;h>++e&&!s[e];);return e}function d(e){for(;--e>=0&&!s[e];);return e}function m(e,t){var n,a;if(!(0>e)){for(n=e,a=c(t);h>n;n++)if(s[n]){if(!(h>a&&s[n].test(R[a])))break;R[n]=R[a],R[a]=r.placeholder,a=c(a)}b(),x.caret(Math.max(f,e))}}function p(e){var t,n,a,i;for(t=e,n=r.placeholder;h>t;t++)if(s[t]){if(a=c(t),i=R[t],R[t]=n,!(h>a&&s[a].test(i)))break;n=i}}function g(e){var t,n,a,r=e.which;8===r||46===r||i&&127===r?(t=x.caret(),n=t.begin,a=t.end,0===a-n&&(n=46!==r?d(n):a=c(n-1),a=46===r?c(a):a),k(n,a),m(n,a-1),e.preventDefault()):27==r&&(x.val(S),x.caret(0,y()),e.preventDefault())}function v(t){var n,a,i,l=t.which,u=x.caret();t.ctrlKey||t.altKey||t.metaKey||32>l||l&&(0!==u.end-u.begin&&(k(u.begin,u.end),m(u.begin,u.end-1)),n=c(u.begin-1),h>n&&(a=String.fromCharCode(l),s[n].test(a)&&(p(n),R[n]=a,b(),i=c(n),o?setTimeout(e.proxy(e.fn.caret,x,i),0):x.caret(i),r.completed&&i>=h&&r.completed.call(x))),t.preventDefault())}function k(e,t){var n;for(n=e;t>n&&h>n;n++)s[n]&&(R[n]=r.placeholder)}function b(){x.val(R.join(""))}function y(e){var t,n,a=x.val(),i=-1;for(t=0,pos=0;h>t;t++)if(s[t]){for(R[t]=r.placeholder;pos++<a.length;)if(n=a.charAt(pos-1),s[t].test(n)){R[t]=n,i=t;break}if(pos>a.length)break}else R[t]===a.charAt(pos)&&t!==u&&(pos++,i=t);return e?b():u>i+1?(x.val(""),k(0,h)):(b(),x.val(x.val().substring(0,i+1))),u?t:f}var x=e(this),R=e.map(t.split(""),function(e){return"?"!=e?l[e]?r.placeholder:e:void 0}),S=x.val();x.data(e.mask.dataName,function(){return e.map(R,function(e,t){return s[t]&&e!=r.placeholder?e:null}).join("")}),x.attr("readonly")||x.one("unmask",function(){x.unbind(".mask").removeData(e.mask.dataName)}).bind("focus.mask",function(){clearTimeout(n);var e;S=x.val(),e=y(),n=setTimeout(function(){b(),e==t.length?x.caret(0,e):x.caret(e)},10)}).bind("blur.mask",function(){y(),x.val()!=S&&x.change()}).bind("keydown.mask",g).bind("keypress.mask",v).bind(a,function(){setTimeout(function(){var e=y(!0);x.caret(e),r.completed&&e==x.val().length&&r.completed.call(x)},0)}),y()}))}})})(jQuery);
+
+jQuery(document).ready(function(){
+	if(jQuery.fn.mask){
+		// Descomentar para no permitir la edición de fechas por texto
+		//jQuery("input.datepicker").attr("readonly", "readonly");
+		// Comentar para no permitir la edición de fechas por texto	
+		jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQuery(this));}});
+	}
+});
+
+//*** END JQUERY PLUGINS *** //
+
 /*  METODO OBLIGATORIO EN EVENTO onLoad DE TODAS LAS PÁGINAS
 	Inicia estilos para todas las páginas que importen este fichero
     Es necesario definir la hoja de estilos SIGA.css con el atributo ID="default" */
@@ -1558,24 +1679,6 @@ document.getElementById = function(elemIdOrName) {
 };
 
 //BNS
-var jQuery = false;
-try{
-	if (window.jQuery){
-		jQuery = window.jQuery;
-	} else if (window.$){
-		jQuery = window.$;
-	} else if (window.parent.jQuery){
-		jQuery = window.parent.jQuery;
-	} else if (window.parent.$){
-		jQuery = window.parent.$;
-	} else if (window.top.jQuery){
-		jQuery = window.top.jQuery;
-	} else if (window.top.$)
-		jQuery = window.top.$;
-} catch(msg){
-	jQuery = false;
-}
-
 if (jQuery){
 	(function(){
 		if(!jQuery.fn.watch){
@@ -2217,101 +2320,3 @@ function setDatepickerClearBtn(btnText){
 	}
 }
 fin();
-// *** JQUERY PLUGINS *** //
-/**
-*	jQuery.noticeAdd() and jQuery.noticeRemove()
-*	These functions create and remove growl-like notices
-*		
-*   Copyright (c) 2009 Tim Benniks
-*
-*	Permission is hereby granted, free of charge, to any person obtaining a copy
-*	of this software and associated documentation files (the "Software"), to deal
-*	in the Software without restriction, including without limitation the rights
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*	copies of the Software, and to permit persons to whom the Software is
-*	furnished to do so, subject to the following conditions:
-*
-*	The above copyright notice and this permission notice shall be included in
-*	all copies or substantial portions of the Software.
-*
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*	THE SOFTWARE.
-*	
-*	@author 	Tim Benniks <tim@timbenniks.com>
-* 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.42 2013-05-27 16:54:53 tf2 Exp $
-**/
-(function(jQuery)
-{
-	jQuery.extend({			
-		noticeAdd: function(options)
-		{	
-			var defaults = {
-				inEffect: 			{opacity: 'show'},	// in effect
-				inEffectDuration: 	600,				// in effect duration in miliseconds
-				stayTime: 			15000,				// time in miliseconds before the item has to disappear
-				text: 				'',					// content of the item
-				stay: 				true,				// should the notice item stay or not?
-				type: 				'notice' 			// could also be error, succes
-			}
-			
-			// declare varaibles
-			var options, noticeWrapAll, noticeItemOuter, noticeItemInner, noticeItemClose;
-								
-			options 		= jQuery.extend({}, defaults, options);
-			noticeWrapAll	= (!jQuery('.notice-wrap').length) ? jQuery('<div></div>').addClass('notice-wrap').appendTo('body') : jQuery('.notice-wrap');
-			noticeItemOuter	= jQuery('<div></div>').addClass('notice-item-wrapper').hover(function() { jQuery.noticeRemove(noticeItemInner) });
-			noticeItemInner	= jQuery('<div></div>').hide().addClass('notice-item ' + options.type).appendTo(noticeWrapAll).html(options.text).animate(options.inEffect, options.inEffectDuration).wrap(noticeItemOuter);
-			//noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner).html('x').hover(function() { jQuery.noticeRemove(noticeItemInner) });
-			noticeItemClose	= jQuery('<div></div>').addClass('notice-item-close').prependTo(noticeItemInner);
-			
-			// hmmmz, zucht
-			if(navigator.userAgent.match(/MSIE 6/i)) 
-			{
-		    	noticeWrapAll.css({top: document.documentElement.scrollTop});
-		    }
-			
-			if(!options.stay)
-			{
-				setTimeout(function()
-				{
-					jQuery.noticeRemove(noticeItemInner);
-				},
-				options.stayTime);
-			}
-		},
-		
-		noticeRemove: function(obj)
-		{
-			obj.animate({opacity: '0'}, 600, function()
-			{
-				obj.parent().animate({height: '0px'}, 600, function()
-				{
-					obj.parent().remove();
-				});
-			});
-		}
-	});
-})(jQuery);
-
-/*
-Masked Input plugin for jQuery
-Copyright (c) 2007-2013 Josh Bush (digitalbush.com)
-Licensed under the MIT license (http://digitalbush.com/projects/masked-input-plugin/#license)
-Version: 1.3.1
-*/
-(function(e){function t(){var e=document.createElement("input"),t="onpaste";return e.setAttribute(t,""),"function"==typeof e[t]?"paste":"input"}var n,a=t()+".mask",r=navigator.userAgent,i=/iphone/i.test(r),o=/android/i.test(r);e.mask={definitions:{9:"[0-9]",a:"[A-Za-z]","*":"[A-Za-z0-9]"},dataName:"rawMaskFn",placeholder:"_"},e.fn.extend({caret:function(e,t){var n;if(0!==this.length&&!this.is(":hidden"))return"number"==typeof e?(t="number"==typeof t?t:e,this.each(function(){this.setSelectionRange?this.setSelectionRange(e,t):this.createTextRange&&(n=this.createTextRange(),n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select())})):(this[0].setSelectionRange?(e=this[0].selectionStart,t=this[0].selectionEnd):document.selection&&document.selection.createRange&&(n=document.selection.createRange(),e=0-n.duplicate().moveStart("character",-1e5),t=e+n.text.length),{begin:e,end:t})},unmask:function(){return this.trigger("unmask")},mask:function(t,r){var c,l,s,u,f,h;return!t&&this.length>0?(c=e(this[0]),c.data(e.mask.dataName)()):(r=e.extend({placeholder:e.mask.placeholder,completed:null},r),l=e.mask.definitions,s=[],u=h=t.length,f=null,e.each(t.split(""),function(e,t){"?"==t?(h--,u=e):l[t]?(s.push(RegExp(l[t])),null===f&&(f=s.length-1)):s.push(null)}),this.trigger("unmask").each(function(){function c(e){for(;h>++e&&!s[e];);return e}function d(e){for(;--e>=0&&!s[e];);return e}function m(e,t){var n,a;if(!(0>e)){for(n=e,a=c(t);h>n;n++)if(s[n]){if(!(h>a&&s[n].test(R[a])))break;R[n]=R[a],R[a]=r.placeholder,a=c(a)}b(),x.caret(Math.max(f,e))}}function p(e){var t,n,a,i;for(t=e,n=r.placeholder;h>t;t++)if(s[t]){if(a=c(t),i=R[t],R[t]=n,!(h>a&&s[a].test(i)))break;n=i}}function g(e){var t,n,a,r=e.which;8===r||46===r||i&&127===r?(t=x.caret(),n=t.begin,a=t.end,0===a-n&&(n=46!==r?d(n):a=c(n-1),a=46===r?c(a):a),k(n,a),m(n,a-1),e.preventDefault()):27==r&&(x.val(S),x.caret(0,y()),e.preventDefault())}function v(t){var n,a,i,l=t.which,u=x.caret();t.ctrlKey||t.altKey||t.metaKey||32>l||l&&(0!==u.end-u.begin&&(k(u.begin,u.end),m(u.begin,u.end-1)),n=c(u.begin-1),h>n&&(a=String.fromCharCode(l),s[n].test(a)&&(p(n),R[n]=a,b(),i=c(n),o?setTimeout(e.proxy(e.fn.caret,x,i),0):x.caret(i),r.completed&&i>=h&&r.completed.call(x))),t.preventDefault())}function k(e,t){var n;for(n=e;t>n&&h>n;n++)s[n]&&(R[n]=r.placeholder)}function b(){x.val(R.join(""))}function y(e){var t,n,a=x.val(),i=-1;for(t=0,pos=0;h>t;t++)if(s[t]){for(R[t]=r.placeholder;pos++<a.length;)if(n=a.charAt(pos-1),s[t].test(n)){R[t]=n,i=t;break}if(pos>a.length)break}else R[t]===a.charAt(pos)&&t!==u&&(pos++,i=t);return e?b():u>i+1?(x.val(""),k(0,h)):(b(),x.val(x.val().substring(0,i+1))),u?t:f}var x=e(this),R=e.map(t.split(""),function(e){return"?"!=e?l[e]?r.placeholder:e:void 0}),S=x.val();x.data(e.mask.dataName,function(){return e.map(R,function(e,t){return s[t]&&e!=r.placeholder?e:null}).join("")}),x.attr("readonly")||x.one("unmask",function(){x.unbind(".mask").removeData(e.mask.dataName)}).bind("focus.mask",function(){clearTimeout(n);var e;S=x.val(),e=y(),n=setTimeout(function(){b(),e==t.length?x.caret(0,e):x.caret(e)},10)}).bind("blur.mask",function(){y(),x.val()!=S&&x.change()}).bind("keydown.mask",g).bind("keypress.mask",v).bind(a,function(){setTimeout(function(){var e=y(!0);x.caret(e),r.completed&&e==x.val().length&&r.completed.call(x)},0)}),y()}))}})})(jQuery);
-
-jQuery(document).ready(function(){
-	if(jQuery.fn.mask){
-		// Descomentar para no permitir la edición de fechas por texto
-		//jQuery("input.datepicker").attr("readonly", "readonly");
-		// Comentar para no permitir la edición de fechas por texto	
-		jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQuery(this));}});
-	}
-});
