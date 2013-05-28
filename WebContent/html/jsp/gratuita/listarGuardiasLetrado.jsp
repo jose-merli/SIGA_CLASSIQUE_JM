@@ -264,11 +264,9 @@
 				<%} // WHILE%>
 				
 			<% } else { %>
-				<br>
-				<p class="titulitos" style="text-align: center">
-					<siga:Idioma key="messages.noRecordFound" />
-				</p>
-				<br>
+				<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 			<% } %>
 		</siga:Table>
 
