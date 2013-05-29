@@ -252,6 +252,8 @@ public class InscripcionTurno {
 			Integer tipoGuardias, String guardiasSeleccionadas, String idRetencion, UsrBean usr) throws ClsExceptions {
 		
 		try {
+			String fechaInscripcion = GstDate.getHoyJava();
+			
 			if (guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("") && guardiasSeleccionadas.indexOf("@")>=0){
 				guardiasSeleccionadas=guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
 			}  
@@ -263,7 +265,7 @@ public class InscripcionTurno {
 			miHash.put(ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);  
 			miHash.put(ScsInscripcionTurnoBean.C_IDINSTITUCION, usr.getLocation());
 			miHash.put(ScsInscripcionTurnoBean.C_IDTURNO, idTurno.toString());
-			miHash.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, "sysdate");
+			miHash.put(ScsInscripcionTurnoBean.C_FECHASOLICITUD, fechaInscripcion);
 			
 			if (observacionesSolicitudAlta!=null) {
 				miHash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD, observacionesSolicitudAlta);
@@ -289,7 +291,7 @@ public class InscripcionTurno {
 	
 			// Realiza el alta de la inscripcion de turno
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);		
-			boolean result = inscripcionTurnoAdm.insert(miHash);
+			boolean result = inscripcionTurnoAdm.insert(miHash);						 
 			
 			// Comprueba que se ha realizado el alta de turno y tiene guardias
 			if (result && tipoGuardias!=null) {
@@ -312,7 +314,9 @@ public class InscripcionTurno {
 								beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
 								beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
 								beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
-								beanInscripcionGuardia.setFechaSuscripcion("sysdate");
+								
+								// La fecha de suscripcion sera la misma para todas las inscripciones de guardia
+								beanInscripcionGuardia.setFechaSuscripcion(fechaInscripcion);
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
 							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
@@ -340,16 +344,8 @@ public class InscripcionTurno {
 					if( guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
 						guardiasSel=guardiasSeleccionadas.split("@");
 	
-						Date date = new Date();
-						String fechaInscripcion= formatoFecha.format(date);
-	
 						// Recorre las guardias seleccionadas
 						for (int i=0; i<guardiasSel.length;i++){
-							try {
-								fechaInscripcion = formatoFecha.format(formatoFecha.parse(fechaInscripcion));							
-							} catch (Exception e) {
-								fechaInscripcion = "sysdate";
-							} 
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 					
 							ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
@@ -357,6 +353,8 @@ public class InscripcionTurno {
 								beanInscripcionGuardia.setIdTurno(new Integer(idTurno));					
 								beanInscripcionGuardia.setIdGuardia(new Integer(guardiasSel[i]));					
 								beanInscripcionGuardia.setIdPersona(Long.valueOf(idPersona));
+								
+								// La fecha de suscripcion sera la misma para todas las inscripciones de guardia
 								beanInscripcionGuardia.setFechaSuscripcion(fechaInscripcion);
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
@@ -472,6 +470,7 @@ public class InscripcionTurno {
 			 * Si tiene la variable a true tendra que insertar todas las guardias del turno
 			 */			
 			boolean bTieneAlgunaInscripcionGuardia = false;
+			String sFechaSuscripcionGuardia = GstDate.getHoyJava(); 
 			
 			// JPT: Esto es generico para todos los tipos de guardias
 			// Actualiza las guardias del turno
@@ -489,6 +488,9 @@ public class InscripcionTurno {
 					inscripcionGuardia.validarAlta(usr);
 					
 					bTieneAlgunaInscripcionGuardia = true;
+					
+					// Obtiene la fecha de suscripcion de una inscripcion de guardia ya existente por si la tengo que indicar despues
+					sFechaSuscripcionGuardia = beanInscripcionGuardia.getFechaSuscripcion();
 				}
 			}			
 			
@@ -529,7 +531,9 @@ public class InscripcionTurno {
 								beanInscripcionGuardia.setIdTurno(this.bean.getIdTurno());					
 								beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
 								beanInscripcionGuardia.setIdPersona(this.bean.getIdPersona());
-								beanInscripcionGuardia.setFechaSuscripcion(this.bean.getFechaSolicitud());
+								
+								// La fecha de suscripcion sera la misma para todas las inscripciones de guardia (fecha de suscripcion previamente calculada o fecha actual)
+								beanInscripcionGuardia.setFechaSuscripcion(sFechaSuscripcionGuardia);
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
 							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);
@@ -655,6 +659,11 @@ public class InscripcionTurno {
 	 */
 	private void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja, UsrBean usr, boolean tieneFechaBaja) throws ClsExceptions {
 		try {
+			String fechaSolicitudBajaInscripcion = fechaSolicitudBaja;
+			if(fechaSolicitudBajaInscripcion.equalsIgnoreCase("sysdate")) {
+				fechaSolicitudBajaInscripcion = GstDate.getHoyJava();
+			}				
+			
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
 			Long idPersona = this.bean.getIdPersona();
@@ -679,7 +688,7 @@ public class InscripcionTurno {
 					observacionesSolicitudBaja += "[Observaciones denegación previa:"+observacionDenegacion+"]";						
 				}
 				
-				inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBaja);							
+				inscripcionBean.setFechaSolicitudBaja(fechaSolicitudBajaInscripcion);							
 				String observacionesPrevias = inscripcionBean.getObservacionesBaja()==null || inscripcionBean.getObservacionesBaja().equals("") ? "" : "{" + inscripcionBean.getObservacionesBaja() + "}";
 				inscripcionBean.setObservacionesBaja(observacionesSolicitudBaja+observacionesPrevias);
 					
@@ -708,8 +717,10 @@ public class InscripcionTurno {
 						ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
 						
 						// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + fechaSolicitudBaja + observacionesFechaSolicitudBaja
-						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);						
-						inscripcionGuardia.setBajas(observacionesSolicitudBaja, fechaSolicitudBaja, null, null);
+						InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);			
+						
+						// La fecha de solicitud de baja sera la misma para todas las inscripciones de guardia 
+						inscripcionGuardia.setBajas(observacionesSolicitudBaja, fechaSolicitudBajaInscripcion, null, null);
 						
 						inscripcionGuardia.solicitarBaja(usr, null);
 					}
@@ -1008,6 +1019,7 @@ public class InscripcionTurno {
 							inscripcionGuardia.validarBaja(usr, null);
 							
 						} else {
+							// Aqui es posible que las guardias no tengan la misma fecha de solicitud de baja, pero como son para darlas de baja definitiva ... pues no pasa nada
 							inscripcionGuardia.setBajas(inscripcionTurno.getObservacionesBaja(), inscripcionTurno.getFechaSolicitudBaja(), fechaBaja, obsValBaja);						
 							inscripcionGuardia.solicitarBaja(usr, null);
 						}											

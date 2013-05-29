@@ -7,10 +7,21 @@ package com.siga.beans;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
 /**
@@ -389,8 +400,9 @@ public abstract class MasterBeanAdministrador {
 				i++;
 			}
 			
-			Vector resultado = UtilidadesBDAdm.sqlWhereBind(this.nombreTabla, hash, campos);
-//			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());
+			Row row = new Row();			
+			Vector resultado = row.sqlWhereBind(this.nombreTabla, hash, campos);
+//			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());			
 			vector = this.selectGenericaBind((String)resultado.get(0),(Hashtable)resultado.get(1));
 		}
 		catch (Exception e) {
@@ -413,7 +425,8 @@ public abstract class MasterBeanAdministrador {
 				i++;
 			}
 			
-			Vector resultado = UtilidadesBDAdm.sqlWhereBind(this.nombreTabla, hash, campos);
+			Row row = new Row();	
+			Vector resultado = row.sqlWhereBind(this.nombreTabla, hash, campos);
 //			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());
 			vector = this.selectGenericaBind((String)resultado.get(0),(Hashtable)resultado.get(1));
 		}
@@ -470,7 +483,8 @@ public abstract class MasterBeanAdministrador {
 				i++;
 			}
 			
-			Vector resultado = UtilidadesBDAdm.sqlWhereBind(this.nombreTabla, hash, campos);
+			Row row = new Row();
+			Vector resultado = row.sqlWhereBind(this.nombreTabla, hash, campos);
 //			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());
 			vector = this.selectForUpdateBind((String)resultado.get(0),(Hashtable)resultado.get(1));
 		}

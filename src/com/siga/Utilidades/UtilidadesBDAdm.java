@@ -263,52 +263,6 @@ public class UtilidadesBDAdm
 	  	    return sqlWhere.toString();
 	  	  }
 	  	
-	  public static Vector sqlWhereBind (String tableName, Hashtable row, Object[] keyfields) throws ClsExceptions {
-	  	
-	      	Vector salida =new Vector();
-	      	Hashtable codigos = new Hashtable();
-	  	  	int contador=1;
-	      	StringBuffer sqlWhere = new StringBuffer("");
-	  	  	Hashtable dataTypes = DbTypes.getDataTypes(tableName);
-	  	  	if (keyfields != null) {
-	  		  String aux = " WHERE ";
-	  		  for (int i = 0; i < keyfields.length; i++) {
-	  		    if (row.get(keyfields[i]) == null) {
-	  		      sqlWhere.append(aux + keyfields[i] + " IS NULL ");
-	  		    } 
-	  		    else 
-	  		    	if (row.get(keyfields[i]).toString().trim().equals("")) {
-	  		    		sqlWhere.append(aux + keyfields[i] + " IS NULL ");
-	  		    	}
-	  				else {
-	  				  sqlWhere.append(aux + keyfields[i] + " = ");
-	  				  if (dataTypes.get(keyfields[i]).equals(DbTypes.STRING)) {
-  	  				    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-	  				  } else if (dataTypes.get(keyfields[i]).equals(DbTypes.NUMBER)) {
-	  				    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-	  				  } else if (dataTypes.get(keyfields[i]).equals(DbTypes.DATE)) {
-	  					sqlWhere.append(" TO_DATE(" + ":"+new Integer(contador).toString() + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-	  				  } else {
-	  				    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-	  				  }
-	  				}
-	  				aux = " AND ";
-	  		  }
-	  	    }
-	  	  	salida.add(sqlWhere.toString());
-	  	  	salida.add(codigos);
-  
-	  	  	return salida;
-	  	  }
-	  	
 	  /**
 	   * Construye una clausula 'order by' con los campos que se le pasan
 	   * @param fields Lista de campos de base de datos

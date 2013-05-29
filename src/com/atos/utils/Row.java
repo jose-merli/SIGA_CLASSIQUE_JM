@@ -1,7 +1,6 @@
 package com.atos.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -22,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.siga.Utilidades.DbTypes;
+
 import es.satec.siga.util.SigaSequence;
 
 
@@ -33,9 +34,8 @@ import es.satec.siga.util.SigaSequence;
  * @version 1.8
  */
 
-public class Row implements Serializable 
-{
-	static protected String schemasAvailables[]=null;
+public class Row implements Serializable {
+	static protected String schemasAvailables[]=null; 
 	
 	/**
 	 *  Contiene parejas de clave/valor.
@@ -520,9 +520,15 @@ public class Row implements Serializable
 		*/
 	}
 	
-	
-	public int deleteBind(String tableName, Object[] keyfields) throws ClsExceptions 
-	{
+	/**
+	 * Borra datos de una tala con parametros
+	 * 
+	 * @param tableName
+	 * @param keyfields
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int deleteBind(String tableName, Object[] keyfields) throws ClsExceptions {
 		boolean thowsExc=false;
 		Connection con = null;
 		int deletedRecords = 0;
@@ -602,8 +608,13 @@ public class Row implements Serializable
 		return deletedRecords;
 	}
 	
-	public int deleteSQL(String sql) throws ClsExceptions 
-	{
+	/**
+	 * Borra datos de una tabla sin parametros
+	 * @param sql
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int deleteSQL(String sql) throws ClsExceptions {
 		boolean thowsExc=false;
 		Connection con = null;
 		int deletedRecords = 0;
@@ -653,8 +664,15 @@ public class Row implements Serializable
 		
 		return deletedRecords;
 	}
-	public int updateSQL(String sql) throws ClsExceptions 
-	{
+	
+	/**
+	 * Actualiza una tabla sin parametros
+	 * 
+	 * @param sql
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int updateSQL(String sql) throws ClsExceptions {
 		boolean thowsExc=false;
 		Connection con = null;
 		int updatedRecords = 0;
@@ -1288,8 +1306,16 @@ public class Row implements Serializable
 		*/
 	}
 
-	public int updateBind(String tableName, Object[] keyfields, Object[] updatableFields) throws ClsExceptions 
-	{
+	/**
+	 * Actualiza una tabla con parametros
+	 * 
+	 * @param tableName
+	 * @param keyfields
+	 * @param updatableFields
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int updateBind(String tableName, Object[] keyfields, Object[] updatableFields) throws ClsExceptions {
 		Connection con = null;
 		int updatedRecords = 0;
 		try {
@@ -1313,40 +1339,51 @@ public class Row implements Serializable
 				if (!row.containsKey(updatableFields[i])) continue;
 				sql += aux + updatableFields[i] + " = ";
 				
-				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("null")) {
+				if (row.get(updatableFields[i]) == null || "NULL".equalsIgnoreCase("" + updatableFields[i]) || row.get(updatableFields[i]).toString().trim().equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("NULL")) {
 					sql += " NULL ";
+					
 				} else {
 					if (dataTypes.get(updatableFields[i]).equals("STRING")) {
 						//sql += "'" + validateChars(row.get(updatableFields[i])) + "' ";
-						sql +=":"+new Integer(contador).toString()+" ";
 						//codigos.put(new Integer(contador),validateChars(""+row.get(updatableFields[i])));
-						codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+						
+						sql += this.transformarParametrosOut(contador);
+						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
   	  				    contador++;
+  	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) {
 						//sql += " " + row.get(updatableFields[i]) + " ";
-						sql +=":"+new Integer(contador).toString()+" ";
-  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+						
+						sql += ":" + new Integer(contador).toString() + " ";
+  	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
   	  				    contador++;
+  	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("DATE")) {
 						if (row.get(updatableFields[i]).toString().equalsIgnoreCase("SYSDATE")) {
 							//sql += " " + row.get(updatableFields[i]).toString() + " ";
+							
 							sql += " SYSTIMESTAMP ";
+							
 						} else {
 							//TEMPORAL: test the passed date is in standard format
-							// esto no hace nada porque no recoge la respuesta 
-						    formatDate(row.get(updatableFields[i]));
+							// esto no hace nada porque no recoge la respuesta 						    
 							//sql += " TO_DATE('" + row.get(updatableFields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-							sql += " TO_DATE(" + ":"+new Integer(contador).toString() + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-	  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+							
+							formatDate(row.get(updatableFields[i]));							
+							sql += " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
 	  	  				    contador++;
 						}
+						
 					} else {
 						//sql += row.get(updatableFields[i]).toString();
-						sql += ":"+new Integer(contador).toString()+" ";
-  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+						
+						sql += this.transformarParametrosOut(contador);
+  	  				    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
   	  				    contador++;
 					}
 				}
+				
 				aux = ", ";
 			}
 		}
@@ -1814,8 +1851,16 @@ public class Row implements Serializable
 		*/
 	}
 	
-	public int updateDirectBind(String tableName, Object[] keyfields, Object[] updatableFields) throws ClsExceptions 
-	{
+	/**
+	 * Actualiza una tabla con parametros
+	 * 
+	 * @param tableName
+	 * @param keyfields
+	 * @param updatableFields
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int updateDirectBind(String tableName, Object[] keyfields, Object[] updatableFields) throws ClsExceptions {
 		int updatedRecords = 0;
 		String aux = " ";
 		Hashtable codigos= new Hashtable();
@@ -1828,68 +1873,42 @@ public class Row implements Serializable
 		Hashtable dataTypes = ClsMngBBDD.tableDataTypesAsString(con, tableName);
 		String sql = " UPDATE " + tableName + " SET ";
 		int contador=1;
+		
 		// UPDATE SENTENCE!
-		if (updatableFields != null) 
-		{
-			for (int i = 0; i < updatableFields.length; i++) 
-			{
+		if (updatableFields != null) {
+			for (int i = 0; i < updatableFields.length; i++) {
 				sql += aux + updatableFields[i] + " = ";
 				
-				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).equals("null") || row.get(updatableFields[i]).equals("NULL")) 
-				{
+				if (row.get(updatableFields[i]) == null ||  "NULL".equalsIgnoreCase("" + updatableFields[i]) || row.get(updatableFields[i]).toString().trim().equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("NULL")) {
 					sql += " NULL ";
-				} 
-				else 
-				{
-					if (dataTypes.get(updatableFields[i]).equals("STRING")) 
-					{
-						//sql += "'" + validateChars(row.get(updatableFields[i])) + "' ";
-						sql +=":"+new Integer(contador).toString()+" ";
-						//codigos.put(new Integer(contador),validateChars(""+row.get(updatableFields[i])));
-						codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
-  	  				    contador++;
-					} 
 					
-					else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) 
-					{
-						//sql += " " + row.get(updatableFields[i]) + " ";
-						sql +=":"+new Integer(contador).toString()+" ";
-  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+				} else {										
+					if (dataTypes.get(updatableFields[i]).equals("STRING")) {
+						sql += this.transformarParametrosOut(contador);						
+						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
   	  				    contador++;
-					} 
-					
-					else if (dataTypes.get(updatableFields[i]).equals("DATE")) 
-					{
-						if (row.get(updatableFields[i]).toString().equalsIgnoreCase("SYSDATE")) 
-						{
-							//sql += " " + row.get(updatableFields[i]).toString() + " ";
+  	  				    
+					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) 	{
+						sql += ":" + new Integer(contador).toString() + " ";
+  	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
+  	  				    contador++;
+  	  				    
+					} else if (dataTypes.get(updatableFields[i]).equals("DATE")) {
+						if (row.get(updatableFields[i]).toString().equalsIgnoreCase("SYSDATE")) {
 							sql += " SYSTIMESTAMP ";
-							/*
-							sql +=":"+new Integer(contador).toString()+" ";
-							codigos.put(new Integer(contador)," SYSTIMESTAMP ");
-		  				    contador++;
-		  				    */
-						} 
-						
-						else 
-						{
+							
+						} else {
 							//TEMPORAL: test the passed date is in standard format
-							formatDate(row.get(updatableFields[i]));
-							//sql += " TO_DATE('" + row.get(updatableFields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-							sql +=" TO_DATE(:"+new Integer(contador).toString() + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-	  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+							formatDate(row.get(updatableFields[i]));							
+							sql += " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
 	  	  				    contador++;
-
 						}
-					} 
-					
-					else 
-					{
-						//sql += row.get(updatableFields[i]).toString();
-						sql +=":"+new Integer(contador).toString()+" ";
-  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
+						
+					} else 	{
+						sql += this.transformarParametrosOut(contador);
+  	  				    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
   	  				    contador++;
-
 					}
 				}
 				
@@ -1921,12 +1940,20 @@ public class Row implements Serializable
 			*/
 			st = connec.prepareStatement(sql);
             st.setQueryTimeout(Integer.parseInt(timeOut));
-
+            
+            for (int x=1; x<=codigos.size(); x++) {
+            	st.setString(x, (String)codigos.get(new Integer(x)));
+            }
+            
+            /*
+             *
             Enumeration e = codigos.keys();
 	   	    while (e.hasMoreElements()) {
 	   	         Integer key = (Integer)e.nextElement();
-	   	         st.setString(key.intValue(), (String)codigos.get(key));
+	   	         st.setString(key.intValue(), (String)codigos.get(new Integer(contador)));
 	   	     }
+             */
+
            try {
                updatedRecords = st.executeUpdate();
            } catch (SQLException exce) {
@@ -2232,8 +2259,15 @@ public class Row implements Serializable
 		return sqlFields.toString();
 	}
 	
-	public Vector buildInsertStatementBind(Connection con, String tableName, Object[] fieldNames) throws ClsExceptions 
-	{
+	/**
+	 * 
+	 * @param con
+	 * @param tableName
+	 * @param fieldNames
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector buildInsertStatementBind(Connection con, String tableName, Object[] fieldNames) throws ClsExceptions {
 	    Vector salida = new Vector();
 	    Hashtable codigos = new Hashtable();
 	    int contador=1;
@@ -2251,62 +2285,50 @@ public class Row implements Serializable
 		{
 			String aux = " ";
 			
-			for (int i = 0; i < fieldNames.length; i++) 
-			{
-				if (row.get(fieldNames[i]) == null || row.get(fieldNames[i]).equals("") ||
-					"NULL".equalsIgnoreCase(""+fieldNames[i]) ||
-				    row.get(fieldNames[i]).equals("NULL") || 
-				    row.get(fieldNames[i]).equals("null")) 
-				{
-					sqlValues.append(aux + " NULL ");
-				} 
+			for (int i = 0; i < fieldNames.length; i++) {
 				
-				else 
-				{
+				if (row.get(fieldNames[i]) == null || "NULL".equalsIgnoreCase("" + fieldNames[i]) || row.get(fieldNames[i]).toString().trim().equals("") || row.get(fieldNames[i]).toString().equalsIgnoreCase("NULL")) {
+					sqlValues.append(aux + " NULL ");
+					
+				} else {
 					if (row.get(fieldNames[i]) instanceof SigaSequence) {
 						SigaSequence sigaSequence = (SigaSequence)row.get(fieldNames[i]);						
 						sqlValues.append(aux + sigaSequence.getNombreSecuencia() + ".NEXTVAL");
-					} else if (datatypes.get(fieldNames[i]).equals("STRING")) 
-					{
+						
+					} else if (datatypes.get(fieldNames[i]).equals("STRING")) {
 						//sqlValues.append(aux + " '" + validateChars(row.get(fieldNames[i])) + "' ");
-						sqlValues.append(aux + ":"+new Integer(contador).toString()+" ");
 						//codigos.put(new Integer(contador),""+validateChars(row.get(fieldNames[i])));
-						codigos.put(new Integer(contador),""+row.get(fieldNames[i]));
+  	  				    
+  	  				    sqlValues.append(aux + this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
   	  				    contador++;
-					} 
-					
-					else if (datatypes.get(fieldNames[i]).equals("NUMBER")) 
-					{
+  	  				    
+					} else if (datatypes.get(fieldNames[i]).equals("NUMBER")) {
 						//sqlValues.append(aux + row.get(fieldNames[i]) + " ");
-						sqlValues.append(aux + ":"+new Integer(contador).toString()+" ");
+						
+						sqlValues.append(aux + ":" + new Integer(contador).toString() + " ");
 						codigos.put(new Integer(contador),""+row.get(fieldNames[i]));
   	  				    contador++;
 
-					} 
-					
-					else if (datatypes.get(fieldNames[i]).equals("DATE")) 
-					{
-						if (row.get(fieldNames[i]).toString().equalsIgnoreCase("SYSDATE")) 
-						{
+					} else if (datatypes.get(fieldNames[i]).equals("DATE")) {
+						if (row.get(fieldNames[i]).toString().equalsIgnoreCase("SYSDATE")) {
 							sqlValues.append(aux + " SYSTIMESTAMP ");
-						} 
-						
-						else 
-						{
-							//TEMPORAL: test the passed date is in standard format
-							formatDate(row.get(fieldNames[i]));
+							
+						} else {
+							//TEMPORAL: test the passed date is in standard format							
 							//sqlValues.append(aux + " TO_DATE('" + row.get(fieldNames[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-							sqlValues.append(aux + " TO_DATE(:"+new Integer(contador).toString()+", '" + ClsConstants.DATE_FORMAT_SQL + "')");
-							codigos.put(new Integer(contador),""+row.get(fieldNames[i]).toString());
+							
+	  	  				    formatDate(row.get(fieldNames[i]));
+						    sqlValues.append(aux + " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
+							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
 	  	  				    contador++;
 						}
-					} 
-					
-					else 
-					{
+						
+					} else {
 						//sqlValues.append(aux + " " + row.get(fieldNames[i]).toString() + " ");
-						sqlValues.append(aux + ":"+new Integer(contador).toString()+" ");
-						codigos.put(new Integer(contador),""+row.get(fieldNames[i]).toString());
+						
+						sqlValues.append(aux + this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
   	  				    contador++;
 					}
 				}
@@ -2400,70 +2422,57 @@ public class Row implements Serializable
 	 * @param keyfields Nombres de los campos para la cláusula SELECT.
 	 * @return Cadena formateada.
 	 */
-	public Vector buildSQLWhereBind(Connection con, String tableName, Object[] keyfields, Hashtable codigos, int cont) throws ClsExceptions 
-	{
+	public Vector buildSQLWhereBind(Connection con, String tableName, Object[] keyfields, Hashtable codigos, int cont) throws ClsExceptions {
 	    Vector salida = new Vector();
 	    int contador = cont;
 	    
-		if (table == null || !table.equals(tableName)) 
-		{
+		if (table == null || !table.equals(tableName)) {
 			table = tableName;
 			this.datatypes = ClsMngBBDD.tableDataTypesAsString(con, tableName);
 		}
 		
 		StringBuffer sqlWhere = new StringBuffer("");
 		
-		if (keyfields != null) 
-		{
+		if (keyfields != null) 	{
 			String aux = " WHERE ";
 			
-			for (int i = 0; i < keyfields.length; i++) 
-			{
-				if (row.get(keyfields[i]) == null) 
-				{
+			for (int i = 0; i < keyfields.length; i++) {
+				if (row.get(keyfields[i]) == null ||  "NULL".equalsIgnoreCase("" + keyfields[i]) || row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("NULL")) {
 					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
-				} 
-				else if (row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("null")) 
-				{
-					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
-				}
-				else 
-				{
+					
+				} else {
 					sqlWhere.append(aux + keyfields[i] + " = ");
 					
-					if (datatypes.get(keyfields[i]).equals("STRING")) 
-					{
+					if (datatypes.get(keyfields[i]).equals("STRING")) {
 					    //sqlWhere.append("'" + validateChars(row.get(keyfields[i])) + "' ");
-					    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-					    //codigos.put(new Integer(contador),validateChars(""+row.get(keyfields[i])));
-					    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-					} 
-					else if (datatypes.get(keyfields[i]).equals("NUMBER")) 
-					{
-						//sqlWhere.append(" " + row.get(keyfields[i]) + " ");
-					    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-						codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-					} 
-					
-					else if (datatypes.get(keyfields[i]).equals("DATE")) 
-					{
-						//TEMPORAL: test the passed date is in standard format
-						formatDate(row.get(keyfields[i]));
-						//sqlWhere.append(" TO_DATE('" + row.get(keyfields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-					    sqlWhere.append(" TO_DATE(:" + new Integer(contador).toString() + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-						codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
-					} 
-					
-					else 
-					{
-						//sqlWhere.append(row.get(keyfields[i]).toString());
-					    sqlWhere.append(":"+new Integer(contador).toString()+" ");
-						codigos.put(new Integer(contador),""+row.get(keyfields[i]));
-  	  				    contador++;
+						//codigos.put(new Integer(contador),validateChars(""+row.get(keyfields[i])));
 
+					    sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
+  	  				      	  				    
+					} else if (datatypes.get(keyfields[i]).equals("NUMBER")) {
+						//sqlWhere.append(" " + row.get(keyfields[i]) + " ");
+						
+					    sqlWhere.append(":" + new Integer(contador).toString() + " ");
+						codigos.put(new Integer(contador),"" + row.get(keyfields[i]));
+  	  				    contador++;
+  	  				    
+					} else if (datatypes.get(keyfields[i]).equals("DATE")) {
+						//TEMPORAL: test the passed date is in standard format						
+						//sqlWhere.append(" TO_DATE('" + row.get(keyfields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ");
+						
+						formatDate(row.get(keyfields[i]));
+					    sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
+						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
+  	  				    
+					} else {
+						//sqlWhere.append(row.get(keyfields[i]).toString());
+  	  				    
+  	  				    sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
 					}
 				}
 				
@@ -2474,6 +2483,65 @@ public class Row implements Serializable
 		salida.add(codigos);
 		return salida;
 	}
+	
+	/**
+	 * 
+	 * @param tableName
+	 * @param row
+	 * @param keyfields
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector sqlWhereBind (String tableName, Hashtable row, Object[] keyfields) throws ClsExceptions {
+  	
+      	Vector salida =new Vector();
+      	Hashtable codigos = new Hashtable();
+  	  	int contador=1;
+      	StringBuffer sqlWhere = new StringBuffer("");
+      	Hashtable dataTypes = DbTypes.getDataTypes(tableName);
+      	
+      	if (keyfields != null) {
+      		String aux = " WHERE ";
+      		for (int i = 0; i < keyfields.length; i++) {
+      			if (row.get(keyfields[i]) == null ||  "NULL".equalsIgnoreCase("" + keyfields[i]) || row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("NULL")) {
+					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
+
+      			} else {
+      				sqlWhere.append(aux + keyfields[i] + " = ");
+      				
+      				if (dataTypes.get(keyfields[i]).equals(DbTypes.STRING)) {      					
+      					sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
+      					
+      				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.NUMBER)) {
+      					sqlWhere.append(":" + new Integer(contador).toString() + " ");
+						codigos.put(new Integer(contador),"" + row.get(keyfields[i]));
+  	  				    contador++;
+      					
+      				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.DATE)) {
+      					formatDate(row.get(keyfields[i]));
+					    sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
+						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
+      					
+      					
+      				} else {
+      					sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    contador++;
+      				}
+      			}
+      			
+      			aux = " AND ";
+      		}
+      	}
+	  	
+      	salida.add(sqlWhere.toString());
+	  	salida.add(codigos);
+  
+	  	return salida;
+	}		
 	
 	/**
 	 * Devuelve una Hashtable con los tipos de datos de las columnas.
@@ -3260,8 +3328,15 @@ public class Row implements Serializable
 		return salida;
 
 	}
-	public int updateDirectSQL(String sql) throws ClsExceptions 
-	{
+	
+	/**
+	 * Actualiza una tabla sin parametros
+	 * 
+	 * @param sql
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int updateDirectSQL(String sql) throws ClsExceptions {
 		int updatedRecords = 0;
 		Statement st = null;
 		Connection connec = null;
@@ -3321,5 +3396,27 @@ public class Row implements Serializable
 		return updatedRecords;
 	}
 
+	/**
+	 * Cambios antes de pasar los parametros a la query
+	 * 
+	 * @param cad
+	 * @return
+	 */
+	private String transformarParametrosIn(Object cad) {
+		String cadena = cad.toString();
+		
+		cadena = cadena.replaceAll(":", ":#");
+		
+		return cadena;
+	}		
 	
+	/**
+	 * Cambios despues de cambiar los parametros a la query
+	 * 
+	 * @param contador
+	 * @return
+	 */
+	private String transformarParametrosOut(int contador) {
+		return " REPLACE(:" + new Integer(contador).toString() + ", ':#', ':') ";
+	}	
 }

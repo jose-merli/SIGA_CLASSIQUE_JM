@@ -2012,6 +2012,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 							inscripcionGuardia.validarBaja(this.usrbean, null);
 							
 						} else {
+							// La fecha de solicitud de baja sera la misma para todas las inscripciones de guardia 
 							inscripcionGuardia.setBajas(sMotivo, fechaBajaInscripcionesLarga, fechaBajaInscripciones, sMotivo);						
 							inscripcionGuardia.solicitarBaja(this.usrbean, null);
 						}											
@@ -2051,11 +2052,13 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 							
 							// Transformo el objeto guardia al objeto inscripcion de guardia
 							ScsInscripcionGuardiaBean beanInscripcionGuardia = new ScsInscripcionGuardiaBean();
-							beanInscripcionGuardia.setIdInstitucion(beanInscripcionTurno.getIdInstitucion());					
-							beanInscripcionGuardia.setIdTurno(beanInscripcionTurno.getIdTurno());					
-							beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
-							beanInscripcionGuardia.setIdPersona(beanInscripcionTurno.getIdPersona());
-							beanInscripcionGuardia.setFechaSuscripcion(fechaAltaInscripcionesLarga);
+								beanInscripcionGuardia.setIdInstitucion(beanInscripcionTurno.getIdInstitucion());					
+								beanInscripcionGuardia.setIdTurno(beanInscripcionTurno.getIdTurno());					
+								beanInscripcionGuardia.setIdGuardia(beanGuardia.getIdGuardia());					
+								beanInscripcionGuardia.setIdPersona(beanInscripcionTurno.getIdPersona());
+							
+								// La fecha de suscripcion sera la misma para todas las inscripciones de guardia 
+								beanInscripcionGuardia.setFechaSuscripcion(fechaAltaInscripcionesLarga);
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSubscripcion 
 							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);									

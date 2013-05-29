@@ -297,7 +297,12 @@ public class InscripcionGuardia {
 			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechSubscripcion);
+						
+			if(fechSubscripcion.equalsIgnoreCase("sysdate")) {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, GstDate.getHoyJava());
+			} else {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechSubscripcion);				
+			}	
 			
 			if (observacionesSuscripcion!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION, observacionesSuscripcion);
@@ -315,12 +320,7 @@ public class InscripcionGuardia {
 					laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, obsValidacion);
 				else
 					laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
-			}
-			
-			if(fechaBaja!=null && !fechaBaja.equals("")){
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA, "sysdate");
-				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));				
-			}			
+			}		
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			
@@ -395,7 +395,7 @@ public class InscripcionGuardia {
 			if(idGuardia!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);					
 			
 			if (observacionesValidacion!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
@@ -638,7 +638,7 @@ public class InscripcionGuardia {
 			if(idGuardia!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechSubscripcion);	
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechSubscripcion);						
 			
 			String[] claves = null;
 			if(idGuardia!=null){
@@ -663,7 +663,11 @@ public class InscripcionGuardia {
 			ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(usr);		
 			Vector<ScsInscripcionGuardiaBean> v = inscripcionAdm.select(laHash);
 			
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,fechSolicitudBaja);
+			if(fechSolicitudBaja.equalsIgnoreCase("sysdate")) {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA, GstDate.getHoyJava());
+			} else {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA, fechSolicitudBaja);				
+			}	
 			
 			boolean tieneBajaDenegada = false;
 			if (v != null && v.size() >0 ) {
@@ -684,7 +688,7 @@ public class InscripcionGuardia {
 			if(tieneBajaDenegada){
 				this.bean.setFechaDenegacion(null);
 				this.bean.setObservacionesDenegacion(null);
-				denegarBajaGuardia(usr);
+				this.denegarBajaGuardia(usr);
 			}
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
@@ -899,7 +903,7 @@ public class InscripcionGuardia {
 			if(idGuardia!=null)
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);							
 			
 			if(!fechaBaja.equalsIgnoreCase("sysdate") && fechaBaja.length()==10)
 				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaBaja));
