@@ -235,7 +235,8 @@
 		  				name="cabecera"
 		  				border="2"
 		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
-		   				columnSizes="20,15,17,8,8,6,10,11,5">
+		   				columnSizes="20,15,17,8,8,6,10,11,5"
+		   				fixedHeight="80%">
 
 				
 <% 				
@@ -316,7 +317,20 @@
 			  				<td align="right">
 		  						<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;
 		  					</td>
-			  				
+			  				<%if (elementos == null || elementos.length <= 0){ %>
+								<td></td>
+							<%} else {
+								boolean pintarCelda = true;
+								int l = 0;
+								while (pintarCelda && l < elementos.length){
+									if (elementos[l] != null)
+										pintarCelda = false;
+									l++;
+								}
+								if (pintarCelda){%>
+									<td></td>
+								<%}
+							}%>
 						</siga:FilaConIconos>
 
 	 <%		}
