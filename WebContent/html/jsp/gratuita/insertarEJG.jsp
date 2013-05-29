@@ -164,7 +164,7 @@
 										<siga:Idioma key="gratuita.busquedaEJG.literal.fechaApertura"/>&nbsp;(*)
 									</td>
 									<td>		
-										<siga:Fecha nombreCampo="fechaApertura" valorInicial="<%=fecha%>/>
+										<siga:Fecha nombreCampo="fechaApertura" valorInicial="<%=fecha%>"/>
 									</td>
 								</tr>		
 						</table>
