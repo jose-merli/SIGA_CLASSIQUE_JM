@@ -405,7 +405,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String numeroAsunto = null;
 			Hashtable designaActual = (Hashtable) ses.getAttribute("designaActual");
 			if(designaActual!=null){
-				Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
+				Vector visibles = (Vector)miform.getDatosTablaOcultos(0);
 				numeroAsunto = (String)visibles.get(1);
 				anio = (String)designaActual.get("ANIO");
 				idInstitucion= (String)usr.getLocation();
