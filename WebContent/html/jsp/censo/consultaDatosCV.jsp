@@ -180,7 +180,7 @@
 	<siga:Table 
 		name="tablaDatos" 
 		border="1" 
-		columnNames=",censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
+		columnNames="censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
 		columnSizes="10,10,10,10,10,10,20,8,13"
 		modal="M">
 
