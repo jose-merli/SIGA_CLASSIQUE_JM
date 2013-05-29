@@ -497,8 +497,12 @@
 						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/>&nbsp;(*)
 						</td>
-						<td>							
-							<siga:Fecha nombreCampo="fechaActuacion" valorInicial="<%=fechaActuacion%>" <% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> disabled="true"<%}%>></siga:Fecha>
+						
+						<td>
+						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> <siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> <%}else{%>
+							<siga:Fecha nombreCampo="fechaActuacion"   valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
+						<%} %>							
+							
 						</td>
 							
 						<td class="labelText" nowrap>
@@ -678,8 +682,15 @@
 						<td class="labelText">	
 							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
 						</td>
-						<td>							
-							<siga:Fecha nombreCampo="fechaJustificacion" valorInicial="<%=fechaJustificacion%>" <% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")) { %> disabled="true"<%}%>></siga:Fecha>
+						<td>	
+						<% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")) { %>
+						 <siga:Fecha nombreCampo="fechaJustificacion"  disabled="true" valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
+						 <%}else{%>
+							<siga:Fecha nombreCampo="fechaJustificacion"   valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
+						<%} %>
+						
+						
+												
 						</td>						
 
 						<td>
