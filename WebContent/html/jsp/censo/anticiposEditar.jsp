@@ -238,7 +238,7 @@
 			   border="1"
 			   columnNames="censo.anticipos.literal.nombreServicio,"
 			   columnSizes="90,10"
-			   scrollModal = "true"
+			   modalScroll="true"
 			   modal="M">
 
 <% if ((v != null) && (v.size() > 0)) {
