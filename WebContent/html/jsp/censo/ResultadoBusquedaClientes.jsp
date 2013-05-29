@@ -259,7 +259,7 @@
 	<%
 		if (resultado == null || resultado.size() == 0) {
 	%>
-	<tr class="notFound">
+					<tr class="notFound">
 			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 					</tr>
 	<%

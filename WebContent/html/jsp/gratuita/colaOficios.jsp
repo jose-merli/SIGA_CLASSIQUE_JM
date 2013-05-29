@@ -149,7 +149,7 @@
 <!---------- Ultimo letrado ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
 
-<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="99%" align="center">
+<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
   	<tr style="display:none">
 	  <td width="59%" style="vertical-align: top"></td>
 	  <td width="1%"  style="vertical-align: top"></td>
@@ -184,7 +184,7 @@
 	  </td>
 	</tr>
   	<tr>
-	  <td rowspan="2" style="vertical-align: top; height:450px">
+	  <td rowspan="2" colspan="2" style="vertical-align: top; height:450px">
 	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
@@ -287,7 +287,6 @@
 	  
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>
-	  <td rowspan="2"><!--margen--></td>
 	  <td style="vertical-align: top; height:160px">
 	  
 	  
