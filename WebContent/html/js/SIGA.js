@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.48 2013-05-29 15:35:34 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.49 2013-05-29 17:02:42 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -1968,7 +1968,8 @@ if (jQuery){
     	if (oTable.length > 0){  		
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
-    			scrolify(oTable, fixedHeight);
+    			if (parseInt(fixedHeight) > 0)
+    				scrolify(oTable, fixedHeight);
     		} else {
 	    		//alert("fixedHeaderTable BEGIN");
 	    		var fixedHeaderTableHeight = 0;

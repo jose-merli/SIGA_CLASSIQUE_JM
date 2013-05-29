@@ -121,6 +121,7 @@
 		  				border="2"
 		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago"  
 		   				columnSizes="30,15,19,8,11,7,10"
+		   				fixedHeight="-1"
 		   				modal = "G">
 				
 					<% 				
