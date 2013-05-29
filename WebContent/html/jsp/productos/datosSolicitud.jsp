@@ -249,7 +249,7 @@
 </script>
 
 
-<body onload="validarAncho_tablaResultados()">
+<body>
 
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">

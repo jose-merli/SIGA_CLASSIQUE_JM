@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.46 2013-05-28 15:42:21 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.47 2013-05-29 11:30:51 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -1854,6 +1854,23 @@ if (jQuery){
 	}
 	
 	function scrolify(tblAsJQueryObject, height) {
+		console.log("scrolify TableId"+tblAsJQueryObject.attr("id")+" height: " + height);
+		/* CONTROL DE NÚMERO DE CABECERAS/COLUMNAS DATOS
+		var numRows = parseInt(tblAsJQueryObject.find('tbody tr').length);
+		var numHeaders = parseInt(tblAsJQueryObject.find('thead th').length);
+		var numCells = parseInt(tblAsJQueryObject.find('tbody td').length);
+		console.log("scrolify numRows: " + numRows + "; numHeaders: "+numHeaders+"; numCells:"+numCells);
+		if (numRows * numHeaders < numCells){
+			console.log("scrolify NUM CABECERAS MENOR A NUM COLUMNAS DATOS");
+			var addHeader = 1;
+			while((numRows * (numHeaders + addHeader)) < numCells){
+				addHeader++;
+			}
+			console.log("scrolify AÑADO "+addHeader+" CABECERAS VACÍAS");
+			for (var i = 0; i < addHeader; i++)
+				tblAsJQueryObject.find('thead').append("<th></th>");
+		}
+		*/
     	var oTbl;
         var newTbl;        
         oTbl = tblAsJQueryObject;
@@ -1878,7 +1895,7 @@ if (jQuery){
 
         // save original width
         oTbl.attr("data-item-original-width", oTbl.width());
-        oTbl.find('thead tr td').each(function () {
+        oTbl.find('thead tr th').each(function () {
             jQuery(this).attr("data-item-original-width", jQuery(this).width());
         });
         oTbl.find('tbody tr:eq(0) td').each(function () {
@@ -1946,9 +1963,11 @@ if (jQuery){
 	}
 	//BNS: Scroll de tablas
 	function loadFixedHeaderTables (tableId, fixedHeight) {
+		console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){  		
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
+    			console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
     			scrolify(oTable, fixedHeight);
     		} else {
 	    		//alert("fixedHeaderTable BEGIN");
@@ -2044,19 +2063,21 @@ if (jQuery){
 				if (tablaBotonesLocal != undefined){
 					fixedHeaderTableHeight -= tablaBotonesLocal.outerHeight(true);
 				}
-				if (tablaPaginacionLocal == undefined && tablaBotonesLocal == undefined){
+				if (fixedHeight != undefined){
 					var addMargin = true;
 					try{
 						if (fixedHeight != undefined && fixedHeight.substr(fixedHeight.length - 1) == "%"){
+							console.log("loadFixedHeaderTables fixedHeight x%");
 							var percent = fixedHeight.substring(0, fixedHeight.length - 1);
-							if (!isNaN(percent)){							
+							if (!isNaN(percent)){
+								console.log("loadFixedHeaderTables fixedHeight "+fixedHeaderTableHeight+"px >> "+percent+"%");
 								fixedHeaderTableHeight = fixedHeaderTableHeight * percent / 100;
 								addMargin = false;
 							}
 						}
 					} catch(e){}
 					if (addMargin)
-					fixedHeaderTableHeight -= 20;
+						fixedHeaderTableHeight -= 20;
 				}
 				//alert("scrolify con " + fixedHeaderTableHeight);
 	            scrolify(oTable, fixedHeaderTableHeight);
@@ -2105,6 +2126,7 @@ if (jQuery){
     		}
     		//fixCellBorders(oTable);
     	}
+    	console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") END");
     }
 }
 

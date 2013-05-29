@@ -144,14 +144,23 @@
 			<!-- INICIO: LISTA DE VALORES -->
 			<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 				 de cabeceras fijas -->
-	
+			<%
+			String columnas =  "censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
+		  			   "censo.consultaExpedientes.literal.sancionFinalizada,censo.consultaExpedientes.literal.fechaCaducidad,"+
+		  			   "censo.consultaExpedientes.literal.motivo";
+			String tamanios = "20,13,13,17,25";
+			if(idPersona.equals(idUsr)){
+				columnas =  "censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
+			  			   "censo.consultaExpedientes.literal.sancionFinalizada,censo.consultaExpedientes.literal.fechaCaducidad,"+
+			  			   "censo.consultaExpedientes.literal.motivo,";
+				tamanios = "20,13,13,17,25,12";
+			}
+			%>
 			<siga:Table 
 			   	name="tablaDatos"
 			   	border="1"
-			  	columnNames="censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,
-			  			   censo.consultaExpedientes.literal.sancionFinalizada,censo.consultaExpedientes.literal.fechaCaducidad,
-			  			   censo.consultaExpedientes.literal.motivo,"
-			  	columnSizes="20,13,13,17,25,12">
+			  	columnNames="<%=columnas%>"
+			  	columnSizes="<%=tamanios%>">
 		 	<%	 		
 		 		if(vDatos == null || vDatos.size()<1)
 		 			{ 			

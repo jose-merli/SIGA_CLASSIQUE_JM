@@ -561,18 +561,19 @@
   				int var=1;
 
   				if(!user.isLetrado()&&aprobarSolicitud.equals("S"))  { 
-  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva";  
-  					tamanoCol1="10,19,20,6,8,8,7,14,8";
+  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
+  					tamanoCol1="13,16,19,8,8,7,7,15,8";
 				}else{
 				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-				   	tamanoCol1="24,19,20,6,8,8,7,8";
+				   	tamanoCol1="13,16,19,8,8,7,7,8";
 				}%>
 
    					<siga:Table 
 		  				name="cabecera"
 		  				border="2"
 						columnNames="<%=nombrecol1%>"
-		  				columnSizes="<%=tamanoCol1%>">
+		  				columnSizes="<%=tamanoCol1%>"
+		  				fixedHeight="80%">
 
 <% 					if(vArticulos == null || vArticulos.size()<1 ) 					{ 	
   							botones = "V"; 
@@ -699,7 +700,7 @@
 			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
 			  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 			  				</td>
-			  				<td align="center">	
+			  				<td>	
 	<%
 	 								formaPago[3] = String.valueOf((Integer)a.getIdTipo());
 	 								formaPago[4] = String.valueOf((Long)a.getIdArticulo());
@@ -771,7 +772,22 @@
 									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
 								</td>
 							<% }%>
+							<%if (elems.length <= 0){ %>
+								<td></td>
+							<%} else {
+								boolean pintarCelda = true;
+								int l = 0;
+								while (pintarCelda && l < elems.length){
+									if (elems[l] != null)
+										pintarCelda = false;
+									l++;
+								}
+								if (pintarCelda){%>
+									<td></td>
+								<%}
+							}%>
 							</siga:FilaConIconos>
+							
 	 <%		}
 	 }
 	%>  			

@@ -281,7 +281,6 @@
 						value="${DefinirUnidadFamiliarEJGForm.importeBienesInmuebles}"></c:out>&euro;</td>
 					<td align="right"><c:out
 						value="${DefinirUnidadFamiliarEJGForm.importeOtrosBienes}"></c:out>&euro;</td>
-					<td align="right"></td>
 		
 		</siga:FilaConIconos>
 	</logic:notEmpty>

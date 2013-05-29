@@ -62,7 +62,7 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 </head>
 
-<body onLoad="validarAncho_tablaResultados()">
+<body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">

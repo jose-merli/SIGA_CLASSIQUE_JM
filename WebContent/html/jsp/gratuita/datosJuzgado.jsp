@@ -218,7 +218,7 @@
 		</script>	
 	</head>
 
-	<body onLoad="validarAncho_tablaResultados()">
+	<body>
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
