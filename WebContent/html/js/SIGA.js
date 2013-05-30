@@ -45,7 +45,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.49 2013-05-29 17:02:42 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.50 2013-05-30 08:24:40 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -1965,7 +1965,7 @@ if (jQuery){
 	function loadFixedHeaderTables (tableId, fixedHeight) {
 		//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
-    	if (oTable.length > 0){  		
+    	if (oTable.length > 0){	
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
     			if (parseInt(fixedHeight) > 0)
@@ -2126,6 +2126,7 @@ if (jQuery){
 	            }
     		}
     		//fixCellBorders(oTable);
+    		jQuery("#"+tableId+"_tblFxHeadr").find("table").css("visibility","visible");
     	}
     	//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") END");
     }

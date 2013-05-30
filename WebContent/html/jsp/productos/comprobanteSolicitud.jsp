@@ -236,7 +236,7 @@
 		  				border="2"
 		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
 		   				columnSizes="20,15,17,8,8,6,10,11,5"
-		   				fixedHeight="80%">
+		   				fixedHeight="70%">
 
 				
 <% 				
