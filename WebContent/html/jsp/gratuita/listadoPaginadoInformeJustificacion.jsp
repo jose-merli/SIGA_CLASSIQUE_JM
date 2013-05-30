@@ -64,23 +64,27 @@ function informeGenerico(){
 	document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 	document.InformesGenericosForm.datosInforme.value=datos;
 
-	//aalg: INC_10641_SIGA: se quita la restricción de único tipo de informe
-	var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-	if (arrayResultado==undefined||arrayResultado[0]==undefined){
-	   		
-   	} 
-   	else {
-   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
-   		if(confirmar){
-   			var idEnvio = arrayResultado[0];
-		    var idTipoEnvio = arrayResultado[1];
-		    var nombreEnvio = arrayResultado[2];				    
-		    
-		   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-		   	document.DefinirEnviosForm.modo.value='editar';
-		   	document.DefinirEnviosForm.submit();
-   		}
-   	}
+	if(document.getElementById("informeUnico").value=='1'){
+		document.InformesGenericosForm.submit();
+	}else{
+	
+		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
+	}
 }
 
 function ajustarCabeceraTabla(){
