@@ -1,22 +1,64 @@
-var jQuery = false;
-try{
-	if (window.jQuery){
-		jQuery = window.jQuery;
-	} else if (window.$){
-		jQuery = window.$;
-	} else if (window.parent && window.parent.jQuery){
-		jQuery = window.parent.jQuery;
-	} else if (window.parent && window.parent.$){
-		jQuery = window.parent.$;
-	} else if (window.top && window.top.jQuery){
-		jQuery = window.top.jQuery;
-	} else if (window.top && window.top.$)
-		jQuery = window.top.$;
-} catch(msg){
-	jQuery = false;
+if (typeof jQuery == "undefined"){
+	// Tratamos de usar jQuery de main o de un parent
+	try{
+		var windowTop = window.top;
+		if (typeof windowTop != "undefined"){
+			//alert("busco en window TOP");
+			if (typeof windowTop.jQuery != "undefined"){
+				//alert("jquery encontrado en TOP: " +  + windowTop.location);
+				jQuery = windowTop.jQuery;
+			} else {				
+				while (windowTop!=window.self && typeof windowTop.jQuery == "undefined"){
+					windowTop = windowTop.top;
+					//alert("buscando TOP TOP");
+				}
+				if (typeof windowTop.jQuery != "undefined"){
+					jQuery = windowTop.jQuery;
+				} else {
+					//alert("jquery no encontrado para "+window.location );
+				}
+			}
+		} else {
+			//alert("jquery no encontrado para "+window.location);
+		}	
+	} catch(msg){
+		//alert("CATCH ERROR: " + msg.message);
+	}
 }
-if (!jQuery)
-	document.write('<script src="/SIGA/html/js/jquery.ui/js/jquery-1.8.3.js"><\/script>');
+/* PARA HACER ESTO DEBERÍA ESTAR T0DO EL JS EN UN CALLBACK
+if (typeof jQuery == "undefined"){
+	alert("cargando jquery en la misma página...");
+	// No se ha encontrado jQuery ni en top ni en un parent
+	// Cargamos jQuery y esperamos a que este listo	
+	var jqueryScript = document.createElement("script");
+	jqueryScript.type = "text/javascript";
+	jqueryScript.src = "/SIGA/html/js/jquery.js";
+	var headElement = document.getElementsByTagName("head")[0];
+	if (headElement.firstChild != undefined){
+		headElement.insertBefore(jqueryScript, headElement.firstChild);
+	} else {
+		headElement.appendChild(theNewScript);
+	}
+	var maxIntentos = 15;
+	var intento = 0;
+	var waitForLoad = function () {
+	    if (typeof jQuery != "undefined") {
+	        // jQuery LOADED!
+	    	alert("jquery CARGADO en la misma página...");
+	    } else if (intento < maxIntentos){
+	    	alert("jquery NO CARGADO en la misma página, reintentando...");
+	    	intento++;
+	        window.setTimeout(waitForLoad, 1000);
+	    } else {
+	    	alert("ERROR: Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde");
+	    }
+	};
+	alert("empieza pool setTimeout para carga jquery");
+	window.setTimeout(waitForLoad, 1000);
+}
+*/
+// Inicialización de jquery para el contexto actual
+window.top.jQueryContext(window);
 
 // *** BEGIN JQUERY PLUGINS *** //
 /**
@@ -45,7 +87,7 @@ if (!jQuery)
 *	
 *	@author 	Tim Benniks <tim@timbenniks.com>
 * 	@copyright  2009 timbenniks.com
-*	@version    $Id: SIGA.js,v 1.50 2013-05-30 08:24:40 tf2 Exp $
+*	@version    $Id: SIGA.js,v 1.51 2013-05-30 17:19:26 tf2 Exp $
 **/
 (function(jQuery)
 {
@@ -1965,7 +2007,7 @@ if (jQuery){
 	function loadFixedHeaderTables (tableId, fixedHeight) {
 		//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
-    	if (oTable.length > 0){	
+    	if (oTable.length > 0){
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
     			if (parseInt(fixedHeight) > 0)
@@ -2126,6 +2168,7 @@ if (jQuery){
 	            }
     		}
     		//fixCellBorders(oTable);
+    		//alert("hago visible la tabla");
     		jQuery("#"+tableId+"_tblFxHeadr").find("table").css("visibility","visible");
     	}
     	//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") END");

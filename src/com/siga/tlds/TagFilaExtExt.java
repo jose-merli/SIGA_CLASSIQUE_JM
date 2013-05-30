@@ -19,6 +19,10 @@ public class TagFilaExtExt extends TagFilaExt
 		this.sNombreTablaPadre = dato;
 	}
 	
+	public String getNombreTablaPadre(){
+		return this.sNombreTablaPadre;
+	}
+	
 	public int doStartTag() 
 	{
 		return super.doStartTag();
@@ -41,7 +45,7 @@ public class TagFilaExtExt extends TagFilaExt
 			  	aux += " name=\"" + accion + "_" + this.fila + "\" " +
 			  	"border=\"0\" " +
 			  	
-			  	"onClick=\"selectRow_" + this.sNombreTablaPadre + "(" + this.fila + "); "+ accion + "_" + this.sNombreTablaPadre + "(" + this.fila + "); \" " +
+			  	"onClick=\"selectRow(" + this.fila + ",'"+this.sNombreTablaPadre+"'); "+ accion + "(" + this.fila + ", '"+this.sNombreTablaPadre+"'); \" " +
 			  	//"onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
 			  	"onMouseOut=\"MM_swapImgRestore()\" " +
 			  	"onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + accion + "_on.gif',1)\">";

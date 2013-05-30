@@ -62,10 +62,10 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	
+	<!-- Incluido jquery en siga.js -->
+	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -106,7 +106,8 @@
 				informes.sjcs.pagos.literal.ejg,
 				informes.sjcs.pagos.literal.soj,
 		   		factSJCS.detalleFacturacion.literal.importe,"
-	columnSizes="18,38,8,8,8,8,8,4">
+	columnSizes="18,38,8,8,8,8,8,4"
+	fixedHeight="90%">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<%

@@ -329,6 +329,15 @@ public class TagFila extends TagSupport
 				  ">";
 			
 			aux += "</a>";*/
+		
+	String sIdPadre = "";
+	if (this instanceof TagFilaExtExt){
+		String nombrePadre = ((TagFilaExtExt)this).getNombreTablaPadre();
+		if (nombrePadre != null && !"".equals(nombrePadre)){
+			sIdPadre = ", '"+nombrePadre+"'";
+		}
+		
+	}
 	aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + accion + "_off.gif\" " +
 	  "style=\"cursor:pointer;\" " +
 			  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
@@ -340,7 +349,7 @@ public class TagFila extends TagSupport
 			  "border=\"0\" " +
 			  //"onClick=\"selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); parent.buscar();\" " +
 			  //"onClick=\" deshabilitariconos('iconoFila');selectRow(" + this.fila + "); "+ accion + "(" + this.fila + ");habilitariconos('iconoFila'); \" " +
-			  "onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
+			  "onClick=\" selectRow(" + this.fila + sIdPadre + "); "+ accion + "(" + this.fila + sIdPadre + "); \" " +
 			  "onMouseOut=\"MM_swapImgRestore()\" " +
 			  "onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + accion + "_on.gif',1)\">";
 		

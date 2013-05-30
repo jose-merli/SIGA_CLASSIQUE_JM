@@ -165,15 +165,16 @@ public class TagTable extends TagSupport {
 			out.println("});");
 			// FUNCIONES
 			// FUNCIÓN SELECTROW
-			out.println(" function selectRow(fila) {");
-			out.println("   if(document.getElementById('filaSelD')){ ");
+			out.println(" function selectRow(fila, id) {");
+			out.println("	if (typeof id == 'undefined')");
+			out.println("		id='"+this.name+"';");
+			out.println("   if(document.getElementById('filaSelD')) ");
 			out.println("   	document.getElementById('filaSelD').value = fila;");
 			out.println("		var iFila = fila -1;");
-			out.println("   	jQuery('#"+this.name+"_BodyDiv').find('tbody').find('tr:odd').attr('class','filaTablaPar');");
-			out.println("   	jQuery('#"+this.name+"_BodyDiv').find('tbody').find('tr:even').attr('class','filaTablaImpar');");
-			out.println("   	jQuery('#"+this.name+"_BodyDiv').find('tbody').find('tr:eq('+iFila+')').attr('class','listaNonEditSelected')");
+			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:odd').attr('class','filaTablaPar');");
+			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:even').attr('class','filaTablaImpar');");
+			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:eq('+iFila+')').attr('class','listaNonEditSelected')");
 //out.println("alert('Marco seleccionada ' + iFila + ' encontradas: ' + jQuery('#BodyDiv').find('tbody').find('tr:eq('+iFila+')'));");
-			out.println("  }");
 			out.println(" }");
 			out.println("");
 
@@ -213,8 +214,10 @@ public class TagTable extends TagSupport {
 			out.println();
 			
 			// FUNCIÓN CONSULTAR
-			out.println(" function "+ TagFila.accConsultar + "(fila) {");
-			out.println("	preparaDatos(fila,'"+this.name+"');");
+			out.println(" function "+ TagFila.accConsultar + "(fila, id) {");
+			out.println("	if (typeof id == 'undefined')");
+			out.println("		id='"+this.name+"';");
+			out.println("	preparaDatos(fila,id);");
 			out.println("   document.forms[0].modo.value = \"Ver\";");
 			if (!this.modal.equals("")) {
 //out.println("alert('llamando a ventaModalGeneral...');");
@@ -231,8 +234,10 @@ public class TagTable extends TagSupport {
 			out.println("");
 
 			// FUNCIÓN EDITAR
-			out.println(" function " + TagFila.accEditar + "(fila) {");
-			out.println("	preparaDatos(fila, '"+this.name+"');");
+			out.println(" function " + TagFila.accEditar + "(fila, id) {");
+			out.println("	if (typeof id == 'undefined')");
+			out.println("		id='"+this.name+"';");
+			out.println("	preparaDatos(fila, id);");
 			out.println("   document.forms[0].modo.value = \"Editar\";");
 			if (!this.modal.equals("")) {
 				if (this.modalScroll) {
@@ -256,14 +261,16 @@ public class TagTable extends TagSupport {
 			out.println("");
 
 			// FUNCIÓN BORRAR
-			out.println(" function " + TagFila.accBorrar + "(fila) {");
+			out.println(" function " + TagFila.accBorrar + "(fila, id) {");
+			out.println("	if (typeof id == 'undefined')");
+			out.println("		id='"+this.name+"';");
 			out.println("   var datos;");
 			String mensaje = UtilidadesString.getMensajeIdioma(getUserBean(),"messages.deleteConfirmation");
 			if (getMensajeBorrado() != null) {
 				mensaje = UtilidadesString.getMensajeIdioma(getUserBean(), getMensajeBorrado());
 			}
 			out.println("   if (confirm(\'"+ mensaje + "\')){");			
-			out.println("		preparaDatos(fila, '"+this.name+"');");
+			out.println("		preparaDatos(fila, id);");
 			out.println("   	var auxTarget = document.forms[0].target;");
 			out.println("   	document.forms[0].target=\"submitArea\";");
 			out.println("   	document.forms[0].modo.value = \"Borrar\";");

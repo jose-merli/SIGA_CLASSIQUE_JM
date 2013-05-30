@@ -20,10 +20,10 @@
 <head>
   
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
-	<!-- <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/jquery-ui.1.9.2.custom.min.css'/>"/> -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
-	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.9.2.custom.min.js'/>"></script> -->
+	
+	<!-- Incluido jquery en siga.js -->
+	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<title><siga:Idioma key="gratuita.operarUnidadFamiliar.literal.unidadFamiliar"/></title>
 	<siga:Titulo 
@@ -96,14 +96,13 @@
 		   columnNames="gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
 		   columnSizes="9,8,25,8,8,8,8,28"
 		   modal="G"
-		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado">
+		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
+		   fixedHeight="300">
 		  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="unidadFamiliar">
-	<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
@@ -113,7 +112,7 @@
 			<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 			<bean:define id="botones" name="solicitante" property="botones" type="java.lang.String"/>	
 			
-			<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="<%=botones%>" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" >
+			<siga:FilaConIconosExtExt fila="<%=String.valueOf(index.intValue())%>" botones="<%=botones%>" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" nombreTablaPadre="listadoUnidadFamiliar">
 					
 					
 			
@@ -187,11 +186,11 @@
 						</c:if>
 					</td>
 
-					</siga:FilaConIconos>
+					</siga:FilaConIconosExtExt>
 				</c:if>
 				<c:if	test="${solicitante.idPersona==DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
 				<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-				<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>"  visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
+				<siga:FilaConIconosExtExt fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>"  visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false" nombreTablaPadre="listadoUnidadFamiliar">
 					
 					<td>
 						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
@@ -261,16 +260,14 @@
 						
 						</c:if>
 					</td>
-
-					</siga:FilaConIconos>
-				
+			</siga:FilaConIconosExtExt>				
 				
 				</c:if>
 
 			
 		</logic:iterate>
 		
-		<siga:FilaConIconos fila="200" botones ="" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"  clase="listaNonEdit">
+		<siga:FilaConIconosExtExt fila="200" botones ="" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"  clase="listaNonEdit" nombreTablaPadre="listadoUnidadFamiliar">
 					
 					<td colspan="3" align="right"><b><siga:Idioma key="gratuita.listadoUnidadFamiliar.literal.totalUnidadFamiliar"/></b></td>
 					<td align="right"><c:out
@@ -282,7 +279,7 @@
 					<td align="right"><c:out
 						value="${DefinirUnidadFamiliarEJGForm.importeOtrosBienes}"></c:out>&euro;</td>
 		
-		</siga:FilaConIconos>
+		</siga:FilaConIconosExtExt>
 	</logic:notEmpty>
 
 </siga:Table>
@@ -311,15 +308,13 @@
 		   border="2"
 		   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.eejg.peticiones.usuarioPeticion,gratuita.eejg.peticiones.fechaPeticion,"
 		   columnSizes="5,10,30,30,10,"
-		   fixedHeight="500">
+		   fixedHeight="300">
 	<c:set var="disabledPorCambioLetrado" value="" />
 					  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="peticionesEejg">
-	<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	</logic:empty>
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
@@ -342,7 +337,7 @@
 						</c:choose>
 			
 				<bean:define id="elementosFila" name="peticion" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-				<siga:FilaConIconos fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
+				<siga:FilaConIconosExtExt fila="<%=String.valueOf(indice.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false" nombreTablaPadre="listadoPeticiones">
 					<td align="center">
 						<c:choose>
 							<c:when test="${peticion.idXml!=null&&peticion.personaUnidadFamiliar==true}">
@@ -370,7 +365,7 @@
 					</td>
 
 					
-					</siga:FilaConIconos>
+					</siga:FilaConIconosExtExt>
 
 				
 				
@@ -495,13 +490,8 @@
 			   	document.DefinirEnviosForm.submit();
 	   		}
 	   	}
-
-		
-		
-		
-		
-	   
 	} 
+	
 	function validaNumeroIdentificacion (nif,idTipoIdentificacion){
 		var errorNIE = false;
 		var errorNIF = false;
@@ -701,37 +691,41 @@
 		document.DefinirUnidadFamiliarEJGForm.submit();
 	
    	}
-	function ajustarCabeceraTabla(){
-		if(document.getElementById("listadoPeticiones")){
-			ajusteAlto("listadoUnidadFamiliarDiv");
-			ajusteAlto("listadoPeticionesDiv");
-			
-			
-			if (document.getElementById("listadoUnidadFamiliar").clientHeight < document.getElementById("listadoUnidadFamiliarDiv").clientHeight) {
-				document.getElementById("listadoUnidadFamiliarCabeceras").width='100%';
-		  	} else {
-			  
-		  		document.getElementById("listadoUnidadFamiliarCabeceras").width='98.43%';
-			  
-			   
-			   
-			   
-		  	}
-			
-				if (document.getElementById("listadoPeticiones").clientHeight < document.getElementById("listadoPeticionesDiv").clientHeight) {
-					document.getElementById("listadoPeticionesCabeceras").width='100%';
-					 
-				  } else {
-					  document.getElementById("listadoPeticionesCabeceras").width='98.43%';
-					  
-					   
-				  }
-				
-			
-			
-		}
-}
 	
+	function consultar(fila, id) {
+		if (typeof id == 'undefined')
+			id='listadoPeticiones';
+		preparaDatos(fila,id);
+	   document.forms[0].modo.value = "Ver";
+	   if (id=='listadoUnidadFamiliar'){
+		   ventaModalGeneral(document.forms[0].name,"G");
+	   } else
+	   		document.forms[0].submit();
+	 }
+
+	 function editar(fila, id) {
+		if (typeof id == 'undefined')
+			id='listadoPeticiones';
+		preparaDatos(fila, id);
+	   document.forms[0].modo.value = "Editar";
+	   if (id == 'listadoUnidadFamiliar'){
+		   var resultado = ventaModalGeneral(document.forms[0].name,"G");
+		   if (resultado) {
+		  	 	if (resultado[0]) {
+		   		refrescarLocalArray(resultado);
+		   	} else 
+		   	if (resultado=="MODIFICADO")
+		   	{
+		      		refrescarLocal();
+		   	}
+		   }
+	   } else
+	   	document.forms[0].submit();
+	 }
+	 function selectRowPeticiones(fila){
+		 selectRow(fila, 'listadoPeticiones');
+	 }
+/*	
 	function selectRowPeticiones(fila) {
 		   document.getElementById('filaSelD').value = fila;
 		   var tabla;
@@ -872,7 +866,7 @@
 		   	document.forms[0].target=auxTarget;
 		 	}
 		 }
-
+*/
 
 	
 	</script>

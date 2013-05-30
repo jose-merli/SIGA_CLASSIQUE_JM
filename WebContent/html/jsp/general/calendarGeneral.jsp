@@ -30,7 +30,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
 	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/css/calendar.css'/>">	
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.8.3.js'/>"></script>
+	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
 	
