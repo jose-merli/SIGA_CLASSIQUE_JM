@@ -303,7 +303,7 @@
 									if (fechaSolicitudBaja.equals("")) {
 										if (fechaDenegacion.equals("")) {
 											estadoInscripcion = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.pendiente");
-											elems[1]=new FilaExtElement("borrar","borrar",SIGAConstants.ACCESS_FULL);
+											elems[1]=new FilaExtElement("borrar", "borrarTurnoPendiente", SIGAConstants.ACCESS_FULL);
 											
 										} else {
 											estadoInscripcion = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.denegada");
@@ -529,7 +529,7 @@
 		}%>
 	
 		<script>		
-			function borrar(fila) {
+			function borrarTurnoPendiente(fila) {
 				var idTurno = 'oculto' + fila + '_' + 1;				
 				document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
 				
