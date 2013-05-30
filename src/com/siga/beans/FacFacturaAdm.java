@@ -2863,8 +2863,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	//		" fac_lineafactura.cantidad AS CANTIDAD, " +
 			" fac_lineafactura.iva AS IVA_PORCENTAJE, " +
 			" (fac_lineafactura.preciounitario * fac_lineafactura.cantidad *(fac_lineafactura.iva/100)) as IVA, " +
-			" (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) + (fac_lineafactura.preciounitario * fac_lineafactura.cantidad * (fac_lineafactura.iva/100)) as TOTAL_FACTURA, " +
-			" trunc(fac_factura.fechaemision) FECHAEMISION " +
+			" (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) + (fac_lineafactura.preciounitario * fac_lineafactura.cantidad * (fac_lineafactura.iva/100)) as TOTAL_FACTURA " +
 	
 			" from fac_factura, fac_lineafactura , cen_cliente, cen_persona " +
 	
@@ -2908,8 +2907,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			"    (fac_lineaabono.iva / 100))*-1 as IVA, "+
 			"    (fac_lineaabono.preciounitario * fac_lineaabono.cantidad)*-1 + "+
 			"    (fac_lineaabono.preciounitario * fac_lineaabono.cantidad * "+
-			"    (fac_lineaabono.iva / 100))*-1 as TOTAL_FACTURA, "+
-			"    trunc(fac_factura.fechaemision) FECHAEMISION " +
+			"   (fac_lineaabono.iva / 100))*-1 as TOTAL_FACTURA "+
 	
 			" from fac_abono, fac_lineaabono, cen_cliente, cen_persona, fac_factura "+
 			"   where fac_abono.idinstitucion = fac_lineaabono.idinstitucion "+
@@ -2933,7 +2931,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),fechaHasta);
 	
 			sql += " trunc(to_date(:"+contador+", 'YYYY/MM/DD HH24:mi:ss')) ";
-			sql +=" order by FECHAEMISION asc ";
+			sql +=" order by FECHA asc";
 	
 	
 	
