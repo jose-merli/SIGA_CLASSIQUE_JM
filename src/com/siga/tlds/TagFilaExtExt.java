@@ -34,7 +34,7 @@ public class TagFilaExtExt extends TagFilaExt
 		
 		if (permitido)
 		{
-			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + accion + "_off.gif\" " +
+			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
 			  	"style=\"cursor:hand;\" ";
 			  	if (alt==null || alt.equals("")) {
 			  	  aux +=" alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" ";
