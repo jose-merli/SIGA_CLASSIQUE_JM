@@ -31,6 +31,7 @@ if (typeof jQuery == "undefined"){
 	var intento = 0;
 	var waitForLoad = function () {
 	    if (typeof jQuery != "undefined") {
+	    	// Inicializa script
 	    	jQueryLoaded();
 	    } else if (intento < maxIntentos){
 	    	intento++;
@@ -41,9 +42,20 @@ if (typeof jQuery == "undefined"){
 	};
 	window.setTimeout(waitForLoad, 1000);
 } else {
+	// Se ha encontrado jQuery en top. Inicializa script
 	jQueryLoaded();
 }
 
+
+
+
+/**
+*	Inicialización una vez cargado jquery en el iframe
+*	Esta función ya incluye un método de onload de jquery
+*	por lo que cualquier cosa que se tenga que añadir en el
+*	onload debería estár aquí
+*	
+**/
 function jQueryLoaded(){
 	// Inicialización de jquery para el contexto actual
 	window.top.jQueryContext(window);
@@ -75,7 +87,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.52 2013-05-31 10:03:29 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.53 2013-05-31 10:07:17 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
