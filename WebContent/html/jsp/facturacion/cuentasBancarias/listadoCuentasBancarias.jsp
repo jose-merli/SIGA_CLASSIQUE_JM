@@ -85,7 +85,7 @@
 				
 				<siga:FilaConIconos	fila='${status.count}'				    
 	  				pintarEspacio="no"
-	  				botones="C,B"
+	  				botones="E,C,B"
 	  				clase="listaNonEdit">
 				
 				<input type="hidden" name="idCuentaBancaria_${status.count}" id="idCuentaBancaria_${status.count}"  value="${cuentaBancaria.idCuentaBancaria}">

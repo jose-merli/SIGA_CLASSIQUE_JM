@@ -53,7 +53,7 @@
 jQuery.noConflict();
 	
 
-	jQuery(function() {
+	/*jQuery(function() {
 		
 	   jQuery( "#bancoAjaxIn" ).autocomplete({
       		source: function( request, response ) {
@@ -91,7 +91,7 @@ jQuery.noConflict();
     
     });
   });
-	
+	*/
 	function buscar(){
 		sub();
 		jQuery.ajax({

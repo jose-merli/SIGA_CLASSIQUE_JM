@@ -307,7 +307,7 @@
 						String f = (String) htData
 								.get(CenCuentasBancariasBean.C_FECHABAJA);
 						if ((f == null) || (f.equals(""))) {
-							iconos += ",B";
+							iconos += ",E,B";
 						}
 		%>
 		<siga:FilaConIconos fila='<%=String.valueOf(i)%>'

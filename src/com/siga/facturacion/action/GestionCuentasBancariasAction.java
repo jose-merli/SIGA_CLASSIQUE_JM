@@ -64,9 +64,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 					}else if ( accion.equalsIgnoreCase("consultar")){
 						mapDestino = consultar(mapping, miForm, request, response);
 					}
-//					else if ( accion.equalsIgnoreCase("editar")){
-//						mapDestino = editar(mapping, miForm, request, response);
-//					}
+					else if ( accion.equalsIgnoreCase("editar")){
+						mapDestino = editar(mapping, miForm, request, response);
+					}
 					else if ( accion.equalsIgnoreCase("insertar")){
 						mapDestino = insertar(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("modificar")){
@@ -202,7 +202,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 	/**
 	 * Lo comenntamos porque no se usa
 	 */
-	/*
+	
 	protected String editar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -213,8 +213,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			CuentaBancariaVoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoImpl();
-			CuentaBancariaVo cuentaBancariaVo = cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
+			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			cuentasBancariasForm.setModo("modificar");
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
@@ -229,7 +229,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		return "editar";
 	}
-	*/
+	
 	protected String borrar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 

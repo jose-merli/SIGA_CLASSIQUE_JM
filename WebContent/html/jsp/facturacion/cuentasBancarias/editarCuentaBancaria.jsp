@@ -99,7 +99,16 @@
 	<html:hidden property="idCuentaBancaria" value ="${CuentasBancariasForm.idCuentaBancaria}"/>
 	<html:hidden property="fechaBaja" value ="${CuentasBancariasForm.fechaBaja}"/>
     <input type="hidden" id="actionModal" name="actionModal" />
-    
+    <c:set var="clasePorEdicion" value="box" />
+    <c:set var="disabledPorEdicion" value="false" />
+	<c:if	test="${CuentasBancariasForm.modo=='modificar'}">
+		<c:set var="clasePorEdicion" value="boxConsulta" />
+		<c:set var="disabledPorEdicion" value="true" />
+		<html:hidden property="codigoBanco" value ="${CuentasBancariasForm.codigoBanco}"/>
+		<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
+		<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
+		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
+	</c:if>
 	<table width="100%" border="0">
 			
 	
@@ -112,7 +121,7 @@
 							<!-- <html:text styleId="codigoBanco"
 									property="codigoBanco" name ="CuentasBancariasForm" size="4" maxlength="4"
 									styleClass="box" />-->
-								<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
+								<html:select  styleId="codigoBanco" property="codigoBanco"  styleClass="boxCombo" disabled="${disabledPorEdicion}" style="width:250px;">
 									<html:option value=""><siga:Idioma key="general.combo.seleccionar" />	</html:option>
 									<c:forEach items="${listaBancos}" var="banco">
 										<html:option value="${banco.codigo}"><c:out value="${banco.codigo}"/>&nbsp;<c:out value="${banco.nombre}"/></html:option>
@@ -122,16 +131,16 @@
 							</td>
 							<td class="labelText">-</td>
 							<td><html:text styleId="sucursalBanco"
-									property="sucursalBanco" name ="CuentasBancariasForm" size="4" maxlength="4"
-									styleClass="box" /></td>
+									property="sucursalBanco" name ="CuentasBancariasForm"  size="4" maxlength="4"
+									styleClass="${clasePorEdicion}" /></td>
 							<td class="labelText">-</td>
 
 							<td><html:text styleId="digControlBanco"
-									property="digControlBanco" name ="CuentasBancariasForm" size="2" maxlength="2"
-									styleClass="box" /></td>
+									property="digControlBanco" name ="CuentasBancariasForm"  size="2" maxlength="2"
+									styleClass="${clasePorEdicion}" /></td>
 							<td class="labelText">-</td>
 							<td><html:text styleId="cuentaBanco" property="cuentaBanco" name ="CuentasBancariasForm"
-									size="10" maxlength="10" styleClass="box" /></td>
+									size="10" maxlength="10" styleClass="${clasePorEdicion}" /></td>
 
 						</tr>
 					</table> </>
@@ -285,7 +294,6 @@
 	function accionGuardarCerrar() 
 	{
 		sub();
-		alertStop("document.CuentasBancariasForm"+document.CuentasBancariasForm.codigoBanco.value);
 		if(validateCuentasBancariasForm(document.CuentasBancariasForm)){
 			document.CuentasBancariasForm.submit();
 		}else{
