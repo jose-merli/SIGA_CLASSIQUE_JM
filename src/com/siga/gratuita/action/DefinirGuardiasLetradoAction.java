@@ -213,7 +213,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= "+fecha.trim()+" "; 
 				consulta += " AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL ";
 				consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NOT NULL AND ";
-				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) > "+fecha.trim()+")))" ;
+				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >= "+fecha.trim()+")))" ;
 			  
 					
 					
