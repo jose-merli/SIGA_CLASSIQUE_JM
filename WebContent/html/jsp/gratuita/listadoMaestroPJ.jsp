@@ -66,7 +66,8 @@
 			   name="listadoPJ"
 			   border="2"
 			   columnNames="gratuita.busquedaMaestroPJ.literal.partido,"
-			   columnSizes="90,10">
+			   fixedHeight="95%"
+			   columnSizes="85,15">
 			   
 		<%
 				int recordNumber=1;

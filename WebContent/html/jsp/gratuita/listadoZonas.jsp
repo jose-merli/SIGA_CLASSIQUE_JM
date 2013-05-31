@@ -57,7 +57,8 @@
 		   name="listadoZonas"
 		   border="2"
 		   columnNames="gratuita.busquedaZonas.literal.zona,"
-		   columnSizes="90,10">
+		   columnSizes="90,10"
+		   fixedHeight="95%">
 
   			<%
 	    	int recordNumber=1;

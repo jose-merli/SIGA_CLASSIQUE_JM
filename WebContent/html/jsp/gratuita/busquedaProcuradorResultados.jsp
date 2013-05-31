@@ -70,6 +70,7 @@
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
 			   			  gratuita.mantenimientoTablasMaestra.literal.fax1,"
 			   columnSizes = "10,7,13,7,10,12,12,8,8,10"
+			   fixedHeight="95%"
 			   modal = "m">
 
 		<%  if ((vProcuradores != null) && (vProcuradores.size() > 0)){ %>

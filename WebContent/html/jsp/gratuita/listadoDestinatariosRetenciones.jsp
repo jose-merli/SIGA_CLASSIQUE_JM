@@ -68,6 +68,7 @@
 		   		  border="1"
 		   		  columnNames="gratuita.maestros.destinatariosRetenciones.literal.orden,gratuita.maestros.destinatariosRetenciones.literal.descripcion,"
 		   		  columnSizes="20,70,10"
+		   		  fixedHeight="95%"
 		   		  modal="P">
 
 <%				

@@ -64,6 +64,7 @@
 		   name="listadoAreas"
 		   border="2"
 		   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionTipo,censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.descripcionDocu,"
+		   fixedHeight="95%"
 		   columnSizes="15,30,15,30,10">
 		   
   			<%
