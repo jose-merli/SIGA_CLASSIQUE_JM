@@ -53,6 +53,7 @@
 
 	<table class="tablaCentralCamposPeque" align="center">
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+		<bean:define id="inscripcionForm" name="InscripcionTGForm" type="com.siga.gratuita.form.InscripcionTGForm"/>
 		
 		<html:form action="${path}"  method="POST" target="submitArea">
 			<html:hidden name="InscripcionTGForm" property="modo"  />
@@ -75,8 +76,8 @@
 								<td class="labelText">
 									<siga:Idioma key="gratuita.gestionInscripciones.fechaBaja" />(*)
 								</td>
-								<td>
-									<siga:Fecha nombreCampo="fechaBaja"></siga:Fecha>
+								<td>									
+									<siga:Fecha nombreCampo="fechaBaja" valorInicial="${inscripcionForm.fechaBajaPrevia}"></siga:Fecha>
 								</td>
 							</tr>
 							
