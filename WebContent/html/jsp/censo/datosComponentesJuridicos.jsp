@@ -503,7 +503,6 @@
 					elementoSelTipoColegio.add(idtipocolegioaux);
 					 %>
 				<td id="colegiadoabogacia" style="display:none">
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.tipocolegio"/>
 					<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 
 					
 				</td>
