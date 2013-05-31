@@ -591,6 +591,10 @@ public class InscripcionTurno {
 				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
 			}
 			
+			// Actualiza la inscripcio de turno
+			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);			
+			
 			// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
 			List vGuardiasTurno = (List) admInscripcionGuardia.getInscripcionesGuardiasTurnoFechaEfectiva(
@@ -598,11 +602,7 @@ public class InscripcionTurno {
 					this.bean.getIdTurno(),
 					this.bean.getIdPersona(),
 					this.bean.getFechaValidacion(),
-					true);	
-									
-			// Actualiza la inscripcio de turno
-			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);
+					true);							
 			
 			// Recorre y actualiza las guardias
 			if(vGuardiasTurno!=null) {
@@ -1075,6 +1075,10 @@ public class InscripcionTurno {
 				htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, "");
 			}
 			
+			// Actualiza la inscripcio de turno
+			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);			
+			
 			// Obtenemos las inscripciones de guardias de una inscripcion de turno, que se tienen que modificar al cambiar la fecha efectiva de validacion de una inscripcion de turno
 			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);		
 			List vGuardiasTurno = (List) admInscripcionGuardia.getInscripcionesGuardiasTurnoFechaEfectiva(
@@ -1083,10 +1087,6 @@ public class InscripcionTurno {
 					this.bean.getIdPersona(),
 					this.bean.getFechaBaja(),
 					false);					
-			
-			// Actualiza la inscripcio de turno
-			ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-			scsInscripcionTurnoAdm.updateDirect(htInscTurno, clavesTurno, camposTurno);
 			
 			// Recorre y actualiza las guardias
 			if(vGuardiasTurno!=null) {

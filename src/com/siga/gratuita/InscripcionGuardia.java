@@ -324,6 +324,8 @@ public class InscripcionGuardia {
 			
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			
+			
+			// JPT: Siempre viene idGuardia a este metodo, pero lo dejo por si se necesita en el futuro
 			if(idGuardia==null){
 				
 				// Obtiene las guardias del turno
@@ -345,12 +347,6 @@ public class InscripcionGuardia {
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
 				insguardia.insert(laHash);
 				
-				ScsInscripcionGuardiaBean inscripcionInsertada = insguardia.getInscripcionGuardiaUltimaSinBaja(idInstitucion, idTurno, idPersona, idGuardia);
-				
-				if (inscripcionInsertada == null) {
-					throw new ClsExceptions("No se ha encontrado ninguna inscripcion");
-				}	
-				
 				if(this.getBean().getNumeroGrupo()!=null){
 					ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
 					admGrupoColegiado.insertaGrupoGuardiaColegiado(
@@ -358,7 +354,7 @@ public class InscripcionGuardia {
 						this.getBean().getIdTurno(),
 						this.getBean().getIdGuardia(),
 						this.getBean().getIdPersona(), 
-						inscripcionInsertada.getFechaSuscripcion(), 
+						(String) laHash.get(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION), 
 						this.getBean().getNumeroGrupo(), 
 						this.getBean().getOrdenGrupo().toString(), 
 						null);
