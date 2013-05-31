@@ -39,6 +39,7 @@ VERSIONES: -->
 	boolean desactivado  = false;
 	String clase   = "box";
 	String claseCombo = "boxCombo";
+	String claseEdicion = "box";
 	String botones = "C,Y,R";
 
 	String DB_TRUE  = ClsConstants.DB_TRUE;
@@ -79,15 +80,17 @@ VERSIONES: -->
 				else 
 					fechaBaja = "";
 		}
-
+		claseEdicion = "boxConsulta";
 		if (modo.equals("editar")) {
 			desactivado  = false;
 			editarCampos = true;	
 			botones += ",GAH";
+			
 		}
 		else {
 			desactivado = true;
 			clase = "boxConsulta";
+			
 			claseCombo = clase;
 			cuentaNumeroCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaNumeroCuenta);
 		}
@@ -375,7 +378,7 @@ VERSIONES: -->
 
 							<tr>		
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;(*)</td>
-								<td colspan="2" class="labelText"><html:text name="cuentasBancariasForm" property="titular" value="<%=titular%>" size="40" styleClass="<%=clase%>" maxlength="100" readOnly="<%=desactivado%>"></html:text></td>
+								<td colspan="2" class="labelText"><html:text name="cuentasBancariasForm" property="titular" value="<%=titular%>" size="40" styleClass="<%=claseEdicion%>" maxlength="100" readOnly="<%=desactivado%>"></html:text></td>
 								<%if (!modo.equals("nuevo")) {%>
 									<td class="labelText">
 										<siga:Idioma key="censo.datosCuentaBancaria.literal.sociedad"/>
@@ -424,10 +427,10 @@ VERSIONES: -->
 							
 							<!-- FILA -->
 							<tr>						
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=clase%>" readOnly="<%=desactivado%>" onChange="cargarBancos();"></html:text></td>
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
-								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
-								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>" onChange="cargarBancos();"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
+								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
+								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
 							</tr>
 						</table>
 					<!-- TABLA -->
