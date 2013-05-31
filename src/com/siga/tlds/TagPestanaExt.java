@@ -176,9 +176,9 @@ public class TagPestanaExt extends TagSupport {
 			out.println("   for(i=0; i<links.length;i++) {");
 			out.println("       var lnk=links[i];");
 			out.println("       if(lnk==objLink) {");
-			out.println("           $(lnk).addClass('here');");
+			out.println("           jQuery(lnk).addClass('here');");
 			out.println("       } else {");
-			out.println("           $(lnk).removeClass('here');");
+			out.println("           jQuery(lnk).removeClass('here');");
 			out.println("       }");
 			out.println("   }");
 			out.println("}");
