@@ -1058,7 +1058,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		where += " TRUNC(SCS_INSCRIPCIONTURNO.FECHAVALIDACION) <= "+fecha.trim()+" "; 
 		where += " AND (SCS_INSCRIPCIONTURNO.FECHABAJA IS NULL ";
 		where += " OR (SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL AND ";
-		where += " TRUNC(SCS_INSCRIPCIONTURNO.FECHABAJA) > "+fecha.trim()+")))" ;
+		where += " TRUNC(SCS_INSCRIPCIONTURNO.FECHABAJA) >= "+fecha.trim()+")))" ;
 	  
 		where += " OR ";
 		     // PENDIENTES DE BAJA
@@ -1226,7 +1226,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			boolean resultado = false;
 		    	
 	    	// Preparamos las fechas:
-	    	// Si provocan excepcione es porque no estan en formato largo sino en corto. En ese caso tomamos directamente su valor del bean:
+	    	// Si provocan excepciones es porque no estan en formato largo sino en corto. En ese caso tomamos directamente su valor del bean:
 	    	String sFechaSolicitud = "";
 	    	try {
 	    		sFechaSolicitud = GstDate.getFormatedDateShort("ES", FechaSolicitud);
@@ -1234,7 +1234,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				sFechaSolicitud = FechaSolicitud;
 			}
 	    	
-	    	// Hay que dar de baja las guardias del mismo dia que la inscripcion de turno
+	    	// Hay que dar de baja las guardias del turno
 	    	String sql = "DELETE SCS_INSCRIPCIONGUARDIA IG " +
 	    		" WHERE IG.IDINSTITUCION = " + idInstitucion + 
 					" AND IG.IDTURNO = " + idTurno +
