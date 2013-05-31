@@ -2520,7 +2520,7 @@ public class Row implements Serializable {
   	  				    contador++;
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.DATE)) {
-      					formatDate(row.get(keyfields[i]));
+      					//formatDate(row.get(keyfields[i]));
 					    sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
 						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
   	  				    contador++;
