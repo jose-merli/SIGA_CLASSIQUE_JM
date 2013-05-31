@@ -86,7 +86,7 @@
 	
 </head>
 
-<body onload="validaTabla();">
+<body>
 
 	<!-- Comienzo del formulario con los campos -->
 	<html:form action="/CEN_ActividadProfesional.do" method="POST" target="submitArea" style="display:none">
