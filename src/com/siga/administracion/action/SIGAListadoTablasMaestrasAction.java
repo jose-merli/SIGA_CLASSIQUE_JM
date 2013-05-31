@@ -268,7 +268,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        vFields.add(MasterBean.C_USUMODIFICACION);
 	        vFields.add(MasterBean.C_FECHAMODIFICACION);
 	        
-	        if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("")){
+	        if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("") && form.getIdRelacionado()!=null && !form.getIdRelacionado().equals("")){
 	        	row.setValue(form.getIdCampoCodigoRel(), new Integer(form.getIdRelacionado().split(",")[0]));
 	    		vFields.add(form.getIdCampoCodigoRel());
 	        }
@@ -294,7 +294,6 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        
 	        //Chequeo si existe una descripcion igual:
 	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,userBean.getLanguage())){
-//	        	request.setAttribute("mensaje","messages.inserted.descDuplicated");
 	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
 	        } else if (!sCodigoExt.trim().equals("") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,sTipoCodigoExt)) {  
 //	        	request.setAttribute("mensaje","messages.inserted.codDuplicated");

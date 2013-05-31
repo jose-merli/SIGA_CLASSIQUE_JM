@@ -52,7 +52,7 @@
 		try {
 			obj=miHash.get("IDTIPODICTAMENEJG");
 			vIntFDict.add(obj.equals("")? "0":obj.toString() + "," + (String)usr.getLocation());
-			datos[0]=(String) vIntFDict.get(0);
+			datos[0]=(String) obj.toString();
 			datos[1]=(String)usr.getLocation();
 		} catch (Exception e) {}
 	}
@@ -62,8 +62,8 @@
 			if(!obj.toString().equals("")){
 			vIntFCalf.add(obj.equals("")? "0":obj.toString());
 			vIntFDict.add(obj.equals("")? "0":obj.toString());
-			dato[0]=(String) vIntFCalf.get(0);
-			datos[2]=(String) vIntFCalf.get(0);
+			dato[0]=(String) obj.toString();
+			datos[2]=(String) obj.toString();
 			}else{
 				vIntFDict.add("-1");
 				datos[2]="-1";

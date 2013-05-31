@@ -131,6 +131,16 @@
 				}
 				listadoTablasMaestrasForm.numeroTextoPlantillas.value = textoPlantillas;
 				
+				if(document.getElementById("idTablaRel")){
+					if (document.getElementById("idRelacionado").value=='') {
+						nombre = document.getElementById("descripcionCampoAsociado").innerText;
+						error = "<siga:Idioma key='errors.required' arg0='"+nombre+"'/>";
+						alert(error);
+						fin();
+						return false;
+					}
+				}
+				
 				if (listadoTablasMaestrasForm.descripcionRegistro.value=='') {
 					alert('<siga:Idioma key="messages.consultas.error.descripcion"/>');
 					fin();
@@ -213,7 +223,7 @@
 							<siga:ConjCampos leyenda="administracion.catalogos.titulo">
 								<table class="tablaCampos" align="center">
 								<tr>
-											<td width="25%"></td>
+											<td width="20%"></td>
 											<td width="75%"> </td>
 										</tr>
 									<tr>
@@ -267,7 +277,7 @@
 											<% } %>                                    
 									</tr>
 									
-									<%if (sDarDeBaja!=null && sDarDeBaja.equals("S")){%>
+									<%if (sDarDeBaja!=null && sDarDeBaja.equals("S")&&!bNuevo){%>
 										<tr>
 											<td class="labelText">
 												<siga:Idioma key="general.baja"/>
@@ -328,7 +338,7 @@
 											<td width="75%"> </td>
 										</tr>
 										<tr>
-											<td class="labelText">
+											<td class="labelText" id="descripcionCampoAsociado">
 												<siga:Idioma key="<%=descripcionRel%>"/>
 											</td>
 											<td class="labelTextValue">
