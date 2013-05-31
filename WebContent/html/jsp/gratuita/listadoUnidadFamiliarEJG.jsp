@@ -97,7 +97,7 @@
 		   columnSizes="9,8,25,8,8,8,8,28"
 		   modal="G"
 		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
-		   fixedHeight="300">
+		   fixedHeight="275">
 		  
 	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="unidadFamiliar">
 	<tr class="notFound">
