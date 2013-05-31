@@ -105,6 +105,12 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">	
 			
+	function solicitarbaja(fila, id){
+		if (id == 'productos')
+			solicitarbaja_productos(fila);
+		else
+			solicitarbaja_servicios(fila);
+	}
 	
 		function solicitarbaja_servicios(fila) {		
 		        subicono('solicitarbaja_'+fila);
