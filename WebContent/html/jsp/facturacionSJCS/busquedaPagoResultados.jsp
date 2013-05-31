@@ -107,7 +107,8 @@
 		   name="tablaDatos"
 		   border="1"
 		   columnNames="<%=nombresCol %>"
-		   columnSizes="<%=tamanosCol %>">
+		   columnSizes="<%=tamanosCol %>"
+		   fixedHeight="95%">
 		   
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->

@@ -87,7 +87,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.53 2013-05-31 10:07:17 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.54 2013-05-31 12:46:04 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -785,7 +785,7 @@ function finsubicono(identificador) {
  */
 
 function sub(w){
-	var jQuery = window.top.jQuery;
+	//var jQuery = window.top.jQuery;
 	if(w == undefined) {
 		w = this.top;
 	}
@@ -838,7 +838,7 @@ function sub(w){
 
 function fin(w){
 	
-	var jQuery = window.top.jQuery;
+	//var jQuery = window.top.jQuery;
 	if(w == undefined) {
 		w = this.top;
 	}
@@ -1537,16 +1537,16 @@ function ocultarDIV(ident) {
 		document.getElementById(ident).style.display = "inline";
 		document.getElementById(ident).parentElement.className = 'legend';
 		if (document.getElementById(ident + "ImMas"))
-			document.getElementById(ident + "ImMas").style.display = "none"
+			document.getElementById(ident + "ImMas").style.display = "none";
 		if (document.getElementById(ident + "ImMenos"))
-			document.getElementById(ident + "ImMenos").style.display = "inline-block"
+			document.getElementById(ident + "ImMenos").style.display = "inline-block";
 	} else {
 		document.getElementById(ident).style.display = "none";
 		document.getElementById(ident).parentElement.className = 'legendNoBorder';
 		if (document.getElementById(ident + "ImMenos"))
-			document.getElementById(ident + "ImMenos").style.display = "none"
+			document.getElementById(ident + "ImMenos").style.display = "none";
 		if (document.getElementById(ident + "ImMas"))
-			document.getElementById(ident + "ImMas").style.display = "inline-block"
+			document.getElementById(ident + "ImMas").style.display = "inline-block";
 	}
 	ajusteAltoPaginador('resultado');
 	ajusteAlto('resultado');
@@ -1728,50 +1728,50 @@ function daysInFebruary (year){
 }
 function DaysArray(n) {
 	for (var i = 1; i <= n; i++) {
-		this[i] = 31
-		if (i==4 || i==6 || i==9 || i==11) {this[i] = 30}
-		if (i==2) {this[i] = 29}
+		this[i] = 31;
+		if (i==4 || i==6 || i==9 || i==11) {this[i] = 30;}
+		if (i==2) {this[i] = 29;}
    } 
-   return this
+   return this;
 }
 
 function validarFechaRegExp(dtStr){
-	var daysInMonth = DaysArray(12)
-	var pos1=dtStr.indexOf(dtCh)
-	var pos2=dtStr.indexOf(dtCh,pos1+1)
-	var strDay=dtStr.substring(0,pos1)
-	var strMonth=dtStr.substring(pos1+1,pos2)
-	var strYear=dtStr.substring(pos2+1)
-	strYr=strYear
-	if (strDay.charAt(0)=="0" && strDay.length>1) strDay=strDay.substring(1)
-	if (strMonth.charAt(0)=="0" && strMonth.length>1) strMonth=strMonth.substring(1)
+	var daysInMonth = DaysArray(12);
+	var pos1=dtStr.indexOf(dtCh);
+	var pos2=dtStr.indexOf(dtCh,pos1+1);
+	var strDay=dtStr.substring(0,pos1);
+	var strMonth=dtStr.substring(pos1+1,pos2);
+	var strYear=dtStr.substring(pos2+1);
+	strYr=strYear;
+	if (strDay.charAt(0)=="0" && strDay.length>1) strDay=strDay.substring(1);
+	if (strMonth.charAt(0)=="0" && strMonth.length>1) strMonth=strMonth.substring(1);
 	for (var i = 1; i <= 3; i++) {
-		if (strYr.charAt(0)=="0" && strYr.length>1) strYr=strYr.substring(1)
+		if (strYr.charAt(0)=="0" && strYr.length>1) strYr=strYr.substring(1);
 	}
-	month=parseInt(strMonth)
-	day=parseInt(strDay)
-	year=parseInt(strYr)
+	month=parseInt(strMonth);
+	day=parseInt(strDay);
+	year=parseInt(strYr);
 	if (pos1==-1 || pos2==-1){
 		//alert("The date format should be : dd/mm/yyyy")
-		return false
+		return false;
 	}
 	if (strMonth.length<1 || month<1 || month>12){
 		//alert("Please enter a valid month")
-		return false
+		return false;
 	}
 	if (strDay.length<1 || day<1 || day>31 || (month==2 && day>daysInFebruary(year)) || day > daysInMonth[month]){
 		//alert("Please enter a valid day")
-		return false
+		return false;
 	}
 	if (strYear.length != 4 || year==0 || year<minYear || year>maxYear){
 		//alert("Please enter a valid 4 digit year between "+minYear+" and "+maxYear)
-		return false
+		return false;
 	}
 	if (dtStr.indexOf(dtCh,pos2+1)!=-1 || isInteger(stripCharsInBag(dtStr, dtCh))==false){
 		//alert("Please enter a valid date")
-		return false
+		return false;
 	}
-return true
+return true;
 }
 
 
@@ -2041,6 +2041,7 @@ document.getElementById = function(elemIdOrName) {
 		//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){
+    		sub(window);
     		if (fixedHeight != undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
     			if (parseInt(fixedHeight) > 0)
@@ -2203,6 +2204,7 @@ document.getElementById = function(elemIdOrName) {
     		//fixCellBorders(oTable);
     		//alert("hago visible la tabla");
     		jQuery("#"+tableId+"_tblFxHeadr").find("table").css("visibility","visible");
+    		fin(window);
     	}
     	//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") END");
     }
