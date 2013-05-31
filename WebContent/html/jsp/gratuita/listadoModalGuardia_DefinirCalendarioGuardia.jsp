@@ -258,6 +258,8 @@
 				validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
 				if(validado.equals("1"))
 					activarCheck="checked";
+				else
+					activarCheck="";
 				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
