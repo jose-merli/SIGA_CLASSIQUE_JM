@@ -230,7 +230,7 @@ public class CuentasBancariasForm extends MasterForm {
 				buffer.append("-");
 				buffer.append(getSucursalBanco());
 				buffer.append("-");
-				buffer.append(getDigControlBanco());
+				buffer.append(getDigControlBanco()!=null?getDigControlBanco():"");
 				buffer.append("-");
 				buffer.append(getCuentaBanco());
 				return buffer.toString();

@@ -48,7 +48,7 @@ public class TagFilaExtExt extends TagFilaExt
 			  	"onClick=\"selectRow(" + this.fila + ",'"+this.sNombreTablaPadre+"'); "+ accion + "(" + this.fila + ", '"+this.sNombreTablaPadre+"'); \" " +
 			  	//"onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
 			  	"onMouseOut=\"MM_swapImgRestore()\" " +
-			  	"onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + accion + "_on.gif',1)\">";
+			  	"onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + icono + "_on.gif',1)\">";
 
 			println(out, aux);
 		}
