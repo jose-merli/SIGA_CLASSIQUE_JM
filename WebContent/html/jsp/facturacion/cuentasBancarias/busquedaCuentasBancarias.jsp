@@ -186,14 +186,7 @@ jQuery.noConflict();
 				<td colspan="3">
 					<table>
 						<tr>
-							<td>
-							
-							<!--   <html:text styleId="bancoAjaxIn"	property="bancoAjaxIn"  maxlength="200"		styleClass="box" />
-							&nbsp;
-							<html:text styleId="codigoBanco" property="codigoBanco" size="4" maxlength="9" styleClass="box" />
-								-->
-								
-								<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
+							<td><html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
 									<html:option value=""/>
 							
 						
@@ -201,6 +194,13 @@ jQuery.noConflict();
 										<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
 									</c:forEach>
 								</html:select>
+							
+							<!--   <html:text styleId="bancoAjaxIn"	property="bancoAjaxIn"  maxlength="200"		styleClass="box" />
+							&nbsp;
+							<html:text styleId="codigoBanco" property="codigoBanco" size="4" maxlength="9" styleClass="box" />
+								-->
+								
+								
 								
 								
 							</td>

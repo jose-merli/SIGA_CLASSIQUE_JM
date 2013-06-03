@@ -224,7 +224,7 @@
 								<table class="tablaCampos" align="center">
 								<tr>
 											<td width="20%"></td>
-											<td width="75%"> </td>
+											<td width="80%"> </td>
 										</tr>
 									<tr>
 										<td class="labelText">
@@ -334,12 +334,12 @@
 								<siga:ConjCampos leyenda="Asociado a">
 									<table class="tablaCampos" align="center">
 										<tr>
-											<td width="25%"></td>
-											<td width="75%"> </td>
+											<td width="20%"></td>
+											<td width="80%"> </td>
 										</tr>
 										<tr>
 											<td class="labelText" id="descripcionCampoAsociado">
-												<siga:Idioma key="<%=descripcionRel%>"/>
+												<siga:Idioma key="<%=descripcionRel%>"/>&nbsp;(*)
 											</td>
 											<td class="labelTextValue">
 												<% if (bEditable) { %>
@@ -379,8 +379,8 @@
 							
 									<table class="tablaCampos" align="center">
 										<tr>
-											<td width="25%"></td>
-											<td width="85%"> </td>
+											<td width="20%"></td>
+											<td width="80%"> </td>
 										</tr>
 										<tr>
 											<td class="labelText">
