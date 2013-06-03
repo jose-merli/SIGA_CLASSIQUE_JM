@@ -1,5 +1,6 @@
 package com.siga.gratuita;
 
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -8,7 +9,9 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.MasterBean;
@@ -424,8 +427,13 @@ public class InscripcionGuardia {
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};
 			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(laHash,claves,campos);
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {						
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "validarAlta");
+			}
 			
 			if(this.getBean().getNumeroGrupo()!=null){
 				ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);								
@@ -459,48 +467,54 @@ public class InscripcionGuardia {
 			Integer idTurno = this.bean.getIdTurno();
 			Integer idGuardia = this.bean.getIdGuardia();
 			Long idPersona = this.bean.getIdPersona();
-			String fechaSuscripcion = this.bean.getFechaSuscripcion();			
+			String fechaSuscripcion = this.bean.getFechaSuscripcion();
+			String fechaValidacionPrevia = this.bean.getFechaValidacion();
 			
 			// Preparamos los datos para la inscripcion de guardia
-			String[] clavesGuardia = null;
-			
+			String[] claves = null;			
 			if(idGuardia!=null){
-				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};		
 			}
 			
-			String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
 				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};		
 			
-			Hashtable htInscGuardia = new Hashtable();
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
+			Hashtable laHash = new Hashtable();
+			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
 			if(idGuardia!=null)
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
+				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
 			
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, GstDate.getApplicationFormatDate(usr.getLanguage(), fechaValidacion));
 			
 			if (observacionesValidacion!=null) {
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, observacionesValidacion);
 			} else {
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
 			}
-	
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(htInscGuardia, clavesGuardia, camposGuardia);
+			
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION + "PREVIA", fechaValidacionPrevia);
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "modificarFechaValidacion");
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar modificarFechaValidacion()");
@@ -522,47 +536,53 @@ public class InscripcionGuardia {
 			Integer idGuardia = this.bean.getIdGuardia();
 			Long idPersona = this.bean.getIdPersona();
 			String fechaSuscripcion = this.bean.getFechaSuscripcion();	
+			String fechaBajaPrevia = this.bean.getFechaBaja();
 			
 			// Preparamos los datos para la inscripcion de guardia
-			String[] clavesGuardia = null;
-			
+			String[] claves = null;			
 			if(idGuardia!=null){
-				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDGUARDIA,
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 				
 			} else {
-				clavesGuardia = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
+				claves = new String[] {ScsInscripcionGuardiaBean.C_IDINSTITUCION,				
 					ScsInscripcionGuardiaBean.C_IDTURNO, 
 					ScsInscripcionGuardiaBean.C_IDPERSONA,
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};		
 			}	
 			
-			String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHABAJA,
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,
 				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};				
 			
-			Hashtable htInscGuardia = new Hashtable();
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
+			Hashtable laHash = new Hashtable();
+			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
 			if(idGuardia!=null)
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
+				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
+			laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION, fechaSuscripcion);
 			
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
+			laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA, GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
 			
 			if (observacionesBaja!=null) {
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, observacionesBaja);
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, observacionesBaja);
 			} else {
-				htInscGuardia.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, "");
+				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, "");
 			}			
+			
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
 				
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(htInscGuardia, clavesGuardia, camposGuardia);
+			} else {
+				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA + "PREVIA", fechaBajaPrevia);
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "modificarFechaBaja");
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar modificarFechaBaja()");
@@ -687,8 +707,13 @@ public class InscripcionGuardia {
 				this.denegarBajaGuardia(usr);
 			}
 			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(laHash,claves,campos);
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {						
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "solicitaBaja");
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar solicitaBaja()");
@@ -750,8 +775,13 @@ public class InscripcionGuardia {
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};
 			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(laHash,claves,campos);
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {						
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "denegarAltaGuardia");
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar denegarAltaGuardia()");
@@ -825,8 +855,13 @@ public class InscripcionGuardia {
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};
 			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(laHash,claves,campos);
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {						
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "denegarBajaGuardia");
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar denegarBajaGuardia()");
@@ -928,8 +963,13 @@ public class InscripcionGuardia {
 				MasterBean.C_USUMODIFICACION,
 				MasterBean.C_FECHAMODIFICACION};
 			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			insguardia.updateDirect(laHash,claves,campos);
+			if(idGuardia!=null){
+				ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
+				insguardia.updateDirect(laHash, claves, campos);
+				
+			} else {						
+				this.actualizarInscripcionesGuardias(laHash, claves, campos, usr, "validarBaja");
+			}
 	
 			// Saltos y Compensaciones
 			if(bajaSyC!=null && bajaSyC.equalsIgnoreCase("G")){
@@ -944,4 +984,128 @@ public class InscripcionGuardia {
 			throw new ClsExceptions (e, "Error al ejecutar validarBaja()");
 		}			
 	} 
+	
+	/**
+	 * Actualiza las inscripciones de guardia
+	 * 
+	 * No podemos incluir la fecha de suscripcion, porque antes de realizar un gran cambio en las inscripciones de turno y guardia (mayo 2013)
+	 * no había control de las fechas. Por lo tanto, puede haber varias inscripciones con diferentes fechas de suscripcion.
+	 * Ademas, se realizan cambios a mano directamente en base de datos sin control, con lo que no nos podemos fiar de que esa fecha contenga todas las inscripciones de guardia que deberia.
+	 * 
+	 * @param hash
+	 * @param claves
+	 * @param campos
+	 * @param usr
+	 * @param accion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean actualizarInscripcionesGuardias(Hashtable hash, String[] claves, String [] campos, UsrBean usr, String accion) throws ClsExceptions {
+		String sNombreTabla = "SCS_INSCRIPCIONGUARDIA";
+		hash.put(MasterBean.C_USUMODIFICACION, usr.getUserName()); 
+		hash.put(MasterBean.C_FECHAMODIFICACION, "sysdate");
+		
+		try {
+			Connection con = ClsMngBBDD.getConnection();
+			Hashtable dataTypes = ClsMngBBDD.tableDataTypesAsString(con, sNombreTabla);
+			
+			String sql = " UPDATE " + sNombreTabla + " SET ";
+			
+			String sqlSet = "";
+			for (int i = 0; i < campos.length; i++) {
+				
+				String valor = "";		
+				if (hash.get(campos[i]) == null || hash.get(campos[i]).toString().trim().equals("") || hash.get(campos[i]).toString().equalsIgnoreCase("NULL") || "NULL".equalsIgnoreCase("" + campos[i])) {
+					valor = " NULL ";				
+				
+				} else if (dataTypes.get(campos[i]).equals("STRING")) {
+					valor = " '" + hash.get(campos[i]).toString() + "' ";
+					
+				} else if (dataTypes.get(campos[i]).equals("NUMBER")) {
+					valor = " " + hash.get(campos[i]) + " ";
+					
+				} else if (dataTypes.get(campos[i]).equals("DATE")) {
+					if (hash.get(campos[i]).toString().equalsIgnoreCase("sysdate")) {
+						valor = " SYSTIMESTAMP ";
+					} else {
+						valor = " TO_DATE('" + hash.get(campos[i]).toString() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+					}
+					
+				} else {
+					valor = " '" + hash.get(campos[i]).toString() + "' ";
+				}
+				
+				if (sqlSet.equals("")) {				
+					sqlSet += campos[i] + " = " + valor;					
+				} else {
+					sqlSet += ", " + campos[i] + " = " + valor;
+				}
+			}
+			
+			sql += sqlSet + " WHERE ";
+			
+			String sqlWhere = "";
+			for (int i = 0; i < claves.length; i++) {
+				if (!ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION.equals(claves[i])) {
+
+					String valor = "";				
+					if (dataTypes.get(claves[i]).equals("STRING")) {
+						valor = " '" + hash.get(claves[i]).toString() + "' ";
+						
+					} else if (dataTypes.get(claves[i]).equals("NUMBER")) {
+						valor = " " + hash.get(claves[i]) + " ";
+						
+					} else if (dataTypes.get(claves[i]).equals("DATE")) {
+						if (hash.get(claves[i]).toString().equalsIgnoreCase("sysdate")) {
+							valor = " SYSTIMESTAMP ";
+						} else {
+							valor = " TO_DATE('" + hash.get(claves[i]).toString() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+						}
+						
+					} else {
+						valor = " '" + hash.get(claves[i]).toString() + "' ";
+					}				
+				
+					if (sqlWhere.equals("")) {				
+						sqlWhere += claves[i] + " = " + valor;					
+					} else {
+						sqlWhere += " AND " + claves[i] + " = " + valor;
+					}
+				}
+			}				
+			
+			if (accion.equalsIgnoreCase("validarAlta") || accion.equalsIgnoreCase("denegarAltaGuardia")) {
+				sqlWhere += " AND " + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " IS NULL " +
+					" AND " + ScsInscripcionGuardiaBean.C_FECHADENEGACION + " IS NULL ";
+				
+			} else if (accion.equalsIgnoreCase("solicitaBaja") || accion.equalsIgnoreCase("validarBaja")) {
+				sqlWhere += " AND (" + ScsInscripcionGuardiaBean.C_FECHADENEGACION + " IS NULL " +
+					" OR " + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " IS NOT NULL) " +
+					" AND " + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL ";
+				
+			} else if (accion.equalsIgnoreCase("denegarAltaGuardia")) {
+				sqlWhere += " AND " + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " IS NOT NULL " +
+					" AND " + ScsInscripcionGuardiaBean.C_FECHADENEGACION + " IS NULL " + 
+					" AND " + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL ";
+				
+			} else if (accion.equalsIgnoreCase("modificarFechaValidacion")) {
+				sqlWhere += " AND " + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " IS NOT NULL " +
+					" AND " + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL " + 
+					" AND TRUNC(" + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + ") = TRUNC(TO_DATE('" + hash.get(ScsInscripcionGuardiaBean.C_FECHAVALIDACION + "PREVIA").toString() + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";;
+					
+			} else if (accion.equalsIgnoreCase("modificarFechaBaja")) {
+				sqlWhere += " AND " + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NOT NULL " + 
+					" AND TRUNC(" + ScsInscripcionGuardiaBean.C_FECHABAJA + ") = TRUNC(TO_DATE('" + hash.get(ScsInscripcionGuardiaBean.C_FECHABAJA + "PREVIA").toString() + "', '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) ";;		
+			}									
+			
+			sql += sqlWhere;
+
+			Row row = new Row();				
+			int valor = row.updateSQL(sql);
+			return valor > 0;
+
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar actualizarInscripcionesGuardias()");
+		}		       
+	}		
 }
