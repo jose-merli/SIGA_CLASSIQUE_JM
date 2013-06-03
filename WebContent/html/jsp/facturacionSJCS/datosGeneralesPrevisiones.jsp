@@ -244,11 +244,11 @@
 							</td>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
 							<td>
-								<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaInicio%>" <%if (consulta) {%>disabled="true"<%}%>></siga:Fecha>								
+								<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(consulta)%>"></siga:Fecha>								
 							</td>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
 							<td >								
-								<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaFin%>" <%if (consulta) {%>disabled="true"<%}%>></siga:Fecha>
+								<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaFin%>" disabled="<%=String.valueOf(consulta)%>"></siga:Fecha>
 							</td>	
 						</tr>
 					</table>

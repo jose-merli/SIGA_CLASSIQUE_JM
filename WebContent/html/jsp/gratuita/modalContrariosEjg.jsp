@@ -344,8 +344,12 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.fechaNacimiento"/>:
 		</td>
-		<td>			
-			<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" <% if (accion==null || accion.equalsIgnoreCase("ver")) { %> disabled="true"<%}%>></siga:Fecha>
+		<td>
+			<% if (accion==null || accion.equalsIgnoreCase("ver")) { %>
+				<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" disabled="true"></siga:Fecha>
+			<%} else {%>
+				<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Fecha>
+			<%}%>
 		</td>
 		<td class="labelText" colspan="4">		
 		</td>		

@@ -115,7 +115,7 @@
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenunciaSolicita"/>
 		</td>
 		<td>		
-			<siga:Fecha nombreCampo="fechaRenunciaSolicita" <% if (accion.equalsIgnoreCase("ver")) { %> disabled="true" <%}%>></siga:Fecha>
+			<siga:Fecha nombreCampo="fechaRenunciaSolicita" disabled="<%=String.valueOf(accion.equalsIgnoreCase("ver"))%>"></siga:Fecha>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia"/>

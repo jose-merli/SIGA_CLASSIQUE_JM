@@ -309,7 +309,11 @@
 		<siga:Idioma key="gratuita.operarDatosBeneficiario.literal.fechaNacimiento"/>
 	</td>
 	<td class="labelText">
-		<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" <% if (accion==null || accion.equalsIgnoreCase("ver")) { %> disabled="true" <%}%>></siga:Fecha>
+		<% if (accion==null || accion.equalsIgnoreCase("ver")) { %>
+			<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"  disabled="true" ></siga:Fecha>
+		<%} else {%>
+			<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Fecha>
+		<%}%>
 	</td>
 	<td class="labelText" colspan="5">		
 	</td>		
