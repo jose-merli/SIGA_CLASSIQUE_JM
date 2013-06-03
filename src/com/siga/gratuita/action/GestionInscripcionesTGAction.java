@@ -2965,6 +2965,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						
 					}else{
 						miForm.setFechaValidacion(null);
+						miForm.setFechaValidacionPrevia(null);
 						miForm.setObservacionesValidacion(null);
 						miForm.setModo("comprobarAmfvtModificar");
 						forward = "editarFechaValidacion";
@@ -2988,6 +2989,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						
 					}else{
 						miForm.setFechaValidacion(null);
+						miForm.setFechaValidacionPrevia(null);
 						miForm.setObservacionesValidacion(null);
 						miForm.setModo("comprobarAmfvgModificar");
 						forward = "editarFechaValidacion";						
@@ -3009,6 +3011,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else{
 						//cambio de fecha efectiva de baja de turno
 						miForm.setFechaBaja(null);
+						miForm.setFechaBajaPrevia(null);
 						miForm.setModo("comprobarAmfbtModificar");
 						forward = "editarFechaBaja";
 					}
@@ -3028,6 +3031,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else{
 						//cambio de fecha efectiva de baja de guardia
 						miForm.setFechaBaja(null);
+						miForm.setFechaBajaPrevia(null);
 						miForm.setModo("comprobarAmfbgModificar");
 						forward = "editarFechaBaja";
 					}
