@@ -134,7 +134,7 @@
 			name="tablaDatos" 
 			border="1"
 			columnNames="gratuita.listarGuardias.literal.turno,gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-			columnSizes="15,14,10,8,6,9,8,8,8,7,8" >
+			columnSizes="14,14,10,8,6,9,8,8,8,8,8" >
 			
 			<% if (obj.size()>0) { 
 	    		int recordNumber=1;
@@ -241,6 +241,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_10' name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=hash.get("OBSERVACIONESBAJA")%>'>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_11' name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=hash.get("FECHADENEGACION")%>'>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_12' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=hash.get("OBSERVACIONESDENEGACION")%>'>
+						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_13' name='oculto<%=String.valueOf(recordNumber)%>_13' value='<%=hash.get("OBSERVACIONESVALBAJA")%>'>
 			
 						<td><%=hash.get("TURNO")%></td>
 						<td><%=hash.get("GUARDIA")%></td>
@@ -308,6 +309,7 @@
 			<html:hidden property="observacionesDenegacion" />
 			<html:hidden property="fechaDenegacion" />
 			<html:hidden property="estadoPendientes" />
+			<html:hidden property="observacionesValBaja" />			
 			<input type="hidden" name="actionModal" />
 		</html:form>
 
@@ -388,30 +390,29 @@
 			function consultaInscripcion(fila) {
 				document.FormAConsultar.idInstitucion.value = <%=usr.getLocation()%>;
 			   
-				var idTurno 				= 'oculto' + fila + '_' + 1;
-				var fsoli = 'oculto' + fila + '_' + 5;
-				var osoli = 'oculto' + fila + '_' + 9;
-				
-				var fvali = 'oculto' + fila + '_' + 4;
-				var ovali = 'oculto' + fila + '_' + 8;
-				
+				var idTurno  = 'oculto' + fila + '_' + 1;
+				var fvali    = 'oculto' + fila + '_' + 4;				
+				var fsoli    = 'oculto' + fila + '_' + 5;
+				var fbaja    = 'oculto' + fila + '_' + 6;
 				var fsolbaja = 'oculto' + fila + '_' + 7;
-				var obaja = 'oculto' + fila + '_' + 10;
-				
-				var fbaja = 'oculto' + fila + '_' + 6;
-				var fechaDenegacion = 'oculto' + fila + '_' + 11;
+				var ovali    = 'oculto' + fila + '_' + 8;				
+				var osoli    = 'oculto' + fila + '_' + 9;				
+				var obaja    = 'oculto' + fila + '_' + 10;
+				var fechaDenegacion         = 'oculto' + fila + '_' + 11;
 				var observacionesDenegacion = 'oculto' + fila + '_' + 12;
-				document.FormAConsultar.idTurno.value = document.getElementById(idTurno).value;
-			   	document.FormAConsultar.fechaSolicitud.value = document.getElementById(fsoli).value;
+				var observacionesValidacionBaja = 'oculto' + fila + '_' + 13;
+				
+				document.FormAConsultar.idTurno.value 					= document.getElementById(idTurno).value;
+			   	document.FormAConsultar.fechaSolicitud.value 			= document.getElementById(fsoli).value;
 			   	document.FormAConsultar.observacionesSolicitud.value 	= document.getElementById(osoli).value;
 			    document.FormAConsultar.fechaValidacion.value 			= document.getElementById(fvali).value;
-				document.FormAConsultar.fechaBaja.value 			= document.getElementById(fbaja).value;
+				document.FormAConsultar.fechaBaja.value 				= document.getElementById(fbaja).value;
 				document.FormAConsultar.observacionesValidacion.value 	= document.getElementById(ovali).value;
 				document.FormAConsultar.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
 				document.FormAConsultar.observacionesBaja.value 		= document.getElementById(obaja).value;
-				document.FormAConsultar.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
-				document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
-				
+				document.FormAConsultar.fechaDenegacion.value 			= document.getElementById(fechaDenegacion).value;
+				document.FormAConsultar.observacionesDenegacion.value 	= document.getElementById(observacionesDenegacion).value;
+				document.FormAConsultar.observacionesValBaja.value 		= document.getElementById(observacionesValidacionBaja).value;				
 				
 			   	document.FormAConsultar.modo.value = "consultaInscripcion";
 			   	var resultado = ventaModalGeneral(document.FormAConsultar.name,"M");				 
