@@ -4480,8 +4480,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insGuardiaBean.setIdGuardia(idGuardia);
 			insGuardiaBean.setIdPersona(Long.valueOf(miForm.getIdPersona()));
 			insGuardiaBean.setFechaSuscripcion(miForm.getFechaSolicitud());
+			insGuardiaBean.setFechaValidacion(miForm.getFechaValidacionPrevia()); // Fecha de validacion previa
 			
-			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud
+			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + FechaValidacionPrevia
 			InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);				
 			
 			inscripcion.modificarFechaValidacion(miForm.getFechaValidacion(), miForm.getObservacionesValidacion(), usr);
@@ -4572,8 +4573,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			insGuardiaBean.setIdGuardia(idGuardia);
 			insGuardiaBean.setIdPersona(Long.valueOf(miForm.getIdPersona()));
 			insGuardiaBean.setFechaSuscripcion(miForm.getFechaSolicitud());
+			insGuardiaBean.setFechaBaja(miForm.getFechaBajaPrevia()); // Fecha de baja previa
 			
-			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud
+			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + FechaBajaPrevia
 			InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);					
 				
 			inscripcion.modificarFechaBaja(miForm.getFechaBaja(), miForm.getObservacionesValBaja(), usr);
