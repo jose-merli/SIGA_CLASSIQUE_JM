@@ -266,12 +266,11 @@
 				</siga:FilaConIconos>
 				<% recordNumber++;
 			} %>
+			
 		<%}else{%>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
 		<%}%>
 		</siga:Table>
 <%-- 	<html:form action="/JGR_SolicitarBajaTurno"  name="FormAValidar" type ="com.siga.gratuita.form.InscripcionTGForm"> --%>
@@ -285,8 +284,6 @@
 		
 <!-- 		<input type="hidden" name="actionModal" /> -->
 <%-- 	</html:form> --%>
-
-
 				
 			<siga:ConjBotonesAccion botones="bajaEnTurnosSel,X" clase="botonesDetalle"  />	
 

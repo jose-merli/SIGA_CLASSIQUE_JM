@@ -1,4 +1,5 @@
 <!-- listadoTurnosDisponibles.jsp -->
+
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
@@ -334,22 +335,20 @@
 			<td><%=UtilidadesString.mostrarDatoJSP(hash
 									.get("PARTIDOS"))%></td>
 		</siga:FilaConIconos>
-		<%
-			recordNumber++;
+		
+		<% 		recordNumber++;
 					}
-		%>
-		<%
+					
 			} else {
 		%>
-		<br>
-		<p class="titulitos" style="text-align: center">
-			<siga:Idioma key="messages.noRecordFound" />
-		</p>
-		<br>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>		
 		<%
 			}
 		%>
 	</siga:Table>
+	
 	<html:form action="/JGR_AltaTurnosGuardias" name="FormAValidar"
 		type="com.siga.gratuita.form.InscripcionTGForm" styleId="FormAValidar">
 		<html:hidden property="modo" />
