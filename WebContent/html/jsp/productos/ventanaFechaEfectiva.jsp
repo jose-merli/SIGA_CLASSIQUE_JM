@@ -70,7 +70,7 @@
 	
 	</head>
 
-	<body>
+	<body onload="quitarFoco()">
 
 			<!-- TITULO -->
 			<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -134,6 +134,10 @@
 					
 			}
 	
+			
+			function quitarFoco() {	 
+				document.getElementById("fechaEfectiva").blur();
+			}
 			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
