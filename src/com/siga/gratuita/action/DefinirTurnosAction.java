@@ -97,9 +97,7 @@ public class DefinirTurnosAction extends MasterAction {
 		Vector ocultos = new Vector();
 		String forward="";
 		
-		try {
-			
-			String entrada= (String) request.getSession().getAttribute("entrada");
+		try {			
 			DefinirTurnosForm form = (DefinirTurnosForm) formulario;
 			campos = (Vector)form.getDatosTablaVisibles(0);
 			ocultos = (Vector)form.getDatosTablaOcultos(0);
@@ -172,11 +170,13 @@ public class DefinirTurnosAction extends MasterAction {
 			form.setAlfabeticoApellidos(orden.getAlfabeticoApellidos().toString());
 			form.setAntiguedad(orden.getNumeroColegiado().toString());
 			form.setAntiguedadEnCola(orden.getAntiguedadCola().toString());
-			form.setEdad(orden.getFechaNacimiento().toString());
+			form.setEdad(orden.getFechaNacimiento().toString());			
 			
-			
-			if (entrada.equalsIgnoreCase("1")){
+			// Hemos visto, que el valor que debe decidir a que pagina ir, seria el valor de si el usuario es letrado
+			// String entrada= (String) request.getSession().getAttribute("entrada");
+			if (usr.isLetrado()){
 				forward= "editar";
+				
 			}else{
 				forward= "editarLetrado";
 			}
