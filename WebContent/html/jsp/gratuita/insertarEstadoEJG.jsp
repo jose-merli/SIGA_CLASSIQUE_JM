@@ -126,7 +126,7 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
 	</td>
 	<td>		
-		<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" <%if (bReadOnly){%>disabled="true"<%}%>></siga:Fecha>
+		<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(bReadOnly)%>"></siga:Fecha>
 	</td>
 	</tr>
 	<tr>
