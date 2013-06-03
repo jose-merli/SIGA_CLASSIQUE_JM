@@ -129,7 +129,6 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 	 * que correspondería con el turno seleccionado.
 	 */ 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
 		String forward="exception";
 		String numero = "";
 		String nombre = "";
@@ -190,45 +189,25 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 					" AND SCS_INSCRIPCIONGUARDIA.IDINSTITUCION = " + usr.getLocation() + //la de la sesión
 					" AND SCS_INSCRIPCIONGUARDIA.IDPERSONA = " + idPersona; // la del colegiado
 					
-			if(miForm==null || miForm.getBajaLogica()==null ||miForm.getBajaLogica().equals("N")){
-					//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
-					if(fecha==null || fecha.equalsIgnoreCase("sysdate"))
-						fecha = "trunc(sysdate)";
-					else
-						fecha = "'"+fecha+"'";
+			if(miForm==null || miForm.getBajaLogica()==null || miForm.getBajaLogica().equals("N")){
+				//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
+				if(fecha==null || fecha.equalsIgnoreCase("sysdate"))
+					fecha = "trunc(sysdate)";
+				else
+					fecha = "'"+fecha+"'";
 					
 				consulta += " AND ( ";
-	//										consulta += "   (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL ";
-	//										consulta += " AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <> ";
-	//										consulta += " NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ";
-	//										consulta += " OR ";
 					
-				   //PENDIENTES DE ALTA
-				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NULL ";
-				consulta += " AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
-	//										     
-				consulta += " OR ";
-				     //VALIDADOS DE ALTA
-				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL AND ";
-				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= "+fecha.trim()+" "; 
-				consulta += " AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL ";
-				consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NOT NULL AND ";
-				consulta += " TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >= "+fecha.trim()+")))" ;
-			  
-					
-					
-					
-	//										consulta += " OR ";
-					     // PENDIENTES DE BAJA
-	//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL AND SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL) ";
-					       
-					       //BAJA FUTURA
-	//										consulta += " OR TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >"+fecha.trim()+" ";
-					       
-					       // BAJA DENEGADA
-	//										consulta += " OR "; 
-	//										consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONGUARDIA.FECHASOLICITUDBAJA IS NOT NULL) ";
-				consulta += " ) ";
+				// ALTA PENDIENTE 
+				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL " +
+					" AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL " +
+					" AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
+								
+				// FECHAS DE ALTA DENTRO DEL PERIODO DE VIDA DE LA GUARDIA
+				consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL " +
+					" AND TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= " + fecha.trim() + 
+					" AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL " + 
+					" OR TRUNC(SCS_INSCRIPCIONGUARDIA.FECHABAJA) >= " + fecha.trim() + "))) ";
 			}
 									
 //								" ORDER BY SCS_INSCRIPCIONGUARDIA.FECHABAJA DESC, SCS_TURNO.NOMBRE";
@@ -238,10 +217,12 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 			request.getSession().setAttribute("resultado",resultado);
 			request.getSession().setAttribute("fechaConsultaInscripcionTurno",miForm.getFechaConsulta());
 			forward="listado";
-		}catch(Exception e){
-			throwExcp("messages.select.error",e,null);
+			
+		} catch(Exception e) {
+			throwExcp("messages.select.error", e, null);
 		}
-			return forward;
+		
+		return forward;
 	}
 	
 	/**
