@@ -158,7 +158,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        sSQL += " FROM " + idTabla +  " WHERE 1 = 1 "; 
 	                      
 	        //sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND " + sCampoCodigoExt + " = '" + sCodigoBusqueda + "'" : "";
-	        sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(sCampoCodigoExt,sCodigoBusqueda.trim()): "";
+	        sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(sCodigoBusqueda.trim(),sCampoCodigoExt): "";
 	        sSQL += (sDescripcionBusqueda!=null && !sDescripcionBusqueda.equals("")) ? " AND " + ComodinBusquedas.prepararSentenciaCompleta(sDescripcionBusqueda.trim(), "F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +")"): "";
 	        sSQL += (sLocal!=null && sLocal.equals("S")) ? " AND IDINSTITUCION = " + userBean.getLocation() : "";
 	        
