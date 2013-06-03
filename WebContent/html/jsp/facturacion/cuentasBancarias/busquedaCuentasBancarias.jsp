@@ -242,8 +242,8 @@ jQuery.noConflict();
 						</html:option>
 					</html:select></td>
 				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /></td>
-				<td align="left"><html:select styleId="fechaBaja"
-						property="fechaBaja" styleClass="boxCombo">
+				<td align="left"><html:select styleId="baja"
+						property="baja" styleClass="boxCombo">
 						<html:option value="">
 							
 						</html:option>
