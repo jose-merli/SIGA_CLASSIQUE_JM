@@ -131,31 +131,32 @@
 				}
 				listadoTablasMaestrasForm.numeroTextoPlantillas.value = textoPlantillas;
 				
+				var error = '';
 				if(document.getElementById("idTablaRel")){
 					if (document.getElementById("idRelacionado").value=='') {
-						nombre = document.getElementById("descripcionCampoAsociado").innerText;
+						nombre = document.getElementById("descripcionRel").value;
 						error = "<siga:Idioma key='errors.required' arg0='"+nombre+"'/>";
-						alert(error);
-						fin();
-						return false;
 					}
 				}
 				
 				if (listadoTablasMaestrasForm.descripcionRegistro.value=='') {
-					alert('<siga:Idioma key="messages.consultas.error.descripcion"/>');
-					fin();
-					return false;
-					
-				} else {					
-					if (validarCodigo()) {
-						listadoTablasMaestrasForm.submit();						
-						window.top.returnValue="MODIFICADO";
-						
-					}else{											
-						fin();
-						return false;					
-					}
+					error += '\n'+'<siga:Idioma key="messages.consultas.error.descripcion"/>';					
 				}
+				
+				var validacodigo = validarCodigo();
+				if(validacodigo!='')
+					error += '\n'+validacodigo;
+				
+				if (error=='') {
+					listadoTablasMaestrasForm.submit();						
+					window.top.returnValue="MODIFICADO";
+						
+				}else{	
+					alert(error);
+					fin();
+					return false;					
+				}
+				
 			}
 			
 			// Asociada al boton Cerrar
@@ -168,11 +169,10 @@
 					if(isNaN(listadoTablasMaestrasForm.codigoRegistroExt.value)) {
 						var aux1 = '<siga:Idioma key="general.codeext"/>';
 						var aux = '<siga:Idioma key="errors.byte" arg0="' + aux1 + '"/>';
-						alert(aux);
-						return false;
+						return aux;
 					}
 				}
-				return true;
+				return '';
 			}
 
 	 		function darDeBaja (o) {
@@ -324,7 +324,7 @@
 					%>
 					<input type="hidden" id="idTablaRel"  name="idTablaRel" value="<%=idTablaRel%>">
 					<input type="hidden" id="idCampoCodigoRel"  name="idCampoCodigoRel" value="<%=idCampoCodigoRel%>">
-					<input type="hidden" id="descripcionRel"  name="descripcionRel" value="<%=descripcionRel%>">
+					<input type="hidden" id="descripcionRel"  name="descripcionRel" value='<siga:Idioma key="<%=descripcionRel%>"/>'>
 					<input type="hidden" id="queryTablaRel"  name="queryTablaRel" value="<%=querycombo%>">
 					
 					
