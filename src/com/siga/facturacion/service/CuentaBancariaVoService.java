@@ -85,8 +85,7 @@ public class CuentaBancariaVoService implements VoService<CuentasBancariasForm,C
 			}
 			if(objectForm.getBaja()!=null && objectForm.getBaja().equals(AppConstants.DB_FALSE)){
 				objectVo.setFechabaja(null);
-			}else{
-				
+			}else if(objectForm.getBaja()!=null && objectForm.getBaja().equals(AppConstants.DB_TRUE)){
 				if(objectForm.getFechaBaja()!=null &&!objectForm.getFechaBaja().equals("")){
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					try {
@@ -94,9 +93,12 @@ public class CuentaBancariaVoService implements VoService<CuentasBancariasForm,C
 					} catch (ParseException e) {e.printStackTrace();
 						
 					}
-				}else{
-					objectVo.setBaja(AppConstants.DB_TRUE);
 				}
+				objectVo.setBaja(AppConstants.DB_TRUE);
+				
+			}else{
+				objectVo.setFechabaja(null);
+				objectVo.setBaja(null);
 			}
 			if(objectForm.getNif()!=null &&!objectForm.getNif().equals(""))
 				objectVo.setNif(objectForm.getNif());
