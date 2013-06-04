@@ -57,10 +57,13 @@
 		nombrePestanha = "";
 		numeroPestanha = "";
 	}
+	
 	//Si entrada=2 venimos desde menu censo:
-	String alto = "281";
-
-
+	String alto = "100%";	
+	String entrada = (String) request.getSession().getAttribute("entrada");
+	if (entrada.equalsIgnoreCase("2")){
+		alto = "281";
+	}
 %>	
 
 <html>
@@ -158,13 +161,9 @@
 			<input type="hidden" name="actionModal" id="actionModal" value="">
 		</html:form>	
 		
-		  <%
-
-			String nC="";
-			String tC="";
-				nC="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardiasTurno.literal.letradosGuardia,gratuita.listarGuardiasTurno.literal.validaJustificacion,gratuita.listarGuardiasTurno.literal.letradosApuntados,";
-				tC="30,10,10,10,10,10,10,10";
-			%>
+		  <%String nC="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardiasTurno.literal.letradosGuardia,gratuita.listarGuardiasTurno.literal.validaJustificacion,gratuita.listarGuardiasTurno.literal.letradosApuntados,";
+			String tC="30,10,10,10,10,10,10,10";%>
+			
 		<siga:Table 
 		   name="tablaDatos"
 		   border="1"
