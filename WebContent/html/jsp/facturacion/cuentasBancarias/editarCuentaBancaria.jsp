@@ -110,10 +110,16 @@
 		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
 	</c:if>
 	<table width="100%" border="0">
-			
+		<tr>
+			<td width="35%">&nbsp; </td>
+			<td  width="20%">&nbsp; </td>
+			<td  width="20%">&nbsp; </td>
+			<td  width="25%">&nbsp; </td>
+	
+		</tr>		
 	
 		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.banco" /> </td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.banco" />(*)</td>
 			<td colspan="3">
 					<table>
 						<tr>
@@ -155,7 +161,7 @@
 		</tr>
 		
 		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.nif" /> </td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.nif" />(*)</td>
 			<td><html:text styleId="nif" property="nif"	name ="CuentasBancariasForm"	size="9" maxlength="9" styleClass="box" /></td>
 			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sufijo" /> </td>
 			<td><html:text styleId="sufijo" property="sufijo" name ="CuentasBancariasForm"		size="3" maxlength="3" styleClass="box" /></td>
@@ -206,17 +212,17 @@
 			</tr>
 		
 		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaCargo" /> </td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaCargo" />(*)</td>
 			<td><html:text styleId="impComisionPropiaCargo" property="impComisionPropiaCargo" name ="CuentasBancariasForm" 	size="13" maxlength="13" styleClass="box" /></td>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaAbono" /></td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaAbono" />(*)</td>
 			<td><html:text styleId="impComisionPropiaAbono" property="impComisionPropiaAbono" name ="CuentasBancariasForm"	size="13" maxlength="13" styleClass="box" /></td>
 	
 		</tr>
 		
 		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaCargo" /></td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaCargo" />(*)</td>
 			<td><html:text styleId="impComisionAjenaCargo" property="impComisionAjenaCargo" name ="CuentasBancariasForm" size="13" maxlength="13" styleClass="box" /></td>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaAbono" /></td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaAbono" />(*)</td>
 			<td><html:text styleId="impComisionAjenaAbono" property="impComisionAjenaAbono"	name ="CuentasBancariasForm" size="13" maxlength="13" styleClass="box" /></td>
 	
 		</tr>
