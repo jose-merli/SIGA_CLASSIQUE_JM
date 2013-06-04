@@ -576,5 +576,11 @@ public class DefinirTurnosForm extends MasterForm {
 		this.incluirRegistrosConBajaLogica = s;
 	}
 	
+	public void setEntradaSJCS (String valor){ 
+		this.datos.put("ENTRADASJCS", valor.toUpperCase());
+	}
 	
+	public String getEntradaSJCS(){
+		return (String)this.datos.get("ENTRADASJCS");
+	}	
 }

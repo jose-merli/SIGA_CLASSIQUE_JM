@@ -198,7 +198,8 @@
 			<input type="hidden" id="fechaSolicitudBaja" name="fechaSolicitudBaja"/>
 			<input type="hidden" id="observacionesBaja" name="observacionesBaja"/>
 			<input type="hidden" id="turnosBajaLogica"  name="turnosBajaLogica" value="<%=turnosBajaLogica%>">
-			<input type="hidden" id="actionModal"  name="actionModal" value="">									
+			<input type="hidden" id="actionModal"  name="actionModal" value="">								
+			<input type="hidden" id="entradaSJCS"  name="entradaSJCS" value="<%=entrada%>">			
 		</html:form>	
 		
 		<siga:Table 
@@ -376,7 +377,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_27' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_28' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_29' name='oculto<%=String.valueOf(i)%>_29' value='<%=registro.get("OBSERVACIONESDENEGACION")%>'/>
-						<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'/>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'/>						
 						
 						<%if (!isEntradaSJCS){%>
 							<td><%=registro.get("ABREVIATURA")%>&nbsp;</td>
