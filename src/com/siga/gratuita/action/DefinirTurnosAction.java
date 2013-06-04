@@ -172,9 +172,10 @@ public class DefinirTurnosAction extends MasterAction {
 			form.setAntiguedadEnCola(orden.getAntiguedadCola().toString());
 			form.setEdad(orden.getFechaNacimiento().toString());			
 			
-			// Hemos visto, que el valor que debe decidir a que pagina ir, seria el valor de si el usuario es letrado
-			// String entrada= (String) request.getSession().getAttribute("entrada");
-			if (usr.isLetrado()){
+			// Hemos visto, que el valor que debe decidir a que pagina ir, seria el valor de si el usuario es letrado			
+			// if (usr.isLetrado()){
+			String entrada= (String) request.getSession().getAttribute("entrada");
+			if (entrada.equalsIgnoreCase("1")){
 				forward= "editar";
 				
 			}else{
