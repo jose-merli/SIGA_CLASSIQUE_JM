@@ -206,7 +206,7 @@
 		name="tablaDatos" 
 		border="1"
 		columnNames="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-		columnSizes="15,8,10,6,7,8,8,8,6,6" 
+		columnSizes="20,12,10,8,8,8,10,8,8,8" 
 		fixedHeight="70%">
 		
 		<% if (obj == null || obj.size() == 0) { %>

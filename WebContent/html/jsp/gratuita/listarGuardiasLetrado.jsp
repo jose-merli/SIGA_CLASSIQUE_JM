@@ -134,7 +134,7 @@
 			name="tablaDatos" 
 			border="1"
 			columnNames="gratuita.listarGuardias.literal.turno,gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-			columnSizes="14,14,10,8,6,9,8,8,8,8,8" >
+			columnSizes="13,13,10,8,6,8,8,10,8,8,8" >
 			
 			<% if (obj.size()>0) { 
 	    		int recordNumber=1;
