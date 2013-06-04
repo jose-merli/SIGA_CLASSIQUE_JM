@@ -744,7 +744,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				sql += " ORDER BY E."+ExpExpedienteBean.C_IDINSTITUCION+",NOMBRETIPOEXPEDIENTE";
 			}
 			//BEGIN BNS
-			sql += ",E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" desc,E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" desc";
+			sql += ",E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" "+ascOdesc+" ,E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" " + ascOdesc;
 			//END BNS
 
 			Paginador paginador = new Paginador(sql);				
