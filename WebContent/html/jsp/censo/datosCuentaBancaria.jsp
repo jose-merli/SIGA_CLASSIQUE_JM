@@ -39,7 +39,7 @@ VERSIONES: -->
 	boolean desactivado  = false;
 	String clase   = "box";
 	String claseCombo = "boxCombo";
-	String claseEdicion = "box";
+	boolean desactivadoEdicion = false;
 	String botones = "C,Y,R";
 
 	String DB_TRUE  = ClsConstants.DB_TRUE;
@@ -62,45 +62,55 @@ VERSIONES: -->
 	String cuentaNumeroCuenta = "";
 	String fechaBaja = "";
 
-	String modo=(String)request.getAttribute("modoConsulta");		
+	String modo=(String)request.getAttribute("modoConsulta");
+	String claseEdicion = "box";
 	if (modo.equals("ver") || modo.equals("editar")) {
 		htData = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 		if (htData != null) {
-				titular = String.valueOf(htData.get(CenCuentasBancariasBean.C_TITULAR));
-				cuentaContable = String.valueOf(htData.get(CenCuentasBancariasBean.C_CUENTACONTABLE));
-				cbo_Codigo = String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO));
-				cuentaCodigoSucursal = String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL));
-				cuentaDigitoControl  = String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL));
-				cuentaNumeroCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA));
-				idCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDCUENTA));
-				idInstitucion = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDINSTITUCION));
-				fechaBaja = String.valueOf(htData.get(CenCuentasBancariasBean.C_FECHABAJA));
-				if ((fechaBaja != null) && !fechaBaja.equals(""))
-					fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaBaja));
-				else 
-					fechaBaja = "";
+			titular = String.valueOf(htData.get(CenCuentasBancariasBean.C_TITULAR));
+			cuentaContable = String.valueOf(htData.get(CenCuentasBancariasBean.C_CUENTACONTABLE));
+			cbo_Codigo = String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO));
+			cuentaCodigoSucursal = String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL));
+			cuentaDigitoControl  = String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL));
+			cuentaNumeroCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA));
+			idCuenta = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDCUENTA));
+			idInstitucion = String.valueOf(htData.get(CenCuentasBancariasBean.C_IDINSTITUCION));
+			fechaBaja = String.valueOf(htData.get(CenCuentasBancariasBean.C_FECHABAJA));
+			if ((fechaBaja != null) && !fechaBaja.equals(""))
+				fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaBaja));
+			else 
+				fechaBaja = "";
 		}
+		
+		
+		
+	}
+	if (modo.equals("editar")) {
+		desactivadoEdicion = true;
+		desactivado  = false;
+		editarCampos = true;	
+		botones += ",GAH";
 		claseEdicion = "boxConsulta";
-		if (modo.equals("editar")) {
-			desactivado  = false;
-			editarCampos = true;	
-			botones += ",GAH";
-			
-		}
-		else {
-			desactivado = true;
-			clase = "boxConsulta";
-			
-			claseCombo = clase;
-			cuentaNumeroCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaNumeroCuenta);
-		}
-	} 
-	else {
-		if (modo.equals("nuevo")) {
-			editarCampos = true;	
-			desactivado = false;
-			titular = nombreUsu;
-		}
+		
+		
+		
+		
+		
+		
+	}else if (modo.equals("ver")) {
+		desactivado = true;
+		desactivadoEdicion = true;
+		editarCampos = false;
+		clase = "boxConsulta";
+		claseCombo = clase;
+		cuentaNumeroCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaNumeroCuenta);
+	
+	}else if (modo.equals("nuevo")) {
+		editarCampos = true;	
+		desactivado = false;
+		desactivadoEdicion = false;
+		titular = nombreUsu;
+		
 	}
 %>	
 
@@ -358,6 +368,7 @@ VERSIONES: -->
 			<html:hidden property="idCuenta" 		value="<%=idCuenta%>"/> 
 			<html:hidden property="idPersona" 		value="<%=idPersona%>"/> 
 			<html:hidden property="idInstitucion" 	value="<%=idInstitucion%>"/> 
+			<html:hidden property="titular" 	value="<%=titular%>"/>
 			<html:hidden property="motivo" 			value=""/> 
 		<%}%>
 		<input type="hidden" name="abonoCargoOrig" value="<%=UtilidadesHash.getString(htData,CenCuentasBancariasBean.C_ABONOCARGO)%>">
@@ -378,7 +389,10 @@ VERSIONES: -->
 
 							<tr>		
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;(*)</td>
-								<td colspan="2" class="labelText"><html:text name="cuentasBancariasForm" property="titular" value="<%=titular%>" size="40" styleClass="<%=claseEdicion%>" maxlength="100" readOnly="<%=desactivado%>"></html:text></td>
+								<td colspan="2" class="labelText">
+							
+									<html:text size="40" maxlength="100" name="cuentasBancariasForm" property="titular" value="<%=titular%>" styleClass="<%claseEdicion%>" readonly="<%=desactivadoEdicion%>" />
+								</td>
 								<%if (!modo.equals("nuevo")) {%>
 									<td class="labelText">
 										<siga:Idioma key="censo.datosCuentaBancaria.literal.sociedad"/>
@@ -404,7 +418,7 @@ VERSIONES: -->
 						<% }else{ %>
 								<tr>
 									<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.cuentaContable"/></td>
-									<td class="labelText"><html:text name="cuentasBancariasForm" property="cuentaContable" value="<%=cuentaContable%>" size="20" maxlength="20" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+									<td class="labelText"><html:text name="cuentasBancariasForm" property="cuentaContable" value="<%=cuentaContable%>" size="20" maxlength="20" styleClass="<%=clase%>" disabled="<%=desactivado%>"></html:text></td>
 								</tr>
 						<% } %>  					
 							
@@ -427,10 +441,14 @@ VERSIONES: -->
 							
 							<!-- FILA -->
 							<tr>						
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>" onChange="cargarBancos();"></html:text></td>
-								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
-								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
-								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=claseEdicion%>" readOnly="<%=desactivado%>"></html:text></td>
+							
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=claseEdicion%>"  readonly="<%=desactivadoEdicion%>" onChange="cargarBancos();"></html:text></td>
+								<td class="labelText"><html:text size="4"  maxlength="4" name="cuentasBancariasForm" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" ></html:text></td>
+								<td class="labelText"><html:text size="5"  maxlength="2" name="cuentasBancariasForm" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" ></html:text></td>
+								<td class="labelText"><html:text size="10" maxlength="10" name="cuentasBancariasForm" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>"></html:text></td>
+									
+							
+								
 							</tr>
 						</table>
 					<!-- TABLA -->

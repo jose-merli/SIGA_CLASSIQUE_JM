@@ -130,7 +130,7 @@
 								<html:select  styleId="codigoBanco" property="codigoBanco"  styleClass="boxCombo" disabled="${disabledPorEdicion}" style="width:250px;">
 									<html:option value=""><siga:Idioma key="general.combo.seleccionar" />	</html:option>
 									<c:forEach items="${listaBancos}" var="banco">
-										<html:option value="${banco.codigo}"><c:out value="${banco.codigo}"/>&nbsp;<c:out value="${banco.nombre}"/></html:option>
+										<html:option value="${banco.codigo}" ><c:out value="${banco.codigo}"/>&nbsp;<c:out value="${banco.nombre}"/></html:option>
 									</c:forEach>
 								</html:select>
 
@@ -138,15 +138,15 @@
 							<td class="labelText">-</td>
 							<td><html:text styleId="sucursalBanco"
 									property="sucursalBanco" name ="CuentasBancariasForm"  size="4" maxlength="4"
-									styleClass="${clasePorEdicion}" /></td>
+									styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" /></td>
 							<td class="labelText">-</td>
 
 							<td><html:text styleId="digControlBanco"
 									property="digControlBanco" name ="CuentasBancariasForm"  size="2" maxlength="2"
-									styleClass="${clasePorEdicion}" /></td>
+									styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"/></td>
 							<td class="labelText">-</td>
 							<td><html:text styleId="cuentaBanco" property="cuentaBanco" name ="CuentasBancariasForm"
-									size="10" maxlength="10" styleClass="${clasePorEdicion}" /></td>
+									size="10" maxlength="10" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"/></td>
 
 						</tr>
 					</table> </>
