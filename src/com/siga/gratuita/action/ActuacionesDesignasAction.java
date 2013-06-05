@@ -1188,7 +1188,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
 		UserTransaction tx = null;
-		Vector visibles = miform.getDatosTablaVisibles(0);
+		Vector visibles = miform.getDatosTablaOcultos(0);
 		Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 		boolean ok = false;
 		try {
