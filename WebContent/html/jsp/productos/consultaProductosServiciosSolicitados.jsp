@@ -268,7 +268,7 @@
 												}
 												
 												precio = UtilidadesNumero.redondea ((precio * (1 + (iva / 100))), 2);
-												String estadoPago	= UtilidadesProductosServicios.getEstadoPago(UtilidadesHash.getString(hash, "ESTADOPAGO"));		
+												String estadoPago = UtilidadesHash.getString(hash, "ESTADOPAGO");		
 												
 												
 																											
@@ -374,7 +374,7 @@
 						  iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
 						}
 						precio = UtilidadesNumero.redondea ((precio * (1 + (iva / 100))), 2);			
-						String estadoPago = UtilidadesProductosServicios.getEstadoPago(UtilidadesHash.getString(hash, "ESTADOPAGO"));																																								
+						String estadoPago = UtilidadesHash.getString(hash, "ESTADOPAGO");																																								
 				%> 			
 						<siga:FilaConIconosExtExt fila='<%=String.valueOf(k)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit" nombreTablaPadre="servicios" >
 							<td>
