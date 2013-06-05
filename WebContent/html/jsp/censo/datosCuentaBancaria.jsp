@@ -101,6 +101,7 @@ VERSIONES: -->
 		desactivado = true;
 		desactivadoEdicion = true;
 		editarCampos = false;
+		claseEdicion = "boxConsulta";
 		clase = "boxConsulta";
 		claseCombo = clase;
 		cuentaNumeroCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaNumeroCuenta);
@@ -391,7 +392,7 @@ VERSIONES: -->
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;(*)</td>
 								<td colspan="2" class="labelText">
 							
-									<html:text size="40" maxlength="100" name="cuentasBancariasForm" property="titular" value="<%=titular%>" styleClass="<%claseEdicion%>" readonly="<%=desactivadoEdicion%>" />
+									<html:text size="40" maxlength="100" name="cuentasBancariasForm" property="titular" value="<%=titular%>" styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" />
 								</td>
 								<%if (!modo.equals("nuevo")) {%>
 									<td class="labelText">
