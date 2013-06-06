@@ -538,6 +538,19 @@
 		function setFechaResolucionCAJG(){
 			var acta =jQuery("#idActaComp option:selected").text().split(" - ");
 			jQuery("#fechaResolucionCAJG").val(acta[1]);
+			if(acta[1]&& acta[1]!=''){
+				document.forms[0].fechaResolucionCAJG.className="boxConsulta";
+				document.forms[0].fechaResolucionCAJG.readOnly="true";
+				jQuery("#calendario_fechaResolucionCAJG").hide();
+			}else{
+				document.forms[0].fechaResolucionCAJG.className="box";
+				document.forms[0].fechaResolucionCAJG.readOnly="";
+				if (jQuery("#calendario_fechaResolucionCAJG").length > 0){
+					jQuery("#calendario_fechaResolucionCAJG").show();
+				} else {
+					jQuery("#fechaResolucionCAJG").after('<a href="javascript://" onclick="return showCalendarGeneral(fechaResolucionCAJG);"><img id="calendario_fechaResolucionCAJG" src="/SIGA/html/imagenes/calendar.gif" border="0"></a>');
+				}
+			}
 		}
 		
 		function resetActa(){
