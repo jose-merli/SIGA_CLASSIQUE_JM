@@ -29,7 +29,10 @@
 	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
 	String tipoacceso = userBean.getAccessType();
 	String idinstitucion = userBean.getLocation();
-
+	
+	//aalg. incidencia del 18 de mayo de 2012. para ver si hay permisos para ese perfil para crear nuevos expedientes
+	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente");
+	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String) request.getAttribute("buscar");
 	String funcionBuscar = "";
@@ -447,7 +450,8 @@
 
 
 <%
-	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ)) {
+//aalg: controlar si tiene acceso al Nuevo
+	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ) || !accesoNuevo.equalsIgnoreCase(SIGAConstants.ACCESS_FULL)) {
 %>
 <siga:ConjBotonesBusqueda botones="B,A,CON" />
 <%

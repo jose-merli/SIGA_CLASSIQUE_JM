@@ -51,11 +51,6 @@
 				<!-- INICIO: CAMPOS DE BUSQUEDA-->
 				<siga:ConjCampos leyenda="FactSJCS.mantRetencionesJ.leyendaRetenciones">
 					<table align="left" border="0"   width="100%">
-					
-    					<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-							<input type="hidden" name="actionModal" value="">
-							<input type="hidden" name="modo" value="abrirBusquedaModal">
-						</html:form>
 	
 						<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 						
@@ -91,7 +86,7 @@
 									<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaNotificacionHasta"/>
 								</td>
 								<td class="labelText" >
-									<siga:Fecha nombreCampo="fechaNotificacionHasta" />
+									<siga:Fecha nombreCampo="fechaNotificacionHasta" campoCargarFechaDesde="fechaNotificacionDesde"/>
 								</td>	
 							</tr>
 							
@@ -121,6 +116,10 @@
 								</td>
 							</tr>	
 						</html:form>
+						<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+							<input type="hidden" name="actionModal" value="">
+							<input type="hidden" name="modo" value="abrirBusquedaModal">
+						</html:form>
 					</table>
 				</siga:ConjCampos>
 			</td>
@@ -136,15 +135,15 @@
 	<script language="JavaScript">
 		// Funcion asociada a boton buscar
 		function buscar() {	
-			if((validarFecha(document.forms[1].fechaNotificacionDesde.value)) &&
-			   (validarFecha(document.forms[1].fechaNotificacionHasta.value))) {
+			if((validarFecha(document.forms[0].fechaNotificacionDesde.value)) &&
+			   (validarFecha(document.forms[0].fechaNotificacionHasta.value))) {
 				var ncolegiado = document.getElementById('numeroNifTagBusquedaPersonas').value;
 				sub();
 				if (!isNaN(ncolegiado)) {
-				    document.forms[1].ncolegiado.value=ncolegiado;
-				    document.forms[1].checkEsDeTurno.value = document.forms[1].checkEsDeTurno.checked;
-					document.forms[1].modo.value = "buscarPor";
-					document.forms[1].submit();
+				    document.forms[0].ncolegiado.value=ncolegiado;
+				    document.forms[0].checkEsDeTurno.value = document.forms[0].checkEsDeTurno.checked;
+					document.forms[0].modo.value = "buscarPor";
+					document.forms[0].submit();
 					
 				} else { 
 					alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');
@@ -157,13 +156,13 @@
 		
 		// Funcion asociada a boton limpiar
 		function limpiar() {		
-			document.forms[0].reset();
+			document.forms[1].reset();
 		}
 		
 		// Funcion asociada a boton Nuevo 
 		function nuevo() {
-			document.forms[1].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[1].name,"M");
+			document.forms[0].modo.value = "nuevo";
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 			if(resultado=='MODIFICADO') 
 				buscar();
 		}

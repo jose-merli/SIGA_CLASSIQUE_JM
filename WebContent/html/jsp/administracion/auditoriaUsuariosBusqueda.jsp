@@ -106,7 +106,7 @@
 							<siga:Idioma key="administracion.auditoriaUsuarios.literal.fechaHasta"/>
 						</td>
 						<td>
-							<siga:Fecha  nombreCampo= "fechaHasta"/>
+							<siga:Fecha  nombreCampo= "fechaHasta" campoCargarFechaDesde="fechaDesde"/>
 						</td>
 	       			</tr>
 				</html:form>

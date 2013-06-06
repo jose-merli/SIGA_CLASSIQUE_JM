@@ -163,7 +163,7 @@
 		<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>
 	</td>				
 	<td>
-	<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
+	<siga:Fecha nombreCampo="fechaFin" campoCargarFechaDesde="fechaIni"></siga:Fecha>
 	</td>
 
 	</tr>

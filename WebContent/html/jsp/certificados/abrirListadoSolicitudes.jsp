@@ -318,7 +318,7 @@
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.fechahasta" /></td>
 					<td><siga:Fecha nombreCampo="fechaHasta"
-							valorInicial="<%=fechaHasta%>" /></td>
+							valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="fechaDesde"/></td>
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.estadosolicitud" /></td>
 					<td>
@@ -361,7 +361,7 @@
 						Hasta
 					</td>
 					<td><siga:Fecha nombreCampo="fechaEmisionHasta"
-							valorInicial="<%=fechaEmisionHasta%>" /> </td>
+							valorInicial="<%=fechaEmisionHasta%>" campoCargarFechaDesde="fechaEmisionDesde"/> </td>
 				</tr>
 				<tr>
 					<td class="labelText"><siga:Idioma

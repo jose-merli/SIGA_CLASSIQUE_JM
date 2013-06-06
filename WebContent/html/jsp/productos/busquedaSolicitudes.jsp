@@ -124,7 +124,7 @@
 		
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaHasta"/></td>
 					<td>
-					<siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>"></siga:Fecha>
+					<siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="buscarFechaDesde"></siga:Fecha>
 					</td>
 					
 				</tr>

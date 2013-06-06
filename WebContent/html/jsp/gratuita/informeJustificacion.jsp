@@ -139,7 +139,7 @@
 											<siga:Idioma key="general.literal.hasta"/>
 										</td>
 										<td>
-											<siga:Fecha nombreCampo="fechaJustificacionHasta"  readOnly="true"></siga:Fecha>
+											<siga:Fecha nombreCampo="fechaJustificacionHasta"  readOnly="true" campoCargarFechaDesde="fechaJustificacionDesde"></siga:Fecha>
 										</td>
 										<td class="labelText" >
 												<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
@@ -215,7 +215,7 @@
 									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
-									<siga:Fecha nombreCampo="fechaHasta"  readOnly="true"></siga:Fecha>								
+									<siga:Fecha nombreCampo="fechaHasta"  readOnly="true" campoCargarFechaDesde="fechaDesde"></siga:Fecha>								
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="expedientes.auditoria.literal.nombre"/>

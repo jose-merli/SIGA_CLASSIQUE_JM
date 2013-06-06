@@ -559,7 +559,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaHasta.literal"/>
 						</td>
 						<td>
-							<siga:Fecha nombreCampo="fechaHasta"  />
+							<siga:Fecha nombreCampo="fechaHasta" campoCargarFechaDesde="fechaDesde" />
 						</td>					
 					</tr>
 			

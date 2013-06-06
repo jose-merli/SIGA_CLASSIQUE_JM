@@ -120,16 +120,6 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 					<td>
 						<siga:ConjCampos leyenda="facturacion.busquedaAbonos.literal.busquedaAbonos">
 						<table class="tablaCampos" align="center" border="0">	
-							<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-								<html:hidden property = "actionModal" value=""/>
-								<html:hidden property = "modo" value = "abrirBusquedaModal"/>
-								<input type="hidden" name="clientes" value="1">
-							</html:form>
-							<html:form action="/FAC_AltaAbonos.do" method="POST" target="mainWorkArea" type="">
-								<html:hidden property = "actionModal" value=""/>
-								<html:hidden property = "modo" value = "abrir"/>
-								
-							</html:form>
 							<html:form action="/FAC_GenerarAbonos.do?noReset=true" method="POST" target="resultado">
 								<html:hidden property = "actionModal" value=""/>
 								<html:hidden property = "modo" value = ""/>
@@ -160,7 +150,7 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoEntre"/>
 										<siga:Fecha  nombreCampo="fechaAbonoDesde" valorInicial="<%=formSession.getFechaAbonoDesde()%>"/>&nbsp;&nbsp;																											
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<siga:Fecha  nombreCampo="fechaAbonoHasta" valorInicial="<%=formSession.getFechaAbonoHasta()%>"/>										
+										<siga:Fecha  nombreCampo="fechaAbonoHasta" valorInicial="<%=formSession.getFechaAbonoHasta()%>" campoCargarFechaDesde="fechaAbonoDesde"/>										
 										</a>
 									</td>
 								</tr>
@@ -178,7 +168,7 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaEntre"/>
 										<siga:Fecha  nombreCampo="fechaFacturaDesde" valorInicial="<%=formSession.getFechaFacturaDesde()%>"/>&nbsp;&nbsp;
 										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
-										<siga:Fecha  nombreCampo="fechaFacturaHasta" valorInicial="<%=formSession.getFechaFacturaHasta()%>"/>										
+										<siga:Fecha  nombreCampo="fechaFacturaHasta" valorInicial="<%=formSession.getFechaFacturaHasta()%>" campoCargarFechaDesde="fechaFacturaDesde"/>										
 									</td>
 								</tr>
 								<tr>
@@ -220,6 +210,16 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 								</td></tr>
 							 	
 					   	  </html:form>	
+				        	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+								<html:hidden property = "actionModal" value=""/>
+								<html:hidden property = "modo" value = "abrirBusquedaModal"/>
+								<input type="hidden" name="clientes" value="1">
+							</html:form>
+							<html:form action="/FAC_AltaAbonos.do" method="POST" target="mainWorkArea" type="">
+								<html:hidden property = "actionModal" value=""/>
+								<html:hidden property = "modo" value = "abrir"/>
+								
+							</html:form>
 				        </table>
 					 </siga:ConjCampos>
 					</td>

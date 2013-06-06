@@ -51,6 +51,9 @@
 	String datoTipoExp[] = new String[2];
 	datoTipoExp[0] = idinstitucion;
 	datoTipoExp[1] = idinstitucion;
+	
+	//aalg. incidencia del 18 de mayo de 2012. para ver si hay permisos para ese perfil para crear nuevos expedientes
+	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente");
 
 	BusquedaExpedientesForm form = (BusquedaExpedientesForm) session.getAttribute("busquedaExpedientesForm");
 
@@ -538,7 +541,8 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	--> <%
- 	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ)) {
+ 	//aalg: controlar si tiene acceso al Nuevo
+ 	if (tipoacceso.equalsIgnoreCase(SIGAConstants.ACCESS_READ) || !accesoNuevo.equalsIgnoreCase(SIGAConstants.ACCESS_FULL)) {
  %> <siga:ConjBotonesBusqueda
 	botones="B,S" /> <%
  	} else {

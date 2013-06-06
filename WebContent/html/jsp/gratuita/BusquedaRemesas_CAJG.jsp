@@ -173,7 +173,7 @@
 						<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.hasta"/>
 					</td>
 					<td>
-						<siga:Fecha nombreCampo="fechaFinBuscar" valorInicial="<%=fechaFinBuscar%>" />
+						<siga:Fecha nombreCampo="fechaFinBuscar" valorInicial="<%=fechaFinBuscar%>" campoCargarFechaDesde="fechaInicioBuscar"/>
 					</td>
 				</tr>
 			</table>

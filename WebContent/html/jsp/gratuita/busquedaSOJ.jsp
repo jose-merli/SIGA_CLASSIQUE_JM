@@ -119,11 +119,6 @@
 <body onLoad="ajusteAlto('resultado');inicio();" >
 
 
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type=""  style="display:none">	
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-	</html:form>
-	
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="/JGR_ExpedientesSOJ.do" method="POST" target="resultado">
 	<html:hidden property = "modo" value = "inicio"/>
@@ -150,7 +145,7 @@
 	<td class="labelText" colspan="3" style="text-align: left">
 		<siga:Fecha nombreCampo="fechaAperturaSOJDesde" valorInicial="<%=fechaAperturaDesde%>"></siga:Fecha>
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
-		<siga:Fecha nombreCampo="fechaAperturaSOJHasta" valorInicial="<%=fechaAperturaHasta%>"></siga:Fecha>
+		<siga:Fecha nombreCampo="fechaAperturaSOJHasta" valorInicial="<%=fechaAperturaHasta%>" campoCargarFechaDesde="fechaAperturaSOJDesde"></siga:Fecha>
 	</td>
 	</tr>
 	<tr>
@@ -236,6 +231,11 @@
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type=""  style="display:none">	
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>
+	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
 	<siga:ConjBotonesBusqueda botones="C,N,B" titulo="gratuita.busquedaSOJ.literal.expedientesSOJ" />
@@ -249,15 +249,15 @@
 		function buscarPaginador() 
 		{
 //			if (validateDefinirSOJForm(document.forms[1])){
-		    	document.forms[1].modo.value = "buscarPor";
-				document.forms[1].submit();
+		    	document.forms[0].modo.value = "buscarPor";
+				document.forms[0].submit();
 //			}		
 		}
 		function buscar() 
 		{
 //			if (validateDefinirSOJForm(document.forms[1])){
 			sub();
-			if (isNaN(document.forms[1].anio.value)) {
+			if (isNaN(document.forms[0].anio.value)) {
 				
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 				fin();
@@ -269,8 +269,8 @@
 				return false;
 			}
 			
-		    	document.forms[1].modo.value = "buscarInit";
-				document.forms[1].submit();
+		    	document.forms[0].modo.value = "buscarInit";
+				document.forms[0].submit();
 				
 //			}		
 		}			
@@ -278,14 +278,14 @@
 		<!-- Funcion asociada a boton limpiar -->
 		function limpiar() 
 		{		
-			document.forms[1].reset();
+			document.forms[0].reset();
 		}
 		
 		<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{
-			document.forms[1].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[1].name,"M");
+			document.forms[0].modo.value = "nuevo";
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 //			if(resultado=='MODIFICADO') buscar();
 			if(resultado && resultado[0]=="MODIFICADO"){
 				with(document.DefinirSOJForm){
@@ -301,7 +301,7 @@
 		}
 		function seleccionarTodos(pagina) 
 		{
-				document.forms[1].seleccionarTodos.value = pagina;
+				document.forms[0].seleccionarTodos.value = pagina;
 				buscar('buscarPor');
 				
 		}		

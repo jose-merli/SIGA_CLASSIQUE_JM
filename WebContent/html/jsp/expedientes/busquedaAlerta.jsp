@@ -158,7 +158,7 @@
 							<siga:Idioma key="expedientes.auditoria.literal.fechafinal" />
 						</td>
 						<td>
-							<siga:Fecha  nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>"/>							
+							<siga:Fecha  nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" campoCargarFechaDesde="fechaDesde"/>							
 						</td>
 						<td></td>
 					</tr>

@@ -134,7 +134,7 @@
 											<siga:Idioma key="censo.busquedaSolicitudesTextoLibre.literal.fechaHasta"/>&nbsp;&nbsp;					
 										</td>					
 										<td>
-											<siga:Fecha  nombreCampo= "fechaHasta"/>
+											<siga:Fecha  nombreCampo= "fechaHasta" campoCargarFechaDesde="fechaDesde"/>
 										</td>
 									</tr>
 								</html:form>	

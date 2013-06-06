@@ -161,7 +161,7 @@
 		<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
 	</td>				
 	<td>
-		<siga:Fecha nombreCampo="fechaFin" readonly="true"></siga:Fecha>
+		<siga:Fecha nombreCampo="fechaFin" readonly="true" campoCargarFechaDesde="fechaIni"></siga:Fecha>
 	</td>
 
 	</tr>

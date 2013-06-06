@@ -144,7 +144,7 @@
 			&nbsp;
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
 			&nbsp;
-			<siga:Fecha nombreCampo="fechaHasta"></siga:Fecha>		
+			<siga:Fecha nombreCampo="fechaHasta" campoCargarFechaDesde="fechaDesde"></siga:Fecha>		
 		</td>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensado"/>

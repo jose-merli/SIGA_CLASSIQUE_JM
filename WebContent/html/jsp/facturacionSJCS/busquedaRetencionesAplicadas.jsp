@@ -50,10 +50,7 @@
 </head>
 
 <body onLoad="ajusteAlto('resultado');setFocus();">
-
-	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
-	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
 	<html:form action = "/FCS_BusquedaRentencionesAplicadas.do" method="POST" target="resultado">
 
 		<html:hidden property="modo"/>
@@ -85,7 +82,7 @@
 									<siga:Idioma key="factSJCS.busquedaRetAplicadas.literal.fechaHasta"/>
 								</td>
 								<td>
-									<siga:Fecha nombreCampo="fechaHasta" readOnly="true" ></siga:Fecha>
+									<siga:Fecha nombreCampo="fechaHasta" readOnly="true" campoCargarFechaDesde="fechaDesde"></siga:Fecha>
 								</td>
 								<td class="labelText">
 									
@@ -167,12 +164,14 @@
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
+	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	<!-- Formularios auxiliares para la busqueda de persona-->
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<html:hidden property="actionModal" value=""/>
-		<html:hidden property="modo" value="abrirBusquedaModal"/>
-		
+		<html:hidden property="modo" value="abrirBusquedaModal"/>	
 	</html:form>
+	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->
+	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 

@@ -130,7 +130,7 @@ String[] getdatos = { usr.getLocation() };
 		function seleccionDatos(){
 			var turnoSel = "<%=usr.getLocation()%>,<%=idTurno%>";
 			var tipoDesignaSel = "<%=tipoDesigna%>";
-			var f = document.forms[1];
+			var f = document.forms[0];
 			
 			//Seleccion combo turno
 			for (var i=1; i<f.idTurno.length; i++) {
@@ -224,15 +224,6 @@ String[] getdatos = { usr.getLocation() };
 
 <body  onLoad="ajusteAlto('resultado');inicio();">
 
-	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
-	
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-	</html:form>
-
-	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
-	
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 	
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -272,7 +263,7 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.y"/>
 		</td>	
 		<td>	
-			<siga:Fecha nombreCampo="fechaAperturaFin" valorInicial="<%=fechaAperturaFin%>" />
+			<siga:Fecha nombreCampo="fechaAperturaFin" valorInicial="<%=fechaAperturaFin%>" campoCargarFechaDesde="fechaAperturaInicio" />
 			
 		</td>	
 	</tr>
@@ -474,6 +465,14 @@ String[] getdatos = { usr.getLocation() };
 	</siga:ConjCampos>
 	
 	</html:form>
+	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
+	
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>
+
+	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea23">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
 		<html:hidden property = "codigoExt2" value=""/>
@@ -498,28 +497,28 @@ String[] getdatos = { usr.getLocation() };
 				return false;
 			}
 
-			if((validarFecha(document.forms[1].fechaAperturaInicio.value))&&
-			   (validarFecha(document.forms[1].fechaAperturaFin.value))){
+			if((validarFecha(document.forms[0].fechaAperturaInicio.value))&&
+			   (validarFecha(document.forms[0].fechaAperturaFin.value))){
 				sub();
 				/*var codigo = document.forms[1].codigo.value;
 				if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
 				else {*/
-					//document.forms[1].action = "<%=app%>/JGR_Designas.do";
-					if (isNaN(document.forms[1].anio.value)) {
+					//document.forms[0].action = "<%=app%>/JGR_Designas.do";
+					if (isNaN(document.forms[0].anio.value)) {
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 						return false;
 					}
 					
 					
-					document.forms[1].target="resultado";
+					document.forms[0].target="resultado";
 					if(modo)
-						document.forms[1].modo.value = modo;
+						document.forms[0].modo.value = modo;
 					else
-						document.forms[1].modo.value = "buscarInicio";
+						document.forms[0].modo.value = "buscarInicio";
 					
-					document.forms[1].submit();
+					document.forms[0].submit();
 				//}
 			}else{
 				setFocusFormularios();
@@ -527,7 +526,7 @@ String[] getdatos = { usr.getLocation() };
 		}
 			function seleccionarTodos(pagina) 
 		{
-				document.forms[1].seleccionarTodos.value = pagina;
+				document.forms[0].seleccionarTodos.value = pagina;
 				buscar('buscarPor');
 				
 		}		
@@ -537,24 +536,24 @@ String[] getdatos = { usr.getLocation() };
 				if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
 				else {*/
-					//document.forms[1].action = "<%=app%>/JGR_Designas.do";
-					document.forms[1].target="resultado";
-					document.forms[1].modo.value = "buscarPor";
-					document.forms[1].submit();
+					//document.forms[0].action = "<%=app%>/JGR_Designas.do";
+					document.forms[0].target="resultado";
+					document.forms[0].modo.value = "buscarPor";
+					document.forms[0].submit();
 				//}
 		}			
 		
 		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar() 
 		{		
-			document.forms[1].reset();
-			document.forms[1].ncolegiado.value="";
+			document.forms[0].reset();
+			document.forms[0].ncolegiado.value="";
 		}
 		
 		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{		
-			document.forms[1].modo.value = "nuevo";
+			document.forms[0].modo.value = "nuevo";
 			var resultado=ventaModalGeneral(document.forms[1].name,"M");
 			if (resultado!=null && resultado[0]=='MODIFICADO')
 			{
@@ -569,9 +568,9 @@ String[] getdatos = { usr.getLocation() };
 		
 		function redireccionar ()
 		{ 
-			document.forms[1].target="mainWorkArea";
-			document.forms[1].modo.value="editar";
-			document.forms[1].submit();
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].modo.value="editar";
+			document.forms[0].submit();
 		}
 		
 

@@ -232,7 +232,7 @@ jQuery.noConflict();
 				
 							<td class="labelText"><siga:Idioma key="censo.bajastemporales.filtro.fechaHasta"/></td>
 							<td class="labelText" >
-							<siga:Fecha  nombreCampo= "fechaHasta"/>
+							<siga:Fecha  nombreCampo= "fechaHasta" campoCargarFechaDesde="fechaDesde"/>
 							</td>
 						</tr>
 					</table>

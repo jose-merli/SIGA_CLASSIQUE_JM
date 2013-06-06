@@ -194,7 +194,7 @@
 				<siga:Fecha nombreCampo="fechaResolucion"/>
 
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fResolucionHasta"/>
-				<siga:Fecha nombreCampo="fechaResolucionHasta"/>
+				<siga:Fecha nombreCampo="fechaResolucionHasta" campoCargarFechaDesde="fechaResolucion"/>
 			</td>
 			
 			<td class="labelText">
@@ -204,7 +204,7 @@
 				<siga:Fecha nombreCampo="fechaCarga"/>
 
 				<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fCargaHasta"/>
-				<siga:Fecha nombreCampo="fechaCargaHasta"/>
+				<siga:Fecha nombreCampo="fechaCargaHasta" campoCargarFechaDesde="fechaCarga"/>
 			</td>
 			
 		</tr>	

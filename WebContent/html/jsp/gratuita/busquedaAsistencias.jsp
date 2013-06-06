@@ -170,7 +170,7 @@
 			colegiado=resultado[2];
 		}
 		if(colegiado!=null) {
-			document.forms[1].colegiado.value = colegiado;
+			document.forms[0].colegiado.value = colegiado;
 		}
 	}
 	
@@ -250,14 +250,6 @@
 
 <body onLoad="ajusteAlto('resultado');inicio();">
 
-	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
-	
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-	</html:form>
-
-	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
 	<html:form action = "/JGR_Asistencia.do" method="POST" target="resultado">
 		<input type="hidden" name="actionModal" value="">
 		<html:hidden property = "modo" value = ""/>	
@@ -291,7 +283,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
 			</td>
 			<td>	
-				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />
+				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="fechaDesde"/>
 			</td>
 		</tr>
 		<tr>
@@ -441,7 +433,14 @@
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
+	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>
+
+	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 <% if (validarVolantes.equals("S")) { %>
 		<siga:ConjBotonesBusqueda botones="VOL,C,B,N"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
 <% } else { %>
@@ -492,24 +491,24 @@
 		function buscar() 
 		{ 
 
-			document.forms[1].asunto.value = trim(document.forms[1].asunto.value);
-			document.forms[1].numero.value = trim(document.forms[1].numero.value);
+			document.forms[0].asunto.value = trim(document.forms[0].asunto.value);
+			document.forms[0].numero.value = trim(document.forms[0].numero.value);
 
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
 				alert("<siga:Idioma key="fecha.error.anio"/>");
 				return false;
 			}
 
-			if((validarFecha(document.forms[1].fechaDesde.value))&&
-				(validarFecha(document.forms[1].fechaHasta.value))){
+			if((validarFecha(document.forms[0].fechaDesde.value))&&
+				(validarFecha(document.forms[0].fechaHasta.value))){
 				sub();
 				if (!errorValidacion()) {
 					// obtenemos el idturno y el idguardia
-					document.forms[1].idGuardia.value 	= document.forms[1].scsinscripcionguardia.value;
-					document.forms[1].idTurno.value		= document.forms[1].turnos.value.substr(document.forms[1].turnos.value.indexOf(",")+1);
-					document.forms[1].target			= "resultado";
-					document.forms[1].modo.value 		= "buscarInit";
-					document.forms[1].submit();
+					document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
+					document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
+					document.forms[0].target			= "resultado";
+					document.forms[0].modo.value 		= "buscarInit";
+					document.forms[0].submit();
 				}else{
 					fin();
 				}
@@ -522,31 +521,31 @@
 		
 				if (!errorValidacion()) {
 					// obtenemos el idturno y el idguardia
-					document.forms[1].idGuardia.value 	= document.forms[1].scsinscripcionguardia.value;
-					document.forms[1].idTurno.value		= document.forms[1].turnos.value.substr(document.forms[1].turnos.value.indexOf(",")+1);
-					document.forms[1].target			= "resultado";
-					document.forms[1].modo.value 		= "buscarPor";
-					document.forms[1].submit();
+					document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
+					document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
+					document.forms[0].target			= "resultado";
+					document.forms[0].modo.value 		= "buscarPor";
+					document.forms[0].submit();
 				}
 		}				
 		
 		function nuevo()
 		{
-			document.forms[1].modo.value = "nuevo";
+			document.forms[0].modo.value = "nuevo";
 	   		var resultado = ventaModalGeneral(document.forms[1].name,"M");
 	   		if(resultado == "MODIFICADO") {
-				document.forms[1].anio.value   = "";
-				document.forms[1].numero.value = "";
-				document.forms[1].modo.value   = "editar";
-				document.forms[1].target       = "mainWorkArea";
-				document.forms[1].submit();
+				document.forms[0].anio.value   = "";
+				document.forms[0].numero.value = "";
+				document.forms[0].modo.value   = "editar";
+				document.forms[0].target       = "mainWorkArea";
+				document.forms[0].submit();
 	   		}
 		}
 		
 		function generarCarta() 
 		{
-			document.forms[1].modo.value	= "generarCarta";
-	   		var resultado = ventaModalGeneral(document.forms[1].name,"M");
+			document.forms[0].modo.value	= "generarCarta";
+	   		var resultado = ventaModalGeneral(document.forms[0].name,"M");
 	   		if(resultado = "MODIFICADO"){
 	   			buscar();
 	   		}

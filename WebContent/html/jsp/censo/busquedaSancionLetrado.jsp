@@ -180,7 +180,7 @@
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 		</td>
 		<td>
-			<siga:Fecha  nombreCampo= "fechaFinBuscar"/>
+			<siga:Fecha  nombreCampo= "fechaFinBuscar" campoCargarFechaDesde="fechaInicioBuscar"/>
 		</td>			
 	</tr>	
 		
@@ -205,7 +205,7 @@
 		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
 		</td>
 		<td>
-		  <siga:Fecha  nombreCampo= "fechaFinArchivada"/>
+		  <siga:Fecha  nombreCampo= "fechaFinArchivada" campoCargarFechaDesde="fechaInicioArchivada"/>
 		</td>
 	</tr>
 	<%}else{%>

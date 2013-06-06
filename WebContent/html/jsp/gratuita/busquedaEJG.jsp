@@ -249,7 +249,7 @@
 		function buscarCliente () {
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
 			if (resultado != null && resultado[2]!=null) {
-				document.forms[1].idPersona.value=resultado[2];
+				document.forms[0].idPersona.value=resultado[2];
 			}
 		}
 		
@@ -284,7 +284,7 @@
 		}
 		
 		function seleccionarTodos(pagina) {
-				document.forms[1].seleccionarTodos.value = pagina;
+				document.forms[0].seleccionarTodos.value = pagina;
 				buscar('buscarPor');				
 		}
 
@@ -294,9 +294,9 @@
 		
 		// Funcion que obtiene el juzgado buscando por codigo externo	
 		 function obtenerJuzgado(){ 
-			  if (document.forms[1].codigoExtJuzgado.value!=""){
+			  if (document.forms[0].codigoExtJuzgado.value!=""){
  				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
-				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
+				   document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[0].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.submit();		
 			 } else
 		 		seleccionComboSiga("juzgado",-1);
@@ -363,11 +363,6 @@
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-	</html:form>
-	
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="<%=accion %>" method="POST" target="resultado">
 		<html:hidden name="<%=formulario%>" property="idPersona" value=""></html:hidden> <!-- 0 -->
@@ -444,7 +439,7 @@
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" /> 
+					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" campoCargarFechaDesde="fechaAperturaDesde"/> 
 				</td>
 			</tr>
 			
@@ -471,7 +466,7 @@
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" /> 
+					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" campoCargarFechaDesde="fechaEstadoDesde"/> 
 				</td>
 			</tr>
 			
@@ -494,7 +489,7 @@
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" /> 
+					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" campoCargarFechaDesde="fechaLimitePresentacionDesde" /> 
 				</td>			
 			</tr>
 			
@@ -545,7 +540,7 @@
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle"> 
-					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" /> 
+					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" campoCargarFechaDesde="fechaDictamenDesde"/> 
 				</td>
 			</tr>
 			
@@ -568,7 +563,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.hasta" />
 				</td>
 				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" /> 
+					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" campoCargarFechaDesde="fechaPresentacionPonenteDesde"/> 
 				</td>			
 			</tr>				
 
@@ -717,23 +712,27 @@
 		</table>
 	</siga:ConjCampos>
 </html:form>
-	
-<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea21">
-	<input type="hidden" name="modo"        value="buscarJuzgado">
-	<html:hidden property = "codigoExt2" value=""/>
-	<html:hidden property = "nombreObjetoDestino" value=""/>
-</html:form>
-	
-<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="submitArea21">
-	<html:hidden property="modo"/>
-	<html:hidden property="datosInforme"/>
-</html:form>
 
-<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
-	<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS%>"/>
-	<html:hidden property="modo" value="inicio"/>
-	<html:hidden property="accionAnterior" value="${path}"/>
-</html:form>	
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>	
+	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea21">
+		<input type="hidden" name="modo"        value="buscarJuzgado">
+		<html:hidden property = "codigoExt2" value=""/>
+		<html:hidden property = "nombreObjetoDestino" value=""/>
+	</html:form>
+		
+	<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="submitArea21">
+		<html:hidden property="modo"/>
+		<html:hidden property="datosInforme"/>
+	</html:form>
+	
+	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+		<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS%>"/>
+		<html:hidden property="modo" value="inicio"/>
+		<html:hidden property="accionAnterior" value="${path}"/>
+	</html:form>	
 
 <!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
@@ -781,32 +780,31 @@
 	//<!-- Funcion asociada a boton buscar -->
 	function buscarPaginador(){		
 		
-			document.forms[1].modo.value = "buscarPor";				
+			document.forms[0].modo.value = "buscarPor";				
 			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
-				document.forms[1].modo.value = "buscarListos";
-				document.forms[1].idRemesa.value=<%=idremesa%>;
-				//document.forms[1].submit();
+				document.forms[0].modo.value = "buscarListos";
+				document.forms[0].idRemesa.value=<%=idremesa%>;
 			<%}%>
 			
 			/* El idenficiador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
 			con el turno, ya que la institución se recogerá del formulario. Viene ha sido debido a que es necesario para
 			el combo hijo de guardias
 			*/
-			var id = document.forms[1].identificador.value;
+			var id = document.forms[0].identificador.value;
 			<%if (!esComision){%>
-				document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+				document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 			<% } %>
 
 			var posicion = 0;
 			/* Se recorre hasta encontrar el separador, que es ","*/									
 			posicion = id.indexOf(',') + 1;
 			/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
-			document.forms[1].guardiaTurnoIdTurno.value = id.substring(posicion);
-			if (isNaN(document.forms[1].anio.value)) {
+			document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
+			if (isNaN(document.forms[0].anio.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
-			}else if (isNaN(document.forms[1].idPersona.value)) {
+			}else if (isNaN(document.forms[0].idPersona.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
-			}else document.forms[1].submit();			
+			}else document.forms[0].submit();			
 		}		
 		
 		function buscar(){ 
@@ -819,50 +817,49 @@
 					return false;
 				}
 	
-				if((validarFecha(document.forms[1].fechaAperturaHasta.value))&&
-				   (validarFecha(document.forms[1].fechaAperturaDesde.value))&&
-				   (validarFecha(document.forms[1].fechaEstadoHasta.value))&&
-				   (validarFecha(document.forms[1].fechaEstadoDesde.value))&&
-				   (validarFecha(document.forms[1].fechaDictamenHasta.value))&&
-				   (validarFecha(document.forms[1].fechaDictamenDesde.value))&&
-				   (validarFecha(document.forms[1].fechaLimitePresentacionHasta.value))&&
-				   (validarFecha(document.forms[1].fechaLimitePresentacionDesde.value))){
+				if((validarFecha(document.forms[0].fechaAperturaHasta.value))&&
+				   (validarFecha(document.forms[0].fechaAperturaDesde.value))&&
+				   (validarFecha(document.forms[0].fechaEstadoHasta.value))&&
+				   (validarFecha(document.forms[0].fechaEstadoDesde.value))&&
+				   (validarFecha(document.forms[0].fechaDictamenHasta.value))&&
+				   (validarFecha(document.forms[0].fechaDictamenDesde.value))&&
+				   (validarFecha(document.forms[0].fechaLimitePresentacionHasta.value))&&
+				   (validarFecha(document.forms[0].fechaLimitePresentacionDesde.value))){
 				
 					sub();
-					document.forms[1].modo.value = "buscarInit";
+					document.forms[0].modo.value = "buscarInit";
 					
 					<%if(ventanaCajg.equalsIgnoreCase("2")){%>
-						document.forms[1].modo.value = "buscarListosInicio";
-						document.forms[1].idRemesa.value=<%=idremesa%>;
-						//document.forms[1].submit();				
+						document.forms[0].modo.value = "buscarListosInicio";
+						document.forms[0].idRemesa.value=<%=idremesa%>;			
 					<%}%>
 					
 					/* El idenficiador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
 					con el turno, ya que la institución se recogerá del formulario. Viene ha sido debido a que es necesario para
 					el combo hijo de guardias
 					*/
-					var id = document.forms[1].identificador.value;
+					var id = document.forms[0].identificador.value;
 					<%if (!esComision){%>
-						document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+						document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 					<%}%>
 		
 					var posicion = 0;
 					/* Se recorre hasta encontrar el separador, que es ","*/									
 					posicion = id.indexOf(',') + 1;
 					/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
-					document.forms[1].guardiaTurnoIdTurno.value = id.substring(posicion);
-					if (isNaN(document.forms[1].anio.value)) {
+					document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
+					if (isNaN(document.forms[0].anio.value)) {
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 					}
-					/*else if (isNaN(document.forms[1].numEJG.value)) {
+					/*else if (isNaN(document.forms[0].numEJG.value)) {
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
 					}  Podemos hacer la busqueda por este campo con comodines*/
-					else if (isNaN(document.forms[1].idPersona.value)) {
+					else if (isNaN(document.forms[0].idPersona.value)) {
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
 					}
-					else document.forms[1].submit();
+					else document.forms[0].submit();
 				}else{
 					setFocusFormularios();
 				}
@@ -870,13 +867,13 @@
 		
 		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar(){		
-			document.forms[1].reset();
+			document.forms[0].reset();
 		}
 		
 		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo(){
-			document.forms[1].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[1].name,"M");
+			document.forms[0].modo.value = "nuevo";
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 			//if(resultado[0]=='MODIFICADO') buscar();
 			if(resultado && resultado[0]=="MODIFICADO"){
 				with(document.DefinirEJGForm){
@@ -934,11 +931,11 @@
 				if( window.frames.resultado.document.<%=formulario%>) {
 					var datos1 =  window.frames.resultado.document.<%=formulario%>.selDefinitivo;
 					if(datos1.value) {
-				    	document.forms[1].selDefinitivo.value=datos1.value;
-				    	document.forms[1].idRemesa.value=<%=idremesa%>;
-				    	document.forms[1].target="mainWorkArea";
-						document.forms[1].modo.value = "aniadirARemesa";
-						document.forms[1].submit();
+				    	document.forms[0].selDefinitivo.value=datos1.value;
+				    	document.forms[0].idRemesa.value=<%=idremesa%>;
+				    	document.forms[0].target="mainWorkArea";
+						document.forms[0].modo.value = "aniadirARemesa";
+						document.forms[0].submit();
 					}
 				}
 			<%}%>
@@ -946,12 +943,12 @@
 
 		function accionVolver(){
 			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
-				document.forms[1].action="./JGR_E-Comunicaciones_Gestion.do";	
-				document.forms[1].modo.value="editar";
-				document.forms[1].volver.value="SI";
-				document.forms[1].idRemesa.value=<%=idremesa%>;
-				document.forms[1].target="mainWorkArea"; 
-				document.forms[1].submit(); 
+				document.forms[0].action="./JGR_E-Comunicaciones_Gestion.do";	
+				document.forms[0].modo.value="editar";
+				document.forms[0].volver.value="SI";
+				document.forms[0].idRemesa.value=<%=idremesa%>;
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit(); 
 			<%}%>
 		}
 		
@@ -960,14 +957,14 @@
 			try{
 			    var dat = "";
 			    var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
-			    document.forms[1].selDefinitivo.value=datos1.value;
+			    document.forms[0].selDefinitivo.value=datos1.value;
 			    
-			  	document.forms[1].modo.value = "listosParaComision";
-			  	var f = document.forms[1].name;	
+			  	document.forms[0].modo.value = "listosParaComision";
+			  	var f = document.forms[0].name;	
 			  	//Para quien se encargue del marrón de la ruedecita, con mucho cariño para ....
 			  	//(JTA)Saludos tambien de mi parte. si quieres ponerlo aqui mira en accionGenerarCarta() de listadoEJG.jspi
 	
-			    document.forms[1].submit();
+			    document.forms[0].submit();
 			}
 			catch (e){
 				alert('<siga:Idioma key="messages.cajg.error.listos"/>');
