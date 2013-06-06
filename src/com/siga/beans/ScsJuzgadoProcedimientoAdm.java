@@ -160,7 +160,7 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 					  " , juzgadoProc."+ScsJuzgadoProcedimientoBean.C_IDINSTITUCION_JUZG+" AS IDINSTITUCION_JUZG"+
 					  " , juzgadoProc."+ScsJuzgadoProcedimientoBean.C_IDPROCEDIMIENTO+
 					  " , juzgadoProc."+ScsJuzgadoProcedimientoBean.C_IDJUZGADO+
-					  " , (select f_siga_getrecurso("+ScsJurisdiccionBean.C_DESCRIPCION+",'1')"+
+					  " , (select f_siga_getrecurso("+ScsJurisdiccionBean.C_DESCRIPCION+","+usrbean.getLanguage()+")"+
 				      "    from "+ScsJurisdiccionBean.T_NOMBRETABLA+
 				      "    where "+ScsJurisdiccionBean.C_IDJURISDICCION+"=procedimiento."+ScsProcedimientosBean.C_IDJURISDICCION+") as JURISDICCION";
 			
@@ -193,17 +193,20 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		
 		try {
 			select  = " SELECT " + ScsProcedimientosBean.C_NOMBRE + ", " +
-								   ScsProcedimientosBean.C_IDINSTITUCION + ","  + 
-								   ScsProcedimientosBean.C_IDPROCEDIMIENTO + 
-					    " FROM " + ScsProcedimientosBean.T_NOMBRETABLA + 
-					   " WHERE " + ScsProcedimientosBean.C_IDINSTITUCION + " = " + idInstitucion +  
+								   ScsProcedimientosBean.C_IDINSTITUCION + ", "  + 
+								   ScsProcedimientosBean.C_IDPROCEDIMIENTO + ", " +
+								   " (select f_siga_getrecurso("+ScsJurisdiccionBean.C_DESCRIPCION+","+usrbean.getLanguage()+")"+
+								   "  from "+ScsJurisdiccionBean.T_NOMBRETABLA+
+								   "  where "+ScsJurisdiccionBean.C_IDJURISDICCION+"=procedimiento."+ScsProcedimientosBean.C_IDJURISDICCION+") as JURISDICCION" +		   
+					  " FROM " + ScsProcedimientosBean.T_NOMBRETABLA + " procedimiento " + 
+					  " WHERE " + ScsProcedimientosBean.C_IDINSTITUCION + " = " + idInstitucion +  
 					     " AND " + ScsProcedimientosBean.C_IDPROCEDIMIENTO + " NOT IN " +   
 						 		" (SELECT idprocedimiento " +
 								   " FROM " + ScsJuzgadoProcedimientoBean.T_NOMBRETABLA + 
 								  " WHERE " + ScsJuzgadoProcedimientoBean.C_IDINSTITUCION + " = " + idInstitucion + 
 								    " AND " + ScsJuzgadoProcedimientoBean.C_IDINSTITUCION_JUZG + " = " + idInstitucion +
 									" AND " + ScsJuzgadoProcedimientoBean.C_IDJUZGADO + " = " + idJuzgado + " ) " +
-						" ORDER BY " + ScsProcedimientosBean.C_NOMBRE;
+					  " ORDER BY " + ScsProcedimientosBean.C_NOMBRE;
 
 			datos = this.selectGenerico(select);
 		} 

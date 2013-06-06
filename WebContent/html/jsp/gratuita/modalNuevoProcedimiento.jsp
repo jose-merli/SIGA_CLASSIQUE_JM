@@ -61,8 +61,8 @@
 	<siga:Table 
 		name="tablaDatos"
 		border="1"
-		columnNames="&nbsp;,gratuita.procedimientos.literal.nombre"
-		columnSizes="10,90" >
+		columnNames="&nbsp;,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.Jurisdiccion,"
+		columnSizes="5,60,35" >
 			   
 			<%	if (vProcedimientos==null || vProcedimientos.size() < 1) { %>			
 				<div class="notFound">
@@ -77,6 +77,7 @@
 						String nombre = UtilidadesHash.getString  (h, ScsProcedimientosBean.C_NOMBRE);
 						String idProcedimiento = UtilidadesHash.getString  (h, ScsProcedimientosBean.C_IDPROCEDIMIENTO);
 						String idInstitucion = "" + UtilidadesHash.getInteger (h, ScsProcedimientosBean.C_IDINSTITUCION);
+						String jurisdiccion = UtilidadesHash.getString (h, "JURISDICCION");
 			%>
 
 		   		<tr class="<%=((i+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
@@ -87,6 +88,9 @@
 					</td>
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(nombre) %>
+					</td>
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(jurisdiccion) %>
 					</td>
 			   </tr>
 			<%		} // del for			
