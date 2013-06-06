@@ -480,16 +480,17 @@
 							<% 	} else {%>	
 								<td></td>
 							<%	}%>
+						<%}%>
 						
-								<td>
-									<input 	type="button" 
-										alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
-				       					id="idButton"  
-				       					onclick="return generarCarta();" 
-				       					class="button" 	
-				       					value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%>' />
-								</td>
-							<%}%>				
+							<td>
+								<input 	type="button" 
+									alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
+			       					id="idButton"  
+			       					onclick="return generarCarta();" 
+			       					class="button" 	
+			       					value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%>' />
+							</td>
+											
 						</tr>
 					</table>
 	
