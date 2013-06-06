@@ -1378,8 +1378,11 @@ public class Row implements Serializable {
 					} else {
 						//sql += row.get(updatableFields[i]).toString();
 						
-						sql += this.transformarParametrosOut(contador);
-  	  				    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+						//sql += this.transformarParametrosOut(contador);
+  	  				    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+						
+						sql += ":" + new Integer(contador).toString() + " ";
+  	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
   	  				    contador++;
 					}
 				}
@@ -1906,8 +1909,13 @@ public class Row implements Serializable {
 						}
 						
 					} else 	{
-						sql += this.transformarParametrosOut(contador);
-  	  				    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+						//sql += row.get(updatableFields[i]).toString();
+						
+						//sql += this.transformarParametrosOut(contador);
+  	  				    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+  	  				    
+  	  				    sql += ":" + new Integer(contador).toString() + " ";
+  	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
   	  				    contador++;
 					}
 				}
@@ -2307,7 +2315,7 @@ public class Row implements Serializable {
 						//sqlValues.append(aux + row.get(fieldNames[i]) + " ");
 						
 						sqlValues.append(aux + ":" + new Integer(contador).toString() + " ");
-						codigos.put(new Integer(contador),""+row.get(fieldNames[i]));
+						codigos.put(new Integer(contador), "" + row.get(fieldNames[i]));
   	  				    contador++;
 
 					} else if (datatypes.get(fieldNames[i]).equals("DATE")) {
@@ -2327,8 +2335,11 @@ public class Row implements Serializable {
 					} else {
 						//sqlValues.append(aux + " " + row.get(fieldNames[i]).toString() + " ");
 						
-						sqlValues.append(aux + this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
+						//sqlValues.append(aux + this.transformarParametrosOut(contador));					    
+					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
+					    
+					    sqlValues.append(aux + ":" + new Integer(contador).toString() + " ");
+						codigos.put(new Integer(contador), "" + row.get(fieldNames[i]));
   	  				    contador++;
 					}
 				}
@@ -2455,7 +2466,7 @@ public class Row implements Serializable {
 						//sqlWhere.append(" " + row.get(keyfields[i]) + " ");
 						
 					    sqlWhere.append(":" + new Integer(contador).toString() + " ");
-						codigos.put(new Integer(contador),"" + row.get(keyfields[i]));
+						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
   	  				    contador++;
   	  				    
 					} else if (datatypes.get(keyfields[i]).equals("DATE")) {
@@ -2470,8 +2481,11 @@ public class Row implements Serializable {
 					} else {
 						//sqlWhere.append(row.get(keyfields[i]).toString());
   	  				    
-  	  				    sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+  	  				    //sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+						
+						sqlWhere.append(":" + new Integer(contador).toString() + " ");
+						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
   	  				    contador++;
 					}
 				}
@@ -2516,7 +2530,7 @@ public class Row implements Serializable {
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.NUMBER)) {
       					sqlWhere.append(":" + new Integer(contador).toString() + " ");
-						codigos.put(new Integer(contador),"" + row.get(keyfields[i]));
+						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
   	  				    contador++;
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.DATE)) {
@@ -2527,8 +2541,11 @@ public class Row implements Serializable {
       					
       					
       				} else {
-      					sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+      					//sqlWhere.append(this.transformarParametrosOut(contador));					    
+					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+					    
+					    sqlWhere.append(":" + new Integer(contador).toString() + " ");
+						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
   	  				    contador++;
       				}
       			}
