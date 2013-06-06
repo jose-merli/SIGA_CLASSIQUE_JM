@@ -73,68 +73,85 @@
 
 
 <table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' >
-		<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
+	<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
-				<%index = index-1; %>
-				<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
-				<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
+			<%index = index-1; %>
+			<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
+			<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
 				  
-				<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
-				<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
-				<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
-				<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
-				<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
-				<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
-				<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
-				<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
-				<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
-	  				pintarEspacio="no"
-	  				visibleConsulta="no"
-	  				botones="<%=botones%>"
-	  				clase="listaNonEdit">
+			<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
+			<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
+			<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
+			<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
+			<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
+			<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
+			<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
+			<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
+			
+			<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
+	  			pintarEspacio="no"
+	  			visibleConsulta="no"
+	  			botones="<%=botones%>"
+	  			clase="listaNonEdit">
+	  			
 				<td align='center' width='5%'>
-					<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales"  >
- 						
+					<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales"  > 					
  				</td>
-				<td align='center' width='8%'><c:out value="${bajaTemporalForm.colegiadoNumero}"/></td>
-				<td align='left' width='18%'><c:out  value="${bajaTemporalForm.colegiadoNombre}"/></td>
+ 				
+				<td align='center' width='8%'>
+					<c:out value="${bajaTemporalForm.colegiadoNumero}"/>
+				</td>
+				
+				<td align='left' width='18%'>
+					<c:out value="${bajaTemporalForm.colegiadoNombre}"/>
+				</td>
 				
 				<c:choose>
-						<c:when test="${BajasTemporalesForm.situacion=='B'||BajasTemporalesForm.fichaColegial==true}">
-							<td align='center' width='17%'><c:out value="${bajaTemporalForm.tipoDescripcion}"/></td>
-							<td align='left' width='16%'>
-								<c:choose>
-									<c:when test="${bajaTemporalForm.descripcion!=null && bajaTemporalForm.descripcion!=''}">
-										<c:out value="${bajaTemporalForm.descripcion}"></c:out>
-									</c:when>
-									<c:otherwise>
-										  &nbsp;
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td align='center' width='10%'><c:out value="${bajaTemporalForm.fechaDesde}"/></td>
-							<td align='center' width='10%'><c:out value="${bajaTemporalForm.fechaHasta}"/></td>
-							<td align='center'  width='8%'><c:out value="${bajaTemporalForm.estadoBajaTxt}"/></td>
-						</c:when>
-						<c:otherwise>
-							<td align='center' width='17%'>
+					<c:when test="${BajasTemporalesForm.situacion=='B'||BajasTemporalesForm.fichaColegial==true}">
+						<td align='center' width='17%'>
+							<c:out value="${bajaTemporalForm.tipoDescripcion}"/>
+						</td>
+						
+						<td align='left' width='16%'>
 							<c:choose>
-									<c:when test="${bajaTemporalForm.tipo!=null && bajaTemporalForm.tipo!=''}">
-										<c:out value="${bajaTemporalForm.tipo}"></c:out>
-									</c:when>
-									<c:otherwise>
-										  &nbsp;
-									</c:otherwise>
-								</c:choose>
-							
-							</td>
-							<td align='left' width='16%'>&nbsp;</td>
-							<td align='center' width='10%'>&nbsp;</td>
-							<td align='center' width='10%'>&nbsp;</td>
-							<td align='center'  width='8%'>&nbsp;</td>
-							<td align='center'  width='8%'>&nbsp;</td>  
-						</c:otherwise>
-					</c:choose>	
+								<c:when test="${bajaTemporalForm.descripcion!=null && bajaTemporalForm.descripcion!=''}">
+									<c:out value="${bajaTemporalForm.descripcion}" />
+								</c:when>
+								<c:otherwise>
+									  &nbsp;
+								</c:otherwise>
+							</c:choose>
+						</td>
+						
+						<td align='center' width='10%'>
+							<c:out value="${bajaTemporalForm.fechaDesde}"/>
+						</td>
+						<td align='center' width='10%'>
+							<c:out value="${bajaTemporalForm.fechaHasta}"/>
+						</td>
+						<td align='center'  width='8%'>
+							<c:out value="${bajaTemporalForm.estadoBajaTxt}"/>
+						</td>
+					</c:when>
+												
+					<c:otherwise>
+						<td align='center' width='17%'>
+							<c:choose>
+								<c:when test="${bajaTemporalForm.tipo!=null && bajaTemporalForm.tipo!=''}">
+									<c:out value="${bajaTemporalForm.tipo}" />
+								</c:when>
+								<c:otherwise>
+									  &nbsp;
+								</c:otherwise>
+							</c:choose>							
+						</td>
+						
+						<td align='left' width='16%'>&nbsp;</td>
+						<td align='center' width='10%'>&nbsp;</td>
+						<td align='center' width='10%'>&nbsp;</td>
+						<td align='center'  width='8%'>&nbsp;</td>  
+					</c:otherwise>
+				</c:choose>	
 			</siga:FilaConIconos>
 		</logic:iterate>
 	</logic:notEmpty>
