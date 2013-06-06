@@ -25,7 +25,6 @@
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -96,8 +95,24 @@
 	{		
 		top.cierraConParametros("NORMAL");
 	}		
+	function validarNig( strValue ) 
+	{
+		var objRegExp  = /^([0-9]{19})?$/;
+		return objRegExp.test(strValue);
+	}	
 	function accionGuardar() 
 	{
+		var nigAux = document.getElementById("nig").value;
+		nigAux = replaceAll(nigAux,' ','');
+		if(!validarNig(nigAux)){	
+			
+
+			alert("<siga:Idioma key='gratuita.nig.formato'/>");
+			fin();
+			return false;
+				
+	 	}
+		
 		sub();
 		document.MaestroDesignasForm.modo.value = 'actualizaDesigna';
 		document.MaestroDesignasForm.submit();
@@ -149,6 +164,7 @@
 		for(i=0; i< psts.length; i++)
 		{
 			psts[i].className = '';
+			psts[i].style.width="100px";
 		}
 		
 		// Añadimos la clase "actual" a la pestaña activa
@@ -163,7 +179,14 @@
 		// Añadimos la clase "actual" a la pestaña activa
 		pnl.style.display = 'block';
 	}
- 
+	jQuery(function($){
+		var defaultValue = jQuery("#nig").val();
+		jQuery("#nig").mask("?***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
+		if(jQuery("#nig").val() == "" || defaultValue.length > 19){
+			jQuery("#nig").val(defaultValue);
+		}
+			
+	});	
 </script>
 </head>
 
@@ -263,6 +286,15 @@
 						
 						</td>
 					</tr>
+					<tr>
+						
+						<td width="20%"  class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/></td>
+						<td colspan="5">
+							<html:text name="MaestroDesignasForm" property="nig" styleId="nig" styleClass="box" style="size:28;maxlength:19"/>
+							 	
+						</td>									
+					</tr>
+					
 					<tr><td  colspan="6">&nbsp;</td></tr>
 				</table>
 			</siga:ConjCampos>

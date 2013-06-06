@@ -567,7 +567,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			request.setAttribute("CAMBIAR_COLOR", (cambiarColorEjgs!=null && cambiarColorEjgs.equalsIgnoreCase(ClsConstants.DB_TRUE)));
 		}
 		
-		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorPenstania);
+		String editarDesignaLetrados = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_DESIGNA_LETRADOS, "0");
+		
+		request.setAttribute("EDITAR_DESIGNA_LETRADOS",editarDesignaLetrados);
 		
 		
 		

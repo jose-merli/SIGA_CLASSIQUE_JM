@@ -938,6 +938,7 @@ public class MaestroDesignasAction extends MasterAction {
 		ScsTurnoBean turnoBean = (ScsTurnoBean) turnoVector.get(0) ;
 		miform.setTurno(turnoBean.getDescripcion());
 		ScsDesignaBean beanDesigna = (ScsDesignaBean)vDesignas.get(0);
+		miform.setNig(beanDesigna.getNIG());
 		miform.setNumeroProcedimiento(beanDesigna.getNumProcedimiento());
 		if (beanDesigna.getAnioProcedimiento() == null)
 			miform.setAnioProcedimiento("");
@@ -974,7 +975,7 @@ public class MaestroDesignasAction extends MasterAction {
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
 			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
 					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
-			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO,ScsDesignaBean.C_NUMPROCEDIMIENTO,ScsDesignaBean.C_ANIOPROCEDIMIENTO};
+			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO,ScsDesignaBean.C_NUMPROCEDIMIENTO,ScsDesignaBean.C_ANIOPROCEDIMIENTO,ScsDesignaBean.C_NIG};
 			Hashtable<String, String> htDesigna = new Hashtable<String, String>();
 			htDesigna.put(ScsDesignaBean.C_IDINSTITUCION,usr.getLocation());
 			htDesigna.put(ScsDesignaBean.C_ANIO,miform.getAnio());
@@ -992,6 +993,11 @@ public class MaestroDesignasAction extends MasterAction {
 				htDesigna.put(ScsDesignaBean.C_IDJUZGADO, miform.getIdJuzgado());
 				htDesigna.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, usr.getLocation());
 			}
+			if (miform.getNig() == null)
+				htDesigna.put(ScsDesignaBean.C_NIG,"");
+			else
+				htDesigna.put(ScsDesignaBean.C_NIG,miform.getNig());
+			
 			designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
 
 		}catch(Exception e){

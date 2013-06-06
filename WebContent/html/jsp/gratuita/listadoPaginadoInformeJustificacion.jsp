@@ -623,8 +623,6 @@ function downloadDocumentoResolucion(docResolucion) {
 	document.InformeJustificacionMasivaForm.target="submitArea";		   	
 	document.InformeJustificacionMasivaForm.submit();
 }
-		
-
 </script>
 </head>
 
@@ -755,6 +753,9 @@ function downloadDocumentoResolucion(docResolucion) {
 	</tr>
 	<bean:define id="permitirBotones" name="permitirBotones"
 		scope="request"></bean:define>
+	<bean:define id="editarDesignaLetrados" name="EDITAR_DESIGNA_LETRADOS"
+		scope="request"></bean:define>
+		
 
 	<bean:define id="designaFormList" name="designaFormList"
 		scope="request"></bean:define>
@@ -1032,7 +1033,7 @@ function downloadDocumentoResolucion(docResolucion) {
 								disabled="disabled" /></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when
-									test="${permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
+									test="${permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
 									<img id="iconoboton_editar1"
 										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
@@ -1076,7 +1077,7 @@ function downloadDocumentoResolucion(docResolucion) {
 								disabled="disabled" /></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when
-									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
 									<img id="iconoboton_editar1"
 										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
@@ -1138,7 +1139,7 @@ function downloadDocumentoResolucion(docResolucion) {
 											<td><input type="checkbox" disabled="disabled" /></td>
 											<td rowspan="${designa.rowSpan}"><c:choose>
 												<c:when
-													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
+													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
 													<img id="iconoboton_editar1"
 														src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 														style="cursor: hand;" alt="Editar" name="editar_1"
@@ -1193,7 +1194,7 @@ function downloadDocumentoResolucion(docResolucion) {
 														<td><input type="checkbox" disabled="disabled" /></td>
 														<td rowspan="${designa.rowSpan}"><c:choose>
 															<c:when
-																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
+																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
 																<img id="iconoboton_editar1"
 																	src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																	style="cursor: hand;" alt="Editar" name="editar_1"
@@ -1244,7 +1245,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																		type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
 																	<td rowspan="${designa.rowSpan}"><c:choose>
 																		<c:when
-																			test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false)}">
+																			test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
 																			<img id="iconoboton_editar1"
 																				src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																				style="cursor: hand;" alt="Editar" name="editar_1"
