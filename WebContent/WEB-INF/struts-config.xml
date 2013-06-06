@@ -2929,7 +2929,7 @@
 			<forward name="tipoEnvio" path="/html/jsp/consultas/seleccTipoEnvio.jsp"/>
 		</action>
 
-		<action path="/CON_RecuperarConsultasDinamicas" forward="/CON_RecuperarConsultas.do?tipoConsulta=listas">
+		<action path="/CON_RecuperarConsultasDinamicas" type="com.siga.consultas.action.RecuperarConsultasAction" parameter="tipoConsulta" name="RecuperarConsultasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/consultas/recuperarConsultas.jsp"/>
 			<forward name="resultado" path="/html/jsp/consultas/resultadoRecConsultas.jsp"/>
 			<forward name="editar" path="/html/jsp/consultas/pestanasConsultas.jsp"/>

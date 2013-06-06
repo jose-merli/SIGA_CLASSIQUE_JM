@@ -89,8 +89,8 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table  class="tablaCentralCampos"  align="center">
-	
-	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="resultado">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}" method="POST" target="resultado">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "accionAnterior" />
 		

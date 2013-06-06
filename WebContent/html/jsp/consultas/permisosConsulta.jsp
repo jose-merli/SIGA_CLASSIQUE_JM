@@ -462,11 +462,21 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<%if (tipoConsulta != null && tipoConsulta.equals("&tipoConsulta=listas")){%>				
+		<html:form action="/CON_RecuperarConsultasDinamicas.do?noReset=true" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "accionAnterior"/>
+			<html:hidden property = "idModulo"/>
+		</html:form>
+		
+	<%}else{%>
 		<html:form action="/CON_RecuperarConsultas.do?noReset=true" method="POST" target="mainWorkArea">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "accionAnterior"/>
 			<html:hidden property = "idModulo"/>
 		</html:form>
+	<%}%>	
+
 		<html:form action="/ADM_GestionInformes" method="POST" target="mainWorkArea">
 			<html:hidden property = "modo"/>
 			<html:hidden property = "actionModal" value = ""/>

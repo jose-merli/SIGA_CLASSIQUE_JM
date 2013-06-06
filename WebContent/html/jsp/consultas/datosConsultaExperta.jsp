@@ -478,13 +478,21 @@ if (!bEditable){
 
 	<!-- FIN: BOTONES REGISTRO -->
 
-	
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<%if (tipoConsulta != null && tipoConsulta.equals("tipoConsulta=listas")){%>				
+		<html:form action="/CON_RecuperarConsultasDinamicas.do" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "accionAnterior"/>
+			<html:hidden property = "idModulo"/>
+		</html:form>
+		
+	<%}else{%>
 		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "accionAnterior"/>
 			<html:hidden property = "idModulo"/>
 		</html:form>
+	<%}%>
 	
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>	

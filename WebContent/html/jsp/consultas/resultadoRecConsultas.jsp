@@ -57,8 +57,8 @@
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
-			 
-		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea" style="display:none">			
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}"  method="POST" target="mainWorkArea" style="display:none">			
 		    <html:hidden styleId = "modo"  property = "modo"  value = ""/>
 			<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame" value = "1"/>			
 			<html:hidden styleId = "idInstitucion" property = "idInstitucion"/>

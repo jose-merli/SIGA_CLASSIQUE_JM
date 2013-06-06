@@ -124,7 +124,13 @@ public class RecuperarConsultasAction extends MasterAction {
 	 */
     protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{	
-    	String tipoConsulta =  request.getParameter("tipoConsulta");
+    	String tipoConsulta = null;
+    	if(mapping.getParameter() != null){
+    		tipoConsulta = "listas";
+    	} else if (request.getParameter("tipoConsulta") != null){
+    		tipoConsulta = request.getParameter("tipoConsulta");
+    	}
+    	
     	RecuperarConsultasForm form = (RecuperarConsultasForm)formulario;
     	
     	try{   		

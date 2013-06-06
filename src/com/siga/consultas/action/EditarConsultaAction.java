@@ -334,7 +334,7 @@ public class EditarConsultaAction extends MasterAction {
 				request.setAttribute("datos",databackup); 
 				String tablas ="";
 				String nombreTabla="";
-				if (tipoConsulta.equals(ConConsultaAdm.TIPO_CONSULTA_GEN)){
+				if (tipoConsulta!=null && tipoConsulta.equals(ConConsultaAdm.TIPO_CONSULTA_GEN)){
 					//Recupero los vectores de datos y los paso a la jsp
 					ConCamposSalidaAdm csAdm = new ConCamposSalidaAdm(this.getUserBean(request));
 					Vector vcs = csAdm.getCamposSalida(idInstitucion,idConsulta);
