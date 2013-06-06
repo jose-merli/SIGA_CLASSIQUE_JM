@@ -528,7 +528,10 @@ function TestFileType( fileName, fileTypes ) {
 	if (!fileName) return true;
 	dots = fileName.split(".")
 	fileType = dots[dots.length-1];
-	return (fileTypes.join(".").indexOf(fileType) != -1) ? true : alert(mensajeFichero+ "\n\n" + (fileTypes.join(" .")) + "\n\n" +mensajeFichero2);
+	var variable = fileTypes.join(".").indexOf(fileType) != -1;
+	if (variable == false)
+		alert(mensajeFichero+ "\n\n" + (fileTypes.join(" .")) + "\n\n" +mensajeFichero2);
+	return variable;
 }
 function isFicheroPermitido( fileName, fileTypes ) {
 	fileName = fileName.toUpperCase();
