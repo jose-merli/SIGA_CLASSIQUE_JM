@@ -175,12 +175,12 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actasAdm = new ScsActaComisionAdm(usr);
 		String idInstitucion = usr.getLocation();
 		Date hoy = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy");
 		String anio = sdf2.format(hoy);
 		int numActa;
 		try {
-			actasForm.setFechaResolucion(sdf.format(hoy));
+//			actasForm.setFechaResolucion(sdf.format(hoy));
 			actasForm.setAnioActa(anio);
 			numActa = actasAdm.getNuevoNumActa(idInstitucion,anio);
 			actasForm.setNumeroActa(String.valueOf(numActa));
