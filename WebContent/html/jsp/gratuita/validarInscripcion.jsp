@@ -243,7 +243,7 @@
 		- vbgComprobarValidar: Baja de inscripcion de guardia por baja pendiente masivo
 		*/
 		function accionFinalizar() {		
-				//sub();
+				sub();
 				
 				// No es obligatoria la fecha en los siguiente casos:
 				// - sigInsertar -----------> Alta de guardia
