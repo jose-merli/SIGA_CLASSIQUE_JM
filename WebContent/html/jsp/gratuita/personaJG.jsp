@@ -388,6 +388,9 @@
 
 			jQuery("#provincia").attr("disabled","disabled");
 			jQuery("#poblacion").attr("disabled","disabled");
+			document.forms[0].tipoVia.value = "";
+			jQuery("#tipoVia").attr("disabled","disabled");
+			
 		}else {
 			document.getElementById("desaparece").style.display="inline";
 			document.getElementById("desaparecePr").style.display="inline";
@@ -397,6 +400,7 @@
 			jQuery("#cp").removeAttr("disabled");
 			jQuery("#provincia").removeAttr("disabled");
 			jQuery("#poblacion").removeAttr("disabled");
+			jQuery("#tipoVia").removeAttr("disabled");
  			document.forms[0].existeDom.checked = false;
  			document.PersonaJGForm.existeDomicilio.value = "S";
 		}
