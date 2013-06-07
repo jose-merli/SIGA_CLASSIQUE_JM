@@ -327,41 +327,14 @@
 			}
 
 
-			function descargaLog(fila)
-			{
-				sub();
-				   var datos;
-				   datos = document.getElementById('tablaDatosDinamicosD');
-				   datos.value = ""; 
-				   var i, j;
-				   for (i = 0; i < 5; i++) {
-				      var tabla;
-				      tabla = document.getElementById('tablaDatos');
-				      if (i == 0) {
-				        var flag = true;
-				        j = 1;
-				        while (flag) {
-				          var aux = 'oculto' + fila + '_' + j;
-				          var oculto = document.getElementById(aux);
-				          if (oculto == null)  { flag = false; }
-				          else { datos.value = datos.value + oculto.value + ','; }
-				          j++;
-				        }
-				        datos.value = datos.value + "%"
-				      } else { j = 2; }
-				      if ((tabla.rows[fila].cells)[i].innerHTML == "") {
-				        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-				      } else {
-				        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-				      }
-				   }
-				   
+			function descargaLog(fila) {
+				preparaDatos(fila,'tablaDatos');
+				
 				var aux = document.forms[0].target;
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value="descargarLogErrores";
 				document.forms[0].submit();
 				document.forms[0].target = aux;
-				fin();
 			}
 
 	</script>
