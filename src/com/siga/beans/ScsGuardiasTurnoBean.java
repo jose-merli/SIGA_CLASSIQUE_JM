@@ -37,21 +37,21 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_NUMEROACTUACIONES			= "NUMEROACTUACIONES";
 	static public final String C_IDPERSONA_ULTIMO			= "IDPERSONA_ULTIMO";
 	static public final String C_IDGRUPOGUARDIACOLEGIADO_ULTIMO		= "IDGRUPOGUARDIA_ULTIMO";
-	static public final String C_FECHASUSCRIPCION_ULTIMO	= "FECHASUSCRIPCION_ULTIMO";
-	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
+	static public final String C_FECHASUSCRIPCION_ULTIMO	= "FECHASUSCRIPCION_ULTIMO";	
 	static public final String C_DIASPERIODO				= "DIASPERIODO";
 	static public final String C_TIPODIASPERIODO			= "TIPODIASPERIODO";
 	static public final String C_FESTIVOS					= "FESTIVOS";
 	static public final String C_SELECCIONLABORABLES		= "SELECCIONLABORABLES";
 	static public final String C_SELECCIONFESTIVOS			= "SELECCIONFESTIVOS";
 	static public final String C_IDGUARDIASUSTITUCION		= "IDGUARDIASUSTITUCION";
-	static public final String C_IDTURNOSUSTITUCION			= "IDTURNOSUSTITUCION";
-	static public final String C_ESVIOLENCIAGENERO			= "ESVIOLENCIAGENERO";
+	static public final String C_IDTURNOSUSTITUCION			= "IDTURNOSUSTITUCION";	
 	static public final String C_PORGRUPOS					= "PORGRUPOS";
 	static public final String C_ROTARCOMPONENTES			= "ROTARCOMPONENTES";
 	static public final String C_IDINSTITUCIONPRINCIPAL			= "IDINSTITUCIONPRINCIPAL";
 	static public final String C_IDTURNOPRINCIPAL			= "IDTURNOPRINCIPAL";
 	static public final String C_IDGUARDIAPRINCIPAL			= "IDGUARDIAPRINCIPAL";
+	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
+	static public final String C_TIPOGUARDIA				= "TIPOGUARDIA";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
@@ -82,7 +82,6 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private String		festivos;
 	private String		seleccionLaborables;
 	private String		seleccionFestivos;
-	private String		esViolenciaGenero;
 	private String		porGrupos;
 	private String		rotarComponentes;
 	
@@ -95,6 +94,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer 	idInstitucionPrincipal;
 	private Integer 	idTurnoPrincipal;
 	private Integer 	idGuardiaPrincipal;
+	private Integer 	idTipoGuardiaSeleccionado;
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -126,7 +126,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public String getFestivos() {return festivos;}
 	public String getSeleccionLaborables () {return seleccionLaborables;}
 	public String getSeleccionFestivos () {return seleccionFestivos;}
-	public String getEsViolenciaGenero () {return esViolenciaGenero;}
+	public Integer getIdTipoGuardiaSeleccionado() {return idTipoGuardiaSeleccionado;}
 	public String getPorGrupos () {return porGrupos;}
 	public String getRotarComponentes () {return rotarComponentes;}
 	public ScsTurnoBean getTurno() {return turno;}
@@ -169,7 +169,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setFestivos(String festivos) {this.festivos = festivos;}
 	public void setSeleccionLaborables (String valor) {this.seleccionLaborables = valor;}
 	public void setSeleccionFestivos (String valor) {this.seleccionFestivos = valor;}
-	public void setEsViolenciaGenero(String valor) {this.esViolenciaGenero = valor;}
+	public void setIdTipoGuardiaSeleccionado(Integer valor) {this.idTipoGuardiaSeleccionado = valor;}
 	public void setPorGrupos (String valor) {this.porGrupos = valor;}
 	public void setRotarComponentes (String valor) {this.rotarComponentes = valor;}
 	public void setTurno(ScsTurnoBean turno) {this.turno = turno;}

@@ -3,6 +3,8 @@ package com.siga.gratuita.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.redabogacia.sigaservices.app.autogen.model.ScsTiposguardias;
+
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
@@ -43,7 +45,6 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String seleccionFestivosSabado;
 	private String seleccionFestivosDomingo;
 	private String sustituta;
-	private String vg;
 	private String porGrupos;
 	private String rotarComponentes;
 	private ArrayList ordenacion = new ArrayList();
@@ -70,9 +71,11 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	
 	List<ScsTurnoBean> turnosPrincipales;
 	List<ScsGuardiasTurnoBean> guardiasPrincipales;
+	private List<ScsTiposguardias> tiposGuardias;
 	private String idInstitucionPrincipal;
 	private String idTurnoPrincipal;
 	private String idGuardiaPrincipal;
+	private String idTipoGuardiaSeleccionado;
 	List<ScsGuardiasTurnoBean> guardiasVinculadas;
 	//////////////////// GETTERS ////////////////////
 	// Configuracion de guardia
@@ -94,7 +97,6 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public String getSeleccionFestivosSabado() {return this.seleccionFestivosSabado;}
 	public String getSeleccionFestivosDomingo() {return this.seleccionFestivosDomingo;}
 	public String getSustituta() {return sustituta;}
-	public String getVg() {return this.vg;}
 	public String getPorGrupos() {return this.porGrupos;}
 	public String getRotarComponentes() {return this.rotarComponentes;}
 	public String getCheckGuardiaDeSustitucion() {return checkGuardiaDeSustitucion;}
@@ -214,8 +216,7 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setSeleccionFestivosJueves(String valor) {this.seleccionFestivosJueves = valor;}
 	public void setSeleccionFestivosViernes(String valor) {this.seleccionFestivosViernes = valor;}
 	public void setSeleccionFestivosSabado(String valor) {this.seleccionFestivosSabado = valor;}
-	public void setSeleccionFestivosDomingo(String valor) {this.seleccionFestivosDomingo = valor;}
-	public void setVg(String valor) {this.vg = valor;}
+	public void setSeleccionFestivosDomingo(String valor) {this.seleccionFestivosDomingo = valor;}	
 	public void setPorGrupos(String valor) {this.porGrupos = valor;}
 	public void setRotarComponentes(String valor) {this.rotarComponentes = valor;}
 	
@@ -329,6 +330,12 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setTurnosPrincipales(List<ScsTurnoBean> turnosPrincipales) {
 		this.turnosPrincipales = turnosPrincipales;
 	}
+	public List<ScsTiposguardias> getTiposGuardias() {
+		return tiposGuardias;
+	}
+	public void setTiposGuardias(List<ScsTiposguardias> tiposGuardias) {
+		this.tiposGuardias = tiposGuardias;
+	}	
 	public List<ScsGuardiasTurnoBean> getGuardiasPrincipales() {
 		return guardiasPrincipales;
 	}
@@ -354,6 +361,13 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setIdGuardiaPrincipal(String idGuardiaPrincipal) {
 		this.idGuardiaPrincipal = idGuardiaPrincipal;
 	}
+	public String getIdTipoGuardiaSeleccionado() {
+		return idTipoGuardiaSeleccionado;
+	}
+	public void setIdTipoGuardiaSeleccionado(String idTipoGuardiaSeleccionado) {
+		this.idTipoGuardiaSeleccionado = idTipoGuardiaSeleccionado;
+	}		
+	
 	public List<ScsGuardiasTurnoBean> getGuardiasVinculadas() {
 		return guardiasVinculadas;
 	}

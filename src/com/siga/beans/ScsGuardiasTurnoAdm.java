@@ -63,21 +63,21 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
 				ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO,
 				ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO,
-				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
 				ScsGuardiasTurnoBean.C_DIASPERIODO,
 				ScsGuardiasTurnoBean.C_TIPODIASPERIODO,
 				ScsGuardiasTurnoBean.C_FECHAMODIFICACION,
 				ScsGuardiasTurnoBean.C_USUMODIFICACION,
 				ScsGuardiasTurnoBean.C_SELECCIONLABORABLES,
 				ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS,
-				ScsGuardiasTurnoBean.C_IDGUARDIASUSTITUCION,
-				ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO,
+				ScsGuardiasTurnoBean.C_IDGUARDIASUSTITUCION,				
 				ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION,
 				ScsGuardiasTurnoBean.C_PORGRUPOS,
 				ScsGuardiasTurnoBean.C_ROTARCOMPONENTES,
 				ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL,
 				ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL,
-				ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL
+				ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL,
+				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
+				ScsGuardiasTurnoBean.C_TIPOGUARDIA
 		};
 		return campos;
 	} //getCamposBean ()
@@ -131,8 +131,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setTipodiasGuardia(UtilidadesHash.getString(hash,ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
 			bean.setDiasPeriodo(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_DIASPERIODO));
 			bean.setTipoDiasPeriodo(UtilidadesHash.getString(hash,ScsGuardiasTurnoBean.C_TIPODIASPERIODO));
-			bean.setSeleccionLaborables(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));
-			bean.setEsViolenciaGenero(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO));
+			bean.setSeleccionLaborables(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));			
 			bean.setSeleccionFestivos(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS));
 			bean.setIdGuardiaSustitucion(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDGUARDIASUSTITUCION));
 			bean.setIdTurnoSustitucion(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION));
@@ -141,6 +140,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdInstitucionPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL));
 			bean.setIdTurnoPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL));
 			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL));
+			
+			bean.setIdTipoGuardiaSeleccionado(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_TIPOGUARDIA));
 			
 			
 		}
@@ -190,14 +191,14 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPODIASPERIODO, b.getTipoDiasPeriodo());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_SELECCIONLABORABLES, b.getSeleccionLaborables());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS, b.getSeleccionFestivos());
-			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO, b.getEsViolenciaGenero());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIASUSTITUCION, b.getIdGuardiaSustitucion());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION, b.getIdTurnoSustitucion());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_PORGRUPOS, b.getPorGrupos());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, b.getRotarComponentes());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL, b.getIdInstitucionPrincipal());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, b.getIdTurnoPrincipal());
-			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, b.getIdGuardiaPrincipal());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, b.getIdGuardiaPrincipal());			
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPOGUARDIA, b.getIdTipoGuardiaSeleccionado());
 		}
 		catch (Exception e){
 			hash = null;
@@ -279,9 +280,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARJUSTIFICACIONES+" VALIDARJUSTIFICACIONES,"+
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
 				break;
@@ -299,10 +299,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION+" FECHAINSCRIPCION,"+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHABAJA+" FECHABAJA,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+","+
@@ -330,9 +329,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA+" NUMEROLETRADOS,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA+" NUMEROSUSTITUTOS,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES";
@@ -347,7 +345,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS+" DIASSEPARACIONGUARDIAS, "+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+" TIPODIASGUARDIA"+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+"";
 				break;
