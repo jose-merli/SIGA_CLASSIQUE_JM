@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
@@ -25,9 +23,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.atos.utils.Validaciones;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenBajasTemporalesBean;
-import com.siga.beans.EnvDestinatariosAdm;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
