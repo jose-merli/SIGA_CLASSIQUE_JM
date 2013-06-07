@@ -147,7 +147,7 @@
 			   			gratuita.relaciones.Tipo,
 						gratuita.listaTurnosLetrados.literal.turno,
 						gratuita.busquedaDesignas.literal.letrado,"
-			   columnSizes="6,6,6,24,24,24,10">
+			   columnSizes="10,5,6,20,24,24,12">
 		
 		<% if (obj==null || obj.size()==0){%>
 	 		<div class="notFound">
