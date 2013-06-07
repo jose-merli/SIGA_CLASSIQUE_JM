@@ -70,8 +70,8 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService"									implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosTextoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService"									implementation="org.redabogacia.sigaservices.app.services.fac.impl.CuentasBancariasServiceImpl"/>
 		
-
-<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTiposGuardiasService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTiposGuardiasServiceImpl"/>
 	</context>
 </configuration> 
 	
