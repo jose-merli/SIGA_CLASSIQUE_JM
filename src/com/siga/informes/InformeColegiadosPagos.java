@@ -37,7 +37,6 @@ public class InformeColegiadosPagos extends MasterReport {
 	
 	public Hashtable getDatosInformeColegiado(UsrBean usr, Hashtable htDatos) throws ClsExceptions, SIGAException{
 		String idioma = usr.getLanguage().toUpperCase();
-		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
 		String institucion =usr.getLocation();
 		String idPagos =(String)htDatos.get("idPago");
 		Hashtable htAux=null;
@@ -66,7 +65,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		//Datos Cabecera
 		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr, idPagos);
 		
-		
+
 		String cuenta=(String)htAux.get("CUENTA_CORRIENTE");
 		if (cuenta==null || cuenta.equals("")) {
 			String delimIni=CTR+"INI_TODO_CUENTA"+CTR;
@@ -106,6 +105,10 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//Datos del Pago y Totales
 		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr,idPerDestino);
+		
+		//Fecha actual con letra para mostrar en las cartas
+		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
+		
 		htDatos.putAll(htAux);
 		
 		return htDatos;
