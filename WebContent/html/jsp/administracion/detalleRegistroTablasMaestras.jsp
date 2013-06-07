@@ -139,13 +139,12 @@
 					}
 				}
 				
-				if (listadoTablasMaestrasForm.descripcionRegistro.value=='') {
-					error += '\n'+'<siga:Idioma key="messages.consultas.error.descripcion"/>';					
-				}
+				if (listadoTablasMaestrasForm.descripcionRegistro.value=='')				
+					error += (error==''?'':'\n') + '<siga:Idioma key="messages.consultas.error.descripcion"/>';					
 				
 				var validacodigo = validarCodigo();
 				if(validacodigo!='')
-					error += '\n'+validacodigo;
+					error += (error==''?'':'\n') + validacodigo;
 				
 				if (error=='') {
 					listadoTablasMaestrasForm.submit();						

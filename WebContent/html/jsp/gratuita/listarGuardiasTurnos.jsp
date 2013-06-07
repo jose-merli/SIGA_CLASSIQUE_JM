@@ -227,17 +227,26 @@
 						  else if(tipoDia.equalsIgnoreCase("Q"))
 								 literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";	
 				%>
-		  <siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1'  value='<%=hash.get("IDTURNO")%>'/><input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'/><%=hash.get("GUARDIA")%><input type='hidden'  id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'/><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'/></td>
-				<td><%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/><%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/><%}else{%><siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/><%}%></td>
+				
+			<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1'  value='<%=hash.get("IDTURNO")%>'/>
+				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'/>					
+				<input type='hidden'  id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'/>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'/>		  
+				
+				<td><%=hash.get("GUARDIA")%></td>
 				<td>
-				<%=UtilidadesString.mostrarDatoJSP(ScsGuardiasTurnoAdm.obtenerTipoDia((String)hash.get("SELECCIONLABORABLES"), (String)hash.get("SELECCIONFESTIVOS"), usr))%>
+					<%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%>
+						<siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/>
+					<%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%>
+						<siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/><%}else{%><siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/>
+					<%}%>
 				</td>
+				<td><%=UtilidadesString.mostrarDatoJSP(ScsGuardiasTurnoAdm.obtenerTipoDia((String)hash.get("SELECCIONLABORABLES"), (String)hash.get("SELECCIONFESTIVOS"), usr))%></td>
 				<td><%=hash.get("DURACION")%>&nbsp;<siga:Idioma key="<%=literalDuracion%>"/></td>
 				<td><%=hash.get("NUMEROLETRADOS")%></td>
 				<td><%=hash.get("VALIDARJUSTIFICACIONES")%></td>
-				<td><%=NLetradosInscritos %></td>
-			
+				<td><%=NLetradosInscritos %></td>			
 			</siga:FilaConIconos>	
 		
 		<%
