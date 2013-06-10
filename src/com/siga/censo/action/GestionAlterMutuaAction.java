@@ -238,7 +238,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			json.put("error", alterForm.isError());
 			json.put("idSolicitud", alterForm.getIdSolicitudalter());
 			json.put("mensaje", alterForm.getMsgRespuesta());
-			response.setContentType("application/x-www-form-urlencoded;charset=ISO-8859-15");
+			response.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Content-Type", "application/json");
 			response.setHeader("X-JSON", json.toString());
@@ -270,7 +270,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			json.put("breve", alterForm.getBrevePropuesta());
 			json.put("error", alterForm.isError());
 			json.put("mensaje", alterForm.getMsgRespuesta());
-			response.setContentType("application/x-www-form-urlencoded;charset=ISO-8859-15");
+			response.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Content-Type", "application/json");
 			response.setHeader("X-JSON", json.toString());
@@ -298,7 +298,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			json.put("error", alterForm.isError());
 			json.put("mensaje", alterForm.getMsgRespuesta());
 			json.put("ruta", alterForm.getRutaFichero());
-			response.setContentType("application/x-www-form-urlencoded;charset=ISO-8859-15");
+			response.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Content-Type", "application/json");
 			response.setHeader("X-JSON", json.toString());
@@ -325,7 +325,7 @@ public class GestionAlterMutuaAction extends MasterAction {
 			JSONObject json = new JSONObject();
 			json.put("error", alterForm.isError());
 			json.put("mensaje", alterForm.getMsgRespuesta());
-			response.setContentType("application/x-www-form-urlencoded;charset=ISO-8859-15");
+			response.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Content-Type", "application/json");
 			response.setHeader("X-JSON", json.toString());

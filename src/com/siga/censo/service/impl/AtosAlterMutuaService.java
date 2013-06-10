@@ -497,6 +497,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 					form.setTipoIdentificacion(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_TIPOIDENTIFICADOR, form.getIdTipoIdentificacion().toString()));
 					form.setColegio(instAdm.getAbreviaturaInstitucion(usr.getLocation()));
 					form.setIdInstitucion(usr.getLocation());
+					form.setCodigoInstitucion(catAdm.getCodigoExtInstitucion(usr.getLocation()));
 					form.setFechaNacimiento(
 						UtilidadesString.formatoFecha(
 							UtilidadesHash.getString(per,"FECHANACIMIENTO"),
