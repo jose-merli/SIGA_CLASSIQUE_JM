@@ -186,7 +186,7 @@
 	            	String total=row.getString("TOTAL");
 	            	Boolean isPermitidoBorrar =(Boolean) row.getRow().get("ESPERMITIDOBORRAR");
 	            	// BNS NO SE PERMITE BORRAR ABONOS SJCS
-	            	if (isPermitidoBorrar){
+	            	if (isPermitidoBorrar.booleanValue()){
 		            	String IDPAGOSJG = (String) row.getRow().get("IDPAGOSJG");
 		            	if (IDPAGOSJG != null && !IDPAGOSJG.equals("")){
 		            		isPermitidoBorrar = false;
