@@ -159,6 +159,7 @@
 		   border="1"
 		   columnNames="<%=columnas%>"
 		   columnSizes="<%=tamanoCol%>"
+		   fixedHeight="380"
 		   modal="g"
 		   modalScroll="true">
 		   
