@@ -69,21 +69,14 @@
 			function buscarLetradoEnColaLetrado() {
 				s = document.getElementById("buscarLetrado").value;
 				if (s) {
-					var ele = document.getElementsByName ("numeroColegiadoBusqueda");
-					for (i = 0; i < ele.length; i++) {
-						var a = ele[i].value.split("_");
-						if (a) {
-							var fila = a[0];
-							var nColegiado = a[1];
-	//						alert ("Texto: " + s + " Fila: " + fila + " nColegiado: " + nColegiado);
-							if(nColegiado == s) {
-								selectRowTablaLetrados(eval(fila)+1);
-								return;
-							}
-						}
-					}
-				}
-				selectRowTablaLetrados(-1);
+					var inputBusqColegiado = jQuery("input.numeroColegiadoBusqueda[value$='_"+s+"']");
+					if (inputBusqColegiado.exists()){
+						var inputBusqColegiado_fila = inputBusqColegiado.val().split("_")[0];
+						selectRow(parseInt(inputBusqColegiado_fila) + 1, "tablaLetrados");
+					} else
+						selectRow(-1, "tablaLetrados");
+				} else
+					selectRow(-1, "tablaLetrados");
 			}
 		
 			function selectRowTablaLetrados(fila) {
@@ -372,7 +365,7 @@
 							%>
 								
 							<td id="colegiado_<%=i%>">
-								<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" />
+								<input name="numeroColegiadoBusqueda" type="hidden" class="box, numeroColegiadoBusqueda" size="10" value="<%=numeroColegiadoBusqueda%>" />
 								<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
 								<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
 								<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
