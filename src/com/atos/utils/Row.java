@@ -1347,8 +1347,14 @@ public class Row implements Serializable {
 						//sql += "'" + validateChars(row.get(updatableFields[i])) + "' ";
 						//codigos.put(new Integer(contador),validateChars(""+row.get(updatableFields[i])));
 						
-						sql += this.transformarParametrosOut(contador);
-						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+						String dato = row.get(updatableFields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);												
+																							
+						sql += this.transformarParametrosOut(contador, bTransforma);
+						codigos.put(new Integer(contador), "" + datoTransformado);
   	  				    contador++;
   	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) {
@@ -1366,12 +1372,19 @@ public class Row implements Serializable {
 							
 						} else {
 							//TEMPORAL: test the passed date is in standard format
+							formatDate(row.get(updatableFields[i]));
+							
 							// esto no hace nada porque no recoge la respuesta 						    
 							//sql += " TO_DATE('" + row.get(updatableFields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
 							
-							formatDate(row.get(updatableFields[i]));							
-							sql += " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+							String dato = row.get(updatableFields[i]).toString();
+							boolean bTransforma = dato.indexOf(":")>=0;
+							String datoTransformado = dato;
+							if (bTransforma)
+								datoTransformado = this.transformarParametrosIn(dato);	
+																																		
+							sql += " TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+							codigos.put(new Integer(contador), "" + datoTransformado);
 	  	  				    contador++;
 						}
 						
@@ -1877,6 +1890,7 @@ public class Row implements Serializable {
 		String sql = " UPDATE " + tableName + " SET ";
 		int contador=1;
 		
+		
 		// UPDATE SENTENCE!
 		if (updatableFields != null) {
 			for (int i = 0; i < updatableFields.length; i++) {
@@ -1886,9 +1900,15 @@ public class Row implements Serializable {
 					sql += " NULL ";
 					
 				} else {										
-					if (dataTypes.get(updatableFields[i]).equals("STRING")) {
-						sql += this.transformarParametrosOut(contador);						
-						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+					if (dataTypes.get(updatableFields[i]).equals("STRING")) {		
+						String dato = row.get(updatableFields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+												
+						sql += this.transformarParametrosOut(contador, bTransforma);
+						codigos.put(new Integer(contador), "" + datoTransformado);
   	  				    contador++;
   	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) 	{
@@ -1902,9 +1922,16 @@ public class Row implements Serializable {
 							
 						} else {
 							//TEMPORAL: test the passed date is in standard format
-							formatDate(row.get(updatableFields[i]));							
-							sql += " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+							formatDate(row.get(updatableFields[i]));	
+							
+							String dato = row.get(updatableFields[i]).toString();
+							boolean bTransforma = dato.indexOf(":")>=0;
+							String datoTransformado = dato;
+							if (bTransforma)
+								datoTransformado = this.transformarParametrosIn(dato);	
+																																		
+							sql += " TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+							codigos.put(new Integer(contador), "" + datoTransformado);
 	  	  				    contador++;
 						}
 						
@@ -2306,9 +2333,15 @@ public class Row implements Serializable {
 					} else if (datatypes.get(fieldNames[i]).equals("STRING")) {
 						//sqlValues.append(aux + " '" + validateChars(row.get(fieldNames[i])) + "' ");
 						//codigos.put(new Integer(contador),""+validateChars(row.get(fieldNames[i])));
-  	  				    
-  	  				    sqlValues.append(aux + this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
+						
+						String dato = row.get(fieldNames[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+  	  				      	  				    			    					    
+					    sqlValues.append(aux + this.transformarParametrosOut(contador, bTransforma));
+					    codigos.put(new Integer(contador), "" + datoTransformado);
   	  				    contador++;
   	  				    
 					} else if (datatypes.get(fieldNames[i]).equals("NUMBER")) {
@@ -2323,12 +2356,19 @@ public class Row implements Serializable {
 							sqlValues.append(aux + " SYSTIMESTAMP ");
 							
 						} else {
-							//TEMPORAL: test the passed date is in standard format							
+							//TEMPORAL: test the passed date is in standard format
+							formatDate(row.get(fieldNames[i]));
+							
 							//sqlValues.append(aux + " TO_DATE('" + row.get(fieldNames[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ");
 							
-	  	  				    formatDate(row.get(fieldNames[i]));
-						    sqlValues.append(aux + " TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-							codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
+							String dato = row.get(fieldNames[i]).toString();
+							boolean bTransforma = dato.indexOf(":")>=0;
+							String datoTransformado = dato;
+							if (bTransforma)
+								datoTransformado = this.transformarParametrosIn(dato);	
+								  	  				    						    							
+							sqlValues.append(aux + " TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
+							codigos.put(new Integer(contador), "" + datoTransformado);
 	  	  				    contador++;
 						}
 						
@@ -2457,9 +2497,15 @@ public class Row implements Serializable {
 					if (datatypes.get(keyfields[i]).equals("STRING")) {
 					    //sqlWhere.append("'" + validateChars(row.get(keyfields[i])) + "' ");
 						//codigos.put(new Integer(contador),validateChars(""+row.get(keyfields[i])));
-
-					    sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+						
+						String dato = row.get(keyfields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+					    					   					    
+					    sqlWhere.append(this.transformarParametrosOut(contador, bTransforma));
+					    codigos.put(new Integer(contador), "" + datoTransformado);
   	  				    contador++;
   	  				      	  				    
 					} else if (datatypes.get(keyfields[i]).equals("NUMBER")) {
@@ -2470,12 +2516,19 @@ public class Row implements Serializable {
   	  				    contador++;
   	  				    
 					} else if (datatypes.get(keyfields[i]).equals("DATE")) {
-						//TEMPORAL: test the passed date is in standard format						
+						//TEMPORAL: test the passed date is in standard format
+						formatDate(row.get(keyfields[i]));					 
+						
 						//sqlWhere.append(" TO_DATE('" + row.get(keyfields[i]) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ");
 						
-						formatDate(row.get(keyfields[i]));
-					    sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+						String dato = row.get(keyfields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+												  
+						codigos.put(new Integer(contador), "" + datoTransformado);
+						sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
   	  				    contador++;
   	  				    
 					} else {
@@ -2523,9 +2576,15 @@ public class Row implements Serializable {
       			} else {
       				sqlWhere.append(aux + keyfields[i] + " = ");
       				
-      				if (dataTypes.get(keyfields[i]).equals(DbTypes.STRING)) {      					
-      					sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+      				if (dataTypes.get(keyfields[i]).equals(DbTypes.STRING)) {      	
+      					String dato = row.get(keyfields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+      					
+					    codigos.put(new Integer(contador), "" + datoTransformado);
+					    sqlWhere.append(this.transformarParametrosOut(contador, bTransforma));
   	  				    contador++;
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.NUMBER)) {
@@ -2534,9 +2593,14 @@ public class Row implements Serializable {
   	  				    contador++;
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.DATE)) {
-      					//formatDate(row.get(keyfields[i]));
-					    sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-						codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
+      					String dato = row.get(keyfields[i]).toString();
+						boolean bTransforma = dato.indexOf(":")>=0;
+						String datoTransformado = dato;
+						if (bTransforma)
+							datoTransformado = this.transformarParametrosIn(dato);	
+      					
+						codigos.put(new Integer(contador), "" + datoTransformado);
+						sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
   	  				    contador++;
       					
       					
@@ -3419,21 +3483,23 @@ public class Row implements Serializable {
 	 * @param cad
 	 * @return
 	 */
-	private String transformarParametrosIn(Object cad) {
-		String cadena = cad.toString();
-		
-		cadena = cadena.replaceAll(":", ":#");
-		
-		return cadena;
+	private String transformarParametrosIn(String cadena) {
+		String cadena2 = cadena.replaceAll(":", "::##");	
+		return cadena2;
 	}		
 	
 	/**
 	 * Cambios despues de cambiar los parametros a la query
 	 * 
 	 * @param contador
+	 * @param bTransforma
 	 * @return
 	 */
-	private String transformarParametrosOut(int contador) {
-		return " REPLACE(:" + new Integer(contador).toString() + ", ':#', ':') ";
+	private String transformarParametrosOut(int contador, boolean bTransforma) {
+		if (bTransforma)
+			return " REPLACE(:" + new Integer(contador).toString() + ", '::##', ':') ";
+		else 			
+			return ":" + new Integer(contador).toString() + " ";
+				
 	}	
 }
