@@ -554,7 +554,7 @@ String[] getdatos = { usr.getLocation() };
 		function nuevo() 
 		{		
 			document.forms[0].modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.forms[1].name,"M");
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 			if (resultado!=null && resultado[0]=='MODIFICADO')
 			{
 				redireccionar();
