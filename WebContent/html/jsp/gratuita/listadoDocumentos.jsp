@@ -79,28 +79,9 @@
 		function consultarDocumento(fila) {
 		   var datos;
 		   datos = document.getElementById('tablaDatosDinamicosD');
-		   datos.value = ""; 
-		   var i, j;
-		   for (i = 0; i < 2; i++) {
-		      var tabla;
-		      tabla = document.getElementById('listadoMaterias');
-		      if (i == 0) {
-		        var flag = true;
-		        j = 1;
-		        while (flag) {
-		          var aux = 'oculto' + fila + '_' + j;
-		          var oculto = document.getElementById(aux);
-		          if (oculto == null)  { flag = false; }
-		          else { datos.value = datos.value + oculto.value + ','; }
-		          j++;
-		        }
-		        datos.value = datos.value + "%"
-		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerHTML == "")
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-		   }
+		   datos.value = "";
+		   preparaDatos(fila, 'listadoMaterias', datos);
+		   
 		   document.forms[0].modo.value = "verDocu";
 		   ventaModalGeneral(document.forms[0].name,"P");
 		 }
@@ -108,28 +89,7 @@
 		 function editarDocumento(fila) {
 		   var datos;
 		   datos = document.getElementById('tablaDatosDinamicosD');
-		   datos.value = ""; 
-		   var i, j;
-		   for (i = 0; i < 2; i++) {
-		      var tabla;
-		      tabla = document.getElementById('listadoMaterias');
-		      if (i == 0) {
-		        var flag = true;
-		        j = 1;
-		        while (flag) {
-		          var aux = 'oculto' + fila + '_' + j;
-		          var oculto = document.getElementById(aux);
-		          if (oculto == null)  { flag = false; }
-		          else { datos.value = datos.value + oculto.value + ','; }
-		          j++;
-		        }
-		        datos.value = datos.value + "%"
-		      } else { j = 2; }
-		      if ((tabla.rows[fila].cells)[i].innerHTML == "") 
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-		      else
-		        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-		   }
+		   preparaDatos(fila, 'listadoMaterias', datos);
 		   document.forms[0].modo.value = "editarDocu";
 		   var resultado = ventaModalGeneral(document.forms[0].name,"P");
 		   if (resultado) {
@@ -147,28 +107,8 @@
 		   var datos;
 		   if (confirm('¿Está seguro de que desea eliminar el registro?')){
 		   	datos = document.getElementById('tablaDatosDinamicosD');
-		       datos.value = ""; 
-		   	var i, j;
-		   	for (i = 0; i < 2; i++) {
-		      		var tabla;
-		      		tabla = document.getElementById('listadoMaterias');
-		      		if (i == 0) {
-		        		var flag = true;
-		        		j = 1;
-		        		while (flag) {
-		          			var aux = 'oculto' + fila + '_' + j;
-		          			var oculto = document.getElementById(aux);
-		          			if (oculto == null)  { flag = false; }
-		          			else { datos.value = datos.value + oculto.value + ','; }
-		          			j++;
-		        		}
-		        		datos.value = datos.value + "%"
-		      		} else { j = 2; }
-		      		if ((tabla.rows[fila].cells)[i].innerHTML == "")
-		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-		      		else
-		        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-		   	}
+		    datos.value = ""; 
+		    preparaDatos(fila, 'listadoMaterias', datos);
 		   	var auxTarget = document.forms[0].target;
 		   	document.forms[0].target="submitArea";
 		   	document.forms[0].modo.value = "BorrarDocu";
