@@ -170,10 +170,10 @@ public class TagTable extends TagSupport {
 			out.println("		id='"+this.name+"';");
 			out.println("   if(document.getElementById('filaSelD')) ");
 			out.println("   	document.getElementById('filaSelD').value = fila;");
-			out.println("		var iFila = fila -1;");
+			out.println("	var iFila = fila -1;");
 			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:odd').attr('class','filaTablaPar');");
 			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:even').attr('class','filaTablaImpar');");
-			out.println("   jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:eq('+iFila+')').attr('class','listaNonEditSelected')");
+			out.println("   if (iFila >= 0) jQuery('#'+id+'_BodyDiv').find('tbody').find('tr:eq('+iFila+')').attr('class','listaNonEditSelected')");
 //out.println("alert('Marco seleccionada ' + iFila + ' encontradas: ' + jQuery('#BodyDiv').find('tbody').find('tr:eq('+iFila+')'));");
 			out.println(" }");
 			out.println("");
