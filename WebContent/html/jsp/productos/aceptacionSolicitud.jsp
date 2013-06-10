@@ -111,6 +111,12 @@
 	boolean bModPrecio = UtilidadesString.stringToBoolean(sModPrecio);
 	String aprobarSolicitud=admGen.getValor(user.getLocation(), ClsConstants.MODULO_PRODUCTOS, "APROBAR_SOLICITUD_COMPRA", "S");
 	bModPrecio &= !esLetrado;
+	
+	// Devolucion de texto para mostrar en esta pantalla, al intentar continuar
+	String textoError = (String)request.getAttribute("textoError");
+	if (textoError == null)
+		textoError = "";
+	request.setAttribute("textoError", "");
 
 %>
 <html>
@@ -190,6 +196,11 @@
 		}
 
 		function cuentaUnica() {
+			// Mostrando mensaje de error si se ha vuelto a cargar la pagina porque habia un error
+			if ("<%=textoError%>") {
+				alert ("<%=textoError%>");
+			}
+			
 			f = document.solicitudCompraForm;
 			
 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
@@ -215,7 +226,7 @@
 				   	jQuery("#cuenta"+j).attr("disabled","disabled");
 					document.getElementById("cuenta"+j).style.display ='none';
 				}
-			}		   
+			}
  		}
 	
 		function obtenerCuentaAccion(fila) {
@@ -468,7 +479,7 @@
  		}
  		
  		function validaNumeroPositivo(valorInicial,valor) { 		
-	 	 	if (isNaN(valor.value) || valor.value < 1 || (valor.value!=parseInt(valor.value,10))) {
+	 	 	if (isNaN(valor.value) || valor.value == 0 || (valor.value!=parseInt(valor.value,10))) {
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.cantidad"/> <siga:Idioma key="messages.campoNoCorrecto.error"/>";
 				alert (mensaje);
 	//			valor.value = valorInicial;	   

@@ -310,9 +310,11 @@ public class CarroCompra
 	 */
 	private boolean actualizarCantidadArticulo (Articulo a, int nuevaCantidad) throws SIGAException {
 		try {
-			if (nuevaCantidad < 1) {
+			// El siguiente control no se utilizaba para nada
+			// Ademas, hay q quitarlo para permitir cantidades negativas (INC_10878_SIGA)
+			/*if (nuevaCantidad < 1) {
 				return this.borrarArticulo(a);
-			}
+			}*/
 			a.setCantidad(nuevaCantidad);
 			this.setArticulo(a);
 			return true;

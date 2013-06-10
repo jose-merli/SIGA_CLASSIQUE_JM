@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1007,11 +1009,13 @@ public class SolicitudCompraAction extends MasterAction{
 		UsrBean user = null;		
 		CarroCompra carro;		
 		double varPrecioTotalTarjeta=0, precio=0, importe=0, iva=0, varIvaTotalTarjeta=0;
+		Double subtotal;
 		Articulo articulo;
 		int claseArticulo;
 		Vector vArticulos = new Vector();
 		String pagoConTarjeta = "N";
 		String importeDecimal="", importeEntero="";
+		String claveTipo;
 		SolicitudCompraForm form =  (SolicitudCompraForm) formulario;
 		
 		try {
@@ -1023,6 +1027,10 @@ public class SolicitudCompraAction extends MasterAction{
 			
 			if (vArticulos.size()==0) modo = exito("error",request);
 			else {			
+				// preparando tabla para controlar que el subtotales por cada tipo de un importe positivo
+				// control exclusivo para evitar totales negativos ya que se han de permitir cantidades negativas
+				Hashtable<String, Double> subtotalesPorTipo = new Hashtable<String, Double>();
+				
 				//Recorremos los articulos del carro para calcular el importe total del pago con tarjeta:
 				//Tambien vamos actualizando el carro con los datos que me faltan.
 				for(int i=1; i < vArticulos.size()+1; i++){
@@ -1056,7 +1064,24 @@ public class SolicitudCompraAction extends MasterAction{
 							carro.actualizarNCuentaServicio(articulo.getIdArticulo(),articulo.getIdArticuloInstitucion(),articulo.getIdTipo(),articulo.getNumeroCuenta());
 						}					
 					}
-				}	
+					
+					// acumulando subtotales por tipo
+					claveTipo = articulo.getIdTipo()+"_"+articulo.getIdArticulo()+"_"+articulo.getIdInstitucion();
+					if ((subtotal = subtotalesPorTipo.get(claveTipo)) == null)
+						subtotal = new Double(0);
+					subtotal += articulo.getCantidad() * articulo.getPrecio() * (1 + iva/100);
+					subtotalesPorTipo.put(claveTipo, subtotal);
+				}
+				
+				// comprobando que los subtotales por tipo tienen importe positivo
+				Enumeration<Double> enuSubtotalesPorTipo = subtotalesPorTipo.elements();
+				while (enuSubtotalesPorTipo.hasMoreElements()) {
+					subtotal = enuSubtotalesPorTipo.nextElement();
+					if (subtotal < 0) { 
+						request.setAttribute("textoError", "Uno de los subtotales por Tipo de productos/servicios resulta en un importe negativo. Recuerde que al introducir una cantidad negativa para un producto/servicio, tiene que añadir otro producto/servicio de su mismo Tipo con un importe positivo mayor que el anterior");
+						return continuar(mapping, formulario, request, response);
+					}
+				}
 				
 				if (pagoConTarjeta.equals("S")) {
 					//Redondeo el importe:
