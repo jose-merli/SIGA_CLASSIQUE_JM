@@ -29,7 +29,9 @@ import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -158,9 +160,15 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					}
 					//INSERTAR EN LA COLA PARA ENVÍO DE DOCUMENTACIÓN
 					enviaDocumentacion(getUsrBean(), getIdInstitucion(), anio, numero, idTipoEJG);
+										
+					ScsEjgKey scsEjgKey = new ScsEjgKey();
+					scsEjgKey.setIdinstitucion((short)getIdInstitucion());
+					scsEjgKey.setAnio(Short.valueOf(anio));
+					scsEjgKey.setNumero(Long.valueOf(numero));
+					scsEjgKey.setIdtipoejg(Short.valueOf(idTipoEJG));
 					
-					ConsultaNumeracionAsigna consultaNumeracionAsigna = new ConsultaNumeracionAsigna();
-					consultaNumeracionAsigna.obtenerNumeracion(getUsrBean(), getIdInstitucion(), Integer.valueOf(anio), Integer.valueOf(numero), idTipoEJG);
+					AsignaConsultaNumeracionService asignaConsultaNumeracionService = (AsignaConsultaNumeracionService) BusinessManager.getInstance().getService(AsignaConsultaNumeracionService.class);
+					asignaConsultaNumeracionService.insert(scsEjgKey);
 					
 					correctos++;
 				}
