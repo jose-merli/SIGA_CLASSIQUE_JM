@@ -2322,7 +2322,11 @@ public class Row implements Serializable {
 			
 			for (int i = 0; i < fieldNames.length; i++) {
 				
-				if (row.get(fieldNames[i]) == null || "NULL".equalsIgnoreCase("" + fieldNames[i]) || row.get(fieldNames[i]).toString().trim().equals("") || row.get(fieldNames[i]).toString().equalsIgnoreCase("NULL")) {
+				if (row.get(fieldNames[i]) == null || row.get(fieldNames[i]).equals("") ||
+						"NULL".equalsIgnoreCase(""+fieldNames[i]) ||
+					    row.get(fieldNames[i]).equals("NULL") || 
+					    row.get(fieldNames[i]).equals("null")) 
+					{
 					sqlValues.append(aux + " NULL ");
 					
 				} else {
