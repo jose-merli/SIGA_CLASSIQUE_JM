@@ -1052,7 +1052,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, "");
 			
 				// JPT: Combo seleccionable de tipo de guardia
-				nuevo.put(ScsGuardiasTurnoBean.C_TIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado());			
+				nuevo.put(ScsGuardiasTurnoBean.C_TIPOGUARDIA, (miForm.getIdTipoGuardiaSeleccionado() == null ? "" : miForm.getIdTipoGuardiaSeleccionado()));			
 			
 				// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
 				ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));

@@ -166,6 +166,12 @@
 		listaTiposGuardias = new ArrayList();
 	}
 	if (listaTiposGuardias==null) listaTiposGuardias = new ArrayList();
+	
+	// JPT: Obtengo si es vinculada
+	String sIdGuardiaPrincipal = (String) hash.get("IDGUARDIAPRINCIPAL");
+	boolean bVinculada = (sIdGuardiaPrincipal != null && (sIdGuardiaPrincipal.equals("") || sIdGuardiaPrincipal.equals("-1")));	
+	String sVinculada = (bVinculada ? "true" : "false");
+	String sNoVinculada = (bVinculada ? "false" : "true");		
 %>
 
 <html>
@@ -225,7 +231,7 @@
 	<% } %>
 
 	<!-- TURNO: Información del Turno que tenemos seleccionado -->
-	<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno" desplegable="true" oculto="true">
+	<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno" desplegable="true" oculto="<%=sVinculada%>">
 		<table border="0" align="center" width="100%">
 			<tr>
 				<td class="labelText" style="text-align: left">
@@ -431,7 +437,7 @@
 			</table>
 		</siga:ConjCampos>
 
-		<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncola" desplegable="true" oculto="false">
+		<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncola" desplegable="<%=sVinculada%>" oculto="<%=sNoVinculada%>">
 			<table align="center" border="0" width="100%">
 				<tr>
 					<td class="labelText" style="text-align: left" width="15%">
@@ -466,7 +472,7 @@
 		</siga:ConjCampos>
 
 		<!-- PESOS ORDENACION -->
-		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.pesosOrdenacion" desplegable="true" oculto="false">
+		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.pesosOrdenacion" desplegable="<%=sVinculada%>" oculto="<%=sNoVinculada%>">
 			<table border="0" width="100%" align="center">
 				<tr>
 					<td class="labelText" style="text-align: left">
@@ -696,7 +702,7 @@
 			</table>
 		</siga:ConjCampos>
 
-		<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncalendarios" desplegable="true" oculto="false">
+		<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncalendarios" desplegable="<%=sVinculada%>" oculto="<%=sNoVinculada%>">
 			<table align="center" border="0" width="100%">
 				<tr>
 					<td class="labelText">
@@ -874,8 +880,7 @@
 			var modo="<%=modoPestanha%>";		
 			if (modo=="VER"){
 				jQuery("#turnosPrincipales").attr("disabled","disabled");
-				jQuery("#guardiasPrincipales").attr("disabled","disabled");
-		
+				jQuery("#guardiasPrincipales").attr("disabled","disabled");		
 			}
 			<%if(soloLectura){%>
 				jQuery("input").not("*[type=button]").not("*.boxConsulta").not("*.boxConsultaNumber").attr("disabled","disabled");
@@ -905,7 +910,10 @@
 	
 		//Habilita o no el input y combo de dias de periodo
 		function modificarDiasPeriodo () {
-			if (document.DefinirGuardiasTurnosForm.checkDiasPeriodo.checked) {
+			var deshabilitar = (document.getElementById("idGuardiaPrincipal") && 
+					!(document.getElementById("idGuardiaPrincipal").value=='' || document.getElementById("idGuardiaPrincipal").value=='-1'));
+			
+			if (document.DefinirGuardiasTurnosForm.checkDiasPeriodo.checked && !deshabilitar){
 				jQuery("#diasPeriodo").removeAttr("disabled");
 				jQuery("#tipoDiasPeriodo").removeAttr("disabled");
 	
