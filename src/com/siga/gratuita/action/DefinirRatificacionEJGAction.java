@@ -114,10 +114,23 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		
 		/* "DATABACKUP" se usa habitualmente así que en primer lugar borramos esta variable */		
 		request.getSession().removeAttribute("DATABACKUP");
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+		try {
+			String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
+			request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
+			String validarObligatoriedadResolucion = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
+			request.setAttribute("ISOBLIGATORIORESOLUCION",validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)?true:false);
+		} catch (Exception e) {
+			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION y VALIDAR_OBLIGATORIEDAD_RESOLUCION",e,null);
+		}
+		
+		
+		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;
 		Vector v = new Vector ();
 		Hashtable miHash = new Hashtable();		
-		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");		
+				
 		if(request.getParameter("ANIO")!=null){
 			miHash.put("ANIO",request.getParameter("ANIO").toString());
 			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
@@ -139,13 +152,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		boolean accesoActa = accesoActaSt!=null && (accesoActaSt.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
 		request.setAttribute("accesoActa", accesoActa?"true":"false");
 		*/
-		GenParametrosAdm paramAdm = new GenParametrosAdm(usr); 
-		try {
-			String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
-			request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
-		} catch (Exception e) {
-			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION",e,null);
-		}
+		
 		
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
 		

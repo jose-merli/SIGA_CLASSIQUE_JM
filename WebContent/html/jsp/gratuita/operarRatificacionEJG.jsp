@@ -49,7 +49,6 @@
 		String accesoActasST = (String)request.getAttribute("accesoActa");
 		accesoActas = accesoActasST.equalsIgnoreCase("true")?true:false; 
 	}	
-	
 	try {
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
@@ -163,6 +162,10 @@
 </head>
 
 <body>
+<input type="hidden" id="isObligatorioResolucion" value='${ISOBLIGATORIORESOLUCION}'>
+
+
+
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
@@ -338,7 +341,6 @@
 						<%}%>
 					</td>
 				</tr>
-	
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
@@ -489,18 +491,29 @@
 		function accionGuardar()
 		{ 
 			sub();
+			error = "";
 			if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
 			    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
-			    fin();
-			    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
-			    return false;
+				error += '<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>'+ '\n';
 			   
+			}
+			if(document.forms[0].fechaResolucionCAJG.value!=''&&document.getElementById("isObligatorioResolucion").value=='true' ){
+				if(document.forms[0].idTipoRatificacionEJG.value=='')
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarRatificacion.literal.tipoRatificacion'/>"+ '\n';
+				if(document.forms[0].idFundamentoJuridico.value=='')
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarRatificacion.literal.fundamentoJuridico'/>"+ '\n';
 			}
 			if(document.getElementById("idActaComp")&&document.getElementById("idActaComp").value!=""){
 				var actaComp= document.getElementById("idActaComp").value.split(',');
 				document.forms[0].idInstitucionActa.value=actaComp[0];
 				document.forms[0].anioActa.value=actaComp[1];
 				document.forms[0].idActa.value=actaComp[2];
+			}
+			if(error!=''){
+				fin();
+			    alert(error);
+			    return false;
+				
 			}
 			document.forms[0].submit();
 		}

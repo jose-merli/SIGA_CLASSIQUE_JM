@@ -35,6 +35,7 @@
 </head>
 
 <body>
+<input type="hidden" id="isObligatorioResolucion" value='${ISOBLIGATORIORESOLUCION}'>
 	<html:form action="/JGR_ActasComision.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo" value="updateMasivo">
 		<input type="hidden" name="seleccionados" 	value="<%=seleccionados%>">
@@ -106,7 +107,9 @@
 
 		function accionGuardarCerrar(){
 			sub();
-			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>10 &&
+			
+			
+			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>10 && document.getElementById("isObligatorioResolucion").value=='true' &&
 				( (!document.ActaComisionForm.guardaRatificacion.checked || jQuery("#idTipoRatificacionEJG option:selected").val()==0)
 				|| (!document.ActaComisionForm.guardaFundamento.checked || jQuery("#idFundamentoJuridico option:selected").val()==0))){
 				alert("<siga:Idioma key='sjcs.actas.checkRatificacionResolucion'/>");
@@ -144,6 +147,20 @@
 				}
 			}
 		}
+		
+		function validaFechaResolucion(obligaResolucion){
+			error ='';
+			if(obligaResolucion){
+				if(!document.ActaComisionForm.guardaRatificacion.checked ||!document.ActaComisionForm.guardaFundamento.checked){
+					error += "<siga:Idioma key='sjcs.actas.checkRatificacionResolucion'/>"+ '\n';
+				}
+					
+			}
+			return error;
+			
+		}
+		
+		
 	</script>
 </body>
 </html:html>

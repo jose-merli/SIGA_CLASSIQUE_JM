@@ -337,7 +337,8 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", ejg."+ScsEJGBean.C_NUMERO + " as NUM");
 		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
-
+		consulta.append(", ejg.IDTIPORATIFICACIONEJG,ejg.IDFUNDAMENTOJURIDICO ");
+		
 		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
 		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
 		consulta.append(" , " + ScsPersonaJGBean.T_NOMBRETABLA +" sol");

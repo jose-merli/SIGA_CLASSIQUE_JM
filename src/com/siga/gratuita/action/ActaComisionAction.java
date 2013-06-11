@@ -26,11 +26,13 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActaComisionAdm;
 import com.siga.beans.ScsActaComisionBean;
 import com.siga.beans.ScsEJGAdm;
@@ -429,7 +431,10 @@ public class ActaComisionAction extends MasterAction{
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 		Vector listadoEJGs = new Vector();
 		UserTransaction tx=null;
-		
+		//Requisito 1. Se modificara la fecha de resolucion cuando no queden expedientes pendientes de retirar
+		String detalleEjgsPtesRetirar = null;
+		//Requisito 2. Se modificara la fecha de resolucion cuando no queden expedientes sin resolver. Esto a su vez depende del parametro GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION
+		String detalleEjgsNoResueltos = null;
 		try {
 
 			// Campos clave
@@ -478,23 +483,49 @@ public class ActaComisionAction extends MasterAction{
 				actaBean.setHoraInicioReunion(sdf.format(horaInicio.getTime()));
 			}
 			
-				
-			
-			tx = usr.getTransaction();		
-			tx.begin();
-			
-			actaAdm.updateDirect(actaBean);
-			
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String validarObligatoriedadResolucion = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
 			String fechaResOld = (String)actaOld.get(ScsActaComisionBean.C_FECHARESOLUCION);
-			if((fechaResOld==null||fechaResOld.equalsIgnoreCase("")) &&
-					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase(""))){
-				// Hay que actualizar los EJGs del acta
-				StringBuffer sql = new StringBuffer();
+			StringBuffer sql = null;
+			//si la fecha de resolucion es nueva o si la modifica
+			
+			
+			
+			if(((fechaResOld==null||fechaResOld.equalsIgnoreCase("")) &&
+					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")))||(fechaResOld!=null &&
+					actaBean.getFechaResolucionCAJG()!=null&&GstDate.compararFechas(actaBean.getFechaResolucionCAJG(), fechaResOld) !=0 ) ){
+				//
+				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr);
+				if(validarObligatoriedadResolucion!=null && validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)){
+					detalleEjgsNoResueltos =  getEJGsActaSinResolucion(actaBean,usr);
+				}
+				// Si no hay ejg pendientes de retirar y estan todos con resolucion y fundamento actualizamos la fecha de resolucion, si no dejamos la antigua
+				if(detalleEjgsNoResueltos==null && detalleEjgsPtesRetirar==null){
+					sql = new StringBuffer();
+					sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
+					sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = TO_DATE('" + actaBean.getFechaResolucionCAJG() + "', 'YYYY/MM/DD HH24:MI:SS')"); 
+					sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
+					sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
+					sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
+				}else{
+					actaBean.setFechaResolucionCAJG(fechaResOld);
+				}
+				
+			}else if(actaBean.getFechaResolucionCAJG()==null||actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")){
+				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
-				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = TO_DATE('" + actaBean.getFechaResolucionCAJG() + "', 'YYYY/MM/DD HH24:MI:SS')"); 
+				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null "); 
 				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
+				
+			}
+			
+			tx = usr.getTransaction();		
+			tx.begin();
+			actaAdm.updateDirect(actaBean);
+			if(sql!=null){
+				// Hay que actualizar los EJGs del acta
 				ejgAdm.updateSQL(sql.toString());
 			}
 			
@@ -506,9 +537,81 @@ public class ActaComisionAction extends MasterAction{
 		} catch (Exception e) {
 			throw new SIGAException("Error al modificar el acta.",e);
 		}
-		
+		if(detalleEjgsPtesRetirar!=null || detalleEjgsNoResueltos!=null){
+			StringBuffer descripcion = new StringBuffer("");
+			if(detalleEjgsPtesRetirar!=null){
+				descripcion.append("Los siguientes expedientes deben ser desvinculados del acta al estar Devueltos o Pendientes CAJG:");
+				descripcion.append("\n");
+				descripcion.append(detalleEjgsPtesRetirar);
+				descripcion.append("\nPara ello debe pulsar el botón habilitado para ello.");
+				
+			}
+			
+			if(detalleEjgsNoResueltos!=null){
+				if(!descripcion.equals(""))
+					descripcion.append("\n");
+				descripcion.append("Los siguientes expedientes no tienen resolución o fundamento jurídico:");
+				descripcion.append("\n");
+				descripcion.append(detalleEjgsNoResueltos);
+				descripcion.append("\nPara ello debera ir a la pestaña Resolución del EJG y asociarles una resolución y un fundamento Jurídico.");
+				
+			}
+			descripcion.append("\nLa fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.\nEl resto de los campos del acta se han actualizado correctamente");
+			return errorRefresco(descripcion.toString(),new ClsExceptions(descripcion.toString()), request);
+			
+		}
 		return exito("messages.updated.success", request);
 	}
+	
+	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr) throws ClsExceptions{
+		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
+		String idActa		 = actaBean.getIdActa().toString();
+		String idInstitucion = actaBean.getIdInstitucion().toString();
+		String anioActa		 = actaBean.getAnioActa().toString();
+		StringBuffer detalleEjgsNoResueltos = new StringBuffer("");
+		Vector ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion);
+		for (int i = 0; i < ejgsRelacionados.size(); i++) {
+			Row row = (Row) ejgsRelacionados.get(i);
+			if((row.getString("IDTIPORATIFICACIONEJG")==null||row.getString("IDTIPORATIFICACIONEJG").equals(""))||(row.getString("IDFUNDAMENTOJURIDICO")==null||row.getString("IDFUNDAMENTOJURIDICO").equals(""))){
+				detalleEjgsNoResueltos.append(row.getString("ANIO"));
+				detalleEjgsNoResueltos.append("/");
+				detalleEjgsNoResueltos.append(row.getString("NUMERO"));
+				detalleEjgsNoResueltos.append(", ");
+			}
+		}
+		if(!detalleEjgsNoResueltos.equals("")&&detalleEjgsNoResueltos.length()>0){
+			detalleEjgsNoResueltos= detalleEjgsNoResueltos.delete(detalleEjgsNoResueltos.length()-2,detalleEjgsNoResueltos.length());
+			return detalleEjgsNoResueltos.toString();
+		}
+		else
+			return null;
+		
+		
+		
+	}
+	
+	private String getEJGsPtesRetirar(ScsActaComisionBean actaBean,UsrBean usr) throws  SIGAException, ClsExceptions{
+		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
+		StringBuffer detalleEjgsPteRetirar = new StringBuffer("");
+		Vector ejgsPteRetirar = actaAdm.getEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa());
+		for (int i = 0; i < ejgsPteRetirar.size(); i++) {
+			Hashtable row = (Hashtable) ejgsPteRetirar.get(i);
+				detalleEjgsPteRetirar.append((String)row.get("ANIO"));
+				detalleEjgsPteRetirar.append("/");
+				detalleEjgsPteRetirar.append((String)row.get("NUMERO"));
+				detalleEjgsPteRetirar.append(", ");
+		}
+		if(!detalleEjgsPteRetirar.equals("")&&detalleEjgsPteRetirar.length()>0){
+			detalleEjgsPteRetirar= detalleEjgsPteRetirar.delete(detalleEjgsPteRetirar.length()-2,detalleEjgsPteRetirar.length());
+			return detalleEjgsPteRetirar.toString();
+		}
+		else
+			return null;
+		
+		
+		
+	}
+	
 	
 	
 	/** 
@@ -549,9 +652,19 @@ public class ActaComisionAction extends MasterAction{
 	 * @return  String  Destino del action  
 	 * @throws ClsExceptions 
 	 */	
-	protected String edicionMasiva(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) {
+	protected String edicionMasiva(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		ActaComisionForm form = (ActaComisionForm)formulario;
 		request.setAttribute("seleccionados", form.getSeleccionados());
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+		try {
+			String validarObligatoriedadResolucion = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
+			request.setAttribute("ISOBLIGATORIORESOLUCION",validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)?true:false);
+		} catch (Exception e) {
+			throwExcp("Error al recuperar el parametro VALIDAR_OBLIGATORIEDAD_RESOLUCION",e,null);
+		}
+		
+		
 		form.reset();
 		return "edicionMasiva";
 	}
