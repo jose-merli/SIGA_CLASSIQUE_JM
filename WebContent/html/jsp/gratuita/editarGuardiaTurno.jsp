@@ -354,7 +354,7 @@
 					<td class="labelText">
 						<%if (hash.get("IDGUARDIASUSTITUCION") != null && !((String) hash.get("IDGUARDIASUSTITUCION")).equals("")) {%> 
 							<siga:ComboBD nombre="guardiaDeSustitucion" tipo="guardias"
-								clase="boxComboConsulta" readOnly="true"
+								clase="boxConsulta" readOnly="true"
 								parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>"
 								ancho="300" /> 
 						<% } %>
