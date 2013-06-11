@@ -446,6 +446,16 @@ public abstract class MasterAction extends SIGAAuxAction {
 		return "exito"; 
 	} 
 	
+	protected String errorRefresco(String mensaje, ClsExceptions e, HttpServletRequest request) {
+		e.prepare(request);
+		if (mensaje!=null && !mensaje.equals("")) {
+			request.setAttribute("mensaje", mensaje);
+		} else {
+			request.setAttribute("mensaje", e.getMessage());
+		}
+		return "exito"; 
+	} 
+	
 	/** 
 	 *  Funcion que prepara la salida en caso de error en una pantalla modal	
 	 *  @param mensaje en formato key de recurso
