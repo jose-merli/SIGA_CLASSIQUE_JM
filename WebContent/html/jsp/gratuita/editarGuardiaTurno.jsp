@@ -1042,23 +1042,25 @@
 					if(document.getElementById("nombreGuardia").value ==""){
 						error += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>"+ '\n';
 					}
+					
 					if(document.getElementById("descripcion").value ==""){
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.maestroTurnos.literal.descripcion'/>"+ '\n';
-							
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.maestroTurnos.literal.descripcion'/>"+ '\n';							
 					}
+					
 					if(error ==''){
 						document.DefinirGuardiasTurnosForm.modo.value = "modificar";
 				       	document.DefinirGuardiasTurnosForm.target = "submitArea";
+				       	jQuery("form[name=DefinirGuardiasTurnosForm]")
+						.find("input:disabled, textarea:disabled, select:disabled").removeAttr("disabled");
 						document.DefinirGuardiasTurnosForm.submit();
+						
 					}else{
 						fin();
 						alert(error);
-					 	return false;
-					
+					 	return false;					
 					}
 					
-				}else{
-		
+				}else{		
 					if (validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)) {
 						if (document.DefinirGuardiasTurnosForm.duracion.value==0) {
 							alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
@@ -1069,6 +1071,7 @@
 						}
 					}
 			}
+			
 			comprobarPorGrupos();
 		}
 
