@@ -523,12 +523,14 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			bajasTemporalesForm.setIdPersona("");
 			
 			forward = exitoModal("messages.updated.success",request);
-			
+		} catch (ClsExceptions e){
+			if (e.getMessage().equalsIgnoreCase("Incidencias")){
+				forward="incidencias";
+			} else {
+				throwExcp("messages.general.errorExcepcion", e, null); 
+			}
 		} catch (Exception e) {
-			 
 			throwExcp("messages.general.errorExcepcion", e, null); 
-
-			
 		}
 	
 		

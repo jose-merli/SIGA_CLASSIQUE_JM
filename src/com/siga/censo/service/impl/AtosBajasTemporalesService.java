@@ -5,8 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -202,10 +207,28 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 		
 	}
 	public void modificarSolicitudBajaTemporal(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions{
+		/* 
 		CenBajasTemporalesBean bajaTemporal = bajasTemporalesForm.getBajaTemporalBean();
 		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(usrBean);
 		btAdm.modificarBajaTemporal(bajaTemporal);
-		
+		*/
+		//BNS INC_10980_SIGA
+		try {
+			this.borrarSolicitudBajaTemporal(bajasTemporalesForm, usrBean);
+			if (bajasTemporalesForm.getDatosSeleccionados() == null || bajasTemporalesForm.getDatosSeleccionados().equals(""))
+				bajasTemporalesForm.setDatosSeleccionados(bajasTemporalesForm.getIdPersona());
+			this.comprobarInsercion(bajasTemporalesForm, usrBean);
+			if((bajasTemporalesForm.getPersonasDeBaja()!=null && bajasTemporalesForm.getPersonasDeBaja().size()>0)||
+					(bajasTemporalesForm.getPersonasDeGuardia()!=null && bajasTemporalesForm.getPersonasDeGuardia().size()>0)){
+				throw new ClsExceptions("Incidencias");
+			} else {
+				this.insertaBajasTemporales(bajasTemporalesForm, usrBean);
+			}
+		} catch (ClsExceptions e){
+			throw e;
+		} catch(Exception e){
+			throw new ClsExceptions("Ha ocurrido un error al procesar la acción");
+		}
 	}
 	public void setColegiado(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions{
 		CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
