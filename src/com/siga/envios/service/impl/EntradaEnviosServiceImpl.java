@@ -310,11 +310,9 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 		
 		try {			
             InputStream entrada =  new ByteArrayInputStream(entradaEnvioWithBLOBs.getPdf());
-			pdfIntercambioFile = new File("pdfIntercambioFile_"+entradaEnvioWithBLOBs.getIdinstitucion()+"_"+entradaEnvioWithBLOBs.getIdenvio()+".pdf");				
-			File logTmp = File.createTempFile("pdfIntercambioFile_"+entradaEnvioWithBLOBs.getIdinstitucion()+"_"+entradaEnvioWithBLOBs.getIdenvio(),"");
-			pdfIntercambioFile = new File(logTmp.getPath()+".pdf");
+			pdfIntercambioFile = new File("adjuntosIntercambioFile_"+entradaEnvioWithBLOBs.getIdinstitucion()+"_"+entradaEnvioWithBLOBs.getIdcabecera()+".zip");				
+
 			pdfIntercambioFile.deleteOnExit();
-			logTmp.delete();
             OutputStream salida=new FileOutputStream(pdfIntercambioFile);
             
             byte[] buf =new byte[1024];
