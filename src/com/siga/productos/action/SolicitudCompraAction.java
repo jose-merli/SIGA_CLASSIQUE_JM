@@ -1078,7 +1078,7 @@ public class SolicitudCompraAction extends MasterAction{
 				while (enuSubtotalesPorTipo.hasMoreElements()) {
 					subtotal = enuSubtotalesPorTipo.nextElement();
 					if (subtotal < 0) { 
-						request.setAttribute("textoError", "Uno de los subtotales por Tipo de productos/servicios resulta en un importe negativo. Recuerde que al introducir una cantidad negativa para un producto/servicio, tiene que añadir otro producto/servicio de su mismo Tipo con un importe positivo mayor que el anterior");
+						request.setAttribute("textoError", "1");
 						return continuar(mapping, formulario, request, response);
 					}
 				}

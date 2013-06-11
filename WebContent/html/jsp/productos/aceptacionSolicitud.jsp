@@ -198,7 +198,8 @@
 		function cuentaUnica() {
 			// Mostrando mensaje de error si se ha vuelto a cargar la pagina porque habia un error
 			if ("<%=textoError%>") {
-				alert ("<%=textoError%>");
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.message.subtotalNegativo"/>";
+				alert (mensaje);
 			}
 			
 			f = document.solicitudCompraForm;
@@ -690,7 +691,7 @@
 														 				
 	%> 				
 								<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones='' visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
-								<td> 													
+								<td title='<%=String.valueOf((Integer)a.getIdTipo())%>-<%=String.valueOf((Long)a.getIdArticulo())%>-<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'> 													
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_1' value='<%=String.valueOf((Integer)a.getIdTipo())%>'>	 							
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_2' value='<%=String.valueOf((Long)a.getIdArticulo())%>'>	
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_3' value='<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'>	
