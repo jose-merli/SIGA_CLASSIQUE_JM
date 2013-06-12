@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+//import java.io.StringBufferInputStream;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,18 +23,19 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
+import com.atos.utils.ClsLogging;
 
 
 
@@ -275,16 +277,14 @@ public class RowsContainer implements Serializable {
 	   	     Enumeration e = data.keys();
 	   	     while (e.hasMoreElements()) {
 	   	         Integer key = (Integer)e.nextElement();
-	   	         
-	   	         if (sqlStatement.indexOf(":"+key) >= 0) {	   	         
-		   	         Object objeto = (Object)data.get(key);
-		   	         if(objeto instanceof String)
-		   	        	 pst.setString(key.intValue(), (String)objeto);
-		   	         else{
-		   	        	objeto = String.valueOf(objeto);
-		   	        	 pst.setString(key.intValue(), (String)objeto);
-		   	         }
+	   	         Object objeto = (Object)data.get(key);
+	   	         if(objeto instanceof String)
+	   	        	 pst.setString(key.intValue(), (String)objeto);
+	   	         else{
+	   	        	objeto = String.valueOf(objeto);
+	   	        	 pst.setString(key.intValue(), (String)objeto);
 	   	         }
+	   	         
 	   	     }
             try {
                 rs = pst.executeQuery();
