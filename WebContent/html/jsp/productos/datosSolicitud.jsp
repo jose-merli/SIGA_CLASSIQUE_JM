@@ -167,27 +167,8 @@
 	   var datos;
 	   datos = document.getElementById('tablaDatosDinamicosD');
 	   datos.value = ""; 
-	   var i, j;
-	   for (i = 0; i < 4; i++) {
-	      var tabla;
-	      tabla = document.getElementById('tablaResultados');
-	      if (i == 0) {
-	        var flag = true;
-	        j = 1;
-	        while (flag) {
-	          var aux = 'oculto' + fila + '_' + j;
-	          var oculto = document.getElementById(aux);
-	          if (oculto == null)  { flag = false; }
-	          else { datos.value = datos.value + oculto.value + ','; }
-	          j++;
-	        }
-	        datos.value = datos.value + "%"
-	      } else { j = 2; }
-	      if ((tabla.rows[fila].cells)[i].innerHTML == "") 
-	        datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-	      else
-	        datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-	   }
+	   preparaDatos(fila,'tablaResultados', datos);
+	  
 	   document.forms[0].modo.value = modo;
 	   document.forms[0].submit();
 	}
@@ -516,17 +497,18 @@
 											&nbsp;
 										<%	} %>
 									</td> 
+								<%if (elementos == null){ %>
+									<td></td>
+								<%} %>
 									</siga:FilaConIconos>
 							 		
 			<%	 		 } // if
 				 	 }  // for  
 				 	 
 	} else {	 	 %>
-				<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 <%	}  %>
 	
 	
