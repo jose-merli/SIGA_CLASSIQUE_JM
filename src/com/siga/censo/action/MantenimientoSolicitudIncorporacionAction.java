@@ -630,7 +630,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado
 						(beanCli.getIdInstitucion ().toString (), 
 						beanCli.getIdPersona ().toString(), 
-						"", 
+						UtilidadesString.formatoFecha(beanSolic.getFechaEstadoColegial(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH), //CRM - INC_10947_SIGA: Se ha modificado la fecha vacia (sysdate), por la fecha de estado colegial
 						""+this.getUserName (request));
 				
 				if ((resultado == null) || (!resultado[0].equals("0")))
