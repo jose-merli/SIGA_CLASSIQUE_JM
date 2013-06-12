@@ -225,7 +225,7 @@ jQuery.noConflict();
 								<html:option value="S"><siga:Idioma key="censo.bajastemporales.tipo.suspension"/></html:option>
 							</html:select>
 							</td>
-							<td class="labelText" style="width:18%"><siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/></td>
+							<td class="labelText" style="width:15%"><siga:Idioma key="censo.bajastemporales.filtro.fechaDesde"/>&nbsp;(*)</td>
 							<td class="labelText" >
 								<siga:Fecha  nombreCampo= "fechaDesde" campoCargarFechaDesde="fechaHasta"/>
 							</td>
