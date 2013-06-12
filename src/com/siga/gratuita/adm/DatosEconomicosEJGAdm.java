@@ -55,6 +55,8 @@ public class DatosEconomicosEJGAdm {
 		ScsEjgUnidadesFamiliaresService datosEconomicosService = (ScsEjgUnidadesFamiliaresService) businessManager.getService(ScsEjgUnidadesFamiliaresService.class);
 		
 		String nombre = datosEconomicosService.obtenerPersonaEJG(parametrosMap);
+		if (nombre == null)
+			nombre="";
 		
 		while (numero.length()<5) {
 			numero = "0" + numero;
