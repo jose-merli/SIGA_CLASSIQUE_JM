@@ -2095,7 +2095,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
 		try {
 			vSalida = new Vector();	
-			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna); 
+			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna, idioma); 
 			
 			String idiomainforme="";
 			Hashtable htCodigo = new Hashtable();
@@ -2395,7 +2395,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 										  String idturno,
 										  String anio,
 										  String numero,
-										  String codigoDesigna)
+										  String codigoDesigna,
+										  String idioma)
 		throws ClsExceptions  
 	{
 		try {
@@ -2428,6 +2429,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Des.NIG, " +
 				"       Des.Anio || '/' || Des.Codigo As Noficio, " +
 				"       To_Char(Des.Fechaentrada, 'dd-mm-yyyy') As Fecha_Designa, " +
+				" 		PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(Des.Fechaentrada, 'M', "+idioma+") FECHADESIGNAENLETRA, " +
 				"       To_Char(Sysdate, 'dd') As Dia_Actual, " +
 				" 		To_Char(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, " +			
 				"       To_Char(Sysdate, 'yyyy') As Anio_Actual, " +
