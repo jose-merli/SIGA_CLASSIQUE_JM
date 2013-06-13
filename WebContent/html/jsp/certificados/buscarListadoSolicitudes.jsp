@@ -103,54 +103,7 @@
 				subicono('iconoboton_anular'+fila);
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	
-			   	for (i = 0; i < 7; i++)
-			   	{
-					var tabla;
-			      	tabla = document.getElementById('tablaDatos');
-			      	
-			      	if (i == 0)
-			      	{
-			        	var flag = true;
-			        	j = 1;
-			        	
-			        	while (flag)
-			        	{
-			          		var aux = 'oculto' + fila + '_' + j;
-			          		var oculto = document.getElementById(aux);
-			          		
-			          		if (oculto == null)
-			          		{
-			          			flag = false;
-			          		}
-			          		
-			          		else
-			          		{
-			          			datos.value = datos.value + oculto.value + ',';
-			          		}
-			          		
-			          		j++;
-						}
-			        	
-			        	datos.value = datos.value + "%"
-			      	}
-			      	
-			      	else
-			      	{
-			      		j = 2;
-			      	}
-			      	
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "")
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        }
-			      	
-			      	else
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			        }
-			   	}
+			    preparaDatos(fila,'tablaDatos', datos);
 			   	
 			   	var auxTarget = document.forms[0].target;
 			   	document.forms[0].target="submitArea";
@@ -165,54 +118,7 @@
 				subicono('iconoboton_generar'+fila);
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	
-			   	for (i = 0; i < 1; i++)
-			   	{
-					var tabla;
-			      	tabla = document.getElementById('tablaDatos');
-			      	
-			      	if (i == 0)
-			      	{
-			        	var flag = true;
-			        	j = 1;
-			        	
-			        	while (flag)
-			        	{
-			          		var aux = 'oculto' + fila + '_' + j;
-			          		var oculto = document.getElementById(aux);
-			          		
-			          		if (oculto == null)
-			          		{
-			          			flag = false;
-			          		}
-			          		
-			          		else
-			          		{
-			          			datos.value = datos.value + oculto.value + ',';
-			          		}
-			          		
-			          		j++;
-						}
-			        	
-			        	datos.value = datos.value + "%"
-			      	}
-			      	
-			      	else
-			      	{
-			      		j = 2;
-			      	}
-			      	
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "")
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        }
-			      	
-			      	else
-			      	{
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			        }
-			   	}
+			    preparaDatos(fila,'tablaDatos', datos);
 
 				var oCheck = document.getElementsByName("chkPDF");
 				SolicitudesCertificadosForm.idsTemp.value=oCheck[fila-1].value;
@@ -265,50 +171,7 @@
 
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	
-			   	for (i = 0; i < 7; i++)
-			   	{
-					var tabla;
-			      	tabla = document.getElementById('tablaDatos');
-			      	
-			      	if (i == 0)
-			      	{
-			        	var flag = true;
-			        	j = 1;
-			        	
-			        	while (flag)
-			        	{
-			          		var aux = 'oculto' + fila + '_' + j;
-			          		var oculto = document.getElementById(aux);
-			          		
-			          		if (oculto == null)
-			          		{
-			          			flag = false;
-			          		}
-			          		
-			          		else
-			          		{
-			          			datos.value = datos.value + oculto.value + ',';
-			          		}
-			          		
-			          		j++;
-						}
-			        	
-			        	datos.value = datos.value + "%"
-			      	}
-			      	
-			      	else
-			      	{
-			      		j = 2;
-			      	}
-			      	
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        } else {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			        }
-			   	}
+			    preparaDatos(fila,'tablaDatos', datos);
 			   	
 			   	var auxTarget = document.forms[0].target;
 			   	document.forms[0].target="submitArea";
@@ -324,50 +187,7 @@
 				subicono('iconoboton_finalizar'+fila);
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	
-			   	for (i = 0; i < 7; i++)
-			   	{
-					var tabla;
-			      	tabla = document.getElementById('tablaDatos');
-			      	
-			      	if (i == 0)
-			      	{
-			        	var flag = true;
-			        	j = 1;
-			        	
-			        	while (flag)
-			        	{
-			          		var aux = 'oculto' + fila + '_' + j;
-			          		var oculto = document.getElementById(aux);
-			          		
-			          		if (oculto == null)
-			          		{
-			          			flag = false;
-			          		}
-			          		
-			          		else
-			          		{
-			          			datos.value = datos.value + oculto.value + ',';
-			          		}
-			          		
-			          		j++;
-						}
-			        	
-			        	datos.value = datos.value + "%"
-			      	}
-			      	
-			      	else
-			      	{
-			      		j = 2;
-			      	}
-			      	
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        } else {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			        }
-			   	}
+			    preparaDatos(fila,'tablaDatos', datos);
 			   	
 			   	var auxTarget = document.forms[0].target;
 			   	document.forms[0].target="submitArea";
@@ -383,50 +203,7 @@
 				
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	
-			   	for (i = 0; i < 7; i++)
-			   	{
-					var tabla;
-			      	tabla = document.getElementById('tablaDatos');
-			      	
-			      	if (i == 0)
-			      	{
-			        	var flag = true;
-			        	j = 1;
-			        	
-			        	while (flag)
-			        	{
-			          		var aux = 'oculto' + fila + '_' + j;
-			          		var oculto = document.getElementById(aux);
-			          		
-			          		if (oculto == null)
-			          		{
-			          			flag = false;
-			          		}
-			          		
-			          		else
-			          		{
-			          			datos.value = datos.value + oculto.value + ',';
-			          		}
-			          		
-			          		j++;
-						}
-			        	
-			        	datos.value = datos.value + "%"
-			      	}
-			      	
-			      	else
-			      	{
-			      		j = 2;
-			      	}
-			      	
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			        } else {
-			        	datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			        }
-			   	}
+			    preparaDatos(fila,'tablaDatos', datos);
 			   	
 			   	//var auxTarget = document.forms[0].target;
 			   	document.forms[0].target="submitArea";
