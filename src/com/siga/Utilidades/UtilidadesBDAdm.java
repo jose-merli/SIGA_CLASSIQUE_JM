@@ -6,16 +6,18 @@
  */
 package com.siga.Utilidades;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 
 /**
  * @author daniel.campos
@@ -843,7 +845,7 @@ public class UtilidadesBDAdm
 			if (texto.indexOf(marcaUNION)!=-1 || texto.indexOf(marcaGROUP)!=-1 || texto.indexOf(marcaDISTINCT)!=-1) {
 			    ClsLogging.writeFileLog("WARNING paginador: Quitar campos de query: No se puede simplificar porque contiene clausulas DISTINCT, UNION o GROUP BY.",7);
 				retorno.add(queryInicial);
-				retorno.add(codigos);
+				retorno.add(comprobarCodigosQuery(queryInicial,codigos));
 			    return retorno;
 			}
 
@@ -861,10 +863,10 @@ public class UtilidadesBDAdm
 				if (abrir<cerrar) {
 				    ClsLogging.writeFileLog("WARNING paginador: Quitar campos de query: No se puede simplificar porque contiene más paréntesis cerrados que abiertos.",7);
 					retorno.add(queryInicial);
-					retorno.add(codigos);
+					retorno.add(comprobarCodigosQuery(queryInicial,codigos));
 				    return retorno;
-				} else
-				if (abrir>cerrar) {
+				    
+				} else if (abrir>cerrar) {
 				    // hay que seguir buscando
 				    continuar=true;
 				    fin=texto.indexOf(marcaFinal,fin+marcaFinal.length());
@@ -873,9 +875,10 @@ public class UtilidadesBDAdm
 					} else {	
 					    ClsLogging.writeFileLog("WARNING paginador: Quitar campos de query: No se puede simplificar porque contiene más paréntesis abiertos que cerrados.",7);
 						retorno.add(queryInicial);
-						retorno.add(codigos);
+						retorno.add(comprobarCodigosQuery(queryInicial,codigos));
 					    return retorno;
 					}
+					
 				} else {
 				    continuar=false;
 				}
@@ -934,5 +937,26 @@ public class UtilidadesBDAdm
 	      }catch (NumberFormatException nfe) {
 	          return false;
 	      }
+	  }
+	  
+	  /**
+	   * 
+	   * @param query
+	   * @param codigos
+	   * @return
+	   */
+	  private static Hashtable comprobarCodigosQuery(String query, Hashtable codigos) {
+		  Hashtable codigosNuevo = new Hashtable();
+		  int indice = 1;
+		  
+		  Enumeration e = codigos.keys();
+		  while (e.hasMoreElements()) {
+			  Integer key = (Integer)e.nextElement();
+			  if (query.indexOf(":"+key) >= 0) {	
+				   codigosNuevo.put(key, codigos.get(key));
+				   indice++;
+			  }
+		  }
+		  return codigosNuevo;
 	  }
 }
