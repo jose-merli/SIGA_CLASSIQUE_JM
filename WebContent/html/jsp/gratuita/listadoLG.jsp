@@ -71,7 +71,8 @@
 			   name="listadoLG"
 			   border="1"
 			   columnNames="gratuita.listadoLG.literal.nombre,gratuita.listadoLG.literal.lugar,"
-			   columnSizes="35,35,10">
+			   columnSizes="35,35,10"
+			   fixedHeight="95%">
 				
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 		
@@ -101,11 +102,9 @@
 				<% } %>
 		<!-- FIN: RESULTADO -->
 	<% } else { %>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	 		<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>
 	<% } %>
 
 	</siga:Table>
