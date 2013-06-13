@@ -32,6 +32,7 @@
 	Hashtable turno = (Hashtable) request.getSession().getAttribute("turnoElegido");
 	Vector ocultos = (Vector) ses.getAttribute("ocultos");
 	Vector campos = (Vector) ses.getAttribute("campos");
+	String accion = String.valueOf(request.getSession().getAttribute("modoPestanha"));
 	String accionTurno = (String) request.getSession().getAttribute("accionTurno");
 	String botones = "C,E,B";
 	if (accionTurno.equalsIgnoreCase("Ver"))
@@ -418,9 +419,9 @@
 					) {
 						estadoBajaTurno = true;
 					}
-						
+					
 					// COMPRUEBO QUE NO TENGA QUE VALIDAR EL TURNO, NI QUE ESTE DE BAJA
-					if (!estadoPendienteValidacionTurno && !estadoBajaTurno) {
+					if (!estadoPendienteValidacionTurno && !estadoBajaTurno && accion.equalsIgnoreCase("Editar")) {
 
 						// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA" O "ELECCION" (LAS OBLIGATORIAS NO ENTRAN)
 						if (obligatoriedad.equals("2") || obligatoriedad.equals("1")) {

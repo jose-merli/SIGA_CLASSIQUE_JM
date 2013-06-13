@@ -228,6 +228,8 @@
 					  		}			
 						}
 						
+						alert('<siga:Idioma key="gratuita.maestroTurnos.literal.procesando"/>');
+												
 						document.forms[0].target="submitArea";
 						document.forms[0].modo.value="modificar";
 						document.forms[0].submit();							

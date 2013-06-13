@@ -472,7 +472,7 @@ public class DefinirTurnosAction extends MasterAction {
 			hash.put("IDTURNO",idturno);			
 
 			if (usr==null) throw new ClsExceptions("Sesión no válida.");
-			tx = usr.getTransaction();
+			tx = usr.getTransactionPesada();
 		    tx.begin();
 
 		    if (paso)ok = ordenacion.insert(haux);
