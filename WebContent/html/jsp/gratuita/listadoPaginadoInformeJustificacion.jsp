@@ -293,7 +293,14 @@ function accionGuardar (isLetrado)
 				}
 			
 			}
+		} else {		
+			if(document.InformeJustificacionMasivaForm.fecha.value == null || document.InformeJustificacionMasivaForm.fecha.value == ''){
+				alert("<siga:Idioma key='errors.required' arg0='gratuita.informeJustificacionMasiva.literal.fecha.Justif'/>");
+				fin();
+				return false;
+			}
 		}
+		
 		document.InformeJustificacionMasivaForm.modo.value="justificar";
 		document.InformeJustificacionMasivaForm.datosBaja.value = datosBaja;
 		document.InformeJustificacionMasivaForm.datosJustificacion.value = datosJustificacion;
@@ -623,6 +630,8 @@ function downloadDocumentoResolucion(docResolucion) {
 	document.InformeJustificacionMasivaForm.target="submitArea";		   	
 	document.InformeJustificacionMasivaForm.submit();
 }
+		
+
 </script>
 </head>
 
@@ -688,7 +697,7 @@ function downloadDocumentoResolucion(docResolucion) {
 					<td width="75%">&nbsp;</td>
 					<td class="labelText">
 					<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif" />					
-						<siga:Fecha nombreCampo="fecha"></siga:Fecha>
+						<siga:Fecha nombreCampo="fecha" valorInicial="${InformeJustificacionMasivaForm.fecha}"></siga:Fecha>
 					</td>
 				</tr>
 
