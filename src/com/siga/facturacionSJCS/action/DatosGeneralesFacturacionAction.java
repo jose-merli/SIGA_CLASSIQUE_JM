@@ -27,6 +27,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
+import org.redabogacia.sigaservices.app.AppConstants.FCS_MAESTROESTADOS_ENVIO_FACT;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionEstadoEnvio;
+import org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -55,6 +59,8 @@ import com.siga.informes.InformePersonalizable;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 import com.siga.ws.InformeXML;
 import com.siga.ws.JustificacionEconomicaWS;
+
+import es.satec.businessManager.BusinessManager;
 
 
 public class DatosGeneralesFacturacionAction extends MasterAction {
@@ -111,6 +117,12 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if ((miForm.getModo() != null) && (miForm.getModo().equalsIgnoreCase("descargarInformeIncidencias"))){
 				return mapping.findForward(this.descargarInformeIncidencias(mapping, miForm, request, response));
 			}
+			if (((String)miForm.getModo()!=null)&&(((String)miForm.getModo()).equalsIgnoreCase("accionXuntaEnvioReintegro"))){
+				return mapping.findForward(this.accionXuntaEnvioReintegro(mapping, miForm, request, response));
+			}
+			if (((String)miForm.getModo()!=null)&&(((String)miForm.getModo()).equalsIgnoreCase("accionXuntaEnvioJustificacion"))){
+				return mapping.findForward(this.accionXuntaEnvioJustificacion(mapping, miForm, request, response));
+			}
 
 			return super.executeInternal(mapping, formulario, request, response);
 		}
@@ -122,6 +134,47 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 	}
 	
+	private String accionXuntaEnvioJustificacion(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		return accionXuntaEnvios(miForm, request, OPERACION.XUNTA_ENVIO_JUSTIFICACION);
+	}
+
+	private String accionXuntaEnvioReintegro(ActionMapping mapping,	MasterForm masterForm, HttpServletRequest request,	HttpServletResponse response) throws SIGAException {
+		return accionXuntaEnvios(masterForm, request, OPERACION.XUNTA_ENVIO_REINTEGROS);
+	}
+	
+	private String accionXuntaEnvios(MasterForm masterForm, HttpServletRequest request, OPERACION operacion) throws SIGAException {
+		String mensajePantalla = "messages.facturacion.envioEnProceso";
+		
+		try {
+			
+			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm) masterForm;
+			String idFacturacion = (String)miform.getIdFacturacion();
+			String idinstitucion = miform.getIdInstitucion();
+			
+			XuntaEnviosJEService xuntaEnviosJEService = (XuntaEnviosJEService) BusinessManager.getInstance().getService(XuntaEnviosJEService.class);
+			
+			if (OPERACION.XUNTA_ENVIO_REINTEGROS.equals(operacion)) {
+				xuntaEnviosJEService.envioReintegros(Short.valueOf(idinstitucion), Integer.valueOf(idFacturacion));
+			} else if (OPERACION.XUNTA_ENVIO_JUSTIFICACION.equals(operacion)) {
+				xuntaEnviosJEService.envioJustificacion(Short.valueOf(idinstitucion), Integer.valueOf(idFacturacion));
+			} else {
+				throw new IllegalArgumentException("Operación no soportada. Revisar la operación que debe realizarse");
+			}
+			
+			
+			Hashtable datosFacturacion = new Hashtable();
+			datosFacturacion.put("idFacturacion", idFacturacion);
+			datosFacturacion.put("idInstitucion", idinstitucion);
+	//		datosFacturacion.put("accion", "Edicion");
+			request.setAttribute("datosFacturacion",datosFacturacion);
+			
+		} catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"}, e, null);
+		}
+		
+		return exitoRefresco(mensajePantalla,request);
+	}
+
 	/** 
 	 *  Funcion que atiende la accion listaParaConsejo.
 	 * @param  mapping - Mapeo de los struts
@@ -334,6 +387,13 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			//esta variable es para mostrar en los criterios el boton de borrado
 			request.getSession().setAttribute("estado",(String)nombreEstadoBean.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
 			request.setAttribute("idEstado",UtilidadesHash.getInteger(nombreEstadoBean, FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
+			
+			//para los envíos de la Xunta también recuperamos el estado
+			XuntaEnviosJEService xuntaEnviosJEService = (XuntaEnviosJEService) BusinessManager.getInstance().getService(XuntaEnviosJEService.class);						
+			FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = xuntaEnviosJEService.getUltimoEstadoEnvioFacturacion(Short.valueOf(idInstitucion), Integer.valueOf(idFacturacion));
+			
+			request.setAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION, ultimoEstadoEnvio);
+			
 			// para ver si ya se ha ejecutado
 			request.setAttribute("yaHaSidoEjecutada",new Boolean(facturaAdm.yaHaSidoEjecutada(idInstitucion,idFacturacion)));
 			if(borrar !=null && borrar.equalsIgnoreCase("S"))
