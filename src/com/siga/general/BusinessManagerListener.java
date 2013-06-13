@@ -18,6 +18,8 @@ public class BusinessManagerListener implements ServletContextListener {
 			BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
 			ClsLogging.writeFileLog("PersistenceBusinessManager creado", 3);
 		} catch (Exception e) {
+			//Si falla la carga de fichero del BusinessManager luego falla el la clase ClsLogging porque intenta cargar un servicio así que dejamos el e.printStackTrace()			
+			e.printStackTrace();//NO QUITAR!! 
 			ClsLogging.writeFileLogError("Error al createBusinessManager", e, 3);
 		}
 
