@@ -36,6 +36,8 @@
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenPropertiesService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenPropertiesServiceImpl"/>
 		
 		<service interface="org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.AsignaConsultaNumeracionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.XuntaEnviosJEServiceImpl"/>
+		
 		
 		<service interface="com.siga.envios.service.EntradaEnviosService" 							implementation="com.siga.envios.service.impl.EntradaEnviosServiceImpl"/>
 		<service interface="com.siga.envios.service.sigp_ca.RespuestaSolSusProcedimientoService" 	implementation="com.siga.envios.service.sigp_ca.impl.RespuestaSolSusProcedimientoServiceImpl"/>
@@ -72,6 +74,7 @@
 		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTiposGuardiasService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTiposGuardiasServiceImpl"/>
+		
 	</context>
 </configuration> 
 	
