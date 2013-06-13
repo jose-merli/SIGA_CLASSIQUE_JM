@@ -96,6 +96,8 @@ public enum ActionButtonsConstants {
 	SOLICITARALTA ("SA","general.boton.solicitaralta","solicitarAlta()",83),
 	SOLICITARBAJA ("SB","general.boton.solicitarbaja","solicitarBaja()",84),
 	PROCESAR ("p","general.boton.procesar","accionProcesar()",36),
+	XUNTA_ENVIO_REINTEGRO ("ER","general.boton.xunta.envio_reintegro","accionXuntaEnvioReintegro()",85),
+	XUNTA_ENVIO_JUSTIFICACION ("EJ","general.boton.xunta.envio_justificacion","accionXuntaEnvioJustificacion()",86)
 	
 	;
 

@@ -5,6 +5,8 @@
 -->
 
 <!-- CABECERA JSP -->
+<%@page import="org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionEstadoEnvio"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.FCS_MAESTROESTADOS_ENVIO_FACT"%>
 <%@page import="java.util.Properties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -22,6 +24,9 @@
 
 <%@ page import = "com.atos.utils.ClsConstants"%>
 <%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
+
+
+
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.beans.*"%>
@@ -125,6 +130,8 @@
 		clase = "boxConsulta";
 		
 		botones ="GM";
+		
+		
 	}
 	
 	if ((idEstado!=null) && ( 
@@ -135,6 +142,19 @@
 		clase = "boxConsulta";
 		
 		botones ="GM";
+		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			//recuperamos el último estado de envío a la Xunta
+			FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
+			if (ultimoEstadoEnvio != null) {
+				if (FCS_MAESTROESTADOS_ENVIO_FACT.CERTIFICACION_VERIFICADA.equals(ultimoEstadoEnvio)) {
+					botones += ",ER,EJ";//Envío Reintegro y Envío Justificación		
+				} else if (FCS_MAESTROESTADOS_ENVIO_FACT.REINTEGRO_VERIFICADO.equals(ultimoEstadoEnvio)) {
+					botones += ",EJ";//Envío Justificación
+				}
+			}
+			
+		}
+		
 	}
 	else if ((idEstado!=null) && (
 			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo() || 
@@ -189,8 +209,6 @@
 	else {
 		botones ="G";
 	}
-
-	
 	
 %>	
 <html>
@@ -336,6 +354,20 @@
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
+		
+		function accionXuntaEnvioReintegro() {
+			sub();
+			document.forms[0].modo.value="accionXuntaEnvioReintegro";
+			document.forms[0].target = "submitArea2";
+			document.forms[0].submit();
+		}
+		
+		function accionXuntaEnvioJustificacion() {
+			sub();
+			document.forms[0].modo.value="accionXuntaEnvioJustificacion";
+			document.forms[0].target = "submitArea2";
+			document.forms[0].submit();
+		}
 		</script>	
 </head>
 
@@ -399,8 +431,7 @@
 	</html:form>
 	
 	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
-	
-		
+			
 		
 
 <!-- PARA LA FUNCION VOLVER -->
@@ -483,6 +514,7 @@
 	<% if ((estado != null) && (!estado.equals(""))) { %>
 		document.forms[0].estado.value = "<siga:Idioma key='<%=estado%>'/>";
 	<% } %>
+	
 </script>
 
 			
