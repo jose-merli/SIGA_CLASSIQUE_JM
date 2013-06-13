@@ -2568,7 +2568,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 			
-			sql.append(" ejg.idpretension AS PRETENSION, ");			
+			sql.append(" ejg.idpretension AS PRETENSION ");			
 			
 		       
 			
