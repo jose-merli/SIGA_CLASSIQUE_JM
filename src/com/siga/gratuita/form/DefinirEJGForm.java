@@ -34,6 +34,10 @@ import com.siga.censo.form.DatosRegTelForm;
 	 //Crear nuevos campos en la pestaña de impugnaciones del EJG
 	 String numeroResolucion;
 	 String anioResolucion;
+	 
+	 String idTipoResolucion;
+	 String idTipoFundamento;
+	 
 	 //String bisResolucion;
 	 
 	 
@@ -1023,5 +1027,21 @@ import com.siga.censo.form.DatosRegTelForm;
 		
 		public String getIdInstitucionActa() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDINSTITUCIONACTA);}
 		public void setIdInstitucionActa(String valor)	{this.datos.put(ScsEJGBean.C_IDINSTITUCIONACTA, valor);}
+
+		public String getIdTipoResolucion() {
+			return idTipoResolucion;
+		}
+
+		public void setIdTipoResolucion(String idTipoResolucion) {
+			this.idTipoResolucion = idTipoResolucion;
+		}
+
+		public String getIdTipoFundamento() {
+			return idTipoFundamento;
+		}
+
+		public void setIdTipoFundamento(String idTipoFundamento) {
+			this.idTipoFundamento = idTipoFundamento;
+		}
 
 }
