@@ -135,7 +135,10 @@ public class SIGAListadoCertificadosAction extends MasterAction
 	            AdmCertificadosBean beanCertificado = (AdmCertificadosBean)registro.get("datos");*/
 	        	Row fila = (Row)datos.elementAt(i);
 	    	    Hashtable hashDatos = (Hashtable) fila.getRow();
-	            
+	            /*
+	             * CRM: INC_10939_SIGA De momento ocmo solucion parcial se comenta esta parte para que no de error. 
+	             *  	Cuando la gente de explotación nos de una solución se descomentara y se arreglará
+	             * 
 	            if (hashDatos.get("REVOCACION").equals("S"))
 	            {
 	                tx = userBean.getTransaction();
@@ -261,6 +264,8 @@ public class SIGAListadoCertificadosAction extends MasterAction
 				        tx.commit();
 					}
 	            }
+	            
+	            */
 	        }
 	        
 	        request.setAttribute("datos", datos);
