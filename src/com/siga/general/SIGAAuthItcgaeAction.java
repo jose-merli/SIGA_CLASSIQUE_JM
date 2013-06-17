@@ -308,11 +308,16 @@ public class SIGAAuthItcgaeAction extends Action
 			
 				CenPersonaAdm admPersona = new CenPersonaAdm(usr);
 				Vector vPersona = admPersona.select(sWHERE);
-				if (vPersona!=null && vPersona.size()>0)
-				{
-				    CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
-				    idPersona = beanPersona.getIdPersona().longValue();
-				}
+		
+		        if (vPersona!=null && vPersona.size()>0)
+		        {
+		        	//aalg: se tiene que almacenar el idpersona sólo si se trata de un cliente del colegio al que se accede
+		        	CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
+		        	if (CenClienteAdm.getEsCliente(beanPersona.getIdPersona().toString(), sIdInstitucion).equalsIgnoreCase("S"))
+		        		idPersona = beanPersona.getIdPersona().longValue();
+		        	else
+		        		ClsLogging.writeFileLog("***** ES PERSONA PERO NO CLIENTE DE ESTE COLEGIO. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+		        }
 				else {
 				    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
 				}

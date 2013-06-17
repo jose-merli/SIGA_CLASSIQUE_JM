@@ -348,14 +348,18 @@ public class SIGATemporalAccessAction extends Action
 		        String sNIF = beanUsuario.getNIF();
 		        
 		        // Hacemos la comparacion del NIF sin los 0 por la izquierda
-		        sWHERE = " WHERE ltrim(upper(" + CenPersonaBean.C_NIFCIF + "),'0') = '" + UtilidadesString.LTrim(sNIF.toUpperCase(),"0") + "'";
+		        sWHERE = " WHERE ltrim(upper(" + CenPersonaBean.C_NIFCIF + "),'0') = '" + UtilidadesString.LTrim(sNIF.toUpperCase(),"0") + "' ";
 
 		        CenPersonaAdm admPersona = new CenPersonaAdm(usr);
 		        Vector vPersona = admPersona.select(sWHERE);
 		        if (vPersona!=null && vPersona.size()>0)
 		        {
-		            CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
-		            idPersona = beanPersona.getIdPersona().longValue();
+		        	//aalg: se tiene que almacenar el idpersona sólo si se trata de un cliente del colegio al que se accede
+		        	CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
+		        	if (CenClienteAdm.getEsCliente(beanPersona.getIdPersona().toString(), sIdInstitucion).equalsIgnoreCase("S"))
+		        		idPersona = beanPersona.getIdPersona().longValue();
+		        	else
+		        		ClsLogging.writeFileLog("***** ES PERSONA PERO NO CLIENTE DE ESTE COLEGIO. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
 		        }
 		        else {
 		        	ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
