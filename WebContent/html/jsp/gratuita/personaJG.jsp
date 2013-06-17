@@ -345,6 +345,11 @@
 				document.forms[0].existeDom.checked=true;
 	 			document.PersonaJGForm.direccion.disabled = "disabled";
 	 			document.PersonaJGForm.cp.disabled = "disabled";
+	 			document.PersonaJGForm.numeroDir.disabled = "disabled";
+	 			document.PersonaJGForm.escaleraDir.disabled = "disabled";
+	 			document.PersonaJGForm.pisoDir.disabled = "disabled";
+	 			document.PersonaJGForm.puertaDir.disabled = "disabled";	
+	 			jQuery("#tipoVia").attr("disabled","disabled");
 				document.getElementById("desaparece").style.display="none";
 				document.getElementById("desaparecePr").style.display="none";
 				document.getElementById("desapareceCp").style.display="none";
@@ -379,6 +384,10 @@
  			document.PersonaJGForm.existeDomicilio.value = "N";
  			document.PersonaJGForm.direccion.value = "";
  			document.PersonaJGForm.cp.value = "";
+ 			document.PersonaJGForm.numeroDir.value = "";
+ 			document.PersonaJGForm.escaleraDir.value = "";
+ 			document.PersonaJGForm.pisoDir.value = "";
+ 			document.PersonaJGForm.puertaDir.value = "";
 			document.forms[0].provincia.value = "";
 			document.forms[0].provincia.onchange();
 			jQuery("#direccion").attr("disabled","disabled");
@@ -391,18 +400,28 @@
 			document.forms[0].tipoVia.value = "";
 			jQuery("#tipoVia").attr("disabled","disabled");
 			
+ 			document.PersonaJGForm.numeroDir.disabled = "disabled";
+ 			document.PersonaJGForm.escaleraDir.disabled = "disabled";
+ 			document.PersonaJGForm.pisoDir.disabled = "disabled";
+ 			document.PersonaJGForm.puertaDir.disabled = "disabled";			
+			
 		}else {
 			document.getElementById("desaparece").style.display="inline";
 			document.getElementById("desaparecePr").style.display="inline";
 			document.getElementById("desapareceCp").style.display="inline";
 			document.getElementById("desaparecePo").style.display="inline";
-			jQuery("#direccion").removeAttr("disabled");
-			jQuery("#cp").removeAttr("disabled");
 			jQuery("#provincia").removeAttr("disabled");
 			jQuery("#poblacion").removeAttr("disabled");
 			jQuery("#tipoVia").removeAttr("disabled");
  			document.forms[0].existeDom.checked = false;
- 			document.PersonaJGForm.existeDomicilio.value = "S";
+ 			document.PersonaJGForm.direccion.disabled = "";	
+ 			document.PersonaJGForm.cp.disabled = "";
+ 			document.PersonaJGForm.provincia.disabled = "";	
+ 			document.PersonaJGForm.puertaDir.disabled = "";	
+ 			document.PersonaJGForm.numeroDir.disabled = "";
+ 			document.PersonaJGForm.escaleraDir.disabled = "";
+ 			document.PersonaJGForm.pisoDir.disabled = "";
+ 			document.PersonaJGForm.puertaDir.disabled = "";	
 		}
 	}
 
