@@ -75,6 +75,11 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTiposGuardiasService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTiposGuardiasServiceImpl"/>
 		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoResolucionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoFundamentosServiceImpl"/>
+		
+		
+		
 	</context>
 </configuration> 
 	
