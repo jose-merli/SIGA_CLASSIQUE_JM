@@ -747,8 +747,10 @@ public class DefinirEnviosAction extends MasterAction {
 		
 		try {
 			String fechaProgramada = null;
-			String fechaProg = form.getFechaProgramada(); // + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-			fechaProg = GstDate.anyadeHora(fechaProg);
+			String fechaProg = form.getFechaProgramada();
+			//fechaProg = GstDate.anyadeHora(fechaProg);
+			if (fechaProg != null && fechaProg.length() == 10)
+				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
 
 
 			String language = userBean.getLanguage();
@@ -879,8 +881,10 @@ public class DefinirEnviosAction extends MasterAction {
 
 			// obtener fechaProgramada
 			String fechaProgramada = null;
-			String fechaProg = form.getFechaProgramada(); // + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-			fechaProg = GstDate.anyadeHora(fechaProg);
+			String fechaProg = form.getFechaProgramada();
+			//fechaProg = GstDate.anyadeHora(fechaProg);
+			if (fechaProg != null && fechaProg.length() == 10)
+				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
 
 			String language = userBean.getLanguage();
 			String format = language.equalsIgnoreCase("EN")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
@@ -1170,8 +1174,10 @@ public class DefinirEnviosAction extends MasterAction {
 
 			// obtener fechaProgramada
 			String fechaProgramada = null;
-			String fechaProg = form.getFechaProgramada(); // + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-			fechaProg = GstDate.anyadeHora(fechaProg);			
+			String fechaProg = form.getFechaProgramada();
+			//fechaProg = GstDate.anyadeHora(fechaProg);
+			if (fechaProg != null && fechaProg.length() == 10)
+				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
 
 			String language = userBean.getLanguage();
 			String format = language.equalsIgnoreCase("1")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
