@@ -1339,22 +1339,16 @@ public class Row implements Serializable {
 				if (!row.containsKey(updatableFields[i])) continue;
 				sql += aux + updatableFields[i] + " = ";
 				
-				if (row.get(updatableFields[i]) == null || "NULL".equalsIgnoreCase("" + updatableFields[i]) || row.get(updatableFields[i]).toString().trim().equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("NULL")) {
+				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("null")) {
 					sql += " NULL ";
 					
 				} else {
 					if (dataTypes.get(updatableFields[i]).equals("STRING")) {
 						//sql += "'" + validateChars(row.get(updatableFields[i])) + "' ";
 						//codigos.put(new Integer(contador),validateChars(""+row.get(updatableFields[i])));
-						
-						String dato = row.get(updatableFields[i]).toString();
-						boolean bTransforma = dato.indexOf(":")>=0;
-						String datoTransformado = dato;
-						if (bTransforma)
-							datoTransformado = this.transformarParametrosIn(dato);												
-																							
-						sql += this.transformarParametrosOut(contador, bTransforma);
-						codigos.put(new Integer(contador), "" + datoTransformado);
+						  	  				  
+						sql +=":"+new Integer(contador).toString()+" ";
+  	  				    codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
   	  				    contador++;
   	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) {
@@ -1389,10 +1383,7 @@ public class Row implements Serializable {
 						}
 						
 					} else {
-						//sql += row.get(updatableFields[i]).toString();
-						
-						//sql += this.transformarParametrosOut(contador);
-  	  				    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
+						//sql += row.get(updatableFields[i]).toString();						
 						
 						sql += ":" + new Integer(contador).toString() + " ";
   	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
@@ -1896,19 +1887,16 @@ public class Row implements Serializable {
 			for (int i = 0; i < updatableFields.length; i++) {
 				sql += aux + updatableFields[i] + " = ";
 				
-				if (row.get(updatableFields[i]) == null ||  "NULL".equalsIgnoreCase("" + updatableFields[i]) || row.get(updatableFields[i]).toString().trim().equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("NULL")) {
+				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).equals("null") || row.get(updatableFields[i]).equals("NULL")) {
 					sql += " NULL ";
 					
 				} else {										
-					if (dataTypes.get(updatableFields[i]).equals("STRING")) {		
-						String dato = row.get(updatableFields[i]).toString();
-						boolean bTransforma = dato.indexOf(":")>=0;
-						String datoTransformado = dato;
-						if (bTransforma)
-							datoTransformado = this.transformarParametrosIn(dato);	
-												
-						sql += this.transformarParametrosOut(contador, bTransforma);
-						codigos.put(new Integer(contador), "" + datoTransformado);
+					if (dataTypes.get(updatableFields[i]).equals("STRING")) {		 	  				    
+  	  				    //sql += "'" + validateChars(row.get(updatableFields[i])) + "' ";
+  	  				    //codigos.put(new Integer(contador),validateChars(""+row.get(updatableFields[i])));
+  	  				    
+  	  				    sql +=":"+new Integer(contador).toString()+" ";						
+						codigos.put(new Integer(contador),""+row.get(updatableFields[i]));
   	  				    contador++;
   	  				    
 					} else if (dataTypes.get(updatableFields[i]).equals("NUMBER")) 	{
@@ -1937,9 +1925,6 @@ public class Row implements Serializable {
 						
 					} else 	{
 						//sql += row.get(updatableFields[i]).toString();
-						
-						//sql += this.transformarParametrosOut(contador);
-  	  				    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(updatableFields[i])));
   	  				    
   	  				    sql += ":" + new Integer(contador).toString() + " ";
   	  				    codigos.put(new Integer(contador), "" + row.get(updatableFields[i]));
@@ -2337,15 +2322,9 @@ public class Row implements Serializable {
 					} else if (datatypes.get(fieldNames[i]).equals("STRING")) {
 						//sqlValues.append(aux + " '" + validateChars(row.get(fieldNames[i])) + "' ");
 						//codigos.put(new Integer(contador),""+validateChars(row.get(fieldNames[i])));
-						
-						String dato = row.get(fieldNames[i]).toString();
-						boolean bTransforma = dato.indexOf(":")>=0;
-						String datoTransformado = dato;
-						if (bTransforma)
-							datoTransformado = this.transformarParametrosIn(dato);	
-  	  				      	  				    			    					    
-					    sqlValues.append(aux + this.transformarParametrosOut(contador, bTransforma));
-					    codigos.put(new Integer(contador), "" + datoTransformado);
+  	  				    
+  	  				    sqlValues.append(aux + ":"+new Integer(contador).toString()+" ");
+  	  				    codigos.put(new Integer(contador),""+row.get(fieldNames[i]));
   	  				    contador++;
   	  				    
 					} else if (datatypes.get(fieldNames[i]).equals("NUMBER")) {
@@ -2378,9 +2357,6 @@ public class Row implements Serializable {
 						
 					} else {
 						//sqlValues.append(aux + " " + row.get(fieldNames[i]).toString() + " ");
-						
-						//sqlValues.append(aux + this.transformarParametrosOut(contador));					    
-					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(fieldNames[i])));
 					    
 					    sqlValues.append(aux + ":" + new Integer(contador).toString() + " ");
 						codigos.put(new Integer(contador), "" + row.get(fieldNames[i]));
@@ -2492,7 +2468,7 @@ public class Row implements Serializable {
 			String aux = " WHERE ";
 			
 			for (int i = 0; i < keyfields.length; i++) {
-				if (row.get(keyfields[i]) == null ||  "NULL".equalsIgnoreCase("" + keyfields[i]) || row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("NULL")) {
+				if (row.get(keyfields[i]) == null || row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("null")) {
 					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
 					
 				} else {
@@ -2501,16 +2477,10 @@ public class Row implements Serializable {
 					if (datatypes.get(keyfields[i]).equals("STRING")) {
 					    //sqlWhere.append("'" + validateChars(row.get(keyfields[i])) + "' ");
 						//codigos.put(new Integer(contador),validateChars(""+row.get(keyfields[i])));
-						
-						String dato = row.get(keyfields[i]).toString();
-						boolean bTransforma = dato.indexOf(":")>=0;
-						String datoTransformado = dato;
-						if (bTransforma)
-							datoTransformado = this.transformarParametrosIn(dato);	
-					    					   					    
-					    sqlWhere.append(this.transformarParametrosOut(contador, bTransforma));
-					    codigos.put(new Integer(contador), "" + datoTransformado);
-  	  				    contador++;
+  	  				    
+  	  				    sqlWhere.append(":"+new Integer(contador).toString()+" ");
+  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
+  	  				    contador++;  	  				    
   	  				      	  				    
 					} else if (datatypes.get(keyfields[i]).equals("NUMBER")) {
 						//sqlWhere.append(" " + row.get(keyfields[i]) + " ");
@@ -2537,9 +2507,6 @@ public class Row implements Serializable {
   	  				    
 					} else {
 						//sqlWhere.append(row.get(keyfields[i]).toString());
-  	  				    
-  	  				    //sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
 						
 						sqlWhere.append(":" + new Integer(contador).toString() + " ");
 						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
@@ -2556,6 +2523,7 @@ public class Row implements Serializable {
 	}
 	
 	/**
+	 * JPT: Antiguo UtilidadesBDAdm.sqlWhereBind
 	 * 
 	 * @param tableName
 	 * @param row
@@ -2574,21 +2542,15 @@ public class Row implements Serializable {
       	if (keyfields != null) {
       		String aux = " WHERE ";
       		for (int i = 0; i < keyfields.length; i++) {
-      			if (row.get(keyfields[i]) == null ||  "NULL".equalsIgnoreCase("" + keyfields[i]) || row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("NULL")) {
+      			if (row.get(keyfields[i]) == null || row.get(keyfields[i]).toString().trim().equals("")) {
 					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
 
       			} else {
       				sqlWhere.append(aux + keyfields[i] + " = ");
       				
       				if (dataTypes.get(keyfields[i]).equals(DbTypes.STRING)) {      	
-      					String dato = row.get(keyfields[i]).toString();
-						boolean bTransforma = dato.indexOf(":")>=0;
-						String datoTransformado = dato;
-						if (bTransforma)
-							datoTransformado = this.transformarParametrosIn(dato);	
-      					
-					    codigos.put(new Integer(contador), "" + datoTransformado);
-					    sqlWhere.append(this.transformarParametrosOut(contador, bTransforma));
+  	  				    sqlWhere.append(":"+new Integer(contador).toString()+" ");
+  	  				    codigos.put(new Integer(contador),""+row.get(keyfields[i]));
   	  				    contador++;
       					
       				} else if (dataTypes.get(keyfields[i]).equals(DbTypes.NUMBER)) {
@@ -2605,13 +2567,9 @@ public class Row implements Serializable {
       					
 						codigos.put(new Integer(contador), "" + datoTransformado);
 						sqlWhere.append(" TO_DATE(" + this.transformarParametrosOut(contador, bTransforma) + ", '" + ClsConstants.DATE_FORMAT_SQL + "') ");
-  	  				    contador++;
-      					
+  	  				    contador++;      					
       					
       				} else {
-      					//sqlWhere.append(this.transformarParametrosOut(contador));					    
-					    //codigos.put(new Integer(contador), "" + this.transformarParametrosIn(row.get(keyfields[i])));
-					    
 					    sqlWhere.append(":" + new Integer(contador).toString() + " ");
 						codigos.put(new Integer(contador), "" + row.get(keyfields[i]));
   	  				    contador++;
