@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -21,7 +22,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolucion;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -90,6 +93,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.InformeDefinirEJG;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -268,7 +273,9 @@ public class DefinirEJGAction extends MasterAction
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions,SIGAException  {
-
+		
+		
+		
 		ScsEJGAdm admBean =new ScsEJGAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
@@ -1375,11 +1382,16 @@ public class DefinirEJGAction extends MasterAction
 		request.getSession().removeAttribute("accion");
 		request.getSession().removeAttribute("resultadoTelefonos");
 		try {
+//			SCS
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
 			request.setAttribute("permisoEejg", isPermisoEejg);
+			BusinessManager bm = getBusinessManager();
+			ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
+			List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
+			request.setAttribute("tiposResolucion", tiposResolucion);
 		}
 		catch (Exception e) 
 		{
@@ -1412,16 +1424,21 @@ public class DefinirEJGAction extends MasterAction
 			} 
 		}
 		/* "DATABACKUP" y "DATOSFORMULARIO" se usan habitualmente así que en primero lugar las borramos esta*/
-		request.getSession().removeAttribute("DATABACKUP");
         request.getSession().removeAttribute("DATOSFORMULARIO");
         request.getSession().removeAttribute("DATABACKUP");
         request.getSession().removeAttribute("accion");
         try {
-        	 GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+        	GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
      		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
      		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
      		request.setAttribute("permisoEejg", isPermisoEejg);
+     		BusinessManager bm = getBusinessManager();
+			ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
+			List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
+			request.setAttribute("tiposResolucion", tiposResolucion);
 			
+			
+     		
 		}
 		catch (Exception e) 
 		{
