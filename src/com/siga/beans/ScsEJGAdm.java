@@ -2281,17 +2281,45 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND EJG.IDTIPODICTAMENEJG = :" + contador;
 		}	
 		
-		if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
-			contador++;
-			String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
-			codigos.put(new Integer(contador),ratificacion[0]);
-			consulta += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
+		
+		miHash.put("tiposResolucionBusqueda", miForm.getIdTipoResolucion());
+		if(miForm.getIdTipoResolucion()!=null && !miForm.getIdTipoResolucion().equals("")){
 			
-					if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
-						contador++;
-						codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
-						consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
-					}
+			//si contiene -1 es que quiere sacar lo que no tienen resolucion 
+			int resolucionesNulas = miForm.getIdTipoResolucion().indexOf("-1");
+//			Si no lo encuentra
+			
+			if(resolucionesNulas==-1){
+				consulta += " AND EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion()+") ";	
+			}else{
+				if(miForm.getIdTipoResolucion().substring(resolucionesNulas+2).length()>0)
+					consulta += " AND (EJG.IDTIPORATIFICACIONEJG IS NULL OR EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion().substring(resolucionesNulas+3)+") ) ";
+				else
+					consulta += " AND EJG.IDTIPORATIFICACIONEJG IS NULL ";
+				
+			}
+			if(miForm.getIdTipoFundamento()!=null && !miForm.getIdTipoFundamento().equals("")){
+				contador++;
+				codigos.put(new Integer(contador),miForm.getIdTipoFundamento());
+				consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+				
+			}
+			//System.out.println("AQUINAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+consulta);
+			
+		}else{
+			if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
+				contador++;
+				String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
+				codigos.put(new Integer(contador),ratificacion[0]);
+				consulta += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
+				
+						if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
+							contador++;
+							codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
+							consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+						}
+			}
+			
 		}
 
 		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
