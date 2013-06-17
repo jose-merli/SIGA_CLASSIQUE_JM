@@ -386,6 +386,7 @@ public class InformeColegiadosPagos extends MasterReport {
 						sql2="SELECT f_siga_getrecurso(TA.descripcion, " + idioma + " ) TIPOACTUACION, " +
 							" AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, " +
 							" AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA," +
+							" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) NUMEJGASISTENCIA, " +
 							" PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
 							" to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 							" DECODE(FAAS.PRECIOAPLICADO,0,NULL,f_siga_formatonumero(FAAS.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
@@ -448,7 +449,7 @@ public class InformeColegiadosPagos extends MasterReport {
 							" AND AAS.IDJUZGADO = JUZGADOS.IDJUZGADO(+) " + 
 							" AND ASI.IDINSTITUCION = JUZGADOS_ASI.IDINSTITUCION(+) " +   
 							" AND ASI.JUZGADO = JUZGADOS_ASI.IDJUZGADO(+) " +
-						" ORDER BY AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
+						" ORDER BY AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, ASI.EJGANIO, ASI.EJGNUMERO, NOMBRE_ASISTIDO";
 						
 					}else{
 						// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion de la asistencia
@@ -456,6 +457,7 @@ public class InformeColegiadosPagos extends MasterReport {
 						sql2= " SELECT '' TIPOACTUACION, " +
 							" '' ACTUACION, " +
 							" ASI.ANIO || '/' || ASI.NUMERO ASISTENCIA, " +
+							" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) NUMEJGASISTENCIA, " +
 							" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
 							" to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
 							" DECODE(FASI.PRECIOAPLICADO, 0, NULL, f_siga_formatonumero(FASI.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
@@ -515,6 +517,8 @@ public class InformeColegiadosPagos extends MasterReport {
 							" AND ASI.JUZGADO = JUZGADOS.IDJUZGADO(+) " +
 						" GROUP BY ASI.ANIO, " +
 							" ASI.NUMERO, " +
+							" ASI.EJGANIO, " +
+							" ASI.EJGNUMERO," +
 							" PJG.NOMBRE, " +
 							" PJG.APELLIDO1, " +
 							" PJG.APELLIDO2, " +
