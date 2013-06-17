@@ -1,5 +1,7 @@
 package com.siga.general;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,11 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.autogen.model.ScsTipofundamentos;
+import org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
+
+import es.satec.businessManager.BusinessManager;
 
 public class JuzgadosAction extends MasterAction{
 	
@@ -38,8 +46,9 @@ public class JuzgadosAction extends MasterAction{
 
 			} else if (modo!=null && modo.equalsIgnoreCase("getAjaxJuzgado4")){
 				getAjaxJuzgado4 (request, response);
-			}
-	
+			} else if (modo!=null && modo.equalsIgnoreCase("getAjaxTiposFundamento")){
+				getAjaxTiposFundamento (request, response);
+			} 
 		} catch (SIGAException es) {
 			throw es;
 			
@@ -145,4 +154,30 @@ public class JuzgadosAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 		
 	}
+	
+	protected void getAjaxTiposFundamento (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String idCombo = request.getParameter("idCombo");		
+		BusinessManager bm = getBusinessManager();
+		UsrBean usrBean = this.getUserBean(request);
+		ScsTipoFundamentosService tipoFundamentosService = (ScsTipoFundamentosService)bm.getService(ScsTipoFundamentosService.class);
+		List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(idCombo),new Integer(usrBean.getLocation()));
+		
+		JSONArray jsonArray = new JSONArray();
+		for (ScsTipofundamentos tipoFundamento : tiposFundamentos) {
+			JSONObject json = new JSONObject();	
+			json.put("idFundamento",tipoFundamento.getIdfundamento().toString());
+			json.put("descripcion", tipoFundamento.getDescripcion());
+			jsonArray.put(json);
+		}
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("fundamentos", jsonArray);
+		
+		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", jsonObject.toString());
+		response.getWriter().write(jsonObject.toString()); 		
+	}
+	
 }
