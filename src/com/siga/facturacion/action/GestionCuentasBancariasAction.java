@@ -244,7 +244,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService bts = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
+			cuentaBancariaVo = bts.getCuentaBancaria(cuentaBancariaVo);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			bts.delete(cuentaBancariaVo);
 			request.setAttribute("mensaje","messages.deleted.success");
