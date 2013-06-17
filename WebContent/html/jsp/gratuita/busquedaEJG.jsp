@@ -1,6 +1,9 @@
 <!-- busquedaEJG.jsp -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.gratuita.form.DefinirEJGForm"%>
+<%@page import="com.siga.administracion.SIGAGestorInterfaz"%>
+<%@page import="org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolucion"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -10,6 +13,8 @@
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -57,7 +62,8 @@
 	
 	if(request.getAttribute("idremesa")!=null)
 		idremesa = (String) request.getAttribute("idremesa");	
-	
+	String idTipoRatificacionEjg = "";
+	String tiposResolucionBusqueda = "";
 	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
 		miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
 		ses.removeAttribute("DATOSFORMULARIO");    
@@ -144,12 +150,14 @@
 				//	idResolucion.add(miHash.get("IDTIPORATIFICACIONEJG").toString());
 				
 				if (miHash.containsKey("IDTIPORATIFICACIONEJG")) {
-					String idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
+					idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
 					vTipoRatificacion.add(idTipoRatificacionEjg.equals("")? "0,0": idTipoRatificacionEjg);
 					dato3[0]=(String) vTipoRatificacion.get(0);
 					dato3[1]=(String) usr.getLocation();
 				}	
-						
+				if (miHash.get("tiposResolucionBusqueda") != null) 
+					tiposResolucionBusqueda = (String)miHash.get("tiposResolucionBusqueda");
+				
 				if (miHash.get("GUARDIATURNO_IDTURNO") != null) {
 					String identificadorTurno = miHash.get("GUARDIATURNO_IDTURNO").toString();
 					idTurno.add(identificadorTurno.equals("")? "0": (String)usr.getLocation() + "," + identificadorTurno);
@@ -233,6 +241,8 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+ 	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/smoothness-1.8.13/jquery-ui-1.8.13.custom.css'/>">
+    <link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist.themeroller.css'/>">	
 	
 	
 	<!-- Incluido jquery en siga.js -->
@@ -240,9 +250,69 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-1.6.1.min.js'/>"></script>
+    <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-ui-1.8.13.custom.min.js'/>"></script>
+    <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
+<%
+	String app=request.getContextPath();
+	if (src==null) {
+	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
+	  src=interfazGestor.getInterfaceOptions();	  
+	}
+	// RGG 14/03/2007 cambio para dar un tamaño a la letra y en caso de Tiems darle otro
 	
-	<script type="text/javascript">	
-		function refrescarLocal() {			
+	String fontSize = "11px";
+	if (((String)src.get("color.background")).equalsIgnoreCase("FFFFFF")) {
+		fontSize="15px";
+		if (((String)src.get("font.style")).indexOf("Times")!=-1) {
+			fontSize="17px";
+		}
+	} else{
+	
+		if (((String)src.get("font.style")).indexOf("Arial")>=0) {
+			fontSize="13px";
+		}
+		if (((String)src.get("font.style")).indexOf("Times")>=0) {
+		    fontSize="14px";
+			
+		}
+	} 
+	
+%>
+
+       <style>
+table td { vertical-align: center }
+dd { padding-bottom: 15px }
+
+
+.ui-dropdownchecklist-text {
+	font-family: <%=src.get("font.style")%>;
+	font-size: <%=fontSize%>;
+	font-weight: normal;
+	margin-top: 0px;
+	margin-left: 0px;
+	vertical-align: top;
+	text-align: left;
+	
+	border: 0px solid #<%=src.get("color.button.border")%>;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+
+
+    </style>
+
+	     
+	 <script type="text/javascript">
+    	jQuery.noConflict();
+    	jQuery(document).ready(function() {
+            jQuery("#idTipoResolucionEJG").dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true,explicitClose: '<siga:Idioma key='general.boton.close'/>...' ,icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
+      	});
+    
+		function refrescarLocal() {	
+			// #color:#<src.get("color.labelText")%>;
+			// #background-color: #<src.get("color.background")%>;
 			buscar();
 		}		
 		
@@ -310,6 +380,49 @@
 				seleccionComboSiga("juzgado",resultado[0]);				 
 		}	
 		
+	function onchangeTipoResolucion() {
+		comboTipoResolucion = document.getElementById('idTipoResolucionEJG');
+		//document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
+		
+		if(document.getElementById('idFundamentoJuridico')){
+			elementsTipoResolucion =  jQuery(comboTipoResolucion).val();
+			var comboFundamentos = document.getElementById('idFundamentoJuridico');
+			var optioncomboFundamentos = comboFundamentos.options;
+			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString().split(',').length=='1' ){
+				if(comboTipoResolucion.value!=""){
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+			   			type: "POST",
+						url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposFundamento",
+						data: "idCombo="+comboTipoResolucion.value,
+						dataType: "json",
+						success: function(json){		
+							var fundamentos = json.fundamentos;
+								optioncomboFundamentos.length = 0;
+								jQuery("#idFundamentoJuridico").append("<option  value=''>&nbsp;</option>");
+		           				jQuery.each(fundamentos, function(i,item2){
+		           					seleccionado = '';
+		           					if(document.forms[0].idTipoFundamento.value==item2.idFundamento)
+		           						seleccionado = 'selected';
+			                        jQuery("#idFundamentoJuridico").append("<option "+seleccionado+" value='"+item2.idFundamento+"'>"+item2.descripcion+"</option>");
+			                        
+			                    });
+						},
+						error: function(e){
+							alert('Error de comunicación: ' + e);
+							fin();
+						}
+					});
+				}
+				else{
+					optioncomboFundamentos.length = 0;
+				}
+			}else{
+				optioncomboFundamentos.length = 0;
+				
+			}
+		}
+	}	
+		
 		function cambiarJuzgado(comboJuzgado) {
 			if(comboJuzgado.value!=""){
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -358,11 +471,11 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
-<body onLoad="inicio();ajusteAlto('resultado');" >
+<body onLoad="inicio();ajusteAlto('resultado');onchangeTipoResolucion();" >
 <!--bean:define id="permisoEejg" scope="request" name="permisoEejg" type="java.lang.Boolean"/-->
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
-
+<bean:define id="tiposResolucion" name="tiposResolucion" type="java.util.ArrayList"  scope="request"/>
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="<%=accion %>" method="POST" target="resultado">
 		<html:hidden name="<%=formulario%>" property="idPersona" value=""></html:hidden> <!-- 0 -->
@@ -378,7 +491,12 @@
 		<input type="hidden" name="volver" value="">
 		<html:hidden property="seleccionarTodos" />
 		<input type="hidden" id="tablaDatosDinamicosD" />	
-		<input type="hidden" id="filaSelD" />			
+		<input type="hidden" id="filaSelD" />		
+		<html:hidden property = "idTipoResolucion" />
+		<html:hidden property = "idTipoFundamento" />	
+		
+		
+		
 
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
@@ -474,8 +592,28 @@
 				<td class="labelText" style="vertical-align:middle" width="90px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
-				<td style="vertical-align:middle"> 
+				<td style="vertical-align:middle">
+					<%if(esComision){%>
+						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();"  style="width:375px;display: none; ">
+							<option value=""><bean:message key="gratuita.busquedaSOJ.literal.indiferente" /> </option>
+							<option value="-1"><bean:message key="gratuita.sinResolucion" /></option>
+							
+							<% for (int i = 0; i < tiposResolucion.size(); i++) {
+								ScsTiporesolucion  resolucion = (ScsTiporesolucion)tiposResolucion.get(i);
+								String seleccionado = "";
+								if(tiposResolucionBusqueda!=null && !tiposResolucionBusqueda.equals("")){
+									List alIds = Arrays.asList(tiposResolucionBusqueda.split(",")) ;
+									seleccionado=alIds.contains(resolucion.getIdtiporesolucion().toString())?"selected":"";
+								}
+							%>
+								<option <%=seleccionado%> value="<%=resolucion.getIdtiporesolucion() %>" ><c:out value="<%=resolucion.getDescripcion() %>"/> </option>
+							<%} %>	
+							
+							
+						</select>
+				<%}else{%>
 					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>
+				<%}%>	
 				</td>
 													
 				<td class="labelText" style="vertical-align:middle" width="140px">
@@ -499,7 +637,10 @@
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 					</td>
 					<td colspan="4">
-						<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentos" elementoSel="<%=vFundamentoJuridico%>" clase="boxCombo" parametro="<%=dato3%>" hijo="t"/>
+						<select style="width:700px;" id="idFundamentoJuridico">
+								<option value="">&nbsp;</option>
+						</select>
+					
 					</td>
 				</tr>
 			<%}%>
@@ -523,7 +664,7 @@
 								<siga:Idioma key="gratuita.busquedaEJG.dictamen"/>
 							</td>
 							<td style="vertical-align:middle"> 
-								<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" obligatorio="false" ancho="140" elementoSel="<%=idTipoDictamen%>" />
+								<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" parametro="<%=dato%>" obligatorio="false" ancho="140" elementoSel="<%=idTipoDictamen%>" />
 							</td>									
 						</tr>
 					</table>
@@ -808,6 +949,24 @@
 		}		
 		
 		function buscar(){ 
+			
+			var tipoResol = jQuery("#idTipoResolucionEJG").val();
+			if(tipoResol){
+				if(true){
+					if(tipoResol.toString().substring(0,1)==','){
+						tipoResol = tipoResol.toString().substring(1);
+					}
+					document.forms[0].idTipoResolucion.value = tipoResol;
+				}
+			}else{
+				document.forms[0].idTipoResolucion.value = "";
+				
+			}
+			if(document.getElementById("idFundamentoJuridico"))
+				document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
+			
+			
+			
 				if ( !validarObjetoAnio(document.getElementById("anio")) ){
 					alert("<siga:Idioma key='fecha.error.anio'/>");
 					return false;
