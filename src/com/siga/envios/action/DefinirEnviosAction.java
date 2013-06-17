@@ -747,7 +747,9 @@ public class DefinirEnviosAction extends MasterAction {
 		
 		try {
 			String fechaProgramada = null;
-			String fechaProg = form.getFechaProgramada() + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+			String fechaProg = form.getFechaProgramada(); // + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+			fechaProg = GstDate.anyadeHora(fechaProg);
+
 
 			String language = userBean.getLanguage();
 			String format = language.equalsIgnoreCase("EN")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
@@ -877,7 +879,8 @@ public class DefinirEnviosAction extends MasterAction {
 
 			// obtener fechaProgramada
 			String fechaProgramada = null;
-			String fechaProg = form.getFechaProgramada() + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+			String fechaProg = form.getFechaProgramada(); // + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+			fechaProg = GstDate.anyadeHora(fechaProg);
 
 			String language = userBean.getLanguage();
 			String format = language.equalsIgnoreCase("EN")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
