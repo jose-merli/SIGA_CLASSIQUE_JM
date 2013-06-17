@@ -605,25 +605,7 @@
 				if (size>0) {  
 					datos = document.getElementById('tablaDatosDinamicosD');
 					datos.value = ""; 
-					var j, fila;
-					for (fila = 1; fila < size+1; fila++) {
-						var tabla;
-						tabla = document.getElementById('documentoAPresentar');
-						var flag = true;
-						j = 1;
-						while (flag) {
-							var aux = 'oculto' + fila + '_' + j;
-							var oculto = document.getElementById(aux);
-							if (oculto == null)  
-								flag = false;
-							else 
-								datos.value = datos.value + oculto.value + ',';
-							j++;
-						}
-						datos.value = datos.value + "%";
-						datos.value = datos.value + (tabla.rows[fila].cells)[0].children[j-2].checked + ',';
-						datos.value = datos.value + "#";
-					}
+					preparaDatos(fila, 'documentoAPresentar', datos);					
 				}								
 				document.SolicitudIncorporacionForm.modo.value = "Modificar";
 				document.SolicitudIncorporacionForm.target = "submitArea";

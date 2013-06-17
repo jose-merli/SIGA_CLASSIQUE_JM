@@ -138,36 +138,8 @@
 			   if (confirm('<%= UtilidadesString.getMensajeIdioma(usr,"messages.deleteConfirmation")%>')){
 			   	datos = document.getElementById('tablaDatosDinamicosD');
 			    datos.value = ""; 
-			   	var i, j;
-			   	for (i = 0; i < 8; i++) {
-			    	var tabla;
-			      	tabla = document.getElementById('listarAsistencias');
-			      	if (i == 0) {
-			        	var flag = true;
-			        	j = 1;
-			        	while (flag) {
-			        		var aux = 'oculto' + fila + '_' + j;
-			        		var oculto = document.getElementById(aux);
-			        		if (oculto == null) { 
-			        			flag = false; 
-			        		} else { 
-					        	if(oculto.value=='') {
-					        		oculto.value=' ';
-					          	}
-								datos.value = datos.value + oculto.value + ','; 
-							}
-					      	j++;
-					    }
-					    datos.value = datos.value + "%";
-			      	} else { 
-			      		j = 2; 
-			      	}
-			      	if ((tabla.rows[fila].cells)[i].innerHTML == "") {
-			      		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
-			      	} else {
-			      		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'') + ',';
-			      	}
-			   	}
+			    preparaDatos(fila, 'listarAsistencias', datos);
+			   	
 			   	document.forms[0].target="submitArea";
 			   	document.forms[0].modo.value = "Borrar";
 			   	document.forms[0].submit();
