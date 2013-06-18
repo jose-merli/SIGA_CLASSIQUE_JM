@@ -949,14 +949,21 @@ public class UtilidadesBDAdm
 		  Hashtable codigosNuevo = new Hashtable();
 		  int indice = 1;
 		  
-		  Enumeration e = codigos.keys();
-		  while (e.hasMoreElements()) {
-			  Integer key = (Integer)e.nextElement();
-			  if (query.indexOf(":"+key) >= 0) {	
-				   codigosNuevo.put(key, codigos.get(key));
-				   indice++;
+		  if (codigos!=null) {
+			  Enumeration e = codigos.keys();
+			  while (e.hasMoreElements()) {
+				  Integer key = (Integer)e.nextElement();
+				  if (query.indexOf(":"+key) >= 0) {	
+					   codigosNuevo.put(key, codigos.get(key));
+					   indice++;
+				  }
 			  }
+			  
+			  return codigosNuevo;
+			  
+		  } else {
+			  return null;
 		  }
-		  return codigosNuevo;
+		  
 	  }
 }
