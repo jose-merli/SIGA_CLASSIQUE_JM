@@ -280,7 +280,7 @@
 					<td>&nbsp;</td>
 					<td class="labelText" colspan="2">
 						<siga:Idioma key="expedientes.gestionarExpedientes.fechaAperturaHasta" /></td>
-						<td><siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" /></td>
+						<td><siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" campoCargarFechaDesde="fecha" /></td>
 																	
 				</tr>
 				<tr>
