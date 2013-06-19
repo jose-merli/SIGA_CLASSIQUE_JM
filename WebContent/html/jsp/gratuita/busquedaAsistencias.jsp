@@ -532,7 +532,7 @@
 		function nuevo()
 		{
 			document.forms[0].modo.value = "nuevo";
-	   		var resultado = ventaModalGeneral(document.forms[1].name,"M");
+	   		var resultado = ventaModalGeneral(document.forms[0].name,"M");
 	   		if(resultado == "MODIFICADO") {
 				document.forms[0].anio.value   = "";
 				document.forms[0].numero.value = "";
