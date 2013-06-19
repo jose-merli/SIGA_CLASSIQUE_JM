@@ -62,10 +62,10 @@ public class DatosEconomicosEJGAdm {
 			numero = "0" + numero;
 		}
 		
-		String datoEJG = anio + "/" + numero + " - " + nombre;
+		//String datoEJG = anio + "/" + numero + " - " + nombre;
+		//request.setAttribute("datoEJG", datoEJG);
 		
-		request.setAttribute("modosDatosEconomicosEJG", formulario.getModos());
-		request.setAttribute("datoEJG", datoEJG);
+		request.setAttribute("modosDatosEconomicosEJG", formulario.getModos());		
 		
 		return "inicio";		
 	}	

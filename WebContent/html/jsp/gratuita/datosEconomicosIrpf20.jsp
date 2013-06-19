@@ -18,6 +18,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.beans.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
 
 <% 	
 	HttpSession ses=request.getSession();
@@ -60,7 +62,6 @@
 	String idtipoejg = (String) request.getParameter("idtipoejg");
 	String anio = (String) request.getParameter("anio");
 	String numero = (String) request.getParameter("numero");		
-	String datoEJG = (String) request.getParameter("datoEJG");
 %>	
 
 <html>
@@ -84,14 +85,28 @@
 		<html:hidden property="id" value=""/>	
 		<html:hidden property="idtipoejg" value="<%=idtipoejg%>"/>	
 		<html:hidden property="anio" value="<%=anio%>"/>	
-		<html:hidden property="numero" value="<%=numero%>"/>	
-		<html:hidden property="datoEJG" value="<%=datoEJG%>"/>			
+		<html:hidden property="numero" value="<%=numero%>"/>			
 	
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 			<tr>
+				<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
+					ScsEJGAdm adm = new ScsEJGAdm (usr);
+					
+					Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idtipoejg);
+					if (hTitulo != null) {
+						t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+						t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+						t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+						t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);
+						t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
+						t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
+					}
+		
+				%>
 				<td id="titulo" class="titulitosDatos">
-					<%=datoEJG%>
-				</td>
+						<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+						- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
+				</td>	
 			</tr>
 		</table>	
 		<br>		
