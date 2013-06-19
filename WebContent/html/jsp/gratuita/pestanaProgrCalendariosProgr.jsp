@@ -210,7 +210,7 @@ function cancelarGeneracionCalendarios(fila)
 		
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaProgrHasta"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaProgrHasta" campoCargarFechaDesde="fechaProgrDesde"></siga:Fecha>
 					</td>
 					
 				</tr>
@@ -256,7 +256,7 @@ function cancelarGeneracionCalendarios(fila)
 		
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
 					<td>						
-						<siga:Fecha nombreCampo="fechaCalFin"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaCalFin" campoCargarFechaDesde="fechaCalInicio"></siga:Fecha>
 					</td>
 					
 				</tr>

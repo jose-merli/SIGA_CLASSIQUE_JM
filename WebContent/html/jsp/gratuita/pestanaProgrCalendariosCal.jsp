@@ -254,7 +254,7 @@ function descargaLog(fila)
 		
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaFin" campoCargarFechaDesde="fechaInicio"></siga:Fecha>
 					</td>
 					
 				</tr>

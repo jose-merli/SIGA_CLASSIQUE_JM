@@ -140,7 +140,7 @@
 					<td width="120" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
 					<td>
 						<!--html:text styleClass="box" property="buscarFechaHasta" size="8" maxlength="10" readonly="true"/-->
-						<siga:Fecha nombreCampo="buscarFechaHasta" />
+						<siga:Fecha nombreCampo="buscarFechaHasta" campoCargarFechaDesde="buscarFechaDesde" />
 					</td>
 				</tr>
 		
