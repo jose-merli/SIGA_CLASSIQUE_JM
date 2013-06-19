@@ -5774,14 +5774,17 @@ public class EnvioInformesGenericos extends MasterReport {
 					fila.put("GUARDIA_DIA_TEXTO", (String) f.get("DIA_FECHA_INICIO"));
 					fila.put("GUARDIA", (String) f.get("GUARDIA"));
 					Date fecha_inicio = new Date((String) f.get("FECHA_INICIO"));
+					Date fecha_fin = new Date((String) f.get("FECHA_FIN"));
 					SimpleDateFormat formateador = new SimpleDateFormat(
 							"dd/MM/yyyy");
 					String fechaIni = formateador.format(fecha_inicio);
+					String fechaF = formateador.format(fecha_fin);
 
 					fila.put("DIA_GUA", fechaIni.substring(0, 2));
 					fila.put("MES_GUA", fechaIni.substring(3, 5));
 					fila.put("ANIO_GUA", fechaIni.substring(6, 10));
 					fila.put("FECHA_INICIO", fechaIni);
+					fila.put("FECHAFIN", fechaF);
 					fila.put("TURNO", (String) f.get("TURNO"));
 					fila.put("TFNO_OFICINA1",
 							(String) htCol.get("TELEFONO1_LETRADO"));
