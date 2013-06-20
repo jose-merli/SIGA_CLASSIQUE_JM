@@ -25,7 +25,7 @@
 
 	<script type="text/javascript">
 	function refrescarLocal(){
-		alert("refrescarLocal");		
+		buscar();
 	} 
 	
 	function borrar(fila){

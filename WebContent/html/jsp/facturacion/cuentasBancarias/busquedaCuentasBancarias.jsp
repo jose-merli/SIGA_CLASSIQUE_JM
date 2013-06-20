@@ -127,7 +127,6 @@ jQuery.noConflict();
 	  	var resultado = ventaModalGeneral(document.CuentasBancariasForm.name,"M");
 	  	if(resultado && resultado=='MODIFICADO'){
 	  		buscar();
-			//refrescarLocal();
 	  	}
 			
 	}
@@ -139,10 +138,7 @@ jQuery.noConflict();
 		document.CuentasBancariasForm.modo.value="borrar";
 		document.CuentasBancariasForm.target="submitArea";
 		document.CuentasBancariasForm.submit();
-		if(1==1){
-			alertStop('pepe');
-			buscar();
-		}
+		
 		
 		
 	 }

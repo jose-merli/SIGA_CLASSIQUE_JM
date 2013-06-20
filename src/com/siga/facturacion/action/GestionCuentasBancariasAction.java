@@ -249,12 +249,14 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentaBancariaVo = bts.getCuentaBancaria(cuentaBancariaVo);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			bts.delete(cuentaBancariaVo);
+			request.removeAttribute("modal");
+			request.removeAttribute("sinrefresco");
 			request.setAttribute("mensaje","messages.deleted.success");
-//			forward = exitoModal("messages.updated.success",request);
+			forward = "exito";
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return "exito";
+		return forward;
 	}
 
 	

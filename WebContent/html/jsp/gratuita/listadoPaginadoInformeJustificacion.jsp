@@ -88,13 +88,10 @@ function informeGenerico(){
 }
 
 function ajustarCabeceraTabla(){
-	
 	if (document.getElementById("listadoInformeJustificacion").clientHeight < document.getElementById("listadoInformeJustificacionDiv").clientHeight) {
-		document.getElementById("listadoInformeJustificacionCab").width='100%';
-		   
+		document.getElementById("listadoInformeJustificacionCab").style.width='100%';
 	  } else {
-		  document.getElementById("listadoInformeJustificacionCab").width='98.43%';
-		   
+		  document.getElementById("listadoInformeJustificacionCab").style.width='98.43%';
 	  }
 }
 function accionCerrar(){

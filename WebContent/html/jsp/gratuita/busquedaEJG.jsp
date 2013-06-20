@@ -242,7 +242,6 @@
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
  	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/smoothness-1.8.13/jquery-ui-1.8.13.custom.css'/>">
-    <link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist.themeroller.css'/>">	
 	
 	
 	<!-- Incluido jquery en siga.js -->
