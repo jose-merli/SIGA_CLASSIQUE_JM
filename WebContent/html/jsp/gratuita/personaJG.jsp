@@ -1489,7 +1489,7 @@
 				
 			</td>
 			<td>		
-				<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:280" ></html:text>
+				<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:200" ></html:text>
 			</td>
 			
 			<td class="labelText" >
@@ -1606,7 +1606,7 @@
  				}
  			%>	
 		</td>
-		<td colspan="6">
+		<td colspan="8">
 			<%
 				ArrayList selPoblacion = new ArrayList();
 						if (miform.getPoblacion() != null)
