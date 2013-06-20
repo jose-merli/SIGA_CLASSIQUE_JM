@@ -364,20 +364,30 @@
 						<siga:Idioma key="gratuita.turno.guardia.literal.tipoGuardia" />
 					</td>
 					<td>
-						<html:select styleId="tiposGuardias" styleClass="boxCombo" style="width:150px;" property="idTipoGuardiaSeleccionado"  value="<%=idTipoGuardiaSeleccionado%>" readOnly="<%=soloLectura%>"> 		
-							<html:option value="">
-								<% if (soloLectura) { %>
-									&nbsp;
-								<% } else { %>
-									<siga:Idioma key="general.combo.seleccionar" />									
-								<% } %>
-							</html:option>	
-							<%for (int i=0; i<listaTiposGuardias.size(); i++) {
-								ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
-							%>							
-								<html:option value="<%=UtilidadesString.mostrarDatoJSP(objTipoGuardia.getIdtipoguardia())%>"> <%=UtilidadesMultidioma.getDatoMaestroIdioma(objTipoGuardia.getDescripcion(), usr)%></html:option> 
-							<%}%>					
-						</html:select>
+						<% if (soloLectura) {
+							String textoTipoGuardia = "";
+							if (idTipoGuardiaSeleccionado!=null && !idTipoGuardiaSeleccionado.equals("")) {
+								for (int i=0; i<listaTiposGuardias.size(); i++) {
+									ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
+									if (objTipoGuardia.getIdtipoguardia() != null && idTipoGuardiaSeleccionado.equals(objTipoGuardia.getIdtipoguardia().toString())) {
+										textoTipoGuardia = UtilidadesMultidioma.getDatoMaestroIdioma(objTipoGuardia.getDescripcion(), usr);
+									}
+								}
+							}%>
+								<input type="text" name="tiposGuardias" class="boxConsulta" value="<%=textoTipoGuardia%>" readOnly="true" />			
+							
+						<% } else { %>
+							<html:select styleId="tiposGuardias" styleClass="boxCombo" style="width:150px;" property="idTipoGuardiaSeleccionado"  value="<%=idTipoGuardiaSeleccionado%>"> 		
+								<html:option value="">									
+									<siga:Idioma key="general.combo.seleccionar" />																		
+								</html:option>	
+								<%for (int i=0; i<listaTiposGuardias.size(); i++) {
+									ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
+								%>							
+									<html:option value="<%=UtilidadesString.mostrarDatoJSP(objTipoGuardia.getIdtipoguardia())%>"> <%=UtilidadesMultidioma.getDatoMaestroIdioma(objTipoGuardia.getDescripcion(), usr)%></html:option> 
+								<%}%>					
+							</html:select>
+						<% } %>							
 					</td>
 				</tr>
 				
