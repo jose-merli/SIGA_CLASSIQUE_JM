@@ -2282,12 +2282,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}	
 		
 		
-		miHash.put("tiposResolucionBusqueda", miForm.getIdTipoResolucion());
+		
 		if(miForm.getIdTipoResolucion()!=null && !miForm.getIdTipoResolucion().equals("")){
 			
 			//si contiene -1 es que quiere sacar lo que no tienen resolucion 
 			int resolucionesNulas = miForm.getIdTipoResolucion().indexOf("-1");
 //			Si no lo encuentra
+			miHash.put("tiposResolucionBusqueda", miForm.getIdTipoResolucion());
 			
 			if(resolucionesNulas==-1){
 				consulta += " AND EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion()+") ";	
@@ -2304,20 +2305,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
 				
 			}
-			//System.out.println("AQUINAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+consulta);
 			
 		}else{
+			miHash.put("tiposResolucionBusqueda", "");
 			if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
 				contador++;
 				String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
 				codigos.put(new Integer(contador),ratificacion[0]);
 				consulta += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
 				
-						if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
-							contador++;
-							codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
-							consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
-						}
+				if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
+					contador++;
+					codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
+					consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+				}
 			}
 			
 		}

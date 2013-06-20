@@ -338,7 +338,11 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 
 		} 
 		catch (Exception e){
-			throwExcp("error.messages.application",e,tx);
+			if(e.getMessage().indexOf("ORA-01438") != -1) {
+				return error("messages.inserted.maxLongitud", new ClsExceptions("messages.inserted.maxLongitud"), request);
+			}else{
+				throwExcp("error.messages.application",e,tx);
+			}
 		}
         request.setAttribute("modal","1");
 	    return "exito";
