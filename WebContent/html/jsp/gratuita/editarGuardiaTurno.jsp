@@ -378,9 +378,7 @@
 							
 						<% } else { %>
 							<html:select styleId="tiposGuardias" styleClass="boxCombo" style="width:150px;" property="idTipoGuardiaSeleccionado"  value="<%=idTipoGuardiaSeleccionado%>"> 		
-								<html:option value="">									
-									<siga:Idioma key="general.combo.seleccionar" />																		
-								</html:option>	
+								<html:option value="">&nbsp;</html:option>	
 								<%for (int i=0; i<listaTiposGuardias.size(); i++) {
 									ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
 								%>							
