@@ -811,7 +811,7 @@ public class DefinirEnviosAction extends MasterAction {
 						form.getIsCodigoEjis() != null && form.getIsCodigoEjis().equals("0")){
 						//throw new ClsExceptions("Existe un registro en el cual no hay codigo EJIS");
 						String[] datosEnvio = form.getDatosEnvios().split(",");
-						request.setAttribute("mensajeDescarga", "definirenvios.message.noadmitenviotelematico");
+						request.setAttribute("mensajeDescarga", UtilidadesString.getMensajeIdioma(userBean.getLanguage(),"definirenvios.message.noadmitenviotelematico"));
 						request.setAttribute("idsInforme",datosEnvio[2]+","+datosEnvio[3]);
 						request.setAttribute("datosInforme",form.getDatosInforme());
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.descargarEnvioTelematico", 10);
