@@ -30,6 +30,10 @@ import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
+import org.redabogacia.sigaservices.app.autogen.model.VWs2055Archivo;
+import org.redabogacia.sigaservices.app.autogen.model.VWs2055Ejg;
+import org.redabogacia.sigaservices.app.autogen.model.VWs2055Persona;
+import org.redabogacia.sigaservices.app.autogen.model.VWs2055Prestaciones;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
@@ -63,6 +67,7 @@ import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.Dt
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtPretensionesDefender.Procedimiento;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.DtSolicitante;
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
+import com.siga.ws.i2055.xmlbeans.SPrestacion;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -71,12 +76,13 @@ import es.satec.businessManager.BusinessManager;
  * @author angelcpe
  *
  */
-public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstantes {
+public class SIGAWSClient extends SIGAWSClientAbstract {
 	
 	private static int TIPO_TERCERO_SOLICITANTE = 1;
 
 	Map<String, List<Map<String, String>>> htCargaDtPersonas = new Hashtable<String, List<Map<String,String>>>();
 	Map<String, List<Map<String, String>>> htCargaDtArchivo = new Hashtable<String, List<Map<String,String>>>();
+	Map<String, List<Map<String, String>>> htPrestaciones = new Hashtable<String, List<Map<String,String>>>();
 	
 	
 	@Override
@@ -97,6 +103,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		List<Hashtable<String, String>> listDtExpedientes = wsPamplonaAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(wsPamplonaAdm.getDtPersonas(getIdInstitucion(), getIdRemesa()), htCargaDtPersonas);
 		construyeHTxEJG(wsPamplonaAdm.getDtArchivo(getIdInstitucion(), getIdRemesa()), htCargaDtArchivo);
+		construyeHTxEJG(wsPamplonaAdm.getPrestaciones(getIdInstitucion(), getIdRemesa()), htPrestaciones);
 		
 		String anio = null;
 		String numejg = null;
@@ -111,7 +118,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		tx.begin();
 		//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
 		cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
-		cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), v_ws_2055_ejg);	
+		cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), VWs2055Ejg.T_V_WS_2055_EJG);	
 		tx.commit();
 		
 		for (int i = 0; i < listDtExpedientes.size(); i++) {
@@ -120,10 +127,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			
 			try {
 				mapExp = listDtExpedientes.get(i);
-				anio = mapExp.get(ANIO);
-				numejg = mapExp.get(NUMEJG);
-				numero = mapExp.get(NUMERO);
-				idTipoEJG = mapExp.get(IDTIPOEJG);								
+				anio = mapExp.get(VWs2055Ejg.C_ANIO);
+				numejg = mapExp.get(VWs2055Ejg.C_NUMEJG);
+				numero = mapExp.get(VWs2055Ejg.C_NUMERO);
+				idTipoEJG = mapExp.get(VWs2055Ejg.C_IDTIPOEJG);								
 									
 				escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
 				SIGAAsignaDocument sigaAsignaDocument = getDtExpedientes(mapExp);
@@ -278,25 +285,25 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		SIGAAsignaDocument sigaAsignaDocument = SIGAAsignaDocument.Factory.newInstance();
 		DtExpedientes dtExpedientes = sigaAsignaDocument.addNewSIGAAsigna().addNewDtExpedientes();
 		
-		BigInteger bi = SIGAServicesHelper.getBigInteger("identificador expediente SIGA", map.get(IDEXPEDIENTESIGA));
+		BigInteger bi = SIGAServicesHelper.getBigInteger("identificador expediente SIGA", map.get(VWs2055Ejg.C_IDEXPEDIENTESIGA));
 		if (bi != null)	dtExpedientes.setIDExpedienteSIGA(bi);
-		bi = SIGAServicesHelper.getBigInteger("número expediente SIGA", map.get(NUMEROEXPEDIENTESIGA));
+		bi = SIGAServicesHelper.getBigInteger("número expediente SIGA", map.get(VWs2055Ejg.C_NUMEROEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setNumeroExpedienteSIGA(bi);
-		bi = SIGAServicesHelper.getBigInteger("año expediente SIGA", map.get(ANOEXPEDIENTESIGA));
+		bi = SIGAServicesHelper.getBigInteger("año expediente SIGA", map.get(VWs2055Ejg.C_ANOEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setAnoExpedienteSIGA(bi);
-		Integer in = SIGAServicesHelper.getInteger("colegio de abogados", map.get(IDORGANISMOCOLEGIOABOGADOS));
+		Integer in = SIGAServicesHelper.getInteger("colegio de abogados", map.get(VWs2055Ejg.C_IDORGANISMOCOLEGIOABOGADOS));
 		if (in != null) dtExpedientes.setIDOrganismoColegioAbogados(in);
-		Calendar date = SIGAServicesHelper.getCalendar(map.get(FECHAREGISTRO));
+		Calendar date = SIGAServicesHelper.getCalendar(map.get(VWs2055Ejg.C_FECHAREGISTRO));
 		if (date != null) dtExpedientes.setFechaRegistro(date);	
-		String st = map.get(LUGARPRESENTACION);
+		String st = map.get(VWs2055Ejg.C_LUGARPRESENTACION);
 		if (st != null) dtExpedientes.setLugarPresentacion(st);
-		st = map.get(OTROSDATOSDEINTERES);
+		st = map.get(VWs2055Ejg.C_OTROSDATOSDEINTERES);
 		if (st != null) dtExpedientes.setOtrosDatosDeInteres(st);
-		date = SIGAServicesHelper.getCalendar(map.get(FECHAPRESENTACION));
+		date = SIGAServicesHelper.getCalendar(map.get(VWs2055Ejg.C_FECHAPRESENTACION));
 		if (date != null) dtExpedientes.setFechaPresentacion(date);
-		in = SIGAServicesHelper.getInteger("código de usuario", map.get(IDUSUARIOREGISTRO));
+		in = SIGAServicesHelper.getInteger("código de usuario", map.get(VWs2055Ejg.C_IDUSUARIOREGISTRO));
 		if (in != null) dtExpedientes.setIDUsuarioRegistro(in);
-		in = SIGAServicesHelper.getInteger("código de colegio", map.get(IDORGANISMOREGISTRA));
+		in = SIGAServicesHelper.getInteger("código de colegio", map.get(VWs2055Ejg.C_IDORGANISMOREGISTRA));
 		if (in != null) dtExpedientes.setIDOrganismoRegistra(in);
 		
 		addDtPretensionesDefender(dtExpedientes.addNewDtPretensionesDefender(), map);
@@ -305,12 +312,21 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		addDtArchivos(dtExpedientes, getKey(map));
 		addTurnadoAbogado(dtExpedientes.addNewTurnadoAbogado(), map);
 		addCalificacionRegistro(dtExpedientes.addNewCalificacionRegistro(), map);
+		addPrestaciones(dtExpedientes, getKey(map));
 		return sigaAsignaDocument;
 		
 	}
 
+	
+
+	/**
+	 * 
+	 * @param calificacionRegistro
+	 * @param map
+	 * @throws Exception
+	 */
 	private void addCalificacionRegistro(SCalificacion calificacionRegistro, Map<String, String> map) throws Exception {
-		String st = map.get(C_CALIFICACION);
+		String st = map.get(VWs2055Ejg.C_C_CALIFICACION);
 		if (st != null && !st.trim().equals("")) {
 			try {				
 				calificacionRegistro.setCalificacion(com.siga.ws.i2055.xmlbeans.ECalificaciones.Enum.forString(st));
@@ -320,7 +336,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		}
 		com.siga.ws.i2055.xmlbeans.ArrayOfMotivosRechazo motivoRechazo = calificacionRegistro.addNewMotivoRechazo();
 		
-		st = map.get(C_MR_CODIGO);
+		st = map.get(VWs2055Ejg.C_C_MR_CODIGO);
 		if (st != null && !st.trim().equals("")) {
 			try {				
 				motivoRechazo.setCodigo(com.siga.ws.i2055.xmlbeans.EMotivosDeNegacion.Enum.forString(st));
@@ -329,12 +345,12 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			}
 		}
 		
-		motivoRechazo.setDescripcion(map.get(C_MR_DESCRIPCION));
-		motivoRechazo.setParam1(map.get(C_MR_PARAM1));
-		motivoRechazo.setParam2(map.get(C_MR_PARAM2));
-		motivoRechazo.setParam3(map.get(C_MR_PARAM3));
+		motivoRechazo.setDescripcion(map.get(VWs2055Ejg.C_C_MR_DESCRIPCION));
+		motivoRechazo.setParam1(map.get(VWs2055Ejg.C_C_MR_PARAM1));
+		motivoRechazo.setParam2(map.get(VWs2055Ejg.C_C_MR_PARAM2));
+		motivoRechazo.setParam3(map.get(VWs2055Ejg.C_C_MR_PARAM3));
 		
-		st = map.get(C_OBSERVACIONES);
+		st = map.get(VWs2055Ejg.C_C_OBSERVACIONES);
 		if (st != null && !st.trim().equals("")) {
 			try {				
 				calificacionRegistro.setObservaciones(com.siga.ws.i2055.xmlbeans.EObservaciones.Enum.forString(st));
@@ -342,15 +358,15 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				throw new IllegalArgumentException("El campo observaciones del dictamen no es correcto.");
 			}
 		}
-		calificacionRegistro.setFecha(SIGAServicesHelper.getCalendar(map.get(C_FECHA)));
+		calificacionRegistro.setFecha(SIGAServicesHelper.getCalendar(map.get(VWs2055Ejg.C_C_FECHA)));
 		
 	}
 
 
 
 	private void addTurnadoAbogado(TurnadoAbogado turnadoAbogado,	Map<String, String> map) throws Exception {
-		turnadoAbogado.setIdentificacion(map.get(TA_IDENTIFICACION));		
-		turnadoAbogado.setFechaTurnado(SIGAServicesHelper.getCalendar(map.get(TA_FECHATURNADO)));
+		turnadoAbogado.setIdentificacion(map.get(VWs2055Ejg.C_TA_IDENTIFICACION));		
+		turnadoAbogado.setFechaTurnado(SIGAServicesHelper.getCalendar(map.get(VWs2055Ejg.C_TA_FECHATURNADO)));
 	}
 
 
@@ -402,10 +418,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @return
 	 */
 	private String getKey(Map<String, String> ht) {
-		if (isNull(ht.get(IDINSTITUCION)) || isNull(ht.get(ANIO)) || isNull(ht.get(NUMERO)) || isNull(ht.get(IDTIPOEJG))){
+		if (isNull(ht.get(VWs2055Ejg.C_IDINSTITUCION)) || isNull(ht.get(VWs2055Ejg.C_ANIO)) || isNull(ht.get(VWs2055Ejg.C_NUMERO)) || isNull(ht.get(VWs2055Ejg.C_IDTIPOEJG))){
 			throw new IllegalArgumentException("Los campos clave del EJG no pueden ser nulos");
 		}
-		String key = ht.get(IDINSTITUCION) + "##" + ht.get(ANIO) + "##" + ht.get(NUMERO) + "##" + ht.get(IDTIPOEJG);
+		String key = ht.get(VWs2055Ejg.C_IDINSTITUCION) + "##" + ht.get(VWs2055Ejg.C_ANIO) + "##" + ht.get(VWs2055Ejg.C_NUMERO) + "##" + ht.get(VWs2055Ejg.C_IDTIPOEJG);
 				
 		return key;
 	}
@@ -433,17 +449,34 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (list != null && list.size() > 0) {					
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);				
-				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
+				if (map.get(VWs2055Archivo.C_IDARCHIVO) != null && !map.get(VWs2055Archivo.C_IDARCHIVO).trim().equals("")) {
 					DtArchivos dtArchivo = dtExpedientes.addNewDtArchivos();
-					Integer in = SIGAServicesHelper.getInteger("identificador de archivo", map.get(IDARCHIVO));
+					Integer in = SIGAServicesHelper.getInteger("identificador de archivo", map.get(VWs2055Archivo.C_IDARCHIVO));
 					if (in != null) dtArchivo.setIDArchivo(in);
-					String st = map.get(NOMBREARCHIVO);
+					String st = map.get(VWs2055Archivo.C_NOMBREARCHIVO);
 					if (st != null) dtArchivo.setNombreArchivo(st);
-					in = SIGAServicesHelper.getInteger("tipo de archivo", map.get(IDTIPOARCHIVO));
+					in = SIGAServicesHelper.getInteger("tipo de archivo", map.get(VWs2055Archivo.C_IDTIPOARCHIVO));
 					if (in != null) dtArchivo.setIDTipoArchivo(in);
-					Boolean b = getBoolean(map.get(PRINCIPAL));
+					Boolean b = getBoolean(map.get(VWs2055Archivo.C_PRINCIPAL));
 					if (b != null) dtArchivo.setPrincipal(b);										
 				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param dtExpedientes
+	 * @param key
+	 */
+	private void addPrestaciones(DtExpedientes dtExpedientes, String key) {		
+		List<Map<String, String>> list = htPrestaciones.get(key);
+				
+		if (list != null && list.size() > 0) {					
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, String> map = list.get(i);
+				SPrestacion sPrestacion = dtExpedientes.addNewPrestacionesRegistro();
+				sPrestacion.setPrestacion(map.get(VWs2055Prestaciones.C_COD_PRESTACION));
 			}
 		}
 	}
@@ -464,142 +497,142 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);				
 				
-				Integer isSolicitante = SIGAServicesHelper.getInteger("es solicitante", map.get(IS_SOLICITANTE));
+				Integer isSolicitante = SIGAServicesHelper.getInteger("es solicitante", map.get(VWs2055Persona.C_IS_SOLICITANTE));
 				
 				if (isSolicitante != null && isSolicitante.intValue() == 1) {
 					DtSolicitante datosPersona = dtExpedientes.addNewDtSolicitante();					
 					datosPersona.setIDTipoTercero(TIPO_TERCERO_SOLICITANTE);
-					Integer in = SIGAServicesHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
+					Integer in = SIGAServicesHelper.getInteger("tipo persona", map.get(VWs2055Persona.C_IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
-					String st = map.get(NOMBRE);
+					String st = map.get(VWs2055Persona.C_NOMBRE);
 					if (st != null) datosPersona.setNombre(st);
-					st = map.get(APELLIDO1);
+					st = map.get(VWs2055Persona.C_APELLIDO1);
 					if (st != null) datosPersona.setApellido1(st);
-					st = map.get(APELLIDO2);
+					st = map.get(VWs2055Persona.C_APELLIDO2);
 					if (st != null) datosPersona.setApellido2(st);
-					in = SIGAServicesHelper.getInteger("tipo identificación", map.get(IDTIPOIDENTIFICACION));
+					in = SIGAServicesHelper.getInteger("tipo identificación", map.get(VWs2055Persona.C_IDTIPOIDENTIFICACION));
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
-					st = map.get(NUMEROIDENTIFICACION);
+					st = map.get(VWs2055Persona.C_NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
 					
 					//DIRECCION
 					Direccion dtDirecciones = datosPersona.addNewDtDirecciones();
-					in = SIGAServicesHelper.getInteger("tipo de vía", map.get(DIR_IDTIPOVIA));
+					in = SIGAServicesHelper.getInteger("tipo de vía", map.get(VWs2055Persona.C_DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
-					st = map.get(DIR_NOMBREVIA);
+					st = map.get(VWs2055Persona.C_DIR_NOMBREVIA);
 					if (st != null) dtDirecciones.setNombreVia(st);
-					st = map.get(DIR_NUMERO);
+					st = map.get(VWs2055Persona.C_DIR_NUMERO);
 					if (st != null) dtDirecciones.setNumero(st);
-					st = map.get(DIR_PISO);
+					st = map.get(VWs2055Persona.C_DIR_PISO);
 					if (st != null) dtDirecciones.setPiso(st);
-					in = SIGAServicesHelper.getInteger("población", map.get(DIR_IDPOBLACION));
+					in = SIGAServicesHelper.getInteger("población", map.get(VWs2055Persona.C_DIR_IDPOBLACION));
 					if (in != null) dtDirecciones.setIDPoblacion(in);
-					st = map.get(DIR_CODIGOPOSTAL);
+					st = map.get(VWs2055Persona.C_DIR_CODIGOPOSTAL);
 					if (st != null) dtDirecciones.setCodigoPostal(st);
-					st = map.get(DIR_TELEFONO1);
+					st = map.get(VWs2055Persona.C_DIR_TELEFONO1);
 					if (st != null) dtDirecciones.setTelefono1(st);
-					st = map.get(DIR_TELEFONO2);
+					st = map.get(VWs2055Persona.C_DIR_TELEFONO2);
 					if (st != null)	dtDirecciones.setTelefono2(st);
-					st = map.get(DIR_FAX);
+					st = map.get(VWs2055Persona.C_DIR_FAX);
 					if (st != null) dtDirecciones.setFax(st);
-					st = map.get(DIR_EMAIL);
+					st = map.get(VWs2055Persona.C_DIR_EMAIL);
 					if (st != null) dtDirecciones.setEmail(st);
-					in = SIGAServicesHelper.getInteger("país", map.get(DIR_IDPAIS));
+					in = SIGAServicesHelper.getInteger("país", map.get(VWs2055Persona.C_DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
 					
 					
-					in = SIGAServicesHelper.getInteger("código estado civil", map.get(IDESTADOCIVIL));
+					in = SIGAServicesHelper.getInteger("código estado civil", map.get(VWs2055Persona.C_IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
-					in = SIGAServicesHelper.getInteger("sexo", map.get(SEXO));
+					in = SIGAServicesHelper.getInteger("sexo", map.get(VWs2055Persona.C_SEXO));
 					if (in != null) datosPersona.setSexo(in);					
-					st = map.get(RAZONSOCIAL);
+					st = map.get(VWs2055Persona.C_RAZONSOCIAL);
 					if (st != null)	datosPersona.setRazonSocial(st);
-					BigDecimal bd = SIGAServicesHelper.getBigDecimal("ingresos anuales", map.get(INGRESOSANUALES));
+					BigDecimal bd = SIGAServicesHelper.getBigDecimal("ingresos anuales", map.get(VWs2055Persona.C_INGRESOSANUALES));
 					if (bd != null) datosPersona.setIngresosAnuales(bd);
-					Calendar cal = SIGAServicesHelper.getCalendar(map.get(FECHANACIMIENTO));
+					Calendar cal = SIGAServicesHelper.getCalendar(map.get(VWs2055Persona.C_FECHANACIMIENTO));
 					if (cal != null) datosPersona.setFechaNacimiento(cal);
-					st = map.get(OBSERVACIONES);
+					st = map.get(VWs2055Persona.C_OBSERVACIONES);
 					if (st != null) datosPersona.setObservaciones(st);
-					st = map.get(PROFESION);
+					st = map.get(VWs2055Persona.C_PROFESION);
 					if (st != null) datosPersona.setProfesion(st);
-					in = SIGAServicesHelper.getInteger("régimen económico matrimonial", map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					in = SIGAServicesHelper.getInteger("régimen económico matrimonial", map.get(VWs2055Persona.C_IDREGIMENECONOMICOMATRIMONIAL));
 					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
-					in = SIGAServicesHelper.getInteger("otra prestación", map.get(IDOTRAPRESTACION));
+					in = SIGAServicesHelper.getInteger("otra prestación", map.get(VWs2055Persona.C_IDOTRAPRESTACION));
 					if (in != null) datosPersona.setIDOtraPrestacion(in);
-					bd = SIGAServicesHelper.getBigDecimal("importe otra prestación", map.get(IMPORTEOTRAPRESTACION));
+					bd = SIGAServicesHelper.getBigDecimal("importe otra prestación", map.get(VWs2055Persona.C_IMPORTEOTRAPRESTACION));
 					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
-					in = SIGAServicesHelper.getInteger("nacionalidad", map.get(IDNACIONALIDAD));
+					in = SIGAServicesHelper.getInteger("nacionalidad", map.get(VWs2055Persona.C_IDNACIONALIDAD));
 					if (in != null) datosPersona.setIDNacionalidad(in);
 					addDtOtrosIngresosBienesPorPersona(datosPersona, map);
 										
 				} else {
 					DtIntervinientes datosPersona = dtExpedientes.addNewDtIntervinientes();
-					Integer in = SIGAServicesHelper.getInteger("tipo solicitante/contrario", map.get(IDTIPOTERCERO));
+					Integer in = SIGAServicesHelper.getInteger("tipo solicitante/contrario", map.get(VWs2055Persona.C_IDTIPOTERCERO));
 					
 					if (in != null) datosPersona.setIDTipoTercero(in);
-					in = SIGAServicesHelper.getInteger("tipo persona", map.get(IDTIPOPERSONA));
+					in = SIGAServicesHelper.getInteger("tipo persona", map.get(VWs2055Persona.C_IDTIPOPERSONA));
 					if (in != null) datosPersona.setIDTipoPersona(in);
-					String st = map.get(NOMBRE);
+					String st = map.get(VWs2055Persona.C_NOMBRE);
 					if (st != null) datosPersona.setNombre(st);
-					st = map.get(APELLIDO1);
+					st = map.get(VWs2055Persona.C_APELLIDO1);
 					if (st != null) datosPersona.setApellido1(st);
-					st = map.get(APELLIDO2);
+					st = map.get(VWs2055Persona.C_APELLIDO2);
 					if (st != null) datosPersona.setApellido2(st);
-					in = SIGAServicesHelper.getInteger("tipo identificación", map.get(IDTIPOIDENTIFICACION));
+					in = SIGAServicesHelper.getInteger("tipo identificación", map.get(VWs2055Persona.C_IDTIPOIDENTIFICACION));
 					if (in != null) datosPersona.setIDTipoIdentificacion(in);
-					st = map.get(NUMEROIDENTIFICACION);
+					st = map.get(VWs2055Persona.C_NUMEROIDENTIFICACION);
 					if (st != null) datosPersona.setNumeroIdentificacion(st);
 					
 					//DIRECCION
 					Direccion dtDirecciones = datosPersona.addNewDtDirecciones();
-					in = SIGAServicesHelper.getInteger("tipo de vía", map.get(DIR_IDTIPOVIA));
+					in = SIGAServicesHelper.getInteger("tipo de vía", map.get(VWs2055Persona.C_DIR_IDTIPOVIA));
 					if (in != null) dtDirecciones.setIDTipoVia(in);
-					st = map.get(DIR_NOMBREVIA);
+					st = map.get(VWs2055Persona.C_DIR_NOMBREVIA);
 					if (st != null) dtDirecciones.setNombreVia(st);
-					st = map.get(DIR_NUMERO);
+					st = map.get(VWs2055Persona.C_DIR_NUMERO);
 					if (st != null) dtDirecciones.setNumero(st);
-					st = map.get(DIR_PISO);
+					st = map.get(VWs2055Persona.C_DIR_PISO);
 					if (st != null) dtDirecciones.setPiso(st);
-					in = SIGAServicesHelper.getInteger("población", map.get(DIR_IDPOBLACION));
+					in = SIGAServicesHelper.getInteger("población", map.get(VWs2055Persona.C_DIR_IDPOBLACION));
 					if (in != null) dtDirecciones.setIDPoblacion(in);
-					st = map.get(DIR_CODIGOPOSTAL);
+					st = map.get(VWs2055Persona.C_DIR_CODIGOPOSTAL);
 					if (st != null) dtDirecciones.setCodigoPostal(st);
-					st = map.get(DIR_TELEFONO1);
+					st = map.get(VWs2055Persona.C_DIR_TELEFONO1);
 					if (st != null) dtDirecciones.setTelefono1(st);
-					st = map.get(DIR_TELEFONO2);
+					st = map.get(VWs2055Persona.C_DIR_TELEFONO2);
 					if (st != null)	dtDirecciones.setTelefono2(st);
-					st = map.get(DIR_FAX);
+					st = map.get(VWs2055Persona.C_DIR_FAX);
 					if (st != null) dtDirecciones.setFax(st);
-					st = map.get(DIR_EMAIL);
+					st = map.get(VWs2055Persona.C_DIR_EMAIL);
 					if (st != null) dtDirecciones.setEmail(st);
-					in = SIGAServicesHelper.getInteger("país", map.get(DIR_IDPAIS));
+					in = SIGAServicesHelper.getInteger("país", map.get(VWs2055Persona.C_DIR_IDPAIS));
 					if (in != null) dtDirecciones.setIDPais(in);					
 					
 					
-					in = SIGAServicesHelper.getInteger("estado civil", map.get(IDESTADOCIVIL));
+					in = SIGAServicesHelper.getInteger("estado civil", map.get(VWs2055Persona.C_IDESTADOCIVIL));
 					if (in != null)	datosPersona.setIDEstadoCivil(in);
-					in = SIGAServicesHelper.getInteger("sexo", map.get(SEXO));
+					in = SIGAServicesHelper.getInteger("sexo", map.get(VWs2055Persona.C_SEXO));
 					if (in != null) datosPersona.setSexo(in);
-					st = map.get(RAZONSOCIAL);
+					st = map.get(VWs2055Persona.C_RAZONSOCIAL);
 					if (st != null)	datosPersona.setRazonSocial(st);
-					BigDecimal bd = SIGAServicesHelper.getBigDecimal("ingresos anuales", map.get(INGRESOSANUALES));
+					BigDecimal bd = SIGAServicesHelper.getBigDecimal("ingresos anuales", map.get(VWs2055Persona.C_INGRESOSANUALES));
 					if (bd != null) datosPersona.setIngresosAnuales(bd);
-					Calendar cal = SIGAServicesHelper.getCalendar(map.get(FECHANACIMIENTO));
+					Calendar cal = SIGAServicesHelper.getCalendar(map.get(VWs2055Persona.C_FECHANACIMIENTO));
 					if (cal != null) datosPersona.setFechaNacimiento(cal);
-					st = map.get(OBSERVACIONES);
+					st = map.get(VWs2055Persona.C_OBSERVACIONES);
 					if (st != null) datosPersona.setObservaciones(st);
-					st = map.get(PROFESION);
+					st = map.get(VWs2055Persona.C_PROFESION);
 					if (st != null) datosPersona.setProfesion(st);
-					in = SIGAServicesHelper.getInteger("régimen económico matrimonial", map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					in = SIGAServicesHelper.getInteger("régimen económico matrimonial", map.get(VWs2055Persona.C_IDREGIMENECONOMICOMATRIMONIAL));
 					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
-					in = SIGAServicesHelper.getInteger("otra prestación", map.get(IDOTRAPRESTACION));
+					in = SIGAServicesHelper.getInteger("otra prestación", map.get(VWs2055Persona.C_IDOTRAPRESTACION));
 					if (in != null) datosPersona.setIDOtraPrestacion(in);
-					bd = SIGAServicesHelper.getBigDecimal("importe otra prestación", map.get(IMPORTEOTRAPRESTACION));
+					bd = SIGAServicesHelper.getBigDecimal("importe otra prestación", map.get(VWs2055Persona.C_IMPORTEOTRAPRESTACION));
 					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
-					in = SIGAServicesHelper.getInteger("nacionalidad", map.get(IDNACIONALIDAD));
+					in = SIGAServicesHelper.getInteger("nacionalidad", map.get(VWs2055Persona.C_IDNACIONALIDAD));
 					if (in != null) datosPersona.setIDNacionalidad(in);
 					
-					BigInteger idOtroIngresoBien = SIGAServicesHelper.getBigInteger("otro ingreso bien", map.get(IDOTROINGRESOBIEN));
+					BigInteger idOtroIngresoBien = SIGAServicesHelper.getBigInteger("otro ingreso bien", map.get(VWs2055Persona.C_IDOTROINGRESOBIEN));
 					if (idOtroIngresoBien != null) {
 						datosPersona.addNewDtOtrosIngresosBienesPorPersona().addIdOtroIngresoBien(idOtroIngresoBien);
 					}
@@ -619,7 +652,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @return
 	 */
 	private void addDtOtrosIngresosBienesPorPersona(DtSolicitante dtPersona, Map<String, String> map) {			
-		BigInteger idOtroIngresoBien = SIGAServicesHelper.getBigInteger("otro ingreso bien", map.get(IDOTROINGRESOBIEN));
+		BigInteger idOtroIngresoBien = SIGAServicesHelper.getBigInteger("otro ingreso bien", map.get(VWs2055Persona.C_IDOTROINGRESOBIEN));
 		if (idOtroIngresoBien != null) {			
 			dtPersona.addNewDtOtrosIngresosBienesPorPersona().setIdOtroIngresoBienArray((new BigInteger[]{idOtroIngresoBien}));
 		}
@@ -636,49 +669,49 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 */
 	private void addDtPretensionesDefender(DtPretensionesDefender dtPretensionesDefender, Map<String, String> map) throws Exception {
 		
-		Boolean b = getBoolean(map.get(PRE_PRECISAABOGADO));
+		Boolean b = getBoolean(map.get(VWs2055Ejg.C_PRE_PRECISAABOGADO));
 		if (b != null) dtPretensionesDefender.setPrecisaAbogado(b);
-		String st = map.get(PRE_CODIGOTIPOPROCEDIMIENTO);
+		String st = map.get(VWs2055Ejg.C_PRE_CODIGOTIPOPROCEDIMIENTO);
 		if (st != null && !st.trim().equals("")) {
 			dtPretensionesDefender.setCodigoTipoProcedimiento(st);
 		}
 		
-		st = map.get(PRE_OTROSASPECTOS);
+		st = map.get(VWs2055Ejg.C_PRE_OTROSASPECTOS);
 		if (st != null) dtPretensionesDefender.setOtrosAspectos(st);
-		Integer in = SIGAServicesHelper.getInteger("partido judicial", map.get(PRE_IDPARTIDOJUDICIAL));
+		Integer in = SIGAServicesHelper.getInteger("partido judicial", map.get(VWs2055Ejg.C_PRE_IDPARTIDOJUDICIAL));
 		if (in != null) dtPretensionesDefender.setIDPartidoJudicial(in);
-		in = SIGAServicesHelper.getInteger("situación proceso", map.get(PRE_IDSITUACIONPROCESO));
+		in = SIGAServicesHelper.getInteger("situación proceso", map.get(VWs2055Ejg.C_PRE_IDSITUACIONPROCESO));
 		if (in != null) dtPretensionesDefender.setIDSituacionProceso(in);
 		
-		st = map.get(PRE_NUMEROPROCEDIMIENTO);
-		BigInteger bi = SIGAServicesHelper.getBigInteger("año del procedimiento", map.get(PRE_ANOPROCEDIMIENTO));
+		st = map.get(VWs2055Ejg.C_PRE_NUMEROPROCEDIMIENTO);
+		BigInteger bi = SIGAServicesHelper.getBigInteger("año del procedimiento", map.get(VWs2055Ejg.C_PRE_ANOPROCEDIMIENTO));
 		if ((st != null && !st.trim().equals("")) || bi != null) {
 			Procedimiento procedimiento =  dtPretensionesDefender.addNewProcedimiento();						
 			procedimiento.setNumeroProcedimiento(st);
 			procedimiento.setAnoProcedimiento(bi);			
 		}		
 		
-		st = map.get(PRE_CODUNIDADFUNCIONAL);
+		st = map.get(VWs2055Ejg.C_PRE_CODUNIDADFUNCIONAL);
 		if (st != null) dtPretensionesDefender.setCodUnidadFuncional(st);
-		in = SIGAServicesHelper.getInteger("orden jurisdiccional", map.get(PRE_IDORDENJURISDICCIONAL));
+		in = SIGAServicesHelper.getInteger("orden jurisdiccional", map.get(VWs2055Ejg.C_PRE_IDORDENJURISDICCIONAL));
 		if (in != null) dtPretensionesDefender.setIDOrdenJurisdiccional(in);				
-		b = getBoolean(map.get(PRE_PRECISAPROCURADOR));
+		b = getBoolean(map.get(VWs2055Ejg.C_PRE_PRECISAPROCURADOR));
 		if (b != null) dtPretensionesDefender.setPrecisaProcurador(b);
-		in = SIGAServicesHelper.getInteger("código del turno", map.get(PRE_IDLISTATURNADOABOGADOS));
+		in = SIGAServicesHelper.getInteger("código del turno", map.get(VWs2055Ejg.C_PRE_IDLISTATURNADOABOGADOS));
 		if (in != null) dtPretensionesDefender.setIDListaTurnadoAbogados(in);
-		BigInteger posInt = SIGAServicesHelper.getBigInteger("código del procedimiento", map.get(PRE_IDTARIFAABOGADOS));
+		BigInteger posInt = SIGAServicesHelper.getBigInteger("código del procedimiento", map.get(VWs2055Ejg.C_PRE_IDTARIFAABOGADOS));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaAbogados(posInt);
-		posInt = SIGAServicesHelper.getBigInteger("tarifa de procuradores", map.get(PRE_IDTARIFAPROCURADORES));
+		posInt = SIGAServicesHelper.getBigInteger("tarifa de procuradores", map.get(VWs2055Ejg.C_PRE_IDTARIFAPROCURADORES));
 		if (posInt != null) dtPretensionesDefender.setIDTarifaProcuradores(posInt);
-		BigDecimal bd = SIGAServicesHelper.getBigDecimal("porcentaje tarifa abogado", map.get(PRE_PORCENTAJETARIFAABOGADO));
+		BigDecimal bd = SIGAServicesHelper.getBigDecimal("porcentaje tarifa abogado", map.get(VWs2055Ejg.C_PRE_PORCENTAJETARIFAABOGADO));
 		if (bd != null) dtPretensionesDefender.setPorcentajeTarifaAbogado(bd);
-		bd = SIGAServicesHelper.getBigDecimal("porcentaje tarifa procurador", map.get(PRE_PORCENTAJETARIFAPROCURADOR));
+		bd = SIGAServicesHelper.getBigDecimal("porcentaje tarifa procurador", map.get(VWs2055Ejg.C_PRE_PORCENTAJETARIFAPROCURADOR));
 		if (bd != null) dtPretensionesDefender.setPorcentajeTarifaProcurador(bd);
-		in = SIGAServicesHelper.getInteger("tipo de facturación", map.get(PRE_IDTIPOFACTURACION));
+		in = SIGAServicesHelper.getInteger("tipo de facturación", map.get(VWs2055Ejg.C_PRE_IDTIPOFACTURACION));
 		if (in != null) dtPretensionesDefender.setIDTipoFacturacion(in);
-		st = map.get(PRE_PRETENSIONDEFENDER);
+		st = map.get(VWs2055Ejg.C_PRE_PRETENSIONDEFENDER);
 		if (st != null) dtPretensionesDefender.setPretensionDefender(st);
-		b = getBoolean(map.get(PRE_SAM));
+		b = getBoolean(map.get(VWs2055Ejg.C_PRE_SAM));
 		if (b != null) dtPretensionesDefender.setSAM(b);		
 	}
 	

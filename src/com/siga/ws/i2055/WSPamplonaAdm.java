@@ -61,5 +61,13 @@ public class WSPamplonaAdm extends WSAdm{
 		" AND IDREMESA = " + idRemesa;
 		return select(sql);
 	}
+	
+	public List<Hashtable<String, String>> getPrestaciones(int idInstitucion, int idRemesa) throws ClsExceptions {
+		String sql = "SELECT *" +
+		" FROM V_WS_2055_PRESTACIONES" +
+		" WHERE IDINSTITUCION = " + idInstitucion +
+		" AND IDREMESA = " + idRemesa;
+		return select(sql);
+	}
 
 }
