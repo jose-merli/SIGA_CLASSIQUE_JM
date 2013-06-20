@@ -661,7 +661,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			miForm.setTurnosPrincipales(alTurnos);
 			
 			// JPT: Obtiene los tipos de guardias
-			List<ScsTiposguardias> listaTiposGuardias = this.obtenerListaTiposGuardias();
+			List<ScsTiposguardias> listaTiposGuardias = this.obtenerListaTiposGuardias(usr);
 			miForm.setTiposGuardias(listaTiposGuardias);			
 			
 			miForm.setGuardiasPrincipales(new ArrayList<ScsGuardiasTurnoBean>());
@@ -1371,12 +1371,13 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static List<ScsTiposguardias> obtenerListaTiposGuardias () throws ClsExceptions {
+	public static List<ScsTiposguardias> obtenerListaTiposGuardias (UsrBean usr) throws ClsExceptions {
 		try  {
 			// JPT: Obtiene los tipos de guardias
 			BusinessManager businessManager = BusinessManager.getInstance();
 			ScsTiposGuardiasService servicioTiposGuardias = (ScsTiposGuardiasService) businessManager.getService(ScsTiposGuardiasService.class);
 			ScsTiposguardiasExample excampleTiposGuardias = new ScsTiposguardiasExample();
+			excampleTiposGuardias.setOrderByClause("F_SIGA_GETRECURSO(DESCRIPCION, " + usr.getLanguage() + ") ASC");		
 			List<ScsTiposguardias> listaTiposGuardias = servicioTiposGuardias.getList(excampleTiposGuardias);
 			
 			return listaTiposGuardias;

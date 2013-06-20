@@ -161,7 +161,7 @@
 	String idTipoGuardiaSeleccionado = (String) hash.get(ScsGuardiasTurnoBean.C_TIPOGUARDIA);
 	List listaTiposGuardias = new ArrayList();
 	try {
-		listaTiposGuardias = DefinirGuardiasTurnosAction.obtenerListaTiposGuardias();
+		listaTiposGuardias = DefinirGuardiasTurnosAction.obtenerListaTiposGuardias(usr);
 	} catch (Exception e) {
 		listaTiposGuardias = new ArrayList();
 	}
