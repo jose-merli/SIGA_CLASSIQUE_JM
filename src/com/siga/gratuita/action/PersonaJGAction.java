@@ -1917,14 +1917,36 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,"");
 			else
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
+
+			if(miform.getTipoDir()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPODIR,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPODIR,miform.getTipoDir());
 			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPODIR,miform.getTipoDir());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NUMERODIR,miform.getNumeroDir());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESCALERADIR,miform.getEscaleraDir());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_PISODIR,miform.getPisoDir());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_PUERTADIR,miform.getPuertaDir());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,miform.getTipoVia());
+			if(miform.getNumeroDir()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_NUMERODIR,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_NUMERODIR,miform.getNumeroDir());
 			
+			if(miform.getEscaleraDir()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESCALERADIR,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESCALERADIR,miform.getEscaleraDir());
+			
+			if(miform.getPisoDir()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_PISODIR,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_PISODIR,miform.getPisoDir());			
+			
+			if(miform.getPuertaDir()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_PUERTADIR,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_PUERTADIR,miform.getPuertaDir());	
+						
+			if(miform.getTipoVia()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,miform.getTipoVia());	
 	     	
 			// recojo el databackup
 			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
