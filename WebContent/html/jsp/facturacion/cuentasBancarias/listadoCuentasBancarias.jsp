@@ -43,7 +43,7 @@
 <div>		
 	<table id='tabCuentasBancarias' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
-			<td align='center' width='24%'><bean:message key="facturacion.cuentasBancarias.banco" /></td>
+			<td align='center' width='22%'><bean:message key="facturacion.cuentasBancarias.banco" /></td>
 			<td align='center' width='17%'><bean:message key="facturacion.cuentasBancarias.cuentaBanco" /></td>
 			<td align='center' width='7%'><bean:message key="facturacion.cuentasBancarias.impComisionPropiaCargo" /> </td>
 			<td align='center' width='7%'><bean:message key="facturacion.cuentasBancarias.impComisionAjenaCargo" /></td>
@@ -51,7 +51,7 @@
 			<td align='center' width='7%'><bean:message key="facturacion.cuentasBancarias.impComisionAjenaAbono" /></td>
 			<td align='center' width='7%'><bean:message key="facturacion.cuentasBancarias.sjcs" /></td>
 			<td align='center'  width='7%'><bean:message key="facturacion.cuentasBancarias.uso" /></td>
-			<td align='center'  width='7%'><bean:message key="facturacion.cuentasBancarias.baja" /></td>
+			<td align='center'  width='8%'><bean:message key="facturacion.cuentasBancarias.baja" /></td>
 			<td align='center'  width='10%'>&nbsp;</td>
 		</tr>
 	</table>
@@ -69,7 +69,7 @@
    			
    			
    			<tr>
-     			<td width='24%'></td>
+     			<td width='22%'></td>
 				<td width='17%'></td>
 				<td width='7%'></td>
 				<td width='7%'></td>
@@ -77,7 +77,7 @@
 				<td width='7%'></td>
 				<td width='7%'></td>
 				<td width='7%'></td>
-				<td width='7%'></td>
+				<td width='8%'></td>
 				<td width='10%'></td>
 			</tr>
    

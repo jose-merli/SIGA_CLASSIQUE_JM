@@ -139,8 +139,11 @@ jQuery.noConflict();
 		document.CuentasBancariasForm.modo.value="borrar";
 		document.CuentasBancariasForm.target="submitArea";
 		document.CuentasBancariasForm.submit();
-		if(1==1)
+		if(1==1){
+			alertStop('pepe');
 			buscar();
+		}
+		
 		
 	 }
 	

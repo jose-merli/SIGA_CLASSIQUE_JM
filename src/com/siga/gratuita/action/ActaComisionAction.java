@@ -598,7 +598,7 @@ public class ActaComisionAction extends MasterAction{
 			Hashtable row = (Hashtable) ejgsPteRetirar.get(i);
 				detalleEjgsPteRetirar.append((String)row.get("ANIO"));
 				detalleEjgsPteRetirar.append("/");
-				detalleEjgsPteRetirar.append((String)row.get("NUMERO"));
+				detalleEjgsPteRetirar.append((String)row.get("NUMEJG"));
 				detalleEjgsPteRetirar.append(", ");
 		}
 		if(!detalleEjgsPteRetirar.equals("")&&detalleEjgsPteRetirar.length()>0){

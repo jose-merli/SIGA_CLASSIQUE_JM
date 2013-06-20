@@ -1390,8 +1390,17 @@ public class DefinirEJGAction extends MasterAction
 			request.setAttribute("permisoEejg", isPermisoEejg);
 			BusinessManager bm = getBusinessManager();
 			ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
-			List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
-			request.setAttribute("tiposResolucion", tiposResolucion);
+			if(usr.isComision()){
+				List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
+				ScsTiporesolucion option = new  ScsTiporesolucion();
+				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaSOJ.literal.indiferente"));
+				tiposResolucion.add(0,option);
+				option = new  ScsTiporesolucion();
+				option.setIdtiporesolucion(new Short("-1"));
+				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.sinResolucion"));
+				tiposResolucion.add(1,option);
+				request.setAttribute("tiposResolucion", tiposResolucion);
+			}
 		}
 		catch (Exception e) 
 		{
@@ -1432,11 +1441,19 @@ public class DefinirEJGAction extends MasterAction
      		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
      		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
      		request.setAttribute("permisoEejg", isPermisoEejg);
-     		BusinessManager bm = getBusinessManager();
-			ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
-			List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
-			request.setAttribute("tiposResolucion", tiposResolucion);
-			
+     		if(usr.isComision()){
+	     		BusinessManager bm = getBusinessManager();
+				ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
+				List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
+				ScsTiporesolucion option = new  ScsTiporesolucion();
+				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaSOJ.literal.indiferente"));
+				tiposResolucion.add(0,option);
+				option = new  ScsTiporesolucion();
+				option.setIdtiporesolucion(new Short("-1"));
+				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.sinResolucion"));
+				tiposResolucion.add(1,option);
+				request.setAttribute("tiposResolucion", tiposResolucion);
+     		}
 			
      		
 		}

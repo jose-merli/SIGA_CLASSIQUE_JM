@@ -291,7 +291,7 @@ dd { padding-bottom: 15px }
 	font-weight: normal;
 	margin-top: 0px;
 	margin-left: 0px;
-	vertical-align: top;
+	vertical-align: middle;
 	text-align: left;
 	
 	border: 0px solid #<%=src.get("color.button.border")%>;
@@ -307,7 +307,7 @@ dd { padding-bottom: 15px }
 	 <script type="text/javascript">
     	jQuery.noConflict();
     	jQuery(document).ready(function() {
-            jQuery("#idTipoResolucionEJG").dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true,explicitClose: '<siga:Idioma key='general.boton.close'/>...' ,icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
+            jQuery("#idTipoResolucionEJG").dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
       	});
     
 		function refrescarLocal() {	
@@ -388,7 +388,7 @@ dd { padding-bottom: 15px }
 			elementsTipoResolucion =  jQuery(comboTipoResolucion).val();
 			var comboFundamentos = document.getElementById('idFundamentoJuridico');
 			var optioncomboFundamentos = comboFundamentos.options;
-			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString().split(',').length=='1' ){
+			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString().split(',').length=='1' && jQuery(comboTipoResolucion).val().toString()!='-1'){
 				if(comboTipoResolucion.value!=""){
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			   			type: "POST",
@@ -475,7 +475,12 @@ dd { padding-bottom: 15px }
 <!--bean:define id="permisoEejg" scope="request" name="permisoEejg" type="java.lang.Boolean"/-->
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
-<bean:define id="tiposResolucion" name="tiposResolucion" type="java.util.ArrayList"  scope="request"/>
+<%
+ArrayList tiposResolucion = null;
+if(usr.isComision()){
+	tiposResolucion = (ArrayList)request.getAttribute("tiposResolucion");
+
+} %>
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<html:form action="<%=accion %>" method="POST" target="resultado">
 		<html:hidden name="<%=formulario%>" property="idPersona" value=""></html:hidden> <!-- 0 -->
@@ -595,21 +600,18 @@ dd { padding-bottom: 15px }
 				<td style="vertical-align:middle">
 					<%if(esComision){%>
 						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();"  style="width:375px;display: none; ">
-							<option value=""><bean:message key="gratuita.busquedaSOJ.literal.indiferente" /> </option>
-							<option value="-1"><bean:message key="gratuita.sinResolucion" /></option>
-							
 							<% for (int i = 0; i < tiposResolucion.size(); i++) {
 								ScsTiporesolucion  resolucion = (ScsTiporesolucion)tiposResolucion.get(i);
 								String seleccionado = "";
 								if(tiposResolucionBusqueda!=null && !tiposResolucionBusqueda.equals("")){
 									List alIds = Arrays.asList(tiposResolucionBusqueda.split(",")) ;
-									seleccionado=alIds.contains(resolucion.getIdtiporesolucion().toString())?"selected":"";
+									if(resolucion.getIdtiporesolucion()!=null)
+										seleccionado=alIds.contains(resolucion.getIdtiporesolucion().toString())?"selected":"";
+									
 								}
 							%>
-								<option <%=seleccionado%> value="<%=resolucion.getIdtiporesolucion() %>" ><c:out value="<%=resolucion.getDescripcion() %>"/> </option>
+								<option <%=seleccionado%> value="<%=resolucion.getIdtiporesolucion()!=null?resolucion.getIdtiporesolucion():"" %>" ><c:out value="<%=resolucion.getDescripcion() %>"/> </option>
 							<%} %>	
-							
-							
 						</select>
 				<%}else{%>
 					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>

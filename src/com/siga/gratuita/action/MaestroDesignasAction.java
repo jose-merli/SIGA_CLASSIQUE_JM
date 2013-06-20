@@ -936,7 +936,7 @@ public class MaestroDesignasAction extends MasterAction {
 		pkTurnoHashtable.put(ScsTurnoBean.C_IDINSTITUCION, (String)usr.getLocation());
 		Vector turnoVector = admTurno.selectByPK(pkTurnoHashtable);
 		ScsTurnoBean turnoBean = (ScsTurnoBean) turnoVector.get(0) ;
-		miform.setTurno(turnoBean.getDescripcion());
+		miform.setTurno(turnoBean.getAbreviatura());
 		ScsDesignaBean beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 		miform.setNig(beanDesigna.getNIG());
 		miform.setNumeroProcedimiento(beanDesigna.getNumProcedimiento());
