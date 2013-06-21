@@ -343,19 +343,14 @@
 	 		if (existeDomicilio != null && existeDomicilio.equals("N")) {%>
 
 				document.forms[0].existeDom.checked=true;
-	 			document.PersonaJGForm.direccion.disabled = "disabled";
-	 			document.PersonaJGForm.cp.disabled = "disabled";
-	 			document.PersonaJGForm.numeroDir.disabled = "disabled";
-	 			document.PersonaJGForm.escaleraDir.disabled = "disabled";
-	 			document.PersonaJGForm.pisoDir.disabled = "disabled";
-	 			document.PersonaJGForm.puertaDir.disabled = "disabled";	
-	 			jQuery("#tipoVia").attr("disabled","disabled");
+				desabilitarDomicilio (document.forms[0].existeDom);
 				document.getElementById("desaparece").style.display="none";
 				document.getElementById("desaparecePr").style.display="none";
 				document.getElementById("desapareceCp").style.display="none";
 				document.getElementById("desaparecePo").style.display="none";
 			<%}else{ %>
 			document.forms[0].existeDom.checked=false;
+			desabilitarDomicilio (document.forms[0].existeDom);
 			document.getElementById("desaparece").style.display="inline";
 			document.getElementById("desaparecePr").style.display="inline";
 			document.getElementById("desapareceCp").style.display="inline";
@@ -375,7 +370,7 @@
 			}%>
 		}
 	function desabilitarDomicilio (o) {	
-			if (o.checked) {
+		if (o.checked) {
 			document.getElementById("desaparece").style.display="none";
 			document.getElementById("desaparecePr").style.display="none";
 			document.getElementById("desapareceCp").style.display="none";
@@ -403,7 +398,9 @@
  			document.PersonaJGForm.numeroDir.disabled = "disabled";
  			document.PersonaJGForm.escaleraDir.disabled = "disabled";
  			document.PersonaJGForm.pisoDir.disabled = "disabled";
- 			document.PersonaJGForm.puertaDir.disabled = "disabled";			
+ 			document.PersonaJGForm.puertaDir.disabled = "disabled";		
+ 			document.PersonaJGForm.direccion.disabled = "disabled";
+ 			document.PersonaJGForm.cp.disabled = "disabled";	 			
 			
 		}else {
 			document.getElementById("desaparece").style.display="inline";
@@ -422,6 +419,8 @@
  			document.PersonaJGForm.escaleraDir.disabled = "";
  			document.PersonaJGForm.pisoDir.disabled = "";
  			document.PersonaJGForm.puertaDir.disabled = "";	
+ 			document.PersonaJGForm.direccion.disabled = "";
+ 			document.PersonaJGForm.cp.disabled = "";	
 		}
 	}
 
@@ -645,12 +644,14 @@
 					%> 
 					if(resultado[25]!=null && resultado[25]=="N"){
 						document.forms[0].existeDom.checked=true;
+						desabilitarDomicilio (document.forms[0].existeDom);
 						document.getElementById("desaparece").style.display="inline";
 						document.getElementById("desaparecePr").style.display="inline";
 						document.getElementById("desapareceCp").style.display="inline";
 						document.getElementById("desaparecePo").style.display="inline";
 					}else{
 						document.forms[0].existeDom.checked=false;
+						desabilitarDomicilio (document.forms[0].existeDom);
 						document.getElementById("desaparece").style.display="none";
 						document.getElementById("desaparecePr").style.display="none";
 						document.getElementById("desapareceCp").style.display="none";
