@@ -501,7 +501,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				hashPestanha.put(ScsGuardiasTurnoBean.C_IDGUARDIA,(String)miForm.getGuardia());
 			hashPestanha.put("MODOPESTANA","EDITAR");
 						
-			hashPestanha.put(ScsGuardiasTurnoBean.C_TIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado()==null?"":miForm.getIdTipoGuardiaSeleccionado());
+			hashPestanha.put(ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado()==null?"":miForm.getIdTipoGuardiaSeleccionado());
 			
 			request.setAttribute("HASHGUARDIA",hashPestanha);
 			
@@ -850,7 +850,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put(ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, "0");
 			
 			// JPT: Combo seleccionable de tipo de guardia
-			nuevo.put(ScsGuardiasTurnoBean.C_TIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado());
+			nuevo.put(ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado());
 			
 			//Iniciando la insercion
 			tx = usrbean.getTransaction();
@@ -1052,7 +1052,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, "");
 			
 				// JPT: Combo seleccionable de tipo de guardia
-				nuevo.put(ScsGuardiasTurnoBean.C_TIPOGUARDIA, (miForm.getIdTipoGuardiaSeleccionado() == null ? "" : miForm.getIdTipoGuardiaSeleccionado()));			
+				nuevo.put(ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, (miForm.getIdTipoGuardiaSeleccionado() == null ? "" : miForm.getIdTipoGuardiaSeleccionado()));			
 			
 				// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
 				ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));

@@ -77,7 +77,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL,
 				ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL,
 				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
-				ScsGuardiasTurnoBean.C_TIPOGUARDIA
+				ScsGuardiasTurnoBean.C_IDTIPOGUARDIA
 		};
 		return campos;
 	} //getCamposBean ()
@@ -141,7 +141,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdTurnoPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL));
 			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL));
 			
-			bean.setIdTipoGuardiaSeleccionado(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_TIPOGUARDIA));
+			bean.setIdTipoGuardiaSeleccionado(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTIPOGUARDIA));
 			
 			
 		}
@@ -198,7 +198,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL, b.getIdInstitucionPrincipal());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, b.getIdTurnoPrincipal());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, b.getIdGuardiaPrincipal());			
-			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPOGUARDIA, b.getIdTipoGuardiaSeleccionado());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, b.getIdTipoGuardiaSeleccionado());
 		}
 		catch (Exception e){
 			hash = null;
@@ -281,7 +281,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
 				break;
@@ -301,7 +301,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+","+
@@ -330,7 +330,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA+" NUMEROSUSTITUTOS,"+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASPERIODO+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES";
@@ -345,7 +345,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS+" DIASSEPARACIONGUARDIAS, "+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+" TIPODIASGUARDIA"+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPOGUARDIA+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+"";
 				break;

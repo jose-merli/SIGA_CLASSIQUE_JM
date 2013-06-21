@@ -2536,7 +2536,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			sql = 
 				"select turno, " +
 				"       guardia, " +
-				"       decode(tipoguardia, " +
+				"       decode(idTipoGuardia, " +
 				"              '0', " +
 				"              f_siga_getrecurso_etiqueta('general.no', "+idioma+"), " +
 				"              f_siga_getrecurso_etiqueta('general.yes', "+idioma+")) vg, " +
@@ -2550,7 +2550,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from ( /*Formas de facturar las guardias*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               0 idapunte, " +
@@ -2598,7 +2598,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Actuaciones por unidades*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               facact.idapunte idapunte, " +
@@ -2670,7 +2670,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Asistencias por unidades*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               facasi.idapunte idapunte, " +
@@ -2739,7 +2739,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Dias de guardia mas o menos normales*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               facgua.idapunte idapunte, " +
@@ -2816,7 +2816,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Cabeceras de guardia mas o menos normales*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               apu.idapunte idapunte, " +
@@ -2862,7 +2862,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Dias de guardia de facturacion por tipos*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               facgua.idapunte idapunte, " +
@@ -2910,7 +2910,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Dias de guardia devengadas - Precios raros*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               facgua.idapunte idapunte, " +
@@ -2944,7 +2944,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Cabeceras devengadas - Precios raros*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               hit.nombre hito, " +
 				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
 				"               apu.idapunte idapunte, " +
@@ -2970,7 +2970,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        /*Costes Fijos*/ " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               f_siga_getrecurso_etiqueta('gratuita.mantActuacion.literal.Coste', "+idioma+") hito, " +
 				"               f_siga_getrecurso(cos.descripcion, "+idioma+") hitodesc, " +
 				"               0 idapunte, " +
@@ -2998,7 +2998,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"         " +
 				"        select tur.abreviatura turno, " +
 				"               gua.nombre guardia, " +
-				"               nvl(gua.tipoguardia, '0') tipoguardia, " +
+				"               nvl(gua.idTipoGuardia, '0') idTipoGuardia, " +
 				"               f_siga_getrecurso_etiqueta('gratuita.mantActuacion.literal.Coste', "+idioma+") hito, " +
 				"               f_siga_getrecurso(cos.descripcion, "+idioma+") hitodesc, " +
 				"               facact.idapunte idapunte, " +
@@ -3036,8 +3036,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and facact.idinstitucion = "+idInstitucion+" " +
 				"           and facact.idfacturacion in ("+facturaciones+")) " +
 
-				" group by tipoguardia, turno, guardia, hito, hitodesc, precio " +
-				" order by tipoguardia, turno, guardia, hito, hitodesc, precio";
+				" group by idTipoGuardia, turno, guardia, hito, hitodesc, precio " +
+				" order by idTipoGuardia, turno, guardia, hito, hitodesc, precio";
 		}
 		
 		return this.selectGenerico (sql);
@@ -3334,7 +3334,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (1, 44) /*GAs, GAc*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3358,7 +3358,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and (upper(fuc.motivo) like 'GA%' or upper(fuc.motivo) = 'GS%') " +
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 		        "           and (select 1 " +
 				"                  from scs_hitofacturableguardia h " +
 				"                 where h.idinstitucion = fuc.idinstitucion " +
@@ -3380,7 +3380,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"       	and (upper(fap.motivo) like 'GA%' or upper(fap.motivo) = 'GS%')" +
 				"       	and fap.idinstitucion = "+idInstitucion+" " +
 				"       	and fap.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"       	and fap.precioaplicado > 0" +
 				"  		    and (select 1" +
 				"              	   from scs_hitofacturableguardia h" +
@@ -3417,7 +3417,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3440,7 +3440,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (2, 4) /*GDAs, GDAc*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3473,7 +3473,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3496,7 +3496,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (3) /*AsMax*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3521,7 +3521,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3544,7 +3544,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (8) /*AcMax*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') <> '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') <> '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3569,7 +3569,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3592,7 +3592,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (5) /*As*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3639,7 +3639,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fas.idinstitucion = "+idInstitucion+" " +
 				//"           and fas.idfacturacion = "+idFacturacion+" " +
 				"           and fas.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fas.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3662,7 +3662,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (7) /*Ac*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3714,7 +3714,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fac.idinstitucion = "+idInstitucion+" " +
 				//"           and fac.idfacturacion = "+idFacturacion+" " +
 				"           and fac.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fac.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3737,7 +3737,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (9) /*AcFG*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3765,7 +3765,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and apu.idinstitucion = "+idInstitucion+" " +
 				//"           and apu.idfacturacion = "+idFacturacion+" " +
 				"           and apu.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by hitgua.preciohito) " +
 				" " +
 				" group by subprecio " +
@@ -3788,7 +3788,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (2, 4, 3, 8) " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3821,7 +3821,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado " +
 				"         " +
 				"        union all " +
@@ -3841,7 +3841,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado " +
 				"         " +
 				"        union all " +
@@ -3861,7 +3861,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fuc.idinstitucion = "+idInstitucion+" " +
 				//"           and fuc.idfacturacion = "+idFacturacion+" " +
 				"           and fuc.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
 				" group by subprecio " +
@@ -3884,7 +3884,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (7, 9) " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
 				"		    and ghito.idinstitucion = hit.idinstitucion " +
 				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
@@ -3936,7 +3936,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and fac.idinstitucion = "+idInstitucion+" " +
 				//"           and fac.idfacturacion = "+idFacturacion+" " +
 				"           and fac.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fac.precioaplicado " +
 				"         " +
 				"        union all " +
@@ -3959,7 +3959,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and apu.idinstitucion = "+idInstitucion+" " +
 				//"           and apu.idfacturacion = "+idFacturacion+" " +
 				"           and apu.idfacturacion in  (" + facturaciones + ")" +
-				"           and nvl(guatur.tipoguardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+				"           and nvl(guatur.idTipoGuardia, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by hitgua.preciohito) " +
 				" " +
 				" group by subprecio " +

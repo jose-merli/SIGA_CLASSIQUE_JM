@@ -51,7 +51,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_IDTURNOPRINCIPAL			= "IDTURNOPRINCIPAL";
 	static public final String C_IDGUARDIAPRINCIPAL			= "IDGUARDIAPRINCIPAL";
 	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
-	static public final String C_TIPOGUARDIA				= "TIPOGUARDIA";
+	static public final String C_IDTIPOGUARDIA				= "IDTIPOGUARDIA";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////

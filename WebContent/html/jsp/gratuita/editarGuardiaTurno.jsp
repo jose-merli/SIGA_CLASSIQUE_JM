@@ -158,7 +158,7 @@
 	}
 	
 	// JPT: Obtiene los tipos de guardias
-	String idTipoGuardiaSeleccionado = (String) hash.get(ScsGuardiasTurnoBean.C_TIPOGUARDIA);
+	String idTipoGuardiaSeleccionado = (String) hash.get(ScsGuardiasTurnoBean.C_IDTIPOGUARDIA);
 	List listaTiposGuardias = new ArrayList();
 	try {
 		listaTiposGuardias = DefinirGuardiasTurnosAction.obtenerListaTiposGuardias(usr);
