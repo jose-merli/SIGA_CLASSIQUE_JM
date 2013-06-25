@@ -28,7 +28,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	request.getSession().setAttribute("pestanas","1");
 
 	String idSerieFacturacion=(String)request.getAttribute("idSerieFacturacion");
@@ -43,7 +43,7 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -25,7 +25,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	// Validamos si es una consulta o no.
 	String modo = request.getParameter("MODO")!=null?request.getParameter("MODO"):"";
 	String accion = (String) request.getSession().getAttribute("accion");
@@ -243,7 +243,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

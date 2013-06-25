@@ -43,7 +43,7 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String idremesa=(String)request.getAttribute("idremesa");
 	String idioma=usr.getLanguage().toUpperCase();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	//Vector obj = (Vector) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	String valor="";
@@ -104,7 +104,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

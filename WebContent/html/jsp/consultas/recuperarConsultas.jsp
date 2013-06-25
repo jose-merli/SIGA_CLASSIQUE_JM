@@ -26,7 +26,7 @@
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	String tipoacceso=userBean.getAccessType();
 		
@@ -56,7 +56,7 @@
 <!-- HEAD -->
 <head>	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet2.jsp">
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -27,7 +27,7 @@
 <head>
 	<%String app = request.getContextPath();%>
 	<title>Calendario</title>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/css/calendar.css'/>">	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>

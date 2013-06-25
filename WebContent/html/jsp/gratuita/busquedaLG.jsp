@@ -23,7 +23,7 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Hashtable datosFormulario = new Hashtable();
 	String listaguardias="", lugar="", provincia="", zona="", subzona="", partido="", iniciarBusqueda="";
 	if (request.getSession().getAttribute("DATOSFORMULARIO")!=null) {
@@ -42,7 +42,7 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -27,7 +27,7 @@
 	
 	String modo=(String)request.getAttribute("modo");
 	
-	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) request.getAttribute("solicitud");
 	CenInstitucionBean beanInstitucionOrigen = (CenInstitucionBean) request.getAttribute("institucionOrigen");
 	CenInstitucionBean beanInstitucionDestino = (CenInstitucionBean) request.getAttribute("institucionDestino");
@@ -140,7 +140,7 @@
 
 <html>
 <head>
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

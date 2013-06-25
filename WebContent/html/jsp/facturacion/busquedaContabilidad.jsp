@@ -22,7 +22,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	
 	ArrayList idEstadoSeleccionado = new ArrayList();
 //	idEstadoSeleccionado.add(new Integer(FacRegistroFichContaBean.ESTADO_TERMINADO).toString());
@@ -35,7 +35,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -32,7 +32,7 @@
 	HttpSession ses=request.getSession();
 	request.getSession().removeAttribute("pestanasG");
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Vector obj = (Vector)request.getSession().getAttribute("resultado");
 	Hashtable turno =(Hashtable)request.getSession().getAttribute("turnoElegido");
 	String NLETRADOSINSCRITOS =(String)request.getAttribute("NLETRADOSINSCRITOS");
@@ -70,7 +70,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

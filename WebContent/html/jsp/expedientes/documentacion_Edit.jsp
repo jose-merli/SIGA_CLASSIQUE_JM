@@ -22,7 +22,7 @@
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	
 	String accion = (String)request.getAttribute("accion");
 	String boxStyle = accion.equals("consulta")?"boxConsulta":"box";
@@ -42,7 +42,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

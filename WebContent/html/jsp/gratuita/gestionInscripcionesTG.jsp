@@ -22,7 +22,7 @@
 
 <%
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	if (src==null) {
 	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
 	  src=interfazGestor.getInterfaceOptions();	  
@@ -46,7 +46,7 @@
 
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>

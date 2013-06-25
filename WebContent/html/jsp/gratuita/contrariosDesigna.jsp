@@ -23,7 +23,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	Vector obj = (Vector)request.getAttribute("resultado");
 	request.getSession().setAttribute("resultado",obj);
 	String modo = (String) ses.getAttribute("Modo");
@@ -40,7 +40,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

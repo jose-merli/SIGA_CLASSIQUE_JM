@@ -26,7 +26,7 @@
 <!-- JSP -->
 <% 
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	Vector obj = (Vector)request.getSession().getAttribute("resultado");
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 
@@ -56,7 +56,7 @@
 <html>
 	<!-- HEAD -->
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

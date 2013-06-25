@@ -32,7 +32,7 @@
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	boolean esComision = usr.isComision();
 	HttpSession ses = request.getSession();
-	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	
 	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig=""; 
 	String creadoDesde="", fechaApertura="", fechaAperturaHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaEstadoDesde="", fechaEstadoHasta="",  fechaLimiteDesde="", fechaLimiteHasta="", fechaPonenteDesde="", fechaPonenteHasta="";
@@ -240,7 +240,7 @@
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
  	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/smoothness-1.8.13/jquery-ui-1.8.13.custom.css'/>">
 	
 	
@@ -252,57 +252,14 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-1.6.1.min.js'/>"></script>
     <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-ui-1.8.13.custom.min.js'/>"></script>
     <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
-<%
-	String app=request.getContextPath();
-	if (src==null) {
-	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
-	  src=interfazGestor.getInterfaceOptions();	  
-	}
-	// RGG 14/03/2007 cambio para dar un tamaño a la letra y en caso de Tiems darle otro
-	
-	String fontSize = "11px";
-	if (((String)src.get("color.background")).equalsIgnoreCase("FFFFFF")) {
-		fontSize="15px";
-		if (((String)src.get("font.style")).indexOf("Times")!=-1) {
-			fontSize="17px";
-		}
-	} else{
-	
-		if (((String)src.get("font.style")).indexOf("Arial")>=0) {
-			fontSize="13px";
-		}
-		if (((String)src.get("font.style")).indexOf("Times")>=0) {
-		    fontSize="14px";
-			
-		}
-	} 
-	
-%>
 
        <style>
 table td { vertical-align: center }
 dd { padding-bottom: 15px }
 
-
-.ui-dropdownchecklist-text {
-	font-family: <%=src.get("font.style")%>;
-	font-size: <%=fontSize%>;
-	font-weight: normal;
-	margin-top: 0px;
-	margin-left: 0px;
-	vertical-align: middle;
-	text-align: left;
-	
-	border: 0px solid #<%=src.get("color.button.border")%>;
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-
-
-
     </style>
 
-	     
+	   
 	 <script type="text/javascript">
     	jQuery.noConflict();
     	jQuery(document).ready(function() {

@@ -25,7 +25,7 @@
 	HttpSession ses=request.getSession();
 	request.getSession().removeAttribute("pestanasG");
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Vector resultado = (Vector)request.getAttribute("resultado");
 	Vector campos = (Vector)request.getSession().getAttribute("campos");
 	String orden = (String)request.getAttribute("orden");
@@ -41,7 +41,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

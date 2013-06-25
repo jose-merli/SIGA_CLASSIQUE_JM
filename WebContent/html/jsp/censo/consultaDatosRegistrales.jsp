@@ -60,7 +60,6 @@
 		
 		app=request.getContextPath();
 		ses=request.getSession();
-		src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 		user = (UsrBean) ses.getAttribute("USRBEAN");
 		bOcultarHistorico = user.getOcultarHistorico();
 		formulario = (DatosRegistralesForm)request.getAttribute("DatosRegistralesForm");
@@ -116,7 +115,7 @@
 	<!-- HEAD -->
 	<head>
 	
-			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

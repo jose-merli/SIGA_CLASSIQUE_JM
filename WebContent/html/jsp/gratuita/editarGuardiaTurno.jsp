@@ -41,7 +41,7 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 
 	ScsGuardiasTurnoBean beanGuardiasTurno = (ScsGuardiasTurnoBean) ses.getAttribute("DATABACKUPPESTANA");
 	DefinirGuardiasTurnosForm miform = (DefinirGuardiasTurnosForm) request.getAttribute("DefinirGuardiasTurnosForm");	
@@ -178,7 +178,7 @@
 
 <!-- HEAD -->
 <head>	
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
 	
 	<!-- Incluido jquery en siga.js -->	

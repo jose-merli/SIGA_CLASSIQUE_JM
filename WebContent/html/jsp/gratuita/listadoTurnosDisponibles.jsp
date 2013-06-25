@@ -25,8 +25,6 @@
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) request.getSession()
 			.getAttribute("USRBEAN");
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Colegio cole = (Colegio) ses.getAttribute("colegio");
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String entrada = (String) ses.getAttribute("entrada");
@@ -40,7 +38,7 @@
 
 <head>
 
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

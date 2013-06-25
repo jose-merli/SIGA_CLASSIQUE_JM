@@ -22,7 +22,7 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 
 	//Datos propios del jsp:
 	String partidojudicial = request.getAttribute("partidoJudicial") == null?"":((String) request.getAttribute("partidoJudicial"));
@@ -49,7 +49,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

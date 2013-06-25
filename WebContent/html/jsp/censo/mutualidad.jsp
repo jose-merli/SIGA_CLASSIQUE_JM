@@ -94,7 +94,7 @@ function habilitarCampos(isHabilitar) {
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 				 
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

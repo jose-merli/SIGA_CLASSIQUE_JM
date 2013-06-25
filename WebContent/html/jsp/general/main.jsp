@@ -42,7 +42,7 @@
 	String pathAyuda = BotonesMenu.getPathAyuda(userBean.getLocation());
 	String pathVersiones = BotonesMenu.getPathVersiones(userBean.getLocation());
 	
-	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	ReadProperties rproperties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	
 	//Parte para el Applet:
@@ -84,7 +84,7 @@
 	<title><siga:Idioma key="index.title" /></title>
 
 	<!-- ESTILOS Y JAVASCRIPT -->
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>

@@ -24,7 +24,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	

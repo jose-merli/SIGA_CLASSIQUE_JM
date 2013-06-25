@@ -39,7 +39,7 @@ String path = actionMapping.getPath();
 	String fecha="";
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 
 	// Datos a visualizar
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
@@ -90,7 +90,7 @@ String path = actionMapping.getPath();
 	<!-- HEAD -->
 	<head>
 		
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

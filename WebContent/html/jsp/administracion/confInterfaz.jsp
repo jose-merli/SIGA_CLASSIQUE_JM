@@ -23,7 +23,7 @@
 <% 
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	String color=(String)request.getAttribute(SIGAConstants.COLOR);
 	String tipoLetra=(String)request.getAttribute(SIGAConstants.FONT);
 	String aceso=((UsrBean)request.getSession().getAttribute("USRBEAN")).getAccessType();
@@ -34,7 +34,7 @@
 
 <html>
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

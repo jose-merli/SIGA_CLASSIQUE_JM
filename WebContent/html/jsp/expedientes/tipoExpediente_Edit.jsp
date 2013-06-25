@@ -31,7 +31,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Vector datos = (Vector)request.getAttribute("datos");
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
 	String modo=request.getParameter("modo");
@@ -44,7 +44,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

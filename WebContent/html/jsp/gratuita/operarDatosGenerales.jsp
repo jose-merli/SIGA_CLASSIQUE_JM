@@ -27,7 +27,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	Hashtable miHash = (Hashtable) ses.getAttribute("DATABACKUP");	
 	String accion = (String)ses.getAttribute("accion");	
 	String persona = "", fechaApertura="",anio="",numero="", respuesta="",consulta="", estado="", idPersonaJG = "", descripcionTurno = "", descripcionGuardia = "", idTurno="", idGuardia="", ncolegiado="", nombre="",numeroSOJ="",sufijo="";
@@ -105,7 +105,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

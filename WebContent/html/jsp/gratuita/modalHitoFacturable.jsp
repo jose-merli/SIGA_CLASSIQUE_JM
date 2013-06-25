@@ -27,7 +27,7 @@
 	HttpSession ses=request.getSession();
 	
 	String nombreHito = (String)request.getAttribute("nombreHito");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	ScsHitoFacturableGuardiaBean hito= (ScsHitoFacturableGuardiaBean)request.getSession().getAttribute("HITO");
 	String idHito = (String)request.getAttribute("idHito");
 	ArrayList seleccionado = new ArrayList();
@@ -42,7 +42,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

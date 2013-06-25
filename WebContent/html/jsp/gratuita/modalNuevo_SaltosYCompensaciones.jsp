@@ -26,7 +26,7 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	String profile[]=usr.getProfile();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 
 	//Para el Combo de Turnos
 	String dato[] = {(String)usr.getLocation()};
@@ -44,7 +44,7 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

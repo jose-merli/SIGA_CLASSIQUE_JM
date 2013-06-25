@@ -19,7 +19,7 @@
 	// JZB 23/12/2004 Se ha anhadido un comportamiento específica para las modales
 	String modal= (String)request.getAttribute("modal");
 %>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

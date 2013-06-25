@@ -6,7 +6,7 @@
 <head>
 <title>Seleccione una localización</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

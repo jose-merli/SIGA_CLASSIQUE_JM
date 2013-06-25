@@ -28,7 +28,7 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 
 	String modopestanha = request.getSession().getAttribute("Modo")==null?"":(String)request.getSession().getAttribute("Modo");
 	PestanaDelitoDesignaForm miForm= (PestanaDelitoDesignaForm) request.getAttribute("pestanaDelitoDesignaForm");
@@ -44,7 +44,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

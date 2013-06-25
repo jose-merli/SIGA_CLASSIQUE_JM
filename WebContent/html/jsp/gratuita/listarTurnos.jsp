@@ -23,7 +23,7 @@
 <% 	
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Colegio cole = (Colegio)ses.getAttribute("colegio");
 	String elTarget = "mainWorkArea";
 
@@ -110,7 +110,7 @@
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>

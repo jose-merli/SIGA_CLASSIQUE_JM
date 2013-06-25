@@ -25,7 +25,7 @@
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 
 	// mensajes

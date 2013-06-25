@@ -41,7 +41,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	String fecha="";
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+		
 
 	// Datos del cliente a visualizar
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
@@ -117,7 +117,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			}
 			
 		</style>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

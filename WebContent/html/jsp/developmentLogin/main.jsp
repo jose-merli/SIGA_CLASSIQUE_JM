@@ -20,11 +20,12 @@
 	HttpSession ses=request.getSession();
 	
 	ses.removeAttribute(SIGAConstants.STYLESHEET_REF);
+	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, "/html/css/skin5/stylesheet.css");
 %>
 	
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>

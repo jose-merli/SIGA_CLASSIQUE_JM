@@ -26,7 +26,7 @@
 	<meta http-equiv="Pragma" 			content="no-cache">
 	<meta http-equiv="Cache-Control" 	content="no-cache">	
 	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet2.jsp" />
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

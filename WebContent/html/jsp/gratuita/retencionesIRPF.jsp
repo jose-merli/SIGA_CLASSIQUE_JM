@@ -26,7 +26,7 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Vector obj = new Vector();
 	obj = (Vector) request.getAttribute("resultado");
 	String sociedad = (String) request.getAttribute("SOCIEDAD");
@@ -79,7 +79,7 @@
 <html>
 	<head>
 	<title><siga:Idioma key="gratuita.retencionesIRPF.literal.title"/></title>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

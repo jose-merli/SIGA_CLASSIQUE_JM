@@ -23,7 +23,7 @@
 	String modal= (String)request.getAttribute("modal");
 	String retorno= (String) request.getAttribute("retorno"); //Para devolver un valor a la ventana principal
 %>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -28,7 +28,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	String dato[] = {(String)usr.getLocation()};
 	Hashtable miHash = (Hashtable) ses.getAttribute("DATABACKUP");
 	String accion = (String) ses.getAttribute("accion");
@@ -88,7 +88,7 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

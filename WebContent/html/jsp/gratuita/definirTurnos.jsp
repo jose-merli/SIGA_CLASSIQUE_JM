@@ -28,7 +28,7 @@
 	String entrada = "1";
 	ses.setAttribute("entrada",entrada);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Colegio cole = (Colegio)ses.getAttribute("colegio");
 	String dato[] = {usr.getLocation()};
 	String hayBusqueda ="0";
@@ -49,7 +49,7 @@
 <html>
 <!-- HEAD -->
 <head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

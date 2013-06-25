@@ -21,7 +21,7 @@
 
 <!-- HEAD -->
 <head>
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>" />
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 <link rel="stylesheet" href="/html/js/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="/html/css/jquery-ui.css" />
 

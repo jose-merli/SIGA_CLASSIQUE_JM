@@ -23,7 +23,7 @@
 <% 	
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Colegio cole = new Colegio(request);
 	ses.setAttribute("colegio",cole);
 	String acceso=((UsrBean)request.getSession().getAttribute("USRBEAN")).getAccessType();
@@ -43,7 +43,7 @@
 <!-- HEAD -->
 <head>
 	<title><"definirTurnos.title"></title>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

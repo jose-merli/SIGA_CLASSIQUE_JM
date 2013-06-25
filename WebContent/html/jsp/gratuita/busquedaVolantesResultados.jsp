@@ -27,7 +27,6 @@
 <%
 	String app=request.getContextPath(); 
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)request.getSession().getAttribute(SIGAConstants.STYLESHEET_REF);
 	
 	//Datos propios del jsp:	
 	Vector obj = (Vector) request.getAttribute("resultado");
@@ -48,7 +47,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

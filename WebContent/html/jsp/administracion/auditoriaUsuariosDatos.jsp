@@ -19,7 +19,6 @@
 
 <% 
 	String app = request.getContextPath();
-	Properties src = (Properties)request.getSession().getAttribute(SIGAConstants.STYLESHEET_REF);
 	
 	Hashtable h = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 	String botones = "C", estilo = "boxConsulta";
@@ -40,7 +39,7 @@
 <html>
 
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		
 		<!-- Incluido jquery en siga.js -->

@@ -16,7 +16,7 @@
 	HttpSession ses=request.getSession();
 	String urlAction = (String)request.getAttribute("urlAction");	
 %>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

@@ -34,7 +34,7 @@
 		idPersona = (String)((Hashtable)request.getSession().getAttribute("DATOSSOJ")).get("IDPERSONA");
 	}	
 	catch (Exception e) {};
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 	Vector obj = (Vector) ses.getAttribute("resultadoTelefonos");	
 	String idPers = (String) request.getParameter("idPers");
 	if ((obj==null)||(obj.size()==0)){	
@@ -51,7 +51,7 @@
 <!-- HEAD -->
 <head>
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->

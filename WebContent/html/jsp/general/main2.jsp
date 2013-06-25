@@ -24,7 +24,7 @@ String pathInicio = rproperties.returnProperty("general.paginaInicio");
 	<head>
 		<title><siga:Idioma key="index.title"/></title>
 		
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/jsp/general/stylesheet.jsp'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
