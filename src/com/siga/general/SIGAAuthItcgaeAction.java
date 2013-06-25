@@ -1,15 +1,27 @@
 package com.siga.general;
 
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Vector;
 
-import com.atos.utils.*;
-
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.Globals;
-import org.apache.struts.action.*;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.pra.core.filters.security.helper.UsuariosTO;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -405,6 +417,8 @@ public class SIGAAuthItcgaeAction extends Action
 	{
 		String iconsPath="/"+ClsConstants.PATH_DOMAIN+"/"+ClsConstants.RELATIVE_PATH_LOGOS;
 		String icon="logoconsejo2.gif";
+		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
 		try
 		{
 			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
@@ -413,6 +427,7 @@ public class SIGAAuthItcgaeAction extends Action
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css");
 		}
 		catch(com.atos.utils.ClsExceptions ex)
 		{

@@ -6,6 +6,8 @@
  */
 package com.siga.censo.action;
 
+import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,9 +17,13 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.*;
-import com.siga.administracion.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.UsrBean;
+import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.SIGAGestorInterfaz;
 import com.siga.censo.form.SolicitudIncorporacionAccesoDirectoForm;
 
 
@@ -86,6 +92,8 @@ public class SolicitudIncorporacionAccesoDirectoAction extends Action {
 	{
 		String iconsPath = "/" + ClsConstants.PATH_DOMAIN + "/" + ClsConstants.RELATIVE_PATH_LOGOS;
 		String icon = "logoconsejo2.gif";
+		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
 		try
 		{
 			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
@@ -94,6 +102,7 @@ public class SolicitudIncorporacionAccesoDirectoAction extends Action {
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css");
 		}
 		catch(com.atos.utils.ClsExceptions ex)
 		{

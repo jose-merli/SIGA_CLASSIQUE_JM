@@ -191,6 +191,7 @@ public class SIGAGestorInterfazAction extends MasterAction {
 						//request.setAttribute("descOperation","messages.updated.success");
 						//Aviso para que refresque al recargar los frames:
 						request.getSession().setAttribute("refrescar", "SI");
+						request.getSession().setAttribute(SIGAConstants.STYLESHEET_SKIN, "/html/css/skin"+ stylesheet.get("color")+"/stylesheet.css");
 					} else {
 						tx.rollback();
 						request.setAttribute("descOperation","messages.updated.error"); 

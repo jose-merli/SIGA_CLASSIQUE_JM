@@ -7,31 +7,48 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
+
 import org.apache.struts.action.ActionServlet;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
-//import pra.axis.services.Certificados_service.CertInfoServiceServiceLocator;
-//import pra.axis.services.Certificados_service.CertificadosServiceSoapBindingStub;
-import com.pra.core.filters.security.helper.UsuariosTO;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-//import com.pra.core.TO.SesionUsuarioTO;
-//import com.pra.core.TO.SesionZonaTO;
-//import com.pra.core.context.ContextFactory;
-//import com.pra.core.context.IContext;
-//import com.pra.core.sesion.SesionTO;
+import com.pra.core.filters.security.helper.UsuariosTO;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
-import com.siga.beans.*;
+import com.siga.beans.AdmCertificadosAdm;
+import com.siga.beans.AdmCertificadosBean;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmPerfilRolAdm;
+import com.siga.beans.AdmPerfilRolBean;
+import com.siga.beans.AdmRolAdm;
+import com.siga.beans.AdmRolBean;
+import com.siga.beans.AdmUsuarioEfectivoAdm;
+import com.siga.beans.AdmUsuarioEfectivoBean;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.AdmUsuariosEfectivosPerfilAdm;
+import com.siga.beans.AdmUsuariosEfectivosPerfilBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenInstitucionLenguajesAdm;
+import com.siga.beans.CenInstitucionLenguajesBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 
 
 /**
@@ -493,6 +510,8 @@ System.setProperties(properties);
 		String iconsPath="/"+ClsConstants.PATH_DOMAIN+"/"+ClsConstants.RELATIVE_PATH_LOGOS;
 		//por defecto los del CGAE
 		String icon="logoconsejo2.gif";
+		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
 		/*
 		if(location.equals("5"))
 		{
@@ -524,11 +543,11 @@ System.setProperties(properties);
 		try
 		{
 			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
-
 			java.util.Properties stylesheet = interfazGestor.getInterfaceOptions();
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css");
 		}
 
 		catch(com.atos.utils.ClsExceptions ex)

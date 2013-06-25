@@ -1,21 +1,48 @@
 package com.siga.test;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.pra.core.filters.security.helper.UsuariosTO;
-import com.siga.beans.*;
-import com.siga.general.SIGAException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.MDC;
-import org.apache.struts.*;
-import javax.servlet.http.*;
+import org.apache.struts.Globals;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.pra.core.filters.security.helper.UsuariosTO;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.*;
-import org.apache.struts.action.*;
+import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.SIGAGestorInterfaz;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenInstitucionLenguajesAdm;
+import com.siga.beans.CenInstitucionLenguajesBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.general.SIGAException;
 
 public class SIGATemporalAccessAction extends Action
 {
@@ -447,6 +474,8 @@ public class SIGATemporalAccessAction extends Action
 	private void initStyles(String location, HttpSession ses)
 	{
 		String iconsPath="/"+ClsConstants.PATH_DOMAIN+"/"+ClsConstants.RELATIVE_PATH_LOGOS;
+		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
 		//por defecto los del CGAE
 		String icon="logoconsejo2.gif";
 		/*
@@ -485,6 +514,8 @@ public class SIGATemporalAccessAction extends Action
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
+			// Apuntamos al skin de la institucion
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" +stylesheet.get("color")+"/stylesheet.css");
 		}
 		
 		catch(com.atos.utils.ClsExceptions ex)

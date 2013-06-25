@@ -15,7 +15,9 @@ public interface SIGAConstants
 	 * Para referenciar la hoja de estilos css entre los atributos de sesión.
 	 */	
 	public static final String STYLESHEET_REF="SIGA_STYLESHEET";
+	public static final String STYLESHEET_SKIN="SKIN";
 	public static final String PATH_LOGO="SIGA_LOGO";
+	public static final String STYLESHEET_PATH="directorios.carpeta.css";
 
 	/**
 	 * Para referenciar el path del logotipo de la institucion entre los atributos de sesión.
