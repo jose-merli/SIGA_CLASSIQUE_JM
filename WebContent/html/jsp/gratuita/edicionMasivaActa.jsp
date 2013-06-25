@@ -112,17 +112,14 @@
 			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>10 && document.getElementById("isObligatorioResolucion").value=='true' &&
 				( (!document.ActaComisionForm.guardaRatificacion.checked || jQuery("#idTipoRatificacionEJG option:selected").val()==0)
 				|| (!document.ActaComisionForm.guardaFundamento.checked || jQuery("#idFundamentoJuridico option:selected").val()==0))){
-				alertStop("1");
 				alert("<siga:Idioma key='sjcs.actas.checkRatificacionResolucion'/>");
 				fin();
 			}else if (document.ActaComisionForm.guardaRatificacion.checked && !document.ActaComisionForm.guardaFundamento.checked) {
-				alertStop("2");
 				alert("<siga:Idioma key='sjcs.actas.checkresolucion'/>");
 				fin();
 			} else {
 			
 				if (document.ActaComisionForm.guardaFundamento.checked && !document.ActaComisionForm.guardaRatificacion.checked) {
-					alertStop("3");
 					alert("<siga:Idioma key='sjcs.actas.checkfundamentojuridico'/>");
 					fin();
 				} else {
@@ -144,7 +141,6 @@
 						
 						document.ActaComisionForm.submit();
 					}else{
-						alertStop("4");
 						alert("<siga:Idioma key='sjcs.actas.seleccioneCampos'/>");
 						fin();
 					}
