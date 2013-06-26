@@ -1,4 +1,5 @@
 <!-- defendidosDesigna.jsp -->
+
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas -->
 	 
@@ -10,7 +11,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
@@ -22,18 +23,19 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
+	HttpSession ses = request.getSession();
 		
 	Vector obj = (Vector)request.getAttribute("resultado");
-	request.getSession().setAttribute("resultado",obj);
-	String modo = (String) ses.getAttribute("Modo");
-	UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	ses.setAttribute("resultado",obj);
 	
-	String anio="",numero="", idturno="";
+	String modo = (String) ses.getAttribute("Modo");
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
+	
+	String anio="",numero="", idturno="";	
 	anio = (String)designaActual.get("ANIO");
 	numero = (String)designaActual.get("NUMERO");
 	idturno = (String)designaActual.get("IDTURNO");	
@@ -52,59 +54,47 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="gratuita.defendidosDesigna.literal.titulo" 
-		localizacion="gratuita.defendidosDesigna.literal.location"/>
+	<siga:Titulo titulo="gratuita.defendidosDesigna.literal.titulo" localizacion="gratuita.defendidosDesigna.literal.location"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
-
-	<!-- SCRIPTS LOCALES -->
-	<script language="JavaScript">
-	</script>
-
 </head>
 
-<body onLoad="ajusteAlto('resultado');" class="tablaCentralCampos">
+<body class="tablaCentralCampos">
 
-		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
+	<!-- INICIO: LISTA DE VALORES -->
+	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista  de cabeceras fijas -->
 
-		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/JGR_DefendidosDesignas.do" method="post" target="mainPestanas" style="display:none">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "actionModal" value = ""/>
-		</html:form>
-		
-<iframe align="center" src="<%=app%>/html/jsp/gratuita/listarDefendidosDesignas.jsp"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0";					 
-					class="frameGeneral">
+	<!-- Formulario de la lista de detalle multiregistro -->
+	<html:form action="/JGR_DefendidosDesignas.do" method="post" target="mainPestanas" style="display:none">
+		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "actionModal" value = ""/>
+	</html:form>
+	
+	<iframe align="center" src="<html:rewrite page='/html/jsp/gratuita/listarDefendidosDesignas.jsp'/>"
+		id="resultado"
+		name="resultado" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"					 
+		style="position:relative;height:100%;width:100%;">
 	</iframe>
-
-<!-- FIN: LISTA DE VALORES -->
+	<!-- FIN: LISTA DE VALORES -->
 		
 	
-<!-- INICIO: SUBMIT AREA -->
-<script language="JavaScript">
+	<!-- INICIO: SUBMIT AREA -->
+	<script language="JavaScript">
 
-			<!-- Asociada al boton Volver -->
-		function accionVolver() 
-		{	
+		// Asociada al boton Volver
+		function accionVolver() {	
 			document.forms[0].target = "mainWorkArea";	
 			document.forms[0].action="JGR_Designas.do";
 			document.forms[0].modo.value="volverBusqueda";
 			document.forms[0].submit();
 		}
 		
-		function accionNuevo() 
-		{	
+		function accionNuevo() {	
 			var resultado=ventaModalGeneral(document.forms[1].name,"G");
-			if (resultado=="MODIFICADO")
-			{
+			if (resultado=="MODIFICADO") {
 				buscar();
 			}
 		}
@@ -115,39 +105,33 @@
 			document.forms[0].submit();
 		}
 		
-		function refrescarLocal()
-		{
+		function refrescarLocal(){
 			buscar();
 		}
-</script>		
+	</script>		
 
-		<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" modo="<%=modo%>" />
+	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" modo="<%=modo%>" />
 
-		<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea">
-			<input type="hidden" name="modo" value="abrirPestana">
-			<input type="hidden" name="actionModal" value="">
-			
-			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idPersonaJG" value="">
-	
-			<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
-			<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
-			<input type="hidden" name="anioDES" value="<%=anio %>">
-			<input type="hidden" name="numeroDES" value="<%=numero %>">
-	
-			<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_INTERESADO %>">
-			<input type="hidden" name="tituloE" value="gratuita.defendidosDesigna.literal.titulo">
-			<input type="hidden" name="localizacionE" value="">
-			<input type="hidden" name="accionE" value="nuevo">
-			<input type="hidden" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
-			<input type="hidden" name="pantallaE" value="M">
-		</html:form>	
+	<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea">
+		<input type="hidden" name="modo" value="abrirPestana">
+		<input type="hidden" name="actionModal" value="">
 		
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idPersonaJG" value="">
 
-	</body>
+		<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
+		<input type="hidden" name="anioDES" value="<%=anio %>">
+		<input type="hidden" name="numeroDES" value="<%=numero %>">
+
+		<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_INTERESADO %>">
+		<input type="hidden" name="tituloE" value="gratuita.defendidosDesigna.literal.titulo">
+		<input type="hidden" name="localizacionE" value="">
+		<input type="hidden" name="accionE" value="nuevo">
+		<input type="hidden" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
+		<input type="hidden" name="pantallaE" value="M">
+	</html:form>	
+	
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+</body>
 </html>
-		  
-		
