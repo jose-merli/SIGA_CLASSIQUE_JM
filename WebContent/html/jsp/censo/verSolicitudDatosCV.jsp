@@ -62,9 +62,6 @@
 	
 	// RGG 14/03/2007 cambio para dar un tamaño a la letra y en caso de Tiems darle otro
 	String fontSize = "13px";
-	if (((String)src.get("font.style")).indexOf("Times")!=-1) {
-		fontSize="15px";
-	}
 	
 %>
 
@@ -72,48 +69,6 @@
 
 	<!-- HEAD -->
 	<head>
-
-		<style type="text/css">
-			.labelTextRojo{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						font-size: <%=fontSize%>; 	font-weight: bold; 
-						margin: auto; color:#6A0000; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; vertical-align: top;}	
-						
-			.labelTextNormal{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						font-size: <%=fontSize%>; vertical-align: top; 
-						margin: auto; color:#<%=src.get("color.labelText")%>; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; padding-left: 5px;}							
-						
-			.boxConsultaRojo {
-						font-family: <%=src.get("font.style")%>; font-size: <%=fontSize%>;
-						font-weight: bold; margin: auto;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent; color:#6A0000;}						  
-						
-			.boxComboNormal {
-						font-family: <%=src.get("font.style")%>; font-size: <%=fontSize%>;
-						margin: auto; color:#<%=src.get("color.labelText")%>;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent;}
-
-			.boxComboRojo {
-						font-family: <%=src.get("font.style")%>; font-size: <%=fontSize%>;
-						font-weight: bold; margin: auto;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent; color:#6A0000;}
-
-		</style>
-
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

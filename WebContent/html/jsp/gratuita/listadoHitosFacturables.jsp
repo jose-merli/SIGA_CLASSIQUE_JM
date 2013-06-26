@@ -78,22 +78,7 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
-	<style type="text/css">
-	    .box {
-	      font-family: <%=src.get("font.style")%>;
-	      font-size: 10px;
-	      vertical-align: middle;
-	      width: 70;
-	    }
-	    .boxDisabled {
-	      font-family: <%=src.get("font.style")%>;
-	      font-size: 10px;
-	      background-color: #dfdfde;
-	      vertical-align: middle;
-	      width: 70;
-	    }
-	</style>
+
 		
   <!------------------------------------------------------->
   <!-------------------- ESTILOS - FIN -------------------->

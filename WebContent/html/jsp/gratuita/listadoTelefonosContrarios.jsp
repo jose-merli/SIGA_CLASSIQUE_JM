@@ -57,21 +57,6 @@
 		titulo="gratuita.busquedaSOJ.literal.expedientesSOJ" 
 		localizacion="SJCS > Maestros > Expedientes SOJ > Mantenimiento"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
-	<style type="text/css">
-		.tablaCentral {		
-			width: 10;
-			background-color: #<%=src.get("color.tableTitle.BG")%>;
-		}
-		
-		.tdBotones {
-			text-align: center;			
-			padding-left: 0px;
-			padding-right: 0px;
-			padding-top: 0px;
-			padding-bottom: 0px;
-		}
-		
-	</style>
 		
 	<script type="text/javascript">	
 		function refrescarLocal(){			

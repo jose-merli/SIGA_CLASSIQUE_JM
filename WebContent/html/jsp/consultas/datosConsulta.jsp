@@ -986,7 +986,7 @@ if (!bEditable){
 	altura="460px";
 }
 %>
-<div id="capaPrincipal" style="position:relative; width:100%; height:<%=altura%>; overflow-y:auto;	margin:5px; border: 2px solid #<%=src.get("color.button.border")%>;">
+<div id="capaPrincipal" style="position:relative; width:100%; height:<%=altura%>; overflow-y:auto;	margin:5px; border: 2px solid ;">
 
 <logic:equal name="EditarConsultaForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">
 		<siga:ConjCampos leyenda="consultas.recuperarconsulta.literal.campossalida">

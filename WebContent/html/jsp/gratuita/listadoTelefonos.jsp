@@ -59,21 +59,6 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 
-	<style type="text/css">
-		.tablaCentral {		
-			width: 10;
-			background-color: #<%=src.get("color.tableTitle.BG")%>;
-		}
-		
-		.tdBotones {
-			text-align: center;			
-			padding-left: 0px;
-			padding-right: 0px;
-			padding-top: 0px;
-			padding-bottom: 0px;
-		}
-		
-	</style>
 		
 	<script type="text/javascript">	
 		function refrescarLocal(){

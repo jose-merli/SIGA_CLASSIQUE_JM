@@ -82,49 +82,6 @@
 	<!-- HEAD -->
 	<head>
 
-		<style type="text/css">
-			.labelTextRojo{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						font-size: 11px; 	font-weight: bold; 
-						margin: auto; color:#6A0000; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; vertical-align: top;}	
-						
-			.labelTextNormal{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						font-size: 11px; vertical-align: top; 
-						margin: auto; color:#<%=src.get("color.labelText")%>; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; padding-left: 5px;}							
-						
-			.boxConsultaRojo {
-						font-size: 10px;font-family: <%=src.get("font.style")%>;
-						font-weight: normal;	margin: auto;
-	                    padding-left: 5px;	vertical-align: top;
-                    	text-align: left;	padding-top: 3px;
-                     	padding-bottom: 3px; border:none;
-                     	background-color:transparent;
-						color:#6A0000;
-						margin-top: 0px;}	
-						
-			.boxComboNormal {
-						font-family: <%=src.get("font.style")%>; font-size: 11px;
-						margin: auto; color:#<%=src.get("color.labelText")%>;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent;}
-
-			.boxComboRojo {
-						font-family: <%=src.get("font.style")%>; font-size: 11px;
-						font-weight: bold; margin: auto;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent; color:#6A0000;}
-
-		</style>
-
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

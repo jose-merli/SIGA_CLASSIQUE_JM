@@ -1379,6 +1379,7 @@ table.fixedheadertable tbody td {
   border: 2px groove;
 }
 .ui-dropdownchecklist-text {
+  font-size: 11px;
   font-weight: normal;
   margin-top: 0px;
   margin-left: 0px;
@@ -1799,6 +1800,114 @@ div#panel #paneles {
 .ui-dropdownchecklist-text {
   border: 0px solid #222222;
 }
-.ui-dropdownchecklist-text {
-  border: 0px solid #222222;
+.labeltextrojo {
+  text-align: left;
+  font-weight: bold;
+  margin: auto;
+  color: #6a0000;
+  padding-right: 17px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  vertical-align: top;
+}
+.labeltextnormal {
+  text-align: left;
+  vertical-align: top;
+  margin: auto;
+  color: #222222;
+  padding-right: 17px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 5px;
+}
+.boxconsultarojo {
+  font-weight: bold;
+  margin: auto;
+  padding-left: 5px;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: none;
+  background-color: transparent;
+  color: #6a0000;
+}
+.boxcombonormal {
+  margin: auto;
+  color: #222222;
+  padding-left: 5px;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: none;
+  background-color: transparent;
+}
+.boxcomborojo {
+  font-weight: bold;
+  margin: auto;
+  padding-left: 5px;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: none;
+  background-color: transparent;
+  color: #6a0000;
+}
+.totales {
+  font-size: 11px;
+  font-weight: bold;
+  color: #333333;
+  margin: auto;
+  padding-right: 4px;
+  padding-left: 3px;
+  vertical-align: middle;
+  text-align: left;
+  padding-top: 3px;
+  background-color: #b5c4d6;
+  padding-bottom: 3px;
+}
+.misbotones {
+  text-align: left;
+  color: #222222;
+  padding-left: 0px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 10px;
+  height: 30px;
+}
+.boxconsultanegro {
+  font-weight: normal;
+  margin: auto;
+  padding-left: 5px;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: none;
+  background-color: transparent;
+  color: #000000;
+  width: 100%;
+}
+.tabletitleespec {
+  font-weight: bold;
+  color: #222222;
+  height: 25px;
+  margin: auto;
+  padding-left: 2px;
+  vertical-align: middle;
+  padding-top: 2px;
+  text-align: center;
+  background-color: #7a96b6;
+}
+.especif {
+  background-color: #7a96b6;
+  position: absolute;
+  width: 964;
+  height: 35;
+  z-index: 2;
+  top: 325px;
+  left: 0px;
 }

@@ -52,7 +52,6 @@
 	
 </script>
 </head>
-<!-- <body background="<%=app%>/html/imagenes/fondo<%=src.get("color")%>.gif"> -->
 <body>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr><td class="rayita"></td></tr>

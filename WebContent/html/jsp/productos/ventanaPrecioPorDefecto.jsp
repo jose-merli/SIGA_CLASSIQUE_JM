@@ -41,33 +41,6 @@
 <!-- HEAD -->
 	<head>
 
-		<style type="text/css">						
-			.labelTextNormal{
-						text-align: left; font-family: <%=src.get("font.style")%>;
-						vertical-align: top; 
-						margin: auto; color:#<%=src.get("color.labelText")%>; 
-						padding-right: 17px; padding-top: 3px;
-						padding-bottom: 3px; padding-left: 5px;}													
-						
-			.boxComboNormal {
-						font-family: <%=src.get("font.style")%>; 
-						margin: auto; color:#<%=src.get("color.labelText")%>;
-						padding-left: 5px; vertical-align: top;
-						text-align: left; padding-top: 3px;
-						padding-bottom: 3px; border:none;
-						background-color:transparent;}
-						
-			.tableTitleEspec {
-						font-family: <%=src.get("font.style")%>;
-						font-weight: bold; color: #<%=src.get("color.titleBar.font")%>;
-						height: 25px; margin: auto;
-						padding-left: 2px; vertical-align: middle;
-						padding-top: 2px; text-align: center;
-						background-color: #<%=src.get("color.titleBar.BG")%>;
-					}
-
-		</style>
-
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

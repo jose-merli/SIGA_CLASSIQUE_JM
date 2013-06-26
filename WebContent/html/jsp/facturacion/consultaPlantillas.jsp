@@ -50,15 +50,7 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<style type="text/css">
 
-			.especif
-			{
-				background-color : #<%=src.get("color.titleBar.BG")%>;
-				position:absolute; width:964; height:35; z-index:2; top: 285px; left: 0px
-			}
-
-		</style>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->

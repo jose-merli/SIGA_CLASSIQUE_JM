@@ -267,8 +267,6 @@ dd { padding-bottom: 15px }
       	});
     
 		function refrescarLocal() {	
-			// #color:#<src.get("color.labelText")%>;
-			// #background-color: #<src.get("color.background")%>;
 			buscar();
 		}		
 		

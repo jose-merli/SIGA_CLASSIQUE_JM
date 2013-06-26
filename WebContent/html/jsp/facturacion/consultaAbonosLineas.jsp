@@ -106,14 +106,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	<head>
 
 		<style type="text/css">
-			.totales {
-				font-family: <%=src.get("font.style")%>; font-size: 11px;
-				font-weight: bold; color: #<%=src.get("color.nonEdit.selected.font")%>;
-				margin: auto; padding-right: 4px;
-				padding-left: 3px; vertical-align: middle;
-				text-align: left; padding-top: 3px;
-				background-color: #<%=src.get("color.nonEdit.selected.BG")%>; padding-bottom: 3px;
-}
+
 		</style>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

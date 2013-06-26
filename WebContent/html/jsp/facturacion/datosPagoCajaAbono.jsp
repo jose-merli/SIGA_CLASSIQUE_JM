@@ -50,28 +50,6 @@
 <!-- HEAD -->
 <head>
 
-		<style type="text/css">
-			.totales {
-				font-family: <%=src.get("font.style")%>; 
-				font-weight: bold; color: #<%=src.get("color.nonEdit.selected.font")%>;
-				margin: auto; padding-right: 4px;
-				padding-left: 3px; vertical-align: middle;
-				text-align: left; padding-top: 3px;
-				background-color: #<%=src.get("color.nonEdit.selected.BG")%>; padding-bottom: 3px;
-			}
-			
-			.misBotones {
-				text-align: left;
-				color:#<%=src.get("color.labelText")%>;
-				padding-left: 0px;
-				padding-right: 10px;
-				padding-top: 5px;
-				padding-bottom: 5px;
-				width: 10px;
-				height: 30px;
-			}
-			
-		</style>
 		
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

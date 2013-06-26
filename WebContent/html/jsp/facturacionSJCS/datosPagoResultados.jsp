@@ -67,22 +67,6 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
- 	 	<style type="text/css">
-	 	.boxConsultaNegro {
-			font-family: <%=src.get("font.style")%>;
-			font-weight: normal;
-			margin: auto;
-			padding-left: 5px;
-			vertical-align: top;
-			text-align: left;
-			padding-top: 3px;
-			padding-bottom: 3px;
-			border:none;
-			background-color:transparent;
-			color:#000000;
-			width:100%;
-		}
-	</style>
  	
 </head>
 
