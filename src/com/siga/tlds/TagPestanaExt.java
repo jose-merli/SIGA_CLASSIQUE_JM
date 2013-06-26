@@ -12,7 +12,8 @@ package com.siga.tlds;
 
 import java.io.PrintWriter;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,7 +50,7 @@ public class TagPestanaExt extends TagSupport {
 	protected int elementoactivo=1;
 	protected int idinstitucionCliente=-1;
 	protected int tipoAcceso=0xffffffff;
-	private Hashtable htParametros=null;
+	private Map htParametros=null;
 	private Element elements[]=null;
 	public static final String SQL_KEY="pestana";
 	//public static final String PROPERTIES_FILE="Pestana.properties";
@@ -139,7 +140,7 @@ public class TagPestanaExt extends TagSupport {
 			HttpSession session = pageContext.getSession();
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			String path = request.getContextPath(); 
-			if(parametros!=null) htParametros=(Hashtable)request.getAttribute(parametros);
+			if(parametros!=null) htParametros=(Map)request.getAttribute(parametros);
 			if(modos!=null) aModos=(String [])request.getAttribute(modos);
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			PrintWriter out = pageContext.getResponse().getWriter();
@@ -215,14 +216,16 @@ public class TagPestanaExt extends TagSupport {
 					out.print(path+"/"+elements[i].url+".do"+"?granotmp="+System.currentTimeMillis());
 					if(htParametros!=null && htParametros.size()!=0){
 						out.print("&");
-						Enumeration parametros=htParametros.keys();
+						Iterator parametros=htParametros.keySet().iterator();
 						int size = htParametros.size();
 						int temp=0;
-						while(parametros.hasMoreElements()){
-							Object parametro=parametros.nextElement();
+						while (parametros.hasNext()) {
+							Object parametro=parametros.next();
 							temp++;
-							out.print((String)parametro+"="+(String)htParametros.get(parametro)+(size>temp?"&":""));
+							String pepe = parametro+"="+htParametros.get(parametro)+(size>temp?"&":""); 
+							out.print(pepe);
 						}
+						
 					}					
 					if(modos!=null){
 						out.print("&modo="+aModos[i]);
