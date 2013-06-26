@@ -12,13 +12,14 @@ h1 {
 }
 
 td {
+	color:@estilo-labeltext;
 	vertical-align: top;
 	word-wrap:break-word;
 }
 
 td.disabled {
+	color: @estilo-linkinactivo;
 	opacity: 0.5;
-	color: #ddddee;
 }
 
 textarea {
@@ -31,6 +32,7 @@ form {
 }
 
 body {
+	background-color : @estilo-background;
 	margin-top : 0px;
 	margin-left : 0px;
 	margin-bottom : 0px;
@@ -39,22 +41,22 @@ body {
 	vertical-align: top;
 	font-size: 13px;
 	width: 100%;
-	font-family: arial;
-	background-color: #4477aa;	
+	font-family: arial;	
 }
 
 select {
-	border: 1px solid #ddddee;
+	border: 1px solid @estilo-buttonborder;
 }
 
 checkbox {
 	font-size: 13px;
 	left: 25px;
+	color:@estilo-labeltext;
 	vertical-align: top;
 	margin-top: -4px;
 	margin-left: 0px;
 	color:#ddddee;
-	background-color: #4477aa;	
+	background-color: @estilo-background;	
 }
 
 radio {
@@ -63,14 +65,14 @@ radio {
 	vertical-align: top;
 	margin-top: -4px;
 	margin-left: 0px;
-	color:#ddddee;
-	background-color: #4477aa;	
+	color:@estilo-labeltext;
+	background-color: @estilo-background;	
 }
 
 fieldset {
-	border: 1px solid #ddddee;	
+	border: 1px solid @estilo-labeltext;	
+	color: @estilo-labeltext;	
 	text-align: left;
-	color: #ddddee;
 	font-size: 13px;
 	padding: 1px;
 	vertical-align: top;
@@ -81,7 +83,7 @@ fieldset {
 }
 
 legend {
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	font-weight: normal;
 	padding-top:0px;
@@ -112,12 +114,12 @@ a.disabled {
 	padding-top: 2px;
 	padding-bottom: 1px;
 	vertical-align: top;
-	background-color : #4477aa;
+	background-color : @estilo-background;
 }
 
 .labeltextnum {
 	text-align: right;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	font-weight: normal;
 	padding-left: 10px;
@@ -129,7 +131,7 @@ a.disabled {
 
 .labeltextvalue{
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -140,7 +142,7 @@ a.disabled {
 
 .txgrandeactivo {
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 14px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -151,7 +153,7 @@ a.disabled {
 
 .txgrandebaja {
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 14px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -162,7 +164,7 @@ a.disabled {
 
 .labeltextvalor {
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -173,7 +175,7 @@ a.disabled {
 
 .labeltext {
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	font-weight: normal;
 	padding-left: 10px;
@@ -192,9 +194,9 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#ddddee;
-	background-color: #446699;
-	border: 1px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-buttonbg;
+	border: 1px solid @estilo-buttonborder;
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-top: 2px;
@@ -204,7 +206,7 @@ a.disabled {
 
 .labeltextcentro {
 	text-align: center;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	padding-left: 3px;
 	padding-right: 3px;
@@ -224,7 +226,7 @@ a.disabled {
 	text-align: left;
 	padding-top: 2px;
 	padding-bottom: 1px;
-	color:#ddddee;
+	color:@estilo-labeltext;
 }
 
 .noneditred {
@@ -242,25 +244,25 @@ a.disabled {
 .tabletitle {
 	font-size: 13px;
 	font-weight: normal;
-	color: #ddddee;
 	margin: auto;
 	padding-left: 2px;
 	vertical-align: middle;
 	padding-top: 2px;
 	text-align: center;
-	background-color: #303e54;
+	color: @estilo-tabletitlefont;
+	background-color: @estilo-labeltable;
 }
 
 .tabletitleprimero {
 	font-size: 13px;
 	font-weight: normal;
-	color: #ddddee;
 	margin: auto;
 	padding-left: 2px;
 	vertical-align: middle;
 	padding-top: 2px;
 	text-align: center;
-  	background-color: #303e54;
+  	color: @estilo-tabletitlefont;
+	background-color: @estilo-labeltable;
 }
 
 #tabladatos td {
@@ -277,9 +279,9 @@ a.disabled {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	color: #333333;
+	color: @estilo-noneditselectedfont;
 	width: 30px;
-	background-color: #e9e9f9;
+	background-color: @estilo-filaparbg;
 }
 
 .filatablaimpar {
@@ -292,9 +294,9 @@ a.disabled {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	color: #333333;
+	color: @estilo-noneditselectedfont;
 	width: 30px;
-	background-color: #d5d5e7;
+	background-color: @estilo-filaimparbg;
 }
 
 .box {
@@ -303,9 +305,9 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#ddddee;
-	background-color: #446699;
-	border: 1px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-buttonbg;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -316,9 +318,9 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color: #ddddee;
-	background-color: #446699;
-	border: 1px solid #ddddee;
+	color: @estilo-buttonfont;
+	background-color: @estilo-buttonbg;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -330,9 +332,9 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#ddddee;
-	background-color:  #446699;
-	border: 1px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color:  @estilo-buttonbg;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -343,15 +345,15 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#ddddee;
-	background-color: #4477aa;
-	border: 1px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-background;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .linea {
-	border-left: 1px solid #ddddee;
+	border-left: 1px solid @estilo-buttonborder;
 }
 
 .boxlabel { 
@@ -360,9 +362,9 @@ a.disabled {
 	margin-top: 0px;
 	margin-left: 0px;
 	text-align: left;
-	color:#ddddee;
-	background-color: #4477aa;
-	border: 0px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-background;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	vertical-align: middle;	
@@ -374,9 +376,9 @@ a.disabled {
 	margin-top: 0px;
 	margin-left: 0px;
 	text-align: left;
-	color:#ddddee;
-	background-color: #4477aa;
-	border: 0px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-background;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	vertical-align: middle;	
@@ -389,9 +391,9 @@ a.disabled {
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#ddddee;
-	background-color: #4477aa;
-	border: 0px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-background;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -403,9 +405,9 @@ a.disabled {
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	background-color: transparent;
-	border: 0px solid #ddddee;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -418,7 +420,7 @@ a.disabled {
 	vertical-align: top;
 	text-align: left;
 	background-color: transparent;
-	border: 0px solid #ddddee;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -431,9 +433,9 @@ a.disabled {
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: right;
-	color:#ddddee;
-	background-color: #4477aa;
-	border: 0px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-background;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;	
 }
@@ -447,10 +449,10 @@ a.disabled {
 	text-align: left;
 	//padding-top: 2px;
 	//padding-bottom: 3px;
-	background-color:transparent;
+	background-color: @estilo-background;
 	background-color: #4477aa;
 	margin-top: -4px;
-	border: 0px solid #ddddee;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -461,21 +463,21 @@ a.disabled {
 	font-size: 13px;
 	left: 25px;
 	width: 70%;
-	background-color: #446699;
-	color: #ddddee;
-	border: 1px solid #ddddee;
+	background-color: @estilo-buttonbg;
+	color: @estilo-buttonfont;
+	border: 1px solid @estilo-buttonborder;
 	vertical-align: top;
 }
 
 .boxdisablednumber {
 	font-size: 13px;
 	left: 25px;
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	text-align: right;
 	vertical-align: top;
 	margin-top: -3px;
 	margin-left: 0px;
-	border: 1px solid #ddddee;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;	
 }
@@ -485,9 +487,9 @@ a.disabled {
 	left: 25px;
 	margin-top: -2px;
 	margin-left: 0px;
-	border: 1px solid #ddddee;
-	color: #ddddee;
-	background-color: #446699;	
+	border: 1px solid @estilo-buttonborder;
+	color: @estilo-buttonfont;
+	background-color: @estilo-buttonbg;	
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -498,17 +500,17 @@ a.disabled {
 	vertical-align: top;
 	margin-top: 0px;	
 	margin-left: 0px;	
-	color: #ddddee;
-	background-color: #446699;
-	border: 1px solid #ddddee;
+	color: @estilo-buttonfont;
+	background-color: @estilo-buttonbg;
+	border: 1px solid @estilo-buttonborder;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .button {
-	color: #ddddee;
-	background-color: #446699;
-	border: 2px solid  #ddddee;
+	color: @estilo-buttonfont;
+	background-color: @estilo-buttonbg;
+	border: 2px solid  @estilo-buttonborder;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	font-size: 13px;
@@ -518,16 +520,16 @@ a.disabled {
 	margin :0px;
 	padding-left: 14px;
 	padding-right: 14px;
-	padding-left: 0px;
-	padding-right: 0px;
+	padding-left: 0px\9;
+	padding-right: 0px\9;
 	height: 22px;
 }
 
 .buttonentabla {
 	font-size: 13px;
 	color: white;
-	background-color: #444444;
-	border: thin solid white;
+	background-color: @estilo-buttonbg;
+	border: 2px solid  @estilo-buttonborder;
 	font-weight: bold;
 	cursor: pointer;
 	clear: right;
@@ -540,11 +542,11 @@ a.disabled {
 }
 
 .titlebar {
-	background-color : #dddeee;
+	background-color : @estilo-titlebarfont;
 	font-size: 13px;
 	text-align: center;
 	font-weight: normal;
-	color:#446699;
+	color:@estilo-titlebarbg;
 }
 
 .titulos {
@@ -552,8 +554,8 @@ a.disabled {
 	text-align:right;
 	font-size: 17px;
 	text-decoration: none;
-	background-color : #303e54;
-	color:#dddeee;
+	background-color : @estilo-labeltable;
+	color:@estilo-titlebarfont;
 	padding-top: 2px;
 	padding-right: 50px;
 	padding-bottom: 2px;
@@ -570,8 +572,8 @@ a.disabled {
 	font-weight: normal; 
 	font-size: 13px;
 	text-decoration: none;
-	background-color : #303e54;
-	color:#dddeee;
+	background-color : @estilo-labeltable;
+	color:@estilo-titlebarfont;
 	height: 25px;
 	width:100%;
 	padding: 2px;
@@ -585,8 +587,8 @@ a.disabled {
 	text-align:left;
 	font-size: 17px; 
 	text-decoration: none;
-	background-color : #303e54;
-	color:#dddeee;
+	background-color : @estilo-labeltable;
+	color:@estilo-titlebarfont;
 	padding-top: 1px;
 	padding-right: 10px;
 	padding-bottom: 1px;
@@ -601,8 +603,8 @@ a.disabled {
 	font-weight: normal; 
 	font-size: 13px;
 	text-decoration: none;
-	background-color : #303e54;
-	color:#dddeee;
+	background-color : @estilo-labeltable;
+	color:@estilo-titlebarfont;
 	height: 22px;
 	width:100%;
 	padding: 2px;
@@ -616,9 +618,9 @@ a.disabled {
 	font-size: 13px;
 	text-decoration: none;
 	padding: 2px;
-	background-color : #303e54;
-	border: 1px solid #ddddee;
-	color:#dddeee;;
+	background-color : @estilo-labeltable;
+	border: 1px solid @estilo-labeltext;
+	color:@estilo-titlebarfont;
 	height: 30px;
 	width: 100%;
 	font: bold;
@@ -627,7 +629,7 @@ a.disabled {
 
 .titulitos {
 	font-weight: bold; 
-	color:#dddeee;
+	color:@estilo-titlebarfont;
 	font-size: 13px;
 	text-decoration: none;
 	margin: 0px;
@@ -640,21 +642,21 @@ a.disabled {
 
 a.titulitos:link {
 	cursor: pointer; 
-	color: #ddddee; 
+	color: @estilo-titulos; 
 	font-style: normal; 
 	text-decoration: none;
 }
 a.titulitos:active {
-	color: #ddddee;
+	color: @estilo-titulos;
 	text-decoration: none;
 }
 a.titulitos:hover {
-	color: #ddddee;
+	color: @estilo-titulos;
 	text-decoration: none;
 }
 
 a.section:link {
-	color:#dddeee;
+	color:@estilo-linkinactivo;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -663,7 +665,7 @@ a.section:link {
 }
 
 a.section:visited {
-	color:#dddeee;
+	color:@estilo-linkinactivo;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -672,7 +674,7 @@ a.section:visited {
 }
 
 a.section:hover {
-	color:#dddeee;
+	color:@estilo-linkactivo;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -681,7 +683,7 @@ a.section:hover {
 }
 
 a.section:active {
-	color:#dddeee;
+	color:@estilo-linkactivo;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -691,7 +693,7 @@ a.section:active {
 
 
 a.lb:link {
-	color:#dddeee;
+	color:@estilo-linkinactivo;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -701,7 +703,7 @@ a.lb:link {
 
 
 a.lb:visited {
-	color:#dddeee;
+	color:@estilo-linkinactivo;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -710,7 +712,7 @@ a.lb:visited {
 }
 
 a.lb:hover {
-	color:#dddeee;
+	color:@estilo-linkactivo;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -719,7 +721,7 @@ a.lb:hover {
 }
 
 a.lb:active {
-	color:#dddeee;
+	color:@estilo-linkactivo;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -766,15 +768,15 @@ a.lb:active {
 }
 
 .cllevel0 {
-	background-color: #27436c;
-	layer-background-color: #27436c;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel0bg;
+	layer-background-color: @estilo-menulevel0bg;
+	color: @estilo-menulevel0font;
 }
 
 .cllevel0over {
-	background-color: #446699;
-	layer-background-color: #446699;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel0activobg;
+	layer-background-color: @estilo-menulevel0activobg;
+	color: @estilo-menulevel0activofont;
 	cursor: pointer;
 	border-bottom: 1px solid #000000;
 	border-left: 1px solid #000000;
@@ -784,9 +786,9 @@ a.lb:active {
 }
 
 .cllevel0nolinkover {
-	background-color: #446699;
-	layer-background-color: #446699;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel0activobg;
+	layer-background-color: @estilo-menulevel0activobg;
+	color: @estilo-menulevel0activofont;
 	cursor: default;
 }
 
@@ -806,24 +808,24 @@ a.lb:active {
 }
 
 .cllevel1 {
-	background-color: #27436c;
-	layer-background-color: #27436c;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel1bg;
+	layer-background-color: @estilo-menulevel1bg;
+	color: @estilo-menulevel1font;
 	border: 1px solid #ffffff;
 }
 
 .cllevel1over {
-	background-color: #446699;
-	layer-background-color: #446699;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel1activobg;
+	layer-background-color: @estilo-menulevel1activobg;
+	color: @estilo-menulevel1activofont;
 	cursor: pointer;
 	border: 1px solid #000000;
 }
 
 .cllevel1nolinkover {
-	background-color: #446699;
-	layer-background-color: #446699;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel1activobg;
+	layer-background-color: @estilo-menulevel1activobg;
+	color: @estilo-menulevel1activofont;
 }
 
 .cllevel1border {
@@ -842,16 +844,16 @@ a.lb:active {
 }
 
 .cllevel2 {
-  	background-color: #27436c;
-  	layer-background-color: #27436c;
-	color: #dbdbdb;
+  	background-color: @estilo-menulevel2bg;
+	layer-background-color: @estilo-menulevel2bg;
+	color: @estilo-menulevel2font;
 	border: 1px solid #ffffff;
 }
 
 .cllevel2over {
-	background-color: #446699;
-	layer-background-color: #446699;
-	color: #dbdbdb;
+	background-color: @estilo-menulevel2activobg;
+	layer-background-color: @estilo-menulevel2activobg;
+	color: @estilo-menulevel2activofont;
 	cursor: pointer;
 	cursor: pointer;
 	border: 1px solid #000000;
@@ -863,7 +865,7 @@ a.lb:active {
 }
 
 a.imagelink:link {
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 
 	font-weight: normal;
@@ -876,7 +878,7 @@ a.imagelink:link {
 }
 
 a.imagelink:visited {
-	color:#ddddee;;
+	color:@estilo-labeltext;
 	font-size: 13px;
 
 	font-weight: normal;
@@ -889,7 +891,7 @@ a.imagelink:visited {
 }
 
 a.imagelink:hover {
-	color:#ddddee;
+	color:@estilo-labeltext;;
 	font-size: 13px;
 
 	font-weight: normal;
@@ -903,7 +905,7 @@ a.imagelink:hover {
 	
 
 a.imagelink:active {
-	color:#ddddee;
+	color:@estilo-labeltext;;
 	font-size: 13px;
 	font-weight: normal;
 	margin: auto;
@@ -917,71 +919,71 @@ a.imagelink:active {
 .noneditselected {
 	font-size: 13px;
 	font-weight: bold;
-	color: #333333;
+	color: @estilo-noneditselectedfont;
 	margin: auto;
 	padding-left: 5px;
 	vertical-align: middle;
 	text-align: left;
 	padding-top: 3px;
-	background-color: #ddddee;
+	background-color: @estilo-noneditselectedbg;
 	padding-bottom: 3px;
 }
 
 .tablacentralmedia {
-	background-color : #446699;
+	background-color : @estilo-titlebarbg;
 	width: 100%;
 }
 .tablacentralpeque {
-	background-color : #446699;
+	background-color : @estilo-titlebarbg;
 	width: 100%;
 }
 
 .tablacentralgrande {
-	background-color : #446699;
+	background-color : @estilo-titlebarbg;
 	width: 100%;
 }
 
 .tablacentralcampos {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .tablacentralcamposimp {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 670px;
 }
 
 .tablacentralcamposmedia {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .tablacentralcamposgrande {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .tablacentralcampospeque {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .tablacampos {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .tablatitulo {
 	width: 100%;
-	background-color : #303e54;
+	background-color : @estilo-labeltable;
 	margin: 0px;
 	padding: 0px;	
-	border: 1px solid #ddddee;	
+	border: 1px solid @estilo-labeltext;	
 }
 
 .tdbotones {
 	text-align: right;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	padding-left: 7px;
 	padding-right: 7px;
 	padding-top: 1px;
@@ -994,7 +996,7 @@ a.imagelink:active {
 
 .tdmensaje {
 	text-align: center;
-	color:#ddddee;
+	color:@estilo-labeltext;
 	font-size: 13px;
 	padding-left: 5px;
 	padding-right: 5px;
@@ -1004,7 +1006,7 @@ a.imagelink:active {
 }
 
 .tablecabecera {
-	color: #ddddee;
+	color: @estilo-tabletitlefont;
 	padding-left: 0px;
 	vertical-align: left;
 	padding-top: 0px;
@@ -1029,37 +1031,37 @@ a.imagelink:active {
 
 
 .botonesdetallesinposicionfija {
-	background-color : #446699;
+	background-color : @estilo-tabletitlebg;
 	width:100%; 
 	height:26px; 
 	z-index:2; 
 	bottom: 0px; 
 	left:0px;
-	border: 0px solid #ddddee;	
+	border: 0px solid @estilo-labeltext;	
 	margin:0px;
 	padding:0px;
 }
 
 .botonesdetalle {
-	background-color : #446699;
+	background-color : @estilo-tabletitlebg;
 	position:absolute; 
 	width:100%; 
 	height:26px; 
 	z-index:2; 
 	bottom: 0px; 
 	left:0px;
-	border: 0px solid #ddddee;	
+	border: 0px solid @estilo-labeltext;	
 	margin:0px;
 	padding:0px;
 }
 
 .botonesseguido {
-	background-color : #446699;
+	background-color : @estilo-tabletitlebg;
 	position:relative;
 	width:100%; 
 	height:26px; 
 	z-index:2; 
-	border: 0px solid #ddddee;	
+	border: 0px solid @estilo-labeltext;	
 	margin:0px;
 	padding:0px;
 }
@@ -1070,10 +1072,8 @@ a.imagelink:active {
 	height: 600px; 
 	top: 102px; 
 	z-index:3;  
-  	border-bottom: 0px solid #303e54;
-  	border-left: 0px solid #303e54;
-  	border-right: 0px solid #303e54;
-  	border-top: 0px solid #303e54;
+	border: 0px solid @estilo-labeltable;
+
 	margin :0px;
 	margin-top: 3px;	
 }
@@ -1086,14 +1086,14 @@ a.imagelink:active {
 }	
 
 .posicionbusquedasolo {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
 	height: 100%;
 }
 .posicionbusquedasoloimp {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	left: 0px; 
 	width: 670px; 
 	top: 0px; 
@@ -1144,8 +1144,8 @@ a.imagelink:active {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	background-color : #eeeeee;
-	color: #333333;
+	background-color : @estilo-nonedit;
+	color: @estilo-noneditselectedfont;
 }
 
 .posicionpest {
@@ -1160,14 +1160,14 @@ a.imagelink:active {
 	font-size: 13px;
 
 	font-weight: normal;
-	color: #333333;
+	color: @estilo-noneditselectedfont;
 	margin: auto;
 	padding-right: 4px;
 	padding-left: 3px;
 	vertical-align: middle;
 	text-align: left; 
 	padding-top: 0px;
-	background-color: #ddddee;
+	background-color: @estilo-noneditselectedbg;
 	padding-bottom: 0px;
 }
 
@@ -1184,28 +1184,28 @@ a.imagelink:active {
 }
 
 .posicionmodalgrande {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .posicionmodalmedia {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .posicionmodalpeque {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 	width: 100%;
 }
 
 .detallepestanas {
-	background-color: #4477aa;
+	background-color: @estilo-background;
 }
 
 .paginator {
 	font-size: 13px;
-	color: #ddddee; 
-	background-color: #446699;
+	color: @estilo-tabletitlefont; 
+	background-color: @estilo-tabletitlebg;
 	text-decoration: none;
 	margin: 0px;
 	padding: 1px;
@@ -1213,8 +1213,8 @@ a.imagelink:active {
 
 .tpaginator {
 	font-size: 13px;
-	color: #ddddee; 
-	background-color: #446699;
+	color: @estilo-tabletitlefont; 
+	background-color: @estilo-tabletitlebg;
 	text-decoration: none;
 	margin: 0px;
 	padding: 0px;
@@ -1230,34 +1230,34 @@ a.imagelink:active {
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#ddddee;
-	background-color: #446699;
-	border: 0px solid #ddddee;
+	color:@estilo-labeltext;
+	background-color: @estilo-tabletitlebg;
+	border: 0px solid @estilo-buttonborder;
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
 
 a.paginator:link {
 	cursor: pointer; 
-	color: #ddddee; 
+	color: @estilo-titulos; 
 	font-style: normal; 
 	text-decoration: none;
 }
 a.paginator:visited {
-	color: #ddddee;
+	color: @estilo-titulos;
 	text-decoration: none;
 }
 a.paginator:hover {
-	color: #ddddee;
+	color: @estilo-titulos;
 	text-decoration: none;
 }
 a.paginator:active {
-	color: #ddddee;
+	color: @estilo-titulos;
 	text-decoration: none;
 }
 
 .tooltipo {
-	background-color: #446699;
+	background-color: @estilo-tabletitlebg;
 	border: solid 1px #999999;
 	vertical-align: middle;
 	padding-right: 5px;
@@ -1268,7 +1268,7 @@ a.paginator:active {
 }
 .tooltipoletra {
 	font-size: 12px;
-	color: #ddddee;
+	color: @estilo-tabletitlefont;
 }
 
 #iconoboton {
@@ -1307,7 +1307,7 @@ ul#tabs li {
 		padding-left: 8px;
 		list-style: none;
 		margin-right: 1px;
-		background-color: #ddddee;
+		background-color: @estilo-labeltable;
 	font-size: 13px;
 
 		font-weight: normal;
@@ -1317,14 +1317,13 @@ ul#tabs li {
 ul#tabs li.actual {
 		height: 24px;
 		width: 80px;
-		background-color: #303e54;
+		background-color: @estilo-labeltable;
 		font-size: 13px;
 		font-weight: normal;
 		color: #ffffff;
 		text-decoration: none;
 		border-left-width: 2px;
-		border-left-style: solid;
-		border-left-color: #4477aa;			
+		border-left-color: @estilo-background;			
 }
 
 ul#tabs li a {	
@@ -1352,13 +1351,13 @@ ul#tabs li.actual a {
 
 
 div#panel #paneles {
+	background: @estilo-background;
 	position:absolute;
 	left: 1px;
 	top: 23px;
 	width: 950px;
 	height: 350px;
 	border: 1px solid #91a7b4;
-	background: #4477aa;
 	overflow: hidden;
 	z-index: 10px;
 }
@@ -1371,6 +1370,7 @@ div#panel #paneles div {
 	text-decoration: none;
 	color: #000;
 	overflow: auto;
+	border: 0px solid @estilo-buttonborder;
 }
 
 .sigapopuptable {
@@ -1481,7 +1481,7 @@ div#panel #paneles div {
 }
  
 .notice-item {
-	background: #f9edbe url(../imagenes/warning.png) no-repeat 2px;
+	background: #f9edbe url(../images/warning.png) no-repeat 2px;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
@@ -1507,11 +1507,11 @@ div#panel #paneles div {
 }
 
 .error{
-	background: #f57676 url(../imagenes/error.png) no-repeat 2px;
+	background: #f57676 url(../images/error.png) no-repeat 2px;
 }
 
 .success{
-	background: #84f576 url(../imagenes/success.png) no-repeat 2px;
+	background: #84f576 url(../images/success.png) no-repeat 2px;
 }
 
 #ui-datepicker-div{
@@ -1550,506 +1550,5 @@ table.fixedheadertable tbody td {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-}
-h1 {
-	color:@estilo-labeltext;
-}
-td.disabled {
-	color: @estilo-linkinactivo;
-}
-
-
-body {
-	background-color : @estilo-background;
-	font-family: @estilo-fuente;
-}
-select {
-	border: 1px solid @estilo-buttonborder;
-}
-checkbox {
-	color:@estilo-labeltext;
-	background-color: @estilo-background;	
-}
-radio {
-	color:@estilo-labeltext;
-	background-color: @estilo-background;	
-}
-fieldset {
-	border: 1px solid @estilo-labeltext;	
-	color: @estilo-labeltext;
-}
-legend {
-	color:@estilo-labeltext;
-}
-.valortop {
-	background-color : @estilo-background;
-}
-.labeltextnum {
-	color:@estilo-labeltext;
-}
-.labeltextvalue{
-	color:@estilo-labeltext;
-}
-.txgrandeactivo {
-	color:@estilo-labeltext;
-}
-.txgrandebaja {
-	color:@estilo-labeltext;
-}
-.labeltextvalor {
-	color:@estilo-labeltext;
-}
-.labeltext {
-	color:@estilo-labeltext;
-}
-.labeltextarea{
-	color:@estilo-labeltext;
-	background-color: @estilo-buttonbg;
-	border: 1px solid @estilo-buttonborder;
-} 
-.labeltextcentro {
-	color:@estilo-labeltext;
-}
-.nonedit {
-	color:@estilo-labeltext;
-}
-.tabletitle {
-	color: @estilo-tabletitlefont;
-	background-color: @estilo-labeltable;
-}
-.tabletitleprimero {
-	color: @estilo-tabletitlefont;
-	background-color: @estilo-labeltable;
-}
-.filatablapar {
-	color: @estilo-noneditselectedfont;
-	background-color: @estilo-filaparbg;
-}
-.filatablaimpar {
-	color: @estilo-noneditselectedfont;
-	background-color: @estilo-filaimparbg;
-}
-.box {
-	color:@estilo-labeltext;
-	background-color: @estilo-buttonbg;
-	border: 1px solid @estilo-buttonborder;
-}
-.boxnumber {
-	color: @estilo-buttonfont;
-	background-color: @estilo-buttonbg;
-	border: 1px solid @estilo-buttonborder;
-}
-.boxmayuscula {
-	color:@estilo-labeltext;
-	background-color:  @estilo-buttonbg;
-	border: 1px solid @estilo-buttonborder;
-}
-.boxdisabled {
-	color:@estilo-labeltext;
-	background-color: @estilo-background;
-	border: 1px solid @estilo-buttonborder;
-}
-.linea {
-	border-left: 1px solid @estilo-buttonborder;
-}
-.boxlabel { 
-	color:@estilo-labeltext;
-	background-color: @estilo-background;
 	border: 0px solid @estilo-buttonborder;
-}
-.boxlabelreadonly { 
-	color:@estilo-labeltext;
-	background-color: @estilo-background;
-	border: 0px solid @estilo-buttonborder;
-}
-.boxconsulta { 
-	color:@estilo-labeltext;
-	background-color: @estilo-background;
-	border: 0px solid @estilo-buttonborder;
-}
-.boxcomboconsulta { 
-	color:@estilo-labeltext;
-	border: 0px solid @estilo-buttonborder;
-}
-.boxcomboentabla { 
-	border: 0px solid @estilo-buttonborder;
-}
-.boxconsultanumber {
-	color:@estilo-labeltext;
-	background-color: @estilo-background;
-	border: 0px solid @estilo-buttonborder;
-}
-.boxconsultalabeltext {
-	background-color: @estilo-background;
-	border: 0px solid @estilo-buttonborder;
-}
-.boxcabecera {
-	background-color: @estilo-buttonbg;
-	color: @estilo-buttonfont;
-	border: 1px solid @estilo-buttonborder;
-}
-.boxdisablednumber {
-	background-color: @estilo-background;
-	border: 1px solid @estilo-buttonborder;
-}
-.boxlogin {
-	border: 1px solid @estilo-buttonborder;
-	color: @estilo-buttonfont;
-	background-color: @estilo-buttonbg;	
-}
-.boxcombo {
-	color: @estilo-buttonfont;
-	background-color: @estilo-buttonbg;
-	border: 1px solid @estilo-buttonborder;
-}
-.button {
-	color: @estilo-buttonfont;
-	background-color: @estilo-buttonbg;
-	border: 2px solid  @estilo-buttonborder;
-}
-.titlebar {
-	background-color : @estilo-titlebarfont;
-	color:@estilo-titlebarbg;
-}
-.titulos {
-	background-color : @estilo-labeltable;
-	color:@estilo-titlebarfont;
-}
-.titulospeq {
-	background-color : @estilo-labeltable;
-	color:@estilo-titlebarfont;
-}
-.titulosleft {
-	background-color : @estilo-labeltable;
-	color:@estilo-titlebarfont;
-}
-.titulitosdatos {
-	background-color : @estilo-labeltable;
-	color:@estilo-titlebarfont;
-}
-.titulitosdatosimp {
-	background-color : @estilo-labeltable;
-	border: 1px solid @estilo-labeltext;
-	color:@estilo-titlebarfont;;
-}
-.titulitos {
-	color:@estilo-titlebarfont;
-}
-a.titulitos:link {
-	color: @estilo-titulos; 
-}
-a.titulitos:active {
-	color: @estilo-titulos;
-}
-a.titulitos:hover {
-	color: @estilo-titulos;
-}
-a.section:link {
-	color:@estilo-linkinactivo;
-}
-a.section:visited {
-	color:@estilo-linkinactivo;
-}
-a.section:hover {
-	color:@estilo-linkactivo;
-}
-a.section:active {
-	color:@estilo-linkactivo;
-}
-a.lb:link {
-	color:@estilo-linkinactivo;
-}
-a.lb:visited {
-	color:@estilo-linkinactivo;
-}
-a.lb:hover {
-	color:@estilo-linkactivo;
-}
-a.lb:active {
-	color:@estilo-linkactivo;
-}
-.rayita { 
-	 background-image:url(<%:app%>/html/imagenes/bgppals.gif); 
-}
-.cllevel0 {
-	background-color: @estilo-menulevel0bg;
-	layer-background-color: @estilo-menulevel0bg;
-	color: @estilo-menulevel0font;
-}
-.cllevel0over {
-	background-color: @estilo-menulevel0activobg;
-	layer-background-color: @estilo-menulevel0activobg;
-	color: @estilo-menulevel0activofont;
-}
-.cllevel0nolinkover {
-	background-color: @estilo-menulevel0activobg;
-	layer-background-color: @estilo-menulevel0activobg;
-	color: @estilo-menulevel0activofont;
-}
-.cllevel1 {
-	background-color: @estilo-menulevel1bg;
-	layer-background-color: @estilo-menulevel1bg;
-	color: @estilo-menulevel1font;
-}
-.cllevel1over {
-	background-color: @estilo-menulevel1activobg;
-	layer-background-color: @estilo-menulevel1activobg;
-	color: @estilo-menulevel1activofont;
-}
-.cllevel1nolinkover {
-	background-color: @estilo-menulevel1activobg;
-	layer-background-color: @estilo-menulevel1activobg;
-	color: @estilo-menulevel1activofont;
-}
-.cllevel2 {
-	background-color: @estilo-menulevel2bg;
-	layer-background-color: @estilo-menulevel2bg;
-	color: @estilo-menulevel2font;
-}
-.cllevel2over {
-	background-color: @estilo-menulevel2activobg;
-	layer-background-color: @estilo-menulevel2activobg;
-	color: @estilo-menulevel2activofont;
-}
-a.imagelink:link {
-	color:@estilo-labeltext;;
-}
-a.imagelink:visited {
-	color:@estilo-labeltext;;
-}
-a.imagelink:hover {
-	color:@estilo-labeltext;;
-}
-a.imagelink:active {
-	color:@estilo-labeltext;;
-}
-.noneditselected {
-	color: @estilo-noneditselectedfont;
-	background-color: @estilo-noneditselectedbg;
-}
-.tablacentralmedia {
-	background-color : @estilo-titlebarbg;
-}
-.tablacentralpeque {
-	background-color : @estilo-titlebarbg;
-}
-.tablacentralgrande {
-	background-color : @estilo-titlebarbg;
-}
-.tablacentralcampos {
-	background-color: @estilo-background;
-}
-.tablacentralcamposimp {
-	background-color: @estilo-background;
-}
-.tablacentralcamposmedia {
-	background-color: @estilo-background;
-}
-.tablacentralcamposgrande {
-	background-color: @estilo-background;
-}
-.tablacentralcampospeque {
-	background-color: @estilo-background;
-}
-.tablacampos {
-	background-color: @estilo-background;
-}
-.tablatitulo {
-	background-color : @estilo-labeltable;
-	border: 1px solid @estilo-labeltext;	
-}
-.tdbotones {
-	color:@estilo-labeltext;
-}
-.tdmensaje {
-	color:@estilo-labeltext;
-}
-.tablecabecera {
-	color: @estilo-tabletitlefont;
-}
-.botonesdetallesinposicionfija {
-	background-color : @estilo-tabletitlebg;
-	border: 0px solid @estilo-labeltext;	
-}
-.botonesdetalle {
-	background-color : @estilo-tabletitlebg;
-	border: 0px solid @estilo-labeltext;	
-}
-.botonesseguido {
-	background-color : @estilo-tabletitlebg;
-	border: 0px solid @estilo-labeltext;	
-}
-.posicionprincipal {
-	border-bottom: 0px solid @estilo-labeltable;
-	border-left: 0px solid @estilo-labeltable;
-	border-right: 0px solid @estilo-labeltable;
-	border-top: 0px solid @estilo-labeltable;
-}
-.posiciontitulo { 
-}	
-.posicionbusquedasolo {
-	background-color: @estilo-background;
-}
-.posicionbusquedasoloimp {
-	background-color: @estilo-background;
-}
-.pestanatd a {
-	border-left-color: @estilo-background;	
-	background: url(pestana.gif) no-repeat right;
-}
-
-.pestanatd a:hover {
-	background: url(pestahover.gif) no-repeat right;
-}
-
-.pestanatd a.here {
-	background: url(pestahover.gif) no-repeat right;
-}
-.listanonedit {
-	background-color : @estilo-nonedit;
-	color: @estilo-noneditselectedfont;
-}
-.listanoneditselected {
-	color: @estilo-noneditselectedfont;
-	background-color: @estilo-noneditselectedbg;
-}
-.posicionmodalgrande {
-	background-color: @estilo-background;
-}
-.posicionmodalmedia {
-	background-color: @estilo-background;
-}
-.posicionmodalpeque {
-	background-color: @estilo-background;
-}
-.detallepestanas {
-	background-color: @estilo-background;
-}
-.paginator {
-	color: @estilo-tabletitlefont; 
-	background-color: @estilo-tabletitlebg;
-}
-.tpaginator {
-	color: @estilo-tabletitlefont; 
-	background-color: @estilo-tabletitlebg;
-}
-.boxconsultapaginador { 
-	color:@estilo-labeltext;
-	background-color: @estilo-tabletitlebg;
-	border: 0px solid @estilo-buttonborder;
-}
-a.paginator:link {
-	color: @estilo-titulos; 
-}
-a.paginator:visited {
-	color: @estilo-titulos;
-}
-a.paginator:hover {
-	color: @estilo-titulos;
-}
-a.paginator:active {
-	color: @estilo-titulos;
-}
-.tooltipo {
-	background-color: @estilo-tabletitlebg;
-}
-.tooltipoletra {
-	color: @estilo-tabletitlefont;
-}
-ul#tabs li {
-		background-color: @estilo-labeltable;
-}
-ul#tabs li.actual {
-		background-color: @estilo-labeltable;
-		border-left-color: @estilo-background;			
-}
-div#panel #paneles {
-	background: @estilo-background;
-}
-.ui-dropdownchecklist-text {
-	border: 0px solid @estilo-buttonborder;
-}
-.labeltextrojo{
-	text-align: left;
-	font-weight: bold; 
-	margin: auto; color:#6a0000; 
-	padding-right: 17px; padding-top: 3px;
-	padding-bottom: 3px; vertical-align: top;
-}	
-			
-.labeltextnormal{
-	text-align: left;
-	vertical-align: top; 
-	margin: auto; color:@estilo-labeltext; 
-	padding-right: 17px; padding-top: 3px;
-	padding-bottom: 3px; padding-left: 5px;
-}							
-			
-.boxconsultarojo {
-	font-weight: bold; margin: auto;
-	padding-left: 5px; vertical-align: top;
-	text-align: left; padding-top: 3px;
-	padding-bottom: 3px; border:none;
-	background-color:transparent; color:#6a0000;
-}						  
-			
-.boxcombonormal {
-			margin: auto; color:@estilo-labeltext;
-			padding-left: 5px; vertical-align: top;
-			text-align: left; padding-top: 3px;
-			padding-bottom: 3px; border:none;
-			background-color:transparent;}
-
-.boxcomborojo {
-	font-weight: bold; margin: auto;
-	padding-left: 5px; vertical-align: top;
-	text-align: left; padding-top: 3px;
-	padding-bottom: 3px; border:none;
-	background-color:transparent; color:#6a0000;
-}
-			
-.totales {
-	font-size: 11px;
-	font-weight: bold; color: @estilo-noneditselectedfont;
-	margin: auto; padding-right: 4px;
-	padding-left: 3px; vertical-align: middle;
-	text-align: left; padding-top: 3px;
-	background-color: @estilo-noneditselectedbg; padding-bottom: 3px;
-}
-.misbotones {
-	text-align: left;
-	color:@estilo-labeltext;
-	padding-left: 0px;
-	padding-right: 10px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	width: 10px;
-	height: 30px;
-}
-
-.boxconsultanegro {
-	font-weight: normal;
-	margin: auto;
-	padding-left: 5px;
-	vertical-align: top;
-	text-align: left;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	border:none;
-	background-color:transparent;
-	color:#000000;
-	width:100%;
-}
-
-.tabletitleespec {
-	font-weight: bold; color: @estilo-titlebarfont;
-	height: 25px; margin: auto;
-	padding-left: 2px; vertical-align: middle;
-	padding-top: 2px; text-align: center;
-	background-color: @estilo-titlebarbg;
-}
-
-.especif {
-	background-color : @estilo-titlebarbg;
-	position:absolute; width:964; height:35; z-index:2; top: 325px; left: 0px
 }
