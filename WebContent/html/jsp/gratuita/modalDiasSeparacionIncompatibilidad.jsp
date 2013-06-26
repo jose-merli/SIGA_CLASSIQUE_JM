@@ -80,6 +80,7 @@
 		}
 		
 		function mainSub(){
+			/*
 				$(document).ready(
 				function() { 
 					$.blockUI({
@@ -88,17 +89,22 @@
 						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
 				}
 			)
-			bloqueado=true; 
+			*/
+			jQuery("#divEspera").show();
+			bloqueado=true;
 		}
 
-		function mainFin(){
+		function mainFin(){			
 			if(bloqueado){
+				/*
 				$(document).ready(
 					function() { 
 				    	$.unblockUI(); 
 					}
 				)
+				*/
 				bloqueado=false;
+				jQuery("#divEspera").hide();
 			} 
 		}
 		
