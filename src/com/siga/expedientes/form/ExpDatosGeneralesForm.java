@@ -6,6 +6,8 @@ package com.siga.expedientes.form;
 
 import java.util.StringTokenizer;
 
+import org.json.JSONObject;
+
 import com.siga.general.MasterForm;
 
 /**
@@ -310,28 +312,30 @@ public class ExpDatosGeneralesForm extends MasterForm {
 		return juzgado;
 	}
 	public void setJuzgado(String juzgado) {
-		StringTokenizer st = new StringTokenizer(juzgado, ",");
-		
-		if (st.hasMoreTokens())
-		{
-			this.juzgado = st.nextToken();
-
-			if (st.hasMoreTokens())
-			{
-				this.idInstitucionJuzgado = st.nextToken();
-			}
-			
-			else
-			{
+		if (!juzgado.startsWith("{")){
+			StringTokenizer st = new StringTokenizer(juzgado, ",");
+			if (st.hasMoreTokens()) {
+				this.juzgado = st.nextToken();
+				if (st.hasMoreTokens()) {
+					this.idInstitucionJuzgado = st.nextToken();
+				} else {
+					this.idInstitucionJuzgado="";
+				}
+			} else {
+				this.juzgado="";
 				this.idInstitucionJuzgado="";
 			}
+		} else {
+			// JSON
+			try {
+				final JSONObject juzgadoJSON = new JSONObject(juzgado);
+				this.juzgado=(String) juzgadoJSON.get("idjuzgado");
+				this.idInstitucionJuzgado=(String) juzgadoJSON.get("idinstitucion");
+			} catch (Exception e) {				
+			}
 		}
 		
-		else
-		{
-			this.juzgado="";
-			this.idInstitucionJuzgado="";
-		}
+		
 	}
 	public String getIdInstitucionJuzgado() {
 		return idInstitucionJuzgado;
@@ -347,29 +351,32 @@ public class ExpDatosGeneralesForm extends MasterForm {
 
 
 	public void setIdMateria(String valor) {
-		StringTokenizer st = new StringTokenizer(valor, ",");
-		
-		if (st.hasMoreTokens())
-		{
-			st.nextToken();
-			if (st.hasMoreTokens())
-			{
-				this.idArea = st.nextToken();
-				if (st.hasMoreTokens())
-				{
-					this.idMateria = st.nextToken();
-					
+		if (valor.startsWith("{")){
+			try {
+				final JSONObject idmateriaJSON = new JSONObject(valor);
+				this.idMateria=(String) idmateriaJSON.get("idmateria");
+				this.idArea=(String) idmateriaJSON.get("idarea");
+			} catch (Exception e) {		
+			}
+		} else {
+			StringTokenizer st = new StringTokenizer(valor, ",");
+			if (st.hasMoreTokens()){
+				st.nextToken();
+				if (st.hasMoreTokens()){
+					this.idArea = st.nextToken();
+					if (st.hasMoreTokens()) {
+						this.idMateria = st.nextToken();
+					} else {
+						this.idMateria="";
+					}
 				} else {
+					this.idArea="";
 					this.idMateria="";
 				}
-				
 			} else {
 				this.idArea="";
 				this.idMateria="";
 			}
-		} else {
-			this.idArea="";
-			this.idMateria="";
 		}
 	}
 	public String getIdMateria() {
@@ -449,27 +456,26 @@ public class ExpDatosGeneralesForm extends MasterForm {
 		return procedimiento;
 	}
 	public void setProcedimiento(String procedimiento) {
-		StringTokenizer st = new StringTokenizer(procedimiento, ",");
-
-		if (st.hasMoreTokens())
-		{
-			this.procedimiento = st.nextToken();
-			
-			if (st.hasMoreTokens())
-			{
-				this.idInstitucionProcedimiento = st.nextToken();
+		if (procedimiento.startsWith("{")){
+			try {
+				final JSONObject procedimientoJSON = new JSONObject(procedimiento);
+				this.procedimiento=(String) procedimientoJSON.get("idprocedimiento");
+				this.idInstitucionProcedimiento=(String) procedimientoJSON.get("idinstitucion");
+			} catch (Exception e) {		
 			}
-			
-			else
-			{
+		} else {
+			StringTokenizer st = new StringTokenizer(procedimiento, ",");
+			if (st.hasMoreTokens()) {
+				this.procedimiento = st.nextToken();
+				if (st.hasMoreTokens()) {
+					this.idInstitucionProcedimiento = st.nextToken();
+				} else {
+					this.idInstitucionProcedimiento="";
+				}
+			} else {
+				this.procedimiento="";
 				this.idInstitucionProcedimiento="";
 			}
-		}
-		
-		else
-		{
-			this.procedimiento="";
-			this.idInstitucionProcedimiento="";
 		}
 	}
 	public String getIdInstitucionProcedimiento() {
@@ -504,11 +510,19 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setComboEstados(String comboEstados) {
 		this.comboEstados = comboEstados;
 		if (comboEstados!=null && !comboEstados.equals("")){
-	    	StringTokenizer st = new StringTokenizer(comboEstados,",");
-	    	st.nextToken();//idinstitucion_tipoexpediente
-	    	st.nextToken();//idtipoexpediente
-	    	st.nextToken();//idfase
-	    	this.setEstado(st.nextToken());        	
+			if (comboEstados.startsWith("{")){
+				try {
+					final JSONObject comboEstadosJSON = new JSONObject(comboEstados);
+					this.setEstado((String) comboEstadosJSON.get("idestado"));
+				} catch (Exception e) {				
+				}
+			} else {
+		    	StringTokenizer st = new StringTokenizer(comboEstados,",");
+		    	st.nextToken();//idinstitucion_tipoexpediente
+		    	st.nextToken();//idtipoexpediente
+		    	st.nextToken();//idfase
+		    	this.setEstado(st.nextToken()); 
+			}
 	    }else{        	
 	    	this.setEstado("");  
 	    }
@@ -519,10 +533,18 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setComboFases(String comboFases) {
 		this.comboFases = comboFases;
 	    if (comboFases!=null && !comboFases.equals("")){
-	    	StringTokenizer st = new StringTokenizer(comboFases,",");
-	    	st.nextToken();//idinstitucion_tipoexpediente
-	    	st.nextToken();//idtipoexpediente
-	    	this.setFase(st.nextToken());        	
+	    	if (comboFases.startsWith("{")){
+				try {
+					final JSONObject comboFasesJSON = new JSONObject(comboFases);
+					this.setFase((String) comboFasesJSON.get("idfase"));
+				} catch (Exception e) {		
+				}
+			} else {
+		    	StringTokenizer st = new StringTokenizer(comboFases,",");
+		    	st.nextToken();//idinstitucion_tipoexpediente
+		    	st.nextToken();//idtipoexpediente
+		    	this.setFase(st.nextToken());
+			}
 	    }else{        	
 	    	this.setFase("");  
 	    }

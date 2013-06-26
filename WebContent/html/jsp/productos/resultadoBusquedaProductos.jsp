@@ -81,6 +81,7 @@
 			   			  pys.busquedaProductos.literal.producto,pys.resultadoBusquedaProductos.literal.precio,
 			   			  pys.resultadoBusquedaProductos.literal.Estado,"
 			   columnSizes="20,20,20,10,20,10"
+			   fixedHeight="95%"
 			   modal="G">
 			   
 			<%

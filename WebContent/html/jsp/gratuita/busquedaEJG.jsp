@@ -249,7 +249,6 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-1.6.1.min.js'/>"></script>
     <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-ui-1.8.13.custom.min.js'/>"></script>
     <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 
@@ -316,7 +315,8 @@ dd { padding-bottom: 15px }
 			document.RecuperarConsultasForm.submit();			
 		}
 		
-		// Funcion que obtiene el juzgado buscando por codigo externo	
+		// Funcion que obtiene el juzgado buscando por codigo externo
+		/*
 		 function obtenerJuzgado(){ 
 			  if (document.forms[0].codigoExtJuzgado.value!=""){
  				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
@@ -325,6 +325,7 @@ dd { padding-bottom: 15px }
 			 } else
 		 		seleccionComboSiga("juzgado",-1);
 		}
+		*/
 		
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
@@ -376,7 +377,7 @@ dd { padding-bottom: 15px }
 			}
 		}
 	}	
-		
+		/*
 		function cambiarJuzgado(comboJuzgado) {
 			if(comboJuzgado.value!=""){
 				jQuery.ajax({ //Comunicación jQuery hacia JSP  
@@ -397,6 +398,7 @@ dd { padding-bottom: 15px }
 			else
 				document.getElementById("codigoExtJuzgado").value = "";
 		}		
+		*/
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -477,14 +479,14 @@ if(usr.isComision()){
 								<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG" />
 							</td>
 							<td style="vertical-align:middle">
-								<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>"clase="boxCombo" obligatorio="false" elementoSel="<%=idTipoEJG%>" ancho="200"/>
+								<siga:Select id="idTipoEJG" queryId="getTiposEjg" width="200" selectedIds="<%=idTipoEJG %>"/>
 							</td>
 							
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
 							</td>
 							<td style="vertical-align:middle">
-								<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idTipoEJGColegio%>" ancho="200"/>
+								<siga:Select id="idTipoEJGColegio" queryId="getTiposEjgColegio" width="200" selectedIds="<%=idTipoEJGColegio %>"/>
 							</td>						
 						</tr>
 					</table>
@@ -526,9 +528,9 @@ if(usr.isComision()){
 				</td>
 				<td style="vertical-align:middle">
 					<% if(esComision){%>
-						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJGComision" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>"/>
+						<siga:Select id="estadoEJG" queryId="getEstadosEjgComision" selectedIds="<%=idEstado%>" />
 					<% }else{ %>
-						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJG" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" />					
+						<siga:Select id="estadoEJG" queryId="getEstadosEjg" selectedIds="<%=idEstado%>" />
 					<% } %>
 				</td>
 				
@@ -568,7 +570,7 @@ if(usr.isComision()){
 							<%} %>	
 						</select>
 				<%}else{%>
-					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" clase="boxCombo" parametro="<%=datoIdioma%>" elementoSel="<%=vTipoRatificacion%>" ancho="375" accion="Hijo:idFundamentoJuridico"/>
+					<siga:Select id="idTipoRatificacionEJG" queryParamId="idtiporesolucion" queryId="getTiposResolucionTodos" childrenIds="idFundamentoJuridico" selectedIds="<%=vTipoRatificacion%>" width="375" />
 				<%}%>	
 				</td>
 													
@@ -619,8 +621,8 @@ if(usr.isComision()){
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.dictamen"/>
 							</td>
-							<td style="vertical-align:middle"> 
-								<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" parametro="<%=dato%>" obligatorio="false" ancho="140" elementoSel="<%=idTipoDictamen%>" />
+							<td style="vertical-align:middle">
+								<siga:Select id="idTipoDictamenEJG" queryId="getTiposDictamenEjg" selectedIds="<%=idTipoDictamen%>" width="140" />
 							</td>									
 						</tr>
 					</table>
@@ -646,7 +648,7 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
 				</td>
 				<td style="vertical-align:middle"> 
-					<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" ancho="375"/>
+					<siga:Select id="idPonente" queryId="getPonentes" selectedIds="<%=vPonente%>" width="375" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle" width="140px">
@@ -693,14 +695,15 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />
 				</td>					
 				<td>
-					<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:guardiaTurnoIdGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>" ancho="355" />
+					<siga:Select id="identificador" queryParamId="idturno" queryId="getTurnos" selectedIds="<%=idTurno%>" width="355" childrenIds="guardiaTurnoIdGuardia" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />
 				</td>
 				<td>
-					<siga:ComboBD nombre="guardiaTurnoIdGuardia" tipo="guardias" clase="boxCombo" obligatorio="false" hijo="t" parametro="<%=dato2%>" elementoSel="<%=idGuardia%>" ancho="355" />
+					<% String guardiaTurnoIdGuardiaParam = "{\"idturno\":\""+idTurno+"\"}"; %>
+					<siga:Select id="guardiaTurnoIdGuardia" queryId="getGuardiasDeTurno" params="<%=guardiaTurnoIdGuardiaParam %>" selectedIds="<%=idGuardia%>" selectParentMsg="Seleccione turno..." width="355" parentQueryParamIds="idturno" />
 				</td>
 			</tr>
 			
@@ -725,26 +728,23 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.personaJG.literal.calidad" />
 				</td>
 				<td>
-					<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="130" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
+					<siga:Select id="calidad" queryId="getTiposCalidades" selectedIds="<%=calidadSel%>" width="130" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.operarEJG.literal.renuncia" />
 				</td>
 				<td  colspan="4">
-					<siga:ComboBD nombre="idRenuncia" tipo="comboRenuncia" ancho="180" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="false"/>
+					<siga:Select id="idRenuncia" queryId="getRenuncias" selectedIds="<%=renunciaSel%>" width="180" />
 				</td>
 			</tr>
 			
 			<tr>
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" />
-				</td>
-				<td>
-					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				</td>
-				<td colspan="4">
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" accion="parent.cambiarJuzgado(this);"/>
+				</td>				
+				<td colspan="6">
+					<siga:Select id="juzgado" queryId="getJuzgados" selectedIds="<%=juzgado%>" width="500" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
 				</td>
 			</tr>
 			

@@ -21,6 +21,8 @@
 	
 
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
+	sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras";
 %>	
 	
 
@@ -35,43 +37,36 @@
 
 		<siga:Titulo titulo="administracion.catalogos.titulo" localizacion="menu.administracion"/>
 
-		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 			var bBuscado=false;
 			
-			<!-- Funcion asociada a boton buscar -->
-			function buscar()
-			{
+			jQuery(function(){
+				jQuery("#nombreTablaMaestra").on("change", function(){
+					bBuscado=false;
+					buscar();
+				});
+				buscar();
+			});
+			
+			// Funcion asociada a boton buscar
+			function buscar() {
 				sub();
-				if (listadoTablasMaestrasForm.nombreTablaMaestra.value=="")
-				{
+				if (listadoTablasMaestrasForm.nombreTablaMaestra.value=="") {
 					alert("<siga:Idioma key="administracion.catalogos.elegirCatalogo"/>");
 					fin();
 					bBuscado=false;
-				}
-				else
-				{
+				} else {
 					bBuscado=true;
 					listadoTablasMaestrasForm.modo.value="buscarInicio";
 					listadoTablasMaestrasForm.submit();
 				}
 			}
 			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-
-		<!-- INICIO: SCRIPTS BOTONES -->
-		<script language="JavaScript">
-	
-			<!-- Asociada al boton Nuevo -->
-			function nuevo() 
-			{
-				if (!bBuscado)
-				{
+			// Asociada al boton Nuevo
+			function nuevo()  {
+				if (!bBuscado) {
 					alert("<siga:Idioma key="administracion.catalogos.realizarBusqueda"/>");
-				}
-				else
-				{
+				} else {
 					listadoTablasMaestrasForm.modo.value="nuevo";
 					var tamanio = "P";
 					if(listadoTablasMaestrasForm.numeroTextoPlantillas.value==1)
@@ -81,15 +76,12 @@
 					
 					var resultado=ventaModalGeneral("listadoTablasMaestrasForm",tamanio);
 					
-					if (resultado=="MODIFICADO")
-					{
+					if (resultado=="MODIFICADO") {
 						buscar();
 					}
 				}
 			}
 		</script>
-		<!-- FIN: SCRIPTS BOTONES -->
-
 	</head>
 
 	<body onLoad="ajusteAlto('resultado');">
@@ -127,12 +119,7 @@
 							Seleccionar Catálogo&nbsp;(*)
 						</td>				
 						<td>
-<%
-						String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
-						
-						sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "tablasMaestrasAdmin" : "tablasMaestras";
-%>
-							<siga:ComboBD nombre="nombreTablaMaestra" tipo="<%=sTipoCombo%>" obligatorio="true" clase="boxCombo" accion="bBuscado=false;buscar();"/>
+							<siga:Select id="nombreTablaMaestra" queryId="<%=sTipoCombo%>" required="true"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="general.codeext"/>
@@ -163,7 +150,7 @@
 							marginheight="0"
 							marginwidth="0";					 
 					class="frameGeneral">
-	</iframe>
+			</iframe>
 			
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

@@ -60,8 +60,8 @@
 	if (totalMinuta == null)
 		totalMinuta = new String("");
 
-	ArrayList juzgadoSel = new ArrayList();
-	ArrayList materiaSel = new ArrayList();
+	ArrayList<String> juzgadoSel = new ArrayList<String>();
+	ArrayList<String> materiaSel = new ArrayList<String>();
 	ArrayList pretensionSel = new ArrayList();
 	String idJuzgado = "", idInstitucionJuzgado = "", idArea = "", idMateria = "", idPretension = "", codigoEjg = "", tipoExpD = "", anioExpD = "", numExpD = "", CODIGO = "", SUFIJO = "";
 	// Datos del Juzgado seleccionado:
@@ -129,15 +129,14 @@
 		numExpD = form.getNumExpDisciplinario();
 	codigoEjg = form.getNumExpDisciplinarioCalc();
 	
-	String[] datosJuzgado = { userBean.getLocation(), idArea,
-			idMateria, "-1" };
+	String datosJuzgado = "{\"idarea\":\""+idArea+"\",\"idmateria\":\""+idMateria+"\"}";
 	String[] datosMateria = { "-1", userBean.getLocation() };
 
 	if (idJuzgado != null && idInstitucionJuzgado != null) {
-		juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
-		if (!idJuzgado.equals("")) {
-			datosJuzgado[3] = idJuzgado;
-			datosMateria[0] = idJuzgado;
+		juzgadoSel.add("{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+		if (!idJuzgado.equals("")) {			
+			datosJuzgado = datosJuzgado.substring(0, datosJuzgado.length() - 1);
+			datosJuzgado += ",\"idjuzgado\":\""+idJuzgado+"\"}";
 		}
 	}
 	if (idPretension != null) {
@@ -145,8 +144,7 @@
 	}
 
 	if (idMateria != null) {
-		materiaSel.add(0, userBean.getLocation() + "," + idArea + ","
-				+ idMateria + "," + datosJuzgado[3]);
+		materiaSel.add("{\"idmateria\":\""+idMateria+"\",\"idarea\":\""+idArea+"\",\"idinstitucion\":\""+userBean.getLocation()+"\"}");		
 	}
 
 	//recupero los campos visibles para mostrar o no ciertas leyendas
@@ -167,9 +165,10 @@
 	String idinst_idtipo_idfase = "";
 	String idinst_idtipo_idfase_idestado = "";
 	String idclasificacion = "";
-	ArrayList vFase = new ArrayList();
-	ArrayList vEstado = new ArrayList();
-	ArrayList vClasif = new ArrayList();
+	ArrayList<String> faseSel = new ArrayList<String>();
+	String vFase = "";
+	ArrayList<String> estadoSel = new ArrayList<String>();
+	ArrayList<String> vClasif = new ArrayList<String>();
 
 	
 	String anioExpOrigen ="";
@@ -185,8 +184,11 @@
 				.getAttribute("idinst_idtipo_idfase_idestado");
 		idclasificacion = (String) request
 				.getAttribute("idclasificacion");
-		vFase.add(idinst_idtipo_idfase);
-		vEstado.add(idinst_idtipo_idfase_idestado);
+		String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+		vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
+		faseSel.add(0, vFase);
+		String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+		estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
 		vClasif.add(idclasificacion);
 	}else{
 		if (!copia.equals("s")) { //pestanhas:edicion o consulta
@@ -196,8 +198,11 @@
 					.getAttribute("idinst_idtipo_idfase_idestado");
 			idclasificacion = (String) request
 					.getAttribute("idclasificacion");
-			vFase.add(idinst_idtipo_idfase);
-			vEstado.add(idinst_idtipo_idfase_idestado);
+			String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+			vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
+			faseSel.add(0, vFase);
+			String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+			estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
 			vClasif.add(idclasificacion);
 		}
 	}
@@ -228,9 +233,7 @@
 	} else {
 		estiloCombo = "boxCombo";
 		readOnlyCombo = "false";
-	}
-
-	String dato[] = { idinstitucion_tipoexpediente, tipoExp };
+	}	
 
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute(
@@ -257,14 +260,13 @@
 	paramPro[0] = idJuzgado;
 	paramPro[1] = idInstitucionJuzgado;
 
-	String[] paramPretension = { userBean.getLocation(), "-1" };
+	String paramPretension = "{\"idpretension\":\"\"}";
 	if (form.getIdPretension() != null
 			&& (!form.getIdPretension().equals("")))
-		paramPretension[1] = form.getIdPretension();
+		paramPretension = "{\"idpretension\":\""+form.getIdPretension()+"\"}";
 
-	if (idProcedimiento != null && idInstitucionProcedimiento != null) {
-		procedimientoSel.add(0, idProcedimiento + ","
-				+ idInstitucionProcedimiento);
+	if (idProcedimiento != null && !"".equals(idProcedimiento) && idInstitucionProcedimiento != null && !"".equals(idInstitucionProcedimiento)) {
+		procedimientoSel.add(0, "{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}");
 	}
 
 	if (idTipoIVA != null) {
@@ -296,7 +298,19 @@
 		numExpOrigen = request.getParameter("numeroExpediente");
 		anioExpOrigen = request.getParameter("anioExpediente");		
 	}
-		
+	
+	String dato = "";
+	if (idinst_idtipo_idfase_idestado != null && !"".equals(idinst_idtipo_idfase_idestado)){
+		String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\", \"idfase\":\""+array_idinst_idtipo_idfase_idestado[2]+"\", \"idestado\":\""+array_idinst_idtipo_idfase_idestado[3]+"\"}";
+	} else if (idinst_idtipo_idfase != null && !"".equals(idinst_idtipo_idfase)){
+		String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\", \"idfase\":\""+array_idinst_idtipo_idfase[2]+"\"}";
+	} else if (idinstitucion_tipoexpediente != null && !"".equals(idinstitucion_tipoexpediente) && tipoExp != null && !"".equals(tipoExp)){
+		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\"}";
+	} else if (tipoExp != null && !"".equals(tipoExp)){
+		dato = "{\"idtipoexpediente\":\""+tipoExp+"\"}";
+	}	
 %>	
 
 <html>
@@ -342,7 +356,7 @@
 		var jsEstadoViejo="";
 		var jsEstadoNuevo="";
 		
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{
 			<%if (busquedaVolver == null) {%>
@@ -373,51 +387,51 @@
 			document.forms[1].submit();	
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			var elemento=parent.document.getElementById('pestana.auditoriaexp.datosgenerales');
-			parent.pulsar(elemento,'mainPestanas') 
+			parent.pulsar(elemento,'mainPestanas');
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		//aalg: añadida para quitar la validación con structs y poder sacar todos los mensajes juntos con un mensaje variable según el tipo de interesado
 		function validarGuardar(){
 			var mensajeError = "";
 			
 			//Comprobamos que exista el campo, que tenga valor y que tenga 4 digitos
-			if($("#anioExpDisciplinario").length != 0 && $("#anioExpDisciplinario").val()!="" && $("#anioExpDisciplinario").val().length != 4){
+			if(jQuery("#anioExpDisciplinario").length != 0 && jQuery("#anioExpDisciplinario").val()!="" && jQuery("#anioExpDisciplinario").val().length != 4){
 				mensajeError = mensajeError + '<siga:Idioma key="fecha.error.anio"/> \n';
 			}
 			
 			//Incidencia 177. Validacion del campo anioExpDisciplinario/numExpDisciplinario			
-			if ($("#numExpDisciplinario").length != 0 && $("#anioExpDisciplinario").length != 0){
-				if($("#numExpDisciplinario").val()!="" || $("#anioExpDisciplinario").val()!=""){
-					if ($.isNumeric($("#numExpDisciplinario").val())==false || $.isNumeric($("#anioExpDisciplinario").val())==false)
+			if (jQuery("#numExpDisciplinario").length != 0 && jQuery("#anioExpDisciplinario").length != 0){
+				if(jQuery("#numExpDisciplinario").val()!="" || jQuery("#anioExpDisciplinario").val()!=""){
+					if (jQuery.isNumeric(jQuery("#numExpDisciplinario").val())==false || jQuery.isNumeric(jQuery("#anioExpDisciplinario").val())==false)
 						mensajeError = mensajeError + '<siga:Idioma key="messages.general.aviso.valorCampo"/> <siga:Idioma key="<%=nombreExpDisciplinario%>" /> <siga:Idioma key="messages.general.aviso.numericoEntero"/> \n';
 				}
 			}
 		
-			if ($("#clasificacion").val()=="")
+			if (jQuery("#clasificacion").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 
-			if ($("#asunto").val()=="")
+			if (jQuery("#asunto").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.asunto"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 				
-			if ($("#comboFases").length != 0){
-				if ($("#comboFases").val()=="")
+			if (jQuery("#comboFases").length != 0){
+				if (jQuery("#comboFases").val()=="")
 					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fase"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			}
 			
-			if ($("#comboEstados").length != 0){
-				if ($("#comboEstados").val()=="")
+			if (jQuery("#comboEstados").length != 0){
+				if (jQuery("#comboEstados").val()=="")
 					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.estado"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			}
 			
-			if ($("#fechaInicial").val()=="")
+			if (jQuery("#fechaInicial").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			
-			if ($("#idPersonaDenunciado").val()=="")
+			if (jQuery("#idPersonaDenunciado").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="<%=tituloDenunciadoMensajeError%>"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			
 			return mensajeError;
@@ -430,7 +444,7 @@
 			if (mensajeError == ""){
 				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaFinal.value && document.ExpDatosGeneralesForm.fechaFinal.value!='')) {
 					if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaFinal) == 1) {
-						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>'
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>';
 						alert(mensaje);
 						fin();
 						return false;
@@ -438,7 +452,7 @@
 				}
 				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 					if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>'
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>';
 						alert(mensaje);
 						fin();
 						return false;
@@ -447,7 +461,7 @@
 		
 				if ((document.ExpDatosGeneralesForm.fechaFinal && document.ExpDatosGeneralesForm.fechaFinal.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 					if (compararFecha (document.ExpDatosGeneralesForm.fechaFinal, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>'
+						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>';
 						alert(mensaje);
 						fin();
 						return false;
@@ -503,97 +517,7 @@
 				fin();
 				return false;
 			}
-		}
-	
-	<%-- aalg: sustituida por la anterior para unificar las validaciones quitando la de structs por 
-		necesitar validaciones variables según la opción seleccionada 	
-	function accionGuardar() 
-		{	
-			sub();	
-				
-			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
-				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
-						alert('<siga:Idioma key="expedientes.auditoria.literal.denunciado"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-						fin();
-						return false;
-				}
-				else {
-
-						if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaFinal.value && document.ExpDatosGeneralesForm.fechaFinal.value!='')) {
-							if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaFinal) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>'
-								alert(mensaje);
-								fin();
-								return false;
-							}
-						}
-						if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
-							if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>'
-								alert(mensaje);
-								fin();
-								return false;
-							}
-						}				
-				
-						if ((document.ExpDatosGeneralesForm.fechaFinal && document.ExpDatosGeneralesForm.fechaFinal.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
-							if (compararFecha (document.ExpDatosGeneralesForm.fechaFinal, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>'
-								alert(mensaje);
-								fin();
-								return false;
-							}
-						}
-						if (document.forms[0].minuta){
-							  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");		
-						}
-						if (document.forms[0].importeTotal){
-							  document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
-						}
-						if (document.forms[0].importeIVA){
-							  document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
-						}
-						if (document.forms[0].minutaFinal){
-							  document.forms[0].minutaFinal.value = document.forms[0].minutaFinal.value.replace(/,/,".");
-						}
-						if (document.forms[0].importeTotalFinal){
-							  document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
-						}
-						if (document.forms[0].solicitanteEJG){
-							  document.forms[0].solicitanteEJG.value = document.forms[0].solicitanteEJG.value.replace(/,/,".");
-						}
-						if (document.forms[0].importeIVAFinal){
-							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
-						}
-						if (document.forms[0].porcentajeIVA){							
-							 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");	
-							if (document.forms[0].porcentajeIVAFinal){	
-							 	document.forms[0].porcentajeIVAFinal.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
-							}							  
-						}						
-
-						if (document.forms[0].derechosColegiales){
-							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
-						}
-										
-						<% 
-						if (accion.equals("nuevo") || copia.equals("s")) { %>
-							document.ExpDatosGeneralesForm.accion.value="nuevo";
-							document.forms[0].modo.value="insertar";
-							
-						<%} else {%>
-						document.ExpDatosGeneralesForm.accion.value="edicion";
-							document.forms[0].modo.value="modificar";
-						<%}%>
-						
-						document.forms[0].target="submitArea";	
-						document.forms[0].submit();	
-				}
-			}else{
-				fin();
-				return false;
-			}
-		} --%>
+		}		
 		
 		function relacionarConEJG() 
 		{
@@ -616,8 +540,10 @@
 		function recargarComboJuzgado()
 		{
 			<%if (bEditable) {%> 
-				<%if (bAsuntoJud) {%>
-				document.getElementById("juzgado").value='<%=idJuzgado + "," + idInstitucionJuzgado%>';
+				<%if (bAsuntoJud) {
+					String idJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}";
+				%>
+			jQuery("#juzgado").val('<%=idJuzgadoJSON%>');
 				<%}%>
 			<%}%>
 		}		
@@ -625,20 +551,17 @@
 		function recargarCombos()
 		{
 			<%if (bEditable) {%> 
-				<%if (bAsuntoJud) {%>
-					document.getElementById("idMateria").value='<%=userBean.getLocation() + "," + idArea + ","
-							+ idMateria + "," + datosJuzgado[3]%>';
-					document.getElementById("idMateria").onchange();
-					//window.setTimeout('recargarComboJuzgado()',1000,"JavaScript");
-					
+				<%if (bAsuntoJud) {
+					String idMateriaJSON = "{\"idmateria\":\""+idMateria+"\",\"idarea\":\""+idArea+"\",\"idinstitucion\":\""+userBean.getLocation()+"\"}";
+				%>
+				//jQuery("#idMateria").val('<%=idMateriaJSON%>');
+				//jQuery("#idMateria").change();
 				<%}%>
-			
-				var tmp1 = document.getElementsByName("comboFases");
-				var tmp2 = tmp1[0];			 
-				tmp2.onchange();
+				/*
 				if(document.forms[0].idTipoIVA){// solo aparece el tipo IVA cuando está el campo minuta
-				  document.getElementById("idTipoIVA").onchange();
+					jQuery("#idTipoIVA").change();
 				}
+				*/
 			<%}%>
 		}
 		
@@ -706,47 +629,15 @@
 			document.datosGeneralesForm.idDireccion.value="";
 			*/
 		}				
-		
-	 	function obtenerJuzgado() 
-		{ 
-		  	if (document.getElementById("codigoExtJuzgado").value!=""){
-			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";
-			   	document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codigoExtJuzgado").value;
-				document.MantenimientoJuzgadoForm.submit();		
-		 	}
-		 	else
-		 		seleccionComboSiga("juzgado",-1);
-		}
-		
+		/*	 		
 		function traspasoDatos(resultado){
-		 	if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
-				document.getElementById("codigoExtJuzgado").value = "";
-			} 
+		 	if (resultado[0]==undefined)
+		 		jQuery("#juzgado").val("");
 			else
-				seleccionComboSiga("juzgado",resultado[0]);	
-		}	
-		
-	function cambiarJuzgado(comboJuzgado) {
-		if(comboJuzgado.value!=""){
-			jQuery.ajax({ //Comunicación jQuery hacia JSP  
-	   			type: "POST",
-				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-				data: "idCombo="+comboJuzgado.value,
-				dataType: "json",
-				success: function(json){		
-		       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-					fin();
-				},
-				error: function(e){
-					alert('Error de comunicación: ' + e);
-					fin();
-				}
-			});
+				jQuery("#juzgado").val(resultado[0]);
+		 	jQuery("#juzgado").change();
 		}
-		else
-			document.getElementById("codigoExtJuzgado").value = "";
-	}			
+		*/
 		
 		function getPlazo(){
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
@@ -1029,10 +920,10 @@
 	
 				
 				if ((luego.getMonth()+1) < 10)
-					iMonth = '0' + ((luego.getMonth()+1).toString())
+					iMonth = '0' + ((luego.getMonth()+1).toString());
 					else iMonth = ((luego.getMonth()+1).toString()); 
 				if (luego.getDate() < 10)
-					iDay = '0' + luego.getDate().toString()
+					iDay = '0' + luego.getDate().toString();
 					else iDay = luego.getDate().toString();
 	
 				document.forms[0].fechaCaducidad.value = iDay + "/" + iMonth + "/" + luego.getFullYear();
@@ -1050,14 +941,16 @@
 			
 			luego.setTime( this.getTime() + (dias * diferencia ) );
 			return luego; 
-		} 
-
-		<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
-		$(document).ready(function(){
-			generarFechaCaducidad();
-			$("#fechaCaducidad").attr("disabled", "disabled");
+		};
+		jQuery(document).ready(function(){
+			<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
+				generarFechaCaducidad();
+				jQuery("#fechaCaducidad").attr("disabled", "disabled");
+			<%}%>
+			calcularTotalMinuta ();
+			calcularTotalMinutaFinal ();
+			<%=recargarCombos%>
 		});
-		<%}%>
 
 	</script>
 	
@@ -1066,7 +959,7 @@
 	
 </head>
 
-<body class="detallePestanas" onload="<%=recargarCombos%>; calcularTotalMinuta (); calcularTotalMinutaFinal ()">
+<body class="detallePestanas">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -1252,21 +1145,12 @@
 			{
 		%>
 				<td class="labelText"><siga:Idioma 	key="expedientes.auditoria.literal.clasificacion" />&nbsp;(*)</td>
-				<td colspan="2"> 
-		<%
-				if (bEditable) 
-				{
-		%> 
-					<siga:ComboBD nombre="clasificacion" tipo="cmbClasificacion"  clase="boxCombo" obligatorio="false" ElementoSel="<%=vClasif%>" parametro="<%=dato%>" /> 
-		<%
-				} 
-				else 
-				{
-		%>
-					<html:text name="ExpDatosGeneralesForm" property="clasificacionSel" styleId="clasificacionSel" styleClass="boxConsulta" readonly="true"></html:text> 
-		<%
-				}
-		%>
+				<td colspan="2">
+					<siga:Select queryId="getClasificacionesExpediente" 
+								id="clasificacion" 
+								selectedIds="<%=vClasif%>" 
+								params="<%=dato%>" 
+								disabled="<%=String.valueOf(bEditable)%>"/>		
 				</td>
 		<%
 			} 
@@ -1369,19 +1253,18 @@
 			</td>				
 			<td>
 				<%
-					if (bEditable) {
-									String comboHijo = "";
-									if (bEstado)
-										comboHijo = "Hijo:comboEstados";
+				String comboHijo = "";
+				if (bEstado)
+					comboHijo = "Hijo:comboEstados";
 				%>
-				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>" pestana="t"/>
-				<%
-					} else {
-				%>
-				<html:text name="ExpDatosGeneralesForm" property="faseSel" styleId="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%
-					}
-				%>
+				<siga:Select queryId="getFasesExpediente" 
+							id="comboFases" 
+							queryParamId="idfase" 
+							childrenIds="comboEstados" 
+							disabled="<%=readOnlyCombo%>" 
+							selectedIds="<%=faseSel%>" 
+							params="<%=dato%>" 
+							required="true"/>				
 			</td>
 
 			<td class="labelText">
@@ -1389,17 +1272,15 @@
 			</td>
 			
 			<td colspan="2">
-				<%
-					if (bEditable) {
-				%>		
-				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="390" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
-				<%
-											} else {
-										%>
-				<html:text name="ExpDatosGeneralesForm" property="estadoSel" styleId="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%
-					}
-				%>
+				<siga:Select queryId="getEstadosExpediente" 
+							id="comboEstados" 
+							queryParamId="idestado" 
+							parentQueryParamIds="idfase" 
+							params="<%=dato%>" 
+							selectedIds="<%=estadoSel%>" 
+							disabled="<%=readOnlyCombo%>" 
+							required="true" 
+							width="390"/>			
  			</td>			
 			
 			<td>
@@ -1752,36 +1633,31 @@
 				<siga:Idioma key="expedientes.auditoria.literal.materia"/>
 			</td>				
 			<td>
-				<%
-					if (bEditable) {
-				%>
-				 	  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
-				<%
-           	   					} else {
-           	   				%>
-					  <siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
-				<%
-           	   					}
-           	   				%>							
-				
+				<siga:Select queryId="getMateriaAreaExpediente" 
+							id="idMateria"
+							selectedIds="<%=materiaSel%>"
+							params="<%=vFase %>";
+							childrenIds="juzgado"
+							disabled="<%=readOnlyCombo%>"
+							width="250"/>			
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.juzgado"/>
 			</td>				
 			<td COLSPAN="3">
-				<%
-					if (bEditable) {
-				%>
-				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento;parent.cambiarJuzgado(this);" readonly="false"/>           	   
-				<%
-           	   					} else {
-           	   				%>
-						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
-				<%
-           	   					}
-           	   				%>							
-				
+				<siga:Select id="juzgado" 
+							queryParamId="idjuzgado" 
+							queryId="getJuzgadosMateria" 
+							parentQueryParamIds="idmateria,idarea" 
+							childrenIds="procedimiento" 
+							params="<%=datosJuzgado%>"
+							showSearchBox="true" 
+							searchkey="CODIGOEXT2" 
+							searchBoxMaxLength="10" 
+							searchBoxWidth="10" 
+							selectedIds="<%=juzgadoSel%>" 
+							disabled="<%=readOnlyCombo%>" 
+							width="330" />				
 			</td>
 		</tr>					
 		<tr>					
@@ -1790,7 +1666,14 @@
 				<siga:Idioma key="expedientes.auditoria.literal.procedimiento"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t" parametro="<%=paramPro%>" elementoSel="<%=procedimientoSel%>" pestana="true"/>
+				<% String paramIdjuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"}";%>
+				<siga:Select queryId="getProcedimientos" 
+							id="procedimiento"
+							parentQueryParamIds="idjuzgado"
+							params="<%=paramIdjuzgadoJSON%>"
+							selectedIds="<%=procedimientoSel%>"
+							readOnly="<%=readOnlyCombo%>"
+							width="250"/>
 			</td>
 		
 			<td class="labelText">
@@ -1807,7 +1690,12 @@
 				<siga:Idioma key="expedientes.auditoria.literal.pretensiones"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" estilo="true" clase="<%=estiloCombo%>" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" pestana="true"/>
+				<siga:Select queryId="getPretensiones" 
+							id="idPretension"							
+							selectedIds="<%=pretensionSel%>"
+							params="<%=paramPretension%>"
+							readOnly="<%=readOnlyCombo%>"
+							width="250"/>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.otrasPretensiones"/>
@@ -1858,7 +1746,7 @@
 							<% String sNombreCampo = "campo"+(k+1);
 							if (GenTipoCampoBean.ID_TIPO_ALFANUMERICO.equals(campoConf.getTipo())){ %>
 								<%if (campoConf.getMaxLong() > 100){ %>
-									<textarea name="<%=sNombreCampo%>" onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" class="<%=boxStyle %>" style="width:950;" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>
+									<textarea name="<%=sNombreCampo%>" onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" class="<%=boxStyle %>" style="width:900;" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>
 								<%} else { %>
 									<input type="text" name="<%=sNombreCampo%>" value="<%=vDatosCamposPestanas.elementAt(k)%>"  size="<%=vDatosCamposPestanasLongitud.elementAt(k)%>" class ="<%=boxStyle %>" maxlength="<%=campoConf.getMaxLong()%>"></input>
 								<%} %>								

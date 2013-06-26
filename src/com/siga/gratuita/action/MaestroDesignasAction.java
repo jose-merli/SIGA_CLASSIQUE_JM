@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -13,6 +14,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -492,7 +494,9 @@ public class MaestroDesignasAction extends MasterAction {
 			tx = usr.getTransaction();
 			datosEntrada = (Hashtable)miform.getDatos();
 			
-		    if ((!ValidacionExisteDesigna(miform,request))|| (ValidacionExisteDesigna(miform,request)&& request.getParameter("modificarDesigna")!=null && request.getParameter("modificarDesigna").equals("1"))){
+			boolean bExisteDesigna = ValidacionExisteDesigna(miform,request);
+			
+		    if ((!bExisteDesigna)|| (bExisteDesigna&& request.getParameter("modificarDesigna")!=null && request.getParameter("modificarDesigna").equals("1"))){
 		    	
 		    
 						String consultaDesigna = " where " +ScsDesignaBean.C_ANIO+"="+(String)datosEntrada.get("ANIO")+ 
@@ -644,10 +648,21 @@ public class MaestroDesignasAction extends MasterAction {
 						idInstitucionJuzgado = null;			
 						String sJuzgado=((String)datosEntrada.get("JUZGADO"));
 						if (sJuzgado!=null) {
-							String[] juzgado =sJuzgado.split(",");
-							if (juzgado[0]!=null && !juzgado[0].equals("")){
-								idJuzgado = new Integer(juzgado[0]);
-								idInstitucionJuzgado = new Integer(juzgado[1]);
+							String sIdJuzgado = "";
+							String sIdInstitucionJuzgado = "";
+							if (sJuzgado.startsWith("{")){
+								// ES UN JSON
+								HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+								sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
+								sIdInstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
+							} else {
+								String[] juzgado =sJuzgado.split(",");
+								sIdJuzgado = juzgado[0];
+								sIdInstitucionJuzgado = juzgado[1];
+							}
+							if (sIdJuzgado!=null && !sIdJuzgado.equals("")){
+								idJuzgado = new Integer(sIdJuzgado);
+								idInstitucionJuzgado = new Integer(sIdInstitucionJuzgado);
 								designaNueva.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);
 								designaNueva.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
 							} else {
@@ -678,7 +693,7 @@ public class MaestroDesignasAction extends MasterAction {
 						}
 						
 						String procedimientoSel=(String)datosEntrada.get("IDPROCEDIMIENTO");
-						if (procedimientoSel!=null){
+						if (procedimientoSel!=null){							
 							if(procedimientoSel.equals("")&& designaAntigua.getEstado().equals("F")){
 								if (!designaAntigua.getProcedimiento().equals("")){
 									designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, designaAntigua.getProcedimiento());
@@ -686,8 +701,19 @@ public class MaestroDesignasAction extends MasterAction {
 									designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, "");
 								}
 							}else{
-								String procedimiento[] = procedimientoSel.split(",");
-								designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, procedimiento[0]);
+								String sIdprocedimiento = "";
+								String sIdInstitucionProcedimiento = "";
+								if (procedimientoSel.startsWith("{")){
+									// ES UN JSON
+									HashMap<String, String> hmProcedimientoSel = new ObjectMapper().readValue(procedimientoSel, HashMap.class);
+									sIdprocedimiento = hmProcedimientoSel.get("idprocedimiento");
+									sIdInstitucionProcedimiento = hmProcedimientoSel.get("idinstitucion");
+								} else {
+									String procedimiento[] = procedimientoSel.split(",");
+									sIdprocedimiento = procedimiento[0];
+									sIdInstitucionProcedimiento = procedimiento[1];
+								}
+								designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, sIdprocedimiento);
 							}							
 						}
 						// JBD 16/2/2009 INC-5739-SIGA
@@ -841,10 +867,20 @@ public class MaestroDesignasAction extends MasterAction {
 		try{
 			String idJuzgadoObtenido=formulario.getJuzgado();
 			if ((idJuzgadoObtenido!=null && !idJuzgadoObtenido.equals("")) && (formulario.getNumeroProcedimiento()!=null && !formulario.getNumeroProcedimiento().equals(""))){
-				String cadena[]=idJuzgadoObtenido.split(",");
-				String idJuzgado=cadena[0];
-				String idinstitucionJuzgado=cadena[1];
-		        
+				// BNS CAMBIO POR EL TAG SELECT
+				String idJuzgado = "";
+				String idinstitucionJuzgado="";
+				if (idJuzgadoObtenido.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(idJuzgadoObtenido, HashMap.class);
+					idJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
+					idinstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
+				} else {
+					// MANTENEMOS LA FORMA ANTIGÜA 
+					String cadena[]=idJuzgadoObtenido.split(",");
+					idJuzgado=cadena[0];
+					idinstitucionJuzgado=cadena[1];
+				}
 			         
 				String consultaDesigna = " where " +ScsDesignaBean.C_IDJUZGADO+"="+idJuzgado+
 				 " and "+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+"="+idinstitucionJuzgado+

@@ -396,6 +396,10 @@
 		<action path="/infoDirectorio" type="com.siga.general.SIGAInfoDirectorioAuthAction">
 			<forward name="success" path="/html/jsp/general/infoDirectorio.jsp"/>			
 		</action>
+		
+		<action path="/selectData" type="com.siga.general.SelectDataAction">
+		<!-- ESCRIBE DIRECTAMENTE EN RESPONSE -->
+		</action>
 
 		<action path="/itcgaeinit" type="com.siga.general.SIGAAuthItcgaeAction">
 			<forward name="topMenu" path="/openMainFrameset.do"/>

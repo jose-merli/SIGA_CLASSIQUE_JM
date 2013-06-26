@@ -125,9 +125,9 @@
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
 	String turno = "";
-	String[] datoJuzgado 	= null;
+	String paramsJuzgadoJSON = "";
 	String filtrarModulos = "N";
-	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="";
+	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="", comboPretensionesParentQueryIds = "";
 	String art27 = "";
 	
 	 
@@ -149,23 +149,20 @@
 			filtrarModulos = (String)request.getAttribute("filtrarModulos");
 		}
 		
+		paramsJuzgadoJSON = "{\"idjuzgado\":\"-1\"}";
 		if(filtrarModulos.equals("S")){
-	    	datoJuzgado = new String[5];
-	    	datoJuzgado [0] = "-1";
-			datoJuzgado [1] = fechaApertura;
-			datoJuzgado [2] = fechaApertura;
-	    	datoJuzgado [3] = usr.getLocation();
-	    	datoJuzgado [4] = "-1";
-	    	comboJuzgados = "comboJuzgadosTurnosModulos";
-	    	comboModulos = "comboProcedimientosVigencia";
-	    	comboPretensionesEjis= "comboPretensionesEjisModulosFiltros";
+	    	comboJuzgados = "getJuzgadosTurnosModulos";
+	    	comboModulos = "getProcedimientosEnVigencia";
+	    	comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
+	    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
+	    	comboPretensionesParentQueryIds = "idjuzgado, idpretension";
+	    	
 	    }else{
-	    	datoJuzgado = new String[2];
-	    	datoJuzgado [0] = usr.getLocation();
-			datoJuzgado [1] = "-1";
-			comboJuzgados = "comboJuzgadosTurno";
-	    	comboModulos = "comboProcedimientos";
-	    	comboPretensionesEjis= "comboPretensionesEjisModulos";
+			comboJuzgados = "getJuzgadosTurnos";
+	    	comboModulos = "getProcedimientos";
+	    	comboModulosParentQueryIds = "idjuzgado";
+	    	comboPretensionesEjis= "getPretensionesEjisModulos";
+	    	comboPretensionesParentQueryIds = "idjuzgado, idpretension";
 	    }
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
@@ -236,17 +233,12 @@
 				idProcedimiento = beanDesigna.getProcedimiento().toString();
 			}
 			
-			if(filtrarModulos.equals("S")){
-				if(!idProcedimiento.equals(""))
-					datoJuzgado[0]=idProcedimiento;
-			}
-
 			anioProcedimiento = new String("");
 			if (beanDesigna.getAnioProcedimiento() != null)
 				anioProcedimiento = beanDesigna.getAnioProcedimiento().toString();			
 			
 			
-			procedimientoSel.add(0, idProcedimiento + "," + usr.getLocation());
+			procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+usr.getLocation()+"\"}");
 		}
 
 		// Datos del juzgado seleccionado:
@@ -254,25 +246,15 @@
 			beanDesigna.getIdInstitucionJuzgado() != null &&!beanDesigna.getIdInstitucionJuzgado().equals("")) {
 				idJuzgado = beanDesigna.getIdJuzgado().toString();
 				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
-				if(filtrarModulos.equals("S")){
-					juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fechaApertura+","+fechaApertura);
-					datoJuzgado[4]=beanDesigna.getIdJuzgado().toString();
-				}else{
-					juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
-					datoJuzgado[1]=beanDesigna.getIdJuzgado().toString();
-				}
-
+				paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
 		} else {
 			if (request.getAttribute("idDesigna") != null) {
 				Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
 				idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
 				idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 				numero = (String) datosDesigna.get(ScsDesignaBean.C_NUMERO);
-				if(filtrarModulos.equals("S")){
-					juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fechaApertura+","+fechaApertura);
-				}else{
-					juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
-				}
+				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
 			}
 		}
 
@@ -311,9 +293,12 @@
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
 	
 	// datos2 es para idPresentacion
+	String idPretensionParamsJSON = "";
 	String[] datos2={usr.getLocation(),usr.getLanguage()};
-	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals("")))
+	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals(""))){
 		datos2[1]= beanDesigna.getIdPretension().toString();
+		idPretensionParamsJSON = "{\"idpretension\":\""+beanDesigna.getIdPretension().toString()+"\"}";
+	}
 	
 	String asterisco = "&nbsp(*)&nbsp";
 	int pcajgActivo = 0;
@@ -363,7 +348,16 @@
 	 obligatorioTipoDesigna=false;
 	 
 	}
+	String modoVerReadOnly = String.valueOf(modo.equalsIgnoreCase("ver"));
 	
+	String comboPretensiones = "getPretensiones";
+	if (ejisActivo>0 || pcajgActivo == 4){
+		comboPretensiones = comboPretensionesEjis;
+		idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);
+		idPretensionParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+	} else {
+		comboPretensionesParentQueryIds = "idpretension";
+	}
 %>	
 
 <html>
@@ -635,6 +629,7 @@
 		}
 
 		var bJuzgado=false;
+		/*
  		function obtenerJuzgado() { 
 			if (document.forms[0].codigoExtJuzgado.value!=""){
 				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
@@ -647,6 +642,7 @@
 				document.getElementById("juzgado").onchange();
 			}
 		}
+		*/
 	
 		function traspasoDatos(resultado){
 			if (resultado[0]==undefined) {
@@ -659,7 +655,7 @@
 			bJuzgado=true;
 			document.getElementById("juzgado").onchange();
 		}
-		
+		/*
 		function cambiarJuzgado(comboJuzgado) {
 			if (bJuzgado)
 				bJuzgado=false;
@@ -686,7 +682,8 @@
 				bJuzgado=true;
 				document.getElementById("juzgado").onchange();
 			}
-		}		
+		}	
+		*/
 		
 		function generarCarta() {
 			//sub();
@@ -728,17 +725,19 @@
 	function accionCerrar() {
 			
 	}
-
+/*
 	function cargarComboModulo() {
 		<% if (!modo.equalsIgnoreCase("ver")) { %>
-			document.getElementById("juzgado").onchange();	
+			//document.getElementById("juzgado").onchange();
+			jQuery("juzgado").change();
 		<% } %>	
 	}
+	*/
 	</script>
 	 
 </head>
 
-<body onload ="cargarComboModulo();">
+<body>
 
 <table class="tablaTitulo" cellspacing="0" heigth="38" width="100%"
 	border="0">
@@ -864,11 +863,7 @@
 						%>
 						
 						<td colspan="7">
-							<% if (!modo.equalsIgnoreCase("ver")) { %> 
-								<siga:ComboBD  pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
-							<% } else { %> 
-								<siga:ComboBD pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxConsulta" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true" />
-							<% } %>
+							<siga:Select id="tipo" queryId="getTiposDesignaDeColegio" selectedIds="<%=vTipo%>" readOnly="<%=modoVerReadOnly%>"/>
 						</td>
 					</tr>
 
@@ -996,19 +991,10 @@
 												<%}%>
 											</td>
 										
-											<td class="labelText">
-												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
-											</td>
-											
-											<td>
-												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento, Hijo:idPretension; cambiarJuzgado(this);"/>
-											</td>
-											
-										<% } else { %> 
-											<td>
-									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento, Hijo:idPretension;" readonly="true" />
-											</td> 
 										<% } %>
+											<td colspan="2">
+												<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="500" childrenIds="idProcedimiento,idPretension" disabled="<%=modoVerReadOnly%>"/>
+											</td> 
 									</tr>
 									
 						<% } else { %>			
@@ -1022,19 +1008,10 @@
 												<%}%>
 											</td>
 										
-											<td class="labelText">
-												<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
-											</td>
-											
-											<td>
-												<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento; cambiarJuzgado(this);"/>
-											</td>	
-											
-										<% } else { %> 
-											<td>
-									 			<siga:ComboBD nombre="juzgado" tipo="<%=comboJuzgados%>" estilo="" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento;" readonly="true" />
+										<% } %> 
+											<td rowspan="2">
+												<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="500" childrenIds="idProcedimiento" disabled="<%=modoVerReadOnly%>"/>
 											</td> 
-										<% } %>
 									</tr>									
 									
 									
@@ -1071,11 +1048,7 @@
 						
 						<td colspan="7">
 							<%-- Procedimiento --%> 
-							<% if (!modo.equalsIgnoreCase("ver")) { %>
-								<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
-							<% } else { %>
-								<siga:ComboBD nombre="idProcedimiento" tipo="<%=comboModulos%>" estilo="true" clase="boxComboConsulta" filasMostrar="1" seleccionMultiple="false" ancho="750" obligatorio="false" readonly="true"  elementoSel="<%=procedimientoSel%>" hijo="t" pestana="t" /> 
-							<% } %>
+							<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>							
 						</td>
 					</tr>
 					
@@ -1100,24 +1073,11 @@
 							<% if (obligatorioProcedimiento){ %>
 								<%= asterisco %>
 							<%} %>
-						</td>	
-				<%if (ejisActivo>0 || pcajgActivo == 4){%>		
+						</td>				
+				
 						<td  colspan="7">
-							<%if(modo.equals("editar")){%>
-								<siga:ComboBD nombre="idPretension" tipo="<%=comboPretensionesEjis%>" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
-							<%}else{%>
-								<siga:ComboBD nombre="idPretension" tipo="<%=comboPretensionesEjis%>" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
-							<%}%>
+							<siga:Select id="idPretension" queryId="<%=comboPretensiones %>" parentQueryParamIds="idjuzgado" params="<%=idPretensionParamsJSON%>" selectedIds="<%=pretensionesSel %>" width="380" readOnly="<%=modoVerReadOnly%>"/>							
 						</td>
-				<%}else{%>		
-						<td  colspan="7">
-							<%if(modo.equals("editar")){%>
-								<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="380" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
-							<%}else{%>
-								<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="380" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
-							<%}%>
-						</td>	
-				<%} %>											
 					</tr>
 					
 					<!-- JBD 16/2/2009 INC-5739-SIGA -->

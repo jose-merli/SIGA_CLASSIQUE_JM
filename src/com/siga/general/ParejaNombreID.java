@@ -43,4 +43,8 @@ public class ParejaNombreID implements Serializable, PropertyReader {
 	public boolean isCData() {
 		return false;
 	}
+	
+	public static String getHtmlOption(ParejaNombreID option, boolean selected){
+		return "<option "+(selected?"selected":"")+" value='"+option.getValue()+"'>"+option.getName()+"</option>";
+	}
 }

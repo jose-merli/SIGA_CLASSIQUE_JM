@@ -271,14 +271,14 @@ String[] getdatos = { usr.getLocation() };
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
 		</td>
-		<td colspan="3">	
-			<siga:ComboBD nombre="idTurno" tipo="turnosDesignacion" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="380"/>
+		<td colspan="3">
+			<siga:Select id="idTurno" queryId="getTurnosDesignacion" width="380"/>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
 		</td>
 		<td colspan="3">	
-			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="250" />
+			<siga:Select queryId="getTiposDesignaDeColegio" id="tipoDesigna" width="250"/>
 		</td>	
 		
 	</tr>
@@ -367,16 +367,14 @@ String[] getdatos = { usr.getLocation() };
 		<tr>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.personaJG.literal.calidad" /></td>
-				<td colspan="1">
-						&nbsp;<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="140" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=dato%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
+				<td>
+						<siga:Select queryId="getTiposCalidades" id="calidad" width="140" selectedIds="<%=calidadSel%>"/>
 				</td>
 				<td class="labelText">
-					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
-				<td class="labelText">
-					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgado');" />
-				</td>
+					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" />
+				</td>				
 				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" accion="if(parent.comboJuzgado!=undefined)parent.cambiarJuzgado(this,'codigoExtJuzgado');"/>
+					<siga:Select id="juzgado" queryId="getJuzgados" selectedIds="<%=juzgado%>" width="450" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
 				</td>
 		</tr>
 		<tr>
@@ -409,7 +407,7 @@ String[] getdatos = { usr.getLocation() };
 				<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>
 			</td>	
 			<td class="labelText" colspan="2">
-				<siga:ComboBD nombre="modulo" tipo="comboTiposProcedimientos" ancho="740" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=modulo%>" parametro="<%=dato%>" />           	   
+				<siga:Select queryId="getTiposProcedimientos" id="modulo" width="740" selectedIds="<%=modulo%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -417,7 +415,7 @@ String[] getdatos = { usr.getLocation() };
 				<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>
 			</td>
 			<td class="labelText" colspan="2">
-				<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS" ancho="740" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=acreditacion%>" obligatorio="false"  />           	   
+				<siga:Select queryId="getAcreditacionesSJCS" id="acreditacion" width="740" selectedIds="<%=acreditacion%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -425,8 +423,7 @@ String[] getdatos = { usr.getLocation() };
 				<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 			</td>
 			<td class="labelText" >
-				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado(this, 'juzgadoActu');" />
-				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" accion="if(parent.comboJuzgado!=undefined)parent.cambiarJuzgado(this,'codigoExtJuzgadoActu');"/>           	   
+				<siga:Select id="juzgadoActu" queryId="getJuzgados" selectedIds="<%=juzgadoActu%>" width="680" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
 			</td>
 		</tr>
 		

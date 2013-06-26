@@ -268,14 +268,15 @@
 											
 										</td>				
 										<td colspan="3">
+										
 											<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
 											<% if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){	%>
 												<html:hidden name="busquedaClientesForm" property = "nombreInstitucion" value = "<%=institucionAcceso%>" />
 												<html:text property="" styleClass="boxConsulta" size="80" value='<%=nombreInstitucionAcceso%>' readOnly="true" />
 											<% } else if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-											    <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
+											    <siga:Select id="nombreInstitucion" queryId="getNombreColegiosTodos" selectedIds="<%=colegioSel %>"/>
 											<% }else{ %>
-												<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
+												<siga:Select id="nombreInstitucion" queryId="getInstituciones" selectedIds="<%=colegioSel %>"/>
 											<% } %>
 										</td>
 									</tr>												
@@ -308,7 +309,7 @@
 											</td>
 											<td>
 												<!-- TIPO -->
-												<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoSel %>" ancho="450"/>
+												<siga:Select id="tipo" queryId="getTiposNoColegiado" width="450" selectedIds="<%=tipoSel %>" />
 												<!--
 													<html:select name="busquedaClientesForm" property="tipo" styleClass="boxCombo">
 															<html:option value=""></html:option>

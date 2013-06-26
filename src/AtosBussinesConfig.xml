@@ -34,6 +34,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenParametrosService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenParametrosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenPropertiesService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenPropertiesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.SelectDataService"	implementation="org.redabogacia.sigaservices.app.services.gen.impl.SelectDataServiceImpl"/>
 		
 		<service interface="org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.AsignaConsultaNumeracionServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.XuntaEnviosJEServiceImpl"/>

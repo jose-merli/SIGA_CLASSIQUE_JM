@@ -114,14 +114,18 @@ public class DefinirTurnosForm extends MasterForm {
 	
 	
 	
-	public void setArea (String valor){ 
-		String aux="";
-		int longitud = valor.indexOf(","); 
-		if (longitud>0){
-			aux= valor.substring(longitud+1,valor.length());
-			this.datos.put("IDAREA", aux);
+	public void setArea (String valor){
+		if (!valor.startsWith("{")){
+			String aux="";
+			int longitud = valor.indexOf(","); 
+			if (longitud>0){
+				aux= valor.substring(longitud+1,valor.length());
+				this.datos.put("IDAREA", aux);
+			}
+			else this.datos.put("IDAREA",valor);
+		} else {
+			this.datos.put("IDAREA",valor);
 		}
-		else this.datos.put("IDAREA",valor);
 	}
 	
 	public void setMateria (String valor){ 
@@ -129,23 +133,27 @@ public class DefinirTurnosForm extends MasterForm {
 	}
 	
 	public void setZona (String valor){ 
-		String aux="";
-		int longitud = valor.indexOf(","); 
-		if (longitud>0){
-			aux= valor.substring(longitud+1,valor.length());
-			this.datos.put("IDZONA", aux);
-		}
-		else this.datos.put("IDZONA",valor);
+		if (!valor.startsWith("{")){
+			String aux="";
+			int longitud = valor.indexOf(","); 
+			if (longitud>0){
+				aux= valor.substring(longitud+1,valor.length());
+				this.datos.put("IDZONA", aux);
+			}
+			else this.datos.put("IDZONA",valor);
+		}else this.datos.put("IDZONA",valor);
 	}
 	
 	public void setIdZona (String valor){ 
-		String aux="";
-		int longitud = valor.indexOf(","); 
-		if (longitud>0){
-			aux= valor.substring(longitud+1,valor.length());
-			this.datos.put("IDIDZONA", aux);
-		}
-		else this.datos.put("IDIDZONA",valor);
+		if (!valor.startsWith("{")){
+			String aux="";
+			int longitud = valor.indexOf(","); 
+			if (longitud>0){
+				aux= valor.substring(longitud+1,valor.length());
+				this.datos.put("IDIDZONA", aux);
+			}
+			else this.datos.put("IDIDZONA",valor);
+		}else this.datos.put("IDIDZONA",valor);
 	}
 	
 	public void setSubzona (String valor){ 

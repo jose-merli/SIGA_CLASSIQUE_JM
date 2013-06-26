@@ -62,7 +62,15 @@
 		titulo="gratuita.maestroGuardias.literal.mantenimientoTurnos" 
 		localizacion="gratuita.turnos.localizacion"/>
 	<script language="JavaScript">
-
+		jQuery(function(){
+			jQuery("#zona").on("change", function(){
+				mostrarPartido();
+			});
+			jQuery("#subzona").on("change", function(){
+				mostrarPartido();
+			});
+		});
+		
 		//Funcion asociada a boton buscar
 		function buscar() 
 		{
@@ -87,19 +95,34 @@
 			document.DeficionTurnosForm.modo.value = "nuevo";
 			document.DeficionTurnosForm.submit();
 		}
-</script>
-		
-<script language="JavaScript">
-		function mostrarPartido(obj)
-		{
-			if (document.partidosJud) { 
-				document.partidosJud.action= "<%=app%>/html/jsp/gratuita/partidosJudiciales.jsp";
-				document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
-				document.partidosJud.idzona.value=document.forms[0].zona.value;
-				document.partidosJud.idsubzona.value=obj.value;			
-				
-				document.partidosJud.submit();
-			};
+
+		function mostrarPartido() {
+			var ocultar = true;
+			try{
+				if (document.partidosJud) {
+					if (jQuery("#zona").val() != "" && jQuery("#zona").val() != undefined && jQuery("#zona").val() != null){
+						var zonaSeleccionadaJSON = jQuery.parseJSON(jQuery("#zona").val());
+						var idZona = zonaSeleccionadaJSON.idzona;
+						if (typeof idZona != "undefined"){
+							var idSubzona = jQuery("#subzona").val();
+						
+							document.partidosJud.action= "<%=app%>/html/jsp/gratuita/partidosJudiciales.jsp";
+							document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
+							document.partidosJud.idzona.value=idZona;
+							document.partidosJud.idsubzona.value=idSubzona;			
+							//console.log("Cargando partidos judiciales de idzona="+idZona+" y idsubzona="+idSubzona);
+							document.partidosJud.submit();
+							jQuery("#partidosjudiciales").show();
+							ocultar = false;
+						}
+					}
+				}
+			} catch (e){
+				console.error("Error al mostrar el partido judicial: "+ e.message);
+			}
+			if (ocultar){
+				jQuery("#partidosjudiciales").hide();
+			}
 		}
 </script>
 		 
@@ -134,26 +157,19 @@
 		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/></td>
 		<td>		
 		<%
-			String [] parametroMateria = null;
+			String parametroMateria = "";
 			ArrayList vArea = new ArrayList();
 			try {
 				String area = (String)hash.get("IDAREA");
 				
 				if (area!=null && !area.equals("-1")){					
-					vArea.add(usr.getLocation()+","+(String)hash.get("IDAREA"));
-					parametroMateria = new String[]{usr.getLocation(),area};
-				}
-				
-				else {
-					vArea.add("0");
-					 
+					vArea.add("{\"idarea\":\""+(String)hash.get("IDAREA")+"\", \"idinstitucion\":\""+usr.getLocation()+"\"}");
+					parametroMateria = "{\"idarea\":\""+(String)hash.get("IDAREA")+"\"}";
 				}
 			} catch (Exception e) {
-				vArea.add("0");
 			}
-		%>									
-			<siga:ComboBD nombre="area" tipo="area" clase="boxCombo"  parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vArea%>" obligatorio="false" accion="Hijo:materia"/>
-			<script> document.forms[0].area[0].value=-1;</script>		
+		%>
+			<siga:Select queryId="getAreas" id="area" queryParamId="idarea" selectedIds="<%=vArea%>" childrenIds="materia"/>
 		</td>
 		<td class="labelText"> 
 		<%
@@ -163,41 +179,32 @@
 				if (materia != null && !materia.equals("-1")){
 					vMateria.add ((String)hash.get("IDMATERIA"));
 				}
-				else {
-					vMateria.add("0");
-					 
-				}
 			} catch (Exception e) {
-				vMateria.add("0");
 			}
 		%>			
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/>
 		</td> 
-		<td><siga:ComboBD nombre="materia" tipo="materia" parametro="<%=parametroMateria%>" elementoSel="<%=vMateria%>" clase="boxCombo"  hijo="t"/></td>
+		<td>
+			<siga:Select queryId="getMaterias" id="materia" parentQueryParamIds="idarea" selectedIds="<%=vMateria%>" params="<%=parametroMateria%>" selectParentMsg="Seleccione área..."/>
+		</td>
 	</tr>
 	
 	<tr>
 		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/></td>						
 		<td>
 		<%
-			String [] parametroSubZona = null;
+			String parametroSubZona = "";
 			ArrayList vZona = new ArrayList();
 			try {
 				String zona = (String)hash.get("IDZONA");
 				if (zona!=null && !zona.equals("-1")){
-					vZona.add(usr.getLocation()+","+(String)hash.get("IDZONA"));
-					parametroSubZona = new String[]{usr.getLocation(),zona};
-				}
-				else {
-					vZona.add("0");
-					 
-				}
+					vZona.add("{\"idzona\":\""+(String)hash.get("IDZONA")+"\", \"idinstitucion\":\""+usr.getLocation()+"\"}");
+					parametroSubZona = "{\"idzona\":\""+(String)hash.get("IDZONA")+"\"}";
+				}				
 			} catch (Exception e) {
-				vZona.add("0");
 			}
 		%>									
-			<siga:ComboBD nombre="zona" tipo="zona" clase="boxCombo"  parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vZona%>" obligatorio="false" accion="Hijo:subzona"/>
-			<script> document.forms[0].zona[0].value=-1;</script>			
+			<siga:Select queryId="getZonas" id="zona" queryParamId="idzona" selectedIds="<%=vZona%>" childrenIds="subzona"/>
 		</td>
 		<td class="labelText">
 		<%
@@ -207,23 +214,24 @@
 				if (subZona!=null && !subZona.equals("-1")){
 					vSubzona.add((String)hash.get("IDSUBZONA"));
 				}
-				else {
-					vSubzona.add("0");
-					 
-				}
 			} catch (Exception e) {
-				vSubzona.add("0");
-				
 			}
 		%>	
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.subzona"/>
 		</td>
-		<td><siga:ComboBD nombre="subzona" tipo="subzona"  parametro="<%=parametroSubZona%>" elementoSel="<%=vSubzona%>" clase="boxCombo"  hijo="t" accion="parent.mostrarPartido(this);"/></td>
+		<td>
+			<siga:Select queryId="getSubZonas" id="subzona" parentQueryParamIds="idzona" params="<%=parametroSubZona%>" selectedIds="<%=vSubzona%>" selectParentMsg="Seleccione zona..."/>
+		</td>
 	</tr>
 	
 	<tr>		
-		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/></td>
-		<td colspan="3"><iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="600"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="NO"></iframe></td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
+		</td>
+		<td colspan="3">
+			<!-- SE PODRÍA SUSTITUIR POR EL SELECT FILTRADO PARA INCLUSO PODER BUSCAR POR PARTIDOS JUDICIALES... -->
+			<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="600"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="NO"></iframe>
+		</td>
 	</tr>
 	
 	<tr>
@@ -235,15 +243,10 @@
 				if (hash.get("IDPARTIDAPRESUPUESTARIA")==null || hash.get("IDPARTIDAPRESUPUESTARIA").equals("-1")){
 					vParPre.add("0");
 				}
-				else {
-					vParPre.add((String)hash.get("IDPARTIDAPRESUPUESTARIA"));
-				}
 			} catch (Exception e) {
-				vParPre.add("0");
 			}
 		%>
-			<siga:ComboBD nombre="partidaPresupuestaria" tipo="partidaPresupuestaria" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vParPre%>" obligatorio="false" estilo="true" clase="boxCombo" parametro="<%=dato%>" />
-			<script> document.forms[0].partidaPresupuestaria[0].value=-1;</script>
+			<siga:Select queryId="getPartidasPresupuestarias" id="partidaPresupuestaria" selectedIds="<%=vParPre%>"/>
 		</td>
 		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/></td>
 		<td>
@@ -253,15 +256,10 @@
 				if (hash.get("IDGRUPOFACTURACION")==null || hash.get("IDGRUPOFACTURACION").equals("-1")){
 					vGrupo.add("0");
 				}
-				else {
-					vGrupo.add((String)hash.get("IDGRUPOFACTURACION"));
-				}
 			} catch (Exception e) {
-				vGrupo.add("0");
 			}
-		%>									
-			<siga:ComboBD estilo="true" obligatorio="false" nombre="grupoFacturacion" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vGrupo%>" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
-			<script> document.forms[0].grupoFacturacion[0].value=-1;</script>
+		%>		
+			<siga:Select queryId="getGrupoFacturacion" id="grupoFacturacion" selectedIds="<%=vGrupo%>"/>							
 		</td>
 	</tr>
 	<tr>		
@@ -274,14 +272,12 @@
 				if (hash.get("IDTIPOTURNO")==null || hash.get("IDTIPOTURNO").equals("-1")){
 					vTipoTurno.add("0");
 				}
-				else {
-					vTipoTurno.add((String)hash.get("IDTIPOTURNO"));
-				}
 			} catch (Exception e) {
-				vTipoTurno.add("0");
 			}
 		%>		
-		<td><siga:ComboBD nombre="idTipoTurno" tipo="tipoTurno" clase="boxCombo" estilo="true" obligatorio="false" elementoSel='<%=vTipoTurno%>' parametro="<%=dato%>"/></td>
+		<td>
+			<siga:Select queryId="getTiposTurno" id="idTipoTurno" selectedIds="<%=vTipoTurno%>"/>
+		</td>
 	</tr>	
 	<%}%>
 	</html:form>

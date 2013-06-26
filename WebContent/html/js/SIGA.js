@@ -1,4 +1,32 @@
-var console = window.console || { log: function() {} };
+(function() {
+	// Para los navegadores sin console
+    var method;
+    var noop = function () {};
+    var methods = [
+        'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+        'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+        'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+        'timeStamp', 'trace', 'warn'
+    ];
+    var length = methods.length;
+    var console = (window.console = window.console || {});
+
+    while (length--) {
+        method = methods[length];
+
+        // Only stub undefined methods.
+        if (!console[method]) {
+            console[method] = noop;
+        }
+    }
+    
+    // Para los navegadores que no soportan la función trim
+    if(typeof String.prototype.trim !== 'function') {
+    	  String.prototype.trim = function() {
+    	    return this.replace(/^\s+|\s+$/g, ''); 
+    	  }
+	}
+}());
 var jqueryFileUri = "/SIGA/html/js/jquery.js";
 if (typeof jQuery == "undefined"){
 	// Tratamos de usar jQuery de window.top
@@ -62,9 +90,9 @@ function jQueryLoaded(){
 	window.top.jQueryContext(window);
 	
 	// *** BEGIN PLUGINS *** //
-	
 	// EXISTS FUNCTION
 	jQuery.fn.exists = function(){return this.length>0;};
+	
 	
 	//JSON FOR COMPATIBILITY MODE ON IE
 	//http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.min.js
@@ -75,6 +103,7 @@ function jQueryLoaded(){
 	p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,e,n,r={"\u0008":"\\b","\t":"\\t","\n":"\\n","\u000c":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},i;if(typeof JSON.stringify!=="function")JSON.stringify=function(a,j,c){var d;n=e="";if(typeof c==="number")for(d=0;d<c;d+=1)n+=" ";else typeof c==="string"&&(n=c);if((i=j)&&typeof j!=="function"&&(typeof j!=="object"||typeof j.length!=="number"))throw Error("JSON.stringify");return l("",
 	{"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 	"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
+	
 	
 	/**
 	*	jQuery.noticeAdd() and jQuery.noticeRemove()
@@ -102,7 +131,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.55 2013-06-13 14:14:41 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.56 2013-06-26 10:38:27 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -174,145 +203,156 @@ function jQueryLoaded(){
 		}
 	});
 	
-	/**
-	 * jQuery Watch Plugin
-	 *
-	 * @author Darcy Clarke
-	 * @version 2.0
-	 *
-	 * Copyright (c) 2012 Darcy Clarke
-	 * Dual licensed under the MIT and GPL licenses.
-	 *
-	 * ADDS: 
-	 *
-	 * - $.watch()
-	 *  
-	 * USES:
-	 *
-	 * - DOMAttrModified event
-	 * 
-	 * FALLBACKS:
-	 * 
-	 * - propertychange event
-	 * - setTimeout() with delay 
-	 *
-	 * EXAMPLE:
-	 * 
-	 * $('div').watch('width height', function(){
-	 *      console.log(this.style.width, this.style.height);
-	 * });
-	 *
-	 * $('div').animate({width:'100px',height:'200px'}, 500);
-	 *
-	 */
+	/*
+	A simple jQuery function that can add listeners on attribute change.
+	http://meetselva.github.io/attrchange/
 
-	(function($){
-	    
-	    $.extend($.fn, {         
-	        
-	        /**
-	         * Watch Method
-	         * 
-	         * @param {String} the name of the properties to watch
-	         * @param {Object} options to overide defaults (only 'throttle' right now)
-	         * @param {Function} callback function to be executed when attributes change
-	         *
-	         * @return {jQuery Object} returns the jQuery object for chainability
-	         */   
-	        watch : function(props, options, callback){
+	About License:
+	Copyright (C) 2013 Selvakumar Arumugam
+	You may use attrchange plugin under the terms of the MIT Licese.
+	https://github.com/meetselva/attrchange/blob/master/MIT-License.txt
+	*/
+	(function($) {
+	   function isDOMAttrModifiedSupported() {
+			var p = document.createElement('p');
+			var flag = false;
+			
+			if (p.addEventListener) p.addEventListener('DOMAttrModified', function() {
+				flag = true;
+			}, false);
+			else if (p.attachEvent) p.attachEvent('onDOMAttrModified', function() {
+				flag = true;
+			});
+			else return false;
+			
+			p.setAttribute('id', 'target');
+			
+			return flag;
+	   }
+	   
+	   function checkAttributes(chkAttr, e) {
+			if (chkAttr) {
+				var attributes = this.data('attr-old-value');
+				
+				if (e.attributeName.indexOf('style') >= 0) {
+					if (!attributes['style']) attributes['style'] = {}; //initialize
+					var keys = e.attributeName.split('.');
+					e.attributeName = keys[0];
+					e.oldValue = attributes['style'][keys[1]]; //old value
+					e.newValue = keys[1] + ':' + this.prop("style")[$.camelCase(keys[1])]; //new value
+					attributes['style'][keys[1]] = e.newValue;
+				} else {
+					e.oldValue = attributes[e.attributeName];
+					e.newValue = this.attr(e.attributeName);
+					attributes[e.attributeName] = e.newValue; 
+				}
+				
+				this.data('attr-old-value', attributes); //update the old value object
+			}	   
+	   }
 
-	            // Dummmy element
-	            var element = document.createElement('div');
+	   //initialize Mutation Observer
+	   var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-	            /**
-	             * Checks Support for Event
-	             * 
-	             * @param {String} the name of the event
-	             * @param {Element Object} the element to test support against
-	             *
-	             * @return {Boolean} returns result of test (true/false)
-	             */
-	            var isEventSupported = function(eventName, el) {
-	                eventName = 'on' + eventName;
-	                var supported = (eventName in el);
-	                if(!supported){
-	                    el.setAttribute(eventName, 'return;');
-	                    supported = typeof el[eventName] == 'function';
-	                }
-	                return supported;
-	            };
+	   $.fn.attrchange = function(o) {
+		   
+			var cfg = {
+				trackValues: false,
+				callback: $.noop
+			};
+			
+			//for backward compatibility
+			if (typeof o === "function" ) { 
+				cfg.callback = o; 
+			} else { 
+				$.extend(cfg, o); 
+			}
 
-	            // Type check options
-	            if(typeof(options) == 'function'){
-	                callback = options;
-	                options = {};
-	            }
+		    if (cfg.trackValues) { //get attributes old value
+		    	$(this).each(function (i, el) {
+		    		var attributes = {};
+		    		for (var attr, i=0, attrs=el.attributes, l=attrs.length; i<l; i++){
+		    		    attr = attrs.item(i);
+		    		    attributes[attr.nodeName] = attr.value;
+		    		}
+		    		
+		    		$(this).data('attr-old-value', attributes);
+		    	});
+		    }
+		   
+			if (MutationObserver) { //Modern Browsers supporting MutationObserver
+				/*
+				   Mutation Observer is still new and not supported by all browsers. 
+				   http://lists.w3.org/Archives/Public/public-webapps/2011JulSep/1622.html
+				*/
+				var mOptions = {
+					subtree: false,
+					attributes: true,
+					attributeOldValue: cfg.trackValues
+				};
+		
+				var observer = new MutationObserver(function(mutations) {
+					mutations.forEach(function(e) {
+						var _this = e.target;
+						
+						//get new value if trackValues is true
+						if (cfg.trackValues) {
+							/**
+							 * @KNOWN_ISSUE: The new value is buggy for STYLE attribute as we don't have 
+							 * any additional information on which style is getting updated. 
+							 * */
+							e.newValue = $(_this).attr(e.attributeName);
+						}
+						
+						cfg.callback.call(_this, e);
+					});
+				});
+		
+				return this.each(function() {
+					observer.observe(this, mOptions);
+				});
+			} else if (isDOMAttrModifiedSupported()) { //Opera
+				//Good old Mutation Events but the performance is no good
+				//http://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/
+				return this.on('DOMAttrModified', function(event) {
+					if (event.originalEvent) event = event.originalEvent; //jQuery normalization is not required for us 
+					event.attributeName = event.attrName; //property names to be consistent with MutationObserver
+					event.oldValue = event.prevValue; //property names to be consistent with MutationObserver 
+					cfg.callback.call(this, event);
+				});
+			} else if ('onpropertychange' in document.body) { //works only in IE		
+				return this.on('propertychange', function(e) {
+					e.attributeName = window.event.propertyName;
+					//to set the attr old value
+					checkAttributes.call($(this), cfg.trackValues , e);
+					cfg.callback.call(this, e);
+				});
+			}
 
-	            // Type check callback
-	            if(typeof(callback) != 'function')
-	                callback = function(){};
-
-	            // Map options over defaults
-	            options = $.extend({}, { throttle : 10 }, options);
-
-	            /**
-	             * Checks if properties have changed
-	             * 
-	             * @param {Element Object} the element to watch
-	             *
-	             */
-	            var check = function(el) {
-	                var data = el.data(),
-	                    changed = false,
-	                    temp;
-
-	                // Loop through properties
-	                for(var i=0;i < data.props.length; i++){
-	                    temp = el.css(data.props[i]);
-	                    if(data.vals[i] != temp){
-	                        data.vals[i] = temp;
-	                        changed = true;
-	                        break;
-	                    }
-	                }
-	                
-	                // Run callback if property has changed
-	                if(changed && data.cb)
-	                    data.cb.call(el, data);
-	            };
-
-	            return this.each(function(){
-	                var el = $(this),
-	                    cb = function(){ check.call(this, el) },
-	                    data = { props:props.split(','), cb:callback, vals: [] };
-	                $.each(data.props, function(i){ data.vals[i] = el.css(data.props[i]); });
-	                el.data(data);
-	                if(isEventSupported('DOMAttrModified', element)){
-	                    el.on('DOMAttrModified', callback);
-	                } else if(isEventSupported('propertychange', element)){
-	                    el.on('propertychange', callback);
-	                } else {
-	                    setInterval(cb, options.throttle);
-	                }
-	            });
-	        }
-	    });
+			return this;
+	    };
 	})(jQuery);
 	
-	//serializeObject
-	
+	// SERIALIZE
 	jQuery.fn.serializeObject = function()
 	{
 	    var o = {};
 	    var a = this.serializeArray();
 	    jQuery.each(a, function() {
-	        if (o[this.name] !== undefined) {
-	            if (!o[this.name].push) {
-	                o[this.name] = [o[this.name]];
+	    	var key = this.name.toLowerCase();
+	    	if (o[this.name] !== undefined){
+	    		var old_value = o[this.name];
+	    		delete o[this.name];
+	    		o[key] = old_value;
+	    	}
+	    	var value = o[key];
+	    	if (value !== undefined && value != "" && value != " " && value != "-1" && new String(value).trim() != ""){
+	            if (!o[key].push) {
+	                o[key] = [value];
 	            }
-	            o[this.name].push(this.value || '');
+	            o[key].push(this.value || '');
 	        } else {
-	            o[this.name] = this.value || '';
+	            o[key] = this.value || '';
 	        }
 	    });
 	    return o;
@@ -322,12 +362,12 @@ function jQueryLoaded(){
 	
 	/*  Hack for allowing correct typing in modal dialogs in safari. */
 	try {
-		if($.browser.msie || $.browser.mozilla){
-			$.browser.safari = false;
+		if(jQuery.browser.msie || jQuery.browser.mozilla){
+			jQuery.browser.safari = false;
 		} else {
-			$.browser.safari = ( $.browser.webkit && /chrome/.test(navigator.userAgent.toLowerCase()) ) ? false : true;
+			jQuery.browser.safari = ( jQuery.browser.webkit && /chrome/.test(navigator.userAgent.toLowerCase()) ) ? false : true;
 		}
-		if( ($.browser.safari) && (window.top.dialogArguments) ){
+		if( (jQuery.browser.safari) && (window.top.dialogArguments) ){
 			// Only applies to Windows Safari browsers
 			if(/win32/.test(navigator.platform.toLowerCase())){
 				jQuery(document).keydown(function(event) {
@@ -344,65 +384,8 @@ function jQueryLoaded(){
 	
 	//*** ONLOAD ***//
 	
-	(function(jQuery){
-		if(!jQuery.fn.watch){
-			jQuery.fn.watch = function(props, callback, timeout){
-			    if(!timeout)
-			        timeout = 10;
-			    return this.each(function(){
-			        var el         = jQuery(this),
-			            func     = function(){ __check.call(this, el); },
-			            data     = {    props:     props.split(","),
-			                        func:     callback,
-			                        vals:     [] };
-			            jQuery.each(data.props, function(i) { data.vals[i] = el.attr(data.props[i]); });
-			        el.data(data);
-			        if (typeof (this.onpropertychange) == "object"){
-			            el.bind("propertychange", callback);
-			        } else if (jQuery.browser.mozilla){
-			            el.bind("DOMAttrModified", callback);
-			        } else {
-			            setInterval(func, timeout);
-			        }
-			    });
-			    function __check(el) {
-			        var data     = el.data(),
-			            changed = false,
-			            temp    = "";
-			        for(var i=0;i < data.props.length; i++) {
-			            temp = el.attr(data.props[i]);
-			            if(data.vals[i] != temp){
-			                data.vals[i] = temp;
-			                changed = true;
-			                break;
-			            }
-			        }
-			        if(changed && data.func) {
-			            data.func.call(el, data);
-			        }
-			    }
-			};
-			var original_removeAttr = jQuery.fn.removeAttr;
-			jQuery.fn.removeAttr = function(){
-				original_removeAttr.apply(this, arguments);
-				//alert(jQuery(this).attr("id")+".removeAttr("+arguments+")");
-				jQuery(this).each(function(){
-					if (jQuery(this).is("select"))
-						disableSelect(jQuery(this));
-				});
-			};
-			/*
-			var original_attr = jQuery.fn.attr;
-			jQuery.fn.attr = function(attrname, attrvalue){
-				original_attr.apply(this,arguments);
-				//alert(jQuery(this).attr("id")+".attr("+attrname+")");
-				jQuery(this).each(function(){
-					if (jQuery(this).is("select"))
-						disableSelect(jQuery(this));
-				});
-			};
-			*/
-		}
+	jQuery(document).ready(function(){
+		// CONFIGURACIÓN POR DEFECTO DE DATEPICKER
 		if (jQuery.datepicker){
 			//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
 		   jQuery.datepicker.regional['es'] = {
@@ -433,18 +416,284 @@ function jQueryLoaded(){
 			   		}) ;
 		   		};
 		}
-	})(jQuery);
-	//var log = "";
+		
+		// TAG SELECT BEGIN
+		//console.debug("div.tagSelectDiv: " + jQuery("div.tagSelectDiv").length + " EN " + window.location);
+		jQuery("div.tagSelectDiv").each(function(){
+			//console.debug("--- BEGIN tagSelectDiv ---");
+			var tagSelect_select = jQuery(this).find("select");			
+			if (tagSelect_select.exists()){
+				var tagSelect_input = jQuery(this).find("input.tagSelect_disabled");
+				var tagSelect_searchBox = jQuery(this).find("input.tagSelect_searchBox");
+				// INPUT PARA ESTADO DISABLED/READONLY
+				if (tagSelect_input.exists()){
+					tagSelect_select.on("change",function(){
+						tagSelect_input.val(tagSelect_select.find('option:selected').text());
+					});
+					
+					//OJO: NO FUNCIONA EN IE AL AÑADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
+					//		SE DEBE HACER .show()/.hide() del select para que funcione bien en vez de habilitar/deshabilitar
+					tagSelect_select.attrchange({
+						callback:function(event){
+									var modifiedAttributeName=event.attributeName;
+									if (modifiedAttributeName == "disabled" || 
+											modifiedAttributeName == "readonly" || 
+											(jQuery(this).is(":visible") == jQuery("#" + jQuery(this).attr("id")+"_disabled").is(":visible"))){
+										if (jQuery(this).is(":not(:visible)") || jQuery(this).is(":disabled") || jQuery(this).is("[readonly]") || jQuery(this).is("[readonly='readonly']")){
+											//console.debug("watch disabled,readonly, visible hide select show input for id: "+jQuery(this).attr("id"));
+											if (jQuery(this).is(":visible")){
+												jQuery(this).hide();
+												if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
+													jQuery("#"+jQuery(this).attr("id") + "_searchBox").hide();
+											}
+											jQuery("#" + jQuery(this).attr("id")+"_disabled").show();
+										} else {
+											//console.debug("watch disabled,readonly, visible show select hide input for id: "+jQuery(this).attr("id"));
+											jQuery(this).show();
+											if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
+												jQuery("#"+jQuery(this).attr("id") + "_searchBox").show();
+											jQuery("#" + jQuery(this).attr("id")+"_disabled").hide();
+										}
+									}
+								}
+					});					
+				}
+				// INPUT PARA BUSCAR/FILTRAR EL SELECT
+				if (tagSelect_searchBox.exists()){					
+					tagSelect_select.on("change",function(){
+						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
+					});
+					tagSelect_searchBox.on("keyup",function(){
+						var searchBox_select = jQuery(this).parent().find("select.tagSelect");
+						var old_selected_value = searchBox_select.find("option:selected").val();
+						
+						tagSelect_search(searchBox_select, jQuery(this));
+						
+						var current_selectedValue = searchBox_select.find("option:selected").val();
+						console.debug(searchBox_select.attr("id") + " keyup selected value OLD: " + old_selected_value + " NEW: "+ current_selectedValue);
+						if (old_selected_value != current_selectedValue && typeof searchBox_select.data("childrenids") != "undefined"){
+							console.debug(searchBox_select.attr("id") + " load children...");
+							var reloadIds = searchBox_select.data("childrenids").split(",");
+							jQuery.each(reloadIds, function(index, childrenId){
+								if (typeof current_selectedValue != "undefined" && current_selectedValue != "-1" && current_selectedValue != ""){
+									loadSelect(searchBox_select,childrenId);
+								} else {
+									//console.debug("OnChange empty parent value");
+									jQuery("#"+childrenId).html("");
+									if (typeof jQuery("#"+childrenId).data("selectparentmsg") != "undefined"){
+										jQuery("#"+childrenId).prepend("<option value='' selected>"+jQuery("#"+childrenId).data("selectparentmsg")+"</option>");
+									} else if (typeof jQuery("#"+childrenId).data("required") == "undefined" && jQuery("#"+childrenId).data("required") != "true") {
+										jQuery("#"+childrenId).prepend("<option value='' selected></option>");
+									}
+								}
+							});
+						}
+					}).on("change",function(){
+						console.debug("[searchBox] CHANGE ENVENT");
+						tagSelect_search(jQuery(this).parent().find("select.tagSelect"), jQuery(this));
+					}).on("blur", function(){
+						console.debug("[searchBox] BLUR ENVENT");
+						//var selected_value = tagSelect_select.find("option:selected").val();
+						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
+							tagSelect_select.change();
+					});
+					if (tagSelect_select.find("option:selected").exists()){
+						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
+					}
+				}
+				
+				var childrenIds = tagSelect_select.data("childrenids");
+				if (typeof childrenIds != "undefined"){
+					// TIENE HIJOS, ES UN SELECT ANIDADO
+					//console.debug(tagSelect_select.attr("id") + " TIENE HIJOS: "+ childrenIds);
+					childrenIds = childrenIds.split(",");
+					tagSelect_select.on("change",function(){
+						var parentSelect = jQuery(this);
+						var parentValue = jQuery(this).find("option:selected").val();
+						jQuery.each(childrenIds, function(index, childrenId){
+							if (typeof parentValue != "undefined" && parentValue != "-1" && parentValue != ""){
+								loadSelect(parentSelect,childrenId);
+							} else {
+								//console.debug("OnChange empty parent value");
+								jQuery("#"+childrenId).html("");
+								if (typeof jQuery("#"+childrenId).data("selectparentmsg") != "undefined"){
+									jQuery("#"+childrenId).prepend("<option value='' selected>"+jQuery("#"+childrenId).data("selectparentmsg")+"</option>");
+								} else if (typeof jQuery("#"+childrenId).data("required") == "undefined" && jQuery("#"+childrenId).data("required") != "true") {
+									jQuery("#"+childrenId).prepend("<option value='' selected></option>");
+								}
+							}
+							if (jQuery("#"+childrenId).parent().find("input.tagSelect_searchBox").exists()){
+								if (jQuery("#"+childrenId).find('option:selected').exists())
+									jQuery("#"+childrenId).parent().find("input.tagSelect_searchBox").val(jQuery("#"+childrenId).find('option:selected').data("searchkey"));
+								else
+									jQuery("#"+childrenId).parent().find("input.tagSelect_searchBox").val("");
+							}
+							/*
+							//var data = jQuery("select[data-childrenIds*='"+childrenId+"']").serialize();
+							var data = jQuery("select, input").serialize();
+							var childrenSelect = jQuery("#"+childrenId);
+							childrenSelect.load("SIGA/selectData.do?queryId="+childrenSelect.data("queryId"), data, function(responseText, textStatus, XMLHttpRequest){
+								alert("children loaded textStatus: " + textStatus);
+							});
+							*/							
+						});
+					});
+				} else {
+					//console.debug(tagSelect_select.attr("id") + " NO TIENE HIJOS!");
+				}
+				// Inicializa hijos si hay valor en los padres y no estaba
+				// ya inicializado por TAGSELECT con los parámetros de la request
+				if (tagSelect_select.children().length <= 0){
+					//console.debug(tagSelect_select.attr("id")+" NO TIENE OPTIONS CARGADAS, COMPROBANDO SI HAY QUE INICIALIZARLO...");
+					var parentSelects = jQuery("select[data-childrenIds*='" + tagSelect_select.attr("id")+"']");
+					if (parentSelects.length > 0 && 
+							parentSelects.filter(function() { return jQuery(this).val() == "" || typeof jQuery(this).val() == "undefined" || jQuery(this).val() == "-1"; }).length <= 0){
+						//console.debug("ES UN HIJO! INICIALIZANDOLO...");
+						//Tiene padres y todos tienen valor
+						loadSelect(parentSelects, tagSelect_select.attr("id"), true);
+					} else {
+						//console.debug("NO ES UN HIJO!");
+					}
+				}
+			}
+		});
+		// TAG SELECT END
+	}); // READY
+	
+	function tagSelect_search(tagSelect_select, tagSelect_searchBox){
+		if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" &&
+				tagSelect_searchBox.exists() && tagSelect_searchBox.exists()){
+			tagSelect_select.find("option").each(function() {
+				if (jQuery(this).parent().is("span")){
+					jQuery(this).unwrap();
+				}
+				jQuery(this).show();
+			});
+			var searchValue = tagSelect_searchBox.val();
+			if (searchValue != ""){
+				tagSelect_select.find("option").wrap("<span>").hide();
+				var optionsFound = tagSelect_select.find("option[data-searchkey]").filter(function(){
+					//console.debug("tagSelect_search comparando " + String(jQuery(this).data("searchkey")).toLowerCase() + " con " + String(searchValue).toLowerCase() + " > " + String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()));
+					return String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()) != "-1";
+				});
+				console.debug("[tagSelect_search] Búsqueda por '" + searchValue + "' encontradas " + optionsFound.length + " options...");
+				if (optionsFound.length > 0){
+					optionsFound.show();
+					optionsFound.each(function() {
+						if (jQuery(this).parent().is("span")){							
+							jQuery(this).unwrap();
+							//console.debug("muestro["+jQuery(this).data("searchkey")+"]: " + jQuery(this).text());
+						}
+					});
+					//console.debug("[tagSelect_search] Seteo el valor del select a '"+optionsFound.first().val()+"'");
+					//tagSelect_select.val(optionsFound.first().val());
+					if (tagSelect_select.find("option:selected").exists())
+						tagSelect_select.find("option:selected").attr('selected', false);
+					optionsFound.first().attr('selected', true);
+					//tagSelect_select.val(tagSelect_select.find("option:selected").text());
+					//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
+				} else {
+					if (tagSelect_select.find("option:selected").exists())
+						tagSelect_select.find("option:selected").attr('selected', false);
+					tagSelect_select.find("option").first().attr('selected', true);
+				}
+			} else {
+				if (tagSelect_select.find("option:selected").exists())
+					tagSelect_select.find("option:selected").attr('selected', false);
+				tagSelect_select.find("option").first().attr('selected', true);
+			}
+		}
+	}
+	
+	function loadSelect(parentSelects, childrenId, setInitialValue){
+		var blockParentSelects = parentSelects.not(":disabled").filter(":visible");
+		blockParentSelects.hide();
+		var childrenSelect = jQuery("#"+childrenId);
+		if (childrenSelect.exists()){
+			var loadingId = childrenSelect.attr("id") + "_loading";
+			if (!jQuery("#"+loadingId).exists()){
+				childrenSelect.after("<img id='"+loadingId+"' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='display:none' />");
+				jQuery("#"+loadingId).fadeIn();
+			}
+			var dataObject = {};
+			dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
+			jQuery("*[data-queryparamid]").each(function(){
+				var key = jQuery(this).data("queryparamid");
+				var value = jQuery(this).val();
+				if (value == "" && jQuery(this).is("select"))
+					value = jQuery(this).find("option:selected").val();
+				/*
+				if (dataObject[key] !== undefined && dataObject[key] != "" && dataObject[key] != " " && dataObject[key] != "-1") {
+					if (!dataObject[key].push) {
+						dataObject[key] = [dataObject[key]];
+		            }
+					dataObject[key].push(value || '');
+				} else {
+					dataObject[key] = value || '';
+				}
+				*/
+				// Sobreescribimos el valor siempre aunque exista ya para evitar errores en páginas donde hay más de un formulario y se repiten atributos
+				// atributos
+				dataObject[key] = value || '';
+				console.debug("ADDED queryparamid: " + key + " = " + dataObject[key]);
+			});
+			var data = JSON.stringify(dataObject);
+			var params = "";
+			if (typeof data != "undefined"){
+				params = "&params="+encodeURIComponent(data);
+			}
+			var selectedIds = "";
+			if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
+				selectedIds = "&selectedIds="+childrenSelect.data("inival");
+			}
+			
+			var required = "";
+			if(typeof childrenSelect.data("required") != "undefined"){
+				required = "&required="+childrenSelect.data("required");
+			}
+			var sShowsearchbox = "";
+			if (typeof childrenSelect.data("showsearchbox") != "undefined"){
+				sShowsearchbox ="&showsearchbox='true'";
+			}
+			childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
+				console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
+				/* LO HACE EL ACTION
+				if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
+					var iniVal = childrenSelect.data("inival");
+					if (iniVal != ""){
+						if (iniVal.charAt(0) == "[")
+							iniVal = iniVal.substring(1);
+						if (iniVal.charAt(iniVal.length - 1) == "]")
+							iniVal = iniVal.substring(0,iniVal.length-1);
+						console.log("SETTING " + iniVal + " to "+childrenSelect.attr("id"));
+						iniVal = iniVal.split(",");
+						for (var j=0; j<iniVal.length; j++) {
+					        childrenSelect.val(iniVal[j]);
+					    }
+						childrenSelect.change();
+					}
+				}
+				*/
+				if (childrenSelect.val() !== "undefined" && childrenSelect.val() != "" && childrenSelect.val() != "-1"){
+					childrenSelect.change();
+				}
+				if (jQuery("#"+loadingId).exists())
+					jQuery("#"+loadingId).remove();
+				
+				blockParentSelects.show();
+			});
+		}
+	}
+	
+	/* YA NO TIENE SENTIDO CON EL CAMBIO DE COMBO_BD A SELECT
 	if (typeof modo != "undefined" && modo.toUpperCase() === "VER"){
 		jQuery(document).ready(function() {	
 		    jQuery(window).load(function (){
 		    	iniInputSelect(false);
-		    	//alert("entro");
-	//	    	if (log != "")
-	//	    		alert(log);
 		    });
 		});
 	}
+	*/
 } // FIN JQUERY LOADED
 
 var ie = (function(){
@@ -2000,10 +2249,10 @@ document.getElementById = function(elemIdOrName) {
 	function iniInputSelect(frames){
 		var selects = undefined;
 		if (frames){
-			selects = frames.find("select").not(".inputSelect");
+			selects = frames.find("select:not(.inputSelect, .tagSelect)");
 			frames.addClass("inputSelect");
 		} else
-			selects = jQuery("select").not(".inputSelect");
+			selects = jQuery("select:not(.inputSelect, .tagSelect)");
 		
 		selects.each(function(){
 	    	   var select = jQuery(this);

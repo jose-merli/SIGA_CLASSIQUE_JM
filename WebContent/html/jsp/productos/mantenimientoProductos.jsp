@@ -42,7 +42,8 @@
 	String remitente = request.getAttribute("modelo").toString(); // Obtengo la operacion (consulta,modificar o insertar)a realizar
 
 	// Valor tarjeta, Domiciliacion Bancaria
-	String valorMomentoCargo[] = {""+ClsConstants.TIPO_FORMAPAGO_TARJETA,""+ClsConstants.TIPO_FORMAPAGO_FACTURA};   
+	//String valorMomentoCargo[] = {""+ClsConstants.TIPO_FORMAPAGO_TARJETA,""+ClsConstants.TIPO_FORMAPAGO_FACTURA};
+	String valorMomentoCargo = "{'options':[{'key':'"+ClsConstants.TIPO_FORMAPAGO_TARJETA+"', 'value':'alSolicitar'},{'key':'"+ClsConstants.TIPO_FORMAPAGO_FACTURA+"', 'value':'proximoPeriodo'}]}";
 
 	String valorModo = "";
 	
@@ -317,11 +318,11 @@
 			function cargaCombo(modo)
 			{
 				<% if (remitente.equalsIgnoreCase("modificar")){%>
-					document.getElementById("tipoProducto").onchange();
+					jQuery("tipoProducto").change();
 				<% } %>	
 			}							
 
-			var momentoCargoInicial, resetComboPagoInternet, resetComboPagoSecretaria;
+			var momentoCargoInicial;
 
 			function limpiarCombo(nombre) 
 			{
@@ -346,37 +347,33 @@
 				iframeCombo.src = cadenaFinal;
 			}
 	
-			function cambiarCombosMomentoPago (o) 
-			{
-				combo = document.getElementById("momentoCargo");
+			function cambiarCombosMomentoPago (o) {
 				if (o.value == 'S' && o.checked) {
-					combo.options(0).selected = true;   // Al solicitarlo
+					jQuery("#momentoCargo").val("<%=ClsConstants.TIPO_FORMAPAGO_TARJETA%>");// Al solicitarlo
+				} else {
+					jQuery("#momentoCargo").val("<%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>");// Proximo periodo
 				}
-				else {
-					combo.options(1).selected = true;	// Proximo periodo
-				}
-				combo.onchange();
+				jQuery("#momentoCargo").change();
 
 				if (momentoCargoInicial != o.value ) {
-					limpiarCombo("formaPagoInternet");
-					limpiarCombo("formaPagoSecretaria");
+					jQuery("formaPagoInternet").val("");
+					jQuery("formaPagoSecretaria").val("");
 				}
 			}
 			
-			function inicio (o) {
-				combo = document.getElementById("momentoCargo");
+			function inicio (o) {				
 				if (o.value == 'S' && o.checked) {
-					combo.options(0).selected = true;   // Al solicitarlo
+					jQuery("#momentoCargo").val("<%=ClsConstants.TIPO_FORMAPAGO_TARJETA%>");// Al solicitarlo
 					momentoCargoInicial = "S";
 				}
 				else {
-					combo.options(1).selected = true;	// Proximo periodo
+					jQuery("#momentoCargo").val("<%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>");// Proximo periodo
 					momentoCargoInicial = "P";
 				}
-				combo.onchange();
+				jQuery("#momentoCargo").change();
 
-				resetComboPagoInternet = document.getElementById ("formaPagoInternetFrame").src;
-				resetComboPagoSecretaria = document.getElementById ("formaPagoSecretariaFrame").src;
+				//resetComboPagoInternet = document.getElementById ("formaPagoInternetFrame").src;
+				//resetComboPagoSecretaria = document.getElementById ("formaPagoSecretariaFrame").src;
 
 				 var cont=document.getElementById("contador");
 				// Mostramos el valor del contador cuando está relleno el combo Tipo Certificado 
@@ -387,6 +384,7 @@
 				<%}%>
 			}
 			
+			jQuery(function(){jQuery("#momentoCargo_tagSelectDiv").hide();});
 		</script>		
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
  	
@@ -433,17 +431,12 @@
 									<siga:Idioma key="pys.resultadoBusquedaProductos.literal.tipo"/>&nbsp;(*)
 								</td>
 								<td width="29%" class="labelText">
-									<% if (remitente=="insertar"){%>
-										<siga:ComboBD nombre = "tipoProducto" tipo="cmbTipoProducto" ancho="200" clase="boxCombo" obligatorio="true" accion="Hijo:producto" ancho="300"/>
-									<% }else{ %>
-										<% vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)); %>
-										<% if (remitente=="modificar"){ %>
-											<html:hidden property="producto" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%>"/>
-											<siga:ComboBD nombre = "tipoProducto"   tipo="cmbTipoProducto" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoProducto%>" accion="Hijo:producto" readOnly="true" ancho="300"/>
-										<%}else{%>
-											<siga:ComboBD nombre = "tipoProducto"  tipo="cmbTipoProducto" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoProducto%>" accion="Hijo:producto" readOnly="true" ancho="300"/>
-										<% } %>	
-									<% } %>
+									<% if (!"insertar".equalsIgnoreCase(remitente)){ 
+										vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)); %>
+										<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" disabled="true" selectedIds="<%=vTipoProducto%>"  width="200" required="true"></siga:Select>
+									<%} else { %>
+										<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" width="200" required="true"></siga:Select>					
+									<%} %>
 								</td>
 								<td width="18%" class="labelText">
 									<siga:Idioma key="pys.resultadoBusquedaProductos.literal.precio"/>&nbsp;(*)
@@ -464,29 +457,25 @@
 								<td class="labelText">
 									<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.categoria"/>&nbsp;(*)
 								</td>
-								<td class="labelText">										
-									<% if (remitente=="insertar"){%>
-										<siga:ComboBD nombre = "producto" tipo="cmbProducto"  parametro="<%=parametroCombo%>" clase="boxCombo" obligatorio="true" hijo="t" ancho="300"/>
-									<% } else { %>
-										<% vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); %>
-										<% if (remitente=="modificar"){ %>
-											<html:text property="productoC" styleClass="boxConsulta"  style="width:300"  value='<%=row.getString("CATEGORIA")%>' readOnly="true"></html:text>
-										<%}else{%>
-											<html:text property="productoC" styleClass="boxConsulta"  style="width:300" value='<%=row.getString("CATEGORIA")%>' readOnly="true"></html:text>
-										<% } %>											
-									<% } %>
+								<td class="labelText">
+									<% if ("insertar".equalsIgnoreCase(remitente)){%>
+										<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" />
+									<%} else {
+										vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); %>
+										<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" selectedIds="<%=vProducto %>" disabled="true"/>
+									<%} %>						
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="pys.resultadoBusquedaProductos.literal.IVA"/>&nbsp;(*)
 								</td>
-								<td class="labelText"> 					
-									<% if (remitente=="insertar"){%>
-										<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" obligatorio="true"/>
+								<td class="labelText"> 									
+									<% if ("insertar".equalsIgnoreCase(remitente)){%>
+										<siga:Select queryId="getPorcentajesIva" id="iva" required="true"/>
 							  		<% } else { %>
-										<% if (remitente=="modificar"){ %>
-											<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="box" elementoSel="<%=vIva%>" obligatorio="true"/>
+										<% if ("modificar".equalsIgnoreCase(remitente)){ %>
+											<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true"/>
 										<%}else{%>
-											<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
+											<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true" disabled="true" />
 										<% } %>
 							  		<% } %>
 								</td>
@@ -582,7 +571,7 @@
 									<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
 								</td>
 								<td class="labelText">
-									<siga:ComboBD nombre = "sufijo" tipo="cmbSufijos" ancho="175" clase="<%=estiloCombo%>" elementoSel="<%=sufijoSel%>" obligatorio="false" readonly="<%=String.valueOf(lectura)%>" parametro="<%=institucionParam %>" />
+									<siga:Select queryId="getSufijos" id="sufijo" selectedIds="<%=sufijoSel%>" readonly="<%=String.valueOf(lectura)%>" width="175"/>
 								</td>									
 							</tr>	
 							<tr>
@@ -703,8 +692,7 @@
 													<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
 														<tr>
 															<td class="labelText">
-
-															<siga:ComboBD nombre = "momentoCargo" tipo="momentoCargo" obligatorioSinTextoSeleccionar="true" parametro="<%=valorMomentoCargo%>" accion="Hijo:formaPagoSecretaria,Hijo:formaPagoInternet" estilo="display:none"/>
+															<siga:Select queryId="JSON" id="momentoCargo" queryParamId="idformapago" dataJSON="<%=valorMomentoCargo%>" childrenIds="formaPagoSecretaria,formaPagoInternet"/>
 
 															<% if (remitente=="insertar"){%>
 																<input type="radio" name="cargo" value="S" checked onclick="cambiarCombosMomentoPago(this);" ><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
@@ -788,20 +776,20 @@
 													<siga:Idioma key="productos.mantenimientoProductos.literal.internet"/>&nbsp;&nbsp;
 												</td>
 												<td width="80%" class="labelText" align="left">
-													<% if (remitente=="insertar"){int i=0;%>
-														<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternetProductos" clase="boxCombo" filasMostrar="2" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" 	hijo="t"/>
+													<% if (remitente=="insertar"){%>
+														<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" id="formaPagoInternet" multiple="true" lines="2" required="true" />
 													<%} else { %> 
-														<%	if (vInt.isEmpty()){int i=0;%>
+														<%	if (vInt.isEmpty()){%>
 															<% if (remitente=="modificar"){ %>
-																<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternetProductos" clase="box" filasMostrar="2" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" 	hijo="t"/>
+																<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" id="formaPagoInternet" multiple="true" lines="2" required="true" />
 															<%}else{%>
-																<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternetProductos" clase="boxConsulta" filasMostrar="2" seleccionMultiple="true" obligatorio="true" hijo="t" readOnly="true"/>
-															<% } %>																
+																<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" id="formaPagoInternet" multiple="true" lines="2" required="true" disabled="true" />
+															<% } %>
 														<% } else { %>
 															<% if (remitente=="modificar"){ %>
-																<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternetProductos" clase="box" filasMostrar="2" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" hijo="t" />
+																<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" />
 															<%}else{%>
-																<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternetProductos" clase="boxConsulta" filasMostrar="2" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" hijo="t" readOnly="true"/>
+																<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" disabled="true" />
 															<% } %>																																		
 														<% } %>
 													<% } %>
@@ -813,14 +801,14 @@
 													<siga:Idioma key="productos.mantenimientoProductos.literal.secretaria"/>&nbsp;(*)
 												</td>
 												<td width="80%" class="labelText" align="left">
-																<% if (remitente=="insertar"){int i=0;%>
-																	<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretariaProductos" clase="boxCombo" filasMostrar="7" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" hijo="t" />
+																<% if (remitente=="insertar"){%>
+																	<siga:Select queryId="getformaPagoSecretaria" parentQueryParamIds="idformapago" id="formaPagoSecretaria" multiple="true" lines="7" required="true"/>
 																<% } else { %>													
-																	<% if (vSec.isEmpty()){int i=0;%>
+																	<% if (vSec.isEmpty()){%>
 																		<% if (remitente=="modificar"){ %>
-																			<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretariaProductos" clase="box" filasMostrar="7" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" hijo="t"/>
+																			<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" id="formaPagoSecretaria" multiple="true" lines="7" required="true"/>
 																		<%}else{%>
-																			<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretariaProductos" clase="boxConsulta" filasMostrar="7" seleccionMultiple="true" obligatorio="true" hijo="t" readOnly="true"/>
+																			<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" id="formaPagoSecretaria" multiple="true" lines="7" required="true" disabled="true"/>
 																		<% } %>																																			
 																	<% } else { 
 																	
@@ -830,9 +818,9 @@
 																		}
 																		%>
 																		<% if (remitente=="modificar"){ %>
-																			<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretariaProductos" clase="box" filasMostrar="7" seleccionMultiple="true" elementoSel="<%=elementoSel%>" obligatorio="true" hijo="t"/>
+																			<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" />
 																		<%}else{%>
-																			<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretariaProductos" clase="boxConsulta" filasMostrar="7" seleccionMultiple="true" elementoSel="<%=elementoSel%>" obligatorio="true" hijo="t" readOnly="true"/>
+																			<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" disabled="true"/>
 																		<% } %>																			
 																	<% } %>																													
 																<% } %>																																				
@@ -916,8 +904,8 @@
 			<!-- Asociada al boton Restablecer -->
 			function accionRestablecer() 
 			{		
-				document.getElementById ("formaPagoInternetFrame").src = resetComboPagoInternet;
-				document.getElementById ("formaPagoSecretariaFrame").src = resetComboPagoSecretaria;
+				//document.getElementById ("formaPagoInternetFrame").src = resetComboPagoInternet;
+				//document.getElementById ("formaPagoSecretariaFrame").src = resetComboPagoSecretaria;
 				document.forms[0].reset();
 			}
 

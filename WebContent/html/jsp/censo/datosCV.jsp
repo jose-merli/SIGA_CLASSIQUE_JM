@@ -67,6 +67,7 @@
 	String idCV = "";
 	String idInstitucion = "";
 	String fechaBaja = "";
+	String paramIdTipoCV = "";
 	ArrayList idTipoCV = new ArrayList();
 	ArrayList idSubtipo1 = new ArrayList();
 	ArrayList idSubtipo2 = new ArrayList();
@@ -101,6 +102,7 @@
 						.valueOf(htData.get(CenDatosCVBean.C_IDCV));
 				idInstitucion = String.valueOf(htData.get(CenDatosCVBean.C_IDINSTITUCION));
 				idTipoCV.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
+				paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
 
 				idSubtipo1.add(String.valueOf(htData
 								.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)
@@ -113,6 +115,17 @@
 			} else {
 				desactivado = true;
 				clase = "boxConsulta";
+				idInstitucion = String.valueOf(htData.get(CenDatosCVBean.C_IDINSTITUCION));
+				idTipoCV.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
+				paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
+				idSubtipo1.add(String.valueOf(htData
+						.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)
+						+ "@"
+						+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
+				idSubtipo2.add(String.valueOf(htData
+						.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2)
+						+ "@"
+						+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
 			}
 		}
 	} else {
@@ -222,26 +235,26 @@
 					return false;
 				}
 				
-				if ((!v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
-					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
+				if ((!jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
+					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 					alert(aux);
 					fin();
 					return false;
 			    } else { 
-					if((!v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
-		      			aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
+					if((!jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
+		      			aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 		   		     	alert(aux);
 		   		     	fin();
 						return false;
 					} else {
-						if ((v_subTipo1.disabled) && (document.datosCVForm.tipoApunte.value=="")){
-							aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
+						if ((jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="")){
+							aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 				     		alert(aux);
 				     		fin();
 						    return false;
 					    } else {
 					    	if (document.datosCVForm.tipoApunte.value==""){
-					            aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>'
+					            aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>';
 					          	alert(aux);
 					          	fin();
 						        return false;
@@ -320,7 +333,6 @@
 				  var cmb1 = document.getElementsByName("tipoApunte");
 				  var cmb2 = cmb1[0]; 			 
 				  tipoCurriculum=<%=idTipoCV%>;			
-				  cmb2.onchange();
 				 <%}%>			  
 			}
 	
@@ -402,17 +414,11 @@
 		<html:form action="/CEN_DatosCV.do" method="POST" target="submitArea" styleId="datosCVForm">
 			<html:hidden property="modo" value="cerrar" />
 
-			<%
-				if (editarCampos) {
-			%>
 			<html:hidden property="idPersona" styleId="" value="<%=idPersona%>" />
 			<html:hidden property="idCV" styleId="idCV" value="<%=idCV%>" />
 			<html:hidden property="idInstitucion" styleId="idInstitucion"
 				value="<%=idInstitucion%>" />
 			<html:hidden property="motivo" styleId="motivo" value="" />
-			<%
-				}
-			%>
 
 			<table class="tablaCentralCamposMedia" align="center">
 				<tr>
@@ -426,14 +432,14 @@
 
 									<td class="labelText">
 										<siga:Idioma key="censo.busquedaClientes.literal.colegio" /></td>
-									<td width="20px">
+									<td width="20px">										
 										<%
 											if (editarCampos) {
-										%> <!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
-										<siga:ComboBD nombre="idInstitucionCargo"
-											id="idInstitucionCargo" parametro="<%=parametro %>"
-											elementoSel="<%=modoSel %>" tipo="cmbNombreColegiosTodos"
-											obligatorio="true" readonly="true" clase="boxCombo" /> 
+										%> <!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->										
+										<siga:Select id="idInstitucionCargo"
+													queryId="getNombreColegiosTodos"
+													disabled="true"
+													selectedIds="<%=modoSel%>"/>
 										<%
 										 	} else {
 										 %> 
@@ -473,33 +479,33 @@
 									<td>
 										<%
 											if (editarCampos) {
-												if (esMantenimiento) {
 										%> 
- 										<siga:ComboBD nombre="tipoApunte" tipo="curriculum" clase="boxCombo"
-											obligatorio="true" elementoSel="<%=idTipoCV%>"
-											readonly="true"
-											accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
+										<siga:Select id="tipoApunte"
+													queryId="getCenTiposCV"
+													selectedIds="<%=idTipoCV%>"
+													disabled="<%=String.valueOf(esMantenimiento)%>"
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													queryParamId="idtipocv" /> 										
 										<%
-												} else {
-										%> 
-										<siga:ComboBD nombre="tipoApunte" tipo="curriculum"
-											clase="boxCombo" obligatorio="true"
-											elementoSel="<%=idTipoCV%>"
-											accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
-										<%
-												}
 											} else {
 												if (esMantenimiento) {
 										%> 
-										<html:text name="datosCVForm" property="tipoApunte"
-											styleId="tipoApunte" value='<%=tipoApunte%>'
-											styleClass="<%=clase%>" readOnly="true"></html:text> 
+										<siga:Select id="tipoApunte"
+													queryId="getCenTiposCV"
+													selectedIds="<%=idTipoCV%>"
+													disabled="true"
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													queryParamId="idtipocv" /> 	
 										<%
 											 	} else {
 											 %> 
-										<html:text name="datosCVForm" property="tipoApunte"
-											styleId="tipoApunte" value='<%=tipoApunte%>'
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+											 <siga:Select id="tipoApunte"
+													queryId="getCenTiposCV"
+													selectedIds="<%=idTipoCV%>"
+													disabled="<%=String.valueOf(desactivado) %>"
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													queryParamId="idtipocv" /> 	
+										
 										<%
  												}
 											}
@@ -507,40 +513,22 @@
 									</td>
 
 									<td>
-										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1"
-											parametro="<%=parametro%>" clase="boxCombo"
-											obligatorio="true" elementoSel="<%=idSubtipo1%>" hijo="t"
-											accion="parent.deshabilitarCombos1(this);" /> 
-										<%
-										 	} else {
-										%> 
-										<html:text name="datosCVForm" property="idTipoCVSubtipo1"
-											styleId="idTipoCVSubtipo1" value='<%=descTipo1%>'
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-										<%
-											}
-										%>
+										<siga:Select id="idTipoCVSubtipo1"
+													queryId="getCenTiposCVsubtipo1"
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo1%>"
+													parentQueryParamIds="idtipocv"
+													selectParentMsg="Seleccione tipo"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
 									<td>
-										<%
-											if (editarCampos) {
-										%>
-										<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1"
-											parametro="<%=parametro%>" clase="boxCombo"
-											obligatorio="true" elementoSel="<%=idSubtipo2%>" hijo="t"
-											accion="parent.deshabilitarCombos2(this);" /> 
-										<%
-										} else {
-										%>
-										<html:text name="datosCVForm" property="idTipoCVSubtipo2"
-											styleId="idTipoCVSubtipo2" value='<%=descTipo2%>'
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-										<%
-										}
-										%>
+										<siga:Select id="idTipoCVSubtipo2"
+													queryId="getCenTiposCVsubtipo2" 
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo2%>"
+													parentQueryParamIds="idtipocv"
+													selectParentMsg="Seleccione tipo"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>
 									</td>
 								</tr>
 

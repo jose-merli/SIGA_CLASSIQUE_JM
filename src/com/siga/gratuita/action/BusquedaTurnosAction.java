@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -7,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.UsrBean;
@@ -90,8 +93,22 @@ public class BusquedaTurnosAction extends MasterAction {
 				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hash.get("NOMBRE")).trim(),"turnos."+ScsTurnoBean.C_NOMBRE);
 			}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDAREA"))>0))where+=" and ";
-			if(Integer.parseInt((String)hash.get("IDAREA"))>0){
-				where+=	" AND area.idarea = "+(String)hash.get("IDAREA");
+			if(!"".equals(hash.get("IDAREA"))){
+				String areaSeleccionada = (String) hash.get("IDAREA");
+				String sIdarea = "";
+				String sIdinstitucionArea = "";
+				if (areaSeleccionada.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmAreaSeleccionada = new ObjectMapper().readValue(areaSeleccionada, HashMap.class);
+					sIdarea = hmAreaSeleccionada.get("idarea");
+					sIdinstitucionArea = hmAreaSeleccionada.get("idinstitucion");
+				} else {
+					sIdarea = areaSeleccionada;
+				}
+				if(Integer.parseInt(sIdarea)>0){
+					where+=	" AND area.idarea = "+sIdarea;
+					//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
+				}
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
 			}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDMATERIA"))>0))where+=" and ";
@@ -102,29 +119,36 @@ public class BusquedaTurnosAction extends MasterAction {
 				}
 			}catch(Exception e){}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDZONA"))>0))where+=" and ";
-			String idzon = "";
-			if (hash.get("IDZONA")!=null && !hash.get("IDZONA").equals("0")&& !hash.get("IDZONA").equals("")) {
-				idzon=(String)hash.get("IDZONA");
+			if (!"".equals(hash.get("IDZONA"))) {
+				String zonaSeleccionada=(String)hash.get("IDZONA");
+				String sIdzona = "";
+				String sIdinstitucionZona = "";
+				if (zonaSeleccionada.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmZonaSeleccionada = new ObjectMapper().readValue(zonaSeleccionada, HashMap.class);
+					sIdzona = hmZonaSeleccionada.get("idzona");
+					sIdinstitucionZona = hmZonaSeleccionada.get("idinstitucion");
+				} else {
+					sIdzona = zonaSeleccionada;
+				}
 				//idzon=idzon.substring(idzon.indexOf(","),idzon.length());
-				if(Integer.parseInt(idzon)>0){
-					where+=	" AND zona.idzona ="+idzon;
+				if(Integer.parseInt(sIdzona)>0){
+					where+=	" AND zona.idzona ="+sIdzona;
 					//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
 				}
 			}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDSUBZONA"))>0))where+=" and ";
-			try{
-				if(Integer.parseInt((String)hash.get("IDSUBZONA"))>0){
-					where+=	" AND subzon.idsubzona = "+(String)hash.get("IDSUBZONA");
-				}
-			}catch(Exception e){}
+			if(!"".equals(hash.get("IDSUBZONA")) && Integer.parseInt((String)hash.get("IDSUBZONA"))>0){
+				where+=	" AND subzon.idsubzona = "+(String)hash.get("IDSUBZONA");
+			}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0))where+=" and ";
 			//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDSUBZONA+"="+form.getSubzona()+" and "+
-			if(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0){
+			if(!"".equals(hash.get("IDPARTIDAPRESUPUESTARIA")) && Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0){
 				where+=	" AND partid.idpartidapresupuestaria ="+((String)hash.get("IDPARTIDAPRESUPUESTARIA")).toUpperCase();
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA+" = "+((String)hash.get("IDPARTIDAPRESUPUESTARIA")).toUpperCase();
 			}
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDGRUPOFACTURACION"))>0))where+=" and ";
-			if(Integer.parseInt((String)hash.get("IDGRUPOFACTURACION"))>0){
+			if(!"".equals(hash.get("IDGRUPOFACTURACION")) && Integer.parseInt((String)hash.get("IDGRUPOFACTURACION"))>0){
 				where+=	" AND grupof.idgrupofacturacion        (+)= "+(String)hash.get("IDGRUPOFACTURACION");
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDGRUPOFACTURACION+" LIKE "+((String)hash.get("IDGRUPOFACTURACION")).toUpperCase();
 			}

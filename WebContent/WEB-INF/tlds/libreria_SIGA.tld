@@ -64,6 +64,145 @@
     </attribute>
   </tag>
 
+<!-- SELECT  -->
+  <tag>
+    <name>Select</name>
+    <tag-class>com.siga.tlds.TagSelect</tag-class>
+    <body-content>empty</body-content>  
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Atributo ID y NAME de la etiqueta SELECT</description>
+    </attribute>
+    <attribute>
+      <name>queryId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Nombre del método de SelectDataService que invoca este select para obtener sus opciones o constante JSON si las opciones del select vienen informadas en dataJSON</description>
+    </attribute>
+    <attribute>
+      <name>dataJSON</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>JSON que contiene las opciones del select según el siguiente formato: {options:[{key:valor,value:valor[,searchKey:valor]},...,{key:valor,value:valor[,searchKey:valor]}]}</description>
+    </attribute>
+    <attribute>
+      <name>params</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Parámetros requeridos por la query que ejecuta el SelectDataService y que se encuentra en SelectDataMapper. 
+      Además de estos parámetros, se inyectarán todos los parámetros que se encuentren en la request, el idioma del usuario en sesión 
+      y el idinstitución del usuario en sesión (si no han sido incluidos ya) por lo que si los parámetros necesarios para ejecutar la query se encuentran ya entre 
+      estos, no sería necesário este atributo</description>
+    </attribute>
+    <attribute>
+      <name>childrenIds</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Los identificadores (atributo ID) de los selects hijos</description>
+    </attribute>
+    <attribute>
+      <name>queryParamId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>El identificador al que hace referencia el valor de este select en la query. 
+      Si el identificador/nombre del select coincide con el identificador del parámetro de la query no es necesario</description>
+    </attribute>
+    <attribute>
+      <name>parentQueryParamIds</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Los identificadores de parámtros de query (queryParamId) de los selects padres</description>
+    </attribute>
+    <attribute>
+      <name>selectParentMsg</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Mensaje o identificador de mensaje que se muestra en los selects hijos cuando alguno de sus padres no tiene valor seleccionado</description>
+    </attribute>
+    <attribute>
+      <name>selectedIds</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Lista de IDs seleccionados</description>
+    </attribute>
+    <attribute>
+      <name>label</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Texto o identificador del texto de la etiqueta del select</description>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Clase CSS de la etiqueta select (Valor por defecto: boxCombo)</description>
+    </attribute>
+    <attribute>
+      <name>width</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Ancho aplicado a la etiqueta select</description>
+    </attribute>
+    <attribute>
+      <name>multiple</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>flag que indica si la etiqueta select permite múltiples valores</description>
+    </attribute>
+    <attribute>
+      <name>lines</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Número de lineas mostradas del select</description>
+    </attribute>
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>flag que indica si la etiqueta select debe de ser deshabilitada. En caso se deshabilitarse se mostrará
+      un input text deshabilitado con el texto del valor seleccionado en el select</description>
+    </attribute>
+    <attribute>
+      <name>required</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>flag que indica si el select debe tener valor obligatoriamente</description>
+    </attribute>
+    <attribute>
+      <name>readOnly</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>flag que indica si la etiqueta select debe de ser solo lectura. En caso de ser de solo lectura se mostrará
+      un input text de solo lectura con el texto del valor seleccionado en el select</description>
+    </attribute>
+    <attribute>
+      <name>showSearchBox</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Flag que indica si se debe mostrar una caja de texto contigua al select para buscar/filtrar sus opciones</description>
+    </attribute>
+    <attribute>
+      <name>searchkey</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Indica el parámetro de la query por el que se va a buscar en el searchBox. Si no se indica parámetro, la búsqueda se realizará sobre el id especificado en el SelectDataServiceImpl</description>
+    </attribute>
+    <attribute>
+      <name>searchBoxMaxLength</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Atributo maxlength del input del searchBox</description>
+    </attribute>
+    <attribute>
+      <name>searchBoxWidth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Atributo width del input del searchBox</description>
+    </attribute>
+  </tag>
+
 	<!-- COMBO DE BASE DE DATOS -->
   <tag>
     <name>ComboBD</name>
