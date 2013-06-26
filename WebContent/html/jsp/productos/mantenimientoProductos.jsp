@@ -361,7 +361,8 @@
 				}
 			}
 			
-			function inicio (o) {				
+			function inicio (o) {	
+				/*
 				if (o.value == 'S' && o.checked) {
 					jQuery("#momentoCargo").val("<%=ClsConstants.TIPO_FORMAPAGO_TARJETA%>");// Al solicitarlo
 					momentoCargoInicial = "S";
@@ -371,6 +372,7 @@
 					momentoCargoInicial = "P";
 				}
 				jQuery("#momentoCargo").change();
+				*/
 
 				//resetComboPagoInternet = document.getElementById ("formaPagoInternetFrame").src;
 				//resetComboPagoSecretaria = document.getElementById ("formaPagoSecretariaFrame").src;
@@ -384,7 +386,10 @@
 				<%}%>
 			}
 			
-			jQuery(function(){jQuery("#momentoCargo_tagSelectDiv").hide();});
+			jQuery(function(){
+				jQuery("#momentoCargo_tagSelectDiv").hide();
+				inicio(document.getElementById('cargo'));
+			});
 		</script>		
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
  	
@@ -397,7 +402,7 @@
 	
 	</head>
 
-	<body onload="inicio(document.getElementById('cargo'))">
+	<body>
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
