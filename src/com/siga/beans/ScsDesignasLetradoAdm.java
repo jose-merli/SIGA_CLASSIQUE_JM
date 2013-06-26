@@ -1386,9 +1386,9 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			contador++;
 			StringBuffer aux = new StringBuffer();
 			aux.append("%");
-			aux.append(formulario.getInteresadoNombre().toUpperCase());
-			aux.append(" ");
-			aux.append(formulario.getInteresadoApellidos().toUpperCase());
+			aux.append(formulario.getInteresadoNombre().trim().toUpperCase());
+			aux.append("%");
+			aux.append(formulario.getInteresadoApellidos().trim().toUpperCase());
 			aux.append("%");
 			codigos.put(new Integer(contador),aux.toString());
 			
@@ -1404,7 +1404,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			contador++;
 			StringBuffer aux = new StringBuffer();
 		    aux.append("%");
-		    aux.append(formulario.getInteresadoApellidos().toUpperCase());
+		    aux.append(formulario.getInteresadoApellidos().trim().toUpperCase());
 		    aux.append("%");
 			codigos.put(new Integer(contador),aux.toString());
 		    
@@ -1420,7 +1420,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		    contador++;
 			StringBuffer aux = new StringBuffer();
 		    aux.append("%");
-		    aux.append(formulario.getInteresadoNombre().toUpperCase());
+		    aux.append(formulario.getInteresadoNombre().trim().toUpperCase());
 		    aux.append("%");
 		    codigos.put(new Integer(contador),aux.toString());
 		    
