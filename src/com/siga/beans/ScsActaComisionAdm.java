@@ -338,11 +338,13 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", ejg."+ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION");
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 		consulta.append(", ejg.IDTIPORATIFICACIONEJG,ejg.IDFUNDAMENTOJURIDICO ");
+		consulta.append(", f_siga_getrecurso(r.descripcion,"+usrbean.getLanguage()+") resolucion ");
 		
 		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
 		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
 		consulta.append(" , " + ScsPersonaJGBean.T_NOMBRETABLA +" sol");
 		consulta.append(" , " + ScsGuardiasTurnoBean.T_NOMBRETABLA +" gua");
+		consulta.append(", scs_tiporesolucion r");
 
 		consulta.append(" where ejg." + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion);
 		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA+ " = " + anioActa);
@@ -354,8 +356,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(" and gua." + ScsGuardiasTurnoBean.C_IDGUARDIA+ "(+) = ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA);
 		consulta.append(" and sol." + ScsPersonaJGBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
 		consulta.append(" and sol." + ScsPersonaJGBean.C_IDPERSONA+ "(+) = ejg." + ScsEJGBean.C_IDPERSONAJG);
+		consulta.append(" and ejg.idtiporatificacionejg =  r.idtiporesolucion(+) ");
 		
-		consulta.append(" order by ejg." + ScsEJGBean.C_ANIO + " desc , ejg." + ScsEJGBean.C_NUMERO + " desc");
+		consulta.append(" order by  IDTIPORATIFICACIONEJG desc, ejg." + ScsEJGBean.C_ANIO + "  , ejg." + ScsEJGBean.C_NUMERO + " ");
 		
 		if (rc.find(consulta.toString())) {
            if(rc.size()>0){
