@@ -33,24 +33,7 @@
 <!-- JSP -->
 <% 	
 	HttpSession ses=request.getSession();
-	
-	if (src==null) {
-	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
-	  src=interfazGestor.getInterfaceOptions();	  
-	}	
-	
-	Integer alturaDatosTabla = 0;
-	String tipoLetra = "";
-	if (((String)src.get("font.style")).indexOf("Times")!=-1) {
-		alturaDatosTabla = 155;
-		tipoLetra = "Times";
-	} else if (((String)src.get("font.style")).indexOf("Arial")>=0) {
-		alturaDatosTabla = 155;
-		tipoLetra = "Arial";
-	} else {
-	    alturaDatosTabla = 148;
-	    tipoLetra = "Helvetica";
-	} 
+	Integer alturaDatosTabla = 155;
 	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");

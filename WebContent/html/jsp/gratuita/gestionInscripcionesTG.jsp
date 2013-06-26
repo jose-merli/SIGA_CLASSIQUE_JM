@@ -22,24 +22,7 @@
 
 <%
 	HttpSession ses=request.getSession();
-	
-	if (src==null) {
-	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
-	  src=interfazGestor.getInterfaceOptions();	  
-	}	
-	
-	Integer alturaDatosTabla = 0;
-	String tipoLetra = "";
-	if (((String)src.get("font.style")).indexOf("Times")!=-1) {
-		alturaDatosTabla = 258;
-		tipoLetra = "Times";
-	} else if (((String)src.get("font.style")).indexOf("Arial")>=0) {
-		alturaDatosTabla = 256;
-		tipoLetra = "Arial";
-	} else {
-	    alturaDatosTabla = 240;
-	    tipoLetra = "Helvetica";
-	} 
+	Integer alturaDatosTabla = 256;
 %>
 
 <html>
