@@ -2699,6 +2699,11 @@
 			<forward name="editar" path="/html/jsp/gratuita/operarEJG.jsp"/>
 		</action>
 		
+		<action path="/JGR_SolicitudEJG" type="com.siga.gratuita.action.SolicitudEJGAction" >
+			<forward name="inicio" path="/html/jsp/gratuita/pestanaSolicitudEJG.jsp"/>
+		</action>
+		
+		
 		<action path="/JGR_DictamenEJG" type="com.siga.gratuita.action.DefinirDictamenEJGAction" name="DefinirDictamenEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/operarDictamenEJG.jsp"/>
 		</action>
