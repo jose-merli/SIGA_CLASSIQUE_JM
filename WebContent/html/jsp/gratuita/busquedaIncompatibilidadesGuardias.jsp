@@ -7,13 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-
 <!---------- TAGLIBS ---------->
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-
 
 <!---------- IMPORTS ---------->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -21,127 +19,122 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
 
-
 <!---------- PRE-JAVASCRIPT ---------->
 <%
     //Controles globales
-	String app      = request.getContextPath (); 
 	HttpSession ses = request.getSession (true);
-	UsrBean usr     =(UsrBean) ses.getAttribute ("USRBEAN");
+	UsrBean usr = (UsrBean) ses.getAttribute ("USRBEAN");
 	String[] dato = {usr.getLocation ()};
+	Properties src =(Properties) ses.getAttribute (SIGAConstants.STYLESHEET_REF);
 %>
 
-
 <html>
-
 
 <!---------- HEAD ---------->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<!-- Incluido jquery en siga.js -->	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo 
-		titulo="gratuita.incompatibilidadesGuardias.cabecera" 
-		localizacion="gratuita.incompatibilidadesGuardias.localizacion" />
+	<siga:Titulo titulo="gratuita.incompatibilidadesGuardias.cabecera" localizacion="gratuita.incompatibilidadesGuardias.localizacion" />
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
-
 <!---------- BODY ---------->
-<body onload="ajusteAltoBotones('resultado');">
+<body>
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<siga:ConjCampos leyenda="gratuita.incompatibilidadesGuardias.criteriosBusqueda">
-	<html:form action="/JGR_MantenimientoIncompatibilidadesGuardias.do"
-	           method="POST" target="resultado">
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "actionModal" value = ""/>
-	<html:hidden property = "idTurno" value = ""/>
-	<html:hidden property = "idGuardia" value = ""/>
-	<html:hidden property = "idTurno_incompatible" value = ""/>
-	<html:hidden property = "idGuardia_incompatible" value = ""/>
-	<html:hidden property = "diasseparacionguardias" value = ""/>
-	<html:hidden property = "motivos" value = ""/>
-	<html:hidden property = "incompParaAnyadir" value = ""/>
-	<html:hidden property = "incompParaQuitar" value = ""/>
-	<html:hidden property = "soloIncompatibilidades" value = ""/>
-	<html:hidden property = "idInstitucion" value = "<%usr.getLocation ();%>" />
-	<input type="hidden" name="limpiarFilaSeleccionada" value="">
-    
-    <table align="left" width="100%">
-      <tr>
-        <td class="labelText">
-          <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.turno1" />
-        </td>
-        <td>
-          <siga:ComboBD nombre="turno1" tipo="turnos" estilo="true"
-                        clase="boxCombo" filasMostrar="1"
-                        seleccionMultiple="false" obligatorio="false"
-                        parametro="<%=dato%>" accion="Hijo:guardia1" ancho="300" />
-        </td>
-        <td class="labelText">
-          <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.turno2" />
-        </td>
-        <td>
-          <siga:ComboBD nombre="turno2" tipo="turnos" estilo="true"
-                        clase="boxCombo" filasMostrar="1"
-                        seleccionMultiple="false" obligatorio="false"
-                        parametro="<%=dato%>" accion="Hijo:guardia2" ancho="300" />
-        </td>
-               
-        <td class="labelText" rowspan="2">
-          <br>
-          <input type="checkbox" name="soloIncomp" />
-          <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.soloIncompatibilidades" />
-        </td>
-      </tr>
-      <tr>
-      	 <td class="labelText">
-          <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.guardia1" />
-        </td>
-        <td>
-          <siga:ComboBD nombre="guardia1" tipo="cmbGuardias" estilo="true"
-                        clase="boxCombo" filasMostrar="1"
-                        seleccionMultiple="false" obligatorio="false"
-                        parametro="<%=dato%>" hijo="t" ancho="300" />
-        </td>
-        <td class="labelText">
-          <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.guardia2" />
-        </td>
-        <td>
-          <siga:ComboBD nombre="guardia2" tipo="cmbGuardias" estilo="true"
-                        clase="boxCombo" filasMostrar="1"
-                        seleccionMultiple="false" obligatorio="false"
-                        parametro="<%=dato%>" hijo="t" ancho="300" />
-        </td>
-      </tr>
-    </table>
-
-	</html:form>
+		<html:form action="/JGR_MantenimientoIncompatibilidadesGuardias.do" method="POST" target="resultado">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "actionModal" value = ""/>
+			<html:hidden property = "idTurno" value = ""/>
+			<html:hidden property = "idGuardia" value = ""/>
+			<html:hidden property = "idTurno_incompatible" value = ""/>
+			<html:hidden property = "idGuardia_incompatible" value = ""/>
+			<html:hidden property = "diasseparacionguardias" value = ""/>
+			<html:hidden property = "motivos" value = ""/>
+			<html:hidden property = "incompParaAnyadir" value = ""/>
+			<html:hidden property = "incompParaQuitar" value = ""/>
+			<html:hidden property = "soloIncompatibilidades" value = ""/>
+			<html:hidden property = "idInstitucion" value = "<%usr.getLocation ();%>" />
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		    
+			<table align="left" width="100%">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.turno1" />
+					</td>
+					<td>
+						<siga:ComboBD nombre="turno1" tipo="turnos" estilo="true"
+							clase="boxCombo" filasMostrar="1"
+							seleccionMultiple="false" obligatorio="false"
+							parametro="<%=dato%>" accion="Hijo:guardia1" ancho="300" />
+					</td>
+		
+					<td class="labelText">
+						<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.turno2" />
+					</td>
+					<td>
+						<siga:ComboBD nombre="turno2" tipo="turnos" estilo="true"
+							clase="boxCombo" filasMostrar="1"
+							seleccionMultiple="false" obligatorio="false"
+							parametro="<%=dato%>" accion="Hijo:guardia2" ancho="300" />
+					</td>
+		       
+					<td class="labelText" rowspan="2">
+						<br>
+						<input type="checkbox" name="soloIncomp" />
+						<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.soloIncompatibilidades" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.guardia1" />
+					</td>
+					<td>
+						<siga:ComboBD nombre="guardia1" tipo="cmbGuardias" estilo="true"
+							clase="boxCombo" filasMostrar="1"
+							seleccionMultiple="false" obligatorio="false"
+							parametro="<%=dato%>" hijo="t" ancho="300" />
+					</td>
+					
+					<td class="labelText">
+		  				<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.guardia2" />
+					</td>
+					<td>
+		  				<siga:ComboBD nombre="guardia2" tipo="cmbGuardias" estilo="true"
+							clase="boxCombo" filasMostrar="1"
+							seleccionMultiple="false" obligatorio="false"
+							parametro="<%=dato%>" hijo="t" ancho="300" />
+		  			</td>
+				</tr>		
+		    </table>
+		</html:form>
 	</siga:ConjCampos>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 	
 	
 	<!-- INICIO: BOTONES DE BUSQUEDA-->
-	<siga:ConjBotonesBusqueda botones = "B"
-	    titulo="gratuita.incompatibilidadesGuardias.literal.titulo" />
+	<siga:ConjBotonesBusqueda botones = "B" titulo="gratuita.incompatibilidadesGuardias.literal.titulo" />
 	<!-- FIN: BOTONES DE BUSQUEDA-->
     
     
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0";					 
-					class="frameGeneral">
+	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+		id="resultado"
+		name="resultado" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"					 
+		class="frameGeneral"
+		style="position:relative;height:100%;width:100%;">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 	
@@ -153,31 +146,22 @@
 	
 	<!-- INICIO: SCRIPT -->
 	<script language="JavaScript">
-		<!-- Funcion asociada a boton buscar -->
-		function buscar () 
-		{
+		// Funcion asociada a boton buscar
+		function buscar () {
 			//obtenemos el idturno y el idguardia
 			sub();
-			document.forms[0].idGuardia.value  =
-			    document.forms[0].guardia1.value;
-			document.forms[0].idTurno.value    =
-			    document.forms[0].turno1.value.substr
-			        (document.forms[0].turno1.value.indexOf (",") + 1);
-			document.forms[0].idGuardia_incompatible.value  =
-			    document.forms[0].guardia2.value;
-			document.forms[0].idTurno_incompatible.value    =
-			    document.forms[0].turno2.value.substr
-			        (document.forms[0].turno2.value.indexOf (",") + 1);
-			document.forms[0].soloIncompatibilidades.value = 
-				document.forms[0].soloIncomp.checked ? "1" : "0";
-			document.forms[0].target           = "resultado";
-			document.forms[0].modo.value       = "buscarPor";
-			document.forms[0].submit ();
+			document.forms[0].idGuardia.value = document.forms[0].guardia1.value;
+			document.forms[0].idTurno.value = document.forms[0].turno1.value.substr(document.forms[0].turno1.value.indexOf (",") + 1);
+			document.forms[0].idGuardia_incompatible.value = document.forms[0].guardia2.value;
+			document.forms[0].idTurno_incompatible.value = document.forms[0].turno2.value.substr(document.forms[0].turno2.value.indexOf (",") + 1);
+			document.forms[0].soloIncompatibilidades.value = document.forms[0].soloIncomp.checked ? "1" : "0";
+			document.forms[0].target = "resultado";
+			document.forms[0].modo.value = "buscarPor";
+			document.forms[0].submit();
 		}
 		
-		<!-- Asociada al boton MarcarTodos -->
-		function accionMarcarTodos ()
-		{		
+		// Asociada al boton MarcarTodos
+		function accionMarcarTodos () {		
 			var checks = document.resultado.document.getElementsByName ("chkInc");
 			if (checks.type != 'checkbox') {
 				for (i = 0; i < checks.length; i++){
@@ -189,9 +173,8 @@
 			}
 		} //accionMarcarTodos ()
 		
-		<!-- Asociada al boton DesmarcarTodos -->
-		function accionDesmarcarTodos ()
-		{		
+		// Asociada al boton DesmarcarTodos
+		function accionDesmarcarTodos () {		
 			var checks = document.resultado.document.getElementsByName ("chkInc");
 			if (checks.type != 'checkbox') {
 				for (i = 0; i < checks.length; i++){
@@ -203,14 +186,10 @@
 			}
 		} //accionDesmarcarTodos ()
 		
-		<!-- Funcion asociada a boton guardar -->
-		function accionGuardar ()
-		{
+		// Funcion asociada a boton guardar
+		function accionGuardar () {
 			//solicitando numero de dias
-			var datos = showModalDialog ("/SIGA/html/jsp/gratuita/" +
-			    "modalDiasSeparacionIncompatibilidad.jsp", "",
-			    "dialogHeight:250px;dialogWidth:500px;" +
-			    "help:no;scroll:no;status:no;");
+			var datos = showModalDialog ("<html:rewrite page='/html/jsp/gratuita/modalDiasSeparacionIncompatibilidad.jsp'/>", "", "dialogHeight:250px; dialogWidth:500px; help:no; scroll:no; status:no;");
 			window.top.focus();
 			if (datos == null) 
 				return;
@@ -224,14 +203,12 @@
 			sub ();
 			
 			//obteniendo los checks
-			var oCheck =  window.frames.resultado.document.getElementsByName
-			    ("chkInc");
+			var oCheck =  window.frames.resultado.document.getElementsByName("chkInc");
 			
 			//separando checks activados de desactivados
 			document.forms[0].incompParaAnyadir.value = "";
 			document.forms[0].incompParaQuitar.value = "";
-			for(i=0; i<oCheck.length; i++)
-			{
+			for(i=0; i<oCheck.length; i++) {
 				if (oCheck[i].checked) {
 					document.forms[0].incompParaAnyadir.value += ";" +
 					    oCheck[i].value;
@@ -249,27 +226,20 @@
 		   	document.forms[0].modo.value = 'editar';
 			var f = document.forms[0].name;	
 			document.forms[0].target = "submitArea2";
-			 window.frames.submitArea2.location = 
-		        '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' +
-		        f + '&msg=messages.wait';
+			 window.frames.submitArea2.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
 		    
 		} //accionGuardar ()
 		
-		function refrescarLocal ()
-		{
+		function refrescarLocal () {
 		    buscar ();
 		}
 	</script>
 	<!-- FIN: SCRIPT -->
 	
-	
     <!-- INICIO: SUBMIT AREA -->
     <!-- Obligatoria en todas las páginas -->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-	        style="display:none" />
-	<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp"
-	        style="display:none" />
+    <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+    <iframe name="submitArea2" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
     <!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>

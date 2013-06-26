@@ -7,13 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-
 <!---------- TAGLIBS ---------->
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
-
 
 <!---------- IMPORTS ---------->
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
@@ -21,24 +19,23 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.beans.*"%>
 
-
 <!---------- JSP ---------->
-<% 
-	String app=request.getContextPath();
-%>
+<% String app=request.getContextPath(); %>
 
 <html>
 
 <!---------- HEAD ---------->
 <head>
-<title><siga:Idioma key="general.ventana.cgae"/></title>
+	<title>
+		<siga:Idioma key="general.ventana.cgae"/>
+	</title>
+	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<!-- Incluido jquery en siga.js -->	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
     
 	<script language="JavaScript">
 
@@ -80,29 +77,25 @@
 		}
 		
 		function mainSub(){
-			/*
-				$(document).ready(
+			/*jQuery(document).ready(
 				function() { 
-					$.blockUI({
+					jQuery.blockUI({
 						message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
 						css:{border:0, background:'transparent'},
 						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
 				}
-			)
-			*/
+			)*/
 			jQuery("#divEspera").show();
-			bloqueado=true;
+			bloqueado=true; 
 		}
 
-		function mainFin(){			
+		function mainFin(){
 			if(bloqueado){
-				/*
-				$(document).ready(
+				/*$(document).ready(
 					function() { 
 				    	$.unblockUI(); 
 					}
-				)
-				*/
+				)*/
 				bloqueado=false;
 				jQuery("#divEspera").hide();
 			} 
@@ -125,40 +118,42 @@
 
 	<!-- INICIO: Titulo -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-		<tr><td id="titulo" class="titulosPeq">
-		    <siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.diasSeparacionGuardias" />
-		</td></tr>
+		<tr>
+			<td id="titulo" class="titulosPeq">
+		    	<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.diasSeparacionGuardias" />
+			</td>
+		</tr>
 	</table>
 	<!-- FIN: Titulo -->
 	
 	<!-- INICIO: Campos -->
 	<fieldset>
-	<html:form action="/JGR_MantenimientoIncompatibilidadesGuardias.do"
-	           method="POST">
-		<table class="tablaCampos" align="center">	
-			<tr>
-				<td class="labelText">
-				    <siga:Idioma key="messages.gratuita.incompatibilidadesGuardias.pideDiasSeparacion" />
-				</td>
-				<td style="text-align: center;">
-				    <input type="text" maxlength="2" size="1"
-				           style="text-align: right;"
-				           name="diasseparacion" />
-				</td>
-			</tr>
+		<html:form action="/JGR_MantenimientoIncompatibilidadesGuardias.do" method="POST">
+			<table class="tablaCampos" align="center">	
+				<tr>
+					<td class="labelText">
+				    	<siga:Idioma key="messages.gratuita.incompatibilidadesGuardias.pideDiasSeparacion" />
+					</td>
+					<td style="text-align: center;">
+				    	<input type="text" maxlength="2" size="1" style="text-align: right;" name="diasseparacion" />
+					</td>
+				</tr>
 		</table>
+		
 		<table class="tablaCampos" align="center">	
-			<tr>
-			    <td class="labelText">
-			    	<br><siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.motivos" />
-			    </td>
-			    <td>
-				    <textarea class="box" type="text" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" maxlength="1024" rows="3" name="motivos">
-				    </textarea>
-				</td>
-			</tr>
-		</table>
-	</html:form>
+				<tr>
+			    	<td class="labelText">
+			    		<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.motivos" />
+			    	</td>
+			    	<td>
+				    	<textarea class="box" type="text" name="motivos" 
+							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"	
+							style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+						></textarea>
+					</td>
+				</tr>
+			</table>
+		</html:form>
 	</fieldset>
 	<!-- FIN: Campos -->
     
@@ -167,5 +162,4 @@
 	<!-- FIN: Botones -->
 
 </body>
-
 </html>
