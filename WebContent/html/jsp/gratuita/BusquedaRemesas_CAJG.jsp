@@ -178,6 +178,12 @@
 				</tr>
 			</table>
 		</fieldset>	
+	</html:form>	
+	
+	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+		<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS%>"/>
+		<html:hidden property="modo" value="inicio"/>
+		<html:hidden property="accionAnterior" value="${path}"/>
 	</html:form>		
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 			
