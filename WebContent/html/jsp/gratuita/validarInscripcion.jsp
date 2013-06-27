@@ -561,513 +561,489 @@
 <!-- INICIO: CAMPOS -->
 <!-- Zona de campos de busqueda o filtro -->
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-<html:form action="${path}" method="post" target="_self">
-	<html:hidden property="fechaSolicitud" styleId="fechaSolicitud"/>
-	<html:hidden property="fechaBaja" styleId="fechaBaja"/>
-	<html:hidden property="fechaSolicitudBaja" styleId="fechaSolicitudBaja"/>
-	<html:hidden property="fechaValidacion" styleId="fechaValidacion"/>
-	<html:hidden property="idGuardia" styleId="idGuardia"/>
-	<html:hidden property="porGrupos" styleId="porGrupos"/>
-	<html:hidden property="modo" styleId="modo"/>
-	<html:hidden property="validarInscripciones" styleId="validarInscripciones"/>
-	<html:hidden property="fechaBajaTurno" styleId="fechaBajaTurno"/>
-	<html:hidden property="fechaValidacionTurno" styleId="fechaValidacionTurno"/>
-	<html:hidden property="fechaDenegacion" styleId="fechaDenegacion"/>
-	<html:hidden property="observacionesDenegacion" styleId="observacionesDenegacion"/>
-	<html:hidden property="observacionesValBaja" styleId="observacionesValBaja"/>
-	<html:hidden property="tipoActualizacionSyC" styleId="tipoActualizacionSyC"/>	
-	
-	<c:if test="${(InscripcionTGForm.fechaSolicitud==null || InscripcionTGForm.fechaSolicitud=='')&& InscripcionTGForm.solicitudAlta==true}">
-<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
-	 
-	 <table width="100%" border="0">
-	 	<tr>
-		 	<td width="25%"></td>
-		 	<td width="15%"></td>
-		 	<td width="25%"></td>
-		 	<td width="35%"></td>
-	 	
-	 	</tr>
-		<tr>
-		<!-- obtenemos los campos para el alta de turnos -->
-			<td class="labelText">
-				<siga:Idioma
-					key="gratuita.altaTurnos.literal.fsolicitud" />
-				</td>
-			<td class="labelText">
-				<input type="text" name="fechaSol" class="boxConsulta" readOnly="true"/>
-			</td>
-			<c:choose>
-			<c:when test="${InscripcionTGForm.irpf=='0'}">
-				<td colspan="2">
-				<table>
-					<tr>
-						<td class="labelText" style="align:right">
-							<siga:Idioma key='gratuita.altaTurnos.literal.retencion' />
-						</td>
+	<html:form action="${path}" method="post" target="_self">
+		<html:hidden property="fechaSolicitud" styleId="fechaSolicitud"/>
+		<html:hidden property="fechaBaja" styleId="fechaBaja"/>
+		<html:hidden property="fechaSolicitudBaja" styleId="fechaSolicitudBaja"/>
+		<html:hidden property="fechaValidacion" styleId="fechaValidacion"/>
+		<html:hidden property="idGuardia" styleId="idGuardia"/>
+		<html:hidden property="porGrupos" styleId="porGrupos"/>
+		<html:hidden property="modo" styleId="modo"/>
+		<html:hidden property="validarInscripciones" styleId="validarInscripciones"/>
+		<html:hidden property="fechaBajaTurno" styleId="fechaBajaTurno"/>
+		<html:hidden property="fechaValidacionTurno" styleId="fechaValidacionTurno"/>
+		<html:hidden property="fechaDenegacion" styleId="fechaDenegacion"/>
+		<html:hidden property="observacionesDenegacion" styleId="observacionesDenegacion"/>
+		<html:hidden property="observacionesValBaja" styleId="observacionesValBaja"/>
+		<html:hidden property="tipoActualizacionSyC" styleId="tipoActualizacionSyC"/>	
 		
-						<td align="left">
-							<logic:notEmpty name="InscripcionTGForm" property="retenciones">
-								<html:select property="idRetencion" styleClass="boxCombo" styleId="idRetencion">
-									<logic:iterate name="InscripcionTGForm" property="retenciones"
-										id="retencion" indexId="index">										
-											<html:option value="${retencion.idRetencion}">
-												<c:out value="${retencion.descripcion}"></c:out>
-											</html:option>
-										</logic:iterate>
-								</html:select>								
-							</logic:notEmpty>
-						</td>
-					</tr>
-				</table>
-				</td>
-			</c:when>
-			<c:otherwise>
-				<td class="labelText">&nbsp;</td>
-				<td class="labelText">&nbsp;</td>
-			</c:otherwise>
-			</c:choose>
-		</tr>
-		<tr>			
-			<td class="labelText">
-				<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud"/>
-			</td>
-			<td colspan="3">
-				<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud"
-					onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
-			</td>
-		</tr>
-	 </table>
-	 
-	</siga:ConjCampos>
-</c:if>
-<c:if test="${InscripcionTGForm.solicitudBaja==true}">
-	<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
-	 <table width="100%" border="0">
-	 	<tr>
-		 	<td width="25%"></td>
-		 	<td width="15%"></td>
-		 	<td width="25%"></td>
-		 	<td width="35%"></td>	 	
-	 	</tr>
-		<tr>
-		<!-- obtenemos los campos para el alta de turnos -->
-			<td class="labelText">
-				<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
-			</td>
-			<td class="labelText">
-				<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly="true"/>
-			</td>
-			<td class="labelText">&nbsp;</td>
-			<td class="labelText">&nbsp;</td>
-		</tr>
-		<tr>			
-			<td class="labelText">
-				<siga:Idioma key="gratuita.altaTurnos.literal.mbaja"/>
-			</td>
-			<td colspan="3"> 
-				<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
-					onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
-			</td>
-		</tr>
-	 </table>
-	 
-	</siga:ConjCampos>	
-
-</c:if>
-
-	<c:if test="${InscripcionTGForm.usrBean.letrado==false}">
-		<c:if
-			test="${(InscripcionTGForm.validarInscripciones=='S'&&(InscripcionTGForm.validacionAlta==true||InscripcionTGForm.validacionBaja==true))||InscripcionTGForm.masivo==true}">
-			<c:if
-				test="${InscripcionTGForm.solicitudAlta==false && InscripcionTGForm.validacionAlta==true&& InscripcionTGForm.masivo==false}">
-				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
-
-					<table width="100%" border="0">
-						<tr>
-							<td width="25%"></td>
-							<td width="15%"></td>
-							<td width="25%"></td>
-							<td width="35%"></td>
-						</tr>
-						<tr>
-							<!-- obtenemos los campos para el alta de turnos -->
-							<td class="labelText">
-								<siga:Idioma
-								key="gratuita.altaTurnos.literal.fsolicitud" />
-							</td>
-							<td class="labelText">
-								<c:out value="${InscripcionTGForm.fechaSolicitudJsp}"></c:out>
-							</td>
-							<td class="labelText">&nbsp;</td>
-							<td class="labelText">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud" />
-							</td>
-							<td colspan="3">
-								<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud" 
-									onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" 
-									styleClass="box" style="overflow:auto;width=400;height=80"
-									disabled="true"></html:textarea>
-							</td>
-						</tr>
-					</table>
-
-				</siga:ConjCampos>
-			</c:if>
-			<c:if test="${InscripcionTGForm.solicitudBaja==false && InscripcionTGForm.validacionBaja==true&& InscripcionTGForm.masivo==false}">
-				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
-					<table width="100%" border="0">
-						<tr>
-							<td width="25%"></td>
-							<td width="15%"></td>
-							<td width="25%"></td>
-							<td width="35%"></td>
-						</tr>
-						<tr>
-							<!-- obtenemos los campos para el alta de turnos -->
-							<td class="labelText">
-								<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
-							</td>
-							<td class="labelText">
-								<c:out value="${InscripcionTGForm.fechaSolicitudBajaJsp}"></c:out>
-							</td>
-							<td class="labelText">&nbsp;</td>
-							<td class="labelText">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.altaTurnos.literal.mbaja" />
-							</td>
-							<td colspan="3">
-								<html:textarea name="InscripcionTGForm" styleId="observacionesBaja"
-									property="observacionesBaja" onChange="cuenta(this,1024)"
-									cols="65" rows="2" onkeydown="cuenta(this,1024);"
-									styleClass="box" style="overflow:auto;width=400;height=80"
-									disabled="true"></html:textarea>
-							</td>
-						</tr>
-					</table>
-				</siga:ConjCampos>
-
-			</c:if>
-
-			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
-				<table width="100%" border="0">
-					<tr>
-						<td width="25%"></td>
-						<td width="15%"></td>
-						<td width="25%"></td>
-						<td width="35%"></td>
-					</tr>
-
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
-						</td>
-						<td>
-							<siga:Fecha nombreCampo="fechaCheck" readOnly="true"></siga:Fecha>
-							
-						</td>
-						<td colspan="2" align="left">
-
-						<table>
-
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
-								</td>
-
-								<c:choose>
-									<c:when
-										test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'}">
-										<td>
-											<input type="checkbox" id="validar" name="validar" value="no"
-												onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="gratuita.altaTurnos.literal.denegar" />
-										</td>
-										<td>
-											<input type="checkbox" id="denegar" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
-										</td>
-										<td>&nbsp;</td>
-									</c:when>
-									
-									<c:when
-										test="${InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
-										<td>
-											<input type="checkbox" id="validar" name="validar" value="no"
-												onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="gratuita.altaTurnos.literal.denegar" />
-										</td>
-										<td>
-											<input type="checkbox" name="denegar" value="no"
-												onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
-										</td>
-										<td class="labelText">
-											<div id="capa1" style="visibility: hidden">								
-												<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
-												<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
-												<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
-												<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
-											</div>
-										</td>	
-									</c:when>
-									
-									<c:when
-										test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'}">
-										<td>
-											<input type="checkbox" id="validar" name="validar" value="no"
-												onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
-										</td>
-										<td>
-											<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden" />
-										</td>
-										<td>&nbsp;</td>	
-										<td class="labelText">
-											<div id="capa1" style="visibility: hidden">								
-												<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
-												<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
-												<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
-												<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
-											</div>
-										</td>	
-									</c:when>
-									
-									<c:otherwise>
-										<td>
-											<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
-										</td>
-										<td>&nbsp;</td>
-										<td>
-											<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden"></td>
-										<td>&nbsp;</td>	
-									</c:otherwise>
-								</c:choose>
-							</tr>
-						</table>
-						</td>
-
-					</tr>
-					<c:if
-						test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||
-					InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||
-					InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'  }">
-						<tr id="observacionesValidacion">
-							<td class="labelText">
-								<siga:Idioma key="gratuita.altaTurnos.literal.ovalidacion" />
-							</td>
-							<td colspan="3">
-								<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-									onChange="cuenta(this,1024)"
-									cols="65" rows="2" onkeydown="cuenta(this,1024);"
-									styleClass="box" style="overflow:auto;width=400;height=80"
-									readOnly="false">
-								</html:textarea>
-							</td>
-						</tr>
-					</c:if>
-				</table>
-			</siga:ConjCampos>
-
-		</c:if>
-		<!-- principio baja con validacion automatica  -->
-				<c:if
-			test="${InscripcionTGForm.validarInscripciones=='N'&&InscripcionTGForm.validacionBaja==true && (InscripcionTGForm.modo=='sbtComprobarInsertar' || InscripcionTGForm.modo=='sbgComprobarInsertar')}">
-
-			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
-				
-					<table width="100%" border="0">
+		<c:if test="${(InscripcionTGForm.fechaSolicitud==null || InscripcionTGForm.fechaSolicitud=='')&& InscripcionTGForm.solicitudAlta==true}">
+			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">		 
+				 <table width="100%" border="0">
 				 	<tr>
 					 	<td width="25%"></td>
 					 	<td width="15%"></td>
-					 	<td width="15%"></td>
+					 	<td width="25%"></td>
 					 	<td width="35%"></td>
 				 	
 				 	</tr>
 					<tr>
 					<!-- obtenemos los campos para el alta de turnos -->
 						<td class="labelText">
-							<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
-						</td>
+							<siga:Idioma
+								key="gratuita.altaTurnos.literal.fsolicitud" />
+							</td>
 						<td class="labelText">
-							<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" readOnly="true"/>							
+							<input type="text" name="fechaSol" class="boxConsulta" readOnly="true"/>
 						</td>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
-						</td>
-						<td class="labelText">
-							<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true" />
-						</td>			
+						<c:choose>
+						<c:when test="${InscripcionTGForm.irpf=='0'}">
+							<td colspan="2">
+							<table>
+								<tr>
+									<td class="labelText" style="align:right">
+										<siga:Idioma key='gratuita.altaTurnos.literal.retencion' />
+									</td>
+					
+									<td align="left">
+										<logic:notEmpty name="InscripcionTGForm" property="retenciones">
+											<html:select property="idRetencion" styleClass="boxCombo" styleId="idRetencion">
+												<logic:iterate name="InscripcionTGForm" property="retenciones"
+													id="retencion" indexId="index">										
+														<html:option value="${retencion.idRetencion}">
+															<c:out value="${retencion.descripcion}"></c:out>
+														</html:option>
+													</logic:iterate>
+											</html:select>								
+										</logic:notEmpty>
+									</td>
+								</tr>
+							</table>
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td class="labelText">&nbsp;</td>
+							<td class="labelText">&nbsp;</td>
+						</c:otherwise>
+						</c:choose>
 					</tr>
-					<tr>						
+					<tr>			
 						<td class="labelText">
-							<siga:Idioma key="gratuita.altaTurnos.literal.validacion"/>
+							<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud"/>
 						</td>
-						<td colspan="3"> 
-							<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-								onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="true">
-							</html:textarea>
+						<td colspan="3">
+							<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud"
+								onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
 						</td>
-						<td class="labelText">&nbsp;</td>
-						<td class="labelText">&nbsp;</td>
 					</tr>
-				 </table>			
-
-			</siga:ConjCampos>
-			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.saltosycompensaciones">
-				
-					<table width="100%" border="0">
-				 	<tr>
-					 	<td width="35%"></td>
-					 	<td width="15%"></td>
-					 	<td width="10%"></td>
-					 	<td width="40%"></td>				 	
-				 	</tr>
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
-						</td>
-						<td class="labelText" align="right">					
-							<input type="Radio" name="syc" value="s"> si
-							<input type="Radio" name="syc" value="n"> no  
-						</td>
-						<td class="labelText"  align="left">
-						</td>					
-						<td class="labelText">&nbsp;</td>
-					</tr>
-				 </table>			
-
+				 </table>		 
 			</siga:ConjCampos>
 		</c:if>
-		<!-- fin baja con validacion automatica-->
-		
-		<div id="divGuardiaGrupo" style="display: none"><c:choose>
-
-			<c:when
-				test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='sigInsertar') }">
-				<siga:ConjCampos leyenda="Guardia de grupo">
+	
+		<c:if test="${InscripcionTGForm.solicitudBaja==true}">
+			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
+			 <table width="100%" border="0">
+			 	<tr>
+				 	<td width="25%"></td>
+				 	<td width="15%"></td>
+				 	<td width="25%"></td>
+				 	<td width="35%"></td>	 	
+			 	</tr>
+				<tr>
+				<!-- obtenemos los campos para el alta de turnos -->
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
+					</td>
+					<td class="labelText">
+						<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly="true"/>
+					</td>
+					<td class="labelText">&nbsp;</td>
+					<td class="labelText">&nbsp;</td>
+				</tr>
+				<tr>			
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.mbaja"/>
+					</td>
+					<td colspan="3"> 
+						<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
+							onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
+					</td>
+				</tr>
+			 </table>		 
+			</siga:ConjCampos>		
+		</c:if>
+	
+		<c:if test="${InscripcionTGForm.usrBean.letrado==false}">
+			<c:if test="${(InscripcionTGForm.validarInscripciones=='S'&&(InscripcionTGForm.validacionAlta==true||InscripcionTGForm.validacionBaja==true))||InscripcionTGForm.masivo==true}">
+				<c:if test="${InscripcionTGForm.solicitudAlta==false && InscripcionTGForm.validacionAlta==true&& InscripcionTGForm.masivo==false}">
+					<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
+						<table width="100%" border="0">
+							<tr>
+								<td width="25%"></td>
+								<td width="15%"></td>
+								<td width="25%"></td>
+								<td width="35%"></td>
+							</tr>
+							<tr>
+								<!-- obtenemos los campos para el alta de turnos -->
+								<td class="labelText">
+									<siga:Idioma
+									key="gratuita.altaTurnos.literal.fsolicitud" />
+								</td>
+								<td class="labelText">
+									<c:out value="${InscripcionTGForm.fechaSolicitudJsp}"></c:out>
+								</td>
+								<td class="labelText">&nbsp;</td>
+								<td class="labelText">&nbsp;</td>
+							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud" />
+								</td>
+								<td colspan="3">
+									<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud" 
+										onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" 
+										styleClass="box" style="overflow:auto;width=400;height=80"
+										disabled="true"></html:textarea>
+								</td>
+							</tr>
+						</table>
+	
+					</siga:ConjCampos>
+				</c:if>
+				
+				<c:if test="${InscripcionTGForm.solicitudBaja==false && InscripcionTGForm.validacionBaja==true&& InscripcionTGForm.masivo==false}">
+					<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
+						<table width="100%" border="0">
+							<tr>
+								<td width="25%"></td>
+								<td width="15%"></td>
+								<td width="25%"></td>
+								<td width="35%"></td>
+							</tr>
+							<tr>
+								<!-- obtenemos los campos para el alta de turnos -->
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
+								</td>
+								<td class="labelText">
+									<c:out value="${InscripcionTGForm.fechaSolicitudBajaJsp}"></c:out>
+								</td>
+								<td class="labelText">&nbsp;</td>
+								<td class="labelText">&nbsp;</td>
+							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaTurnos.literal.mbaja" />
+								</td>
+								<td colspan="3">
+									<html:textarea name="InscripcionTGForm" styleId="observacionesBaja"
+										property="observacionesBaja" onChange="cuenta(this,1024)"
+										cols="65" rows="2" onkeydown="cuenta(this,1024);"
+										styleClass="box" style="overflow:auto;width=400;height=80"
+										disabled="true"></html:textarea>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</c:if>
+	
+				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
 					<table width="100%" border="0">
 						<tr>
 							<td width="25%"></td>
 							<td width="15%"></td>
-							<td width="60%"></td>
+							<td width="25%"></td>
+							<td width="35%"></td>
+						</tr>
+	
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
+							</td>
+							<td>
+								<siga:Fecha nombreCampo="fechaCheck" readOnly="true"></siga:Fecha>							
+							</td>
+							
+							<td colspan="2" align="left">
+								<table>
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
+										</td>
+		
+										<c:choose>
+											<c:when	test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'}">
+												<td>
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+												</td>
+												
+												<td class="labelText">
+													<siga:Idioma key="gratuita.altaTurnos.literal.denegar" />
+												</td>
+												<td>
+													<input type="checkbox" id="denegar" name="denegar" value="no" onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												</td>
+												
+												<td>&nbsp;</td>
+											</c:when>
+											
+											<c:when	test="${InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
+												<td>
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+												</td>
+												
+												<td class="labelText">
+													<siga:Idioma key="gratuita.altaTurnos.literal.denegar" />
+												</td>											
+												<td>
+													<input type="checkbox" name="denegar" value="no" onClick="obtenerFecha('denegar');document.getElementById('divGuardiaGrupo').style.display = 'none';" />
+												</td>
+												
+												<td class="labelText">
+													<div id="capa1" style="visibility: hidden">								
+														<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
+														<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
+														<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
+														<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
+													</div>
+												</td>	
+											</c:when>
+											
+											<c:when	test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'}">
+												<td>
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+												</td>
+												<td>
+													<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden" />
+												</td>
+												<td>&nbsp;</td>	
+												<td class="labelText">
+													<div id="capa1" style="visibility: hidden">								
+														<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
+														<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
+														<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
+														<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
+													</div>
+												</td>	
+											</c:when>
+											
+											<c:otherwise>
+												<td>
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+												</td>
+												<td>&nbsp;</td>
+												<td>
+													<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden"></td>
+												<td>&nbsp;</td>	
+											</c:otherwise>
+										</c:choose>
+									</tr>
+								</table>
+							</td>
 						</tr>
 						
+						<c:if test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||
+							InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||
+							InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'  }">
+							<tr id="observacionesValidacion">
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaTurnos.literal.ovalidacion" />
+								</td>
+								<td colspan="3">
+									<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
+										onChange="cuenta(this,1024)"
+										cols="65" rows="2" onkeydown="cuenta(this,1024);"
+										styleClass="box" style="overflow:auto; width=400; height=80"
+										readOnly="false">
+									</html:textarea>
+								</td>
+							</tr>
+						</c:if>
+					</table>
+				</siga:ConjCampos>
+			</c:if>
+			
+			<!-- principio baja con validacion automatica  -->
+			<c:if test="${InscripcionTGForm.validarInscripciones=='N' && InscripcionTGForm.validacionBaja==true && (InscripcionTGForm.modo=='sbtComprobarInsertar' || InscripcionTGForm.modo=='sbgComprobarInsertar')}">
+				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
+					
+						<table width="100%" border="0">
+					 	<tr>
+						 	<td width="25%"></td>
+						 	<td width="15%"></td>
+						 	<td width="15%"></td>
+						 	<td width="35%"></td>
+					 	
+					 	</tr>
 						<tr>
-							<!-- obtenemos los campos para el alta de turnos -->
+						<!-- obtenemos los campos para el alta de turnos -->
 							<td class="labelText">
-								<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.numero" />
+								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
 							</td>
 							<td class="labelText">
-								<html:text property="numeroGrupo" styleId="numeroGrupo" size="6" maxlength="6" styleClass="box" />
+								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" readOnly="true"/>							
 							</td>
-							<td rowspan="2" align="center">
-								<div style="height: 140px; width: 100%; overflow-y: auto">
-	
-									<table id='tabInscripcionesCabeceras' border='1' width='100%'
-										cellspacing='0' cellpadding='0'>
-										<tr class='tableTitle'>
-											<td align='center' width='8%'>
-												<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.numero" />
-											</td>
-											<td align='center' width='8%'>
-												<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.orden" />
-											</td>
-											<td align='center' width='8%'>
-												<siga:Idioma key="gratuita.listaTurnosLetrados.literal.numeroletrado" />
-											</td>
-											<td align='center' width='13%'>
-												<siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado" />
-											</td>		
-										</tr>
-		
-										<logic:notEmpty name="InscripcionTGForm"
-											property="gruposGuardiaLetrado">
-											<logic:iterate name="InscripcionTGForm"
-												property="gruposGuardiaLetrado" id="grupoGuardiaLetrado"
-												type="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"
-												indexId="index">
-												<tr class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
+							<td class="labelText">
+								<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
+							</td>
+							<td class="labelText">
+								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true" />
+							</td>			
+						</tr>
+						<tr>						
+							<td class="labelText">
+								<siga:Idioma key="gratuita.altaTurnos.literal.validacion"/>
+							</td>
+							<td colspan="3"> 
+								<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
+									onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="true">
+								</html:textarea>
+							</td>
+							<td class="labelText">&nbsp;</td>
+							<td class="labelText">&nbsp;</td>
+						</tr>
+					 </table>			
+				</siga:ConjCampos>
+				
+				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.saltosycompensaciones">				
+					<table width="100%" border="0">
+					 	<tr>
+						 	<td width="35%"></td>
+						 	<td width="15%"></td>
+						 	<td width="10%"></td>
+						 	<td width="40%"></td>				 	
+					 	</tr>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.altaTurnos.literal.actualizarSyC" />:
+							</td>
+							<td class="labelText" align="right">					
+								<input type="Radio" name="syc" value="s"> si
+								<input type="Radio" name="syc" value="n"> no  
+							</td>
+							<td class="labelText"  align="left">
+							</td>					
+							<td class="labelText">&nbsp;</td>
+						</tr>
+					 </table>			
+				</siga:ConjCampos>
+			</c:if>
+			<!-- fin baja con validacion automatica-->
+			
+			<div id="divGuardiaGrupo" style="display: none">
+				<c:choose>
+					<c:when test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='sigInsertar') }">
+						<siga:ConjCampos leyenda="Guardia de grupo">
+							<table width="100%" border="0">
+								<tr>
+									<td width="25%"></td>
+									<td width="15%"></td>
+									<td width="60%"></td>
+								</tr>
+								
+								<tr>
+									<!-- obtenemos los campos para el alta de turnos -->
+									<td class="labelText">
+										<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.numero" />
+									</td>
+									<td class="labelText">
+										<html:text property="numeroGrupo" styleId="numeroGrupo" size="6" maxlength="6" styleClass="box" />
+									</td>
+									<td rowspan="2" align="center">
+										<div style="height: 140px; width: 100%; overflow-y: auto">
+											<table id='tabInscripcionesCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
+												<tr class='tableTitle'>
 													<td align='center' width='8%'>
-														<c:choose>
-															<c:when test="${grupoGuardiaLetrado.numeroGrupo!=null&&grupoGuardiaLetrado.numeroGrupo!=''}">
-																<c:out	value="${grupoGuardiaLetrado.numeroGrupo}" />
-															</c:when>
-															<c:otherwise>&nbsp;</c:otherwise>
-														</c:choose>													
+														<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.numero" />
 													</td>
 													<td align='center' width='8%'>
-														<c:choose>
-															<c:when test="${grupoGuardiaLetrado.ordenGrupo!=null&&grupoGuardiaLetrado.ordenGrupo!=''}">
-																<c:out	value="${grupoGuardiaLetrado.ordenGrupo}" />
-															</c:when>
-															<c:otherwise>&nbsp;</c:otherwise>
-														</c:choose>					
+														<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.orden" />
 													</td>
 													<td align='center' width='8%'>
-														<c:out value="${grupoGuardiaLetrado.persona.nombre}" />
+														<siga:Idioma key="gratuita.listaTurnosLetrados.literal.numeroletrado" />
 													</td>
 													<td align='center' width='13%'>
-														<c:out value="${grupoGuardiaLetrado.persona.colegiado.NColegiado}"/>
+														<siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado" />
 													</td>		
 												</tr>
-											</logic:iterate>
-										</logic:notEmpty>
-									</table>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<!-- obtenemos los campos para el alta de turnos -->
-							<td class="labelText">
-								<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.orden" />
-							</td>
-							<td class="labelText">
-								<html:text property="ordenGrupo" styleId="ordenGrupo" size="6" maxlength="6" styleClass="box" />
-							</td>
-						</tr>
-					</table>
+				
+												<logic:notEmpty name="InscripcionTGForm" property="gruposGuardiaLetrado">
+													<logic:iterate name="InscripcionTGForm"
+														property="gruposGuardiaLetrado" id="grupoGuardiaLetrado"
+														type="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"
+														indexId="index">
+														<tr class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
+															<td align='center' width='8%'>
+																<c:choose>
+																	<c:when test="${grupoGuardiaLetrado.numeroGrupo!=null&&grupoGuardiaLetrado.numeroGrupo!=''}">
+																		<c:out	value="${grupoGuardiaLetrado.numeroGrupo}" />
+																	</c:when>
+																	<c:otherwise>&nbsp;</c:otherwise>
+																</c:choose>													
+															</td>
+															<td align='center' width='8%'>
+																<c:choose>
+																	<c:when test="${grupoGuardiaLetrado.ordenGrupo!=null&&grupoGuardiaLetrado.ordenGrupo!=''}">
+																		<c:out	value="${grupoGuardiaLetrado.ordenGrupo}" />
+																	</c:when>
+																	<c:otherwise>&nbsp;</c:otherwise>
+																</c:choose>					
+															</td>
+															<td align='center' width='8%'>
+																<c:out value="${grupoGuardiaLetrado.persona.nombre}" />
+															</td>
+															<td align='center' width='13%'>
+																<c:out value="${grupoGuardiaLetrado.persona.colegiado.NColegiado}"/>
+															</td>		
+														</tr>
+													</logic:iterate>
+												</logic:notEmpty>
+											</table>
+										</div>
+									</td>
+								</tr>
+								
+								<tr>
+									<!-- obtenemos los campos para el alta de turnos -->
+									<td class="labelText">
+										<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.orden" />
+									</td>
+									<td class="labelText">
+										<html:text property="ordenGrupo" styleId="ordenGrupo" size="6" maxlength="6" styleClass="box" />
+									</td>
+								</tr>
+							</table>
+							
+						</siga:ConjCampos> 
+					</c:when>
 					
-				</siga:ConjCampos> 
-				</c:when>
-				<c:when 
-					test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia' ) }">
-					<input type="hidden" name="mostrarAvisoPorGrupo" id="mostrarAvisoPorGrupo" />
-				</c:when>			
-			</c:choose>
-		</div>
-	</c:if>
-
-</html:form>
-
+					<c:when test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia' ) }">
+						<input type="hidden" name="mostrarAvisoPorGrupo" id="mostrarAvisoPorGrupo" />
+					</c:when>			
+				</c:choose>
+			</div>
+		</c:if>
+	</html:form>
+	
 	<c:choose>
 		<c:when test="${InscripcionTGForm.modo!='sitEditarTelefonosGuardia'&&InscripcionTGForm.modo!='smitEditarTelefonosGuardia'}">
 			<siga:ConjBotonesAccion botones="X,F" ordenar="false" />
 		</c:when>		
-
+	
 		<c:otherwise>
 			<siga:ConjBotonesAccion botones="X,S" ordenar="false" />
 		</c:otherwise>
 	</c:choose>
 
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea"
-	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-	style="display: none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 
-<script>
+	<script>
 		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
 			document.getElementById("divGuardiaGrupo").style.display = "block";
-</script>
-
+	</script>
 </body>
 </html>

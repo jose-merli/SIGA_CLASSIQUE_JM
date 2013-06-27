@@ -421,7 +421,7 @@
 					}
 					
 					// COMPRUEBO QUE NO TENGA QUE VALIDAR EL TURNO, NI QUE ESTE DE BAJA
-					if (!estadoPendienteValidacionTurno && !estadoBajaTurno && accion.equalsIgnoreCase("Editar")) {
+					if (!estadoPendienteValidacionTurno && !estadoBajaTurno && (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()))) {
 
 						// COMPRUEBO SI ES UN TURNO CONFIGURADO CON GUARDIAS "TODAS O NINGUNA" O "ELECCION" (LAS OBLIGATORIAS NO ENTRAN)
 						if (obligatoriedad.equals("2") || obligatoriedad.equals("1")) {

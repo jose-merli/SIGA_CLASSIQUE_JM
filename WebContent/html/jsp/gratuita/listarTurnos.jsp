@@ -304,7 +304,7 @@
 									if (fechaSolicitudBaja.equals("")) {
 										if (fechaDenegacion.equals("")) {
 											estadoInscripcion = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.estado.alta.pendiente");											
-											if (accion.equals("editar"))
+											if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true))
 												elems[1]=new FilaExtElement("borrar", "borrarTurnoPendiente", SIGAConstants.ACCESS_FULL);
 											
 										} else {
@@ -318,7 +318,7 @@
 												
 											} else {
 												estadoInscripcion = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");												
-												if (accion.equals("editar"))
+												if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true))
 													elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 											}
 											
@@ -330,7 +330,7 @@
 								} else {
 									if (fechaSolicitudBaja.equals("")) {
 										estadoInscripcion = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.alta.confirmada");
-										if (accion.equals("editar"))
+										if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true))
 											elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 										
 									} else {
@@ -339,7 +339,7 @@
 											
 										} else {
 											estadoInscripcion = UtilidadesString.getMensajeIdioma(usr,	"gratuita.gestionInscripciones.estado.baja.denegada");
-											if (accion.equals("editar"))
+											if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true))
 												elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
 										}
 									}
@@ -514,14 +514,14 @@
 			if (!estaDeBaja) {
 				//aalg: se controlan los permisos según el modo de acceso
 				if (!busquedaVolver.equals("volverNo")) { 
-					if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true) ){%>
+					if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true)) {%>
 						<siga:ConjBotonesAccion botones="V,bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
 					<%} else {%>
 						<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 					<%}
 						
 				} else { 
-					if (accion.equals("editar")|| (accion.equals("ver") && usr.isLetrado()==true)){%>
+					if (accion.equals("editar")|| (accion.equals("ver") && usr.isLetrado()==true)) {%>
 						<siga:ConjBotonesAccion botones="bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
 				<%  }
 				}
