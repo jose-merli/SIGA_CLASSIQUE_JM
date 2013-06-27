@@ -1746,6 +1746,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @throws Exception
 	 */
 	private void ejecutaBackground(MasterForm formulario, HttpServletRequest request, int indexClass) throws ClsExceptions {
+		log.debug("Ejecutando en background para el colegio " + getIDInstitucion(request));
 		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;
 		Integer idInstitucion = getIDInstitucion(request);
 		UsrBean usrBean = getUserBean(request);
@@ -1777,7 +1778,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		timer.addNotificationListener(sigaWSListener, null, timer);
 		Integer idNotificacion = timer.addNotification("WSType", "WSMessage", sigaWSClient, new Date(), 0);
 		sigaWSListener.setIdNotificacion(idNotificacion);		
-		
+		log.debug("Iniciando el nuevo hilo para ejecución en background para el colegio " + getIDInstitucion(request));
 		timer.start();
 		
 	} 
@@ -1829,7 +1830,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private String validarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {				
+	private String validarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		log.debug("Ejecutando validarRemesa para el colegio " + getIDInstitucion(request));
 		ejecutaBackground(formulario, request, 0);		
 		return exitoRefresco("messages.cajg.validarRemesa", request);
 	}

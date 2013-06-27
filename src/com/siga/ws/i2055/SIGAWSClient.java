@@ -24,6 +24,7 @@ import org.apache.axis.SimpleTargetedChain;
 import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
+import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
@@ -79,6 +80,7 @@ import es.satec.businessManager.BusinessManager;
 public class SIGAWSClient extends SIGAWSClientAbstract {
 	
 	private static int TIPO_TERCERO_SOLICITANTE = 1;
+	private static Logger log = Logger.getLogger(SIGAWSClient.class);
 
 	Map<String, List<Map<String, String>>> htCargaDtPersonas = new Hashtable<String, List<Map<String,String>>>();
 	Map<String, List<Map<String, String>>> htCargaDtArchivo = new Hashtable<String, List<Map<String,String>>>();
@@ -87,7 +89,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 	
 	@Override
 	public void execute() throws Exception {
-		
+		log.debug("Ejecutando envío/validación de remesas para el colegio " + getIdInstitucion());
 		WSPamplonaAdm wsPamplonaAdm = new WSPamplonaAdm();
 		Map<String, String> mapExp;
 		
@@ -98,6 +100,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		if (!isSimular()) {
 			IntegracionSigaAsignaLocator locator = new IntegracionSigaAsignaLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Envío y recepción webservice del colegio " + getIdInstitucion() + " de la remesa " + getIdRemesa()));
 			stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
+			log.debug("Creado el stub para el colegio " + getIdInstitucion());
 		}
 		
 		List<Hashtable<String, String>> listDtExpedientes = wsPamplonaAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());
@@ -116,8 +119,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		UserTransaction tx = getUsrBean().getTransaction();
 					
 		tx.begin();
+		log.debug("Eliminando errores anteriores para el colegio " + getIdInstitucion());
 		//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
 		cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
+		log.debug("Insertando error para aquellos EJG que están en la remesa y no están en la consulta realizada para el colegio " + getIdInstitucion());
 		cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), VWs2055Ejg.T_V_WS_2055_EJG);	
 		tx.commit();
 		
@@ -130,7 +135,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 				anio = mapExp.get(VWs2055Ejg.C_ANIO);
 				numejg = mapExp.get(VWs2055Ejg.C_NUMEJG);
 				numero = mapExp.get(VWs2055Ejg.C_NUMERO);
-				idTipoEJG = mapExp.get(VWs2055Ejg.C_IDTIPOEJG);								
+				idTipoEJG = mapExp.get(VWs2055Ejg.C_IDTIPOEJG);	
+				log.debug("Valida/envía el ejg " + anio + "/" + numejg + " para el colegio " + getIdInstitucion());
 									
 				escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
 				SIGAAsignaDocument sigaAsignaDocument = getDtExpedientes(mapExp);
@@ -139,11 +145,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 				//guardamos el xml que vamos a enviar
 				saveXML(sigaAsignaDocument);
 				
-				if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG) && !isSimular() && stub != null){												
+				if(validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG) && !isSimular() && stub != null){
+					log.debug("El expediente " + anio + "/" + numejg + " se ha validado correctamente para el colegio " + getIdInstitucion());
 					String xml = sigaAsignaDocument.xmlText();
 					SIGAAsigna sigaAsigna = (SIGAAsigna) AxisObjectSerializerDeserializer.deserializeAxisObject(xml, SIGAAsigna.class);
 				
-					respuesta = stub.registrar_Solicitud(sigaAsigna);					
+					respuesta = stub.registrar_Solicitud(sigaAsigna);
+					log.debug("Envío correcto para el expediente " + anio + "/" + numejg + " se ha validado correctamente para el colegio " + getIdInstitucion());
 					escribeLogRemesa("El expediente se ha enviado correctamente.");					
 					
 					if (respuesta == null) {
@@ -229,11 +237,12 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		file.mkdirs();
 		file = new File(file, sigaAsignaDocument.getSIGAAsigna().getDtExpedientes().getIDExpedienteSIGA()+".xml");
 		
+		log.debug("Guardando fichero de envío webservice del colegio " + getIdInstitucion());
 		ClsLogging.writeFileLog("Guardando fichero de envío webservice del colegio " + getIdInstitucion(), 3);
 		ClsLogging.writeFileLog("Ruta del fichero: " + file.getAbsolutePath(), 3);
 		
 		sigaAsignaDocument.save(file, xmlOptions);
-		
+		log.debug("El fichero se ha guardado correctamente para el colegio " + getIdInstitucion());
 	}
 
 

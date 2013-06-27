@@ -7,6 +7,8 @@ import javax.management.InstanceNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 
+import org.apache.log4j.Logger;
+
 import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsLogging;
@@ -14,6 +16,7 @@ import com.atos.utils.ClsLogging;
 public class SIGAWSListener implements NotificationListener {
 	
 	private Integer idNotificacion;
+	private static Logger log = Logger.getLogger(SIGAWSListener.class);
 	
 	/**
 	 * Lista para guardar las remesas que se estan ejecutando
@@ -28,6 +31,7 @@ public class SIGAWSListener implements NotificationListener {
 		
 		String key = null;
 		SIGAWSClientAbstract sigaWSClient = null;
+		log.debug("Notificación recibida...");
 		
 		try {
 			Object obj = notification.getUserData();
@@ -37,8 +41,10 @@ public class SIGAWSListener implements NotificationListener {
 			
 			sigaWSClient = (SIGAWSClientAbstract) obj;
 			key = getKey(sigaWSClient.getIdInstitucion(), sigaWSClient.getIdRemesa());
+			
 			ejecutandose.add(key);			
 			sigaWSClient.execute();
+			log.debug("Se ha ejecutado correctamente");
 			
 			// paramos la ejecución
 			if (handback != null && handback instanceof Timer) {
@@ -82,8 +88,10 @@ public class SIGAWSListener implements NotificationListener {
 	 * @param idRemesa
 	 * @return
 	 */
-	private static String getKey(int idInstitucion, int idRemesa) {		
-		return idInstitucion + "-" + idRemesa;
+	private static String getKey(int idInstitucion, int idRemesa) {
+		String key = idInstitucion + "-" + idRemesa; 
+		log.debug("La key es " + key);
+		return key;
 	}
 
 	/**
