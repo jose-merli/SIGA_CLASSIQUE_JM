@@ -146,7 +146,7 @@
 		<siga:Table 
 		   name="tablaDatos"
 		   border="1"
-		   columnNames=",censo.consultaComponentesJuridicos.literal.nifcif,censo.consultaComponentesJuridicos.literal.nombre,censo.consultaComponentesJuridicos.literal.cargo,censo.consultaComponentesJuridicos.literal.fechaCargo,censo.consultaComponentesJuridicos.literal.sociedad,censo.consultaComponentesJuridicos.literal.ejerciente,censo.consultaComponentesJuridicos.literal.ParticipacionSociedad%,"
+		   columnNames="censo.consultaComponentesJuridicos.literal.nifcif,censo.consultaComponentesJuridicos.literal.nombre,censo.consultaComponentesJuridicos.literal.cargo,censo.consultaComponentesJuridicos.literal.fechaCargo,censo.consultaComponentesJuridicos.literal.sociedad,censo.consultaComponentesJuridicos.literal.ejerciente,censo.consultaComponentesJuridicos.literal.ParticipacionSociedad%,"
 		   columnSizes="10,25,15,10,10,10,10,10"
 		   modal="G">  
 		 
