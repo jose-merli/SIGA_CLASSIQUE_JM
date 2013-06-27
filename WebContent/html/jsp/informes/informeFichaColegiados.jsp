@@ -34,6 +34,7 @@
 	String comboParams[] = new String[2];
 	comboParams[0] = usrbean.getLocation();
 	comboParams[1] = ClsConstants.ESTADO_PAGO_EJECUTADO;
+	String idInstitucionIdioma[] = {usrbean.getLocation()};
 
 %>	
 
@@ -92,7 +93,7 @@
 		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>&nbsp;(*)
 	</td>				
 	<td>
-		<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="false" />
+		<siga:ComboBD nombre="idioma" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>"  clase="boxCombo" obligatorio="false" />
 	</td>
 	</tr>
 

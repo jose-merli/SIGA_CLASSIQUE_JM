@@ -142,6 +142,8 @@
 	   	institucionParam[0] = user.getLocation();
 	}
 	
+	
+	
 	// Obteniendo Tipo de cliente
     String sTipo = (String) request.getAttribute("TIPO");
 	if (sTipo == null)
@@ -1155,7 +1157,7 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+						<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
 					</td>
 					<td class="labelText">
 					<!-- CUENTA CONTABLE -->

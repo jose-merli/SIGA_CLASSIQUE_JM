@@ -881,7 +881,7 @@
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
 													</td>
 													<td style="width:320px">
-														<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=estiloCombo%>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+														<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCombo%>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
 														&nbsp;
 													</td>
 												</tr>

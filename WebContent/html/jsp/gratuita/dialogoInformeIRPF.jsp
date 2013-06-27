@@ -35,6 +35,7 @@
 		botones+=",C";
 	}
 	String informeUnico =(String) request.getAttribute("informeUnico");
+	String idInstitucionIdioma[] = {idInstitucion};
 %>
 
 <html>
@@ -104,7 +105,7 @@
 				<tr>
 					<td class="labelText"><siga:Idioma
 						key="gratuita.retencionesIRPF.informe.literal.idioma" />&nbsp;(*)</td>
-					<td><siga:ComboBD nombre="idioma" tipo="cmbIdioma"
+					<td><siga:ComboBD nombre="idioma" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>"
 						clase="boxCombo" obligatorioSinTextoSeleccionar="true"
 						elementoSel="<%=alElementoSelec%>" /></td>
 					<td>&nbsp;</td>

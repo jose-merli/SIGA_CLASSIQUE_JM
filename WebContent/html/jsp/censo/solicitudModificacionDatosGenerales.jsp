@@ -32,7 +32,7 @@
 	DatosGeneralesForm miForm = (DatosGeneralesForm) request.getAttribute("datosGeneralesForm");
 	String idPersona = miForm.getIdPersona();
 	String idInstitucion = miForm.getIdInstitucion();
-	
+	String idInstitucionIdioma[] = {idInstitucion};
 	Vector resultado = (Vector) request.getAttribute("CenSolititudDatosGeneralesResultados");
 	Vector resultadoPersona = (Vector) request.getAttribute("CenSolititudDatosGeneralesPersonaResultados");
 	
@@ -219,7 +219,7 @@
 		<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>  &nbsp;(*)
 	</td>				
 	<td colspan="3">
-		<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="box" obligatorio="true" elementoSel="<%=idiomaSel %>" obligatorioSinTextoSeleccionar="true"/>
+		<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>" clase="box" obligatorio="true" elementoSel="<%=idiomaSel %>" obligatorioSinTextoSeleccionar="true"/>
 	</td>
 
 	</tr>

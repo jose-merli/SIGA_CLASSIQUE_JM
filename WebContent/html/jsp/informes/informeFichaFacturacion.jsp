@@ -34,6 +34,7 @@
 	String comboParams[] = new String[1];
 	comboParams[0] = usrbean.getLocation();
 	
+	
 %>	
 
 <html>
@@ -89,7 +90,7 @@
 		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>
 	</td>				
 	<td>
-		<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="false" />
+		<siga:ComboBD nombre="idioma" tipo="cmbIdiomaInstitucion" parametro="<%=comboParams%>"  clase="boxCombo" obligatorio="false" />
 	</td>
 	</tr>
 

@@ -70,6 +70,9 @@
 	// RGG 14/03/2007 cambio para dar un tamaño a la letra y en caso de Tiems darle otro
 	String fontSize = "13px";
 	
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	String idInstitucionIdioma[] = {user.getLocation()};
+	
 %>
 
 <html>
@@ -223,8 +226,8 @@
 											<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;
 										</td>				
 					   					<td colspan=3>
-					   						<siga:ComboBD nombre="idiomaO" tipo="cmbIdioma" clase="boxComboNormal" elementoSel="<%=idiomaOrig%>" readOnly="true"/><br>
-					   						<siga:ComboBD nombre="idiomaM" tipo="cmbIdioma" clase="boxComboRojo" elementoSel="<%=idiomaDest%>" readOnly="true"/>
+					   						<siga:ComboBD nombre="idiomaO" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>" clase="boxComboNormal" elementoSel="<%=idiomaOrig%>" readOnly="true"/><br>
+					   						<siga:ComboBD nombre="idiomaM" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>" clase="boxComboRojo" elementoSel="<%=idiomaDest%>" readOnly="true"/>
 										</td>
 					  				</tr>
 				   				</table>

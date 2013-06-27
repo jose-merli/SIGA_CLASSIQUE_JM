@@ -1842,7 +1842,7 @@
 						ArrayList selIdioma = new ArrayList();
 						selIdioma.add(idioma);
 			%>
-			<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
 		</td>
 			<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.profesion"/>		
@@ -2016,7 +2016,7 @@
 					selIdioma.add(idioma);
 					
 				%>
-				<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
 			</td>		
 		<% } %>	
 	</tr>

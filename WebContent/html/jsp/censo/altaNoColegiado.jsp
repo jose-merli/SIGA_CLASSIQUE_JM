@@ -64,6 +64,8 @@
 	String idInstitucionActual = user.getLocation();
 	String parametroidInstitucionActual[] = new String[1];
 	parametroidInstitucionActual[0] = idInstitucionActual;
+	String idInstitucionIdioma[] = {usr.getLocation()};
+	
 	String idPersona = "";
 	String nombre = "";
 	String apellido1 = "";
@@ -930,7 +932,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
 						</td>
 						<td>
-							<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
 						</td>
 					</tr>
 				</table>
