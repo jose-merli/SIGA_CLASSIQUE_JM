@@ -721,8 +721,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		} catch (ClsExceptions e) {
 			throw new SIGAException(e.getMsg());
 		}
-		
-		request.setAttribute("permitirBotones", isPermisoActualizarDesignas&&f.getAccion()!=null&& !f.getAccion().equals("ver"));
+		request.setAttribute("permitirBotones", isPermisoActualizarDesignas);
 		
 		
 		return "listadoPaginado";
