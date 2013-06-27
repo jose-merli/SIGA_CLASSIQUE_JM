@@ -345,18 +345,21 @@
 			}			
 			
 			function existeCondicion () {
+				
 				var s = "<%=comprobarCondicion%>";
+				
 				if(s == "true") {
-					if ((frameResultado.tablaDatos.rows[1].cells)[1]) {
+										
+					if (frameResultado.tablaDatos[1].rows.length > 0) { //Se comprueba si en la fila de suscripciones alguna fila con una condicion
 						return true;
-					}
-					else {
+					} else {
 						alert ("<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.mensaje.errorCondicionNecesaria"/>");
 						return false;
 					}
 				}
 				return true;
 			}
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 				
