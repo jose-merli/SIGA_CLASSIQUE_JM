@@ -10,7 +10,6 @@ h1 {
   color: #ddddee;
 }
 td {
-  color: #ddddee;
   vertical-align: top;
   word-wrap: break-word;
 }
@@ -1020,6 +1019,13 @@ a.imagelink:active {
   border-left-width: 2px;
   border-left-style: solid;
   border-left-color: #4477aa;
+  background: url(pestana.gif) no-repeat right;
+}
+.pestanatd a:hover {
+  background: url(pestahover.gif) no-repeat right;
+}
+.pestanatd a.here {
+  background: url(pestahover.gif) no-repeat right;
 }
 .listanonedit {
   font-size: 13px;
