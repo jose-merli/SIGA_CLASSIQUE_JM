@@ -317,7 +317,6 @@
 					jQuery("#lugarNacimiento").attr("disabled","disabled");
 					jQuery("#fechaNacimiento").attr("disabled","disabled");
 				
-				document.getElementById("iconoFecha").style.display="none"; 				
 			}							
 		}		
 
@@ -842,7 +841,6 @@
 					jQuery("#estadoCivil").removeAttr("disabled");
 					jQuery("#lugarNacimiento").removeAttr("disabled");
 					jQuery("#fechaNacimiento").removeAttr("disabled");
-					document.getElementById("iconoFecha").style.display=""; 
 					document.busquedaCensoModalForm.existeNIF.value = "";
 				}
 			}
@@ -903,7 +901,6 @@
 					jQuery("#estadoCivil").attr("disabled","disabled");
 					jQuery("#lugarNacimiento").attr("disabled","disabled");
 					jQuery("#fechaNacimiento").attr("disabled","disabled");
-						document.getElementById("iconoFecha").style.display="none"; 
 					}
 					
 				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
@@ -1135,7 +1132,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
 						</td>
 						<td>
-							<siga:ComboBD nombre = "idioma" tipo="cmbIdioma" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
 						</td>
 					</tr>
 				</table>
@@ -1474,7 +1471,6 @@
 			limpiarCliente();   
 			
 			//NUEVAS MEJORAS
-			document.getElementById("iconoFecha").style.display="block";
 			jQuery("#idButtonB").removeAttr("disabled");
 			document.getElementById("tdadicional").style.display="none";
 			document.getElementById("tddireccion").style.display="none";
