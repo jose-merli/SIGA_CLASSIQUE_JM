@@ -1,4 +1,5 @@
 <!-- listado2PJ.jsp-->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -7,7 +8,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
@@ -21,9 +22,8 @@
 
 <!-- JSP --> 
 <% 
-	String app=request.getContextPath(); 
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	
 	String profile[]=usr.getProfile();
 	
@@ -32,7 +32,7 @@
 	String modo = request.getAttribute("modo")==null?"":(String)request.getAttribute("modo");	
 	String cambiar = request.getAttribute("cambiar")==null?"":(String)request.getAttribute("cambiar");	
 	String accion = request.getAttribute("accion") == null?"":(String)request.getAttribute("accion");
-	//String accion = request.getSession().getAttribute("accion") == null?"":(String)request.getSession().getAttribute("accion");
+	//String accion = ses.getAttribute("accion") == null?"":(String)ses.getAttribute("accion");
 	String idpartido = request.getAttribute("idPartido") == null?"":((String) request.getAttribute("idPartido"));
 	String idprovincia = request.getAttribute("idProvincia") == null?"":((String) request.getAttribute("idProvincia"));
 	boolean desactivar = false;
@@ -55,20 +55,18 @@
 
 <!-- HEAD -->
 <head>
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script>
 		//Refresco del iframe 	
-	 	function refrescarLocal()
-		{
+	 	function refrescarLocal() {
 			parent.refrescarLocal()
 		}
+		
 		//Guardo los campos seleccionados
 		function seleccionarFila(fila){
 		    var idPartido = 'oculto' + fila + '_' + 1;
@@ -81,9 +79,8 @@
 
 		}
 
-		<!-- Funcion asociada al botón eliminar población -->
-		function eliminarPoblacion(fila) 
-		{		
+		// Funcion asociada al botón eliminar población
+		function eliminarPoblacion(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila)			
 			
@@ -94,11 +91,9 @@
 
 		}				
 	</script>
- 	
 </head>
 
 <body>
-
 	<html:form action="/JGR_MantenimientoPartidosJudiciales.do" method="post" target="mainWorkArea" style="display:none">
 		<html:hidden property = "modo" value = "<%=modo%>"/>
 		<html:hidden property = "cambiar" value = "modal"/>
@@ -108,54 +103,61 @@
 	</html:form>	
 		
 	<!-- INICIO: RESULTADO -->
-
 	<siga:Table
-			   name="consultarPJ"
-			   border="1"
-			   columnNames="gratuita.consultarPJ.literal.poblacionesPartido,"
-			   columnSizes="90,10"
-			   modal="P">
-	<%if ((obj != null) && (obj.size()>0)) { %>
-
-			<%
-					int recordNumber=1;
-					while ((recordNumber) <= obj.size())
-					{	 Hashtable miHash = (Hashtable)obj.get(recordNumber-1);
-			%>
+	   name="consultarPJ"
+	   border="1"
+	   columnNames="gratuita.consultarPJ.literal.poblacionesPartido,"
+	   columnSizes="90,10"
+	   fixedHeight="98%"
+	   modal="P">
+			   
+		<%if ((obj != null) && (obj.size()>0)) {
+			int recordNumber=1;
+			while ((recordNumber) <= obj.size()) {	 
+				Hashtable miHash = (Hashtable)obj.get(recordNumber-1);
+		%>
 			<!-- Campos ocultos por cada fila:      
 					1- POBLACION
 					2- IDPOBLACION
 					3- IDPROVINCIA
-					4- IDPARTIDO
-			-->
+					4- IDPARTIDO-->
 			<!-- Campos visibles por cada fila:
 					1- PARTIDOJUDICIAL
-					2- POBLACION
-			-->
+					2- POBLACION-->
+					
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" pintarEspacio="false" modo="<%=accion%>" >
-<!--				<td>
-<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=miHash.get("POBLACION")%>'>
-<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=miHash.get("IDPOBLACION")%>'>
-<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idprovincia%>'>
-<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idpartido%>'>
-<%=miHash.get("PARTIDOJUDICIAL")%></td> -->
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idpartido%>'>
+
+				<!--				<td>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=miHash.get("POBLACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=miHash.get("IDPOBLACION")%>'>
-				<%=miHash.get("POBLACION")%></td>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idprovincia%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idpartido%>'>
+				<%=miHash.get("PARTIDOJUDICIAL")%></td> -->
+
+
+				<td>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idpartido%>'>
+					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=miHash.get("IDPOBLACION")%>'>
+					<%=miHash.get("POBLACION")%>
+				</td>
 			</siga:FilaConIconos>
+			
 			<% 			recordNumber++; %>
 			<%  	} %>
-	<% } else { %>
+			
+		<% } else { %>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	<% } %>	
-		</siga:Table>
+				<td class="titulitos">
+					<siga:Idioma key="messages.noRecordFound"/>
+				</td>
+			</tr>
+		<% } %>	
+	</siga:Table>
 	<!-- FIN: RESULTADO -->
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
 	
 </body>	
