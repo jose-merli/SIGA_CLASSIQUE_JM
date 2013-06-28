@@ -2402,7 +2402,12 @@ public class EditarConsultaAction extends MasterAction {
 				 	
 				 		String sentenciaA=critCampoWhere.substring(0,critCampoWhere.toUpperCase().indexOf(operadorEstudio));
 				 		int indiceAndIni =  sentenciaA.lastIndexOf("AND");
-				 		String lineaEstudio = critCampoWhere.substring(indiceAndIni+3);
+				 		String lineaEstudio = null;
+				 		if (indiceAndIni < 0){
+				 			lineaEstudio = critCampoWhere.substring(indiceAndIni+8);
+				 		} else{
+				 			lineaEstudio = critCampoWhere.substring(indiceAndIni+3);
+				 		}
 				 		if(operadorEstudio.equals(ClsConstants.TIPOMULTIVALOR)){
 				 			int indexArroba=  lineaEstudio.indexOf("@"); 
 				 			String p1 = lineaEstudio.substring(0,indexArroba);
@@ -2422,8 +2427,13 @@ public class EditarConsultaAction extends MasterAction {
 					 		if(indiceAndFin>-1)
 					 			lineaEstudio = lineaEstudio.substring(0,indiceAndFin);
 				 		}
-				 		lineaEstudio = "AND"+lineaEstudio;
-				 		critCampoWhere= critCampoWhere.substring(0,indiceAndIni)+critCampoWhere.substring(indiceAndIni+lineaEstudio.length());
+				 		if (indiceAndIni > -1){
+				 			lineaEstudio = "AND"+lineaEstudio;
+				 			critCampoWhere= critCampoWhere.substring(0,indiceAndIni)+critCampoWhere.substring(indiceAndIni+lineaEstudio.length());
+				 		}else{
+				 			critCampoWhere = "";
+				 		}
+				 		
 				 		String operadores[] = sentenciaA.split("%%");
 				 		for (int j = operadores.length-1; j >= 0 ; j--) {
 							String operador = operadores[j];
@@ -2439,7 +2449,9 @@ public class EditarConsultaAction extends MasterAction {
 							throw new SIGAException("messages.consultas.error.etiquetaOperador");
 					    }
 				 		aliasSustituir=lineaEstudio.substring(0,lineaEstudio.toUpperCase().indexOf(operadorEstudio));
-				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("AND"));
+				 		if(aliasSustituir.toUpperCase().lastIndexOf("AND") > -1){
+				 			aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("AND"));
+				 		}
 				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
 				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
 				 			if (aux.toUpperCase().lastIndexOf(operadorWhere)<=0)		
