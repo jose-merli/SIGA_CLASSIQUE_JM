@@ -314,7 +314,7 @@
 	</script>	
 </head>
 
-<body onload="refrescarLocal();ajusteAlto('resultado1');">
+<body onload="refrescarLocal();">
 	
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 
@@ -694,7 +694,7 @@
 					marginheight="0"
 					marginwidth="0";					 
 					class="frameGeneral"
-					style="position:relative;width:100%;"
+					style="position:relative;height:29%;width:100%;"
 						>
 	</iframe>
 

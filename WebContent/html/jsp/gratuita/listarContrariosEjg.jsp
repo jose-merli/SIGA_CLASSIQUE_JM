@@ -122,6 +122,7 @@ function accionNuevo()
 			   border="2"
 			   columnNames="gratuita.mantenimientoTablasMaestra.literal.nif,gratuita.mantenimientoTablasMaestra.literal.nombreyapellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
 			   columnSizes="10,30,25,25,15"
+			   fixedHeight="80%"
 			   modal="G">
 	<% if (vContrariosEJG!= null && !vContrariosEJG.isEmpty()) { %>
 			<%
