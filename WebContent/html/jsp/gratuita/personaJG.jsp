@@ -34,7 +34,7 @@
 
 <!-- JSP -->
 <%
-	String app = request.getContextPath();
+String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	String dato[] = {(String) usr.getLocation()};
@@ -104,6 +104,8 @@
 	String bPestana = (pantalla != null && pantalla.equals("P"))
 			? "true"
 			: "false";
+	if(bPestana.equals("true")&&conceptoE!=null&&conceptoE.equals("EJG"))
+		bPestana = "2";
 	String nuevo = miform.getNuevo();
 	String sexo = "";
 	String idioma = "";
