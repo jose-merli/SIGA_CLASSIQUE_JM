@@ -351,6 +351,7 @@
 	String modoVerReadOnly = String.valueOf(modo.equalsIgnoreCase("ver"));
 	
 	String comboPretensiones = "getPretensiones";
+	comboPretensionesParentQueryIds = "idpretension";
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
 		if (!"".equals(idPretensionParamsJSON)){
@@ -358,9 +359,8 @@
 			idPretensionParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
 		} else {
 			idPretensionParamsJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+			comboPretensionesParentQueryIds = "idjuzgado, idpretension";
 		}
-	} else {
-		comboPretensionesParentQueryIds = "idpretension";
 	}
 %>	
 
@@ -1080,7 +1080,7 @@
 						</td>				
 				
 						<td  colspan="7">
-							<siga:Select id="idPretension" queryId="<%=comboPretensiones %>" parentQueryParamIds="idjuzgado" params="<%=idPretensionParamsJSON%>" selectedIds="<%=pretensionesSel %>" width="380" readOnly="<%=modoVerReadOnly%>"/>							
+							<siga:Select id="idPretension" queryId="<%=comboPretensiones %>" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=pretensionesSel %>" width="380" readOnly="<%=modoVerReadOnly%>"/>							
 						</td>
 					</tr>
 					
