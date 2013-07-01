@@ -1073,20 +1073,22 @@ if(usr.isComision()){
 		
 		//<!-- Accion de la busqueda CAJG -->
 		function accionListoParaEnviar() {
-			try{
-			    var dat = "";
-			    var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
-			    document.forms[0].selDefinitivo.value=datos1.value;
-			    
-			  	document.forms[0].modo.value = "listosParaComision";
-			  	var f = document.forms[0].name;	
-			  	//Para quien se encargue del marrón de la ruedecita, con mucho cariño para ....
-			  	//(JTA)Saludos tambien de mi parte. si quieres ponerlo aqui mira en accionGenerarCarta() de listadoEJG.jspi
-	
-			    document.forms[0].submit();
-			}
-			catch (e){
-				alert('<siga:Idioma key="messages.cajg.error.listos"/>');
+			if(confirm("<siga:Idioma key='messages.cajg.confirmarListoRemitir'/>")){
+				try{
+				    var dat = "";
+				    var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
+				    document.forms[0].selDefinitivo.value=datos1.value;
+				    
+				  	document.forms[0].modo.value = "listosParaComision";
+				  	var f = document.forms[0].name;	
+				  	//Para quien se encargue del marrón de la ruedecita, con mucho cariño para ....
+				  	//(JTA)Saludos tambien de mi parte. si quieres ponerlo aqui mira en accionGenerarCarta() de listadoEJG.jspi
+		
+				    document.forms[0].submit();
+				}
+				catch (e){
+					alert('<siga:Idioma key="messages.cajg.error.listos"/>');
+				}
 			}
 		}
 	</script>

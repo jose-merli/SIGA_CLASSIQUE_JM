@@ -39,6 +39,7 @@
 	String paginaSeleccionada ="";
 	
 	String totalRegistros ="";
+	String regSeleccionados ="";
 	
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
@@ -225,12 +226,14 @@
 		
 	</siga:Table>
 
-     <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+     <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
 	  
-	  						
+	  	regSeleccionados = "" + ((ejgSeleccionados == null) ? 0 : ejgSeleccionados.size());
+	  	%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 
 								paginaSeleccionada="<%=paginaSeleccionada%>" 
+								registrosSeleccionados="<%=regSeleccionados%>"
 								idioma="<%=idioma%>"
 								modo="buscarPor"								
 								clase="paginator" 
@@ -259,7 +262,7 @@
 		   		seleccionados1=ObjArray;
 		   }
 		  	
-		  	
+		   document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 		   document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
 		   
 	   }
@@ -313,6 +316,9 @@
 				for (i = 0; i < ele.length; i++) {
 					ele[i].checked = false; 
 				}
+			}
+			if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
+				document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 			}
 		}
 	   
