@@ -396,7 +396,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			CenPersonaBean perBean = null;			
 			Hashtable codigos = new Hashtable();
 			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
-			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1",codigos);			
+			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1 AND ROWNUM = 1",codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
