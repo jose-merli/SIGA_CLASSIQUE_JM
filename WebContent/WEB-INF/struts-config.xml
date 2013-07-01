@@ -326,6 +326,7 @@
 		<form-bean name="ConfConjuntoGuardiasForm" type="com.siga.gratuita.form.ConfConjuntoGuardiasForm"/>
 		<form-bean name="ActaComisionForm" type="com.siga.gratuita.form.ActaComisionForm"/>
 		<form-bean name="CuentasBancariasForm" type="com.siga.facturacion.form.CuentasBancariasForm"/>
+		<form-bean name="PrestacionRechazadaEjgForm" type="com.siga.gratuita.form.PrestacionRechazadaEjgForm"/>
 		
 		
 		
@@ -2706,6 +2707,10 @@
 		
 		<action path="/JGR_DictamenEJG" type="com.siga.gratuita.action.DefinirDictamenEJGAction" name="DefinirDictamenEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/operarDictamenEJG.jsp"/>
+		</action>
+		
+		<action path="/JGR_PrestacionesEJG" type="com.siga.gratuita.action.PrestacionesRechazadasEJGAction" name="PrestacionRechazadaEjgForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/prestacionesEJG.jsp"/>
 		</action>
 
 		<action path="/JGR_DocumentacionEJG" type="com.siga.gratuita.action.DefinirDocumentacionEJGAction" name="DefinirDocumentacionEJGForm" scope="request">
