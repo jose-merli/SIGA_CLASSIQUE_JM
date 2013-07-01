@@ -1,5 +1,3 @@
-
-
 package com.siga.gratuita.action;
 
 import java.util.Enumeration;
@@ -18,7 +16,14 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.SIGAException;
 
-
+/**
+ * 
+ * @author jorgeta 
+ * @date   27/06/2013
+ *
+ * La imaginación es más importante que el conocimiento
+ *
+ */
 
 public class SolicitudEJGAction extends MasterAction 
 {
@@ -49,25 +54,14 @@ public class SolicitudEJGAction extends MasterAction
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
 			  request.setAttribute("pestanasOcultas",pestanasOcultas);
 	 		}
-			
-	 		
 	 		Map mapSolicitud = new HashMap();
 	 		Enumeration enumParametros=request.getParameterNames();
 	 		while (enumParametros.hasMoreElements()) {
 				String parametro = (String) enumParametros.nextElement();
 				mapSolicitud.put(parametro, request.getParameter(parametro));
 			}
-	 		
-			
-	 		
 	 		request.setAttribute("SOLEJG",mapSolicitud);
-	 		
-	 		
-	 		
-	 		
 	 		mapDestino ="inicio"; 
-			
-						
 			
 		}
 		 
