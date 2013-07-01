@@ -5998,6 +5998,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(registro, "DELITOS", "");
 				UtilidadesHash.set(registro, "FECHA_DESIGNA", "");
 				UtilidadesHash.set(registro, "DESCRIPCION_TURNO", "");
+				UtilidadesHash.set(registro, "NOMBRE_TURNO", "");
 				UtilidadesHash.set(registro, "ABREV_TURNO", "");
 				UtilidadesHash.set(registro, "NOMBRE_PARTIDO", "");								
 				UtilidadesHash.set(registro, "NCOLEGIADO_LETRADO_DESIGNADO", "");

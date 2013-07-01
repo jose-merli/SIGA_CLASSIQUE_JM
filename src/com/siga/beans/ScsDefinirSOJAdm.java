@@ -772,6 +772,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		}else{
 			sojHashtable.put("DESCRIPCION_TURNO", "");
 			sojHashtable.put("ABREV_TURNO", "");
+			sojHashtable.put("NOMBRE_TURNO", "");
 			
 		}
 		
