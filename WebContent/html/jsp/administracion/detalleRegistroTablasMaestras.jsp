@@ -312,7 +312,7 @@
 							ArrayList vCodigoCampoRel = new ArrayList();
 							
 							vCodigoCampoRel.add(idRelacionado);
-							vCodigoCampoRel.add(userBean.getLocation());
+							//vCodigoCampoRel.add(userBean.getLocation());
 							
 							String idCampoCodigoRel =(String) request.getAttribute("IDCAMPOCODIGOREL");
 							String descripcionRel =(String) request.getAttribute("DESCRIPCIONREL");
@@ -341,11 +341,11 @@
 												<siga:Idioma key="<%=descripcionRel%>"/>&nbsp;(*)
 											</td>
 											<td class="labelTextValue">
-												<% if (bEditable) { %>
-													<siga:ComboBD nombre="idRelacionado" tipo="<%=querycombo%>"  obligatorio="false" parametro="<%=datoCombo%>" elementoSel="<%=vCodigoCampoRel%>" clase="boxCombo" readonly="false" ancho="320"/>
-												<% } else { %>
-													<siga:ComboBD nombre="idRelacionado" tipo="<%=querycombo%>" obligatorio="false" parametro="<%=datoCombo%>" elementoSel="<%=vCodigoCampoRel%>" clase="boxConsulta" readonly="true" ancho="320"/>	
-												<% } %>
+												<siga:Select id="idRelacionado"
+															queryId="<%=querycombo%>"
+															selectedIds="<%=vCodigoCampoRel%>"
+															width="320"
+															readOnly="<%=String.valueOf(!bEditable) %>" />
 											</td>
 										</tr>	
 										<tr>

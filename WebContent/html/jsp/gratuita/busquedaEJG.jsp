@@ -53,7 +53,6 @@
 	String dato[] = { (String) usr.getLocation() };
 	String datoIdioma[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
 	String dato2[] = new String[2];
-	String dato3[] = new String[2];
 	String idioma[] = { (String) usr.getLanguage() };
 	String sDictaminado = "I";
 	
@@ -151,9 +150,14 @@
 				
 				if (miHash.containsKey("IDTIPORATIFICACIONEJG")) {
 					idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
-					vTipoRatificacion.add(idTipoRatificacionEjg.equals("")? "0,0": idTipoRatificacionEjg);
-					dato3[0]=(String) vTipoRatificacion.get(0);
-					dato3[1]=(String) usr.getLocation();
+					if (idTipoRatificacionEjg != null && !"".equals(idTipoRatificacionEjg)){
+						String[] idTipoRatificacion = idTipoRatificacionEjg.trim().split(",");
+						if (idTipoRatificacion.length > 0){
+							vTipoRatificacion.add(idTipoRatificacion[0]);
+						} else {
+							vTipoRatificacion.add("");
+						}
+					}
 				}	
 				if (miHash.get("tiposResolucionBusqueda") != null) 
 					tiposResolucionBusqueda = (String)miHash.get("tiposResolucionBusqueda");
@@ -570,7 +574,7 @@ if(usr.isComision()){
 							<%} %>	
 						</select>
 				<%}else{%>
-					<siga:Select id="idTipoRatificacionEJG" queryParamId="idtiporesolucion" queryId="getTiposResolucionTodos" childrenIds="idFundamentoJuridico" selectedIds="<%=vTipoRatificacion%>" width="375" />
+					<siga:Select id="idTipoRatificacionEJG" queryParamId="idtiporesolucion" queryId="getTiposResolucionTodos" selectedIds="<%=vTipoRatificacion%>" width="375" />
 				<%}%>	
 				</td>
 													
