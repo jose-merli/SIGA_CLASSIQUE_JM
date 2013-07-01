@@ -92,7 +92,7 @@
 							<siga:Idioma key="administracion.auditoriaUsuarios.literal.tipoAccion"/>
 						</td>
 	        			<td >
-	        				<siga:ComboBD nombre="tipoAccion" tipo="cmbCambioHistorico" clase="boxCombo" />
+	        				<siga:Select queryId="getTiposCambio" id="tipoAccion"/> 
 						</td>
 	       			</tr>
 	       			<tr>

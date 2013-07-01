@@ -325,12 +325,14 @@ public class TagSelect extends TagSupport {
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
+			if (keyValue == null)
+				keyValue = new KeyValue();
 			boolean selected = false;
 			if (this.selectedIds != null && this.selectedIds.size() > 0)
 				selected = this.selectedIds.contains(keyValue.getKey());
 			if (selected)
 				selectedOption = keyValue;
-			out.println(keyValue.toHtmlOption(selected));
+			out.println(KeyValue.getHtmlOption(keyValue,selected));
 		}
 		out.println("</select>");
 		if (!multiple)

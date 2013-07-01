@@ -12,11 +12,6 @@
 
 <%@ page import="com.atos.utils.*"%>
 
-<% 
-	String app=request.getContextPath(); 
-	
-%>
-
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -52,13 +47,13 @@
 							<siga:Idioma key="administracion.parametrosGenerales.literal.modulo"/>
 						</td>
 	        			<td class="labelText" >
-	        				<siga:ComboBD nombre="idModulo" tipo="cmbModuloContador"  clase="boxCombo" />
+	        				<siga:Select queryId="getContadores" id="idModulo"/>
 						</td>
 						<td class="labelText" >
 							<siga:Idioma key="administracion.parametrosGenerales.literal.codigo"/>
 						</td>
 						<td class="labelText">
-						<html:text property="codigo" styleClass="box" size="20" ></html:text>
+							<html:text property="codigo" styleClass="box" size="20" ></html:text>
 						</td>
 	       			</tr>	   
 					<tr>				
@@ -82,10 +77,10 @@
 
 		<siga:ConjBotonesBusqueda botones="B" titulo=""/>
 
-		<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado"  scrolling="no"
+		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="resultado" name="resultado"  scrolling="no"
 								frameborder="0" marginheight="0" marginwidth="0"; class="frameGeneral">
 		</iframe>
 
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	</body>
 </html>

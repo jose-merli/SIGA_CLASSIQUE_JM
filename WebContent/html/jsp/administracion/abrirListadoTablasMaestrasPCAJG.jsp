@@ -21,6 +21,9 @@
 	
 
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	
+	String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
+	sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "tablasMaestrasPCAJG" : "tablasMaestrasPCAJG";
 %>	
 	
 
@@ -38,6 +41,14 @@
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 			var bBuscado=false;
+			
+			jQuery(function(){
+				jQuery("#nombreTablaMaestra").on("change", function(){
+					bBuscado=false;
+					buscar();
+				});
+				buscar();
+			});
 			
 			<!-- Funcion asociada a boton buscar -->
 			function buscar(){
@@ -92,12 +103,7 @@
 							Seleccionar Catálogo&nbsp;(*)
 						</td>				
 						<td>
-<%
-						String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
-						
-						sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "tablasMaestrasPCAJG" : "tablasMaestrasPCAJG";
-%>
-							<siga:ComboBD nombre="nombreTablaMaestra" tipo="<%=sTipoCombo%>" obligatorio="true" clase="boxCombo" accion="bBuscado=false;buscar();"/>
+							<siga:Select id="nombreTablaMaestra" queryId="<%=sTipoCombo%>" required="true"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="general.code"/>

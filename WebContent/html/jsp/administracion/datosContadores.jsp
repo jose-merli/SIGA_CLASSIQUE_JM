@@ -244,10 +244,10 @@
 											<siga:Idioma key="administracion.parametrosGenerales.literal.modo"/>&nbsp;(*)
 										</td>
 										<td class="labelTextValue" colspan="5">
-										  <% if (bean.getIdContador().equals("SOCIEDADSJ") || bean.getIdContador().equals("SSPP")){%>
-										    <siga:ComboBD nombre="modoContador" tipo="cmbModo" obligatorio="true" obligatorioSinTextoSeleccionar="true" clase="<%=estiloCombo%>" elementoSel="<%=modoSel%>" readonly="<%=soloLectura%>" />
+										  <% if (bean != null && ("SOCIEDADSJ".equalsIgnoreCase(bean.getIdContador()) || "SSPP".equalsIgnoreCase(bean.getIdContador()))){%>
+										  	<siga:Select queryId="getModosContador" id="modoContador" selectedIds="<%=modoSel%>" required="true" readOnly="<%=soloLectura%>"/>
 										  <%}else{%>
-											<siga:ComboBD nombre="modoContador" tipo="cmbModo" obligatorio="true" obligatorioSinTextoSeleccionar="true" clase="boxConsulta" elementoSel="<%=modoSel%>" readonly="true" />
+										  	<siga:Select queryId="getModosContador" id="modoContador" selectedIds="<%=modoSel%>" required="true" readOnly="true"/>
 										  <%}%>	
 										</td>
 									</tr>
