@@ -3723,6 +3723,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		String sms = "";
 		
 		try {			
 			String turnosSel = miForm.getTurnosSel();
@@ -3738,7 +3739,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				// String idGuardia= d[3];
 				// String fechaSolicitud= d[4];
 				// String validarInscripciones = d[5];
-				// String tipoGuardias = d[6];
+				String tipoGuardias = d[6];
 				String fechaValidacion = d[7];
 				// String fechaSolicitudBaja = d[8];				
 				
@@ -3758,30 +3759,95 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setIdPersona(idPersona);
 				miForm.setFechaValidacionPrevia(GstDate.getFormatedDateShort("", fechaValidacion));
 				
-				// Para inscripciones automaticas, se realiza como si no lo fueran
-				miForm.setValidarInscripciones("S");
-				
-				// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
-				String sPreAlta = this.preAltaTurno(miForm, usr);
-				
-				// Compruebo si existe algun error en las comprobaciones
-				if (sPreAlta != "") {
-					request.setAttribute("mensaje", sPreAlta);
-					return ClsConstants.ERROR_AVISO;	
-				}	
-	
 				String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
 				String sFechaValidacionTurnoPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
 				
 				// Resultado de la comparacion de la fecha de validacion, con la fecha de validacion del turno					
 				int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionTurnoPrevia);
 				
-				// Si la fecha de validacion es mayor que la fecha de validacion del turno, muestro un error 
 				if (comparacion > 0) {
-					sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionTurnoPrevia; 
-					request.setAttribute("mensaje", sPreAlta);
-					return ClsConstants.ERROR_AVISO;	
-				}					
+					
+					// 1. Compruebo si tiene tiene guardias pendientes
+					ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+					String fechaFinalGuardiasPendientes = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						null, 
+						sFechaValidacionTurnoPrevia, 
+						sFechaValidacion,
+						true);
+					
+					// Obtengo la fecha menor
+					String fechaFinal = "";
+					if (fechaFinalGuardiasPendientes != null && !fechaFinalGuardiasPendientes.equals("")) {					
+						fechaFinal = fechaFinalGuardiasPendientes;
+					}
+														
+					// 2. Compruebo si tiene trabajos pendientes
+					String fechaFinalTrabajosPendientes = inscripcionTurnoAdm.comprobarTrabajosSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						sFechaValidacionTurnoPrevia, 
+						sFechaValidacion,
+						true);
+					
+					// Obtengo la fecha menor
+					if (fechaFinalTrabajosPendientes != null && !fechaFinalTrabajosPendientes.equals("")) {
+						if (fechaFinal != null && !fechaFinal.equals("")) {
+							if (GstDate.compararFechas(fechaFinal, fechaFinalTrabajosPendientes) > 0) {
+								fechaFinal = fechaFinalTrabajosPendientes;
+							}
+						} else {
+							fechaFinal = fechaFinalTrabajosPendientes;
+						}
+					}
+									
+					// 3. Compruebo que no sea un turno configurado con guardias obligatorias
+					if (!tipoGuardias.equals("0")) {								
+					
+						//  Compruebo la fecha de validacion/baja de las guardias del turno 
+						String fechaFinalGuardias = inscripcionTurnoAdm.comprobarFechaGuardiasTurno(
+							Long.valueOf(miForm.getIdPersona()), 
+							new Integer(miForm.getIdInstitucion()), 
+							new Integer(miForm.getIdTurno()), 
+							sFechaValidacionTurnoPrevia, 
+							true);
+						
+						// Obtengo la fecha menor
+						if (fechaFinalGuardias != null && !fechaFinalGuardias.equals("")) {
+							if (fechaFinal != null && !fechaFinal.equals("")) {
+								if (GstDate.compararFechas(fechaFinal, fechaFinalGuardias) > 0) {
+									fechaFinal = fechaFinalGuardias;
+								}
+							} else {
+								fechaFinal = fechaFinalGuardias;
+							}
+						}		
+					}
+					
+					// Compruebo si tiene fecha final y es menor o igual que la fecha de validacion
+					if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaValidacion, fechaFinal) > 0) {
+						sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + fechaFinal; 
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;
+					}	
+					
+				} else if (comparacion < 0) {				
+				
+					// Para inscripciones automaticas, se realiza como si no lo fueran
+					miForm.setValidarInscripciones("S");
+					
+					// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
+					sms = this.preAltaTurno(miForm, usr);
+					
+					// Compruebo si existe algun error en las comprobaciones
+					if (sms != "") {
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;	
+					}	
+				}			
 			}			
 			
 			return amfvtModificar(mapping, formulario, request, response);							
@@ -3959,25 +4025,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	 */
 	protected String actualizarFechaValidacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {		
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		UsrBean usr = this.getUserBean(request);		
+		UsrBean usr = this.getUserBean(request);
+		String sms = "";
 		
 		if(miForm.getIdGuardia()!=null && miForm.getIdGuardia().equals("-1"))
 			miForm.setIdGuardia("");
 		
 		// Compruebo si es un cambio de fecha efectiva de guardia
 		if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("")){
-			
-			// Para inscripciones automaticas, se realiza como si no lo fueran
-			miForm.setValidarInscripciones("S");
-			
-			// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
-			String sPreAlta = this.preAltaGuardia(miForm, usr);
-			
-			// Compruebo si existe algun error en las comprobaciones
-			if (sPreAlta != "") {
-				request.setAttribute("mensaje", sPreAlta);
-				return ClsConstants.ERROR_AVISO;	
-			}	
 			
 			String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
 			
@@ -3989,27 +4044,46 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			// Si la fecha de validacion es mayor que la fecha de validacion del turno, muestro un error 
 			if (comparacion > 0) {
-				sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionGuardiaPrevia; 
-				request.setAttribute("mensaje", sPreAlta);
-				return ClsConstants.ERROR_AVISO;	
-			}				
+				
+				Integer idGuardia = null;
+				if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+					idGuardia = new Integer(miForm.getIdGuardia());
+				
+				// Compruebo si tiene tiene guardias pendientes
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				String fechaFinal = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					idGuardia, 
+					sFechaValidacionGuardiaPrevia, 
+					sFechaValidacion,
+					true);
+				
+				if (fechaFinal != null && !fechaFinal.equals("")) {
+					sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + fechaFinal; 
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;
+				}
+				
+			} else if (comparacion < 0) {
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+			
+				// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
+				sms = this.preAltaGuardia(miForm, usr);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sms != "") {
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+			}
 			
 			return afvgModificar(mapping, formulario, request, response);
 		
 		// Compruebo si es un cambio de fecha efectiva de turno
 		} else {
-			
-			// Para inscripciones automaticas, se realiza como si no lo fueran
-			miForm.setValidarInscripciones("S");
-			
-			// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
-			String sPreAlta = this.preAltaTurno(miForm, usr);
-			
-			// Compruebo si existe algun error en las comprobaciones
-			if (sPreAlta != "") {
-				request.setAttribute("mensaje", sPreAlta);
-				return ClsConstants.ERROR_AVISO;	
-			}	
 
 			String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
 			String sFechaValidacionTurnoPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
@@ -4017,12 +4091,89 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Resultado de la comparacion de la fecha de validacion, con la fecha de validacion del turno					
 			int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionTurnoPrevia);
 			
-			// Si la fecha de validacion es mayor que la fecha de validacion del turno, muestro un error 
 			if (comparacion > 0) {
-				sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionTurnoPrevia; 
-				request.setAttribute("mensaje", sPreAlta);
-				return ClsConstants.ERROR_AVISO;	
-			}	
+				
+				// 1. Compruebo si tiene tiene guardias pendientes
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				String fechaFinalGuardiasPendientes = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					null, 
+					sFechaValidacionTurnoPrevia, 
+					sFechaValidacion,
+					true);
+				
+				// Obtengo la fecha menor
+				String fechaFinal = "";
+				if (fechaFinalGuardiasPendientes != null && !fechaFinalGuardiasPendientes.equals("")) {					
+					fechaFinal = fechaFinalGuardiasPendientes;
+				}
+													
+				// 2. Compruebo si tiene trabajos pendientes
+				String fechaFinalTrabajosPendientes = inscripcionTurnoAdm.comprobarTrabajosSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					sFechaValidacionTurnoPrevia, 
+					sFechaValidacion,
+					true);
+				
+				// Obtengo la fecha menor
+				if (fechaFinalTrabajosPendientes != null && !fechaFinalTrabajosPendientes.equals("")) {
+					if (fechaFinal != null && !fechaFinal.equals("")) {
+						if (GstDate.compararFechas(fechaFinal, fechaFinalTrabajosPendientes) > 0) {
+							fechaFinal = fechaFinalTrabajosPendientes;
+						}
+					} else {
+						fechaFinal = fechaFinalTrabajosPendientes;
+					}
+				}
+								
+				// 3. Compruebo que no sea un turno configurado con guardias obligatorias
+				if (!miForm.getTipoGuardias().equals("0")) {								
+				
+					//  Compruebo la fecha de validacion/baja de las guardias del turno 
+					String fechaFinalGuardias = inscripcionTurnoAdm.comprobarFechaGuardiasTurno(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						sFechaValidacionTurnoPrevia, 
+						true);
+					
+					// Obtengo la fecha menor
+					if (fechaFinalGuardias != null && !fechaFinalGuardias.equals("")) {
+						if (fechaFinal != null && !fechaFinal.equals("")) {
+							if (GstDate.compararFechas(fechaFinal, fechaFinalGuardias) > 0) {
+								fechaFinal = fechaFinalGuardias;
+							}
+						} else {
+							fechaFinal = fechaFinalGuardias;
+						}
+					}		
+				}
+				
+				// Compruebo si tiene fecha final y es menor o igual que la fecha de validacion
+				if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaValidacion, fechaFinal) > 0) {
+					sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + fechaFinal; 
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;
+				}				
+				
+				
+			} else if (comparacion < 0) {
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				
+				// Hago una serie de comprobaciones previas al alta de la inscripcion del turno
+				sms = this.preAltaTurno(miForm, usr);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sms != "") {
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+			}
 			
 			return afvtModificar(mapping, formulario, request, response);
 		}	
@@ -4042,25 +4193,16 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	 */
 	protected String actualizarFechaBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-		UsrBean usr = this.getUserBean(request);		
+		UsrBean usr = this.getUserBean(request);
+		String sms = "";
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		
 		if(miForm.getIdGuardia()!=null && miForm.getIdGuardia().equals("-1"))
 			miForm.setIdGuardia("");
 		
 		// Compruebo si es un cambio de fecha efectiva de guardia
 		if(miForm.getIdGuardia()!=null && !miForm.getIdGuardia().equals("")){
-			// Para inscripciones automaticas, se realiza como si no lo fueran
-			miForm.setValidarInscripciones("S");
 			
-			// Hago una serie de comprobaciones previas a la baja de la inscripcion de la guardia
-			String sPreBaja = this.preBajaGuardia(miForm, usr, true);
-			
-			// Compruebo si existe algun error en las comprobaciones
-			if (sPreBaja != "") {
-				request.setAttribute("mensaje", sPreBaja);
-				return ClsConstants.ERROR_AVISO;	
-			}	
-
 			String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
 			
 			// Obtiene la fecha de baja previa de la guardia (no es el de la guardia anterior) 
@@ -4069,37 +4211,80 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa de la guardia				
 			int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaGuardia);
 			
-			// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
 			if (comparacion < 0) {
-				sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaGuardia; 
-				request.setAttribute("mensaje", sPreBaja);
-				return ClsConstants.ERROR_AVISO;	
-			}	
-			
-			// Obtengo los datos del turno actual
-			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-			ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
-				new Integer(miForm.getIdInstitucion()),
-				new Integer(miForm.getIdTurno()), 
-				new Long(miForm.getIdPersona()));
-			
-			// Controlo que no supere la fecha de baja del turno actual					
-			if (insTurno!=null && insTurno.getFechaBaja()!=null && !insTurno.getFechaBaja().equals("")) { 
-				String sFechaBajaTurno = insTurno.getFechaBaja();				
+				Integer idGuardia = null;
+				if(Integer.parseInt(miForm.getTipoGuardias())==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+					idGuardia = new Integer(miForm.getIdGuardia());
 				
-				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-				Date dFechaBajaTurno = GstDate.convertirFechaHora(sFechaBajaTurno);
-				sFechaBajaTurno = sdf.format(dFechaBajaTurno);
+				// La fecha de baja debe ser mayor o igual a la fecha de guardia pendiente
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				String fechaFinal = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					idGuardia, 
+					sFechaBaja, 
+					sFechaBajaGuardia,
+					false);				
 				
-				// Resultado de la comparacion de la fecha de baja, con la fecha de baja del turno					
-				comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+				// La fecha de baja debe ser mayor o igual a la fecha de validacion de la guardia (da igual si es Eleccion o TodasNinguna)
+				String sFechaValidacionGuardia = miForm.getFechaValidacion();
+				Date dFechaValidacionGuardia = GstDate.convertirFechaHora(sFechaValidacionGuardia);
+				sFechaValidacionGuardia = sdf.format(dFechaValidacionGuardia);		
 				
-				// Si la fecha de baja es mayor que la fecha de baja del turno, muestro un error 
-				if (comparacion > 0) {
-					sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.menorigual") + " " + sFechaBajaTurno; 
-					request.setAttribute("mensaje", sPreBaja);
+				// Obtengo la fecha mayor
+				if (fechaFinal != null && !fechaFinal.equals("")) {
+					if (GstDate.compararFechas(fechaFinal, sFechaValidacionGuardia) < 0) {
+						fechaFinal = sFechaValidacionGuardia;
+					}
+					
+				} else {
+					fechaFinal = sFechaValidacionGuardia;
+				}						
+				
+				if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaBaja, fechaFinal) < 0) {
+					sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + fechaFinal; 
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;
+				}				
+				
+			} else if (comparacion > 0) { 							
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				
+				// Hago una serie de comprobaciones previas a la baja de la inscripcion de la guardia
+				sms = this.preBajaGuardia(miForm, usr, true);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sms != "") {
+					request.setAttribute("mensaje", sms);
 					return ClsConstants.ERROR_AVISO;	
 				}	
+				
+				// Obtengo los datos del turno actual
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
+					new Integer(miForm.getIdInstitucion()),
+					new Integer(miForm.getIdTurno()), 
+					new Long(miForm.getIdPersona()));
+				
+				// Controlo que no supere la fecha de baja del turno actual					
+				if (insTurno!=null && insTurno.getFechaBaja()!=null && !insTurno.getFechaBaja().equals("")) { 
+					String sFechaBajaTurno = insTurno.getFechaBaja();				
+					
+					Date dFechaBajaTurno = GstDate.convertirFechaHora(sFechaBajaTurno);
+					sFechaBajaTurno = sdf.format(dFechaBajaTurno);
+					
+					// Resultado de la comparacion de la fecha de baja, con la fecha de baja del turno					
+					comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+					
+					// Si la fecha de baja es mayor que la fecha de baja del turno, muestro un error 
+					if (comparacion > 0) {
+						sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.menorigual") + " " + sFechaBajaTurno; 
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;	
+					}	
+				}
 			}
 			
 			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
@@ -4129,33 +4314,113 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				return afbgModificar(mapping,  formulario,  request,  response);				
 			}
 			
+			
 		// Compruebo si es un cambio de fecha efectiva de turno	
 		} else {
-			// Para inscripciones automaticas, se realiza como si no lo fueran
-			miForm.setValidarInscripciones("S");
-			miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
 			
-			// Hago una serie de comprobaciones previas a la baja de la inscripcion del turno
-			String sPreBaja = this.preBajaTurno(miForm, usr, true);
-			
-			// Compruebo si existe algun error en las comprobaciones
-			if (sPreBaja != "") {
-				request.setAttribute("mensaje", sPreBaja);
-				return ClsConstants.ERROR_AVISO;	
-			}	
-
 			String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
-			String sFechaBajaTurno = miForm.getFechaBajaPrevia(); // Fecha con formato dd/MM/yyyy
+			String sFechaBajaTurno = miForm.getFechaBajaPrevia(); // Fecha con formato dd/MM/yyyy			
 			
 			// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa				
 			int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
 			
-			// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
 			if (comparacion < 0) {
-				sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaTurno; 
-				request.setAttribute("mensaje", sPreBaja);
-				return ClsConstants.ERROR_AVISO;	
-			}	
+				
+				String sFechaValidacion = miForm.getFechaValidacion();
+				Date dFechaValidacionGuardia = GstDate.convertirFechaHora(sFechaValidacion);
+				sFechaValidacion = sdf.format(dFechaValidacionGuardia);						
+				
+				// 1. Compruebo si tiene tiene guardias pendientes
+				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+				String fechaFinalGuardiasPendientes = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					null, 
+					sFechaBaja, 
+					sFechaBajaTurno,
+					false);
+				
+				// Obtengo la fecha
+				String fechaFinal = "";
+				if (fechaFinalGuardiasPendientes != null && !fechaFinalGuardiasPendientes.equals("")) {					
+					fechaFinal = fechaFinalGuardiasPendientes;
+				}
+													
+				// 2. Compruebo si tiene trabajos pendientes
+				String fechaFinalTrabajosPendientes = inscripcionTurnoAdm.comprobarTrabajosSJCSPendientes(
+					Long.valueOf(miForm.getIdPersona()), 
+					new Integer(miForm.getIdInstitucion()), 
+					new Integer(miForm.getIdTurno()), 
+					sFechaBaja, 
+					sFechaBajaTurno,
+					false);
+				
+				// Obtengo la fecha mayor
+				if (fechaFinalTrabajosPendientes != null && !fechaFinalTrabajosPendientes.equals("")) {
+					if (fechaFinal != null && !fechaFinal.equals("")) {
+						if (GstDate.compararFechas(fechaFinal, fechaFinalTrabajosPendientes) < 0) {
+							fechaFinal = fechaFinalTrabajosPendientes;
+						}
+					} else {
+						fechaFinal = fechaFinalTrabajosPendientes;
+					}
+				}
+								
+				// 3. Compruebo que no sea un turno configurado con guardias obligatorias
+				if (!miForm.getTipoGuardias().equals("0")) {								
+				
+					//  Compruebo la fecha de validacion/baja de las guardias del turno 
+					String fechaFinalGuardias = inscripcionTurnoAdm.comprobarFechaGuardiasTurno(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						sFechaValidacion, 
+						false);
+					
+					// Obtengo la fecha mayor
+					if (fechaFinalGuardias != null && !fechaFinalGuardias.equals("")) {
+						if (fechaFinal != null && !fechaFinal.equals("")) {
+							if (GstDate.compararFechas(fechaFinal, fechaFinalGuardias) < 0) {
+								fechaFinal = fechaFinalGuardias;
+							}
+						} else {
+							fechaFinal = fechaFinalGuardias;
+						}
+					}		
+				}
+				
+				// 4. Compruebo la fecha de validacion del turno											
+				if (fechaFinal != null && !fechaFinal.equals("")) {
+					if (GstDate.compararFechas(fechaFinal, sFechaValidacion) < 0) {
+						fechaFinal = sFechaValidacion;
+					}
+				} else {
+					fechaFinal = sFechaValidacion;
+				}					
+				
+				// Compruebo si tiene fecha final y es menor o igual que la fecha de validacion
+				if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaBaja, fechaFinal) < 0) {
+					sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + fechaFinal; 
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;
+				}				
+				
+			} else if (comparacion > 0) {				
+			
+				// Para inscripciones automaticas, se realiza como si no lo fueran
+				miForm.setValidarInscripciones("S");
+				miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
+				
+				// Hago una serie de comprobaciones previas a la baja de la inscripcion del turno
+				sms = this.preBajaTurno(miForm, usr, true);
+				
+				// Compruebo si existe algun error en las comprobaciones
+				if (sms != "") {
+					request.setAttribute("mensaje", sms);
+					return ClsConstants.ERROR_AVISO;	
+				}	
+			}
 			
 			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 				
@@ -4382,6 +4647,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		String sms = "";
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -4397,7 +4663,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				String idGuardia= d[3];
 				//String fechaSolicitud= d[4];
 				//String validarInscripciones = d[5];
-				//String tipoGuardias = d[6];
+				String tipoGuardias = d[6];
 				String fechaValidacion = d[7];
 				// String fechaSolicitudBaja = d[8];	
 				
@@ -4419,31 +4685,47 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setIdGuardia(idGuardia);
 				miForm.setFechaValidacionPrevia(GstDate.getFormatedDateShort("", fechaValidacion));
 				
-				// Para inscripciones automaticas, se realiza como si no lo fueran
-				miForm.setValidarInscripciones("S");
-				
-				// Hago una serie de comprobaciones previas al alta de la inscripcion de guardia
-				String sPreAlta = this.preAltaGuardia(miForm, usr);
-				
-				// Compruebo si existe algun error en las comprobaciones
-				if (sPreAlta != "") {
-					request.setAttribute("mensaje", sPreAlta);
-					return ClsConstants.ERROR_AVISO;	
-				}	
-	
 				String sFechaValidacion = miForm.getFechaValidacion(); // Fecha con formato dd/MM/yyyy
-				String sFechaValidacionTurnoPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
+				String sFechaValidacionGuardiaPrevia = miForm.getFechaValidacionPrevia(); // Fecha con formato dd/MM/yyyy
 				
 				// Resultado de la comparacion de la fecha de validacion, con la fecha de validacion previa				
-				int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionTurnoPrevia);
+				int comparacion = GstDate.compararFechas(sFechaValidacion, sFechaValidacionGuardiaPrevia);
 				
-				// Si la fecha de validacion es mayor que la fecha de validacion previa, muestro un error 
 				if (comparacion > 0) {
-					sPreAlta = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + sFechaValidacionTurnoPrevia; 
-					request.setAttribute("mensaje", sPreAlta);
-					return ClsConstants.ERROR_AVISO;	
-				}		
-			}
+					Integer intGuardia = null;
+					if(Integer.parseInt(tipoGuardias)==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+						intGuardia = new Integer(idGuardia);
+					
+					ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+					String fechaFinal = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						intGuardia, 
+						sFechaValidacionGuardiaPrevia, 
+						sFechaValidacion,
+						true);
+					
+					if (fechaFinal != null && !fechaFinal.equals("")) {
+						sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaValidacion.menorigual") + " " + fechaFinal; 
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;
+					}
+					
+				} else if (comparacion < 0) { 
+					// Para inscripciones automaticas, se realiza como si no lo fueran
+					miForm.setValidarInscripciones("S");
+				
+					// Hago una serie de comprobaciones previas al alta de la inscripcion de guardia
+					sms = this.preAltaGuardia(miForm, usr);
+					
+					// Compruebo si existe algun error en las comprobaciones
+					if (sms != "") {
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;	
+					}
+				}
+			}				
 			
 			return amfvgModificar(mapping, formulario, request, response);
 			
@@ -4605,12 +4887,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
+		String sms = "";
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
 			String sHayEstadosPendientes = "";
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -4622,7 +4906,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				// String idGuardia= d[3];
 				// String fechaSolicitud= d[4];
 				// String validarInscripciones = d[5];
-				// String tipoGuardias = d[6];
+				String tipoGuardias = d[6];
 				String fechaValidacion = d[7];
 				// String fechaSolicitudBaja = d[8];
 				String fechaBaja = d[9];
@@ -4633,30 +4917,109 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setFechaValidacionTurno(fechaValidacion);
 				miForm.setFechaBajaPrevia(GstDate.getFormatedDateShort("", fechaBaja));
 				
-				// Para inscripciones automaticas, se realiza como si no lo fueran
-				miForm.setValidarInscripciones("S");
-				
-				// Hago una serie de comprobaciones previas al alta de la inscripcion de turno
-				String sPreBaja = this.preBajaTurno(miForm, usr, true);
-				
-				// Compruebo si existe algun error en las comprobaciones
-				if (sPreBaja != "") {
-					request.setAttribute("mensaje", sPreBaja);
-					return ClsConstants.ERROR_AVISO;	
-				}
-				
 				String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
 				String sFechaBajaTurno = miForm.getFechaBajaPrevia(); // Fecha con formato dd/MM/yyyy
 				
 				// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa				
 				int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
 				
-				// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
 				if (comparacion < 0) {
-					sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaTurno; 
-					request.setAttribute("mensaje", sPreBaja);
-					return ClsConstants.ERROR_AVISO;	
-				}	
+					
+					String sFechaValidacion = fechaValidacion;
+					Date dFechaValidacionGuardia = GstDate.convertirFechaHora(sFechaValidacion);
+					sFechaValidacion = sdf.format(dFechaValidacionGuardia);						
+					
+					// 1. Compruebo si tiene tiene guardias pendientes
+					ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+					String fechaFinalGuardiasPendientes = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						null, 
+						sFechaBaja, 
+						sFechaBajaTurno,
+						false);
+					
+					// Obtengo la fecha
+					String fechaFinal = "";
+					if (fechaFinalGuardiasPendientes != null && !fechaFinalGuardiasPendientes.equals("")) {					
+						fechaFinal = fechaFinalGuardiasPendientes;
+					}
+														
+					// 2. Compruebo si tiene trabajos pendientes
+					String fechaFinalTrabajosPendientes = inscripcionTurnoAdm.comprobarTrabajosSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						sFechaBaja, 
+						sFechaBajaTurno,
+						false);
+					
+					// Obtengo la fecha mayor
+					if (fechaFinalTrabajosPendientes != null && !fechaFinalTrabajosPendientes.equals("")) {
+						if (fechaFinal != null && !fechaFinal.equals("")) {
+							if (GstDate.compararFechas(fechaFinal, fechaFinalTrabajosPendientes) < 0) {
+								fechaFinal = fechaFinalTrabajosPendientes;
+							}
+						} else {
+							fechaFinal = fechaFinalTrabajosPendientes;
+						}
+					}
+									
+					// 3. Compruebo que no sea un turno configurado con guardias obligatorias
+					if (!tipoGuardias.equals("0")) {								
+					
+						//  Compruebo la fecha de validacion/baja de las guardias del turno 
+						String fechaFinalGuardias = inscripcionTurnoAdm.comprobarFechaGuardiasTurno(
+							Long.valueOf(miForm.getIdPersona()), 
+							new Integer(miForm.getIdInstitucion()), 
+							new Integer(miForm.getIdTurno()), 
+							sFechaValidacion, 
+							false);
+						
+						// Obtengo la fecha mayor
+						if (fechaFinalGuardias != null && !fechaFinalGuardias.equals("")) {
+							if (fechaFinal != null && !fechaFinal.equals("")) {
+								if (GstDate.compararFechas(fechaFinal, fechaFinalGuardias) < 0) {
+									fechaFinal = fechaFinalGuardias;
+								}
+							} else {
+								fechaFinal = fechaFinalGuardias;
+							}
+						}		
+					}
+					
+					// 4. Compruebo la fecha de validacion del turno											
+					if (fechaFinal != null && !fechaFinal.equals("")) {
+						if (GstDate.compararFechas(fechaFinal, sFechaValidacion) < 0) {
+							fechaFinal = sFechaValidacion;
+						}
+					} else {
+						fechaFinal = sFechaValidacion;
+					}					
+					
+					// Compruebo si tiene fecha final y es menor o igual que la fecha de validacion
+					if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaBaja, fechaFinal) < 0) {
+						sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + fechaFinal; 
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;
+					}				
+
+					
+				} else if (comparacion > 0) { 				
+				
+					// Para inscripciones automaticas, se realiza como si no lo fueran
+					miForm.setValidarInscripciones("S");
+					
+					// Hago una serie de comprobaciones previas al alta de la inscripcion de turno
+					sms = this.preBajaTurno(miForm, usr, true);
+					
+					// Compruebo si existe algun error en las comprobaciones
+					if (sms != "") {
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;	
+					}
+				}
 				
 				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								
 					
@@ -4789,11 +5152,13 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		String sHayEstadosPendientes = "";
+		String sms = "";		
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean hayEstadosPendientes = false;
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			
 			while (st1.hasMoreTokens()) {
 				String registro = st1.nextToken();
@@ -4805,8 +5170,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				String idGuardia= d[3];
 				// String fechaSolicitud= d[4];
 				// String validarInscripciones = d[5];
-				// String tipoGuardias = d[6];
-				// String fechaValidacion = d[7];
+				String tipoGuardias = d[6];
+				String fechaValidacion = d[7];
 				// String fechaSolicitudBaja = d[8];
 				String fechaBaja = d[9];
 				
@@ -4820,18 +5185,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				else
 					miForm.setIdGuardia(idGuardia);
 				
-				// Para inscripciones automaticas, se realiza como si no lo fueran
-				miForm.setValidarInscripciones("S");
-			
-				// Hago una serie de comprobaciones previas a la baja de la inscripcion de la guardia
-				String sPreBaja = this.preBajaGuardia(miForm, usr, true);
-				
-				// Compruebo si existe algun error en las comprobaciones
-				if (sPreBaja != "") {
-					request.setAttribute("mensaje", sPreBaja);
-					return ClsConstants.ERROR_AVISO;	
-				}	
-
 				String sFechaBaja = miForm.getFechaBaja(); // Fecha con formato dd/MM/yyyy
 			
 				// Obtiene la fecha de baja previa de la guardia (no es el de la guardia anterior) 
@@ -4839,38 +5192,83 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 				// Resultado de la comparacion de la fecha de baja, con la fecha de baja previa de la guardia				
 				int comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaGuardia);
-			
-				// Si la fecha de baja es menor que la fecha de baja previa, muestro un error 
-				if (comparacion < 0) {
-					sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + sFechaBajaGuardia; 
-					request.setAttribute("mensaje", sPreBaja);
-					return ClsConstants.ERROR_AVISO;	
-				}	
-			
-				// Obtengo los datos del turno actual
-				ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
-				ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
-					new Integer(miForm.getIdInstitucion()),
-					new Integer(miForm.getIdTurno()), 
-					new Long(miForm.getIdPersona()));
 				
-				// Controlo que no supere la fecha de baja del turno actual					
-				if (insTurno!=null && insTurno.getFechaBaja()!=null && !insTurno.getFechaBaja().equals("")) { 
-					String sFechaBajaTurno = insTurno.getFechaBaja();				
+				if (comparacion < 0) {
+					Integer intGuardia = null;
+					if(Integer.parseInt(tipoGuardias)==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+						intGuardia = new Integer(idGuardia);
 					
-					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-					Date dFechaBajaTurno = GstDate.convertirFechaHora(sFechaBajaTurno);
-					sFechaBajaTurno = sdf.format(dFechaBajaTurno);
+					// La fecha de baja debe ser mayor o igual a la fecha de guardia pendiente
+					ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+					String fechaFinal = inscripcionTurnoAdm.comprobarGuardiasSJCSPendientes(
+						Long.valueOf(miForm.getIdPersona()), 
+						new Integer(miForm.getIdInstitucion()), 
+						new Integer(miForm.getIdTurno()), 
+						intGuardia, 
+						sFechaBaja, 
+						sFechaBajaGuardia,
+						false);				
 					
-					// Resultado de la comparacion de la fecha de baja, con la fecha de baja del turno					
-					comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+					// La fecha de baja debe ser mayor o igual a la fecha de validacion de la guardia (da igual si es Eleccion o TodasNinguna)
+					String sFechaValidacionGuardia = fechaValidacion;
+					Date dFechaValidacionGuardia = GstDate.convertirFechaHora(sFechaValidacionGuardia);
+					sFechaValidacionGuardia = sdf.format(dFechaValidacionGuardia);		
 					
-					// Si la fecha de baja es mayor que la fecha de baja del turno, muestro un error 
-					if (comparacion > 0) {
-						sPreBaja = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.menorigual") + " " + sFechaBajaTurno; 
-						request.setAttribute("mensaje", sPreBaja);
+					// Obtengo la fecha mayor
+					if (fechaFinal != null && !fechaFinal.equals("")) {
+						if (GstDate.compararFechas(fechaFinal, sFechaValidacionGuardia) < 0) {
+							fechaFinal = sFechaValidacionGuardia;
+						}
+						
+					} else {
+						fechaFinal = sFechaValidacionGuardia;
+					}							
+					
+					if (fechaFinal != null && !fechaFinal.equals("") && GstDate.compararFechas(sFechaBaja, fechaFinal) < 0) {
+						sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.mayorigual") + " " + fechaFinal; 
+						request.setAttribute("mensaje", sms);
+						return ClsConstants.ERROR_AVISO;
+					}		
+					
+					
+				} else if (comparacion > 0) {
+					
+					// Para inscripciones automaticas, se realiza como si no lo fueran
+					miForm.setValidarInscripciones("S");
+				
+					// Hago una serie de comprobaciones previas a la baja de la inscripcion de la guardia
+					sms = this.preBajaGuardia(miForm, usr, true);
+					
+					// Compruebo si existe algun error en las comprobaciones
+					if (sms != "") {
+						request.setAttribute("mensaje", sms);
 						return ClsConstants.ERROR_AVISO;	
-					}	
+					}					
+			
+					// Obtengo los datos del turno actual
+					ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
+					ScsInscripcionTurnoBean insTurno = inscripcionTurnoAdm.getInscripcionTurnoUltimaValidada(
+						new Integer(miForm.getIdInstitucion()),
+						new Integer(miForm.getIdTurno()), 
+						new Long(miForm.getIdPersona()));
+					
+					// Controlo que no supere la fecha de baja del turno actual					
+					if (insTurno!=null && insTurno.getFechaBaja()!=null && !insTurno.getFechaBaja().equals("")) { 
+						String sFechaBajaTurno = insTurno.getFechaBaja();				
+												
+						Date dFechaBajaTurno = GstDate.convertirFechaHora(sFechaBajaTurno);
+						sFechaBajaTurno = sdf.format(dFechaBajaTurno);
+						
+						// Resultado de la comparacion de la fecha de baja, con la fecha de baja del turno					
+						comparacion = GstDate.compararFechas(sFechaBaja, sFechaBajaTurno);
+						
+						// Si la fecha de baja es mayor que la fecha de baja del turno, muestro un error 
+						if (comparacion > 0) {
+							sms = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.error.fechaBaja.menorigual") + " " + sFechaBajaTurno; 
+							request.setAttribute("mensaje", sms);
+							return ClsConstants.ERROR_AVISO;	
+						}	
+					}
 				}
 				
 				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals("")) {								

@@ -2028,14 +2028,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 						dFechaAltaGuardias.setTime(dFechaAltaGuardias.getTime() + ClsConstants.DATE_MORE);				
 						String sFechaAltaGuardias = sdf.format(dFechaAltaGuardias);			
 						
-						String fechaAltaInscripcionesLarga = sFechaAltaGuardias;
-						if(fechaAltaInscripcionesLarga.length()==10) {
-							try {
-								fechaAltaInscripcionesLarga = UtilidadesString.formatoFecha(fechaAltaInscripcionesLarga, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);						
-							} catch (Exception e) {
-								// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
-							}					
-						}						
+						String fechaAltaInscripcionesLarga = GstDate.getHoyJava();					
 						
 						// Obtengo las guardias del turno
 						ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrbean);
@@ -2073,4 +2066,155 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar cambiarConfiguracionTiposGuardias()");
 		}		    	
 	}	
+	
+	/**
+	 * Comprueba que tenga o no guardias pendientes
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param fechaDesde
+	 * @param fechaHasta
+	 * @param esAlta
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String comprobarGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia, String fechaDesde, String fechaHasta, boolean esAlta) throws ClsExceptions {
+		try {
+			String fechaFinal = null;
+		 
+			String sql = " SELECT TO_CHAR(" + ScsGuardiasColegiadoBean.C_FECHAFIN + ", 'dd/mm/yyyy') FECHA_FINAL " +
+				" FROM " + ScsGuardiasColegiadoBean.T_NOMBRETABLA +
+				" WHERE " + ScsGuardiasColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + ScsGuardiasColegiadoBean.C_IDPERSONA + " = " + idPersona +					
+					" AND " + ScsGuardiasColegiadoBean.C_IDTURNO + " = " + idTurno;		
+			
+			if(idGuardia!=null)
+				sql += " AND " + ScsGuardiasColegiadoBean.C_IDGUARDIA + " = " + idGuardia;			
+			
+			if (esAlta) {
+				sql += " AND TRUNC(" + ScsGuardiasColegiadoBean.C_FECHAFIN + ") >= '" + fechaDesde + "' " +
+					" AND TRUNC(" + ScsGuardiasColegiadoBean.C_FECHAFIN + ") < '" + fechaHasta + "' " +
+					" ORDER BY " + ScsGuardiasColegiadoBean.C_FECHAFIN + " ASC ";
+			} else {
+				sql += " AND TRUNC(" + ScsGuardiasColegiadoBean.C_FECHAFIN + ") > '" + fechaDesde + "' " +
+					" AND TRUNC(" + ScsGuardiasColegiadoBean.C_FECHAFIN + ") <= '" + fechaHasta + "' " +
+					" ORDER BY " + ScsGuardiasColegiadoBean.C_FECHAFIN + " DESC ";
+			}
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				if (rc.size()>0) {
+					Row fila = (Row) rc.get(0);
+					fechaFinal = fila.getString("FECHA_FINAL");
+				}
+			}
+			
+			return fechaFinal;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar comprobarGuardiasSJCSPendientes()");
+		}			
+	}	
+	
+	/**
+	 * Comprueba que tenga o no guardias pendientes
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param fechaDesde
+	 * @param fechaHasta
+	 * @param esAlta
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String comprobarTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, String fechaDesde, String fechaHasta, boolean esAlta) throws ClsExceptions {
+		try {
+			String fechaFinal = null;
+		 
+			String sql = " SELECT TO_CHAR(DES." + ScsDesignaBean.C_FECHAENTRADA + ", 'dd/mm/yyyy') FECHA_FINAL " +
+				" FROM " + ScsDesignaBean.T_NOMBRETABLA + " DES, " +
+					ScsDesignasLetradoBean.T_NOMBRETABLA + " DESLET " +
+				" WHERE DES." + ScsDesignaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND DES." + ScsDesignaBean.C_ESTADO + " <> 'F'" +
+					" AND DESLET." + ScsDesignasLetradoBean.C_IDPERSONA + " = " + idPersona +
+					" AND DESLET." + ScsDesignasLetradoBean.C_FECHARENUNCIA + " IS NULL" +
+					" AND DESLET." + ScsDesignasLetradoBean.C_IDTURNO + " = " + idTurno +					
+					" AND DES." + ScsDesignaBean.C_IDINSTITUCION + " = DESLET." + ScsDesignasLetradoBean.C_IDINSTITUCION + 
+					" AND DES." + ScsDesignaBean.C_IDTURNO + " = DESLET." + ScsDesignasLetradoBean.C_IDTURNO + 
+					" AND DES." + ScsDesignaBean.C_ANIO + " = DESLET." + ScsDesignasLetradoBean.C_ANIO +
+					" AND DES." + ScsDesignaBean.C_NUMERO + " = DESLET." + ScsDesignasLetradoBean.C_NUMERO;		
+			
+			if (esAlta) {
+				sql += " AND TRUNC(DES." + ScsDesignaBean.C_FECHAENTRADA + ") >= '" + fechaDesde + "' " +
+					" AND TRUNC(DES." + ScsDesignaBean.C_FECHAENTRADA + ") < '" + fechaHasta + "' " +
+					" ORDER BY DES." + ScsDesignaBean.C_FECHAENTRADA + " ASC ";
+			} else {
+				sql += " AND TRUNC(DES." + ScsDesignaBean.C_FECHAENTRADA + ") > '" + fechaDesde + "' " +
+					" AND TRUNC(DES." + ScsDesignaBean.C_FECHAENTRADA + ") <= '" + fechaHasta + "' " +
+					" ORDER BY DES." + ScsDesignaBean.C_FECHAENTRADA + " DESC ";
+			}									
+			
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				if (rc.size()>0) {
+					Row fila = (Row) rc.get(0);
+					fechaFinal = fila.getString("FECHA_FINAL");
+				}
+			}
+			
+			return fechaFinal;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar comprobarTrabajosSJCSPendientes()");
+		}			
+	}		
+	
+	/**
+	 * JPT: Obtiene la fecha de validacion/baja de las guardias del turno 
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param fechaValidacionTurno
+	 * @param esAlta
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String comprobarFechaGuardiasTurno(Long idPersona, Integer idInstitucion, Integer idTurno, String fechaValidacionTurno, Boolean esAlta) throws ClsExceptions {
+		try {
+			String fecha = "";
+			if (esAlta) 
+				fecha = ScsInscripcionGuardiaBean.C_FECHAVALIDACION;
+			else
+				fecha = ScsInscripcionGuardiaBean.C_FECHABAJA;
+			
+			String sql = " SELECT TO_CHAR(" + fecha + ", 'dd/mm/yyyy') FECHA_FINAL " + 
+				" FROM " + ScsInscripcionGuardiaBean.T_NOMBRETABLA +
+				" WHERE " + ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + ScsInscripcionGuardiaBean.C_IDTURNO + " = " + idTurno +
+					" AND " + ScsInscripcionGuardiaBean.C_IDPERSONA + " = " + idPersona +
+					" AND " + fecha + " IS NOT NULL " + 
+					" AND TRUNC(" + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + ") >= '" + fechaValidacionTurno + "' ";
+			
+			if (esAlta) {
+				sql += " ORDER BY 1 ASC ";
+			} else {
+				sql += " ORDER BY 1 DESC ";
+			}	
+					 			
+			RowsContainer rc = new RowsContainer();			
+			rc.query(sql);
+			
+			if (rc.size() > 0) {
+				Row fila = (Row) rc.get(0);
+				fecha = fila.getString("FECHA_FINAL");
+			}
+			
+			return fecha;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar comprobarFechaGuardiasTurno()");
+		}				
+	}
 }
