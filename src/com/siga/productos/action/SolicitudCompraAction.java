@@ -1066,7 +1066,7 @@ public class SolicitudCompraAction extends MasterAction{
 					}
 					
 					// acumulando subtotales por tipo
-					claveTipo = articulo.getIdTipo()+"_"+articulo.getIdArticulo()+"_"+articulo.getIdInstitucion();
+					claveTipo = articulo.getIdTipo()+"_"+articulo.getIdArticulo()+"_"+articulo.getIdInstitucion()+"_"+articulo.getIdFormaPago();
 					if ((subtotal = subtotalesPorTipo.get(claveTipo)) == null)
 						subtotal = new Double(0);
 					subtotal += articulo.getCantidad() * articulo.getPrecio() * (1 + iva/100);
