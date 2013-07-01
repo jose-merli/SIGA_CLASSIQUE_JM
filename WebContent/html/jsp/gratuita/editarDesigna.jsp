@@ -353,8 +353,12 @@
 	String comboPretensiones = "getPretensiones";
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
-		idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);
-		idPretensionParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+		if (!"".equals(idPretensionParamsJSON)){
+			idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);
+			idPretensionParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+		} else {
+			idPretensionParamsJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+		}
 	} else {
 		comboPretensionesParentQueryIds = "idpretension";
 	}
