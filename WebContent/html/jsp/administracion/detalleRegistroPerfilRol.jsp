@@ -103,15 +103,14 @@
 										</td>				
 										<td class="labelTextValue">
 <%
-											ArrayList al = new ArrayList();
-											al.add(htDatos.get(AdmPerfilBean.T_NOMBRETABLA + "_" + AdmPerfilBean.C_IDPERFIL));
-										
-											String[] parametros = new String[3];
-											parametros[0] = userbean.getLocation();
-											parametros[1] = userbean.getLocation();
-											parametros[2] = (String)htDatos.get(AdmRolBean.T_NOMBRETABLA + "_" + AdmRolBean.C_IDROL);
+											String selectedRolJSON = "{\"idrol\":"+AdmRolBean.C_IDROL+"}";
+											ArrayList<String> selectedPerfil = new ArrayList<String>();
+											selectedPerfil.add(AdmPerfilBean.C_IDPERFIL);
 %>
-											<siga:ComboBD nombre = "perfilRol" tipo="perfilRol" elementoSel="<%=al%>" parametro="<%=parametros%>" clase="boxCombo" obligatorio="false"/>
+											<siga:Select id="perfilRol"
+														queryId="getPerfilesDeRol"
+														selectedIds="<%=selectedPerfil%>" 
+														params="<%=selectedRolJSON%>"/>
 										</td>
 									</tr>
 								</table>

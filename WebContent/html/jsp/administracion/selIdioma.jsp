@@ -159,7 +159,7 @@
 				<siga:Idioma key="administracion.cambioIdioma.literal.idiomaUsuario"/>&nbsp;(*)
 			</td>
 			<td>
-				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" clase="box" obligatorio="true" elementoSel="<%=idiomaSel %>" obligatorioSinTextoSeleccionar="true" parametro="<%=idInstitucion%>"/>
+				<siga:Select queryId="getIdiomasInstitucion" id="idioma" required="true" selectedIds="<%=idiomaSel %>"/>
 			</td>
 		</tr>
 	</table>

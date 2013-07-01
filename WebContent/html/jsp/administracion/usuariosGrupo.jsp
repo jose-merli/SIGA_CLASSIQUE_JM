@@ -82,13 +82,13 @@
 							<siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.rol"/>
 						</td>				
 						<td>
-							<siga:ComboBD nombre="idRolBusqueda" tipo="cmbRol_AsignarUsuariosGrupo" clase="boxCombo"/>
+							<siga:Select queryId="getRoles" id="idRolBusqueda"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.grupo"/>
 						</td>				
 						<td>
-							<siga:ComboBD nombre="idGrupoBusqueda" tipo="cmbGrupo_AsignarUsuariosGrupo" parametro="<%=parametro%>" clase="boxCombo"/>
+							<siga:Select queryId="getPerfilesDeInstitucion" id="idGrupoBusqueda"/>
 						</td>
 					</tr>
 				</html:form>

@@ -54,8 +54,7 @@
 							<siga:Idioma key="administracion.permisos.literal.grupo"/>&nbsp;(*)
 						</td>
 	        			<td class="labelText">
-							<% String[] institucion={((UsrBean)request.getSession().getAttribute("USRBEAN")).getLocation()};%>
-	        				<siga:ComboBD nombre="idPerfil" tipo="perfil" obligatorio="true" clase="boxCombo" parametro="<%=institucion%>"/>
+	        				<siga:Select queryId="getPerfiles" id="idPerfil" required="true"/>
 						</td>
 	       			</tr>	   
 				</html:form>

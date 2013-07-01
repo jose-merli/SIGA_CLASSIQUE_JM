@@ -80,20 +80,22 @@
 					<input type="hidden" name="modo" value="inicio">
 					<input type="hidden" name="esCatalogo" value="<%=bCatalogos%>">
 					
-					<tr>				
-						<td class="labelText" width="40%">
-						
+					<tr>
+						<td>
 							<% if (bCatalogos) { // Catalogos %>
 								<siga:Idioma key="administracion.multidioma.catalogosMaestros.literal.entidad"/>
-								&nbsp;&nbsp;
-		        				<siga:ComboBD nombre="descripcion" tipo="mutidiomaCatalogosMaestros" parametro="<%=parametros%>" obligatorio="true" clase="boxCombo" obligatorioSinTextoSeleccionar="true" />
-		        				
 							<% } else { // Etiquetas %>
 								<siga:Idioma key="administracion.multidioma.etiquetas.literal.descripcion"/>
-								&nbsp;&nbsp;
+							<% } %>
+						</td>			
+						<td class="labelText" width="35%">
+							<% if (bCatalogos) { // Catalogos %>
+		        				<siga:Select id="descripcion"
+		        							queryId="getCatalogoMultiidioma" 
+		        							required="true"/>
+							<% } else { // Etiquetas %>
 								<input type="text" name="descripcion" size="30" value="" class="box"/>
 							<% } %>
-
 						</td>
 						<td class="labelText" width="">
 							<siga:Idioma key="administracion.multidioma.etiquetas.literal.idioma"/>
@@ -103,13 +105,18 @@
 							   ArrayList eleSel = new ArrayList();
 							   eleSel.add(usrbean.getLanguage());
 							%>
-	        				<siga:ComboBD nombre="idIdioma" tipo="cmbIdioma" obligatorio="true" clase="boxCombo" obligatorioSinTextoSeleccionar="true" elementoSel="<%=eleSel%>"/>
+	        				<siga:Select id="idIdioma"
+	        							 queryId="getIdiomas"
+	        							 selectedIds="<%=eleSel%>"
+	        							 required="true"/>
 						</td>
 						<td class="labelText" width="">
 							<siga:Idioma key="administracion.multidioma.etiquetas.literal.idiomaATraducir"/>
 						</td>
 						<td class="labelText" width="">
-	        				<siga:ComboBD nombre="idIdiomaATraducir" tipo="cmbIdioma" obligatorio="true" clase="boxCombo" obligatorioSinTextoSeleccionar="true"/>
+							<siga:Select id="idIdiomaATraducir"
+	        							 queryId="getIdiomas"
+	        							 required="true"/>
 						</td>
 	       			</tr>
 				</html:form>

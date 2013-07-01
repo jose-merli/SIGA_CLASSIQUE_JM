@@ -32,8 +32,9 @@
 	 		function buscar()
 	 		{
 				var combo = document.getElementById("idModulo");
+				var combo = jQuery("#idModulo");
 				sub();
-				if (combo.value == '') {
+				if (combo.val() == '' || combo.val() == '-1') {
 					alert("<siga:Idioma key="administracion.parametrosGenerales.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error"/>");
 					return;
 				}
@@ -65,7 +66,7 @@
 							<siga:Idioma key="administracion.parametrosGenerales.literal.modulo"/>
 						</td>
 	        			<td class="labelText" width="15%">
-	        				<siga:ComboBD nombre="idModulo" tipo="parametrosGenerales" obligatorio="true" clase="boxCombo" obligatorioSinTextoSeleccionar="true"/>
+	        				<siga:Select queryId="getParametros" id="idModulo" required="true"/>
 						</td>
 
 						<td class="labelText">

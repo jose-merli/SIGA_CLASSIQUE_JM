@@ -40,7 +40,7 @@
 			var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
 			var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
 			
-			if(comboPlantilla.options.length>0&&comboTiposEnvio.value!=''){
+			if(comboPlantilla.options.length>0 && comboTiposEnvio.value!=''){
 			
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
@@ -447,12 +447,33 @@
 					<table width="100%" border="0">						
 						<tr>													
 							<td rowspan="3">
-								<siga:ComboBD nombre = "comboTipoEnvioPermitidos" tipo="${comboTipoEnvio}"
-									 clase="box" filasMostrar="7"
-								 	parametro="${parametrosComboEnvios}"
-									seleccionMultiple="true" 
-									elementoSel="<%=idTipoEnvioSeleccionado%>" obligatorio="true"
-									accion="accionComboTipoEnvio(this.selectedIndex);"/>							
+								<%
+								String tagSelectComboTipoEnvio = "getTiposEnvio";
+								if ("cmbTipoEnviosInst".equals(comboTipoEnvio)){
+									tagSelectComboTipoEnvio = "getTiposEnvioInst";
+								} else if ("cmbTipoEnviosInstNotTelematico".equals(comboTipoEnvio)){
+									tagSelectComboTipoEnvio = "getTiposEnvioInstNotTelematico";
+								} else if ("cmbTipoEnviosInstSmsNotTelematico".equals(comboTipoEnvio)){
+									tagSelectComboTipoEnvio = "getTiposEnvioInstSmsNotTelematico";
+								} else if ("cmbTipoEnviosSoloSms".equals(comboTipoEnvio)){
+									tagSelectComboTipoEnvio = "getTiposEnviosSoloSms";
+								}
+								ArrayList<String> tagSelectidTipoEnvioSeleccionado = new ArrayList<String>();
+								Iterator<String> iteraIdsTipoEnvioSelect = idTipoEnvioSeleccionado.iterator();
+								while (iteraIdsTipoEnvioSelect.hasNext()){
+									String sIdTipoEnvioSeleccionado = iteraIdsTipoEnvioSelect.next();
+									if (sIdTipoEnvioSeleccionado != null && sIdTipoEnvioSeleccionado.indexOf(",") >= 0){
+										String[] idDescompuesto = sIdTipoEnvioSeleccionado.split(",");
+										tagSelectidTipoEnvioSeleccionado.add(idDescompuesto[idDescompuesto.length - 1]);
+									}
+								}
+								%>
+								<siga:Select id="comboTipoEnvioPermitidos"
+											queryId="<%=tagSelectComboTipoEnvio%>"
+											selectedIds="<%=tagSelectidTipoEnvioSeleccionado%>"
+											required="true"
+											multiple="true" 
+											lines="7"/>															
 							</td>
 								
 							<td class="labelText" style="vertical-align: middle;">
@@ -909,23 +930,25 @@
 			var envioDefectoSeleccionado = document.getElementById("idTipoEnvioDefecto").value;
 			document.getElementById("idTipoEnvioDefecto").options.length = 0;
 		
-			var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 			var findDefecto = false;
-			jQuery("#idTipoEnvioDefecto").append("<option  value=''>&nbsp;</option>");
-			for ( var i = 0; i < tiposEnvio.length; i++) {
-				var optionTipoEnvio =tiposEnvio[i];
-				if(optionTipoEnvio.selected){
-					var idTipoEnvio = optionTipoEnvio.value.split(',')[1];
+			jQuery("#idTipoEnvioDefecto").html("<option  value=''>&nbsp;</option>");
+			jQuery("#comboTipoEnvioPermitidos").find("option").each(function(){
+				if (jQuery(this).is(":selected")){
+					var idTipoEnvio = jQuery(this).val();
 					if(!findDefecto && idTipoEnvio==envioDefectoSeleccionado){
 						findDefecto = true;
 					}
-					jQuery("#idTipoEnvioDefecto").append("<option  value='"+idTipoEnvio+"'>"+optionTipoEnvio.text+"</option>");
+					var optionHtml = "<option  value='"+idTipoEnvio+"'";
+					if (envioDefectoSeleccionado == idTipoEnvio){
+						optionHtml += " selected ";
+					}
+					optionHtml += ">"+jQuery(this).text()+"</option>";
+					jQuery("#idTipoEnvioDefecto").append(optionHtml);
 				}
-			}
-			document.getElementById("idTipoEnvioDefecto").value = envioDefectoSeleccionado;
+			});
+			
 			if(!findDefecto){
 				onChangeTipoenvio();
-		
 			}
 		
 		
@@ -941,7 +964,7 @@
 		}
 		
 		jQuery(document).ready(function () {
-		
+			jQuery("#comboTipoEnvioPermitidos").on("change", function(){accionComboTipoEnvio();});
 			accionComboTipoEnvio(-1);
 		});	
 	</script>
