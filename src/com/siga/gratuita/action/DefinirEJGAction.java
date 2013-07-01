@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -422,6 +421,10 @@ public class DefinirEJGAction extends MasterAction
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 				
 		try {		
+				
+			
+			
+			
 			HttpSession session =request.getSession();
 			DefinirEJGForm miForm = (DefinirEJGForm) formulario;		
 			
@@ -448,12 +451,25 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_NUMERO,miForm.getNumero());
 			}
 			
+			
+			
 			//Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion","editar");
 	
 			// 03-04-2006 RGG cambio en ventanas de Personas JG
 			// Persona JG
 			ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
+			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
+			StringBuffer solicitante = new StringBuffer();
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+			miHash.put("solicitante", solicitante.toString());
+			miHash.put("ejgAnio", (String)hTitulo.get(ScsEJGBean.C_ANIO));
+			miHash.put("ejgNumEjg", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+			
 			Vector resultadoObj = admi.selectPorClave(miHash);
 			ScsEJGBean obj = (ScsEJGBean)resultadoObj.get(0);
 			if (obj.getIdPersonaJG()==null) {
@@ -538,6 +554,20 @@ public class DefinirEJGAction extends MasterAction
 			// 03-04-2006 RGG cambio en ventanas de Personas JG
 			// Persona JG
 			ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
+			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
+			StringBuffer solicitante = new StringBuffer();
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+			miHash.put("solicitante", solicitante.toString());
+			miHash.put("ejgAnio", (String)hTitulo.get(ScsEJGBean.C_ANIO));
+			miHash.put("ejgNumEjg", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+			
+			
+			
+			
 			Vector resultadoObj = admi.selectPorClave(miHash);
 			ScsEJGBean obj = (ScsEJGBean)resultadoObj.get(0);
 			if (obj.getIdPersonaJG()==null) {
