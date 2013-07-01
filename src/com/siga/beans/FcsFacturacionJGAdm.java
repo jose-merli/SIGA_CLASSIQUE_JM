@@ -3992,9 +3992,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	
 	
 	
+
 	public void ejecutarFacturacion(String idInstitucion, String idFacturacion, UserTransaction tx) throws ClsExceptions, SIGAException {
-		//aalg: INC_10717_SIGA. Se ha reducido a una única transacción para que sea la ejecución completa o nada.
-		boolean bCommit = false; 
+		//CRM: Marcha atras a la incidencia --> (aalg: INC_10717_SIGA) 
 	    FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(this.usrbean);
 		FcsFactEstadosFacturacionBean beanEstado = null;
 
@@ -4013,6 +4013,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    SIGALogging log = new SIGALogging(sNombreFichero);
 
 		try {
+		    
+		    
+			
+			//////////////////////////////////
 			// cambio de estado
 		    tx.begin();
 			beanEstado = new FcsFactEstadosFacturacionBean();
@@ -4023,16 +4027,17 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 			admEstado.insert(beanEstado);
 			boolean prevision = false;
+			tx.commit();
 			
 			Hashtable criterios = new Hashtable();
 			criterios.put(FcsFacturacionJGBean.C_IDINSTITUCION,idInstitucion);
 			criterios.put(FcsFacturacionJGBean.C_IDFACTURACION,idFacturacion);
 			Vector v = (Vector)this.select(criterios);
 			if (v!=null && v.size()>0) {
+				tx.begin();
 				
 				FcsFacturacionJGBean beanFac = (FcsFacturacionJGBean)v.get(0);
-				if(beanFac.getPrevision().equals("1"))
-					prevision=true;
+				if(beanFac.getPrevision().equals("1"))prevision=true;
 				Hashtable estado = this.getEstadoFacturacion(idInstitucion,idFacturacion);
 				String idEstado = (String) estado.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 
@@ -4114,7 +4119,23 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				importeEJG = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeEJG.doubleValue();
 				
+				if(prevision){
+					//////////////////////////////////////
+					/// CREAMOS EL INFORME
+					ArrayList filtrosInforme = this.getFiltrosInforme(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
+					InformePersonalizable informePersonalizable = new InformePersonalizable();
+					File fichero = informePersonalizable.getFicheroGenerado(usrbean,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
+					beanFac.setNombreFisico(fichero.getPath());
 				
+					tx.rollback();
+				}else{
+					tx.commit();
+				}
+
+
+				//////////////////////////////////
+				// ACTUALIZO EL TOTAL
+				tx.begin();
 				beanFac.setImporteEJG(importeEJG);
 				beanFac.setImporteGuardia(importeGuardia);
 				beanFac.setImporteOficio(importeOficio);
@@ -4123,38 +4144,25 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				if (!this.update(beanFac)) {
 					throw new SIGAException(this.getError());
 				}
-				
-				if(prevision){
-					/// CREAMOS EL INFORME
-					ArrayList filtrosInforme = this.getFiltrosInforme(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
-					InformePersonalizable informePersonalizable = new InformePersonalizable();
-					File fichero = informePersonalizable.getFicheroGenerado(usrbean,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
-					beanFac.setNombreFisico(fichero.getPath());
-				}else{
-					bCommit = true;
-				}
-			}
-			else{
-				bCommit = true;
-			}
-			
-			if (bCommit){
-				// cambio de estado
-				beanEstado = new FcsFactEstadosFacturacionBean();
-				beanEstado.setIdInstitucion(new Integer(idInstitucion));
-				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
-				beanEstado.setFechaEstado("SYSDATE");
-				beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
-				Thread.sleep(1000);
-				admEstado.insert(beanEstado);
 				tx.commit();
-			}
-			else
-				tx.rollback();
+			}	
 
 			// Exportacion de datos a EXCEL: Se ha comentado este metodo por que no se quiere utilizar
-			//UtilidadesFacturacionSJCS.exportarDatosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), this.usrbean);				
+			//UtilidadesFacturacionSJCS.exportarDatosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), this.usrbean);			
+	
+
+			//////////////////////////////////
+			// cambio de estado
+			tx.begin();
+			beanEstado = new FcsFactEstadosFacturacionBean();
+			beanEstado.setIdInstitucion(new Integer(idInstitucion));
+			beanEstado.setIdFacturacion(new Integer(idFacturacion));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
+			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
+			Thread.sleep(1000);
+			admEstado.insert(beanEstado);
+			tx.commit();
 			
 		} catch (SIGAException e) {
 			try {
@@ -4162,10 +4170,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			    ClsLogging.writeFileLogError("Error al ejecutar facturacion SJCS.",e,3);
 			    log.writeLimpio(UtilidadesString.getMensajeIdioma(this.usrbean,"mensaje.error.logFacturacion.cabecera")+" "+fecha);
 			    log.writeLimpioError(e,idInstitucion,this.usrbean.getUserName());
-			    
+
 			    tx.rollback();
-			    
-			    beanEstado = new FcsFactEstadosFacturacionBean();
+
+
+			    //////////////////////////////////
+				// cambio de estado
+				tx.begin();
+				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
 				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
@@ -4173,7 +4185,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);
-				
+				tx.commit();
 			} catch (Exception ee) {
 			    ClsLogging.writeFileLogError("Error al cambiar de estado facturacion SJCS por error.",ee,3);
 			}
@@ -4186,8 +4198,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			    log.writeLimpioError(e,idInstitucion,this.usrbean.getUserName());
 
 			    tx.rollback();
-			    
-			    beanEstado = new FcsFactEstadosFacturacionBean();
+
+			    //////////////////////////////////
+				// cambio de estado
+				tx.begin();
+				beanEstado = new FcsFactEstadosFacturacionBean();
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
 				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
@@ -4195,7 +4210,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);
-				
+				tx.commit();
 			} catch (Exception ee) {
 			    ClsLogging.writeFileLogError("Error al cambiar de estado facturacion SJCS por error.",ee,3);
 			}
