@@ -354,11 +354,14 @@
 	comboPretensionesParentQueryIds = "idpretension";
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
+		String sIdJuzgado = "";
+		if (beanDesigna.getIdJuzgado() != null)
+			sIdJuzgado = beanDesigna.getIdJuzgado().toString();
 		if (!"".equals(idPretensionParamsJSON)){
-			idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);
-			idPretensionParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+			idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);			
+			idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
 		} else {
-			idPretensionParamsJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+			idPretensionParamsJSON = "{\"idjuzgado\":\""+sIdJuzgado+"\"}";
 			comboPretensionesParentQueryIds = "idjuzgado, idpretension";
 		}
 	}
