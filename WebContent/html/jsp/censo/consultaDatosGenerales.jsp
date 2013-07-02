@@ -157,11 +157,6 @@
 		tipoCliente = ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
 	}
 	
-	// Obteniendo Caracter
-	String [] caracterParam = new String[1];
-	caracterParam[0] = tipoCliente;
-
-	
 	// Calculando estilos generales en funcion de Ver o Editar
 	String estiloCaja; // para los textos
 	String readonly;  // para el combo
@@ -852,6 +847,10 @@ function str_replace(search, replace, subject) {
 			tipoIdentificacionSel.add(""+ClsConstants.TIPO_IDENTIFICACION_NIF);
 			descripcion = new Boolean(false);
 		}
+	
+	boolean camposReadonly = true;
+	if (!breadonly && bDatosGeneralesEditables)
+		camposReadonly = false;
 %>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
@@ -985,9 +984,16 @@ function str_replace(search, replace, subject) {
 					</td>				
 					<td colspan="4">
 					<% if (!breadonly && bDatosGeneralesEditables) { %>
-							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />						
+							<siga:Select id="tipoIdentificacion" 
+										queryId="getTiposIdentificacionSinCIF"
+										selectedIds="<%=tipoIdentificacionSel%>"
+										required="true"/> 
 					<% } else { %>
-							<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionConCIF" clase="boxConsulta" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="true"/>
+							<siga:Select id="tipoIdentificacion" 
+										queryId="getTiposIdentificacion"
+										selectedIds="<%=tipoIdentificacionSel%>"
+										required="true"
+										readOnly="true"/>
 					<% } %>
 					&nbsp;
 					<% if (!breadonly && bDatosGeneralesEditables) { %>
@@ -1013,7 +1019,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
 					</td>
 					<td  style="width:200px">
-						<siga:ComboBD nombre = "tratamiento" tipo="cmbTratamiento" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=tratamientoSel %>" readonly="<%=readonly %>" />						
+						<siga:Select id="tratamiento" 
+									queryId="getTratamientos"
+									selectedIds="<%=tratamientoSel%>"
+									readOnly="<%=readonly%>"
+									required="true"/>
 					</td>
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp;(*)
@@ -1084,11 +1094,10 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
 					</td>				
 					<td>
-					<% if (!breadonly && bDatosGeneralesEditables) { %>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="box" obligatorio="false" elementoSel="<%=estadoCivilSel %>"/>						
-					<% } else { %>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxConsulta" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="true"/>						
-					<% } %>
+						<siga:Select id="estadoCivil"
+									queryId="getEstadosCiviles"
+									selectedIds="<%=estadoCivilSel%>"
+									readOnly="<%=String.valueOf(camposReadonly)%>"/>					
 					</td>
 				
 					<!-- SEXO -->
@@ -1157,7 +1166,11 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+						<siga:Select id="idioma"
+									queryId="getIdiomasInstitucion"
+									required="true"
+									selectedIds="<%=idiomaSel%>"
+									readOnly="<%=readonly%>"/>
 					</td>
 					<td class="labelText">
 					<!-- CUENTA CONTABLE -->
@@ -1178,7 +1191,15 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
 					</td>
 					<td colspan="3">
-						<siga:ComboBD nombre = "caracter" tipo="cmbCaracter" clase="boxConsulta" obligatorio="true" parametro="<%=caracterParam %>" elementoSel="<%=caracterSel %>" readonly="true" obligatorioSinTextoSeleccionar="true" />
+					<% 	
+						String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
+					%>
+						<siga:Select id="caracter"
+									queryId="getCaracteres"
+									params="<%=caracterParams%>"
+									selectedIds="<%=caracterSel%>"
+									required="true"
+									readonly="true"/>
 					</td>
 	
 				</tr>
