@@ -38,10 +38,12 @@
 	} 
 	
 	ArrayList tipoApunte = new ArrayList();	
+	String paramIdTipoApunte = "";
 	if (formulario.getTipoApunte()==null||formulario.getTipoApunte().equals("")){
 	 	tipoApunte.add("");
 	}else{
 	 	tipoApunte.add(formulario.getTipoApunte());
+	 	paramIdTipoApunte = "{\"idtipocv\":\""+formulario.getTipoApunte()+"\"}";
 	} 
 	
 	ArrayList comision = new ArrayList();	
@@ -267,10 +269,8 @@
 			
 			var tipoCurriculum;			
 			function init() {			 
-			  	var cmb1 = document.getElementsByName("tipoApunte");
-			  	var cmb2 = cmb1[0]; 
 			   	tipoCurriculum=<%=tipoApunte%>;
-			  	cmb2.onchange();			
+			  	//jQuery("#tipoApunte").change();
 			}
 			
 			function recargarCombos(tipo) {
@@ -457,7 +457,7 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.grupoCliente"/>
 									</td>
 									<td colspan="3">
-										<siga:ComboBD nombre = "grupoClientes" tipo="cmbGruposCliente_1" clase="boxCombo" obligatorio="false" elementoSel="<%=grupoClienteSel %>" parametro="<%=institucionParam%>" />
+										<siga:Select queryId="getGruposClientes" id="grupoClientes" selectedIds="<%=grupoClienteSel%>"/>
 									</td>
 								</tr>
 								
@@ -467,14 +467,27 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoApunteCV"/>
 									</td>
 									<td>
-										<siga:ComboBD nombre = "tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoApunte %>" parametro="<%=institucionParam%>" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
+										<siga:Select id="tipoApunte"
+													queryParamId="idtipocv"
+													queryId="getCenTiposCV"
+													selectedIds="<%=tipoApunte%>" 
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"/>
 									</td>
 									
 									<td>
-										<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1" parametro="<%=parametro%>" clase="boxCombo" obligatorio="true"  elementoSel = "<%=idSubtipo1%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
+										<siga:Select id="idTipoCVSubtipo1" 
+													queryId="getCenTiposCVsubtipo1"
+													parentQueryParamIds="idtipocv"
+													params="<%=paramIdTipoApunte%>"
+													selectedIds="<%=idSubtipo1%>"/>
+													<!-- parmas = parametro -->
 									</td>		
 									<td>
-										<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1" parametro="<%=parametro%>" clase="boxCombo"  obligatorio="true"  elementoSel = "<%=idSubtipo2%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
+										<siga:Select id="idTipoCVSubtipo2"
+													queryId="getCenTiposCVsubtipo2" 
+													params="<%=paramIdTipoApunte%>"
+													selectedIds="<%=idSubtipo2%>"
+													parentQueryParamIds="idtipocv"/>
 									</td>
 							   </tr>
   							</table>
@@ -501,10 +514,13 @@
 											</td>				
 											<td colspan="5">
 												<% if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
-									     	  		<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
-									     	  		
+													<siga:Select id="nombreInstitucion" 
+																queryId="getInstituciones"
+																selectedIds="<%=colegioSel%>"/>
 												<% } else { %>
-													<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
+													<siga:Select id="nombreInstitucion" 
+																queryId="getNombreColegiosTodos"
+																selectedIds="<%=colegioSel%>"/>
 												<% } %>
 											</td>
 										</tr>		
@@ -518,7 +534,7 @@
 											</td>
 											<td>
 												<!-- TIPO -->
-												<siga:ComboBD nombre = "tipo" tipo="cmbTiposNoColegiadoBusqueda" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoSel%>"/>
+												<siga:Select queryId="getTiposNoColegiado" id="tipo" selectedIds="<%=tipoSel%>"/>
 											</td>
 					
 											<input type="hidden" name="numeroColegiado">
@@ -545,7 +561,7 @@
 												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/>
 											</td>				
 				 							<td colspan="5">
-												<siga:ComboBD nombre = "tipoColegiacion" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+				 								<siga:Select queryId="getTiposColegiacion" id="tipoColegiacion" selectedIds="<%=tipoColeg%>"/>
 				 							</td>
 										</tr>
 										
