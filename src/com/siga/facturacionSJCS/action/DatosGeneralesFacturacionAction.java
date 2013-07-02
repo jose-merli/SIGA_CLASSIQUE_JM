@@ -553,7 +553,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			tx.commit();
 		    // Notificación
 			request.setAttribute("modal", null);
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoFacturacionSJCS);
 			
 			salida = this.exitoRefresco("messages.facturacionSJCS.programada",request);
 		} 
@@ -1012,7 +1012,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			tx.commit();
 		    // Notificación
 			
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 			
 			salida = this.exitoRefresco("messages.facturacionSJCS.programadaRegularizacion",request);
 		} 
