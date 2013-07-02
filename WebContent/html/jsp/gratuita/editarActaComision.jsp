@@ -170,11 +170,11 @@
 			   	<%fila=(Row)ejgs.get(i);%>
 			   	<%hash=(Hashtable)fila.getRow();%>
 			   <siga:FilaConIconos fila="<%=filaSt%>" botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="no" >
-			   		<input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=hash.get("IDTIPOEJG")%>">
+			   		
+				   <td><input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=hash.get("IDTIPOEJG")%>">
 					<input type="hidden" name="oculto<%=filaSt%>_2" id="oculto<%=filaSt%>_2" value="<%=hash.get("IDINSTITUCION")%>">
 					<input type="hidden" name="oculto<%=filaSt%>_3" id="oculto<%=filaSt%>_3" value="<%=hash.get("ANIO")%>">
-					<input type="hidden" name="oculto<%=filaSt%>_4" id="oculto<%=filaSt%>_4" value="<%=hash.get("NUM")%>">
-				   <td><%=hash.get("ANIO")%>/<%=hash.get("NUMERO")%></td>
+					<input type="hidden" name="oculto<%=filaSt%>_4" id="oculto<%=filaSt%>_4" value="<%=hash.get("NUM")%>"><%=hash.get("ANIO")%>/<%=hash.get("NUMERO")%></td>
 				   <td><%=hash.get("TURNO")%> / <%=hash.get("GUARDIA")%>&nbsp;</td>
 				   <td><%=UtilidadesString.formatoFecha((String)hash.get("FECHAAPERTURA"), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
 				   <td><%=hash.get("SOLICITANTE")%>&nbsp;</td>

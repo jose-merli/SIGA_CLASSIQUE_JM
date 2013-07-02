@@ -686,14 +686,13 @@
 							  visibleEdicion='no'
 							  visibleBorrado='no'
 							  clase="listaNonEdit"
-							  pintarespacio='no'
-							  >
+							  pintarespacio='no'>
 						  		
+								
+							<td>
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString("IDINSTITUCION")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString("COD_BANCO")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString("IDSERIEFACTURACION")%>">
-							<td>
-								
 								<input type="checkbox" value="<%=row.getString("BANCOS_CODIGO")%>" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >
 							</td>  	
 							<td>

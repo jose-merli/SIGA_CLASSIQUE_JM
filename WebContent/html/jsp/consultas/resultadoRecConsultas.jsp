@@ -107,11 +107,11 @@
 	  				botones="<%=botones%>" 
 	  				elementos='<%=elementos%>' 
 	  				clase="listaNonEdit">
-						<input type="hidden" id="oculto<%=""+(i+1)%>_1" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString(ConConsultaBean.C_IDINSTITUCION)%>" />
+										
+					<td><input type="hidden" id="oculto<%=""+(i+1)%>_1" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString(ConConsultaBean.C_IDINSTITUCION)%>" />
 						<input type="hidden" id="oculto<%=""+(i+1)%>_2" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString(ConConsultaBean.C_IDCONSULTA)%>" />
 						<input type="hidden" id="oculto<%=""+(i+1)%>_3" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString(ConConsultaBean.C_TIPOCONSULTA)%>" />	
-						<input type="hidden" id="oculto<%=""+(i+1)%>_4" name="oculto<%=""+(i+1)%>_4" value="<%=fila.getString(ConConsultaBean.C_ESEXPERTA)%>" />				
-					<td><%=fila.getString(ConModuloBean.C_NOMBRE)%></td>
+						<input type="hidden" id="oculto<%=""+(i+1)%>_4" name="oculto<%=""+(i+1)%>_4" value="<%=fila.getString(ConConsultaBean.C_ESEXPERTA)%>" /><%=fila.getString(ConModuloBean.C_NOMBRE)%></td>
 					<td><%=fila.getString(ConConsultaBean.C_DESCRIPCION)%></td>
 				</siga:FilaConIconos>
 			<% 

@@ -205,11 +205,9 @@
 			<siga:FilaConIconos fila="<%=String.valueOf(cont) %>" botones="" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="no">
 			
 				  	<% if (tipo.equalsIgnoreCase("EJG")) { %>
-						<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
+						<td><input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
 						<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=numero%>">
-						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=idTipoEJG%>">
-						
-						<td><%=turnoGuardia%>&nbsp;</td>
+						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=idTipoEJG%>"><%=turnoGuardia%>&nbsp;</td>
 						<td><%=registro.get("TURNODESIGNA")%></td>
 						<td><%=registro.get(ScsEJGBean.C_ANIO)%></td>
 						 <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
@@ -224,12 +222,9 @@
 						<td><%=ScsEJGAdm.getUnidadEJG(usrbean.getLocation(),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
 						
 					<% } else if (tipo.equalsIgnoreCase("DESIGNA")) { %>				  		
-						<input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
+						<td><input type="hidden" id="oculto<%=cont%>_1" name="oculto<%=cont%>_1" value="<%=anio%>">
 						<input type="hidden" id="oculto<%=cont%>_2" name="oculto<%=cont%>_2" value="<%=numero%>">
-						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=turno%>">
-						
-						
-						<td><%=registro.get("TURNODESIG")%>&nbsp;</td>
+						<input type="hidden" id="oculto<%=cont%>_3" name="oculto<%=cont%>_3" value="<%=turno%>"><%=registro.get("TURNODESIG")%>&nbsp;</td>
 						<td><%=registro.get("ANIO")%>&nbsp;</td>
 				        <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
 						<td><%=registro.get("CODIGO")%>-<%=registro.get("SUFIJO")%>&nbsp;</td>

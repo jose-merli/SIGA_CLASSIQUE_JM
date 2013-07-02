@@ -392,7 +392,10 @@ String app = request.getContextPath();
 
 			<siga:FilaConIconos fila="<%=cont %>"  botones="<%=botones %>" modo="<%=modo %>" elementos="<%=elems%>"  visibleEdicion="no" visibleBorrado="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="false" >
 
-				<!-- campos hidden  -->
+				
+
+				<td>
+					<!-- campos hidden  -->
 				<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=identificadorCuenta %>">
 				<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
 				<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idTipoServicios %>">
@@ -407,8 +410,6 @@ String app = request.getContextPath();
 				<input type="hidden" id="oculto<%=cont %>_11" name="oculto<%=cont %>_11" value="<%=precio %>">
 				<input type="hidden" id="oculto<%=cont %>_12" name="oculto<%=cont %>_12" value="<%=iva %>"/>
 				<input type="hidden" id="oculto<%=cont %>_13" name="oculto<%=cont %>_13" value="<%=fechaEfectiva %>"/>
-
-				<td>
 					<%=fecha %>
 				</td>
 				<td>
