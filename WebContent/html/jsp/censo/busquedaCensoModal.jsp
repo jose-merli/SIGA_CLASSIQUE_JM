@@ -126,7 +126,7 @@
 	</td>				
 	<td colspan="4">
 		<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
-			<siga:ComboBD nombre = "nombreInstitucion"  tipo="cmbInstitucionCenso"  parametro="<%=parametro %>" clase="boxCombo" obligatorio="false"/>	
+		<siga:Select queryId="getInstitucionesCenso" id="nombreInstitucion"/>	
 	</td>
 	</tr>
 	<!-- FILA -->

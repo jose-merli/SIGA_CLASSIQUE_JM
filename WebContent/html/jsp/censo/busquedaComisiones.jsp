@@ -101,7 +101,7 @@
 				<html:hidden property="idInstitucion"  value='<%=institucionAcceso%>'></html:hidden>
 			
 			<% }else{%>
-				<siga:ComboBD nombre = "idInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false"/>
+				<siga:Select queryId="getNombreColegiosTodos" id="idInstitucion"/>
 			<% } %>
 			
 	</td>
@@ -113,7 +113,7 @@
 		<siga:Idioma key="censo.busquedaComisiones.literal.comision"/>
 	</td>
 	<td class="labelText">
-		<siga:ComboBD nombre="comision" tipo="cmbComision" parametro="<%=parametro%>" clase="boxCombo" />
+		<siga:Select queryId="getCenTiposCVsubtipo1IdTipoCv4" id="comision"/>
 	</td>
 	
 	<td class="labelText">
