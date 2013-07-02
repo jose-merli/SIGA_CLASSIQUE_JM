@@ -792,6 +792,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 						form.setPrimerApellidoDenunciado(personaBean.getApellido1());
 						form.setSegundoApellidoDenunciado(personaBean.getApellido2());
 						form.setNifDenunciado(personaBean.getNIFCIF());
+						if(personaBean.getIdTipoIdentificacion() !=null)
+							form.setIdTipoIdentificacionDenunciado(personaBean.getIdTipoIdentificacion().toString());
 						
 						// Obtenemos datos del colegiado de la institución del expediente
 						form.setnColDenunciado("");
@@ -849,6 +851,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 						form.setPrimerApellidoDenunciante(personaBean.getApellido1());
 						form.setSegundoApellidoDenunciante(personaBean.getApellido2());
 						form.setNifDenunciante(personaBean.getNIFCIF());
+						if(personaBean.getIdTipoIdentificacion() !=null)
+							form.setIdTipoIdentificacionDenunciante(personaBean.getIdTipoIdentificacion().toString());
 						
 						// Obtenemos datos del colegiado en la institución del expediente
 						form.setnColDenunciante("");

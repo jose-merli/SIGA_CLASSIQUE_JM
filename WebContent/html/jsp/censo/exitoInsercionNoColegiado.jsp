@@ -66,6 +66,7 @@
 					aux[7]="";
 				<%}%>
 				
+				aux[8]="Nuevo";
 				
 				top.cierraConParametros(aux);
 	

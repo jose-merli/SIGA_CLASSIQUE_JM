@@ -96,6 +96,8 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String nombreRelacionExpediente;    
     private String copia;
     private String campo;
+    private String idTipoIdentificacionDenunciado="";
+    private String idTipoIdentificacionDenunciante="";
     
 	public String getCopia() {
 		return copia;
@@ -733,5 +735,17 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setnColDenunciado(String nColDenunciado) {
 		this.nColDenunciado = nColDenunciado;
 	}
-
+	public String getIdTipoIdentificacionDenunciado() {
+		return idTipoIdentificacionDenunciado;
+	}
+	public void setIdTipoIdentificacionDenunciado(String idTipoIdentificacionDenunciado) {
+		this.idTipoIdentificacionDenunciado = idTipoIdentificacionDenunciado;
+	}
+	public String getIdTipoIdentificacionDenunciante() {
+		return idTipoIdentificacionDenunciante;
+	}
+	public void setIdTipoIdentificacionDenunciante(String idTipoIdentificacionDenunciante) {
+		this.idTipoIdentificacionDenunciante = idTipoIdentificacionDenunciante;
+	}
+	
 }

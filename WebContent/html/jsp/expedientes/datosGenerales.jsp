@@ -66,9 +66,26 @@
 	String idJuzgado = "", idInstitucionJuzgado = "", idArea = "", idMateria = "", idPretension = "", codigoEjg = "", tipoExpD = "", anioExpD = "", numExpD = "", CODIGO = "", SUFIJO = "";
 	// Datos del Juzgado seleccionado:
 	
-	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request
-			.getAttribute("ExpDatosGeneralesForm");
+	ExpDatosGeneralesForm form = (ExpDatosGeneralesForm) request.getAttribute("ExpDatosGeneralesForm");
 	
+	//TIPO IDENTIFICACION
+	String tipoIdentificacionDenunciante = "expedientes.auditoria.literal.nid";	
+	if(form.getIdTipoIdentificacionDenunciante().equals("10")){
+		tipoIdentificacionDenunciante = "expedientes.auditoria.literal.nif";
+	} else if (form.getIdTipoIdentificacionDenunciante().equals("30")) {
+		tipoIdentificacionDenunciante = "expedientes.auditoria.literal.pasaporte";
+	} else if (form.getIdTipoIdentificacionDenunciante().equals("40")) {
+		tipoIdentificacionDenunciante = "expedientes.auditoria.literal.nie";
+	}
+	
+	String tipoIdentificacionDenunciado = "expedientes.auditoria.literal.nid";
+	if(form.getIdTipoIdentificacionDenunciado().equals("10")){
+		tipoIdentificacionDenunciado = "expedientes.auditoria.literal.nif";
+	} else if (form.getIdTipoIdentificacionDenunciado().equals("30")) {
+		tipoIdentificacionDenunciado = "expedientes.auditoria.literal.pasaporte";
+	} else if (form.getIdTipoIdentificacionDenunciado().equals("40")) {
+		tipoIdentificacionDenunciado = "expedientes.auditoria.literal.nie";
+	}
 	
 	String nombreTamanio=""+form.getNombreDenunciado().length();
 	if(nombreTamanio.equals("0"))
@@ -585,14 +602,28 @@
 			
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				
-				document.forms[0].idPersonaDenunciado.value=resultado[0];
-				document.forms[0].nColDenunciado.value=resultado[1];
-				document.forms[0].nombreDenunciado.value=resultado[2];
-				document.forms[0].primerApellidoDenunciado.value=resultado[3];
-				document.forms[0].segundoApellidoDenunciado.value=resultado[4];
-				document.forms[0].idInstitucionOrigenDenunciado.value=resultado[5];
-				document.forms[0].nifDenunciado.value=resultado[6];
-				document.forms[0].idDireccionDenunciado.value=resultado[7];				
+				if(resultado[8]!=undefined && resultado[8] == 'Nuevo'){
+					//Se cera desde cero
+					document.forms[0].idPersonaDenunciado.value=resultado[0];
+					document.forms[0].nColDenunciado.value=resultado[2];
+					document.forms[0].nombreDenunciado.value=resultado[4];
+					document.forms[0].primerApellidoDenunciado.value=resultado[5];
+					document.forms[0].segundoApellidoDenunciado.value=resultado[6];
+					document.forms[0].idInstitucionOrigenDenunciado.value=resultado[1];
+					document.forms[0].nifDenunciado.value=resultado[3];
+					document.forms[0].idDireccionDenunciado.value=resultado[7];
+				
+				}else{
+					//Selecciona uno existente
+					document.forms[0].idPersonaDenunciado.value=resultado[0];
+					document.forms[0].nColDenunciado.value=resultado[1];
+					document.forms[0].nombreDenunciado.value=resultado[2];
+					document.forms[0].primerApellidoDenunciado.value=resultado[3];
+					document.forms[0].segundoApellidoDenunciado.value=resultado[4];
+					document.forms[0].idInstitucionOrigenDenunciado.value=resultado[5];
+					document.forms[0].nifDenunciado.value=resultado[6];
+					document.forms[0].idDireccionDenunciado.value=resultado[7];	
+				}
 			}
 			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
 			/*
@@ -613,14 +644,29 @@
 			
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				
-				document.forms[0].idPersonaDenunciante.value=resultado[0];
-				document.forms[0].nColDenunciante.value=resultado[1];
-				document.forms[0].nombreDenunciante.value=resultado[2];
-				document.forms[0].primerApellidoDenunciante.value=resultado[3];
-				document.forms[0].segundoApellidoDenunciante.value=resultado[4];
-				document.forms[0].idInstitucionOrigenDenunciante.value=resultado[5];
-				document.forms[0].nifDenunciante.value=resultado[6];
-				document.forms[0].idDireccionDenunciante.value=resultado[7];				
+				if(resultado[8]!=undefined && resultado[8] == 'Nuevo'){
+					//Se cera desde cero
+					document.forms[0].idPersonaDenunciante.value=resultado[0];
+					document.forms[0].nColDenunciante.value=resultado[2];
+					document.forms[0].nombreDenunciante.value=resultado[4];
+					document.forms[0].primerApellidoDenunciante.value=resultado[5];
+					document.forms[0].segundoApellidoDenunciante.value=resultado[6];
+					document.forms[0].idInstitucionOrigenDenunciante.value=resultado[1];
+					document.forms[0].nifDenunciante.value=resultado[3];
+					document.forms[0].idDireccionDenunciante.value=resultado[7];
+				
+				}else{
+					//Selecciona uno existente
+					document.forms[0].idPersonaDenunciante.value=resultado[0];
+					document.forms[0].nColDenunciante.value=resultado[1];
+					document.forms[0].nombreDenunciante.value=resultado[2];
+					document.forms[0].primerApellidoDenunciante.value=resultado[3];
+					document.forms[0].segundoApellidoDenunciante.value=resultado[4];
+					document.forms[0].idInstitucionOrigenDenunciante.value=resultado[5];
+					document.forms[0].nifDenunciante.value=resultado[6];
+					document.forms[0].idDireccionDenunciante.value=resultado[7];	
+				}				
+				
 			}
 			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
 			/*
@@ -1481,7 +1527,7 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
+				<siga:Idioma key="<%=tipoIdentificacionDenunciado%>"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
 			<td width="<%=nifTamanio%>">				
 				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nifDenunciado" styleId="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
@@ -1567,7 +1613,7 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
+				<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
 			</td>				
 				
 			<td width="<%=nifDenuncianteTamanio%>">				
