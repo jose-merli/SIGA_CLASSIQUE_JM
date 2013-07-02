@@ -881,7 +881,11 @@
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
 													</td>
 													<td style="width:320px">
-														<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCombo%>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+														<siga:Select id="idioma"
+															queryId="getIdiomasInstitucion"
+															required="true"
+															selectedIds="<%=idiomaSel%>"
+															readOnly="<%=readonly%>"/>
 														&nbsp;
 													</td>
 												</tr>
@@ -891,7 +895,15 @@
 														<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
 													</td>
 													<td style="width:320px">
-														<siga:ComboBD nombre = "caracter" tipo="cmbCaracter" clase="boxConsulta" obligatorio="false" parametro="<%=caracterParam %>" elementoSel="<%=caracterSel %>" readonly="true" obligatorioSinTextoSeleccionar="true" />
+														<% 	
+															String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
+														%>
+															<siga:Select id="caracter"
+																		queryId="getCaracteres"
+																		params="<%=caracterParams%>"
+																		selectedIds="<%=caracterSel%>"
+																		required="true"
+																		readonly="true"/>
 													</td>
 												</tr>
 												<tr>
