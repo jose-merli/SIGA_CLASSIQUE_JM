@@ -13,6 +13,7 @@
 		<service interface="com.siga.censo.service.MutualidadService" implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
 		<service interface="com.siga.expedientes.service.ExpedientesService" implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
 		<service interface="com.siga.censo.service.AlterMutuaService" implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
+		<service interface="com.siga.facturacionSJCS.service.FacturacionSJCSService" implementation="com.siga.facturacionSJCS.service.impl.AtosFacturacionSJCSServiceImpl"/>
 		
 		<!--  <service interface="com.siga.envios.service.AtosEnviosService" implementation="com.siga.envios.service.impl.SolSusProcedimientoService"/>-->
 	</context>
