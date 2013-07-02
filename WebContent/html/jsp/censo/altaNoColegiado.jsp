@@ -816,7 +816,7 @@
 					</td>				
 					<td colspan="3">
   				        <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" maxlength="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion%>" onblur="rellenarComboIden()"></html:text>
-  				        <siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />
+  				        <siga:Select id="tipoIdentificacion" queryId="getTiposIdentificacionSinCIF" selectedIds="<%=tipoIdentificacionSel%>" required="true"/>
   				        <img id="info_existe" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>		
 					</td>
 				</tr>
@@ -826,7 +826,7 @@
 						<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;
 					</td>
 					<td>
-						<siga:ComboBD nombre = "colegiadoen" tipo="cmbColegiosSinActualAbreviados" parametro="<%=parametroidInstitucionActual%>" clase="<%=estiloCaja %>" estilo='width:160px;' obligatorio="true" readonly="<%=readonly %>" />						
+						<siga:Select queryId="getNombreColegiosSinActual" id="colegiadoen" readOnly="<%=readonly %>" required="true" width="160"/>
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/>&nbsp;
@@ -898,7 +898,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
 						</td>				
 						<td>
-							<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCajaNombreApellidos %>" obligatorio="false" elementoSel="<%=estadoCivilSel %>" readonly="<%=readonlyComboNIFCIF %>"/>							
+							<siga:Select id="estadoCivil" queryId="getEstadosCiviles" selectedIds="<%=estadoCivilSel %>" readOnly="<%=readonlyComboNIFCIF%>"/>
 						</td>
 					
 						<!-- SEXO -->
@@ -924,7 +924,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
 						</td>
 						<td  style="width:200px">
-							<siga:ComboBD nombre = "tratamiento" tipo="cmbTratamiento"  clase="<%=estiloCaja %>" obligatorio="true" readonly="<%=readonly %>" />						
+							<siga:Select id="tratamiento" queryId="getTratamientos" required="true" readOnly="<%=readonly%>"/>
 						</td>
 					
 						<!-- IDIOMA -->
@@ -932,7 +932,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
 						</td>
 						<td>
-							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=idInstitucionIdioma%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+							<siga:Select queryId="getIdiomasInstitucion" id="idioma" selectedIds="<%=idiomaSel%>" readOnly="<%=readonly%>" required="true"/>
 						</td>
 					</tr>
 				</table>
@@ -1026,7 +1026,7 @@
 							<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
 						</td>
 						<td colspan = "3">
-							<siga:ComboBD nombre="pais" tipo="pais" clase="boxCombo" obligatorio="false" accion="selPais(this.value);" />
+							<siga:Select queryId="getPaises" id="pais"/>
 						</td>
 					</tr>
 
@@ -1038,8 +1038,10 @@
 							<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;(*)
 						</td>
 						<td id="provinciaEspanola">
-							<siga:ComboBD nombre="provincia" tipo="provincia" clase="boxCombo" obligatorio="false"
-							accion="Hijo:poblacion" />
+							<siga:Select id="provincia" 
+										queryParamId="idprovincia" 
+										queryId="getProvincias"
+										childrenIds="poblacion"/>
 						</td>
 						<td class="labelText" id="poblacionSinAsterisco">
 							<siga:Idioma
@@ -1050,8 +1052,10 @@
 							key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
 						</td>
 						<td id="poblacionEspanola">
-							<siga:ComboBD nombre="poblacion"
-							tipo="poblacion" clase="boxCombo" hijo="t" />
+							<siga:Select id="poblacion"
+										queryParamId="idpoblacion"
+										queryId="getPoblacionesDeProvincia"
+										parentQueryParamIds="idprovincia"/>
 						</td>
 						<td class="ocultar" id="poblacionExtranjera">
 							<html:text
@@ -1251,6 +1255,13 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
+
+	jQuery(function(){
+		jQuery("#pais").on("change", function(){
+			return selPais(jQuery(this).val());
+		});
+	});
+
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
 			jQuery("#tipoIdentificacion").removeAttr("disabled");
@@ -1421,9 +1432,7 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		}
 	
 		//funciones de direcciones
-		function selPais(valor) {              
-
-
+		function selPais(valor) {
 		   if (valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
