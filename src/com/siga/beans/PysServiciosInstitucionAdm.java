@@ -662,7 +662,8 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
             			" AND SE." + PysServiciosBean.C_IDINSTITUCION + " = SI." + PysServiciosInstitucionBean.C_IDINSTITUCION +
             			" AND SE." + PysServiciosBean.C_IDTIPOSERVICIOS + " = SI." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + 
             			" AND SE." + PysServiciosBean.C_IDSERVICIO + " = SI." + PysServiciosInstitucionBean.C_IDSERVICIO +
-            			" AND SI." + PysServiciosInstitucionBean.C_FECHABAJA + " IS NOT NULL ";
+            			" AND (SI." + PysServiciosInstitucionBean.C_FECHABAJA + " IS NULL " +
+            			" OR SI." + PysServiciosInstitucionBean.C_FECHABAJA + " > SYSDATE) ";
 	            
 	            contador++;
 	            codigosBind.put(new Integer(contador), idinstitucion);
