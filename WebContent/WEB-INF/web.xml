@@ -119,7 +119,7 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
-<!-- -->
+ 
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
@@ -128,6 +128,8 @@
 	<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
+	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
+	
 <!-- -->
 
 	<servlet>
@@ -163,12 +165,16 @@
 		<load-on-startup>5</load-on-startup>
 	</servlet>
 	<servlet>
-		<servlet-name>SIGASvlProcesoRapido</servlet-name>
-		<servlet-class>com.siga.servlets.SIGASvlProcesoRapido</servlet-class>
+		<servlet-name>SIGASvlProcesoRapidoFacturacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoRapidoFacturacion</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SIGASvlProcesoFacturacionSJCS</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoFacturacionSJCS</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -309,15 +315,18 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoRapido</servlet-name>
-		<url-pattern>SIGASvlProcesoRapido.svrl</url-pattern>
+		<servlet-name>SIGASvlProcesoRapidoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoRapidoFacturacion.svrl</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
 		<url-pattern>SIGASvlProcesoGeneracionEnvio.svrl</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoFacturacionSJCS</servlet-name>
+		<url-pattern>SIGASvlProcesoFacturacionSJCS.svrl</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
