@@ -5,7 +5,6 @@
  */
 package com.siga.expedientes.action;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -23,21 +22,9 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
-import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.EnvDestProgramInformesAdm;
-import com.siga.beans.EnvDestProgramInformesBean;
-import com.siga.beans.EnvEnvioProgramadoAdm;
-import com.siga.beans.EnvEnvioProgramadoBean;
-import com.siga.beans.EnvInformesGenericosAdm;
-import com.siga.beans.EnvInformesGenericosBean;
-import com.siga.beans.EnvProgramInformesAdm;
-import com.siga.beans.EnvProgramInformesBean;
-import com.siga.beans.EnvValorCampoClaveAdm;
-import com.siga.beans.EnvValorCampoClaveBean;
 import com.siga.beans.ExpAlertaAdm;
 import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.ExpAnotacionBean;
@@ -45,24 +32,18 @@ import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
 import com.siga.beans.ExpDenunciadoAdm;
 import com.siga.beans.ExpDenunciadoBean;
-import com.siga.beans.ExpDestinatariosAvisosAdm;
-import com.siga.beans.ExpDestinatariosAvisosBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ExpFasesAdm;
 import com.siga.beans.ExpFasesBean;
-import com.siga.beans.ExpTipoExpedienteAdm;
-import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.ExpTiposAnotacionesAdm;
 import com.siga.beans.ExpTiposAnotacionesBean;
-import com.siga.envios.EnvioInformesGenericos;
 import com.siga.expedientes.form.ExpSeguimientoForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 /**
  * Action de las anotaciones de un expediente

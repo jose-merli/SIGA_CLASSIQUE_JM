@@ -21,7 +21,6 @@ import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.envios.EnvioInformesGenericos;
 import com.siga.expedientes.form.BusquedaAlertaForm;
-import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 /**
  * TODO To change the template for this generated type comment go to
