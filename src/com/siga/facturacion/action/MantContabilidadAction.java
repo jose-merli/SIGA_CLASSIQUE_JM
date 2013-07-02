@@ -331,7 +331,7 @@ public class MantContabilidadAction extends MasterAction
 		    tx.commit();
 
 		    // Notificación
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 
 		    request.setAttribute("mensaje","messages.inserted.contablidad");
 			request.setAttribute("modal","1");
@@ -394,7 +394,7 @@ public class MantContabilidadAction extends MasterAction
 	    tx.commit();
 
 	    // Notificación
-		SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+		SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 
 		request.setAttribute("mensaje","messages.inserted.contablidad");
 		request.setAttribute("refresco","1");

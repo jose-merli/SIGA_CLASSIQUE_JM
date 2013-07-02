@@ -4990,7 +4990,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			// EN CUALQUIER CASO LANZAMOS EL PROCESO DE FACTURACIÓN PARA QUE SE EJECUTEN LAS PROGRAMADAS
 			ClsLogging.writeFileLogWithoutSession(" >> Relanzando servicio de proceso automático rápido para tratar las facturacines programadas (RELANZADAS).",1);
             ClsLogging.writeFileLogWithoutSession("",1);
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 		}
 	}
 	
