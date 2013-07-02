@@ -36,8 +36,9 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 	private long lIntervalo = 1;
 	static private String sNombreProceso = "ProcesoAutomaticoRapido";
     private String urlSiga = "";
-    static final public String procesoRapido = "SIGASvlProcesoRapido";
+    static final public String procesoRapidoFacturacion = "SIGASvlProcesoRapidoFacturacion";
     static final public String procesoGeneracionEnvio = "SIGASvlProcesoGeneracionEnvio";
+    static final public String procesoFacturacionSJCS = "SIGASvlProcesoFacturacionSJCS";
     static final public String procesoIndividualConfirmacionFacturacion = "SIGASvlProcesoIndividualConfirmacionFacturacion";
 	static final public String htNombreProceso = "proceso";
 	static final public String htNombreDatosHashtable = "datosHashtable";
