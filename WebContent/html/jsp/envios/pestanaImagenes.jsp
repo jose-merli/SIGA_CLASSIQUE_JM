@@ -118,13 +118,14 @@
 				<%
 					ImagenPlantillaForm formImagen = formPlantilla.getImagenes().get(index);
 					index = index.intValue()+1;										 
-				%>
-				<input type="hidden" id="oculto<%=index%>_1" value="<bean:write name="imagen" property="idInstitucion" />">
-				<input type="hidden" id="oculto<%=index%>_2" value="<bean:write name="imagen" property="idTipoEnvios" />">
-				<input type="hidden" id="oculto<%=index%>_3" value="<bean:write name="imagen" property="idPlantillaEnvios" />">
-				<input type="hidden" id="oculto<%=index%>_4" value="<bean:write name="imagen" property="idImagen" />">
+				%>				
 	  			<siga:FilaConIconos fila='<%=String.valueOf(index.intValue())%>' botones='<%=botonesFila%>'elementos='<%=elementosFila%>' clase="listaNonEdit" visibleConsulta='no'>
-					<td><%=formImagen.getNombre()%></td>
+					<td>
+						<input type="hidden" id="oculto<%=index%>_1" value="<bean:write name="imagen" property="idInstitucion" />">
+						<input type="hidden" id="oculto<%=index%>_2" value="<bean:write name="imagen" property="idTipoEnvios" />">
+						<input type="hidden" id="oculto<%=index%>_3" value="<bean:write name="imagen" property="idPlantillaEnvios" />">
+						<input type="hidden" id="oculto<%=index%>_4" value="<bean:write name="imagen" property="idImagen" />">
+						<%=formImagen.getNombre()%></td>
 					<td><%=formImagen.getTipoArchivo()%></td>
 					<td><%=formImagen.getEmbebedTxt()%></td>
 				</siga:FilaConIconos>
