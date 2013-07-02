@@ -640,41 +640,53 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 		   Vector datos=new Vector();
 		   Hashtable codigosBind = new Hashtable();
 		   int contador = 0;
-	       try {
-	    	   
+		   
+	       try {	    	   
 	    	    String idioma = this.usrbean.getLanguage();
-	    	    String idinstitucion = this.usrbean.getLocation();
-	    	   
+	    	    String idinstitucion = this.usrbean.getLocation();	    	   
 	            RowsContainer rc = new RowsContainer(); 
 	            
-	            String sql=" select si.idinstitucion AS IDINST, si.idtiposervicios AS IDTIPOSERV, si.idservicio AS IDSERV, si.idserviciosinstitucion AS IDESERVINST, "; 
 	            contador++;
 	            codigosBind.put(new Integer(contador), idioma);
-	            sql+=" f_siga_getrecurso(ts.descripcion, :"+contador+")"+" AS NOMBRECATSERVICIO , s.descripcion as NOMBRETIPOSERVICIO, si.descripcion as NOMBRESERVICIO";
-	            sql+=" from pys_tiposervicios ts, pys_servicios s, pys_serviciosinstitucion si";
-	            sql+=" where ts.idtiposervicios =s.idtiposervicios";
-	            sql+=" and   s.idinstitucion = si.idinstitucion";
-	            sql+=" and   s.idtiposervicios = si.idtiposervicios";
-	            sql+=" and   s.idservicio = si.idservicio";
+	            String sql = " SELECT SI." + PysServiciosInstitucionBean.C_IDINSTITUCION + " AS IDINST, " + 
+		            	" SI." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " AS IDTIPOSERV, " +
+		            	" SI." + PysServiciosInstitucionBean.C_IDSERVICIO + " AS IDSERV, " +
+		            	" SI." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + " AS IDESERVINST, " +
+		            	" F_SIGA_GETRECURSO(TS." + PysTipoServiciosBean.C_DESCRIPCION + ", :" + contador + ") AS NOMBRECATSERVICIO, " + 
+		            	" SE." + PysServiciosBean.C_DESCRIPCION + " as NOMBRETIPOSERVICIO, " +
+		            	" SI." + PysServiciosInstitucionBean.C_DESCRIPCION + " as NOMBRESERVICIO " +	            
+	            	" FROM " + PysTipoServiciosBean.T_NOMBRETABLA + " TS, " +
+	            		PysServiciosBean.T_NOMBRETABLA + " SE, " +
+	            		PysServiciosInstitucionBean.T_NOMBRETABLA + " SI " +
+            		" WHERE TS. " + PysTipoServiciosBean.C_IDTIPOSERVICIOS + " = SE." + PysServiciosBean.C_IDTIPOSERVICIOS +
+            			" AND SE." + PysServiciosBean.C_IDINSTITUCION + " = SI." + PysServiciosInstitucionBean.C_IDINSTITUCION +
+            			" AND SE." + PysServiciosBean.C_IDTIPOSERVICIOS + " = SI." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + 
+            			" AND SE." + PysServiciosBean.C_IDSERVICIO + " = SI." + PysServiciosInstitucionBean.C_IDSERVICIO +
+            			" AND SI." + PysServiciosInstitucionBean.C_FECHABAJA + " IS NOT NULL ";
+	            
 	            contador++;
 	            codigosBind.put(new Integer(contador), idinstitucion);
-	            sql+=" and   si.idinstitucion= :"+contador;
-	            if((categoriaServicio != null) && (!categoriaServicio.equals(""))){
-	            contador++;
-	            codigosBind.put(new Integer(contador),categoriaServicio);
-	            sql+=" and   si.idtiposervicios =:" +contador;
+	            sql += " AND SI." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = :" + contador;
+	            
+	            if (categoriaServicio!=null && !categoriaServicio.equals("")) {
+	            	contador++;
+	            	codigosBind.put(new Integer(contador), categoriaServicio);
+	            	sql += " AND SI." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = :" + contador;
 	            }
-	            if((tipoServicio != null) &&(!tipoServicio.equals(""))){
-	            contador++;
-	            codigosBind.put(new Integer(contador),tipoServicio);
-	            sql+=" and   si.idservicio= :"+contador;
+	            
+	            if (tipoServicio!=null && !tipoServicio.equals("")) {
+	            	contador++;
+	            	codigosBind.put(new Integer(contador),tipoServicio);
+	            	sql += " AND SI." + PysServiciosInstitucionBean.C_IDSERVICIO + " = :" + contador;
 	            }
-	            if((nombreServicio != null) &&(!nombreServicio.equals(""))){
-	            contador++;
-	            sql+=" and "+ComodinBusquedas.prepararSentenciaCompletaBind(nombreServicio,  "si.descripcion" , contador, codigosBind);
-	            //sql+=" and   si.descripcion like ':nombre%'";
+	            
+	            if (nombreServicio!=null && !nombreServicio.equals("")) {
+	            	contador++;
+	            	sql += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(nombreServicio,  "SI." + PysServiciosInstitucionBean.C_DESCRIPCION, contador, codigosBind);
+	            	//sql+=" and   si.descripcion like ':nombre%'";
 	            }
-	            sql+=" order by si.descripcion";
+	            
+	            sql += " ORDER BY SI." + PysServiciosInstitucionBean.C_DESCRIPCION;
 							
 	            if (rc.findNLSBind(sql, codigosBind)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -682,24 +694,23 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	                  datos.add(fila);
 	               }
 	            } 
-	       }
-	       catch (Exception e) {
+	            
+	       } catch (Exception e) {
 		   		if (e instanceof SIGAException){
 		   			throw (SIGAException)e;
-		   		}
-		   		else{
+		   			
+		   		} else {
 		   			if (e instanceof ClsExceptions){
 		   				throw (ClsExceptions)e;
-		   			}
-		   			else {
-		   				throw new ClsExceptions(e,"Error al buscar los servicios de un anticipo.");
+		   				
+		   			} else {
+		   				throw new ClsExceptions(e, "Error al buscar los servicios de un anticipo.");
 		   			}
 		   		}	
 	       }
+	       
 	       return datos;                        
 	    }
-	
-	
 	
 	/** 
 	 * Gestiona automaticamente todas las solicitudes pendientes de una determinada institucion
