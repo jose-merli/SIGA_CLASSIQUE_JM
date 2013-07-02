@@ -120,7 +120,7 @@
 		<siga:Idioma key="censo.busquedaComisiones.literal.cargos"/>
 	</td>
 	<td class="labelText">
-		<siga:ComboBD nombre="cargos" tipo="cmbCargos" parametro="<%=parametro%>" clase="boxCombo" />
+		<siga:Select queryId="getCenTiposCVsubtipo2IdTipoCv4" id="cargos"/>
 	</td>
 	</tr>
 	<tr>
