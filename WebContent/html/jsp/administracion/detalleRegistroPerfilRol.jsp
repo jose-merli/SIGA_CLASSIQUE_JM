@@ -103,9 +103,9 @@
 										</td>				
 										<td class="labelTextValue">
 <%
-											String selectedRolJSON = "{\"idrol\":"+AdmRolBean.C_IDROL+"}";
+											String selectedRolJSON = "{\"idrol\":\""+htDatos.get(AdmRolBean.T_NOMBRETABLA + "_" + AdmRolBean.C_IDROL)+"\"}";
 											ArrayList<String> selectedPerfil = new ArrayList<String>();
-											selectedPerfil.add(AdmPerfilBean.C_IDPERFIL);
+											selectedPerfil.add(htDatos.get(AdmPerfilBean.T_NOMBRETABLA + "_" + AdmPerfilBean.C_IDPERFIL).toString());
 %>
 											<siga:Select id="perfilRol"
 														queryId="getPerfilesDeRol"
