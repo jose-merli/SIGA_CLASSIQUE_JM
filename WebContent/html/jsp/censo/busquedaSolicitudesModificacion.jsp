@@ -106,21 +106,13 @@
 											<siga:Idioma key="censo.busquedaSolicitudesTextoLibre.literal.tipoModificacion"/>&nbsp;&nbsp;
 										</td>				
 										<td>
-											<% if (buscar!=null) { %>
-												<siga:ComboBD nombre = "cmbTipoModificacion" tipo="cmbTipoModificacion" clase="boxCombo" elementoSel="<%=vSel%>" obligatorio="false"/>
-											<% } else { %>
-												<siga:ComboBD nombre = "cmbTipoModificacion" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="false"/>
-											<% } %>
+											<siga:Select queryId="getTiposModificacion" id="cmbTipoModificacion" selectedIds="<%=vSel%>"/>											
 										</td>
 										<td class="labelText">
 											<siga:Idioma key="censo.busquedaSolicitudesTextoLibre.literal.estado"/>&nbsp;&nbsp;
 										</td>					
 										<td>
-											<% if (buscar!=null) { %>
-												<siga:ComboBD nombre ="estadoSolicitudModif" tipo="EstadoSolicitudModif" clase="boxCombo" elementoSel="<%=vSelEst%>" obligatorio="false"/>
-											<% } else { %>
-												<siga:ComboBD nombre ="estadoSolicitudModif" tipo="EstadoSolicitudModif" clase="boxCombo" obligatorio="false"/>
-											<% } %>
+											<siga:Select queryId="getEstadosSolicitudMod" id="estadoSolicitudModif" selectedIds="<%=vSelEst%>"/>
 										</td>
 									</tr>
 									<tr>	
