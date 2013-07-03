@@ -77,10 +77,10 @@
 		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 		<tr>				
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.tipoSolicitud"/></td>				
-			<td><siga:ComboBD nombre = "buscarTipoSolicitud" tipo="solicitud" clase="boxCombo" /></td>
+			<td><siga:Select queryId="getTiposSolicitud" id="buscarTipoSolicitud"/></td>
 	
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.estado"/></td>				
-			<td><siga:ComboBD nombre = "buscarEstadoSolicitud" tipo="estadoSolicitud1" elementoSel="<%=estadoSolicitud%>" clase="boxCombo"/></td>
+			<td><siga:Select queryId="getEstadosSolicitud1" id="buscarEstadoSolicitud" selectedIds="<%=estadoSolicitud%>"/></td>
 	
 			<td class="labelText"><siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.verAlarmas"/>&nbsp;&nbsp;<input type="checkbox" name="buscarVerAlarmas" onclick="deshabilitarCombo();"></td>
 		</tr>

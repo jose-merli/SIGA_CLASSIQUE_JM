@@ -110,14 +110,14 @@
 		<siga:Idioma key="censo.documentacionSolicitud.literal.tipoColegiacion"/>&nbsp;(*)
 	</td>				
 	<td >
-		<siga:ComboBD nombre = "tipoColegiacion"  tipo="colegiacion"  clase="boxCombo" obligatorio="true" elementoSel="<%=colegiacionSel %>"/>						
+		<siga:Select queryId="getCenTipoColegiacion" id="tipoColegiacion" selectedIds="<%=colegiacionSel%>" required="true"/>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="censo.documentacionSolicitud.literal.tipoSolicitud"/>&nbsp;(*)
 	</td>				
 	<td >
-		<siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud"  clase="boxCombo" obligatorio="true" elementoSel="<%=tipoSolicitudSel %>"/>						
+		<siga:Select queryId="getTiposSolicitud" id="tipoSolicitud" required="true" selectedIds="<%=tipoSolicitudSel%>"/>
 	</td>
 
 
@@ -125,7 +125,7 @@
 		<siga:Idioma key="censo.documentacionSolicitud.literal.modalidad"/>&nbsp;(*)
 	</td>				
 	<td >
-		<siga:ComboBD nombre = "tipoModalidad" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>" elementoSel="<%=tipoModalidadSel%>"/>
+		<siga:Select queryId="getModalidadesDocumentacion" id="tipoModalidad" selectedIds="<%=tipoModalidadSel%>" required="true"/>
 	</td>
 	</tr>
 
