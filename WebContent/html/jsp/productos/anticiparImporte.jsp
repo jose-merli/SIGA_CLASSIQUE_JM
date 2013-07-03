@@ -108,7 +108,7 @@
 												<siga:Idioma key="pys.mantenimientoServicios.literal.totalAnticipado"/>
 											</td>
 											<td class="labelTextNum">		
-												<%=totalAnticipado%>&nbsp;&euro;
+												<%=UtilidadesNumero.formatoCampo(totalAnticipado)%>&nbsp;&euro;
 											</td>
 										</tr>
 										<tr>

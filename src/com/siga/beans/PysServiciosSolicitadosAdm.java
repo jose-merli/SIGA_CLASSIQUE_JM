@@ -209,54 +209,41 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 									") AS FORMAPAGO, " +
 
 									
-									// Fecha Efectiva:
-									/*"NVL((SELECT PYS_SUSCRIPCION.Fechabaja "+
-                                    " FROM PYS_SUSCRIPCION" +
-                                    " WHERE pys_peticioncomprasuscripcion.idinstitucion=PYS_SUSCRIPCION.IDINSTITUCION" +
-                                    " and pys_peticioncomprasuscripcion.idpeticionalta=PYS_SUSCRIPCION.IDPETICION" +
-                                    " and pys_peticioncomprasuscripcion.idpeticion="+idPeticion+
-                                    "  and PYS_SUSCRIPCION.IDINSTITUCION = PYS_SERVICIOSSOLICITADOS.IDINSTITUCION" +
-                                    "  AND PYS_SUSCRIPCION.IDTIPOSERVICIOS = PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS" +
-                                    "  AND PYS_SUSCRIPCION.IDSERVICIO = PYS_SERVICIOSSOLICITADOS.IDSERVICIO" +
-                                    "  AND PYS_SUSCRIPCION.IDSERVICIOSINSTITUCION = PYS_SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION" +
-                                    "  AND ROWNUM = 1)," +
-										"(SELECT " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHASUSCRIPCION + 
-										" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
-										" WHERE " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDINSTITUCION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDINSTITUCION +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDPETICION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDPETICION +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDTIPOSERVICIOS+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDSERVICIO+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDSERVICIO +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDSERVICIOSINSTITUCION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-										  " AND ROWNUM = 1)" +
-									") AS FECHAEFEC, " +*/
-									
+									// Fecha Efectiva:									
 									" NVL((SELECT " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHASUSCRIPCION + 
 										" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
-										" WHERE " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDINSTITUCION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDINSTITUCION +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDPETICION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDPETICION +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDTIPOSERVICIOS+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDSERVICIO+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDSERVICIO +
-										  " AND " + PysSuscripcionBean.T_NOMBRETABLA+"."+PysSuscripcionBean.C_IDSERVICIOSINSTITUCION+ "=" +PysServiciosSolicitadosBean.T_NOMBRETABLA+"."+PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-										  " AND ROWNUM = 1),"+
-									"           (SELECT petco.fecha" +
-									"            FROM PYS_PETICIONCOMPRASUSCRIPCION petco," +
-									"                 PYS_SERVICIOSSOLICITADOS      prodsol" +
-									"            WHERE petco.IDINSTITUCION = " +idInstitucion+
-									"                 AND petco.IDPERSONA = PYS_SERVICIOSSOLICITADOS.idPersona" +
-									"                 and petco.idestadopeticion <> 10" +
-									"                 AND petco.TIPOPETICION = 'B'" +
-									"                 and prodsol.aceptado = 'B'" +
-									"                 and petco.idpeticionalta is not null" +
-									"                AND petco.IDPETICION = prodsol.IDPETICION" +
-									"                AND prodsol.Idtiposervicios =" +
-									"                PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS" +
-									"                AND prodsol.IDSERVICIO = PYS_SERVICIOSSOLICITADOS.IDSERVICIO" +
-									"                AND prodsol.IDSERVICIOSINSTITUCION =" +
-									"                PYS_SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION" +
-									"                AND prodsol.IDINSTITUCION =" +
-									"                PYS_SERVICIOSSOLICITADOS.IDINSTITUCION" +
-									"                AND prodsol.IDPETICION = PYS_SERVICIOSSOLICITADOS.IDPETICION" +
-									"                AND prodsol.IDPERSONA = petco.IDPERSONA)) AS FECHAEFEC," +
+										" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +										  
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION +
+										  " AND ROWNUM = 1), " +
+										  
+										  "NVL((SELECT " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHABAJA + 
+										" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
+										" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +										  
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
+										  	" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA +
+										  " AND ROWNUM = 1), " +
+										  
+											" (SELECT petco.fecha" +
+											" FROM PYS_PETICIONCOMPRASUSCRIPCION petco," +
+												"PYS_SERVICIOSSOLICITADOS prodsol" +
+											" WHERE petco.IDINSTITUCION = PYS_SERVICIOSSOLICITADOS.IDINSTITUCION " +
+												" AND petco.IDPERSONA = PYS_SERVICIOSSOLICITADOS.idPersona" +
+												" AND petco.idestadopeticion <> 10" +
+												" AND petco.TIPOPETICION = 'B'" +
+												" AND prodsol.aceptado = 'B'" +
+												" AND petco.idpeticionalta is not null" +
+												" AND petco.IDPETICION = prodsol.IDPETICION" +
+												" AND prodsol.Idtiposervicios = PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS" +
+												" AND prodsol.IDSERVICIO = PYS_SERVICIOSSOLICITADOS.IDSERVICIO" +
+												" AND prodsol.IDSERVICIOSINSTITUCION = PYS_SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION" +
+												" AND prodsol.IDINSTITUCION = PYS_SERVICIOSSOLICITADOS.IDINSTITUCION" +
+												" AND prodsol.IDPETICION = PYS_SERVICIOSSOLICITADOS.IDPETICION" +
+												" AND prodsol.IDPERSONA = petco.IDPERSONA))) AS FECHAEFEC, " +
 									
 									// Concepto
 									"(SELECT " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION + 
@@ -416,6 +403,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							datosPrecio[5] = UtilidadesHash.getString(a, "CONCEPTO") + " " + datosPrecio[5];
 							UtilidadesHash.set(a, "CONCEPTO", datosPrecio[5]);
 							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
+							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
 						}
 					}
 

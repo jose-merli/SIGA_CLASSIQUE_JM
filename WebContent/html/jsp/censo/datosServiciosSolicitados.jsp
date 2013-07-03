@@ -1,4 +1,5 @@
 <!-- datosServiciosSolicitados.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -7,7 +8,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
@@ -20,10 +21,12 @@
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 		
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
@@ -75,34 +78,29 @@
 	} else { 
 		busc += UtilidadesString.getMensajeIdioma(usrbean,"censo.fichaCliente.literal.NoColegiado");
 	}  
-
 %>	
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Vector"%>
-<%@page import="java.util.Properties"%>
+
 <html>
 
 <!-- HEAD -->
 <head>
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<!-- Incluido jquery en siga.js -->	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="datosFacturacionForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<html:javascript formName="datosFacturacionForm" staticJavascript="false" />  
+		
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	
 	<script>	
 		function verCuentas() {
-			if (document.forms[0].formaPago.value == <%=pagoBancario %>) 
-			{
+			if (document.forms[0].formaPago.value == <%=pagoBancario %>) {
 				// es pago bancario
 				document.forms[0].nCuenta.disabled = false;
 			} else {
@@ -118,11 +116,11 @@
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulosPeq">
-			<%=busc %>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<%=busc%>
+			</td>
+		</tr>
 	</table>
 
 
@@ -137,60 +135,47 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposPeque"  align="center">
+		<html:form action="/CEN_Facturacion.do" method="POST" target="submitArea">
+			<html:hidden name="datosFacturacionForm"  property = "modo" value = ""/>
+			<html:hidden name="datosFacturacionForm"  property = "idInstitucion" />
+			<html:hidden name="datosFacturacionForm"  property = "idPersona" />
 
-	<html:form action="/CEN_Facturacion.do" method="POST" target="submitArea">
-	<html:hidden name="datosFacturacionForm"  property = "modo" value = ""/>
-	<html:hidden name="datosFacturacionForm"  property = "idInstitucion" />
-	<html:hidden name="datosFacturacionForm"  property = "idPersona" />
+			<!-- datos modificacion -->
+			<html:hidden  name="datosFacturacionForm" property="motivo"/>
+			<input type="hidden" name="idFormaPagoCuenta" value="<%=(String)request.getAttribute("CenDatosIdFormaPagoSel")%>" >
+			<input type="hidden" name="idTipoServicioSel" value="<%=formaPagoParam[1]%>" >
+			<input type="hidden" name="idServicioSel" value="<%=formaPagoParam[2]%>" >
+			<input type="hidden" name="idServicioInstitucionSel" value="<%=formaPagoParam[3]%>" >
+			<input type="hidden" name="idPeticionSel" value="<%=idPeticion%>" >
 
-	<!-- datos modificacion -->
-	<html:hidden  name="datosFacturacionForm" property="motivo"/>
-	<input type="hidden" name="idFormaPagoCuenta" value="<%=(String)request.getAttribute("CenDatosIdFormaPagoSel")%>" >
-	<input type="hidden" name="idTipoServicioSel" value="<%=formaPagoParam[1]%>" >
-	<input type="hidden" name="idServicioSel" value="<%=formaPagoParam[2]%>" >
-	<input type="hidden" name="idServicioInstitucionSel" value="<%=formaPagoParam[3]%>" >
-	<input type="hidden" name="idPeticionSel" value="<%=idPeticion%>" >
+			<!-- FILA -->
+			<tr>				
+				<td>
+					<siga:ConjCampos leyenda="cen.consultaServicios.leyenda">
+						<table class="tablaCampos" align="center">
+							<tr>				
+								<td class="labelText">
+									<siga:Idioma key="cen.consultaProductos.literal.formaPago"/>
+								</td>				 
+								<td>
+									<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
+								</td>
+							</tr>				
 
-	<!-- FILA -->
-	<tr>				
-	<td>
-
-	<siga:ConjCampos leyenda="cen.consultaServicios.leyenda">
-
-	<table class="tablaCampos" align="center">
-
-	<tr>				
-	<td class="labelText">
-		<siga:Idioma key="cen.consultaProductos.literal.formaPago"/>
-	</td>				 
-	<td>
-		<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-
-	</tr>				
-
-	<!-- FILA -->
-	<tr>				
-
-	<td class="labelText">
-		<siga:Idioma key="cen.consultaProductos.literal.nCuenta"/>
-	</td>				
-	<td>
-		<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargo" clase="box" obligatorio="true" elementoSel="<%=nCuentaSel %>"  parametro="<%=nCuentaParam %>" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-
-	</tr>
-
-	</table>
-
-	</siga:ConjCampos>
-
-
-	</td>
-	</tr>
-
-	</html:form>
-	
+							<!-- FILA -->
+							<tr>					
+								<td class="labelText">
+									<siga:Idioma key="cen.consultaProductos.literal.nCuenta"/>
+								</td>				
+								<td>
+									<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargo" clase="box" obligatorio="true" elementoSel="<%=nCuentaSel %>"  parametro="<%=nCuentaParam %>" obligatorioSinTextoSeleccionar="true"/>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</html:form>	
 	</table>
 
 
@@ -208,20 +193,15 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
-
+	<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
 	<!-- FIN: BOTONES REGISTRO -->
 
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
- 
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{		
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {		
 		    sub();
 		    var banco = false;
 		    var pagoDomiciliado = "<%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>";
@@ -233,11 +213,11 @@
 				alert("<siga:Idioma key='pys.solicitudCompra.message.nCuenta'/>");
 				fin();
 				return;
-			}
-			else {
+				
+			} else {
 
 				<% if (!bOcultarHistorico) { %>
-						var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+						var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp", "", "dialogHeight:230px; dialogWidth:520px; help:no; scroll:no; status:no;");
 						window.top.focus();
 				<% } else { %>
 						var datos = new Array();
@@ -256,31 +236,23 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		// Asociada al boton Cerrar
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
 			document.forms[0].reset();
 		}
-
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
-
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
