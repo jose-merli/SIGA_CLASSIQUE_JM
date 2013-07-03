@@ -131,7 +131,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.56 2013-06-26 10:38:27 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.57 2013-07-03 09:37:59 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1320,6 +1320,7 @@ function ajusteAltoMain(nObj, menos) {
 		var hCont = obj.offsetParent.clientHeight;
 		//alert("obj = "+obj.id + " : " + obj.nodeName + " : " + obj.offsetTop);
 		if (obj.nodeName == 'IFRAME') {
+			var AlturaIframeOriginal = jQuery(obj).height();
 			var windowHeight = jQuery(window).height();
 			if (windowHeight == null || windowHeight == undefined || windowHeight <= 0){
 				windowHeight = document.body.offsetHeight - 5;
@@ -1343,6 +1344,23 @@ function ajusteAltoMain(nObj, menos) {
 					obj.style.height = hCont;
 					obj.style.pixelHeight = hCont;
 				}
+			}
+			var innerFixedHeadertables = jQuery(obj).contents().find("table.fixedHeaderTable");
+			if (innerFixedHeadertables.exists()){
+				var menosAplicadoAlIframe = menos;
+				if (AlturaIframeOriginal >= jQuery(obj).height()){
+					menosAplicadoAlIframe = AlturaIframeOriginal - jQuery(obj).height();
+				} else if (AlturaIframeOriginal < jQuery(obj).height()) {
+					menosAplicadoAlIframe = jQuery(obj).height() - AlturaIframeOriginal;
+					menosAplicadoAlIframe = menosAplicadoAlIframe * -1;
+				}
+				console.debug("ajusteAltoMain nodeName=IFRAMEID:"+jQuery(obj).attr("id")+" fixedHeaderTable: "+jQuery(obj).contents().find("table.fixedHeaderTable").attr("id"));
+				innerFixedHeadertables.parent().filter("div[id$='_BodyDiv']").each(function(){
+					var tableBodyDiv = jQuery(this);
+					console.debug("ajusteAltoMain ajustando FixedHeadertableID="+tableBodyDiv.attr("id")+ " con altura:"+tableBodyDiv.height()+" restando " + menosAplicadoAlIframe);
+					tableBodyDiv.height(tableBodyDiv.height() - menosAplicadoAlIframe);
+					console.debug("ajusteAltoMain ajustando FixedHeadertable resultado: " + tableBodyDiv.height());
+				});
 			}			
 		} else {
 			if (cont.nodeName == 'FORM') {
