@@ -288,8 +288,16 @@
 						var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 						var operadorT = operador[operador.selectedIndex].text;
 						var operadorV = operador[operador.selectedIndex].value;
-						 window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
-						var valor =  window.frames["frameOperadorValor"].document.all.item("valor");
+						var valor;
+						
+						if (window.frames["frameOperadorValor"].document.all.item("valor")) {
+							window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
+							valor =  window.frames["frameOperadorValor"].document.all.item("valor");
+						} else {
+							window.frames["frameOperadorValor"].document.all.item("caja").value =  window.frames["frameOperadorValor"].document.all.item("caja").value.replace(/,/,".");
+							valor =  window.frames["frameOperadorValor"].document.all.item("caja");
+						}
+							
 						//valor.value = valor.value.replace(/,/,".");
 						if (valor.tagName=="SELECT"){
 				  			valorT = valor.options[valor.selectedIndex].text;
