@@ -92,7 +92,9 @@
 						
 					} else {		
 						if (document.getElementById('caja')){
-							valor.value="";
+							if (document.getElementById('valor') ){	
+								valor.value="";
+							}
 							document.getElementById('comb').style.visibility='hidden';
 							document.getElementById('caja').style.visibility='visible';
 							document.getElementById('caja').style.width='120px';
