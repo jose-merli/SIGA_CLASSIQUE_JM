@@ -23,6 +23,7 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="org.redabogacia.sigaservices.app.services.gen.SelectDataService" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -36,12 +37,12 @@
     // Botones a mostrar
 	String botones = "B";
 	
-	// valores para el combo de tipos de modificaciones
-	String valoresSolic[] = {String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES),
-							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV),
-							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION),String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES),
-							 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO)};   
-
+	// valores para el combo de tipos de modificaciones	  
+	String valoresSolic = "{\""+SelectDataService.IDTIPOMODIFICACION_KEY+"\":[\""+String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES)+","+String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES)+","+
+			 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS)+","+String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV)+","+
+			 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION)+","+String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES)+","+
+			 String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO)+"\"]}";
+	
 	String buscar = (String)request.getAttribute("buscar");
 	String funcionBuscar = "";
 	if (buscar!=null) {
@@ -106,13 +107,15 @@
 											<siga:Idioma key="censo.busquedaSolicitudesModificacion.literal.tipoModificacion"/>
 										</td>				
 										<td>
-											<siga:ComboBD nombre = "tipoModifEspec" tipo="tipoModifEspec" clase="boxCombo" obligatorio="false" parametro="<%=valoresSolic%>"/>
+											<siga:Select id="tipoModifEspec"
+														queryId="getTiposModificacionEspecificas"
+														params="<%=valoresSolic%>"/>
 										</td>
 										<td class="labelText">
 											<siga:Idioma key="censo.busquedaSolicitudesModificacion.literal.estado"/>&nbsp;&nbsp;
 										</td>					
 										<td>
-											<siga:ComboBD nombre ="estadoSolicitudModif" tipo="EstadoSolicitudModif" clase="boxCombo" obligatorio="false"/>
+											<siga:Select queryId="getEstadosSolicitudMod" id="estadoSolicitudModif" />
 										</td>
 									</tr>
 									<tr>	
