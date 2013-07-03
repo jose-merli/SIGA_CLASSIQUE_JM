@@ -187,9 +187,9 @@
 							
 							if (encontrado){%>
 							
-								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" checked="true" onclick="pulsarCheck(this)">
+								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" checked="true" onclick="pulsarCheck(this)">
 							<%}else{%>
-								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" onclick="pulsarCheck(this)" >
+								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" onclick="pulsarCheck(this)" >
 							<%}
 						%>
 						
@@ -227,8 +227,7 @@
 	</siga:Table>
 
      <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  
-	  	regSeleccionados = "" + ((ejgSeleccionados == null) ? 0 : ejgSeleccionados.size());
+	  	regSeleccionados = "0";
 	  	%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 
@@ -255,6 +254,7 @@
 	   
 	   function pulsarCheck(obj){
 		   if (!obj.checked ){
+			   jQuery("#chkGeneral").prop('checked',false);
 			   	ObjArray.splice(ObjArray.indexOf(obj.value),1);
 			   	seleccionados1=ObjArray;
 		   }else{
@@ -264,13 +264,11 @@
 		  	
 		   document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 		   document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
-		   
 	   }
+	   
 	   function cargarChecks(){
 	   		
-	   		
-	   		 <% 
-	   		 if (ejgSeleccionados!=null){
+	   		 <%if (ejgSeleccionados!=null){
 	   		 	for (int p=0;p<ejgSeleccionados.size();p++){
 	   		 	
 		   			Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
@@ -283,65 +281,95 @@
 			ObjArray.toString();
 			seleccionados1=ObjArray;
 			document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
+			if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
+				document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+			}
 			
 	   }
 	   
 		function cargarChecksTodos(o){
-			if (o.checked){
-	   			<% 
-					if (ejgSeleccionados!=null){
-						for (int p=0;p<ejgSeleccionados.size();p++){
-							Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
-							valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
-							%>
-								var aux='<%=valor%>';
-								ObjArray.push(aux);
-							<%
+			var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
+		   	 
+		   	if (conf){
+				if (o.checked){
+					ObjArray = new Array();
+		   			<% 
+						if (ejgSeleccionados!=null){
+							for (int p=0;p<ejgSeleccionados.size();p++){
+								Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
+								valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
+								%>
+									var aux='<%=valor%>';
+									ObjArray.push(aux);
+								<%
+							}
 						}
+					%>
+					ObjArray.toString();
+					seleccionados1=ObjArray;
+					document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
+					var ele = document.getElementsByName("chkGuardia");
+					for (i = 0; i < ele.length; i++) {
+						ele[i].checked = true;
 					}
-				%>
-				ObjArray.toString();
-				seleccionados1=ObjArray;
-				document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
-				var ele = document.getElementsByName("chkGuardia");
-				for (i = 0; i < ele.length; i++) {
-					ele[i].checked = true;
+				} else {
+			 		ObjArray1= new Array();
+			 		ObjArray=ObjArray1;
+			 		seleccionados1=ObjArray;
+					document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
+					var ele = document.getElementsByName("chkGuardia");
+					for (i = 0; i < ele.length; i++) {
+						ele[i].checked = false; 
+					}
 				}
-			} else {
-		 		ObjArray1= new Array();
-		 		ObjArray=ObjArray1;
-		 		seleccionados1=ObjArray;
-				document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
-				var ele = document.getElementsByName("chkGuardia");
-				for (i = 0; i < ele.length; i++) {
-					ele[i].checked = false; 
+		   	  
+		   	  }else{
+		   		  
+				if (!o.checked){
+					
+					var ele = document.getElementsByName("chkGuardia");
+					for (i = 0; i < ele.length; i++) {
+				  		if(!ele[i].disabled){
+				  			if(ele[i].checked){	
+		     					ele[i].checked = false;
+		     				
+								ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
+							}
+						}
+				   	}
+					seleccionados1=ObjArray;
+				} else {
+	
+					var ele = document.getElementsByName("chkGuardia");
+					for (i = 0; i < ele.length; i++) {
+				  		if(!ele[i].disabled){
+							if(!ele[i].checked){				  		
+			    				ele[i].checked = true;
+								ObjArray.push(ele[i].value);
+							}
+						}
+				   	}
+					seleccionados1=ObjArray;
 				}
-			}
+				
+		   	}
+		   	document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
 			if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
 				document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 			}
 		}
 	   
 	   function checkTodos(){
-			var todos=1;
-			<% 
-				if (ejgSeleccionados!=null){
-					for (int p=0;p<ejgSeleccionados.size();p++){
-			   			Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
-						valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
-						if (!clavesEJG.get("SELECCIONADO").equals("1")){
-							%>
-								todos=0;
-							<%
-						}
-					}
+		   
+			var todos=true;
+			jQuery('.chkGuardia').each(function(){
+				if(!this.checked){
+					todos=false;
 				}
-			%>
-			if (todos==1){
-				document.getElementById("chkGeneral").checked=true;
-			}else{
-				document.getElementById("chkGeneral").checked=false;
-			}
+			});
+			
+			jQuery("#chkGeneral").prop('checked',todos);
+	   
 	   }
 	</script>
 <!-- INICIO: SUBMIT AREA -->
