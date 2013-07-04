@@ -18,6 +18,7 @@ td.disabled {
   opacity: 0.5;
 }
 textarea {
+  font-family: Arial;
   width: 100%;
 }
 form {
