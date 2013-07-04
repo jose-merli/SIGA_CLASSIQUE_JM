@@ -15,14 +15,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -33,6 +37,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
@@ -1551,4 +1558,39 @@ public class UtilidadesString {
 		}
 		return consulta;
 	}
+	
+	 /**
+	  * Method to convert map into json format
+	  * @param map with data to be converted into json
+	  * @return json string
+	  */
+	 public static String createJsonString(Map jsonMap) throws IOException {
+		 String jsonString = "";
+		 try{
+		  Writer writer = new StringWriter();
+		  JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(writer);
+		  ObjectMapper mapper = new ObjectMapper();
+		  mapper.writeValue(jsonGenerator, jsonMap);
+		  jsonGenerator.close();
+		  jsonString = writer.toString();
+		 } catch (Exception e){
+			 ClsLogging.writeFileLog("Error al crear JSON string desde MAP",10);
+		 }
+		 return jsonString;
+	 }
+	 
+	 /**
+	  * Method to convert json string into map
+	  * @param jsonString with valid json format
+	  * @return jsonMap HashMap
+	  */
+	 public static HashMap createHashMap(String jsonString) throws IOException {
+		 HashMap jsonMap = new HashMap<Object, Object>();
+		 try{
+			 jsonMap = new ObjectMapper().readValue(jsonString, HashMap.class);
+		 } catch (Exception e){
+			 ClsLogging.writeFileLog("Error al crear HASHMAP desde JSON STRING",10);
+		 }
+		 return jsonMap;
+	 }
 }

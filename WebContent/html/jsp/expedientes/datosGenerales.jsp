@@ -26,10 +26,14 @@
 <%@ page import="com.siga.expedientes.form.ExpDatosGeneralesForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
+<%@ page import="org.redabogacia.sigaservices.app.services.gen.SelectDataService"%>
 
 <!-- JSP -->
 <%
+	HashMap<String, String> paramsJSON = new HashMap<String, String>();
 	//Se pasa por defectola fecha de sistema al campo Fecha de Apertura
+	String idinstitucion_tipoexpediente = (String) request
+			.getParameter("idInstitucion_TipoExpediente");
 	String fechaApertura = (String) request
 			.getAttribute("fechaApertura");
 	String app = request.getContextPath();
@@ -131,8 +135,10 @@
 		idJuzgado = form.getJuzgado();
 	if (form.getIdInstitucionJuzgado() != null)
 		idInstitucionJuzgado = form.getIdInstitucionJuzgado();
-	if (form.getIdPretension() != null)
+	if (form.getIdPretension() != null){
 		idPretension = form.getIdPretension();
+		paramsJSON.put("idpretension",idPretension);
+	}
 	if (form.getIdArea() != null)
 		idArea = form.getIdArea();
 	if (form.getIdMateria() != null)
@@ -146,10 +152,15 @@
 		numExpD = form.getNumExpDisciplinario();
 	codigoEjg = form.getNumExpDisciplinarioCalc();
 	
+	paramsJSON.put("idarea", idArea);
+	paramsJSON.put("idmateria", idMateria);
 	String datosJuzgado = "{\"idarea\":\""+idArea+"\",\"idmateria\":\""+idMateria+"\"}";
 	String[] datosMateria = { "-1", userBean.getLocation() };
 
 	if (idJuzgado != null && idInstitucionJuzgado != null) {
+		paramsJSON.put("idjuzgado", idJuzgado);
+		paramsJSON.put("idinstitucion", idInstitucionJuzgado);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_JUZGADO_KEY, idInstitucionJuzgado);
 		juzgadoSel.add("{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
 		if (!idJuzgado.equals("")) {			
 			datosJuzgado = datosJuzgado.substring(0, datosJuzgado.length() - 1);
@@ -161,7 +172,10 @@
 	}
 
 	if (idMateria != null) {
-		materiaSel.add("{\"idmateria\":\""+idMateria+"\",\"idarea\":\""+idArea+"\",\"idinstitucion\":\""+userBean.getLocation()+"\"}");		
+		paramsJSON.put("idmateria", idMateria);
+		paramsJSON.put("idarea", idArea);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_MATERIA_KEY, idinstitucion_tipoexpediente);
+		materiaSel.add("{\"idmateria\":\""+idMateria+"\",\"idarea\":\""+idArea+"\",\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\"}");		
 	}
 
 	//recupero los campos visibles para mostrar o no ciertas leyendas
@@ -201,12 +215,26 @@
 				.getAttribute("idinst_idtipo_idfase_idestado");
 		idclasificacion = (String) request
 				.getAttribute("idclasificacion");
-		String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
-		vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
-		faseSel.add(0, vFase);
-		String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
-		estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
-		vClasif.add(idclasificacion);
+		if (idinst_idtipo_idfase != null){
+			String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+			paramsJSON.put("idfase", array_idinst_idtipo_idfase[2]);
+			paramsJSON.put("idinstitucion", array_idinst_idtipo_idfase[0]);
+			paramsJSON.put(SelectDataService.IDINSTITUCION_FASE_KEY, array_idinst_idtipo_idfase[0]);
+			paramsJSON.put("idtipoexpediente", array_idinst_idtipo_idfase[1]);
+			vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
+			faseSel.add(0, vFase);
+		}
+		if(idinst_idtipo_idfase_idestado != null){
+			String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+			paramsJSON.put("idestado", array_idinst_idtipo_idfase_idestado[3]);
+			paramsJSON.put("idfase", array_idinst_idtipo_idfase_idestado[2]);
+			paramsJSON.put("idinstitucion", array_idinst_idtipo_idfase_idestado[0]);
+			paramsJSON.put(SelectDataService.IDINSTITUCION_ESTADO_EXPEDIENTE_KEY, array_idinst_idtipo_idfase_idestado[0]);
+			paramsJSON.put(SelectDataService.IDINSTITUCION_CLASIFICACION_EXPEDIENTE_KEY, array_idinst_idtipo_idfase_idestado[0]);
+			paramsJSON.put("idtipoexpediente", array_idinst_idtipo_idfase_idestado[1]);
+			estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
+			vClasif.add(idclasificacion);
+		}
 	}else{
 		if (!copia.equals("s")) { //pestanhas:edicion o consulta
 			idinst_idtipo_idfase = (String) request
@@ -217,18 +245,27 @@
 					.getAttribute("idclasificacion");
 			if (idinst_idtipo_idfase != null){
 				String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+				paramsJSON.put("idfase", array_idinst_idtipo_idfase[2]);
+				paramsJSON.put("idinstitucion", array_idinst_idtipo_idfase[0]);
+				paramsJSON.put(SelectDataService.IDINSTITUCION_FASE_KEY, array_idinst_idtipo_idfase[0]);
+				paramsJSON.put("idtipoexpediente", array_idinst_idtipo_idfase[1]);
 				vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
 				faseSel.add(0, vFase);
 			}
 			if (idinst_idtipo_idfase_idestado != null){
 				String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+				paramsJSON.put("idestado", array_idinst_idtipo_idfase_idestado[3]);
+				paramsJSON.put("idfase", array_idinst_idtipo_idfase_idestado[2]);
+				paramsJSON.put("idinstitucion", array_idinst_idtipo_idfase_idestado[0]);
+				paramsJSON.put("idtipoexpediente", array_idinst_idtipo_idfase_idestado[1]);
+				paramsJSON.put(SelectDataService.IDINSTITUCION_ESTADO_EXPEDIENTE_KEY, array_idinst_idtipo_idfase_idestado[0]);
+				paramsJSON.put(SelectDataService.IDINSTITUCION_CLASIFICACION_EXPEDIENTE_KEY, array_idinst_idtipo_idfase_idestado[0]);
 				estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
 				vClasif.add(idclasificacion);
 			}
 		}
 	}
-	String idinstitucion_tipoexpediente = (String) request
-			.getParameter("idInstitucion_TipoExpediente");
+	
 	String tipoExp = (String) request.getParameter("idTipoExpediente");
 	if(form.getIdTipoExpediente()!=null && !form.getIdTipoExpediente().trim().equalsIgnoreCase(""))
 		tipoExp=form.getIdTipoExpediente();
@@ -283,10 +320,15 @@
 
 	String paramPretension = "{\"idpretension\":\"\"}";
 	if (form.getIdPretension() != null
-			&& (!form.getIdPretension().equals("")))
+			&& (!form.getIdPretension().equals(""))){
 		paramPretension = "{\"idpretension\":\""+form.getIdPretension()+"\"}";
+		paramsJSON.put("idpretension", form.getIdPretension());
+	}
 
 	if (idProcedimiento != null && !"".equals(idProcedimiento) && idInstitucionProcedimiento != null && !"".equals(idInstitucionProcedimiento)) {
+		paramsJSON.put("idprocedimiento", idProcedimiento);
+		paramsJSON.put("idinstitucion", idInstitucionProcedimiento);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_PROCEDIMIENTO_KEY, idInstitucionProcedimiento);
 		procedimientoSel.add(0, "{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}");
 	}
 
@@ -323,15 +365,29 @@
 	String dato = "";
 	if (idinst_idtipo_idfase_idestado != null && !"".equals(idinst_idtipo_idfase_idestado)){
 		String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+		paramsJSON.put("idinstitucion", idinstitucion_tipoexpediente);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_TIPO_EXPEDIENTE_KEY, idinstitucion_tipoexpediente);
+		paramsJSON.put("idtipoexpediente", tipoExp);
+		paramsJSON.put("idfase", array_idinst_idtipo_idfase_idestado[2]);
+		paramsJSON.put("idestado", array_idinst_idtipo_idfase_idestado[3]);
 		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\", \"idfase\":\""+array_idinst_idtipo_idfase_idestado[2]+"\", \"idestado\":\""+array_idinst_idtipo_idfase_idestado[3]+"\"}";
 	} else if (idinst_idtipo_idfase != null && !"".equals(idinst_idtipo_idfase)){
 		String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+		paramsJSON.put("idinstitucion", idinstitucion_tipoexpediente);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_TIPO_EXPEDIENTE_KEY, idinstitucion_tipoexpediente);
+		paramsJSON.put("idtipoexpediente", tipoExp);
+		paramsJSON.put("idfase", array_idinst_idtipo_idfase[2]);
 		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\", \"idfase\":\""+array_idinst_idtipo_idfase[2]+"\"}";
 	} else if (idinstitucion_tipoexpediente != null && !"".equals(idinstitucion_tipoexpediente) && tipoExp != null && !"".equals(tipoExp)){
+		paramsJSON.put("idinstitucion", idinstitucion_tipoexpediente);
+		paramsJSON.put(SelectDataService.IDINSTITUCION_TIPO_EXPEDIENTE_KEY, idinstitucion_tipoexpediente);
+		paramsJSON.put("idtipoexpediente", tipoExp);
 		dato = "{\"idinstitucion\":\""+idinstitucion_tipoexpediente+"\",\"idtipoexpediente\":\""+tipoExp+"\"}";
 	} else if (tipoExp != null && !"".equals(tipoExp)){
+		paramsJSON.put("idtipoexpediente", tipoExp);
 		dato = "{\"idtipoexpediente\":\""+tipoExp+"\"}";
-	}	
+	}
+	String paramJSONstring = UtilidadesString.createJsonString(paramsJSON);
 %>	
 
 <html>
@@ -1199,8 +1255,9 @@
 					<siga:Select queryId="getClasificacionesExpediente" 
 								id="clasificacion" 
 								selectedIds="<%=vClasif%>" 
-								params="<%=dato%>" 
-								disabled="<%=String.valueOf(bEditable)%>"/>		
+								params="<%=paramJSONstring%>"
+								required="true"
+								disabled="<%=String.valueOf(!bEditable)%>"/>		
 				</td>
 		<%
 			} 
@@ -1313,7 +1370,7 @@
 							childrenIds="comboEstados" 
 							disabled="<%=readOnlyCombo%>" 
 							selectedIds="<%=faseSel%>" 
-							params="<%=dato%>" 
+							params="<%=paramJSONstring%>"
 							required="true"/>				
 			</td>
 
@@ -1322,11 +1379,12 @@
 			</td>
 			
 			<td colspan="2">
+				
 				<siga:Select queryId="getEstadosExpediente" 
 							id="comboEstados" 
 							queryParamId="idestado" 
 							parentQueryParamIds="idfase" 
-							params="<%=dato%>" 
+							params="<%=paramJSONstring%>"
 							selectedIds="<%=estadoSel%>" 
 							disabled="<%=readOnlyCombo%>" 
 							required="true" 
@@ -1686,7 +1744,7 @@
 				<siga:Select queryId="getMateriaAreaExpediente" 
 							id="idMateria"
 							selectedIds="<%=materiaSel%>"
-							params="<%=vFase %>";
+							params="<%=paramJSONstring%>"
 							childrenIds="juzgado"
 							disabled="<%=readOnlyCombo%>"
 							width="250"/>			
@@ -1700,7 +1758,7 @@
 							queryId="getJuzgadosMateria" 
 							parentQueryParamIds="idmateria,idarea" 
 							childrenIds="procedimiento" 
-							params="<%=datosJuzgado%>"
+							params="<%=paramJSONstring%>"
 							showSearchBox="true" 
 							searchkey="CODIGOEXT2" 
 							searchBoxMaxLength="10" 
@@ -1720,7 +1778,7 @@
 				<siga:Select queryId="getProcedimientos" 
 							id="procedimiento"
 							parentQueryParamIds="idjuzgado"
-							params="<%=paramIdjuzgadoJSON%>"
+							params="<%=paramJSONstring%>"
 							selectedIds="<%=procedimientoSel%>"
 							readOnly="<%=readOnlyCombo%>"
 							width="250"/>
@@ -1743,7 +1801,7 @@
 				<siga:Select queryId="getPretensiones" 
 							id="idPretension"							
 							selectedIds="<%=pretensionSel%>"
-							params="<%=paramPretension%>"
+							params="<%=paramJSONstring%>"
 							readOnly="<%=readOnlyCombo%>"
 							width="250"/>
 			</td>
