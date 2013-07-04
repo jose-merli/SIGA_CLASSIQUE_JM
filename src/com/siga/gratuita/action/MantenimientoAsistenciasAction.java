@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -16,6 +17,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -627,9 +629,16 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			
 			String juzgado = miForm.getJuzgado();
 			if (juzgado != null && !juzgado.equals("")) {
-				String a[] = juzgado.split(",");
-				UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
-				UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
+				if (juzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(juzgado, HashMap.class);
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, hmIdJuzgadoObtenido.get("idjuzgado"));
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, hmIdJuzgadoObtenido.get("idinstitucion"));
+				} else {
+					String a[] = juzgado.split(",");
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
+				}
 			}
 
 			String comisaria = miForm.getComisaria();

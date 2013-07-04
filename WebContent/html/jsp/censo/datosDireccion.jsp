@@ -79,6 +79,7 @@
 	String idPersona = "";
 	String idInstitucion = "";
 	String idDireccion = "";
+	String sIdprovincia = "";
 	ArrayList idProvincia = new ArrayList();
 	ArrayList idPais = new ArrayList();
 	ArrayList idPoblacion = new ArrayList();
@@ -177,6 +178,7 @@
 
 				idProvincia.add(String.valueOf(htData
 						.get(CenDireccionesBean.C_IDPROVINCIA)));
+				sIdprovincia = String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA));
 				idPoblacion.add(String.valueOf(htData
 						.get(CenDireccionesBean.C_IDPOBLACION)));
 				ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String
@@ -273,6 +275,17 @@
 <script language="JavaScript">
 	
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
+		
+		jQuery(function(){
+			jQuery("#pais").on("change", function(){
+				selPais(jQuery(this).val());
+			});
+			jQuery("#provincia").on("change", function(){
+				if (trim(document.consultaDireccionesForm.pais.value) == idEspana) {
+					jQuery("#codigoPostal").val(jQuery(this).val() + "000");
+				}
+			});
+		});
 		
 		//Asociada al boton Volver -->
 		function accionCerrar(){ 		
@@ -770,7 +783,7 @@
 
 	//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 	function rellenarCampos() {
-		document.getElementById("provincia").onchange();
+		//document.getElementById("provincia").onchange();
 	}
 
 	function createProvince() {
@@ -783,8 +796,14 @@
 				Primary="0"+Primary;
 			}	  
 			var idProvincia	= Primary.substring(0,2);
-			document.getElementById("provincia").value=idProvincia;  				  
-			rellenarCampos();
+			if (jQuery("#provincia").val() != idProvincia){
+				if (jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+					jQuery("#provincia").val(idProvincia);
+					jQuery("#provincia").change();
+				} else {
+					alert("No se ha encontrado provincia para el código postal: " + document.consultaDireccionesForm.codigoPostal.value);
+				}
+			} 
 		}
 	}       
 	</script>
@@ -977,21 +996,11 @@
 										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp
 									</td>
 									<td>
-										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="pais" tipo="pais"
-											clase="boxCombo" obligatorio="false"
-											elementoSel="<%=idPais%>" accion="selPais(this.value);" /> 
-										<%
- 											} else {
- 										%>
-										<html:hidden property="pais" styleId="pais" value='<%=ididPais%>'></html:hidden>
-										<html:text name="consultaDireccionesForm" property="pais2" styleId="pais2"
-											value='<%=pais%>' size="40" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>"></html:text> <%
-											}
-										%>
+										<siga:Select id="pais" 
+													queryParamId="idpais" 
+													queryId="getPaises"
+													disabled="<%=String.valueOf(!editarCampos)%>"
+													selectedIds="<%=idPais%>"/>										
 									</td>
 								</tr>
 
@@ -1003,20 +1012,12 @@
 										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp(*)
 									</td>
 									<td id="provinciaEspanola">
-										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="provincia"
-											tipo="provincia" clase="boxCombo" obligatorio="false"
-											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> <%
- 											} else {
- 										%> 
- 										<html:text property="provincia" value="<%=provincia%>" styleId="provincia"
-											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-										<%
-											}
-										%>
+										<siga:Select id="provincia" 
+													queryParamId="idprovincia"
+													queryId="getProvincias"
+													childrenIds="poblacion"
+													selectedIds="<%=idProvincia%>"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
 									<td class="labelText" id="poblacionSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp
@@ -1026,18 +1027,17 @@
 									</td>
 									<td id="poblacionEspanola">
 										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="poblacion"
-											tipo="poblacion" clase="boxCombo"
-											elementoSel="<%=idPoblacion%>" hijo="t" /> <%
- 											} else {
- 										%> 
- 										<html:text property="poblacion" value="<%=poblacion%>" styleId="poblacion"
-											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-										<%
-											}
+										String idProvinciaJSON = "";
+										if (sIdprovincia != null && !"".equals(sIdprovincia)){
+											idProvinciaJSON = "{\"idprovincia\":\""+sIdprovincia+"\"}";
+										}
 										%>
+										<siga:Select id="poblacion"
+													queryId="getPoblacionesDeProvincia"
+													parentQueryParamIds="idprovincia"
+													params="<%=idProvinciaJSON%>"
+													selectedIds="<%=idPoblacion%>"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
 									<td class="ocultar" id="poblacionExtranjera">
 										<html:text name="consultaDireccionesForm" property="poblacionExt" styleId="poblacionExt"

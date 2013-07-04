@@ -448,8 +448,8 @@
 												<html:text property="tipoSeguro"  size="50" styleClass="boxConsulta" value="<%=seguro%>" readOnly="true"></html:text>											
 											<% } %>
 										<% }else{ %>
-											<siga:ComboBD nombre = "cmbTipoSeguro" tipo="cmbTipoSeguro" clase="boxCombo" elementoSel="<%=arraySel%>" obligatorio="false"/>
-										<% } %>	
+											<siga:Select queryId="getTiposSeguros" id="cmbTipoSeguro" selectedIds="<%=arraySel%>"/>
+										<% } %>												
 									</td>									
 								</tr>	
 								<tr>

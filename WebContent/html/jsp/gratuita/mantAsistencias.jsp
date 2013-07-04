@@ -183,12 +183,15 @@
 	}
 	
  	// Datos de la comisaria seleccionado:
+ 	String idcomisariaJSON = "";
 	String comisariaAsi            = (String) hash.get(ScsAsistenciasBean.C_COMISARIA);
 	String comisariaInstitucionAsi = (String) hash.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
 	if (comisariaAsi!=null && comisariaInstitucionAsi!=null){
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
-		if(!comisariaAsi.equals(""))
+		if(!comisariaAsi.equals("")){
 			parametroComisaria[1] = comisariaAsi;
+			idcomisariaJSON = "{\"idcomisaria\":\""+comisariaAsi+"\"}";
+		}
 	}
  	// Datos del estadoseleccionado:
 	String estadoAsi = (String) hash.get(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
@@ -453,7 +456,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<% if(modo.equals("ver")){%>
 					<%=TIPOASISTENCIASELDESC%>
 				<%}else{%>
-					<siga:ComboBD ancho="600" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true"  elementoSel="<%=TIPOASISTENCIASEL%>"/>
+					<siga:Select queryId="getTiposAsistencia" id="idTipoAsistencia" selectedIds="<%=TIPOASISTENCIASEL%>" width="600"/>
 				<%}%>
 				</td>	
 			</tr>
@@ -463,12 +466,17 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 					<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
 				</td>
 				
-				<td class="labelTextValor" width="80%">	
-				<% if((modo.equals("ver"))||(!idfacturacion.equals(""))){%>
-					<siga:ComboBD  readonly="true" ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>"/>
-				<%}else{%>
-					<siga:ComboBD  ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
-				<%}%>
+				<td class="labelTextValor" width="80%">					
+					<% 
+						boolean tipoasistenciaColegioDisabled = false;
+						if((modo.equals("ver"))||(!idfacturacion.equals("")))
+							tipoasistenciaColegioDisabled = true;
+					%>
+					<siga:Select id="idTipoAsistenciaColegio" 
+								queryId="getTiposAsistenciaDeColegio" 
+								selectedIds="<%=TIPOASISTENCIACOLEGIOSEL%>" 
+								disabled="<%=String.valueOf(tipoasistenciaColegioDisabled)%>" 
+								width="700"/>
 				</td>				
 			</tr>
 		</table>
@@ -499,11 +507,11 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				
 					<%if(usr.isLetrado()){%>
 						<td class="labelText">
-						<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxConsulta" readonly="true" obligatorioSinTextoSeleccionar="si"/>
-							<% 	}else{%>
-							<td class="labelTextValor">
-							<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" obligatorioSinTextoSeleccionar="si"/>									
-						<% }%>
+						<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="true"/>
+					<% 	}else{%>
+						<td class="labelTextValor">
+						<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="<%=readOnly%>"/>	
+					<% }%>
 					
 				</td>
 				<td class="labelText" >
@@ -570,24 +578,35 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		<tr>
 			<!-- Busqueda automatica de juzgados-->
 			<td colspan="4">
-	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
-		   <table width="100%">
-		   	<tr>
-		   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
-		   		</td>
-		   	<td>
-				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
-			</td> 
-			<% if(!modo.equals("ver")){%>
-			<td class="labelText" style="vertical-align:text-top;text-align: right">
-			<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
-			&nbsp;
-			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
-			<%}%>
-			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroComisaria%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroDiligencia(); cambiarComisaria(this);"/>
-			</td>
-			</tr>
-		</table>
+			   <siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
+			   <table width="100%">
+			   	<tr>
+			   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
+			   		</td>
+			   	<td>
+					<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
+				</td> 
+				
+				<td class="labelText" style="vertical-align:text-top;text-align: right">
+					<% if(!modo.equals("ver")){%>
+					<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
+					<%}%>
+				</td>
+				<td class="labelText" style="vertical-align:text-top;text-align: right">
+				
+				<siga:Select id="comisaria" 
+							queryId="getComisariasDeInstitucion" 
+							params="<%=idcomisariaJSON%>"
+							selectedIds="<%=comisariaSel%>"
+							showSearchBox="true"
+							searchkey="CODIGOEXT"
+							searchBoxMaxLength="10"
+							searchBoxWidth="8"
+							readOnly="<%=readOnly%>"
+							width="420"/>
+				</td>
+				</tr>
+			</table>
 	</siga:ConjCampos> 
 		</td>
 <!------------------>
@@ -606,13 +625,29 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
 				</td>
 				
-				<% if(!modo.equals("ver")){%>	
+				
 				<td class="labelText" style="vertical-align:text-top;text-align: right">	
+					<% if(!modo.equals("ver")){%>	
 				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-				   &nbsp;
-				   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
-				<%}%>
-				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" accion="actualizarTdNumeroProcedimiento(); cambiarJuzgado(this);"/>
+				   <%}%>
+				</td>
+				<td class="labelText" style="vertical-align:text-top;text-align: right">
+					<%
+					String paramsJuzgadoJSON = "{\"idjuzgado\":\""+juzgadoAsi+"\"}";
+					juzgadoSel = new ArrayList();
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+juzgadoAsi+"\",\"idinstitucion\":\""+juzgadoInstitucionAsi+"\"}");
+					%>
+					<siga:Select id="juzgado" 
+								queryParamId="idjuzgado"
+								queryId="getJuzgadosTurnos"
+								params="<%=paramsJuzgadoJSON%>"
+								selectedIds="<%=juzgadoSel%>"
+								showSearchBox="true"
+								searchkey="CODIGOEXT2"
+								searchBoxMaxLength="10"
+								searchBoxWidth="8"
+								readOnly="<%=readOnly%>"
+								width="420"/>
 				</td>   
 					
 			</tr>
@@ -634,11 +669,14 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 						<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>&nbsp;&nbsp;&nbsp;
 					</td>
 					<td> 
-						<%if(!modo.equals("ver")){%>
-							<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="420" clase="<%=estilo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false" parametro="<%=datosPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
-						<%}else{%>
-							<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" ancho="420" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosPretension%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
-						<%}%>
+						<%
+						String idPretensionJSON = "{\"idpretension\":\""+idPretension+"\"}";
+						%>
+						<siga:Select id="idPretension" 
+									queryId="getPretensiones" 
+									selectedIds="<%=pretensionesSel%>"
+									params="<%=idPretensionJSON%>"
+									readOnly="<%=readOnly%>"/>
 					</td>				
 					
 				</tr>	
@@ -1155,8 +1193,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	
 	function cargarComboModulo() {
 		<% if (!modo.equalsIgnoreCase("ver")) { %>
-			document.getElementById("juzgado").onchange();
-			document.getElementById("comisaria").onchange();	
+			//document.getElementById("juzgado").onchange();
+			//document.getElementById("comisaria").onchange();	
 		<% } %>	
 	}	
 		

@@ -131,7 +131,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.57 2013-07-03 09:37:59 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.58 2013-07-04 07:54:37 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -655,6 +655,9 @@ function jQueryLoaded(){
 			if (typeof childrenSelect.data("showsearchbox") != "undefined"){
 				sShowsearchbox ="&showsearchbox='true'";
 			}
+			// Funciona mucho mejor en IE que .html("");
+			childrenSelect.each(function(){this.innerHTML="";});
+			childrenSelect.html("<option>Cargando...</option>");
 			childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
 				console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
 				/* LO HACE EL ACTION
