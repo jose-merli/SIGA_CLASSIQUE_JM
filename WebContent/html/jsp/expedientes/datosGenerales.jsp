@@ -215,12 +215,16 @@
 					.getAttribute("idinst_idtipo_idfase_idestado");
 			idclasificacion = (String) request
 					.getAttribute("idclasificacion");
-			String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
-			vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
-			faseSel.add(0, vFase);
-			String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
-			estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
-			vClasif.add(idclasificacion);
+			if (idinst_idtipo_idfase != null){
+				String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
+				vFase = "{\"idfase\":\""+ array_idinst_idtipo_idfase[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase[1]+"\"}";
+				faseSel.add(0, vFase);
+			}
+			if (idinst_idtipo_idfase_idestado != null){
+				String[] array_idinst_idtipo_idfase_idestado = idinst_idtipo_idfase_idestado.split(",");
+				estadoSel.add("{\"idestado\":\""+ array_idinst_idtipo_idfase_idestado[3]+"\",\"idfase\":\""+ array_idinst_idtipo_idfase_idestado[2]+"\",\"idinstitucion\":\""+ array_idinst_idtipo_idfase_idestado[0]+"\",\"idtipoexpediente\":\""+array_idinst_idtipo_idfase_idestado[1]+"\"}");
+				vClasif.add(idclasificacion);
+			}
 		}
 	}
 	String idinstitucion_tipoexpediente = (String) request
