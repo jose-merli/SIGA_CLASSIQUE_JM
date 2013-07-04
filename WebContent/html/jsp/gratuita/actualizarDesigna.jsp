@@ -97,7 +97,7 @@
 	}		
 	function validarNig( strValue ) 
 	{
-		var objRegExp  = /^([0-9]{19})?$/;
+		var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
 		return objRegExp.test(strValue);
 	}	
 	function accionGuardar() 
