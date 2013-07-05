@@ -130,14 +130,13 @@ public class InscripcionGuardia {
 			// Controles
 			ScsGuardiasTurnoAdm guaadm = new ScsGuardiasTurnoAdm(usr);
 			ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
-			//TODO Descomentar la siguiente linea (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente:
-			// ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
+			ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
 			CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 			ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
 	
-			//Actualizar cola guardia
+			//Actualizar cola guardia para evitar que el ultimo grupo quede a caballo
 			ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(usr);
-			admGrupoGuardia.actualizarColaGuardia(idInstitucion, idTurno, idGuardia);
+			admGrupoGuardia.actualizarColaGuardiaConUltimoColegiadoPorGrupo(idInstitucion, idTurno, idGuardia);
 			
 			// obteniendo la guardia
 			Hashtable hashGuardia = new Hashtable();
@@ -157,8 +156,7 @@ public class InscripcionGuardia {
 			if (idOrdenacionColas == null)
 				throw new ClsExceptions("messages.general.error");
 			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
-			//TODO Descomentar la siguiente linea y borrar lo anyadido (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente):
-			orden = porGrupos ? " numeroGrupo, ordengrupo" : /* Anyadido: */ ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr); // ordadm.getOrderBy(idOrdenacionColas.toString(), usr);
+			orden = porGrupos ? " numeroGrupo, ordengrupo" : ordadm.getOrderBy(idOrdenacionColas.toString());
 	
 			// obteniendo ultimo apuntado de la guardia
 			if (idPersonaUltimo == null)

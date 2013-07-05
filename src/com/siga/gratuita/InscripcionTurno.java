@@ -109,12 +109,14 @@ public class InscripcionTurno {
 	 */
 	public static List<LetradoInscripcion> getColaTurno(Integer idInstitucion, Integer idTurno, String fecha, boolean quitarSaltos, UsrBean usr) throws ClsExceptions {
 		try {
+			// Controles
 			ScsTurnoAdm turadm = new ScsTurnoAdm(usr);
 			Hashtable hashTurno = new Hashtable();
 			ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
 			ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
 			ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
 			CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
+			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 			
 			
 			// obteniendo la guardia
@@ -130,9 +132,8 @@ public class InscripcionTurno {
 			
 			Long idPersonaUltimo = beanTurno.getIdPersonaUltimo();
 			String fechaUltimo = beanTurno.getFechaSolicitudUltimo();
-			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 			// obteniendo ordenacion de la guardia
-			String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr);
+			String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString());
 			
 			ScsInscripcionTurnoBean ultimoAnterior;
 			

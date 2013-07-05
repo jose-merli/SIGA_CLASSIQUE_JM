@@ -283,7 +283,7 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		else
 			this.updateDirect(bean);
 		//aalg: INC_09672_SIGA. Para actualizar el último idpersona de la cola si el grupo modificado es el último que ha trabajado
-		actualizarColaGuardiaPorGrupos(idInstitucion, idTurno, idGuardia);
+		actualizarColaGuardiaConUltimoColegiadoPorGrupo(idInstitucion, idTurno, idGuardia);
 	}
 	
 	public void updateOrderGruposLetrados() {
@@ -449,128 +449,82 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 			this.update(hashDataNew, hashDataOld);
 
 		} catch (ClsExceptions e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * 
-	*/
-	public void actualizarColaGuardia(Integer idInstitucion,Integer idTurno,Integer idGuardia) {
-		boolean repetido = false;
-		Hashtable hash = new Hashtable();
-		StringBuffer sql = new StringBuffer();
-		//Guardia del Turno
-		ScsGuardiasTurnoBean beanGuardiasTurno = new ScsGuardiasTurnoBean();
+	 * Se utiliza para asegurar que la cola de guardia tiene el puntero_ultimo en el ultimo colegiado del grupo.
+	 * Este control se necesita porque hay casos en los que la cola se queda a caballo dentro de un grupo:
+	 *  Por ejemplo, el grupo 3, que tiene 3 colegiados: A, B, C. 
+	 *  Si el puntero_ultimo apunta a B, es una incongruencia: este metodo lo arregla para que apunte a C
+	 *  
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 */
+	public void actualizarColaGuardiaConUltimoColegiadoPorGrupo(Integer idInstitucion, Integer idTurno, Integer idGuardia)
+	{
+		// Controles
 		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrbean);
-		Long idPersona, idGrupoGuardiaColegiado=null;
-		String fechaSubs="";
-		sql.append(" SELECT gru.idpersona, gru.Fechasuscripcion ,Gruult.IdgrupoguardiaColegiado ");
-		sql.append(" FROM Scs_Grupoguardiacolegiado Gru,Scs_Inscripcionguardia Ins,Scs_Grupoguardiacolegiado Gruult,Scs_Guardiasturno Gua ");
-		sql.append(" WHERE Gru.Idinstitucion = Ins.Idinstitucion ");
-		sql.append(" AND  Gru.Idpersona = Ins.Idpersona");
-		sql.append(" AND Gru.Idturno = Ins.Idturno");
-		sql.append(" AND Gru.Idguardia = Ins.Idguardia");
-		sql.append(" AND Gru.Fechasuscripcion = Ins.Fechasuscripcion");
-		
-		sql.append(" AND Gruult.Idpersona = Gru.Idpersona");
-		sql.append(" AND Gruult.IdgrupoguardiaColegiado = Gru.IdgrupoguardiaColegiado");
-		
-		sql.append(" AND Gruult.Idinstitucion = Gua.Idinstitucion");
-		sql.append(" AND Gruult.Idturno = Gua.Idturno");
-		sql.append(" AND Gruult.Idguardia = Gua.Idguardia");
 
-		sql.append(" AND Gruult.Idpersona = Gua.Idpersona_Ultimo");
-		sql.append(" AND Gruult.Fechasuscripcion = Gua.Fechasuscripcion_Ultimo");
-		sql.append(" AND Gruult.IdgrupoguardiaColegiado = Gua.Idgrupoguardia_Ultimo");
-
-		sql.append(" AND Gru.Idgrupoguardia = Gruult.Idgrupoguardia");
-
-		sql.append(" AND Gru.Orden >= Gruult.Orden");
-		sql.append(" AND Gru.Idinstitucion = " + idInstitucion + " ");
-		sql.append(" AND Gru.Idturno = " + idTurno + " ");
-		sql.append(" AND Gru.Idguardia = " + idGuardia);
-		sql.append(" ORDER BY Gru.Orden desc");
-		RowsContainer rc = new RowsContainer();
-		try {
-			if (rc.query(sql.toString())) {
-				Row fila = (Row) rc.get(0);
-				Hashtable registro = (Hashtable) fila.getRow();
-				if (registro != null) {
-					idPersona = new Long((String) registro.get("IDPERSONA"));
-					idGrupoGuardiaColegiado = new Long((String) registro.get("IDGRUPOGUARDIACOLEGIADO"));
-					fechaSubs = (String) registro.get("FECHASUSCRIPCION");
-					Hashtable<String, String> hashGuardiasTurno=new Hashtable<String, String>();
-					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
-					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
-					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
-					beanGuardiasTurno = (ScsGuardiasTurnoBean)guardiaAdm.selectByPK(hashGuardiasTurno).get(0);
-					beanGuardiasTurno.setIdPersona_Ultimo(idPersona);
-					beanGuardiasTurno.setIdGrupoGuardiaColegiado_Ultimo(idGrupoGuardiaColegiado);
-					beanGuardiasTurno.setFechaSuscripcion_Ultimo(fechaSubs);
-					guardiaAdm.updateDirect(beanGuardiasTurno);
-				}
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-	}
-	//aalg: INC_09672
-	public void actualizarColaGuardiaPorGrupos(Integer idInstitucion,Integer idTurno,Integer idGuardia) {
-		boolean repetido = false;
-		Hashtable hash = new Hashtable();
+		// obteniendo el ultimo colegiado del grupo tal que es el ultimo asignado en la cola:
 		StringBuffer sql = new StringBuffer();
-		//Guardia del Turno
-		ScsGuardiasTurnoBean beanGuardiasTurno = new ScsGuardiasTurnoBean();
-		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrbean);
-		Long idPersona, idGrupoGuardiaColegiado=null;
-		String fechaSubs="";
-		
 		sql.append(" SELECT idpersona, Fechasuscripcion, IdgrupoguardiaColegiado ");
-		sql.append(" FROM ( ");
+		sql.append("   FROM  ");
+		sql.append(" ( ");
 		sql.append(" SELECT gru.idpersona, gru.Fechasuscripcion, Gru.IdgrupoguardiaColegiado, gru.orden, gru.idgrupoguardia ");
 		sql.append("   FROM Scs_Grupoguardiacolegiado Gru, ");
-		sql.append("        Scs_Guardiasturno         Gua ");
-		sql.append("  WHERE Gru.Idinstitucion = Gua.Idinstitucion ");
-		sql.append("   AND Gru.Idturno = Gua.Idturno ");
-		sql.append("    AND Gru.Idguardia = Gua.Idguardia ");
-		sql.append("    AND Gru.Idinstitucion = " + idInstitucion + " ");
-		sql.append("   AND Gru.Idturno = " + idTurno + " ");
-		sql.append("   AND Gru.Idguardia = " + idGuardia );
-		sql.append("   and gru.idgrupoguardia = (select idgrupoguardia ");
-		sql.append("                                 from Scs_Grupoguardiacolegiado  ");
-		sql.append("                                 where Idinstitucion =  Gru.Idinstitucion ");
-		sql.append("                                 AND Idturno = Gru.Idturno ");
-		sql.append("                                 AND Idguardia = Gru.Idguardia and idgrupoguardiacolegiado = Gua.Idgrupoguardia_Ultimo) ");
-		sql.append("  ORDER BY Gru.Orden desc) ");
-		sql.append("  WHERE ROWNUM = 1 ");
+		sql.append("        Scs_Guardiasturno         Gua, ");
+		sql.append("        Scs_Grupoguardiacolegiado gruult ");
+
+		// ... dado el grupo que figura como ultimo en la guardia ...
+		sql.append("  WHERE Gruult.Idinstitucion = Gua.Idinstitucion ");
+		sql.append("    AND Gruult.Idturno = Gua.Idturno ");
+		sql.append("    AND Gruult.Idguardia = Gua.Idguardia ");
+		sql.append("    and gruult.idgrupoguardiacolegiado = Gua.Idgrupoguardia_Ultimo ");
 		
+		// ... se sacan los colegiados de dicho grupo ...
+		sql.append("    and gruult.idgrupoguardia = gru.idgrupoguardia ");
+		sql.append("    and gruult.Idinstitucion = Gru.Idinstitucion ");
+		sql.append("    AND gruult.Idturno = Gru.Idturno ");
+		sql.append("    AND gruult.Idguardia = Gru.Idguardia ");
+
+		sql.append("    AND Gru.Idinstitucion = " + idInstitucion + " ");
+		sql.append("    AND Gru.Idturno = " + idTurno + " ");
+		sql.append("    AND Gru.Idguardia = " + idGuardia);
+		
+		// ... se ordenan por su orden de forma descendente ...
+		sql.append("  ORDER BY Gru.Orden desc ");
+		sql.append("  ) ");
+		
+		// ... y asi podemos obtener el ultimo colegiado del grupo ...
+		sql.append("  WHERE ROWNUM = 1 ");
+
+		// actualizando el ultimo colegiado de la guardia al ultimo colegiado del grupo (que era ultimo de la guardia)
 		RowsContainer rc = new RowsContainer();
 		try {
 			if (rc.query(sql.toString())) {
 				Row fila = (Row) rc.get(0);
 				Hashtable registro = (Hashtable) fila.getRow();
 				if (registro != null) {
-					idPersona = new Long((String) registro.get("IDPERSONA"));
-					idGrupoGuardiaColegiado = new Long((String) registro.get("IDGRUPOGUARDIACOLEGIADO"));
-					fechaSubs = (String) registro.get("FECHASUSCRIPCION");
-					Hashtable<String, String> hashGuardiasTurno=new Hashtable<String, String>();
+					Hashtable<String, String> hashGuardiasTurno = new Hashtable<String, String>();
 					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
 					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
 					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
-					beanGuardiasTurno = (ScsGuardiasTurnoBean)guardiaAdm.selectByPK(hashGuardiasTurno).get(0);
-					beanGuardiasTurno.setIdPersona_Ultimo(idPersona);
-					beanGuardiasTurno.setIdGrupoGuardiaColegiado_Ultimo(idGrupoGuardiaColegiado);
-					beanGuardiasTurno.setFechaSuscripcion_Ultimo(fechaSubs);
+					
+					ScsGuardiasTurnoBean beanGuardiasTurno = new ScsGuardiasTurnoBean();
+					beanGuardiasTurno = (ScsGuardiasTurnoBean) guardiaAdm.selectByPK(hashGuardiasTurno).get(0);
+					beanGuardiasTurno.setIdPersona_Ultimo(new Long((String) registro.get("IDPERSONA")));
+					beanGuardiasTurno.setIdGrupoGuardiaColegiado_Ultimo(new Long((String) registro.get("IDGRUPOGUARDIACOLEGIADO")));
+					beanGuardiasTurno.setFechaSuscripcion_Ultimo((String) registro.get("FECHASUSCRIPCION"));
 					guardiaAdm.updateDirect(beanGuardiasTurno);
 				}
 
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-	  
+ 
 }

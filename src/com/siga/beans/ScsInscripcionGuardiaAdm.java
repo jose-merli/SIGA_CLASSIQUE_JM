@@ -1097,7 +1097,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 				consulta+=" (case "+
 			         " when Ins.Fechavalidacion Is Not Null And "+
 			              " Trunc(Ins.Fechavalidacion) <= "+
-			              " nvl('01/04/2012', Ins.Fechavalidacion) And "+
+			              " nvl('"+fechaGuardia+"', Ins.Fechavalidacion) And "+
 			              " (Ins.Fechabaja Is Null Or "+
 			              " Trunc(Ins.Fechabaja) > nvl('"+fechaGuardia+"', '01/01/1900')) then "+
 			          " '1' "+

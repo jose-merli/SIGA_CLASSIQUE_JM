@@ -143,15 +143,13 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 	 * @return Order by sin el "order by"
 	 * @throws ClsExceptions
 	 */
-	public static String getOrderBy(String idOrdenacionColas, UsrBean usr)
+	public String getOrderBy(String idOrdenacionColas)
 			throws ClsExceptions
 	{
-		ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
-		Hashtable hashOrden = new Hashtable();
-		
 		// obteniendo el orden
+		Hashtable hashOrden = new Hashtable();
 		hashOrden.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS, idOrdenacionColas);
-		Vector vOrden = ordadm.select(hashOrden);
+		Vector vOrden = this.select(hashOrden);
 		ScsOrdenacionColasBean ordenBean = (ScsOrdenacionColasBean) vOrden.get(0);
 		Integer apellidos = ordenBean.getAlfabeticoApellidos();
 		Integer antiguedad = ordenBean.getAntiguedadCola();
@@ -179,7 +177,7 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 				orden += ", ";
 			}
 			if (Math.abs(numerocolegiado) == i) {
-//				orden += "to_number("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+")";				 
+				//orden += "to_number("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+")"; esta linea queda comentada para que se vea que el to_number es peligroso				 
 				orden += "lpad("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+",20,'0')";
 				if (Math.abs(numerocolegiado) != numerocolegiado) orden += " desc";
 				orden += ", ";
