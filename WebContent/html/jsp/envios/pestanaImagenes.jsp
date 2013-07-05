@@ -60,6 +60,8 @@
 				datos = document.getElementById('tablaDatosDinamicosD');
 				datos.value = ""; 
 				preparaDatos(fila, 'tablaDatos', datos);
+				document.forms[0].idImagen.value = document.getElementById("oculto"+fila+"_4").value;
+				
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "download";
 				document.forms[0].submit();
@@ -87,6 +89,14 @@
 			<html:hidden property="volverModo"/>
 			<html:hidden property="editable"/>
 			<html:hidden property="idPlantillaEnvios"/>
+			<html:hidden property="idImagen"/>
+			
+			
+			
+			
+			
+			
+			
 
 		</html:form>
 
