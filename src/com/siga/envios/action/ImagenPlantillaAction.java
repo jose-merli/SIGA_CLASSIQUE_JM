@@ -92,8 +92,8 @@ public class ImagenPlantillaAction extends MasterAction
 		try 
 		{
 			ImagenPlantillaForm form = (ImagenPlantillaForm)formulario;
-			String idImagen = (String)form.getDatosTablaOcultos(0).elementAt(3);
-			form.setIdImagen(idImagen);
+			//String idImagen = (String)form.getDatosTablaOcultos(0).elementAt(3);
+			//form.setIdImagen(idImagen);
 
 			EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.getUserBean(request));
 			File fImagen = admImagenPlantilla.getImagen(form.getImagenPlantillaBean());

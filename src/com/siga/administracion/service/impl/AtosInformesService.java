@@ -182,29 +182,26 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			String[] idTiposEnvio = idTipoEnvios.split("##");
 			if(idTiposEnvio.length>0){
 				for (int i = 0; i < idTiposEnvio.length; i++) {
-					String[] idsTipoEnvio = idTiposEnvio[i].split(",");
-					if(idsTipoEnvio.length>1){
-						String idTipoEnvio = idsTipoEnvio[1];
-						if(!idTipoEnvio.equals("")){
-							AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
-							envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
-							envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
-							envioInformeBean.setIdTipoEnvios(idTipoEnvio);
-							if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
-								envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
-								if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
-									envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
-							}else{
-								envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
-								
-							}
-							envioInformeAdm.insert(envioInformeBean);
+					String idTipoEnvio = idTiposEnvio[i];
+					
+					if(!idTipoEnvio.equals("")){
+						AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+						envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+						envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+						envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+						if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+							envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+							if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+								envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
 						}else{
-							break;
+							envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+							
 						}
+						envioInformeAdm.insert(envioInformeBean);
 					}else{
 						break;
 					}
+					
 					
 				}
 			}
@@ -265,29 +262,26 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		envioInformeAdm.deleteDirect(tiposEnvioHashtable, claves);
 		if(idTiposEnvio.length>0){
 			for (int i = 0; i < idTiposEnvio.length; i++) {
-				String[] idsTipoEnvio = idTiposEnvio[i].split(",");
-				if(idsTipoEnvio.length>1){
-					String idTipoEnvio = idsTipoEnvio[1];
-					if(!idTipoEnvio.equals("")){
-						AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
-						envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
-						envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
-						envioInformeBean.setIdTipoEnvios(idTipoEnvio);
-						if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
-							envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
-							if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
-								envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
-						}else{
-							envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
-							
-						}
-						envioInformeAdm.insert(envioInformeBean);
+				String idTipoEnvio = idTiposEnvio[i];
+				
+				if(!idTipoEnvio.equals("")){
+					AdmEnvioInformeBean envioInformeBean = new AdmEnvioInformeBean();
+					envioInformeBean.setIdInstitucion(informeVo.getIdInstitucion());
+					envioInformeBean.setIdPlantilla(informeVo.getIdPlantilla());
+					envioInformeBean.setIdTipoEnvios(idTipoEnvio);
+					if(informeForm.getIdTipoEnvio()!=null &&informeForm.getIdTipoEnvio().equals(idTipoEnvio)){
+						envioInformeBean.setDefecto(ClsConstants.DB_TRUE);
+						if(informeForm.getIdPlantillaEnvio()!=null &&!informeForm.getIdPlantillaEnvio().equals(""))
+							envioInformeBean.setIdPlantillaEnvioDef(informeForm.getIdPlantillaEnvio());
 					}else{
-						break;
+						envioInformeBean.setDefecto(ClsConstants.DB_FALSE);
+						
 					}
+					envioInformeAdm.insert(envioInformeBean);
 				}else{
 					break;
 				}
+				
 				
 			}
 		}
