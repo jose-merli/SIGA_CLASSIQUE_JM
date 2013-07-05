@@ -211,7 +211,7 @@ public class TagBotonesAccion extends TagSupport {
 			}
 
 			//out.println("<div id=\"divBotones\" class=\""+this.clase+"\">");
-			out.println("<table class=\""+this.clase+"\" align=\"center\">");
+			out.println("<table class=\""+this.clase+"\" id=\"idBotonesAccion\"  align=\"center\">");
 			out.println("<tr>");
 			if (this.titulo!=null && !titulo.equals("")) {
 				out.println("<td class=\"titulitos\">");

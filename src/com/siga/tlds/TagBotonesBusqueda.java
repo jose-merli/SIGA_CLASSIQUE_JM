@@ -135,7 +135,7 @@ public class TagBotonesBusqueda extends TagSupport {
 			if (this.clase==null || this.clase.trim().equals("")) {
 				this.clase = "botonesSeguido"; 
 			}
-			out.println("<table class=\""+this.clase+"\" align=\"center\" >");
+			out.println("<table class=\""+this.clase+"\" id=\"idBotonesBusqueda\" align=\"center\" >");
 			out.println("<tr> ");
 			out.println("<td class=\"titulitos\">");
 			if (this.titulo!=null) {
