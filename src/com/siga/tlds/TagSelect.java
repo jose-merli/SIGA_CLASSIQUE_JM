@@ -91,7 +91,7 @@ public class TagSelect extends TagSupport {
 			try {
 				final HashMap<String, List<KeyValue>> hmData = (HashMap<String, List<KeyValue>>) UtilidadesString.createHashMap(this.dataJSON, new TypeReference<HashMap<String, List<KeyValue>>>() {});
 				options = hmData.get(DATA_JSON_OPTION_KEY);				
-			} catch (IOException e) {
+			} catch (Exception e) {
 				ClsLogging.writeFileLogError("ERROR AL TRATAR DE OBTENER LAS OPTIONS (" + this.dataJSON + ") DEL SELECT CON ID: " + this.id, e, 10);
 			}
 		} else {

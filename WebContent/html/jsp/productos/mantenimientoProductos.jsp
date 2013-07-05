@@ -20,6 +20,9 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 
 <!-- IMPORTS -->
+<%@ page import="com.siga.tlds.*"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.lang.*"%>
@@ -43,7 +46,13 @@
 
 	// Valor tarjeta, Domiciliacion Bancaria
 	//String valorMomentoCargo[] = {""+ClsConstants.TIPO_FORMAPAGO_TARJETA,""+ClsConstants.TIPO_FORMAPAGO_FACTURA};
-	String valorMomentoCargo = "{'options':[{'key':'"+ClsConstants.TIPO_FORMAPAGO_TARJETA+"', 'value':'alSolicitar'},{'key':'"+ClsConstants.TIPO_FORMAPAGO_FACTURA+"', 'value':'proximoPeriodo'}]}";
+	//String valorMomentoCargo = "{'options':[{'key':'"+ClsConstants.TIPO_FORMAPAGO_TARJETA+"', 'value':'alSolicitar'},{'key':'"+ClsConstants.TIPO_FORMAPAGO_FACTURA+"', 'value':'proximoPeriodo'}]}";
+	HashMap<String, List<KeyValue>> hmValorMomentoCargo = new HashMap<String, List<KeyValue>>();
+	ArrayList<KeyValue> arlOptions = new ArrayList<KeyValue>();
+	arlOptions.add(new KeyValue(String.valueOf(ClsConstants.TIPO_FORMAPAGO_TARJETA), UtilidadesString.getMensajeIdioma(usrbean, "alSolicitar")));
+	arlOptions.add(new KeyValue(String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA), UtilidadesString.getMensajeIdioma(usrbean, "proximoPeriodo")));
+	hmValorMomentoCargo.put(TagSelect.DATA_JSON_OPTION_KEY,arlOptions);
+	String valorMomentoCargo = UtilidadesString.createJsonString(hmValorMomentoCargo);
 
 	String valorModo = "";
 	
