@@ -107,7 +107,7 @@ public final class SIGASvlProcesoAutomaticoFacturacionSJCS  extends SIGAContextL
 			BusinessManager businessManager = BusinessManager.getInstance()  ;
    			FacturacionSJCSService facturacionSJCSService = (FacturacionSJCSService)businessManager.getService(FacturacionSJCSService.class);
    			facturacionSJCSService.procesarAutomaticamenteFacturacionSJCS();
-		    ClsLogging.writeFileLogWithoutSession(" - OK. >>>  Ejecutando Notificación: \"" + sNombreProceso + "\" ejecutada OK. " + sProximaEjecucion, 3);
+		    ClsLogging.writeFileLogWithoutSession(" - FIN . >>>  Notificación  \"" + sNombreProceso + "\" ejecutada OK. " + sProximaEjecucion, 3);
 		}
 		catch(Exception e)
 		{
