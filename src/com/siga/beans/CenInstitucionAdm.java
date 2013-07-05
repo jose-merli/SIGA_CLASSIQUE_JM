@@ -194,10 +194,8 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		
 		String nombreInstitucion="";
 		RowsContainer rows=new RowsContainer();
-        String sql="select DOMICILIO || ' (' || CODIGOPOSTAL || ')' AS DOMICILIO from cen_direcciones " +
-           " where idpersona=(SELECT I.IDPERSONA FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION=" + idInstitucion + ") " +
-           " and preferente like '%C%' " + 
-           " and idinstitucion=" + idInstitucion;
+        String sql="select DOMICILIO || ' (' || CODIGOPOSTAL || ')' AS DOMICILIO ";
+        sql += this.getSqlDireccioInstitucion(idInstitucion);
         if(rows.find(sql)){
             Hashtable htRow=((Row)rows.get(0)).getRow();
             // El valor devuelto será null si no existe padre
@@ -218,10 +216,8 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		
 		String nombreInstitucion="";
 		RowsContainer rows=new RowsContainer();
-        String sql="select (SELECT P.NOMBRE FROM CEN_POBLACIONES P WHERE P.IDPOBLACION=cen_direcciones.IDPOBLACION) AS POBLACION  from cen_direcciones " +
-           " where idpersona=(SELECT I.IDPERSONA FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION=" + idInstitucion + ") " +
-           " and preferente like '%C%' " + 
-           " and idinstitucion=" + idInstitucion;
+        String sql="select (SELECT P.NOMBRE FROM CEN_POBLACIONES P WHERE P.IDPOBLACION=cen_direcciones.IDPOBLACION) AS POBLACION ";
+        sql += this.getSqlDireccioInstitucion(idInstitucion);
         if(rows.find(sql)){
             Hashtable htRow=((Row)rows.get(0)).getRow();
             // El valor devuelto será null si no existe padre
@@ -230,7 +226,18 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
  
 		return nombreInstitucion;
 	}
-
+	
+	public String getSqlDireccioInstitucion (String idInstitucion) throws ClsExceptions,SIGAException {
+		
+		RowsContainer rows=new RowsContainer();
+        String sql=" from cen_direcciones " +
+           " where idpersona=(SELECT I.IDPERSONA FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION=" + idInstitucion + ") " +
+           " and preferente like '%C%' " + 
+           " and fechabaja is null " +           
+           " and idinstitucion=" + idInstitucion;
+ 
+		return sql;
+	}
 	
 	/**
 	 * Funcion que devuelve el identificador de la persona
