@@ -163,7 +163,15 @@ jQuery.noConflict();
 		
 		<table>
 			<tr>
-				<td width="87" class="labelText">Comunicacion</td>
+				<td width="25%">
+				</td>
+				<td width="75%">
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma
+						key="informes.genericos.comunicacion" />
+				</td>
 				<td class="labelTextValor"><html:text name="DefinirEnviosForm"
 						property="nombre" value="${asunto}" size="50" maxlength="100" styleClass="box"></html:text>
 				</td>
@@ -340,6 +348,13 @@ function accionDownload()
 		var oCheck = document.getElementsByName("chkPL");
 		var idsInformes = "";
 		error = "";
+		if(DefinirEnviosForm.nombre==''){
+			error = "<siga:Idioma key='errors.required' arg0='informes.genericos.comunicacion'/>"+ '\n';
+			alert(error);
+			return  false;
+			
+			
+		}
 		for (i = 0; i < oCheck.length; i++) {
 			if (oCheck[i].checked) {
 				ids = oCheck[i].id.split("_");
