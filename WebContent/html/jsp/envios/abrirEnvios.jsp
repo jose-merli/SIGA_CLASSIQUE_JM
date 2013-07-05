@@ -15,6 +15,7 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants,java.lang.*"%>
@@ -26,7 +27,8 @@
 	HttpSession ses=request.getSession();
 	
 	UsrBean userBean = (UsrBean)ses.getAttribute(("USRBEAN"));
-
+	//boolean isComision = request.getAttribute("isComision");
+	
 //	String buscar = (String) request.getAttribute("buscarEnvios");
 	String buscar = (String) request.getAttribute("buscar");
 	
@@ -80,7 +82,7 @@
 	
 </head>
 
-<body onload="ajusteAltoBotones('resultado');<%=funcionBuscar%>">
+<body onload="ajustarAltoCondicional();<%=funcionBuscar%>">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -183,8 +185,12 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-
-		<siga:ConjBotonesBusqueda botones="B,N,CON"/>
+		<c:set var="botones" value="B,N,CON"/>
+		<c:if test="${isComision}">
+			<c:set var="botones" value="B"/>
+			
+		</c:if>
+		<siga:ConjBotonesBusqueda botones="${botones}"/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -250,6 +256,14 @@
 				document.RecuperarConsultasForm.submit();
 			
 			}
+			function ajustarAltoCondicional()
+			{		
+				if(document.getElementById("idBotonesAccion"))
+					ajusteAltoBotones('resultado');
+				else{
+					ajusteAlto('resultado');
+				}
+			}
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -264,8 +278,10 @@
 					marginwidth="0";					 
 					class="frameGeneral">
 	</iframe>
-
-		<siga:ConjBotonesAccion botones="IE" clase="botonesDetalle"/> 
+	<c:if test="${!isComision}">
+		<siga:ConjBotonesAccion botones="IE" clase="botonesDetalle"  />
+	</c:if>
+		 
 
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
