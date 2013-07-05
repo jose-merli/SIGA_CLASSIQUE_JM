@@ -16,6 +16,8 @@ import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
@@ -63,11 +65,13 @@ public class SolicitudesEEJG {
 		URL url = new URL(urlWS);		
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
 		
-		String idSolicitudImportada = null;
+		
 		
 		if (scsEejgPeticionesBean.getIdInstitucion() == null) {
 			throw new IllegalArgumentException("La institucion o zona no puede ser nula");
 		}
+		
+		String idSolicitudImportada = getIdentificadorEjg(usrBean, scsEejgPeticionesBean);	
 		String idZona = scsEejgPeticionesBean.getIdInstitucion().toString();
 		String dNI_NIE_Tramitador = getDNITramitador(usrBean, scsEejgPeticionesBean);
 		
@@ -110,6 +114,26 @@ public class SolicitudesEEJG {
 		}
 		return nif;
 	}
+	private String getIdentificadorEjg(UsrBean usrBean, ScsEejgPeticionesBean scsEejgPeticionesBean) throws ClsExceptions {
+		StringBuffer identificadorEjg = null;
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+		Hashtable hash = new Hashtable();
+		hash.put(ScsEJGBean.C_IDINSTITUCION, scsEejgPeticionesBean.getIdInstitucion());
+		hash.put(ScsEJGBean.C_IDTIPOEJG, scsEejgPeticionesBean.getIdTipoEjg());
+		hash.put(ScsEJGBean.C_ANIO, scsEejgPeticionesBean.getAnio());
+		hash.put(ScsEJGBean.C_NUMERO, scsEejgPeticionesBean.getNumero());
+		Vector vector = ejgAdm.selectByPK(hash);
+		if (vector != null && vector.size() > 0) {
+			ScsEJGBean scsEJGBean = (ScsEJGBean) vector.get(0);
+			identificadorEjg = new StringBuffer();
+			identificadorEjg.append(scsEJGBean.getAnio());
+			identificadorEjg.append("/");
+			identificadorEjg.append(scsEJGBean.getNumEJG());
+			
+		}
+		return identificadorEjg!=null?identificadorEjg.toString():null;
+	}
+	
 
 	/**
 	 * 
