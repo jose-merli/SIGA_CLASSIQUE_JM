@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +41,9 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.type.TypeReference;
+import org.redabogacia.sigaservices.app.util.KeyValue;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
@@ -1563,18 +1567,56 @@ public class UtilidadesString {
 	  * Method to convert map into json format
 	  * @param map with data to be converted into json
 	  * @return json string
-	  */
+	  */	
 	 public static String createJsonString(Map jsonMap) throws IOException {
+		 return UtilidadesString.createJsonString(jsonMap, null, false);
+	 }
+	 
+	 public static String createJsonString(Map jsonMap, UsrBean usr, boolean translateValue) throws IOException {
+		 String jsonString = "";
+		 if (jsonMap != null && jsonMap.size() > 0){
+			 try{
+				if (translateValue && usr != null){
+					 Iterator iteraKeys = jsonMap.keySet().iterator();
+					 while (iteraKeys.hasNext()){
+						 Object key = iteraKeys.next();
+						 Object value = jsonMap.get(key);
+						 try{
+							 if (value instanceof String || !StringUtils.isEmpty(value.toString())){
+								 jsonMap.put(key, UtilidadesString.getMensajeIdioma(usr, value.toString()));
+							 }
+						 } catch (Exception e){
+							 
+						 }
+					 }
+				}
+				Writer writer = new StringWriter();
+				JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(writer);
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writeValue(jsonGenerator, jsonMap);
+				jsonGenerator.close();
+				jsonString = writer.toString();
+			 } catch (Exception e){
+				 ClsLogging.writeFileLog("Error al crear JSON string desde MAP",10);
+			 }
+		 }
+		 return jsonString;
+	 }
+	 
+	 public static String createJsonString(String jsonKey, String jsonValue) throws IOException {
 		 String jsonString = "";
 		 try{
-		  Writer writer = new StringWriter();
-		  JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(writer);
-		  ObjectMapper mapper = new ObjectMapper();
-		  mapper.writeValue(jsonGenerator, jsonMap);
-		  jsonGenerator.close();
-		  jsonString = writer.toString();
+			 if (jsonKey != null){
+				 jsonKey = "";
+			 }
+			 if (jsonKey != null){
+				 jsonKey = "";
+			 }
+			 if (!"".equals(jsonKey)){
+				 jsonString = "{\""+jsonKey.toLowerCase()+"\":\""+jsonValue+"\"}";
+			 }
 		 } catch (Exception e){
-			 ClsLogging.writeFileLog("Error al crear JSON string desde MAP",10);
+			 ClsLogging.writeFileLog("Error al crear JSON con key: "+jsonKey+ " y value: "+jsonValue,10);
 		 }
 		 return jsonString;
 	 }
@@ -1585,12 +1627,27 @@ public class UtilidadesString {
 	  * @return jsonMap HashMap
 	  */
 	 public static HashMap createHashMap(String jsonString) throws IOException {
+		 return UtilidadesString.createHashMap(jsonString, HashMap.class);
+	 }
+	 
+	 public static HashMap createHashMap(String jsonString, Class mapClass) throws IOException {
 		 HashMap jsonMap = new HashMap<Object, Object>();
 		 try{
-			 jsonMap = new ObjectMapper().readValue(jsonString, HashMap.class);
+			 jsonMap = new ObjectMapper().readValue(jsonString, mapClass);
 		 } catch (Exception e){
 			 ClsLogging.writeFileLog("Error al crear HASHMAP desde JSON STRING",10);
 		 }
 		 return jsonMap;
 	 }
+	 
+	 public static Object createHashMap(String jsonString, TypeReference typeReference) throws IOException {
+		 Object result= null;
+		 try{
+			 result = new ObjectMapper().readValue(jsonString, typeReference);
+		 } catch (Exception e){
+			 ClsLogging.writeFileLog("Error al crear HASHMAP desde JSON STRING",10);
+		 }
+		 return result;
+	 }
+	 
 }

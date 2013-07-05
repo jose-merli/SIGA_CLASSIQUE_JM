@@ -131,7 +131,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.58 2013-07-04 07:54:37 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.59 2013-07-05 10:26:56 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -645,6 +645,10 @@ function jQueryLoaded(){
 			var selectedIds = "";
 			if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
 				selectedIds = "&selectedIds="+childrenSelect.data("inival");
+			}
+			if (typeof childrenSelect.data("set-id-value") != "undefined"){
+				selectedIds = "&selectedIds="+childrenSelect.data("set-id-value");
+				childrenSelect.removeData("set-id-value");
 			}
 			
 			var required = "";

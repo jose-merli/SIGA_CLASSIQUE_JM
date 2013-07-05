@@ -17,6 +17,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +45,7 @@ public class TagSelect extends TagSupport {
 	private static final long serialVersionUID = 1661010558139313776L;
 
 	public static final String DEFAULT_NOT_SELECTED_ID = "-1";	
+	public static final String DATA_JSON_OPTION_KEY = "options";
 
 	private String id;
 	private String label;
@@ -87,16 +89,9 @@ public class TagSelect extends TagSupport {
 		List<KeyValue> options = new ArrayList<KeyValue>();
 		if (StringUtils.hasText(this.dataJSON)){
 			try {
-				final JSONObject dataJSON = new JSONObject(this.dataJSON);
-				final JSONArray optionsJSON = dataJSON.getJSONArray("options");
-				for (int i = 0; i < optionsJSON.length(); ++i) {
-					final JSONObject optionJSON = optionsJSON.getJSONObject(i);
-					KeyValue option = new KeyValue(optionJSON.getString("key"), optionJSON.getString("value"));
-					if (optionJSON.has("searchKey"))
-						option.setSearchKey(optionJSON.getString("searchKey"));
-					options.add(option);
-				}
-			} catch (JSONException e) {
+				final HashMap<String, List<KeyValue>> hmData = (HashMap<String, List<KeyValue>>) UtilidadesString.createHashMap(this.dataJSON, new TypeReference<HashMap<String, List<KeyValue>>>() {});
+				options = hmData.get(DATA_JSON_OPTION_KEY);				
+			} catch (IOException e) {
 				ClsLogging.writeFileLogError("ERROR AL TRATAR DE OBTENER LAS OPTIONS (" + this.dataJSON + ") DEL SELECT CON ID: " + this.id, e, 10);
 			}
 		} else {
