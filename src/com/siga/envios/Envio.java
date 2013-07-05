@@ -636,6 +636,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
         enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
+        enviosBean.setComisionAJG(this.usrBean.isComision()?Short.valueOf(ClsConstants.DB_TRUE):Short.valueOf(ClsConstants.DB_FALSE));
         envAdm.insert(enviosBean);
 
         // Copiamos los datos la plantilla, incluidos los remitentes

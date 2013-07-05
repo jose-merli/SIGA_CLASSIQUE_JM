@@ -16,7 +16,7 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 	private Integer idPlantillaEnvios;
 	private Integer idPlantilla;
 	
-	
+	private Short comisionAJG;
 	
 	private String nombre;
 	private String acuseRecibo;
@@ -32,6 +32,7 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
 	static public final String C_ACUSERECIBO = "ACUSERECIBO";
+	static public final String C_COMISIONAJG = "COMISIONAJG";
 	
 	static public final String C_NOMBRE = "NOMBRE";	
 	static public final String C_FECHAPROGRAMADA = "FECHAPROGRAMADA";	
@@ -138,6 +139,16 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 
 	public void setAcuseRecibo(String acuseRecibo) {
 		this.acuseRecibo = acuseRecibo;
+	}
+
+
+	public Short getComisionAJG() {
+		return comisionAJG;
+	}
+
+
+	public void setComisionAJG(Short comisionAJG) {
+		this.comisionAJG = comisionAJG;
 	}	
 
 

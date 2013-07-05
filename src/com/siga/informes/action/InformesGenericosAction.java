@@ -2091,7 +2091,8 @@ public class InformesGenericosAction extends MasterAction {
 					return download(mapping, formulario, request, response);
 				}
 			}else if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCAJG)){
-				miForm.setEnviar("0");
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.ejg.asunto");
+				//miForm.setEnviar("0");
 				/*if(informeBeans.size()==1){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
 					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+ "";

@@ -24,6 +24,7 @@ public class EnvEnviosBean extends MasterBean {
 	private String acuseRecibo;
 	private String idTipoIntercambioTelematico;
 	private Long idEnvioProgramado;
+	private Short comisionAJG;
 	
 	public Long getIdEnvioProgramado() {
 		return idEnvioProgramado;
@@ -47,6 +48,7 @@ public class EnvEnviosBean extends MasterBean {
 	static public final String C_CONSULTA = "CONSULTA";
 	static public final String C_ACUSERECIBO = "ACUSERECIBO";
 	static public final String C_IDTIPOINTERCAMBIOTELEMATICO = "IDTIPOINTERCAMBIOTELEMATICO";
+	static public final String C_COMISIONAJG = "COMISIONAJG";
 	static public final String SEQ_ENV_ENVIOS = "SEQ_ENV_ENVIOS";
 	
 	static public final String T_NOMBRETABLA = "ENV_ENVIOS";	
@@ -141,4 +143,11 @@ public class EnvEnviosBean extends MasterBean {
 	public void setIdTipoIntercambioTelematico(String idTipoIntercambioTelematico) {
 		this.idTipoIntercambioTelematico = idTipoIntercambioTelematico;
 	}
+	public Short getComisionAJG() {
+		return comisionAJG;
+	}
+	public void setComisionAJG(Short comisionAJG) {
+		this.comisionAJG = comisionAJG;
+	}
+	
 }

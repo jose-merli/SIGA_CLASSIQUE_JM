@@ -108,10 +108,17 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				criteria.andIdtipointercambiotelematicoEqualTo(entradaEnviosForm.getIdTipoIntercambioTelematico());
 			}
 			
-			entradaEnviosExample.setOrderByClause("FECHAPETICION DESC");
+			if(entradaEnviosForm.getComisionAJG()!=null && entradaEnviosForm.getComisionAJG().equals(AppConstants.DB_TRUE)){
+
+				criteria.andComisionajgEqualTo(new Short(AppConstants.DB_TRUE));
+			}else{
+				entradaEnviosExample.or().andComisionajgEqualTo(new Short(AppConstants.DB_FALSE)).andComisionajgIsNull();
+//				sql += " AND (COMISIONAJG IS NULL OR COMISIONAJG = 0 ) ";	
+			}
 			
+			entradaEnviosExample.orderByFechapeticionDESC();
 			entradaEnvios = envEntradaEnviosMapper.selectByExample(entradaEnviosExample);
-		
+			
 		} catch (Exception e) {
 			log.error("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos", e);
 			throw new BusinessException("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos",e);

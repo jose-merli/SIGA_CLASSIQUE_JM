@@ -242,6 +242,8 @@ public class EntradaEnviosAction extends MasterAction {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+			entradaEnviosForm.setComisionAJG(userBean.isComision()?"1":"0");
 			List<EnvEntradaEnvios> entradaEnvios = entradaEnviosService.getEntradaEnvios(entradaEnviosForm);
 			
 			for(EnvEntradaEnvios entrada: entradaEnvios){

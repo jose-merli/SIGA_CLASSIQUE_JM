@@ -269,6 +269,7 @@ public class DefinirEnviosAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
 		}
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		request.setAttribute("isComision",  userBean.isComision());
 		ClsLogging.writeFileLog("DefinirEnviosAction:fin abrir. IdInstitucion:" + userBean.getLocation(), 10);
 		return("inicio");
 	}
@@ -415,7 +416,7 @@ public class DefinirEnviosAction extends MasterAction {
 				datos = null;
 
 				resultado = enviosAdm.buscarEnvio(idEnvio,tipoFecha,fechaDesde,fechaHasta,idEstado,
-						nombre,idTipoEnvio,idInstitucion);
+						nombre,idTipoEnvio,idInstitucion,userBean.isComision());
 				databackup.put("paginador",resultado);
 				if (resultado!=null){ 
 					datos = resultado.obtenerPagina(1);
@@ -773,6 +774,9 @@ public class DefinirEnviosAction extends MasterAction {
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesEjg)){
 					envioInformesGenericos.gestionarComunicacionEjg(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCAJG)){
+					envioInformesGenericos.gestionarComunicacionCAJG(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
 					envioInformesGenericos.gestionarComunicacionMorosos(form,  request.getLocale(), userBean);

@@ -37,6 +37,7 @@ public class EntradaEnviosForm extends MasterForm
 	private JSONArray ejgSelDesignas;
 	private String idTipoDesignacionColegio;
 	boolean preceptivoProcurador = false;
+	private String comisionAJG;
 	public boolean isPreceptivoProcurador() {
 		return preceptivoProcurador;
 	}
@@ -393,5 +394,11 @@ public class EntradaEnviosForm extends MasterForm
 	}
 	public void setNumEJGSel(String numEJGSel) {
 		this.numEJGSel = numEJGSel;
+	}
+	public String getComisionAJG() {
+		return comisionAJG;
+	}
+	public void setComisionAJG(String comisionAJG) {
+		this.comisionAJG = comisionAJG;
 	}
 }

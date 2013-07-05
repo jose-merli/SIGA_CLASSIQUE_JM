@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -44,6 +45,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
                 EnvEnvioProgramadoBean.C_NOMBRE,
                 EnvEnvioProgramadoBean.C_FECHAPROGRAMADA,
                 EnvEnvioProgramadoBean.C_ACUSERECIBO,
+                EnvEnvioProgramadoBean.C_COMISIONAJG,
             	EnvEnvioProgramadoBean.C_FECHAMODIFICACION,
             	EnvEnvioProgramadoBean.C_USUMODIFICACION
 				};
@@ -88,6 +90,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
 			bean.setNombre(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_NOMBRE));
 			bean.setFechaProgramada(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA));
 			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvEnvioProgramadoBean.C_ACUSERECIBO));
+			bean.setComisionAJG(UtilidadesHash.getShort(hash, EnvEnvioProgramadoBean.C_COMISIONAJG));
 			
 			
 			
@@ -124,6 +127,7 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA, b.getFechaProgramada());
 			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_ACUSERECIBO, b.getAcuseRecibo());
+			UtilidadesHash.set(htData, EnvEnvioProgramadoBean.C_COMISIONAJG, b.getComisionAJG());
 			
 
 		}
@@ -147,6 +151,15 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
     public Integer getNewIdEnvio(UsrBean usrBean) throws ClsExceptions{
     	return getNewIdEnvio(usrBean.getLocation());
     }
+    public boolean insert(EnvEnvioProgramadoBean bean) throws ClsExceptions{
+    	bean.setComisionAJG(this.usrbean.isComision()?Short.valueOf(ClsConstants.DB_TRUE):Short.valueOf(ClsConstants.DB_FALSE));
+		try {
+			return this.insert(this.beanToHashTable(bean));
+		}
+		catch (Exception e)	{
+			throw new ClsExceptions (e,  e.getMessage());
+		}
+	}
     
     
     
