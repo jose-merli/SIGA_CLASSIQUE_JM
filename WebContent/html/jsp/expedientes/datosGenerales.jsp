@@ -1675,7 +1675,7 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
+				<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>				
 				
 			<td width="<%=nifDenuncianteTamanio%>">				
