@@ -132,7 +132,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.60 2013-07-08 09:43:07 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.61 2013-07-08 11:09:08 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -429,7 +429,7 @@ function jQueryLoaded(){
 				// INPUT PARA ESTADO DISABLED/READONLY
 				if (tagSelect_input.exists()){
 					tagSelect_select.on("change",function(){
-						tagSelect_input.val(tagSelect_select.find('option:selected').text());
+						jQuery("#"+jQuery(this).attr("id")+"_disabled").val(jQuery(this).find('option:selected').text());
 					});
 					
 					//OJO: NO FUNCIONA EN IE AL AÑADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
@@ -462,7 +462,7 @@ function jQueryLoaded(){
 				// INPUT PARA BUSCAR/FILTRAR EL SELECT
 				if (tagSelect_searchBox.exists()){					
 					tagSelect_select.on("change",function(){
-						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
+						jQuery("#"+jQuery(this).attr("id")+"_searchBox").val(jQuery(this).find('option:selected').data("searchkey"));
 					});
 					tagSelect_searchBox.on("keyup",function(){
 						var searchBox_select = jQuery(this).parent().find("select.tagSelect");
@@ -496,22 +496,20 @@ function jQueryLoaded(){
 						console.debug("[searchBox] BLUR ENVENT");
 						//var selected_value = tagSelect_select.find("option:selected").val();
 						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
-							tagSelect_select.change();
+						jQuery(this).parent().find("select.tagSelect").change();
 					});
 					if (tagSelect_select.find("option:selected").exists()){
 						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
 					}
 				}
 				
-				var childrenIds = tagSelect_select.data("childrenids");
-				if (typeof childrenIds != "undefined"){
+				if (typeof tagSelect_select.data("childrenids") != "undefined"){
 					// TIENE HIJOS, ES UN SELECT ANIDADO
 					//console.debug(tagSelect_select.attr("id") + " TIENE HIJOS: "+ childrenIds);
-					childrenIds = childrenIds.split(",");
 					tagSelect_select.on("change",function(){
 						var parentSelect = jQuery(this);
 						var parentValue = jQuery(this).find("option:selected").val();
-						jQuery.each(childrenIds, function(index, childrenId){
+						jQuery.each(jQuery(this).data("childrenids").split(","), function(index, childrenId){
 							if (typeof parentValue != "undefined" && parentValue != "-1" && parentValue != ""){
 								loadSelect(parentSelect,childrenId);
 							} else {
@@ -610,6 +608,7 @@ function jQueryLoaded(){
 		var blockParentSelects = parentSelects.not(":disabled").filter(":visible");
 		blockParentSelects.hide();
 		var childrenSelect = jQuery("#"+childrenId);
+		console.debug("loadSelect " + childrenId);
 		if (childrenSelect.exists()){
 			var loadingId = childrenSelect.attr("id") + "_loading";
 			if (!jQuery("#"+loadingId).exists()){
@@ -670,25 +669,37 @@ function jQueryLoaded(){
 				}).done(function(data, textStatus, jqXHR){
 					console.debug(jQuery(currentChild).attr("id")+" load DONE!");
 					//var start = +new Date();
-					//jQuery(currentChild).html(data);
-					
+					var currentChildId = jQuery(currentChild).attr("id");
+					jQuery(currentChild).html(data);
+					/* FUNCIONA MUCHO MÁS RÁPIDO EN IE PERO SE PIERDEN LOS EVENTOS					
 					jQuery(currentChild).empty();
 					var currentChild_loader = jQuery("#"+jQuery(currentChild).attr("id")+"_loader")[0];
 					
+					var events = jQuery(currentChild).data('events');
 					var newSelect = jQuery(currentChild).clone(true, true);
 					newSelect[0].innerHTML = data;
-					
+					alert("options: " + newSelect[0].options.length);
 					var newSelectDiv = document.createElement('div');
 					newSelectDiv.appendChild(newSelect[0]);
 					currentChild_loader.innerHTML = newSelectDiv.innerHTML;
+					
+					console.debug(currentChildId + ": " + jQuery("#"+currentChildId).length);
+					$.each(events, function() {
+					  $.each(this, function() {
+						  console.debug(currentChildId+ " bind " + this.type + " " + this.handler);
+						  jQuery("#"+currentChildId).bind(this.type, this.handler);
+					  });
+					});
+					*/								
+					
 					/*
 					var end =  +new Date();
 					var diff = end - start;
 					console.debug(jQuery(currentChild).attr("id")+" Inserted on DOM on: "+diff);
 					*/
 					
-					if (jQuery(currentChild).val() !== "undefined" && jQuery(currentChild).val() != "" && jQuery(currentChild).val() != "-1"){
-						jQuery(currentChild).change();
+					if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
+						jQuery("#"+currentChildId).change();
 					}
 					
 				}).fail(function(jqXHR, textStatus, errorThrown) {
