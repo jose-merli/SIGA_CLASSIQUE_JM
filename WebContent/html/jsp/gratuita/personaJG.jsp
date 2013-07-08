@@ -606,8 +606,8 @@ String app = request.getContextPath();
 				document.forms[0].fechaNac.value = resultado[13]; 
 								
 				//Pais:
-				document.forms[0].nacionalidad.value = resultado[8];
-				document.forms[0].nacionalidad.onchange();
+				jQuery("#nacionalidad").val(resultado[8]);
+				jQuery("#nacionalidad").change();
 
 				//Provincia:
 				jQuery("#provincia").val(resultado[9]);
