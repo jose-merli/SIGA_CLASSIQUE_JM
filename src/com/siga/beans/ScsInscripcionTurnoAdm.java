@@ -1505,7 +1505,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
 					InscripcionTurno inscripcion = new InscripcionTurno(insTurno);
 					
-					String motivo = "Baja de turno";		
+					String motivo = UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.gestionInscripciones.motivo.bajaTurno");		
 					
 					if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
 						inscripcion.validarBaja(
@@ -1629,7 +1629,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public void validarInscripcionesPendientes(String idInstitucion,String idTurno) throws ClsExceptions {
-		String sMotivo = "Validado al modificar la configuracion de turno";
+		String sMotivo = UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.gestionInscripciones.motivo.validarIncripciones");
 		
 		try {
 			this.validarAltasPendientes(idInstitucion, idTurno, sMotivo);
@@ -1934,7 +1934,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public void cambiarConfiguracionTiposGuardias(boolean bPrincipal, String idInstitucion, String idTurno) throws ClsExceptions {
-		String sMotivo = "Cambios de configuración del turno, modificando el tipo de guardias del turno";		
+		String sMotivo = UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.gestionInscripciones.motivo.cambiarTipoGuardias"); 		
 		
 		try {					
 			/*
