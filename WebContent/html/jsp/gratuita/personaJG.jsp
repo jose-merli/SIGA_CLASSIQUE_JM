@@ -396,7 +396,7 @@ String app = request.getContextPath();
 
 			jQuery("#provincia").attr("disabled","disabled");
 			jQuery("#poblacion").attr("disabled","disabled");
-			document.forms[0].tipoVia.value = "";
+			jQuery("#tipoVia").val("");
 			jQuery("#tipoVia").attr("disabled","disabled");
 			
  			document.PersonaJGForm.numeroDir.disabled = "disabled";
@@ -616,7 +616,7 @@ String app = request.getContextPath();
 				//Profesion:
 				if(document.forms[0].profesion){
 					document.forms[0].profesion.value = resultado[14];
-					document.forms[0].profesion.onchange();
+					jQuery("#profesion").change();
 				}
 
 				//Sexo:
@@ -638,7 +638,7 @@ String app = request.getContextPath();
 				document.forms[0].escaleraDir.value=resultado[27];
 				document.forms[0].pisoDir.value=resultado[28];
 				document.forms[0].puertaDir.value=resultado[29];
-				document.forms[0].tipoVia.value=resultado[30];
+				jQuery("#tipoVia").val(resultado[30]);
 
 				//existeDomicilio
 				document.forms[0].existeDomicilio.value = resultado[25];
@@ -1008,7 +1008,7 @@ String app = request.getContextPath();
   				  Primary="0"+Primary;
   			  }	  
   			  var idProvincia	= Primary.substring(0,2);
-  			  document.forms[0].provincia.value=idProvincia;  				  
+  			  jQuery("#provincia").val(idProvincia);  				  
   			  rellenarCampos();
 
   	}

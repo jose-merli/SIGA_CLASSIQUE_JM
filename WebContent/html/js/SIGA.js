@@ -132,7 +132,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.61 2013-07-08 11:09:08 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.62 2013-07-08 11:38:25 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -704,7 +704,7 @@ function jQueryLoaded(){
 					
 				}).fail(function(jqXHR, textStatus, errorThrown) {
 					console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
-					alert("Se ha producido un error al cargar los datos");
+					//alert("Se ha producido un error al cargar los datos");
 				}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 					if (jQuery("#"+loadingId).exists())
 						jQuery("#"+loadingId).remove();
