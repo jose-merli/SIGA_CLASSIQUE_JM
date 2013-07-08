@@ -571,9 +571,9 @@ String app = request.getContextPath();
 
 					document.forms[0].nuevo.value = bNuevo;					
 				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG					  
-					if (resultado[1]!="null" && trim(resultado[1])!="") {					
-						document.forms[0].idTipoPersona.value=resultado[22];						
-						document.forms[0].idTipoPersona.onchange();
+					if (resultado[1]!="null" && trim(resultado[1])!="") {						
+						jQuery("#tipoId").val(resultado[22]);
+						jQuery("#tipoId").change();
 						//recuperamos el valor del tipoIdentificacion.											
 						var funcionRetardo = 'retarda('+resultado[0]+')';
 						window.setTimeout(funcionRetardo,150,"Javascript");						 															
@@ -2738,7 +2738,7 @@ function limpiarPersonaContrario() {
 			}
 			
 			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+				jQuery("#tipoId").val("");
 			
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){			
 				if (<%=obligatorioFechaNac%>&&document.getElementById('fechaNac').value=="")
@@ -2887,8 +2887,8 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			
-			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+			if(document.forms[0].NIdentificacion.value=="")
+				jQuery("#tipoId").val("");
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				if (<%=obligatorioFechaNac%>&&document.getElementById('fechaNac').value=="")
@@ -3055,8 +3055,7 @@ function limpiarPersonaContrario() {
 			}			
 			
 			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
-				
+				jQuery("#tipoId").val("");
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
 				fin();
@@ -3132,8 +3131,8 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			
-			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+			if(document.forms[0].NIdentificacion.value=="")
+				jQuery("#tipoId").val("");
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -3218,7 +3217,7 @@ function limpiarPersonaContrario() {
 			}			
 			
 			if(document.forms[0].NIdentificacion.value=="")
-			 	document.forms[0].tipoId.value = "";
+				jQuery("#tipoId").val("");
 			 	
 			 if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -3301,7 +3300,7 @@ function limpiarPersonaContrario() {
 			}			
 			
 			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+				jQuery("#tipoId").val("");
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -3374,8 +3373,8 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 			
-			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+			if(document.forms[0].NIdentificacion.value=="")
+				jQuery("#tipoId").val("");
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -3477,8 +3476,8 @@ function limpiarPersonaContrario() {
 				document.forms[0].tipoDir.value = 'COMUNICA';
 			}			
 			
-			if(document.forms[0].NIdentificacion.value=="") 
-				document.forms[0].tipoId.value = "";
+			if(document.forms[0].NIdentificacion.value=="")
+				jQuery("#tipoId").val("");
 				
 			if(!comprobarFecha(document.getElementById('fechaNac').value)){
 				alert("<siga:Idioma key='fecha.error.valida'/>");				
@@ -3573,7 +3572,7 @@ function accionGuardarCerrar()	{
 	}
 	
 	if(document.forms[0].NIdentificacion.value=="") 
-		document.forms[0].tipoId.value = "";
+		jQuery("#tipoId").val("");
 		
 	if(!comprobarFecha(document.getElementById('fechaNac').value)){
 		alert("<siga:Idioma key='fecha.error.valida'/>");				
