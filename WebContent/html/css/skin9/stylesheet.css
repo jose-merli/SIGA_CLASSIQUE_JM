@@ -103,6 +103,9 @@ a.disabled {
   vertical-align: top;
   background-color: #ffffff;
 }
+.hidden {
+  display: none;
+}
 .labeltextnum {
   text-align: right;
   color: #000000;
