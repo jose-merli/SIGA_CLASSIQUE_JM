@@ -132,7 +132,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.62 2013-07-08 11:38:25 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.63 2013-07-08 12:12:21 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -592,11 +592,23 @@ function jQueryLoaded(){
 					//tagSelect_select.val(tagSelect_select.find("option:selected").text());
 					//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
 				} else {
+					tagSelect_select.find("option").each(function() {
+						if (jQuery(this).parent().is("span")){
+							jQuery(this).unwrap();
+						}
+						jQuery(this).show();
+					});
 					if (tagSelect_select.find("option:selected").exists())
 						tagSelect_select.find("option:selected").attr('selected', false);
 					tagSelect_select.find("option").first().attr('selected', true);
 				}
 			} else {
+				tagSelect_select.find("option").each(function() {
+					if (jQuery(this).parent().is("span")){
+						jQuery(this).unwrap();
+					}
+					jQuery(this).show();
+				});
 				if (tagSelect_select.find("option:selected").exists())
 					tagSelect_select.find("option:selected").attr('selected', false);
 				tagSelect_select.find("option").first().attr('selected', true);

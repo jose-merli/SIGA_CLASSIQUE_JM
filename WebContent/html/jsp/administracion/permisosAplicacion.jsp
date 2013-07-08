@@ -29,13 +29,7 @@
 	 		function buscar()
 	 		{
 				var combo = document.getElementById("idPerfil");
-				sub();				
-				if (combo.selectedIndex==0)
-				{
-					alert("<siga:Idioma key="administracion.permisos.mensaje.especificarGrupo"/>");
-					fin();
-					return false;
-				}
+				
 				configurarPermisosAplicacionForm.modo.value="buscar";
 				configurarPermisosAplicacionForm.submit();
 
