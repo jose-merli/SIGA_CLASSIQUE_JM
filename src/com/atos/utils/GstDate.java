@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-
 import java.util.Vector;
 
 /*
@@ -470,34 +469,34 @@ public class GstDate {
 	/**
 	 * 
 	 * @param nombreColumna
-	 * @param fechaDesde
-	 *            en formato YYYY/MM/DD HH:mm:ss
-	 * @param fechaHasta
-	 *            en formato YYYY/MM/DD HH:mm:ss
-	 * @return String con la sentencia
-	 *         " nombrecampo>=fechaDesde and nombrecampo<=fechaHasta "
+	 * @param fechaDesde en formato YYYY/MM/DD HH:mm:ss
+	 * @param fechaHasta en formato YYYY/MM/DD HH:mm:ss
+	 * @return String con la sentencia nombrecampo>=fechaDesde and nombrecampo<=fechaHasta
 	 * @throws ClsExceptions
 	 */
 	public static String dateBetweenDesdeAndHasta(String nombreColumna,
-			String fechaDesde, String fechaHasta) throws ClsExceptions {
+		String fechaDesde, String fechaHasta) throws ClsExceptions {
 		String result = "";
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				ClsConstants.DATE_FORMAT_JAVA);
+		//SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 
 		try {
 			String fechaIni = fechaDesde;
 			String fechaFin = fechaHasta;
-			if (fechaFin != null && !fechaFin.trim().equals("")) {
-				Date d = sdf.parse(fechaFin);
-				d.setTime(d.getTime() + ClsConstants.DATE_MORE);
-				fechaFin = (sdf.format(d));
-			}
+			
+			/* JPT: 
+			 * - No entiendo para que le suma un dia y luego hace un trunc
+			 * - Si le suma un dia y hace menor o igual por fecha y hora todavia puede tener sentido 
+			 * 
+				if (fechaFin != null && !fechaFin.trim().equals("")) {
+					Date d = sdf.parse(fechaFin);
+					d.setTime(d.getTime() + ClsConstants.DATE_MORE);
+					fechaFin = (sdf.format(d));
+				}
+			*/
 			boolean existedesde = false;
 
 			if (fechaIni != null && !fechaIni.trim().equals("")) {
-				result = "trunc(" + nombreColumna + ") >= trunc(TO_DATE('"
-						+ fechaIni + "', '" + ClsConstants.DATE_FORMAT_SQL
-						+ "')) ";
+				result = " TRUNC(" + nombreColumna + ") >= TRUNC(TO_DATE('" + fechaIni + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
 				existedesde = true;
 			}
 
@@ -505,14 +504,11 @@ public class GstDate {
 				if (existedesde) {
 					result += " AND ";
 				}
-				result += "trunc(" + nombreColumna + ") <= trunc(TO_DATE('"
-						+ fechaFin + "', '" + ClsConstants.DATE_FORMAT_SQL
-						+ "')) ";
+				result += " TRUNC(" + nombreColumna + ") <= TRUNC(TO_DATE('" + fechaFin + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
 			}
 
 		} catch (Exception e) {
-			ClsExceptions exc = new ClsExceptions(e,
-					"Formato de fecha no reconocido");
+			ClsExceptions exc = new ClsExceptions(e, "Formato de fecha no reconocido");
 			exc.setErrorCode("DATEFORMAT");
 			throw exc;
 		}
@@ -520,30 +516,31 @@ public class GstDate {
 		return result;
 	}
 
-	public static Vector dateBetweenDesdeAndHastaBind(String nombreColumna,
-			String fechaDesde, String fechaHasta, int contador,
-			Hashtable codigos) throws ClsExceptions {
+	public static Vector dateBetweenDesdeAndHastaBind(String nombreColumna, String fechaDesde, String fechaHasta, int contador, Hashtable codigos) throws ClsExceptions {
 		Vector resultV = new Vector();
 		String result = "";
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				ClsConstants.DATE_FORMAT_JAVA);
+		//SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 
 		try {
 			String fechaIni = fechaDesde;
 			String fechaFin = fechaHasta;
-			if (fechaFin != null && !fechaFin.trim().equals("")) {
-				Date d = sdf.parse(fechaFin);
-				d.setTime(d.getTime() + ClsConstants.DATE_MORE);
-				fechaFin = (sdf.format(d));
-			}
+			
+			/* JPT: 
+			 * - No entiendo para que le suma un dia y luego hace un trunc
+			 * - Si le suma un dia y hace menor o igual por fecha y hora todavia puede tener sentido 
+			 * 
+				 if (fechaFin != null && !fechaFin.trim().equals("")) {
+					Date d = sdf.parse(fechaFin);
+					d.setTime(d.getTime() + ClsConstants.DATE_MORE);
+					fechaFin = (sdf.format(d));
+				}
+			*/
 			boolean existedesde = false;
 
 			if (fechaIni != null && !fechaIni.trim().equals("")) {
 				contador++;
 				codigos.put(new Integer(contador), fechaIni);
-				result = "trunc(" + nombreColumna + ") >= trunc(TO_DATE(:"
-						+ contador + ", '" + ClsConstants.DATE_FORMAT_SQL
-						+ "')) ";
+				result = " TRUNC(" + nombreColumna + ") >= TRUNC(TO_DATE(:" + contador + ", '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
 				existedesde = true;
 			}
 
@@ -553,14 +550,11 @@ public class GstDate {
 				}
 				contador++;
 				codigos.put(new Integer(contador), fechaFin);
-				result += "trunc(" + nombreColumna + ") <= trunc(TO_DATE(:"
-						+ contador + ", '" + ClsConstants.DATE_FORMAT_SQL
-						+ "')) ";
+				result += " TRUNC(" + nombreColumna + ") <= TRUNC(TO_DATE(:" + contador + ", '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
 			}
 
 		} catch (Exception e) {
-			ClsExceptions exc = new ClsExceptions(e,
-					"Formato de fecha no reconocido");
+			ClsExceptions exc = new ClsExceptions(e, "Formato de fecha no reconocido");
 			exc.setErrorCode("DATEFORMAT");
 			throw exc;
 		}
