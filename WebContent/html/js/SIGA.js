@@ -28,6 +28,7 @@
 	}
 }());
 var jqueryFileUri = "/SIGA/html/js/jquery.js";
+var optionCargando = "<option>Cargando...</option>";
 if (typeof jQuery == "undefined"){
 	// Tratamos de usar jQuery de window.top
 	try{
@@ -131,7 +132,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.59 2013-07-05 10:26:56 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.60 2013-07-08 09:43:07 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -661,26 +662,49 @@ function jQueryLoaded(){
 			}
 			// Funciona mucho mejor en IE que .html("");
 			childrenSelect.each(function(){this.innerHTML="";});
-			childrenSelect.html("<option>Cargando...</option>");
+			childrenSelect.html(optionCargando);
+			childrenSelect.each(function(){
+				var currentChild = this;
+				var jqxhr = jQuery.ajax({
+					url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox
+				}).done(function(data, textStatus, jqXHR){
+					console.debug(jQuery(currentChild).attr("id")+" load DONE!");
+					//var start = +new Date();
+					//jQuery(currentChild).html(data);
+					
+					jQuery(currentChild).empty();
+					var currentChild_loader = jQuery("#"+jQuery(currentChild).attr("id")+"_loader")[0];
+					
+					var newSelect = jQuery(currentChild).clone(true, true);
+					newSelect[0].innerHTML = data;
+					
+					var newSelectDiv = document.createElement('div');
+					newSelectDiv.appendChild(newSelect[0]);
+					currentChild_loader.innerHTML = newSelectDiv.innerHTML;
+					/*
+					var end =  +new Date();
+					var diff = end - start;
+					console.debug(jQuery(currentChild).attr("id")+" Inserted on DOM on: "+diff);
+					*/
+					
+					if (jQuery(currentChild).val() !== "undefined" && jQuery(currentChild).val() != "" && jQuery(currentChild).val() != "-1"){
+						jQuery(currentChild).change();
+					}
+					
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
+					alert("Se ha producido un error al cargar los datos");
+				}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+					if (jQuery("#"+loadingId).exists())
+						jQuery("#"+loadingId).remove();
+					
+					blockParentSelects.show();
+				});
+			});
+			/*
 			childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
 				console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
-				/* LO HACE EL ACTION
-				if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
-					var iniVal = childrenSelect.data("inival");
-					if (iniVal != ""){
-						if (iniVal.charAt(0) == "[")
-							iniVal = iniVal.substring(1);
-						if (iniVal.charAt(iniVal.length - 1) == "]")
-							iniVal = iniVal.substring(0,iniVal.length-1);
-						console.log("SETTING " + iniVal + " to "+childrenSelect.attr("id"));
-						iniVal = iniVal.split(",");
-						for (var j=0; j<iniVal.length; j++) {
-					        childrenSelect.val(iniVal[j]);
-					    }
-						childrenSelect.change();
-					}
-				}
-				*/
+				
 				if (childrenSelect.val() !== "undefined" && childrenSelect.val() != "" && childrenSelect.val() != "-1"){
 					childrenSelect.change();
 				}
@@ -689,6 +713,7 @@ function jQueryLoaded(){
 				
 				blockParentSelects.show();
 			});
+			*/
 		}
 	}
 	

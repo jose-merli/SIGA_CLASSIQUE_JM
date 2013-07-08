@@ -316,7 +316,7 @@ public class TagSelect extends TagSupport {
 				styleSelect += " disabled ";
 		}
 		
-		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+styleSelect+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+">");
+		out.println("<div id='"+this.id+"_loader'><select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+styleSelect+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
@@ -329,7 +329,7 @@ public class TagSelect extends TagSupport {
 				selectedOption = keyValue;
 			out.println(KeyValue.getHtmlOption(keyValue,selected));
 		}
-		out.println("</select>");
+		out.println("</select></div>");
 		if (!multiple)
 			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+styleInput+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+selectedOption.getValue()+"'/>");
 		out.println("</div>");// this.id_div;
