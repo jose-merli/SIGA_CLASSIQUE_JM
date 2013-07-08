@@ -7,7 +7,7 @@ iframe {
 
 }
 h1 {
-  color: #ddddee;
+  color: #eeeeee;
 }
 td {
   vertical-align: top;
@@ -475,8 +475,8 @@ a.disabled {
 .buttonentabla {
   font-size: 13px;
   color: white;
-  background-color: #726158;
-  border: 2px solid #eeeeee;
+  background-color: #444444;
+  border: 2px solid  white;
   font-weight: bold;
   cursor: pointer;
   clear: right;

@@ -473,8 +473,8 @@ a.disabled {
 .buttonentabla {
   font-size: 13px;
   color: white;
-  background-color: #446699;
-  border: 2px solid #ddddee;
+  background-color: #444444;
+  border: 2px solid  white;
   font-weight: bold;
   cursor: pointer;
   clear: right;
