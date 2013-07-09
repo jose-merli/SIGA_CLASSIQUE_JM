@@ -105,7 +105,7 @@ a.disabled {
 .hidden {
   display: none;
 }
-.labeltextnum {
+.labelTextnum {
   text-align: right;
   color: #ddddee;
   font-size: 13px;
@@ -116,7 +116,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.labeltextvalue {
+.labelTextValue {
   text-align: left;
   color: #ddddee;
   font-size: 13px;
@@ -126,7 +126,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.txgrandeactivo {
+.txGrandeActivo {
   text-align: left;
   color: #ddddee;
   font-size: 14px;
@@ -136,7 +136,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.txgrandebaja {
+.txGrandeBaja {
   text-align: left;
   color: #ddddee;
   font-size: 14px;
@@ -146,7 +146,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.labeltextvalor {
+.labelTextValor {
   text-align: left;
   color: #ddddee;
   font-size: 13px;
@@ -156,7 +156,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.labeltext {
+.labelText {
   text-align: left;
   color: #ddddee;
   font-size: 13px;
@@ -169,7 +169,7 @@ a.disabled {
   font-weight: bold;
   cursor: default;
 }
-.labeltextarea {
+.labelTextArea {
   text-align: left;
   font-size: 13px;
   left: 25px;
@@ -184,7 +184,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: top;
 }
-.labeltextcentro {
+.labelTextCentro {
   text-align: center;
   color: #ddddee;
   font-size: 13px;
@@ -195,7 +195,7 @@ a.disabled {
   font-weight: bold;
   vertical-align: top;
 }
-.nonedit {
+.nonEdit {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -206,7 +206,7 @@ a.disabled {
   padding-bottom: 1px;
   color: #ddddee;
 }
-.noneditred {
+.nonEditRed {
   font-size: 13px;
   font-weight: bold;
   margin: auto;
@@ -216,7 +216,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.tabletitle {
+.tableTitle {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -227,7 +227,7 @@ a.disabled {
   color: #ddddee;
   background-color: #303e54;
 }
-.tabletitleprimero {
+.tableTitlePrimero {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -238,10 +238,10 @@ a.disabled {
   color: #ddddee;
   background-color: #303e54;
 }
-#tabladatos td {
+#tablaDatos td {
   overflow: hidden;
 }
-.filatablapar {
+.filaTablaPar {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -255,7 +255,7 @@ a.disabled {
   width: 30px;
   background-color: #e9e9f9;
 }
-.filatablaimpar {
+.filaTablaImpar {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -281,7 +281,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxnumber {
+.boxNumber {
   font-size: 13px;
   text-align: right;
   vertical-align: top;
@@ -293,7 +293,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxmayuscula {
+.boxMayuscula {
   font-size: 13px;
   left: 25px;
   text-transform: uppercase;
@@ -306,7 +306,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxdisabled {
+.boxDisabled {
   font-size: 13px;
   left: 25px;
   vertical-align: top;
@@ -321,7 +321,7 @@ a.disabled {
 .linea {
   border-left: 1px solid #ddddee;
 }
-.boxlabel {
+.boxLabel {
   font-size: 13px;
   font-weight: bold;
   margin-top: 0px;
@@ -334,7 +334,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: middle;
 }
-.boxlabelreadonly {
+.boxLabelReadOnly {
   font-size: 13px;
   font-weight: normal;
   margin-top: 0px;
@@ -347,7 +347,7 @@ a.disabled {
   padding-bottom: 1px;
   vertical-align: middle;
 }
-.boxconsulta {
+.boxConsulta {
   font-size: 13px;
   font-weight: normal;
   margin-top: 0px;
@@ -360,7 +360,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxcomboconsulta {
+.boxComboConsulta {
   font-size: 13px;
   font-weight: normal;
   margin-top: 0px;
@@ -373,7 +373,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxcomboentabla {
+.boxComboEnTabla {
   font-size: 13px;
   font-weight: normal;
   margin-top: 0px;
@@ -385,7 +385,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxconsultanumber {
+.boxConsultaNumber {
   font-size: 13px;
   font-weight: normal;
   margin-top: 0px;
@@ -398,7 +398,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxconsultalabeltext {
+.boxConsultaLabelText {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -411,7 +411,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxcabecera {
+.boxCabecera {
   color: #333333;
   font-size: 13px;
   left: 25px;
@@ -421,7 +421,7 @@ a.disabled {
   border: 1px solid #ddddee;
   vertical-align: top;
 }
-.boxdisablednumber {
+.boxDisabledNumber {
   font-size: 13px;
   left: 25px;
   background-color: #4477aa;
@@ -433,7 +433,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxlogin {
+.boxLogin {
   font-size: 13px;
   left: 25px;
   margin-top: -2px;
@@ -444,7 +444,7 @@ a.disabled {
   padding-top: 2px;
   padding-bottom: 1px;
 }
-.boxcombo {
+.boxCombo {
   font-size: 13px;
   left: 25px;
   vertical-align: top;
@@ -473,7 +473,7 @@ a.disabled {
   padding-right: 0px\9;
   height: 22px;
 }
-.buttonentabla {
+.buttonEnTabla {
   font-size: 13px;
   color: white;
   background-color: #444444;
@@ -513,7 +513,7 @@ a.disabled {
   height: 25px;
   cursor: default;
 }
-.titulospeq {
+.titulosPeq {
   font-weight: normal;
   font-size: 13px;
   text-decoration: none;
@@ -526,7 +526,7 @@ a.disabled {
   font: bold;
   vertical-align: middle;
 }
-.titulosleft {
+.titulosLeft {
   font-weight: normal;
   text-align: left;
   font-size: 17px;
@@ -542,7 +542,7 @@ a.disabled {
   border-top-style: none;
   border-bottom-style: none;
 }
-.titulitosdatos {
+.titulitosDatos {
   font-weight: normal;
   font-size: 13px;
   text-decoration: none;
@@ -555,7 +555,7 @@ a.disabled {
   font: bold;
   vertical-align: middle;
 }
-.titulitosdatosimp {
+.titulitosDatosImp {
   font-weight: normal;
   font-size: 13px;
   text-decoration: none;
@@ -581,29 +581,21 @@ a.disabled {
   font: bold;
   vertical-align: middle;
 }
-a.titulitos:link {
+A.titulitos:link {
   cursor: pointer;
   color: #ddddee;
   font-style: normal;
   text-decoration: none;
 }
-a.titulitos:active {
+A.titulitos:active {
   color: #ddddee;
   text-decoration: none;
 }
-a.titulitos:hover {
+A.titulitos:hover {
   color: #ddddee;
   text-decoration: none;
 }
-a.section:link {
-  color: #ddddee;
-  text-decoration: none;
-  height: 29px;
-  width: 162px;
-  text-align: center;
-  vertical-align: text-bottom;
-}
-a.section:visited {
+A.section:link {
   color: #ddddee;
   text-decoration: none;
   height: 29px;
@@ -611,7 +603,7 @@ a.section:visited {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.section:hover {
+A.section:visited {
   color: #ddddee;
   text-decoration: none;
   height: 29px;
@@ -619,7 +611,7 @@ a.section:hover {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.section:active {
+A.section:hover {
   color: #ddddee;
   text-decoration: none;
   height: 29px;
@@ -627,7 +619,15 @@ a.section:active {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.lb:link {
+A.section:active {
+  color: #ddddee;
+  text-decoration: none;
+  height: 29px;
+  width: 162px;
+  text-align: center;
+  vertical-align: text-bottom;
+}
+A.lb:link {
   color: #ddddee;
   text-decoration: none;
   height: 15px;
@@ -635,7 +635,7 @@ a.lb:link {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.lb:visited {
+A.lb:visited {
   color: #ddddee;
   text-decoration: none;
   height: 15px;
@@ -643,7 +643,7 @@ a.lb:visited {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.lb:hover {
+A.lb:hover {
   color: #ddddee;
   text-decoration: none;
   height: 15px;
@@ -651,7 +651,7 @@ a.lb:hover {
   text-align: center;
   vertical-align: text-bottom;
 }
-a.lb:active {
+A.lb:active {
   color: #ddddee;
   text-decoration: none;
   height: 15px;
@@ -664,7 +664,7 @@ a.lb:active {
   height: 1px;
 }
 /* coolmenus 4 - default styles - do not edit */
-.clcmabs {
+.clCMAbs {
   position: absolute;
   visibility: hidden;
   left: 0;
@@ -672,7 +672,7 @@ a.lb:active {
 }
 /* coolmenus 4 - default styles - end */
 /*style for the background-bar*/
-.clbar {
+.clBar {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -681,9 +681,9 @@ a.lb:active {
   visibility: hidden;
 }
 /*styles for level 0*/
-.cllevel0,
-.cllevel0over,
-.cllevel0nolinkover {
+.clLevel0,
+.clLevel0over,
+.clLevel0NoLinkOver {
   position: absolute;
   padding: 1px;
   font-size: 13px;
@@ -695,12 +695,12 @@ a.lb:active {
   border-right: 1px solid #ffffff;
   border-style: solid;
 }
-.cllevel0 {
+.clLevel0 {
   background-color: #27436c;
   layer-background-color: #27436c;
   color: #dbdbdb;
 }
-.cllevel0over {
+.clLevel0over {
   background-color: #446699;
   layer-background-color: #446699;
   color: #dbdbdb;
@@ -711,76 +711,76 @@ a.lb:active {
   border-top: 1px solid #000000;
   border-style: solid;
 }
-.cllevel0nolinkover {
+.clLevel0NoLinkOver {
   background-color: #446699;
   layer-background-color: #446699;
   color: #dbdbdb;
   cursor: default;
 }
-.cllevel0border {
+.clLevel0border {
   position: absolute;
   visibility: hidden;
   background-color: transparent;
   layer-background-color: transparent;
 }
 /*styles for level 1*/
-.cllevel1,
-.cllevel1over,
-.cllevel1nolinkover {
+.clLevel1,
+.clLevel1over,
+.clLevel1NoLinkOver {
   position: absolute;
   padding: 2px;
   font-size: 13px;
   font-weight: normal;
 }
-.cllevel1 {
+.clLevel1 {
   background-color: #27436c;
   layer-background-color: #27436c;
   color: #dbdbdb;
   border: 1px solid #ffffff;
 }
-.cllevel1over {
+.clLevel1over {
   background-color: #446699;
   layer-background-color: #446699;
   color: #dbdbdb;
   cursor: pointer;
   border: 1px solid #000000;
 }
-.cllevel1nolinkover {
+.clLevel1NoLinkOver {
   background-color: #446699;
   layer-background-color: #446699;
   color: #dbdbdb;
 }
-.cllevel1border {
+.clLevel1border {
   position: absolute;
   visibility: hidden;
   layer-background-color: #006699;
 }
 /*styles for level 2*/
-.cllevel2,
-.cllevel2over {
+.clLevel2,
+.clLevel2over {
   position: absolute;
   padding: 2px;
   font-size: 13px;
   font-weight: normal;
 }
-.cllevel2 {
+.clLevel2 {
   background-color: #27436c;
   layer-background-color: #27436c;
   color: #dbdbdb;
   border: 1px solid #ffffff;
 }
-.cllevel2over {
+.clLevel2over {
   background-color: #446699;
   layer-background-color: #446699;
   color: #dbdbdb;
   cursor: pointer;
   border: 1px solid #000000;
 }
-.cllevel2border {
+.clLevel2border {
   position: absolute;
   visibility: hidden;
 }
-a.imagelink:link {
+A.imageLink:link {
   color: #ddddee;
   font-size: 13px;
   font-weight: normal;
@@ -791,7 +791,7 @@ a.imagelink:link {
   vertical-align: middle;
   text-decoration: none;
 }
-a.imagelink:visited {
+A.imageLink:visited {
   color: #ddddee;
   font-size: 13px;
   font-weight: normal;
@@ -802,7 +802,7 @@ a.imagelink:visited {
   vertical-align: middle;
   text-decoration: none;
 }
-a.imagelink:hover {
+A.imageLink:hover {
   color: #ddddee;
   font-size: 13px;
   font-weight: normal;
@@ -813,7 +813,7 @@ a.imagelink:hover {
   vertical-align: middle;
   text-decoration: none;
 }
-a.imagelink:active {
+A.imageLink:active {
   color: #ddddee;
   font-size: 13px;
   font-weight: normal;
@@ -824,7 +824,7 @@ a.imagelink:active {
   vertical-align: middle;
   text-decoration: none;
 }
-.noneditselected {
+.nonEditSelected {
   font-size: 13px;
   font-weight: bold;
   color: #333333;
@@ -836,50 +836,50 @@ a.imagelink:active {
   background-color: #ddddee;
   padding-bottom: 3px;
 }
-.tablacentralmedia {
+.tablaCentralMedia {
   background-color: #446699;
   width: 100%;
 }
-.tablacentralpeque {
+.tablaCentralPeque {
   background-color: #446699;
   width: 100%;
 }
-.tablacentralgrande {
+.tablaCentralGrande {
   background-color: #446699;
   width: 100%;
 }
-.tablacentralcampos {
+.tablaCentralCampos {
   background-color: #4477aa;
   width: 100%;
 }
-.tablacentralcamposimp {
+.tablaCentralCamposImp {
   background-color: #4477aa;
   width: 670px;
 }
-.tablacentralcamposmedia {
+.tablaCentralCamposMedia {
   background-color: #4477aa;
   width: 100%;
 }
-.tablacentralcamposgrande {
+.tablaCentralCamposGrande {
   background-color: #4477aa;
   width: 100%;
 }
-.tablacentralcampospeque {
+.tablaCentralCamposPeque {
   background-color: #4477aa;
   width: 100%;
 }
-.tablacampos {
+.tablaCampos {
   background-color: #4477aa;
   width: 100%;
 }
-.tablatitulo {
+.tablaTitulo {
   width: 100%;
   background-color: #303e54;
   margin: 0px;
   padding: 0px;
   border: 1px solid #ddddee;
 }
-.tdbotones {
+.tdBotones {
   text-align: right;
   color: #ddddee;
   padding-left: 7px;
@@ -891,7 +891,7 @@ a.imagelink:active {
   font: bold;
   vertical-align: middle;
 }
-.tdmensaje {
+.tdMensaje {
   text-align: center;
   color: #ddddee;
   font-size: 13px;
@@ -901,14 +901,14 @@ a.imagelink:active {
   padding-bottom: 5px;
   width: 100%;
 }
-.tablecabecera {
+.tableCabecera {
   color: #ddddee;
   padding-left: 0px;
   vertical-align: left;
   padding-top: 0px;
   text-align: left;
 }
-.posicionpestanas {
+.posicionPestanas {
   position: relative;
   width: 100%;
   height: 32px;
@@ -916,7 +916,7 @@ a.imagelink:active {
   top: 0px;
   left: 0px;
 }
-.framegeneral {
+.frameGeneral {
   position: relative;
   width: 100%;
   height: 100px;
@@ -924,7 +924,7 @@ a.imagelink:active {
   top: -3px;
   left: 0px;
 }
-.framepestanas {
+.framePestanas {
   position: relative;
   width: 100%;
   height: 100px;
@@ -933,7 +933,7 @@ a.imagelink:active {
   left: 0px;
   margin-top: 0px;
 }
-.botonesdetallesinposicionfija {
+.botonesDetalleSinPosicionFija {
   background-color: #446699;
   width: 100%;
   height: 26px;
@@ -944,7 +944,7 @@ a.imagelink:active {
   margin: 0px;
   padding: 0px;
 }
-.botonesdetalle {
+.botonesDetalle {
   background-color: #446699;
   position: absolute;
   width: 100%;
@@ -956,7 +956,7 @@ a.imagelink:active {
   margin: 0px;
   padding: 0px;
 }
-.botonesseguido {
+.botonesSeguido {
   background-color: #446699;
   position: relative;
   width: 100%;
@@ -966,7 +966,7 @@ a.imagelink:active {
   margin: 0px;
   padding: 0px;
 }
-.posicionprincipal {
+.posicionPrincipal {
   position: absolute;
   width: 1000px;
   height: 600px;
@@ -976,26 +976,26 @@ a.imagelink:active {
   margin: 0px;
   margin-top: 3px;
 }
-.posiciontitulo {
+.posicionTitulo {
   position: absolute;
   left: 0px;
   width: 1000px;
   top: 80px;
 }
-.posicionbusquedasolo {
+.posicionBusquedaSolo {
   background-color: #4477aa;
   margin: 0px;
   padding: 0px;
   width: 100%;
   height: 100%;
 }
-.posicionbusquedasoloimp {
+.posicionBusquedaSoloImp {
   background-color: #4477aa;
   left: 0px;
   width: 670px;
   top: 0px;
 }
-.posicionframeprincipal {
+.posicionFramePrincipal {
   position: absolute;
   width: 100%;
   height: 87%;
@@ -1011,10 +1011,10 @@ a.imagelink:active {
   height: 18px;
   padding: 4px 0px;
 }
-.pestanatd {
+.pestanaTD {
   white-space: nowrap;
 }
-.pestanatd a {
+.pestanaTD a {
   font-size: 13px;
   font-weight: normal;
   color: #ffffff;
@@ -1025,13 +1025,13 @@ a.imagelink:active {
   border-left-color: #4477aa;
   background: url(pestana.gif) no-repeat right;
 }
-.pestanatd a:hover {
+.pestanaTD a:hover {
   background: url(pestahover.gif) no-repeat right;
 }
-.pestanatd a.here {
+.pestanaTD a.here {
   background: url(pestahover.gif) no-repeat right;
 }
-.listanonedit {
+.listaNonEdit {
   font-size: 13px;
   font-weight: normal;
   margin: auto;
@@ -1044,14 +1044,14 @@ a.imagelink:active {
   background-color: #eeeeee;
   color: #333333;
 }
-.posicionpest {
+.posicionPest {
   position: absolute;
   left: 0px;
   width: 100%;
   top: 10px;
   z-index: 5;
 }
-.listanoneditselected {
+.listaNonEditSelected {
   font-size: 13px;
   font-weight: normal;
   color: #333333;
@@ -1064,30 +1064,30 @@ a.imagelink:active {
   background-color: #ddddee;
   padding-bottom: 0px;
 }
-.tablalineapestanas {
+.tablaLineaPestanas {
   background-color: #333333;
   width: 100%;
   height: 5px;
   z-index: 100;
 }
-.tablalineapestanasarriba {
+.tablaLineaPestanasArriba {
   width: 100%;
   height: 5px;
   z-index: 100;
 }
-.posicionmodalgrande {
+.posicionModalGrande {
   background-color: #4477aa;
   width: 100%;
 }
-.posicionmodalmedia {
+.posicionModalMedia {
   background-color: #4477aa;
   width: 100%;
 }
-.posicionmodalpeque {
+.posicionModalPeque {
   background-color: #4477aa;
   width: 100%;
 }
-.detallepestanas {
+.detallePestanas {
   background-color: #4477aa;
 }
 .paginator {
@@ -1098,7 +1098,7 @@ a.imagelink:active {
   margin: 0px;
   padding: 1px;
 }
-.tpaginator {
+.tPaginator {
   font-size: 13px;
   color: #ddddee;
   background-color: #446699;
@@ -1108,7 +1108,7 @@ a.imagelink:active {
   height: 20px;
   width: 100%;
 }
-.boxconsultapaginador {
+.boxConsultaPaginador {
   font-size: 13px;
   font-weight: bold;
   margin-top: 0px;
@@ -1242,7 +1242,7 @@ div#panel #paneles div {
   overflow: auto;
   border: 0px solid #ddddee;
 }
-.sigapopuptable {
+.sigaPopupTable {
   margin-top: 10px;
   padding-bottom: 10px;
   padding-left: 10px;
@@ -1250,22 +1250,22 @@ div#panel #paneles div {
   width: 100%;
   border: 1px;
 }
-.sigapopupimagecontainer {
+.sigaPopupImageContainer {
   text-align: center;
   width: 30%;
 }
-.sigapopupimage {
+.sigaPopupImage {
   width: 50px;
   height: 50px;
 }
-.sigapopuptextcontainer {
+.sigaPopupTextContainer {
   text-align: left;
   vertical-align: middle;
 }
-.sigapopupinputcontainer {
+.sigaPopupInputContainer {
   text-align: center;
 }
-#barranavegacion {
+#barraNavegacion {
   width: 95%;
 }
 #popup_container {
@@ -1369,7 +1369,7 @@ div#panel #paneles div {
 .ui-datepicker-trigger {
   cursor: pointer;
 }
-tr.notfound {
+tr.notFound {
   background-color: transparent;
   text-align: center;
 }
@@ -1377,11 +1377,11 @@ tr.notfound {
   background-color: transparent;
   text-align: center;
 }
-table.fixedheadertable thead th {
+table.fixedHeaderTable thead th {
   display: table-cell;
   border-bottom: 2px groove;
 }
-table.fixedheadertable tbody td {
+table.fixedHeaderTable tbody td {
   display: table-cell;
   border: 2px groove;
 }
