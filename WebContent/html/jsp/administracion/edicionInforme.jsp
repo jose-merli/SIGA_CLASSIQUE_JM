@@ -473,7 +473,7 @@
 											selectedIds="<%=tagSelectidTipoEnvioSeleccionado%>"
 											required="true"
 											multiple="true" 
-											lines="7"/>															
+											lines="7"/>
 							</td>
 								
 							<td class="labelText" style="vertical-align: middle;">
@@ -756,7 +756,7 @@
 			if(document.InformeFormEdicion.idTipoInforme.value!='CON'){
 				var tiposEnvio = document.getElementById("comboTipoEnvioPermitidos").options;
 				
-				for ( var i = 1; i < tiposEnvio.length; i++) {
+				for ( var i = 0; i < tiposEnvio.length; i++) {
 					var tipoEnvio = tiposEnvio[i];
 					if(tipoEnvio.selected){
 						tiposEnvioSeleccionados += tipoEnvio.value+'##';						
