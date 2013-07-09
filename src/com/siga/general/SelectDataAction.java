@@ -93,6 +93,14 @@ public class SelectDataAction extends Action {
 					params.put("idioma", user.getLanguage());
 				if (!params.containsKey("idinstitucion"))
 					params.put("idinstitucion", user.getLocation());
+				if (!params.containsKey("idperfil")){
+					String userProfiles = "";
+					for (String idperfil: user.getProfile()){
+						userProfiles += "," + idperfil;
+					}
+					userProfiles = userProfiles.substring(1);
+					params.put("idperfil", userProfiles);
+				}
 				params = TagSelect.normalizeJSONparams(params);
 				// CALL SelectDataService				
 				try {

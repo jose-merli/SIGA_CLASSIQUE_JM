@@ -18,7 +18,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.mapper.SelectDataMapper;
@@ -139,6 +138,14 @@ public class TagSelect extends TagSupport {
 					params.put("idioma", user.getLanguage());
 				if (!params.containsKey("idinstitucion"))
 					params.put("idinstitucion", user.getLocation());
+				if (!params.containsKey("idperfil")){
+					String userProfiles = "";
+					for (String idperfil: user.getProfile()){
+						userProfiles += "," + idperfil;
+					}
+					userProfiles = userProfiles.substring(1);
+					params.put("idperfil", userProfiles);
+				}
 				
 				if (StringUtils.hasText(this.searchkey)){
 					params.put(SelectDataMapper.SEARCH_KEY_PARAMETER, this.searchkey);
@@ -252,9 +259,9 @@ public class TagSelect extends TagSupport {
 		
 		styleSearchBox = styleSelect;		
 		if (!styleSearchBox.equals(""))
-			styleSearchBox += "'";
-		if (!styleSearchBox.equals(""))
-			styleSearchBox += "'";
+			styleSearchBox += "float:left;'";
+		else
+			styleSearchBox = " style='float:left;' ";
 		
 		String searchBoxSize = "";
 		if (this.searchBoxWidth != null){
@@ -301,8 +308,11 @@ public class TagSelect extends TagSupport {
 			out.println("<label for='"+this.id+"'>"+localizedLabelText+"</label>");
 		}
 		
-		if (!multiple && showSearchBox)
+		String selectLoaderStyle = "";
+		if (!multiple && showSearchBox){
+			selectLoaderStyle = " style='float:right;'";
 			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' class='tagSelect_searchBox box' "+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
+		}
 		String sShowSearchBox = "";
 		if (showSearchBox)
 			sShowSearchBox = " data-showsearchbox='true' ";
@@ -316,7 +326,7 @@ public class TagSelect extends TagSupport {
 				styleSelect += " disabled ";
 		}
 		
-		out.println("<div id='"+this.id+"_loader'><select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+styleSelect+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+">");
+		out.println("<div id='"+this.id+"_loader' class='tagSelect_loader'"+selectLoaderStyle+"><select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+styleSelect+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();

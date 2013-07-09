@@ -77,6 +77,15 @@ if (typeof jQuery == "undefined"){
 }
 
 
+//JSON FOR COMPATIBILITY MODE ON IE
+//http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.min.js
+var JSON;JSON||(JSON={});
+(function(){function k(a){return a<10?"0"+a:a}function o(a){p.lastIndex=0;return p.test(a)?'"'+a.replace(p,function(a){var c=r[a];return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function l(a,j){var c,d,h,m,g=e,f,b=j[a];b&&typeof b==="object"&&typeof b.toJSON==="function"&&(b=b.toJSON(a));typeof i==="function"&&(b=i.call(j,a,b));switch(typeof b){case "string":return o(b);case "number":return isFinite(b)?String(b):"null";case "boolean":case "null":return String(b);case "object":if(!b)return"null";
+e+=n;f=[];if(Object.prototype.toString.apply(b)==="[object Array]"){m=b.length;for(c=0;c<m;c+=1)f[c]=l(c,b)||"null";h=f.length===0?"[]":e?"[\n"+e+f.join(",\n"+e)+"\n"+g+"]":"["+f.join(",")+"]";e=g;return h}if(i&&typeof i==="object"){m=i.length;for(c=0;c<m;c+=1)typeof i[c]==="string"&&(d=i[c],(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h))}else for(d in b)Object.prototype.hasOwnProperty.call(b,d)&&(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h);h=f.length===0?"{}":e?"{\n"+e+f.join(",\n"+e)+"\n"+g+"}":"{"+f.join(",")+
+"}";e=g;return h}}if(typeof Date.prototype.toJSON!=="function")Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+k(this.getUTCMonth()+1)+"-"+k(this.getUTCDate())+"T"+k(this.getUTCHours())+":"+k(this.getUTCMinutes())+":"+k(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()};var q=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,e,n,r={"\u0008":"\\b","\t":"\\t","\n":"\\n","\u000c":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},i;if(typeof JSON.stringify!=="function")JSON.stringify=function(a,j,c){var d;n=e="";if(typeof c==="number")for(d=0;d<c;d+=1)n+=" ";else typeof c==="string"&&(n=c);if((i=j)&&typeof j!=="function"&&(typeof j!=="object"||typeof j.length!=="number"))throw Error("JSON.stringify");return l("",
+{"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
 
 
 /**
@@ -92,19 +101,7 @@ function jQueryLoaded(){
 	
 	// *** BEGIN PLUGINS *** //
 	// EXISTS FUNCTION
-	jQuery.fn.exists = function(){return this.length>0;};
-	
-	
-	//JSON FOR COMPATIBILITY MODE ON IE
-	//http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.min.js
-	var JSON;JSON||(JSON={});
-	(function(){function k(a){return a<10?"0"+a:a}function o(a){p.lastIndex=0;return p.test(a)?'"'+a.replace(p,function(a){var c=r[a];return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function l(a,j){var c,d,h,m,g=e,f,b=j[a];b&&typeof b==="object"&&typeof b.toJSON==="function"&&(b=b.toJSON(a));typeof i==="function"&&(b=i.call(j,a,b));switch(typeof b){case "string":return o(b);case "number":return isFinite(b)?String(b):"null";case "boolean":case "null":return String(b);case "object":if(!b)return"null";
-	e+=n;f=[];if(Object.prototype.toString.apply(b)==="[object Array]"){m=b.length;for(c=0;c<m;c+=1)f[c]=l(c,b)||"null";h=f.length===0?"[]":e?"[\n"+e+f.join(",\n"+e)+"\n"+g+"]":"["+f.join(",")+"]";e=g;return h}if(i&&typeof i==="object"){m=i.length;for(c=0;c<m;c+=1)typeof i[c]==="string"&&(d=i[c],(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h))}else for(d in b)Object.prototype.hasOwnProperty.call(b,d)&&(h=l(d,b))&&f.push(o(d)+(e?": ":":")+h);h=f.length===0?"{}":e?"{\n"+e+f.join(",\n"+e)+"\n"+g+"}":"{"+f.join(",")+
-	"}";e=g;return h}}if(typeof Date.prototype.toJSON!=="function")Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+k(this.getUTCMonth()+1)+"-"+k(this.getUTCDate())+"T"+k(this.getUTCHours())+":"+k(this.getUTCMinutes())+":"+k(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()};var q=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-	p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,e,n,r={"\u0008":"\\b","\t":"\\t","\n":"\\n","\u000c":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},i;if(typeof JSON.stringify!=="function")JSON.stringify=function(a,j,c){var d;n=e="";if(typeof c==="number")for(d=0;d<c;d+=1)n+=" ";else typeof c==="string"&&(n=c);if((i=j)&&typeof j!=="function"&&(typeof j!=="object"||typeof j.length!=="number"))throw Error("JSON.stringify");return l("",
-	{"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
-	"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
-	
+	jQuery.fn.exists = function(){return this.length>0;};	
 	
 	/**
 	*	jQuery.noticeAdd() and jQuery.noticeRemove()
@@ -132,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.63 2013-07-08 12:12:21 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.64 2013-07-09 11:47:42 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -520,6 +517,7 @@ function jQueryLoaded(){
 								} else if (typeof jQuery("#"+childrenId).data("required") == "undefined" && jQuery("#"+childrenId).data("required") != "true") {
 									jQuery("#"+childrenId).prepend("<option value='' selected></option>");
 								}
+								jQuery("#"+childrenId).change();
 							}
 							if (jQuery("#"+childrenId).parent().find("input.tagSelect_searchBox").exists()){
 								if (jQuery("#"+childrenId).find('option:selected').exists())
@@ -559,49 +557,40 @@ function jQueryLoaded(){
 		// TAG SELECT END
 	}); // READY
 	
-	function tagSelect_search(tagSelect_select, tagSelect_searchBox){
-		if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" &&
-				tagSelect_searchBox.exists() && tagSelect_searchBox.exists()){
-			tagSelect_select.find("option").each(function() {
-				if (jQuery(this).parent().is("span")){
-					jQuery(this).unwrap();
-				}
-				jQuery(this).show();
+} // FIN JQUERY LOADED
+
+function tagSelect_search(tagSelect_select, tagSelect_searchBox){
+	if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" &&
+			tagSelect_searchBox.exists() && tagSelect_searchBox.exists()){
+		tagSelect_select.find("option").each(function() {
+			if (jQuery(this).parent().is("span")){
+				jQuery(this).unwrap();
+			}
+			jQuery(this).show();
+		});
+		var searchValue = tagSelect_searchBox.val();
+		if (searchValue != ""){
+			tagSelect_select.find("option").wrap("<span>").hide();
+			var optionsFound = tagSelect_select.find("option[data-searchkey]").filter(function(){
+				//console.debug("tagSelect_search comparando " + String(jQuery(this).data("searchkey")).toLowerCase() + " con " + String(searchValue).toLowerCase() + " > " + String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()));
+				return String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()) != "-1";
 			});
-			var searchValue = tagSelect_searchBox.val();
-			if (searchValue != ""){
-				tagSelect_select.find("option").wrap("<span>").hide();
-				var optionsFound = tagSelect_select.find("option[data-searchkey]").filter(function(){
-					//console.debug("tagSelect_search comparando " + String(jQuery(this).data("searchkey")).toLowerCase() + " con " + String(searchValue).toLowerCase() + " > " + String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()));
-					return String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()) != "-1";
+			console.debug("[tagSelect_search] Búsqueda por '" + searchValue + "' encontradas " + optionsFound.length + " options...");
+			if (optionsFound.length > 0){
+				optionsFound.show();
+				optionsFound.each(function() {
+					if (jQuery(this).parent().is("span")){							
+						jQuery(this).unwrap();
+						//console.debug("muestro["+jQuery(this).data("searchkey")+"]: " + jQuery(this).text());
+					}
 				});
-				console.debug("[tagSelect_search] Búsqueda por '" + searchValue + "' encontradas " + optionsFound.length + " options...");
-				if (optionsFound.length > 0){
-					optionsFound.show();
-					optionsFound.each(function() {
-						if (jQuery(this).parent().is("span")){							
-							jQuery(this).unwrap();
-							//console.debug("muestro["+jQuery(this).data("searchkey")+"]: " + jQuery(this).text());
-						}
-					});
-					//console.debug("[tagSelect_search] Seteo el valor del select a '"+optionsFound.first().val()+"'");
-					//tagSelect_select.val(optionsFound.first().val());
-					if (tagSelect_select.find("option:selected").exists())
-						tagSelect_select.find("option:selected").attr('selected', false);
-					optionsFound.first().attr('selected', true);
-					//tagSelect_select.val(tagSelect_select.find("option:selected").text());
-					//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
-				} else {
-					tagSelect_select.find("option").each(function() {
-						if (jQuery(this).parent().is("span")){
-							jQuery(this).unwrap();
-						}
-						jQuery(this).show();
-					});
-					if (tagSelect_select.find("option:selected").exists())
-						tagSelect_select.find("option:selected").attr('selected', false);
-					tagSelect_select.find("option").first().attr('selected', true);
-				}
+				//console.debug("[tagSelect_search] Seteo el valor del select a '"+optionsFound.first().val()+"'");
+				//tagSelect_select.val(optionsFound.first().val());
+				if (tagSelect_select.find("option:selected").exists())
+					tagSelect_select.find("option:selected").attr('selected', false);
+				optionsFound.first().attr('selected', true);
+				//tagSelect_select.val(tagSelect_select.find("option:selected").text());
+				//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
 			} else {
 				tagSelect_select.find("option").each(function() {
 					if (jQuery(this).parent().is("span")){
@@ -613,143 +602,162 @@ function jQueryLoaded(){
 					tagSelect_select.find("option:selected").attr('selected', false);
 				tagSelect_select.find("option").first().attr('selected', true);
 			}
+		} else {
+			tagSelect_select.find("option").each(function() {
+				if (jQuery(this).parent().is("span")){
+					jQuery(this).unwrap();
+				}
+				jQuery(this).show();
+			});
+			if (tagSelect_select.find("option:selected").exists())
+				tagSelect_select.find("option:selected").attr('selected', false);
+			tagSelect_select.find("option").first().attr('selected', true);
 		}
 	}
-	
-	function loadSelect(parentSelects, childrenId, setInitialValue){
-		var blockParentSelects = parentSelects.not(":disabled").filter(":visible");
+}
+
+function reloadSelect(childrenId, setValue, params){
+	if (setValue)
+		jQuery("#"+childrenId).data("set-id-value", setValue);
+	loadSelect(undefined, childrenId, undefined, params);
+}
+
+function loadSelect(parentSelects, childrenId, setInitialValue, params){
+	var blockParentSelects = undefined;
+	if (parentSelects){
+		blockParentSelects = parentSelects.not(":disabled").filter(":visible");
 		blockParentSelects.hide();
-		var childrenSelect = jQuery("#"+childrenId);
-		console.debug("loadSelect " + childrenId);
-		if (childrenSelect.exists()){
-			var loadingId = childrenSelect.attr("id") + "_loading";
-			if (!jQuery("#"+loadingId).exists()){
-				childrenSelect.after("<img id='"+loadingId+"' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='display:none' />");
-				jQuery("#"+loadingId).fadeIn();
-			}
-			var dataObject = {};
-			dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
-			jQuery("*[data-queryparamid]").each(function(){
-				var key = jQuery(this).data("queryparamid");
-				var value = jQuery(this).val();
-				if (value == "" && jQuery(this).is("select"))
-					value = jQuery(this).find("option:selected").val();
-				/*
-				if (dataObject[key] !== undefined && dataObject[key] != "" && dataObject[key] != " " && dataObject[key] != "-1") {
-					if (!dataObject[key].push) {
-						dataObject[key] = [dataObject[key]];
-		            }
-					dataObject[key].push(value || '');
-				} else {
-					dataObject[key] = value || '';
-				}
-				*/
-				// Sobreescribimos el valor siempre aunque exista ya para evitar errores en páginas donde hay más de un formulario y se repiten atributos
-				// atributos
-				dataObject[key] = value || '';
-				console.debug("ADDED queryparamid: " + key + " = " + dataObject[key]);
-			});
-			var data = JSON.stringify(dataObject);
-			var params = "";
-			if (typeof data != "undefined"){
-				params = "&params="+encodeURIComponent(data);
-			}
-			var selectedIds = "";
-			if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
-				selectedIds = "&selectedIds="+childrenSelect.data("inival");
-			}
-			if (typeof childrenSelect.data("set-id-value") != "undefined"){
-				selectedIds = "&selectedIds="+childrenSelect.data("set-id-value");
-				childrenSelect.removeData("set-id-value");
-			}
-			
-			var required = "";
-			if(typeof childrenSelect.data("required") != "undefined"){
-				required = "&required="+childrenSelect.data("required");
-			}
-			var sShowsearchbox = "";
-			if (typeof childrenSelect.data("showsearchbox") != "undefined"){
-				sShowsearchbox ="&showsearchbox='true'";
-			}
-			// Funciona mucho mejor en IE que .html("");
-			childrenSelect.each(function(){this.innerHTML="";});
-			childrenSelect.html(optionCargando);
-			childrenSelect.each(function(){
-				var currentChild = this;
-				var jqxhr = jQuery.ajax({
-					url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox
-				}).done(function(data, textStatus, jqXHR){
-					console.debug(jQuery(currentChild).attr("id")+" load DONE!");
-					//var start = +new Date();
-					var currentChildId = jQuery(currentChild).attr("id");
-					jQuery(currentChild).html(data);
-					/* FUNCIONA MUCHO MÁS RÁPIDO EN IE PERO SE PIERDEN LOS EVENTOS					
-					jQuery(currentChild).empty();
-					var currentChild_loader = jQuery("#"+jQuery(currentChild).attr("id")+"_loader")[0];
-					
-					var events = jQuery(currentChild).data('events');
-					var newSelect = jQuery(currentChild).clone(true, true);
-					newSelect[0].innerHTML = data;
-					alert("options: " + newSelect[0].options.length);
-					var newSelectDiv = document.createElement('div');
-					newSelectDiv.appendChild(newSelect[0]);
-					currentChild_loader.innerHTML = newSelectDiv.innerHTML;
-					
-					console.debug(currentChildId + ": " + jQuery("#"+currentChildId).length);
-					$.each(events, function() {
-					  $.each(this, function() {
-						  console.debug(currentChildId+ " bind " + this.type + " " + this.handler);
-						  jQuery("#"+currentChildId).bind(this.type, this.handler);
-					  });
-					});
-					*/								
-					
-					/*
-					var end =  +new Date();
-					var diff = end - start;
-					console.debug(jQuery(currentChild).attr("id")+" Inserted on DOM on: "+diff);
-					*/
-					
-					if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
-						jQuery("#"+currentChildId).change();
-					}
-					
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
-					//alert("Se ha producido un error al cargar los datos");
-				}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
-					if (jQuery("#"+loadingId).exists())
-						jQuery("#"+loadingId).remove();
-					
-					blockParentSelects.show();
-				});
-			});
+	}
+	var childrenSelect = jQuery("#"+childrenId);
+	console.debug("loadSelect " + childrenId);
+	if (childrenSelect.exists()){
+		var loadingId = childrenSelect.attr("id") + "_loading";
+		if (!jQuery("#"+loadingId).exists()){
+			childrenSelect.after("<img id='"+loadingId+"' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='display:none' />");
+			jQuery("#"+loadingId).fadeIn();
+		}
+		var dataObject = {};
+		dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
+		jQuery("*[data-queryparamid]").each(function(){
+			var key = jQuery(this).data("queryparamid");
+			var value = jQuery(this).val();
+			if (value == "" && jQuery(this).is("select"))
+				value = jQuery(this).find("option:selected").val();
 			/*
-			childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
-				console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
-				
-				if (childrenSelect.val() !== "undefined" && childrenSelect.val() != "" && childrenSelect.val() != "-1"){
-					childrenSelect.change();
+			if (dataObject[key] !== undefined && dataObject[key] != "" && dataObject[key] != " " && dataObject[key] != "-1") {
+				if (!dataObject[key].push) {
+					dataObject[key] = [dataObject[key]];
+	            }
+				dataObject[key].push(value || '');
+			} else {
+				dataObject[key] = value || '';
+			}
+			*/
+			// Sobreescribimos el valor siempre aunque exista ya para evitar errores en páginas donde hay más de un formulario y se repiten atributos
+			// atributos
+			dataObject[key] = value || '';
+			console.debug("ADDED queryparamid: " + key + " = " + dataObject[key]);
+		});
+		if (params){
+			jQuery.each(params, function(index, param){
+				try{
+					dataObject[param.key] = param.value || '';
+					console.debug("ADDED param "+ param.key + " = " + dataObject[param.key]);
+				} catch (e){
+					console.error("Error al incluir algún parámetro en la carga del select");
 				}
+			});
+		}
+		var data = JSON.stringify(dataObject);
+		var params = "";
+		if (typeof data != "undefined"){
+			params = "&params="+encodeURIComponent(data);
+		}
+		var selectedIds = "";
+		if(setInitialValue && typeof childrenSelect.data("inival") != "undefined"){
+			selectedIds = "&selectedIds="+childrenSelect.data("inival");
+		}
+		if (typeof childrenSelect.data("set-id-value") != "undefined"){
+			selectedIds = "&selectedIds="+childrenSelect.data("set-id-value");
+			childrenSelect.removeData("set-id-value");
+		}
+		
+		var required = "";
+		if(typeof childrenSelect.data("required") != "undefined"){
+			required = "&required="+childrenSelect.data("required");
+		}
+		var sShowsearchbox = "";
+		if (typeof childrenSelect.data("showsearchbox") != "undefined"){
+			sShowsearchbox ="&showsearchbox='true'";
+		}
+		// Funciona mucho mejor en IE que .html("");
+		childrenSelect.each(function(){this.innerHTML="";});
+		childrenSelect.html(optionCargando);
+		childrenSelect.each(function(){
+			var currentChild = this;
+			var jqxhr = jQuery.ajax({
+				url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox
+			}).done(function(data, textStatus, jqXHR){
+				console.debug(jQuery(currentChild).attr("id")+" load DONE!");
+				//var start = +new Date();
+				var currentChildId = jQuery(currentChild).attr("id");
+				jQuery(currentChild).html(data);
+				/* FUNCIONA MUCHO MÁS RÁPIDO EN IE PERO SE PIERDEN LOS EVENTOS					
+				jQuery(currentChild).empty();
+				var currentChild_loader = jQuery("#"+jQuery(currentChild).attr("id")+"_loader")[0];
+				
+				var events = jQuery(currentChild).data('events');
+				var newSelect = jQuery(currentChild).clone(true, true);
+				newSelect[0].innerHTML = data;
+				alert("options: " + newSelect[0].options.length);
+				var newSelectDiv = document.createElement('div');
+				newSelectDiv.appendChild(newSelect[0]);
+				currentChild_loader.innerHTML = newSelectDiv.innerHTML;
+				
+				console.debug(currentChildId + ": " + jQuery("#"+currentChildId).length);
+				$.each(events, function() {
+				  $.each(this, function() {
+					  console.debug(currentChildId+ " bind " + this.type + " " + this.handler);
+					  jQuery("#"+currentChildId).bind(this.type, this.handler);
+				  });
+				});
+				*/								
+				
+				/*
+				var end =  +new Date();
+				var diff = end - start;
+				console.debug(jQuery(currentChild).attr("id")+" Inserted on DOM on: "+diff);
+				*/
+				
+				if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
+					jQuery("#"+currentChildId).change();
+				}
+				
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
+				//alert("Se ha producido un error al cargar los datos");
+			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 				if (jQuery("#"+loadingId).exists())
 					jQuery("#"+loadingId).remove();
-				
-				blockParentSelects.show();
+				if (blockParentSelects)
+					blockParentSelects.show();
 			});
-			*/
-		}
-	}
-	
-	/* YA NO TIENE SENTIDO CON EL CAMBIO DE COMBO_BD A SELECT
-	if (typeof modo != "undefined" && modo.toUpperCase() === "VER"){
-		jQuery(document).ready(function() {	
-		    jQuery(window).load(function (){
-		    	iniInputSelect(false);
-		    });
 		});
+		/*
+		childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
+			console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
+			
+			if (childrenSelect.val() !== "undefined" && childrenSelect.val() != "" && childrenSelect.val() != "-1"){
+				childrenSelect.change();
+			}
+			if (jQuery("#"+loadingId).exists())
+				jQuery("#"+loadingId).remove();
+			
+			blockParentSelects.show();
+		});
+		*/
 	}
-	*/
-} // FIN JQUERY LOADED
+}
 
 var ie = (function(){
     var undef, v = 3, div = document.createElement('div');
