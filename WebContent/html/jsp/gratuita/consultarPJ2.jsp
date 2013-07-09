@@ -36,8 +36,7 @@
 	String cambiar = request.getAttribute("cambiar") == null?"":(String)request.getAttribute("cambiar");
 	String modo = request.getAttribute("modo")==null?"":(String)request.getAttribute("modo");
 	boolean desactivar = false;
-	String clase = "box";
-	String botones = "E";
+	String clase = "box";	
 	ArrayList instituciones = request.getAttribute("arrayInstituciones") == null ? new ArrayList() : (ArrayList)request.getAttribute("arrayInstituciones");
 	ArrayList partidoSe= new ArrayList();
 	
@@ -121,11 +120,7 @@
 		
 		// Para cargar los datos inicialmente: buscarInicial()		
 		function buscarInicial() {
-			<% if (!modo.equals("nuevo") && !modo.equals("ver")) { %>
-				ajusteAltoBotones('resultado');
-			<% } else { %>
-				ajusteAlto('resultado');
-			<% } %>
+			ajusteAltoBotones('resultado');
 			
 			if (document.forms[0].modo.value != "nuevo") {
 				cargarProvincias();
@@ -254,16 +249,24 @@
 		</table>	
 	</fieldset>
 
-	<% if (!idInstitucion.equals("2000") && !accion.equals("nuevo")) {%>
-		<siga:ConjBotonesAccion botones="V"  clase="botonesSeguido" modo="<%=accion%>"/>
-	<%} else {%>
-		<siga:ConjBotonesAccion botones="V,G,R"  clase="botonesSeguido" modo="<%=accion%>"/>
-	<%}%>
+	<% 
+		String botones = "V";
+		if (idInstitucion.equals("2000") || accion.equals("nuevo")) {
+	%>
+		<siga:ConjBotonesAccion botones="G,R"  clase="botonesSeguido" modo="<%=accion%>"/>
+	<%  }
 
-	<div style="position:absolute; width:100%;left:0px;bottom:0px;">
-		<% if (!modo.equals("nuevo") && !modo.equals("ver")) { %>
-			<siga:ConjBotonesBusqueda botones="AN"  modal="G" titulo="" />
-		<% }%>
+		if (!modo.equals("nuevo") && !modo.equals("ver")) {
+			if (botones.equals("")) {
+				botones = "AP";
+			} else  {
+				botones += ",AP";
+			}
+	 	}
+		
+	%>
+	<div style="position:absolute; width:100%; left:0px; bottom:0px;">		
+		<siga:ConjBotonesAccion botones="<%=botones%>" />
 	</div>
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
@@ -274,7 +277,7 @@
 		frameborder="0"
 		marginheight="0"
 		marginwidth="0"
-		class="frameGeneral">
+		style="position:relative; width:100%;">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
