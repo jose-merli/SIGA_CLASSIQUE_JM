@@ -1536,7 +1536,7 @@
 	} 		
 </script>
 
-<body  class="tablaCentralCampos" >
+<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
 	<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
