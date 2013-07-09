@@ -49,6 +49,8 @@
 			elementoactivo="1"
 	/>
 
+</html:form>
+
 	<iframe src="<%=app%>/html/jsp/general/blank.jsp"
 			id="mainPestanas"
 			name="mainPestanas"
@@ -60,7 +62,6 @@
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 
-</html:form>
 
 </body>
 </html>

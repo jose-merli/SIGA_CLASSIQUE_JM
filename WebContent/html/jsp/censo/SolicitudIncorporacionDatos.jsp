@@ -101,15 +101,15 @@
 	boolean scheck = false;
 	if (editar.equalsIgnoreCase("false")) {
 		estiloBox = "boxConsulta";
-		estiloBoxNumber = "boxConsultaNumber";
-		estiloCombo = "boxConsulta";
+		estiloBoxNumber = "boxConsulta";
+		estiloCombo = "boxComboConsulta";
 		readonly = true;
 		sreadonly = "true";
 		scheck = true;
 	} else {
 		estiloBox = "box";
 		estiloBoxNumber = "boxNumber";
-		estiloCombo = "box";
+		estiloCombo = "boxCombo";
 		readonly = false;
 		sreadonly = "false";
 		scheck = false;
@@ -1536,7 +1536,7 @@
 	} 		
 </script>
 
-<body  class="tablaCentralCampos" onLoad="cargaPais(<%=datosPersonales.getIdPais() %>);cargarChecksCuenta();comprobarTipoIdent();ajusteAlto('divDocumentoAPresentar');cargarBancos();">
+<body  class="tablaCentralCampos" >
 	<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
@@ -1569,12 +1569,11 @@
 			<siga:ConjCampos>
 				<table border="0" cellpadding="5" cellspacing="0">
 					<tr>
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:50px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/>
 						</td>
 						<%if (readonly || datosPersonales.getIdEstado().intValue()==ClsConstants.ESTADO_SOLICITUD_APROBADA) {%>
-							<td class="boxLabelReadOnly">
+							<td class="labelTextValue">
 								<%=UtilidadesString.mostrarDatoJSP(estadoSolicitud)%>
 								<html:hidden property="editarEstadoSolicitud" value="<%=datosPersonales.getIdEstado().toString()%>"  />
 							</td>
@@ -1586,20 +1585,18 @@
 						
 						<td style="width:10px">&nbsp;</td>
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:92px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.fechaEstado'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.fechaEstado'/>
 						</td>
-						<td class="boxLabel">
+						<td class="labelText">
 							<html:text property="fechaEstado" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
 								value="<%=datosPersonales.getFechaEstado()%>"/>
 						</td>	
 						
 						<td style="width:10px">&nbsp;</td>
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:100px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>
 						</td>
 
 						<td rowspan="2">
@@ -1617,11 +1614,10 @@
 					<tr>
 						<td colspan="3"> &nbsp;</td>
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:125px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>
 						</td>
-						<td class="boxLabel">
+						<td class="labelText">
 							<html:text property="fechaSolicitud" size="10" styleClass="boxConsulta" tabindex="-1" readonly="true"
 								value="<%=datosPersonales.getFechaSolicitud()%>"/>
 						</td>												
@@ -1640,12 +1636,11 @@
 						<td style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:80px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />&nbsp;(*)
+									<td class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%=UtilidadesString.mostrarDatoJSP(tipoSolicitud)%>
 										</td>
 									<%}else{%>
@@ -1661,12 +1656,11 @@
 						<td style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:130px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />&nbsp;(*)
+									<td class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>&nbsp;(*)
 									</td>
 									<%if(readonly){ %>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%=UtilidadesString.mostrarDatoJSP(tipoColegiacion)%>
 										</td>
 									<%}else{%>
@@ -1679,12 +1673,11 @@
 							</table>
 						</td>									
 
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:170px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />&nbsp;(*)
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>&nbsp;(*)
 						</td>						
 						<%if(readonly){ %>
-							<td class="boxLabelReadOnly">
+							<td class="labelTextValue">
 								<%=UtilidadesString.mostrarDatoJSP(modalidadDocumentacion)%>
 							</td>
 						<%}else{%>
@@ -1699,12 +1692,11 @@
 						<td style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:158px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>
 									</td>
 									<%if(readonly){%>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
 										</td>
 									<%}else{%>
@@ -1719,9 +1711,8 @@
 						<td style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>						
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:70px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.consultaDatosColegiacion.literal.residente'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.consultaDatosColegiacion.literal.residente'/>
 									</td>
 									<td>
 										<html:checkbox property="residente" disabled="<%=readonly%>"/>
@@ -1730,9 +1721,8 @@
 							</table>
 						</td>									
 					
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:90px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.nColegiado'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.nColegiado'/>
 						</td>
 						<td>
 							<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
@@ -1750,15 +1740,14 @@
 			<siga:ConjCampos>
 				<table border="0" cellpadding="5" cellspacing="0">
 					<tr>
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:58px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>" />&nbsp;(*)
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>&nbsp;(*)
 						</td>
 						<td colspan="6" style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>									
 									<%if(readonly){%>	
-										<td class="boxLabelReadOnly">						
+										<td class="labelTextValue">						
 											<siga:ComboBD nombre="tipoIdentificacion" tipo="cmbTipoIdentificacion" ancho="100" 
 												clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" 
 												readOnly="<%=sreadonly%>" obligatorio="true"/>	
@@ -1783,13 +1772,12 @@
 					</tr>
 					
 					<tr>		
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:85px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>" />&nbsp;(*)
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>&nbsp;(*)
 						</td>
 						
 						<%if(readonly){%>
-							<td class="boxLabelReadOnly">
+							<td class="labelTextValue">
 								<%=UtilidadesString.mostrarDatoJSP(tipoTratamiento)%>
 							</td>
 						<%}else{%>
@@ -1800,17 +1788,15 @@
 							</td>
 						<%}%>						
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:55px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>" />&nbsp;(*)
+						<td class="labelText">
+							<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>&nbsp;(*)
 						</td>
 						<td>
 							<html:text property="nombre" style="width:170" maxlength="100" value="<%=datosPersonales.getNombre()%>" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"/>
 						</td>		
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:65px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>" />&nbsp;(*)
+						<td class="labelText">
+							<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>&nbsp;(*)
 						</td>
 						<td>
 							<html:text property="apellido1"  style="width:170" maxlength="100" value="<%=datosPersonales.getApellido1()%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
@@ -1824,12 +1810,11 @@
 						<td colspan="7" style="padding:0px">
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>			
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:140px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
+									<td class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>&nbsp;(*)
 									</td>						
 									<%if(readonly){%>
-										<td class="boxLabelReadOnly"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
+										<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaNacimiento())%></td>
 									<%}else{%>
 										<td>
 											<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento() %>" />
@@ -1838,12 +1823,11 @@
 									
 									<td style="width:13px">&nbsp;</td>												
 												
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:37px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>" />&nbsp;(*)
+									<td class="labelText">
+										<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>&nbsp;(*)
 									</td>
 									<%if (readonly){%>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%if(datosPersonales.getSexo()!=null)out.print(UtilidadesString.mostrarDatoJSP(ssexo));%>
 										</td>
 									<%}else{%>
@@ -1859,13 +1843,12 @@
 									
 									<td style="width:13px">&nbsp;</td>
 									
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:81px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>
 									</td>
 									
 									<%if(readonly){%>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%=UtilidadesString.mostrarDatoJSP(tipoEstadoCivil)%>
 										</td>											
 									<%}else{%>
@@ -1877,9 +1860,8 @@
 									
 									<td style="width:13px">&nbsp;</td>
 			
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:73px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>
 									</td>
 									<td>
 										<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" value="<%= datosPersonales.getNaturalDe() %>"/>
@@ -1897,13 +1879,12 @@
 						<td>				
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:32px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.datosDireccion.literal.pais2'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.datosDireccion.literal.pais2'/>
 									</td>	
 																
 									<%if(readonly){%>
-										<td class="boxLabelReadOnly">
+										<td class="labelTextValue">
 											<%=UtilidadesString.mostrarDatoJSP(pais)%>
 										</td>
 									<%}else{%>
@@ -1914,9 +1895,8 @@
 								</tr>
 								
 								<tr>
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:64px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>" />&nbsp;(*)
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>&nbsp;(*)
 									</td>									
 									<td>
 										<html:text styleClass="<%=estiloBox%>" property="domicilio" readOnly="<%=readonly%>"
@@ -1928,7 +1908,7 @@
 									<td colspan="2" style="padding:0px">
 										<table border="0" cellpadding="5" cellspacing="0">
 											<tr id="trEspanol1">
-												<td class="boxLabel">
+												<td class="labelText">
 													CP&nbsp;(*)
 												</td>
 												<td>	
@@ -1941,9 +1921,8 @@
 													<%}%>
 												</td>					
 											
-												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
-														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+												<td class="labelText">
+													<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>&nbsp;(*)
 												</td>																		
 																		
 												<td>
@@ -1970,27 +1949,25 @@
 													<siga:ToolTip id='idAyudaPoblaciones' imagen="/SIGA/html/imagenes/botonAyuda.gif" texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "censo.SolicitudIncorporacion.ayudaPoblaciones"))%>' />
 												</td>  																																								
 
-												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
-														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
+												<td class="labelText">
+													<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>									
 												</td>
-												<td class="boxLabel">
+												<td class="labelText">
 													<input id="provincia_input" class="boxConsulta" type="text" style="width:310px"  
 														value="<%=provincia%>" readonly tabindex="-1" />
 												</td>
 											</tr>
 											
 											<tr id="trExtranjero" style="display:none">
-												<td class="boxLabel">
+												<td class="labelText">
 													CP&nbsp;(*)
 												</td>											
 												<td>	
 													<html:text property="CPExt" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value="<%=datosPersonales.getCodigoPostal()%>" readOnly="<%=readonly%>"/>
 												</td>						
 											
-												<td class="boxLabel">
-													<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
-														value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+												<td class="labelText">
+													<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>&nbsp;(*)
 												</td>																																													
 												<td>
 													<html:text styleId="poblacionExt" property="poblacionExt" style="width:310px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
@@ -2015,17 +1992,15 @@
 						<td>
 							<table border="0" cellpadding="5" cellspacing="0">
 								<tr>
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>" />&nbsp;(*)
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>&nbsp;(*)
 									</td>									
 									<td>
 										<html:text property="telefono1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>" />
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>
 									</td>									
 									<td>
 										<html:text property="telefono2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getTelefono2()%>" readOnly="<%=readonly%>"/>
@@ -2033,17 +2008,15 @@
 								</tr>
 								
 								<tr>
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>" />
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>
 									</td>									
 									<td>
 										<html:text property="fax1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax1()%>" readOnly="<%=readonly%>"/>
 									</td>
 									
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>" />
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>
 									</td>
 									<td>
 										<html:text property="fax2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getFax2()%>" readOnly="<%=readonly%>"/>
@@ -2051,9 +2024,8 @@
 								</tr>
 								
 								<tr>
-									<td  class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>" />								
+									<td  class="labelText">
+										<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>						
 									</td>
 									<td colspan="3">
 										<html:text property="telefono3" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getMovil()%>" readOnly="<%=readonly%>"/>
@@ -2063,9 +2035,8 @@
 								<tr>
 									<td colspan="4" style="padding:0px;">
 										<table border="0" cellpadding="5" cellspacing="0">
-											<td  class="boxLabel">
-												<input class="boxLabel" type="text" style="width:126px" tabindex="-1" readonly
-													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>" />&nbsp;(*)		
+											<td  class="labelText">
+												<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>&nbsp;(*)		
 											</td>
 											<td>
 												<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
@@ -2086,9 +2057,8 @@
 			<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
 				<table border="0" cellpadding="5" cellspacing="0">	
 					<tr>		
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:50px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.titular'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.datosCuentaBancaria.literal.titular'/>
 						</td>																
 						<td>
 							<html:text property="titular" value="<%=titular%>" size="50" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"/>
@@ -2096,9 +2066,8 @@
 													
 						<td style="width:20px">&nbsp;</td>
 					
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:42px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.tipoCuenta.cargo'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.tipoCuenta.cargo'/>
 						</td>
 						
 						<td style="padding:0px">
@@ -2110,9 +2079,8 @@
 									
 									<td style="width:20px">&nbsp;</td>								
 																						
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.tipoCuenta.abono'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.tipoCuenta.abono'/>
 									</td>									
 									<td>
 										<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
@@ -2120,9 +2088,8 @@
 									
 									<td style="width:20px">&nbsp;</td>
 									
-									<td class="boxLabel">
-										<input class="boxLabel" type="text" style="width:85px" tabindex="-1" readonly
-											value="<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" />
+									<td class="labelText">
+										<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>
 									</td>									
 									<td>
 										<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
@@ -2133,7 +2100,7 @@
 					</tr>
 
 					<tr>					
-						<td class="boxLabel">
+						<td class="labelText">
 							Cuenta
 						</td>						
 						<td style="padding:0px">
@@ -2151,9 +2118,8 @@
 						
 						<td style="width:20px">&nbsp;</td>
 						
-						<td class="boxLabel">
-							<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.datosCuentaBancaria.literal.banco'/>" />
+						<td class="labelText">
+							<siga:Idioma key='censo.datosCuentaBancaria.literal.banco'/>
 						</td>
 						<td>
 							<input id="banco" type="text" style="width:400px;" class="boxConsulta" 
@@ -2303,8 +2269,8 @@
 		<div id='divDocumentoAPresentar' style="overflow-y: scroll">
 			<table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
 				<tr class = 'tableTitle'>
-					<td align='center' width='10%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
-					<td align='center' width='90%'><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.documento"/></td>
+					<td align='center' width='10%' class="labelTextValor"><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
+					<td align='center' width='90%' class="labelTextValor"><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.documento"/></td>
 				</tr>
 		
 				<% if (documentos != null) {
@@ -2319,7 +2285,7 @@
 				   			<input type="hidden" id="oculto<%=(i+1)%>_1" value="<%=documento.getDocumentacionSolicitud().getIdDocumentacion()%>" />
 				   			<input type="checkbox" <%if (editar.equalsIgnoreCase("false")) { out.print(" disabled "); } %><%if(estado.equalsIgnoreCase("true"))out.print("checked");%> />
 				   		</td>
-				   		<td>
+				   		<td class="labelTextValor">
 				   			<%if(documento.getDocumentacionSolicitud().getDescripcion()!=null)out.print(UtilidadesString.mostrarDatoJSP(documento.getDocumentacionSolicitud().getDescripcion()));%>
 				   		</td>
 				   </tr>
