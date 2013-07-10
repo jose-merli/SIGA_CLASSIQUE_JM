@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.64 2013-07-09 11:47:42 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.65 2013-07-10 10:52:20 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -418,7 +418,7 @@ function jQueryLoaded(){
 		// TAG SELECT BEGIN
 		//console.debug("div.tagSelectDiv: " + jQuery("div.tagSelectDiv").length + " EN " + window.location);
 		jQuery("div.tagSelectDiv").each(function(){
-			//console.debug("--- BEGIN tagSelectDiv ---");
+			//console.debug("--- BEGIN tagSelectDiv ---");			
 			var tagSelect_select = jQuery(this).find("select");			
 			if (tagSelect_select.exists()){
 				var tagSelect_input = jQuery(this).find("input.tagSelect_disabled");
@@ -553,11 +553,35 @@ function jQueryLoaded(){
 					}
 				}
 			}
+			setTagselectDivWidth(jQuery(this));
 		});
 		// TAG SELECT END
 	}); // READY
 	
 } // FIN JQUERY LOADED
+
+
+function setTagselectDivWidth(tagSelectDiv){
+	/* NO HACE FALTA CON EL INLINE
+	if (tagSelectDiv.data("width")){
+		tagSelectDiv.width(tagSelectDiv.data("width"));
+	} else {
+		var width = 10;
+		if (tagSelectDiv.find("select:visible").exists()){
+			width = tagSelectDiv.find("select:visible").width();
+			if(tagSelectDiv.find("input.tagSelect_searchBox").exists()){
+				width += tagSelectDiv.find("input.tagSelect_searchBox").width();
+			}
+		} else if (tagSelectDiv.find("input.tagSelect_disabled:visible").exists()){
+			width = tagSelectDiv.find("input.tagSelect_disabled:visible").width();
+		}
+		if (width != 10){
+			console.debug("[setTagselectDivWidth] width: " + width);
+			tagSelectDiv.width(width);
+		}
+	}
+	*/
+}
 
 function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 	if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" &&
@@ -695,6 +719,9 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 		childrenSelect.html(optionCargando);
 		childrenSelect.each(function(){
 			var currentChild = this;
+			if (jQuery(currentChild).data("hideifnooptions") == "true"){
+				jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").show();
+			}
 			var jqxhr = jQuery.ajax({
 				url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox
 			}).done(function(data, textStatus, jqXHR){
@@ -732,11 +759,44 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
 					jQuery("#"+currentChildId).change();
 				}
+				if(typeof jQuery(currentChild).data("onloadcallback") != "undefined"){
+					try{
+						var callbackFnVarName = jQuery(currentChild).data("onloadcallback");
+						console.debug("calling " + jQuery(currentChild).attr("id") + " callback: " + callbackFnVarName);
+						var callbackFnVar = window[callbackFnVarName];
+						var callbacks = jQuery.Callbacks('once unique');
+						callbacks.add(callbackFnVar);
+						callbacks.fireWith(jQuery(currentChild).context);
+					} catch (e){
+						console.error("Error al ejecutar callback de " + jQuery(currentChild).attr("id"));
+					}
+					/*
+					try{
+						var sCompleteCallback = jQuery(currentChild).data("onloadcallback");
+						var sCallbackFnName = sCompleteCallback.substring(0, sCompleteCallback.indexOf("(") - 1);
+						var sCallbackFnArg = undefined;
+						if (sCompleteCallback.indexOf("(") + 1 < sCompleteCallback.indexOf(")") - 1){
+							sCallbackFnArg = sCompleteCallback.substring(sCompleteCallback.indexOf("(") + 1, sCompleteCallback.indexOf(")") - 1);
+							sCallbackFnArg = sCallbackFnArg.split(",");
+						}
+						var callbacks = jQuery.Callbacks('once unique');
+						callbacks.add(window[sCallbackFnName]);
+						callbacks.fireWith( jQuery(currentChild).context, sCallbackFnArg);
+					} catch (e){
+						console.error("Error al ejecutar callback de " + jQuery(currentChild).attr("id"));
+					}
+					*/
+				}
 				
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
 				//alert("Se ha producido un error al cargar los datos");
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+				if (jQuery(currentChild).find("option").length <= 0 && jQuery(currentChild).data("hideifnooptions") == "true"){
+					jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").hide();
+				} else {
+					setTagselectDivWidth(jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv"));
+				}				
 				if (jQuery("#"+loadingId).exists())
 					jQuery("#"+loadingId).remove();
 				if (blockParentSelects)

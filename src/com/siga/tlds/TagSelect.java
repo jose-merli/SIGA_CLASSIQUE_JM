@@ -62,6 +62,7 @@ public class TagSelect extends TagSupport {
 	private boolean disabled = false;
 	private boolean readOnly = false;
 	private boolean required = false;
+	private boolean hideIfnoOptions = false;
 	private String params;
 	private String parentQueryParamIds = "";
 	private String cssClass = "boxCombo";
@@ -73,6 +74,7 @@ public class TagSelect extends TagSupport {
 	private String selectParentLocalizedMsg = "";
 	private String searchkey = "";
 	private String dataJSON = "";
+	private String onLoadCallback = "";
 	
 	private UsrBean user;
 
@@ -300,19 +302,6 @@ public class TagSelect extends TagSupport {
 		}
 		KeyValue selectedOption = new KeyValue(true);
 		
-		// IMPRIME HTML
-		PrintWriter out = pageContext.getResponse().getWriter();
-		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv'>");
-		if (StringUtils.hasText(this.label)){
-			String localizedLabelText = UtilidadesString.getMensajeIdioma(user.getLanguage(), this.label);
-			out.println("<label for='"+this.id+"'>"+localizedLabelText+"</label>");
-		}
-		
-		String selectLoaderStyle = "";
-		if (!multiple && showSearchBox){
-			selectLoaderStyle = " style='float:right;'";
-			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' class='tagSelect_searchBox box' "+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
-		}
 		String sShowSearchBox = "";
 		if (showSearchBox)
 			sShowSearchBox = " data-showsearchbox='true' ";
@@ -326,7 +315,35 @@ public class TagSelect extends TagSupport {
 				styleSelect += " disabled ";
 		}
 		
-		out.println("<div id='"+this.id+"_loader' class='tagSelect_loader'"+selectLoaderStyle+"><select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+styleSelect+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+">");
+		String sHideIfnoOptions = " data-hideifnooptions='"+Boolean.toString(this.hideIfnoOptions).toLowerCase()+"' ";
+		
+		String dataWidth = "";
+		String styleWidth = "style='display:inline;'";
+		if (StringUtils.hasText(this.width)){
+			dataWidth = " data-width = '"+this.width+"' ";
+			styleWidth = " style='display:inline;width:"+this.width+";' ";
+		}
+		
+		// IMPRIME HTML
+		PrintWriter out = pageContext.getResponse().getWriter();
+		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+styleWidth+">");
+		String sOnloadCallback = "";
+		if (this.onLoadCallback != null && !"".equals(this.onLoadCallback)){
+			sOnloadCallback = " data-onloadcallback='"+this.id+"_callback' ";
+			out.println("<script type=\"text/javascript\">var "+this.id+"_callback = function(){"+this.onLoadCallback+"};</script>");
+		}
+		if (StringUtils.hasText(this.label)){
+			String localizedLabelText = UtilidadesString.getMensajeIdioma(user.getLanguage(), this.label);
+			out.println("<label for='"+this.id+"'>"+localizedLabelText+"</label>");
+		}
+		
+		String selectLoaderStyle = "style='display:inline;'";
+		if (!multiple && showSearchBox){
+			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' class='tagSelect_searchBox box' "+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
+		}
+		
+		out.println("<div id='"+this.id+"_loader' class='tagSelect_loader'"+selectLoaderStyle+">");
+		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+styleSelect+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
@@ -685,4 +702,35 @@ public class TagSelect extends TagSupport {
 		this.lines = lines;
 	}
 
+	/**
+	 * @return the hideIfnoOptions
+	 */
+	public boolean isHideIfnoOptions() {
+		return hideIfnoOptions;
+	}
+
+	/**
+	 * @param hideIfnoOptions the hideIfnoOptions to set
+	 */
+	public void setHideIfnoOptions(boolean hideIfnoOptions) {
+		this.hideIfnoOptions = hideIfnoOptions;
+	}
+	public void setHideIfnoOptions(String hideIfnoOptions) {
+		this.hideIfnoOptions = UtilidadesString.stringToBoolean(hideIfnoOptions.trim());;
+	}
+
+	/**
+	 * @return the onLoadCallback
+	 */
+	public String getOnLoadCallback() {
+		return onLoadCallback;
+	}
+
+	/**
+	 * @param onLoadCallback the onLoadCallback to set
+	 */
+	public void setOnLoadCallback(String onLoadCallback) {
+		this.onLoadCallback = onLoadCallback.trim();
+	}
+	
 }
