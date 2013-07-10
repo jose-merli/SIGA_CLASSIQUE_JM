@@ -475,12 +475,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 							throw new ClsExceptions("Error insertando salto: " + saltosCompenAdm.getError());
 						if (!designaLetradoAdm.delete(designaActual))
 							throw new ClsExceptions(designaLetradoAdm.getError());
-					}
-					else {
-						if (!designaLetradoAdm.updateDirect(
-								designaActual,
-								designaLetradoAdm.getClavesBean(),
-								new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA }))
+					
+					} else {
+						if (!designaLetradoAdm.updateDirect(designaActual,designaLetradoAdm.getClavesBean(),new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA }))
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					}
 				}
@@ -499,7 +496,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				designaNueva.put(ScsDesignasLetradoBean.C_OBSERVACIONES, observaciones);
 				if (!designaLetradoAdm.insert(designaNueva))
 					throw new ClsExceptions(designaLetradoAdm.getError());
-	
+				
 				//generando salto
 				if(isManual){
 					if (checkSalto != null && (checkSalto.equals("on") || checkSalto.equals("1"))) {
@@ -529,7 +526,8 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				}
 				
 	//			finalizando transaccion
-				tx.commit();		
+				tx.commit();
+				ses.setAttribute("DATABACKUP_CLD",designaNueva);
 			}
 
 //			preparando mensaje de salida
@@ -552,6 +550,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), mensaje);
 				mensaje += "\r\n" + UtilidadesString.getMensajeIdioma(getUserBean(request), "messages.nuevaDesigna.seleccionAutomaticaLetrado", new String[]{letradoTurno.getPersona().getColegiado().getNColegiado(), nombreCompletoLetrado.toString()});
 			}
+			
 		}catch (SIGAException e) {
 			try {
 				tx.rollback();

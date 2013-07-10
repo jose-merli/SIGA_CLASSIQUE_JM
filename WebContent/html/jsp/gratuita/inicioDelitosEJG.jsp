@@ -694,7 +694,7 @@
 					marginheight="0"
 					marginwidth="0";					 
 					class="frameGeneral"
-					style="position:relative;height:29%;width:100%;"
+					style="position:relative;height:20%;width:100%;"
 						>
 	</iframe>
 
