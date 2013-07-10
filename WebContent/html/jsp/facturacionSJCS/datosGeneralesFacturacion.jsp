@@ -194,6 +194,23 @@
 			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
 			if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 				botones = "LC2,GM";
+				
+				FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
+				if (ultimoEstadoEnvio != null) {
+					if (FCS_MAESTROESTADOS_ENVIO_FACT.CERTIFICACION_ENVIADA.equals(ultimoEstadoEnvio)) {
+						botones = "LC2,";
+					} else if (FCS_MAESTROESTADOS_ENVIO_FACT.CERTIFICACION_VERIFICADA.equals(ultimoEstadoEnvio) ||
+							FCS_MAESTROESTADOS_ENVIO_FACT.REINTEGRO_ENVIADO.equals(ultimoEstadoEnvio)) {
+						botones = "ER,EJ,";//Envío Reintegro y Envío Justificación		
+					} else if (FCS_MAESTROESTADOS_ENVIO_FACT.REINTEGRO_VERIFICADO.equals(ultimoEstadoEnvio)) {
+						botones = "EJ,";//Envío Justificación
+					} else if (FCS_MAESTROESTADOS_ENVIO_FACT.JUSTIFICACION_ENVIADA.equals(ultimoEstadoEnvio)) {
+						botones = "";//Envío Justificación
+					}
+					botones += "GM";
+				}
+				
+				
 				if (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
 						|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()) {				
 					botonesAbajo = "V,II";
