@@ -864,8 +864,11 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 											
 											
 										}
-										if(indiceParentesis>-1)
-											sentenciaAuxFin = sentenciaAuxFin.replaceFirst("\\)", "");
+
+										if(indiceParentesis>-1){
+											if(sentenciaAux.indexOf("(") == -1)
+												sentenciaAuxFin = sentenciaAuxFin.replaceFirst("\\)", "");
+										}
 									}
 										
 									
