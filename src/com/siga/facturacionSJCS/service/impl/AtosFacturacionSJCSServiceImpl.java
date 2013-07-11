@@ -125,7 +125,7 @@ public class AtosFacturacionSJCSServiceImpl extends JtaBusinessServiceTemplate
 						UsrBean usr = UsrBean.UsrBeanAutomatico(beanInstitucion
 								.getIdInstitucion().toString());
 						ClsLogging.writeFileLogWithoutSession(
-								"INICIO proceso FacturacionSJCS  "+beanInstitucion.getNombre(), 3);
+								"INICIO proceso FacturacionSJCS  "+beanInstitucion.getNombre()+":"+beanInstitucion.getIdInstitucion(), 3);
 
 						
 						try {
@@ -141,7 +141,7 @@ public class AtosFacturacionSJCSServiceImpl extends JtaBusinessServiceTemplate
 													.getIdInstitucion(), usr);
 							if (ejecutarOtraVez) break;
 							ClsLogging.writeFileLogWithoutSession(
-									" FIN proceso FacturacionSJCS  "+beanInstitucion.getNombre(), 3);
+									" FIN proceso FacturacionSJCS  "+beanInstitucion.getNombre()+":"+beanInstitucion.getIdInstitucion(), 3);
 
 						} catch (Exception e) {
 							if (beanInstitucion != null
