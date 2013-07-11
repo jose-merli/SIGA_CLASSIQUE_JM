@@ -44,8 +44,7 @@
 				jQuery("#nombreTablaMaestra").on("change", function(){
 					bBuscado=false;
 					buscar();
-				});
-				buscar();
+				});				
 			});
 			
 			// Funcion asociada a boton buscar

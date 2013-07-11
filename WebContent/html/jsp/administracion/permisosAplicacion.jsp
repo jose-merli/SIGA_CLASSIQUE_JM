@@ -29,9 +29,14 @@
 	 		function buscar()
 	 		{
 				var combo = document.getElementById("idPerfil");
-				
-				configurarPermisosAplicacionForm.modo.value="buscar";
-				configurarPermisosAplicacionForm.submit();
+				if (jQuery("#idPerfil").val() == ""){
+					alert("<siga:Idioma key="administracion.permisos.mensaje.especificarGrupo"/>");
+					fin();
+					return false;
+				} else {
+					configurarPermisosAplicacionForm.modo.value="buscar";
+					configurarPermisosAplicacionForm.submit();
+				}
 
 	 		}
 		</script>
