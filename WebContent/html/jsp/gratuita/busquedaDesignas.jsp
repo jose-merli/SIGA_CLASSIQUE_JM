@@ -164,60 +164,7 @@ String[] getdatos = { usr.getLocation() };
 				seleccionDatos();
 				buscarPaginador();
 			<%}%>
-		}
-		
-		var comboJuzgado ="";
-		// Funcion que obtiene el juzgado buscando por codigo externo	
-		function obtenerJuzgado(codigo, combo) { 
-			if (codigo.value!=""){
-				comboJuzgado=combo;
-				document.MantenimientoJuzgadoForm.codigoExt2.value=codigo.value;
-				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value=combo;		
-				document.MantenimientoJuzgadoForm.submit();		
-			}
-			else
-				seleccionComboSiga(combo,-1);
-		}
-			
-		function traspasoDatos(resultado){		
-			if (comboJuzgado=="juzgado") {
-				if (resultado[0]==undefined) {
-					seleccionComboSiga("juzgado",-1);
-					document.getElementById("codigoExtJuzgado").value = "";
-				} 
-				else
-					seleccionComboSiga("juzgado",resultado[0]);					
-			}
-			else {
-				if (resultado[0]==undefined) {
-					seleccionComboSiga("juzgadoActu",-1);
-					document.getElementById("codigoExtJuzgadoActu").value = "";
-				} 
-				else
-					seleccionComboSiga("juzgadoActu",resultado[0]);						
-			} 
-		}			
-		
-		function cambiarJuzgado(comboJuzgado, codigo) {
-			if(comboJuzgado.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		   			type: "POST",
-					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-					data: "idCombo="+comboJuzgado.value,
-					dataType: "json",
-					success: function(json){		
-			       		document.getElementById(codigo).value = json.codigoExt2;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById(codigo).value = "";
-		}			
+		}		
 	</script>
 	
 </head>

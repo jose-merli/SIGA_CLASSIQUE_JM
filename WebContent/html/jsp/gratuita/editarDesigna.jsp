@@ -1017,7 +1017,7 @@
 										
 										<% } %> 
 											<td rowspan="2">
-												<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="500" childrenIds="idProcedimiento" disabled="<%=modoVerReadOnly%>"/>
+												<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="300" childrenIds="idProcedimiento" disabled="<%=modoVerReadOnly%>"/>
 											</td> 
 									</tr>									
 									

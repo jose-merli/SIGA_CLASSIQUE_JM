@@ -102,7 +102,9 @@ public class TagSelect extends TagSupport {
 			String selectDataServiceMethodName = this.queryId;			
 			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(selectDataServiceMethodName, this.showSearchBox);
 			
-			if (!this.required){
+			if (this.required){
+				options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
+			} else {
 				options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
 			}
 			
@@ -238,14 +240,6 @@ public class TagSelect extends TagSupport {
 
 	private void writeSelect(List<KeyValue> selectOptions) throws IOException {
 		
-		String styleInput = "style='display:none;";
-		String styleSelect = "";
-		String styleSearchBox = "";
-		if (this.disabled || this.readOnly){
-			styleSelect = styleInput;
-			styleInput = "";
-		}
-		
 		String childrenInfo = "";
 		if (StringUtils.hasText(this.childrenIds)){
 			childrenInfo = "class='parentSelect' data-childrenIds='"+this.childrenIds+"'";
@@ -261,43 +255,11 @@ public class TagSelect extends TagSupport {
 			sRequired = " data-required='true' ";
 		}
 		
-		styleSearchBox = styleSelect;		
-		if (!styleSearchBox.equals(""))
-			styleSearchBox += "float:left;'";
-		else
-			styleSearchBox = " style='float:left;' ";
-		
 		String searchBoxSize = "";
 		if (this.searchBoxWidth != null){
 			searchBoxSize = " size='"+this.searchBoxWidth+"' ";
 		}
 
-		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
-		String divWidth = String.valueOf(DEFAULT_SELECT_WIDTH + 20);
-		if (StringUtils.hasText(this.width)){
-			selectWidth = this.width;
-			try{
-				 int iWidth = Integer.valueOf(this.width);
-				 divWidth = String.valueOf(iWidth + 20);
-			} catch (Exception e){
-				divWidth = this.width;
-			}
-		}
-		
-		if (!styleSelect.equals(""))
-			styleSelect += " width:"+selectWidth+";";
-		else
-			styleSelect += " style='width:"+selectWidth+";";
-		if (!styleInput.equals(""))
-			styleInput += " width:"+selectWidth+";";
-		else
-			styleInput += " style='width:"+selectWidth+";";
-		
-		if (!styleSelect.equals(""))
-			styleSelect += "'";
-		if (!styleInput.equals(""))
-			styleInput += "'";
-		
 		String sSearchBoxMaxLength = "";
 		if (this.searchBoxMaxLength != null){
 			sSearchBoxMaxLength = " maxlength='"+this.searchBoxMaxLength+"' ";
@@ -318,23 +280,53 @@ public class TagSelect extends TagSupport {
 		if (showSearchBox)
 			sShowSearchBox = " data-showsearchbox='true' ";
 		String sMultiple = "";
-		if (multiple){
-			sMultiple = " multiple size='"+this.lines+"'";
-			styleSelect = "";
-			styleSelect = " style='width:"+selectWidth+";";
-			if (this.disabled || this.readOnly)
-				styleSelect += " disabled ";
-		}
 		
 		String sHideIfnoOptions = " data-hideifnooptions='"+Boolean.toString(this.hideIfnoOptions).toLowerCase()+"' ";
 		
+		String disabledInputStyle = "style='display:none;";
+		String selectStyle = "style='display:inline;";
+		String styleSearchBox = "style='display:inline;'";
+		if (this.disabled || this.readOnly){
+			selectStyle = disabledInputStyle;
+			disabledInputStyle = "style='display:inline;";
+		}		
+		
+		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
+		String divWidth = String.valueOf(DEFAULT_SELECT_WIDTH + 20);
+		if (StringUtils.hasText(this.width)){
+			selectWidth = this.width;
+			try{
+				 int iWidth = Integer.valueOf(this.width);
+				 divWidth = String.valueOf(iWidth + 20);
+			} catch (Exception e){
+				divWidth = this.width;
+			}
+		}
+		
+		selectStyle += " width:"+selectWidth+";";
+		disabledInputStyle += " width:"+selectWidth+";";
+		
+		if (!selectStyle.equals(""))
+			selectStyle += "'";
+		if (!disabledInputStyle.equals(""))
+			disabledInputStyle += "'";			
+		
 		String dataWidth = " data-width = '"+divWidth+"' ";
 		
-		String wrapDivStyleWidth = " style='display:inline;width:"+divWidth+";' ";
+		//String wrapDivStyle = " style='display:inline;width:"+divWidth+";' ";
+		String wrapDivStyle = " style='display:inline;' ";
+		String selectLoaderStyle = "style='display:inline;'";
+		
+		if (multiple){
+			sMultiple = " multiple size='"+this.lines+"'";
+			selectStyle = " style='display:inline;width:"+selectWidth+";";
+			if (this.disabled || this.readOnly)
+				selectStyle += " disabled ";
+		}
 		
 		// IMPRIME HTML
 		PrintWriter out = pageContext.getResponse().getWriter();
-		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+wrapDivStyleWidth+">");
+		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+wrapDivStyle+">");
 		String sOnloadCallback = "";
 		if (this.onLoadCallback != null && !"".equals(this.onLoadCallback)){
 			sOnloadCallback = " data-onloadcallback='"+this.id+"_callback' ";
@@ -342,16 +334,15 @@ public class TagSelect extends TagSupport {
 		}
 		if (StringUtils.hasText(this.label)){
 			String localizedLabelText = UtilidadesString.getMensajeIdioma(user.getLanguage(), this.label);
-			out.println("<label for='"+this.id+"'>"+localizedLabelText+"</label>");
+			out.println("<label for='"+this.id+"' style='display:inline;'>"+localizedLabelText+"</label>");
 		}
 		
-		String selectLoaderStyle = "style='display:inline;'";
 		if (!multiple && showSearchBox){
 			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' class='tagSelect_searchBox box' "+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
 		}
 		
 		out.println("<div id='"+this.id+"_loader' class='tagSelect_loader'"+selectLoaderStyle+">");
-		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+styleSelect+">");
+		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
@@ -366,7 +357,7 @@ public class TagSelect extends TagSupport {
 		}
 		out.println("</select></div>");
 		if (!multiple)
-			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+styleInput+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
+			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
 		out.println("</div>");// this.id_div;
 	}
 

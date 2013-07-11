@@ -655,7 +655,7 @@ public class MaestroDesignasAction extends MasterAction {
 								HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
 								sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
 								sIdInstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
-							} else {
+							} else if (!sJuzgado.equals("")){
 								String[] juzgado =sJuzgado.split(",");
 								sIdJuzgado = juzgado[0];
 								sIdInstitucionJuzgado = juzgado[1];
@@ -702,16 +702,13 @@ public class MaestroDesignasAction extends MasterAction {
 								}
 							}else{
 								String sIdprocedimiento = "";
-								String sIdInstitucionProcedimiento = "";
 								if (procedimientoSel.startsWith("{")){
 									// ES UN JSON
 									HashMap<String, String> hmProcedimientoSel = new ObjectMapper().readValue(procedimientoSel, HashMap.class);
 									sIdprocedimiento = hmProcedimientoSel.get("idprocedimiento");
-									sIdInstitucionProcedimiento = hmProcedimientoSel.get("idinstitucion");
-								} else {
+								} else if (!procedimientoSel.equals("")){
 									String procedimiento[] = procedimientoSel.split(",");
 									sIdprocedimiento = procedimiento[0];
-									sIdInstitucionProcedimiento = procedimiento[1];
 								}
 								designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, sIdprocedimiento);
 							}							
@@ -875,7 +872,7 @@ public class MaestroDesignasAction extends MasterAction {
 					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(idJuzgadoObtenido, HashMap.class);
 					idJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
 					idinstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
-				} else {
+				} else if (!idJuzgadoObtenido.equals("")) {
 					// MANTENEMOS LA FORMA ANTIGÜA 
 					String cadena[]=idJuzgadoObtenido.split(",");
 					idJuzgado=cadena[0];

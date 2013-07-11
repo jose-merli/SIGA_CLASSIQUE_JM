@@ -707,7 +707,7 @@ if(usr.isComision()){
 				</td>
 				<td>
 					<% String guardiaTurnoIdGuardiaParam = "{\"idturno\":\""+idTurno+"\"}"; %>
-					<siga:Select id="guardiaTurnoIdGuardia" queryId="getGuardiasDeTurno" params="<%=guardiaTurnoIdGuardiaParam %>" selectedIds="<%=idGuardia%>" selectParentMsg="Seleccione turno..." width="355" parentQueryParamIds="idturno" />
+					<siga:Select id="guardiaTurnoIdGuardia" queryId="getGuardiasDeTurno" params="<%=guardiaTurnoIdGuardiaParam %>" selectedIds="<%=idGuardia%>" width="355" parentQueryParamIds="idturno" />
 				</td>
 			</tr>
 			
