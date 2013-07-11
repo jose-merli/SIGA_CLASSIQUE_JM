@@ -52,15 +52,7 @@
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
-	<% if(esComision){%>
-		<siga:PestanasExt 
-				pestanaId="SOLEJG" 
-				target="mainPestanas"
-				parametros="SOLEJG"
-				elementoactivo="8"
-				procesosinvisibles="<%=pestanasOcultas%>"
-				/>
-	<%}else{%>
+	
 		<siga:PestanasExt 
 				pestanaId="SOLEJG" 
 				target="mainPestanas"
@@ -68,8 +60,7 @@
 				elementoactivo="1"
 				procesosinvisibles="<%=pestanasOcultas%>"
 				/>
-	<%}%>
-
+	
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
 
 

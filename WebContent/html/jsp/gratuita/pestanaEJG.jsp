@@ -63,7 +63,7 @@
 				pestanaId="EJG" 
 				target="mainPestanas"
 				parametros="EJG"
-				elementoactivo="8"
+				elementoactivo="6"
 				procesosinvisibles="<%=pestanasOcultas%>"
 				/>
 	<%}else{%>
