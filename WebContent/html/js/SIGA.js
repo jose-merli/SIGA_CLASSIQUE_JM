@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.66 2013-07-11 08:56:07 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.67 2013-07-11 12:47:17 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -718,7 +718,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 		}
 		var sShowsearchbox = "";
 		if (typeof childrenSelect.data("showsearchbox") != "undefined"){
-			sShowsearchbox ="&showsearchbox='true'";
+			sShowsearchbox ="&showsearchbox=true";
 		}
 		// Funciona mucho mejor en IE que .html("");
 		childrenSelect.each(function(){this.innerHTML="";});
@@ -767,6 +767,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				}
 				if(typeof jQuery(currentChild).data("onloadcallback") != "undefined"){
 					try{
+						console.debug("Ejecutando callback de " + jQuery(currentChild).attr("id"));
 						var callbackFnVarName = jQuery(currentChild).data("onloadcallback");
 						console.debug("calling " + jQuery(currentChild).attr("id") + " callback: " + callbackFnVarName);
 						var callbackFnVar = window[callbackFnVarName];
