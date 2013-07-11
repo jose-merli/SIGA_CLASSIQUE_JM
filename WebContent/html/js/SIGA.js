@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.67 2013-07-11 12:47:17 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.68 2013-07-11 12:55:36 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -813,7 +813,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				}
 
 				if (jQuery("#"+loadingId).exists())
-					jQuery("#"+loadingId).remove();
+					jQuery("#"+loadingId).hide();
 				if (blockParentSelects)
 					blockParentSelects.show();
 			});
