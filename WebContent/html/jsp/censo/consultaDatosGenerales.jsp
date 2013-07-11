@@ -1502,6 +1502,10 @@ function str_replace(search, replace, subject) {
 		// Asociada al boton Guardar
 		function accionGuardar() {		
 			sub();
+			
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
+			
 			<%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
 				if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
 					alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.aviso"/>");

@@ -1220,6 +1220,10 @@
 		function accionGuardar() {		
 			//Valido el formulario:			
 			sub();
+			
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);
+		
 			if (document.getElementById("longitudSP").value < document.getElementById("contadorNumRegSP").value.length){
 			  alert('<siga:Idioma key="messages.contador.error.longitudSuperada"/>');
 			  fin();
