@@ -20,29 +20,22 @@
 <!-- HEAD -->
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>">
-		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
-<script type="text/javascript">
-
-	
-			
-</script>
-	<siga:Titulo titulo="pestana.justiciagratuitaejg.dictamen"
-		localizacion="gratuita.busquedaEJG.localizacion" />
 </head>
 <body onload="inicio();">
-
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-<html:form action="${path}" target="submitArea">
+<html:form action="${path}" target="mainPestanas">
 	<html:hidden property="modo"  />
 	<html:hidden property="ejgIdInstitucion" />
 	<html:hidden property="ejgIdTipo" />
 	<html:hidden property="ejgAnio" />
 	<html:hidden property="ejgIdTipo" />
 	<html:hidden property="ejgNumero" />
-	<html:hidden property="idsInsertarRechazadas" />
-	<html:hidden property="idsBorrarRechazadas" />
+	<html:hidden property="solicitante" />
+	<html:hidden property="ejgNumEjg" />
+	<html:hidden property="idsInsertarRechazadas" value = '' />
+	<html:hidden property="idsBorrarRechazadas" value = ''/>
 
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>
@@ -53,13 +46,10 @@
 		</td>
 	</tr>
 </table>
-</html:form>
-
 <c:forEach items="${prestacionesRechazadas}" var="prestacionRechazada" varStatus="status">
 	<input type="hidden" id='${prestacionRechazada.prestacionId}' name='prestacionesRechazadasEJG'/>
 </c:forEach>
-
-<div id="campos" align="center">
+<div id="campos" align="center" style="display: none;">
 
 	<table align="center" width="100%" height="430"
 		class="tablaCentralCampos">
@@ -79,15 +69,17 @@
 									<td width='10%'></td>
 									<td width='80%'></td>
 									<td width='10%'></td>
-				
 								</tr>
 									<c:forEach items="${prestaciones}" var="prestacionEJG" varStatus="status">
-					
+										<c:set var="disabledPorConfiguracion" value="${prestacionEJG.habilitado=='0'?'disabled=disabled':'disabledPorConfiguracion' }"> </c:set>
 									<tr>
 										<td width='10%'></td>
-										<td class="labelText"><input type='checkbox'
-													id='prestacion_${prestacionEJG.idprestacion}' name='prestacion' checked="checked"  />
-											<c:out value="${prestacionEJG.descripcion}"></c:out>
+										<td class="labelText">
+											
+											<input type='checkbox'  	id='prestacion_${prestacionEJG.idprestacion}' name='prestacion'  checked="checked" ${disabledPorConfiguracion} >
+											<label for="prestacion_${prestacionEJG.idprestacion}"><c:out value="${prestacionEJG.descripcion}"/></label>
+											
+											</input>
 										</td>
 									</tr>
 									</c:forEach>
@@ -97,11 +89,19 @@
 			</siga:ConjCampos></td>
 		</tr>
 	</table>
-	
-<siga:ConjBotonesAccion botones="R,G" clase="botonesDetalle" /> 
+<siga:ConjBotonesAccion botones="R,G" clase="botonesDetalle" />
 </div>
+</html:form>
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 <script type="text/javascript">
+
+function refrescarLocal()
+{
+	document.PrestacionRechazadaEjgForm.target = 'mainPestanas';
+	document.PrestacionRechazadaEjgForm.modo.value="abrir";
+	document.PrestacionRechazadaEjgForm.submit();
+}
+
 function inicio()
 {
 	var prestRechazadas = document.getElementsByName('prestacionesRechazadasEJG');
@@ -113,6 +113,7 @@ function inicio()
 }
 function accionRestablecer() 
 {	
+	document.PrestacionRechazadaEjgForm.target = 'mainPestanas';
 	document.PrestacionRechazadaEjgForm.modo.value="abrir";
 	document.PrestacionRechazadaEjgForm.submit();
 	
@@ -145,13 +146,15 @@ function accionGuardar()
 		idsBorrarRechazadas = idsBorrarRechazadas.substring(0,idsBorrarRechazadas.length-1);
 	if(idsInsertarRechazadas!='')
 		idsInsertarRechazadas = idsInsertarRechazadas.substring(0,idsInsertarRechazadas.length-1);
-	
+	document.PrestacionRechazadaEjgForm.target = 'submitArea';
 	document.PrestacionRechazadaEjgForm.idsInsertarRechazadas.value = idsInsertarRechazadas;
 	document.PrestacionRechazadaEjgForm.idsBorrarRechazadas.value = idsBorrarRechazadas;
 	document.PrestacionRechazadaEjgForm.submit();
 
 }
-
+jQuery(function(){
+	jQuery("#campos").show();
+});
 </script>
 </body>
 </html>

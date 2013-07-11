@@ -1,35 +1,24 @@
 package com.siga.gratuita.action;
 
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.autogen.model.FacBancoinstitucion;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgPrestacionRechazada;
-import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgPrestacionRechazadaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService;
-import org.redabogacia.sigaservices.app.vo.CuentaBancariaVo;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionRechazadaEjgVo;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionVo;
 import org.redabogacia.sigaservices.app.vo.services.VoService;
 
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.beans.ScsEJGAdm;
-import com.siga.facturacion.form.CuentasBancariasForm;
-import com.siga.facturacion.service.CuentaBancariaVoService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirDictamenEJGForm;
 import com.siga.gratuita.form.PrestacionRechazadaEjgForm;
 import com.siga.gratuita.service.PrestacionRechazadaEjgVoService;
 
@@ -83,7 +72,7 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 			PrestacionRechazadaEjgVo prestacionRechazadaVo =  voService.getForm2Vo(prestacionRechazadaForm);
 			prestacionRechazadaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			prestacionService.actualizarEjgPrestacionesRechazadas(prestacionRechazadaVo);
-			forward = exito("messages.updated.success",request);
+			forward = exitoRefresco("messages.updated.success",request);
 			
 			
 		}catch (Exception e) {
@@ -98,7 +87,7 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 		
 		UsrBean usrBean = this.getUserBean(request);
 		PrestacionRechazadaEjgForm prestacionesEJGForm = (PrestacionRechazadaEjgForm)formulario;
-		if(prestacionesEJGForm.getEjgAnio()!=null && !prestacionesEJGForm.getEjgAnio().equals("")){
+		if(request.getParameter("ANIO")!=null && !request.getParameter("ANIO").toString().equals("")){
 			prestacionesEJGForm.setEjgAnio(request.getParameter("ANIO").toString());
 			prestacionesEJGForm.setEjgIdInstitucion(usrBean.getLocation().toString());
 			prestacionesEJGForm.setEjgIdTipo(request.getParameter("IDTIPOEJG").toString());
@@ -106,6 +95,8 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 			prestacionesEJGForm.setSolicitante(request.getParameter("solicitante").toString());
 			prestacionesEJGForm.setEjgNumEjg(request.getParameter("ejgNumEjg").toString());
 		}
+		prestacionesEJGForm.setIdsBorrarRechazadas("");
+		prestacionesEJGForm.setIdsInsertarRechazadas("");
 		String forward = "inicio";
 		try {
 			BusinessManager bm = getBusinessManager();
