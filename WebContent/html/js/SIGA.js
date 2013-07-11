@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.68 2013-07-11 12:55:36 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.69 2013-07-11 12:58:10 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -798,6 +798,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
 				//alert("Se ha producido un error al cargar los datos");
+				jQuery(currentChild).empty();
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 				if (jQuery(currentChild).data("hideifnooptions")){
 					if (jQuery(currentChild).find("option").length == 0 || (jQuery(currentChild).find("option").length == 1 && jQuery(currentChild).find("option").val() == "")){

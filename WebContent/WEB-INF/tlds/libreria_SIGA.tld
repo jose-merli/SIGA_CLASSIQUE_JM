@@ -201,6 +201,18 @@
       <rtexprvalue>true</rtexprvalue>
       <description>Atributo width del input del searchBox</description>
     </attribute>
+    <attribute>
+      <name>hideIfnoOptions</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Oculta el select si no tiene opciones</description>
+    </attribute>
+    <attribute>
+      <name>onLoadCallback</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>JS que se invocará cuando se recarguen las opciones del select (RECARGA, SOLO PARA SELECTS ANIDADOS)</description>
+    </attribute>
   </tag>
 
 	<!-- COMBO DE BASE DE DATOS -->

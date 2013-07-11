@@ -355,7 +355,9 @@ public class TagSelect extends TagSupport {
 				selectedOption = keyValue;
 			out.println(KeyValue.getHtmlOption(keyValue,selected));
 		}
-		out.println("</select></div>");
+		String loadingElement = "<img id='"+this.id+"_loading' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='visibility:hidden' />";
+					
+		out.println("</select>"+loadingElement+"</div>");
 		if (!multiple)
 			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
 		out.println("</div>");// this.id_div;
