@@ -185,7 +185,7 @@
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/>
 		</td> 
 		<td>
-			<siga:Select queryId="getMaterias" id="materia" parentQueryParamIds="idarea" selectedIds="<%=vMateria%>" params="<%=parametroMateria%>" selectParentMsg="Seleccione área..."/>
+			<siga:Select queryId="getMaterias" id="materia" parentQueryParamIds="idarea" selectedIds="<%=vMateria%>" params="<%=parametroMateria%>" />
 		</td>
 	</tr>
 	
@@ -220,7 +220,7 @@
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.subzona"/>
 		</td>
 		<td>
-			<siga:Select queryId="getSubZonas" id="subzona" parentQueryParamIds="idzona" params="<%=parametroSubZona%>" selectedIds="<%=vSubzona%>" selectParentMsg="Seleccione zona..."/>
+			<siga:Select queryId="getSubZonas" id="subzona" parentQueryParamIds="idzona" params="<%=parametroSubZona%>" selectedIds="<%=vSubzona%>"/>
 		</td>
 	</tr>
 	

@@ -5,6 +5,7 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -280,6 +281,14 @@ public class DefinirEJGAction extends MasterAction
 		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
 		Hashtable miHash= new Hashtable();
 		miHash = miFormulario.getDatos();
+		//BNS TAG SELECT
+		if (miHash.get("GUARDIATURNO_IDTURNO") != null && !"".equals(miHash.get("GUARDIATURNO_IDTURNO").toString()) && miHash.get("GUARDIATURNO_IDTURNO").toString().startsWith("{")){
+			try {
+				miHash.put("GUARDIATURNO_IDTURNO", UtilidadesString.createHashMap(miHash.get("GUARDIATURNO_IDTURNO").toString()).get("idturno"));
+			} catch (IOException e) {
+				throw new SIGAException(e);
+			}
+		}
 		miHash.put("ESCOMISION", this.getUserBean(request).isComision());
 		String consulta= "";
 		String idInstitucion= usr.getLocation();	

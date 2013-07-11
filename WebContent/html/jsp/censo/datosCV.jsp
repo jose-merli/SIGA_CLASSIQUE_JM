@@ -489,7 +489,6 @@
 													params="<%=paramIdTipoCV%>"
 													selectedIds="<%=idSubtipo1%>"
 													parentQueryParamIds="idtipocv"
-													selectParentMsg="Seleccione tipo"
 													hideIfnoOptions="true"
 													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
@@ -499,7 +498,6 @@
 													params="<%=paramIdTipoCV%>"
 													selectedIds="<%=idSubtipo2%>"
 													parentQueryParamIds="idtipocv"
-													selectParentMsg="Seleccione tipo"
 													hideIfnoOptions="true"
 													disabled="<%=String.valueOf(!editarCampos)%>"/>
 									</td>

@@ -52,7 +52,6 @@
 	String datos[] = { (String) usr.getLocation() };
 	String dato[] = { (String) usr.getLocation() };
 	String datoIdioma[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
-	String dato2[] = new String[2];
 	String idioma[] = { (String) usr.getLanguage() };
 	String sDictaminado = "I";
 	
@@ -164,9 +163,10 @@
 				
 				if (miHash.get("GUARDIATURNO_IDTURNO") != null) {
 					String identificadorTurno = miHash.get("GUARDIATURNO_IDTURNO").toString();
-					idTurno.add(identificadorTurno.equals("")? "0": (String)usr.getLocation() + "," + identificadorTurno);
-					dato2[0]=(String) idTurno.get(0);
-					dato2[1]=(String) usr.getLocation();
+					//idTurno.add(identificadorTurno.equals("")? "0": (String)usr.getLocation() + "," + identificadorTurno);
+					if (!identificadorTurno.equals("")){
+						idTurno.add("{\"idinstitucion\":\""+(String)usr.getLocation()+"\",\"idturno\":\"" +identificadorTurno+"\"}");
+					}
 				}
 		
 				if (miHash.get("GUARDIATURNO_IDGUARDIA") != null)
@@ -222,8 +222,9 @@
 				if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
 					idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString());
 				
-				if (miHash.get(ScsTurnoBean.C_IDTURNO) != null)
-					idTurno.add(miHash.get(ScsTurnoBean.C_IDTURNO).toString());
+				if (miHash.get(ScsTurnoBean.C_IDTURNO) != null){
+					idTurno.add("{\"idinstitucion\":\""+(String)usr.getLocation()+"\",\"idturno\":\"" +miHash.get(ScsTurnoBean.C_IDTURNO).toString()+"\"}");
+				}
 		
 				if (miHash.get(ScsGuardiasTurnoBean.C_IDGUARDIA) != null)
 					idGuardia.add(miHash.get(ScsGuardiasTurnoBean.C_IDGUARDIA).toString());
@@ -706,7 +707,7 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />
 				</td>
 				<td>
-					<% String guardiaTurnoIdGuardiaParam = "{\"idturno\":\""+idTurno+"\"}"; %>
+					<% String guardiaTurnoIdGuardiaParam = ""; if (idTurno != null && idTurno.size() > 0) guardiaTurnoIdGuardiaParam = idTurno.iterator().next().toString(); %>
 					<siga:Select id="guardiaTurnoIdGuardia" queryId="getGuardiasDeTurno" params="<%=guardiaTurnoIdGuardiaParam %>" selectedIds="<%=idGuardia%>" width="355" parentQueryParamIds="idturno" />
 				</td>
 			</tr>
@@ -891,16 +892,10 @@ if(usr.isComision()){
 			con el turno, ya que la institución se recogerá del formulario. Viene ha sido debido a que es necesario para
 			el combo hijo de guardias
 			*/
-			var id = document.forms[0].identificador.value;
 			<%if (!esComision){%>
-				document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
+			document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 			<% } %>
-
-			var posicion = 0;
-			/* Se recorre hasta encontrar el separador, que es ","*/									
-			posicion = id.indexOf(',') + 1;
-			/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
-			document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
+			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
 			if (isNaN(document.forms[0].anio.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 			}else if (isNaN(document.forms[0].idPersona.value)) {
@@ -953,20 +948,11 @@ if(usr.isComision()){
 						document.forms[0].idRemesa.value=<%=idremesa%>;			
 					<%}%>
 					
-					/* El idenficiador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
-					con el turno, ya que la institución se recogerá del formulario. Viene ha sido debido a que es necesario para
-					el combo hijo de guardias
-					*/
-					var id = document.forms[0].identificador.value;
 					<%if (!esComision){%>
 						document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 					<%}%>
 		
-					var posicion = 0;
-					/* Se recorre hasta encontrar el separador, que es ","*/									
-					posicion = id.indexOf(',') + 1;
-					/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
-					document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
+					document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
 					if (isNaN(document.forms[0].anio.value)) {
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
