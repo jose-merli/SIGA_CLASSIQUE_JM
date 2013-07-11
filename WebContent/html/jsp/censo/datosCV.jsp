@@ -162,8 +162,13 @@
 			}
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(
 					usr);
-			nombreInstitucionAcceso = institucionAdm
-					.getNombreInstitucion(institucionAcceso);
+			if (institucionAcceso.equals("0")){
+				nombreInstitucionAcceso = institucionAdm
+						.getNombreInstitucion("2000");
+			} else {
+				nombreInstitucionAcceso = institucionAdm
+						.getNombreInstitucion(institucionAcceso);
+			}
 		}
 		modoSel.add(institucionAcceso);
 		parametroJunta[0] = institucionAcceso;
@@ -212,7 +217,23 @@
 	<script language="JavaScript">
 	         var v_subTipo1;
 			 var v_subTipo2;
-			
+						 
+			jQuery(function(){
+				rellenarCampos();
+				if (jQuery("#idInstitucionCargo").exists()){
+					jQuery("#idInstitucionCargo").on("change", function(){
+						jQuery.ajax({
+							url:"/SIGA/CEN_DatosCV.do?modo=obtenerColegiado?idPersona="+jQuery("#idPersona").val()+"&idInstitucionCargo="+jQuery("#idInstitucionCargo").val()						
+						}).done(function(data){
+							jQuery("#numcolegiado").val(data);
+						}).fail(function(data){
+							jQuery("#numcolegiado").val("");
+						});
+					});
+					jQuery("#idInstitucionCargo").change();
+				}
+			});
+			 
 			//Asociada al boton Volver 
 			function accionCerrar() { 		
 				window.top.close();
@@ -223,6 +244,9 @@
 				if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 					document.getElementById("datosCVForm").reset();
 					rellenarCampos();
+					jQuery("#idTipoCVSubtipo1").data("set-id-value", jQuery("#idTipoCVSubtipo1").data("inival"));
+					jQuery("#idTipoCVSubtipo2").data("set-id-value", jQuery("#idTipoCVSubtipo2").data("inival"));
+					jQuery("#tipoApunte").change();
 				}
 			}			
 	
@@ -235,19 +259,19 @@
 					return false;
 				}
 				
-				if ((!jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
+				if ((!jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
 					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 					alert(aux);
 					fin();
 					return false;
 			    } else { 
-					if((!jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
+					if((!jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
 		      			aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 		   		     	alert(aux);
 		   		     	fin();
 						return false;
 					} else {
-						if ((jQuery("idTipoCVSubtipo1").is(":disabled")) && (document.datosCVForm.tipoApunte.value=="")){
+						if ((jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="")){
 							aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 				     		alert(aux);
 				     		fin();
@@ -309,70 +333,15 @@
 				} 		
 			}
 			
-			function deshabilitarCombos1(o){
-				v_subTipo1=o; 
-			  	if (o.options.length > 1) {
-			  		o.disabled = false;
-			  	} else {
-			  		o.disabled = true;
-			  	}		 
-			}
-			
-			function deshabilitarCombos2(o){
-				v_subTipo2=o;
-				if (o.options.length > 1) {
-					o.disabled = false;
-				} else {
-					o.disabled = true;
-				}		 
-			}
-			
 			var tipoCurriculum;
 			function init(){
 				 <%if (!modo.equals("ver")) {%>
-				  var cmb1 = document.getElementsByName("tipoApunte");
-				  var cmb2 = cmb1[0]; 			 
 				  tipoCurriculum=<%=idTipoCV%>;			
 				 <%}%>			  
 			}
 	
-			function recargarCombos(tipo) {
-	
-			<%if (!modo.equals("ver")) {%>
-			if (tipo) {
-				if (tipoCurriculum != tipo.value) {
-					limpiarCombo("idTipoCVSubtipo1");
-					limpiarCombo("idTipoCVSubtipo2");
-				}
-			}
-			<%}%>
-		}
-	
-		function limpiarCombo(nombre) {
-			iframeCombo = window.top.frames[0].document.getElementById(nombre + "Frame");
-			cadenaInicial = iframeCombo.src;
-	
-			if (cadenaInicial.indexOf("&elementoSel=[0]") > 1) {
-				return;
-			}
-	
-			var ini = cadenaInicial.indexOf('&elementoSel=');
-			if (ini < 1)
-				return;
-	
-			cadenaFinal = cadenaInicial.substring(0, ini) + "&elementoSel=[0]";
-	
-			var fin = cadenaInicial.indexOf('&', ini + 2);
-			if (fin > 1) {
-				cadenaFinal = cadenaFinal + cadenaInicial.substring(fin);
-			}
-	
-			iframeCombo.src = cadenaFinal;
-		}
-	
 		function rellenaNumCol(){	
-			//var cmb1 = document.getElementsByName("idInstitucionCargo");
-			//cmb1.onchange();
+			jQuery("select[name='idInstitucionCargo']").change();
 		}
 	
 		function  preAccionColegiado(){
@@ -435,7 +404,7 @@
 									<td width="20px">										
 										<%
 											if (editarCampos) {
-										%> <!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->										
+										%> <!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
 										<siga:Select id="idInstitucionCargo"
 													queryId="getNombreColegiosTodos"
 													disabled="true"
@@ -495,6 +464,7 @@
 													selectedIds="<%=idTipoCV%>"
 													disabled="true"
 													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													hideIfnoOptions="true"
 													queryParamId="idtipocv" /> 	
 										<%
 											 	} else {
@@ -504,6 +474,7 @@
 													selectedIds="<%=idTipoCV%>"
 													disabled="<%=String.valueOf(desactivado) %>"
 													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													hideIfnoOptions="true"
 													queryParamId="idtipocv" /> 	
 										
 										<%
@@ -519,6 +490,7 @@
 													selectedIds="<%=idSubtipo1%>"
 													parentQueryParamIds="idtipocv"
 													selectParentMsg="Seleccione tipo"
+													hideIfnoOptions="true"
 													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
 									<td>
@@ -528,6 +500,7 @@
 													selectedIds="<%=idSubtipo2%>"
 													parentQueryParamIds="idtipocv"
 													selectParentMsg="Seleccione tipo"
+													hideIfnoOptions="true"
 													disabled="<%=String.valueOf(!editarCampos)%>"/>
 									</td>
 								</tr>
@@ -589,14 +562,6 @@
 					</td>
 				</tr>
 			</table>
-			<script>
-				rellenarCampos();
-			</script>
-			<ajax:updateFieldFromField
-				baseUrl="/SIGA/CEN_DatosCV.do?modo=obtenerColegiado"
-				source="idInstitucionCargo" target="numcolegiado"
-				parameters="idPersona={idPersona},idInstitucionCargo={idInstitucionCargo}"
-				preFunction="preAccionColegiado" postFunction="postAccionColegiado" />
 		</html:form>
 		<!-- FIN: CAMPOS -->
 

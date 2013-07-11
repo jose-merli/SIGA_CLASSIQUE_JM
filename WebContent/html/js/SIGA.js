@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.65 2013-07-10 10:52:20 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.66 2013-07-11 08:56:07 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -426,38 +426,44 @@ function jQueryLoaded(){
 				// INPUT PARA ESTADO DISABLED/READONLY
 				if (tagSelect_input.exists()){
 					tagSelect_select.on("change",function(){
-						jQuery("#"+jQuery(this).attr("id")+"_disabled").val(jQuery(this).find('option:selected').text());
+						var optionSelected = jQuery(this).find('option:selected');
+						if (optionSelected.val() != "")
+							jQuery("#"+jQuery(this).attr("id")+"_disabled").val(optionSelected.text());
 					});
 					
 					//OJO: NO FUNCIONA EN IE AL AÑADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
 					//		SE DEBE HACER .show()/.hide() del select para que funcione bien en vez de habilitar/deshabilitar
 					tagSelect_select.attrchange({
 						callback:function(event){
-									var modifiedAttributeName=event.attributeName;
-									if (modifiedAttributeName == "disabled" || 
-											modifiedAttributeName == "readonly" || 
-											(jQuery(this).is(":visible") == jQuery("#" + jQuery(this).attr("id")+"_disabled").is(":visible"))){
-										if (jQuery(this).is(":not(:visible)") || jQuery(this).is(":disabled") || jQuery(this).is("[readonly]") || jQuery(this).is("[readonly='readonly']")){
-											//console.debug("watch disabled,readonly, visible hide select show input for id: "+jQuery(this).attr("id"));
-											if (jQuery(this).is(":visible")){
-												jQuery(this).hide();
+									if (!jQuery("#"+jQuery(this).attr("id")+"_tagSelectDiv").data("hideifnooptions")){
+										var modifiedAttributeName=event.attributeName;
+										if (modifiedAttributeName == "disabled" || 
+												modifiedAttributeName == "readonly" || 
+												(jQuery(this).is(":visible") == jQuery("#" + jQuery(this).attr("id")+"_disabled").is(":visible"))){
+											if (jQuery(this).is(":not(:visible)") || jQuery(this).is(":disabled") || jQuery(this).is("[readonly]") || jQuery(this).is("[readonly='readonly']")){
+												console.debug("watch disabled,readonly, visible hide select show input for id: "+jQuery(this).attr("id"));
+												if (jQuery(this).is(":visible")){
+													jQuery(this).hide();
+													if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
+														jQuery("#"+jQuery(this).attr("id") + "_searchBox").hide();
+												}
+												jQuery("#" + jQuery(this).attr("id")+"_disabled").show();
+											} else {
+												console.debug("watch disabled,readonly, visible show select hide input for id: "+jQuery(this).attr("id"));
+												jQuery(this).show();
 												if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
-													jQuery("#"+jQuery(this).attr("id") + "_searchBox").hide();
+													jQuery("#"+jQuery(this).attr("id") + "_searchBox").show();
+												jQuery("#" + jQuery(this).attr("id")+"_disabled").hide();
 											}
-											jQuery("#" + jQuery(this).attr("id")+"_disabled").show();
-										} else {
-											//console.debug("watch disabled,readonly, visible show select hide input for id: "+jQuery(this).attr("id"));
-											jQuery(this).show();
-											if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
-												jQuery("#"+jQuery(this).attr("id") + "_searchBox").show();
-											jQuery("#" + jQuery(this).attr("id")+"_disabled").hide();
 										}
+									} else {
+										jQuery("#"+jQuery(this).attr("id")+"_tagSelectDiv").removeData("hideifnooptions");
 									}
 								}
 					});					
 				}
 				// INPUT PARA BUSCAR/FILTRAR EL SELECT
-				if (tagSelect_searchBox.exists()){					
+				if (tagSelect_searchBox.exists()){		
 					tagSelect_select.on("change",function(){
 						jQuery("#"+jQuery(this).attr("id")+"_searchBox").val(jQuery(this).find('option:selected').data("searchkey"));
 					});
@@ -792,11 +798,19 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				console.debug(jQuery(currentChild).attr("id")+" load FAIL! ERROR: " + errorThrown);
 				//alert("Se ha producido un error al cargar los datos");
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
-				if (jQuery(currentChild).find("option").length <= 0 && jQuery(currentChild).data("hideifnooptions") == "true"){
-					jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").hide();
+				if (jQuery(currentChild).data("hideifnooptions")){
+					if (jQuery(currentChild).find("option").length == 0 || (jQuery(currentChild).find("option").length == 1 && jQuery(currentChild).find("option").val() == "")){
+						jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").data("hideifnooptions", "true");
+						jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").hide();
+					} else {
+						jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").data("hideifnooptions", "true");
+						jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").show();
+						setTagselectDivWidth(jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv"));
+					}
 				} else {
 					setTagselectDivWidth(jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv"));
-				}				
+				}
+
 				if (jQuery("#"+loadingId).exists())
 					jQuery("#"+loadingId).remove();
 				if (blockParentSelects)

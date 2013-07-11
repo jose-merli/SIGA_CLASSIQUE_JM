@@ -1177,6 +1177,7 @@ function str_replace(search, replace, subject) {
 									queryId="getIdiomasInstitucion"
 									required="true"
 									selectedIds="<%=idiomaSel%>"
+									width="100"
 									readOnly="<%=readonly%>"/>
 					</td>
 					<td class="labelText">

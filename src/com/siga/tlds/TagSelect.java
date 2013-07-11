@@ -270,16 +270,19 @@ public class TagSelect extends TagSupport {
 			searchBoxSize = " size='"+this.searchBoxWidth+"' ";
 		}
 
+		String selectWidth = "165";
 		if (this.width != null){
-			if (!styleSelect.equals(""))
-				styleSelect += " width:"+this.width+";";
-			else
-				styleSelect += " style='width:"+this.width+";";
-			if (!styleInput.equals(""))
-				styleInput += " width:"+this.width+";";
-			else
-				styleInput += " style='width:"+this.width+";";
+			selectWidth = this.width;
 		}
+		
+		if (!styleSelect.equals(""))
+			styleSelect += " width:"+selectWidth+";";
+		else
+			styleSelect += " style='width:"+selectWidth+";";
+		if (!styleInput.equals(""))
+			styleInput += " width:"+selectWidth+";";
+		else
+			styleInput += " style='width:"+selectWidth+";";
 		
 		if (!styleSelect.equals(""))
 			styleSelect += "'";
@@ -309,20 +312,15 @@ public class TagSelect extends TagSupport {
 		if (multiple){
 			sMultiple = " multiple size='"+this.lines+"'";
 			styleSelect = "";
-			if (StringUtils.hasText(this.width))
-				styleSelect = " style='width:"+this.width+";";
+			styleSelect = " style='width:"+selectWidth+";";
 			if (this.disabled || this.readOnly)
 				styleSelect += " disabled ";
 		}
 		
 		String sHideIfnoOptions = " data-hideifnooptions='"+Boolean.toString(this.hideIfnoOptions).toLowerCase()+"' ";
 		
-		String dataWidth = "";
-		String styleWidth = "style='display:inline;'";
-		if (StringUtils.hasText(this.width)){
-			dataWidth = " data-width = '"+this.width+"' ";
-			styleWidth = " style='display:inline;width:"+this.width+";' ";
-		}
+		String dataWidth = " data-width = '"+selectWidth+"' ";
+		String styleWidth = " style='display:inline;width:"+selectWidth+";' ";
 		
 		// IMPRIME HTML
 		PrintWriter out = pageContext.getResponse().getWriter();
@@ -358,7 +356,7 @@ public class TagSelect extends TagSupport {
 		}
 		out.println("</select></div>");
 		if (!multiple)
-			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+styleInput+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+selectedOption.getValue()+"'/>");
+			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+styleInput+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
 		out.println("</div>");// this.id_div;
 	}
 

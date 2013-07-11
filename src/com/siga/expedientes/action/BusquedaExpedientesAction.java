@@ -265,29 +265,50 @@ public class BusquedaExpedientesAction extends MasterAction {
 				String idMateria = null; 
 				String idArea = null;
 				if(miFormulario.getIdMateria()!=null && !miFormulario.getIdMateria().equals("")){
-					String[] materia= miFormulario.getIdMateria().split(",");
-					idMateria = materia[2];
-					idArea = materia[1];
-					miFormulario.setIdMateria(idMateria);
-					miFormulario.setIdArea(idArea);
-					
+					String sMateria = miFormulario.getIdMateria();
+					if (sMateria.startsWith("{")){
+						HashMap<String, String> hmMateria = UtilidadesString.createHashMap(sMateria);
+						idMateria = hmMateria.get("idmateria");
+						idArea = hmMateria.get("idarea");
+						miFormulario.setIdMateria(idMateria);
+						miFormulario.setIdArea(idArea);
+					} else {
+						String[] materia= sMateria.split(",");
+						idMateria = materia[2];
+						idArea = materia[1];
+						miFormulario.setIdMateria(idMateria);
+						miFormulario.setIdArea(idArea);
+					}
 
 				}
 			
 				if(miFormulario.getJuzgado()!=null && !miFormulario.getJuzgado().equals("")){
-					String[] juzgado = miFormulario.getJuzgado().split(",");
-					miFormulario.setJuzgado(juzgado[0]);
-					miFormulario.setIdInstJuzgado(juzgado[1]);
+					String sJuzgado = miFormulario.getJuzgado();
+					if (sJuzgado.startsWith("{")){
+						HashMap<String, String> hmJuzgado = UtilidadesString.createHashMap(sJuzgado);
+						miFormulario.setJuzgado(hmJuzgado.get("idjuzgado"));
+						miFormulario.setIdInstJuzgado(hmJuzgado.get("idinstitucion"));
+					} else {
+						String[] juzgado = sJuzgado.split(",");
+						miFormulario.setJuzgado(juzgado[0]);
+						miFormulario.setIdInstJuzgado(juzgado[1]);
+					}
 				}
 				
 				
 //				String idPretension = miFormulario.getIdPretension();
 //				String idProcedimiento = null;
 				if(miFormulario.getIdProcedimiento()!=null && !miFormulario.getIdProcedimiento().equals("")){
-					String[] procedimiento = miFormulario.getIdProcedimiento().split(",");
-					miFormulario.setIdProcedimiento(procedimiento[0]);
-					miFormulario.setIdInstProcedimiento(procedimiento[1]);
-					
+					String sProcedimiento = miFormulario.getIdProcedimiento();
+					if (sProcedimiento.startsWith("{")){
+						HashMap<String, String> hmProcedimiento = UtilidadesString.createHashMap(sProcedimiento);
+						miFormulario.setIdProcedimiento(hmProcedimiento.get("idprocedimiento"));
+						miFormulario.setIdInstProcedimiento(hmProcedimiento.get("idinstitucion"));
+					} else {
+						String[] procedimiento = sProcedimiento.split(",");
+						miFormulario.setIdProcedimiento(procedimiento[0]);
+						miFormulario.setIdInstProcedimiento(procedimiento[1]);
+					}
 				}
 				
 				
