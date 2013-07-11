@@ -46,6 +46,8 @@ public class TagSelect extends TagSupport {
 	public static final String DEFAULT_NOT_SELECTED_ID = "-1";	
 	public static final String DATA_JSON_OPTION_KEY = "options";
 
+	private static final int DEFAULT_SELECT_WIDTH = 165;
+
 	private String id;
 	private String label;
 	private String queryId;
@@ -270,9 +272,16 @@ public class TagSelect extends TagSupport {
 			searchBoxSize = " size='"+this.searchBoxWidth+"' ";
 		}
 
-		String selectWidth = "165";
-		if (this.width != null){
+		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
+		String divWidth = String.valueOf(DEFAULT_SELECT_WIDTH + 20);
+		if (StringUtils.hasText(this.width)){
 			selectWidth = this.width;
+			try{
+				 int iWidth = Integer.valueOf(this.width);
+				 divWidth = String.valueOf(iWidth + 20);
+			} catch (Exception e){
+				divWidth = this.width;
+			}
 		}
 		
 		if (!styleSelect.equals(""))
@@ -319,12 +328,13 @@ public class TagSelect extends TagSupport {
 		
 		String sHideIfnoOptions = " data-hideifnooptions='"+Boolean.toString(this.hideIfnoOptions).toLowerCase()+"' ";
 		
-		String dataWidth = " data-width = '"+selectWidth+"' ";
-		String styleWidth = " style='display:inline;width:"+selectWidth+";' ";
+		String dataWidth = " data-width = '"+divWidth+"' ";
+		
+		String wrapDivStyleWidth = " style='display:inline;width:"+divWidth+";' ";
 		
 		// IMPRIME HTML
 		PrintWriter out = pageContext.getResponse().getWriter();
-		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+styleWidth+">");
+		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+wrapDivStyleWidth+">");
 		String sOnloadCallback = "";
 		if (this.onLoadCallback != null && !"".equals(this.onLoadCallback)){
 			sOnloadCallback = " data-onloadcallback='"+this.id+"_callback' ";
