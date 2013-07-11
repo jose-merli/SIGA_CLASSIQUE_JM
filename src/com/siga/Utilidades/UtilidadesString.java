@@ -1606,10 +1606,10 @@ public class UtilidadesString {
 	 public static String createJsonString(String jsonKey, String jsonValue) throws IOException {
 		 String jsonString = "";
 		 try{
-			 if (jsonKey != null){
+			 if (jsonKey == null){
 				 jsonKey = "";
 			 }
-			 if (jsonKey != null){
+			 if (jsonKey == null){
 				 jsonKey = "";
 			 }
 			 if (!"".equals(jsonKey)){
