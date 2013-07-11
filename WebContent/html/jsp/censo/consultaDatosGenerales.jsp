@@ -245,9 +245,16 @@
 				buscarGrupos();				
 
 			}
+		
+	//Funcion que quita blancos a derecha e izquierda de la cadena
+	function fTrim(Str)	{				 
+		Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
+		return Str;
+	}
 			
-	function formatearDocumento()
-	{
+	function formatearDocumento(){
+       //Se aplica la funcion ftrim para eliminar blancos
+	   document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);
 	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
 			var sNIF = document.forms[0].numIdentificacion.value;
 			document.forms[0].numIdentificacion.value = formateaNIF(sNIF);
