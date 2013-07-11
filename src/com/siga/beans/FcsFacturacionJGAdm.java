@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.ServletException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
@@ -4473,37 +4474,47 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    try {
 	    	
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()).toString());
-			codigos.put(new Integer(2),idInstitucion);
-			codigos.put(new Integer(3),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()).toString());
+			codigos.put(new Integer(1),idInstitucion);
 			
-			//OJO: ESTA CONSULTA PODRIA HACER QUE SE QUEDARA BLOQUEADAS TODAS LAS FACTURACIONES SJCS
-			//POR QUE: PORQUE SI SE QUEDA UNA FACTURACION EN ESTADO 40 (EN EJECUCION),
-			// YA NO SE PODRA EJECUTAR NINGUNA MAS
+			codigos.put(new Integer(2),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()).toString());
+			
 			String sql = "SELECT F.IDFACTURACION, F.REGULARIZACION "+
-			    		" FROM FCS_FACT_ESTADOSFACTURACION E, FCS_FACTURACIONJG F "+
-	    		 		" WHERE F.IDINSTITUCION = E.IDINSTITUCION "+
-	    		 		" AND F.IDFACTURACION = E.IDFACTURACION "+
-	    		 		" AND E.IDESTADOFACTURACION =:1 "+
-	    		 		" AND E.IDINSTITUCION=:2 "+	    		 	
-	    		 		" AND E.IDORDENESTADO= "+
-	    		 		" (Select Max(Est2.IDORDENESTADO) "+
-	    		 		"	From FCS_FACT_ESTADOSFACTURACION Est2 "+
-	    		 		"   Where Est2.IDINSTITUCION = E.IDINSTITUCION "+
-	    		 		"   And Est2.IDFACTURACION = E.IDFACTURACION) "+	    		 		
-	    		 		" AND NOT EXISTS (" +
-	    		 		"         SELECT *" +
-	    		 		"           FROM FCS_FACT_ESTADOSFACTURACION ESTFAC" +
-	    		 		"  WHERE  ESTFAC.IDORDENESTADO= "+
-	    		 		" (Select Max(Est2.IDORDENESTADO) "+
-	    		 		"	From FCS_FACT_ESTADOSFACTURACION Est2 "+
-	    		 		"   Where Est2.IDINSTITUCION = ESTFAC.IDINSTITUCION "+
-	    		 		"   And Est2.IDFACTURACION = ESTFAC.IDFACTURACION) "+	    		 		
-	    		 		"                    AND ESTFAC.IDESTADOFACTURACION = :3" +
-	    		 		"        )";
-			   
-			UserTransaction tx = usr.getTransactionPesada();
+		    		" FROM FCS_FACT_ESTADOSFACTURACION E, FCS_FACTURACIONJG F "+
+    		 		" WHERE F.IDINSTITUCION = E.IDINSTITUCION "+
+    		 		" AND F.IDFACTURACION = E.IDFACTURACION "+
+    		 		" AND E.IDINSTITUCION=:1 "+
+    		 		" AND E.IDESTADOFACTURACION =:2 "+
+    		 			    		 	
+    		 		" AND E.IDORDENESTADO= "+
+    		 		" (Select Max(Est2.IDORDENESTADO) "+
+    		 		"	From FCS_FACT_ESTADOSFACTURACION Est2 "+
+    		 		"   Where Est2.IDINSTITUCION = E.IDINSTITUCION "+
+    		 		"   And Est2.IDFACTURACION = E.IDFACTURACION) ";	
+			//Si encontramos una fcaturacion en ejecucion es por que se ha parado inesperadamente el proceso de facturacion(por una caida)
+			//Por lo tanto inseertamos el nuevo estado abierta para que vuelva a procesarla y no se quede siempre en ejecucion
 			RowsContainer rc=new RowsContainer();
+			rc.findBind(sql,codigos);
+			if(rc!=null && rc.size()>0){
+				try {
+					ClsLogging.writeFileLogWithoutSession("Iniciando relanzamiento de procesos de facturación bloqeuados.",1);
+		        	relanzarFacturacion();
+		            ClsLogging.writeFileLogWithoutSession(" > Procesos de facturación relanzados OK.",1);
+		            ClsLogging.writeFileLogWithoutSession("",1);
+		        } catch(ClsExceptions e) {
+		            ClsLogging.writeFileLogWithoutSession(" > Procesos de facturación relanzados ERROR.\r\n" + e,1);
+		            ClsLogging.writeFileLogWithoutSession("",1);
+		            throw new ServletException("Error al relanzar procesos de facturación en ejecución: "+ e.toString());
+		        }
+			}
+			
+			
+			codigos.put(new Integer(2),new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()).toString());
+			
+			
+			
+			
+			
+			UserTransaction tx = usr.getTransactionPesada();
 			rc.findBind(sql,codigos);
 			if(rc!=null && rc.size()>0){
 				int size=rc.size();
@@ -4990,7 +5001,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			// EN CUALQUIER CASO LANZAMOS EL PROCESO DE FACTURACIÓN PARA QUE SE EJECUTEN LAS PROGRAMADAS
 			ClsLogging.writeFileLogWithoutSession(" >> Relanzando servicio de proceso automático rápido para tratar las facturacines programadas (RELANZADAS).",1);
             ClsLogging.writeFileLogWithoutSession("",1);
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
+//			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 		}
 	}
 	
