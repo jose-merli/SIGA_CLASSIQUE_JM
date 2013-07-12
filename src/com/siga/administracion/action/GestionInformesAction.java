@@ -636,7 +636,7 @@ public class GestionInformesAction extends MasterAction {
 			if(permitidos!=null && permitidos.size() > 0){
 				for (int i = 0; i < permitidos.size(); i++) {
 					AdmEnvioInformeBean envBean = (AdmEnvioInformeBean)permitidos.get(i);
-					idTipoEnvios = idInstitucion + "," + envBean.getIdTipoEnvios() + "##" + idTipoEnvios;
+					idTipoEnvios += envBean.getIdTipoEnvios() + "##";
 				}
 			}
 			informeForm.setIdTiposEnvio(idTipoEnvios);
