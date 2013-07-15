@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.69 2013-07-11 12:58:10 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.70 2013-07-15 08:32:32 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -663,9 +663,9 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 	if (childrenSelect.exists()){
 		var loadingId = childrenSelect.attr("id") + "_loading";
 		if (!jQuery("#"+loadingId).exists()){
-			childrenSelect.after("<img id='"+loadingId+"' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='display:none' />");
-			jQuery("#"+loadingId).fadeIn();
+			childrenSelect.after("<img id='"+loadingId+"' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='visibility:hidden' />");			
 		}
+		jQuery("#"+loadingId).css('visibility', 'visible');
 		var dataObject = {};
 		dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
 		jQuery("*[data-queryparamid]").each(function(){
@@ -776,23 +776,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 						callbacks.fireWith(jQuery(currentChild).context);
 					} catch (e){
 						console.error("Error al ejecutar callback de " + jQuery(currentChild).attr("id"));
-					}
-					/*
-					try{
-						var sCompleteCallback = jQuery(currentChild).data("onloadcallback");
-						var sCallbackFnName = sCompleteCallback.substring(0, sCompleteCallback.indexOf("(") - 1);
-						var sCallbackFnArg = undefined;
-						if (sCompleteCallback.indexOf("(") + 1 < sCompleteCallback.indexOf(")") - 1){
-							sCallbackFnArg = sCompleteCallback.substring(sCompleteCallback.indexOf("(") + 1, sCompleteCallback.indexOf(")") - 1);
-							sCallbackFnArg = sCallbackFnArg.split(",");
-						}
-						var callbacks = jQuery.Callbacks('once unique');
-						callbacks.add(window[sCallbackFnName]);
-						callbacks.fireWith( jQuery(currentChild).context, sCallbackFnArg);
-					} catch (e){
-						console.error("Error al ejecutar callback de " + jQuery(currentChild).attr("id"));
-					}
-					*/
+					}					
 				}
 				
 			}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -814,7 +798,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				}
 
 				if (jQuery("#"+loadingId).exists())
-					jQuery("#"+loadingId).hide();
+					jQuery("#"+loadingId).css('visibility', 'hidden');
 				if (blockParentSelects)
 					blockParentSelects.show();
 			});

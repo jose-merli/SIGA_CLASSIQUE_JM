@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -513,6 +514,13 @@ public class TagSelect extends TagSupport {
 	 */
 	public void setParams(String params) {
 		this.params = params;
+	}
+	public void setParams(Map<String,String> params) {
+		try {
+			this.params = UtilidadesString.createJsonString(params);
+		} catch (IOException e) {
+			ClsLogging.writeFileLogError("ERROR AL TRATAR DE OBTENER LOS PARÁMETROS DESDE EL JSP", e, 10);
+		}
 	}
 
 	/**
