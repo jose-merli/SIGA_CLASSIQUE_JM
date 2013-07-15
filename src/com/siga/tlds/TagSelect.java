@@ -91,10 +91,15 @@ public class TagSelect extends TagSupport {
 	@Override
 	public int doEndTag() throws JspException {
 		List<KeyValue> options = new ArrayList<KeyValue>();
+		if (this.required){
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
+		} else {
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
+		}
 		if (StringUtils.hasText(this.dataJSON)){
 			try {
 				final HashMap<String, List<KeyValue>> hmData = (HashMap<String, List<KeyValue>>) UtilidadesString.createHashMap(this.dataJSON, new TypeReference<HashMap<String, List<KeyValue>>>() {});
-				options = hmData.get(DATA_JSON_OPTION_KEY);				
+				options.addAll(hmData.get(DATA_JSON_OPTION_KEY));				
 			} catch (Exception e) {
 				ClsLogging.writeFileLogError("ERROR AL TRATAR DE OBTENER LAS OPTIONS (" + this.dataJSON + ") DEL SELECT CON ID: " + this.id, e, 10);
 			}
@@ -102,12 +107,6 @@ public class TagSelect extends TagSupport {
 			SelectDataService selectDataService = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
 			String selectDataServiceMethodName = this.queryId;			
 			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(selectDataServiceMethodName, this.showSearchBox);
-			
-			if (this.required){
-				options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
-			} else {
-				options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
-			}
 			
 			if (selectDataMethod != null){
 				//BUILD PARAMETERS
@@ -198,6 +197,7 @@ public class TagSelect extends TagSupport {
 				ClsLogging.writeFileLogError("NO SE HA ENCONTRADO EL MÉTODO " + queryId + " EN EL SELECTDATASERVICE", (HttpServletRequest) pageContext.getRequest(), 10);
 			}
 		}
+		
 		try{
 			writeSelect(options);
 		} catch (IOException e){

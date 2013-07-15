@@ -41,7 +41,6 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.type.TypeReference;
 import org.redabogacia.sigaservices.app.util.KeyValue;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -53,6 +52,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.general.SIGAException;
+import com.siga.tlds.TagSelect;
 
 
 
@@ -1567,7 +1567,14 @@ public class UtilidadesString {
 	  * Method to convert map into json format
 	  * @param map with data to be converted into json
 	  * @return json string
+	 * @throws IOException 
 	  */	
+	public static String createTagSelectDataJson(List<KeyValue> keyValuesList) throws IOException{
+		HashMap<String, List<KeyValue>> hmOptions = new HashMap<String, List<KeyValue>>();
+		hmOptions.put(TagSelect.DATA_JSON_OPTION_KEY, keyValuesList);
+		return UtilidadesString.createJsonString(hmOptions, null, false);
+	}
+	
 	 public static String createJsonString(Map jsonMap) throws IOException {
 		 return UtilidadesString.createJsonString(jsonMap, null, false);
 	 }
