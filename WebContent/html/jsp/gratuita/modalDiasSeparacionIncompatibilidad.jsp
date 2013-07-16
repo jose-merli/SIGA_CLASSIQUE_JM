@@ -77,25 +77,12 @@
 		}
 		
 		function mainSub(){
-			/*jQuery(document).ready(
-				function() { 
-					jQuery.blockUI({
-						message: '<img src="<%=app%>/html/imagenes/loadingBar.gif">', 
-						css:{border:0, background:'transparent'},
-						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
-				}
-			)*/
 			jQuery("#divEspera").show();
 			bloqueado=true; 
 		}
 
 		function mainFin(){
 			if(bloqueado){
-				/*$(document).ready(
-					function() { 
-				    	$.unblockUI(); 
-					}
-				)*/
 				bloqueado=false;
 				jQuery("#divEspera").hide();
 			} 
