@@ -1527,6 +1527,38 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 	}
 	
+	/**
+	 * Recupera la fecha de renuncia del primer letrado de la designa
+	 * @param sdb
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public Hashtable getUltimoLetrado(Hashtable<String, Object> dato) throws ClsExceptions {
+		try {
+			String sql = 
+				" select dp.* "+
+				" from "+ 
+				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp"+
+				" where dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+"=" +(String)dato.get("IDINSTITUCION")+
+				" and dp."+ScsDesignasLetradoBean.C_ANIO+"="+(String)dato.get("ANIO")+
+				" and dp."+ScsDesignasLetradoBean.C_NUMERO+"=" +(String)dato.get("NUMERO")+
+				" and dp."+ScsDesignasLetradoBean.C_IDTURNO+"=" +(String)dato.get("IDTURNO")+
+				" order by dp."+ScsDesignasLetradoBean.C_FECHADESIGNA+" DESC";
+
+			Vector vector = selectGenerico(sql);
+		    if ((vector != null) && (vector.size() > 0)) {
+		    	return (Hashtable)vector.get(0);
+		    }
+
+			return null;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getUltimoLetrado()");
+		}
+
+	}	
+	
 	
 	/**
 	 * Recupera la fecha de renuncia del primer letrado de la designa

@@ -12,7 +12,6 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.python.modules.synchronize;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -448,9 +447,22 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 						throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 				}
 				
-				// Modificando designacion letrado anterior
-				Hashtable<String, Object> datos = (Hashtable<String, Object>) ses.getAttribute("DATABACKUP_CLD");
+				// Obetnemos la ultima designa
+				designa = new Hashtable<String, Object>();
+				designa.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
+				designa.put(ScsDesignasLetradoBean.C_IDTURNO, idTurno);
+				designa.put(ScsDesignasLetradoBean.C_NUMERO, numero);
+				designa.put(ScsDesignasLetradoBean.C_ANIO, anio);
+				Hashtable<String, Object> datos  = designaLetradoAdm.getUltimoLetrado(designa);
+				
 				if (datos != null) {
+					
+					//Se comprueba si es posterior
+					if (GstDate.compararFechas((String)datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA),fCambio) > 0){
+						String errorFechaMsg = UtilidadesString.getMensajeIdioma(usr, "grtuita.cambioletrado.errorfecha");
+						throw new SIGAException(errorFechaMsg + " " + GstDate.getFormatedDateShort(usr.getLanguage(),datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA)));
+					}
+					
 					idPersonaSaliente = (String) datos.get(ScsDesignasLetradoBean.C_IDPERSONA);
 					Hashtable<String, Object> designaActual = (Hashtable<String, Object>) datos.clone();
 					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIA, fCambio);
@@ -481,7 +493,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					}
 				}
-	
+				
+				
+				
 	//			insertando designacion letrado nuevo
 				Hashtable<String, Object> designaNueva = new Hashtable<String, Object>();
 				designaNueva.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
@@ -527,7 +541,6 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				
 	//			finalizando transaccion
 				tx.commit();
-				ses.setAttribute("DATABACKUP_CLD",designaNueva);
 			}
 
 //			preparando mensaje de salida
