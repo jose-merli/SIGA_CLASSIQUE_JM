@@ -459,7 +459,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					
 					//Se comprueba si es posterior
 					if (GstDate.compararFechas((String)datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA),fCambio) > 0){
-						String errorFechaMsg = UtilidadesString.getMensajeIdioma(usr, "grtuita.cambioletrado.errorfecha");
+						String errorFechaMsg = UtilidadesString.getMensajeIdioma(usr, "gratuita.cambioletrado.errorfecha");
 						throw new SIGAException(errorFechaMsg + " " + GstDate.getFormatedDateShort(usr.getLanguage(),datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA)));
 					}
 					
