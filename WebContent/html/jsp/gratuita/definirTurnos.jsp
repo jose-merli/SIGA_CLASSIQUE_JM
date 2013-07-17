@@ -1,5 +1,6 @@
 <!-- definirTurnos.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -141,7 +142,6 @@
 		<html:form action="/JGR_DefinirTurnos" method="POST" target="resultado" enctype="multipart/form-data" onSubmit="return Buscar()">
 			<input type="hidden" name="modal" value="">
 			<input type="hidden" name="modo" value="">
-			<input type="hidden" name="materia" value="">
 			<input type="hidden" name="limpiarFilaSeleccionada" value="">
 				
 <%if (entrada.equalsIgnoreCase("1")){%>		<!--esto se quitara el dia en que se entre desde el menu-->
@@ -158,13 +158,13 @@
 		<td>		
 		<%
 			String parametroMateria = "";
-			ArrayList vArea = new ArrayList();
+			String vArea = "";
 			try {
 				String area = (String)hash.get("IDAREA");
 				
 				if (area!=null && !area.equals("-1")){					
-					vArea.add("{\"idarea\":\""+(String)hash.get("IDAREA")+"\", \"idinstitucion\":\""+usr.getLocation()+"\"}");
-					parametroMateria = "{\"idarea\":\""+(String)hash.get("IDAREA")+"\"}";
+					vArea = (String)hash.get("IDAREA");
+					parametroMateria = (String)hash.get("IDAREA");
 				}
 			} catch (Exception e) {
 			}
@@ -194,12 +194,12 @@
 		<td>
 		<%
 			String parametroSubZona = "";
-			ArrayList vZona = new ArrayList();
+			String vZona = "";
 			try {
 				String zona = (String)hash.get("IDZONA");
 				if (zona!=null && !zona.equals("-1")){
-					vZona.add("{\"idzona\":\""+(String)hash.get("IDZONA")+"\", \"idinstitucion\":\""+usr.getLocation()+"\"}");
-					parametroSubZona = "{\"idzona\":\""+(String)hash.get("IDZONA")+"\"}";
+					vZona = (String)hash.get("IDZONA");
+					parametroSubZona = (String)hash.get("IDZONA");
 				}				
 			} catch (Exception e) {
 			}
@@ -242,6 +242,8 @@
 			try {
 				if (hash.get("IDPARTIDAPRESUPUESTARIA")==null || hash.get("IDPARTIDAPRESUPUESTARIA").equals("-1")){
 					vParPre.add("0");
+				} else {
+					vParPre.add(hash.get("IDPARTIDAPRESUPUESTARIA"));
 				}
 			} catch (Exception e) {
 			}
@@ -255,6 +257,8 @@
 			try {
 				if (hash.get("IDGRUPOFACTURACION")==null || hash.get("IDGRUPOFACTURACION").equals("-1")){
 					vGrupo.add("0");
+				} else {
+					vGrupo.add(hash.get("IDGRUPOFACTURACION"));
 				}
 			} catch (Exception e) {
 			}
@@ -271,6 +275,8 @@
 			try {
 				if (hash.get("IDTIPOTURNO")==null || hash.get("IDTIPOTURNO").equals("-1")){
 					vTipoTurno.add("0");
+				} else {
+					vTipoTurno.add(hash.get("IDTIPOTURNO"));
 				}
 			} catch (Exception e) {
 			}

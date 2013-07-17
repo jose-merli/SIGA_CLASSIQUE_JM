@@ -43,11 +43,14 @@
 		
 		<script language="JavaScript">
 
-	 		function buscar()
-	 		{
-	 			multidiomasForm.target="resultado";
-	 			multidiomasForm.modo.value="buscar";
-	 			multidiomasForm.submit();
+	 		function buscar() {
+	 			if (jQuery("#descripcion").val() != "" && jQuery("#idIdioma").val() != "" && jQuery("#idIdiomaATraducir").val() != ""){
+		 			multidiomasForm.target="resultado";
+		 			multidiomasForm.modo.value="buscar";
+		 			multidiomasForm.submit();
+	 			} else {
+	 				alert("Seleccione entidad, idioma de búsqueda e idioma a traducir");
+	 			}
 	 		}
 	 		
 	 		function generarRecursos()
@@ -81,7 +84,7 @@
 					<input type="hidden" name="esCatalogo" value="<%=bCatalogos%>">
 					
 					<tr>
-						<td>
+						<td class="labelText">
 							<% if (bCatalogos) { // Catalogos %>
 								<siga:Idioma key="administracion.multidioma.catalogosMaestros.literal.entidad"/>
 							<% } else { // Etiquetas %>
@@ -94,7 +97,7 @@
 		        							queryId="getCatalogoMultiidioma" 
 		        							required="true"/>
 							<% } else { // Etiquetas %>
-								<input type="text" name="descripcion" size="30" value="" class="box"/>
+								<input type="text" id="descripcion" name="descripcion" size="30" value="" class="box"/>
 							<% } %>
 						</td>
 						<td class="labelText" width="">

@@ -446,11 +446,15 @@
 								</td>
 								<td width="29%" class="labelText">
 									<% if (!"insertar".equalsIgnoreCase(remitente)){ 
-										vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)); %>
+										vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)); 
+										if (remitente=="modificar"){ %>
+											<html:hidden property="producto" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%>"/>
+										<%} %>
 										<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" disabled="true" selectedIds="<%=vTipoProducto%>"  width="200" required="true"></siga:Select>
 									<%} else { %>
 										<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" width="200" required="true"></siga:Select>					
 									<%} %>
+									este
 								</td>
 								<td width="18%" class="labelText">
 									<siga:Idioma key="pys.resultadoBusquedaProductos.literal.precio"/>&nbsp;(*)
@@ -475,8 +479,9 @@
 									<% if ("insertar".equalsIgnoreCase(remitente)){%>
 										<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" />
 									<%} else {
-										vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); %>
-										<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" selectedIds="<%=vProducto %>" disabled="true"/>
+										vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); 
+										String productoParams = UtilidadesString.createJsonString("idtipoproducto", row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));%>
+										<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" params="<%=productoParams %>" required="true" width="300" selectedIds="<%=vProducto %>" disabled="true"/>
 									<%} %>						
 								</td>
 								<td class="labelText">

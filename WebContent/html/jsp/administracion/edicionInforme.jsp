@@ -80,11 +80,10 @@
 			
 			if(${mostrarTipoIntercambio} == '1'){
 			
-				var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
-				var tiposEnvio = comboEnviosPermitidos.options;
+				var comboEnviosPermitidos = jQuery('#comboTipoEnvioPermitidos');
 				var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
 				
-				if(tiposEnvio.options.length>0 && tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+				if(jQuery('#comboTipoEnvioPermitidos').find("option").length>0 && jQuery('#comboTipoEnvioPermitidos').val() == "6"){
 				
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",
@@ -149,29 +148,16 @@
 			}else{
 				comboPlantilla.options.length = 0;		
 			}
-		}
-		
-		function tipoTelematicoSeleccionado(comboEnviosPermitidos){
-			var selected = ""; 
-			for (var i = 0; i < comboEnviosPermitidos.options.length; i++) {
-				if (comboEnviosPermitidos.options[i].selected) {
-					selected = comboEnviosPermitidos.options[i].value.split(',')[1];
-					if(selected =='6'){
-						return true;
-					}
-				}
-			}		
-			return false;
-		}
+		}			
 		
 		function onChangeTipoIntercambio() {
 			
 			if(${mostrarTipoIntercambio} == '1'){
 			
 				var comboTiposIntercambioTelematico = document.getElementById('idTipoIntercambioTelematico');
-				var comboEnviosPermitidos = document.getElementById('comboTipoEnvioPermitidos');
+				var comboEnviosPermitidos = jQuery('#comboTipoEnvioPermitidos');
 			
-				if(tipoTelematicoSeleccionado(comboEnviosPermitidos)){
+				if(jQuery('#comboTipoEnvioPermitidos').val() == "6"){
 				
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",

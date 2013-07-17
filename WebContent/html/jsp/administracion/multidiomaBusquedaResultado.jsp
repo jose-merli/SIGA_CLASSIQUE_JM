@@ -178,7 +178,7 @@
 			} // if
 			else { %>
 				<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+	   				<td class="titulitos" colspan="3"><siga:Idioma key="messages.noRecordFound"/></td>
 				</tr>	 		
 			<% } %>
 		   			

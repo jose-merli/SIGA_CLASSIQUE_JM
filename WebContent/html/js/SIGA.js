@@ -129,7 +129,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.70 2013-07-15 08:32:32 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.71 2013-07-17 12:14:19 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -332,12 +332,27 @@ function jQueryLoaded(){
 	})(jQuery);
 	
 	// SERIALIZE
-	jQuery.fn.serializeObject = function()
-	{
+	jQuery.fn.serializeObject = function() {
 	    var o = {};
+	    // Para poder enviar los elementos sin name pero con ID. Si no tienen ni name ni ID se envía un array 'desconocido'
+	    this.each(function(){
+	    	if (typeof jQuery(this).attr("name") == "undefined" || jQuery(this).attr("name") == ""){
+	    		if (typeof jQuery(this).attr("id") !== "undefined" && jQuery(this).attr("id") !== ""){
+	    			jQuery(this).attr("name", jQuery(this).attr("id"));
+	    		} else {
+	    			jQuery(this).attr("name", "desconocido");
+	    		}
+	    	}
+		});
 	    var a = this.serializeArray();
 	    jQuery.each(a, function() {
-	    	var key = this.name.toLowerCase();
+	    	var key = undefined;
+	    	if (typeof this.name !== "undefined" && this.name !== "")
+	    		key = this.name.toLowerCase();
+	    	else if (typeof this.id !== "undefined" && this.id !== "")
+    			key = this.id.toLowerCase();
+	    	if (typeof key == "undefined")
+	    		key = "desconocido";
 	    	if (o[this.name] !== undefined){
 	    		var old_value = o[this.name];
 	    		delete o[this.name];
@@ -432,35 +447,16 @@ function jQueryLoaded(){
 					});
 					
 					//OJO: NO FUNCIONA EN IE AL AÑADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
-					//		SE DEBE HACER .show()/.hide() del select para que funcione bien en vez de habilitar/deshabilitar
+					jQuery(this).attrchange({
+						callback:function(event){
+							tagSelectDivAttrChangeCallback(event, jQuery(this));
+						}
+					});
 					tagSelect_select.attrchange({
 						callback:function(event){
-									if (!jQuery("#"+jQuery(this).attr("id")+"_tagSelectDiv").data("hideifnooptions")){
-										var modifiedAttributeName=event.attributeName;
-										if (modifiedAttributeName == "disabled" || 
-												modifiedAttributeName == "readonly" || 
-												(jQuery(this).is(":visible") == jQuery("#" + jQuery(this).attr("id")+"_disabled").is(":visible"))){
-											if (jQuery(this).is(":not(:visible)") || jQuery(this).is(":disabled") || jQuery(this).is("[readonly]") || jQuery(this).is("[readonly='readonly']")){
-												console.debug("watch disabled,readonly, visible hide select show input for id: "+jQuery(this).attr("id"));
-												if (jQuery(this).is(":visible")){
-													jQuery(this).hide();
-													if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
-														jQuery("#"+jQuery(this).attr("id") + "_searchBox").hide();
-												}
-												jQuery("#" + jQuery(this).attr("id")+"_disabled").show();
-											} else {
-												console.debug("watch disabled,readonly, visible show select hide input for id: "+jQuery(this).attr("id"));
-												jQuery(this).show();
-												if (jQuery("#"+jQuery(this).attr("id") + "_searchBox").exists())
-													jQuery("#"+jQuery(this).attr("id") + "_searchBox").show();
-												jQuery("#" + jQuery(this).attr("id")+"_disabled").hide();
-											}
-										}
-									} else {
-										jQuery("#"+jQuery(this).attr("id")+"_tagSelectDiv").removeData("hideifnooptions");
-									}
+									tagSelectAttrChangeCallback(event, jQuery(this));
 								}
-					});					
+					});		
 				}
 				// INPUT PARA BUSCAR/FILTRAR EL SELECT
 				if (tagSelect_searchBox.exists()){		
@@ -531,14 +527,6 @@ function jQueryLoaded(){
 								else
 									jQuery("#"+childrenId).parent().find("input.tagSelect_searchBox").val("");
 							}
-							/*
-							//var data = jQuery("select[data-childrenIds*='"+childrenId+"']").serialize();
-							var data = jQuery("select, input").serialize();
-							var childrenSelect = jQuery("#"+childrenId);
-							childrenSelect.load("SIGA/selectData.do?queryId="+childrenSelect.data("queryId"), data, function(responseText, textStatus, XMLHttpRequest){
-								alert("children loaded textStatus: " + textStatus);
-							});
-							*/							
 						});
 					});
 				} else {
@@ -566,6 +554,152 @@ function jQueryLoaded(){
 	
 } // FIN JQUERY LOADED
 
+function tagSelectDivAttrChangeCallback(event, element){
+	var modifiedAttributeName=event.attributeName;
+	console.debug("[tagSelectDivAttrChangeCallback] Modified "+modifiedAttributeName+" for id: "+element.attr("id") + " current class Value: "+element.attr("class"));
+	if (modifiedAttributeName == "class" || modifiedAttributeName == "forceCheckAttr"){
+		tagSelectState(element.find("select").attr("id"), element.hasClass("disabled"));
+	}
+}
+
+function tagSelectAttrChangeCallback(event, element){
+	var modifiedAttributeName=event.attributeName;
+	console.debug("[tagSelectAttrChangeCallback] Modified "+modifiedAttributeName+" for id: "+element.attr("id"));
+	if (!jQuery("#"+element.attr("id")+"_tagSelectDiv").data("hideifnooptions")){
+		if (modifiedAttributeName == "forceCheckAttr"){
+			if (element.hasClass("disabled") || element.is(":disabled") || element.is("[readonly='readonly']")){
+				if (!jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+					console.debug("[tagSelectAttrChangeCallback] ADD CLASS DISABLED TO "+element.attr("id")+"_tagSelectDiv");
+					jQuery("#"+element.attr("id")+"_tagSelectDiv").addClass("disabled");
+					if (window.MutationObserver || window.WebKitMutationObserver){
+						// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+					} else {
+						var e = {};
+						e.attributeName = "forceCheckAttr";
+						tagSelectDivAttrChangeCallback(e, jQuery("#"+element.attr("id")+"_tagSelectDiv"));
+					}
+				}
+			} else if (jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+				console.debug("[tagSelectAttrChangeCallback] REMOVE CLASS DISABLED FROM "+element.attr("id")+"_tagSelectDiv");
+				jQuery("#"+element.attr("id")+"_tagSelectDiv").removeClass("disabled");
+				if (window.MutationObserver || window.WebKitMutationObserver){
+					// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+				} else {
+					var e = {};
+					e.attributeName = "forceCheckAttr";
+					tagSelectDivAttrChangeCallback(e, jQuery("#"+element.attr("id")+"_tagSelectDiv"));
+				}
+			}
+		}else if (modifiedAttributeName == "class"){
+			if (element.hasClass("disabled")){
+				if (!jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+					console.debug("[tagSelectAttrChangeCallback] ADD CLASS DISABLED TO "+element.attr("id")+"_tagSelectDiv");
+					jQuery("#"+element.attr("id")+"_tagSelectDiv").addClass("disabled");
+				}
+			} else {
+				if (jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+					console.debug("[tagSelectAttrChangeCallback] REMOVE CLASS DISABLED FROM "+element.attr("id")+"_tagSelectDiv");
+					jQuery("#"+element.attr("id")+"_tagSelectDiv").removeClass("disabled");
+				}
+			}											
+		} else if (modifiedAttributeName == "disabled" || modifiedAttributeName == "readonly"){
+			if (element.is(":disabled") || element.is("[readonly='readonly']")){
+				if (!jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+					console.debug("[tagSelectAttrChangeCallback] ADD CLASS DISABLED TO "+element.attr("id")+"_tagSelectDiv");
+					jQuery("#"+element.attr("id")+"_tagSelectDiv").addClass("disabled");
+				}
+			} else {
+				if (jQuery("#"+element.attr("id")+"_tagSelectDiv").hasClass("disabled")){
+					console.debug("[tagSelectAttrChangeCallback] REMOVE CLASS DISABLED FROM "+element.attr("id")+"_tagSelectDiv");
+					jQuery("#"+element.attr("id")+"_tagSelectDiv").removeClass("disabled");
+				}
+			}
+		} else {
+			console.debug("[tagSelectAttrChangeCallback] NO ACTION");
+		}
+	} else {
+		jQuery("#"+element.attr("id")+"_tagSelectDiv").removeData("hideifnooptions");
+	}
+}
+
+function disableTagSelects(oSelects){
+	if (typeof oSelects != "undefined"){
+		oSelects.each(function(){
+			var oSelect = jQuery(this);
+			oSelect.attr("disabled", true);
+			if (window.MutationObserver || window.WebKitMutationObserver){
+				// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+			} else {
+				var tagSelectDiv = jQuery("#"+oSelect.attr("id")+"_tagSelectDiv");
+				tagSelectDiv.addClass("disabled");
+				var e = {};
+				e.attributeName = "forceCheckAttr";
+				tagSelectDivAttrChangeCallback(e, tagSelectDiv);
+			}
+		});
+	}
+}
+
+function enableTagSelects(oSelects){
+	if (typeof oSelects != "undefined"){
+		oSelects.each(function(){
+			var oSelect = jQuery(this);
+			oSelect.removeAttr("disabled");
+			if (window.MutationObserver || window.WebKitMutationObserver){
+				// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+			} else {
+				var tagSelectDiv = jQuery("#"+oSelect.attr("id")+"_tagSelectDiv");
+				tagSelectDiv.removeClass("disabled");
+				var e = {};
+				e.attributeName = "forceCheckAttr";
+				tagSelectDivAttrChangeCallback(e, tagSelectDiv);
+			}
+		});
+	}
+}
+
+function tagSelectState(id, disabled){
+	console.debug("[tagSelectState] ID: " + id + " disabled: " + disabled);
+	if (disabled == undefined){
+		disabled = jQuery("#"+id).hasClass("disabled");
+	}
+	if (id && jQuery("#"+id).exists()){
+		var selectTag = jQuery("#"+id);
+		var divTag = jQuery("#"+id+"_tagSelectDiv");
+		if (!disabled){
+			console.debug("[tagSelectState] MOSTRANDO SELECT " + id);
+			selectTag.show();
+			if (jQuery("#"+selectTag.attr("id") + "_searchBox").exists())
+				jQuery("#"+selectTag.attr("id") + "_searchBox").show();
+			jQuery("#" + selectTag.attr("id")+"_disabled").hide();			
+		} else {
+			console.debug("[tagSelectState] OCULTANDO SELECT " + id);
+			selectTag.hide();
+			if (jQuery("#"+selectTag.attr("id") + "_searchBox").exists())
+				jQuery("#"+selectTag.attr("id") + "_searchBox").hide();
+			jQuery("#" + selectTag.attr("id")+"_disabled").show();			
+		}
+		if (disabled != jQuery("#"+id).hasClass("disabled")){
+			if (disabled){
+				console.debug("[tagSelectState] UPDATING " + id + " ADDING DISABLED CLASS...");
+				jQuery("#"+id).addClass("disabled");
+			} else {
+				console.debug("[tagSelectState] UPDATING " + id + " REMOVING DISABLED CLASS...");
+				jQuery("#"+id).removeClass("disabled");
+			}
+		}
+		
+		if (disabled != divTag.hasClass("disabled")){
+			if (disabled){
+				console.debug("[tagSelectState] UPDATING " + divTag.attr("id") + " ADDING DISABLED CLASS...");
+				divTag.addClass("disabled");
+			} else {
+				console.debug("[tagSelectState] UPDATING " + divTag.attr("id") + " REMOVING DISABLED CLASS...");
+				divTag.removeClass("disabled");
+			}
+		}
+	}
+}
 
 function setTagselectDivWidth(tagSelectDiv){
 	/* NO HACE FALTA CON EL INLINE
@@ -655,8 +789,8 @@ function reloadSelect(childrenId, setValue, params){
 function loadSelect(parentSelects, childrenId, setInitialValue, params){
 	var blockParentSelects = undefined;
 	if (parentSelects){
-		blockParentSelects = parentSelects.not(":disabled").filter(":visible");
-		blockParentSelects.hide();
+		blockParentSelects = parentSelects.not(":disabled").not('[readonly="readonly"]').not(".disabled");
+		disableTagSelects(blockParentSelects);
 	}
 	var childrenSelect = jQuery("#"+childrenId);
 	console.debug("loadSelect " + childrenId);
@@ -762,9 +896,6 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				console.debug(jQuery(currentChild).attr("id")+" Inserted on DOM on: "+diff);
 				*/
 				
-				if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
-					jQuery("#"+currentChildId).change();
-				}
 				if(typeof jQuery(currentChild).data("onloadcallback") != "undefined"){
 					try{
 						console.debug("Ejecutando callback de " + jQuery(currentChild).attr("id"));
@@ -784,6 +915,9 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				//alert("Se ha producido un error al cargar los datos");
 				jQuery(currentChild).empty();
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+				//if (jQuery("#"+currentChildId).val() !== "undefined" && jQuery("#"+currentChildId).val() != "" && jQuery("#"+currentChildId).val() != "-1"){
+					jQuery(currentChild).change();
+				//}
 				if (jQuery(currentChild).data("hideifnooptions")){
 					if (jQuery(currentChild).find("option").length == 0 || (jQuery(currentChild).find("option").length == 1 && jQuery(currentChild).find("option").val() == "")){
 						jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").data("hideifnooptions", "true");
@@ -796,26 +930,14 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				} else {
 					setTagselectDivWidth(jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv"));
 				}
-
+				
 				if (jQuery("#"+loadingId).exists())
 					jQuery("#"+loadingId).css('visibility', 'hidden');
-				if (blockParentSelects)
-					blockParentSelects.show();
+				enableTagSelects(blockParentSelects);
 			});
-		});
-		/*
-		childrenSelect.load("selectData.do?queryId="+childrenSelect.data("queryid")+params+selectedIds+required+sShowsearchbox, function(responseText, textStatus, XMLHttpRequest){
-			console.debug(childrenSelect.attr("id")+" loaded textStatus: " + textStatus);
-			
-			if (childrenSelect.val() !== "undefined" && childrenSelect.val() != "" && childrenSelect.val() != "-1"){
-				childrenSelect.change();
-			}
-			if (jQuery("#"+loadingId).exists())
-				jQuery("#"+loadingId).remove();
-			
-			blockParentSelects.show();
-		});
-		*/
+		});		
+	} else {
+		enableTagSelects(blockParentSelects);
 	}
 }
 

@@ -287,9 +287,23 @@ public class TagSelect extends TagSupport {
 		String disabledInputStyle = "style='display:none;";
 		String selectStyle = "style='display:inline;";
 		String styleSearchBox = "style='display:inline;'";
+		String divDataReadOnly = " data-readonly='false' ";
+		String divClass = " class='tagSelect tagSelectDiv' ";
+		String selectReadOnly = " data-readonly='false' ";
+		String selectClass = " class='tagSelect tagSelect_searchBox box' ";
+		String divLoaderClass= " class='tagSelect tagSelect_loader' ";
+		String labelClass = "  class='tagSelect tagSelect_label' ";
+		String inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled' ";
 		if (this.disabled || this.readOnly){
 			selectStyle = disabledInputStyle;
 			disabledInputStyle = "style='display:inline;";
+			divDataReadOnly = " data-readonly='true' ";
+			selectReadOnly = " disabled='disabled' data-readonly='true' ";
+			divClass = " class='tagSelect tagSelectDiv disabled' ";
+			selectClass = " class='tagSelect tagSelect_searchBox box disabled' ";
+			divLoaderClass= " class='tagSelect tagSelect_loader disabled' ";
+			labelClass = "  class='tagSelect tagSelect_label disabled' ";
+			inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled disabled' ";
 		}		
 		
 		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
@@ -325,9 +339,9 @@ public class TagSelect extends TagSupport {
 				selectStyle += " disabled ";
 		}
 		
-		// IMPRIME HTML
+		// *** IMPRIME HTML *** //
 		PrintWriter out = pageContext.getResponse().getWriter();
-		out.println("<div id='"+this.id+"_tagSelectDiv' class='tagSelectDiv' "+dataWidth+wrapDivStyle+">");
+		out.println("<div id='"+this.id+"_tagSelectDiv' "+divClass+dataWidth+divDataReadOnly+wrapDivStyle+">");
 		String sOnloadCallback = "";
 		if (this.onLoadCallback != null && !"".equals(this.onLoadCallback)){
 			sOnloadCallback = " data-onloadcallback='"+this.id+"_callback' ";
@@ -335,15 +349,15 @@ public class TagSelect extends TagSupport {
 		}
 		if (StringUtils.hasText(this.label)){
 			String localizedLabelText = UtilidadesString.getMensajeIdioma(user.getLanguage(), this.label);
-			out.println("<label for='"+this.id+"' style='display:inline;'>"+localizedLabelText+"</label>");
+			out.println("<label for='"+this.id+"' "+labelClass+" style='display:inline;'>"+localizedLabelText+"</label>");
 		}
 		
 		if (!multiple && showSearchBox){
-			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' class='tagSelect_searchBox box' "+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
+			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' "+selectClass+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
 		}
 		
-		out.println("<div id='"+this.id+"_loader' class='tagSelect_loader'"+selectLoaderStyle+">");
-		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+">");
+		out.println("<div id='"+this.id+"_loader' "+divLoaderClass+selectLoaderStyle+">");
+		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
@@ -360,7 +374,7 @@ public class TagSelect extends TagSupport {
 					
 		out.println("</select>"+loadingElement+"</div>");
 		if (!multiple)
-			out.println("<input type='text' readonly='readonly' class='boxConsulta tagSelect_disabled' "+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
+			out.println("<input type='text' readonly='readonly' "+inputDisabledClass+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
 		out.println("</div>");// this.id_div;
 	}
 
@@ -447,7 +461,7 @@ public class TagSelect extends TagSupport {
 		this.selectedIds = selectedIds;
 	}
 	public void setSelectedIds(String selectedIds) {
-		this.selectedIds = Arrays.asList(selectedIds.trim().split(","));
+		this.selectedIds = Arrays.asList(selectedIds.trim().split("@@"));
 	}
 	
 	/**
