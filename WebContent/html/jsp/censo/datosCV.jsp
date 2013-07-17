@@ -259,33 +259,18 @@
 					return false;
 				}
 				
-				if ((!jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){	
-					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
+				if (jQuery("#tipoApunte").val()==""){
+				    aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>'
 					alert(aux);
 					fin();
 					return false;
-			    } else { 
-					if((!jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="")){
-		      			aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
-		   		     	alert(aux);
-		   		     	fin();
-						return false;
-					} else {
-						if ((jQuery("#idTipoCVSubtipo1").is(":visible")) && (document.datosCVForm.tipoApunte.value=="")){
-							aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
-				     		alert(aux);
-				     		fin();
-						    return false;
-					    } else {
-					    	if (document.datosCVForm.tipoApunte.value==""){
-					            aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>';
-					          	alert(aux);
-					          	fin();
-						        return false;
-						    }
-					    }
-					}
-				}		   
+				} else if ( (jQuery("#idTipoCVSubtipo1").is(":visible") && jQuery("#idTipoCVSubtipo1").val() == "") || 
+							(jQuery("#idTipoCVSubtipo2").is(":visible") && jQuery("#idTipoCVSubtipo2").val() == "") ){
+					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
+					alert(aux);
+					fin();
+					return false;
+				}   
 			   
 				if (compararFecha (document.datosCVForm.fechaInicio, document.datosCVForm.fechaFin) == 1) {
 					aux = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
