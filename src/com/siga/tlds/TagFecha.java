@@ -175,9 +175,12 @@ public class TagFecha extends TagSupport {
 					out.println("	onfocus=\"this.value=document.forms[0]." + this.campoCargarFechaDesde + ".value;\" ");
 				}
 			}
-			if ((this.styleId != null)&&(this.styleId.equals(""))){
+			String sId = "";
+			if ((this.styleId != null)&&(!this.styleId.equals(""))){
+				sId = this.styleId;
 				out.println("		id=\"" + this.styleId + "\" ");
 			}else{
+				sId = this.nombreCampo;
 				out.println("		id=\"" + this.nombreCampo + "\" ");
 			}
 			if ((this.disabled != null)){
@@ -199,13 +202,13 @@ public class TagFecha extends TagSupport {
 					out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
 				}
 				if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
-					out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
+					out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + sId + ");\"/> ");
 				}else{
-					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/>");
+					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + sId + ");\"/>");
 				}
 			}
 			if ((this.disabled == null)||((this.disabled != null)&&this.disabled.equals("false"))){
-				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ this.nombreCampo +");\"><img id=\"calendario_"+ this.nombreCampo +"\" src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
+				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ sId +");\"><img id=\"calendario_"+ this.nombreCampo +"\" src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
 			}
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
