@@ -51,9 +51,8 @@
 		<script language="JavaScript">
 			function cambiar(){		
 				var oper_aux= operador.value.split(",");			
-				if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>)||(oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) ){;
-					
-	
+				
+				if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>)) {
 						if (document.getElementById('caja')){
 							document.getElementById('comb').style.visibility='visible';
 							document.getElementById('caja').style.visibility='hidden';
@@ -72,41 +71,32 @@
 						 	document.getElementById('comb').style.visibility='visible';
 					 	 	if (document.getElementById('caja')){
 						 	 	document.getElementById('caja').style.visibility='hidden';
+						 	 	document.getElementById('caja').style.width='0px';
 					 	 	}
-					 	 	if (document.getElementById('imagen')){ 				  		  	
-					 	 		document.getElementById('imagen').style.visibility='hidden';	
+					 	 	if (document.getElementById('calendario_valor')){ 		
+					 	 		jQuery("#calendario_valor").hide();
+					 	 		document.getElementById('calendario_valor').style.visibility='hidden';	
 					 	 	}		
 					 	 	pasarvalor();	
 					   }	
 	
 				} else {		
-					if (oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>){					
-						if (document.getElementById('valor') ){		
-							document.getElementById('comb').value="";					
-							 document.getElementById('comb').style.visibility='hidden';
-							 document.getElementById('caja').style.visibility='visible';	
-							 if (document.getElementById('imagen')){ 			  		  	
-						     	document.getElementById('imagen').style.visibility='visible';
-							 }							     		
+					if (document.getElementById('caja')){
+						document.getElementById('valor').value="";
+						document.getElementById('comb').style.visibility='hidden';
+						document.getElementById('caja').style.visibility='visible';
+						if (document.getElementById('calendario_valor')){ 	
+							document.getElementById('calendario_valor').style.visibility='visible';
 						}
-						
-					} else {		
-						if (document.getElementById('caja')){
-							if (document.getElementById('valor') ){	
-								valor.value="";
-							}
-							document.getElementById('comb').style.visibility='hidden';
-							document.getElementById('caja').style.visibility='visible';
-							document.getElementById('caja').style.width='120px';
-						}
-						
-						if (document.getElementById('cmbvalor') ){					
-							quitarvalorcombo();
-							document.getElementById('comb').style.visibility='hidden';
-							document.getElementById('cmbvalor').style.visibility='visible';
-							document.getElementById('cmbvalor').style.width='220px';
-						}
-					}				
+						document.getElementById('caja').style.width='120px';
+					}
+					
+					if (document.getElementById('cmbvalor') ){					
+						quitarvalorcombo();
+						document.getElementById('comb').style.visibility='hidden';
+						document.getElementById('cmbvalor').style.visibility='visible';
+						document.getElementById('cmbvalor').style.width='220px';
+					}			
 				}
 			}
 		
@@ -117,13 +107,14 @@
 				}
 			}
 			
-			function pasarvalor(){
-				valor.value=valor1.value;
+			function pasarvalor(){	
+				document.getElementById('valor').value=document.getElementById('valor1').value
 			}
 		
 			function pasarvalorcombo(){			
 			 	var tiene_0=false;
 			 	var tiene_1=false;
+			 	var valor = document.getElementById('valor');
 			 	for (i=0;i<valor.options.length;i++){
 			 		if (valor[i].value==0){
 			 			tiene_0=true;
@@ -153,6 +144,7 @@
 			 	var tiene_1=false;
 				var posicion_0=0;
 				var posicion_1=0;
+				var valor = document.getElementById('valor');
 			 	for (i=0;i<valor.options.length;i++){
 			 		if (valor[i].innerHTML==0){
 			 			tiene_0=true;
@@ -229,7 +221,7 @@
 							
 					<% } else { %>						
 						<% if (fecha){ %>	
-							<siga:Fecha nombreCampo="caja" readOnly="true"/>
+							<siga:Fecha styleId="caja" nombreCampo="valor" anchoTextField="16" readOnly="true"/>
 							<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">
 								<option value="SI">SI</option>
 								<option value="NO">NO</option>
