@@ -91,10 +91,10 @@
       <name>params</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <description>Parámetros requeridos por la query que ejecuta el SelectDataService y que se encuentra en SelectDataMapper. 
+      <description><![CDATA[ Parámetros requeridos por la query que ejecuta el SelectDataService y que se encuentra en SelectDataMapper. 
       Además de estos parámetros, se inyectarán todos los parámetros que se encuentren en la request, el idioma del usuario en sesión 
       y el idinstitución del usuario en sesión (si no han sido incluidos ya) por lo que si los parámetros necesarios para ejecutar la query se encuentran ya entre 
-      estos, no sería necesário este atributo</description>
+      estos, no sería necesário este atributo (ADMITE JSON O MAP<String,String>)]]></description>
     </attribute>
     <attribute>
       <name>childrenIds</name>
