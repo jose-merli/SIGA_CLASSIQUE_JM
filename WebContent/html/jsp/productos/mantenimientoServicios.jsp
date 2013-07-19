@@ -527,10 +527,9 @@
 																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" disabled >
 																		<% } else {%>
 																			<% if (fechaBaja!=null) {%>
-																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" checked>
-																			
+																				<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1" checked>																			
 																			<% } else { %>
-																			<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1">
+																				<input type="checkbox" name="bajaLogica" id="bajaLogica" value="1">
 																			<% } %>
 																		<% } %>
 																	</td>
@@ -901,7 +900,11 @@
 			//Asociada al boton Guardar
 			function accionGuardar() {	
 				sub();
-				if (document.forms[0].automatico.checked || document.forms[0].bajaLogica.checked){		
+				
+				var antesAutomatico = <%= new Boolean(bAutomatico).toString()%>;
+				var antesBaja = <%= new Boolean(bFechaBaja).toString()%>;
+				
+				if ((document.forms[0].automatico.checked && !antesAutomatico) || (document.forms[0].bajaLogica.checked && !antesBaja)){		
 			      	var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
 			      	window.top.focus();
 			      	if (fecha!=null) {				
@@ -950,44 +953,36 @@
 							  	fin();
 								return false;
 							}	
-						<% } %>	
-						
-						var antesAutomatico = <%= new Boolean(bAutomatico).toString()%>;
-						var antesBaja = <%= new Boolean(bFechaBaja).toString()%>;
+						<% } %>													
 
-						if(document.forms[0].bajaLogica.checked) {
-							// RGG comprubo que antes no estaba checked
+						// RGG compruebo que antes no estaba checked
+						if(document.forms[0].bajaLogica.checked && !antesBaja) {							
+							men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.realizarBajaLogica"/>';
+							if (confirm(men)) {
+								// Abro la ventana de las tuercas:
+								var f = document.forms[0].name;											  
+								var m = "pys.mantenimientoServicios.cabecera.tuercas.realizarBajaLogica";
+								window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+							} 
 							
-							if(!antesBaja) {							
-								men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.realizarBajaLogica"/>';
-								if (confirm(men)) {
+							fin();
+							return false;								
+
+							
+						} else {			
+							// RGG comprubo que antes no estaba checked
+							if(document.forms[0].automatico.checked && !document.forms[0].bajaLogica.checked && !antesAutomatico) {							
+								document.forms[0].comprobarCondicion.value = document.forms[0].automatico.checked;
+								men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.suscripcionAutomaticaATodos"/>';
+							 	if (confirm(men)) {									 						  
 									// Abro la ventana de las tuercas:
-									var f = document.forms[0].name;											  
-									var m = "pys.mantenimientoServicios.cabecera.tuercas.realizarBajaLogica";
+									var f = document.forms[0].name;	
+									var m = "pys.mantenimientoServicios.cabecera.tuercas.suscripcionAutomaticaATodos";
 									window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
-								} 
+								}
 								
 								fin();
-								return false;								
-							}
-							
-						} else {						
-							if((document.forms[0].automatico.checked) && (!document.forms[0].bajaLogica.checked)) {							  					  
-							
-								// RGG comprubo que antes no estaba checked
-								if(!antesAutomatico) {							
-									document.forms[0].comprobarCondicion.value = document.forms[0].automatico.checked;
-									men = '<siga:Idioma key="pys.mantenimientoServicios.mensaje.suscripcionAutomaticaATodos"/>';
-								 	if (confirm(men)) {									 						  
-										// Abro la ventana de las tuercas:
-										var f = document.forms[0].name;	
-										var m = "pys.mantenimientoServicios.cabecera.tuercas.suscripcionAutomaticaATodos";
-										window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
-									}
-									
-									fin();
-									return false;
-								}
+								return false;
 							}
 						}
 						
