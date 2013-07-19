@@ -988,7 +988,8 @@ public class DatosColegialesAction extends MasterAction {
 	 		- Inhabilitación perpetua: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
 	 		- Suspensión ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.*/			
 			ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(usr);
-			tAdm.cancelarInscripcionesTurnosPersona(idpersona, idinstitucion, "Baja por cambio de estado colegial", fechaEstado);
+			String sMotivo = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.motivo.bajaEstadoColegial");
+			tAdm.cancelarInscripcionesTurnosPersona(idpersona, idinstitucion, sMotivo, fechaEstado);
 		}
 
 		// 4. revocando certificados
