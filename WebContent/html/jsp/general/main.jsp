@@ -197,11 +197,6 @@
 		    	document.formularioOcultoParaIP.submit();     
 		    }						
 
-			function comprobarPops()
-			{
-				showModelessDialog('<%=app%>/html/jsp/general/loadingWindowPru.jsp','', 'dialogLeft:2000;dialogTop:2000;dialogWidth:2000px;dialogHeight:2000px;resizable:yes;help:no;center:no;');
-			}
-
 			function mainSub(msg){
 				if(!bloqueado){
 // 					jQuery.blockUI({
@@ -236,7 +231,7 @@
 </head>
 
 <body class="tableCabecera"
-	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');comprobarPops();">
+	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');">
 
 	<!-- MENU PRINCIPAL -->
 	<!-- Esto pinta el menu principal en funcion de los permisos del userBean -->
