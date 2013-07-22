@@ -14,13 +14,17 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
+<%@ page import="org.redabogacia.sigaservices.app.util.PropertyReader"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	
 	ses.removeAttribute(SIGAConstants.STYLESHEET_REF);
-	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, "/html/css/skin5/stylesheet.css");
+	Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
+	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin5/stylesheet.css");
 %>
 	
 <html>
