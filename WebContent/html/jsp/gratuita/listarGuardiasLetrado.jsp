@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarGuardiasLetrado.jsp -->
 
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -53,9 +56,9 @@
 	String botones="C";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

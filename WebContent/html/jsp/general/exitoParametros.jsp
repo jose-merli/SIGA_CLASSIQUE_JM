@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoParametros.jsp -->
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
@@ -17,8 +20,6 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -93,4 +94,4 @@ function reloadPage() {
 
 <body onload="reloadPage();">
 </body>
-</html:html>
+</html>

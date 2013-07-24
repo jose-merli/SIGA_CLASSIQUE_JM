@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- dialogoCompensacionFacturaManual.jsp -->
 
 <!-- CABECERA JSP -->
@@ -44,9 +47,9 @@
 <%@page import="com.siga.beans.FacFacturaBean"%>
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
 <%@page import="com.siga.Utilidades.UtilidadesNumero"%>
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

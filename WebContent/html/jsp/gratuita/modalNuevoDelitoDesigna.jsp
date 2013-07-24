@@ -1,4 +1,7 @@
-<!-- modalNuevoDelitoEJG.jsp-->
+<!DOCTYPE html>
+<html>
+<head>
+<!-- modalNuevoDelitoDesigna.jsp-->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -33,10 +36,10 @@
 	String parametro[] = {usr.getLocation(), usr.getLocation(), numero, anio, idTurno};
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->

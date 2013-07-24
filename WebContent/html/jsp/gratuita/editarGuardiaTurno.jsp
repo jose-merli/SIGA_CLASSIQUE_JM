@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarGuardiaTurno.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -174,10 +177,10 @@
 	String sNoVinculada = (bVinculada ? "false" : "true");		
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>	
+	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
 	

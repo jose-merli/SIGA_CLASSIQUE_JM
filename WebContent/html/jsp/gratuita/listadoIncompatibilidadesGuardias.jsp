@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoIncompatibilidadesGuardias.jsp -->
 
 <!---------- CABECERA JSP ---------->
@@ -34,10 +37,10 @@
 %>
 
 
-<html>
 
 
-<head>
+
+
     <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->

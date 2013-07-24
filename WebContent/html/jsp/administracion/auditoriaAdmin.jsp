@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- auditoriaAdmin.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -25,10 +28,10 @@
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

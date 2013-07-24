@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarDesigna.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -367,10 +370,10 @@
 	}
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<script type="text/javascript">
 	var modo = "<%=modo%>";

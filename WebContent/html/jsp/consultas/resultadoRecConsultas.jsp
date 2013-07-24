@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoRecConsultas.jsp -->
 <!-- 
 	 VERSIONES:
@@ -40,10 +43,10 @@
 	String botones = "";
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

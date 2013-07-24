@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- anticiparImporte.jsp -->
 
 <!-- CABECERA JSP -->
@@ -46,9 +49,9 @@
 %>	
 
 
-<%@page import="com.siga.Utilidades.UtilidadesNumero"%><html>
+<%@page import="com.siga.Utilidades.UtilidadesNumero"%>
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

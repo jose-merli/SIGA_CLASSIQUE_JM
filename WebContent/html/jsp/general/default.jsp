@@ -1,10 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- default.jsp -->
 <%@ page pageEncoding="ISO-8859-1"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 
 <% String app=request.getContextPath(); %>
-<html>
-<head>
+
+
 	<meta http-equiv="Expires" content="0">
 	<meta http-equiv="Pragma" content="no-cache"> 
 	<meta http-equiv="Cache-Control" content="no-cache">

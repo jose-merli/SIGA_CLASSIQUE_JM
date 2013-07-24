@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoBusquedaProductos.jsp -->
 <!-- 
 	 Muestra los resultados de la busqueda de productos
@@ -39,9 +42,9 @@
 
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

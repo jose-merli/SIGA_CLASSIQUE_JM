@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- nuevaActaComision.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -19,9 +22,9 @@
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 	String 	dato[] = {(String)usr.getLocation()};
 %>
-<html>
 
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

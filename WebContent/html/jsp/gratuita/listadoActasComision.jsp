@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoActasComision.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="com.siga.Utilidades.UtilidadesFecha"%>
@@ -72,10 +75,10 @@
 %>
 
 <%@page import="com.siga.Utilidades.paginadores.Paginador"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

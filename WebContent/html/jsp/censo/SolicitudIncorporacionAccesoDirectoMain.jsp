@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- SolicitudIncorporacionAccesoDirectoMain.jsp -->
 <!-- EJEMPLO DE VENTANA PRINCIPAL DE LA APLICACION -->
 <!-- Contiene la cabecera, el menu principal, el logo y los botones de salir.
@@ -37,10 +40,10 @@ String logo=(String)request.getSession().getAttribute(SIGAConstants.PATH_LOGO);
 UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 		<title><siga:Idioma key="index.title"/></title>
 			
 		<!-- ESTILOS Y JAVASCRIPT -->

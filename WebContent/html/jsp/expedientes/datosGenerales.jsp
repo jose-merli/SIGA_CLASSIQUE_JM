@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosGenerales.jsp -->
 <!-- 
 	 VERSIONES:
@@ -424,10 +427,10 @@
 	String paramJSONstring = UtilidadesString.createJsonString(paramsJSON);
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,7 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoInsercion.jsp -->
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<HTML>
-<HEAD><TITLE>Paneles</TITLE>
+
+<TITLE>Paneles</TITLE>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <script language=javascript src="/lib/validar.js">
 </script>

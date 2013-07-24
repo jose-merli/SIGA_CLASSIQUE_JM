@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resumenPagos.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -32,10 +35,10 @@
 
 	
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script language="JavaScript">
 		

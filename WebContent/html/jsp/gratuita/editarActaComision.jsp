@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarActaComision.jsp -->
 
 <%@page import="com.siga.beans.ScsActaComisionBean"%>
@@ -67,9 +70,9 @@
 	}
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
-<html>
 
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

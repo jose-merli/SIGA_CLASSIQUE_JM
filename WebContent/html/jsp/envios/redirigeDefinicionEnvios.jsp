@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- redirigeDefinicionEnvios.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -7,8 +10,6 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 
-<html:html>
-<head>
 	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 </head>
@@ -54,4 +55,4 @@ function reloadPage() {
 }
 reloadPage();
 </script>
-</html:html>
+</html>

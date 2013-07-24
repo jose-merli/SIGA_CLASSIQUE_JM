@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaProductos.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -106,9 +109,9 @@
 
 
 <%@page import="com.atos.utils.Row"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 	
 	<script language="JavaScript">
 	function cambiarFechaEfectiva(fila) {

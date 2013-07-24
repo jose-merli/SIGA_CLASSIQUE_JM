@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- detalleSolicitudCertificado.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -37,19 +40,19 @@
 	String tipoCertificado = (String) request.getAttribute("tipoCertificado");
 
 	boolean isSolicitudColegio = beanSolicitud.getIdInstitucion_Sol().intValue()!=2000 && !String.valueOf(beanSolicitud.getIdInstitucion_Sol()).substring(0,2).equals("30"); 
-	String comboInstituciones = "cmbInstitucionesAbreviadas";
-	String comboInstitucionesDest = "cmbInstitucionesAbreviadas";
+	String comboInstituciones = "getInstitucionesAbreviadas";
+	String comboInstitucionesDest = "getInstitucionesAbreviadas";
 	String consultaOrigen, consultaDestino = "";
 
 	if (institucion == 2000){ // General
-		consultaOrigen = "cmbColegiosAbreviados";
-		consultaDestino = "cmbColegiosAbreviados";
+		consultaOrigen = "getColegiosAbreviados";
+		consultaDestino = "getColegiosAbreviados";
 	}else if (institucion > 3000){  // Consejo
-		consultaOrigen = "cmbColegiosConsejo";
-		consultaDestino = "cmbColegiosConsejoRelacionados";
+		consultaOrigen = "getColegiosDeConsejo";
+		consultaDestino = "getColegiosDeConsejo";
 	}else{ // Colegio
-		consultaOrigen = "cmbColegiosConsejo";
-		consultaDestino = "cmbColegiosAbreviados";
+		consultaOrigen = "getColegiosDeConsejo";
+		consultaDestino = "getColegiosAbreviados";
 	}
 	String[] parametros = new String[]{beanSolicitud.getIdInstitucion_Sol().toString(),beanSolicitud.getIdInstitucion_Sol().toString()};
 		
@@ -138,8 +141,8 @@
 		nombreUltimoUsuMod = new String("");
 %>
 
-<html>
-<head>
+
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -354,17 +357,18 @@
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" />&nbsp;(*)
 						</td>
 						<td class="labelTextValor">
-						<%if (modificarSolicitud.equals("1")) { %> 
-							<siga:ComboBD
-								nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
-								elementoSel="<%=idInstitucionPresentador%>" parametro="<%=parametros%>" clase="<%=tipoBox%>"
-								filasMostrar="1" readonly="<%=stLectura%>" /> 
-						<%} else {%> 						
-							<siga:ComboBD
-								nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
-								elementoSel="<%=idInstitucionPresentador%>" parametro="<%=parametros%>" clase="boxConsulta"
-								filasMostrar="1" readonly="true" /> 
-						<%}%>
+							<% 
+								String idInstitucionSol = UtilidadesString.createJsonString("idinstitucion", beanSolicitud.getIdInstitucion_Sol().toString());
+								String sReadOnly = stLectura; 
+								if (!modificarSolicitud.equals("1"))
+									sReadOnly = "true";
+							%>
+							<siga:Select id="idInstitucionOrigen" 
+									queryId="<%=consultaOrigen%>" 
+									selectedIds="<%=idInstitucionPresentador%>"
+									params="<%=idInstitucionSol%>"
+									readonly="<%=sReadOnly%>"
+									required="true" />					
 						</td>
 						<td class="labelText">
 						<%if (tipoCertificado.equals("C")) {%> 
@@ -374,22 +378,22 @@
 						<%}%>
 						</td>
 						<td class="labelTextValor">
-						<%if (modificarSolicitud.equals("1")
-							  && !(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO))) {%>
-							<siga:ComboBD nombre="idInstitucionDestino"
-								tipo="<%=consultaDestino%>" elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>" 
-								clase="<%=tipoBox%>" filasMostrar="1" readonly="<%=stLectura%>" /> 
-						<%} else {%> 				
-							<siga:ComboBD
-								nombre="idInstitucionDestino" tipo="<%=consultaDestino%>"
-								elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>"  clase="boxConsulta"
-								filasMostrar="1" readonly="true" /> 
-						<%}%>
+							<%if (!modificarSolicitud.equals("1")
+								  || (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)))
+								sReadOnly = "true";
+							  %>
+							<siga:Select id="idInstitucionDestino"
+									queryId="<%=consultaDestino%>"
+									selectedIds="<%=idInstitucionDestino%>"
+									params="<%=idInstitucionSol%>"
+									readonly="<%=sReadOnly%>"/>
 						</td>
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/></td>
 						<td>
-							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" 
-								clase="<%=tipoBox%>" readonly="<%=stLectura%>"/>
+							<siga:Select id="metodoSolicitud"
+									queryId="getMetodosSolicitud" 
+									selectedIds="<%=aMetodoSol%>"
+									readonly="<%=stLectura%>"/>
 						</td>						
 					</tr>
 					<tr>
@@ -397,17 +401,15 @@
 							<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>
 						</td>	
 						<td class="labelTextValor">
-						<%if (modificarSolicitud.equals("1")) { %> 
-							<siga:ComboBD
-								nombre="idInstitucionColegiacion" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
-								elementoSel="<%=idInstitucionColegiacion%>" parametro="<%=parametros%>" clase="<%=tipoBox%>"
-								filasMostrar="1" readonly="<%=stLectura%>" /> 
-						<%} else {%> 						
-							<siga:ComboBD
-								nombre="idInstitucionColegiacion" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
-								elementoSel="<%=idInstitucionColegiacion%>" parametro="<%=parametros%>" clase="boxConsulta"
-								filasMostrar="1" readonly="true" /> 
-						<%}%>
+							<% 	sReadOnly = stLectura; 
+								if (!modificarSolicitud.equals("1"))
+									sReadOnly = "true";
+							%>
+							<siga:Select id="idInstitucionColegiacion" 
+									queryId="<%=consultaOrigen%>" 
+									selectedIds="<%=idInstitucionColegiacion%>"
+									params="<%=idInstitucionSol%>"
+									readonly="<%=sReadOnly%>"/>
 						</td>
 						<td class="labelTextValor" colspan="4">
 							<%if (modificarSolicitud.equals("1")) { %> 

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seleccionModalPorTipoSJCS.jsp -->
 
 <!-- CABECERA JSP -->
@@ -31,10 +34,10 @@
 	Vector v = (Vector) request.getAttribute("elementoSeleccionado");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

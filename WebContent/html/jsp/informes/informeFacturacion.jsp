@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeFacturacion.jsp -->
 <!-- Pantalla con los combos para seleccionar la facturaciona a generar.
 	 VERSIONES:
@@ -36,10 +39,10 @@
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

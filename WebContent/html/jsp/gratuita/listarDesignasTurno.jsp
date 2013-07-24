@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarDesignasTurno.jsp -->	 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -37,9 +40,9 @@
 	if (accionTurno.equalsIgnoreCase("Ver"))botones="C";
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

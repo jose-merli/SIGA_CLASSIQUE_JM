@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--  resultadosBusquedaClientesFiltros.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -81,9 +84,9 @@
 %>
 
 <%@page import="java.util.HashMap"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

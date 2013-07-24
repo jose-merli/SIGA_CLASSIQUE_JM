@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosPlantilla.jsp -->
 <!-- 
 	 Muestra el formulario de edicion de plantillas
@@ -50,9 +53,9 @@
 	String	botones="C,Y,R";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

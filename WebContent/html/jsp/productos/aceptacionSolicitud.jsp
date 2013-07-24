@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- aceptacionSolicitud.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -119,10 +122,10 @@
 	request.setAttribute("textoError", "");
 
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

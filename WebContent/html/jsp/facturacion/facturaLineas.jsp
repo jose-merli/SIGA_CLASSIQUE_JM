@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- facturaLineas.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -64,10 +67,10 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

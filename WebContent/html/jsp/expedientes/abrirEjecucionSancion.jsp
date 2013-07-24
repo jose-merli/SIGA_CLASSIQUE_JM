@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirEjecucionSancion.jsp -->
 
 <!-- CABECERA JSP -->
@@ -30,12 +33,13 @@
 	String actualizado = UtilidadesString.getMensajeIdioma(userBean, "messages.updated.success");
 %>	
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- verSolicitudDatosCV.jsp -->
 <!-- 
 	 Permite mostrar las solicitudes de modificacion de datos en el CV
@@ -65,10 +68,10 @@
 	
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -103,7 +106,7 @@
 		
 		</script>	
 
-	</head  class="tablaCentralCampos">
+	</head>
 	<body onLoad="originalModificado(<%=modificada.getString(CenSolicitudModificacionCVBean.C_IDESTADOSOLIC)%>)">
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 

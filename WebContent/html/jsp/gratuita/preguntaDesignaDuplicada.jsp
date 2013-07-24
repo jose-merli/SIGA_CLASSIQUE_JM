@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- preguntaDesignaDuplicada.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -14,8 +17,6 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.gratuita.form.MaestroDesignasForm"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -38,4 +39,4 @@
 </html:form>
 
 </body>
-</html:html>
+</html>

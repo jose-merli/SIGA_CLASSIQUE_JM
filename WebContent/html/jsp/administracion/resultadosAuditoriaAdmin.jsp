@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadosAuditoriaAdmin.jsp -->
 <%@page import="java.util.List"%>
 <%@page import="java.util.Properties"%>
@@ -22,8 +25,8 @@
 	String messageName = (String)request.getAttribute("descOperation");
 	List listaResultado = new ArrayList();
 %>
-<html>
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

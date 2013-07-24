@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaAbonos.jsp -->
 <!-- 
 	 Muestra el formulario de busqueda de abonos
@@ -79,9 +82,9 @@ CenPersonaAdm admPersona=new CenPersonaAdm(user);
 	String botones = "B,N,L";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

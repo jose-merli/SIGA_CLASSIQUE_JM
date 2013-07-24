@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeJustificacionMasiva.jsp -->
 
 <!-- CABECERA JSP -->
@@ -15,10 +18,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

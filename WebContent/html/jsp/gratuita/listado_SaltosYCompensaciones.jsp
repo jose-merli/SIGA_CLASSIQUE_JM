@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listado_SaltosYCompensaciones.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -34,10 +37,10 @@
 %>
 
 
-<%@page import="com.siga.beans.ScsSaltoCompensacionGrupoBean"%><html>
+<%@page import="com.siga.beans.ScsSaltoCompensacionGrupoBean"%>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

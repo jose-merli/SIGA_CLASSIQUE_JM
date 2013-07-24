@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaEstados.jsp -->
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
@@ -24,8 +27,8 @@
 %>
 
 <%@page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<html>
-<head>
+
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

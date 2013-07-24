@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- recargarPantallaPrincipal.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -10,8 +13,8 @@
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<html>
-	<head>
+
+	
 	<%
 		String app=request.getContextPath();
 		String messageName = (String)request.getAttribute("descOperation");

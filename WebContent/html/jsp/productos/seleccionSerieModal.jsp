@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seleccionSerieModal.jsp -->
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
@@ -40,9 +43,9 @@
 	
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		
 

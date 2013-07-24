@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insertarSOJ.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -27,9 +30,9 @@
 	String anioHoy  = UtilidadesBDAdm.getYearBD("");
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

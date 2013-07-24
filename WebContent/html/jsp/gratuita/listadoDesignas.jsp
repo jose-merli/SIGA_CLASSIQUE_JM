@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoDesignas.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -68,9 +71,9 @@
     String botonesLinea = "E,C" + ((usr.getLocation().equals("2010") && Arrays.asList(usr.getProfile()).contains("PRO")) ? "" : ",B");
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

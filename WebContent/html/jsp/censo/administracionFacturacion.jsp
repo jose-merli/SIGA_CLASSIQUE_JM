@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- administracionFacturacion.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
@@ -32,10 +35,10 @@
 		
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

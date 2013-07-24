@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasAlterMutua.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
@@ -23,10 +26,10 @@
 
 <!-- JSP -->
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 <%String app=request.getContextPath();%>
 <%

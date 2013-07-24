@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -6,9 +9,8 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 
-<html:html>
 	<% String app=request.getContextPath(); %>
-	<head>
+	
 		<title><siga:Idioma key="index.title"/></title>
 		
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -61,4 +63,4 @@
 		</center>
 -->
 	</body>
-</html:html>
+</html>

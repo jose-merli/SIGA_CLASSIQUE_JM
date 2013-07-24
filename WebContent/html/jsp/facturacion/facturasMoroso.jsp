@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- facturasMoroso.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -68,8 +71,8 @@
 <%@page import="com.atos.utils.GstDate"%>
 <%@page import="com.siga.tlds.FilaExtElement"%>
 <%@page import="com.siga.administracion.SIGAConstants"%>
-<html>
-<head>
+
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

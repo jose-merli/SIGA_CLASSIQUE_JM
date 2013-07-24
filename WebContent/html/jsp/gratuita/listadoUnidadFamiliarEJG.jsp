@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoUnidadFamiliarEJG.jsp-->
 
 <%@page import="com.atos.utils.ClsConstants"%>
@@ -14,10 +17,10 @@
 <%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
 <%@ taglib uri="c.tld" prefix="c"%>
 <!-- JSP -->
-<html>
+
 
 <!-- HEAD -->
-<head>
+
   
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

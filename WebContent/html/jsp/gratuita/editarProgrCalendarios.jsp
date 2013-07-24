@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--editarProgrCalendarios.jsp -->
 
 <!-- CABECERA JSP -->
@@ -21,10 +24,10 @@
 <%
 String modo = (String) request.getSession().getAttribute("Modo");
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <c:if test="${ProgrCalendariosFormEdicion.modo=='consultarProgrCalendarios'}">
 	<script type="text/javascript">
 	var modo = "VER";

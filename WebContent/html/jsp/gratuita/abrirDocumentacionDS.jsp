@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirDocumentacionDS.jsp -->
 <!-- 
 	 VERSIONES:
@@ -57,10 +60,10 @@
 	
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

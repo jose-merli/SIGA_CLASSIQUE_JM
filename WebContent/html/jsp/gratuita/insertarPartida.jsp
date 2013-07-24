@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insertarPartida.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -26,9 +29,9 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

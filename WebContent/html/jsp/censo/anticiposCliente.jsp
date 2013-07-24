@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- anticiposCliente.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -152,9 +155,9 @@
 	
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	
 	<script language="JavaScript">
 	function abrirFacturas(fila) {

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--solicitudModificacionCuentasBancarias.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -42,10 +45,10 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Properties"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

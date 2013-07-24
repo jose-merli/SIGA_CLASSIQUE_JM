@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoEjecucion.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -13,8 +16,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.ConConsultaAdm"%>
 
-<html>
-<head>
+
+
 <%
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession();

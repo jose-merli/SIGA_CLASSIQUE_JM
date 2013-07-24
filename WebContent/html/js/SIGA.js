@@ -24,17 +24,36 @@
     if(typeof String.prototype.trim !== 'function') {
     	  String.prototype.trim = function() {
     	    return this.replace(/^\s+|\s+$/g, ''); 
-    	  }
+    	  };
 	}
 }());
-var jqueryFileUri = "/SIGA/html/js/jquery.js";
-var optionCargando = "<option>Cargando...</option>";
+
+if (window == window.top && window.jQuery){
+	var jQueryTop = window.jQuery;
+} else {
+	var jQueryTop = window.top.jQueryTop;
+}
+
+if (typeof String.prototype.endsWith !== 'function') {
+    String.prototype.endsWith = function(suffix) {
+        return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    };
+}
+
+var jqueryFileUri = 	"/SIGA/html/js/jquery.js";
+var jqueryUIfileUri = 	"/SIGA/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js";
+var jqueryUICSSfileUri = "/SIGA/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css";
+
+var defaultDateFormat = "dd/mm/yyyy";
+
+var optionCargando = 	"<option>Cargando...</option>";
+
 if (typeof jQuery == "undefined"){
 	// Tratamos de usar jQuery de window.top
 	try{
 		var windowTop = window.top;
 		if (typeof windowTop != "undefined" && typeof windowTop.jQuery != "undefined"){
-				jQuery = windowTop.jQuery;			
+				jQuery = windowTop.jQuery;	
 		} /*else {
 			alert("jquery no encontrado para "+window.location);
 		}*/
@@ -53,7 +72,7 @@ if (typeof jQuery == "undefined"){
 	if (headElement.firstChild != undefined){
 		headElement.insertBefore(jqueryScript, headElement.firstChild);
 	} else {
-		headElement.appendChild(theNewScript);
+		headElement.appendChild(jqueryScript);
 	}
 	// Se establecen un número máximo de intentos
 	// El primer intento espera un segundo y luego hace pool cada 500ms
@@ -96,8 +115,13 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
 *	
 **/
 function jQueryLoaded(){
+	console.debug("[jQueryLoaded] inicializando contexto jQuery...");
 	// Inicialización de jquery para el contexto actual
 	window.top.jQueryContext(window);
+	// Con este método se inicializa otra vez jquery UI dentro del jquery local de esta página pero
+	// esto no evita los memory leaks de jquery UI por lo que voy a intentar cargarlo solo en el TOP
+	// y usarlo desde allí.
+	//window.top.jQueryUiContext(window.jQuery);
 	
 	// *** BEGIN PLUGINS *** //
 	// EXISTS FUNCTION
@@ -129,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.71 2013-07-17 12:14:19 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.72 2013-07-24 12:47:02 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -190,16 +214,7 @@ function jQueryLoaded(){
 	Licensed under the MIT license (http://digitalbush.com/projects/masked-input-plugin/#license)
 	Version: 1.3.1
 	*/
-	(function(e){function t(){var e=document.createElement("input"),t="onpaste";return e.setAttribute(t,""),"function"==typeof e[t]?"paste":"input"}var n,a=t()+".mask",r=navigator.userAgent,i=/iphone/i.test(r),o=/android/i.test(r);e.mask={definitions:{9:"[0-9]",a:"[A-Za-z]","*":"[A-Za-z0-9]"},dataName:"rawMaskFn",placeholder:"_"},e.fn.extend({caret:function(e,t){var n;if(0!==this.length&&!this.is(":hidden"))return"number"==typeof e?(t="number"==typeof t?t:e,this.each(function(){this.setSelectionRange?this.setSelectionRange(e,t):this.createTextRange&&(n=this.createTextRange(),n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select())})):(this[0].setSelectionRange?(e=this[0].selectionStart,t=this[0].selectionEnd):document.selection&&document.selection.createRange&&(n=document.selection.createRange(),e=0-n.duplicate().moveStart("character",-1e5),t=e+n.text.length),{begin:e,end:t})},unmask:function(){return this.trigger("unmask")},mask:function(t,r){var c,l,s,u,f,h;return!t&&this.length>0?(c=e(this[0]),c.data(e.mask.dataName)()):(r=e.extend({placeholder:e.mask.placeholder,completed:null},r),l=e.mask.definitions,s=[],u=h=t.length,f=null,e.each(t.split(""),function(e,t){"?"==t?(h--,u=e):l[t]?(s.push(RegExp(l[t])),null===f&&(f=s.length-1)):s.push(null)}),this.trigger("unmask").each(function(){function c(e){for(;h>++e&&!s[e];);return e}function d(e){for(;--e>=0&&!s[e];);return e}function m(e,t){var n,a;if(!(0>e)){for(n=e,a=c(t);h>n;n++)if(s[n]){if(!(h>a&&s[n].test(R[a])))break;R[n]=R[a],R[a]=r.placeholder,a=c(a)}b(),x.caret(Math.max(f,e))}}function p(e){var t,n,a,i;for(t=e,n=r.placeholder;h>t;t++)if(s[t]){if(a=c(t),i=R[t],R[t]=n,!(h>a&&s[a].test(i)))break;n=i}}function g(e){var t,n,a,r=e.which;8===r||46===r||i&&127===r?(t=x.caret(),n=t.begin,a=t.end,0===a-n&&(n=46!==r?d(n):a=c(n-1),a=46===r?c(a):a),k(n,a),m(n,a-1),e.preventDefault()):27==r&&(x.val(S),x.caret(0,y()),e.preventDefault())}function v(t){var n,a,i,l=t.which,u=x.caret();t.ctrlKey||t.altKey||t.metaKey||32>l||l&&(0!==u.end-u.begin&&(k(u.begin,u.end),m(u.begin,u.end-1)),n=c(u.begin-1),h>n&&(a=String.fromCharCode(l),s[n].test(a)&&(p(n),R[n]=a,b(),i=c(n),o?setTimeout(e.proxy(e.fn.caret,x,i),0):x.caret(i),r.completed&&i>=h&&r.completed.call(x))),t.preventDefault())}function k(e,t){var n;for(n=e;t>n&&h>n;n++)s[n]&&(R[n]=r.placeholder)}function b(){x.val(R.join(""))}function y(e){var t,n,a=x.val(),i=-1;for(t=0,pos=0;h>t;t++)if(s[t]){for(R[t]=r.placeholder;pos++<a.length;)if(n=a.charAt(pos-1),s[t].test(n)){R[t]=n,i=t;break}if(pos>a.length)break}else R[t]===a.charAt(pos)&&t!==u&&(pos++,i=t);return e?b():u>i+1?(x.val(""),k(0,h)):(b(),x.val(x.val().substring(0,i+1))),u?t:f}var x=e(this),R=e.map(t.split(""),function(e){return"?"!=e?l[e]?r.placeholder:e:void 0}),S=x.val();x.data(e.mask.dataName,function(){return e.map(R,function(e,t){return s[t]&&e!=r.placeholder?e:null}).join("")}),x.attr("readonly")||x.one("unmask",function(){x.unbind(".mask").removeData(e.mask.dataName)}).bind("focus.mask",function(){clearTimeout(n);var e;S=x.val(),e=y(),n=setTimeout(function(){b(),e==t.length?x.caret(0,e):x.caret(e)},10)}).bind("blur.mask",function(){y(),x.val()!=S&&x.change()}).bind("keydown.mask",g).bind("keypress.mask",v).bind(a,function(){setTimeout(function(){var e=y(!0);x.caret(e),r.completed&&e==x.val().length&&r.completed.call(x)},0)}),y()}))}})})(jQuery);
-	
-	jQuery(document).ready(function(){
-		if(jQuery.fn.mask){
-			// Descomentar para no permitir la edición de fechas por texto
-			//jQuery("input.datepicker").attr("readonly", "readonly");
-			// Comentar para no permitir la edición de fechas por texto	
-			jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQuery(this));}});
-		}
-	});
+	(function(e){function t(){var e=document.createElement("input"),t="onpaste";return e.setAttribute(t,""),"function"==typeof e[t]?"paste":"input"}var n,a=t()+".mask",r=navigator.userAgent,i=/iphone/i.test(r),o=/android/i.test(r);e.mask={definitions:{9:"[0-9]",a:"[A-Za-z]","*":"[A-Za-z0-9]"},dataName:"rawMaskFn",placeholder:"_"},e.fn.extend({caret:function(e,t){var n;if(0!==this.length&&!this.is(":hidden"))return"number"==typeof e?(t="number"==typeof t?t:e,this.each(function(){this.setSelectionRange?this.setSelectionRange(e,t):this.createTextRange&&(n=this.createTextRange(),n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select())})):(this[0].setSelectionRange?(e=this[0].selectionStart,t=this[0].selectionEnd):document.selection&&document.selection.createRange&&(n=document.selection.createRange(),e=0-n.duplicate().moveStart("character",-1e5),t=e+n.text.length),{begin:e,end:t})},unmask:function(){return this.trigger("unmask")},mask:function(t,r){var c,l,s,u,f,h;return!t&&this.length>0?(c=e(this[0]),c.data(e.mask.dataName)()):(r=e.extend({placeholder:e.mask.placeholder,completed:null},r),l=e.mask.definitions,s=[],u=h=t.length,f=null,e.each(t.split(""),function(e,t){"?"==t?(h--,u=e):l[t]?(s.push(RegExp(l[t])),null===f&&(f=s.length-1)):s.push(null)}),this.trigger("unmask").each(function(){function c(e){for(;h>++e&&!s[e];);return e}function d(e){for(;--e>=0&&!s[e];);return e}function m(e,t){var n,a;if(!(0>e)){for(n=e,a=c(t);h>n;n++)if(s[n]){if(!(h>a&&s[n].test(R[a])))break;R[n]=R[a],R[a]=r.placeholder,a=c(a)}b(),x.caret(Math.max(f,e))}}function p(e){var t,n,a,i;for(t=e,n=r.placeholder;h>t;t++)if(s[t]){if(a=c(t),i=R[t],R[t]=n,!(h>a&&s[a].test(i)))break;n=i}}function g(e){var t,n,a,r=e.which;8===r||46===r||i&&127===r?(t=x.caret(),n=t.begin,a=t.end,0===a-n&&(n=46!==r?d(n):a=c(n-1),a=46===r?c(a):a),k(n,a),m(n,a-1),e.preventDefault()):27==r&&(x.val(S),x.caret(0,y()),e.preventDefault())}function v(t){var n,a,i,l=t.which,u=x.caret();t.ctrlKey||t.altKey||t.metaKey||32>l||l&&(0!==u.end-u.begin&&(k(u.begin,u.end),m(u.begin,u.end-1)),n=c(u.begin-1),h>n&&(a=String.fromCharCode(l),s[n].test(a)&&(p(n),R[n]=a,b(),i=c(n),o?setTimeout(e.proxy(e.fn.caret,x,i),0):x.caret(i),r.completed&&i>=h&&r.completed.call(x))),t.preventDefault())}function k(e,t){var n;for(n=e;t>n&&h>n;n++)s[n]&&(R[n]=r.placeholder)}function b(){x.val(R.join(""))}function y(e){var t,n,a=x.val(),i=-1;for(t=0,pos=0;h>t;t++)if(s[t]){for(R[t]=r.placeholder;pos++<a.length;)if(n=a.charAt(pos-1),s[t].test(n)){R[t]=n,i=t;break}if(pos>a.length)break}else R[t]===a.charAt(pos)&&t!==u&&(pos++,i=t);return e?b():u>i+1?(x.val(""),k(0,h)):(b(),x.val(x.val().substring(0,i+1))),u?t:f}var x=e(this),R=e.map(t.split(""),function(e){return"?"!=e?l[e]?r.placeholder:e:void 0}),S=x.val();x.data(e.mask.dataName,function(){return e.map(R,function(e,t){return s[t]&&e!=r.placeholder?e:null}).join("")}),x.attr("readonly")||x.one("unmask",function(){x.unbind(".mask").removeData(e.mask.dataName)}).bind("focus.mask",function(){clearTimeout(n);var e;S=x.val(),e=y(),n=setTimeout(function(){b(),e==t.length?x.caret(0,e):x.caret(e)},10)}).bind("blur.mask",function(){y(),x.val()!=S&&x.change()}).bind("keydown.mask",g).bind("keypress.mask",v).bind(a,function(){setTimeout(function(){var e=y(!0);x.caret(e),r.completed&&e==x.val().length&&r.completed.call(x)},0)}),y()}))}})})(jQuery);		
 	
 	/*
 	A simple jQuery function that can add listeners on attribute change.
@@ -373,7 +388,14 @@ function jQueryLoaded(){
 	
 	//*** END PLUGINS *** //
 	
+	if (window == window.top){
+		// NO LO CARGAMOS TIENE QUE ESTAR CARGADO EN EL WINDOW TOP!
+		//cargarJqueryUI(window);
+		jQueryUILoaded();
+	}
+	
 	/*  Hack for allowing correct typing in modal dialogs in safari. */
+	/* jQuery.browser DEPRECATED
 	try {
 		if(jQuery.browser.msie || jQuery.browser.mozilla){
 			jQuery.browser.safari = false;
@@ -394,42 +416,100 @@ function jQueryLoaded(){
 			}
 		}
 	} catch(e){}
+	*/
 	
 	//*** ONLOAD ***//
 	
 	jQuery(document).ready(function(){
-		// CONFIGURACIÓN POR DEFECTO DE DATEPICKER
-		if (jQuery.datepicker){
-			//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
-		   jQuery.datepicker.regional['es'] = {
-		      closeText: 'Cerrar',
-		      prevText: '<Ant',
-		      nextText: 'Sig>',
-		      currentText: 'Hoy',
-		      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-		      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-		      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-		      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-		      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-		      weekHeader: 'Sm',
-		      dateFormat: 'dd/mm/yy',
-		      firstDay: 1,
-		      isRTL: false,
-		      showMonthAfterYear: false,
-		      yearSuffix: ''};
-		   jQuery.datepicker.setDefaults(jQuery.datepicker.regional['es']);
-		   
-		   var clearText = "Borrar";
-		   var old_fn = jQuery.datepicker._updateDatepicker;
-		   jQuery.datepicker._updateDatepicker = function(inst) {
-			   old_fn.call(this, inst);
-			   var buttonPane = jQuery(this).datepicker("widget").find(".ui-datepicker-buttonpane");
-			   jQuery("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+clearText+"</button>").appendTo(buttonPane).click(function(ev) {
-			   jQuery.datepicker._clearDate(inst.input);
-			   		}) ;
-		   		};
+		if (jQuery("table.tablaLineaPestanasArriba").exists()){
+			jQuery("table.tablaLineaPestanasArriba").css("float", "left");
 		}
-		
+		if (jQuery("table.pest").exists()){
+			jQuery("table.pest").css("float", "left");
+		}
+		if(jQuery.fn.mask){
+			// Descomentar para no permitir la edición de fechas por texto
+			//jQuery("input.datepicker").attr("readonly", "readonly");
+			// Comentar para no permitir la edición de fechas por texto	
+			jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQueryTop(this, window.document));}});
+		}
+		jQuery("input.datepicker").each(function(){
+			if (jQuery(this).data("cargarfechadesde")){
+				jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
+			}
+			if (jQuery(this).hasClass("editable")){
+				console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
+				if (window == window.top){
+					console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
+					jQueryTop(this, this.ownerDocument).datepicker({
+						dateFormat: jQuery(this).data("format"),
+						regional: jQuery(this).data("regional")
+					}).keydown(function(e) {
+						if(e.keyCode == 8 || e.keyCode == 46) {
+							jQueryTop.datepicker._clearDate(this);
+							return false;
+						}
+					});
+				} else {
+					console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
+					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
+					var datepickerInput = jQueryTop(this, this.ownerDocument);
+					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(){
+						datepickerInput.datepicker("dialog",
+								formatDate(datepickerInput.val(),datepickerInput.data("format")),
+								function(dateText, datePickerInstance){
+									datepickerInput.val(dateText);
+								},{
+									dateFormat: datepickerInput.data("format"),
+									regional: datepickerInput.data("regional")
+							});
+					});					
+				}
+			}
+		});
+		// iFRAMEs POST
+		/*
+		jQuery("iframe").each(function(){
+			console.debug("[REEMPLAZO IFRAMEs] id: "+jQuery(this).attr("id") + "; name: " + jQuery(this).attr("name"));
+			var iFrame = jQuery(this);
+			var iFrameId = iFrame.attr("id");
+			var iFrameName = iFrame.attr("name");
+			var iFrameSrc = jQuery(this).attr("src");
+			iFrame.replaceWith("<div data-iframe='true' id="+iFrameId+" name="+iFrameName+" class="+iFrame.attr("class")+"></div>");
+			if (iFrameSrc){
+				console.debug("[REEMPLAZO IFRAMEs] Frame("+iFrameId + "; " + iFrameName+"): URL=" + iFrameSrc);
+				var divIframeSelector;
+				if (iFrameId){
+					divIframeSelector = "div#"+iFrameId;
+				} else if (iFrameName){
+					divIframeSelector = "div[name='"+iFrameId+"']";
+				}
+				if (divIframeSelector)
+					jQuery(divIframeSelector).load(iFrameSrc);
+			}
+		});
+		jQuery(document).on("submit", "form", function(event){
+			var submit = true;
+			var form = jQuery(this);
+			console.debug("[FORM SUBMIT] " + form.attr("id") + " to " + form.action + " in " + form.attr("target"));
+			if (form.attr("target")){
+				var target = form.attr("target");
+				var iFrame = jQuery("iframe#"+target+",div#"+target+", iframe[name='"+target+"'], div[name='"+target+"']").filter(function(){
+					return jQuery(this).is("iframe") || jQuery(this).data("iframe");
+				});
+				if (iFrame.exists()){
+					ajaxSubmit(form, iFrame);
+					submit = false;
+				}
+			}
+			if (submit)
+				form.submit();
+			else {
+				event.preventDefault();
+				return false;
+			}
+		});		
+		*/
 		// TAG SELECT BEGIN
 		//console.debug("div.tagSelectDiv: " + jQuery("div.tagSelectDiv").length + " EN " + window.location);
 		jQuery("div.tagSelectDiv").each(function(){
@@ -553,6 +633,150 @@ function jQueryLoaded(){
 	}); // READY
 	
 } // FIN JQUERY LOADED
+
+function cargarJqueryUI(){
+	console.debug("[cargarJqueryUI] BEGIN");
+	if (typeof window.jQuery.ui == "undefined"){
+		console.debug("[cargarJqueryUI] jQuery UI no encontrado, Cargandolo...");
+		// Cargamos jQuery UI y esperamos a que este listo	(CALLBACK jQueryUILoaded)
+		var jqueryScript = document.createElement("script");
+		jqueryScript.type = "text/javascript";
+		jqueryScript.src = jqueryUIfileUri;
+		var headElement = document.getElementsByTagName("head")[0];
+		headElement.appendChild(jqueryScript);
+		// Se establecen un número máximo de intentos
+		// El primer intento espera un segundo y luego hace pool cada 500ms
+		var maxIntentos = 38; // unos 20 segundos como máximo para dar error
+		var intento = 0;
+		var waitForLoad = function () {
+			if (typeof window.jQuery.ui != "undefined") {
+		    	// Inicializa script
+		    	jQueryUILoaded();
+		    } else if (intento < maxIntentos){
+		    	intento++;
+		        window.setTimeout(waitForLoad, 500);
+		    } else {
+		    	alert("Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde...");
+		    }
+		};
+		window.setTimeout(waitForLoad, 1000);
+	} else {
+		// Se ha encontrado jQuery UI en top. Inicializa script
+		jQueryUILoaded();
+	}
+}
+
+function jQueryUILoaded(){
+	console.debug("[jQueryUILoaded] BEGIN");
+	//***CSS***//
+	var css = document.styleSheets;
+	var bFound = false;
+	var i = 0;
+    while (!bFound && i < css.length) {
+    	var cssHref = css[i].href;	    	
+        if (cssHref &&  css[i].href.endsWith(jqueryUICSSfileUri))
+        	bFound = true;
+        else
+        	i++;
+    }
+    if (!bFound){
+    	//JQUERY UI CSS NO ECONTRADA, LA CARGAMOS
+    	console.debug("[jQueryUILoaded] JQUERY UI CSS NO ECONTRADA, LA CARGAMOS");
+    	var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = jqueryUICSSfileUri;
+
+        document.getElementsByTagName("head")[0].appendChild(link);
+    }
+    // CONFIGURACIÓN POR DEFECTO DE DATEPICKER
+	if (jQueryTop.fn.datepicker){
+		console.debug("[jQueryUILoaded] JQUERY datepicker INI");
+		//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
+		jQueryTop.datepicker.regional['es'] = {
+	      closeText: 'Cerrar',
+	      prevText: '&lt;Ant',
+	      nextText: 'Sig&gt;',
+	      currentText: 'Hoy',
+	      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+	      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+	      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+	      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+	      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+	      weekHeader: 'Sm',
+	      dateFormat: 'dd/mm/yy',
+	      firstDay: 1,
+	      isRTL: false,
+	      showMonthAfterYear: false,
+	      yearSuffix: ''};
+		var clearText = "Borrar";
+		
+		jQueryTop.datepicker.setDefaults(jQueryTop.datepicker.regional['es']);
+		jQueryTop.datepicker.setDefaults({
+			changeMonth: true,
+			changeYear: true,
+			showButtonPanel: true,
+			showOn: 'both',
+			buttonImage: 'button',
+			buttonImage: '/SIGA/html/imagenes/calendar.gif',
+			buttonImageOnly: true,
+			yearRange: "c-25:c+25"
+		});		
+	   
+	   var old_fn = jQueryTop.datepicker._updateDatepicker;
+	   jQueryTop.datepicker._updateDatepicker = function(inst) {
+		   old_fn.call(this, inst);
+		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
+		   jQueryTop("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+clearText+"</button>").appendTo(buttonPane).click(function(ev) {
+			   jQueryTop.datepicker._clearDate(inst.input);
+		   		}) ;
+	   		};
+	}
+}
+
+
+function datepickerMaskValueChanged(datepickerInput){
+	var dateFormat = defaultDateFormat;
+	if (datepickerInput.data("format") && datepickerInput.data("format") != "")
+		dateFormat = datepickerInput.data("format");
+	var dateValue = datepickerInput.val();
+	var date = formatDate(dateValue, dateFormat);
+	if (!date){
+		datepickerInput.val("");
+		datepickerInput.blur();
+		alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + dateFormat);		
+	}
+}
+
+function formatDate(dateValue, dateFormat){
+	var date;
+	try{
+		if (!dateFormat || dateFormat == "")
+			dateFormat = defaultDateFormat;
+		console.debug("[formatDate] dateValue="+dateValue+"; dateFormat="+dateFormat);
+		date = jQueryTop.datepicker.parseDate(dateFormat, dateValue);
+		console.debug("[formatDate] OK date="+date);
+	} catch (e){
+		date = "";
+		console.debug("[formatDate] FAIL");
+	}
+	return date;
+}
+
+function ajaxSubmit(form, iFrame){	
+	jQuery.ajax({
+		url: form.attr("action"),
+		dataType: "html",
+		data: form.serialize()
+	}).done(function(data, textStatus, jqXHR){
+		console.debug("[ajaxSubmit] Reemplazando iFrame por div...");
+		iFrame.replaceWith("<div data-iframe='true' id="+iFrame.attr("id")+" name="+iFrame.attr("name")+" class="+iFrame.attr("class")+">" + data + "</div>");
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		console.error("Se ha producido un error al enviar el formulario: " + errorThrown);
+		alert("Se ha producido un error, por favor, inténtelo de nuevo más tarde.");
+	}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+		
+	});
+};
 
 function tagSelectDivAttrChangeCallback(event, element){
 	var modifiedAttributeName=event.attributeName;
@@ -2494,6 +2718,7 @@ function isSWIFTValido(swift){
 	return true; 
 }
 
+/*
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
@@ -2506,6 +2731,7 @@ document.getElementById = function(elemIdOrName) {
 
     return result;
 };
+*/
 
 // **
 	
@@ -3068,33 +3294,4 @@ function getElementAbsolutePos(element) {
     return res;
 }
 
-function datepickerMaskValueChanged(datepickerInput){
-	var dateFormat = "dd/mm/yyyy";
-	try{
-		var dateFormat = datepickerInput.datepicker( "option", "dateFormat" );
-		jQuery.datepicker.parseDate(dateFormat, datepickerInput.val(), null);
-	} catch (e){
-		datepickerInput.val("");
-		alert("Introduzca una fecha válida: " + dateFormat);
-	}
-}
-
-var datepickerBtn = false;
-function setDatepickerClearBtn(btnText){
-	if (!datepickerBtn){
-	var old_fn = jQuery.datepicker._updateDatepicker;
-	jQuery.datepicker._updateDatepicker = function(inst) {
-		   old_fn.call(this, inst);
-		   var buttonPane = jQuery(this).datepicker("widget").find(".ui-datepicker-buttonpane");
-		   if (buttonPane.find(".ui-datepicker-clean").lenght <= 0){
-			   jQuery("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+btnText+"</button>").appendTo(buttonPane).click(function(ev) {
-			   jQuery.datepicker._clearDate(inst.input);
-			   		}) ;
-		   } else {
-			   buttonPane.find(".ui-datepicker-clean").text(btnText);
-		   }
-	   	};
-	   	datepickerBtn = true;
-	}
-}
 fin();

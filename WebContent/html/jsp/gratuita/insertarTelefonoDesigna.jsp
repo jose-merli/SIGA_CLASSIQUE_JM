@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insertarTelefonoDesigna.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -31,9 +34,9 @@
 	String idPersona =  (String)miHash.get(ScsTelefonosPersonaJGBean.C_IDPERSONA);
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

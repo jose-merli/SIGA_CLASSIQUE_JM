@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosPagoCajaAbono.jsp -->
 <!-- 
 	 Muestra el formulario de pago por caja
@@ -45,10 +48,10 @@
 	String mensajeInvalido = UtilidadesString.getMensajeIdioma(userBean.getLanguage(),"errors.invalid", campos );
 
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 		
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

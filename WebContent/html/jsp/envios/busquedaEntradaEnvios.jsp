@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaEntradaEnvios.jsp -->
 <!-- 
 	 VERSIONES:
@@ -22,10 +25,10 @@
 <%@ page import="com.siga.beans.EnvEnviosAdm"%>
 <!-- JSP -->
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

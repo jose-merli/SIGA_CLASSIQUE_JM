@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- actualizarDesigna.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

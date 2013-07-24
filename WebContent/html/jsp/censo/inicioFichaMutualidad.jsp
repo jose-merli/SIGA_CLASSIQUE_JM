@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- inicioFichaMutualidad.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
@@ -23,10 +26,10 @@
 
 <!-- JSP -->
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

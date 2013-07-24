@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- verSolicitudExportarFoto.jsp -->
 <!-- 
 	 Permite mostrar las solicitudes de modificacion de datos generales del cliente
@@ -74,10 +77,10 @@
 %>
 
 
-<%@page import="com.siga.beans.CenSolicModifExportarFotoBean"%><html>
+<%@page import="com.siga.beans.CenSolicModifExportarFotoBean"%>
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

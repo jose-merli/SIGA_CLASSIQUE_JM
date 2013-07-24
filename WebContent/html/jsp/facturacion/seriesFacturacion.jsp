@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- 
 	 VERSIONES : 
 	 	nuria.rgonzalez 07-03-2005 - Inicio
@@ -138,10 +141,10 @@
 	
 	
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaFacturacionColegiados.jsp -->
 <!-- 
 	 VERSIONES:
@@ -33,10 +36,10 @@
 	comboParams[0] = usrbean.getLocation();
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

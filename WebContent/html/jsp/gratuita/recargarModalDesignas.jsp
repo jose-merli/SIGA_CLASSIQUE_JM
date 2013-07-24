@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- recargarModalDesignas.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -13,8 +16,6 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gratuita.form.*"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	BuscarDesignasForm formulario = (BuscarDesignasForm)request.getAttribute("datosEntrada");
@@ -41,4 +42,4 @@
 </script>
 </head>
 <body onload="reloadPage()"></body>
-</html:html>
+</html>

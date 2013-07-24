@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaPlantillas.jsp -->
 <!-- 
 	 Muestra las diferentes plantillas asociadas a una institucion
@@ -40,9 +43,9 @@
 
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

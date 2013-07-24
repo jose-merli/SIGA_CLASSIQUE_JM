@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarProximasDesignasTurno.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -52,9 +55,9 @@
 <%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

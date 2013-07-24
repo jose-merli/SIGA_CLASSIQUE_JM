@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaServiciosAnticipos.jsp -->
 <!-- inspirado en SolicitudCompra.jsp -->
 
@@ -62,11 +65,11 @@
 
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
 
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

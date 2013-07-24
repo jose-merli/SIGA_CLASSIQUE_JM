@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- index.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -9,8 +12,8 @@
 
 <% String app=request.getContextPath(); %>
 
-<html>
-	<head>
+
+	
 		<title><siga:Idioma key="index.title"/></title>
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/css/SIGA.css">

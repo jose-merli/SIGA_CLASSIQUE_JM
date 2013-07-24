@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- validarNoColegiadoCenso.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -20,10 +23,10 @@
 	
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

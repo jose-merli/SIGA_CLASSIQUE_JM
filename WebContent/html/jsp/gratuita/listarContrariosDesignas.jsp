@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarContrariosDesignas.jsp -->
 
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -41,9 +44,9 @@
 	idturno = (String)designaActual.get("IDTURNO");
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

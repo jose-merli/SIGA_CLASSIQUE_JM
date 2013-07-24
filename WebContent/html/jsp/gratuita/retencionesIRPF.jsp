@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- retencionesIRPF.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -76,8 +79,8 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Hashtable"%>
-<html>
-	<head>
+
+	
 	<title><siga:Idioma key="gratuita.retencionesIRPF.literal.title"/></title>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

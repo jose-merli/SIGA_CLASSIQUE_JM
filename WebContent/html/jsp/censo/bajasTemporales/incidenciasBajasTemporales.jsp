@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- incidenciasBajasTemporales.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 
 

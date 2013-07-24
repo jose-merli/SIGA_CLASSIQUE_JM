@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeFacturacionMultiple.jsp -->
 
 <!-- Pantalla con los combos para seleccionar las facturaciones entre las que se genera el informe
@@ -39,8 +42,8 @@
 %>
 
 
-<html>
-<head>
+
+
 
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

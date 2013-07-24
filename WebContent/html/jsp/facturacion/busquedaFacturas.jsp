@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaFacturas.jsp -->
 <!-- EJEMPLO DE VENTANA DE BUSQUEDA -->
 <!-- Contiene la zona de campos de busqueda o filtro y la barra  botones de
@@ -89,10 +92,10 @@
 	
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Properties"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,9 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- botoneraFicha.jsp -->
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+
 <% String app=request.getContextPath(); %>
-<head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Botonera Gestión Censal</title>
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

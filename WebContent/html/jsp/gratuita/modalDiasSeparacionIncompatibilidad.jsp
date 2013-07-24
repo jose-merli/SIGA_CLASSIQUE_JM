@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalDiasSeparacionIncompatibilidad.jsp -->
 
 <!---------- CABECERA JSP ---------->
@@ -22,10 +25,10 @@
 <!---------- JSP ---------->
 <% String app=request.getContextPath(); %>
 
-<html>
+
 
 <!---------- HEAD ---------->
-<head>
+
 	<title>
 		<siga:Idioma key="general.ventana.cgae"/>
 	</title>

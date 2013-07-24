@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -17,8 +20,6 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.PersonaJGForm"%>
 
-<html:html>
-<head>
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -154,4 +155,4 @@
 		</html:form>
 
 </body>
-</html:html>
+</html>

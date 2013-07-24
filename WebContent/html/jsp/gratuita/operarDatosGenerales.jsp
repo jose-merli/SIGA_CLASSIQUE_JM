@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- operarDatosGenerales.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -101,10 +104,10 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

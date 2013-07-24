@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- mensajeInsertarPrecioPorDefecto.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -12,8 +15,6 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -43,6 +44,6 @@
 <body onload="reloadPage();">
 
 </body>
-</html:html>
+</html>
 
 

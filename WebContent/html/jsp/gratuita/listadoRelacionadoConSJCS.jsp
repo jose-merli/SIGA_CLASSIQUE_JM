@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoRelacionadoConSJCS.jsp -->
 
 <!-- CABECERA JSP -->
@@ -42,9 +45,9 @@
 	String relacionesDe = (String)request.getParameter("conceptoE");
 %>	
 											
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -150,11 +153,9 @@
 			   columnSizes="10,5,6,20,24,24,12">
 		
 		<% if (obj==null || obj.size()==0){%>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	 		<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 		<%} else { %>
 		
   <%  int recordNumber=1;

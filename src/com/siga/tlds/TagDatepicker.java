@@ -39,7 +39,7 @@ public class TagDatepicker extends TagSupport {
 	
 	@Override
 	public int doStartTag() throws JspException {
-		boolean bEditable = true;
+		//boolean bEditable = true;
 		try{
 			pageContext.getResponse().setContentType("text/html");
 			HttpSession session = pageContext.getSession();
@@ -79,8 +79,8 @@ public class TagDatepicker extends TagSupport {
 			}
 			String cssClass = " class='datepicker";
 			if (this.disabled != null && UtilidadesString.stringToBoolean(this.disabled)){
-				bEditable = false;
-				cssClass += " boxConsulta";
+				//bEditable = false;
+				cssClass += " boxConsulta noEditable";
 				sDatepicker += " readonly = 'readonly'";
 				/*
 				if (this.readOnly == null || !UtilidadesString.stringToBoolean(this.readOnly)){
@@ -88,7 +88,7 @@ public class TagDatepicker extends TagSupport {
 				}				
 				*/
 			} else {
-				cssClass += " box";
+				cssClass += " box editable";
 			}
 			cssClass += "'";
 			sDatepicker += cssClass;
@@ -109,17 +109,22 @@ public class TagDatepicker extends TagSupport {
 			if(this.postFunction!=null && !this.postFunction.equals("")){
 				sDatepicker += " onchange=\"return "+	this.postFunction+"\"";
 			}
+			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
+				sDatepicker += " data-cargarfechadesde=\""+	this.campoCargarFechaDesde+"\"";
+			}
+			sDatepicker += " data-format=\""+	DATEPICKER_DATE_FORMAT +"\"";
+			//TODO: SELECCIONAR IDIOMA DEL USUARIO DEFINIDO EN SIGA.JS
+			sDatepicker += " data-regional=\""+	"es" +"\"";
 			sDatepicker += " />";
 			out.print(sDatepicker);
-			
+			/* INCLUIDO EN SIGA.JS
 			String sJs = "<script type='text/javascript'>";
 			sJs += "jQuery(function() {";
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
 				sJs += "jQuery('#"+this.styleId+"').val(jQuery('#"+this.campoCargarFechaDesde+"').val());";				
 			}
 			if (bEditable){				
-				sJs += "setDatepickerClearBtn('"+UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"general.boton.borrar")+"');";
-				sJs += "jQuery('#"+this.styleId+"').datepicker({";
+				sJs += "jQueryTop('#"+this.styleId+"', window.document).datepicker({";
 				sJs += "changeMonth: true,";
 				sJs += "changeYear: true,";
 				sJs += "dateFormat: '"+DATEPICKER_DATE_FORMAT+"',";
@@ -132,7 +137,7 @@ public class TagDatepicker extends TagSupport {
 				sJs += "buttonImageOnly: true";
 				sJs += "}).keydown(function(e) {";
 				sJs += "if(e.keyCode == 8 || e.keyCode == 46) {";
-				sJs += "jQuery.datepicker._clearDate(this);";
+				sJs += "jQueryTop.datepicker._clearDate(this);";
 				sJs += "return false;";
 				sJs += "}";
 				sJs += "});";
@@ -147,7 +152,9 @@ public class TagDatepicker extends TagSupport {
 			sJs += "";
 			sJs += "});";
 			sJs += "</script>";
+			
 			out.println(sJs);
+			*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaMovimientosResultados.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -58,9 +61,9 @@
 	
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
  	<script language="JavaScript">	
 	

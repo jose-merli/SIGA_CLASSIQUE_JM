@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- preguntaNumeroFacturas.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -12,8 +15,6 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -52,4 +53,4 @@
 
 <body onload="reloadPage();">
 </body>
-</html:html>
+</html>

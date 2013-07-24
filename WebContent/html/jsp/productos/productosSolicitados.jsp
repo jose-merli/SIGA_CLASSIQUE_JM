@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- productosSolicitados.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -35,7 +38,7 @@
 	String idInstitucionPresentador = String.valueOf((Integer)request.getAttribute("idInstitucionPresentador"));	
 	String botones = "";
 %>
-<html>
+
 
 <!-- HEAD -->
 <head  >

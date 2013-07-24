@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- verSolicitudDatosGenerales.jsp -->
 <!-- 
 	 Permite mostrar las solicitudes de modificacion de datos generales del cliente
@@ -75,10 +78,10 @@
 	
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

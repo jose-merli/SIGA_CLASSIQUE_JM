@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- mantenimientoProductos.jsp -->
 <!-- 
 	 Permite mostrar/editar los distintos productos
@@ -158,9 +161,9 @@
 %>
 
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

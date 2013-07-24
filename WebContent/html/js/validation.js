@@ -771,8 +771,12 @@ function validarFecha2(fecha){
  * Además hace un trim() del valor.
  */
 function validarObjetoAnio(objAnio){
-	objAnio.value = trim(objAnio.value);
-	return validarValorAnio(objAnio.value);
+	if (objAnio){
+		objAnio.value = trim(objAnio.value);
+		return validarValorAnio(objAnio.value);
+	} else {
+		return false;
+	}
 }
 
 /*

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaVolantesResultados.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="com.siga.Utilidades.UtilidadesHash"%>
@@ -42,10 +45,10 @@
 
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

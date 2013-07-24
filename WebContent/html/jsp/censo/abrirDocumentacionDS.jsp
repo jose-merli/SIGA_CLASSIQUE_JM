@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirDocumentacionDS.jsp -->
 <!-- 
 	 VERSIONES:
@@ -70,10 +73,10 @@
 %>	
 
 
-<%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO"%><html>
+<%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO"%>
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		

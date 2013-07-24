@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- mutualidad.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="java.util.ArrayList"%>
@@ -23,8 +26,8 @@
 	<style>
 		.ocultar {display:none}
 	</style>	
-<html>
-<head>
+
+
 <script>
 function habilitarCampos(isHabilitar) {
 		

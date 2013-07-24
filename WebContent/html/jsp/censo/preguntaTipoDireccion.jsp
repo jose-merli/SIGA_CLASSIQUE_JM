@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -11,8 +14,7 @@
 <%@ page import="com.atos.utils.*"%>
 
 <%@page import="com.siga.censo.form.DireccionesForm;"%>
-<html:html>
-<head>
+
 <%
 	String app=request.getContextPath();
 	
@@ -58,4 +60,4 @@
 		
 
 </body>
-</html:html>
+</html>

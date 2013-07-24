@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- BusquedaClientes.jsp -->
 
 <!-- CABECERA JSP -->
@@ -93,10 +96,10 @@
 
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<meta http-equiv="Cache-Control" content="no-cache">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Expires" content="0">
@@ -127,8 +130,9 @@
 			// Funcion asociada a boton buscar
 			function buscarPaginador() {		
 				document.forms[0].modo.value="buscarPor";
-				document.forms[0].target="resultado";	
-				document.forms[0].submit();	
+				document.forms[0].target="resultado";
+				jQuery("#buscarForm").submit();
+				//document.forms[0].submit();	
 			}
 			
 			function buscar(modo) {
@@ -145,7 +149,8 @@
 				else
 		        	document.forms[0].modo.value="buscarInit";
 				document.forms[0].target="resultado";	
-				document.forms[0].submit();					
+				//document.forms[0].submit();
+				jQuery("#buscarForm").submit();
 			}
 			
 			function seleccionarTodos(pagina) {
@@ -250,7 +255,7 @@
 				<td>
 					<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
 						<table class="tablaCampos" align="center">
-							<html:form action="/CEN_BusquedaClientes.do?noReset=true" method="POST" target="resultado">
+							<html:form styleId="buscarForm" action="/CEN_BusquedaClientes.do?noReset=true" method="POST" target="resultado">
 								<html:hidden name="busquedaClientesForm" property = "modo" value = ""/>
 								<html:hidden property="seleccionarTodos" />
 								<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>

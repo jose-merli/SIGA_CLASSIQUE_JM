@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosEconomicosIrpf20.jsp -->
 
 <!-- CABECERA JSP -->
@@ -47,9 +50,9 @@
 	String numero = (String) request.getParameter("numero");		
 %>	
 
-<html>
 
-<head> 	
+
+ 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

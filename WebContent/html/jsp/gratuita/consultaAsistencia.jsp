@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaAsistencia.jsp -->
 
 <!-- CABECERA JSP -->
@@ -21,10 +24,10 @@
 <%@page import="com.atos.utils.UsrBean"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

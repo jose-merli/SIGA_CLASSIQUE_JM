@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- genericLoadForm2.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -9,8 +12,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 <%@ page import="com.siga.administracion.SIGAConstants,java.util.*"%>
-<html:html>
-<head>
+
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -50,4 +52,4 @@
 			<input type="hidden" name="refresh" value=""/>
 </form>
 
-</html:html>
+</html>

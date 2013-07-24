@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoBusqExp.jsp -->
 <!-- 
 	 VERSIONES:
@@ -106,10 +109,10 @@
 
 <%@page import="com.siga.Utilidades.Paginador"%>
 <%@page import="com.siga.tlds.FilaExtElement"%>
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

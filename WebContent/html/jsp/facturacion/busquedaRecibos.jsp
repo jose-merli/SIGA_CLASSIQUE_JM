@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaRecibos.jsp -->
 <!-- EJEMPLO DE VENTANA DE BUSQUEDA -->
 <!-- Contiene la zona de campos de busqueda o filtro y la barra  botones de
@@ -55,10 +58,10 @@
 
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

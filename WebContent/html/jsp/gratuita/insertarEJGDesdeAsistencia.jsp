@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insertarEJGDesdeAsistencia.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
@@ -90,9 +93,9 @@
 	
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

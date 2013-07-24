@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seleccionCuentaBancaria.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -28,10 +31,10 @@
 	String idInstitucion = (String)request.getAttribute("idInstitucion");
 	String idPersona = (String)request.getAttribute("idPersona");
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

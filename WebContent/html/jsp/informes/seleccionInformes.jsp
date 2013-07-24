@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seleccionInformes.jsp -->
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
@@ -25,9 +28,9 @@
 <!-- JSP -->
 
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

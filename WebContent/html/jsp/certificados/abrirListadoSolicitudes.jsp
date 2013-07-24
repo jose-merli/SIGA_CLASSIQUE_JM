@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirListadoSolicitudes.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -74,8 +77,8 @@
 	}
 %>
 
-<html>
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -320,7 +323,6 @@
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.estadosolicitud" /></td>
 					<td>
-						<!--<siga:ComboBD nombre="estado" tipo="estadoSolicitudCertificado" ancho="140" clase="boxCombo" obligatorio="false"/>-->
 						<select name="estado" class="boxCombo">
 							<option value=""></option>
 							<%
@@ -364,10 +366,9 @@
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="certificados.mantenimiento.literal.certificado" /></td>
-					<td><siga:ComboBD nombre="tipoCertificado"
-							tipo="cmbTiposCertificados" ancho="170" clase="boxCombo"
-							obligatorio="false" parametro="<%=dato%>"
-							elementoSel="<%=tipoCert%>" /></td>
+					<td>
+						<siga:Select queryId="getTiposCertificado" id="tipoCertificado" selectedIds="<%=tipoCert%>"/>
+					</td>
 					<td class="labelText"><siga:Idioma
 							key="censo.busquedaClientes.literal.nColegiado" /></td>
 					<td><html:text name="SolicitudesCertificadosForm"
@@ -398,14 +399,15 @@
 				<tr>
 					<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.colegioOrigen" /></td>
-					<td><siga:ComboBD nombre="idInstitucionOrigen"
-							tipo="cmbInstitucionesAbreviadas" ancho="160" clase="boxCombo"
-							obligatorio="false" elementoSel="<%=colOrigen%>" /></td>
+					<td>
+						<siga:Select queryId="getInstitucionesAbreviadas" id="idInstitucionOrigen" selectedIds="<%=colOrigen%>"/>
+					</td>
 					<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.colegioDestino" /></td>
-					<td><siga:ComboBD nombre="idInstitucionDestino"
-							tipo="cmbInstitucionesAbreviadas" ancho="160" clase="boxCombo"
-							obligatorio="false" elementoSel="<%=colDestino%>" /></td>
+							key="certificados.solicitudes.literal.colegioDestino" />
+					</td>
+					<td>
+						<siga:Select queryId="getInstitucionesAbreviadas" id="idInstitucionDestino" selectedIds="<%=colDestino%>"/>
+					</td>
 					<td class="labelText"><siga:Idioma
 							key="pys.gestionSolicitudes.literal.numeroCertificado" /></td>
 					<td><html:text name="SolicitudesCertificadosForm"

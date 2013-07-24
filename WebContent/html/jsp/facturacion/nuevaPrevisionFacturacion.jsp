@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- nuevaPrevisionFacturacion.jsp -->
 <!-- VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -36,10 +39,10 @@
 	request.removeAttribute("alertaFechasErroneas");
 %>
 	
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -115,14 +115,14 @@ public class SolicitudCompraForm extends MasterForm{
 		UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDTIPOPRODUCTO, dato);
 	}		
 	
-	public void setCategoriaProducto(String dato) {	
-		String[] lista=UtilidadesString.split(dato,",");
-		if ((lista == null) || (lista.length < 1)) return;
-		UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDPRODUCTO, lista[1]);
-
-//		String[] lista=UtilidadesString.split(dato,",");		
-//		UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDPRODUCTO, new Long(lista[1]));
-////		UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDPRODUCTO, Long.valueOf(lista[1]));
+	public void setCategoriaProducto(String dato) {
+		if (dato.contains(",")){
+			String[] lista=UtilidadesString.split(dato,",");
+			if ((lista == null) || (lista.length < 1)) return;
+			UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDPRODUCTO, lista[1]);
+		} else {
+			UtilidadesHash.set(this.datos, PysProductosInstitucionBean.C_IDPRODUCTO, dato);
+		}
 	}
 	
 	public void setProducto(Long dato) {	
@@ -133,10 +133,14 @@ public class SolicitudCompraForm extends MasterForm{
 		UtilidadesHash.set(this.datos, PysServiciosInstitucionBean.C_IDTIPOSERVICIOS, dato);
 	}
 	
-	public void setCategoriaServicio(String dato) {	
-		String[] lista=UtilidadesString.split(dato,",");
-		if ((lista == null) || (lista.length < 1)) return;
-		UtilidadesHash.set(this.datos, PysServiciosInstitucionBean.C_IDSERVICIO, lista[1]);
+	public void setCategoriaServicio(String dato) {
+		if (dato.contains(",")){
+			String[] lista=UtilidadesString.split(dato,",");
+			if ((lista == null) || (lista.length < 1)) return;
+			UtilidadesHash.set(this.datos, PysServiciosInstitucionBean.C_IDSERVICIO, lista[1]);
+		} else {
+			UtilidadesHash.set(this.datos, PysServiciosInstitucionBean.C_IDSERVICIO, dato);
+		}
 	}
 	
 	public void setServicio(Long dato) {	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- errorAlerts.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -16,8 +19,8 @@
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%  String app=request.getContextPath(); %>
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaTramosRetencion.jsp -->
 
 <!-- CABECERA JSP -->
@@ -18,10 +21,10 @@
 
 <!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirDatosColegiacion.jsp -->
 <!-- 
 	 Muestra los datos de colegiación generales de un cliente
@@ -43,10 +46,10 @@
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 	String modo = (String) request.getAttribute("ACCION");
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

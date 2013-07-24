@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaFacturacionResultados.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -100,9 +103,9 @@
     String action=app+"/CEN_MantenimientoFacturacion.do?noReset=true";
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- tablasMaestras_Edit.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -18,8 +21,8 @@
 
 <% String app=request.getContextPath(); %>
 
-<html>
-	<head>
+
+	
 		<%
 		String targetName="submitArea";
 		String hiddenFrame="1";

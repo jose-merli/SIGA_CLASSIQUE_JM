@@ -1,9 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- main.jsp -->
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
-<meta http-equiv="Cache-Control" content="no-cache">
 
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
@@ -27,24 +26,29 @@
 	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin5/stylesheet.css");
 %>
 	
-<html>
-	<head>
+
+	
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+		<meta http-equiv="Cache-Control" content="no-cache">
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>">
-	</script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
-	<script type="text/javascript">
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>">
+		</script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
-		function growl(msg,type){
-			//$.noticeRemove($('.notice-item-wrapper'), 400);
-			jQuery.noticeAdd({
-				text: msg,
-				type: type
-			});
-		}
+		<script type="text/javascript">
+		
+			function growl(msg,type){
+				//$.noticeRemove($('.notice-item-wrapper'), 400);
+				jQuery.noticeAdd({
+					text: msg,
+					type: type
+				});
+			}
 		
 		</script>
 	</head>

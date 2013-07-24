@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--- busquedaEnvios.jsp -->
 <!-- 
 	 VERSIONES:
@@ -93,10 +96,10 @@
 %>	
 
 <%@page import="java.io.File"%>
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

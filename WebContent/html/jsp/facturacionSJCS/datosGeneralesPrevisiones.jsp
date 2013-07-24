@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosGeneralesPrevisiones.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -107,10 +110,10 @@
 		}
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<siga:Titulo 
 		titulo="factSJCS.previsiones.cabecera"
 		localizacion="factSJCS.previsiones.ruta"/>

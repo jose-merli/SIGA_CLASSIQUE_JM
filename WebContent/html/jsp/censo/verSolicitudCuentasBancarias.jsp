@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- verSolicitudCuentasBancarias.jsp -->
 <!-- 
 	 Permite mostrar las solicitudes de modificacion de cuentas bancarias
@@ -71,10 +74,10 @@
 	
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<style type="text/css">
 

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- infoDirectorio.jsp -->
 
 <%@page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
@@ -89,8 +92,8 @@ try {
 %>
 
 
-<%@page import="com.siga.Utilidades.UtilidadesString"%><html>
-<head>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
+
     <title>SIGA Directorios</title>
     <style>
 	body {

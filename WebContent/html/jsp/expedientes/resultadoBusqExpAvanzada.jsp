@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoBusqExpAvanzada.jsp -->
 <!-- 
 	 VERSIONES:
@@ -38,10 +41,10 @@
 	request.removeAttribute("datos");
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

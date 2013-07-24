@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ventanaPrecioPorDefecto.jsp -->
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
@@ -37,9 +40,9 @@
 	String	botones="Y,R,C";
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

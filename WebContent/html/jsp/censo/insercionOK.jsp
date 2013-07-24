@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insercionOK.jsp -->
 <!-- 
 	 Muestra un alert indicando que la insercion se ha realizado correctamente
@@ -18,8 +21,8 @@
 
 <% String app=request.getContextPath();%>
 
-<html>
-	<head>	
+
+		
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

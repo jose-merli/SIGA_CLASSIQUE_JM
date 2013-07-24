@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- infoDirectorioOLD.jsp -->
 
 <%@page import="com.siga.general.InfoDirectorio"%>
@@ -76,8 +79,8 @@ try {
 %>
 
 
-<%@page import="com.siga.Utilidades.UtilidadesString"%><html>
-<head>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
+
     <title>Info Direcciones</title>
     <style>
     	td {border:solid 1px #DDDDDD}

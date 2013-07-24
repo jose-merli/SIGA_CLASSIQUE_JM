@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaClientesModal.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -34,10 +37,10 @@
 
 
 
-<%@page import="com.siga.gratuita.form.PersonaJGForm"%><html>
+<%@page import="com.siga.gratuita.form.PersonaJGForm"%>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

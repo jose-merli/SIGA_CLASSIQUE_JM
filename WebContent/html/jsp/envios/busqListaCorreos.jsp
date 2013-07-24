@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busqListaCorreos.jsp -->
 <!-- 
 	 VERSIONES:
@@ -38,10 +41,10 @@
 	if (buscar!=null&&buscar.equalsIgnoreCase("true")) funcionBuscar = "buscar()";	
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoInsercion.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -11,9 +14,6 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
-<html:html>
-<head>
 
 <%
 	String app=request.getContextPath();
@@ -40,4 +40,4 @@
 
 <body onLoad="reloadPage();">
 </body>
-</html:html>
+</html>

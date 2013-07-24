@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeFichaColegiados.jsp -->
 <!-- VERSIONES:
 	 raul.ggonzalez 30-05-2005 creacion
@@ -38,10 +41,10 @@
 
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- solicitudModificacionExpedientes.jsp -->
 <!-- 
 	 Edita la solicitud de modificacion de expedientes
@@ -45,10 +48,10 @@
 	String anhoExpediente = (String)request.getAttribute("anhoExpediente");
 
 %>	
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

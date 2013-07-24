@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modificacionCargoJunta.jsp -->
 
 <!-- CABECERA JSP -->
@@ -21,10 +24,10 @@
 <%@page import="com.atos.utils.UsrBean"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 </head>
 <body>
 	<table class="tablaCampos" id='cargostabla' border='1' width='100%' cellspacing='0' cellpadding='0'  style='table-layout:fixed'>

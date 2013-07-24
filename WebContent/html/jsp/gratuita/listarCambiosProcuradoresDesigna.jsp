@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarCambiosProcuradoresDesigna.jsp -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas -->
@@ -39,9 +42,9 @@
 	
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

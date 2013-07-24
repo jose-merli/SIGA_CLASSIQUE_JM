@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- colaOficios.jsp -->
 	 
  
@@ -37,9 +40,9 @@
 <%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 
 <!-- HEAD -->
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- administracionPago.jsp -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
 	 VERSIONES:
@@ -38,10 +41,10 @@
 
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

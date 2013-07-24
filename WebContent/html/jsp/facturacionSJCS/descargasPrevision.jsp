@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- descargasPrevision.jsp -->
 <!-- VERSIONES:
 	 raul.ggonzalez 26-04-2005 creacion
@@ -45,9 +48,9 @@
 	String idPersona     = request.getAttribute("idPersona") == null?"":(String)request.getAttribute("idPersona");
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

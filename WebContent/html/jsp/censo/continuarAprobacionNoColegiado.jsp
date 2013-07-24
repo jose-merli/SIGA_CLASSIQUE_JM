@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -18,7 +21,7 @@
 <%@page import="com.siga.beans.CenPersonaBean"%>
 <%@page import="com.siga.beans.CenClienteBean"%>
 <%@page import="java.io.File"%><html:html>
-<head>
+
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -142,4 +145,4 @@
 	
 
 </body>
-</html:html>
+</html>

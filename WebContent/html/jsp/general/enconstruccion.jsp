@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- enconstruccion.jsp -->
 <%@ page contentType="text/html" language="java"%>
 <!-- TAGLIBS -->
@@ -8,9 +11,9 @@
 
 <% String app = request.getContextPath(); %>
 
-<html>
 
-<head>
+
+
 	<title>Página en construcción</title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

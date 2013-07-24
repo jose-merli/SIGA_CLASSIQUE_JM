@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- asignarPlantillaCertificado.jsp -->
 <!-- Certificado nueva incorporacion -->
 <meta http-equiv="Expires" content="0">
@@ -45,8 +48,8 @@
 	
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

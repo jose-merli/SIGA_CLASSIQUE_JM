@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoComponentesLista.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL GRANDE -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -50,10 +53,10 @@
 	
 	request.removeAttribute("datos");	
 %>	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

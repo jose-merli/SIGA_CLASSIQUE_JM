@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaAbonos.jsp -->
 <!-- 
 	 Muestra los abonos asociados a un determinado cliente
@@ -38,7 +41,7 @@
 <%@ page import="java.util.Enumeration"%>
 <!-- JSP -->
 
-<html>
+
 
 <!-- HEAD -->
 
@@ -162,7 +165,7 @@
 			+ numero + "&idInstitucion=" + idInstitucion
 			+ "&idInstUsuario=" + idInstUsuario + "&accion=" + accion;
 %>
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

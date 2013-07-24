@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaComisionesJunta.jsp -->
 
 <!-- CABECERA JSP -->
@@ -46,10 +49,10 @@
 	modoSel.add("-1");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		
@@ -92,7 +95,12 @@
 						<siga:Idioma key="censo.busquedaClientes.literal.colegio"/> (*)						
 					</td>				
 					<td class="labelText">
-						<siga:ComboBD ancho="" nombre = "idInstitucionCargo" id="idInstitucionCargo" tipo="cmbNombreColegiosConsejosTodos" parametro="<%=parametro %>" obligatorioSinTextoSeleccionar="true" clase="boxCombo"  elementoSel="<%=modoSel %>" accion="limpiarColegiado()"/>
+						<siga:Select id="idInstitucionCargo" queryId="getNombreColegiosConsejoTodos" required="true" selectedIds="<%=modoSel %>"/>
+						<script type="text/javascript">
+						jQuery(function(){
+							jQuery("#idInstitucionCargo").on("change",function(){limpiarColegiado();});
+						});
+						</script>						
 					</td>
 					<td>
 						<table>
@@ -131,7 +139,8 @@
 									<siga:Idioma key="censo.busquedaComisiones.literal.cargos"/>
 								</td>
 								<td class="labelText">
-									<siga:ComboBD nombre="cargos" id="cargos" tipo="cmbCargosJunta" parametro="<%=parametro%>" clase="boxCombo" />
+									<siga:Select id="cargos"
+												queryId="getCenTiposCVsubtipo2IdTipoCvJuntasGobierno" />
 								</td>
 								<td></td>
 								<td><input type='button'  id = 'idBorrar' name='idButton' style="display:none" value='Borrar' alt='Borrar' ></td>

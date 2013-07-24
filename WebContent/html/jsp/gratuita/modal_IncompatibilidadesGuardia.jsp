@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modal_IncompatibilidadesGuardia.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -32,10 +35,10 @@
 	String idguardiapestanha = request.getAttribute("IDGUARDIAPESTAÑA")==null?"":(String)request.getAttribute("IDGUARDIAPESTAÑA");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

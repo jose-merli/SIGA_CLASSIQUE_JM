@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosConsulta.jsp -->
 <!-- 
 	 VERSIONES:
@@ -115,14 +118,14 @@
 %>	
 
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		
 		<!-- Validaciones en Cliente -->
 		<html:javascript formName="EditarConsultaForm" staticJavascript="false" />  

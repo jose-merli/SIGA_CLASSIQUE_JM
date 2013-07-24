@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarRetencion.jsp -->
 
 <!-- CABECERA JSP -->
@@ -29,9 +32,9 @@
 	ses.removeAttribute("accion");
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

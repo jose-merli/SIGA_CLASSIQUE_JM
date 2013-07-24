@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaSolicitudesModificacionEspecificas.jsp -->
 <!-- 
 	 Muestra el formulario de busqueda de solicitudes de modificacion especificas
@@ -52,9 +55,9 @@
 			
 %>	
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		

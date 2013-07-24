@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasAuditExpedientes.jsp -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal de la auditoría de expedientes
 	 VERSIONES:
@@ -37,7 +40,7 @@
 		accion="nuevo";
 %>	
 	
-<html>
+
 
 <script language="JavaScript">
 			<!-- Funcion asociada a boton buscar -->
@@ -49,7 +52,7 @@
 </script>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

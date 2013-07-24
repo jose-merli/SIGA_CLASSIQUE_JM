@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- envioModal.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL PEQUEÑA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -91,12 +94,12 @@
 %>	
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Vector"%>
-<html>
+
 	<style>
 		.ocultar {display:none}
 	</style>	
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

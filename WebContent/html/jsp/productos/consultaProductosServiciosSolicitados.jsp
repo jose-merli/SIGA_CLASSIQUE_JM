@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaProductosServiciosSolicitados.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -88,10 +91,10 @@
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Enumeration"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

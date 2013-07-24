@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- infoDirectorio.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -85,8 +88,8 @@ try {
 %>
 
 
-<%@page import="com.siga.Utilidades.UtilidadesString"%><html>
-<head>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
+
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
     <title>SIGA Directorios</title>
     <style>

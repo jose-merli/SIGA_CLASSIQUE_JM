@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -19,11 +22,8 @@
 
 <%@ page import="com.siga.comun.action.SessionForms"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!-- ResultadoBusquedaAvanzadaColegiados.jsp -->
 
-<html:html>
-<head>
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 	<meta http-equiv="Content-Type" 	content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Expires" 			content="0">
@@ -65,7 +65,7 @@
 	<siga:ConjBotonesAccion botonera="${BusquedaColegiadosForm.botonesAccion}" />
 </body>
 
-</html:html>
+</html>
 
 
 <script language="Javascript">

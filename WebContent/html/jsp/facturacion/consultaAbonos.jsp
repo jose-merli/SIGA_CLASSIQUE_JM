@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaAbonos.jsp -->
 <!-- 
 	 Muestra los resultados de la busqueda de abonos
@@ -86,9 +89,9 @@
 
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

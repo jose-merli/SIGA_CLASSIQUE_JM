@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaProductos.jsp -->
 <!-- 
 	 Muestra el formulario de busqueda de productos
@@ -42,9 +45,9 @@
    String [] parametroCombo = {idInstitucion};
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

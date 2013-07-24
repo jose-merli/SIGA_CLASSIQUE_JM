@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- gestionInscripcionesTG.jsp -->
 
 <!-- CABECERA JSP -->
@@ -25,10 +28,10 @@
 	Integer alturaDatosTabla = 256;
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>

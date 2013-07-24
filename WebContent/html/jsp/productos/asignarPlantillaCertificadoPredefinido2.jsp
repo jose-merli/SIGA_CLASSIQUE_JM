@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- asignarPlantillaCertificado2.jsp -->
 <!-- Certificado ordinario -->
 <meta http-equiv="Expires" content="0">
@@ -39,8 +42,8 @@
 	aMetodoSol.add(1);
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

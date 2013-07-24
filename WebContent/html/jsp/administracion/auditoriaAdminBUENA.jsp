@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- auditoriaAdminBUENA.jsp
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -22,10 +25,10 @@
 		
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<title><siga:Idioma key="administracion.auditoria.titulo"/></title>
 
 	<!-- ESTILOS Y JAVASCRIPT -->

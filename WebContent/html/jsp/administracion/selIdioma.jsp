@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- selIdioma.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -15,8 +18,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="java.util.Vector" %>
-<html>
-<head>
+
+
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

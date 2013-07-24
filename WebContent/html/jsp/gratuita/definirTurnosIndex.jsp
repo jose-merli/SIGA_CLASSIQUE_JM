@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- definirTurnosIndex.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -38,10 +41,10 @@
 	ses.setAttribute("entrada",entrada);
 %>
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<title><"definirTurnos.title"></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

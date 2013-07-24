@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaPagosAbonos.jsp -->
 <!-- 
 	 Muestra la pestranha de pagos de los abonos
@@ -90,10 +93,10 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 %>	
 
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		</style>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

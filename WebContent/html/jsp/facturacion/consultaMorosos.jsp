@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaMorosos.jsp -->
 <!-- 
 	 VERSIONES:
@@ -32,10 +35,10 @@
 %>
 
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

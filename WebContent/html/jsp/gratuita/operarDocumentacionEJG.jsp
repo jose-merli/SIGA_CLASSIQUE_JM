@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- operarDocumentacionEJG.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -68,9 +71,9 @@
 	String[] datoPresentador={usr.getLocation(),idTipoEJG,anio,numero};		
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

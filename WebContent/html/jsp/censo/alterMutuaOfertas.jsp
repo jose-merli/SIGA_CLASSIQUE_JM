@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 <!-- alterMutuaOfertas.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
@@ -20,8 +22,8 @@
 <%@ taglib uri="fmt.tld" prefix="fmt"%>
 
 
-<html>
-<head>
+
+
 <script>
 function habilitarCampos(isHabilitar) {
 		

@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 
 <!-- alterMutua.jsp -->
 <!-- CABECERA JSP -->
@@ -21,8 +23,8 @@
 <%@ taglib uri="fmt.tld" prefix="fmt"%>
 
 
-<html>
-<head>
+
+
 <script>
 function habilitarCampos(isHabilitar) {
 		
@@ -100,15 +102,13 @@ function habilitarCampos(isHabilitar) {
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 
 <script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/jquery.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 <style media="screen" type="text/css">
 	.ocultar { display: none }
@@ -1071,6 +1071,17 @@ function habilitarCampos(isHabilitar) {
 	function jAlert(texto, ancho, alto){
 		$("#dialog-message").html(texto);
 		$("#dialog-message").height(alto);
+		jQueryTop("#dialog-message", window.document).dialog({
+			modal: true,
+			resizable: false,
+			draggable: false,
+			width: ancho,
+			height: alto,
+			position: { my: "top", at: "top", of: window },
+			buttons: { "Ok": function() { jQueryTop("#dialog-message", window.document).dialog("close"); } }			
+		});
+		jQueryTop("#dialog-message", window.document).scrollTop(0);
+		/*
 		$("#dialog-message").dialog({
 			modal: true,
 			resizable: false,
@@ -1079,6 +1090,7 @@ function habilitarCampos(isHabilitar) {
 			buttons: { "Ok": function() { $(this).dialog("close"); $(this).dialog("destroy"); } }
 		});
 		$("#dialog-message").scrollTop(0);
+		*/
 	}
 	
 	function copiarFamiliares(){

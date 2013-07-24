@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seguimiento_Edit.jsp -->
 <!-- CABECERA JSP -->
 
@@ -64,10 +67,10 @@
 
 <%@page import="java.util.ArrayList"%>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

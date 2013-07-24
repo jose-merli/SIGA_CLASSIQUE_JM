@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -28,10 +31,10 @@
 	Hashtable resul = (Hashtable) request.getAttribute("RESULTADO");
 	
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

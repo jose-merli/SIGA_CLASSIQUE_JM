@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasExpedientes.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
@@ -30,7 +33,7 @@
 	String[] pestanasOcultas = (String[])request.getAttribute("pestanasOcultas");
 %>	
 	
-<html>
+
 
 <script language="JavaScript">
 			<!-- Funcion asociada a boton buscar -->
@@ -42,7 +45,7 @@
 </script>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

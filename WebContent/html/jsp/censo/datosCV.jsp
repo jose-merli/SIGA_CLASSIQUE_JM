@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosCV.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -177,10 +180,10 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -491,11 +494,7 @@
 <tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp</td>
 								<td>
-									<%if (editarCampos) {%>
-									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" posicionX="200" posicionY="10"/>
-									<%}else{%>	
-									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" disabled="true"/>
-									<%}%>
+									<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(!editarCampos) %>"/>									
 								</td>
 								
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaFin"/></td>	

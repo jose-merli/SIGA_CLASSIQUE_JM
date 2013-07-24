@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- errorActionErrors.jsp -->
 
 <%@ page pageEncoding="ISO-8859-15"%>
@@ -9,8 +12,8 @@
 
 <%  String app=request.getContextPath(); %>
 
-<html>
-	<head>
+
+	
 	<meta http-equiv="Expires" content="0">
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Cache-Control" content="no-cache">

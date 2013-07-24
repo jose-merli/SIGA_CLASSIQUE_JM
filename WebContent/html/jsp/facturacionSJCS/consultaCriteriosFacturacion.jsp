@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaCriteriosFacturacion.jsp -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas -->
@@ -66,9 +69,9 @@
 	if ((sRegularizacion != null) && (sRegularizacion.equalsIgnoreCase("true"))) botones = "";
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

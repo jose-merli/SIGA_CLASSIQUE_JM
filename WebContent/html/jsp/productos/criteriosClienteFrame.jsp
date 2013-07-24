@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- criteriosClienteFrame.jsp -->
 
 <!-- CABECERA JSP -->
@@ -37,9 +40,9 @@
 		modo="modificar";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

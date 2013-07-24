@@ -8,12 +8,13 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
 * Tag que implementa un textBox para fechas, con funcion de validacion asociada
 * @author JBD
 */
-@Deprecated
 public class TagFecha extends TagSupport {
 	
 	/**
@@ -25,9 +26,12 @@ public class TagFecha extends TagSupport {
 	 *  	/>
 	 */
 	
+	private static final String DATE_FORMAT = "dd/mm/yyyy";
+	private static final String DATEPICKER_DATE_FORMAT = "dd/mm/yy";
+	
 	private String nombreCampo = ""; 
 	private String valorInicial = ""; 
-	private String anchoTextField = "";
+	private String anchoTextField = "10";
     private String necesario = ""; // Si fuese necesario no puede llevar el valor ""
     private String styleId;
     private String campoCargarFechaDesde;
@@ -37,7 +41,78 @@ public class TagFecha extends TagSupport {
 	private String posicionX;
 	private String posicionY;
 	private String readOnly;
+	private String atributos;
     
+	@Override
+	public int doStartTag() {
+		try{
+			pageContext.getResponse().setContentType("text/html");
+			HttpSession session = pageContext.getSession();
+			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+			if (usrbean==null){
+				usrbean= new UsrBean();
+				usrbean.setLanguage("1");
+			}
+			PrintWriter out = pageContext.getResponse().getWriter();
+			
+			if (this.nombreCampo == null || "".equals(this.nombreCampo)){
+				if (this.styleId == null || this.styleId.equals(""))
+					this.nombreCampo = "datepicker";
+				else
+					this.nombreCampo = this.styleId;
+			}
+			if(this.styleId == null || this.styleId.equals("")){
+				this.styleId = this.nombreCampo;
+			}			
+			String sDatepicker = "<input type='text' id='"+this.styleId+"' name='"+this.nombreCampo+"' maxlength='10'";
+			if (this.atributos != null && !this.atributos.equals("")){
+				sDatepicker += " " + this.atributos;
+			}
+			if(this.anchoTextField!=null && !this.anchoTextField.equals("")){
+				sDatepicker += " size='"+anchoTextField+"'";
+			} else {
+				sDatepicker += " size='10'";
+			}
+			if (this.valorInicial != null && !this.valorInicial.equals("")){
+				try{
+					SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+					Date fechaValorInicial = dateFormat.parse(this.valorInicial);
+					sDatepicker += " value='"+dateFormat.format(fechaValorInicial)+"'";
+				} catch(Exception e){
+					// No ponemos valor inicial
+				}
+			}
+			String cssClass = " class='datepicker";
+			if (this.disabled != null && UtilidadesString.stringToBoolean(this.disabled)){
+				//bEditable = false;
+				cssClass += " boxConsulta noEditable";
+				sDatepicker += " readonly = 'readonly'";				
+			} else {
+				cssClass += " box editable";
+			}
+			cssClass += "'";
+			sDatepicker += cssClass;
+						
+			if(this.preFunction!=null && !this.preFunction.equals("")){
+				sDatepicker += " onfocus=\"return "+	this.preFunction+"\"";
+			}
+			if(this.postFunction!=null && !this.postFunction.equals("")){
+				sDatepicker += " onchange=\"return "+	this.postFunction+"\"";
+			}
+			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
+				sDatepicker += " data-cargarfechadesde=\""+	this.campoCargarFechaDesde+"\"";
+			}
+			sDatepicker += " data-format=\""+	DATEPICKER_DATE_FORMAT +"\"";
+			//TODO: SELECCIONAR IDIOMA DEL USUARIO DEFINIDO EN SIGA.JS
+			sDatepicker += " data-regional=\""+	"es" +"\"";
+			sDatepicker += " />";
+			out.print(sDatepicker);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return EVAL_BODY_INCLUDE; 	
+	}
+	
 	public void setValorInicial(String valorInicial) {
 		this.valorInicial = valorInicial;
 	}
@@ -51,171 +126,6 @@ public class TagFecha extends TagSupport {
 		this.campoCargarFechaDesde = campoCargarFechaDesde;
 	}
     
-	public int doStartTag() {
-		try{
-
-			pageContext.getResponse().setContentType("text/html");
-			HttpSession session = pageContext.getSession();
-			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-			if (usrbean==null){
-				usrbean= new UsrBean();
-				usrbean.setLanguage("1");
-			}
-			PrintWriter out = pageContext.getResponse().getWriter();
-			
-			out.println("<!-- input de fecha con validacion -->");
-			out.println("<script>window.showCalendarGeneral || document.write('<script src=\"SIGA/html/js/calendarJs.jsp\"><\\/script>')</script>");
-			out.println("<script type='text/javascript'>");
-			//BNS INCLUIR EL SCRIPT SI NO ESTABA INCLUIDO			
-			out.println("function validaFecha"+ this.nombreCampo +"(field){ ");
-			
-			out.println("	var checkstr = \"0123456789\";");
-			out.println("	var campoFecha = field;");
-			out.println("	var fecha = \"\";");
-			out.println("	var fechaTemp = \"\";");
-			out.println("	var separador = \"/\";");
-			out.println("	var day;");
-			out.println("	var month;");
-			out.println("	var year;");
-			out.println("	var bisiesto = 0;");
-			out.println("	var err = 0;");
-			out.println("	var i;");
-			out.println("	if (campoFecha.value == \"\"){");
-			out.println("		err = 6;");
-			out.println("	}else{");
-			out.println("		err = 0;");
-			out.println("		fecha = campoFecha.value;");
-			out.println("		// Convierte los caracteres no numericos en separadores");
-			out.println("		for (i = 0; i < fecha.length; i++) {");
-			out.println("			if (checkstr.indexOf(fecha.substr(i,1)) >= 0) {");
-			out.println("				fechaTemp = fechaTemp + fecha.substr(i,1);");
-			out.println("			}else{");
-			out.println("				fechaTemp = fechaTemp + separador;");
-			out.println("			}");
-			out.println("		}");
-			out.println("		fecha = fechaTemp;");
-			out.println("		var pos1=fecha.indexOf(separador);");
-			out.println("		var pos2=fecha.indexOf(separador,pos1+1);");
-			out.println("		var pos3=fecha.indexOf(separador,pos2+1); // No deberia existir.");
-			out.println("		if ((pos1>pos2) || (pos3>0)){ err=5; }");
-			out.println("		day=fecha.substring(0,pos1);");
-			out.println("		month=fecha.substring(pos1+1,pos2)");
-			out.println("		year=fecha.substring(pos2+1)");
-			out.println("		if (year.length == 1) {");
-			out.println("			year = '200' + year; } // Si el año es un solo digito se asume 200x");
-			out.println("		if (year.length == 2) {");
-			out.println("			year = '20' + year; } // Si el año son solo 2 digitos se asume 20xx");
-			out.println("		if ((year < 1900) || (year > 2999)) {");
-			out.println("			err = 1;");
-			out.println("		} // Codigo de error 1 corresponde a año incorrecto");
-			out.println("		if ((day==\"\") || (month==\"\") || (year==\"\")){ err=5;}");
-			out.println("		// Validacion del campo mes");
-			out.println("		if ((err == 0)&&((month < 1) || (month > 12))) { ");
-			out.println("			err = 2; } // Codigo de error 2 corresponde a mes incorrecto");
-			out.println("		// Validacion del campo dia");
-			out.println("		if ((err == 0)&&((day < 1) || (day > 31))){ ");
-			out.println("			err = 3; } // Codigo de error 3 corresponde a dia incorrecto");
-			out.println("		// Validacion 29 febrero");
-			out.println("		if ((year % 4 == 0) || (year % 100 == 0) || (year % 400 == 0)) { bisiesto = 1; }");
-			out.println("		if ((err == 0)&&((month == 2) && (bisiesto == 1) && (day > 29))) { err = 4; } // Codigo de error 4 corresponde a fecha no valida");
-			out.println("		if ((err == 0)&&((month == 2) && (bisiesto != 1) && (day > 28))) { ");
-			out.println("			err = 4; }");
-			out.println("		// Validacion del resto de meses");
-			out.println("		if ((err == 0)&&((day > 31) && ((month == \"01\") || (month == \"03\") || (month == \"05\") || (month == \"07\") || (month == \"08\") || (month == \"10\") || (month == \"12\")))) {");
-			out.println("			err = 4; }");
-			out.println("		if ((err == 0)&&((day > 30) && ((month == \"04\") || (month == \"06\") || (month == \"09\") || (month == \"11\")))) {");
-			out.println("			err = 4; }");
-			out.println("	}");
-			out.println("	// Si no hay error se deja la fecha correctamente formateada");
-			out.println("	if (err == 0) {");
-			out.println("		if (day.length==1) day=\"0\" + day;");
-			out.println("		if (month.length==1) month=\"0\" + month;");
-			out.println("		campoFecha.value = day + separador + month + separador + year;");
-			out.println("	}else if (err == 6) {");
-			// Si el campo se ha marcado como necesario se incluye la clausula que no permita que el campo quede vacio
-			if(this.necesario.equalsIgnoreCase("true")){
-				out.println("		alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.campo.necesario") + "\");");
-				out.println("		campoFecha.select();");
-				out.println("		campoFecha.focus();");
-			}
-			out.println("	}else {");
-			out.println("		if (err ==5){alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.formato") + "\") }");
-			out.println("		else{");
-			out.println("			if (day.length==1) day=\"0\" + day;");
-			out.println("			if (month.length==1) month=\"0\" + month;");
-			out.println("			campoFecha.value = day + separador + month + separador + year;");
-			out.println("			if (err ==4){alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.valida") + "\") }");
-			out.println("			if (err ==2){alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.mes") + "\") }");
-			out.println("			if (err ==1){alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.anio") + "\") }");
-			out.println("			if (err ==3){alertStop(\"" + UtilidadesString.getMensajeIdioma(usrbean.getLanguage(),"fecha.error.dia") + "\") }");
-			out.println("		}");
-			out.println("		// Finalmente seleccion la fecha incorrecta y devuelve el foco al campo fecha");
-			out.println("		campoFecha.select();");
-			out.println("		campoFecha.focus();");
-			out.println("	}");
-			out.println("	return err;");
-			out.println("}");
-			out.println("</script>");
-			out.println(""); // Linea vacia por legibilidad del codigo
-			out.println("<input type=\"text\" name=\"" + this.nombreCampo + "\" ");
-			// out.println("	property=\"" + this.nombreCampo + "\" ");
-			if(anchoTextField!=null && !anchoTextField.equals("")){
-				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" class=\"box\" ");
-			}else{
-				out.println("	size=\"10\" maxlength=\"10\" ");
-			}
-			if ((this.valorInicial != "")&&(this.valorInicial != null)){
-				out.println("		alertStop(this.valorInicial); ");
-				out.println("	value=\"" + this.valorInicial + "\" ");
-			}
-			else
-			{
-				if ((this.campoCargarFechaDesde != null) && (!this.campoCargarFechaDesde.equals("")))
-				{
-					out.println("	onfocus=\"this.value=document.forms[0]." + this.campoCargarFechaDesde + ".value;\" ");
-				}
-			}
-			String sId = "";
-			if ((this.styleId != null)&&(!this.styleId.equals(""))){
-				sId = this.styleId;
-				out.println("		id=\"" + this.styleId + "\" ");
-			}else{
-				sId = this.nombreCampo;
-				out.println("		id=\"" + this.nombreCampo + "\" ");
-			}
-			if ((this.disabled != null)){
-				if(this.disabled.equals("true"))
-					out.println("		class = 'boxConsulta' ");
-				else
-					out.println("		class = 'box' ");
-			}else{
-				out.println("		class = 'box' ");
-			}
-			if ((this.readOnly != null && this.readOnly.equals("true")) || (this.disabled != null  && this.disabled.equals("true"))){
-				if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
-					out.println("	onblur=\""+	this.getPostFunction()+ "\" readOnly='true' /> ");
-				}else{
-					out.println("readOnly='true' />");
-				}
-			}else{
-				if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
-					out.println("   onfocus=\"return "+	this.getPreFunction()+"\"");
-				}
-				if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
-					out.println("	onblur=\""+	this.getPostFunction()+"return validaFecha"+ this.nombreCampo +"(" + sId + ");\"/> ");
-				}else{
-					out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + sId + ");\"/>");
-				}
-			}
-			if ((this.disabled == null)||((this.disabled != null)&&this.disabled.equals("false"))){
-				out.println(" <a href='javascript://'onClick=\"return showCalendarGeneral("+ sId +");\"><img id=\"calendario_"+ this.nombreCampo +"\" src=\"/SIGA/html/imagenes/calendar.gif\" border=\"0\"></a>");
-			}
-			out.println(""); // Linea vacia por legibilidad del codigo
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return EVAL_BODY_INCLUDE;	 	 	
-	}
 	public String getAnchoTextField() {
 		return anchoTextField;
 	}
@@ -263,6 +173,48 @@ public class TagFecha extends TagSupport {
 	}
 	public void setPosicionY(String posicionY) {
 		this.posicionY = posicionY;
+	}
+
+	/**
+	 * @return the atributos
+	 */
+	public String getAtributos() {
+		return atributos;
+	}
+
+	/**
+	 * @param atributos the atributos to set
+	 */
+	public void setAtributos(String atributos) {
+		this.atributos = atributos;
+	}
+
+	/**
+	 * @return the nombreCampo
+	 */
+	public String getNombreCampo() {
+		return nombreCampo;
+	}
+
+	/**
+	 * @return the valorInicial
+	 */
+	public String getValorInicial() {
+		return valorInicial;
+	}
+
+	/**
+	 * @return the necesario
+	 */
+	public String getNecesario() {
+		return necesario;
+	}
+
+	/**
+	 * @return the campoCargarFechaDesde
+	 */
+	public String getCampoCargarFechaDesde() {
+		return campoCargarFechaDesde;
 	}
 
 }

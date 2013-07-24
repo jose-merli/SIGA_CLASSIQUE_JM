@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- detalleRegistroTablasMaestras.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -100,8 +103,8 @@
 	String datoCombo[] = { (String) userBean.getLocation() };
 %>	
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

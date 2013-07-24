@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosPeriodoGuardias.jsp -->
 <!-- 
 	 Permite recoger datos para la generacion de cartas de asistencia
@@ -40,9 +43,9 @@
 
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Hashtable"%>
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

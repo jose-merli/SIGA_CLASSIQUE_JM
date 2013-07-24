@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalNuevo_SaltosYCompensaciones.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -32,10 +35,10 @@
 	String dato[] = {(String)usr.getLocation()};
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->

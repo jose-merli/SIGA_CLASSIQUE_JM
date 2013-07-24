@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoSOJ.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -71,10 +74,10 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
 <%@page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

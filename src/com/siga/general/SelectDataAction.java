@@ -42,7 +42,7 @@ import es.satec.businessManager.BusinessManager;
  * @author borjans
  *
  */
-public class SelectDataAction extends Action {
+public class SelectDataAction extends SIGAActionBase {
 
 	public static final String QUERY_ID_PARAMETER = "queryId";
 	public static final String QUERY_PARAMETERS_JSON_PARAMETER = "params";
@@ -74,7 +74,7 @@ public class SelectDataAction extends Action {
 			if (selectDataMethod != null){
 				//BUILD PARAMETERS
 				HttpSession session = request.getSession();
-				UsrBean user=(UsrBean)session.getAttribute("USRBEAN");
+				UsrBean user=getUserBean(session);
 				
 				HashMap<String, String> params = new HashMap<String, String>();
 				if (sParams != null && !sParams.equals("")){

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaHistorico.jsp -->
 <!-- 
 	 Muestra el formulario de busqueda en el historial
@@ -60,9 +63,9 @@
 			
 %>	
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
@@ -145,17 +148,13 @@
 						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/>&nbsp;&nbsp;
 					</td>					
 					<td>
-								
-									<siga:Fecha  nombreCampo= "fechaInicio"/>
-								
-						
+									<siga:Fecha nombreCampo="fechaInicio"/>
 					</td>					
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaFin"/>&nbsp;&nbsp;					
 					</td>					
 					<td>
-	
-									<siga:Fecha  nombreCampo= "fechaFin"/>
+									<siga:Fecha nombreCampo="fechaFin"/>
 					</div>
 					</td>
 				</tr>

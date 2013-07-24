@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- contabilidad.jsp -->
 
 <!-- VENTANA LISTA DE CABECERAS FIJAS -->
@@ -49,9 +52,9 @@
 
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

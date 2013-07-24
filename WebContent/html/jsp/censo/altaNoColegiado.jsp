@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- altaNoColegiado.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -125,10 +128,10 @@
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 
-<%@page import="java.util.List"%><html>
+<%@page import="java.util.List"%>
 
 <!-- HEAD -->
-<head>
+
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

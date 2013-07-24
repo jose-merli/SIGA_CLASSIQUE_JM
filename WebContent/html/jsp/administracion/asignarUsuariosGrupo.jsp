@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- asignarUsuariosGrupo.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -16,10 +19,10 @@
 	String queryString = sProtocolo + "://" + request.getServerName() + ":" + request.getServerPort();
 %>
 
-<html>
-	<head>
+
+	
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>	
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
 	</head>
 	
 	<body>

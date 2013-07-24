@@ -1,9 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaDatosGenerales.jsp -->
 <!-- CABECERA JSP -->
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
-<meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -199,10 +198,14 @@
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.io.File"%>
-<html>
-	<!-- HEAD -->
-	<head>
 
+	<!-- HEAD -->
+	
+	
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

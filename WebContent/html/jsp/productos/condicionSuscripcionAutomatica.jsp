@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- condicionSuscripcionAutomatica.jsp -->
 
 <!-- 
@@ -71,9 +74,9 @@
 	}
 %>	
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

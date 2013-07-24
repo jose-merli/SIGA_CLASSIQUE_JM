@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaDuplicados.jsp -->
 
 <!-- CABECERA JSP -->
@@ -31,7 +34,7 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
  
-<html>
+
 
 <%
 	String app=request.getContextPath();
@@ -52,7 +55,7 @@
 %>
 
 
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

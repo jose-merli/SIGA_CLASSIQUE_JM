@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirListadoCertificados.jsp -->
 <meta http-equiv="Expires" content="0"> 
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -22,8 +25,8 @@
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

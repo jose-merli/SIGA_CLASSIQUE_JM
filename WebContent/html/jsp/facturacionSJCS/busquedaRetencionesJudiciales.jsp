@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaRetencionesJudiciales.jsp -->
 
 <!-- CABECERA JSP -->
@@ -25,10 +28,10 @@
 	String dato[] = {(String)usr.getLocation()};
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

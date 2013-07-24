@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaActasComision.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -41,9 +44,9 @@
 		buscar = (String)request.getAttribute("buscarLista");
 	}	
 %>
-<html>
 
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

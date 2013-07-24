@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- lista.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -10,7 +13,7 @@
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 
 <%@ page import="java.util.*,com.atos.utils.*"%>
-<html>
+</head>
 
 <body>
 

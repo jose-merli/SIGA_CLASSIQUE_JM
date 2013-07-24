@@ -1,11 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- loadingWindow.jsp -->
 <%@ page contentType="text/html" language="java"%>
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri="c.tld" prefix="c"%>
-<html>
-<head>
+
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

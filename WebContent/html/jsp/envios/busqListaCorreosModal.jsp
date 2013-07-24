@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busqListaCorreosModal.jsp -->
 <!-- 
 	 VERSIONES:
@@ -33,10 +36,10 @@
 	String idinstitucion = userBean.getLocation();
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

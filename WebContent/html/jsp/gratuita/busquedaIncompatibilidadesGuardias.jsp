@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!---------- busquedaIncompatibilidadesGuardias.jsp ---------->
 
 <!---------- CABECERA JSP ---------->
@@ -28,10 +31,10 @@
 	Properties src =(Properties) ses.getAttribute (SIGAConstants.STYLESHEET_REF);
 %>
 
-<html>
+
 
 <!---------- HEAD ---------->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,4 +1,7 @@
-<!-- modalNuevoDelitoEJG.jsp-->
+<!DOCTYPE html>
+<html>
+<head>
+<!-- modalNuevoDelitoAsistencia.jsp-->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -18,6 +21,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoAsistenciaForm"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.*"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -39,10 +43,10 @@
 	}
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -97,7 +101,13 @@
 						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
 				</td>
 				<td>
-						<siga:ComboBD nombre="idDelito" tipo="comboDelitosAsistencias" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=parametro%>" />
+					<%
+					HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
+					hmDeligosparams.put("numero", numero);
+					hmDeligosparams.put("anio", anio);
+					String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
+					%>
+					<siga:Select queryId="getDelitosAsistencia" id="idDelito" params="<%=deligosparamsJSON%>" required="true"/>
 				</td>
 			</tr>
 			</table>

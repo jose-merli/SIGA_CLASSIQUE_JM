@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- validarNoColegiado.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -26,10 +29,10 @@
 <bean:define id="numIdentificacion" name="datosGeneralesForm" property="numIdentificacion" type="java.lang.String"/>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 <script>
 	function cerrarVentana() {

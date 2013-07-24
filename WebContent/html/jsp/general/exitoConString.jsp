@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoConString.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -13,8 +16,6 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -63,4 +64,4 @@
 </script>
 </head>
 <body onload="reloadPage()"></body>
-</html:html>
+</html>

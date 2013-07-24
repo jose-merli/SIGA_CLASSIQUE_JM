@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ResultadoBusquedaClientesAvanzada.jsp -->
 <!-- EJEMPLO DE VENTANA DE LISTA DE RESULTADOS -->
 <!-- Contiene lista de resultados y botones de acción. Aunque
@@ -121,10 +124,10 @@
 				+ "/CEN_BusquedaClientesAvanzada.do?noReset=true";
 	%>
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

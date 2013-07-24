@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosCriteriosFacturacion.jsp -->
 
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL PEQUEÑA -->
@@ -43,10 +46,10 @@
 	}
 	
 %>	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

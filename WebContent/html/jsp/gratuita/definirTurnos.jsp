@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- definirTurnos.jsp -->
 <!-- CABECERA JSP -->
 <%@page import="com.siga.Utilidades.UtilidadesString"%>
@@ -47,9 +50,9 @@
 	String turnosBajaLogica = miform.getTurnosBajaLogica();
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

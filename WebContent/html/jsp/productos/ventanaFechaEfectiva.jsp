@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ventanaFechaEfectiva.jsp -->
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
@@ -39,9 +42,9 @@
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		
 

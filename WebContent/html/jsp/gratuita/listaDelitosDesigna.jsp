@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoDelitosDesigna.jsp -->
 
 <!-- CABECERA JSP -->
@@ -35,10 +38,10 @@
 	Vector vDelitosDesigna = (Vector) request.getAttribute("vDelitosDesigna");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

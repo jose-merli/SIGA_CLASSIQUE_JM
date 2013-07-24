@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ventanaModal.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -33,17 +36,28 @@
 %>	
 
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<title>
 			<siga:Idioma key="general.ventana.cgae"/>
 		</title>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	
+	<style type="text/css">
+	.siga-datepicker-trigger{
+		cursor: pointer;
+	}	
+	.ui-datepicker {
+		z-index: 99 !important;
+	}
+	</style>
 	
 	<script type="text/javascript">
 			var bloqueado=false;

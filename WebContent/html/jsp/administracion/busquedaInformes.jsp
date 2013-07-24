@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaInformes.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <!-- IMPORTS -->
 <!-- JSP -->
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

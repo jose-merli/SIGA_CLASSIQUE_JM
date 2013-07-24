@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- imprimir.jsp -->
 <%-- 
 	 VERSIONES:
@@ -30,10 +33,10 @@
 	
 %>	
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

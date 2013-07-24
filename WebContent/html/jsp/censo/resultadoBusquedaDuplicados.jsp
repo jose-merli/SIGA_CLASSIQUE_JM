@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoBusquedaDuplicados.jsp -->
 
 <!-- CABECERA JSP -->
@@ -114,10 +117,10 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<script type="text/javascript">
 	var contador=0;

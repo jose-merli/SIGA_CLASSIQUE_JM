@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- seleccionDenunciado.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -33,9 +36,9 @@
 
 
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<script>
 			function cerrarVentana() {

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaProgramarFacturacion.jsp -->
 <!-- 
 	 VERSIONES : 
@@ -50,9 +53,9 @@
 	String fRealConfirmacion;
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

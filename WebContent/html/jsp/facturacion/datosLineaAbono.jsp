@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosLineaAbono.jsp -->
 <!-- 
 	 Muestra el formulario de edicion de lines de abonos
@@ -99,9 +102,9 @@
 	
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

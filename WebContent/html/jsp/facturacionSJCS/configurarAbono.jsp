@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- configurarAbono.jsp -->
 <!-- VERSIONES:
 	  jose.barrientos - 26-02-2008 - Creacion
@@ -72,9 +75,9 @@
 	}
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

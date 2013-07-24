@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -12,8 +15,6 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.Hashtable" %>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -51,4 +52,4 @@
 
 <body onload="reloadPage();">
 </body>
-</html:html>
+</html>

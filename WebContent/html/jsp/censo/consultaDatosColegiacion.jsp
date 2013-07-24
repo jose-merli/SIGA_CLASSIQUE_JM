@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaDatosColegiacion.jsp -->
 <!-- 
 	 Muestra los datos de colegiación generales de un cliente
@@ -79,9 +82,9 @@
 		estilo = "box";
 	}
 %>	
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

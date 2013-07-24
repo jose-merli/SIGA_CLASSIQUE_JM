@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -8,7 +11,6 @@
 <%@ page import="com.atos.utils.ClsLogging"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 
-<html:html>
 <% 
 String app=request.getContextPath(); 
 HttpSession ses=request.getSession();
@@ -17,7 +19,7 @@ UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
 //ClsLogging.writeFileLogError("Error de programa en JSP", (Exception)exception,(UsrBean)user, 3);
 
 %>
-	<head>
+	
 		<title><siga:Idioma key="index.title"/></title>
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -65,4 +67,4 @@ UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
 		</center>
 -->
 	</body>
-</html:html>
+</html>

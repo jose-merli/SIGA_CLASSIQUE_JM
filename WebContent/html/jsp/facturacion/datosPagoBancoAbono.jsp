@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosPagoBancoAbono.jsp -->
 <!-- 
 	 Muestra el formulario de pago por banco
@@ -49,10 +52,10 @@
 	cuentaSel.add(idCuenta);
 	
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 
 		

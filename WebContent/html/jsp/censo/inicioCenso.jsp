@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- inicioCenso.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -11,8 +14,8 @@
 
 <% String app=request.getContextPath(); %>
 
-<html>
-	<head>
+
+	
 		<title><siga:Idioma key="menu.censo.titulo"/></title>
 		
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

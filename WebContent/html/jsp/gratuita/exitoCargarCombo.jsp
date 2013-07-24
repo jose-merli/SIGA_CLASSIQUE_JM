@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoCargarCombo.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -11,8 +14,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.*"%>
-<html:html>
-<head>
+
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -55,4 +57,4 @@
 </head>
 <body onload="reloadPage()">
 </body>
-</html:html>
+</html>

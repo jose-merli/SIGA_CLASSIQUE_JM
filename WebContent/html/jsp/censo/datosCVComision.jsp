@@ -1,4 +1,7 @@
-<!-- datosCV.jsp -->
+<!DOCTYPE html>
+<html>
+<head>
+<!-- datosCVComision.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
 	 VERSIONES:
@@ -68,6 +71,7 @@
 	ArrayList idTipoCV = new ArrayList();
 	ArrayList idSubtipo1 = new ArrayList();
 	ArrayList idSubtipo2 = new ArrayList();
+	String paramIdTipoCV = "";
 	
 	String modo = (String)request.getAttribute("modoConsulta");	
 	if (modo.equals("ver") || modo.equals("editar")) {
@@ -94,6 +98,7 @@
 					desactivado = false;
 					idCV 					= String.valueOf(htData.get(CenDatosCVBean.C_IDCV));
 					idInstitucion = String.valueOf(htData.get(CenDatosCVBean.C_IDINSTITUCION));
+					paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
 					idTipoCV.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
 					idSubtipo1.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)+"@"+htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
 					idSubtipo2.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2)+"@"+htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
@@ -120,10 +125,10 @@
 	parametro[3] = (String)usr.getLocation();
 	
 %>	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -258,29 +263,32 @@
 							<tr>		
 								<td class="labelText"  style="display:none"><siga:Idioma key="censo.datosCV.literal.tipo"/>&nbsp(*)</td>
 								<td style="display:none">
-									<%if (editarCampos) { %>
-											<siga:ComboBD nombre="tipoApunte" tipo="curriculum" clase="boxCombo" obligatorio="true" elementoSel = "<%=idTipoCV%>" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" />
-									<%} else {%>
-										<html:text name="datosCVForm" property="tipoApunte" value='<%=tipoApunte%>'  styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-									<%}%>	
+									<siga:Select id="tipoApunte"
+													queryId="getCenTiposCV"
+													selectedIds="<%=idTipoCV%>"
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													queryParamId="idtipocv"
+													disabled="<%=String.valueOf(!editarCampos) %>"/>									
 								</td>	
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.comision"/></td>	
 								<td >
-									<%if (editarCampos) { 
-									 
-									%>
-											<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1"  parametro="<%=parametro%>" clase="boxCombo"  obligatorio="true" elementoSel = "<%=idSubtipo1%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
-									<%} else {%>
-										<html:text name="datosCVForm" property="idTipoCVSubtipo1" value='<%=descTipo1%>'  styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-									<%}%>	
+									<siga:Select id="idTipoCVSubtipo1"
+													queryId="getCenTiposCVsubtipo1"
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo1%>"
+													parentQueryParamIds="idtipocv"
+													hideIfnoOptions="true"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>									
 								</td>	
 								<td class="labelText"  ><siga:Idioma key="censo.datosCV.literal.cargo"/></td>	
 								<td >
-									<%if (editarCampos) { %>
-											<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1" parametro="<%=parametro%>" clase="boxCombo" obligatorio="true" elementoSel = "<%=idSubtipo2%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
-									<%} else {%>
-										<html:text name="datosCVForm" property="idTipoCVSubtipo2" value='<%=descTipo2%>'  styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-									<%}%>
+									<siga:Select id="idTipoCVSubtipo2"
+													queryId="getCenTiposCVsubtipo2" 
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo2%>"
+													parentQueryParamIds="idtipocv"
+													hideIfnoOptions="true"
+													disabled="<%=String.valueOf(!editarCampos)%>"/>									
 								</td>								
 							</tr>
 							

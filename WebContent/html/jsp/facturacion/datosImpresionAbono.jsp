@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosImpresionAbono.jsp -->
 <!-- 
 	 Muestra la pre-impresion del recibo de abono por caja
@@ -51,10 +54,10 @@
 
 %>	
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

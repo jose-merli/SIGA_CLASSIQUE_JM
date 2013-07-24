@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- main.jsp -->
 <!-- EJEMPLO DE VENTANA PRINCIPAL DE LA APLICACION -->
 <!-- Contiene la cabecera, el menu principal, el logo y los botones de salir.
@@ -76,10 +79,10 @@
 
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<meta http-equiv="Expires" content="0">
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Cache-Control" content="no-cache">
@@ -89,9 +92,11 @@
 
 	<!-- ESTILOS Y JAVASCRIPT -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
@@ -107,6 +112,12 @@
 		left:0px;
 		margin: 0px;
 	}
+	.siga-datepicker-trigger{
+		cursor: pointer;
+	}	
+	.ui-datepicker {
+		z-index: 99 !important;
+	}
 	</style>
 
 	<script type="text/javascript">
@@ -119,11 +130,7 @@
 	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
-
-	<script language="JavaScript" type="text/javascript">
+	  })();	
 
 			var user, psswd, profile, loc, bloqueado=false;
 			user='<%=userBean.getUserName()%>';
@@ -195,7 +202,7 @@
 			function establecerIP(dirIP) {		
 			    document.formularioOcultoParaIP.IPCLIENTE.value=dirIP;		
 		    	document.formularioOcultoParaIP.submit();     
-		    }						
+		    }
 
 			function mainSub(msg){
 				if(!bloqueado){
@@ -232,7 +239,7 @@
 
 <body class="tableCabecera"
 	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');">
-
+	
 	<!-- MENU PRINCIPAL -->
 	<!-- Esto pinta el menu principal en funcion de los permisos del userBean -->
 	<script src="<%=app%>/html/js/coolmenus4.jsp" type="text/javascript"></script>

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- edicionMasivaActa.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -22,8 +25,6 @@
 	
 %>
 
-<html:html>
-<head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -163,4 +164,4 @@
 		
 	</script>
 </body>
-</html:html>
+</html>

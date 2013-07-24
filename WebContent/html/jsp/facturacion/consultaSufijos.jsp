@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaSufijos.jsp -->
 
 <!-- CABECERA JSP -->
@@ -27,8 +30,8 @@
 	}
 %>
 
-<html>
-<head>
+
+
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 

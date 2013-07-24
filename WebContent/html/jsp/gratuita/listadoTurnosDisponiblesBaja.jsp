@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoTurnosDisponiblesBaja.jsp -->
 
  <meta http-equiv="Expires" content="0">
@@ -30,9 +33,9 @@
 	elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);	
 %>
 
-<html>
 
-<head>
+
+
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

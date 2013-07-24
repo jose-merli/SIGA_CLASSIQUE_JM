@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosComponentesJuridicos.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -115,10 +118,10 @@
 	}
 	//String[] param = {idInstitucion, idInstitucion};	
 %>	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

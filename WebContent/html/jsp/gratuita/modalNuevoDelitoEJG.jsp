@@ -1,6 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalNuevoDelitoEJG.jsp-->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -18,6 +22,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoEJGForm"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.*"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -33,10 +38,10 @@
 	String parametro[] = {usr.getLocation(), usr.getLocation(), numero, anio, idTipoEJG};
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -91,7 +96,14 @@
 						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
 				</td>
 				<td>
-						<siga:ComboBD nombre="idDelito" tipo="comboDelitosEJG" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=parametro%>" />
+					<%
+					HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
+					hmDeligosparams.put("numero", numero);
+					hmDeligosparams.put("anio", anio);
+					hmDeligosparams.put("idtipoejg", idTipoEJG);
+					String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
+					%>
+					<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true"/>
 				</td>
 			</tr>
 			</table>

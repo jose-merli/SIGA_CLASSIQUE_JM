@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoEjecucionConsulta.jsp -->
 
 <!-- METATAGS -->
@@ -31,7 +34,7 @@
 		(String[]) ((HashMap) ses.getAttribute ("DATABACKUP")).get ("cabeceras");	
 %>	
 
-<html>
+
 
 <!-- METATAGS -->
 <meta http-equiv="Expires" content="0">
@@ -39,7 +42,7 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
 
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

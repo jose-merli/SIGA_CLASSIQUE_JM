@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasCenSJCSRetIRPFNoColegiado.jsp -->
 
 <!-- CABECERA JSP -->
@@ -28,9 +31,9 @@
 	
 %>
 
-<html>
 
-<head> 	
+
+ 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

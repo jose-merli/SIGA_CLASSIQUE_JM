@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- inicioDirecciones.jsp -->
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -16,8 +19,8 @@
 		
 %>	
 	
-<html>
-<head>
+
+
 	<title>"<prueba>"</title>	
 	
 <script language="JavaScript">

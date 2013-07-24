@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- loadingWindowOpener.jsp -->
 <%@ page contentType="text/html" language="java"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%> 
@@ -7,8 +10,8 @@
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
-<html>
-<head>
+
+
 <% String app = request.getContextPath();
 	UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
    	String formName=request.getParameter("formName");

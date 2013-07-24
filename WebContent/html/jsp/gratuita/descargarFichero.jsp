@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- descargarFichero.jsp -->
 
 <!-- CABECERA JSP -->
@@ -24,10 +27,10 @@
 	
 %>	
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>

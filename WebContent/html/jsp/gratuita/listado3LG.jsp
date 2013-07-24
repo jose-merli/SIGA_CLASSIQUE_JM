@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- Definir Listas de Guardias: Modal: listado3LG.jsp-->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -33,10 +36,10 @@
 	String botones = "B";
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

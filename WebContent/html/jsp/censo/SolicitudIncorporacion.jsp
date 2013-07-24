@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- SolicitudIncorporacion.jsp -->
 <!-- EJEMPLO DE VENTANA DE DETALLE DE UN REGISTRO -->
 <!-- Contiene un posible titulo del mantenimiento, ademas de la zona de campos
@@ -40,8 +43,8 @@
 	String estiloCombo = "boxCombo";
 %>
 
-<html>
-<head>
+
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarDestinatarioRetenciones.jsp -->
 
 <!-- CABECERA JSP -->
@@ -47,10 +50,10 @@
 %>
 
 <%@page import="com.siga.beans.FcsDestinatariosRetencionesAdm"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

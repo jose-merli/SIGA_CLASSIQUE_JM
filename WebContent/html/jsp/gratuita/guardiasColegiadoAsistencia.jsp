@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- guardiasColegiadoAsistencia.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -20,7 +23,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 
-<html>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -37,7 +40,7 @@
 	elems[0]=new FilaExtElement("seleccionar","seleccionar",SIGAConstants.ACCESS_READ);  	
 %>
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

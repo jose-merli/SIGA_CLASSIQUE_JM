@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- insertarEJG.jsp -->
 
 <!-- CABECERA JSP -->
@@ -40,9 +43,9 @@
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

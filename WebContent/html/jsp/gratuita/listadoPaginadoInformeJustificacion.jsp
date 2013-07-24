@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--listadoPaginadoInformeJustificacion.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -17,9 +20,9 @@
 
 <!-- JSP -->
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 <title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoAsistenciasLetrado.jsp -->
 
 <!-- CABECERA JSP -->
@@ -30,10 +33,10 @@
 	String anio = UtilidadesBDAdm.getYearBD("");
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

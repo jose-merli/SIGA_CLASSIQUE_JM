@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- maestroTurnosLetrado.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -101,8 +104,8 @@
 	String alto = "293";
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

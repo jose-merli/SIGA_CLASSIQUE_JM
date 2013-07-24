@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- solicitudTextoLibre.jsp -->
 <!-- 
 	 Proporciona un formulario para realizar una solicitud de modificacion
@@ -35,10 +38,10 @@
 	
 %>	
 	
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 
 <!-- multidiomaBusquedaResultados.jsp -->
 
@@ -29,8 +32,8 @@
 	boolean bCatalogos = UtilidadesString.stringToBoolean((String)request.getAttribute("CATALOGOS_MAESTROS"));
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

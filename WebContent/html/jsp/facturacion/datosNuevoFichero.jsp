@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosNuevoFichero.jsp -->
 <!-- 
 	 Muestra el formulario de incorporacion de nuevo fichero de devoluciones
@@ -46,10 +49,10 @@
 	String sufijo = (String)request.getAttribute("sufijo");
 
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaExpedientesAvanzada.jsp -->
 <!-- 
 	 VERSIONES:
@@ -101,7 +104,7 @@
 %>
 
 
-<html>
+
 <style>
 .ocultoexp {
 	display: none
@@ -112,7 +115,7 @@
 }
 </style>
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

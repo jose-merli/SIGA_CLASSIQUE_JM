@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaHistorico.jsp -->
 <!-- 
 	 Muestra los resultados de la busqueda en el historial
@@ -46,9 +49,9 @@
 
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoAsistenciasLetradoResultado.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -109,8 +112,8 @@
 	}		
 	
 %>
-<html>
-<head>
+
+
 <title><"listarAsistencias.title"></title>
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaModalPorTipoSJCS.jsp -->
 <!-- CABECERA JSP -->
 
@@ -40,10 +43,10 @@
 %>	
 	<bean:define id="formulario" name="BusquedaPorTipoSJCSForm"  scope="request"/>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

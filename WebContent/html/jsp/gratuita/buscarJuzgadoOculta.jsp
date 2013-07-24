@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- buscarJuzgadoOculta.jsp -->
 
 <!-- CABECERA JSP -->
@@ -39,10 +42,10 @@
 		myBean = (ScsJuzgadoBean) obj.elementAt(0);
 	}
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

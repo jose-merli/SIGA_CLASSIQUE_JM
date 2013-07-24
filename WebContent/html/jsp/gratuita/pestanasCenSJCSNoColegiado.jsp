@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasCenSJCSNoColegiado.jsp -->
 
 <!-- CABECERA JSP -->
@@ -27,9 +30,9 @@
 	request.setAttribute("datos", datosPestana);
 %>
 
-<html>
 
-<head> 	
+
+ 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

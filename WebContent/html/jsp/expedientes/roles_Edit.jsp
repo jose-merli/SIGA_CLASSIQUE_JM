@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- roles_Edit.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL PEQUEÑA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -36,10 +39,10 @@
 	request.removeAttribute("editable");
 %>	
 
-<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%><html>
+<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

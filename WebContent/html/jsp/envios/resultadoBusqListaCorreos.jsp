@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadoBusqListaCorreos.jsp -->
 <!-- 
 	 VERSIONES:
@@ -37,10 +40,10 @@
 	request.setAttribute("listado","listas");
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

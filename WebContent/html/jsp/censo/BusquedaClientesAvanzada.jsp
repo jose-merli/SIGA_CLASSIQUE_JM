@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- BusquedaClientesAvanzada.jsp -->
 
 <!-- CABECERA JSP -->
@@ -165,10 +168,10 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Properties"%>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		

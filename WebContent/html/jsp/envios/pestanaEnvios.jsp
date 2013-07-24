@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanaEnvios.jsp -->
 <!-- EJEMPLO DE VENTANA DE PESTAÑAS -->
 <!-- Contiene la zona de pestanhas y la zona de gestion principal 
@@ -33,7 +36,7 @@
 	int elementoActivo = 1;
 %>	
 
-<html>
+
 
 <script language="JavaScript">
 		<!-- Funcion asociada a boton buscar -->
@@ -44,7 +47,7 @@
 </script>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- volantesExpressAsistencias.jsp -->
 
 <!-- CABECERA JSP -->
@@ -21,10 +24,10 @@
 <%@page import="com.atos.utils.UsrBean"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
   
 </head>
 

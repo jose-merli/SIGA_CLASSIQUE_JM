@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirDenunciantes.jsp -->
 <!-- 
 	 VERSIONES:
@@ -67,10 +70,10 @@
 	String tituloPagina=(String)request.getAttribute("tituloPagina");
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

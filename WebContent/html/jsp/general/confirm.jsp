@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--  confirm.jsp  -->
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
@@ -6,8 +9,8 @@
 <% 
 	String app=request.getContextPath();
 %>
-<html>
-<head>
+
+
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

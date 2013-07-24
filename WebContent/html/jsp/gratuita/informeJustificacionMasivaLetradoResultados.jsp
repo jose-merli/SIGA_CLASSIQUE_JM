@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeJustificacionMasivaLetradoResultados.jsp -->
 
 <!-- CABECERA JSP -->
@@ -95,9 +98,9 @@
 %>	
 
 <%@page import="java.util.HashMap"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

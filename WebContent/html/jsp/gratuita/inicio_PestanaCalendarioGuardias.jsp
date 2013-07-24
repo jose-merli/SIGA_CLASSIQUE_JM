@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- inicio_PestanaCalendarioGuardias.jsp -->
 
 <!-- CABECERA JSP -->
@@ -68,10 +71,10 @@
 	String idinstitucion = usr.getLocation();
 %>
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

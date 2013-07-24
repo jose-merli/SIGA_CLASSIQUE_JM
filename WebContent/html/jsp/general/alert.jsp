@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--  alert.jsp  -->
 <%@ page pageEncoding="ISO-8859-1"%>
 
@@ -7,8 +10,8 @@
 <% 
 	String app=request.getContextPath();
 %>
-<html>
-<head>
+
+
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	

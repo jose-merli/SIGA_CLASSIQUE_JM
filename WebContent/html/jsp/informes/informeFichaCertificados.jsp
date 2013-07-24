@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeFichaCertificados.jsp-->
 
 <!-- Pantalla con los combos para seleccionar los pagos a generar -->
@@ -29,8 +32,8 @@
 		esConsejo=true;
 %>
 
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

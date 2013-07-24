@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!--editarCuentaBancaria.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 <script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>

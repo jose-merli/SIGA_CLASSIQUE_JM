@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalRegistro_DefinirCalendarioGuardia.jsp-->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -34,10 +37,10 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Iterator"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	
 

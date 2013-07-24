@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaPago.jsp -->
 <!-- Patalla con los campos de busqueda de los Pagos y un iframe para los resultados
 	 VERSIONES:
@@ -68,10 +71,10 @@
 
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

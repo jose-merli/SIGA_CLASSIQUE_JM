@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- pestanasFacturacion.jsp -->
 <!-- VENTANA CON PESTAÑAS -->
 <!-- Contiene los diferentes conjuntos de pestanhas ordenadas segun
@@ -39,10 +42,10 @@
 	ses.setAttribute("accion",accion);
 %>	
 	
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

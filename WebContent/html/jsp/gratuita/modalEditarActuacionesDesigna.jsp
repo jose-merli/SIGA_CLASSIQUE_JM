@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalEditarActuacionesDesigna.jsp -->
 
 <!-- CABECERA JSP -->
@@ -298,10 +301,10 @@
 	
 	%>
 
-<%@page import="com.siga.ws.CajgConfiguracion"%><html>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

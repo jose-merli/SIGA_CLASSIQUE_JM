@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <% 
 //	 VERSIONES:
 //	 raul.ggonzalez 07-03-2005 creacion
@@ -56,10 +59,10 @@
 
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

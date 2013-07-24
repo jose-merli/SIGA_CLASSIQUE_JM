@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- inicioDelitosEJG.jsp --> 
 
 <!-- CABECERA JSP -->
@@ -214,10 +217,10 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="utils.system"%>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

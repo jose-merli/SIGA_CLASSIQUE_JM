@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- abrirSolicitudDiligencia.jsp -->
 
 <!-- CABECERA JSP -->
@@ -39,10 +42,10 @@
 	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoHitosPagos.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE PESTAÑAS (MAESTRO MULTIREGISTRO) -->
 <!-- Contiene la zona de detalle multiregistro, sin botones de acciones, 
@@ -57,9 +60,9 @@
 		alto = "320";
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

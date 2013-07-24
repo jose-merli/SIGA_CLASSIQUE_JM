@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- informeFichaPago.jsp -->
 <!-- Pantalla con los combos para seleccionar la facturaciona a generar.
 	 VERSIONES:
@@ -37,10 +40,10 @@
 	
 %>	
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

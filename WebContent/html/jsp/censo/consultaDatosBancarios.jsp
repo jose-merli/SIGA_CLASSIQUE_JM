@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaDatosBancarios.jsp -->
 <!-- Historico modificaciones:
 		miguel.villegas: implementacion boton volver	1-2-2005
@@ -69,9 +72,9 @@
 	}
 %>
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

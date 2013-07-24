@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- recargaModalAltaAbonos.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -17,8 +20,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 
 <%@page import="java.util.Properties"%>
-<html:html>
-<head>
+
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -80,4 +82,4 @@
 </script>
 </head>
 <body onload="reloadPage()"></body>
-</html:html>
+</html>

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
  <!-- listadoDictamenesEJG.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -31,10 +34,10 @@
 	Hashtable fila = new Hashtable();
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoArchivosInforme.jsp -->
 
 <!-- CABECERA JSP -->
@@ -19,10 +22,10 @@
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

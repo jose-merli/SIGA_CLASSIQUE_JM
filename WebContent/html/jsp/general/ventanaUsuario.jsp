@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ventanaUsuario.jsp -->
 
 <!-- CABECERA JSP -->
@@ -33,10 +36,10 @@
 		nombreInstitucion = (String)h.get("NOMBRE_INSTITUCION");
 	}
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <title><siga:Idioma key="general.ventana.cgae"/> - <siga:Idioma key="general.boton.usuario"/></title>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

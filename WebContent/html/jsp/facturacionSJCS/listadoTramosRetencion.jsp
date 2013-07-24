@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoTramosRetencion.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -43,13 +46,11 @@
  
 <!-- Step 4 -->
 
-<head>
+
        
 </head>
 
-</head>
-
-<body  >
+<body>
 
 <div>		
 	<table id='tabTramosRetencionCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>

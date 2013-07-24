@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listarGuardiasTurnosLetrado.jsp -->
 
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -59,9 +62,9 @@
 	String botonTodasNinguna = "";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

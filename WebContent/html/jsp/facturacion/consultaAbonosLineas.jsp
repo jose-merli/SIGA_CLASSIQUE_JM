@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaAbonosLineas.jsp -->
 <!-- 
 	 Muestra el desglose de un abono
@@ -100,10 +103,10 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 %>	
 
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 		<style type="text/css">
 

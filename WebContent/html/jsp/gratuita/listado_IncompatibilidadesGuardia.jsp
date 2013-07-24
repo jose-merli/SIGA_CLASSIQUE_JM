@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listado_IncompatibilidadesGuardia.jsp -->
 
 
@@ -57,10 +60,10 @@
 %>
 
 
-<html>
 
 
-<head>
+
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

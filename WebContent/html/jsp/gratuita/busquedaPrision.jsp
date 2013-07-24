@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaPrision.jsp -->
 
 <!-- CABECERA JSP -->
@@ -28,10 +31,10 @@
 	parametro[0] = user.getLocation();
 %>	
 	
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

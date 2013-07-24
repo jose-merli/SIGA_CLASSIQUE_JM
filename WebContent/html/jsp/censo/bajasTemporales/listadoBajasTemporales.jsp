@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoBajaTemporales.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -51,7 +54,7 @@
 			}			
 		}		
 	</script>
-<head> 
+ </head>
 
 <body  onload="onInit();">
 

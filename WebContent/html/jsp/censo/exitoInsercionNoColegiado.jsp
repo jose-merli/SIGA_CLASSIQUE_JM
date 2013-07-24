@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- exitoInsercionNoColegiado.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -14,8 +17,6 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -83,4 +84,4 @@
 
 
 </body>
-</html:html>
+</html>

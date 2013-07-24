@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- mensajesDiligencia.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -12,8 +15,6 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 
-<html:html>
-<head>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -80,4 +81,4 @@
 </html:form>
 
 </body>
-</html:html>
+</html>

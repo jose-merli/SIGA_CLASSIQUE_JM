@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosEstadoColegial.jsp -->
 <!-- 
 	 Permite editar los estados colegiales
@@ -80,9 +83,9 @@
 	
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

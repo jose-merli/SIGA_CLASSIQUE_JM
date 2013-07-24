@@ -8,6 +8,7 @@ package com.siga.general;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionServlet;
@@ -38,9 +39,18 @@ public abstract class SIGAActionBase extends Action {
 	 *  @return UsrBean
 	 */
 	protected UsrBean getUserBean(HttpServletRequest request) {
-		return (UsrBean)(request.getSession().getAttribute(ClsConstants.USERBEAN));
+		return getUserBean(request.getSession());
 	}
 
+	/** 
+	 *  Funcion que recupera el userbean
+	 *  @param HttpServletRequest
+	 *  @return UsrBean
+	 */
+	protected UsrBean getUserBean(HttpSession session) {
+		return (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+	}
+	
 	/** Funcion testSession
 	 *  Comprueba que el usuario ha firmado correctamente en la aplicación. En caso contrario, 
 	 * lanza una excepción informando de la incidencia  

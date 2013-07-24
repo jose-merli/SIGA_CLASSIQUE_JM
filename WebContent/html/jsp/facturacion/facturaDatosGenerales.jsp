@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- facturaDatosGenerales.jsp -->
 
 <!-- Modificado por miguel.villegas  12/04/2005  Inserción botón imprimir -->
@@ -192,10 +195,10 @@
 	//}
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

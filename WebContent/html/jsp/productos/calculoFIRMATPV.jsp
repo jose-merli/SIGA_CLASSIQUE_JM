@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- calculoFIRMATPV.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -68,10 +71,10 @@
 		}		
 
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<title>
 		Prueba del TPV: FIRMA y SERVLET

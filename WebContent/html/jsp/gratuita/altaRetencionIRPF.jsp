@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- altaRetencionIRPF.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -73,9 +76,9 @@
 		return true;
 	}
 </script>
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<title><siga:Idioma key="gratuita.altaRetencionIRPF.literal.aRetencionIRPF"/></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

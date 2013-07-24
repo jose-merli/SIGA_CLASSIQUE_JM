@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- cambioFechaValidacion.jsp -->
 
 <!-- CABECERA JSP -->
@@ -13,10 +16,10 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 
 <!-- JSP -->
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>

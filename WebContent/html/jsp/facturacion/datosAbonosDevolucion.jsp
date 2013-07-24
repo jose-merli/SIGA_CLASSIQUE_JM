@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosAbonos.jsp -->
 <!-- 
 	 Muestra el formulario de alta de abonos
@@ -41,9 +44,9 @@
 	String botones = "Y,C";
 %>
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

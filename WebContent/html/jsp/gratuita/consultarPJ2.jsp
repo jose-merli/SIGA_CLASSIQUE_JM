@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultarPJ2.jsp -->
 
 <!-- CABECERA JSP -->
@@ -77,10 +80,10 @@
 	parametros[0] = idInstitucion;
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

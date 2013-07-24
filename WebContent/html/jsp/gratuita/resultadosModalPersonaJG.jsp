@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- resultadosModalPersonaJG.jsp -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas 
@@ -85,9 +88,9 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.siga.beans.CenClienteBean"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

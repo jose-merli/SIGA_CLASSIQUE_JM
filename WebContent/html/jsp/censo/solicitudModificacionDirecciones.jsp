@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- solicitudModificacionDirecciones.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -57,10 +60,10 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <style>
 .ocultar {display:none}
 </style>	

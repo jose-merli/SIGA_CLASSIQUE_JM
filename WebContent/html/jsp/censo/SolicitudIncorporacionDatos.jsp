@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- SolicitudIncorporacionDatos.jsp -->
 
 <!-- CABECERA JSP -->
@@ -162,9 +165,9 @@
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
 
-<head>	
+
+	
 	<html:javascript formName="SolicitudIncorporacionForm" staticJavascript="false" />  	
   	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

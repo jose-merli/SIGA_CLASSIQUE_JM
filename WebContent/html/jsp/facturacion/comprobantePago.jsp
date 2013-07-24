@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- comprobantePago.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -32,8 +35,8 @@
 	String numeroFactura = (String) String.valueOf(request.getAttribute("NUMEROFACTURA"));
 	String operacion = (String) String.valueOf(request.getAttribute("OPERACION"));
 %>
-<html>
-	<head>
+
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

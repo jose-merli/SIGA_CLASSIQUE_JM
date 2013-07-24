@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- solicitudModificacionCV.jsp -->
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
@@ -47,10 +50,12 @@
 	String fechaInicio="";
 	String fechaFin="";
 	String descripcion="";
+	String paramIdTipoCV = "";
 	if(!solicitarNuevo){
 		Hashtable htData=(Hashtable)request.getAttribute("hDatos");	
 		idCV=(String)htData.get(CenDatosCVBean.C_IDCV);
 		lista.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
+		paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
 		idSubtipo1.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)+"@"+htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
 		idSubtipo2.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2)+"@"+htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
 		fechaInicio=GstDate.getFormatedDateShort("",(String)htData.get(CenDatosCVBean.C_FECHAINICIO));
@@ -61,10 +66,10 @@
   String parametro[] = new String[1];
   parametro[0] = (String)usr.getLocation();
 %>
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -83,57 +88,37 @@
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-		<!-- Asociada al boton Volver -->
-		function accionCerrar(){ 			
+		function accionCerrar(){	
 			window.top.close();
 		}	
 		
-		<!-- Asociada al boton Restablecer -->
 		function accionRestablecer(){	
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.datosCVSolicForm.reset();				
-				}						
-		}			
-		<!-- Asociada al boton GuardarCerrar -->
+				}
+		}
+		
 		function accionGuardarCerrar() {	
-			sub();				
+			sub();	
 			if (!validateDatosCVSolicForm(document.datosCVSolicForm)){	
 				fin();
 				return false;
 			}		
 			
 		   
-		  
-		    if((!v_subTipo1.disabled && !v_subTipo2.disabled) && (document.datosCVSolicForm.tipoApunte.value=="" ||document.datosCVSolicForm.idTipoCVSubtipo1.value=="" || document.datosCVSolicForm.idTipoCVSubtipo2.value=="")){
-		        aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
+			if (jQuery("#tipoApunte").val()==""){
+			    aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>';
 				alert(aux);
 				fin();
 				return false;
-		   }else{
-					 if((!v_subTipo1.disabled && v_subTipo2.disabled) && (document.datosCVSolicForm.tipoApunte.value=="" || document.datosCVSolicForm.idTipoCVSubtipo1.value=="")){
-					 aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
-					 alert(aux);
-   		     		 fin();
-				     return false;
-		  
-				 }else{
-				 		if((!v_subTipo2.disabled && v_subTipo1.disabled) && (document.datosCVSolicForm.tipoApunte.value=="" || document.datosCVSolicForm.idTipoCVSubtipo2.value=="")){
-				 		aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
-				 		 alert(aux);
-		     		   	 fin();
-				       	 return false;
-			       		}else{
-		      if (document.datosCVSolicForm.tipoApunte.value==""){
-			     aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>'
+			} else if ( (jQuery("#idTipoCVSubtipo1").is(":visible") && jQuery("#idTipoCVSubtipo1").val() == "") || 
+						(jQuery("#idTipoCVSubtipo2").is(":visible") && jQuery("#idTipoCVSubtipo2").val() == "") ){
+				aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>';
 				alert(aux);
 				fin();
 				return false;
+			}
 			  
-			  }
-		   }	
-				 	}
-				}
-		    
 			if (compararFecha (document.datosCVSolicForm.fechaInicio, document.datosCVSolicForm.fechaFin) == 1) {
 				alert ("<siga:Idioma key="messages.fechas.rangoFechas"/>");
 				fin();
@@ -141,83 +126,14 @@
 			}	
 			document.all.datosCVSolicForm.modo.value = "insertarModificacion";					
 			document.all.datosCVSolicForm.submit();						
-		}			
+		}
         
-		function deshabilitarCombos(o){
-		  v_subTipo1=o; 
-		  if (o.options.length > 1) {
-			 o.disabled = false;
-		  }
-		  else {
-			 o.disabled = true;
-		  }
-		 
-		}
-		function deshabilitarCombos2(o){
-		  v_subTipo2=o; 
-		  if (o.options.length > 1) {
-			 o.disabled = false;
-		  }
-		  else {
-			 o.disabled = true;
-		  }
-		 
-		}
-		
-								
-		
-		var tipoCurriculum;
-		function init(){
-		 
-		  var cmb1 = document.getElementsByName("tipoApunte");
-		  var cmb2 = cmb1[0]; 
-		  
-		  
-		  tipoCurriculum=<%=lista%>;
-		
-		
-		  cmb2.onchange();
-		
-		
-		  
-		}
-		
-		function recargarCombos(tipo){
-		   if (tipo){
-		    if (tipoCurriculum!=tipo.value){
-			  limpiarCombo("idTipoCVSubtipo1");
-     		  limpiarCombo("idTipoCVSubtipo2");
-		    }
-		   }
-		
-		}
-		function limpiarCombo(nombre){
-		   iframeCombo = window.top.frames[0].document.getElementById (nombre + "Frame");
-				cadenaInicial = iframeCombo.src;
-				
-				if (cadenaInicial.indexOf("&elementoSel=[0]") > 1)  {
-					return;
-				}
-				
-				var ini = cadenaInicial.indexOf('&elementoSel=');
-				if (ini < 1) 
-					return;
-				
-				cadenaFinal = cadenaInicial.substring(0,ini) + "&elementoSel=[0]";
-				
-				var fin = cadenaInicial.indexOf('&', ini+2);
-				if (fin > 1) {	
-					cadenaFinal = cadenaFinal + cadenaInicial.substring(fin);
-				}
-
-				iframeCombo.src = cadenaFinal;
-		}
 	</script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
 
 </head>
-<body onload="init();">
+<body>
 <!-- Barra de titulo actualizable desde los mantenimientos -->
 		<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>
@@ -255,16 +171,27 @@
 									<siga:Idioma key="censo.datosCV.literal.tipo"/> &nbsp;(*)
 								</td>
 								<td >
-									<siga:ComboBD nombre="tipoApunte" tipo="curriculum" clase="boxCombo" elementoSel="<%=lista%>" obligatorio="true" accion="Hijo:idTipoCVSubtipo1,Hijo:idTipoCVSubtipo2;recargarCombos(this);" /></td>
-								
+									<siga:Select id="tipoApunte"
+													queryId="getCenTiposCV"
+													selectedIds="<%=lista%>"
+													childrenIds="idTipoCVSubtipo1,idTipoCVSubtipo2"
+													queryParamId="idtipocv" /> 
 								</td>	
 								<td >
-									<siga:ComboBD nombre="idTipoCVSubtipo1" tipo="cmbComision1"  parametro="<%=parametro%>" clase="boxCombo"  obligatorio="true" elementoSel = "<%=idSubtipo1%>" hijo="t" accion="parent.deshabilitarCombos(this);"/>
+									<siga:Select id="idTipoCVSubtipo1"
+													queryId="getCenTiposCVsubtipo1"
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo1%>"
+													parentQueryParamIds="idtipocv"
+													hideIfnoOptions="true"/>
 								</td>		
 								<td >
-									
-									<siga:ComboBD nombre="idTipoCVSubtipo2" tipo="cmbCargos1" parametro="<%=parametro%>" clase="boxCombo" obligatorio="true" elementoSel = "<%=idSubtipo2%>" hijo="t" accion="parent.deshabilitarCombos2(this);"/>
-									
+									<siga:Select id="idTipoCVSubtipo2"
+													queryId="getCenTiposCVsubtipo2" 
+													params="<%=paramIdTipoCV%>"
+													selectedIds="<%=idSubtipo2%>"
+													parentQueryParamIds="idtipocv"
+													hideIfnoOptions="true"/>
 								</td>									
 							</tr>
 							<tr><td>&nbsp</td></tr>		

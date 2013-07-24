@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- calendarGeneral.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -22,9 +25,6 @@
 	String sHoy = UtilidadesString.getMensajeIdiomaCombo (user, "calendario.literal.hoy");
 %>
 
-<html:html>
-
-<head>
 	<%String app = request.getContextPath();%>
 	<title>Calendario</title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -83,4 +83,4 @@
 
 </body>
 
-</html:html>
+</html>

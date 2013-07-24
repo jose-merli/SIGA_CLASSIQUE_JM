@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 
 <!-- alterMutuaConsulta.jsp -->
 <!-- CABECERA JSP -->
@@ -23,8 +25,8 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <%@ taglib uri="fmt.tld" prefix="fmt"%>
 
-<html>
-<head>
+
+
 
 <%String app=request.getContextPath(); 
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");

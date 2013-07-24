@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosGruposFijos.jsp -->
 
 <!-- CABECERA JSP -->
@@ -47,10 +50,10 @@
 		}
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosDevoluciones.jsp -->
 <!-- 
 	 Muestra los disquetes de devoluciones
@@ -67,9 +70,9 @@
 	request.getSession().setAttribute("CenBusquedaClientesTipo", "DEV_AUTO");
 %>	
 
-<html>
+
 	<!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

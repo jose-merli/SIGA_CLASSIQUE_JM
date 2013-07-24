@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- solicitudCompra.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -17,13 +20,13 @@
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import = "org.redabogacia.sigaservices.app.util.*"%>
 
 <!-- JSP -->
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
-	UsrBean user = (UsrBean) request.getSession().getAttribute(
-			"USRBEAN");
+	UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 	boolean esLetrado = user.isLetrado();
 	boolean esConsejo=false;
@@ -109,69 +112,71 @@
 	String valorCatalog = "";
 	if (request.getAttribute("catalogo") != null) {
 		catalogo = (String) request.getAttribute("catalogo");
+		catalogo = catalogo.trim();
 		if (deCertificado != null && deCertificado.equals("1")) {
 			valorCatalog = "C";
-			elementoSel0.add(valorCatalog.trim());
+			elementoSel0.add(valorCatalog);
 		} else {
-			elementoSel0.add((request.getAttribute("catalogo"))
-					.toString());
+			valorCatalog = catalogo;
+			elementoSel0.add(valorCatalog);
 		}
 	} else {
 		valorCatalog = "";
 		catalogo = "P";
 		if (deCertificado != null && deCertificado.equals("1")) {
 			valorCatalog = "C";
-			elementoSel0.add(valorCatalog.trim());
+			elementoSel0.add(valorCatalog);
 		} else {
 			valorCatalog = "P";
-			elementoSel0.add(valorCatalog.trim());
+			elementoSel0.add(valorCatalog);
 		}
 
 	}
+	valorCatalog = valorCatalog.trim();
 
 	//PRODUCTOS:
-	ArrayList elementoSel1 = new ArrayList();
-	if (request.getAttribute("tipoProducto") != null)
-		elementoSel1.add(((Integer) request
-				.getAttribute("tipoProducto")).toString());
-	else
-		elementoSel1.add("0");
+	String sIdTipoProducto = "0";
+	if (request.getAttribute("tipoProducto") != null){
+		sIdTipoProducto = ((Integer) request.getAttribute("tipoProducto")).toString();
+		if (sIdTipoProducto == null || "".equals(sIdTipoProducto))
+			sIdTipoProducto = "0";
+	}
 
-	ArrayList elementoSel2 = new ArrayList();
-	if (request.getAttribute("categoriaProducto") != null)
-		elementoSel2.add((String) request
-				.getAttribute("categoriaProducto"));
-	else
-		elementoSel2.add("0");
+	String sIdProducto = "0";	
+	if (request.getAttribute("categoriaProducto") != null){
+		sIdProducto = (String) request.getAttribute("categoriaProducto");
+		if (sIdProducto == null || "".equals(sIdProducto))
+			sIdProducto = "0";		
+	}
 
-	ArrayList elementoSel3 = new ArrayList();
-	if (request.getAttribute("producto") != null)
-		elementoSel3.add(((Long) request.getAttribute("producto"))
-				.toString());
-	else
-		elementoSel3.add("0");
+	String sIdProductoInstitucion = "0";
+	if (request.getAttribute("producto") != null){
+		sIdProductoInstitucion =((Long) request.getAttribute("producto")).toString();
+		if (sIdProductoInstitucion == null || "".equals(sIdProductoInstitucion))
+			sIdProductoInstitucion = "0";
+	}
 
 	//SERVICIOS:
-	ArrayList elementoSel4 = new ArrayList();
-	if (request.getAttribute("tipoServicio") != null)
-		elementoSel4.add(((Integer) request
-				.getAttribute("tipoServicio")).toString());
-	else
-		elementoSel4.add("0");
+	String sIdTipoServicio = "0";
+	if (request.getAttribute("tipoServicio") != null){
+		sIdTipoServicio = ((Integer) request.getAttribute("tipoServicio")).toString();
+		if (sIdTipoServicio == null || "".equals(sIdTipoServicio))
+			sIdTipoServicio = "0";
+	}
 
-	ArrayList elementoSel5 = new ArrayList();
-	if (request.getAttribute("categoriaServicio") != null)
-		elementoSel5.add((String) request
-				.getAttribute("categoriaServicio"));
-	else
-		elementoSel5.add("0");
+	String sIdServicio = "0";
+	if (request.getAttribute("categoriaServicio") != null){
+		sIdServicio = (String) request.getAttribute("categoriaServicio");
+		if (sIdServicio == null || "".equals(sIdServicio))
+			sIdServicio = "0";
+	}
 
-	ArrayList elementoSel6 = new ArrayList();
-	if (request.getAttribute("servicio") != null)
-		elementoSel6.add(((Long) request.getAttribute("servicio"))
-				.toString());
-	else
-		elementoSel6.add("0");
+	String sIdServicioInstitucion = "0";
+	if (request.getAttribute("servicio") != null){
+		sIdServicioInstitucion = ((Long) request.getAttribute("servicio")).toString();
+		if (sIdServicioInstitucion == null || "".equals(sIdServicioInstitucion))
+			sIdServicioInstitucion = "0";		
+	}
 
 	//Controlamos que si el usuario es letrado muestre el combo.
 	//Si es agente/administrador aparece el combo en modo lectura seleccionando la institucion del userbean del letrado buscado.
@@ -184,11 +189,11 @@
 
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
-<html>
+
 
 <!-- HEAD -->
 
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -209,244 +214,260 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
-			function disableEnterKey(e)
-			{
-				
-			     if(window.event.keyCode == 13){
-			    	 if (document.getElementById("nombreProducto").value!=""){
-			    		 buscarProducto();
-			    	 }else{
-			          	return false;
-			    	 }
-			     }else{
-			          return true;				
-				}
+		function disableEnterKey(e){
+		     if(window.event.keyCode == 13){
+		    	 if (document.getElementById("nombreProducto").value!=""){
+		    		 buscarProducto();
+		    	 }else{
+		          	return false;
+		    	 }
+		     }else{
+		          return true;				
 			}
-			
-		    function ocultarCombosProducto(){
-			    document.getElementById("tipoProducto1").style.display="none";
-				document.getElementById("categoriaProducto1").style.display="none";
-				document.getElementById("producto1").style.display="none";
-				document.getElementById("solicitarProducto1").style.display="none";
-				document.getElementById("tipoServicio1").style.display="block";
-				document.getElementById("categoriaServicio1").style.display="block";
-				document.getElementById("servicio1").style.display="block";
-				document.getElementById("solicitarServicio1").style.display="block";
-				document.getElementById("filaNaranja").focus();	// Por problemas de repintado de pantalla
-			}
-			function ocultarCombosServicio(){
-			    document.getElementById("tipoProducto1").style.display="block";
-				document.getElementById("categoriaProducto1").style.display="block";
-				document.getElementById("producto1").style.display="block";
-				document.getElementById("solicitarProducto1").style.display="block";
-				document.getElementById("tipoServicio1").style.display="none";
-				document.getElementById("categoriaServicio1").style.display="none";
-				document.getElementById("servicio1").style.display="none";
-				document.getElementById("solicitarServicio1").style.display="none";
-				document.getElementById("filaNaranja").focus();	// Por problemas de repintado de pantalla
-			}
-			function cargarCombos() {
-
-				<% 
-				  //se inicializan estos valores porque cuando cambiamos el tipo de catalogo, cambiamos el combo de productos que debe mostrarse
-				  // y la consulta se ejecuta sin tener todos los valores que necesita, como no necesitamos a priori que muestren nada, los 
-				  // inicializamos a -1.
-				  
-				   dato[1] = "-1";
-				   dato[2] = "-1";
-				
-				if (deCertificado.equals("1") ){
-				   
-				%>
-				    jQuery("#catalogo").attr("disabled","disabled");  
-				   
-				   <%if(esLetrado)	{%>//Si venimos de la solicitud de certificados cambiamos el tipo del combo producto para que solo filtre por certificados
-				 
-			            cambiarTipoComboSiga('producto','cmbCertificadoInstitucionLetrado');
-					<%}else{%>
-					
-					   cambiarTipoComboSiga('producto','cmbCertificadoInstitucion');
-					 
-					<%}%>	
-				 
-				<%}else{
-				
-				     if (catalogo.equals("C")){ 
-					     if(esLetrado)	{%>// si venimos de la solicitud de productos y servicios y despues de recuperar el cliente estaba seleccionado 'certificados'
-						                   // debemos cambiar el tipo del combo producto  para que solo filtre por certificados
-			            	cambiarTipoComboSiga('producto','cmbCertificadoInstitucionLetrado');
-							
-						<%}else{%>
-					   		cambiarTipoComboSiga('producto','cmbCertificadoInstitucion');
-							
-					 
-						<%}
-					}%>
-					jQuery("#catalogo").removeAttr("disabled");
-					
-			   <%}	%>	
-					
-				   
-				  
-				  
-				
-				 
-				
-				//Seleccion de los combos de Productos:
-			 if (document.solicitudCompraForm.catalogo.value=='P'||document.solicitudCompraForm.catalogo.value==''||document.solicitudCompraForm.catalogo.value=='C'){	
-			    
-				 ocultarCombosServicio();
-			    
-			 
-				var cmb1 = document.getElementsByName("tipoProducto");
-				var cmb2 = cmb1[0]; 
-				cmb2.onchange();
-				
-				
-				
-			}else{	
-
-			   
-			    ocultarCombosProducto();
-				var cmbs1 = document.getElementsByName("tipoServicio");
-				var cmbs2 = cmbs1[0]; 
-							
-				
-				cmbs2.onchange();
-								
-				
-				
-				
-				
-			}	
-				//Seleccion de los combos de Servicios:			
-				//var tmp1 = document.getElementsByName("tipoServicio");
-				//var tmp2 = tmp1[0]; 
-				//tmp2.onchange();*/
-			}
-
-			function actualizarCliente() {
-			     
-					document.solicitudCompraForm.target = "mainWorkArea";
-					document.solicitudCompraForm.modo.value = "actualizarCliente";
-					//document.solicitudCompraForm.submit();
-								   		   
-			}		  
+		}
 		
-			function borrarCarrito (mostrarMensaje){
-					if (mostrarMensaje) {
-						var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.cambioInstitucion"/>";
-						if(confirm(mensaje)) {						
-								document.solicitudCompraForm.idInstitucion.value = document.busquedaClientesModalForm.idInstitucion.value;
-								document.solicitudCompraForm.target = "mainWorkArea";
-								document.solicitudCompraForm.modo.value = "borrarCarrito";						
-							    document.solicitudCompraForm.submit();
-						}
-						else {
-							document.busquedaClientesModalForm.reset();
-						}
-					} 
-					else {
-							document.solicitudCompraForm.idInstitucion.value = <%=user.getLocation()%>;
+	    function mostrarProducto(){
+	    	jQuery("div.servicio").hide();
+			jQuery("div.producto").show();
+		}
+	    
+		function mostrarServicio(){
+			jQuery("div.producto").hide();
+	    	jQuery("div.servicio").show();			
+		}
+
+		function actualizarCliente() {
+				document.solicitudCompraForm.target = "mainWorkArea";
+				document.solicitudCompraForm.modo.value = "actualizarCliente";
+		}		  
+	
+		function borrarCarrito (mostrarMensaje){
+				if (mostrarMensaje) {
+					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.cambioInstitucion"/>";
+					if(confirm(mensaje)) {						
+							document.solicitudCompraForm.idInstitucion.value = document.busquedaClientesModalForm.idInstitucion.value;
 							document.solicitudCompraForm.target = "mainWorkArea";
 							document.solicitudCompraForm.modo.value = "borrarCarrito";						
 						    document.solicitudCompraForm.submit();
 					}
-			}		  
+					else {
+						document.busquedaClientesModalForm.reset();
+					}
+				} 
+				else {
+						document.solicitudCompraForm.idInstitucion.value = <%=user.getLocation()%>;
+						document.solicitudCompraForm.target = "mainWorkArea";
+						document.solicitudCompraForm.modo.value = "borrarCarrito";						
+					    document.solicitudCompraForm.submit();
+				}
+		}		  
 		  
-			function buscarCliente() {
-			
-			 	var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-			 	//document.busquedaClientesModalForm.submit();
-			 	// Si he recuperado datos y el nuevo idpersona es distinto de la anterior persona
-				if((resultado    != undefined) && 
-					 (resultado[0] != undefined) && 
-					 (resultado[0] != document.solicitudCompraForm.idPersona.value)) {
-					
-						
-						if(document.solicitudCompraForm.idPersona.value != resultado[0]) {
-							var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.vaciarCarrito"/>";
-							
-							if (document.solicitudCompraForm.idPersona.value != "") {
-                             
-								if(confirm(mensaje)) {						
-
-										document.solicitudCompraForm.idPersona.value = resultado[0];
-										document.solicitudCompraForm.numeroColegiado.value = resultado[2];
-										document.solicitudCompraForm.nif.value = resultado[3];
-										document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];
-										if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
-										if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value = "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
-	
-									 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
-									 	document.busquedaClientesModalForm.nif.value = resultado[3];
-									 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-										if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
-										if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
-
-										// copiamos el valor del idInstitucionPresentador
-										document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
-										
-									 	//Borramos el carro ya que hemos cambiado de Cliente:
-										borrarCarrito(false);							
-										
-								}						
-
-							} else {
-								document.solicitudCompraForm.idPersona.value = resultado[0];
-								document.solicitudCompraForm.numeroColegiado.value = resultado[2];
-								document.solicitudCompraForm.nif.value = resultado[3];
-								document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-								if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
-								if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
-
-							 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
-							 	document.busquedaClientesModalForm.nif.value = resultado[3];
-							 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
-								if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
-								if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
-
-								//Institucion:
-								document.solicitudCompraForm.idInstitucion.value = resultado[1];
-
-								// copiamos el valor del idInstitucionPresentador
-								document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
-							
-								actualizarCliente();
-								
-								
-							}
-					}					
-				}			 	
-			}
-
-			function actualizarInstitucionPresentador(objeto) {
-				document.solicitudCompraForm.idInstitucionPresentador.value = objeto.value;
-
-				actualizarCliente();
-			}
-			
-			
-			function solicitar(tipo){
-				sub();
+		function buscarCliente() {
+		
+		 	var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
+		 	//document.busquedaClientesModalForm.submit();
+		 	// Si he recuperado datos y el nuevo idpersona es distinto de la anterior persona
+			if((resultado    != undefined) && 
+				 (resultado[0] != undefined) && 
+				 (resultado[0] != document.solicitudCompraForm.idPersona.value)) {
 				
+					
+					if(document.solicitudCompraForm.idPersona.value != resultado[0]) {
+						var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.vaciarCarrito"/>";
+						
+						if (document.solicitudCompraForm.idPersona.value != "") {
+                            
+							if(confirm(mensaje)) {						
+
+									document.solicitudCompraForm.idPersona.value = resultado[0];
+									document.solicitudCompraForm.numeroColegiado.value = resultado[2];
+									document.solicitudCompraForm.nif.value = resultado[3];
+									document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];
+									if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
+									if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value = "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
+
+								 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
+								 	document.busquedaClientesModalForm.nif.value = resultado[3];
+								 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
+									if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
+									if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
+
+									// copiamos el valor del idInstitucionPresentador
+									document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
+									
+								 	//Borramos el carro ya que hemos cambiado de Cliente:
+									borrarCarrito(false);							
+									
+							}						
+
+						} else {
+							document.solicitudCompraForm.idPersona.value = resultado[0];
+							document.solicitudCompraForm.numeroColegiado.value = resultado[2];
+							document.solicitudCompraForm.nif.value = resultado[3];
+							document.solicitudCompraForm.nombrePersona.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];	
+							if (resultado[3]!="") document.solicitudCompraForm.nombrePersona.value = document.solicitudCompraForm.nombrePersona.value + " - "+resultado[3]+"";
+							if (resultado[2]!="") document.solicitudCompraForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.solicitudCompraForm.nombrePersona.value;
+
+						 	document.busquedaClientesModalForm.numeroColegiado.value = resultado[2];
+						 	document.busquedaClientesModalForm.nif.value = resultado[3];
+						 	document.busquedaClientesModalForm.nombrePersona.value =resultado[4] + " " + resultado[5] +  " " + resultado[6];	
+							if (resultado[3]!="") document.busquedaClientesModalForm.nombrePersona.value = document.busquedaClientesModalForm.nombrePersona.value + " - "+resultado[3]+"";
+							if (resultado[2]!="") document.busquedaClientesModalForm.nombrePersona.value =  "Num. Col: "+resultado[2]+" - " + document.busquedaClientesModalForm.nombrePersona.value;
+
+							//Institucion:
+							document.solicitudCompraForm.idInstitucion.value = resultado[1];
+
+							// copiamos el valor del idInstitucionPresentador
+							document.solicitudCompraForm.idInstitucionPresentador.value = document.busquedaClientesModalForm.idInstitucionPresentador.value;
+						
+							actualizarCliente();
+							
+							
+						}
+				}					
+			}			 	
+		}
+
+		function actualizarInstitucionPresentador(objeto) {
+			document.solicitudCompraForm.idInstitucionPresentador.value = objeto.value;
+			actualizarCliente();
+		}						
+		
+		function buscarProducto() {
+			sub();
+			if (document.solicitudCompraForm.catalogo.value==''){
+				alert ("<siga:Idioma key="producto.campo.catalogo"/>");
+				fin();
+				return;
+			}else{		 
+				if (document.solicitudCompraForm.catalogo.value=='S'){
+		  			document.solicitudCompraForm.concepto.value='Servicio';
+		 		}else if(document.solicitudCompraForm.catalogo.value=='P'){
+  		   			document.solicitudCompraForm.concepto.value='Producto';			
+	 			}else{
+		  			document.solicitudCompraForm.concepto.value='Certificado';
+	 			}			
+		 		document.solicitudCompraForm.target="resultado1";
+				document.solicitudCompraForm.modo.value = "buscarProducto";
+				document.solicitudCompraForm.submit();							 			 
+			}	
+			fin();
+		}
+		
+		//aalg: INC_09651. Se pierde el interesado al volver atrás en una solicitud de compra
+		jQuery("#numeroNifTagBusquedaPersonas").val('<%=numero%>');
+		jQuery("#nombrePersona").val('<%=nombre%>');
+
+		function mostrarColegio() {
+			<%
+				String stylePresentador = "display:none;";
+				String styleCampoBlanco = "display:block;";
+			if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){%>
+				<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {
+					stylePresentador = "display:block;";
+					styleCampoBlanco = "display:none;";
+					request.getSession().setAttribute("volver","");
+				%>
+				//jQuery("#catalogo").attr("disabled","disabled");
+				jQuery("#idInstitucionPresentador").attr("disabled","disabled");
+				<%}		
+			  }else{
+				if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
+					//jQuery("#catalogo").attr("disabled","disabled");
+				<%}%>
+			<%request.getSession().setAttribute("volver","");}%>
+		}
+		
+		function mostrarPresentador(mostrar){
+			if (mostrar){
+				document.getElementById("campoBlanco").style.display="none";
+				document.getElementById("campoBlancoPresentador").style.display="block";
+				document.getElementById("comboPresentador").style.display="block";
+				document.getElementById("presentador").style.display="block";
+			} else {
+				document.getElementById("campoBlanco").style.display="block";
+				document.getElementById("campoBlancoPresentador").style.display="none";
+				document.getElementById("comboPresentador").style.display="none";
+				document.getElementById("presentador").style.display="none";
+			}
+		}
+		
+		jQuery(function(){			
+			
+			jQuery("#catalogo").on("change", function(){
+				console.debug("#catalogo.change");
+				jQuery("#tipoProducto").val("");
+				jQuery("#tipoProducto").change();
+				jQuery("#tipoServicio").val("");
+				jQuery("#tipoServicio").change();
+				jQuery("#categoriaProducto").val("");
+				jQuery("#categoriaProducto").change();
+				jQuery("#categoriaServicio").val("");
+				jQuery("#categoriaServicio").change();
+				jQuery("#producto").val("");
+				jQuery("#producto").change();
+				jQuery("#servicio").val("");
+				jQuery("#servicio").change();
+				
+				var institucion = <%=idInstitucionP%>;
+				var catalogoVal = jQuery(this).val();
+				if (catalogoVal=='C' && (institucion == 2000 || institucion>=3000))
+					mostrarPresentador(true);						
+				else
+					mostrarPresentador(false);
+				
+			 	document.solicitudCompraForm.nombreProducto.value='';
+				if (catalogoVal=='P'||catalogoVal==''||catalogoVal=='C'){
+				    if (catalogoVal=='P'){
+				   	<%if(esLetrado)	{%>
+				  		jQuery("#producto").data("queryid", "getProductosInstitucionLetrado");
+					<%}else{%>
+					  	jQuery("#producto").data("queryid", "getProductosInstitucion");
+					<%}%>
+					}else{
+					  	<%if(esLetrado)	{%>
+					         jQuery("#producto").data("queryid", "getCertificadosInstitucionLetrado");
+						<%}else{%>
+							jQuery("#producto").data("queryid", "getCertificadosInstitucion");					 
+						<%}%>
+					}
+				    jQuery("#producto").change();
+				    console.debug("#catalogo.change Productos ('P','C','')");
+				    mostrarProducto();
+				}else{
+					console.debug("#catalogo.change Servicios !('P','C','')");
+					mostrarServicio();
+				}
+			});
+			
+			jQuery("#idInstitucionPresentador").on("change", function(){
+				console.debug("#idInstitucionPresentador.change");
+				document.solicitudCompraForm.idInstitucionPresentador.value = jQuery(this).val();
+				actualizarCliente();
+			});
+			
+			jQuery("#btnSolicitar").on("click", function(){
+				console.debug("#btnSolicitar.click");
+				sub();
 				f = document.solicitudCompraForm;
 				if(f.idPersona.value == ""){
 					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionCliente"/>";
 					alert (mensaje);
 					fin();					
 					return false;
-					}
-				if(tipo=="Producto"){
+				}
+				
+				var tipo = "producto";
+				if(jQuery("#producto").is(":visible")){
+					tipo = "producto";
 					if(f.tipoProducto.value == "" || f.categoriaProducto.value == "" || f.producto.value == ""){
-					var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionProducto"/>";
-					alert (mensaje);
-					fin();			
+						var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionProducto"/>";
+						alert (mensaje);
+						fin();			
 						return false;
 					}					
-				}
-				else if(tipo=="Servicio"){
+				} else if(jQuery("#servicio").is(":visible")){
+					tipo = "servicio";
 					if(f.tipoServicio.value == "" || f.categoriaServicio.value == "" || f.servicio.value == ""){
 						var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.seleccionProducto"/>";
 						alert (mensaje);	
@@ -454,140 +475,17 @@
 						return false;
 					}
 				}
+				
    			    document.solicitudCompraForm.target="resultado";
 				document.solicitudCompraForm.modo.value = "solicitar";
 				document.solicitudCompraForm.concepto.value = tipo;
 				document.solicitudCompraForm.submit();
-			}
+			});
 			
+			jQuery("#catalogo").change();
 			
-			
-			function cambiarTipoComboSiga(idCombo,tipoNew){// se utliza para cambiar el tipo del combo productos segun seleccionemos en el combo catalogo productos o 
-			                                               // certificados
-
-  				var cadena = window.top.frames[0].document.getElementById(idCombo+'Frame').src;
-				
-				var ini = cadena.indexOf('cmb');
-				if (ini == -1) {
-					return;
-				}
-				var fin = cadena.indexOf('&', ini+1);
-				if (fin == -1) { 
-					window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew;
-				return;
-				}
-					window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + tipoNew + cadena.substring(fin);
-				
-			}
-			
-			
-			function mostrarCombos(){
-				var institucion = <%=idInstitucionP%>;				
-				if (document.solicitudCompraForm.catalogo.value=='C' && (institucion == 2000 || institucion>=3000))
-				{					
-					document.getElementById("campoBlanco").style.display="none";
-					document.getElementById("campoBlancoPresentador").style.display="block";
-					document.getElementById("comboPresentador").style.display="block";
-					document.getElementById("presentador").style.display="block";								
-				}
-				else
-				{
-					document.getElementById("campoBlanco").style.display="block";
-					document.getElementById("campoBlancoPresentador").style.display="none";
-					document.getElementById("comboPresentador").style.display="none";
-					document.getElementById("presentador").style.display="none";										
-				}
-					
-			  document.solicitudCompraForm.nombreProducto.value='';
-
-			  if (document.solicitudCompraForm.catalogo.value=='P'||document.solicitudCompraForm.catalogo.value==''||document.solicitudCompraForm.catalogo.value=='C'){
-			      if (document.solicitudCompraForm.catalogo.value=='P'){
-				    <%if(esLetrado)	{%>
-			            cambiarTipoComboSiga('producto','cmbProductoInstitucionLetrado');
-					<%}else{%>
-					   cambiarTipoComboSiga('producto','cmbProductoInstitucion');
-					 
-					<%}%>	
-				  }else{
-				    <%if(esLetrado)	{%>
-			            cambiarTipoComboSiga('producto','cmbCertificadoInstitucionLetrado');
-					<%}else{%>
-					   cambiarTipoComboSiga('producto','cmbCertificadoInstitucion');
-					 
-					<%}%>	
-				  }
-//			    Cada vez que cambiemos el combo de catalogo, se limpia todos los demas combos
-				var cmb1 = document.getElementsByName("tipoProducto");
-				var a = cmb1[0].options;
-				a[0].selected=true;
-				cmb1[0].onchange();
-//	
-			    ocultarCombosServicio();
-				
-			  }else{
-			    ocultarCombosProducto();
-				
-//			    Cada vez que cambiemos el combo de catalogo, se limpia todos los demas combos				
-				var cmbs1 = document.getElementsByName("tipoServicio");
-				var a = cmbs1[0].options;
-				a[0].selected = true;
-				cmbs1[0].onchange();
-//								
-			  }
-			}
-			
-			
-			function buscarProducto()
-			{
-			 	sub();
- 			 	if (document.solicitudCompraForm.catalogo.value==''){
-			    	alert ("<siga:Idioma key="producto.campo.catalogo"/>");
-			    	fin();
-					return;
-			 }else{ 			 
-				  if (document.solicitudCompraForm.catalogo.value=='S'){
-			   			document.solicitudCompraForm.concepto.value='Servicio';
-			  	  }else if(document.solicitudCompraForm.catalogo.value=='P'){
-      		   			document.solicitudCompraForm.concepto.value='Producto';			
-			  		}else{
-			   			document.solicitudCompraForm.concepto.value='Certificado';
-			  		}			
-			  	document.solicitudCompraForm.target="resultado1";
-   		      	document.solicitudCompraForm.modo.value = "buscarProducto";
-			  	document.solicitudCompraForm.submit();							 			 
-			 }	
-			 fin();
-			}
-			
-		function desactivar(valor){
-		
-			try{
-		   var valorAuxp=valor.value;
-		   if (document.getElementById("producto1").style.display=="block"  && valor.name=='productoSel'){
-		    
-		    if (valorAuxp==''||valorAuxp==0){
-			  
-			  jQuery("#nombreProducto").removeAttr("disabled");
-			}else{
-			  document.solicitudCompraForm.nombreProducto.value='';
-			  jQuery("#nombreProducto").attr("disabled","disabled");
-			}
-		  }	
-		  
-		  if (document.getElementById("servicio1").style.display=="block" && valor.name=='servicioSel'){
-		    
-		    if (valorAuxp==''||valorAuxp==0){
-		    	
-			  jQuery("#nombreProducto").removeAttr("disabled");
-			}else{
-			  document.solicitudCompraForm.nombreProducto.value='';
-			  jQuery("#nombreProducto").attr("disabled","disabled");
-			}
-		  }	
-			} catch(e){}
-		}
-		
-
+			mostrarColegio();
+		});
 
 	</script>	
 	
@@ -595,7 +493,7 @@
 
 </head>
 
-<body onload="cargarCombos();mostrarColegio();">
+<body>
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
@@ -678,106 +576,152 @@
 					<td class="labelText">
 						<siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)
 					</td>
-					<td>
-						<siga:ComboBD nombre="catalogo" tipo="cmbCatalogo"
-						  clase="boxCombo" obligatorio="true" ancho="118"
-						  accion="mostrarCombos();" elementoSel="<%=elementoSel0%>" />
+					<td id="catalogo_td">
+						<%
+						//cmbCatalogo= Select trim('P') AS ID, 'PRODUCTO' AS DESCRIPCION FROM DUAL UNION select trim('S') AS ID,'SERVICIO' AS DESCRIPCION FROM DUAL UNION select trim('C') AS ID,'CERTIFICADO' AS DESCRIPCION FROM DUAL
+						// CAMBIAMOS ESTE COMBO POR JSON (NO HACE FALTA IR A BASE DE DATOS)
+						List<KeyValue> catalogoOptions = new ArrayList<KeyValue>();
+						catalogoOptions.add(new KeyValue("C", "CERTIFICADO"));
+						catalogoOptions.add(new KeyValue("P", "PRODUCTO"));
+						catalogoOptions.add(new KeyValue("S", "SERVICIO"));
+						
+						String catalogoDisabled = "false";
+						String catalogoSelected = valorCatalog;
+						if (deCertificado.equals("1")){
+							catalogoDisabled = "true";
+							catalogoSelected = "C";
+						}
+						String productoStyle = "";
+						String servicioStyle = "display:none;";
+						if (catalogoSelected.equals("S")){
+							productoStyle = "display:none;";
+							servicioStyle = "";
+						}
+						%>
+						<siga:Select id="catalogo"
+									queryId="JSON" 
+									dataJSON="<%=UtilidadesString.createTagSelectDataJson(catalogoOptions)%>"
+									selectedIds="<%=catalogoSelected%>"
+									required="true"
+									disabled="<%=catalogoDisabled%>"
+									width="118"/>						
 					</td>
 					
-					<td class="labelText" id="filaNaranja"><p>></p></td>
-					<td id="tipoProducto1">
-						<siga:ComboBD nombre="tipoProducto"  tipo="cmbTipoProducto" 
-						  clase="boxCombo" obligatorio="false" ancho="120" 
-						  accion="Hijo:categoriaProducto;compruebaComboSigaPadre();"
-						  elementoSel="<%=elementoSel1%>"  />
+					<td><p class="labelText">></p></td>
+					<td id="tipo_td">
+						<div class="producto" style="<%=productoStyle%>" style="<%=productoStyle%>">
+						<siga:Select id="tipoProducto"
+									queryId="getTiposProductos"
+									queryParamId="idtipoproducto"
+									childrenIds="categoriaProducto"
+									selectedIds="<%=sIdTipoProducto%>"
+									width="120"/>
+						</div>				
+						<div class="servicio" style="<%=servicioStyle%>">
+						<siga:Select id="tipoServicio" 
+									queryId="getTiposServicios"
+									queryParamId="idtiposervicio"
+									childrenIds="categoriaServicio"
+									selectedIds="<%=sIdTipoServicio%>"
+									width="120"/>
+						</div>					
 					</td>
-					<td id="tipoServicio1" style="display: none">
-						<siga:ComboBD nombre="tipoServicio" tipo="cmbTipoServicio_1" 
-						  clase="boxCombo" obligatorio="false" ancho="120"
-						  accion="Hijo:categoriaServicio;compruebaComboSigaPadre()"
-						  elementoSel="<%=elementoSel4%>" />
-					</td>
-
-					<td class="labelText"><p>></p></td>
-					<td id="categoriaProducto1">
-						<siga:ComboBD nombre="categoriaProducto" tipo="cmbProducto_1" 
-						  clase="boxCombo" ancho="120" parametro="<%=parametroCombo%>"
-						  accion="Hijo:producto;" hijo="t" elementoSel="<%=elementoSel2%>"/>
-					</td>
-					<td id="categoriaServicio1" style="display: none">
-						<siga:ComboBD nombre="categoriaServicio" tipo="cmbServicio_1" 
-						  clase="boxCombo" ancho="120" parametro="<%=parametroCombo%>"
-						  accion="Hijo:servicio;" hijo="t" elementoSel="<%=elementoSel5%>"/>
-					</td>
-
-
-					<td class="labelText"><p>></p></td>
-					<td id="producto1">
-					<%
+					<td><p class="labelText">></p></td>
+					<td id="categoria_td">
+						<div class="producto" style="<%=productoStyle%>">
+						<siga:Select id="categoriaProducto"
+									queryId="getProductosDeTipo"
+									queryParamId="idproducto"
+									parentQueryParamIds="idtipoproducto"
+									params='<%=UtilidadesString.createJsonString("idtipoproducto", sIdTipoProducto) %>'
+									childrenIds="producto"
+									selectedIds="<%=sIdProducto%>"
+									width="120"/>
+						</div>						
+						<div class="servicio" style="<%=servicioStyle%>">
+						<siga:Select id="categoriaServicio"
+									queryId="getServiciosDeTipo"
+									queryParamId="idservicio"
+									parentQueryParamIds="idtiposervicio"
+									params='<%=UtilidadesString.createJsonString("idtiposervicio", sIdTipoServicio) %>'
+									childrenIds="servicio"
+									selectedIds="<%=sIdServicio%>"
+									width="120"/>
+						</div>				
+					</td>					
+					<td><p class="labelText">></p></td>
+					<td id="producto_servicio_td">
+						<%
+						HashMap<String, String> hmProductoParams = new HashMap<String, String>();
+						hmProductoParams.put("idtipoproducto", sIdTipoProducto);
+						hmProductoParams.put("idproducto", sIdProducto);
+						
+						HashMap<String, String> hmServicioParams = new HashMap<String, String>();
+						hmServicioParams.put("idtiposervicio", sIdTipoServicio);
+						hmServicioParams.put("idservicio", sIdServicio);
+						
+						String productoQueryId = "getProductosInstitucion";
+						String servicioQueryId = "getServiciosInstitucion";
+						if (catalogoSelected.equals("C") || catalogoSelected.equals("")){
+							productoQueryId = "getCertificadosInstitucion";
+						}
+						hmServicioParams.put("solicitaralta", DB_FALSE);
+						hmServicioParams.put("automatico", DB_TRUE);
 						if (esLetrado) {
 								dato[1] = DB_TRUE;
 								dato[2] = DB_FALSE;
-					%> 
-						<siga:ComboBD nombre="producto" tipo="cmbProductoInstitucionLetrado" 
-						  clase="boxCombo" ancho="300" parametro="<%=dato%>" 
-						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel3%>"/> 
-					<%
- 						} else {
+								
+								productoQueryId += "Letrado";
+	 							servicioQueryId += "Letrado";
+						} else {
  							dato[1] = DB_FALSE;
- 					%> 
- 						<siga:ComboBD nombre="producto" tipo="cmbProductoInstitucion"
-						  clase="boxCombo" ancho="300" parametro="<%=dato%>" 
-						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel3%>"/> 
-					<%}%>
+ 							hmServicioParams.put("automatico", DB_FALSE);
+						}
+								
+						%>							
+							<div class="producto" style="<%=productoStyle%>">
+							<siga:Select id="producto"
+										queryId="<%=productoQueryId %>"
+										queryParamId="idproductoinstitucion"
+										parentQueryParamIds="idtipoproducto,idproducto"
+										params="<%=UtilidadesString.createJsonString(hmProductoParams) %>"
+										selectedIds="<%=sIdProductoInstitucion %>"
+										width="250"/>
+							</div>
+							<div class="servicio" style="<%=servicioStyle%>">
+							<siga:Select id="servicio"
+										queryId="<%=servicioQueryId %>"
+										queryParamId="idservicioinstitucion"
+										parentQueryParamIds="idtiposervicio,idservicio"
+										params="<%=UtilidadesString.createJsonString(hmServicioParams) %>"
+										selectedIds="<%=sIdServicioInstitucion %>"
+										width="250"/>
+							</div>
 					</td>
 
-					<td id="servicio1" style="display: none">
-					<%
-						if (esLetrado) {
-								dato[1] = DB_TRUE;
-								dato[2] = DB_FALSE;
-					%> 
-						<siga:ComboBD nombre="servicio" tipo="cmbServicioInstitucionLetrado" 
-						  clase="boxCombo" obligatorio="false" ancho="300" parametro="<%=dato%>"
-						  accion="parent.desactivar(this);" hijo="t" elementoSel="<%=elementoSel6%>"/> 
-					<%
- 						} else {
- 							dato[1] = DB_FALSE;
- 					%> 
- 						<siga:ComboBD nombre="servicio" tipo="cmbServicioInstitucion"
-						  clase="boxCombo"  obligatorio="false" ancho="300" parametro="<%=dato%>"
-						  hijo="t" elementoSel="<%=elementoSel6%>" accion="parent.desactivar(this);"/> 
-					<%
- 						}
- 					%>
-					</td>
-
-					<td align=left id="solicitarProducto1">
-						<html:button property="idButton" onclick="return solicitar('Producto');" styleClass="button">
+					<td>
+						<html:button property="idButton" styleId="btnSolicitar" styleClass="button">
 							<siga:Idioma key="general.boton.solicitarCompra" />
 						</html:button>
-					</td>
-					<td align=left id="solicitarServicio1" style="display: none">
-						<html:button property="idButton" onclick="return solicitar('Servicio');" style="align:right" styleClass="button">
-							<siga:Idioma key="general.boton.solicitarCompra" />
-						</html:button>
-					</td>
+					</td>					
 
 				</tr>
 				<tr>																					
-					<td id ="presentador" class="labelText" width="50px">
+					<td id ="presentador" class="labelText" width="50px" style="<%=stylePresentador%>">
 							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
 					</td>
-					<td id = "comboPresentador" colspan="5">									
-						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" ancho="240"
-						  clase="<%=estiloComboInstitucionPresentador%>" elementoSel ="<%=idInstitucionPresentador%>"
-						  accion="actualizarInstitucionPresentador(this);" readonly="<%=soloLectura%>"/>																								
+					<td id = "comboPresentador" colspan="7" style="<%=stylePresentador%>">
+						<siga:Select id="idInstitucionPresentador"
+									queryId="getInstitucionesAbreviadas"
+									selectedIds="<%=idInstitucionPresentador%>"
+									readOnly="<%=soloLectura%>"
+									width="240"/>
 					</td>
 										
-					<td id="campoBlancoPresentador">&nbsp;</td>
-					<td id="campoBlanco" colspan="7">&nbsp;</td>
+					<td id="campoBlancoPresentador" style="<%=stylePresentador%>">&nbsp;</td>
+					<td id="campoBlanco" colspan="6" style="<%=styleCampoBlanco%>">&nbsp;</td>
 																																																							
-					<td align=left id="nombreProducto">
+					<td align=left id="nombreProducto" colspan="2">
 						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
 						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
 					</td>					
@@ -787,7 +731,9 @@
 						</html:button>
 					</td>
 				</tr>
-		</table>		
+		</table>	
+			<input type="hidden" id="solicitaralta" value="<%=hmServicioParams.get("solicitaralta")%>" style="display:none"></input>
+			<input type="hidden" id="automatico" value="<%=hmServicioParams.get("automatico")%>" style="display:none"/></input>	
 			</td>											
 		</tr>
 		<!-- FILA -->
@@ -825,132 +771,6 @@
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-
-
-
-<script>
-//aalg: INC_09651. Se pierde el interesado al volver atrás en una solicitud de compra
-jQuery("#numeroNifTagBusquedaPersonas").val('<%=numero%>');
-jQuery("#nombrePersona").val('<%=nombre%>');
-
-function compruebaComboSigaPadre () 
-{   
-<%	String aux1 = "" + (Integer)request.getAttribute("tipoProducto");
-    if (aux1 == null) aux1 = new String ("");
-
-     if (aux1 != null) { %>
-          if (document.solicitudCompraForm.tipoProducto.value!='<%=aux1%>'){
-		    limpiarSeleccionComboSiga ('categoriaProducto');
-			limpiarSeleccionComboSiga ('producto');
-		  }
- <%  } 
-
-  	String aux2 = "" + (Integer)request.getAttribute("tipoServicio");
-    if (aux2 == null) aux2 = new String ("");
-
-     if (aux2 != null) { %>
-          if (document.solicitudCompraForm.tipoServicio.value!='<%=aux2%>'){
-		    limpiarSeleccionComboSiga ('categoriaServicio');
-			limpiarSeleccionComboSiga ('servicio');
-		  }
-  <% } %>
-}
-
-function compruebaComboSigaHijo (valor, tipo) 
-
-{   
-  if (tipo=='P'){ 
-    <%	String aux11 = (String)request.getAttribute("categoriaProducto");
-	    
-	   
-    if (aux11 == null) aux11 = new String ("");
-
-     if (aux11 != null) { %>
-	  var aux111='<%=aux11%>';
-	  if (aux111.indexOf(',')!=-1){
-	   aux111=aux111.substring((aux111.indexOf(','))+1);
-	  } 
-	  
-	  if (valor.indexOf(',')!=-1){
-	   valor=valor.substring((valor.indexOf(','))+1);
-	  }
-          if (valor!=aux111){
-			limpiarSeleccionComboSiga ('producto');
-		  }
- <%  } %>
-  }else{
-  	/*< %String aux22 =  (String)request.getAttribute("categoriaServicio");
-    if (aux22== null) aux22 = new String ("");
-
-     if (aux22 != null) { %>
-          if (valor!='< %=aux22%>'){
-		    limpiarSeleccionComboSiga ('servicio');
-		  }
-  < % } %>*/
-      
-  }
-
-}
-
-function limpiarSeleccionComboSiga (idCombo) 
-{
-	var cadena = window.top.frames[0].document.getElementById(idCombo+'Frame').src;
-	var ini = cadena.indexOf('&elementoSel=[');
-	if (ini == -1) {
-		return;
-	}
-	var fin = cadena.indexOf('&', ini+1);
-	if (fin == -1) { 
-		window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=";
-		return;
-	}
-	window.top.frames[0].document.getElementById(idCombo+'Frame').src = cadena.substring(0,ini) + "&elementoSel=" + cadena.substring(fin);
-
-}
-
-function oculta(id)
-{         
-	var elDiv = document.getElementById(id); 
-	//se define la variable "elDiv" igual a nuestro div         
-	elDiv.style.display='none'; 
-	//damos un atributo display:none que oculta el div            
-}
-function muestra(id)
-{       
-	var elDiv = document.getElementById(id); 
-	//se define la variable "elDiv" igual a nuestro div  
-	elDiv.style.display='block';//damos un atributo display:block que  el div
-}
-
-function mostrarColegio()
-{			
-	<%
-	if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){	%>
-		document.getElementById("campoBlanco").style.display="none";
-		document.getElementById("campoBlancoPresentador").style.display="block";
-		document.getElementById("comboPresentador").style.display="block";
-		document.getElementById("presentador").style.display="block";
-		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-		//jQuery("#catalogo").attr("disabled","disabled");
-		jQuery("#idInstitucionPresentador").attr("disabled","disabled");
-		
-		<%request.getSession().setAttribute("volver","");}%>		
-	<%}else
-	{
-	%>			
-		document.getElementById("campoBlanco").style.display="block";
-		document.getElementById("campoBlancoPresentador").style.display="none";
-		document.getElementById("comboPresentador").style.display="none";
-		document.getElementById("presentador").style.display="none";
-		<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {%>
-			//jQuery("#catalogo").attr("disabled","disabled");
-		<%}%>
-	<%request.getSession().setAttribute("volver","");}%>
-	
-}
-
-</script>
-
 
 
 </body>

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- SolicitudIncorporacionValidacion.jsp -->
 <!-- CABECERA JSP -->
 <%@ page pageEncoding="ISO-8859-1"%>
@@ -29,8 +32,8 @@
 	Boolean errorCodigo = (Boolean)request.getAttribute("errorCodigo");
 %>
 
-<html>
-<head>
+
+
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta http-equiv="Expires" content="0">

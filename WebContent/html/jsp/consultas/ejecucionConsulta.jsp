@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ejecucionConsulta.jsp -->
 
 <!-- METATAGS -->
@@ -42,7 +45,7 @@
 	String registrosPorPagina = String.valueOf (paginador.getNumeroRegistrosPorPagina());
 %>
 
-<html>
+
 
 <!-- METATAGS -->
 <meta http-equiv="Expires" content="0">
@@ -50,7 +53,7 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
 
-<head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	

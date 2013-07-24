@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalLG.jsp-->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -29,10 +32,10 @@
 	String idlista = request.getAttribute("IDLISTA")==null?"":(String)request.getAttribute("IDLISTA");		
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

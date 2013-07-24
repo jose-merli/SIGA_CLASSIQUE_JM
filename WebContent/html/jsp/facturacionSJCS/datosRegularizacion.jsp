@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- 
  VERSIONES:
  raul.ggonzalez  23-03-2005
@@ -37,10 +40,10 @@
 	facturacionSel.add(miform.getIdFacturacion());
 
 %>	
-<html>
+
 
 <!-- HEAD -->
-	<head>
+	
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- listadoTurnosDisponibles.jsp -->
 
 <meta http-equiv="Expires" content="0">
@@ -34,9 +37,9 @@
 			SIGAConstants.ACCESS_FULL);
 %>
 
-<html>
 
-<head>
+
+
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

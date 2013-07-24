@@ -1,9 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- mainSmall.jsp -->
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
-<html>
+
 <% String app=request.getContextPath(); %>
-<head>
+
 	<title>Sistema de Gestión de la Abogacía</title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

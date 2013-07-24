@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaServicios.jsp -->
 <!-- EJEMPLO DE VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
@@ -113,9 +116,9 @@ String app = request.getContextPath();
 <%@page import="java.util.HashMap"%>
 <%@page import="com.siga.Utilidades.PaginadorBind"%>
 <%@page import="com.atos.utils.Row"%>
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

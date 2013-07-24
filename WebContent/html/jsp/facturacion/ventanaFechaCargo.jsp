@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ventanaFechaCargo.jsp -->
 
 <!-- CABECERA JSP -->
@@ -22,8 +25,8 @@
 	String app = request.getContextPath(); 
 %>
 
-<html>
-<head>
+
+
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 

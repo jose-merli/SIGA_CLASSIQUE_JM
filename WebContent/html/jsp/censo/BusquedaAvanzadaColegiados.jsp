@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-15"%>
@@ -16,10 +19,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!-- BusquedaAvanzadaColegiados.jsp -->
-<html:html>
-<head>
+
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 	<meta http-equiv="Content-Type" 	content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Expires" 			content="0">
@@ -306,4 +307,4 @@
 	executeOnLoad="true"/>
 </body>
 
-</html:html>
+</html>

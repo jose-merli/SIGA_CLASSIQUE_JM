@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- ficheroBancarioPagos.jsp -->
 <!-- 
 	 VERSIONES : 
@@ -48,9 +51,9 @@
 	String tieneFechaCargo = request.getAttribute("TIENEFECHACARGO")==null?"NO":(String)request.getAttribute("TIENEFECHACARGO");
 %>	
 
-<html>
+
 <!-- HEAD -->
-<head>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

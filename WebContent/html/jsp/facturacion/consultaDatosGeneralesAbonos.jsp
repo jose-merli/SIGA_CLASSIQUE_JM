@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaDatosGeneralesAbonos.jsp -->
 <!-- 
 	 Muestra los datos generales de un abono
@@ -85,10 +88,10 @@ String path = actionMapping.getPath();
 %>	
 
 <%@page import="org.apache.struts.action.ActionMapping"%>
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaCuentasBancarias.jsp -->
 
 <!-- CABECERA JSP -->
@@ -17,10 +20,10 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- AJAX -->
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 <link rel="stylesheet" href="/html/js/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="/html/css/jquery-ui.css" />

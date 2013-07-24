@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- editarRetencionIRPF.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -44,9 +47,9 @@
 	String idRetencion 	= (String)hash.get("IDRETENCION");
 	
 %>	
-<html>
+
 <!-- HEAD -->
-<head>
+
 	<title>Modificacion Retencion IRPF</title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

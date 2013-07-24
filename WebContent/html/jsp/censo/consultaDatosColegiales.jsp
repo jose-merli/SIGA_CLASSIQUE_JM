@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaDatosColegiales.jsp -->
 <!-- 
 	 Muestra los datos colegiales generales de un cliente
@@ -122,10 +125,10 @@
 
 %>	
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- consultaExpedientes.jsp -->
 <!-- Historico modificaciones:
 		miguel.villegas: implementacion boton volver -->
@@ -55,9 +58,9 @@
 	}	
 	
 %>	
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 	
 			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

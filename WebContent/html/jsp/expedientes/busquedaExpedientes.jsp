@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaExpedientes.jsp -->
 <!-- 
 	 VERSIONES:
@@ -88,10 +91,10 @@
 %>
 
 
-<html>
+
 
 <!-- HEAD -->
-<head>
+
 <style>
 .ocultoexp {
 	display: none
@@ -186,7 +189,7 @@
 	</script>
 </head>
 
-<body onload="ajusteAlto('resultado');marked();<%=funcionBuscar%>">
+<body onload="ajusteAlto('resultado');<%=funcionBuscar%>">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 <!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -209,11 +212,12 @@
 					<td class="labelText" style="width:250x;">
 						<siga:Idioma key="expedientes.auditoria.literal.tipo" />
 					</td>
-					<td><siga:ComboBD nombre="comboTipoExpediente"
-							tipo="cmbTipoExpedienteLocaloGeneralPermisos"
-							elementoSel="<%=vTipoExp%>" parametrosIn="<%=aPerfiles%>"
-							parametro="<%=datoTipoExp%>" clase="boxCombo" ancho="200"
-							obligatorio="false" hijo="t" /></td>
+					<td>						
+						<siga:Select id="comboTipoExpediente" 
+								queryId="getTiposExpedientesLocalOgeneralConPermiso"
+								selectedIds="<%=vTipoExp%>"
+								width="200"/>
+					</td>
 					<td>&nbsp;</td>
 					<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.otrainstitucion" /> <input
@@ -390,18 +394,27 @@
 			</td>				
 			<td>
 				
-				<siga:ComboBD nombre="idMateria" tipo="materiaareaExp" ancho="250" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>"  accion="Hijo:juzgado" readonly="false"/>           	   
-						
+				<siga:Select id="idMateria" 
+							queryParamId="idmateria"
+							queryId="getMateriaAreaExpediente"
+							childrenIds="juzgado"
+							width="250"/>
 				
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.juzgado"/>
 			</td>				
 			<td>
-				
-				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateriaExp" ancho="310" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" hijo="t" accion="Hijo:idProcedimiento; parent.cambiarJuzgado(this);" readonly="false"/>           	   
-				
+				<siga:Select id="juzgado" 
+							queryParamId="idjuzgado" 
+							queryId="getJuzgadosMateria" 
+							parentQueryParamIds="idmateria,idarea" 
+							childrenIds="idProcedimiento" 
+							showSearchBox="true" 
+							searchkey="CODIGOEXT2" 
+							searchBoxMaxLength="10" 
+							searchBoxWidth="9" 
+							width="245" />	
 			</td>
 		</tr>					
 		<tr>					
@@ -410,14 +423,17 @@
 				<siga:Idioma key="expedientes.auditoria.literal.procedimiento"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="idProcedimiento" tipo="comboProcedimientos" estilo="true" clase="boxCombo" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="false" hijo="t" parametro="<%=paramPro%>"  />
+				<siga:Select queryId="getProcedimientos" 
+							id="idProcedimiento"
+							parentQueryParamIds="idjuzgado"
+							width="250"/>
 			</td>
 		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.nasunto"/>
 			</td>
 			<td>
-				<html:text name="busquedaExpedientesForm" property="numAsunto" size="10" maxlength="20" styleClass="boxCombo" readonly="false"></html:text>
+				<html:text name="busquedaExpedientesForm" property="numAsunto" size="9" maxlength="20" styleClass="boxCombo" readonly="false"></html:text>
 			</td>	
 		</tr>
 
@@ -427,7 +443,9 @@
 				<siga:Idioma key="expedientes.auditoria.literal.pretensiones"/>
 			</td>
 			<td>
-				<siga:ComboBD nombre="idPretension" tipo="comboPretensiones" estilo="true" clase="boxCombo" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="false" parametro="<%=paramPretension%>"  />
+				<siga:Select id="idPretension" 
+							queryId="getPretensiones"
+							width="250"/>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.otrasPretensiones"/>
@@ -491,26 +509,27 @@
 	
 		//<!-- Funcion asociada al check -->
 		
-				function marked() 
-		{		
-					
-			if (document.forms[0].checkGeneral.checked){	
+		function marked() {
+			if (document.forms[0].checkGeneral.checked){
 				document.forms[0].esGeneral.value="S";
-				var tipo='cmbTipoExpedienteGeneral';
-				<%-- combo anidado: tipoExpediente --%>
+				reloadSelect("comboTipoExpediente", undefined, [{key:'idinstitucion', value: '2000'}]);
+				/*
+				var tipo='cmbTipoExpedienteGeneral';				
 				var destino_esGeneral0=(document.getElementById('comboTipoExpedienteFrame')).src;		
 				var tam_esGeneral0 = destino_esGeneral0.indexOf('&id=');
 				if(tam_esGeneral0==-1)
 				{
 					tam_esGeneral0=destino_esGeneral0.length;
 				}	
-				destino_esGeneral0=destino_esGeneral0.substring(0,tam_esGeneral0)+'&id='+<%=idinstitucion%>+'&tipoalt='+tipo;
-							
+				destino_esGeneral0=destino_esGeneral0.substring(0,tam_esGeneral0)+'&id='+<=idinstitucion%>+'&tipoalt='+tipo;
+
 				(document.getElementById('comboTipoExpedienteFrame')).src=destino_esGeneral0;
+				*/
 				
 			}else {			
 				document.forms[0].esGeneral.value="N";
-			
+				reloadSelect("comboTipoExpediente");
+				/*
 				var tipo='cmbTipoExpedienteLocaloGeneralPermisos';
 				var destino_esGeneral0=(document.getElementById('comboTipoExpedienteFrame')).src;		
 				var tam_esGeneral0 = destino_esGeneral0.indexOf('&id=');
@@ -520,13 +539,8 @@
 				}	
 				destino_esGeneral0=destino_esGeneral0.substring(0,tam_esGeneral0);
 				(document.getElementById('comboTipoExpedienteFrame')).src=destino_esGeneral0;
-					
+				*/
 			}			
-						
-				
-			
-				
-			
 		}
 		
 		

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- dialogoInformeIRPF.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -38,9 +41,9 @@
 	String idInstitucionIdioma[] = {idInstitucion};
 %>
 
-<html>
 
-<head>
+
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

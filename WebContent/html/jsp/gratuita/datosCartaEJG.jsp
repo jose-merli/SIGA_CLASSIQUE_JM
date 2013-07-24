@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- datosCartaEJG.jsp -->
 <!-- 
 	 Permite recoger datos para la generacion de cartas de EJG
@@ -42,9 +45,9 @@
 	}
 %>	
 
-<html>
+
 <!-- HEAD -->
-	<head>
+	
 
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	

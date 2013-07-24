@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- modalNuevoProcedimiento.jsp -->
 
 <!-- CABECERA JSP -->
@@ -28,10 +31,10 @@
 	Vector vProcedimientos = (Vector)request.getAttribute("PROCEDIMIENTOS");
 %>	
 
-<html>
+
 
 	<!-- HEAD -->
-	<head>
+	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
