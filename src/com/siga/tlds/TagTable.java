@@ -181,7 +181,7 @@ public class TagTable extends TagSupport {
 			// FUNCIÓN AUXILIAR PARA PREPARAR DATOS
 			out.println("	function preparaDatos(fila, tableId, datos){");
 			out.println("   var iFila = fila -1;");
-			out.println("   if ( datos == undefined)");
+			out.println("   if (!datos)");
 			out.println("   	datos = document.getElementById('tablaDatosDinamicosD');");
 			out.println("   datos.value = \"\"; ");
 			out.println("   var ocultos_tratados = false;");
