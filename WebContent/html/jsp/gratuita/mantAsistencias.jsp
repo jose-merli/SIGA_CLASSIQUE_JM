@@ -144,8 +144,6 @@
 
 	String idTurno = (String) hash.get("IDTURNO");
 	String[] parametroJuzgado = {usr.getLocation(), "-1"};
-	String[] parametroComisaria = {usr.getLocation(), "-1"};
-	
 
 	
 	// Para cuando creamos la designacion
@@ -191,10 +189,7 @@
 	String comisariaInstitucionAsi = (String) hash.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
 	if (comisariaAsi!=null && comisariaInstitucionAsi!=null){
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
-		if(!comisariaAsi.equals("")){
-			parametroComisaria[1] = comisariaAsi;
-			idcomisariaJSON = "{\"idcomisaria\":\""+comisariaAsi+"\"}";
-		}
+		idcomisariaJSON = "{\"idcomisaria\":\""+comisariaAsi+"\"}";
 	}
  	// Datos del estadoseleccionado:
 	String estadoAsi = (String) hash.get(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
@@ -1067,7 +1062,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert3'/>");
 				return false;
 			}*/
-			
+			document.forms[0].idTipoAsistenciaColegio.disabled="";
 			document.forms[0].modo.value = "modificar";
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
