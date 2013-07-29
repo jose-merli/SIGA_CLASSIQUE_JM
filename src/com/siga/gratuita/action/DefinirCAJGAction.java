@@ -5,6 +5,7 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -173,7 +174,14 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			BusquedaCAJG_EJGForm miForm = (BusquedaCAJG_EJGForm) formulario;		
 			admBean =  new ScsEJGAdm(this.getUserBean(request));				
 			miHash = miForm.getDatos();
-			
+			//BNS TAG SELECT
+			if (miHash.get("GUARDIATURNO_IDTURNO") != null && !"".equals(miHash.get("GUARDIATURNO_IDTURNO").toString()) && miHash.get("GUARDIATURNO_IDTURNO").toString().startsWith("{")){
+				try {
+					miHash.put("GUARDIATURNO_IDTURNO", UtilidadesString.createHashMap(miHash.get("GUARDIATURNO_IDTURNO").toString()).get("idturno"));
+				} catch (IOException e) {
+					throw new SIGAException(e);
+				}
+			}
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion= user.getLocation();		
 			HashMap databackup=new HashMap();
