@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.sql.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -458,7 +459,10 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				if (datos != null) {
 					
 					//Se comprueba si es posterior
-					if (GstDate.compararFechas((String)datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA),fCambio) > 0){
+					java.util.Date dateDesigna = GstDate.convertirFecha((String)datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA),ClsConstants.DATE_FORMAT_JAVA);
+					java.util.Date dateCambio = GstDate.convertirFecha(fCambio,ClsConstants.DATE_FORMAT_JAVA);
+					if (dateDesigna.compareTo(dateCambio) > 0){
+//					if (GstDate.compararFechas((String)datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA),fCambio) > 0){
 						String errorFechaMsg = UtilidadesString.getMensajeIdioma(usr, "gratuita.cambioletrado.errorfecha");
 						throw new SIGAException(errorFechaMsg + " " + GstDate.getFormatedDateShort(usr.getLanguage(),datos.get(ScsDesignasLetradoBean.C_FECHADESIGNA)));
 					}
