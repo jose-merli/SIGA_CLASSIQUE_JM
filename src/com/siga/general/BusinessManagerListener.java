@@ -3,6 +3,7 @@ package com.siga.general;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.ibatis.logging.LogFactory;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsLogging;
@@ -12,6 +13,8 @@ import es.satec.businessManager.BusinessManager;
 public class BusinessManagerListener implements ServletContextListener {
 	 
 	public void contextInitialized(ServletContextEvent evt) {
+		//forzamos a que use log4j mybatis
+        LogFactory.useLog4JLogging();
 		SIGAReferences.initialize(evt.getServletContext());
 //		ClsLogging.writeFileLog("Creando PersistenceBusinessManager", 3);
 		try {
