@@ -82,12 +82,10 @@
 			<td>
 			 <siga:Fecha nombreCampo="fechaHasta" /> 
 			</td>
-			<td width ="15%" class="labelText"><siga:Idioma
-				key="censo.consultaDatosColegiales.literal.estado" /></td>
-			<td colspan ="3">
+			<td width ="15%" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Estado"/></td>
+					<td colspan ="3"><siga:ComboBD nombre="cmbEstadosFactura" tipo="cmbEstadosFactura"  clase="boxCombo" obligatorio="false" />
 			
-			<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
-			</td>	
+				
 		</tr>
 		<tr>
 			<td class="labelText"><siga:Idioma
@@ -140,10 +138,23 @@
 
 
 		<tr>
-			<td colspan="8"><siga:BusquedaPersona tipo="colegiado"
-				titulo='<%=UtilidadesString.getMensajeIdioma(userBean, "facturacion.consultamorosos.literal.deudor")%>'
-				idPersona="letrado">
-			</siga:BusquedaPersona></td>
+			<td colspan="8">
+				<fieldset>
+				<legend><bean:message key="facturacion.consultamorosos.literal.deudor"/> </legend>
+				
+					<table>
+					<tr>
+						<td ><siga:BusquedaPersona tipo="colegiado"	idPersona="letrado">
+						</siga:BusquedaPersona></td>
+						<td  class="labelText"><siga:Idioma
+							key="censo.consultaDatosColegiales.literal.estado" /></td>
+						<td><siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+						</td>
+					</tr>
+					</table>
+			
+				</fieldset>
+			</td>
 		</tr>
 		<tr>
 					<td colspan="8">

@@ -34,6 +34,7 @@ public class ConsultaMorososForm extends MasterForm {
 	private String modelo = "";
 	private String numeroFactura = "";
 	private String cmbEstadoColegial = "";
+	private String cmbEstadosFactura = "";
 	
 	private String numeroComunicacionesDesde = "";
 	private String numeroComunicacionesHasta = "";
@@ -283,6 +284,14 @@ public class ConsultaMorososForm extends MasterForm {
 		
 		super.reset(mapping, request);
 		
+	}
+
+	public String getCmbEstadosFactura() {
+		return cmbEstadosFactura;
+	}
+
+	public void setCmbEstadosFactura(String cmbEstadosFactura) {
+		this.cmbEstadosFactura = cmbEstadosFactura;
 	}
 
 }

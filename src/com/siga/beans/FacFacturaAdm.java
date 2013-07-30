@@ -1498,6 +1498,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	sql += ", SYSDATE)||'%'";
 			    
 		    }
+		    if(form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")){
+		    	//Se hace esto(grrr) para coger los dos estados colegiales
+		        contador++;
+			    codigos.put(new Integer(contador),form.getCmbEstadosFactura());
+		    	sql += " AND EF.IDESTADO =  :"+contador+"  " ;
+		    	
+			    
+		    }
 		    
 		    String fDesde = form.getFechaDesde(); 
 			String fHasta = form.getFechaHasta();
