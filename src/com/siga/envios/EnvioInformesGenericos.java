@@ -5598,7 +5598,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			} else {
 				datosLista = getIdColegiadosTotal(datosInforme, usrBean);
 			}
-			Iterator e = datosLista.keySet().iterator();
+			Iterator iteradorListaGuardias = datosLista.keySet().iterator();
 			Object keyListaGuardia;
 
 			if (datosInforme.get("NOMBRE") == null) {
@@ -5644,9 +5644,9 @@ public class EnvioInformesGenericos extends MasterReport {
 				datosListaGuardias.put("IDLISTA", datosInforme.get("IDLISTA"));
 
 			}
-			while (e.hasNext()) {
+			while (iteradorListaGuardias.hasNext()) {
 
-				keyListaGuardia = e.next();
+				keyListaGuardia = iteradorListaGuardias.next();
 				// Hashtable aux = (Hashtable) datosLista.get(obj);
 				String idPersona = UtilidadesString
 						.split(keyListaGuardia.toString(), "|||")[1];
@@ -6031,8 +6031,11 @@ public class EnvioInformesGenericos extends MasterReport {
 				String key = (GstDate.convertirFecha(
 						(String) lineaGuardia.get("FECHA_INICIO"),
 						"yyyy/MM/dd HH:mm:ss").getTime())
+						+ "##"
 						+ (String) lineaGuardia.get("ORDEN")+
-						 (String) lineaGuardia.get("GUARDIA")
+						 "##"
+						 +(String) lineaGuardia.get("GUARDIA")
+						 + "##"
 						+ (String) lineaGuardia.get("POSICION")
 						+ "|||"
 						+ (String) lineaGuardia.get("IDPERSONA");
