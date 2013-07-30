@@ -80,6 +80,13 @@
 		if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
 		if (tipoAsistenciaColegio!=null && !tipoAsistenciaColegio.equalsIgnoreCase("")) tAsistenciaColegio.add(0,tipoAsistenciaColegio);
 	}
+	
+	String aux = "";
+	String paramsJuzgadoJSON = "{\"idjuzgado\":\""+aux+"\"}";
+	
+	if(juzgado!= null && !juzgado.equals("")){
+		paramsJuzgadoJSON = juzgado;		
+	}	
 %>
 <!-- JSP -->
 <script>
@@ -210,7 +217,8 @@
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 			</td>
 			<td colspan="3">
-				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoJuzg%>" elementoSel="<%=juzgadoSel%>"/>
+				<siga:Select id="juzgado" queryParamId="idjuzgado" queryId="getJuzgadosTurnos" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" 
+							searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="480"/>
 			</td>
 		</tr>
 <%}%>
@@ -329,6 +337,9 @@
 		{	
 		
 			sub();	
+			
+			var idJuzgado = document.getElementsByName('juzgado')[0];
+			
 			if(document.forms[1].turnos.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1' />");

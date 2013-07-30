@@ -108,7 +108,7 @@
 	ArrayList juzgadoSel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
-	String idJuzgado = null, idInstitucionJuzgado = null, idProcedimiento = "-1";
+	String idJuzgado = "-1", idInstitucionJuzgado = null, idProcedimiento = "-1";
 
 	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "",anioProcedimiento = "", sufijo="";
 	boolean anulada = false;
@@ -129,6 +129,7 @@
 	String idPretension = "",pretension="";
 	String turno = "";
 	String paramsJuzgadoJSON = "";
+	String idProcedimientoParamsJSON = "";
 	String filtrarModulos = "N";
 	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="", comboPretensionesParentQueryIds = "";
 	String art27 = "";
@@ -158,14 +159,14 @@
 	    	comboModulos = "getProcedimientosEnVigencia";
 	    	comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
 	    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
-	    	comboPretensionesParentQueryIds = "idjuzgado, idpretension";
+	    	comboPretensionesParentQueryIds = "idpretension";
 	    	
 	    }else{
 			comboJuzgados = "getJuzgadosTurnos";
 	    	comboModulos = "getProcedimientos";
 	    	comboModulosParentQueryIds = "idjuzgado";
 	    	comboPretensionesEjis= "getPretensionesEjisModulos";
-	    	comboPretensionesParentQueryIds = "idjuzgado, idpretension";
+	    	comboPretensionesParentQueryIds = "idpretension";
 	    }
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
@@ -232,8 +233,11 @@
 				nig = beanDesigna.getNIG();
 			}
 			
-			if(beanDesigna.getProcedimiento() != null && !beanDesigna.getProcedimiento().toString().equals("")){
+			if(beanDesigna.getProcedimiento() != null && !beanDesigna.getProcedimiento().equals("")){
 				idProcedimiento = beanDesigna.getProcedimiento().toString();
+				idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+beanDesigna.getProcedimiento().toString()+"\"";
+			} else {
+				idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+"-2"+"\"";
 			}
 			
 			anioProcedimiento = new String("");
@@ -249,16 +253,46 @@
 			beanDesigna.getIdInstitucionJuzgado() != null &&!beanDesigna.getIdInstitucionJuzgado().equals("")) {
 				idJuzgado = beanDesigna.getIdJuzgado().toString();
 				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
-				paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
-				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+				if(filtrarModulos.equals("S")){
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaApertura+"\",\"fechahastavigor\":\""+fechaApertura+"\"}");
+					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
+					paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
+					paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
+					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
+					idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
+					idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
+				}else{
+					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+				}
+				
+				
 		} else {
 			if (request.getAttribute("idDesigna") != null) {
 				Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
 				idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
 				idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 				numero = (String) datosDesigna.get(ScsDesignaBean.C_NUMERO);
-				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+				
+				if(filtrarModulos.equals("S")){
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechaApertura\":\""+fechaApertura+"\",\"fechaApertura\":\""+fechaApertura+"\"}");
+				}else{
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+				}
 			}
+			
+			if(filtrarModulos.equals("S")){
+				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaApertura+"\",\"fechahastavigor\":\""+fechaApertura+"\"}");
+				paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
+				paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
+				paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
+				idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+				idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
+				idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
+			}else{
+				idProcedimientoParamsJSON  = "{\"idjuzgado\":\""+idJuzgado+"\"}";
+			}			
 		}
 
 		if ((beanDesigna != null) &&  (beanDesigna.getIdPretension()!= null)){
@@ -294,14 +328,6 @@
 
 	String nombreTurnoAsistencia = (String) request.getAttribute("nombreTurnoAsistencia");
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
-	
-	// datos2 es para idPresentacion
-	String idPretensionParamsJSON = "";
-	String[] datos2={usr.getLocation(),usr.getLanguage()};
-	if(beanDesigna.getIdPretension()!=null && (!beanDesigna.getIdPretension().toString().equals(""))){
-		datos2[1]= beanDesigna.getIdPretension().toString();
-		idPretensionParamsJSON = "{\"idpretension\":\""+beanDesigna.getIdPretension().toString()+"\"}";
-	}
 	
 	String asterisco = "&nbsp(*)&nbsp";
 	int pcajgActivo = 0;
@@ -344,29 +370,37 @@
 	}
 
 	if (modo1.equals("editar")){
-	 validarProcedimiento = false;
-	 obligatorioProcedimiento = false;
-	 obligatoriojuzgado=false;	
-	 obligatorioModulo=false;
-	 obligatorioTipoDesigna=false;
-	 
+		 validarProcedimiento = false;
+		 obligatorioProcedimiento = false;
+		 obligatoriojuzgado=false;	
+		 obligatorioModulo=false;
+		 obligatorioTipoDesigna=false;
 	}
+	
 	String modoVerReadOnly = String.valueOf(modo.equalsIgnoreCase("ver"));
 	
+	//Combo Pretensiones
+	String idPretensionParamsJSON = "";
+	if(beanDesigna.getIdPretension()!=null){
+		idPretensionParamsJSON = "{\"idpretension\":\""+beanDesigna.getIdPretension().toString()+"\"";
+		comboPretensionesParentQueryIds = "idpretension,";
+	} else {
+		String aux = "-2";
+		idPretensionParamsJSON = "{\"idpretension\":\""+aux+"\"";
+	}
+	
 	String comboPretensiones = "getPretensiones";
-	comboPretensionesParentQueryIds = "idpretension";
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
-	}
-	String sIdJuzgado = "";
-	if (beanDesigna.getIdJuzgado() != null)
-		sIdJuzgado = beanDesigna.getIdJuzgado().toString();
-	if (!"".equals(idPretensionParamsJSON)){
-		idPretensionParamsJSON = idPretensionParamsJSON.substring(0, idPretensionParamsJSON.length()-1);			
-		idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
-	} else {
-		idPretensionParamsJSON = "{\"idjuzgado\":\""+sIdJuzgado+"\"}";
-		comboPretensionesParentQueryIds = "idjuzgado, idpretension";
+		String sIdJuzgado = "";
+		if (beanDesigna.getIdJuzgado() != null){
+			sIdJuzgado = beanDesigna.getIdJuzgado().toString();
+			comboPretensionesParentQueryIds = "idpretension,idjuzgado";
+			idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
+		}
+	}else{
+		comboPretensionesParentQueryIds = "";
+		idPretensionParamsJSON = "";
 	}
 %>	
 
@@ -446,7 +480,6 @@
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
-			cambiarJuzgado(document.getElementById("juzgado"));
 		}
 		
 		//<!-- Asociada al boton Guardar -->
@@ -1058,7 +1091,7 @@
 						
 						<td colspan="7">
 							<%-- Procedimiento --%> 
-							<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>							
+							<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>							
 						</td>
 					</tr>
 					

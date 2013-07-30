@@ -1406,11 +1406,11 @@ String app = request.getContextPath();
 					if (miform.getNIdentificacion() != null) {
 						tipoIdentificacionSel.add(miform.getTipoId());
 					}
-			if (accion.equalsIgnoreCase("ver")) {
+			if (!accion.equalsIgnoreCase("ver")) {
 				String tipoIdent = (String) request.getAttribute("identificacion");
 		%>
 				<script type="text/javascript">jQuery(function(){jQuery("#tipoId").on("change", comprobarTipoIdent());});</script>
-				<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>" required="true"/>
+				<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>"/>
 	    <%
 		 	} else {
 		  %>
@@ -1489,7 +1489,7 @@ String app = request.getContextPath();
 				%>
 			
 			<td>
-				<siga:Select queryId="getTiposVia" id="tipoVia" selectedIds="<%=selTipoVia%>" readOnly="<%=sreadonly%>" width="120"/>	
+				<siga:Select queryId="getTiposVia" id="tipoVia" selectedIds="<%=selTipoVia%>" readOnly="<%=sreadonly%>" width="120" />	
 			</td>
 			
 			<td class="labelText">
