@@ -223,25 +223,14 @@ public class DestinatarioManualAction extends MasterAction {
 			    destinatario.setMovil(form.getMovil());
 			    
 			    
-			    try{
-			        Integer.valueOf(form.getIdPoblacion());
-			        destinatario.setIdPoblacion(form.getIdPoblacion());			    
-			    } catch (NumberFormatException e){
-			        destinatario.setIdPoblacion("");			    
-			    }
-			    try{
-			        Integer.valueOf(form.getIdProvincia());
-			        destinatario.setIdProvincia(form.getIdProvincia());
-			    } catch (NumberFormatException e){
-			        destinatario.setIdProvincia("");
-			    }
-			    try{
-			        Integer.valueOf(form.getIdPais());
-			        destinatario.setIdPais(form.getIdPais());
-			        if (destinatario.getIdPais().equals("")) destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-			    } catch (NumberFormatException e){}
+			    destinatario.setIdPoblacion(form.getIdPoblacion());			    
+		        destinatario.setIdProvincia(form.getIdProvincia());
+			    destinatario.setIdPais(form.getIdPais());
+			    if (destinatario.getIdPais()==null || destinatario.getIdPais().equals("")) 
+			    	destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA);
 
-				destinatario.setPoblacionExtranjera(form.getPoblacionExt());
+			    if(form.getPoblacionExt()!=null && !form.getPoblacionExt().equals(""))
+			    	destinatario.setPoblacionExtranjera(form.getPoblacionExt());
 
 				destinatario.setFax1(form.getFax1());
 				destinatario.setFax2(form.getFax2());
@@ -267,25 +256,14 @@ public class DestinatarioManualAction extends MasterAction {
 			    destinatario.setApellidos1(form.getApellidos1());
 			    destinatario.setApellidos2(form.getApellidos2());
 			    destinatario.setMovil(form.getMovil());
-			    try{
-			        Integer.valueOf(form.getIdPoblacion());
-			        destinatario.setIdPoblacion(form.getIdPoblacion());			    
-			    } catch (NumberFormatException e){
-			        destinatario.setIdPoblacion("");			    
-			    }
-			    try{
-			        Integer.valueOf(form.getIdProvincia());
-			        destinatario.setIdProvincia(form.getIdProvincia());
-			    } catch (NumberFormatException e){
-			        destinatario.setIdProvincia("");
-			    }
-			    try{
-			        Integer.valueOf(form.getIdPais());
-			        destinatario.setIdPais(form.getIdPais());
-			        if (destinatario.getIdPais().equals("")) destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-			    } catch (NumberFormatException e){}
+			    destinatario.setIdPoblacion(form.getIdPoblacion());			    
+		        destinatario.setIdProvincia(form.getIdProvincia());
+			    destinatario.setIdPais(form.getIdPais());
+			    if (destinatario.getIdPais()==null || destinatario.getIdPais().equals("")) 
+			    	destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA);
 
-				destinatario.setPoblacionExtranjera(form.getPoblacionExt());
+			    if(form.getPoblacionExt()!=null && !form.getPoblacionExt().equals(""))
+			    	destinatario.setPoblacionExtranjera(form.getPoblacionExt());
 
 				destinatario.setFax1(form.getFax1());
 				destinatario.setFax2(form.getFax2());
@@ -346,50 +324,38 @@ public class DestinatarioManualAction extends MasterAction {
 			    htPk.put(ExpDestinatariosAvisosBean.C_IDINSTITUCION,form.getIdInstitucion());
 			    htPk.put(ExpDestinatariosAvisosBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
 			    htPk.put(ExpDestinatariosAvisosBean.C_IDPERSONA,form.getIdPersona());
-	    	ExpDestinatariosAvisosBean destBean = null;
+	    	ExpDestinatariosAvisosBean destinatario = null;
 		        try {
-		        	destBean = (ExpDestinatariosAvisosBean)destinatariosAdm.selectByPKForUpdate(htPk).firstElement();
+		        	destinatario = (ExpDestinatariosAvisosBean)destinatariosAdm.selectByPKForUpdate(htPk).firstElement();
 		        } catch (Exception e) {
 		            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
 		        }
 		     // Modificamos los valores que vienen del formulario
 		        // Recordar que el bean guarda en su interior los datos antiguos
-		        destBean.setDomicilio(form.getDomicilio());
-		        destBean.setCodigoPostal(form.getCodigoPostal());
+		        destinatario.setDomicilio(form.getDomicilio());
+		        destinatario.setCodigoPostal(form.getCodigoPostal());
 		        
-		        String idPoblacion="", idProvincia="", idPais="";
-			    try{
-			        Integer.valueOf(form.getIdPoblacion());
-			        destBean.setIdPoblacion(form.getIdPoblacion());			    
-			    } catch (NumberFormatException e){
-			        destBean.setIdPoblacion("");			    
-				}
-			    try{
-			        Integer.valueOf(form.getIdProvincia());
-			        destBean.setIdProvincia(form.getIdProvincia());
-			    } catch (NumberFormatException e){
-			        destBean.setIdProvincia("");
-		    	}
-			    try{
-			        Integer.valueOf(form.getIdPais());
-			        destBean.setIdPais(form.getIdPais());
-			        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-			    } catch (NumberFormatException e){}
+		        destinatario.setIdPoblacion(form.getIdPoblacion());			    
+		        destinatario.setIdProvincia(form.getIdProvincia());
+			    destinatario.setIdPais(form.getIdPais());
+			    if (destinatario.getIdPais()==null || destinatario.getIdPais().equals("")) 
+			    	destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+
+			    if(form.getPoblacionExt()!=null && !form.getPoblacionExt().equals(""))
+			    	destinatario.setPoblacionExtranjera(form.getPoblacionExt());
 		
-			    destBean.setPoblacionExtranjera(form.getPoblacionExt());
-		
-			    destBean.setCorreoElectronico(form.getCorreoElectronico());
-			    destBean.setMovil(form.getMovil());
+			    destinatario.setCorreoElectronico(form.getCorreoElectronico());
+			    destinatario.setMovil(form.getMovil());
 			    
-		        destBean.setFax1(form.getFax1());
-		        destBean.setFax2(form.getFax2());        
+		        destinatario.setFax1(form.getFax1());
+		        destinatario.setFax2(form.getFax2());        
 			    
-			    destBean.setNombre(form.getNombre());
-			    destBean.setApellidos1(form.getApellidos1());
-			    destBean.setApellidos2(form.getApellidos2());
+			    destinatario.setNombre(form.getNombre());
+			    destinatario.setApellidos1(form.getApellidos1());
+			    destinatario.setApellidos2(form.getApellidos2());
 			    
 		        try{
-		        	destinatariosAdm.update(destBean);            
+		        	destinatariosAdm.update(destinatario);            
 			    } catch (Exception exc) {
 			        throwExcp("messages.general.error",new String[] {"modulo.expediente"},exc,null);
 			    }
@@ -403,50 +369,38 @@ public class DestinatarioManualAction extends MasterAction {
 		    htPk.put(EnvDestinatariosBean.C_IDPERSONA,form.getIdPersona());
 		    
 		    //Recupero el bean de la lista
-		    EnvDestinatariosBean destBean = null;
+		    EnvDestinatariosBean destinatario = null;
 	        try {
-	            destBean = (EnvDestinatariosBean)destAdm.selectByPKForUpdate(htPk).firstElement();
+	            destinatario = (EnvDestinatariosBean)destAdm.selectByPKForUpdate(htPk).firstElement();
 	        } catch (Exception e) {
 	            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
 	        }
 	        // Modificamos los valores que vienen del formulario
 	        // Recordar que el bean guarda en su interior los datos antiguos
-	        destBean.setDomicilio(form.getDomicilio());
-	        destBean.setCodigoPostal(form.getCodigoPostal());
+	        destinatario.setDomicilio(form.getDomicilio());
+	        destinatario.setCodigoPostal(form.getCodigoPostal());
 	        
-	        String idPoblacion="", idProvincia="", idPais="";
-		    try{
-		        Integer.valueOf(form.getIdPoblacion());
-		        destBean.setIdPoblacion(form.getIdPoblacion());			    
-		    } catch (NumberFormatException e){
-		        destBean.setIdPoblacion("");			    
-			}
-		    try{
-		        Integer.valueOf(form.getIdProvincia());
-		        destBean.setIdProvincia(form.getIdProvincia());
-		    } catch (NumberFormatException e){
-		        destBean.setIdProvincia("");
-	    	}
-		    try{
-		        Integer.valueOf(form.getIdPais());
-		        destBean.setIdPais(form.getIdPais());
-		        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-		    } catch (NumberFormatException e){}
-	
-		    destBean.setPoblacionExtranjera(form.getPoblacionExt());
-	
-		    destBean.setCorreoElectronico(form.getCorreoElectronico());
-		    destBean.setMovil(form.getMovil());
+	        destinatario.setIdPoblacion(form.getIdPoblacion());			    
+	        destinatario.setIdProvincia(form.getIdProvincia());
+		    destinatario.setIdPais(form.getIdPais());
+		    if (destinatario.getIdPais()==null || destinatario.getIdPais().equals("")) 
+		    	destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+
+		    if(form.getPoblacionExt()!=null && !form.getPoblacionExt().equals(""))
+		    	destinatario.setPoblacionExtranjera(form.getPoblacionExt());
 		    
-	        destBean.setFax1(form.getFax1());
-	        destBean.setFax2(form.getFax2());        
+		    destinatario.setCorreoElectronico(form.getCorreoElectronico());
+		    destinatario.setMovil(form.getMovil());
 		    
-		    destBean.setNombre(form.getNombre());
-		    destBean.setApellidos1(form.getApellidos1());
-		    destBean.setApellidos2(form.getApellidos2());
+	        destinatario.setFax1(form.getFax1());
+	        destinatario.setFax2(form.getFax2());        
+		    
+		    destinatario.setNombre(form.getNombre());
+		    destinatario.setApellidos1(form.getApellidos1());
+		    destinatario.setApellidos2(form.getApellidos2());
 		    
 	        try{
-	            destAdm.update(destBean);            
+	            destAdm.update(destinatario);            
 		    } catch (Exception exc) {
 		        throwExcp("messages.general.error",new String[] {"modulo.envios"},exc,null);
 		    }
