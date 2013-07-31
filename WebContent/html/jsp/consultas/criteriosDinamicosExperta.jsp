@@ -44,8 +44,6 @@
 %>
 
 
-
-	
 	    <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -136,7 +134,7 @@
 			</td>
 			
 			<td>			
-				<select id="operacion<%=i%>"  name="criteriosDinamicos[<%=i%>].op" class = "boxCombo">
+				<select id="operacion<%=i%>"  name="criteriosDinamicos[<%=i%>].op" class = "boxCombo" onchange="accionComboCriterios(<%=i%>)">
 					<% 
 					
 					Vector o = (Vector)operaciones.elementAt(i);
@@ -168,7 +166,7 @@
 				<td>
 				
 				<% if (valores.get(i)!=null){%>
-				<select id="valor<%=i%>" nulo="<%=valorNulo.booleanValue()%>" name="criteriosDinamicos[<%=i%>].val" class = "boxCombo">
+				<select id="valor<%=i%>" nulo="<%=valorNulo.booleanValue()%>" name="criteriosDinamicos[<%=i%>].val" class = "boxCombo" >
 				
 				
 					<% if(valorNulo.booleanValue())%>
@@ -193,6 +191,16 @@
 					<a href='javascript://'onClick="return showCalendarGeneral(valor<%=i%>);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}else if (numerico){%>
 					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>" name="criteriosDinamicos[<%=i%>].val" class="box" value="<%=valorDefecto%>" maxlength="<%=max%>"></input>
+					
+					<script type="text/javascript">
+						jQuery.noConflict();
+						var ident = "#valor<%=i%>";
+						jQuery(ident).keypress(function (e) {
+	   						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+	               				return false;
+	   					});
+					</script>					
+					
 				<%}else{%>
 					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>" name="criteriosDinamicos[<%=i%>].val" value="<%=valorDefecto%>" class="box" maxlength="<%=max-1%>"></input>	
 				<%}%>
@@ -297,6 +305,16 @@
 		{		
 			cadena=cadena.replace("\"","#@#");
 		}	
+        
+        function accionComboCriterios(index) {	
+        	var operacion = document.getElementById("operacion"+index+"").value;
+        	if(operacion == "20" || operacion == "21" || operacion == "22" || operacion == "23"){ //operaciones de esta vacio
+        		document.getElementById("valor"+index+"").value = "";
+        		document.getElementById("valor"+index+"").disabled = "disabled";
+        	}else{
+        		document.getElementById("valor"+index+"").disabled = "";
+        	}
+		}
         
         
 	</script>
