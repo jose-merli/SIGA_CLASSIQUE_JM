@@ -94,38 +94,36 @@
 		tipoIdentificacionDenunciado = "expedientes.auditoria.literal.nie";
 	}
 	
-	String nombreTamanio=""+form.getNombreDenunciado().length();
+	String nombreTamanio=""+(form.getNombreDenunciado().length() + 3);
 	if(nombreTamanio.equals("0"))
-		nombreTamanio="10";
-	String ape1Tamanio=""+form.getPrimerApellidoDenunciado().length();
+		nombreTamanio="30";
+	String ape1Tamanio=""+(form.getPrimerApellidoDenunciado().length() + 3);
 	if(ape1Tamanio.equals("0"))
-		ape1Tamanio="15";
+		ape1Tamanio="30";
 	String ape2Tamanio=""+form.getSegundoApellidoDenunciado().length();
-	if(ape2Tamanio.equals("0"))
-		ape2Tamanio="15";
+
 	String numColegiadoTamanio= ""+form.getnColDenunciado().length();
-	if(numColegiadoTamanio.equals("0"))
-		numColegiadoTamanio="6";
+	//if(numColegiadoTamanio.equals("0"))
+		numColegiadoTamanio="10";
 	String nifTamanio = ""+form.getNifDenunciado().length();
-	if(nifTamanio.equals("0"))
-		nifTamanio="9";
+	//if(nifTamanio.equals("0"))
+		nifTamanio="10";
 	
 	
-	String nombreDenuncianteTamanio=""+form.getNombreDenunciante().length();
+	String nombreDenuncianteTamanio=""+(form.getNombreDenunciante().length() + 3);
 	if(nombreDenuncianteTamanio.equals("0"))
-		nombreDenuncianteTamanio="10";
-	String ape1DenuncianteTamanio=""+form.getPrimerApellidoDenunciante().length();
+		nombreDenuncianteTamanio="30";
+	String ape1DenuncianteTamanio=""+(form.getPrimerApellidoDenunciante().length() + 3);
 	if(ape1DenuncianteTamanio.equals("0"))
-		ape1DenuncianteTamanio="15";
+		ape1DenuncianteTamanio="30";
 	String ape2DenuncianteTamanio=""+form.getSegundoApellidoDenunciante().length();
-	if(ape2DenuncianteTamanio.equals("0"))
-		ape2DenuncianteTamanio="15";
+
 	String nColDenuncianteTamanio= ""+form.getnColDenunciante().length();
-	if(nColDenuncianteTamanio.equals("0"))
-		nColDenuncianteTamanio="6";
+	//if(nColDenuncianteTamanio.equals("0"))
+		nColDenuncianteTamanio="10";
 	String nifDenuncianteTamanio = ""+form.getNifDenunciante().length();
-	if(nifDenuncianteTamanio.equals("0"))
-		nifDenuncianteTamanio="9";
+	//if(nifDenuncianteTamanio.equals("0"))
+		nifDenuncianteTamanio="10";
 	
 	String nombreRelacion ="";
 	Boolean tieneExpeRelacionado= false;
@@ -1625,21 +1623,21 @@
 
 	<!-- FILA -->
 		<tr>
-			<td class="labelText">
-				<siga:Idioma key="<%=tipoIdentificacionDenunciado%>"/>&nbsp;&nbsp;&nbsp;&nbsp;(*)
+			<td class="labelText" width="55">
+				<siga:Idioma key="<%=tipoIdentificacionDenunciado%>"/>&nbsp;&nbsp;(*)
 			</td>				
 			<td width="<%=nifTamanio%>">				
 				<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>"  property="nifDenunciado" styleId="nifDenunciado" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText"  NOWRAP >
+			<td class="labelText"  NOWRAP  width="95">
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
 			<td width="<%=numColegiadoTamanio%>" >
 				<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" styleId="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" >
+			<td class="labelText" width="60">
 				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado" styleId="idPersonaDenunciado"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado" styleId="idInstitucionOrigenDenunciado"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado" styleId="idDireccionDenunciado"/>
@@ -1711,7 +1709,7 @@
 
 	<!-- FILA -->
 		<tr>
-			<td class="labelText">
+			<td class="labelText" width="55">
 				<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>				
 				
@@ -1719,14 +1717,14 @@
 				<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleId="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText"  NOWRAP >
+			<td class="labelText"  NOWRAP width="95">
 				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 			</td>
 			<td width="<%=nColDenuncianteTamanio%>" >
 				<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" styleId="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 
-			<td class="labelText" >
+			<td class="labelText" width="60">
 				<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciante"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciante"/>
 				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciante"/>
