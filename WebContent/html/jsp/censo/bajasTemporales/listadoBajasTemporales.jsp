@@ -11,6 +11,7 @@
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -75,13 +76,15 @@
 </div>
 
 
-<table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' >
+<table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'>
+	<%String fechaAct = UtilidadesBDAdm.getFechaBD("");%>
 	<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
-			<%index = index-1; %>
+			<%index = index-1;%>
 			<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
 			<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
-				  
+			<c:set var="fechaActual" value="<%=fechaAct%>"/>
+			<c:set var="disab" value=""/>
 			<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
 			<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
 			<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
@@ -91,6 +94,11 @@
 			<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
 			<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
 			
+			<c:if test="${fechaActual > bajaTemporalForm.fechaHasta}">
+				<%botones = "";%>
+				<c:set var="disab" value="disabled"/>
+			</c:if>
+			
 			<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
 	  			pintarEspacio="no"
 	  			visibleConsulta="no"
@@ -98,7 +106,7 @@
 	  			clase="listaNonEdit">
 	  			
 				<td align='center' width='5%'>
-					<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales"  > 					
+					<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales" ${disab}>
  				</td>
  				
 				<td align='center' width='8%'>
@@ -194,6 +202,25 @@
 		</tr>
 	</table>
 	
+				<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
+			<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
+				<table align="center" border="0">
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.gestionInscripciones.vertodas" /> 
+							<c:choose>
+								<c:when test="${BajasTemporalesForm.incluirRegistrosConBajaLogica != null && BajasTemporalesForm.incluirRegistrosConBajaLogica == 'S'}">
+									<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked/>
+								</c:when>
+								<c:otherwise>
+									<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);"/>
+								</c:otherwise>
+							</c:choose>	
+						</td>							
+					</tr>
+				</table>
+			</div>
+	
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action="${path}"  name="FormBajasTemporales"
@@ -208,6 +235,7 @@
 		<html:hidden styleId="fechaHasta"   property="fechaHasta" />
 		<html:hidden styleId="tipo" property="tipo" />
 		<html:hidden styleId="datosSeleccionados" property="datosSeleccionados" />
+		<html:hidden styleId="incluirRegistrosConBajaLogica"   property="incluirRegistrosConBajaLogica" />
 		<input type="hidden" id="actionModal" name="actionModal" />
 	</html:form>
 </c:if>
@@ -229,12 +257,7 @@
 		if (messageError)
 			alert(messageError);
 		
-
-
-
-
 if(document.getElementById("chkGeneral")){
-
 	  marcarDesmarcarTodos(document.getElementById("chkGeneral"));
 }
 
@@ -242,6 +265,34 @@ if(!document.getElementById('idBusqueda')){
 	setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
 	setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
 }
+
+// Funcion que agrega el concepto de baja logica
+function incluirRegBajaLogica(o) {
+	if (o.checked) {
+		document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "S";
+	} else {
+		document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "N";
+	}
+	
+	document.FormBajasTemporales.idPersona.value="${BajasTemporalesForm.idPersona}";
+	document.FormBajasTemporales.modo.value = "verHistorico";
+	document.FormBajasTemporales.submit();
+}
+
+function marcarDesmarcarTodos(o) 
+{ 
+	var ele = document.getElementsByName("chkBajasTemporales");
+	for (i = 0; i < ele.length; i++) {
+		if(ele[i].disabled == false)
+			ele[i].checked = o.checked;
+	}
+}
+
+function refrescarLocal() {	
+	document.FormBajasTemporales.target = "_self";	
+	document.FormBajasTemporales.submit();
+}
+
 </script>
 	
 </body>

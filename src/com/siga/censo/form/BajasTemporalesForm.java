@@ -60,6 +60,7 @@ public class BajasTemporalesForm extends MasterForm {
 	
 	boolean fichaColegial=false; 
 	
+		public String incluirRegistrosConBajaLogica = "N";
 
 	String botones ="";
 	UsrBean usrBean;
@@ -134,6 +135,9 @@ public class BajasTemporalesForm extends MasterForm {
 			bajaTemporalBean.setValidado(validado);
 		if(descripcion!=null && !descripcion.equals(""))
 			bajaTemporalBean.setDescripcion(descripcion);
+		
+		
+		
 		
 		return bajaTemporalBean;
 	}
@@ -371,6 +375,8 @@ public class BajasTemporalesForm extends MasterForm {
 		msgAviso= null;
 		
 		fichaColegial = false;
+		
+		incluirRegistrosConBajaLogica = "N";
 	}
 
 	
@@ -460,6 +466,12 @@ public class BajasTemporalesForm extends MasterForm {
 		this.accion = accion;
 	}
 
+	public String getIncluirRegistrosConBajaLogica() {
+		return this.incluirRegistrosConBajaLogica;
+	}
 	
+	public void setIncluirRegistrosConBajaLogica(String s) {
+		this.incluirRegistrosConBajaLogica = s;
+	}
 	
 }

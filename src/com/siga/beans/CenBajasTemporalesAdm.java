@@ -428,16 +428,20 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 		}
 		StringBuffer sqlFechas = new StringBuffer();
-		if(bajaTemporalForm.getFechaDesde()!=null && !bajaTemporalForm.getFechaDesde().equals("")){
-			sqlFechas.append(" AND TRUNC(BT.FECHABT)>='");
-			sqlFechas.append(bajaTemporalForm.getFechaDesde());
-			sqlFechas.append("'");
-			
-		}else{
-			sqlFechas.append(" AND TRUNC(BT.FECHABT)>=TRUNC(SYSDATE)");
-			bajaTemporalForm.setFechaDesde(GstDate.getHoyJsp());
-			
+		
+		if(bajaTemporalForm.getIncluirRegistrosConBajaLogica() != null && !bajaTemporalForm.getIncluirRegistrosConBajaLogica().equalsIgnoreCase("S")){
+			if(bajaTemporalForm.getFechaDesde()!=null && !bajaTemporalForm.getFechaDesde().equals("")){
+				sqlFechas.append(" AND TRUNC(BT.FECHABT)>='");
+				sqlFechas.append(bajaTemporalForm.getFechaDesde());
+				sqlFechas.append("'");
+				
+			}else{
+				sqlFechas.append(" AND TRUNC(BT.FECHABT)>=TRUNC(SYSDATE)");
+				bajaTemporalForm.setFechaDesde(GstDate.getHoyJsp());
+				
+			}
 		}
+		
 		if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
 			sqlFechas.append(" AND TRUNC(BT.FECHABT)<='");
 			sqlFechas.append(bajaTemporalForm.getFechaHasta());

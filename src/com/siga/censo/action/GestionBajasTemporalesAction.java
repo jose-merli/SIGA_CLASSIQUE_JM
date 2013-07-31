@@ -59,7 +59,7 @@ public class GestionBajasTemporalesAction extends MasterAction {
 					String modo = request.getParameter("modo");
 					if(modo!=null)
 						accion = modo;
-					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir") || accion.equalsIgnoreCase("verHistorico")){
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
 						getAjaxGuardias (mapping, miForm, request, response);
@@ -92,7 +92,7 @@ public class GestionBajasTemporalesAction extends MasterAction {
 						mapDestino = refrescar(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("generarIncidencias")){
 						mapDestino = generarIncidencias(mapping, miForm, request, response);
-					}		
+					}
 					
 					
 					else {
@@ -169,8 +169,13 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
-		String idPersona = request.getParameter("idPersonaPestanha");
+
 		BajasTemporalesForm bajasTemporalesForm = (BajasTemporalesForm) formulario;
+		String idPersona = request.getParameter("idPersonaPestanha");
+		if(idPersona == null){
+			idPersona = bajasTemporalesForm.getIdPersona();
+		}
+		String bajaLogica = request.getParameter("incluirRegistrosConBajaLogica");
 		bajasTemporalesForm.clear();
 		bajasTemporalesForm.setFichaColegial(true);
 		UsrBean usrBean = this.getUserBean(request);
@@ -180,7 +185,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		bajasTemporalesForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
 		String forward = "listadoBajasTemporales";
 		
-
+		if(bajaLogica!=null)
+			bajasTemporalesForm.setIncluirRegistrosConBajaLogica(bajaLogica);
 		 
 		try {
 			BusinessManager bm = getBusinessManager();
