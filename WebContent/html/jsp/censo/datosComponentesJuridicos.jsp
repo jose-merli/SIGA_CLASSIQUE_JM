@@ -252,7 +252,7 @@
 			document.getElementById("colegiadonoabogacia").style.display="none";
 			var lista_tipo = document.getElementById("idTipoColegio1").options;
 			for (i = 0; i < lista_tipo.length; i++) {
-				if (lista_tipo.options[i].value == "5" ) {
+				if (lista_tipo.options[i].value == "1" ) {
 					lista_tipo.options[i].selected = true;
 					document.getElementById("idTipoColegio").value=lista_tipo.options[i].value;
 					break;
