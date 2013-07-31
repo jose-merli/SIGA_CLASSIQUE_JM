@@ -533,12 +533,21 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERO, numero);
 				ArrayList<String> camposAct = new ArrayList<String>();
 				if (juzgado != null && !juzgado.equals("")) {
-					String a[] = juzgado.split(",");
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
-					camposAct.add(ScsAsistenciasBean.C_JUZGADO);
-					camposAct.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
-				}
+					if (juzgado.startsWith("{")){
+						// ES UN JSON
+						HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(juzgado, HashMap.class);
+						UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, hmIdJuzgadoObtenido.get("idjuzgado"));
+						UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, hmIdJuzgadoObtenido.get("idinstitucion"));
+						camposAct.add(ScsAsistenciasBean.C_JUZGADO);
+						camposAct.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);							
+					} else {
+						String a[] = juzgado.split(",");
+						UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
+						UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
+						camposAct.add(ScsAsistenciasBean.C_JUZGADO);
+						camposAct.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);						
+					}
+				}				
 
 				if (comisaria != null && !comisaria.equals("")) {
 					String a[] = comisaria.split(",");
