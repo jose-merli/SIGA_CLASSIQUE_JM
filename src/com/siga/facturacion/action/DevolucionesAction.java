@@ -271,10 +271,50 @@ public class DevolucionesAction extends MasterAction {
 		return result;
 	}
 	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			DevolucionesForm form = (DevolucionesForm) formulario;
+			UsrBean usr = this.getUserBean(request);
+			String personasDiferentes = "";
+			
+			Integer idInstitucion 	= new Integer(usr.getLocation());
+			String datosFacturas = form.getDatosFacturas();
+			String strFacturas[]  = null;
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
+			
+			if (datosFacturas != null) {
+				strFacturas = datosFacturas.split("##");
+				String idFactura = strFacturas[0];
+				personasDiferentes = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
+				
+				Hashtable claves = new Hashtable();
+				UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+				UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
+				
+				Vector vFactura = facturaAdm.select(claves);
+				FacFacturaBean facturaBean = null;
+				if (vFactura != null) {
+					facturaBean = (FacFacturaBean) vFactura.get(0);
+					request.setAttribute("factura", 			facturaBean);
+				}
+				
+				if (Integer.parseInt(personasDiferentes) > 1) 
+					request.setAttribute("pagoBanco", "0");
+				else request.setAttribute("pagoBanco", "1");
 
-		DevolucionesForm form = (DevolucionesForm) formulario;
-		String datosFacturas = form.getDatosFacturas();
-		request.setAttribute("datosFacturas", datosFacturas);
+				
+				request.setAttribute("datosFacturas", datosFacturas);
+			} else{
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorLectura");
+				return "nuevo";
+			}
+
+			
+			
+			
+		
+		} catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
+		}
 		return "renegociar";
 	}
 

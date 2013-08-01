@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
 <head>
 <!-- facturaPagos.jsp -->
@@ -47,7 +47,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 
-		
 		Hashtable datos = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 		String  idFactura = (String)request.getAttribute("idFactura");
 		Integer idInstitucion = (Integer)request.getAttribute("idInstitucion");
@@ -81,27 +80,16 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			if (totalBanco==null) totalBanco = new Double(0.0);
 			if (totalCompensado==null) totalCompensado = new Double(0.0);
 			
-			// RGG 11/01/2007
-			// RGG 11/01/2007 Se quita porque la funcion de pagos solo caja ya lo resta
-			//if ((totalCaja != null) && (totalCompensado != null)) {
-			//	totalCaja = new Double(totalCaja.doubleValue() - totalCompensado.doubleValue());
-			//}
-			
-			// RGG 05-09-2005 miro la forma de pago para sumar el anticipado a los totales pagados
 			totalAnticipado   = UtilidadesHash.getDouble(hTotales, "TOTAL_ANTICIPADO");
 			if (totalAnticipado==null) totalAnticipado = new Double(0.0);
 			formaPagoFactura   = (UtilidadesHash.getInteger(hTotales, "FORMAPAGOFACTURA")).intValue();
-			// RGG 02/01/2007 cambio para separar los totales anticipados
 			if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_TARJETA) {
-//				totalTarjeta = new Double(totalTarjeta.doubleValue() +  totalAnticipado.doubleValue());
 				totalTarjeta = new Double(totalTarjeta.doubleValue());
 			} else
 			if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_FACTURA) {
-//				totalBanco = new Double(totalBanco.doubleValue() +  totalAnticipado.doubleValue());
 				totalBanco = new Double(totalBanco.doubleValue());
 			} else
 			if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO) {
-//				totalCaja = new Double(totalCaja.doubleValue() +  totalAnticipado.doubleValue());
 				totalCaja = new Double(totalCaja.doubleValue());
 			}
 		
@@ -115,30 +103,33 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		if ((modoRegistroBusqueda != null) && (!modoRegistroBusqueda.equalsIgnoreCase("ver"))) {
 		
 			if (estadoFactura != null) {
-			
-				// MAV 7/7/05 a instancias de JG
-				//if ((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO) && user.isLetrado()){
-				if ((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO || 
-					(estadoFactura.intValue() == ConsPLFacturacion.RENEGOCIADA && formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO)
+				if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)  
+						|| ((formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO)
+								&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_ANULADA))
+								&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_PAGADA))
+								&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)))
 				    ) && !user.isLetrado()){
 					mostrarBotonPago = true;
 				}
 			
-				if ((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO || 
-					(estadoFactura.intValue() == ConsPLFacturacion.RENEGOCIADA && (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_TARJETA || formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO))
-				    ) && !user.isLetrado()){
+				if (((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))  
+						|| (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_TARJETA || formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO
+						&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_ANULADA))
+						&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_PAGADA))
+						&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA))
+				     ))&& !user.isLetrado()){
 					mostrarBotonTarjeta = true;
 				}
-				
-				// MAV 7/7/05 a instancias de JG
-				//if ((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO) || 
-				//    (estadoFactura.intValue() == ConsPLFacturacion.DEVUELTA       ) || 
-				//    (estadoFactura.intValue() == ConsPLFacturacion.RENEGOCIADA)   ) {
-				if (((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO) || 
-				    (estadoFactura.intValue() == ConsPLFacturacion.DEVUELTA       ) || 
-				    (estadoFactura.intValue() == ConsPLFacturacion.RENEGOCIADA)   ) && !user.isLetrado()){
+
+				if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))
+				     && !user.isLetrado() || (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO))){
 				    mostrarBotonRenegociar = true;
 				}
+				if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA) 
+					    ) && !user.isLetrado()){
+					mostrarBotonRenegociar = true;
+					}				
+				
 			}
 		}
 		
@@ -146,7 +137,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		if ((modoRegistroBusqueda != null) && (modoRegistroBusqueda.equalsIgnoreCase("ver"))) {
 		
 			if (estadoFactura != null) {
-				if ((estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO) && user.isLetrado()){
+				if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) && user.isLetrado()){
 					mostrarBotonTarjeta = true;
 				}
 			}
@@ -233,13 +224,15 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			   name = "tablaResultados"
 			   border  = "2"
 			   columnNames="facturacion.pagosFactura.literal.Fecha,
-			   						facturacion.pagosFactura.literal.MedioPago,
-			   						facturacion.pagosFactura.literal.Devolucion,
+			   						Acción,
+			   						Estado,
 			   						facturacion.pagosFactura.literal.Importe,
 			   						facturacion.pagosFactura.literal.Pendiente,"
 
-			   columnSizes = "10,50,10,10,10,10"
-			   modal = "M">
+			   columnSizes = "10,20,30,10,10,10"
+			   fixedHeight="320"
+			   modal = "M"
+			   modalScroll="true">
 	
 			<%	 
 				if ((vPagos != null) && (vPagos.size() > 0)){
@@ -250,10 +243,10 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 					 if (pago != null){ 
 					 
 							String tabla = UtilidadesHash.getString(pago, "TABLA").trim();
+							String estado = UtilidadesHash.getString(pago, "ESTADO");
 							String fecha = UtilidadesHash.getString(pago, "FECHA");
 							Double importe = UtilidadesHash.getDouble(pago, "IMPORTE");
 							String tarjeta = UtilidadesHash.getString(pago, "TARJETA");
-							String devuelta = UtilidadesHash.getString(pago, "DEVUELTA");
 							String numAbono = UtilidadesHash.getString(pago, "NUMEROABONO");
 							Integer idAbonoCuenta = UtilidadesHash.getInteger(pago, "IDABONO_IDCUENTA");
 							Integer idPago = UtilidadesHash.getInteger(pago, "IDPAGO");
@@ -262,45 +255,25 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 						 	String medioPago = "";
 						 	Double devolucion = new Double(0);
 	
-							if (tabla.equals("PAGOS_POR_CAJA")) {
-								if (tarjeta.equalsIgnoreCase("S")) {
-									medioPago = "TARJETA";
-								}
-								else {
-									if (idAbonoCuenta != null) {
-										medioPago = (UtilidadesString.getMensajeIdioma(user,"messages.abonos.literal.compensa")).toUpperCase() + " " + numAbono;
-									}
-									else {
-										medioPago = "CAJA";
-									}
-								}
-							}
-							else if (tabla.equals("FACTURA_EN_DISCO")) {
-							  if (!nombreBanco.equalsIgnoreCase("")){
-								medioPago = "BANCO " + String.valueOf(idAbonoCuenta)+" - "+nombreBanco;
-							  }else{
-							    medioPago = "BANCO " + String.valueOf(idAbonoCuenta);
-							  }	
-								if (devuelta.equalsIgnoreCase("S")) {
-									devolucion = new Double (importe.doubleValue());
-								}
-							}
-							else if (tabla.equals("ANTICIPADO")) {
-								medioPago = "ANTICIPADO";
-							}
-	
-							if (i == 1) {
-								// RGG 02/01/2007 CAMBIO DE PENDIENTE DE PAGO 
-								pendiente	= new Double(total.doubleValue() - importe.doubleValue() + devolucion.doubleValue());
+							if (tabla.equals("EMISIÓN FACTURA")) { 
+								pendiente	= new Double(total.doubleValue());
+								importe = new Double(0);
 								if (pendiente.doubleValue() < 0.0) {
 									pendiente = new Double(0.0);
 								}
 							}
 							else {
-								// RGG 02/01/2007 CAMBIO DE PENDIENTE DE PAGO 
-								pendiente = new Double (pendiente.doubleValue() - importe.doubleValue() + devolucion.doubleValue());
-								if (pendiente.doubleValue() < 0.0) {
-									pendiente = new Double(0.0);
+								if ("DEVOLUCIÓN".equals(tabla.substring(0,10)) || tabla.equals("RENEGOCIACIÓN")) {
+									pendiente = new Double (importe.doubleValue());
+									importe = new Double(0);
+									if (pendiente.doubleValue() < 0.0) {
+										pendiente = new Double(0.0);
+									}
+								} else {
+									pendiente = new Double (pendiente.doubleValue() - importe.doubleValue() + devolucion.doubleValue());
+									if (pendiente.doubleValue() < 0.0) {
+										pendiente = new Double(0.0);
+									}									
 								}
 							}
 							
@@ -314,11 +287,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 						%>
 
 
-							<siga:FilaConIconos fila='<%=""+i%>' botones="<%=botones%>" visibleEdicion="false" visibleBorrado="false" clase="listaNonEdit">
+							<siga:FilaConIconos fila='<%=""+i%>' botones="<%=botones%>" visibleEdicion="false" visibleBorrado="false" clase="listaNonEdit"  >
 							<td><input type="hidden" id="oculto<%=i%>_1" value="<%=idPago%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%></td>
-							<td><%=UtilidadesString.mostrarDatoJSP(medioPago)%></td>
-							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(devolucion.doubleValue()))%></td>
+							<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
+							<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
 							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
 							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(auxPendiente.doubleValue()))%></td>
 							</siga:FilaConIconos>
@@ -326,7 +299,6 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		<%	 		 } // if
 			 	 }  // for  %>
 				<% } // if  %>
-
 			</siga:Table> 
 	
 	<div id="totales" style="bottom:70px; left:200px; position:absolute; width:295px">

@@ -194,6 +194,26 @@ public class ClsConstants {
 	public static final int TIPO_FORMAPAGO_EFECTOS = 60;
 	public static final int TIPO_FORMAPAGO_RECIBO_CUENTA = 70;
 	
+	//Estado Facturas
+	public static final String ESTADO_FACTURA_PAGADA     = "1";
+	public static final String ESTADO_FACTURA_CAJA       = "2";
+	public static final String ESTADO_FACTURA_BANCO      = "5";
+	public static final String ESTADO_FACTURA_ENREVISION = "7";
+	public static final String ESTADO_FACTURA_ANULADA    = "8";
+	public static final String ESTADO_FACTURA_DEVUELTA   = "4";
+	
+	public static final String ESTADO_ABONO_BANCO        = "5";
+	public static final String ESTADO_ABONO_CAJA         = "6";
+	
+	public static final String TX_PAGADO 				 	= "general.literal.pagado";
+	public static final String TX_PENDIENTE_CAJA 			= "general.literal.pendientecobro";
+	public static final String TX_PENDIENTE_BANCO 			= "general.literal.pendientecobrobanco";
+	public static final String TX_PENDIENTE_ABONO_BANCO 	= "general.literal.pendienteabonobanco";
+	public static final String TX_PENDIENTE_ABONO_CAJA  	= "general.literal.pendienteabonocaja";
+	public static final String TX_EN_REVISION  				= "general.literal.enRevision";
+	public static final String TX_ANULADA  				    = "general.factura.anulada";	
+	public static final String TX_DEVUELTA 				 	= "general.literal.devuelta";
+	
 	// Estado Productos
 	public static final String PRODUCTO_PENDIENTE	= "P";
 	public static final String PRODUCTO_ACEPTADO	= "A";

@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -81,7 +82,8 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				}
 
 				if (accion.equalsIgnoreCase("insertarRenegociar")){
-					mapDestino = insertarRenegociar(mapping, miForm, request, response);
+				//	mapDestino = insertarRenegociar(mapping, miForm, request, response);
+					mapDestino = renegociar(mapping, miForm, request, response);
 					break;
 				}
 
@@ -298,19 +300,41 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		        
 		        if (facturaBean.getImpTotalPorPagar() >= 0) {
 			
-		        	if(pagosAdm.insert(pagoBean)) {
-			        
-		        		if (facturaAdm.update(facturaBean)) {
-				        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-		        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
-		        			t.commit();
-		        		} else {
-		        			t.rollback();
-		        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
-		        		}
-		        	} else {
+		        	if ((GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 1 )) { 
+		        			//|| (GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 0 )) {
+		        	
+			        	if(pagosAdm.insert(pagoBean)) {
+				        
+			        		if (facturaAdm.update(facturaBean)) {
+					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
+			        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+			        			t.commit();
+			        		} else {
+			        			t.rollback();
+			        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+			        		}
+			        	} else {
+			        		t.rollback();
+			        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
+			        	}
+		        	} else if (GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 0 ) {
+			        	if(pagosAdm.insert(pagoBean)) {
+					        
+			        		if (facturaAdm.update(facturaBean)) {
+					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
+			        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+			        			t.commit();
+			        		} else {
+			        			t.rollback();
+			        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+			        		}
+			        	} else {
+			        		t.rollback();
+			        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
+			        	}
+		        	} else {	
 		        		t.rollback();
-		        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
+		        		return exito("error en la fecha", request);
 		        	}
 				
 		        } 
@@ -356,10 +380,13 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			// Obtenemos el estado de la factura
 			//Integer estadoFactura = facturaAdm.getEstadoFactura(idInstitucion, idFactura);
 			Integer estadoFactura = facturaBean.getEstado();
-			
+					
 			// Obtenemos el numero de cuenta
 			String numeroCuenta = "";
 			String codigoEntidad="";
+			String cuentaBancariaFactura = "";
+			String idCuentaUnica = "";
+			String numerocuentaBancariaUnica = "";
 			claves.clear();
 			UtilidadesHash.set(claves, CenCuentasBancariasBean.C_IDINSTITUCION, facturaBean.getIdInstitucion());
 			if ( facturaBean.getIdCuentaDeudor()!=null &&  !facturaBean.getIdCuentaDeudor().equals("")){
@@ -375,22 +402,38 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			if ((vCuentas != null) && (vCuentas.size() == 1)) {
 				numeroCuenta = ((CenCuentasBancariasBean) vCuentas.get(0)).getNumeroCuenta();
 				codigoEntidad=((CenCuentasBancariasBean) vCuentas.get(0)).getCbo_Codigo();
+				String idPersona = ((CenCuentasBancariasBean) vCuentas.get(0)).getIdPersona().toString();
+				String idCuenta =((CenCuentasBancariasBean) vCuentas.get(0)).getIdCuenta().toString();
+			    cuentaBancariaFactura = cuentasAdm.getNumeroCuentaFactura(idInstitucion.toString(), idPersona, idCuenta);
 			}
 
+			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
+				cuentaBancariaFactura ="";
+			}
+			
 			FacFacturaAdm admFac = new FacFacturaAdm(this.getUserBean(request));
 			request.setAttribute("factura", 			facturaBean);
 			request.setAttribute("importePendiente",	admFac.getImportePendientePago(miForm.getIdInstitucion().toString(),miForm.getIdFactura()));
 			request.setAttribute("estadoFactura", 		estadoFactura);
 			request.setAttribute("numeroCuenta", 		numeroCuenta);
 			request.setAttribute("codigoEntidad", 		codigoEntidad);
+			request.setAttribute("cuentaBancariaFactura", 		cuentaBancariaFactura);
+			
 			CenCuentasBancariasBean cuentaBancaria = cuentasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
 			if(cuentaBancaria!=null){
-				cuentaBancaria = cuentasAdm.getCuenta(cuentaBancaria);
-				
+				numerocuentaBancariaUnica = cuentasAdm.getNumeroCuentaFactura(idInstitucion.toString(), cuentaBancaria.getIdPersona().toString(), cuentaBancaria.getIdCuenta().toString());
+				idCuentaUnica = cuentaBancaria.getIdCuenta().toString();
 			}else{
 				cuentaBancaria = new CenCuentasBancariasBean();	
 			}
+
+			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
+				idCuentaUnica ="";
+			}			
+			
+			request.setAttribute("idCuentaUnica",idCuentaUnica);
 			request.setAttribute("cuentaUnicaServicios",cuentaBancaria);
+			request.setAttribute("numerocuentaBancariaUnica",numerocuentaBancariaUnica);
 			
 			
 		} 
@@ -410,7 +453,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 * @exception  SIGAException  Errores de aplicación
 	 */
-	protected String insertarRenegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+/*	protected String insertarRenegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
@@ -432,11 +475,13 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
 		}				
 		return exitoModal("messages.inserted.success", request);
-	}
+	}*/
 	
 	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		String forward = "exception";
 		UserTransaction tx 	= null;
+		String strFacturas[]  = null;
+		String personasDiferentes = "";
 		try {
 			
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
@@ -446,9 +491,19 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			Facturacion facturacion = new Facturacion(usr);
 			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 			String datosFacturas = miForm.getDatosFacturas();
-			String strFacturas[] = datosFacturas.split("##");
+			String idcuenta = "0";
+			if (miForm.getDatosPagosRenegociarIdCuenta() != null){
+				idcuenta = miForm.getDatosPagosRenegociarIdCuenta().toString();
+			}
+			if ("0".equals(idcuenta)) {
+				idcuenta = miForm.getIdCuentaUnica();
+			}
+			if (datosFacturas == null) 
+				strFacturas		= miForm.getIdFactura().split("##");
+				else strFacturas = datosFacturas.split("##");
 			
 			Vector factDevueltasYRenegociadas = facturaAdm.getFacturasDevueltas(idInstitucion,strFacturas);
+			personasDiferentes = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
 			boolean isTodasRenegociadas = true;
 			tx = usr.getTransactionPesada();
 			tx.begin();
@@ -458,25 +513,45 @@ public class GestionarFacturaPagosAction extends MasterAction {
         		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
         		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
         		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
-				try {
-					facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
-							nuevaFormaPago, null,	impTotalPorPagar, 
-								miForm.getDatosPagosRenegociarObservaciones(),true,true,null);	
-				} catch (SIGAException e) {
-					isTodasRenegociadas = false;
-					continue;
-				}
+					if (factDevueltasYRenegociadas.size() == 1){
+					try{	
+						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
+								nuevaFormaPago, idcuenta,	impTotalPorPagar, 
+								miForm.getDatosPagosRenegociarObservaciones(),true,false,null);
+						
+					}catch (SIGAException e) { 
+						tx.rollback();
+						return exito(e.getLiteral(), request);
+						
+					}
+						
+					} else {
+						try {
+							if ((Integer.parseInt(personasDiferentes) > 1) && (nuevaFormaPago.equalsIgnoreCase("porOtroBanco"))) {
+								isTodasRenegociadas = false;
+								break;
+							} else {
+								facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
+										nuevaFormaPago, idcuenta,	impTotalPorPagar, 
+											miForm.getDatosPagosRenegociarObservaciones(),true,true,null);
+							}
+						} catch (SIGAException e) {
+							isTodasRenegociadas = false;
+							continue;
+						}
+					}
+
         		
 			}
 			tx.commit();
 			
-			if(isTodasRenegociadas){
-				forward = exitoModal("facturacion.renegociacionMasiva.literal.procesoCorrecto",request);
+			if((isTodasRenegociadas) && (factDevueltasYRenegociadas.size() > 1)){
+				forward = exito("facturacion.renegociacionMasiva.literal.procesoCorrectoRenegocia",request);
 				
-			}else{
-				forward=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
+			}else if (isTodasRenegociadas == false) {
+				forward=exito("facturacion.renegociar.aviso.noRenegociadas",request);
 				
-			}
+			} else return exitoModal("messages.inserted.success", request);
 
 		}catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 

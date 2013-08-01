@@ -14,6 +14,7 @@ import com.siga.general.MasterForm;
  */
 public class GestionarFacturaForm extends MasterForm{
 	private String datosFacturas;
+	private String idCuentaUnica;
 	
 	public String getDatosFacturas() {
 		return datosFacturas;
@@ -118,6 +119,9 @@ public class GestionarFacturaForm extends MasterForm{
 		public void setDatosPagosRenegociarEstadoFactura (Integer a) {
 			UtilidadesHash.set(this.datos,"_pagosRenegociar_ESTADOFACTURA_", a);		
 		}
+		public void setDatosPagosRenegociarDevuelta (Integer a) {
+			UtilidadesHash.set(this.datos,"_pagosRenegociar_DEVUELTA_", a);		
+		}		
 		public void setDatosPagosRenegociarImportePendiente (Double a) {
 			UtilidadesHash.set(this.datos,"_pagosRenegociar_IMPORTEPENDIENTE_", a);		
 		}
@@ -130,10 +134,17 @@ public class GestionarFacturaForm extends MasterForm{
 		public void setDatosPagosRenegociarObservaciones (String a) {
 			UtilidadesHash.set(this.datos,"_pagosRenegociar_OBSERVACIONES_", a);		
 		}
+		public void setIdCuentaUnica (String a) {
+			this.idCuentaUnica = a;		
+		}		
+		
 
 		public Integer getDatosPagosRenegociarEstadoFactura () {
 			return UtilidadesHash.getInteger(this.datos,"_pagosRenegociar_ESTADOFACTURA_");		
 		}
+		public Integer getDatosPagosRenegociarDevuelta () {
+			return UtilidadesHash.getInteger(this.datos,"_pagosRenegociar_DEVUELTA_");		
+		}		
 		public Double getDatosPagosRenegociarImportePendiente () {
 			return UtilidadesHash.getDouble(this.datos,"_pagosRenegociar_IMPORTEPENDIENTE_");		
 		}
@@ -143,6 +154,9 @@ public class GestionarFacturaForm extends MasterForm{
 		public Integer getDatosPagosRenegociarIdCuenta () {
 			return UtilidadesHash.getInteger(this.datos,"_pagosRenegociar_IDCUENTA_");		
 		}
+		public String getIdCuentaUnica () {
+			return this.idCuentaUnica;		
+		}		
 		public String getDatosPagosRenegociarObservaciones () {
 			return UtilidadesHash.getString(this.datos,"_pagosRenegociar_OBSERVACIONES_");		
 		}

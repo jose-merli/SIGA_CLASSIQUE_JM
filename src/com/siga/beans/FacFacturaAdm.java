@@ -22,6 +22,8 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.eclipse.persistence.internal.helper.ClassConstants;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -161,7 +163,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			bean.setImpTotalPorPagar(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPORPAGAR));			
 			bean.setImpTotalPagadoSoloCaja(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA));			
 			bean.setImpTotalPagadoSoloTarjeta(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA));			
-			bean.setEstado(UtilidadesHash.getInteger(hash,FacFacturaBean.C_ESTADO));			
+			bean.setEstado(UtilidadesHash.getInteger(hash,FacFacturaBean.C_ESTADO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -1899,6 +1901,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
+
+
 	
 	/**
 	 * Obtiene la descripcion del estado de una factura
@@ -3090,74 +3094,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	}
 
 
-	/** 
-	 * Actualiza estado factura
-	 * 
-	 * @param idinstitucion (Integer) IDINSTITUCION
-	 * @param idfactura (String) IDFACTURA
-	 * @param idusuario (Integer) USUARIO
-	 * @throws ClsExceptions
-	 */	
-	public void actualizarEstadoFactura(Integer idinstitucion, String idfactura, Integer usuario) throws ClsExceptions{
-		try 
-		{
-		    FacFacturaAdm facturaAdm = new FacFacturaAdm(this.usrbean);
-		    Hashtable ht = new Hashtable();
-		    ht.put(FacFacturaBean.C_IDINSTITUCION,idinstitucion);
-		    ht.put(FacFacturaBean.C_IDFACTURA,idfactura);
-		    Vector v = facturaAdm.selectByPK(ht);
-		    String nuevoEstado = ""; 
-		    if (v!=null && v.size()>0) {
-		        FacFacturaBean facturaBean = (FacFacturaBean) v.get(0);
-		        if (facturaBean.getImpTotalPorPagar().intValue()<=0) {
-		            // Está pagada
-		            nuevoEstado = "1";
-		        } else {
-		            // Pendiente de pago
-		            if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
-			            // pendiente pago por caja 
-		                nuevoEstado = "2";
-		            } else {
-		                Hashtable renegociacion = this.getRenegociacionFactura(idinstitucion.toString(),idfactura);
-		                if (renegociacion==null) {
-		                    // La factura esta pendiente de enviar a banco
-		                    nuevoEstado="5";
-		                } else {
-		                    if (renegociacion.get("IDRENEGOCIACION")==null || ((String)renegociacion.get("IDRENEGOCIACION")).trim().equals("")) {
-		                        //La factura esta devuelta y pendiente de renegociacion
-		                        nuevoEstado="4";
-		                    } else {
-		                        // La factura esta renegociada y pendiente de enviar a banco
-		                        nuevoEstado="3";
-		                    }
-		                }
-			            // pendiente pago por banco 
-		                nuevoEstado = "5";
-		            }
-		        }
-		        
-		        facturaBean.setEstado(new Integer(nuevoEstado));
-		        if (!facturaAdm.update(facturaBean)) {
-		            throw new ClsExceptions("Error al actualizar el estado: "+facturaAdm.getError());
-		        }
-		        
-		    } else {
-		        throw new ClsExceptions("No se ha encontrado la factura buscada: "+idinstitucion+ " "+idfactura);
-		    }
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en la actualización del estado de la factura.");
-		}
-	}
-
 	public void actualizarEstadoFactura(FacFacturaBean facturaBean, Integer usuario) throws ClsExceptions{
-		try 
-		{
+		try {
 		    String nuevoEstado="";
+
 		    double cero=0;
 		    if (facturaBean.getImpTotalPorPagar().doubleValue()<=cero) {
 	            // Está pagada
-	            nuevoEstado = "1";
+	            nuevoEstado = ClsConstants.ESTADO_FACTURA_PAGADA;
 	        } else {
 	            // Pendiente de pago
 	        	// BNS 
@@ -3165,42 +3109,26 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
                 if (ultimoFicheroBancarioDeFactura==null) {
                 	if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
     		            // pendiente pago por caja 
-    	                nuevoEstado = "2";
+    	                nuevoEstado = ClsConstants.ESTADO_FACTURA_CAJA;
     	            } else {
 	                    // La factura esta pendiente de enviar a banco
-	                    nuevoEstado="5";
+    	            	nuevoEstado= ClsConstants.ESTADO_FACTURA_BANCO;
     	            }
                 } else {
                     if (ultimoFicheroBancarioDeFactura.get("IDRENEGOCIACION")==null || ((String)ultimoFicheroBancarioDeFactura.get("IDRENEGOCIACION")).trim().equals("")) {
                         //La factura esta devuelta y pendiente de renegociacion
-                        nuevoEstado="4";
+                    	nuevoEstado = ClsConstants.ESTADO_FACTURA_DEVUELTA;
                     } else {
                         // La factura esta renegociada y pendiente de enviar a banco
-                        nuevoEstado="3";
+                    	if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
+        		            // pendiente pago por caja 
+        	                nuevoEstado = ClsConstants.ESTADO_FACTURA_CAJA;
+        	            } else {
+    	                    // La factura esta pendiente de enviar a banco
+        	            	nuevoEstado= ClsConstants.ESTADO_FACTURA_BANCO;
+        	            }
                     }
                 }
-	        	/*
-	            if (facturaBean.getIdCuenta()==null && facturaBean.getIdCuentaDeudor()==null) {
-		            // pendiente pago por caja 
-	                nuevoEstado = "2";
-	            } else {
-	                Hashtable renegociacion = this.getRenegociacionFactura(facturaBean.getIdInstitucion().toString(),facturaBean.getIdFactura().toString());
-	                if (renegociacion==null) {
-	                    // La factura esta pendiente de enviar a banco
-	                    nuevoEstado="5";
-	                } else {
-	                    if (renegociacion.get("IDRENEGOCIACION")==null || ((String)renegociacion.get("IDRENEGOCIACION")).trim().equals("")) {
-	                        //La factura esta devuelta y pendiente de renegociacion
-	                        nuevoEstado="4";
-	                    } else {
-	                        // La factura esta renegociada y pendiente de enviar a banco
-	                        nuevoEstado="3";
-	                    }
-	                }
-		            // pendiente pago por banco 
-	                nuevoEstado = "5";
-	            }
-	            */
 	        }
 		    Hashtable ht = new Hashtable();
 		    ht.put(FacFacturaBean.C_IDINSTITUCION,facturaBean.getIdInstitucion());
@@ -3301,49 +3229,108 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
-	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas)
-	throws ClsExceptions,SIGAException
-{
-	Vector factDevueltasYRenegociadas=new Vector();
 	
-	try {
-		Hashtable codigosHashtable = new Hashtable();
-		int contador = 0;
+	/**
+	 *Comprueba si se han seleccionado personas diferentes
+	 * @param form Formulario con los criterios
+	 * @param idInstitucionAlta,usuario
+	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * @throws ClsExceptions
+	 */
+	public String getSelectPersonas(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
+		String diferentes = "";
 		RowsContainer rc = new RowsContainer();
-		StringBuffer sql = new StringBuffer();
-		sql.append(" ");
-		
-		sql.append(" SELECT FAC.NUMEROFACTURA,FAC.IDFACTURA,FAC.IDINSTITUCION,FAC.ESTADO,FAC.IMPTOTALPORPAGAR "); 
-		sql.append(" from FAC_FACTURA FAC ");
-		sql.append(" WHERE FAC.ESTADO IN (4) ");
-		sql.append(" AND IDINSTITUCION = :");
-		contador ++;
-		sql.append(contador);
-		codigosHashtable.put(new Integer(contador),idInstitucion);
-		sql.append(" AND FAC.IDFACTURA IN ( ");
-		for (int i = 0; i < strFacturas.length; i++) {
-			String factura = strFacturas[i];
+		try {
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion.toString());
+		    StringBuffer sql = new StringBuffer();
+		    Hashtable codigosHashtable = new Hashtable();
+			int contador = 0;
+		    
+			sql.append  ("Select Count(distinct ("+ FacFacturaBean.C_IDPERSONA + ")) As personas ");
+			sql.append  ("  From  " + FacFacturaBean.T_NOMBRETABLA);
+			sql.append  (" Where " + FacFacturaBean.C_IDINSTITUCION + " = :");
 			contador ++;
-			sql.append(":");
 			sql.append(contador);
-			if(i!=strFacturas.length-1)
-				sql.append(",");
-			codigosHashtable.put(new Integer(contador),factura);
-		}
-		sql.append(" )");
+			codigosHashtable.put(new Integer(contador),idInstitucion);
+			sql.append  ("   And " + FacFacturaBean.C_IDFACTURA + " in ( "); 
+			for (int i = 0; i < strFacturas.length; i++) {
+				String factura = strFacturas[i];
+				contador ++;
+				sql.append(":");
+				sql.append(contador);
+				if(i!=strFacturas.length-1)
+					sql.append(",");
+				codigosHashtable.put(new Integer(contador),factura);
+			}
+			sql.append(" )");
+
+			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable resultado = fila.getRow();
+				return diferentes = (String) resultado.get("PERSONAS");
+			}
+			else {
+				return diferentes = "0";
+			}
+		} 	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
+	   			}
+	   		}	
+	    }
+	} // getSelectPersonas()	
+	
+	
+	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas) throws ClsExceptions,SIGAException
+	{
+		Vector factDevueltasYRenegociadas=new Vector();
 		
-		
-		if (rc.findBind(sql.toString(),codigosHashtable)) {
-			for (int i = 0; i < rc.size(); i++){
-				Row fila = (Row) rc.get(i);
-				factDevueltasYRenegociadas.add(fila);
+		try {
+			Hashtable codigosHashtable = new Hashtable();
+			int contador = 0;
+			RowsContainer rc = new RowsContainer();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			
+			sql.append(" SELECT FAC.NUMEROFACTURA,FAC.IDFACTURA,FAC.IDINSTITUCION,FAC.ESTADO,FAC.IMPTOTALPORPAGAR "); 
+			sql.append(" from FAC_FACTURA FAC ");
+			sql.append(" WHERE FAC.ESTADO IN ( "+ ClsConstants.ESTADO_FACTURA_CAJA + ", " + ClsConstants.ESTADO_FACTURA_BANCO + ", " + ClsConstants.ESTADO_FACTURA_DEVUELTA  + ")");
+			sql.append(" AND IDINSTITUCION = :");
+			contador ++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),idInstitucion);
+			sql.append(" AND FAC.IDFACTURA IN ( ");
+			for (int i = 0; i < strFacturas.length; i++) {
+				String factura = strFacturas[i];
+				contador ++;
+				sql.append(":");
+				sql.append(contador);
+				if(i!=strFacturas.length-1)
+					sql.append(",");
+				codigosHashtable.put(new Integer(contador),factura);
+			}
+			sql.append(" )");
+			
+			
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					factDevueltasYRenegociadas.add(fila);
+				}
 			}
 		}
-	}
-	catch (Exception e) {
-		throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
-	}
-	
-	return factDevueltasYRenegociadas;                        
-} //getFacturasDevueltasyRenegociadas()
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
+		}
+		
+		return factDevueltasYRenegociadas;                        
+	} //getFacturasDevueltasyRenegociadas()
 }

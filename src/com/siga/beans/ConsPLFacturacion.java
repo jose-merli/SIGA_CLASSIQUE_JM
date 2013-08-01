@@ -4,11 +4,13 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+
 /**
  * Implementa las funciones para el acceso mediante PL
  * 
@@ -22,35 +24,15 @@ public class ConsPLFacturacion {
 	 */
 	public static final String FACTURA 	= "0";
 	public static final String ABONO 	= "1";
-	/**
-	 * Constantes ESTADOS
-	 */
-	public static final int PAGADA 							= 1;
-	public static final int PENDIENTE_COBRO 				= 2;
-	public static final int RENEGOCIADA 					= 3;
-	public static final int DEVUELTA 						= 4;
-	public static final int PENDIENTE_ABONO_BANCO 			= 5;
-	public static final int PENDIENTE_ABONO_CAJA			= 6;
-	public static final int EN_REVISION						= 7;
-	public static final int ANULADA						= 8;
+
 	/**
 	 * Constantes IDIOMAS
 	 */
-	private static final String CASTELLANO 		= "0";
+/*	private static final String CASTELLANO 		= "0";
 	private static final String EUSKERA 		= "1";
 	private static final String CATALAN 		= "2";
-	private static final String GALLEGO 		= "3";
-	/**
-	 * Constantes TEXTOS RECURSOS IDIOMAS
-	 */
-	public static final String TX_PAGADO 				 	= "general.literal.pagado";
-	public static final String TX_PENDIENTE_COBRO 			= "general.literal.pendientecobro";
-	public static final String TX_RENEGOCIADA	 		 	= "general.literal.renegociada";
-	public static final String TX_DEVUELTA 			 	 	= "general.literal.devuelta";
-	public static final String TX_PENDIENTE_ABONO_BANCO 	= "general.literal.pendienteabonobanco";
-	public static final String TX_PENDIENTE_ABONO_CAJA  	= "general.literal.pendienteabonocaja";
-	public static final String TX_EN_REVISION  				= "general.literal.enRevision";
-	public static final String TX_ANULADA  				= "general.factura.anulada";
+	private static final String GALLEGO 		= "3";*/
+
 	/**
 	 * Constructor de la clase. 
 	 */
@@ -70,6 +52,7 @@ public class ConsPLFacturacion {
 
 	public String obtenerEstadoFacAbo(int idinstitucion, long id, String cons) throws ClsExceptions{
 		int estado		 		= 0;
+		String strEstado        = "";
 		String retorno		 	= null;
 		String consulta			= "";
 		Hashtable htRecurso = new Hashtable();
@@ -94,30 +77,30 @@ public class ConsPLFacturacion {
 				String a = (String) ((Hashtable) resultado.get(0)).get("ESTADO");
 				if (!a.trim().equals("")) {
 					estado = Integer.parseInt(String.valueOf(a));
-					if(estado==EN_REVISION) { 
+					if(estado == Integer.parseInt(ClsConstants.ESTADO_FACTURA_ENREVISION)) { 
 					    //where = where +" AND IDRECURSO ='"+TX_EN_REVISION+"'";
-						htRecurso.put("IDRECURSO",TX_EN_REVISION);
-					} else if(estado==PAGADA)  {
+						htRecurso.put("IDRECURSO",ClsConstants.TX_EN_REVISION);
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_PAGADA)) {
 					    //where = where +" AND IDRECURSO ='"+TX_PAGADO+"'";
-						htRecurso.put("IDRECURSO",TX_PAGADO);
-					} else if(estado==PENDIENTE_COBRO) { 
+						htRecurso.put("IDRECURSO",ClsConstants.TX_PAGADO);
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
 					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_COBRO+"'";
-						htRecurso.put("IDRECURSO",TX_PENDIENTE_COBRO);
-					} else if(estado==RENEGOCIADA) { 
-					    //where = where +" AND IDRECURSO ='"+TX_RENEGOCIADA+"'";
-						htRecurso.put("IDRECURSO",TX_RENEGOCIADA);
-					} else if(estado==DEVUELTA)  {
-					    //where = where +" AND IDRECURSO ='"+TX_DEVUELTA+"'";
-						htRecurso.put("IDRECURSO",TX_DEVUELTA);
-					} else if(estado==PENDIENTE_ABONO_BANCO) { 
+						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_CAJA);
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) {
+					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_COBRO+"'";
+						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_BANCO);						
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_ABONO_BANCO)) {
 					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_ABONO_BANCO+"'";
-						htRecurso.put("IDRECURSO",TX_PENDIENTE_ABONO_BANCO);
-					} else if(estado==PENDIENTE_ABONO_CAJA) {
+						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_ABONO_BANCO);
+					} else if(estado==Integer.parseInt(ClsConstants.ESTADO_ABONO_CAJA)) {
 						//where = where +" AND IDRECURSO ='"+TX_PENDIENTE_ABONO_CAJA+"'";
-						htRecurso.put("IDRECURSO",TX_PENDIENTE_ABONO_CAJA);
-					}else if(estado==ANULADA) {
+						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_ABONO_CAJA);
+					}else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_ANULADA)) {
 						//where = where +" AND IDRECURSO ='"+TX_PENDIENTE_ABONO_CAJA+"'";
-						htRecurso.put("IDRECURSO",TX_ANULADA);
+						htRecurso.put("IDRECURSO",ClsConstants.TX_ANULADA);
+					}else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)) {
+						//where = where +" AND IDRECURSO ='"+TX_PENDIENTE_ABONO_CAJA+"'";
+						htRecurso.put("IDRECURSO",ClsConstants.TX_DEVUELTA);
 					}
 				}
 				else {

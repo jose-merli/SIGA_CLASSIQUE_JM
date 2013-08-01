@@ -174,9 +174,58 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 		try {
 			
-			// Select tabla pagos
-			String select1 = " SELECT 'PAGOS_POR_CAJA' AS TABLA, " +
-							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA   + " AS FECHA, "   +
+			// Obteneción emisión factura
+			String select1 = " SELECT 1 AS idtabla, 'EMISIÓN FACTURA' AS tabla, " +
+							   "'Pendiente Cobro' AS estado, " +
+							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
+							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
+							   "'' AS DEVUELTA, '' AS tarjeta, " +
+							   " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
+							   "'' AS NOMBREBANCO";
+
+			String from1 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA; 
+
+			String where1 = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
+
+			String consulta1 = select1 + from1 + where1;	
+			
+			// Obtención de anticipos aplicados a una factura
+			String select2 = " SELECT 2 AS idtabla, 'APLICAR ANTICIPO' AS tabla, " +
+							 " case" +
+							 " when (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ")" +
+							 " THEN 'Pendiente Cobro' " +
+							 " ELSE 'Pagado' " +
+							 " end as estado, " +
+							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
+							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " AS IMPORTE, " +
+							   "'' AS DEVUELTA, '' AS tarjeta, 0 AS idabono_idcuenta, '' AS numeroabono," +
+							   "0 AS idpago, '' AS NOMBREBANCO";
+
+			String from2 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA; 
+
+			String where2 = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'" +
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " > 0 ";
+
+			String consulta2 = select2 + from2 + where2;			
+			
+			
+			// Obtención pagos por caja
+			String select3 = " SELECT 9 AS idtabla, 'PAGOS POR CAJA' AS TABLA, " +
+					 		 " case" +
+					 		 " when (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " +
+					 		" (select sum(pagocaja2 " + "." + FacPagosPorCajaBean.C_IMPORTE + ") as importepagado" +
+					 		 " from " + FacPagosPorCajaBean.T_NOMBRETABLA + " pagocaja2 " + 
+					 		 " where pagocaja2."    + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDFACTURA + " = '" + idFactura + "'" +
+								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " >  " +
+								FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
+							"))" + 
+					 		 " THEN 'Pendiente Cobro Caja' " +
+					 		 " ELSE 'Pagado' " +
+					 		 " end as estado, " +
+							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION   + " AS FECHA, "   +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
 							   "'' AS DEVUELTA, " +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_TARJETA + " AS TARJETA, " +
@@ -185,20 +234,23 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " AS IDPAGO, "+
 							   "'' AS NOMBREBANCO";
 
-			String from1 = 	" FROM " + FacPagosPorCajaBean.T_NOMBRETABLA; 
+			String from3 = 	" FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + ", " + FacFacturaBean.T_NOMBRETABLA; 
 
-			String where1 = " WHERE " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND "   + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = '" + idFactura + "'";
+			String where3 = " WHERE " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
+							" AND "   + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+							" AND "   + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND "   + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = '" + idFactura + "'" +
+							" AND "   + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO + " is null ";
 
-			String consulta1 = select1 + from1 + where1;
+			String consulta3 = select3 + from3 + where3;
 			
-			// Select tabla factura en disco
-			String select2 = " SELECT 'FACTURA_EN_DISCO' AS TABLA, " + 
-							   FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+							   
-							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
-							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
-							   "'' AS TARJETA, " +
-							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
+			// Otención pagos por banco
+			String select4 = " SELECT 9 AS idtabla, 'PAGO POR BANCO' AS tabla, 'Pagado' AS estado, " + 
+							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+							   
+							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
+							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
+							 "'' AS TARJETA, " +
+							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							   "'' AS NUMEROABONO, " +
 							   "0 AS IDPAGO, "+
 							   "(select banco.nombre"+
@@ -206,39 +258,117 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
                                " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                                " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
                                " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
-                               " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA+"="+FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA+"."+ FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA+") as NOMBREBANCO";
+                               " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA + "=" + "incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA+") as NOMBREBANCO";
 
-			String from2 = 	" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "," +  FacDisqueteCargosBean.T_NOMBRETABLA;
+			String from4 = 	" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " +  FacDisqueteCargosBean.T_NOMBRETABLA + " cargos, " + FacFacturaBean.T_NOMBRETABLA + " factura "; 
 
-			String where2 = " WHERE "  + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " +  FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION +
-	                        " AND "+ FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " +  FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS+
-				            " AND "+ FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND "   + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = '" + idFactura + "'";
+			String where4 = " WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = cargos." + FacDisqueteCargosBean.C_IDINSTITUCION +
+	                        " AND incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = cargos." + FacDisqueteCargosBean.C_IDDISQUETECARGOS+
+	                        " and incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+	                        " AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA +
+				            " AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = '" + idFactura + "'";
 
-			String consulta2 = select2 + from2 + where2;
+			String consulta4 = select4 + from4 + where4;
 
-			// Select para obetner el medio de pado anticipado
-			String select3 = " SELECT 'ANTICIPADO' AS TABLA, " +
-							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
-				  			   //"PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") AS IMPORTE, " + 
-				  			   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " AS IMPORTE, " + 
-							   "'' AS DEVUELTA, " +
-							   "'' AS TARJETA, " +
-							   "0 AS IDABONO_IDCUENTA, " +
-							   "'' AS NUMEROABONO, " +
-							   "0 AS IDPAGO, "+
-							   "'' AS NOMBREBANCO";
+			// Obtención devoluciones
+			String select5 = " SELECT 9 AS idtabla, 'DEVOLUCIÓN. ' || lineadevolucion.DESCRIPCIONMOTIVOS AS tabla, " +
+					 		 " case" +
+					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
+					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is null) " +
+					 		 " THEN 'Pendiente Cobro Caja' " +
+					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
+					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
+					 		 " THEN 'Pendiente Cobro Banco' " +
+					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is not null " +
+					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
+					 		 " THEN 'Pendiente Cobro Banco' " +					 		 
+					 		 " ELSE 'Pendiente Cobro Caja' " +
+					 		 " end as estado, " +			
+							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAMODIFICACION   + " AS FECHA, "   + 
+				  			 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " + 
+							 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
+							 "'' AS TARJETA, " +
+							 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
+							 "'' AS NUMEROABONO, " +
+							 "0 AS IDPAGO, "+
+							 "(select banco.nombre"+
+                             " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
+                             " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
+                             " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA + "=" + "incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA+") as NOMBREBANCO";
 
-			String from3 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA; 
+			String from5 = 	" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " +
+							FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " lineadevolucion, " +
+							FacDisqueteDevolucionesBean.T_NOMBRETABLA + " devoluciones, " +
+							FacFacturaBean.T_NOMBRETABLA + " factura ";
 			
-			String where3 = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
+			String where5 = " WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + 
+							" AND incluidadisquete."   + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS + 
+							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE + 
+							" AND lineadevolucion."    + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDINSTITUCION +
+							" AND lineadevolucion."  + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES + 
+							" AND incluidadisquete."   + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
+							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND incluidadisquete."   + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = '" + idFactura + "'";
 			
-			String consulta3 = select3 + from3 + where3;
+			String consulta5 = select5 + from5 + where5;
+			
+			// Obtención renegociaciones
+			String select6 = " SELECT 9 AS idtabla, 'RENEGOCIACIÓN' AS tabla, " +
+					 		 " case" +
+					 		 " when (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) " +
+					 		 " THEN 'Pendiente Cobro Caja' " +					 		 
+					 		 " ELSE 'Pendiente Cobro Banco' " +
+					 		 " end as estado, " +			
+							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA, "   + 
+				  			 "renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
+							 "'' AS DEVUELTA, '' AS tarjeta, " +
+							 " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
+							 "'' AS NOMBREBANCO";
 
-			String consulta = "SELECT TABLA, FECHA, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
-							   consulta1 + " UNION " + consulta2 + " UNION " + consulta3 + 
-							   " ) ORDER BY FECHA ASC, IDPAGO ASC"; 
+			String from6 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " +
+							FacRenegociacionBean.T_NOMBRETABLA + " renegociacion " ;
+			
+			String where6 = " WHERE renegociacion."   + FacRenegociacionBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
+							" AND renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND renegociacion."   + FacRenegociacionBean.C_IDFACTURA + " = '" + idFactura + "'";
+			
+			String consulta6 = select6 + from6 + where6;	
+			
+			// Obtención devoluciones
+			String select7 = " SELECT 9 AS idtabla, 'ANULACIÓN' AS tabla, " +
+					 		 " 'Anulada' AS estado, " +		
+							 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA, "   + 
+				  			 "abono." + FacAbonoBean.C_IMPTOTALABONADO + " AS IMPORTE, " + 
+							 "'' AS DEVUELTA, " +
+							 "'' AS TARJETA, " +
+							 "factura." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
+							 "abono." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
+							 "0 AS IDPAGO, "+
+							 "(select banco.nombre"+
+                             " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
+                             " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
+                             " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA + "=" + "factura."+ FacFacturaBean.C_IDCUENTA+") as NOMBREBANCO";
+
+			String from7 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura,  "+
+							FacAbonoBean.T_NOMBRETABLA + " abono  ";
+			
+			String where7 = " WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
+							" AND factura."   + FacFacturaBean.C_IDFACTURA + " = abono." + FacAbonoBean.C_IDFACTURA +  
+							" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND factura."   + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
+			
+			String consulta7 = select7 + from7 + where7;			
+
+			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
+							   consulta1 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
+							   " ) ORDER BY idtabla ASC, FECHA ASC, IDPAGO ASC"; 
 
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
