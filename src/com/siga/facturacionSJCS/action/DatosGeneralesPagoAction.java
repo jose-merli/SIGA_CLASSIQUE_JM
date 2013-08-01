@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1341,7 +1342,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		// Recuperamos los colegiados a los que tenemos que pagar
 		// aquellos incluidos en el pago o con movimientos varios pendientes
 		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion,
-				idPago);
+				idPago,FcsPagosJGAdm.listaPagoTodos);
 
 		for (Iterator iter = colegiados.iterator(); iter.hasNext();) {
 			// recupera el colegiado
@@ -1484,7 +1485,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		// Recuperamos los colegiados a los que tenemos que pagar
 		// aquellos incluidos en el pago o con movimientos varios pendientes
 		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion,
-				idPago);
+				idPago,FcsPagosJGAdm.listaPagoTodos);
 
 		for (Iterator iter = colegiados.iterator(); iter.hasNext();) {
 			// recupera el colegiado
@@ -1930,51 +1931,54 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm) formulario;
 		Hashtable registro;
 		UserTransaction tx = null;
-		Vector vCriterios = null;
+		//		Vector vCriterios = null;
 
 		try {
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			tx = usr.getTransaction();
 
-			// Recuperamos las filas:
-			vCriterios = miform.getCriterios();
+			String cadenaCriteriosPago = miform.getCadenaCriteriosPago();
+			if(cadenaCriteriosPago.indexOf("##")>0){
+				tx = usr.getTransaction();	
 
-			tx.begin();
-			for (int i = 0; i < vCriterios.size(); i++) {
-				CriteriosPagosBean bean = new CriteriosPagosBean();
-				bean = (CriteriosPagosBean) vCriterios.get(i);
+				String[] criteriosPago = cadenaCriteriosPago.split("##");
+				tx.begin();
+				for (int i = 0; i < criteriosPago.length; i++) {
+					String criterioPago = criteriosPago[i];
+					if(cadenaCriteriosPago.indexOf(",")>0){
+						String[] valoresCriterio = criterioPago.split(",");
+						String idGrupoFacturacion = valoresCriterio[0];
+						String idHitoGenera = valoresCriterio[1];
+						boolean isInsertar = Boolean.parseBoolean(valoresCriterio[2]) ;
+						
+//						CriteriosPagosBean bean = new CriteriosPagosBean();
 
-				if (bean != null) {
-					// Preparamos el nuevo registro del pago:
-					registro = new Hashtable();
-					registro.put(FcsPagoGrupoFactHitoBean.C_IDINSTITUCION,
-							miform.getIdInstitucion());
-					registro.put(FcsPagoGrupoFactHitoBean.C_IDPAGOSJG,
-							bean.getIdPagosJG());
-					registro.put(FcsPagoGrupoFactHitoBean.C_IDHITOGENERAL,
-							bean.getIdHitoGeneral());
-					registro.put(FcsPagoGrupoFactHitoBean.C_IDGRUPOFACTURACION,
-							bean.getIdGrupoFacturacion());
+//						if (bean != null) {
+							// Preparamos el nuevo registro del pago:
+							registro = new Hashtable();
+							registro.put(FcsPagoGrupoFactHitoBean.C_IDINSTITUCION,
+									miform.getIdInstitucion());
+							registro.put(FcsPagoGrupoFactHitoBean.C_IDPAGOSJG,
+									miform.getIdPagosJG());
+							registro.put(FcsPagoGrupoFactHitoBean.C_IDHITOGENERAL,
+									idHitoGenera);
+							registro.put(FcsPagoGrupoFactHitoBean.C_IDGRUPOFACTURACION,
+									idGrupoFacturacion);
 
-					// Primero borramos el posible registro:
-					pagoGrupoAdm.delete(registro);
+							// Primero borramos el posible registro:
+							pagoGrupoAdm.delete(registro);
+							
+							if(isInsertar){
+								registro.put(FcsPagoGrupoFactHitoBean.C_USUMODIFICACION,	usr.getUserName());
+								registro.put(FcsPagoGrupoFactHitoBean.C_FECHAMODIFICACION,"sysdate");
+								pagoGrupoAdm.insert(registro);
+							}
 
-					// Si esta marcado lo insertamos:
-					if ((bean.getCheckCriterio() != null)
-							&& bean.getCheckCriterio().equals("SI")) {
-						// Luego Insertamos:
-						registro.put(
-								FcsPagoGrupoFactHitoBean.C_USUMODIFICACION,
-								usr.getUserName());
-						registro.put(
-								FcsPagoGrupoFactHitoBean.C_FECHAMODIFICACION,
-								"sysdate");
-						pagoGrupoAdm.insert(registro);
+							
 					}
 				}
+				tx.commit();
 			}
-			tx.commit();
 			forward = exitoModalSinRefresco("messages.inserted.success",
 					request);
 		} catch (Exception e) {
@@ -2019,6 +2023,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					idInstitucion, miform.getIdFacturacion(), idPagosJG, usr);
 			miform.setCriterios(vResultados);
 			request.setAttribute("resultadosCriteriosPago", vResultados);
+			miform.setCriterios(vResultados);
 			request.setAttribute("modo", miform.getAccionPrevia());
 			forward = "resultado";
 		} catch (Exception e) {
@@ -2064,7 +2069,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// vector con los colegiados que hay que pagar
 			idPago = (String) miform.getIdPagosJG();
 			resultado = (Vector) pagoAdm.getColegiadosAPagar(
-					(String) usr.getLocation(), idPago);
+					(String) usr.getLocation(), idPago,FcsPagosJGAdm.listaPagoSoloIncluirMorosos);
 		} catch (Exception e) {
 			// si hay sucedido un error al recuperar los colegiados que se van a
 			// facturar
@@ -2074,6 +2079,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		// vector que le pasaremos a la jsp para que rellene la tabla
 		Vector colegiados = new Vector();
 		int posicion = 0;
+		TreeMap<String,ColegiadosPagosBean > treeMap = new TreeMap<String, ColegiadosPagosBean>();
 		for (int contador = 0; contador < resultado.size(); contador++) {
 			// recogemos cada colegiado a pagar
 			Hashtable colegiadoActual = (Hashtable) resultado.get(contador);
@@ -2108,12 +2114,20 @@ public class DatosGeneralesPagoAction extends MasterAction {
 						.getIdentificadorColegiado(colegiadoBean));
 
 				// lo anhadimos
-				colegiados.add(posicion, colegiadoNew);
-				posicion++;
+				treeMap.put(colegiadoNew.getNombreColegiado(), colegiadoNew);
+				
+//				colegiados.add(posicion, colegiadoNew);
+//				posicion++;
 			} catch (Exception e) {
 				// si ha dado un error en una persona podremos seguir con el
 				// resto
 			}
+		}
+		Iterator iterator = treeMap.keySet().iterator();
+		
+		while (iterator.hasNext()) {
+			colegiados.add(treeMap.get(iterator.next()));
+			
 		}
 		miform.setVcolegiados(colegiados);
 		request.setAttribute("resultado", colegiados);
