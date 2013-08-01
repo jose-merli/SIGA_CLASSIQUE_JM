@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
 <head>
 <!-- datosPagoResultados.jsp -->
@@ -105,15 +105,12 @@
 			</logic:empty>
 			<logic:notEmpty name="datosGeneralesPagoForm"	property="criterios">
 			
-			<table id="tablaConceptos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
-				<tr class = 'tableTitle' >
-					
-					<td width="45%"><bean:message key="factSJCS.datosFacturacion.literal.gruposFacturacion"/></td>
-					<td width="45%"><bean:message key="factSJCS.datosFacturacion.literal.hitos"/></td>
-					<td width="10%"></td>
-					
-					
-				</tr>
+				<siga:Table 
+				   name="tablaDatos"
+				   border="1"
+				   columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
+				   columnSizes="45,45,10">
+				
 				
 			
 						
@@ -156,7 +153,7 @@
 							</logic:iterate>
 							<!-- FIN REGISTRO -->
 							<!-- FIN: ZONA DE REGISTROS -->
-			</table>
+			</siga:Table>
 			</logic:notEmpty>	
 
 			

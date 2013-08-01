@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
 <head>
 <!-- CABECERA JSP -->
@@ -76,15 +76,11 @@ color:black;
 	
 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="factSJCS.deducirCobros.literal.explicacion"/></p>
 	<br>
-	<table id="tablaDatos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
-				<tr class = 'tableTitle' >
-					<td width="10%"></td>
-					<td width="25%"><bean:message key="factSJCS.detalleFacturacion.literal.nColegiado"/></td>
-					<td width="65%"><bean:message key="factSJCS.detalleFacturacion.literal.colegiado"/></td>
-					
-					
-					
-				</tr>
+	<siga:Table 
+		   name="tablaDatos"
+		   border="1"
+		   columnNames=",factSJCS.detalleFacturacion.literal.nColegiado,factSJCS.detalleFacturacion.literal.colegiado"
+		   columnSizes="10,25,65">
 	
 	
 		
@@ -120,7 +116,7 @@ color:black;
 			}
 		} //fin del else
 	%>
-	</table>
+	</siga:Table>
 		
 	<siga:ConjBotonesAccion botones="MT,DT,CP,C" modal="G" clase="botonesDetalle"/>
 
