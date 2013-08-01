@@ -49,6 +49,7 @@ public class DatosGeneralesPagoForm extends MasterForm {
 	private Vector vCriterios = new Vector();
 	private Vector vcolegiados = new Vector();
 	
+	private String cadenaCriteriosPago ; 
 	
 	// Metodos Set (Formulario (*.jsp))
 	public void setAccion (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.accion, dato);}
@@ -168,5 +169,11 @@ public class DatosGeneralesPagoForm extends MasterForm {
 
 	public void setColegiado(int index, ColegiadosPagosBean valor) {
 		vcolegiados.add(index, valor);
+	}
+	public String getCadenaCriteriosPago() {
+		return cadenaCriteriosPago;
+	}
+	public void setCadenaCriteriosPago(String cadenaCriteriosPago) {
+		this.cadenaCriteriosPago = cadenaCriteriosPago;
 	}
 }
