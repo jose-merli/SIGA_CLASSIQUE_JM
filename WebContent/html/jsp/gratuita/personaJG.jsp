@@ -1003,16 +1003,19 @@ String app = request.getContextPath();
        }
 
      function createProvince() {
-
-  			  var Primary = document.forms[0].cp.value;
-  			  if ((Primary == null) || (Primary == 0)) return;
-  			
-  			  while(Primary.length<5){
-  				  Primary="0"+Primary;
-  			  }	  
-  			  var idProvincia	= Primary.substring(0,2);
-  			  jQuery("#provincia").val(idProvincia);  				  
-  			  rellenarCampos();
+		
+ 			  var Primary = document.forms[0].cp.value;
+ 			  if ((Primary == null) || (Primary == 0)) return;
+ 			
+ 			  while(Primary.length<5){
+ 				  Primary="0"+Primary;
+ 			  }	  
+ 			  var idProvincia	= Primary.substring(0,2);
+ 			  idprovActual = jQuery("#provincia").val(); 
+ 			  if(idprovActual!=idProvincia){
+	 			  jQuery("#provincia").val(idProvincia);  				  
+	 			  rellenarCampos();
+ 			  }
 
   	}
 		function rellenarCampos(){
