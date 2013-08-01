@@ -648,8 +648,11 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @param idPago
 	 * @return
 	 */
+	public static int listaPagoSoloIncluirMorosos = 0;
+	public static int listaPagoSoloIncluirNoMorosos = 1;
+	public static int listaPagoTodos = 2;
 	
-	public Vector  getColegiadosAPagar(String idInstitucion, String idPago) throws ClsExceptions
+	public Vector  getColegiadosAPagar(String idInstitucion, String idPago, int caseMorosos) throws ClsExceptions
 	{
 		// donde devolveremos el resultado
 		Vector resultado = new Vector();
@@ -660,15 +663,28 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		// select a ejecutar
 		StringBuffer consulta = new StringBuffer();
-		consulta.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERORIGEN + " AS IDPERSONA_SJCS");
+		consulta.append(" SELECT pc." + FcsPagoColegiadoBean.C_IDPERORIGEN + " AS IDPERSONA_SJCS ");
 		consulta.append(" FROM " + FcsPagoColegiadoBean.T_NOMBRETABLA);
+		consulta.append(" pc ");
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
-		consulta.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + "=:" + contador);
+		consulta.append(" WHERE pc." + FcsPagoColegiadoBean.C_IDINSTITUCION + "=:" + contador);
 		contador++;
 		codigos.put(new Integer(contador),idPago);
-		consulta.append(" AND " + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador);		
-		consulta.append(" ORDER BY IDPERSONA_SJCS ASC");
+		consulta.append(" AND pc." + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador);	
+		switch (caseMorosos) {
+			case 0:
+				consulta.append(" and exists (SELECT 1         FROM FAC_FACTURA       F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0'     AND F.IMPTOTALPORPAGAR > 0 ) ");
+				break;
+			case 1:
+				consulta.append(" and not exists (SELECT 1         FROM FAC_FACTURA       F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0'     AND F.IMPTOTALPORPAGAR > 0 ) ");
+				break;
+			default:
+				break;
+		}
+		
+			
+//		consulta.append(" ORDER BY IDPERSONA_SJCS ASC");
 							
 		try
 		{
