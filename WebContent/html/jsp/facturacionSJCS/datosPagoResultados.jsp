@@ -21,6 +21,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.general.*"%>
@@ -92,46 +93,73 @@
 		<html:hidden name="datosGeneralesPagoForm" property="idPagosJG" />
 		<html:hidden name="datosGeneralesPagoForm" property="idFacturacion" />
 		<html:hidden name="datosGeneralesPagoForm" property="idInstitucion" />
+		<html:hidden name="datosGeneralesPagoForm" property="cadenaCriteriosPago" />
+		
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+		</html:form>
+		<logic:empty name="datosGeneralesPagoForm"	property="criterios">
+				<br>
+	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+	 			<br>
+			</logic:empty>
+			<logic:notEmpty name="datosGeneralesPagoForm"	property="criterios">
+			
+			<table id="tablaConceptos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
+				<tr class = 'tableTitle' >
+					
+					<td width="45%"><bean:message key="factSJCS.datosFacturacion.literal.gruposFacturacion"/></td>
+					<td width="45%"><bean:message key="factSJCS.datosFacturacion.literal.hitos"/></td>
+					<td width="10%"></td>
+					
+					
+				</tr>
+				
+			
+						
+							<logic:iterate id="criterio" name="datosGeneralesPagoForm" property="criterios" indexId="index">
+								<input type="hidden" name="criterios" id="${index}" value="${index}" />
+								<input type="hidden" id="idGrupoFacturacion_${index}" value="${criterio.idGrupoFacturacion}" />
+								<input type="hidden" id="idHitoGeneral_${index}" value="${criterio.idHitoGeneral}" />
+							<c:set var="disabledCriterio" value="" />
+							<c:set var="checkedCriterio" value="" />
+							<c:if test="${criterio.checkCriterio=='SI'}">
+								<c:set var="checkedCriterio" value="checked" />
+							</c:if>
+							<c:if	test="${modo=='consulta'}">
+								<c:set var="disabledCriterio" value="disabled" />
+							</c:if>
 
-			<%
-				String tamanosCol = "45,45,10";
-				String nombresCol = "factSJCS.datosFacturacion.literal.gruposFacturacion," +
-									"factSJCS.datosFacturacion.literal.hitos,";
-				if (resultado==null || resultado.size()==0) { %>			
-			   		 <div class="notFound">
-			<br><br>
-	   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-			<br><br>
-			</div>
-			 <% } else { %>
-				<siga:Table 
-				   name="tablaDatos"
-				   border="1"
-				   columnNames="<%=nombresCol %>"
-				   columnSizes="<%=tamanosCol %>">
-							<logic:iterate id="criterio" name="datosGeneralesPagoForm" property="criterios">
-							<tr class="listaNonEdit">
-								<html:hidden name="criterio" property="idGrupoFacturacion" indexed="true" />
-								<html:hidden name="criterio" property="idHitoGeneral" indexed="true" />
-								<html:hidden name="criterio" property="idPagosJG" indexed="true" />
-								<td align="center">
-									<html:text name="criterio" property="grupoFacturacion" indexed="true" readonly="true" styleClass="boxConsultaNegro"/>
+							<c:choose>
+								<c:when test="${index%2==0}">
+									<tr id="fila_<bean:write name='index'/>" class="filaTablaPar">
+								</c:when>
+								<c:otherwise>
+								<tr id="fila_<bean:write name='index'/>" class="filaTablaImpar">
+								</c:otherwise>
+							</c:choose>
+								
+								<td >
+									<c:out value="${criterio.grupoFacturacion}"/>
+								</td>
+								<td>
+									<c:out value="${criterio.hitoGeneral}"/>
 								</td>
 								<td align="center">
-									<html:text name="criterio" property="hitoGeneral" indexed="true" readonly="true" styleClass="boxConsultaNegro" />
-								</td>
-								<td align="center">
-									<html:checkbox name="criterio" property="checkCriterio" indexed="true" value="SI" disabled="<%=disable%>"/>
+									
+										<input type="checkbox"   id="checkCriterio_${index}" ${disabledCriterio} ${checkedCriterio}/>
+									
+								
+									 
 								</td>								
 							</tr>
 							</logic:iterate>
 							<!-- FIN REGISTRO -->
 							<!-- FIN: ZONA DE REGISTROS -->
-			</siga:Table>
-			<% } //fin del else%>
+			</table>
+			</logic:notEmpty>	
+
+			
 
 
 		<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle" modal="P" modo="<%=modo%>"/>
@@ -139,33 +167,51 @@
 	<!-- FIN: LISTA DE VALORES -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
+	function accionMarcarTodos() 
+	{		
+		
+		criteriosjta = document.getElementsByName("criterios");
+		for ( var i = 0; i < criteriosjta.length; i++) {
+			var array_element = criteriosjta[i];
+			var checkCriterio=document.getElementById("checkCriterio_"+array_element.id);
+			checkCriterio.checked = "checked";
+		}
+		
+			
+	}
 
-		<!-- Asociada al boton MarcarTodos -->
-		function accionMarcarTodos() 
-		{		
-			if (document.getElementById("criterio[0].checkCriterio")!=null){
-				for (i = 0; i < <%=resultado.size()%>; i++){
-					
-					seleccionado = document.getElementById('criterio['+i+'].checkCriterio');
-					seleccionado.checked="SI";		
-				}	
-			}	
+	<!-- Asociada al boton DesmarcarTodos -->
+	function accionDesmarcarTodos() 
+	{		
+		criteriosjta = document.getElementsByName("criterios");
+		for ( var i = 0; i < criteriosjta.length; i++) {
+			var array_element = criteriosjta[i];
+			var checkCriterio=document.getElementById("checkCriterio_"+array_element.id);
+			checkCriterio.checked = "";
 		}
-	
-		<!-- Asociada al boton DesmarcarTodos -->
-		function accionDesmarcarTodos() 
-		{		
-			if (document.getElementById("criterio[0].checkCriterio")!=null){
-				for (i = 0; i < <%=resultado.size()%>; i++){
-					seleccionado = document.getElementById('criterio['+i+'].checkCriterio');
-					seleccionado.checked="";		
-				}
-			}	
-		}
-				
+	}
+		
+		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
+			///<input type="hidden" id="idGrupoFacturacion_${index}" value="${criterio.idGrupoFacturacion}" />
+			///<input type="hidden" id="idHitoGeneral_${index}" value="${criterio.idHitoGeneral}" />
+			///<input type="hidden" id="iidPagosJG_${index}" value="${criterio.idPagosJG}" />
+			
+			cadena = "";
+			criteriosjta = document.getElementsByName("criterios");
+			for ( var i = 0; i < criteriosjta.length; i++) {
+				var array_element = criteriosjta[i];
+				var checkCriterio=document.getElementById("checkCriterio_"+array_element.id);
+				idGrupoFacturacion = document.getElementById("idGrupoFacturacion_"+array_element.id).value;
+				idHitoGeneral = document.getElementById("idHitoGeneral_"+array_element.id).value;
+				cadena+= idGrupoFacturacion+","+idHitoGeneral+","+checkCriterio.checked+"##";
+				
+				
+			}
+			document.datosGeneralesPagoForm.cadenaCriteriosPago.value = cadena;
+			
 			var f=document.getElementById("datosGeneralesPagoForm");
 			f.target = "submitArea";			
 			f.modo.value = "insertarCriteriosPagos";

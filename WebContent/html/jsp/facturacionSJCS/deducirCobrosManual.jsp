@@ -76,11 +76,17 @@ color:black;
 	
 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="factSJCS.deducirCobros.literal.explicacion"/></p>
 	<br>
-	<siga:Table 
-		   name="tablaDatos"
-		   border="1"
-		   columnNames=",,factSJCS.detalleFacturacion.literal.nColegiado,factSJCS.detalleFacturacion.literal.colegiado"
-		   columnSizes="10,45,45">
+	<table id="tablaDatos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
+				<tr class = 'tableTitle' >
+					<td width="10%"></td>
+					<td width="25%"><bean:message key="factSJCS.detalleFacturacion.literal.nColegiado"/></td>
+					<td width="65%"><bean:message key="factSJCS.detalleFacturacion.literal.colegiado"/></td>
+					
+					
+					
+				</tr>
+	
+	
 		
 	<%if (resultado==null || resultado.size()==0) { %>
 	<br><br><br>
@@ -104,7 +110,7 @@ color:black;
 						<td align="center">
 							<%=bean.getNcolegiado()%>
 						</td>
-						<td align="center">
+						<td align="left">
 							<%=bean.getNombreColegiado()%>
 						</td>								
 					</tr>
@@ -114,7 +120,7 @@ color:black;
 			}
 		} //fin del else
 	%>
-	</siga:Table>
+	</table>
 		
 	<siga:ConjBotonesAccion botones="MT,DT,CP,C" modal="G" clase="botonesDetalle"/>
 
