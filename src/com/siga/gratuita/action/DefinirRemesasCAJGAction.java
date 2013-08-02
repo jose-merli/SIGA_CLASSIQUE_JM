@@ -1359,6 +1359,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 			admBean = new ScsEJGAdm(this.getUserBean(request));
 			miHash = miForm.getDatos();
+			
+			//BNS TAG SELECT // Añadida por JBD
+			if (miHash.get("GUARDIATURNO_IDTURNO") != null && !"".equals(miHash.get("GUARDIATURNO_IDTURNO").toString()) && miHash.get("GUARDIATURNO_IDTURNO").toString().startsWith("{")){
+				try {
+					miHash.put("GUARDIATURNO_IDTURNO", UtilidadesString.createHashMap(miHash.get("GUARDIATURNO_IDTURNO").toString()).get("idturno"));
+				} catch (IOException e) {
+					throw new SIGAException(e);
+				}
+			}
 
 			HashMap databackup = new HashMap();
 			Vector claves = new Vector();
