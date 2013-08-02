@@ -154,20 +154,20 @@
 		}
 		
 		paramsJuzgadoJSON = "{\"idjuzgado\":\"-1\"}";
-		if(filtrarModulos.equals("S")){
+		//if(filtrarModulos.equals("S")){
 	    	comboJuzgados = "getJuzgadosTurnosModulos";
 	    	comboModulos = "getProcedimientosEnVigencia";
 	    	comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
 	    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
 	    	comboPretensionesParentQueryIds = "idpretension";
 	    	
-	    }else{
-			comboJuzgados = "getJuzgadosTurnos";
-	    	comboModulos = "getProcedimientos";
-	    	comboModulosParentQueryIds = "idjuzgado";
-	    	comboPretensionesEjis= "getPretensionesEjisModulos";
-	    	comboPretensionesParentQueryIds = "idpretension";
-	    }
+	    //}else{
+			//comboJuzgados = "getJuzgadosTurnos";
+	    	//comboModulos = "getProcedimientosEnVigencia";
+	    	//comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
+	    	//comboPretensionesEjis= "getPretensionesEjisModulos";
+	    	//comboPretensionesParentQueryIds = "idpretension";
+	   // }
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
 		turno = (String)resultado.get("TURNO");
@@ -253,19 +253,24 @@
 			beanDesigna.getIdInstitucionJuzgado() != null &&!beanDesigna.getIdInstitucionJuzgado().equals("")) {
 				idJuzgado = beanDesigna.getIdJuzgado().toString();
 				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
+				String fechaVigor = GstDate.getHoyJsp();
 				if(filtrarModulos.equals("S")){
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaApertura+"\",\"fechahastavigor\":\""+fechaApertura+"\"}");
-					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
-					paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
-					paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
-					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
-					idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
-					idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
-				}else{
-					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
-					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+					fechaVigor = fechaApertura;
 				}
+				//if(filtrarModulos.equals("S")){
+					
+					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
+					paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+					paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
+					idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+					idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+				//}else{
+					//paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+					//juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
+					//idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
+				//}
 				
 				
 		} else {
