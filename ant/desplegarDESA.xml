@@ -1,0 +1,187 @@
+﻿
+<project name="SIGA" default="Desplegar nueva versión" basedir=".">
+	
+	
+	<!-- ************************************************* PROPIEDADES ************************************************ -->
+	
+	<property name="undeploy.version" 		value="SIGA_PRE_107_006"/>
+	<property name="redeploy.version" 		value="SIGA_PRE_107_007"/>
+	
+	<property name="eclipse.iis.home" 					value="Y:"/>
+	<property name="eclipse.redeploy.adminurl.siga" 	value="t3://10.60.3.77:7011"/>
+
+	<property name="eclipse.redeploy.home" 			value="/home/Datos/user_projects/domains/domainCGAE"/>
+	<property name="eclipse.redeploy.password.siga" value="desarrollo"/>
+	<property name="eclipse.redeploy.user" 			value="weblogic"/>
+	<property name="eclipse.weblogic.home.siga" 	value="v:\user_projects\domains\domainCGAE"/>
+	<property name="eclipse.workspace.home" 		value="c:\eclipse\workspace"/>
+	<property name="proyecto" 						value="${eclipse.workspace.home}"/>
+	
+	<property name="redeploy.name" 			value="SIGA"/>
+	<property name="redeploy.targets" 		value="serverSIGA"/>
+	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>
+	<property name="redeploy.retiretimeout" value="30"/>
+	<property name="redeploy.source" 		value="${eclipse.redeploy.home}/applications/${redeploy.name}/${redeploy.version}"/>
+
+	<property name="bea.home" 				value="${eclipse.weblogic.home.siga}"/>
+	<property name="deploy.home" 			value="${bea.home}/applications/${redeploy.name}"/>
+	<property name="web.deploy.home" 		value="${deploy.home}/${redeploy.version}"/>
+	<property name="proyecto.home" 			value="${eclipse.workspace.home}/SIGA92/WebContent"/>
+
+	<property name="home"  				value="${proyecto.home}"/>
+	<property name="web.inf.home"  		value="${home}/WEB-INF"/>
+	<property name="services.home" 			value="${eclipse.workspace.home}/SIGAServices/build"/>
+	
+	<property name="html.home"			value="${home}/html"/>			
+	<property name="destinoapplet" 		value="${home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
+	<property name="destinoappletIP" 	value="${home}/html/jsp/general/AppletDireccionIP.jar"/>
+
+	<property name="web.inf.deploy.home"	value="${web.deploy.home}/WEB-INF"/>
+	<property name="html.deploy.home"   		value="${web.deploy.home}/html"/>			
+
+	
+
+<!-- ##########################################################################################################-->	
+
+	<!-- Generación de Applets -->
+		<target name="01.CreaAppletPermisos" >
+			<echo message="Compilando applet de permisos ..."/>
+			<jar destfile="${destinoapplet}">
+				<zipfileset dir="${web.inf.home}/classes/com/siga/gui/processTree" prefix="com/siga/gui/processTree"/>
+				<zipfileset file="${web.inf.home}/classes/com/siga/administracion/SIGAConstants.class" prefix="com/siga/administracion"/>
+			</jar>
+		</target>
+
+
+		<target name="03.ActualizarCodigo">		
+		<!-- - - - - - - - - - - - - - - - - - 
+			Actualiza recursos web
+				- - - - - - - - - - - - - - - - - -->
+		<echo message="Copiando recursos web ..."/>
+			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${html.home}">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${web.inf.home}">
+			  <include name="**/*"/>
+			  <exclude name="META-INF"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}/classes/org" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${services.home}/classes/org">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+		</target>
+
+	
+		<target name="50.GeneracionTodoPortal">
+			<!-- - - - - - - - - - - - - - - - - -
+				Generacion completa del portal
+					- - - - - - - - - - - - - - - - - -->				
+
+			<antcall target="01.CreaAppletPermisos" />
+			<antcall target="03.ActualizarCodigo" />
+			
+		</target> 
+
+		<target name="Desplegar nueva versión" description="Despliega aplicación con la versión seleccionada">
+			<antcall target="50.GeneracionTodoPortal" />
+			<antcall target="64.UndeployApplication" />
+			<antcall target="63.RedeployNewVersionApplication" />
+		</target>
+
+		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${eclipse.weblogic.jar}"/>
+
+		
+	<!-- Despliegues de Aplicaciones en modo normal -->
+
+		<target name="61.RedeployModuleApplicationSIGA" description="Actualiza aplicación con la versión seleccionada">	 	
+			<wldeploy action="redeploy" 
+				verbose="true" 
+				debug="true"
+				name="${redeploy.name}" 
+				user="${eclipse.redeploy.user}" 
+				password="${eclipse.redeploy.password.siga}"
+				targets="${redeploy.modulo.siga}"  	 		
+				adminurl="${eclipse.redeploy.adminurl.siga}"		 		
+			/>
+		</target>
+		<target name="62.RedeployApplication">	 	
+		 	<wldeploy action="redeploy" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+	      		adminurl="${eclipse.redeploy.adminurl.siga}"		 			  
+		 	/>
+		 </target>
+		<target name="63.RedeployNewVersionApplication">    	 	
+	 		<wldeploy action="redeploy" 
+			  	verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+			  	source="${redeploy.source}"
+		      	user="${eclipse.redeploy.user}" 
+		      	password="${eclipse.redeploy.password.siga}"
+		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		      	targets="${redeploy.targets}"  
+			  	appversion="${redeploy.version}"
+			  	remote="true"	 		
+			/>
+		 </target>
+		<target name="64.UndeployApplication" description="Retira aplicación con la versión seleccionada">	 	
+		 	<wldeploy action="undeploy" 
+		 		verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+		      	user="${eclipse.redeploy.user}" 
+		      	password="${eclipse.redeploy.password.siga}"
+		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		  		appversion="${undeploy.version}"
+			/>
+		 </target>
+		<target name="65.DistributeApplication">	 	
+			<wldeploy action="distribute" 
+			  	verbose="true" 
+	    	  	debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+	      		adminurl="${eclipse.redeploy.adminurl.siga}"
+		  		appversion="${redeploy.version}"	 		
+		  		source="${redeploy.source}"
+		  		remote="true"
+			/>
+		</target>
+		<target name="66.StartApplication">	 	 			 	
+	 		<wldeploy action="start" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.targets}"  	 		
+		  		adminurl="${eclipse.redeploy.adminurl.siga}"
+	      		appversion="${redeploy.version}"  
+			/>
+		</target>
+		<target name="67.RedeployModuleApplication">	 	
+	 		<wldeploy action="redeploy" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${eclipse.redeploy.user}" 
+	      		password="${eclipse.redeploy.password.siga}"
+	      		targets="${redeploy.modulo}"  	 		
+	      		adminurl="${redeploy.adminurl}"
+			/>
+		</target>
+
+		
+</project>
