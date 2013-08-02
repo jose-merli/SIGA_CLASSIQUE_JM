@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.72 2013-07-24 12:47:02 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.73 2013-08-02 09:32:46 jose Exp $
 	**/
 	(function(jQuery)
 	{
@@ -2718,7 +2718,7 @@ function isSWIFTValido(swift){
 	return true; 
 }
 
-/*
+// JBD // ¿Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
@@ -2731,7 +2731,7 @@ document.getElementById = function(elemIdOrName) {
 
     return result;
 };
-*/
+
 
 // **
 	
