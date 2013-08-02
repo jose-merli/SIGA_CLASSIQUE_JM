@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.eclipse.persistence.internal.helper.ClassConstants;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -45,11 +44,9 @@ import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
-import com.siga.beans.ConsPLFacturacion;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
-import com.siga.beans.EnvPlantillasEnviosAdm;
 import com.siga.beans.FacBancoInstitucionAdm;
 import com.siga.beans.FacBancoInstitucionBean;
 import com.siga.beans.FacClienIncluidoEnSerieFacturAdm;
@@ -66,7 +63,6 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacFacturacionSuscripcionAdm;
-import com.siga.beans.FacFacturacionSuscripcionBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacPlantillaFacturacionAdm;
@@ -89,8 +85,6 @@ import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
-import com.siga.facturacion.form.GestionarFacturaForm;
-import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
 

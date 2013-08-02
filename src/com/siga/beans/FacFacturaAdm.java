@@ -22,7 +22,6 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.eclipse.persistence.internal.helper.ClassConstants;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
