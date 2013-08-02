@@ -1,0 +1,188 @@
+﻿
+<project name="SIGA" default="E50.Generar entrega DESA" basedir=".">
+	
+	
+	<!-- ************************************************* PROPIEDADES ************************************************ -->
+	<property file="buildDESA.properties"/>
+	<property file="build.properties"/>
+	
+	<property name="home"  			value="${eclipse.workspace.home}/SIGA92"/>
+	<property name="home.desa"  	value="${eclipse.workspace.home}/entregas/${redeploy.version}/SIGA"/>
+	
+	<property name="home.services"  	value="${eclipse.workspace.home}/SIGAServices"/>
+
+	<property name="src.local"    		value="${home}/src"/>	
+	<property name="ant.local"    		value="${home}/ant"/>	
+	<property name="html.local"   		value="${home}/WebContent/html"/>
+	<property name="error.local"   		value="${home}/WebContent/html/jsp/error"/>
+	<property name="webinf.local"		value="${home}/WebContent/WEB-INF"/>
+	<property name="lib.local"   		value="${home}/WebContent/WEB-INF/lib"/>
+	<property name="fopfonts.local"		value="${home}/WebContent/WEB-INF/fopFonts"/>
+	<property name="properties.local"	value="${home}/WebContent/WEB-INF/properties"/>
+	<property name="tlds.local"   		value="${home}/WebContent/WEB-INF/tlds"/>
+
+	<property name="conf.desa"		value="${home.desa}/conf"/>
+	<property name="ant.desa"		value="${home.desa}/ant"/>
+	<property name="bin.desa"		value="${home.desa}/bin"/>
+	<property name="etc.desa"		value="${home.desa}/etc"/>
+	<property name="html.desa"		value="${home.desa}/html"/>
+	<property name="libweb.desa"	value="${home.desa}/lib-web"/>
+	<property name="src.desa"		value="${home.desa}/src"/>
+	<property name="iis.desa"		value="${etc.desa}/iis"/>
+	
+	<property name="services.home"	value="${proyecto}/SIGAServices"/>
+	<property name="lib.services"	value="${services.home}/lib"/>
+	<property name="src.java.services"	value="${services.home}/src/main/java"/>
+	<property name="src.resources.services"	value="${services.home}/src/main/resources"/>
+	<property name="src.test.services"	value="${services.home}/src/test/main"/>
+
+		<target name="E01.CrearEstructuraAplicacion">
+			<delete dir="${ant.desa}"/>
+			<delete dir="${conf.desa}"/>
+			<delete dir="${etc.desa}"/>
+			<delete dir="${html.desa}"/>
+			<delete dir="${bin.desa}"/>
+			<delete dir="${libweb.desa}"/>
+			<delete dir="${src.desa}"/>
+			<mkdir dir="${ant.desa}"/>
+			<mkdir dir="${conf.desa}"/>
+			<mkdir dir="${etc.desa}"/>
+			<mkdir dir="${html.desa}" />
+			<mkdir dir="${libweb.desa}" />
+			<mkdir dir="${src.desa}" />
+		</target> 
+	
+		<target name="E03.ActualizacionAnt">
+			<echo message="Copiando descriptor: build.xml"/>
+	    	<copy file="${ant.local}/build.xml"
+	            todir="${ant.desa}"  overwrite="true" /> 
+	
+			<echo message="Copiando descriptor: build.properties "/>
+	    	<copy file="${ant.local}/build.properties" 
+	            todir="${ant.desa}"  overwrite="true" />
+		</target>
+	
+		<target name="E04.ActualizacionDescriptores">
+			<echo message="Copiando descriptor: struts-config.xml"/>
+	    	<copy file="${webinf.local}/struts-config.xml"
+	            todir="${etc.desa}"  overwrite="true" /> 
+
+			<echo message="Copiando descriptor: web.xml "/>
+	    	<copy file="${webinf.local}/web.xml" 
+	            todir="${etc.desa}"  overwrite="true" />
+
+	   		<echo message="Copiando descriptor: weblogic.xml "/>
+	       	<copy file="${webinf.local}/weblogic.xml" 
+		        todir="${etc.desa}" overwrite="true" />
+
+			<echo message="Copiando directorio tlds"/>
+			<copy todir="${etc.desa}/tlds" >
+				<fileset dir="${tlds.local}">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+			</copy>	
+
+			<echo message="Copiando directorio fopFonts"/>
+			<copy todir="${etc.desa}/fopFonts" >
+				<fileset dir="${fopfonts.local}">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+			</copy>				
+		</target>
+	
+		<target name="E05.ActualizacionProperties">
+			<echo message="Copiando properties nucleo"/>
+		    <copy todir="${conf.desa}" >
+	    		<fileset dir="${properties.local}">
+		  			<patternset>
+			   			<include name="*.properties"/>
+		  				<include name="*.xml"/>
+		   			</patternset>
+		    	</fileset>
+	    	</copy>
+		</target>
+	
+		<target name="E06.ActualizacionClases">
+			<echo message="Copiando fuentes"/>
+			<copy todir="${src.desa}" >
+				<fileset dir="${src.local}">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+				<fileset dir="${src.java.services}">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+				<fileset dir="${src.resources.services}">
+			  		<patternset>
+			   			<include name="**/*.*"/>
+			   		</patternset>
+				</fileset>
+			</copy>	
+		</target>
+	
+		<target name="E07.ActualizacionLib">		
+			<echo message="Actualizando librerías"/>
+			<copy todir="${libweb.desa}" >
+				<fileset dir="${lib.local}">
+		  			<patternset>
+			   			<include name="*.jar"/>
+			   			<include name="*.zip"/>
+			   			<include name="*.lic"/>
+	   				</patternset>
+	    		</fileset>
+		    	<fileset dir="${lib.services}">
+		  			<patternset>
+			   			<include name="*.jar"/>
+	   				</patternset>
+	    		</fileset>
+	    	</copy>
+		</target>
+	
+		<target name="E08.ActualizacionHtml">		
+		<echo message="Copiando recursos web ..."/>
+			<copy todir="${html.desa}" includeEmptyDirs="yes"  overwrite="yes">
+			<fileset dir="${html.local}">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+		</target>
+	
+		<target name="E09.ActualizacionElementosFrontEnd">
+			<echo message="Copiando recursos web de front-end ..."/>		
+				<copy file="${error.local}/certificadoNoValido.htm" todir="${iis.desa}" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/certificadoRevocado.htm" todir="${iis.desa}" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/fondo.jpg" todir="${iis.desa}" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/httpsKO.htm" todir="${iis.desa}" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/noHayCertificado.htm" todir="${iis.desa}" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/mantenimiento/loadingAnt.gif" todir="${iis.desa}/mantenimiento" overwrite="yes">
+				</copy>
+				<copy file="${error.local}/mantenimiento/logoSIGA.png" todir="${iis.desa}/mantenimiento" overwrite="yes">
+				</copy>
+		</target>
+	
+		<target name="E50.Generar entrega DESA">
+			<antcall target="E01.CrearEstructuraAplicacion" />
+			<antcall target="E03.ActualizacionAnt" />
+			<antcall target="E04.ActualizacionDescriptores" />
+			<antcall target="E05.ActualizacionProperties" />
+			<antcall target="E06.ActualizacionClases" />
+			<antcall target="E07.ActualizacionLib" />
+			<antcall target="E08.ActualizacionHtml" />
+			<antcall target="E09.ActualizacionElementosFrontEnd" />
+			
+		</target> 
+
+	
+</project>
