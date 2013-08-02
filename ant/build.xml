@@ -22,6 +22,7 @@
 
 	<property name="destinoapplet" value="${home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
 	<property name="destinoIIS" value="${htm.deploy.home}"/>
+	<property name="destinoCSS" value="${htm.deploy.css}"/>
 	<property name="origenIIS" value="${descriptors.home}/iis"/>
 	
 
@@ -150,7 +151,7 @@
 			<!-- - - - - - - - - - - - - - - - - - 
 					Actualiza recursos FrontEnd
 						- - - - - - - - - - - - - - - - - -->
-			<echo message="Copiando recursos web de front-end ..."/>		
+			<echo message="Copiando recursos web de front-end ..."/>
 				<copy file="${origenIIS}/certificadoNoValido.htm" todir="${destinoIIS}" overwrite="yes">
 				</copy>
 				<copy file="${origenIIS}/certificadoRevocado.htm" todir="${destinoIIS}" overwrite="yes">
@@ -164,6 +165,13 @@
 				<copy file="${origenIIS}/mantenimiento/loadingAnt.gif" todir="${destinoIIS}/mantenimiento" overwrite="yes">
 				</copy>
 				<copy file="${origenIIS}/mantenimiento/logoSIGA.png" todir="${destinoIIS}/mantenimiento" overwrite="yes">
+				</copy>
+				<copy todir="${destinoCSS}" includeEmptyDirs="yes"  overwrite="yes">
+					<fileset dir="${html.home}/css">
+					  <include name="**/*.css"/>
+					  <include name="**/*.png"/>
+					  <include name="**/*.gif"/>
+					</fileset>
 				</copy>
 		</target>
 	
