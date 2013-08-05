@@ -1780,6 +1780,7 @@
 							id="idMateria"
 							selectedIds="<%=materiaSel%>"
 							params="<%=paramJSONstring%>"
+							queryParamId="idmateria,idarea"
 							childrenIds="juzgado"
 							disabled="<%=readOnlyCombo%>"
 							width="250"/>			
