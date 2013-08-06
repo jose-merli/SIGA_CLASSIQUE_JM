@@ -133,6 +133,7 @@
 	String filtrarModulos = "N";
 	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="", comboPretensionesParentQueryIds = "";
 	String art27 = "";
+	String fechaVigor = "";
 	
 	 
 	try {
@@ -248,58 +249,33 @@
 			procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+usr.getLocation()+"\"}");
 		}
 
-		// Datos del juzgado seleccionado:
+		// obteniendo juzgados y juzgado seleccionado
 		if (beanDesigna.getIdJuzgado() != null && !beanDesigna.getIdJuzgado().equals("") && 
 			beanDesigna.getIdInstitucionJuzgado() != null &&!beanDesigna.getIdInstitucionJuzgado().equals("")) {
-				idJuzgado = beanDesigna.getIdJuzgado().toString();
-				idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
-				String fechaVigor = GstDate.getHoyJsp();
-				if(filtrarModulos.equals("S")){
-					fechaVigor = fechaApertura;
-				}
-				//if(filtrarModulos.equals("S")){
-					
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
-					paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
-					paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-					paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
-					idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"";
-					idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-					idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
-				//}else{
-					//paramsJuzgadoJSON = "{\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
-					//juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
-					//idProcedimientoParamsJSON += ",\"idjuzgado\":\""+beanDesigna.getIdJuzgado().toString()+"\"}";
-				//}
-				
-				
-		} else {
-			if (request.getAttribute("idDesigna") != null) {
-				Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
-				idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
-				idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-				numero = (String) datosDesigna.get(ScsDesignaBean.C_NUMERO);
-				
-				if(filtrarModulos.equals("S")){
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechaApertura\":\""+fechaApertura+"\",\"fechaApertura\":\""+fechaApertura+"\"}");
-				}else{
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}");
-				}
-			}
-			
-			if(filtrarModulos.equals("S")){
-				juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaApertura+"\",\"fechahastavigor\":\""+fechaApertura+"\"}");
-				paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
-				paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
-				paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
-				idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
-				idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaApertura+"\"";
-				idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaApertura+"\"}";
-			}else{
-				idProcedimientoParamsJSON  = "{\"idjuzgado\":\""+idJuzgado+"\"}";
-			}			
+			idJuzgado = beanDesigna.getIdJuzgado().toString();
+			idInstitucionJuzgado = beanDesigna.getIdInstitucionJuzgado().toString();
+		} else if (request.getAttribute("idDesigna") != null) {
+			Hashtable datosDesigna = (Hashtable) request.getAttribute("idDesigna");
+			idJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDJUZGADO);
+			idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 		}
+		
+		if(filtrarModulos.equals("S")){
+			fechaVigor = fechaApertura;
+		} else {
+			fechaVigor = GstDate.getHoyJsp();
+		}
+		
+		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
+		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+		idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+		idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
 
+		
+		// obteniendo la pretension
 		if ((beanDesigna != null) &&  (beanDesigna.getIdPretension()!= null)){
 			idPretension = beanDesigna.getIdPretension().toString();
 			pretensionesSel.add(0,idPretension);
