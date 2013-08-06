@@ -1920,10 +1920,10 @@ String app = request.getContextPath();
 					.equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
 %>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>&nbsp;(*)			
+			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>&nbsp;			
 		</td>		
 			<td>
-				<siga:Select queryId="getTiposCalidades" id="calidad2" selectedIds="<%=calidadSel%>" width="200" required="true" readOnly="<%=sreadonly%>"/>				
+				<siga:Select queryId="getTiposCalidades" id="calidad2" selectedIds="<%=calidadSel%>" width="200" readOnly="<%=sreadonly%>"/>				
 		</td>
 <%
 	}
@@ -3494,10 +3494,6 @@ function limpiarPersonaContrario() {
 			var error = "";
 			if (document.getElementById('calidad2')){				 
 				document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
-				var calidad=document.forms[0].idTipoenCalidad.value;   
-				if (calidad==""){			
-					error+="<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>";				
-				}				
 			}			
 			if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
@@ -3593,10 +3589,6 @@ function accionGuardarCerrar()	{
 	var error = "";
 	if (document.getElementById('calidad2')){				 
 		document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
-		var calidad=document.forms[0].idTipoenCalidad.value;   
-		if (calidad==""){			
-			error+="<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>";				
-		}				
 	}
 	if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
