@@ -1489,6 +1489,47 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
+	 * Obtiene las inscripciones de guardia actuales del turno
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<ScsInscripcionGuardiaBean> getInscripcionesGuardiasTurnoActuales (Integer idInstitucion, Integer idTurno, Long idPersona) throws ClsExceptions {
+		try {
+			String sql = " SELECT " + camposSelect +			
+				" FROM SCS_INSCRIPCIONGUARDIA " +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+					" AND IDTURNO = " + idTurno +
+					" AND IDPERSONA = " + idPersona +
+					" AND FECHABAJA IS NULL " +
+					" AND (FECHADENEGACION IS NULL OR FECHAVALIDACION IS NOT NULL) ";
+					
+			Vector<ScsInscripcionGuardiaBean> datos = null;
+			RowsContainer rc = new RowsContainer(); 												
+			if (rc.find(sql)) {
+        	   
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+    			for (int i = 0; i < rc.size(); i++){
+
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					ScsInscripcionGuardiaBean inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
+					
+					datos.add(inscripcionBean);
+				}
+            }
+			
+	       return datos;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardiasTurnoActuales()");
+		}					
+	}	
+	
+	/**
 	 * Obtiene las inscripciones de guardia pendientes de validar
 	 * 
 	 * @param idInstitucion

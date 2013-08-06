@@ -513,7 +513,7 @@ public class DefinirTurnosAction extends MasterAction {
 			     * iTipoGuardias=2 Eleccion
 			     * 
 			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=0) entonces no cambia de tipo
-			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento principal
+			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=1) entonces hacemos el tratamiento principal (este tratamiento se hace para asegurar los datos)
 			     *  Si (iTipoGuardiasOld=0) y (iTipoGuardiasNew=2) entonces no hace falta modificar las guardias (ya que los turnos por eleccion, no obligan a cumplir unos requisitos en sus guardias)
 			     *  
 			     *  Si (iTipoGuardiasOld=1) y (iTipoGuardiasNew=0) entonces hacemos el tratamiento principal 
@@ -527,14 +527,16 @@ public class DefinirTurnosAction extends MasterAction {
 			     *  Tratamiento principal:
 			     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
 			     *  b. Si no se cumple la opciona a:
-			     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
-			     *  b.2. Doy de alta todas las guardias del turno.
+			     *  b.1. Valido las guardias que estan en estado alta pendiente
+			     *  b.2. Deniego las guardias que estan en estado baja pendiente
+			     *  b.3. Doy de alta todas las guardias del turno que no esten activas en las inscripciones de guardia.
 			     *  
 			     *  Tratamiento secundario:
 			     *  a. Si la inscripcion de turno esta cancelada o denegada el alta o pendiente de alta, no hay que cambiar nada.
-			     *  b. Si no se cumple la opciona a:
-			     *  b.1. Doy de baja todas las guardias que no esten canceladas o denegadas de alta.
-			     *  b.2. Si he borrado alguna guardia, doy de alta todas las guardias del turno.
+			     *  b. Si no se cumple la opciona a y existe alguna guardia:
+			     *  b.1. Valido las guardias que estan en estado alta pendiente
+			     *  b.2. Deniego las guardias que estan en estado baja pendiente
+			     *  b.3. Doy de alta todas las guardias del turno que no esten activas en las inscripciones de guardia
 			     *  
 			     */
 			    
