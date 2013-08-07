@@ -89,9 +89,11 @@ public class BusquedaTurnosAction extends MasterAction {
 			if(!((String)hash.get("ABREVIATURA")).equalsIgnoreCase("")){
 				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hash.get("ABREVIATURA")).trim(),"turnos."+ScsTurnoBean.C_ABREVIATURA);
 			}
+			
 			if(!((String)hash.get("NOMBRE")).equalsIgnoreCase("")){
 				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hash.get("NOMBRE")).trim(),"turnos."+ScsTurnoBean.C_NOMBRE);
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDAREA"))>0))where+=" and ";
 			if(!"".equals(hash.get("IDAREA"))){
 				String areaSeleccionada = (String) hash.get("IDAREA");
@@ -111,6 +113,7 @@ public class BusquedaTurnosAction extends MasterAction {
 				}
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDMATERIA"))>0))where+=" and ";
 			try{
 				if(Integer.parseInt((String)hash.get("IDMATERIA"))>0){
@@ -118,6 +121,7 @@ public class BusquedaTurnosAction extends MasterAction {
 					// ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
 				}
 			}catch(Exception e){}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDZONA"))>0))where+=" and ";
 			if (!"".equals(hash.get("IDZONA"))) {
 				String zonaSeleccionada=(String)hash.get("IDZONA");
@@ -137,21 +141,25 @@ public class BusquedaTurnosAction extends MasterAction {
 					//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
 				}
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDSUBZONA"))>0))where+=" and ";
-			if(!"".equals(hash.get("IDSUBZONA")) && Integer.parseInt((String)hash.get("IDSUBZONA"))>0){
+			if(hash.get("IDSUBZONA") != null && !hash.get("IDSUBZONA").equals("") && Integer.parseInt((String)hash.get("IDSUBZONA"))>0){
 				where+=	" AND subzon.idsubzona = "+(String)hash.get("IDSUBZONA");
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0))where+=" and ";
 			//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDSUBZONA+"="+form.getSubzona()+" and "+
 			if(!"".equals(hash.get("IDPARTIDAPRESUPUESTARIA")) && Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0){
 				where+=	" AND partid.idpartidapresupuestaria ="+((String)hash.get("IDPARTIDAPRESUPUESTARIA")).toUpperCase();
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA+" = "+((String)hash.get("IDPARTIDAPRESUPUESTARIA")).toUpperCase();
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDGRUPOFACTURACION"))>0))where+=" and ";
 			if(!"".equals(hash.get("IDGRUPOFACTURACION")) && Integer.parseInt((String)hash.get("IDGRUPOFACTURACION"))>0){
 				where+=	" AND grupof.idgrupofacturacion        (+)= "+(String)hash.get("IDGRUPOFACTURACION");
 				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDGRUPOFACTURACION+" LIKE "+((String)hash.get("IDGRUPOFACTURACION")).toUpperCase();
 			}
+			
 			//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDOJUDICIAL"))>0))where+=" and ";
 			//		try{
 			//			if(Integer.parseInt((String)hash.get("IDPARTIDOJUDICIAL"))>0){
