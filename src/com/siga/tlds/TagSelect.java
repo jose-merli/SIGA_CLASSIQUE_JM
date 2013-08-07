@@ -294,7 +294,9 @@ public class TagSelect extends TagSupport {
 		String divLoaderClass= " class='tagSelect tagSelect_loader' ";
 		String labelClass = "  class='tagSelect tagSelect_label' ";
 		String inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled' ";
-		if (this.disabled || this.readOnly){
+		String selectLoaderStyle = "style='display:inline;'";
+		
+		if (this.disabled){
 			selectStyle = disabledInputStyle;
 			disabledInputStyle = "style='display:inline;";
 			divDataReadOnly = " data-readonly='true' ";
@@ -304,7 +306,22 @@ public class TagSelect extends TagSupport {
 			divLoaderClass= " class='tagSelect tagSelect_loader disabled' ";
 			labelClass = "  class='tagSelect tagSelect_label disabled' ";
 			inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled disabled' ";
-		}		
+			selectLoaderStyle = "style='display:none;'";
+			
+		} else {
+			if (this.readOnly){
+				selectStyle = disabledInputStyle;
+				disabledInputStyle = "style='display:inline;";
+				divDataReadOnly = " data-readonly='true' ";
+				selectReadOnly = " data-readonly='true' ";
+				divClass = " class='tagSelect tagSelectDiv' ";
+				selectClass = " class='tagSelect tagSelect_searchBox box' ";
+				divLoaderClass= " class='tagSelect tagSelect_loader' ";
+				labelClass = "  class='tagSelect tagSelect_label' ";
+				inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled' ";
+				selectLoaderStyle = "style='display:none;'";
+			}
+		}
 		
 		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
 		String divWidth = String.valueOf(DEFAULT_SELECT_WIDTH + 20);
@@ -321,27 +338,24 @@ public class TagSelect extends TagSupport {
 		selectStyle += " width:"+selectWidth+";";
 		disabledInputStyle += " width:"+selectWidth+";";
 		
-		if (!selectStyle.equals(""))
-			selectStyle += "'";
 		if (!disabledInputStyle.equals(""))
 			disabledInputStyle += "'";			
 		
-		String dataWidth = " data-width = '"+divWidth+"' ";
-		
-		//String wrapDivStyle = " style='display:inline;width:"+divWidth+";' ";
-		String wrapDivStyle = " style='display:inline;' ";
-		String selectLoaderStyle = "style='display:inline;'";
+		String dataWidth = " data-width = '"+divWidth+"' ";		
+		String wrapDivStyle = " style='display:inline; width:"+divWidth+";' ";		
 		
 		if (multiple){
 			sMultiple = " multiple size='"+this.lines+"'";
-			selectStyle = " style='display:inline;width:"+selectWidth+";";
-			if (this.disabled || this.readOnly)
+			if (this.disabled)
 				selectStyle += " disabled ";
 		}
 		
+		if (!selectStyle.equals(""))
+			selectStyle += "align:left'";		
+		
 		// *** IMPRIME HTML *** //
 		PrintWriter out = pageContext.getResponse().getWriter();
-		out.println("<div id='"+this.id+"_tagSelectDiv' "+divClass+dataWidth+divDataReadOnly+wrapDivStyle+">");
+		out.println("<div id='"+this.id+"_tagSelectDiv' " + divClass + dataWidth + divDataReadOnly + wrapDivStyle + ">");
 		String sOnloadCallback = "";
 		if (this.onLoadCallback != null && !"".equals(this.onLoadCallback)){
 			sOnloadCallback = " data-onloadcallback='"+this.id+"_callback' ";
@@ -359,6 +373,7 @@ public class TagSelect extends TagSupport {
 		out.println("<div id='"+this.id+"_loader' "+divLoaderClass+selectLoaderStyle+">");
 		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
+		String sInputMultiple = "";
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
 			if (keyValue == null)
@@ -366,8 +381,17 @@ public class TagSelect extends TagSupport {
 			boolean selected = false;
 			if (this.selectedIds != null && this.selectedIds.size() > 0)
 				selected = this.selectedIds.contains(keyValue.getKey());
-			if (selected)
+			if (selected) {
 				selectedOption = keyValue;
+				
+				// JPT: Codigo para generar los input text de los select multiples
+				if (multiple) {
+					sInputMultiple += (sInputMultiple.equals("")?"":"\n<br>") + "<input type='text' readonly='readonly' " + inputDisabledClass + disabledInputStyle +
+						" id='" + this.id + "_disabled' " + 
+						" name='" + this.id + "_disabled' " +
+						" value='" + selectedOption.getValue() +"'/>";
+				}
+			}
 			out.println(KeyValue.getHtmlOption(keyValue,selected));
 		}
 		String loadingElement = "<img id='"+this.id+"_loading' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='visibility:hidden' />";
@@ -375,6 +399,8 @@ public class TagSelect extends TagSupport {
 		out.println("</select>"+loadingElement+"</div>");
 		if (!multiple)
 			out.println("<input type='text' readonly='readonly' "+inputDisabledClass+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
+		else
+			out.println(sInputMultiple);
 		out.println("</div>");// this.id_div;
 	}
 

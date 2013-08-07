@@ -865,15 +865,17 @@ public class MantenimientoProductosAction extends MasterAction {
 		int i,j,k;
 		ArrayList comunes=new ArrayList();
 		
-		for (i=0;i<pagosA.length;i++) {
-			for (j=0;j<pagosB.length;j++) {
-			 if (pagosA[i]!=null && !pagosA[i].equals("")){	
-				if (pagosA[i].compareToIgnoreCase(pagosB[j])==0){
-				 comunes.add(pagosA[i]);
+		if (pagosA!=null) {
+			for (i=0;i<pagosA.length;i++) {
+				for (j=0;j<pagosB.length;j++) {
+				 if (pagosA[i]!=null && !pagosA[i].equals("")){	
+					if (pagosA[i].compareToIgnoreCase(pagosB[j])==0){
+					 comunes.add(pagosA[i]);
+					}
+				 }	
 				}
-			 }	
-			}
-		}	
+			}	
+		}
 		return comunes;
 	}
 	
