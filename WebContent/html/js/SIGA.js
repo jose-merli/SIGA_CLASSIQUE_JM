@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.73 2013-08-02 09:32:46 jose Exp $
+	*	@version    $Id: SIGA.js,v 1.74 2013-08-08 12:58:56 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -948,8 +948,9 @@ function setTagselectDivWidth(tagSelectDiv){
 }
 
 function tagSelect_search(tagSelect_select, tagSelect_searchBox){
-	if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" &&
-			tagSelect_searchBox.exists() && tagSelect_searchBox.exists()){
+	if (typeof tagSelect_searchBox != "undefined" && 
+			typeof tagSelect_select != "undefined" &&
+			tagSelect_searchBox.exists()){
 		tagSelect_select.find("option").each(function() {
 			if (jQuery(this).parent().is("span")){
 				jQuery(this).unwrap();
@@ -976,7 +977,13 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 				//tagSelect_select.val(optionsFound.first().val());
 				if (tagSelect_select.find("option:selected").exists())
 					tagSelect_select.find("option:selected").attr('selected', false);
-				optionsFound.first().attr('selected', true);
+				
+				// JPT: optionsFound.first().attr('selected', true);
+				
+				// JPT: Solo selecciona si es exactamente ese codigo 	
+				if (tagSelect_select.find("option[data-searchKey='"+searchValue+"']").exists())
+					tagSelect_select.find("option[data-searchKey='"+searchValue+"']").attr('selected', true);
+				
 				//tagSelect_select.val(tagSelect_select.find("option:selected").text());
 				//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
 			} else {
@@ -988,7 +995,7 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 				});
 				if (tagSelect_select.find("option:selected").exists())
 					tagSelect_select.find("option:selected").attr('selected', false);
-				tagSelect_select.find("option").first().attr('selected', true);
+				//JPT: tagSelect_select.find("option").first().attr('selected', true);
 			}
 		} else {
 			tagSelect_select.find("option").each(function() {
@@ -999,7 +1006,7 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 			});
 			if (tagSelect_select.find("option:selected").exists())
 				tagSelect_select.find("option:selected").attr('selected', false);
-			tagSelect_select.find("option").first().attr('selected', true);
+			//JPT: tagSelect_select.find("option").first().attr('selected', true);
 		}
 	}
 }
