@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.74 2013-08-08 12:58:56 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.75 2013-08-09 08:04:08 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1975,14 +1975,19 @@ function setFocusFormularios() {
  */
 function seleccionComboSiga(idCombo, valor) {
 
-	combo = top.frames[0].document.frames[0].document.getElementById(idCombo
-			+ 'Frame');
+	combo = top.frames[0].document.frames[0].document.getElementById(idCombo + 'Frame');
 
 	if (!combo) {
 		combo = top.frames[0].document.getElementById(idCombo + 'Frame');
 	}
+	
+	if (!combo) {
+		combo = document.getElementById(idCombo + 'Frame');
+	}
+	
 	if (!combo)
 		return;
+	
 	var cadena = combo.src;
 
 	var ini = cadena.indexOf('&elementoSel=[');
