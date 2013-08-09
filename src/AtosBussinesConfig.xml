@@ -83,6 +83,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgPrestacionRechazadaService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgPrestacionRechazadaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPrestacionServiceImpl"/>
 		
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenWSService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenWSServiceImpl"/>	
 		
 		
 	</context>

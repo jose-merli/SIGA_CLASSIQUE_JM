@@ -52,7 +52,13 @@
 		<form-bean name="facturasClienteForm" type="com.siga.censo.form.FacturasClienteForm"/>
 		<form-bean name="SancionesLetradoForm" type="com.siga.censo.form.SancionesLetradoForm"/>
 		<form-bean name="MantenimientoDuplicadosForm" type="com.siga.censo.form.MantenimientoDuplicadosForm"/>
-
+		
+		<!-- ************************** FORMS WEBSERVICECENSO *************************
+-->		
+		<form-bean name="BusquedaRemesasForm" type="com.siga.censo.ws.form.BusquedaRemesasForm"/>
+		<form-bean name="EdicionRemesaForm" type="com.siga.censo.ws.form.EdicionRemesaForm"/>
+		<form-bean name="EdicionColegiadoForm" type="com.siga.censo.ws.form.EdicionColegiadoForm"/>
+		
 
 		<!-- ************************** FORMS FACTURACIÓN *************************
 -->
@@ -724,6 +730,21 @@
 			<forward name="solicitarModificacion" path="/CEN_SolicitudDirecciones.do"/>
 			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
 		
+		</action>
+		
+		<action path="/CEN_BusquedaRemesas" type="com.siga.censo.ws.action.BusquedaRemesasAction" name="BusquedaRemesasForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/ws/busquedaRemesas.jsp"/>		
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>						
+		</action>
+		
+		<action path="/CEN_EdicionRemesas" type="com.siga.censo.ws.action.EdicionRemesasAction" name="EdicionRemesaForm" scope="session">			
+			<forward name="editar" path="/html/jsp/censo/ws/edicionRemesa.jsp"/>		
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaColegiados.jsp"/>									
+		</action>
+		
+		<action path="/CEN_EdicionColegiado" type="com.siga.censo.ws.action.EdicionColegiadoAction" name="EdicionColegiadoForm" scope="session">			
+			<forward name="editar" path="/html/jsp/censo/ws/edicionColegiado.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoHistorico.jsp"/>
 		</action>
 
 		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
