@@ -30,7 +30,7 @@
 	<property name="src.desa"		value="${home.desa}/src"/>
 	<property name="iis.desa"		value="${etc.desa}/iis"/>
 	
-	<property name="services.home"	value="${proyecto}/SIGAServices"/>
+	<property name="services.home"	value="${eclipse.workspace.home}/SIGAServices"/>
 	<property name="lib.services"	value="${services.home}/lib"/>
 	<property name="src.java.services"	value="${services.home}/src/main/java"/>
 	<property name="src.resources.services"	value="${services.home}/src/main/resources"/>

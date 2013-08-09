@@ -3,41 +3,26 @@
 	
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
+	<property file="buildDESA.properties"/>
+	<property name="bea.weblogic.jar" 		value="D:\oracle\Middleware\wlserver_12.1\server\lib\weblogic.jar"/>
 	
-	<property name="undeploy.version" 		value="SIGA_PRE_107_006"/>
-	<property name="redeploy.version" 		value="SIGA_PRE_107_007"/>
-	
-	<property name="eclipse.iis.home" 					value="Y:"/>
-	<property name="eclipse.redeploy.adminurl.siga" 	value="t3://10.60.3.77:7011"/>
+	<!-- Rutas de origen: Eclipse local -->
+	<property name="services.home" 			value="${eclipse.workspace.home}/SIGAServices/build"/>
+	<property name="proyecto.home" 			value="${eclipse.workspace.home}/SIGA92/WebContent"/>
+	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF"/>
+	<property name="html.home"				value="${proyecto.home}/html"/>			
+	<property name="destinoapplet" 			value="${proyecto.home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
+	<property name="destinoappletIP" 		value="${proyecto.home}/html/jsp/general/AppletDireccionIP.jar"/>
 
-	<property name="eclipse.redeploy.home" 			value="/home/Datos/user_projects/domains/domainCGAE"/>
-	<property name="eclipse.redeploy.password.siga" value="desarrollo"/>
-	<property name="eclipse.redeploy.user" 			value="weblogic"/>
-	<property name="eclipse.weblogic.home.siga" 	value="v:\user_projects\domains\domainCGAE"/>
-	<property name="eclipse.workspace.home" 		value="c:\eclipse\workspace"/>
-	<property name="proyecto" 						value="${eclipse.workspace.home}"/>
-	
+	<!-- Rutas de destino: WL desarrollo -->
 	<property name="redeploy.name" 			value="SIGA"/>
 	<property name="redeploy.targets" 		value="serverSIGA"/>
 	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>
 	<property name="redeploy.retiretimeout" value="30"/>
-	<property name="redeploy.source" 		value="${eclipse.redeploy.home}/applications/${redeploy.name}/${redeploy.version}"/>
 
-	<property name="bea.home" 				value="${eclipse.weblogic.home.siga}"/>
-	<property name="deploy.home" 			value="${bea.home}/applications/${redeploy.name}"/>
-	<property name="web.deploy.home" 		value="${deploy.home}/${redeploy.version}"/>
-	<property name="proyecto.home" 			value="${eclipse.workspace.home}/SIGA92/WebContent"/>
-
-	<property name="home"  				value="${proyecto.home}"/>
-	<property name="web.inf.home"  		value="${home}/WEB-INF"/>
-	<property name="services.home" 			value="${eclipse.workspace.home}/SIGAServices/build"/>
-	
-	<property name="html.home"			value="${home}/html"/>			
-	<property name="destinoapplet" 		value="${home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
-	<property name="destinoappletIP" 	value="${home}/html/jsp/general/AppletDireccionIP.jar"/>
-
-	<property name="web.inf.deploy.home"	value="${web.deploy.home}/WEB-INF"/>
-	<property name="html.deploy.home"   		value="${web.deploy.home}/html"/>			
+	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/${redeploy.version}"/>
+	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
+	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
 
 	
 
@@ -93,7 +78,7 @@
 			<antcall target="63.RedeployNewVersionApplication" />
 		</target>
 
-		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${eclipse.weblogic.jar}"/>
+		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${bea.weblogic.jar}"/>
 
 		
 	<!-- Despliegues de Aplicaciones en modo normal -->
@@ -103,10 +88,10 @@
 				verbose="true" 
 				debug="true"
 				name="${redeploy.name}" 
-				user="${eclipse.redeploy.user}" 
-				password="${eclipse.redeploy.password.siga}"
+				user="${wldesarrollo.deploy.user}" 
+				password="${wldesarrollo.deploy.password}"
 				targets="${redeploy.modulo.siga}"  	 		
-				adminurl="${eclipse.redeploy.adminurl.siga}"		 		
+				adminurl="${wldesarrollo.deploy.adminurl}"		 		
 			/>
 		</target>
 		<target name="62.RedeployApplication">	 	
@@ -114,10 +99,10 @@
 		  		verbose="true" 
 	      		debug="true"
 	      		name="${redeploy.name}" 
-	      		user="${eclipse.redeploy.user}" 
-	      		password="${eclipse.redeploy.password.siga}"
+	      		user="${wldesarrollo.deploy.user}" 
+	      		password="${wldesarrollo.deploy.password}"
 	      		targets="${redeploy.targets}"  	 		
-	      		adminurl="${eclipse.redeploy.adminurl.siga}"		 			  
+	      		adminurl="${wldesarrollo.deploy.adminurl}"		 			  
 		 	/>
 		 </target>
 		<target name="63.RedeployNewVersionApplication">    	 	
@@ -126,9 +111,9 @@
 		      	debug="true"
 		      	name="${redeploy.name}" 
 			  	source="${redeploy.source}"
-		      	user="${eclipse.redeploy.user}" 
-		      	password="${eclipse.redeploy.password.siga}"
-		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"
 		      	targets="${redeploy.targets}"  
 			  	appversion="${redeploy.version}"
 			  	remote="true"	 		
@@ -139,9 +124,9 @@
 		 		verbose="true" 
 		      	debug="true"
 		      	name="${redeploy.name}" 
-		      	user="${eclipse.redeploy.user}" 
-		      	password="${eclipse.redeploy.password.siga}"
-		      	adminurl="${eclipse.redeploy.adminurl.siga}"
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"
 		  		appversion="${undeploy.version}"
 			/>
 		 </target>
@@ -150,10 +135,10 @@
 			  	verbose="true" 
 	    	  	debug="true"
 	      		name="${redeploy.name}" 
-	      		user="${eclipse.redeploy.user}" 
-	      		password="${eclipse.redeploy.password.siga}"
+	      		user="${wldesarrollo.deploy.user}" 
+	      		password="${wldesarrollo.deploy.password}"
 	      		targets="${redeploy.targets}"  	 		
-	      		adminurl="${eclipse.redeploy.adminurl.siga}"
+	      		adminurl="${wldesarrollo.deploy.adminurl}"
 		  		appversion="${redeploy.version}"	 		
 		  		source="${redeploy.source}"
 		  		remote="true"
@@ -164,10 +149,10 @@
 		  		verbose="true" 
 	      		debug="true"
 	      		name="${redeploy.name}" 
-	      		user="${eclipse.redeploy.user}" 
-	      		password="${eclipse.redeploy.password.siga}"
+	      		user="${wldesarrollo.deploy.user}" 
+	      		password="${wldesarrollo.deploy.password}"
 	      		targets="${redeploy.targets}"  	 		
-		  		adminurl="${eclipse.redeploy.adminurl.siga}"
+		  		adminurl="${wldesarrollo.deploy.adminurl}"
 	      		appversion="${redeploy.version}"  
 			/>
 		</target>
@@ -176,8 +161,8 @@
 		  		verbose="true" 
 	      		debug="true"
 	      		name="${redeploy.name}" 
-	      		user="${eclipse.redeploy.user}" 
-	      		password="${eclipse.redeploy.password.siga}"
+	      		user="${wldesarrollo.deploy.user}" 
+	      		password="${wldesarrollo.deploy.password}"
 	      		targets="${redeploy.modulo}"  	 		
 	      		adminurl="${redeploy.adminurl}"
 			/>
