@@ -1,5 +1,21 @@
-Para poder hacer entregas a nuevoDesa hace falta crear las siguientes unidades de red 
+* desplegarDESA.xml
+ - Hace un despliegue en DESA
+ - En builDESA.properties hay que personalizar las rutas 
+ - Para poder hacer entregas a nuevoDesa hace falta crear las siguientes unidades de red: 
+	   v:\ que acceda a 	\\10.60.3.77\Datos        	[root@desarrollo]
+	   y:\ que acceda a 	\\10.60.3.82\iisiga     	[Administrador@desarrollo]
+ - En builDESA.properties hay que cambiar los parámetros:
+	   undeploy.version (versión que sale) y 
+	   redeploy.version (versión que entra)
+ - En desplegarDESA.xml no haria falta tocar nada, pero hay una excepción:
+	   tanto Jorge Torres como yo no hemos conseguido que funcione el proceso WL que despliega 
+	   y hemos tenido que usar un weblogic.jar ajeno al proyecto (el del WL 12). 
+	   Y además la ruta de dicho jar no se puede poner en el properties 
+	   porque el ANT requiere que el CLASSPATH se le indique en el fichero directamente 
+	   (no vale en properties), así que la property "bea.weblogic.jar" 
+	   hay que cambiarla directamente en el desplegarDESA.xml
 
-v:\ que acceda a 	\\10.60.3.77\Datos        	[root@desarrollo]
-
-y:\ que acceda a 	\\10.60.3.82\iisiga     	[Administrador@desarrollo]
+* crearEntregaDESA.xml
+ - Genera una entrega con la siguiente versión
+ - Se alimenta del build.properties para coger el numero de la versión
+ - Lo que genera se le puede pasar directamente a explotación
