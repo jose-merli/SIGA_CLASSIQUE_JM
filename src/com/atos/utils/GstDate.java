@@ -121,6 +121,12 @@ public class GstDate {
 		return dat;
 	}
 
+	public static String getFormatedDateShort(Date date)
+			throws ClsExceptions {
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		return sdf.format(date);
+	}
+	
 	public static String getFormatedDateShort(String lang, Object odate)
 			throws ClsExceptions {
 		String dat = "";
