@@ -977,7 +977,8 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		codigos.put(new Integer(3),idPagosFin);
 		String resultado = null;
 	
-		String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO(:1,:2,:3) PAGOS FROM DUAL ";
+		String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(:1, :2, :3, -1) PAGOS FROM DUAL ";
+		//String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO(:1,:2,:3) PAGOS FROM DUAL ";
 		rc = new RowsContainer(); 
 		if (rc.queryBind(consulta,codigos)) {
 			Row fila = (Row) rc.get(0);
