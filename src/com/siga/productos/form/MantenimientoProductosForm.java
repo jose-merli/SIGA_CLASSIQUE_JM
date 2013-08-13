@@ -267,7 +267,7 @@ public class MantenimientoProductosForm extends MasterForm{
 	
 	public String[] getFormaPagoSecretaria(){
 		// Al cmabiar el tipo de campo en la jsp es necesario partir la cadena
-		if (formaPagoSecretaria.length == 1) {
+		if (formaPagoInternet!=null && formaPagoSecretaria.length == 1) {
 			return formaPagoSecretaria[0].split(",");
 		}
 		return formaPagoSecretaria;
