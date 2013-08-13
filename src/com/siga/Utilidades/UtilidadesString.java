@@ -377,6 +377,7 @@ public class UtilidadesString {
 	    sSalida = sSalida.replaceAll("ç", "&ccedil;");
 	    sSalida = sSalida.replaceAll("Ç", "&Ccedil;");
 	    //sSalida = sSalida.replaceAll("'", "&apos;");
+	    sSalida = sSalida.replaceAll("\r\n", "<BR>");
 	    sSalida = sSalida.replaceAll("\n\r", "<BR>");
 	    sSalida = sSalida.replaceAll("\n", "<BR>");
 	    return sSalida;
