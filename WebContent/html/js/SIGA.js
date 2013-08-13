@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.75 2013-08-09 08:04:08 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.76 2013-08-13 07:42:59 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -689,7 +689,7 @@ function jQueryUILoaded(){
         document.getElementsByTagName("head")[0].appendChild(link);
     }
     // CONFIGURACIÓN POR DEFECTO DE DATEPICKER
-	if (jQueryTop.fn.datepicker){
+	if (jQueryTop!=null&&jQueryTop.fn.datepicker){
 		console.debug("[jQueryUILoaded] JQUERY datepicker INI");
 		//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
 		jQueryTop.datepicker.regional['es'] = {
@@ -948,44 +948,38 @@ function setTagselectDivWidth(tagSelectDiv){
 }
 
 function tagSelect_search(tagSelect_select, tagSelect_searchBox){
-	if (typeof tagSelect_searchBox != "undefined" && 
-			typeof tagSelect_select != "undefined" &&
-			tagSelect_searchBox.exists()){
+	if (typeof tagSelect_searchBox != "undefined" && typeof tagSelect_select != "undefined" && tagSelect_searchBox.exists()) {
+		
 		tagSelect_select.find("option").each(function() {
 			if (jQuery(this).parent().is("span")){
 				jQuery(this).unwrap();
 			}
 			jQuery(this).show();
 		});
+		
 		var searchValue = tagSelect_searchBox.val();
 		if (searchValue != ""){
 			tagSelect_select.find("option").wrap("<span>").hide();
-			var optionsFound = tagSelect_select.find("option[data-searchkey]").filter(function(){
-				//console.debug("tagSelect_search comparando " + String(jQuery(this).data("searchkey")).toLowerCase() + " con " + String(searchValue).toLowerCase() + " > " + String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()));
-				return String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()) != "-1";
+			var optionsFound = tagSelect_select.find("option").filter(function() {
+				var vBoolean = this.value == "";					
+				if (!vBoolean)
+					vBoolean = String(jQuery(this).data("searchkey")).toLowerCase().indexOf(String(searchValue).toLowerCase()) != "-1";
+				return vBoolean;
 			});
-			console.debug("[tagSelect_search] Búsqueda por '" + searchValue + "' encontradas " + optionsFound.length + " options...");
-			if (optionsFound.length > 0){
-				optionsFound.show();
+			
+			if (optionsFound.length > 1){				
 				optionsFound.each(function() {
 					if (jQuery(this).parent().is("span")){							
 						jQuery(this).unwrap();
-						//console.debug("muestro["+jQuery(this).data("searchkey")+"]: " + jQuery(this).text());
 					}
-				});
-				//console.debug("[tagSelect_search] Seteo el valor del select a '"+optionsFound.first().val()+"'");
-				//tagSelect_select.val(optionsFound.first().val());
-				if (tagSelect_select.find("option:selected").exists())
-					tagSelect_select.find("option:selected").attr('selected', false);
-				
-				// JPT: optionsFound.first().attr('selected', true);
-				
-				// JPT: Solo selecciona si es exactamente ese codigo 	
-				if (tagSelect_select.find("option[data-searchKey='"+searchValue+"']").exists())
-					tagSelect_select.find("option[data-searchKey='"+searchValue+"']").attr('selected', true);
-				
-				//tagSelect_select.val(tagSelect_select.find("option:selected").text());
-				//console.debug("[tagSelect_search] Después de setear el valor es: '"+tagSelect_select.find("option:selected").val()+"' y el del select '" + tagSelect_select.val() + "'");
+					
+					if (jQuery(this).attr("data-searchKey") == searchValue)
+					    jQuery(this).attr("selected", true);
+				    else
+				    	jQuery(this).attr("selected", false);
+				});								
+				optionsFound.show();
+
 			} else {
 				tagSelect_select.find("option").each(function() {
 					if (jQuery(this).parent().is("span")){
@@ -993,10 +987,11 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 					}
 					jQuery(this).show();
 				});
+				
 				if (tagSelect_select.find("option:selected").exists())
 					tagSelect_select.find("option:selected").attr('selected', false);
-				//JPT: tagSelect_select.find("option").first().attr('selected', true);
 			}
+			
 		} else {
 			tagSelect_select.find("option").each(function() {
 				if (jQuery(this).parent().is("span")){
@@ -1004,9 +999,9 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 				}
 				jQuery(this).show();
 			});
+			
 			if (tagSelect_select.find("option:selected").exists())
 				tagSelect_select.find("option:selected").attr('selected', false);
-			//JPT: tagSelect_select.find("option").first().attr('selected', true);
 		}
 	}
 }
