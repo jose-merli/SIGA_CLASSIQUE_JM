@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.76 2013-08-13 07:42:59 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.77 2013-08-13 09:09:20 adrian Exp $
 	**/
 	(function(jQuery)
 	{
@@ -976,32 +976,32 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 					if (jQuery(this).attr("data-searchKey") == searchValue)
 					    jQuery(this).attr("selected", true);
 				    else
-				    	jQuery(this).attr("selected", false);
+				    	jQuery(this).removeAttr("selected");
 				});								
 				optionsFound.show();
 
 			} else {
+				tagSelect_select.find("option").removeAttr("selected");
+				tagSelect_select.find("option[value='']").attr("selected", true);
+				
 				tagSelect_select.find("option").each(function() {
 					if (jQuery(this).parent().is("span")){
 						jQuery(this).unwrap();
 					}
 					jQuery(this).show();
 				});
-				
-				if (tagSelect_select.find("option:selected").exists())
-					tagSelect_select.find("option:selected").attr('selected', false);
 			}
 			
 		} else {
+			tagSelect_select.find("option").removeAttr("selected");
+			tagSelect_select.find("option[value='']").attr("selected", true);
+			
 			tagSelect_select.find("option").each(function() {
 				if (jQuery(this).parent().is("span")){
 					jQuery(this).unwrap();
 				}
 				jQuery(this).show();
 			});
-			
-			if (tagSelect_select.find("option:selected").exists())
-				tagSelect_select.find("option:selected").attr('selected', false);
 		}
 	}
 }
