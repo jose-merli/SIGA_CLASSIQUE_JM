@@ -237,72 +237,51 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 	    return salida;
 	}
 
-	public void insertarApunte(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona) {
-    
-    try {
-        // log de envio
-        try {
-	        EnvDocumentosDestinatariosAdm pathAdm = new EnvDocumentosDestinatariosAdm(this.usrbean);
-	        String pathDoc = pathAdm.getPathDocumentosFromDB();
-	    	File auxDirectorios = new File(pathDoc+File.separator + idInstitucion.toString());
-	    	auxDirectorios.mkdirs();
-	    	// RGG 08-09-2005 Cambio para que el fichero de log sea unico 
-	        String sFicheroLog = pathDoc + File.separator + idInstitucion.toString() +File.separator +  "logEnvios_" + idInstitucion.toString() + ".log.xls"; 	        
-	        SIGALogging logEnvio = new SIGALogging(sFicheroLog);
-	        logEnvio.write(idInstitucion.toString()+ClsConstants.SEPARADOR+idEnvio.toString()+ClsConstants.SEPARADOR+idTipoEnvio.toString()+ClsConstants.SEPARADOR+idPersona.toString());
-        } catch (Exception e2) {
-            e2.printStackTrace();
-        }
-        
-	    EnvEstatEnvioBean bean = new EnvEstatEnvioBean();
-	    
-	    Long idEstatEnvio = getSecuenciaNextVal(EnvEstatEnvioBean.SEQ_ENV_ESTAT_ENVIO);
-	    bean.setIdEstatEnvio(idEstatEnvio);
-	    bean.setIdInstitucion(idInstitucion);
-	    bean.setIdEnvio(idEnvio);
-	    bean.setIdTipoEnvio(idTipoEnvio);
-	    bean.setIdPersona(idPersona);
-	    
-        if (!this.insert(bean)) {
-            throw new ClsExceptions("Error al insertar apunte estadístico de envíos: "+this.getError());
-        }
-    } catch (ClsExceptions e) {
-    	ClsLogging.writeFileLogWithoutSession(e.getMessage(), 10);
-    }
-}
+	public void insertarApunte(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona)
+	{
+		insertarApunteExtra(idInstitucion, idEnvio, idTipoEnvio, idPersona, null);
+	}
 
-	public void insertarApunteExtra(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Long idPersona, String extra) {
-    
-    try {
-        // log de envio
-        try {
-	        EnvDocumentosDestinatariosAdm pathAdm = new EnvDocumentosDestinatariosAdm(this.usrbean);
-	        String pathDoc = pathAdm.getPathDocumentosFromDB();
-	    	File auxDirectorios = new File(pathDoc+File.separator + idInstitucion.toString());
-	    	auxDirectorios.mkdirs();
-	    	// RGG 08-09-2005 Cambio para que el fichero de log sea unico 
-	        String sFicheroLog = pathDoc + File.separator + idInstitucion.toString() +File.separator +  "logEnvios_" + idInstitucion.toString() + ".log.xls"; 	        
-	        SIGALogging logEnvio = new SIGALogging(sFicheroLog);
-	        logEnvio.write(idInstitucion.toString()+ClsConstants.SEPARADOR+idEnvio.toString()+ClsConstants.SEPARADOR+idTipoEnvio.toString()+ClsConstants.SEPARADOR+idPersona.toString()+ClsConstants.SEPARADOR+extra.toString());
-        } catch (Exception e2) {
-            e2.printStackTrace();
-        }
-        
-	    EnvEstatEnvioBean bean = new EnvEstatEnvioBean();
-	    Long idEstatEnvio = getSecuenciaNextVal(EnvEstatEnvioBean.SEQ_ENV_ESTAT_ENVIO);
-	    bean.setIdEstatEnvio(idEstatEnvio);
-	    bean.setIdInstitucion(idInstitucion);
-	    bean.setIdEnvio(idEnvio);
-	    bean.setIdTipoEnvio(idTipoEnvio);
-	    bean.setIdPersona(idPersona);
-	    
-        if (!this.insert(bean)) {
-            throw new ClsExceptions("Error al insertar apunte estadístico de envíos: "+this.getError());
-        }
-    } catch (ClsExceptions e) {
-    	ClsLogging.writeFileLogWithoutSession(e.getMessage(), 10);
-    }
-}
+	public void insertarApunteExtra(Integer idInstitucion,
+			Integer idEnvio,
+			Integer idTipoEnvio,
+			Long idPersona,
+			String extra)
+	{
+		// escribiendo log de envio
+		try {
+			String pathDoc = new EnvDocumentosDestinatariosAdm(this.usrbean).getPathDocumentosFromDB();
+			
+			File auxDirectorios = new File(pathDoc + File.separator + idInstitucion.toString());
+			auxDirectorios.mkdirs();
+			
+			String sFicheroLog = pathDoc + File.separator + idInstitucion.toString() + File.separator
+					+ "logEnvios_" + idInstitucion.toString() + ".log.xls";
+			SIGALogging logEnvio = new SIGALogging(sFicheroLog);
+			logEnvio.write(idInstitucion.toString() + ClsConstants.SEPARADOR + idEnvio.toString()
+					+ ClsConstants.SEPARADOR + idTipoEnvio.toString() + ClsConstants.SEPARADOR
+					+ idPersona.toString() + ((extra == null) ? "" : ClsConstants.SEPARADOR + extra));
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		// insertando apunte estadistico de envio
+		try {
+			EnvEstatEnvioBean bean = new EnvEstatEnvioBean();
+			Long idEstatEnvio = getSecuenciaNextVal(EnvEstatEnvioBean.SEQ_ENV_ESTAT_ENVIO);
+			bean.setIdEstatEnvio(idEstatEnvio);
+			bean.setIdInstitucion(idInstitucion);
+			bean.setIdEnvio(idEnvio);
+			bean.setIdTipoEnvio(idTipoEnvio);
+			bean.setIdPersona(idPersona);
+			
+			if (!this.insert(bean)) {
+				throw new ClsExceptions("Error al insertar apunte estadístico de envíos: " + this.getError());
+			}
+		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogWithoutSession(e.getMessage(), 10);
+		}
+	} // insertarApunteExtra ()
 
 	public void borrarEnvio(String idInstitucion, String idEnvio, String idTipoEnvio) throws SIGAException, ClsExceptions {
 
