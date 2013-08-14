@@ -62,7 +62,9 @@ public class SelectDataAction extends SIGAActionBase {
 		boolean required = UtilidadesString.stringToBoolean(request.getParameter(REQUIRED_PARAMETER));
 		
 		List<KeyValue> options = new ArrayList<KeyValue>();
-		if (!required){
+		if (required){
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
+		} else {
 			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
 		}
 		
