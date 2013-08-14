@@ -335,14 +335,14 @@ public class TagSelect extends TagSupport {
 			}
 		}
 		
-		selectStyle += " width:"+selectWidth+";";
-		disabledInputStyle += " width:"+selectWidth+";";
+		selectStyle += " width:"+selectWidth+"px;";
+		disabledInputStyle += " width:"+selectWidth+"px;";
 		
 		if (!disabledInputStyle.equals(""))
 			disabledInputStyle += "'";			
 		
 		String dataWidth = " data-width = '"+divWidth+"' ";		
-		String wrapDivStyle = " style='display:inline; width:"+divWidth+";' ";		
+		String wrapDivStyle = " style='display:inline; width:"+divWidth+"px;' ";		
 		
 		if (multiple){
 			sMultiple = " multiple size='"+this.lines+"'";
@@ -351,7 +351,7 @@ public class TagSelect extends TagSupport {
 		}
 		
 		if (!selectStyle.equals(""))
-			selectStyle += "align:left'";		
+			selectStyle += "'";		
 		
 		// *** IMPRIME HTML *** //
 		PrintWriter out = pageContext.getResponse().getWriter();
