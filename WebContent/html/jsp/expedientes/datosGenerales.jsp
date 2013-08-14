@@ -1811,7 +1811,7 @@
 %>
 																<textarea name="<%=sNombreCampo%>" 
 																	onKeyDown="cuenta(this,<%=campoConf.getMaxLong()%>)" onChange="cuenta(this,<%=campoConf.getMaxLong()%>)" 
-																	class="<%=boxStyle%>" style="width:860px" cols="90" rows="3"><%=vDatosCamposPestanas.elementAt(k)%></textarea>																	
+																	class="<%=boxStyle%>"  style="overflow-y:auto; overflow-x:hidden; width:860px; height:50px; resize:none;"><%=vDatosCamposPestanas.elementAt(k)%></textarea>																
 <%
 															} else { 
 %>
