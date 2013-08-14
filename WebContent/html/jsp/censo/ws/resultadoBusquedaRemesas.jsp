@@ -28,6 +28,8 @@
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="org.redabogacia.sigaservices.app.autogen.model.EcomCenWs"%>
+<%@ page import="com.siga.censo.ws.action.BusquedaRemesasAction"%>
+
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
@@ -55,8 +57,8 @@
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
 	
-	if (ses.getAttribute("DATAPAGINADOR") != null) {
-		hm = (HashMap) ses.getAttribute("DATAPAGINADOR");
+	if (ses.getAttribute(BusquedaRemesasAction.DATAPAGINADOR) != null) {
+		hm = (HashMap) ses.getAttribute(BusquedaRemesasAction.DATAPAGINADOR);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
 			resultado = (List<EcomCenWs>) hm.get("datos");
@@ -180,21 +182,7 @@
 			
 			 <%}%>	
 			 
-			 <script type="text/javascript">
-			 	//sobreescribimos la funcion consultar
-			 	function consultar(fila) {
-			 		var objHiddId = document.getElementById('oculto' + fila + '_1');
-			 		var objHiddDes = document.getElementById('oculto' + fila + '_2');
-			 		
-					if (objHiddId && objHiddDes) {
-						accionConsultaCollection('', objHiddId.value, objHiddDes.value);
-					}
-					
-				}
-			 		 	
-				
-				
-			 </script>
+			
 		
 
 	</body>

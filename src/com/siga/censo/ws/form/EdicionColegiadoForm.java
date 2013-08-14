@@ -4,8 +4,9 @@ import java.util.List;
 
 import com.siga.general.MasterForm;
 
+
 public class EdicionColegiadoForm extends MasterForm {
-	private String idcensodatos = null;
+	private Long idcensodatos = null;
 	
 	private String publicarcolegiado = null;  
 	private String ncolegiado = null;  
@@ -46,7 +47,11 @@ public class EdicionColegiadoForm extends MasterForm {
 	private String codigopaisextranj = null;  
 	private String descripcionpaisextranj = null;
 	
+	private String fechaCambio = null;
 	private List<String> incidencias = null;
+	
+	private boolean historico = false;
+	private Long idcensodatosPadre = null;
 	
 	
 	public String getPublicarcolegiado() {
@@ -259,10 +264,10 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setDescripcionpaisextranj(String descripcionpaisextranj) {
 		this.descripcionpaisextranj = descripcionpaisextranj;
 	}
-	public String getIdcensodatos() {
+	public Long getIdcensodatos() {
 		return idcensodatos;
 	}
-	public void setIdcensodatos(String idcensodatos) {
+	public void setIdcensodatos(Long idcensodatos) {
 		this.idcensodatos = idcensodatos;
 	}
 	public List<String> getIncidencias() {
@@ -271,6 +276,23 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setIncidencias(List<String> incidencias) {
 		this.incidencias = incidencias;
 	}
-
-
+	public String getFechaCambio() {
+		return fechaCambio;
+	}
+	public void setFechaCambio(String fechaCambio) {
+		this.fechaCambio = fechaCambio;
+	}
+	public boolean isHistorico() {
+		return historico;
+	}
+	public void setHistorico(boolean historico) {
+		this.historico = historico;
+	}
+	public Long getIdcensodatosPadre() {
+		return idcensodatosPadre;
+	}
+	public void setIdcensodatosPadre(Long idcensodatosPadre) {
+		this.idcensodatosPadre = idcensodatosPadre;
+	}
+		
 }

@@ -1,6 +1,7 @@
 <!-- resultadoHistorico.jsp -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.censo.ws.action.EdicionColegiadoAction"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -22,11 +23,12 @@
 
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos"%>
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
 <%@ page import="com.siga.censo.ws.action.EdicionRemesasAction"%>
+<%@ page import="com.siga.censo.ws.form.EdicionColegiadoForm"%>
+
 
 
 
@@ -44,7 +46,7 @@
 
 	String idioma=usr.getLanguage().toUpperCase();
 	/** PAGINADOR ***/
-	List<EcomCenDatos> resultado= new ArrayList<EcomCenDatos>();
+	List<EdicionColegiadoForm> resultado= new ArrayList<EdicionColegiadoForm>();
 	String paginaSeleccionada ="";
 	
 	String totalRegistros ="";
@@ -52,11 +54,11 @@
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
 	
-	if (ses.getAttribute(EdicionRemesasAction.DATAPAGINADOR) != null) {
-		hm = (HashMap) ses.getAttribute(EdicionRemesasAction.DATAPAGINADOR);
+	if (ses.getAttribute(EdicionColegiadoAction.DATAPAGINADOR) != null) {
+		hm = (HashMap) ses.getAttribute(EdicionColegiadoAction.DATAPAGINADOR);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
-			resultado = (List<EcomCenDatos>) hm.get("datos");
+			resultado = (List<EdicionColegiadoForm>) hm.get("datos");
 
 			PaginadorVector paginador = (PaginadorVector) hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
@@ -66,7 +68,7 @@
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 
 		} else {
-			resultado = new ArrayList<EcomCenDatos>();
+			resultado = new ArrayList<EdicionColegiadoForm>();
 			paginaSeleccionada = "0";
 
 			totalRegistros = "0";
@@ -74,7 +76,7 @@
 			registrosPorPagina = "0";
 		}
 	} else {
-		resultado = new ArrayList<EcomCenDatos>();
+		resultado = new ArrayList<EdicionColegiadoForm>();
 		paginaSeleccionada = "0";
 		totalRegistros = "0";
 		registrosPorPagina = "0";
@@ -121,21 +123,24 @@
 	<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo"  id="modo"  value="">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+		<input type="hidden" name="idcensodatos"  id="idcensodatos"  value="${EdicionColegiadoForm.idcensodatos}">
+		<input type="hidden" name="historico"  id="historico"  value="true">
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 	</html:form>
+	
 		
 		<siga:Table 		   
 		   name="listadoColegiados"
 		   border="1"
-		   columnNames="censo.ws.literal.numeroColegiado,censo.ws.literal.nombre,censo.ws.literal.primerApellido,censo.ws.literal.segundoApellido,"
+		   columnNames="censo.ws.literal.fechaCambio,censo.ws.literal.incidencias,"
 		   columnSizes="15,20,20,20">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
    					for (int i=0; i<resultado.size(); i++) {
-   						EcomCenDatos ecomCenDatos = (EcomCenDatos)resultado.get(i);
+   						EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm)resultado.get(i);
   		
 		   		   		FilaExtElement[] elems = null;
 		   		   		botones = null;
@@ -147,11 +152,19 @@
 	   		   			visibleConsulta = "true";		   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=ecomCenDatos.getIdcensodatos()%>">
-					<td style="text-align: right;"><%=ecomCenDatos.getNcolegiado()%></td>
-					<td><%=ecomCenDatos.getNombre()!=null?ecomCenDatos.getNombre():"&nbsp;"%></td>
-					<td><%=ecomCenDatos.getApellido1()!=null?ecomCenDatos.getApellido1():"&nbsp;"%></td>
-					<td><%=ecomCenDatos.getApellido2()!=null?ecomCenDatos.getApellido2():"&nbsp;"%></td>										
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=String.valueOf(edicionColegiadoForm.getIdcensodatos())%>">					
+					<td><%=edicionColegiadoForm.getFechaCambio()!=null?edicionColegiadoForm.getFechaCambio():"&nbsp;"%></td>
+					<td>
+					<% if (edicionColegiadoForm.getIncidencias() != null &&  edicionColegiadoForm.getIncidencias().size() > 0) { 
+						for (String incidencia : edicionColegiadoForm.getIncidencias()) {%> 
+							<br><siga:Idioma key="<%=incidencia%>"/></br>
+						<%}
+						
+					} else {%>
+						&nbsp;
+					<%} %>
+					</td>
+					
 				</siga:FilaConIconos>	
 							<% }
 		   				   } else { %>

@@ -33,6 +33,8 @@ import es.satec.businessManager.BusinessManager;
 
 public class BusquedaRemesasAction extends MasterAction {	
 	
+	public static final String DATAPAGINADOR = "DATAPAGINADOR_BUSQUEDA_REMESAS";
+	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -77,6 +79,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
 		busquedaRemesasForm.reset();
+		request.getSession().removeAttribute(DATAPAGINADOR);
 		return abrirAvanzada(mapping, formulario, request, response);
 		
 	}
@@ -140,6 +143,7 @@ public class BusquedaRemesasAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
+		
 		return buscarPor(mapping, formulario, request, response);
 		
 	}
@@ -150,8 +154,8 @@ public class BusquedaRemesasAction extends MasterAction {
 			BusquedaRemesasForm form = (BusquedaRemesasForm) formulario;			
 			HashMap databackup = new HashMap();
 
-			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
-				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
+			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
+				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
 				PaginadorVector<EcomCenWs> paginador = (PaginadorVector<EcomCenWs>) databackup.get("paginador");
 				List<EcomCenWs> datos = new ArrayList<EcomCenWs>();
 
@@ -185,7 +189,7 @@ public class BusquedaRemesasAction extends MasterAction {
 				if (paginador != null) {
 					datos = paginador.obtenerPagina(1);
 					databackup.put("datos", datos);
-					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+					request.getSession().setAttribute(DATAPAGINADOR, databackup);
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 				}
 			}				

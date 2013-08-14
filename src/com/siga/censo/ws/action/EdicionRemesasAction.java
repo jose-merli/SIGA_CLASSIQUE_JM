@@ -198,11 +198,20 @@ public class EdicionRemesasAction extends MasterAction {
 
 	}
 	
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {			
+		return verEditar("ver", formulario, request);		
+	}
+	
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {			
+		return verEditar("editar", formulario, request);		
+	}
+	
+	private String verEditar(String accion, MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		try {
-			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
 			
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			edicionRemesaForm.setAccion(accion);
+						
 			HttpSession session = request.getSession();
 			if (request.getParameter("volver") == null) {
 				session.removeAttribute(DATAPAGINADOR);
@@ -211,7 +220,7 @@ public class EdicionRemesasAction extends MasterAction {
 			
 			
 			// Recuperamos los datos del registro que hemos seleccionado
-			Vector ocultos = formulario.getDatosTablaOcultos(0);
+			Vector ocultos = edicionRemesaForm.getDatosTablaOcultos(0);
 			
 			Hashtable miHash = new Hashtable();
 			
@@ -238,17 +247,17 @@ public class EdicionRemesasAction extends MasterAction {
 			} else {
 				edicionRemesaForm.setDescerror(UtilidadesString.getMensajeIdioma(getUserBean(request), "censo.ws.literal.sinIncidencia"));
 			}
-			
-			// Entramos al formulario en modo 'modificación'
-			session.setAttribute("accion", "editar");
-			
+						
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
-		return "editar";
+		return accion;
+		
 	}
-	
 
+
+	
+	
 
 	private boolean isNotnull(String value) {		
 		return value != null && !value.trim().equals("");

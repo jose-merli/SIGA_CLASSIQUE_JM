@@ -47,7 +47,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.ws.gestionremesas.titulo" localizacion="censo.ws.gestionremesas.localizacion"/>
+	<siga:Titulo titulo="censo.ws.edicionRemesa.titulo" localizacion="censo.ws.edicionRemesa.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -99,7 +99,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 		<table  class="tablaCentralCampos"  align="center">
 			<tr>				
 				<td>
-					<siga:ConjCampos leyenda="censo.ws.gestionremesas.titulo">
+					<siga:ConjCampos leyenda="censo.ws.gestionremesas.datosRemesa">
 						<table class="tablaCampos" align="center">
 															
 								<!-- FILA -->
@@ -143,12 +143,12 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 						</table>
 					</siga:ConjCampos>
 								
-					<siga:ConjCampos leyenda="censo.ws.edicionremesas.datosRemesa">
+					<siga:ConjCampos leyenda="censo.ws.edicionremesas.filtroColegiado">
 						<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="resultado">
 							<table class="tablaCampos" align="center">							
-								<html:hidden name="EdicionRemesaForm" property = "modo" value = ""/>
-								<input type="hidden" name="idcensows" value="<bean:write name="EdicionRemesaForm" property="idcensows"/>"/>
 								
+								<input type="hidden" name="idcensows" value="<bean:write name="EdicionRemesaForm" property="idcensows"/>"/>
+								<input type="hidden" name="modo" value="<bean:write name="EdicionRemesaForm" property="modo"/>"/>
 								
 								
 								<html:hidden property="seleccionarTodos" />
@@ -228,7 +228,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 						 
 		%>
 
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.gestionremesas.titulo" />
+		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.edicionRemesa.listadoColegiados" />
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->

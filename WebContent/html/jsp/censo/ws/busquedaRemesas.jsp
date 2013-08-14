@@ -56,7 +56,7 @@
 			
 			function buscar() {				
 				sub();
-				document.forms[0].modo.value="buscarInit";
+				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();					
 			}

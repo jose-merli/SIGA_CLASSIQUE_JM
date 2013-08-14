@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
-import org.redabogacia.sigaservices.app.autogen.mapper.EcomCenColegiadoMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
@@ -25,7 +24,6 @@ import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
-import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -73,33 +71,46 @@ public class EdicionColegiadoAction extends MasterAction {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
 		}
 	}
-
 	
+	protected String ver (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
+		return verEditar("ver", mapping, formulario, request, response);
+	}
+
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		return verEditar("editar", mapping, formulario, request, response);
+	}
+	
+	protected String verEditar(String accion, ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		try {
 			HttpSession session = request.getSession();
 			session.removeAttribute(DATAPAGINADOR);
 			
 			EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm) formulario;
-			
-			// Recuperamos los datos del registro que hemos seleccionado
-			Vector ocultos = formulario.getDatosTablaOcultos(0);
-			
-			Hashtable miHash = new Hashtable();
-			
+						
 			Long idcensodatos = null;
 			
-			if (ocultos != null && ocultos.size() > 0) {
-				idcensodatos = Long.valueOf(ocultos.get(0).toString());
+			if (edicionColegiadoForm.getIdcensodatosPadre() != null) {
+				idcensodatos = edicionColegiadoForm.getIdcensodatosPadre();
 			} else {
-				throw new IllegalArgumentException("No se ha recibido el identificador para editar el colegiado");
+				// Recuperamos los datos del registro que hemos seleccionado
+				Vector ocultos = formulario.getDatosTablaOcultos(0);
+				if (ocultos != null && ocultos.size() > 0) {
+					idcensodatos = Long.valueOf(ocultos.get(0).toString());
+				} else {
+					throw new IllegalArgumentException("No se ha recibido el identificador para editar el colegiado");
+				}
 			}
+			
+			if (edicionColegiadoForm.isHistorico()) {
+				edicionColegiadoForm.setIdcensodatosPadre(edicionColegiadoForm.getIdcensodatos());
+			}
+			
 					
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
 			EcomCenDatos ecomCenDatos = cenWSService.getEcomCenDatosByPk(idcensodatos);
 						
-			edicionColegiadoForm.setIdcensodatos(ecomCenDatos.getIdcensodatos().toString());
+			edicionColegiadoForm.setIdcensodatos(ecomCenDatos.getIdcensodatos());
 			
 			edicionColegiadoForm.setPublicarcolegiado(getValue(ecomCenDatos.getPublicarcolegiado()));
 			edicionColegiadoForm.setNumsolicitudcolegiacion(getValue(ecomCenDatos.getNumsolicitudcolegiacion()));
@@ -134,14 +145,14 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));
 			
 			edicionColegiadoForm.setIncidencias(cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos()));
-			
+						
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
-		return "editar";
+		return accion;
 	}
 
 	
@@ -153,8 +164,8 @@ public class EdicionColegiadoAction extends MasterAction {
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
 				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
-				PaginadorVector<EcomCenDatos> paginador = (PaginadorVector<EcomCenDatos>) databackup.get("paginador");
-				List<EcomCenDatos> datos = new ArrayList<EcomCenDatos>();
+				PaginadorVector<EdicionColegiadoForm> paginador = (PaginadorVector<EdicionColegiadoForm>) databackup.get("paginador");
+				List<EdicionColegiadoForm> datos = new ArrayList<EdicionColegiadoForm>();
 
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
@@ -172,10 +183,21 @@ public class EdicionColegiadoAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
 
-			} else {									
-				List<EcomCenDatos> datos = getDatos(edicionColegiadoForm);																	
+			} else {
+				CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+				List<EdicionColegiadoForm> edicionColegiadoForms = new ArrayList<EdicionColegiadoForm>();
+				List<EcomCenDatos> ecomCenDatos = getDatos(edicionColegiadoForm);	
+				if (ecomCenDatos != null) {
+					for (EcomCenDatos ecomCenDato : ecomCenDatos) {
+						EdicionColegiadoForm ecf = new EdicionColegiadoForm();
+						ecf.setIdcensodatos(ecomCenDato.getIdcensodatos());
+						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));
+						ecf.setIncidencias(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos()));
+						edicionColegiadoForms.add(ecf);
+					}
+				}
 				
-				PaginadorVector<EcomCenDatos> paginador = new PaginadorVector(datos);
+				PaginadorVector<EdicionColegiadoForm> paginador = new PaginadorVector(edicionColegiadoForms);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -184,8 +206,8 @@ public class EdicionColegiadoAction extends MasterAction {
 
 				databackup.put("paginador", paginador);
 				if (paginador != null) {
-					datos = paginador.obtenerPagina(1);
-					databackup.put("datos", datos);
+					edicionColegiadoForms = paginador.obtenerPagina(1);
+					databackup.put("datos", edicionColegiadoForms);
 					request.getSession().setAttribute(DATAPAGINADOR, databackup);
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 				}
@@ -200,7 +222,7 @@ public class EdicionColegiadoAction extends MasterAction {
 
 	private List<EcomCenDatos> getDatos(EdicionColegiadoForm edicionColegiadoForm) {
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-		return cenWSService.getHistorico(Long.valueOf(edicionColegiadoForm.getIdcensodatos()));		
+		return cenWSService.getHistorico(edicionColegiadoForm.getIdcensodatos());		
 	}
 
 

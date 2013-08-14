@@ -27,7 +27,6 @@
 
 
 
-
 <html>
 
 <!-- HEAD -->
@@ -53,10 +52,12 @@
 		<script language="JavaScript">
 	
 		function buscar() {
-			sub();
-			document.forms[0].modo.value="buscarInit";
-			document.forms[0].target="resultado";	
-			document.forms[0].submit();					
+			if (!${EdicionColegiadoForm.historico}) {
+				sub();
+				document.forms[0].modo.value="buscarInit";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();
+			}
 		}
 			
 			
@@ -64,8 +65,12 @@
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
+
+
 <body onLoad="ajusteAlto('resultado');buscar();">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+	
+	
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
@@ -73,28 +78,36 @@
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
 		
-		<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="POST" target="resultado">					
+		<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="POST" target="resultado">	
+		<c:set var="htmlTextReadOnly" value="false" />
+		<c:set var="htmlTextClass" value="box" />
+		<c:if test="${EdicionColegiadoForm.modo=='Ver' || EdicionColegiadoForm.modo=='ver'}">
+			<c:set var="htmlTextReadOnly" value="true" />
+			<c:set var="htmlTextClass" value="boxConsulta" />
+		</c:if>
+					
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.datosColegiado">			
 				<table class="tablaCampos" align="center">							
-					<html:hidden name="EdicionColegiadoForm" property = "modo" value = ""/>
-					<input type="hidden" name="idcensodatos" value="<bean:write name="EdicionColegiadoForm" property="idcensodatos"/>"/>
+					
+					<input type="hidden" name="modo" value="<bean:write name="EdicionColegiadoForm" property="modo"/>"/>
+					<input type="hidden" name="idcensodatos" value="${EdicionColegiadoForm.idcensodatos}"/>
 					
 					<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 					
 					<!-- FILA -->
 					<tr>				
-						<td class="labelText">
+						<td class="labelText">										
 							<siga:Idioma key="censo.ws.literal.publicarInformacion"/>
 						</td>
 						<td>
-							<html:checkbox name="EdicionColegiadoForm" property="publicarcolegiado" value="${EdicionColegiadoForm.publicarcolegiado}"/>							
+							<html:checkbox name="EdicionColegiadoForm" property="publicarcolegiado"  value="${EdicionColegiadoForm.publicarcolegiado}"  disabled="${htmlTextReadOnly}"/>							
 						</td>
 						
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.numeroSolicitud"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="numsolicitudcolegiacion" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="numsolicitudcolegiacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -102,15 +115,17 @@
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.numColegiado"/>
 						</td>
-						<td>							
-							<html:text name="EdicionColegiadoForm" property="ncolegiado" size="30" styleClass="box"/>							
+						
+						<td>
+							<html:text name="EdicionColegiadoForm" property="ncolegiado" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
+						
 						</td>
 						
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.nombre"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="nombre" styleId="nombreColegiado" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="nombre" styleId="nombreColegiado" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -119,14 +134,14 @@
 							<siga:Idioma key="censo.ws.literal.primerApellido"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="apellido1" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="apellido1" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.segundoApellido"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="apellido2" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="apellido2" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -135,13 +150,13 @@
 							<siga:Idioma key="censo.ws.literal.sexo"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="sexo" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="sexo" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>						
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fechanacimiento"/>
 						</td>
 						<td>							
-							<siga:Fecha  nombreCampo= "fechanacimiento" valorInicial="${EdicionColegiadoForm.fechanacimiento}"/>
+							<siga:Fecha  nombreCampo= "fechanacimiento" valorInicial="${EdicionColegiadoForm.fechanacimiento}" disabled="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -150,13 +165,13 @@
 							<siga:Idioma key="censo.ws.literal.tipoIdentificacion"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="idcensotipoidentificacion" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="idcensotipoidentificacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.identificacion"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="numdocumento" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="numdocumento" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -165,13 +180,13 @@
 							<siga:Idioma key="censo.ws.literal.publicarTelefono"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefono" value="${EdicionColegiadoForm.publicartelefono}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicartelefono" value="${EdicionColegiadoForm.publicartelefono}" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.telefono"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="telefono" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="telefono" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					<!-- FILA -->
@@ -180,13 +195,13 @@
 							<siga:Idioma key="censo.ws.literal.publicarTelefonoMovil"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefonomovil" value="${EdicionColegiadoForm.publicartelefonomovil}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicartelefonomovil" value="${EdicionColegiadoForm.publicartelefonomovil}" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.telefonoMovil"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="telefonomovil" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="telefonomovil" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					
@@ -196,13 +211,13 @@
 							<siga:Idioma key="censo.ws.literal.publicarfax"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicarfax" value="${EdicionColegiadoForm.publicarfax}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicarfax" value="${EdicionColegiadoForm.publicarfax}" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fax"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="fax" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="fax" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					
@@ -212,13 +227,13 @@
 							<siga:Idioma key="censo.ws.literal.publicaremail"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicaremail" value="${EdicionColegiadoForm.publicaremail}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicaremail" value="${EdicionColegiadoForm.publicaremail}" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.email"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="email" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="email" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
 					
@@ -228,13 +243,13 @@
 							<siga:Idioma key="censo.ws.literal.situacionEjer"/>
 						</td>
 						<td>							
-							<html:text name="EdicionColegiadoForm" property="idecomcensosituacionejer" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="idecomcensosituacionejer" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fechasituacion"/>
 						</td>
 						<td>
-							<siga:Fecha  nombreCampo= "fechasituacion" valorInicial="${EdicionColegiadoForm.fechasituacion}"/>							
+							<siga:Fecha  nombreCampo= "fechasituacion" valorInicial="${EdicionColegiadoForm.fechasituacion}" disabled="${htmlTextReadOnly}"/>							
 						</td>						
 					</tr>
 					
@@ -244,7 +259,7 @@
 							<siga:Idioma key="censo.ws.literal.residente"/>
 						</td>
 						<td colspan="3">							
-							<html:checkbox name="EdicionColegiadoForm" property="residente" value="${EdicionColegiadoForm.residente}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="residente" value="${EdicionColegiadoForm.residente}" disabled="${htmlTextReadOnly}"/>						
 						</td>											
 					</tr>
 					
@@ -260,13 +275,13 @@
 							<siga:Idioma key="censo.ws.literal.publicardireccion"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicardireccion" value="${EdicionColegiadoForm.publicardireccion}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicardireccion" value="${EdicionColegiadoForm.publicardireccion}" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.tipovia"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="desctipovia" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="desctipovia" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>		
 					</tr>	
 					
@@ -276,13 +291,13 @@
 							<siga:Idioma key="censo.ws.literal.domicilio"/>
 						</td>  
 						<td>							
-							<html:text name="EdicionColegiadoForm" property="domicilio" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="domicilio" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.codigopostal"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="codigopostal" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="codigopostal" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>		
 					</tr>	
 					
@@ -292,13 +307,13 @@
 							<siga:Idioma key="censo.ws.literal.pais"/>
 						</td>  
 						<td>							
-							<html:text name="EdicionColegiadoForm" property="codigopaisextranj" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="codigopaisextranj" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.provincia"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="codigoprovincia" size="30" styleClass="box"/>
+							<html:text name="EdicionColegiadoForm" property="codigoprovincia" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>		
 					</tr>
 					
@@ -308,13 +323,13 @@
 							<siga:Idioma key="censo.ws.literal.poblacion"/>
 						</td>  
 						<td>							
-							<html:text name="EdicionColegiadoForm" property="codigopoblacion" size="30" styleClass="box"/>						
+							<html:text name="EdicionColegiadoForm" property="codigopoblacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.poblacionRecibida"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="descripcionpoblacion" size="30" styleClass="box" disabled="true"/>
+							<html:text name="EdicionColegiadoForm" property="descripcionpoblacion" size="30" styleClass="boxConsulta" readonly="true"/>
 						</td>		
 					</tr>
 				</table>			
@@ -334,11 +349,25 @@
 			
 		<!-- formulario para el botón volver -->
 		
-		<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="mainWorkArea">
-			<html:hidden property="volver" value="true"/>
-			<html:hidden property="modo" value="editar"/>
-		</html:form>			
+		<c:choose>
+			<c:when test="${EdicionColegiadoForm.historico}">
+				<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="POST" target="mainWorkArea">
+					<html:hidden property="volver" value="true"/>
+					<html:hidden property="modo" value="editar"/>
+										
+					<html:hidden property="idcensodatosPadre" value="${EdicionColegiadoForm.idcensodatosPadre }"/>
+				</html:form>		
+			</c:when>
+			<c:otherwise>
+				<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="mainWorkArea">
+					<html:hidden property="volver" value="true"/>
+					<html:hidden property="modo" value="editar"/>
+				</html:form>
+			</c:otherwise>
+		</c:choose>
+		
 			
+					
 
 		<!-- FIN: CAMPOS DE BUSQUEDA-->
 	
@@ -349,10 +378,16 @@
 		-->
 		<%  
 			String botones = "B";
-						 
+							 
 		%>
-
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.gestionremesas.titulo" />
+		
+		<c:choose>
+			<c:when test="${!EdicionColegiadoForm.historico}">
+				<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.gestioncolegiado.historicoCambios" />
+			</c:when>
+		</c:choose>
+		
+		
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
@@ -379,7 +414,7 @@
 	
 	<script type="text/javascript">
 			 				 	
-			 	function accionVolver() {					 
+			 	function accionVolver() {
 					document.forms[1].submit();
 				}
 				
