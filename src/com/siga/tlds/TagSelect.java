@@ -325,7 +325,7 @@ public class TagSelect extends TagSupport {
 		
 		String selectWidth = String.valueOf(DEFAULT_SELECT_WIDTH);
 		String divWidth = String.valueOf(DEFAULT_SELECT_WIDTH + 20);
-		if (StringUtils.hasText(this.width)){
+		if (StringUtils.hasText(this.width)){			 			
 			selectWidth = this.width;
 			try{
 				 int iWidth = Integer.valueOf(this.width);
@@ -334,15 +334,17 @@ public class TagSelect extends TagSupport {
 				divWidth = this.width;
 			}
 		}
+		selectWidth = selectWidth + (selectWidth.indexOf("px")==-1 && selectWidth.indexOf("%")==-1 ? "px" : "");
+		divWidth = divWidth + (divWidth.indexOf("px")==-1 && divWidth.indexOf("%")==-1 ? "px" : "");		
 		
-		selectStyle += " width:"+selectWidth+"px;";
-		disabledInputStyle += " width:"+selectWidth+"px;";
+		selectStyle += " width:"+selectWidth+";";
+		disabledInputStyle += " width:"+selectWidth+";";
 		
 		if (!disabledInputStyle.equals(""))
 			disabledInputStyle += "'";			
 		
 		String dataWidth = " data-width = '"+divWidth+"' ";		
-		String wrapDivStyle = " style='display:inline; width:"+divWidth+"px;' ";		
+		String wrapDivStyle = " style='display:inline; width:"+divWidth+";' ";		
 		
 		if (multiple){
 			sMultiple = " multiple size='"+this.lines+"'";
