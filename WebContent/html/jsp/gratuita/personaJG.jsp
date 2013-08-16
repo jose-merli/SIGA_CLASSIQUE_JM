@@ -1357,7 +1357,7 @@ String app = request.getContextPath();
 										jQuery("#tipoId").on("change", comprobarTipoIdent());
 									});
 								</script>
-								<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>"/>
+								<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>" width="100"/>
 <%
 		 					} else {
 %>
@@ -1394,7 +1394,7 @@ String app = request.getContextPath();
 							<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:160px" />
 						</td>
 
-						<td class="labelText" colspan="1">
+						<td class="labelText">
 							<div class="labelText" id="perFisica1">
 								<siga:Idioma key="gratuita.personaJG.literal.apellidos(*)"/>
 							</div>
@@ -1406,13 +1406,13 @@ String app = request.getContextPath();
 
 						<td colspan="1">
 							<div class="labelText">
-								<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:150px" />
+								<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:120px" />
 							</div>
 						</td>
 						
 						<td>			
 							<div class="labelText" id="apelli2">
-								<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:150px" />
+								<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:120px" />
 							</div>
 						</td>
 				
@@ -1446,7 +1446,7 @@ String app = request.getContextPath();
 						String paramTipoVia[] = { usr.getLocation() };
 %>
 			
-						<td width="135px">
+						<td width="145px">
 							<siga:Select queryId="getTiposVia" id="tipoVia" selectedIds="<%=selTipoVia%>" readOnly="<%=sreadonly%>" width="123" />	
 						</td>
 			
@@ -1621,7 +1621,7 @@ String app = request.getContextPath();
 			</siga:ConjCampos>
 		
 			<siga:ConjCampos leyenda="gratuita.personaJG.literal.inforAdicional">
-				<table width="100%" align="center" cellpadding="2" cellspacing="0" border="0">
+				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
 						<td class="labelText" width="85px">
 							<siga:Idioma key="gratuita.personaJG.literal.nacionalidad"/>	
@@ -1633,7 +1633,7 @@ String app = request.getContextPath();
  							}
 %>		
 						</td>
-						<td width="215px">
+						<td width="220px">
 <%
 							ArrayList selPais = new ArrayList();
 							if (miform.getNacionalidad() != null) {
@@ -2041,7 +2041,7 @@ String app = request.getContextPath();
 				</script>
 				
 				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
-					<table align="center" width="100%" cellpadding="0" cellspacing="0" border="0">
+					<table width="100%" cellpadding="2" cellspacing="0" border="0">
 						<tr>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
@@ -2207,7 +2207,7 @@ String app = request.getContextPath();
 %>
 
 					<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
-						<table align="center" width="100%" cellpadding="0" cellspacing="0" border="0">
+						<table width="100%" cellpadding="2" cellspacing="0" border="0">
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
