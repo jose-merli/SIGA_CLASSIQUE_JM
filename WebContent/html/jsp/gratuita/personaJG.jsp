@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 
@@ -2660,6 +2659,9 @@ String app = request.getContextPath();
 			}			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
+			
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
 			var numId=document.forms[0].NIdentificacion.value;		
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -2810,6 +2812,9 @@ String app = request.getContextPath();
 		   	sub();
 
 		   	var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+		   	
 			var numId=document.forms[0].NIdentificacion.value;				
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -2973,6 +2978,9 @@ String app = request.getContextPath();
 			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+			
 			var numId=document.forms[0].NIdentificacion.value;
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3054,6 +3062,9 @@ String app = request.getContextPath();
 			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+			
 			var numId=document.forms[0].NIdentificacion.value;			
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3135,6 +3146,9 @@ String app = request.getContextPath();
 					
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+            
 			var numId=document.forms[0].NIdentificacion.value;            
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3218,6 +3232,9 @@ String app = request.getContextPath();
 						
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+            
 			var numId=document.forms[0].NIdentificacion.value;			
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3296,6 +3313,9 @@ String app = request.getContextPath();
 			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+			
 			var numId=document.forms[0].NIdentificacion.value;													
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3395,6 +3415,9 @@ String app = request.getContextPath();
 			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
+			//Se eliminan los espacios en el num. identificacion
+			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+			
 			var numId=document.forms[0].NIdentificacion.value;		
 			if (!validaNumeroIdentificacion()) {
 				fin();
@@ -3490,6 +3513,9 @@ function accionGuardarCerrar()	{
 	
 	sub();
 	var tipoIdent=document.forms[0].tipoId.value;
+	//Se eliminan los espacios en el num. identificacion
+	document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
+
 	var numId=document.forms[0].NIdentificacion.value;		
 	if (!validaNumeroIdentificacion()) {
 		fin();

@@ -368,7 +368,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT familia.*, persona.NIF, persona.NOMBRE, persona.APELLIDO1, persona.APELLIDO2,persona.idtipoidentificacion, ");
+		sql.append("SELECT familia.*, nvl(trim(persona.NIF),'') NIF, persona.NOMBRE, persona.APELLIDO1, persona.APELLIDO2,persona.idtipoidentificacion, ");
 		sql.append(" (select F_SIGA_GETRECURSO(parentesco.descripcion,:");
 		contador ++;
 		sql.append(contador);
