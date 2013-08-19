@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.77 2013-08-13 09:09:20 adrian Exp $
+	*	@version    $Id: SIGA.js,v 1.78 2013-08-19 13:02:36 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -421,10 +421,10 @@ function jQueryLoaded(){
 	//*** ONLOAD ***//
 	
 	jQuery(document).ready(function(){
-		if (jQuery("table.tablaLineaPestanasArriba").exists()){
+		if (jQuery("table.tablaLineaPestanasArriba").length>0){
 			jQuery("table.tablaLineaPestanasArriba").css("float", "left");
 		}
-		if (jQuery("table.pest").exists()){
+		if (jQuery("table.pest").length>0){
 			jQuery("table.pest").css("float", "left");
 		}
 		if(jQuery.fn.mask){
@@ -454,7 +454,7 @@ function jQueryLoaded(){
 					console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
-					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(){
+					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("format")),
 								function(dateText, datePickerInstance){
@@ -462,7 +462,7 @@ function jQueryLoaded(){
 								},{
 									dateFormat: datepickerInput.data("format"),
 									regional: datepickerInput.data("regional")
-							});
+							}, e);
 					});					
 				}
 			}
@@ -543,7 +543,16 @@ function jQueryLoaded(){
 					tagSelect_select.on("change",function(){
 						jQuery("#"+jQuery(this).attr("id")+"_searchBox").val(jQuery(this).find('option:selected').data("searchkey"));
 					});
+					var searchBoxKeyupTimeOut = false;
 					tagSelect_searchBox.on("keyup",function(){
+						console.debug("[searchBox] KEYUP ENVENT");						
+						if (searchBoxKeyupTimeOut)
+							clearTimeout(searchBoxKeyupTimeOut);
+						var el = jQuery(this);
+						searchBoxKeyupTimeOut = setTimeout(function(){
+							tagSelect_searchBox_keyup(el);
+							}, 1000);
+						/*
 						var searchBox_select = jQuery(this).parent().find("select.tagSelect");
 						var old_selected_value = searchBox_select.find("option:selected").val();
 						
@@ -568,13 +577,18 @@ function jQueryLoaded(){
 								}
 							});
 						}
+						*/
 					}).on("change",function(){
 						console.debug("[searchBox] CHANGE ENVENT");
+						if (searchBoxKeyupTimeOut)
+							clearTimeout(searchBoxKeyupTimeOut);
 						tagSelect_search(jQuery(this).parent().find("select.tagSelect"), jQuery(this));
 					}).on("blur", function(){
 						console.debug("[searchBox] BLUR ENVENT");
 						//var selected_value = tagSelect_select.find("option:selected").val();
 						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
+						if (searchBoxKeyupTimeOut)
+							clearTimeout(searchBoxKeyupTimeOut);
 						jQuery(this).parent().find("select.tagSelect").change();
 					});
 					if (tagSelect_select.find("option:selected").exists()){
@@ -633,6 +647,34 @@ function jQueryLoaded(){
 	}); // READY
 	
 } // FIN JQUERY LOADED
+
+function tagSelect_searchBox_keyup(el){
+	console.debug("[searchBox] tagSelect_searchBox_keyup BEGIN");
+	var searchBox_select = el.parent().find("select.tagSelect");
+	var old_selected_value = searchBox_select.find("option:selected").val();
+	
+	tagSelect_search(searchBox_select, el);
+	
+	var current_selectedValue = searchBox_select.find("option:selected").val();
+	console.debug(searchBox_select.attr("id") + " keyup selected value OLD: " + old_selected_value + " NEW: "+ current_selectedValue);
+	if (old_selected_value != current_selectedValue && typeof searchBox_select.data("childrenids") != "undefined"){
+		console.debug(searchBox_select.attr("id") + " load children...");
+		var reloadIds = searchBox_select.data("childrenids").split(",");
+		jQuery.each(reloadIds, function(index, childrenId){
+			if (typeof current_selectedValue != "undefined" && current_selectedValue != "-1" && current_selectedValue != ""){
+				loadSelect(searchBox_select,childrenId);
+			} else {
+				//console.debug("OnChange empty parent value");
+				jQuery("#"+childrenId).html("");
+				if (typeof jQuery("#"+childrenId).data("selectparentmsg") != "undefined"){
+					jQuery("#"+childrenId).prepend("<option value='' selected>"+jQuery("#"+childrenId).data("selectparentmsg")+"</option>");
+				} else if (typeof jQuery("#"+childrenId).data("required") == "undefined" && jQuery("#"+childrenId).data("required") != "true") {
+					jQuery("#"+childrenId).prepend("<option value='' selected></option>");
+				}
+			}
+		});
+	}
+}
 
 function cargarJqueryUI(){
 	console.debug("[cargarJqueryUI] BEGIN");
@@ -719,7 +761,7 @@ function jQueryUILoaded(){
 			buttonImage: 'button',
 			buttonImage: '/SIGA/html/imagenes/calendar.gif',
 			buttonImageOnly: true,
-			yearRange: "c-25:c+25"
+			yearRange: "c-100:c+10"
 		});		
 	   
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
@@ -967,7 +1009,30 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 				return vBoolean;
 			});
 			
-			if (optionsFound.length > 1){				
+			if (optionsFound.length > 1){
+				/* Esto soluciona el problema de que se borre el filtro introducido al 
+					perder el foco, seleccionando el primer elemento no vacío como estaba
+					pero es que no se quiere que se seleccione (falta análisis)
+				var vSelected = false;
+				optionsFound.each(function() {
+					if (jQuery(this).parent().is("span")){							
+						jQuery(this).unwrap();
+					}
+					
+					if (jQuery(this).attr("data-searchKey") == searchValue){
+					    jQuery(this).attr("selected", true);
+					    if (vSelected){
+					    	vSelected.removeAttr("selected");
+					    }
+					} else if (!vSelected && jQuery(this).val() !== ""){
+				    	jQuery(this).attr("selected", true);
+				    	vSelected = jQuery(this);
+				    } else {
+				    	jQuery(this).removeAttr("selected");
+				    }
+				});								
+				optionsFound.show();
+				 */
 				optionsFound.each(function() {
 					if (jQuery(this).parent().is("span")){							
 						jQuery(this).unwrap();
@@ -2726,6 +2791,7 @@ function isSWIFTValido(swift){
 }
 
 // JBD // ¿Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
+// BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un método de document creía que ya no se estaba usando...
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
