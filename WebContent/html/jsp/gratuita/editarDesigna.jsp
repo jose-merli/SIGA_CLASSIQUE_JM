@@ -411,10 +411,17 @@
 
 		
 		// Asociada al boton Restablecer
-		function accionRestablecer() {		
+		function accionRestablecer() {	
+			jQuery("#mainWorkArea", window.top.document).contents().find("#pestana\\.justiciagratuitadesigna\\.datosgenerales").click();
+			/*
 			document.forms[0].reset();			
-			if (jQuery("#juzgado").find("option:selected").exists())
-				document.getElementById("juzgado_searchBox").value = jQuery("#juzgado").find("option:selected").attr("data-searchKey");
+			if (jQuery("#juzgado").find("option:selected").exists()){
+				var selectedKey = "";
+				if (jQuery("#juzgado").find("option:selected").attr("data-searchKey"))
+					selectedKey = jQuery("#juzgado").find("option:selected").attr("data-searchKey");
+				document.getElementById("juzgado_searchBox").value = selectedKey;
+			}
+			*/
 		}
 		
 		// Asociada al boton Guardar
