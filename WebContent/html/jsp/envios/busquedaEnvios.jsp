@@ -118,7 +118,7 @@
 	</head>
 
 	<body class="tablaCentralCampos">
-	
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
@@ -131,6 +131,7 @@
 			<html:hidden styleId = "idTipoEnvio"  property = "idTipoEnvio"/>
 			<html:hidden styleId = "idImpresora"  property = "idImpresora"/>
 			<html:hidden styleId = "idEstadoEnvio" property = "idEstado"/>
+			<html:hidden styleId = "origen" property = "origen" value ="${path}"/>
 			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 

@@ -69,6 +69,7 @@
 	    <html:hidden styleId = "numeroEJGNew" 			property = "numeroEJGNew" />
 	    <html:hidden styleId = "idTipoEJGNew" 			property = "idTipoEJGNew"/>	    
 	    <html:hidden styleId = "fechaApertura" 			property = "fechaApertura"/>
+	    <html:hidden styleId = "origen" 			property = "origen"/>
 	</html:form>
 
 	<table class="tablaCentralCampos" align="center">
@@ -526,6 +527,7 @@
 		<html:hidden styleId = "idTipoEnvio"  	property = "idTipoEnvio"/>
 		<html:hidden styleId = "datosInforme"  	property = "datosInforme" 	value='idInstitucion==${entradaEnvio.idInstitucion}##anio==${entradaEnvio.anioDesignaSel}##idTurno==${entradaEnvio.idTurnoDesignaSel}##numero==${entradaEnvio.numeroDesignaSel}##idTipoInforme==OFICI%%%'/>
 		<html:hidden styleId = "idEstadoEnvio" 	property = "idEstado"/>
+		<html:hidden styleId = "origen" property = "origen" value ="${path}"/>
 		<input type="hidden" id="actionModal"  name="actionModal" value="">
 	</html:form>
 
@@ -540,19 +542,21 @@
 	<!-- formulario para editar EJG -->	
 	<html:form action="/JGR_EJG" method="POST" target="mainWorkArea">
 		<html:hidden styleId = "modo" 			property = "modo"  />
-		<html:hidden styleId = "anio" 			property = "anio"  			value="${entradaEnvio.anioEJGSel}"/>
-		<html:hidden styleId = "numero" 		property = "numero"  		value="${entradaEnvio.numeroEJGSel}"/>
-		<html:hidden styleId = "idTipoEJG" 		property = "idTipoEJG" 		value="${entradaEnvio.idTipoEJGSel}"/>
-		<html:hidden styleId = "idInstitucion" 	property = "idInstitucion" 	value="${entradaEnvio.idInstitucion}"/>
+		<html:hidden styleId = "anio" 			property = "anio"  			value="${entradaEnvio.anioEJGSel!=null?entradaEnvio.anioEJGSel:EntradaEnviosForm.anioEJGSel}"/>
+		<html:hidden styleId = "numero" 		property = "numero"  		value="${entradaEnvio.numeroEJGSel!=null?entradaEnvio.numeroEJGSel:EntradaEnviosForm.numeroEJGSel}"/>
+		<html:hidden styleId = "idTipoEJG" 		property = "idTipoEJG" 		value="${entradaEnvio.idTipoEJGSel!=null?entradaEnvio.idTipoEJGSel:EntradaEnviosForm.idTipoEJGSel}"/>
+		<html:hidden styleId = "idInstitucion" 	property = "idInstitucion" 	value="${entradaEnvio.idInstitucion!=null?entradaEnvio.idInstitucion:EntradaEnviosForm.idInstitucion}"/>
+		<html:hidden styleId = "origen" 	property = "origen" 	value="${EntradaEnviosForm.origen}"/>
 	</html:form>	
 
 	<!-- Designas -->		
-	<html:form action = "/JGR_MantenimientoDesignas.do" method="POST" target="mainWorkArea">
-		<html:hidden styleId = "modo"  		property ="modo" />
-		<html:hidden styleId = "anio"  		property ="anio" 		value="${entradaEnvio.anioDesignaSel}"/>
-		<html:hidden styleId = "numero"		property ="numero" 		value="${entradaEnvio.numeroDesignaSel}"/>
-		<html:hidden styleId = "idTurno" 	property ="idTurno" 	value="${entradaEnvio.idTurnoDesignaSel}"/>
+	<html:form action = "/JGR_MantenimientoDesignas" method="POST" target="mainWorkArea">
+		<html:hidden styleId = "modo"  		property ="modo" value ="editar" />
+		<html:hidden styleId = "anio"  		property ="anio" 		value="${entradaEnvio.anioDesignaSel!=null?entradaEnvio.anioDesignaSel:EntradaEnviosForm.anioDesignaSel}"/>
+		<html:hidden styleId = "numero"		property ="numero" 		value="${entradaEnvio.numeroDesignaSel!=null?entradaEnvio.numeroDesignaSel:EntradaEnviosForm.numeroDesignaSel}"/>
+		<html:hidden styleId = "idTurno" 	property ="idTurno" 	value="${entradaEnvio.idTurnoDesignaSel!=null?entradaEnvio.idTurnoDesignaSel:EntradaEnviosForm.idTurnoDesignaSel}"/>
 		<html:hidden styleId = "desdeEjg"	property ="desdeEjg"	value= "si"/>
+		<html:hidden styleId = "origen" 	property = "origen" 	value="${EntradaEnviosForm.origen}"/>
 	</html:form>		
 
 	<html:form action = "/JGR_Designas.do" method="POST" target="resultado">
@@ -567,7 +571,23 @@
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		
 		<script language="JavaScript">		
-			
+		function accionVolver(){
+			var origenInicial = document.forms['EntradaEnviosForm'].origen;   
+			if(origenInicial && origenInicial.value!=''){
+				if(origenInicial.value=='/JGR_ComunicacionEJG'){
+					document.forms['DefinirEJGForm'].submit();
+						
+				}else{
+					document.forms['MaestroDesignasForm'].target = "mainWorkArea";
+					document.forms['MaestroDesignasForm'].modo.value = "editar";
+					document.forms['MaestroDesignasForm'].submit();
+				}
+			}else{
+				document.forms['EntradaEnviosForm'].modo.value = 'abrir';
+				document.forms['EntradaEnviosForm'].submit();	
+				
+			}
+		}
 			function refrescarLocal(){		
 				
 				document.forms['EntradaEnviosForm'].target="mainWorkArea";
@@ -733,11 +753,7 @@
 				document.forms['EntradaEnviosForm'].submit();			
 			}			
 
-			function accionVolver (){			
-				//history.back();
-				document.forms['EntradaEnviosForm'].modo.value = 'abrir';
-				document.forms['EntradaEnviosForm'].submit();	
-			}
+			
 
 			function accionRadio(){			
 				if(document.getElementById("radioAccionDesigna").checked){

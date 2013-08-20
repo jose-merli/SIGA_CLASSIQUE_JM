@@ -12,6 +12,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.envios.form.ImagenPlantillaForm"%>
 <%@ page import="com.siga.beans.EnvPlantillasEnviosBean"%>
@@ -146,6 +147,45 @@
 					</logic:iterate>
 				</logic:notEmpty>
 			</siga:Table>
+
+<c:catch var ="catchException">
+   <bean:parameter id="origen" name="origen" />
+   <bean:parameter id="datosEnvios" name="datosEnvios" />	
+</c:catch>
+
+<c:if test = "${catchException == null}">
+	<input type="hidden" id="origen" value ="${origen}"/>
+	<input type="hidden" id="datosEnvios" value ="${datosEnvios}"/>
+<c:choose>
+
+	<c:when test="${origen=='/JGR_ComunicacionEJG'}">
+	<bean:define id="busquedaVolver" value="busquedaVolver" scope="request"/>
+	<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
+	
+		<html:form  action="/JGR_EJG"  method="POST" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property="modo" value="editar"/>
+			<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
+			<html:hidden styleId = "anio" property="anio"/>
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion"/>
+			<html:hidden styleId = "origen" property="origen"/>
+		</html:form>
+	</c:when>
+	<c:otherwise>
+	<bean:define id="busquedaVolver" value="busquedaVolver" scope="request"/>
+	<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
+		<html:form action="/JGR_MantenimientoDesignas" method="post" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property = "modo"   value="editar"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion" value=""/>
+			<html:hidden styleId = "anio" property="anio" />
+			<html:hidden styleId = "idTurno" property="idTurno" />
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "origen" property="origen" />
+		</html:form>	
+	</c:otherwise>
+</c:choose>
+</c:if>	
+
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/>
 

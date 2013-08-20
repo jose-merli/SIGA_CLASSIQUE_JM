@@ -55,6 +55,10 @@
 <%
 		} else {
 %>
+			
+
+			
+			
 			<html:form  action="/ENV_DefinirEnvios.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="abrir"/>
 			</html:form>
@@ -74,7 +78,7 @@
 <%
  		if (!busquedaVolver.equals("volverNo")) { 
 		if (busquedaVolver.equals("GS")) {	%>
- 					document.SolicitudesCertificadosForm.action = "<%=app%>/CER_GestionSolicitudes.do?noReset=true&buscar=true";
+ 					document.SolicitudesCertificadosForm.action = "/CER_GestionSolicitudes.do?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
 <%  // RGG VOLER DE ENVIOS
  		} else if (busquedaVolver.equals("GSI")) {  %>
@@ -111,10 +115,61 @@
 <% 		} else if (busquedaVolver.equals("DA")) {  
 
 			request.getSession().removeAttribute("nombreExp");%>
-			top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
+			top.frames["mainWorkArea"].location.href='/Dispatcher.do?proceso=41';
 
-<%		} else { %>
+		
+
+<%	} else { %>
+			var origenInicial = document.getElementById("origen");   
+			if(origenInicial){
+				if(origenInicial.value=='/JGR_ComunicacionEJG'){
+					var cadenaDatosEnvios = ""+document.getElementById("datosEnvios").value;
+					if(cadenaDatosEnvios!=''){
+						var datosEnvios = cadenaDatosEnvios.split(",");
+						document.forms['DefinirEJGForm'].idInstitucion.value = datosEnvios[0];
+						document.forms['DefinirEJGForm'].anio.value  = datosEnvios[1]; 
+						document.forms['DefinirEJGForm'].idTipoEJG.value = datosEnvios[2];
+						document.forms['DefinirEJGForm'].numero.value = datosEnvios[3];
+						document.forms['DefinirEJGForm'].origen.value = origenInicial.value;
+						document.forms['DefinirEJGForm'].submit();
+						
+					}else{
+						document.forms['DefinirEnviosForm'].action="./JGR_EJG.do";	
+						document.forms['DefinirEnviosForm'].modo.value="buscar";
+						document.forms['DefinirEnviosForm'].target="mainWorkArea"; 
+						document.forms['DefinirEnviosForm'].submit(); 
+						
+					}
+					
+					
+				}else if(origenInicial.value=='/JGR_ComunicacionDesigna'){
+					var cadenaDatosEnvios = ""+document.getElementById("datosEnvios").value;
+					
+					if(cadenaDatosEnvios!=''){
+						var datosEnvios = cadenaDatosEnvios.split(",");
+						document.forms['MaestroDesignasForm'].idInstitucion.value = datosEnvios[4];
+						document.forms['MaestroDesignasForm'].anio.value  = datosEnvios[5]; 
+						document.forms['MaestroDesignasForm'].idTurno.value = datosEnvios[6];
+						document.forms['MaestroDesignasForm'].numero.value = datosEnvios[7];
+						document.forms['MaestroDesignasForm'].origen.value = origenInicial.value;
+						document.forms['MaestroDesignasForm'].submit();
+						
+					}else{
+						document.forms['DefinirEnviosForm'].action="./JGR_MantenimientoDesignas.do";	
+						document.forms['DefinirEnviosForm'].modo.value="buscar";
+						document.forms['DefinirEnviosForm'].target="mainWorkArea"; 
+						document.forms['DefinirEnviosForm'].submit(); 
+						
+					}
+					
+					
+					
+				}
+			}else{
 				document.DefinirEnviosForm.submit();
+			}
+
+				
 <%		}
 		}%>
 		}

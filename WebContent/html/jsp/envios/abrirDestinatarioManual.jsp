@@ -134,7 +134,37 @@
 		%>
 	</siga:Table>
 
+<c:catch var ="catchException">
+   <bean:parameter id="origen" name="origen" />
+   <bean:parameter id="datosEnvios" name="datosEnvios" />	
+</c:catch>
 
+<c:if test = "${catchException == null}">
+	<input type="hidden" id="origen" value ="${origen}"/>
+	<input type="hidden" id="datosEnvios" value ="${datosEnvios}"/>
+<c:choose>
+	<c:when test="${origen=='/JGR_ComunicacionEJG'}">
+		<html:form  action="/JGR_EJG"  method="POST" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property="modo" value="editar"/>
+			<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
+			<html:hidden styleId = "anio" property="anio"/>
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion"/>
+			<html:hidden styleId = "origen" property="origen"/>
+		</html:form>
+	</c:when>
+	<c:otherwise>
+		<html:form action="/JGR_MantenimientoDesignas" method="post" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property = "modo"   value="editar"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion" value=""/>
+			<html:hidden styleId = "anio" property="anio" />
+			<html:hidden styleId = "idTurno" property="idTurno" />
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "origen" property="origen" />
+		</html:form>	
+	</c:otherwise>
+</c:choose>
+</c:if>	
 	<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
 	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"  />
 		

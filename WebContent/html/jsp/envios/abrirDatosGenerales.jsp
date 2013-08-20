@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="java.util.Enumeration"%>
 <html>
 <head>
 <!-- abrirDatosGenerales.jsp -->
@@ -12,6 +13,8 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
+
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
@@ -29,11 +32,16 @@
 	Vector vDatos = (Vector)request.getAttribute("datos");
 	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
-	
+//	Enumeration en =  request.getParameterNames();
+//	while (en.hasMoreElements()) {
+//		String type = (String) en.nextElement();
+//	System.out.println("type:"+type+"value:"+request.getParameter(type));
+		
+//	}
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("EnvEdicionEnvio");
 	if (busquedaVolver==null) busquedaVolver="";
-	
+
 	String nombreEnv = (String)request.getAttribute("nombreEnv");
 	String tipo = UtilidadesMultidioma.getDatoMaestroIdioma((String)request.getAttribute("tipo"),userBean);
 	String idTipoEnvio =(String)request.getAttribute("idTipoEnvio");
@@ -320,15 +328,47 @@
 %>
 				</siga:Table>
 
+<c:catch var ="catchException">
+   <bean:parameter id="origen" name="origen" />
+   <bean:parameter id="datosEnvios" name="datosEnvios" />	
+</c:catch>
 
-		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"  />
-
-		<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-			<input type="hidden" name="actionModal" value="">
-			<input type="hidden" name="modo" value="abrirBusquedaModal">
+<c:if test = "${catchException == null}">
+	<input type="hidden" id="origen" value ="${origen}"/>
+	<input type="hidden" id="datosEnvios" value ="${datosEnvios}"/>
+<c:choose>
+	<c:when test="${origen=='/JGR_ComunicacionEJG'}">
+		<html:form  action="/JGR_EJG"  method="POST" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property="modo" value="editar"/>
+			<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
+			<html:hidden styleId = "anio" property="anio"/>
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion"/>
+			<html:hidden styleId = "origen" property="origen"/>
 		</html:form>
+	</c:when>
+	<c:otherwise>
+		<html:form action="/JGR_MantenimientoDesignas" method="post" target="mainWorkArea" style="display:none">
+			<html:hidden styleId = "modo" property = "modo"   value="editar"/>
+			<html:hidden styleId = "idInstitucion" property="idInstitucion" value=""/>
+			<html:hidden styleId = "anio" property="anio" />
+			<html:hidden styleId = "idTurno" property="idTurno" />
+			<html:hidden styleId = "numero" property="numero"/>
+			<html:hidden styleId = "origen" property="origen" />
+		</html:form>	
+	</c:otherwise>
+</c:choose>
+</c:if>	
+
+<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"  />
+
+<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+	<input type="hidden" name="actionModal" value="">
+	<input type="hidden" name="modo" value="abrirBusquedaModal">
+</html:form>
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		
 		
 		<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
 				
