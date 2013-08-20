@@ -400,7 +400,7 @@ public class TagSelect extends TagSupport {
 					
 		out.println("</select>"+loadingElement+"</div>");
 		if (!multiple)
-			out.println("<input type='text' readonly='readonly' "+inputDisabledClass+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)?"":selectedOption.getValue())+"'/>");
+			out.println("<input type='text' readonly='readonly' "+inputDisabledClass+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getValue().equals(KeyValue.DEFAULT_VALUE)||selectedOption.getValue().equals(KeyValue.REQUIRED_VALUE)?"":selectedOption.getValue())+"'/>");
 		else
 			out.println(sInputMultiple);
 		out.println("</div>");// this.id_div;

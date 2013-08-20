@@ -1343,30 +1343,20 @@ String app = request.getContextPath();
 
 						<td>			
 <%
-							ArrayList tipoIdentificacionSel = new ArrayList();
-							if (miform.getNIdentificacion() != null) {
-								tipoIdentificacionSel.add(miform.getTipoId());
-							}
-							
-							if (!accion.equalsIgnoreCase("ver")) {
-								String tipoIdent = (String) request.getAttribute("identificacion");
+						ArrayList tipoIdentificacionSel = new ArrayList();
+						if (miform.getNIdentificacion() != null) {
+							tipoIdentificacionSel.add(miform.getTipoId());
+						}
+						
+							String tipoIdent = (String) request.getAttribute("identificacion");
 %>
-								<script type="text/javascript">
-									jQuery(function(){
-										jQuery("#tipoId").on("change", comprobarTipoIdent());
-									});
-								</script>
-								<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>" width="100"/>
-<%
-		 					} else {
-%>
-		   						<html:select styleId="identificadores"  name="PersonaJGForm"  styleClass="boxCombo"  readOnly="false" property="tipoId" onchange="comprobarTipoIdent();"  >
-									<bean:define id="identificadores" name="PersonaJGForm" property="identificadores" type="java.util.Collection" />
-									<html:optionsCollection name="identificadores" value="idTipoIdentificacion" label="descripcion" />
-								</html:select>
-<%
-		   					}
-%>
+							<script type="text/javascript">
+								jQuery(function(){
+									jQuery("#tipoId").on("change", comprobarTipoIdent());
+								});
+							</script>
+							<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>" width="100"/>
+
 						</td>
 						<td class="labelText">
 							<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" />
@@ -1543,8 +1533,17 @@ String app = request.getContextPath();
 							ArrayList selProvincia = new ArrayList();
 							if (miform.getProvincia() != null)
 								selProvincia.add(miform.getProvincia());
-%>			
-		  					<siga:Select queryId="getProvincias" queryParamId="idprovincia" id="provincia" selectedIds="<%=selProvincia %>" required="true" readOnly="<%=sreadonly%>" childrenIds="poblacion" width="190"/>		 
+			
+							if (obligatorioPoblacion) {
+%>								
+								<siga:Select queryId="getProvincias" queryParamId="idprovincia" id="provincia" selectedIds="<%=selProvincia %>" required="true" readOnly="<%=sreadonly%>" childrenIds="poblacion" width="190"/>
+<%	
+							} else {					
+%>							
+		  						<siga:Select queryId="getProvincias" queryParamId="idprovincia" id="provincia" selectedIds="<%=selProvincia %>" readOnly="<%=sreadonly%>" childrenIds="poblacion" width="190"/>
+<%	
+							}					
+%>									  							 
 						</td>
 						
 						<td colspan="8">
@@ -1581,9 +1580,16 @@ String app = request.getContextPath();
 				   							String idPoblacionParamsJSON = "";
 				   							if (miform.getProvincia() != null)
 				   								idPoblacionParamsJSON = UtilidadesString.createJsonString("idprovincia", miform.getProvincia());
-%>
-								   			<siga:Select queryId="getPoblacionesDeProvincia" id="poblacion" parentQueryParamIds="idprovincia" params="<%=idPoblacionParamsJSON%>" selectedIds="<%=selPoblacion%>" required="true" readOnly="<%=sreadonly%>" width="260"/>
-<%
+				   							
+											if (obligatorioPoblacion) {
+%>								
+												<siga:Select queryId="getPoblacionesDeProvincia" id="poblacion" parentQueryParamIds="idprovincia" params="<%=idPoblacionParamsJSON%>" selectedIds="<%=selPoblacion%>" required="true" readOnly="<%=sreadonly%>" width="260"/>
+<%	
+											} else {					
+%>							
+		  										<siga:Select queryId="getPoblacionesDeProvincia" id="poblacion" parentQueryParamIds="idprovincia" params="<%=idPoblacionParamsJSON%>" selectedIds="<%=selPoblacion%>" readOnly="<%=sreadonly%>" width="260"/>
+<%	
+											}					
 				   						}
 %>
 									</td>
