@@ -19,6 +19,7 @@
 	<property name="redeploy.targets" 		value="serverSIGA"/>
 	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>
 	<property name="redeploy.retiretimeout" value="30"/>
+	<property name="redeploy.source" 		value="${eclipse.source.home}/applications/${redeploy.name}/${redeploy.version}"/>
 
 	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/${redeploy.version}"/>
 	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
@@ -73,8 +74,8 @@
 		</target> 
 
 		<target name="Desplegar nueva versión" description="Despliega aplicación con la versión seleccionada">
-			<antcall target="50.GeneracionTodoPortal" />
-			<antcall target="64.UndeployApplication" />
+			<!-- <antcall target="50.GeneracionTodoPortal" /> -->
+			<!-- <antcall target="64.UndeployApplication" /> -->
 			<antcall target="63.RedeployNewVersionApplication" />
 		</target>
 
