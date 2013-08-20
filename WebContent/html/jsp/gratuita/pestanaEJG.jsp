@@ -28,6 +28,7 @@
 		
 	ses.setAttribute("pestanas","1");
 	String[] pestanasOcultas = (String[])request.getAttribute("pestanasOcultas");
+	int elementoActivo = request.getAttribute("elementoActivo")!=null?Integer.parseInt((String)request.getAttribute("elementoActivo")):1;
 %>	
 	
 
@@ -61,23 +62,17 @@
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
-	<% if(esComision){%>
+	<% if(esComision&&elementoActivo!=9){
+		elementoActivo = 6;
+	}%>
 		<siga:PestanasExt 
 				pestanaId="EJG" 
 				target="mainPestanas"
 				parametros="EJG"
-				elementoactivo="6"
+				elementoactivo="<%=elementoActivo%>"
 				procesosinvisibles="<%=pestanasOcultas%>"
-				/>
-	<%}else{%>
-		<siga:PestanasExt 
-				pestanaId="EJG" 
-				target="mainPestanas"
-				parametros="EJG"
-				elementoactivo="1"
-				procesosinvisibles="<%=pestanasOcultas%>"
-				/>
-	<%}%>
+	/>
+	
 
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
 

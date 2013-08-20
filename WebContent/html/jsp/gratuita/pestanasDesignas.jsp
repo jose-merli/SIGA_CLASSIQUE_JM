@@ -23,7 +23,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	
+	int elementoActivo = request.getAttribute("elementoActivo")!=null?Integer.parseInt((String)request.getAttribute("elementoActivo")):1;
 %>	
 	
 
@@ -83,7 +83,7 @@
 			pestanaId="DESIGNA" 
 			target="mainPestanas"
 			parametros="idDesigna"
-			elementoactivo="1"
+			elementoactivo="<%=elementoActivo%>"
 	/>
 
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
