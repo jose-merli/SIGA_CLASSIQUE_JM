@@ -7,8 +7,8 @@
 	<property name="bea.weblogic.jar" 		value="D:\oracle\Middleware\wlserver_12.1\server\lib\weblogic.jar"/>
 	
 	<!-- Rutas de origen: Eclipse local -->
-	<property name="services.home" 			value="${eclipse.workspace.home}/SIGAServices/build"/>
-	<property name="proyecto.home" 			value="${eclipse.workspace.home}/SIGA92/WebContent"/>
+	<property name="services.home" 			value="${eclipseLocal.workspace.home}/SIGAServices/build"/>
+	<property name="proyecto.home" 			value="${eclipseLocal.workspace.home}/SIGA92/WebContent"/>
 	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF"/>
 	<property name="html.home"				value="${proyecto.home}/html"/>			
 	<property name="destinoapplet" 			value="${proyecto.home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
@@ -19,7 +19,7 @@
 	<property name="redeploy.targets" 		value="serverSIGA"/>
 	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>
 	<property name="redeploy.retiretimeout" value="30"/>
-	<property name="redeploy.source" 		value="${eclipse.source.home}/applications/${redeploy.name}/${redeploy.version}"/>
+	<property name="redeploy.source" 		value="${eclipseLocal.source.home}/applications/${redeploy.name}/${redeploy.version}"/>
 
 	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/${redeploy.version}"/>
 	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
@@ -74,8 +74,8 @@
 		</target> 
 
 		<target name="Desplegar nueva versión" description="Despliega aplicación con la versión seleccionada">
-			<!-- <antcall target="50.GeneracionTodoPortal" /> -->
-			<!-- <antcall target="64.UndeployApplication" /> -->
+			<antcall target="50.GeneracionTodoPortal" />
+			<antcall target="64.UndeployApplication" />
 			<antcall target="63.RedeployNewVersionApplication" />
 		</target>
 
