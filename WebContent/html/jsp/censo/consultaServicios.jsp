@@ -451,24 +451,22 @@ String app = request.getContextPath();
 <%  } else {   %>			
 			<siga:FilaConIconos fila="<%=cont %>" botones="<%=botones %>" elementos="<%=elems2%>" modo="<%=modo %>" visibleBorrado="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="false">
 			
-				<!-- campos hidden  -->
-				<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=identificadorCuenta %>">
-				<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
-				<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idTipoServicios %>">
-				<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=idServicio %>">
-				<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=idServiciosInstitucion %>">
-				<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=idPeticion %>">
-				<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=idPersona %>">
-				<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idFormaPago %>">
-				<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=identificadorCuenta %>">
-				<input type="hidden" id="oculto<%=cont %>_10" name="oculto<%=cont %>_10" value="<%=idPeticion %>"/>
-
-				<input type="hidden" id="oculto<%=cont %>_11" name="oculto<%=cont %>_11" value="<%=precio %>">
-				<input type="hidden" id="oculto<%=cont %>_12" name="oculto<%=cont %>_12" value="<%=iva %>"/>
-				<input type="hidden" id="oculto<%=cont %>_13" name="oculto<%=cont %>_13" value="<%=fechaEfectiva %>"/>
-
-
 				<td>
+					<!-- campos hidden  -->
+					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=identificadorCuenta %>">
+					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
+					<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idTipoServicios %>">
+					<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=idServicio %>">
+					<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=idServiciosInstitucion %>">
+					<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=idPeticion %>">
+					<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=idPersona %>">
+					<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idFormaPago %>">
+					<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=identificadorCuenta %>">
+					<input type="hidden" id="oculto<%=cont %>_10" name="oculto<%=cont %>_10" value="<%=idPeticion %>"/>
+	
+					<input type="hidden" id="oculto<%=cont %>_11" name="oculto<%=cont %>_11" value="<%=precio %>">
+					<input type="hidden" id="oculto<%=cont %>_12" name="oculto<%=cont %>_12" value="<%=iva %>"/>
+					<input type="hidden" id="oculto<%=cont %>_13" name="oculto<%=cont %>_13" value="<%=fechaEfectiva %>"/>
 					<%=fecha %>
 				</td>
 				<td>

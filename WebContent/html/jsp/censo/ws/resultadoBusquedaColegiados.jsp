@@ -151,8 +151,9 @@
 	   		   			visibleConsulta = "true";		   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="${EdicionRemesaForm.accion=='ver'?'C':'C,E'}" clase="listaNonEdit">
+					<td style="text-align: right;">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=ecomCenDatos.getIdcensodatos()%>">
-					<td style="text-align: right;"><%=ecomCenDatos.getNcolegiado()%></td>
+					<%=ecomCenDatos.getNcolegiado()%></td>
 					<td><%=ecomCenDatos.getNombre()!=null?ecomCenDatos.getNombre():"&nbsp;"%></td>
 					<td><%=ecomCenDatos.getApellido1()!=null?ecomCenDatos.getApellido1():"&nbsp;"%></td>
 					<td><%=ecomCenDatos.getApellido2()!=null?ecomCenDatos.getApellido2():"&nbsp;"%></td>										

@@ -260,18 +260,17 @@
 							</td>
 						</c:if>
 						
-						<input type="checkbox" name="chkValOld"
-							value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>"
-							<%=(validado.equals("1"))?"checked":""%> disabled
-							style="display: none">
-					
 						<td align="center">
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' />
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' />
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>'/>
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaInicio%>' />
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=reserva%>' />
-							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=fechaFin%>' /> 
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=fechaFin%>' />
+							<input type="checkbox" name="chkValOld"
+							value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>"
+							<%=(validado.equals("1"))?"checked":""%> disabled
+							style="display: none"> 
 							<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>
 						</td>
 				

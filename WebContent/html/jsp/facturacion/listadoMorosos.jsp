@@ -198,6 +198,8 @@
 	  				elementos='<%=elemento%>' 
 					
 	  				clase="listaNonEdit">
+	  				
+					<td align="center">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=idPersona%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString(CenColegiadoBean.C_NCOLEGIADO)%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString("NOMBRE")%>">
@@ -205,8 +207,6 @@
 						<input type="hidden" name="numeroFactura<%=""+(i+1)%>" value="<%=fila.getString(""+FacFacturaBean.C_NUMEROFACTURA+"")%>">
 						<input type="hidden" name="idFactura<%=""+(i+1)%>" value="<%=idFactura%>">
 						<input type="hidden" name="idInstitucion<%=""+(i+1)%>" value="<%=fila.getString(""+FacFacturaBean.C_IDINSTITUCION+"")%>">
-						
-					<td align="center">
 					<%
 					String valorCheck =idFactura+"||"+idPersona+"||"+idInstitucion;
 					

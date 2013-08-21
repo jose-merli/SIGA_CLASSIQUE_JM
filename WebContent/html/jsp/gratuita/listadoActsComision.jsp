@@ -182,12 +182,14 @@
 					
 					<td><%=turnoGuardia%>&nbsp;</td>
 					<td><%=registro.get("TURNODESIGNA")%></td>
+					
+					<td>
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
 					<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'>
-					<td><%=registro.get(ScsEJGBean.C_ANIO)%></td>
+					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					 <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
 						<td><%=CODIGO%>-<%=(String)registro.get(ScsEJGBean.C_SUFIJO)%></td>
 						<%}else{%>

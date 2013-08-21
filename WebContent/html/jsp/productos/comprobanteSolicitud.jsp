@@ -278,15 +278,15 @@
 								elementos = null;
 							}
 				%>
-					    <input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO)%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION)%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION)%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO)%>">
-					    <input type="hidden" name="oculto<%=i+1%>_tipo" value="P">
 
 						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
 							
 							<td>
+								<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="P">
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>						  								
 			  				</td>
 			  				<td>
@@ -371,14 +371,15 @@
 								elementos = null;
 							}
 				%>
-			    <input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO)%>">
-			    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION)%>">
-			    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION)%>">
-			    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS)%>">
-			    <input type="hidden" name="oculto<%=i+1%>_tipo" value="S">
+			    
 				
 						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
 							<td>
+								<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS)%>">
+							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="S">
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>&nbsp;
 			  						<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"))%>				  								
 			  				</td>

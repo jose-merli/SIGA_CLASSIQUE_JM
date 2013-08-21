@@ -101,11 +101,13 @@
 				  		Row fila = (Row) vDatos.elementAt(i);	
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones='<%=botonBorrar%>' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString(EnvListaCorreoConsultaBean.C_IDINSTITUCION)%>"/>
+						
+					<td>
+					<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString(EnvListaCorreoConsultaBean.C_IDINSTITUCION)%>"/>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString(EnvListaCorreoConsultaBean.C_IDCONSULTA)%>"/>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString(EnvListaCorreoConsultaBean.C_IDLISTACORREO)%>"/>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=fila.getString(EnvListaCorreoConsultaBean.C_IDINSTITUCION_CON)%>"/>
-					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(ConConsultaBean.C_DESCRIPCION))%></td>
+					<%=UtilidadesString.mostrarDatoJSP(fila.getString(ConConsultaBean.C_DESCRIPCION))%></td>
 				</siga:FilaConIconos>
 <%
 					}

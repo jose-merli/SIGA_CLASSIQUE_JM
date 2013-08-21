@@ -184,7 +184,8 @@
 				while ((recordNumber) <= obj.size()) {	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 			 %>	
-				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>" clase="listaNonEdit" modo="<%=modo%>">
+				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>" clase="listaNonEdit" modo="<%=modo%>">						
+						<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.DESIGNACION_INTERESADO%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosDesigna.literal.titulo">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosDesigna.literal.titulo">
@@ -195,7 +196,7 @@
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=idturno %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=anio %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">
-						<td>&nbsp;<%=hash.get("NIF")%></td>
+						&nbsp;<%=hash.get("NIF")%></td>
 						<td>&nbsp;<%=hash.get("NOMBRE")%></td>
 						<td>&nbsp;<%=(String)hash.get("REPRESENTANTE")%></td>
 					</siga:FilaConIconos>	

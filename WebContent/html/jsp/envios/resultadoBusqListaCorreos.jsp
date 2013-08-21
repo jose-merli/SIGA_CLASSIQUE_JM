@@ -100,12 +100,12 @@
 				  		EnvListaCorreosBean bean = (EnvListaCorreosBean)vDatos.elementAt(i);	
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B" clase="listaNonEdit">
+					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdInstitucion()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdListaCorreo()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=bean.getDescripcion()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=bean.getDinamica()%>">
-						
-					<td><%=UtilidadesString.mostrarDatoJSP(bean.getNombre())%></td>
+					<%=UtilidadesString.mostrarDatoJSP(bean.getNombre())%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion())%></td>
 					<td><%
 								if (bean.getDinamica().equals("S"))

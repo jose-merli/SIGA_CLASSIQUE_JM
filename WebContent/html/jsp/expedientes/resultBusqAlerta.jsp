@@ -156,15 +156,15 @@
 				  		botones=perm.getBotones(fila.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila.getString("IDTIPOEXPEDIENTE"),botones);
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" clase="listaNonEdit">
+					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDINSTITUCION")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDINSTITUCION_TIPOEXPEDIENTE")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString("IDTIPOEXPEDIENTE")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=fila.getString("NUMEROEXPEDIENTE")%>">	
 						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=fila.getString("ANIOEXPEDIENTE")%>">	
 						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRETIPOEXPEDIENTE"))%>">	
-						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=fila.getString("IDALERTA")%>">	
-											
-					<td><%=UtilidadesString.formatoFecha(fila.getString("FECHAALERTA"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy HH:mm:ss")%></td>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=fila.getString("IDALERTA")%>">
+					<%=UtilidadesString.formatoFecha(fila.getString("FECHAALERTA"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy HH:mm:ss")%></td>
 					<td><%=fila.getString("NOMBRETIPOEXPEDIENTE")%></td>
 					<td><%=fila.getString("FAS_NOMBRE")%></td>
 					<td><%=fila.getString("EST_NOMBRE")%></td>

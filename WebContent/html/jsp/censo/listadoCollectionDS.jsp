@@ -236,10 +236,12 @@
 		   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
+					
+					
+					<td>
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
-					
-					<td><img src='<%=srcImage%>'/>&nbsp;<%=dsObj.getTitle()%></td>										
+					<img src='<%=srcImage%>'/>&nbsp;<%=dsObj.getTitle()%></td>										
 					<td style="text-align: center;"><%=UtilidadesString.formatoFecha(dsObj.getFechaModificacion(), ClsConstants.DATE_FORMAT_MEDIUM_SPANISH)%>&nbsp;</td>
 					<td style="text-align: right;"><%=size%></td>
 				</siga:FilaConIconos>	

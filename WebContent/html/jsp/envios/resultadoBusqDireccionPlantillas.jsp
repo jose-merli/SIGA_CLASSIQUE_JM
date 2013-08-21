@@ -195,7 +195,8 @@
 			
 			<siga:FilaConIconos fila="<%=cont %>" botones="" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit">
 			
-				<!-- campos hidden -->
+				<td>
+					<!-- campos hidden -->
 					<input type="hidden" name="oculto<%=cont %>_1" value="<%=domicilio1%>">
 					<input type="hidden" name="oculto<%=cont %>_2" value="<%=pob %>">
 					<input type="hidden" name="oculto<%=cont %>_3" value="<%=provincia1%>">
@@ -210,9 +211,7 @@
 					<input type="hidden" name="oculto<%=cont %>_12" value="<%=idDireccion%>">					
 					<input type="hidden" name="oculto<%=cont %>_13" value="<%=telefono1%>">					
 					<input type="hidden" name="oculto<%=cont %>_14" value="<%=movil%>">					
-					<input type="hidden" name="oculto<%=cont %>_15" value="<%=pobExt%>">					
-				
-				<td>				
+					<input type="hidden" name="oculto<%=cont %>_15" value="<%=pobExt%>">			
 					<%=domicilio%>
 				</td>
 				<td>

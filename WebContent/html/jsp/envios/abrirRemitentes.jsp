@@ -189,10 +189,11 @@
 				  		Row fila = (Row)vDatos.elementAt(i);
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones='C,E,B' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no">
+					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDPERSONA")%>"/>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idEnvio%>"/>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=idTipoEnvio%>"/>
-					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%></td>
+					<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("DESCRIPCION"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NIFCIF"))%></td>

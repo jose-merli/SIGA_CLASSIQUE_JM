@@ -231,7 +231,7 @@
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
 						botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="false"
 						visibleEdicion="false" pintarEspacio="false" elementos='<%=elems%>'>
-			
+						<td>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDPERSONA")%>'>
@@ -246,7 +246,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_12' name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=hash.get("OBSERVACIONESDENEGACION")%>'>
 						<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_13' name='oculto<%=String.valueOf(recordNumber)%>_13' value='<%=hash.get("OBSERVACIONESVALBAJA")%>'>
 			
-						<td><%=hash.get("TURNO")%></td>
+						<%=hash.get("TURNO")%></td>
 						<td><%=hash.get("GUARDIA")%></td>
 						<td>
 							<%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%>Obligatorias<%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%>

@@ -232,12 +232,13 @@
 				%>
 				
 			<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
+				
+				<td>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1'  value='<%=hash.get("IDTURNO")%>'/>
 				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'/>					
 				<input type='hidden'  id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'/>
-				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'/>		  
-				
-				<td><%=hash.get("GUARDIA")%></td>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'/>
+				<%=hash.get("GUARDIA")%></td>
 				<td>
 					<%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%>
 						<siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/>

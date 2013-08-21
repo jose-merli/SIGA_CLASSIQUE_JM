@@ -152,8 +152,9 @@
 	   		   			visibleConsulta = "true";		   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=String.valueOf(edicionColegiadoForm.getIdcensodatos())%>">					
-					<td><%=edicionColegiadoForm.getFechaCambio()!=null?edicionColegiadoForm.getFechaCambio():"&nbsp;"%></td>
+					<td>
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=String.valueOf(edicionColegiadoForm.getIdcensodatos())%>">
+					<%=edicionColegiadoForm.getFechaCambio()!=null?edicionColegiadoForm.getFechaCambio():"&nbsp;"%></td>
 					<td>
 					<% if (edicionColegiadoForm.getIncidencias() != null &&  edicionColegiadoForm.getIncidencias().size() > 0) { 
 						for (String incidencia : edicionColegiadoForm.getIncidencias()) {%> 

@@ -354,7 +354,8 @@
 						}						
 					}%>
 		
-					<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" visibleBorrado="<%=String.valueOf(isEntradaSJCS)%>" visibleEdicion="<%=String.valueOf(isEntradaSJCS)%>" pintarEspacio="<%=String.valueOf(isEntradaSJCS)%>" elementos='<%=elems%>' clase="listaNonEdit">				
+					<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" visibleBorrado="<%=String.valueOf(isEntradaSJCS)%>" visibleEdicion="<%=String.valueOf(isEntradaSJCS)%>" pintarEspacio="<%=String.valueOf(isEntradaSJCS)%>" elementos='<%=elems%>' clase="listaNonEdit">
+					<td>				
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'/>
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'/>
@@ -387,7 +388,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_30' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'/>						
 						
 						<%if (!isEntradaSJCS){%>
-							<td><%=registro.get("ABREVIATURA")%>&nbsp;</td>
+							<%=registro.get("ABREVIATURA")%>&nbsp;</td>
 							<td><%=((String)registro.get("NOMBRE"))%>&nbsp;</td>
 							<td><%=registro.get("MATERIA")%>&nbsp;</td>
 						
@@ -435,7 +436,7 @@
 							<td align="center"><%=registro.get("ESTADOLOGICO")%>&nbsp;</td>
 						
 						<%}else{%>
-							<td><%=registro.get("ABREVIATURA")%>&nbsp;</td>
+							<%=registro.get("ABREVIATURA")%>&nbsp;</td>
 							<td><%=((String)registro.get("NOMBRE"))%>&nbsp;</td>
 							<td><%=registro.get("AREA")%>&nbsp;</td>
 							<td><%=registro.get("MATERIA")%>&nbsp;</td>

@@ -136,6 +136,7 @@
 		visibleConsulta="no" visibleEdicion="no" visibleBorrado="no"
 		elementos='<%=elemento%>' pintarEspacio="no" clase="listaNonEdit">
 		
+		<td>
 		<input type="hidden" id="idPersona<%="" + (i + 1)%>"
 			name="idPersona<%="" + (i + 1)%>"
 			value="<%=(String)fila.get("IDPERSONA")%>">
@@ -143,8 +144,7 @@
 		<input type="hidden" id="idFacturacion<%="" + (i + 1)%>"
 			name="idFacturacion<%="" + (i + 1)%>"
 			value="<%=(String)fila.get("IDFACTURACION")%>">
-
-		<td><%=UtilidadesString.mostrarDatoJSP((String)fila.get("FECHADESDE"))+" - "+UtilidadesString.mostrarDatoJSP((String)fila.get("FECHAHASTA"))%></td>
+		<%=UtilidadesString.mostrarDatoJSP((String)fila.get("FECHADESDE"))+" - "+UtilidadesString.mostrarDatoJSP((String)fila.get("FECHAHASTA"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP((String)fila.get("NOMBREFACT"))%></td>
 		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeOficio)%>&nbsp;&euro;</td>
 		<td style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeGuardia)%>&nbsp;&euro;</td>

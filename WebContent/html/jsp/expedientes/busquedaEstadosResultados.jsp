@@ -133,6 +133,7 @@
 %>
 	<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B"
 		clase="listaNonEdit">
+		<td>
 		<input type="hidden" name="oculto<%=""+(i+1)%>_1"
 			value="<%=fila.getString("IDESTADO")%>">
 		<input type="hidden" name="oculto<%=""+(i+1)%>_2"
@@ -141,8 +142,7 @@
 			value="<%=fila.getString("IDINSTITUCION")%>">
 		<input type="hidden" name="oculto<%=""+(i+1)%>_4"
 			value="<%=fila.getString("IDTIPOEXPEDIENTE")%>">
-
-		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("FASE"))%></td>
+		<%=UtilidadesString.mostrarDatoJSP(fila.getString("FASE"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("ESTADO"))%></td>
 		<td><%=fila.getString("SIGUIENTE").equals("")?"&nbsp;":fila.getString("SIGUIENTE")%></td>
 		<td align="center"><%=sAutomatico%></td>

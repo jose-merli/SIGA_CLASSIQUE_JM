@@ -298,14 +298,15 @@
 									  >
 									  
 									  
-									 <input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	  id="idPersona<%="" + String.valueOf(recordNumber)%>"	
-									 		value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
-									 <input type="hidden" name="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	 id="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	
-									 		value="<%=row.getString("IDPERORIGEN")%>">
-			
-									<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>" id="idPago<%="" + String.valueOf(recordNumber)%>"
-										value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
+									 
 									<td>
+										<input type="hidden" name="idPersona<%="" + String.valueOf(recordNumber)%>"	  id="idPersona<%="" + String.valueOf(recordNumber)%>"	
+										 		value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
+										 <input type="hidden" name="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	 id="idPersonaOrigen<%="" + String.valueOf(recordNumber)%>"	
+										 		value="<%=row.getString("IDPERORIGEN")%>">
+				
+										<input type="hidden" name="idPago<%="" + String.valueOf(recordNumber)%>" id="idPago<%="" + String.valueOf(recordNumber)%>"
+											value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1"  value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 										<%=UtilidadesString.mostrarDatoJSP(GstDate

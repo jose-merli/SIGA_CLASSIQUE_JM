@@ -142,13 +142,14 @@
 				  		Row fila = (Row)vDatos.elementAt(i);
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" clase="listaNonEdit">
+					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idInstitucionTipoExpediente%>">						
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=idTipoExpediente%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=numExpediente%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=anioExpediente%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=fila.getString("IDALERTA")%>">						
-					<td><%=UtilidadesString.formatoFecha(fila.getString("FECHAALERTA"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy HH:mm:ss")%></td>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=fila.getString("IDALERTA")%>">
+					<%=UtilidadesString.formatoFecha(fila.getString("FECHAALERTA"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy HH:mm:ss")%></td>
 					<td><%=fila.getString("FASE")%></td>
 					<td><%=fila.getString("ESTADO")%></td>
 					<td><%=fila.getString("TEXTO")%></td>					
