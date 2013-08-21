@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.79 2013-08-21 10:45:18 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.80 2013-08-21 12:38:16 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -462,7 +462,7 @@ function jQueryLoaded(){
 								},{
 									dateFormat: datepickerInput.data("format"),
 									regional: datepickerInput.data("regional")
-							}, e);
+							});
 					});					
 				}
 			}
@@ -3146,8 +3146,8 @@ document.getElementById = function(elemIdOrName) {
 	            //alert("posicion de body de tabla x:"+tblPosition.x+" y:"+tblPosition.y);
 	            var nextUpperElementPosition = undefined;
 	            if (tablaPaginacion !== undefined && tablaBotones !== undefined && 
-	            		tablaPaginacion.exists() && tablaPaginacion[0] !== undefined && 
-	            		tablaBotones.exists() && tablaBotones[0] !== undefined){
+	            		tablaPaginacion.length>0 && tablaPaginacion[0] !== undefined && 
+	            		tablaBotones.length>0 && tablaBotones[0] !== undefined){
 	            	var tablaPaginacionPosition = getElementAbsolutePos(tablaPaginacion[0]);
 	            	var tablaBotonesPosition = getElementAbsolutePos(tablaBotones[0]);
 	            	if (tablaPaginacionPosition.y < tablaBotonesPosition.y){
@@ -3159,11 +3159,11 @@ document.getElementById = function(elemIdOrName) {
 	            		nextUpperElement = tablaBotones;
 	            		nextUpperElementPosition = tablaBotonesPosition;
 	            	}					
-				} else if (tablaPaginacion !== undefined && tablaPaginacion.exists() && tablaPaginacion[0] !== undefined){					
+				} else if (tablaPaginacion !== undefined && tablaPaginacion.length>0 && tablaPaginacion[0] !== undefined){					
 					nextUpperElement = tablaPaginacion;
 					nextUpperElementPosition = getElementAbsolutePos(tablaPaginacion[0]);
 					//alert("recalculo con tablaPaginacionPosition x:" + nextUpperElementPosition.x + " y:" + nextUpperElementPosition.y);
-				} else if (tablaBotones !== undefined && tablaBotones.exists() && tablaBotones[0] !== undefined){
+				} else if (tablaBotones !== undefined && tablaBotones.length>0 && tablaBotones[0] !== undefined){
 					nextUpperElement = tablaBotones;
 					//alert("calculando posicion de tablaBotones");
 					nextUpperElementPosition = getElementAbsolutePos(tablaBotones[0]);
