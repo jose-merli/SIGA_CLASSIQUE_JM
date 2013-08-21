@@ -69,7 +69,7 @@ if (typeof jQuery == "undefined"){
 	jqueryScript.type = "text/javascript";
 	jqueryScript.src = jqueryFileUri;
 	var headElement = document.getElementsByTagName("head")[0];
-	if (headElement.firstChild != undefined){
+	if (headElement.firstChild !== undefined){
 		headElement.insertBefore(jqueryScript, headElement.firstChild);
 	} else {
 		headElement.appendChild(jqueryScript);
@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.78 2013-08-19 13:02:36 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.79 2013-08-21 10:45:18 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -2139,7 +2139,7 @@ function roundNumber(num, dec) {
  */
 function getParentOfType(element, type) {
 	var parent = element.parentNode;
-	while (parent != null && parent != undefined
+	while (parent != null && parent !== undefined
 			&& parent.nodeName.toUpperCase() != type.toUpperCase()) {
 		parent = parent.parentNode;
 	}
@@ -2899,7 +2899,7 @@ document.getElementById = function(elemIdOrName) {
 	}
 	
 	function scrolify(tblAsJQueryObject, height) {
-		//console.log("scrolify TableId"+tblAsJQueryObject.attr("id")+" height: " + height);
+		//console.debug("scrolify TableId"+tblAsJQueryObject.attr("id")+" height: " + height);
 		/* CONTROL DE NÚMERO DE CABECERAS/COLUMNAS DATOS
 		var numRows = parseInt(tblAsJQueryObject.find('tbody tr').length);
 		var numHeaders = parseInt(tblAsJQueryObject.find('thead th').length);
@@ -2930,6 +2930,7 @@ document.getElementById = function(elemIdOrName) {
         // and wrap the table with <div> in the mark-up and assign
         // height and overflow property  
         var oTblDiv = jQuery("<div id='"+tblId+"_BodyDiv'/>");
+        //console.debug(tblId+"_BodyDiv height: " + height);
         oTblDiv.css('height', height);
         oTblDiv.css('overflow-y', 'auto');
         oTblDiv.css('overflow-x', 'hidden');
@@ -2973,7 +2974,7 @@ document.getElementById = function(elemIdOrName) {
         oTbl.find('tbody tr').each(function () {
             jQuery(this).addClass("tableTitle");
         });
-        
+        //console.debug("oTbl html: " + jQuery("#"+tblId+"_tblFxHeadr").html());
     }
 	function fixCellBorders (table){
 		var tableId = table.attr("id");
@@ -3008,16 +3009,18 @@ document.getElementById = function(elemIdOrName) {
 	}
 
 	function loadFixedHeaderTables (tableId, fixedHeight) {
-		//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
+		//console.debug(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){
     		sub(window);
-    		if (fixedHeight != undefined && !isNaN(fixedHeight)){
+    		if (fixedHeight !== undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
-    			if (parseInt(fixedHeight) > 0)
+    			if (parseInt(fixedHeight) > 0){
+    				//console.debug("loadFixedHeaderTables fixedHeight: " + fixedHeight);
     				scrolify(oTable, fixedHeight);
+    			}
     		} else {
-	    		//alert("fixedHeaderTable BEGIN");
+	    		//console.debug("loadFixedHeaderTables calculando altura..");
 	    		var fixedHeaderTableHeight = 0;
 				var tableContainer = getCurrentIFrame();
 				if (tableContainer == null){
@@ -3072,7 +3075,7 @@ document.getElementById = function(elemIdOrName) {
 				
 				var tablaPaginacionLocal = tablaPaginacion;
 				var tablaPaginacionLocalId = undefined;
-				if (tablaPaginacion != undefined){
+				if (tablaPaginacion !== undefined){
 					//alert("tiene tablaPaginacion " + tablaPaginacion.offset().top);
 					tablaPaginacionLocalId = tablaPaginacionLocal.attr("id");
 		        	if (tablaPaginacionLocalId == undefined){
@@ -3089,8 +3092,9 @@ document.getElementById = function(elemIdOrName) {
 				}
 				var tablaBotonesLocal = tablaBotones;
 				var tablaBotonesLocalId = undefined;
-				if (tablaBotones != undefined){
+				if (tablaBotones !== undefined){
 					//alert("tiene tablaBotones");
+					//console.debug("Tiene tablaBotones");
 					tablaBotonesLocalId = tablaBotonesLocal.attr("id");
 		        	if (tablaBotonesLocalId == undefined){
 		        		tablaBotonesLocalId = "tablaBotonesId";
@@ -3104,16 +3108,16 @@ document.getElementById = function(elemIdOrName) {
 					}
 				}									
 				
-				if (tablaPaginacionLocal != undefined){
+				if (tablaPaginacionLocal !== undefined){
 					fixedHeaderTableHeight -= tablaPaginacionLocal.outerHeight(true);
 				}
-				if (tablaBotonesLocal != undefined){
+				if (tablaBotonesLocal !== undefined){
 					fixedHeaderTableHeight -= tablaBotonesLocal.outerHeight(true);
 				}
-				if (fixedHeight != undefined){
+				if (fixedHeight !== undefined){
 					var addMargin = true;
 					try{
-						if (fixedHeight != undefined && fixedHeight.substr(fixedHeight.length - 1) == "%"){
+						if (fixedHeight !== undefined && fixedHeight.substr(fixedHeight.length - 1) == "%"){
 							//console.log("loadFixedHeaderTables fixedHeight x%");
 							var percent = fixedHeight.substring(0, fixedHeight.length - 1);
 							if (!isNaN(percent)){
@@ -3141,7 +3145,9 @@ document.getElementById = function(elemIdOrName) {
 	            var tblPosition = getElementAbsolutePos(jQuery('#'+tableId+'_BodyDiv')[0]);
 	            //alert("posicion de body de tabla x:"+tblPosition.x+" y:"+tblPosition.y);
 	            var nextUpperElementPosition = undefined;
-	            if (tablaPaginacion != undefined && tablaBotones != undefined){
+	            if (tablaPaginacion !== undefined && tablaBotones !== undefined && 
+	            		tablaPaginacion.exists() && tablaPaginacion[0] !== undefined && 
+	            		tablaBotones.exists() && tablaBotones[0] !== undefined){
 	            	var tablaPaginacionPosition = getElementAbsolutePos(tablaPaginacion[0]);
 	            	var tablaBotonesPosition = getElementAbsolutePos(tablaBotones[0]);
 	            	if (tablaPaginacionPosition.y < tablaBotonesPosition.y){
@@ -3153,21 +3159,24 @@ document.getElementById = function(elemIdOrName) {
 	            		nextUpperElement = tablaBotones;
 	            		nextUpperElementPosition = tablaBotonesPosition;
 	            	}					
-				} else if (tablaPaginacion != undefined){					
+				} else if (tablaPaginacion !== undefined && tablaPaginacion.exists() && tablaPaginacion[0] !== undefined){					
 					nextUpperElement = tablaPaginacion;
 					nextUpperElementPosition = getElementAbsolutePos(tablaPaginacion[0]);
 					//alert("recalculo con tablaPaginacionPosition x:" + nextUpperElementPosition.x + " y:" + nextUpperElementPosition.y);
-				} else if (tablaBotones != undefined){
+				} else if (tablaBotones !== undefined && tablaBotones.exists() && tablaBotones[0] !== undefined){
 					nextUpperElement = tablaBotones;
 					//alert("calculando posicion de tablaBotones");
 					nextUpperElementPosition = getElementAbsolutePos(tablaBotones[0]);
 					//alert("posicion de tablaBotones x:"+nextUpperElementPosition.x+" y:"+nextUpperElementPosition.y);
+					//console.debug("posicion de tablaBotones x:"+nextUpperElementPosition.x+" y:"+nextUpperElementPosition.y);
 					//alert("recalculo con tablaBotonesPosition x:" + nextUpperElementPosition.x + " y:" + nextUpperElementPosition.y);
 				}
 	            //alert("comprobamos si recalculamos...");
 	            //alert("tblPosition.y: " + tblPosition.y + " outerHeight: " + jQuery('#'+tableId+'_BodyDiv').outerHeight(true) + " nextUpperElementPosition.y: " + nextUpperElementPosition.y);
-	            if (nextUpperElementPosition != undefined && (tblPosition.y + jQuery('#'+tableId+'_BodyDiv').outerHeight(true)) > nextUpperElementPosition.y){
+	            if (nextUpperElementPosition !== undefined && (tblPosition.y + jQuery('#'+tableId+'_BodyDiv').outerHeight(true)) > nextUpperElementPosition.y){
+	            	//console.debug("tblPosition.y: " + tblPosition.y + " outerHeight: " + jQuery('#'+tableId+'_BodyDiv').outerHeight(true) + " nextUpperElementPosition.y: " + nextUpperElementPosition.y);
 	            	//alert("reajusto a " + (parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y)));
+	            	//console.debug("reajusto a " + (parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y)));
 	            	jQuery('#'+tableId+'_BodyDiv').height(parseInt(nextUpperElementPosition.y) - parseInt(tblPosition.y));
 	            }
     		}
