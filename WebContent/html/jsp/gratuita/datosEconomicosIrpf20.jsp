@@ -109,10 +109,12 @@
 				</td>
 				<td align="center" width="16%">
 					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
-				</td>				
-				<td align="center" width="5%">
-					<b>&nbsp;</b>
-				</td>
+				</td>			
+				<% if (editable) { %>	
+					<td align="center" width="5%">
+						<b>&nbsp;</b>
+					</td>
+				<% } %>
 			</tr>
 		</table>
 		
@@ -140,7 +142,7 @@
 							<%=datoIrpf.getTitular()%>
 						</td>
 						<td align="right" width="16%">
-							<%=datoIrpf.getImporteFormateado()%> &#8364;
+							<%=datoIrpf.getImporteFormateado()%> &euro;
 						</td>		
 						
 						<% if (editable) { %>		
@@ -173,8 +175,15 @@
 	var numMaxFilaNueva = 1;
 	
 	function calcularAltura() {		
-		var altura = document.getElementById("divDatosTabla").offsetParent.offsetHeight;
-		document.getElementById("divDatosTabla").style.height=altura-<%=alturaDatosTabla%>;
+		if(document.getElementById("idBotonesAccion")) {
+			var tablaBotones = jQuery('#idBotonesAccion')[0];						
+			var tablaDatos = jQuery('#divDatosTabla')[0];
+			
+			var posTablaBotones = tablaBotones.offsetTop;
+			var posTablaDatos = tablaDatos.offsetTop;
+			
+			jQuery('#divDatosTabla').height(posTablaBotones - posTablaDatos);
+		}		
 		
 		validarAnchoTabla();
 	}	

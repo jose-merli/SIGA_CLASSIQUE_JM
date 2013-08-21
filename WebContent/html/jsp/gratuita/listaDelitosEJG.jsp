@@ -46,23 +46,19 @@
 	Vector vDelitosEJG = (Vector) request.getAttribute("vDelitosEJG");
 %>
 
-
-
-<!-- HEAD -->
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script>
-		function refrescarLocal(){
+		function refrescarLocal() {
 			parent.refrescarLocal();
 		}
-	function nuevo() 
-		{		
+		
+		function nuevo() {		
 			document.forms[0].modo.value = "nuevo";
 			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
 			if (salida == "MODIFICADO") 
@@ -71,13 +67,19 @@
 	</script>
 </head>
 
-<body >
-
-	<%if(modopestanha.equals("editar")){%>
+<body>
+<%
+	if(modopestanha.equals("editar")) {
+%>
 		<siga:ConjBotonesBusqueda botones="N"  titulo="gratuita.mantenimientoTablasMaestra.literal.delito" />
-	<%}else{%>
+<%
+	} else {
+%>
 		<siga:ConjBotonesBusqueda botones=""  titulo="gratuita.mantenimientoTablasMaestra.literal.delito" />
-	<%}%>	
+<%
+	}
+%>	
+
 	<html:form action="/JGR_DelitosEJG.do" method="post" target="resultado" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 		<!-- Datos de la pestanha -->
@@ -86,24 +88,24 @@
 		<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
 	</html:form>	
 	
-	  <!-- INICIO: RESULTADO -->
-		<siga:Table 		   
-			   name="listadoInicial"
-			   border="2"
-			   columnNames="gratuita.mantenimientoTablasMaestra.literal.delito,"
-			   columnSizes="90,10"
-			   fixedHeight="60%"
-			   modal="P">
-	<% if (vDelitosEJG!= null && !vDelitosEJG.isEmpty()) { %>
-			<%
-				String descripcion="", idDelito="";
-				int recordNumber=1;
-				while ((recordNumber) <= vDelitosEJG.size())
-				{
-					Hashtable hashDelitosEJG = (Hashtable)vDelitosEJG.get(recordNumber-1);
-					descripcion = (String)hashDelitosEJG.get(ScsDelitoBean.C_DESCRIPCION);
-					idDelito = (String)hashDelitosEJG.get(ScsDelitoBean.C_IDDELITO);
-			%>
+	<!-- INICIO: RESULTADO -->
+	<siga:Table 		   
+	   name="listadoInicial"
+	   border="2"
+	   columnNames="gratuita.mantenimientoTablasMaestra.literal.delito,"
+	   columnSizes="90,10"
+	   fixedHeight="60%"
+	   modal="P">
+
+<% 
+		if (vDelitosEJG!= null && !vDelitosEJG.isEmpty()) {
+			String descripcion="", idDelito="";
+			int recordNumber=1;
+			while ((recordNumber) <= vDelitosEJG.size()) {
+				Hashtable hashDelitosEJG = (Hashtable)vDelitosEJG.get(recordNumber-1);
+				descripcion = (String)hashDelitosEJG.get(ScsDelitoBean.C_DESCRIPCION);
+				idDelito = (String)hashDelitosEJG.get(ScsDelitoBean.C_IDDELITO);
+%>
 			<!-- Campos ocultos por cada fila:      
 				1- IDDELITO
 			-->
@@ -113,29 +115,28 @@
 	
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="B" pintarEspacio='no' visibleConsulta="no" visibleEdicion="no" clase="listaNonEdit" modo="<%=modopestanha%>" >
 				<td>
-						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idDelito%>' >
+						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idDelito%>'>
 						<%=descripcion%>
 				</td>
 			</siga:FilaConIconos>
-				<%recordNumber++; %>
-				<% } %>
-	<% } else { %>
+<%
+			recordNumber++; 
+			} 
+		} else { 
+%>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	<% } %>
-
+				<td class="titulitos">
+					<siga:Idioma key="messages.noRecordFound"/>
+				</td>
+			</tr>
+<% 
+		} 
+%>
 	</siga:Table>
-			
-
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas -->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	
-
-
-	
 </body>	
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- datosEconomicosIrpf20.jsp -->
+<!-- datosEconomicosCargaEconomica.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -49,9 +49,6 @@
 	String anio = (String) request.getParameter("anio");
 	String numero = (String) request.getParameter("numero");
 %>	
-
-
-
  	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -110,9 +107,11 @@
 				<td align="center" width="16%px">
 					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
 				</td>
-				<td align="center" width="5%">
-					<b>&nbsp;</b>
-				</td>				
+				<% if (editable) { %>
+					<td align="center" width="5%">
+						<b>&nbsp;</b>
+					</td>	
+				<% } %>			
 			</tr>
 		</table>
 		
@@ -140,7 +139,7 @@
 							<%=dato.getTitular()%>
 						</td>
 						<td align="right" width="16%">
-							<%=dato.getImporteFormateado()%> &#8364;
+							<%=dato.getImporteFormateado()%> &euro;
 						</td>		
 						
 						<% if (editable) { %>		
@@ -173,8 +172,15 @@
 	var numMaxFilaNueva = 1;
 	
 	function calcularAltura() {		
-		var altura = document.getElementById("divDatosTabla").offsetParent.offsetHeight;
-		document.getElementById("divDatosTabla").style.height=altura-<%=alturaDatosTabla%>;
+		if(document.getElementById("idBotonesAccion")) {
+			var tablaBotones = jQuery('#idBotonesAccion')[0];						
+			var tablaDatos = jQuery('#divDatosTabla')[0];
+			
+			var posTablaBotones = tablaBotones.offsetTop;
+			var posTablaDatos = tablaDatos.offsetTop;
+			
+			jQuery('#divDatosTabla').height(posTablaBotones - posTablaDatos);
+		}
 		
 		validarAnchoTabla();
 	}	

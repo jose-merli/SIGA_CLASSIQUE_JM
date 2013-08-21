@@ -230,10 +230,10 @@
 	
 				<!-- FILA -->
 				<tr style="align:left" width="100%" >
-					<td class="labelText" width="220">	
+					<td class="labelText" width="220px">	
 						<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 					</td>
-				   	<td class="labelTextValue" width="230">	
+				   	<td class="labelTextValue" width="230px">	
 				   		<%if(usr.getLocation().equalsIgnoreCase("2027")){%>G<%} %>
 						<% if (accion.equalsIgnoreCase("ver")) {%>
 						  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
@@ -244,14 +244,14 @@
 						<%}%>
 				  	</td>
 				  	
-					<td class="labelText" width="220">	
+					<td class="labelText" width="220px">	
 						<siga:Idioma key='gratuita.operarRatificacion.literal.origen'/>
 					</td>
-					<td width="250">
+					<td width="250px">
 						<% if (accion.equalsIgnoreCase("ver")) {%> 
-							<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="260"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
+							<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="240"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
 						<%}else{ %>
-					    	<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="260" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
+					    	<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="240" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
 					 	<%}%>		
 					</td>
 	  			</tr>
@@ -263,10 +263,10 @@
 	  							<tr>
 									<%if(accesoActas){%>
 									<input type="hidden"  id="actasActivado"  />
-										<td class="labelText" width="212">
+										<td class="labelText" width="212px">
 											<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 										</td>
-										<td width="300">
+										<td width="300px">
 											<%if (accion.equalsIgnoreCase("ver")){%>
 												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
 											<%}else{%>
@@ -279,10 +279,10 @@
 										<html:hidden property="idActaComp" value ="<%=idActa%>"/>
 									<%}%>
 									
-									<td class="labelText" width="220">
+									<td class="labelText" width="220px">
 										<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
 									</td>
-									<td width="200">
+									<td width="200px">
 										<%if (accion.equalsIgnoreCase("ver")){%>
 											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
 										<%} else {%>
@@ -324,7 +324,7 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.operarEJG.literal.presentacionPonente"/>
 					</td>
-					<td width="300">
+					<td width="300px">
 						<%if (accion.equalsIgnoreCase("ver")){%>
 							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Fecha>
 						<%} else {%>
@@ -370,7 +370,7 @@
 						<%}%>
 					</td>
 					
-					<td class="labelText"  width="120">
+					<td class="labelText"  width="120px">
 						<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
 					</td>
 					<td>
@@ -433,9 +433,13 @@
 					</td>
 					<td colspan="3">	
 						<%if (accion.equalsIgnoreCase("ver")) {%>	
-							<textarea name="ratificacionDictamen" class="boxConsulta" style="width:750px" rows="18" readOnly="true"><%=observaciones%></textarea>
+							<textarea name="ratificacionDictamen" class="boxConsulta"
+							style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;" 
+							readOnly="true"><%=observaciones%></textarea>
 						<%} else {%>
-							<textarea name="ratificacionDictamen" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:750px" rows="18"><%=observaciones%></textarea>
+							<textarea name="ratificacionDictamen" class="box" 
+							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 							
+							style="overflow-y:auto; overflow-x:hidden; width:730px; height:200px; resize:none;"><%=observaciones%></textarea>
 						<%}%>
 					</td>		
 				</tr>
