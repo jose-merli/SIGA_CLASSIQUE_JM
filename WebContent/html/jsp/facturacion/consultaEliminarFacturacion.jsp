@@ -126,7 +126,7 @@ function eliminiarfact(fila) {
 				   	border="1"
 				  	columnNames="facturacion.programarFacturacion.literal.conceptosFacturables,facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.programarFacturacion.literal.fechaProgramacion,facturacion.programarFacturacion.literal.fechaPrevistaGeneracion,facturacion.programarFacturacion.literal.fechaRealGeneracion,"
 				  	columnSizes="32,15,15,9,9,10,10"
-				  	fixedHeight="93%"> 		  
+				  	fixedHeight="90%"> 		  
 	 	
 <%				if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<tr class="notFound">

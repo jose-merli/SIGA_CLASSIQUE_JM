@@ -128,6 +128,7 @@
 				   	border="1"
 				  	columnNames="facturacion.programarFacturacion.literal.conceptosFacturables,facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.programarFacturacion.literal.fechaProgramacion,facturacion.programarFacturacion.literal.fechaPrevistaGeneracion,"
 				  	columnSizes="43,15,15,10,9,10"
+				  	fixedHeight="95%"
 				    modal="M"> 		  
 	 	
 <%				if(vDatos == null || vDatos.size()==0 ) { %>

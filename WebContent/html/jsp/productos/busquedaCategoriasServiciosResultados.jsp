@@ -21,9 +21,6 @@
 	Vector servicios = (Vector) request.getAttribute("servicios");
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
@@ -52,6 +49,7 @@
 			   border  = "1"
 			   columnNames="pys.mantenimientoCategorias.literal.tipoServicio,pys.busquedaServicios.literal.categoria,"
 			   columnSizes = "30,55,15"
+			   fixedHeight="95%"
 			   modal = "p">
 
 		<%if ((servicios != null) && (servicios.size() > 0)){ %>

@@ -81,6 +81,7 @@
 			   columnNames="pys.resultadoBusquedaServicios.literal.tipo,pys.resultadoBusquedaServicios.literal.categoria,
 			   			  pys.resultadoBusquedaServicios.literal.concepto,pys.resultadoBusquedaServicios.literal.Estado,"
 			   columnSizes="20,20,30,20,10"
+			   fixedHeight="95%"
 			   modal="G">
 			   
 			<%
