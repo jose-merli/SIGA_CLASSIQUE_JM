@@ -315,17 +315,6 @@
 											<td>
 												<!-- TIPO -->
 												<siga:Select id="tipo" queryId="getTiposNoColegiado" width="450" selectedIds="<%=tipoSel %>" />
-												<!--
-													<html:select name="busquedaClientesForm" property="tipo" styleClass="boxCombo">
-															<html:option value=""></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_SOCIEDAD_SERVICIOS_JURIDICOS%>" key="censo.general.literal.sociedadSJ"></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_SOCIEDAD_CIVIL%>" key="censo.general.literal.SociedadCivil"></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_SOCIEDAD_LIMITADA%>" key="censo.general.literal.SociedadLimitada"></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_SOCIEDAD_ANONIMA%>" key="censo.general.literal.SociedadAnonima"></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_PERSONAL%>" key="censo.general.literal.Personal"></html:option>
-															<html:option value="< %=ClsConstants.COMBO_TIPO_OTROS%>" key="censo.general.literal.Otros"></html:option>
-													</html:select>
-												-->
 											</td>
 											<td class="labelText">
 												<siga:Idioma key="censo.busquedaClientes.literal.checkBusqueda"/>
