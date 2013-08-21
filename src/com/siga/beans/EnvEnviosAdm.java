@@ -25,11 +25,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,8 +46,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -1256,126 +1254,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    return sDirectorio;
 	}
 	
-    public void borrarEnvio(String idInstitucion, String idEnvio,String idTipoEnvio,UsrBean userBean)
-    	throws Exception{
-
-       
-    	UserTransaction tx = userBean.getTransaction();
-		try {
-			String sql="select * from env_envios  e " +
-			"  where e.idenvio in (select t.idenviodoc from env_comunicacionmorosos t" +
-			"                      where idinstitucion=" +userBean.getLocation()+
-			"                      and idenviodoc="+idEnvio+")"+
-			"  and idinstitucion="+userBean.getLocation();
-	
-			Vector resultado = (Vector)selectGenerico(sql);
-			
-			EnvEstatEnvioAdm estatEnvioAdm = new EnvEstatEnvioAdm (usrbean);
-			
-			tx.begin();
-	
-			if (resultado!=null && resultado.size()>=1){ 
-				EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
-				Vector  morososVector = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
-				for (int i = 0; i < morososVector.size(); i++) {
-					Hashtable htEnvioMorosos = (Hashtable)morososVector.get(i);
-					TreeMap<Long, Hashtable> tmIdEnviosAActualizar = getActualizacionIdEnviosMorosos(htEnvioMorosos);
-					if(htEnvioMorosos!=null)
-						borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
-				
-				}	
-		
-		
-			}
-			Hashtable htEnvio = new Hashtable();
-			htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
-			htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
-			String rutaDocus = getPathEnvio(idInstitucion,idEnvio);
-			// Borramos los registros de BBDD
-			delete(htEnvio);
-			estatEnvioAdm.borrarEnvio(idInstitucion,idEnvio, idTipoEnvio);
-			
-			File fDir = new File(rutaDocus);
-			borrarDirectorio(fDir);
-			tx.commit();
-
-        } catch (Exception e) {	                
-        	try {
-    			if (tx!=null) {
-    				tx.rollback();
-    			}
-    		} catch (Exception el) {
-    		}
-    		throw e;
-    		
-        }
-    }
-    private void borraReferenciaMorosos(String idInstitucion, String idEnvio,
-    		Hashtable htEnvioMoroso,TreeMap tmEnviosMorososAActualizar)throws Exception{
-    	EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(this.usrbean);
-        
-        
-        admComunicaMorosos.delete(htEnvioMoroso);
-
-        if(tmEnviosMorososAActualizar!=null && tmEnviosMorososAActualizar.size()>0){
-        	 Iterator itComunicacionMorosos = tmEnviosMorososAActualizar.keySet().iterator();
-        	int idEnvioActualizado = 1;
-        	 while (itComunicacionMorosos.hasNext()) {
-        		Long key = (Long) itComunicacionMorosos.next();
-        		Hashtable comunicacionMorosos = (Hashtable) tmEnviosMorososAActualizar.get(key);
-        		Hashtable comunicacionMorososOld = (Hashtable)comunicacionMorosos.clone();
-        		UtilidadesHash.set(comunicacionMorosos, EnvComunicacionMorososBean.C_IDENVIO, ""+idEnvioActualizado);
-        		if(!UtilidadesHash.getString(comunicacionMorosos, EnvComunicacionMorososBean.C_IDENVIO).equals(UtilidadesHash.getString(comunicacionMorososOld, EnvComunicacionMorososBean.C_IDENVIO))){
-        			admComunicaMorosos.delete(comunicacionMorososOld);
-        			admComunicaMorosos.insert(comunicacionMorosos);
-        		}
-        		idEnvioActualizado++;
-        	}	
-        }
-        
-        
-    }
-    /**
-     * Devolvemos un Treemap con los envios que se han realizado para la factura/persona/insntitucion
-     * actualizando su idEnvio del envio que se quiere eliminar
-     * Devolveremos null en el caso que el envio a borrar sea el unico o el ultimo
-     * @param htEnvioMoroso
-     * @return
-     * @throws Exception
-     */
-    public TreeMap<Long,Hashtable> getActualizacionIdEnviosMorosos(Hashtable htEnvioMoroso)throws Exception{
-    	EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(this.usrbean);
-        TreeMap tmComunicacionMorosos = admComunicaMorosos.getComunicacionesMorosos(htEnvioMoroso);
-        StringBuffer key = new StringBuffer();
-        key.append(UtilidadesHash.getString(htEnvioMoroso, EnvComunicacionMorososBean.C_IDINSTITUCION));
-        key.append(UtilidadesHash.getString(htEnvioMoroso, EnvComunicacionMorososBean.C_IDPERSONA));
-        key.append(UtilidadesHash.getString(htEnvioMoroso, EnvComunicacionMorososBean.C_IDFACTURA));
-        key.append(UtilidadesHash.getString(htEnvioMoroso, EnvComunicacionMorososBean.C_IDENVIO));
-        //si solo hay uno se va es el que se va a eliminar luego no hay que actualizar nada.
-        //Asi mismo si se elimina el ultimo envio tampoco actualiaremos ids
-        if(tmComunicacionMorosos.size()>1 && !(tmComunicacionMorosos.lastKey().toString()).equals(key.toString())){
-        	//Borramos el envio de moroso asociado al envio
-        	tmComunicacionMorosos.remove(Long.valueOf(key.toString()));
-	    	
-        }else{
-        	tmComunicacionMorosos = null;
-        	
-        }
-        return tmComunicacionMorosos;
-    }
-    public void borrarDirectorio(File fDir){
-        if (fDir.exists()){
-            File [] files = fDir.listFiles();
-            for (int i=0;i<files.length;i++){
-                if (files[i].isDirectory()){
-                    borrarDirectorio(files[i]);
-                } else {
-                    files[i].delete();
-                }
-                fDir.delete();
-            }
-        }
-    }
+   
+    
 
     public String getAsunto(Integer idInstitucion, Integer idEnvio)
     	throws SIGAException,ClsExceptions{
@@ -3328,7 +3208,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				 fCopiadoAdjunto.getParentFile().mkdirs();
 				 if (ficheroSalida.exists()) {					
 						copiarFichero(ficheroSalida,fCopiadoAdjunto);						
-						borrarDirectorio(ruta);
+						SIGAServicesHelper.borrarDirectorio(ruta);
 				 }				
 				
 				 // incXXXX // Controlamos que no se generen etiquetas si no hay destinatarios (puede que no sea null, pero este vacio)

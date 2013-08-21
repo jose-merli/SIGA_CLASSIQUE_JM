@@ -41,6 +41,7 @@ import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
@@ -300,6 +301,10 @@ public class MaestroDesignasAction extends MasterAction {
 			if ((desdeEjg!=null && desdeEjg.equalsIgnoreCase("si"))||(desdeEJG!=null && desdeEJG.equalsIgnoreCase("si"))){
 				ses.removeAttribute("DATAPAGINADOR");
 			}
+			
+			
+			
+			
 			boolean hayDatos = false;
 			if (ocultos==null){
 				hayDatos = true;
@@ -307,6 +312,8 @@ public class MaestroDesignasAction extends MasterAction {
 				anio = (String)miform.getAnio();
 				numero = (String)miform.getNumero();
 				estado= miform.getEstado();
+			}else{
+				miform.setOrigen("");	
 			}
 			
 		
@@ -316,6 +323,33 @@ public class MaestroDesignasAction extends MasterAction {
 			elegido.put(ScsDesignaBean.C_IDTURNO, (hayDatos?idturno:(String)ocultos.get(0)));
 			elegido.put(ScsDesignaBean.C_ANIO, (hayDatos?anio:(String)ocultos.get(3)));
 			elegido.put(ScsDesignaBean.C_NUMERO, (hayDatos?numero:(String)ocultos.get(2)));
+			
+			String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_sufijo="";
+			ScsDesignaAdm adm = new ScsDesignaAdm(usr);
+			Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(),
+					(String)elegido.get(ScsDesignaBean.C_ANIO), (String)elegido.get(ScsDesignaBean.C_NUMERO), (String)elegido.get(ScsDesignaBean.C_IDTURNO));
+
+			if (hTitulo != null) {
+				t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+				t_apellido1 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+				t_apellido2 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+				t_anio = (String) hTitulo.get(ScsDesignaBean.C_ANIO);
+				t_numero = (String) hTitulo.get(ScsDesignaBean.C_CODIGO);
+				t_sufijo = (String) hTitulo.get(ScsDesignaBean.C_SUFIJO);
+				if (t_sufijo!=null && !t_sufijo.equals("")){
+					t_numero=t_numero+"-"+t_sufijo;
+				}
+
+			}
+			StringBuffer solicitante = new StringBuffer();
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+			elegido.put("solicitante", solicitante.toString());
+			elegido.put("designaCodigo", t_numero);
+			elegido.put("codigoDesignaNumEJG", t_numero);
 			
 			
 			if (hayDatos==true){				 
@@ -331,7 +365,13 @@ public class MaestroDesignasAction extends MasterAction {
 			}else{					
 				ses.setAttribute("Modo","editar");	
 			}		 
-	  
+			 if(miform.getOrigen()!=null &&miform.getOrigen().equalsIgnoreCase("/JGR_ComunicacionDesigna")){
+		 			
+		 			request.setAttribute("elementoActivo","11");
+		 		}
+			 
+			 
+			 
 			request.setAttribute("idDesigna",elegido);
 		} 
 		catch (Exception e2){
@@ -359,7 +399,7 @@ public class MaestroDesignasAction extends MasterAction {
 		if ((desdeEjg!=null && desdeEjg.equalsIgnoreCase("si"))||(desdeEJG!=null && desdeEJG.equalsIgnoreCase("si"))){
 			request.getSession().removeAttribute("DATAPAGINADOR");
 		}
-		
+		miform.setOrigen("");
 		String idInstitucion = null;
 		String idTurno = null;
 		String anio = null;
@@ -385,10 +425,43 @@ public class MaestroDesignasAction extends MasterAction {
 			elegido.put(ScsDesignaBean.C_IDTURNO, idTurno);
 			elegido.put(ScsDesignaBean.C_ANIO, anio);
 			elegido.put(ScsDesignaBean.C_NUMERO, numero);
-	
+			
+			String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_sufijo="";
+			ScsDesignaAdm adm = new ScsDesignaAdm(usr);
+			Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(),
+					(String)elegido.get(ScsDesignaBean.C_ANIO), (String)elegido.get(ScsDesignaBean.C_NUMERO), (String)elegido.get(ScsDesignaBean.C_IDTURNO));
+
+			if (hTitulo != null) {
+				t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+				t_apellido1 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+				t_apellido2 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+				t_anio = (String) hTitulo.get(ScsDesignaBean.C_ANIO);
+				t_numero = (String) hTitulo.get(ScsDesignaBean.C_CODIGO);
+				t_sufijo = (String) hTitulo.get(ScsDesignaBean.C_SUFIJO);
+				if (t_sufijo!=null && !t_sufijo.equals("")){
+					t_numero=t_numero+"-"+t_sufijo;
+				}
+
+			}
+			StringBuffer solicitante = new StringBuffer();
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+			elegido.put("solicitante", solicitante.toString());
+			elegido.put("designaCodigo", t_numero);
+			elegido.put("codigoDesignaNumEJG", t_numero);
+			
+			
 			HttpSession ses = (HttpSession)request.getSession();
 			ses.setAttribute("Modo","Ver");
 			ses.setAttribute("ModoAction","Ver");
+			if(miform.getOrigen()!=null &&miform.getOrigen().equalsIgnoreCase("/JGR_ComunicacionDesigna")){
+	 			
+	 			request.setAttribute("elementoActivo","10");
+	 		}
+			
 			request.setAttribute("idDesigna",elegido);
 		} 
 		catch (Exception e2){

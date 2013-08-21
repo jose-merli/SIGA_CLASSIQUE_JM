@@ -67,6 +67,8 @@ public class EntradaEnviosAction extends MasterAction {
 				String accion = miForm.getModo();
 
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					EntradaEnviosForm entradaEnviosForm = (EntradaEnviosForm)miForm;
+					entradaEnviosForm.reset();
 					mapDestino = abrir(mapping, miForm, request, response);
 				} else if(accion.equalsIgnoreCase("procesar")){ 
 					mapDestino = procesar(mapping, miForm, request, response);
@@ -80,6 +82,8 @@ public class EntradaEnviosAction extends MasterAction {
 					mapDestino = borrarRelacionDesigna(mapping, miForm, request, response);						
 				}  else if (accion.equalsIgnoreCase("comunicar")) {
 					mapDestino = comunicar(mapping, miForm, request, response);		
+				}else if (accion.equalsIgnoreCase("consultarComunicacion")) {
+					mapDestino = consultarComunicacion(mapping, miForm, request, response);		
 				} else{ 
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -98,7 +102,9 @@ public class EntradaEnviosAction extends MasterAction {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
 		} 
 	}
-	
+	protected String consultarComunicacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		return ver(mapping, formulario, request, response);
+	}
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
@@ -138,7 +144,7 @@ public class EntradaEnviosAction extends MasterAction {
 				}
 				xslTransform = informe.getPlantillaGenerica(infBean, userBean.getLanguage(), "xsl");
 				intercambio = MasterReport.convertXML2HTML(new ByteArrayInputStream(entradaEnviosWithBLOBs.getXml().getBytes("UTF-8")), xslTransform);
-				entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
+//				entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
 			}
 			
 			request.setAttribute("entradaEnvio",entradaEnvioFormulario);

@@ -23,6 +23,10 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWit
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
+import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -82,7 +86,10 @@ import es.satec.businessManager.BusinessManager;
 public class Envio
 {
 	
-    public EnvEnviosBean enviosBean;
+	List<ScsEjg> ejgs;
+    List<ScsDesigna> designas;
+	
+	public EnvEnviosBean enviosBean;
     private UsrBean usrBean;
     
     private String consulta=null;
@@ -638,7 +645,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         enviosBean.setComisionAJG(this.usrBean.isComision()?Short.valueOf(ClsConstants.DB_TRUE):Short.valueOf(ClsConstants.DB_FALSE));
         envAdm.insert(enviosBean);
-
+        
         // Copiamos los datos la plantilla, incluidos los remitentes
         envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 				enviosBean.getIdEnvio(), 
@@ -646,7 +653,32 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 				enviosBean.getIdPlantillaEnvios());
 
         if (idPersona!=null) 
-        	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos);        
+        	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos); 
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+        	try {
+        		 if(getDesignas()!=null &&getDesignas().size()>0)
+     	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+     	        else if(getEjgs()!=null &&getEjgs().size()>0)
+     	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+             	if(this.usrBean.getTransaction().getStatus()==6)
+             		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+             		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
+        
+        
     }
     
     public void generarEnvioBean(String idPersona,String tipoDestinatario, Vector documentos, Object bean) throws SIGAException,ClsExceptions {
@@ -663,6 +695,29 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona, tipoDestinatario, documentos);        
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
     }    
     
     public void generarEnvioSms(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
@@ -679,7 +734,31 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 				enviosBean.getIdPlantillaEnvios(),bean);
 
         if (idPersona!=null) 
-        	addDocumentosDestinatario(idPersona,tipoDestinatario,null);        
+        	addDocumentosDestinatario(idPersona,tipoDestinatario,null);   
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
+        
     }
     
     public void generarEnvio(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
@@ -696,7 +775,30 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 				enviosBean.getIdPlantillaEnvios(),bean);
 
         if (idPersona!=null) 
-        	addDocumentosDestinatario(idPersona,tipoDestinatario,null);        
+        	addDocumentosDestinatario(idPersona,tipoDestinatario,null);     
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
     }
     
     
@@ -716,7 +818,8 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 				enviosBean.getIdPlantillaEnvios());
 
         if (idPersona!=null) 
-        	addDocumentosDestinatarioDireccionEspecifica(idPersona, idDireccion, documentos);        
+        	addDocumentosDestinatarioDireccionEspecifica(idPersona, idDireccion, documentos);      
+        
     }
     /**
      * Se ha creado este metodo para el proceso de generacion de envios.
@@ -851,7 +954,29 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         	enviosBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
             envAdm.updateDirect(enviosBean);
 		}
-        
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
         envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
     }
     
@@ -1800,5 +1925,23 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     		throw new ClsExceptions(e,"Error en Envio.addDestinatarioIndividualDocAdjuntos");
         }
     }
+
+	
+
+	public List<ScsDesigna> getDesignas() {
+		return designas;
+	}
+
+	public void setDesignas(List<ScsDesigna> designas) {
+		this.designas = designas;
+	}
+
+	public List<ScsEjg> getEjgs() {
+		return ejgs;
+	}
+
+	public void setEjgs(List<ScsEjg> ejgs) {
+		this.ejgs = ejgs;
+	}
 	
 }

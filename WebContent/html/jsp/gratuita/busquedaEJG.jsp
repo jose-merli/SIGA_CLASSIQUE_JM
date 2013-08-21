@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 <!-- busquedaEJG.jsp -->
 
 <!-- CABECERA JSP -->
@@ -241,21 +244,18 @@
 	}
 %>
 
-<html>
+
 
 <!-- HEAD -->
-<head>
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
  	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/smoothness-1.8.13/jquery-ui-1.8.13.custom.css'/>">
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
-    <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/jquery-ui-1.8.13.custom.min.js'/>"></script>
-    <script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>    
 
        <style>
 table td { vertical-align: center }
@@ -267,7 +267,7 @@ dd { padding-bottom: 15px }
 	 <script type="text/javascript">
     	jQuery.noConflict();
     	jQuery(document).ready(function() {
-            jQuery("#idTipoResolucionEJG").dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
+            jQueryTop("#idTipoResolucionEJG", window.document).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
       	});
     
 		function refrescarLocal() {	
@@ -348,12 +348,13 @@ dd { padding-bottom: 15px }
 			elementsTipoResolucion =  jQuery(comboTipoResolucion).val();
 			var comboFundamentos = document.getElementById('idFundamentoJuridico');
 			var optioncomboFundamentos = comboFundamentos.options;
-			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString().split(',').length=='1' && jQuery(comboTipoResolucion).val().toString()!='-1'){
+			//if(elementsTipoResolucion  && jQuery(comboTipoResolucion).val().toString()!='-1'){
+			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString()!='-1'){
 				if(comboTipoResolucion.value!=""){
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			   			type: "POST",
 						url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposFundamento",
-						data: "idCombo="+comboTipoResolucion.value,
+						data: "idCombo="+elementsTipoResolucion,
 						dataType: "json",
 						success: function(json){		
 							var fundamentos = json.fundamentos;
@@ -475,7 +476,7 @@ if(usr.isComision()){
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
 							<td style="vertical-align:middle">
-								<html:text name="<%=formulario%>" styleClass="box" property="anio"  value="<%=anio%>" style="width:40" maxlength="4"></html:text>
+								<html:text name="<%=formulario%>" styleId="anio" styleClass="box" property="anio"  value="<%=anio%>" style="width:40" maxlength="4"></html:text>
 								&nbsp;/&nbsp;
 								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" size="8" maxlength="10"> </html:text>
 							</td>
@@ -922,11 +923,11 @@ if(usr.isComision()){
 			
 			
 			
-				if ( !validarObjetoAnio(document.getElementById("anio")) ){
+				if ( document.getElementById("anio") && !validarObjetoAnio(document.getElementById("anio")) ){
 					alert("<siga:Idioma key='fecha.error.anio'/>");
 					return false;
 				}
-				if ( !validarObjetoAnio(document.getElementById("anioCAJG")) ){
+				if ( document.getElementById("anioCAJG") && !validarObjetoAnio(document.getElementById("anioCAJG")) ){
 					alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='fecha.error.anio'/>");
 					return false;
 				}

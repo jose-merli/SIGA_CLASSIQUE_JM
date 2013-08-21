@@ -38,6 +38,8 @@ public class EntradaEnviosForm extends MasterForm
 	private String idTipoDesignacionColegio;
 	boolean preceptivoProcurador = false;
 	private String comisionAJG;
+	private String origen;
+	
 	public boolean isPreceptivoProcurador() {
 		return preceptivoProcurador;
 	}
@@ -400,5 +402,32 @@ public class EntradaEnviosForm extends MasterForm
 	}
 	public void setComisionAJG(String comisionAJG) {
 		this.comisionAJG = comisionAJG;
+	}
+	public String getOrigen() {
+		return origen;
+	}
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+	/**
+	 * 
+	 */
+	public void reset() {
+		this.setAnioDesignaNew("");
+		this.setAnioDesignaSel("");
+		this.setNumeroDesignaNew("");
+		this.setNumeroDesignaSel("");
+		this.setIdTurnoDesignaNew("");
+		this.setIdTurnoDesignaSel("");
+		this.setAnioEJGNew("");
+		this.setAnioEJGSel("");
+		this.setAnioEJGNew("");
+		this.setNumeroEJGNew("");
+		this.setNumeroEJGSel("");
+		this.setIdTipoEJGNew("");
+		this.setIdTipoEJGSel("");
+		this.setOrigen("");
+		
+		
 	}
 }

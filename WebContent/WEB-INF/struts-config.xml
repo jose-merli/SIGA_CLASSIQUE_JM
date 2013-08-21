@@ -333,6 +333,7 @@
 		<form-bean name="ActaComisionForm" type="com.siga.gratuita.form.ActaComisionForm"/>
 		<form-bean name="CuentasBancariasForm" type="com.siga.facturacion.form.CuentasBancariasForm"/>
 		<form-bean name="PrestacionRechazadaEjgForm" type="com.siga.gratuita.form.PrestacionRechazadaEjgForm"/>
+		<form-bean name="ComunicacionesForm" type="com.siga.gratuita.form.ComunicacionesForm"/>
 		
 		
 		
@@ -2723,6 +2724,14 @@
 		
 		<action path="/JGR_SolicitudEJG" type="com.siga.gratuita.action.SolicitudEJGAction" >
 			<forward name="inicio" path="/html/jsp/gratuita/pestanaSolicitudEJG.jsp"/>
+		</action>
+		
+		<action path="/JGR_ComunicacionEJG" type="com.siga.gratuita.action.ComunicacionesAction" parameter="EJG" name="ComunicacionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/comunicaciones.jsp"/>
+		</action>
+		
+		<action path="/JGR_ComunicacionDesigna" type="com.siga.gratuita.action.ComunicacionesAction" parameter="Designacion" name="ComunicacionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/comunicaciones.jsp"/>
 		</action>
 		
 		

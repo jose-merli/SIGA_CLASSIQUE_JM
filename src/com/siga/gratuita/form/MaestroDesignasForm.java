@@ -46,7 +46,7 @@ public class MaestroDesignasForm extends MasterForm {
 	private String idJuzgado;
 	private List<ScsProcedimientosBean> modulos;
 	private List<ScsEJGBean> ejgs;  	
-
+	String origen; 
 	public List<ScsEJGBean> getEjgs() {
 		return ejgs;
 	}
@@ -504,6 +504,12 @@ public class MaestroDesignasForm extends MasterForm {
 	}
 	public void setNig(String nig) {
 		this.nig = nig;
+	}
+	public String getOrigen() {
+		return origen;
+	}
+	public void setOrigen(String origen) {
+		this.origen = origen;
 	}
 	
 }

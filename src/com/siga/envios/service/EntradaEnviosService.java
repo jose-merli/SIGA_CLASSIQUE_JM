@@ -29,5 +29,7 @@ public interface EntradaEnviosService{
 	public void relacionarEnvio(Long idEnvio, Short idInstitucion, Long idEnvioRelacionado) throws BusinessException;
 	public EnvEntradaEnviosWithBLOBs getEntradaEnvios(EnvEntradaEnviosExample entradaEnviosExample) throws BusinessException;
 	public void actualizarEntradaEnvios(EnvEntradaEnviosExample entradaEnviosExample, EnvEntradaEnviosWithBLOBs envEntradaEnvios)throws BusinessException;
+	public List<EnvEntradaEnvios> getComunicacionesEJG(Integer idInstitucion,Short anio,Short idTipo, Integer numero,short comisionAJG ) throws BusinessException ;
+	public List<EnvEntradaEnvios> getComunicacionesDesigna(Integer idInstitucion,Short anio,Short idTurno, Integer numero,short comisionAJG ) throws BusinessException ;
 	
 }

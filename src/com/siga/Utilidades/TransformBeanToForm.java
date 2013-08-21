@@ -4,10 +4,12 @@ import java.text.SimpleDateFormat;
 
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.ScsJuzgado;
 import org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService;
 
 import com.atos.utils.ClsConstants;
+import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.EntradaEnviosForm;
 
 import es.satec.businessManager.BusinessManager;
@@ -78,6 +80,41 @@ public class TransformBeanToForm {
 		}
 		
 		
+		
+
+		return formulario;
+	}
+	public static DefinirEnviosForm getSalidaEnviosForm(EnvEnvios salida){
+//		Identificador  Nombre  Fecha de creación  Fecha programada  Estado  Tipo envío  		
+		DefinirEnviosForm formulario = new DefinirEnviosForm();
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		
+		if(salida.getIdenvio() != null){
+			formulario.setIdEnvio(salida.getIdenvio().toString());
+			
+		}
+		if(salida.getDescripcion() != null){
+			formulario.setNombre(salida.getDescripcion());
+			
+		}
+		if(salida.getFecha() != null){
+			formulario.setFecha(sdf.format(salida.getFecha()));
+		}
+		if(salida.getFechaprogramada() != null){
+			formulario.setFechaProgramada(sdf.format(salida.getFechaprogramada()));
+		}
+		if(salida.getIdestado() != null){
+			formulario.setIdEstado(salida.getIdestado().toString());
+			formulario.setEstado(AppConstants.EstadosSalidaEnviosEnum.getEnum(salida.getIdestado()).getDescripcion());
+		}
+		if(salida.getIdtipoenvios() != null){
+			formulario.setIdTipoEnvio(salida.getIdtipoenvios().toString());
+			formulario.setTipoEnvio(AppConstants.TiposEnvioEnum.getEnum(salida.getIdtipoenvios()).getDescripcion());
+		}
+		if(salida.getIdtipointercambiotelematico() != null){
+			formulario.setIdIntercambio(salida.getIdtipointercambiotelematico());
+			
+		}
 		
 
 		return formulario;

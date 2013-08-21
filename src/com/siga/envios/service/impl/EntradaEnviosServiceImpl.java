@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,14 +33,18 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisionalExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosKey;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
+import org.redabogacia.sigaservices.app.mapper.EnvEntradaEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.vo.Designacion;
@@ -52,6 +57,7 @@ import com.siga.envios.form.EntradaEnviosForm;
 import com.siga.envios.service.EntradaEnviosService;
 import com.siga.envios.service.ca_sigp.mapper.SolDesignacionProvisionalMapper;
 import com.siga.envios.service.ca_sigp.vos.TipoDesignaLetradoProcurador;
+import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -127,6 +133,50 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 		
 		return entradaEnvios;
 	}
+	public List<EnvEntradaEnvios> getComunicacionesEJG(Integer idInstitucion,Short anio,Short idTipoEjg, Integer numero,short comisionAJG ) throws BusinessException {
+		List<EnvEntradaEnvios>  entradaEnvios = null;
+		EnvEntradaEnviosExtendsMapper envEntradaEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEntradaEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("anio", anio);
+			parametrosMap.put("idTipoEjg", idTipoEjg);
+			parametrosMap.put("numero", numero);
+			parametrosMap.put("comisionAJG", comisionAJG);
+			entradaEnvios = envEntradaEnviosMapper.getComunicacionesEJG(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos",e);
+			
+		} 	
+		
+		return entradaEnvios;
+	}
+	public List<EnvEntradaEnvios> getComunicacionesDesigna(Integer idInstitucion,Short anio,Short idTurno, Integer numero,short comisionAJG ) throws BusinessException {
+		List<EnvEntradaEnvios>  entradaEnvios = null;
+		EnvEntradaEnviosExtendsMapper envEntradaEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEntradaEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("anio", anio);
+			parametrosMap.put("idTurno", idTurno);
+			parametrosMap.put("numero", numero);
+			parametrosMap.put("comisionAJG", comisionAJG);
+			entradaEnvios = envEntradaEnviosMapper.getComunicacionesDesigna(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos",e);
+			
+		} 	
+		
+		return entradaEnvios;
+	}
+	
+	
 
 	public EnvEntradaEnviosWithBLOBs getEntradaEnviosWithBlobs(EntradaEnviosForm entradaEnviosForm) throws BusinessException {
 		EnvEntradaEnviosMapper envEntradaEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEntradaEnviosMapper.class);
@@ -170,8 +220,36 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 		EcomCola ecomCola = new EcomCola();
 		EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
 		Short idEstado = -1;
+		/*
+		 * if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
+		 * */
+		
 		
 		if(envEntradaEnviosWithBLOBs.getIdtipointercambiotelematico().equals(AppConstants.TipoIntercambioEnum.SGP_ICA_ENV_SOL_ABG_PRO.getCodigo())){
+			List<ScsDesigna> designas = null;
+			List<ScsEjg> ejgs = null;
 			EcomSoldesignaprovisional ecomSoldesignaprovisional = new EcomSoldesignaprovisional();
 			EcomSoldesignaprovisionalMapper soldesignaprovisionalMapper = getMyBatisSqlSessionManager().getMapper(EcomSoldesignaprovisionalMapper.class);
 			ecomSoldesignaprovisional.setIdenvio(envEntradaEnviosWithBLOBs.getIdenvio());
@@ -182,10 +260,19 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 			if(nuevo){		
 				if(entradaEnviosForm.getCaso().equals("2")){
+					
 					ecomSoldesignaprovisional.setDesignanewanio(new Short(entradaEnviosForm.getAnioDesignaNew()));
 					ecomSoldesignaprovisional.setDesignanewnumero(new Long(entradaEnviosForm.getNumeroDesignaNew()));
 					ecomSoldesignaprovisional.setDesignanewidturno(new Integer(entradaEnviosForm.getIdTurnoDesignaNew()));
 					ecomSoldesignaprovisional.setDesignanewdletrado(new Long(entradaEnviosForm.getAbogadoDesignaSel()));
+					designas = new ArrayList<ScsDesigna>();
+					ScsDesigna designa = new ScsDesigna();
+					designa.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+					designa.setAnio(ecomSoldesignaprovisional.getDesignanewanio());
+					designa.setIdturno(ecomSoldesignaprovisional.getDesignanewidturno());
+					designa.setNumero(ecomSoldesignaprovisional.getDesignanewnumero());
+					designas.add(designa);
+					
 					SimpleDateFormat sdf2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 					try {
 						ecomSoldesignaprovisional.setDesignanewfecha(sdf2.parse(entradaEnviosForm.getFechaApertura()));
@@ -208,6 +295,16 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					ecomSoldesignaprovisional.setEjgselidtipo(new Short(entradaEnviosForm.getIdTipoEJGSel()));
 					ecomSoldesignaprovisional.setEjgselanio(new Short(entradaEnviosForm.getAnioEJGSel()));
 					ecomSoldesignaprovisional.setEjgselnumero(new Long(entradaEnviosForm.getNumeroEJGSel()));
+					
+					ejgs = new ArrayList<ScsEjg>();
+					ScsEjg ejg = new ScsEjg();
+					ejg.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+					ejg.setAnio(ecomSoldesignaprovisional.getEjgselanio());
+					ejg.setIdtipoejg(ecomSoldesignaprovisional.getEjgselidtipo());
+					ejg.setNumero(ecomSoldesignaprovisional.getEjgselnumero());
+					ejgs.add(ejg);
+					
+					
 					List<TipoDesignaLetradoProcurador> designasRelacionadas = getDesignasEJGRelacionadas(entradaEnviosForm.getIdInstitucion(), entradaEnviosForm.getAnioEJGSel(), entradaEnviosForm.getNumeroEJGSel(), entradaEnviosForm.getIdTipoEJGSel());
 					if(designasRelacionadas != null){
 						if(designasRelacionadas.size() == 1){//Existe una sola designa relacionada, por lo que se selecciona esta automáticamente
@@ -221,12 +318,30 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 							ecomSoldesignaprovisional.setDesignaselnumero(new Long(entradaEnviosForm.getNumeroDesignaSel()));
 							ecomSoldesignaprovisional.setDesignaselidturno(new Integer(entradaEnviosForm.getIdTurnoDesignaSel()));
 						}
+						
+						designas = new ArrayList<ScsDesigna>();
+						ScsDesigna designa = new ScsDesigna();
+						designa.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+						designa.setAnio(ecomSoldesignaprovisional.getDesignaselanio());
+						designa.setIdturno(ecomSoldesignaprovisional.getDesignaselidturno());
+						designa.setNumero(ecomSoldesignaprovisional.getDesignaselnumero());
+						designas.add(designa);
+						
 					}
 				
 				}else if(entradaEnviosForm.getCaso().equals("2")){
 					ecomSoldesignaprovisional.setDesignaselanio(new Short(entradaEnviosForm.getAnioDesignaSel()));
 					ecomSoldesignaprovisional.setDesignaselnumero(new Long(entradaEnviosForm.getNumeroDesignaSel()));
-					ecomSoldesignaprovisional.setDesignaselidturno(new Integer(entradaEnviosForm.getIdTurnoDesignaSel()));		
+					ecomSoldesignaprovisional.setDesignaselidturno(new Integer(entradaEnviosForm.getIdTurnoDesignaSel()));
+					designas = new ArrayList<ScsDesigna>();
+					ScsDesigna designa = new ScsDesigna();
+					designa.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+					designa.setAnio(ecomSoldesignaprovisional.getDesignaselanio());
+					designa.setIdturno(ecomSoldesignaprovisional.getDesignaselidturno());
+					designa.setNumero(ecomSoldesignaprovisional.getDesignaselnumero());
+					designas.add(designa);
+					
+					
 				}
 				
 				idEstado = EstadosEntradaEnviosEnum.ESTADO_PENDIENTE_ENVIAR.getCodigo();
@@ -243,8 +358,13 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			}else{
 				soldesignaprovisionalMapper.insert(ecomSoldesignaprovisional);
 			}
-		
+			ComunicacionesService comunicacionesService = (ComunicacionesService)getBusinessManager().getService(ComunicacionesService.class);
+			if(designas!=null &&designas.size()>0)
+		        comunicacionesService.insertarComunicacionDesigna(designas, envEntradaEnviosWithBLOBs);
+		     if(ejgs!=null && ejgs.size()>0)
+		        comunicacionesService.insertarComunicacionEjg(ejgs, envEntradaEnviosWithBLOBs);
 		}else if(envEntradaEnviosWithBLOBs.getIdtipointercambiotelematico().equals(AppConstants.TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
+			
 			EcomRespsolsusprocedimiento respsolProc = new EcomRespsolsusprocedimiento();
 			EcomRespsolsusprocedimientoMapper respsolProcsMapper = getMyBatisSqlSessionManager().getMapper(EcomRespsolsusprocedimientoMapper.class);
 			respsolProc.setIdenvio(envEntradaEnviosWithBLOBs.getIdenvio());
@@ -268,12 +388,15 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			
 			respsolProcsMapper.insert(respsolProc);
 			
+			
 		}else if(envEntradaEnviosWithBLOBs.getIdtipointercambiotelematico().equals(AppConstants.TipoIntercambioEnum.SGP_CAJG_RES_SOL_IMP.getCodigo())){
 			EcomResolucionimpugnacion resolucionimpugnacion = new EcomResolucionimpugnacion();
 			EcomResolucionimpugnacionMapper resolucionimpugnacionMapper = getMyBatisSqlSessionManager().getMapper(EcomResolucionimpugnacionMapper.class);
 			
 			resolucionimpugnacion.setIdenvio(envEntradaEnviosWithBLOBs.getIdenvio());
 			resolucionimpugnacion.setIdinstitucion(envEntradaEnviosWithBLOBs.getIdinstitucion());
+			
+			
 			resolucionimpugnacion.setFechamodificacion(new Date());
 			resolucionimpugnacion.setUsumodificacion(new Integer (usrBean.getUserName()));
 
@@ -289,15 +412,13 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			org.redabogacia.sigaservices.app.autogen.model.EcomResolucionimpugnacionExample.Criteria crit = resolucionimpugnacionExample.createCriteria();
 			crit.andIdenvioEqualTo(envEntradaEnviosWithBLOBs.getIdenvio());
 			crit.andIdinstitucionEqualTo(envEntradaEnviosWithBLOBs.getIdinstitucion());		
-			List<EcomResolucionimpugnacion> record =resolucionimpugnacionMapper.selectByExample(resolucionimpugnacionExample);
-			if(record != null && record.size() > 0){
-				resolucionimpugnacionMapper.updateByPrimaryKeySelective(resolucionimpugnacion); 
+			List<EcomResolucionimpugnacion> recordList =resolucionimpugnacionMapper.selectByExample(resolucionimpugnacionExample);
+			if(recordList != null && recordList.size() > 0){
+				resolucionimpugnacionMapper.updateByExampleSelective(resolucionimpugnacion, resolucionimpugnacionExample); 
 			}else{
 				resolucionimpugnacionMapper.insert(resolucionimpugnacion);
 			}			
-			
 		}
-		
 		//Actualizamos el estado. 
 		this.actualizarEstado(envEntradaEnviosWithBLOBs.getIdenvio(),envEntradaEnviosWithBLOBs.getIdinstitucion(), idEstado);
 
@@ -557,6 +678,20 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			List<EcomSoldesignaprovisional> listEcomSoldesignaprovisional = soldesignaprovisionalMapper.selectByExample(soldesignaprovisionalExample);
 			if(listEcomSoldesignaprovisional != null){
 				EcomSoldesignaprovisional ecomSoldesignaprovisional = listEcomSoldesignaprovisional.get(0);
+				
+				if(ecomSoldesignaprovisional.getEjgselanio()!=null){
+					ComunicacionesService comunicacionesService = (ComunicacionesService)BusinessManager.getInstance().getService(ComunicacionesService.class);
+					ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+					scsComunicaciones.setIdenvioentrada(ecomSoldesignaprovisional.getIdenvio());
+					scsComunicaciones.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+					scsComunicaciones.setEjganio(ecomSoldesignaprovisional.getEjgselanio());
+					scsComunicaciones.setEjgidtipo(ecomSoldesignaprovisional.getEjgselidtipo());
+					scsComunicaciones.setEjgnumero(ecomSoldesignaprovisional.getEjgselnumero());
+					comunicacionesService.borrarComunicacion(scsComunicaciones);
+				}
+				
+				
+				
 				ecomSoldesignaprovisional.setDesignanewidturno(null);
 				ecomSoldesignaprovisional.setDesignanewanio(null);
 				ecomSoldesignaprovisional.setDesignanewnumero(null);
@@ -579,6 +714,9 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				}
 				soldesignaprovisionalMapper.updateByPrimaryKey(ecomSoldesignaprovisional);
 				
+				
+				
+				
 				//Se borra el registro del EJG
 				if(entradaEnviosForm.getAnioEJGNew()!=null && !entradaEnviosForm.getAnioEJGNew().equals("")){
 					ScsEjgService ejgService = (ScsEjgService) BusinessManager.getInstance().getService(ScsEjgService.class);
@@ -592,7 +730,12 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 					ejg.setEjg(obj);
 					ejgService.delete(ejg);
 				}
-
+				
+				
+				
+				
+				
+				
 				//Actualizamos el estado. 
 				this.actualizarEstado(ecomSoldesignaprovisional.getIdenvio(),ecomSoldesignaprovisional.getIdinstitucion(), EstadosEntradaEnviosEnum.ESTADO_LEIDO.getCodigo());
 			}
@@ -614,6 +757,21 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			List<EcomSoldesignaprovisional> listEcomSoldesignaprovisional =soldesignaprovisionalMapper.selectByExample(soldesignaprovisionalExample);
 			if(listEcomSoldesignaprovisional != null){
 				EcomSoldesignaprovisional ecomSoldesignaprovisional = listEcomSoldesignaprovisional.get(0);
+				
+				if(ecomSoldesignaprovisional.getEjgselanio()!=null){
+					ComunicacionesService comunicacionesService = (ComunicacionesService)BusinessManager.getInstance().getService(ComunicacionesService.class);
+					ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+					scsComunicaciones.setIdenvioentrada(ecomSoldesignaprovisional.getIdenvio());
+					
+					scsComunicaciones.setIdinstitucion(ecomSoldesignaprovisional.getIdinstitucion());
+					scsComunicaciones.setDesignaanio(ecomSoldesignaprovisional.getDesignaselanio());
+					scsComunicaciones.setDesignaidturno(ecomSoldesignaprovisional.getDesignaselidturno());
+					scsComunicaciones.setDesignanumero(ecomSoldesignaprovisional.getDesignaselnumero());
+					comunicacionesService.borrarComunicacion(scsComunicaciones);
+				}
+				
+				
+				
 				ecomSoldesignaprovisional.setDesignaselidturno(null);
 				ecomSoldesignaprovisional.setDesignaselanio(null);
 				ecomSoldesignaprovisional.setDesignaselnumero(null);
@@ -734,6 +892,6 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			log.error("Error al actualizar", e);
 		}
 	
-	}	
-	
+	}
+
 }

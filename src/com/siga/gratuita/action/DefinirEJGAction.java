@@ -450,6 +450,7 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
+				miForm.setOrigen("");
 				session.removeAttribute("origenEJG");
 			}	
 			else {
@@ -478,6 +479,8 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("solicitante", solicitante.toString());
 			miHash.put("ejgAnio", (String)hTitulo.get(ScsEJGBean.C_ANIO));
 			miHash.put("ejgNumEjg", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+			miHash.put("codigoDesignaNumEJG", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+			
 			
 			Vector resultadoObj = admi.selectPorClave(miHash);
 			ScsEJGBean obj = (ScsEJGBean)resultadoObj.get(0);
@@ -512,7 +515,11 @@ public class DefinirEJGAction extends MasterAction
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
 			  request.setAttribute("pestanasOcultas",pestanasOcultas);
 	 		}
-			
+	 		if(miForm.getOrigen()!=null &&miForm.getOrigen().equalsIgnoreCase("/JGR_ComunicacionEJG")){
+	 			
+	 			request.setAttribute("elementoActivo","9");
+	 		}
+	 		
 			// En EJG pasamos la clave principal a todas las pestanhas que constituyen el mantenimiento de un EJG
 			session.removeAttribute("origenEJG");
 			request.setAttribute("EJG",miHash);
@@ -542,6 +549,7 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
+				miForm.setOrigen("");
 				session.removeAttribute("origenEJG");
 			} else {
 				session.removeAttribute("DATAPAGINADOR");
@@ -623,7 +631,10 @@ public class DefinirEJGAction extends MasterAction
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
 			  request.setAttribute("pestanasOcultas",pestanasOcultas);
 	 		}
-			
+	 		if(miForm.getOrigen()!=null &&miForm.getOrigen().equalsIgnoreCase("/JGR_ComunicacionEJG")){
+	 			
+	 			request.setAttribute("elementoActivo","9");
+	 		}
 			
 			
 			// En EJG pasamos la clave principal a todas las pestanhas que constituyen el mantenimiento de un EJG
