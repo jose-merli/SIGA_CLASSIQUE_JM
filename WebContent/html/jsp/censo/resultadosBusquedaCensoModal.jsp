@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 <!-- resultadosBusquedaCensoModal.jsp -->
@@ -306,8 +305,7 @@
 						<siga:FilaConIconos fila="<%=cont %>" botones="" modo="<%=modo %>" 
 							elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" 
 							visibleConsulta="no" clase="listaNonEdit"
-							pintarEspacio="no"
-							>
+							pintarEspacio="no">
 							<td>
 								<!-- campos hidden -->
 								<input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>">
@@ -365,10 +363,8 @@
 	registrosPorPagina="${registrosPorPagina}"
 	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrbean.language}"
 	modo="buscarTodosModal" clase="paginator" 
-	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:26px; left: 0px"
-	
-	distanciaPaginas="" action="<%=action%>"
-	/>
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:26px; left: 0px"	
+	distanciaPaginas="" action="<%=action%>"/>
 		    
 		<!-- FIN: LISTA DE VALORES -->		
 	
