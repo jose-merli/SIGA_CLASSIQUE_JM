@@ -8,12 +8,12 @@
 	   undeploy.version (versión que sale) y 
 	   redeploy.version (versión que entra)
  - En desplegarDESA.xml no haria falta tocar nada, pero hay una excepción:
-	   tanto Jorge Torres como yo no hemos conseguido que funcione el proceso WL que despliega 
-	   y hemos tenido que usar un weblogic.jar ajeno al proyecto (el del WL 12). 
-	   Y además la ruta de dicho jar no se puede poner en el properties 
-	   porque el ANT requiere que el CLASSPATH se le indique en el fichero directamente 
-	   (no vale en properties), así que la property "bea.weblogic.jar" 
-	   hay que cambiarla directamente en el desplegarDESA.xml
+	   La property "bea.weblogic.jar" hay que cambiarla directamente en el desplegarDESA.xml
+	   La razon: tanto Jorge Torres como yo no conseguiamos que funcionara el proceso WL 
+	   que despliega en Desarrollo; la solucion fue usar un weblogic.jar ajeno al proyecto 
+	   (el del WL 12). Pero la ruta de dicho jar no se puede poner en el properties 
+	   porque el ANT requiere que se le indique el CLASSPATH en el fichero ant directamente 
+	   (no vale en properties).
 
 * crearEntregaDESA.xml
  - Genera una entrega con la siguiente versión
