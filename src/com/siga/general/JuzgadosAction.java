@@ -19,6 +19,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -160,7 +161,18 @@ public class JuzgadosAction extends MasterAction{
 		BusinessManager bm = getBusinessManager();
 		UsrBean usrBean = this.getUserBean(request);
 		ScsTipoFundamentosService tipoFundamentosService = (ScsTipoFundamentosService)bm.getService(ScsTipoFundamentosService.class);
-		List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(idCombo),new Integer(usrBean.getLocation()));
+		//String[] tiposResolucion =  idCombo.split(",");
+		
+		List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamentoResolucionesMultiples(Integer.parseInt(usrBean.getLanguage()),idCombo,new Integer(usrBean.getLocation()));
+		
+//		List<ScsTipofundamentos> tiposFundamentos = new ArrayList<ScsTipofundamentos>();
+//		for (int i = 0; i < tiposResolucion.length; i++) {
+//			List<ScsTipofundamentos> tiposFundamentosResolucion = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(tiposResolucion[i]),new Integer(usrBean.getLocation()));
+//			 tiposFundamentos.addAll(tiposFundamentosResolucion);
+//		}
+		
+		//List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(idCombo),new Integer(usrBean.getLocation()));
+		
 		
 		JSONArray jsonArray = new JSONArray();
 		for (ScsTipofundamentos tipoFundamento : tiposFundamentos) {
