@@ -110,7 +110,7 @@
 	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar">
 		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
 			<%index = index.intValue()+1; %>
-			<input type="hidden" id="idPersonaJG_<%=index%>" value="<bean:write name="solicitante" property="idPersona" />">			
+						
 			<c:if	test="${solicitante.idPersona!=DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
 			<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 			<bean:define id="botones" name="solicitante" property="botones" type="java.lang.String"/>	
@@ -120,6 +120,7 @@
 					
 			
 					<td>
+						<input type="hidden" id="idPersonaJG_<%=index%>" value="<bean:write name="solicitante" property="idPersona" />">
 						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
 						<input type="hidden" name="oculto<%=index%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
 						<input type="hidden" name="oculto<%=index%>_3" value="gratuita.personaJG.literal.unidadFamiliar">
@@ -196,6 +197,7 @@
 				<siga:FilaConIconosExtExt fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>"  visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false" nombreTablaPadre="listadoUnidadFamiliar">
 					
 					<td>
+						<input type="hidden" id="idPersonaJG_<%=index%>" value="<bean:write name="solicitante" property="idPersona" />">
 						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
 						<input type="hidden" name="oculto<%=index%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
 						<input type="hidden" name="oculto<%=index%>_3" value="gratuita.personaJG.literal.unidadFamiliar">

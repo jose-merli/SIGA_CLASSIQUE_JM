@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.80 2013-08-21 12:38:16 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.81 2013-08-22 11:47:40 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -2914,8 +2914,11 @@ document.getElementById = function(elemIdOrName) {
 			//console.log("scrolify AÑADO "+addHeader+" CABECERAS VACÍAS");
 			for (var i = 0; i < addHeader; i++)
 				tblAsJQueryObject.find('thead').append("<th></th>");
-		}
+		}		
 		*/
+		if (height && !isNaN(height) && height < 20){
+			height = 100;
+		}
     	var oTbl;
         var newTbl;        
         oTbl = tblAsJQueryObject;
@@ -3028,7 +3031,31 @@ document.getElementById = function(elemIdOrName) {
 				} else {
 					tableContainer = jQuery(tableContainer);
 				}
-				fixedHeaderTableHeight += tableContainer.height();			
+				// En ventanaModal debe de cargarse el iframe después de la inicialización por lo que
+				// el tamaño del conteneder (iframe id="modal") es de 5 cosa que luego no se cumple...
+				// como estos casos son una tabla cuyo padre directamente es el iframe modal podemos
+				// tomar como altura el tamaño de la ventana modal.
+				if (tableContainer != null && tableContainer.attr("id") == "modal" && tableContainer.height() < 20){
+					console.debug("[loadFixedHeaderTables] AJUSTE MODAL (window height)");
+					var winW = 630, winH = 460;
+					if (document.body && document.body.offsetWidth) {
+					 winW = document.body.offsetWidth;
+					 winH = document.body.offsetHeight;
+					}
+					if (document.compatMode=='CSS1Compat' &&
+					    document.documentElement &&
+					    document.documentElement.offsetWidth ) {
+					 winW = document.documentElement.offsetWidth;
+					 winH = document.documentElement.offsetHeight;
+					}
+					if (window.innerWidth && window.innerHeight) {
+					 winW = window.innerWidth;
+					 winH = window.innerHeight;
+					}
+					fixedHeaderTableHeight += winH;
+				} else {
+					fixedHeaderTableHeight += tableContainer.height();
+				}
 				
 	    		var clonarTablaBotones = true;
 	        	var tablaBotones = undefined;
@@ -3112,6 +3139,7 @@ document.getElementById = function(elemIdOrName) {
 					fixedHeaderTableHeight -= tablaPaginacionLocal.outerHeight(true);
 				}
 				if (tablaBotonesLocal !== undefined){
+					//alert("ContainerId: "+tableContainer.attr("id")+"; ContainerHeight: "+tableContainer.height()+"; fixedHeaderTableHeight: " + fixedHeaderTableHeight + " - " + tablaBotonesLocal.outerHeight(true));
 					fixedHeaderTableHeight -= tablaBotonesLocal.outerHeight(true);
 				}
 				if (fixedHeight !== undefined){

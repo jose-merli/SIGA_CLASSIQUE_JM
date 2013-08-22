@@ -48,6 +48,12 @@
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
+<style type="text/css">
+#listadoConfDiv {
+	overflow-x: hidden;
+}
+</style>
+
 <script language="JavaScript">
 function accionNuevoConjuntoGuardias(){
 	sub();

@@ -33,7 +33,7 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
@@ -48,6 +48,12 @@
 	<siga:Titulo titulo="sjcs.guardias.programacionCalendarios.generados" localizacion="sjcs.guardias.programacionCalendarios.localizacion"/>
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
+
+<style type="text/css">
+#listadoCalendariosDiv {
+	overflow-x: hidden;
+}
+</style>
 
 <script language="JavaScript">
 
@@ -296,8 +302,8 @@ function descargaLog(fila)
 
 </tr>
 </table>
-<div id="divCalendarios" style='position:absolute;width:100%; '>
-	<table id='calendarios' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+<div id="divCalendarios" style='position:absolute;width:100%;overflow-x: hidden;'>
+	<table id='calendarios' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed;overflow-x: hidden'>
 	</table>
 </div>	
 

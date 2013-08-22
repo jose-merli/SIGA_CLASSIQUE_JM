@@ -109,6 +109,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		   name="listadoSOJ"
 		   border="2"
 		   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/> ,gratuita.busquedaSOJ.literal.apertura, gratuita.busquedaSOJ.literal.turno, gratuita.busquedaSOJ.literal.guardia, gratuita.busquedaSOJ.literal.anyo, gratuita.busquedaSOJ.literal.codigo, gratuita.busquedaSOJ.literal.tipoSOJ, gratuita.busquedaSOJ.literal.SOJColegio,gratuita.busquedaSOJ.literal.estadoSOJ, gratuita.busquedaSOJ.literal.nombreSolicitante,"
+		   fixedHeight="95%"
 		   columnSizes="5,7,13,13,4,5,9,9,8,15">
 
 	<%if (resultado.size()>0){%>

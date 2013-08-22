@@ -109,7 +109,7 @@
 			<br>
 		<% } else {%>
 		
-			<table><tr><td>
+			<table border="0" width="100%"><tr><td>
 					<siga:Table 
 					   name="tablaDatos"
 					   border="1"

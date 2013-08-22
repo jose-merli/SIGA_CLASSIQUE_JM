@@ -233,8 +233,8 @@ jQuery.noConflict();
 			<siga:FilaConIconos fila='${status.count}' botones=""
 				visibleConsulta="false" visibleEdicion="false" 
 				visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
-				<input type="hidden" name="indice" id="${status.count}"/>
-				<td><input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}" name="chkPL" ${preseleccionado} />
+				
+				<td><input type="hidden" name="indice" id="${status.count}"/><input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}" name="chkPL" ${preseleccionado} />
 				</td>
 				<td ><c:out value="${informe.descripcion}" /></td>
 				<c:choose>

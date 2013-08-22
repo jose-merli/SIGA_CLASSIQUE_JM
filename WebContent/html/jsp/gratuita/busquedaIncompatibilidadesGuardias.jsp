@@ -48,7 +48,7 @@
 </head>
 
 <!---------- BODY ---------->
-<body>
+<body onload="ajusteAlto('resultado');">
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<siga:ConjCampos leyenda="gratuita.incompatibilidadesGuardias.criteriosBusqueda">

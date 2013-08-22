@@ -73,6 +73,11 @@ jQuery.noConflict();
 	
 </script>
 
+<style type="text/css">
+#divBajasTemporales {
+	overflow-x: hidden;
+}
+</style>
 </head>
 
 <body  >
