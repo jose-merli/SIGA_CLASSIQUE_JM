@@ -276,7 +276,9 @@
 
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
+					
 					limpiarDireccion();
+					jQuery("#direcciones").append("<option selected value='-1'>-- Nueva</option>");
 					jQuery("#direcciones").attr("disabled","disabled");
 					document.getElementById("correoElectronico").value 	= resultado[13];
 					document.getElementById("fax1").value 	= resultado[16];
@@ -656,7 +658,43 @@
 	   	jQuery("#checkTipoDireccion_8").attr("disabled","disabled");
 
 	}	
-	  		
+	  	
+	
+	function desBloquearDireccion(){
+
+		//Datos direccion
+		jQuery("#domicilio").removeAttr("disabled");
+	   	jQuery("#codigoPostal").removeAttr("disabled");
+	   	jQuery("#pais").removeAttr("disabled");
+	   	jQuery("#provincia").removeAttr("disabled");
+	   	jQuery("#poblacion").removeAttr("disabled");
+	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");   	
+	   	jQuery("#movil").removeAttr("disabled");
+	   	jQuery("#telefono1").removeAttr("disabled");
+	   	jQuery("#telefono2").removeAttr("disabled");
+	   	jQuery("#fax1").removeAttr("disabled");
+	   	jQuery("#fax2").removeAttr("disabled");
+	   	jQuery("#correoElectronico").removeAttr("disabled");
+	   	jQuery("#paginaWeb").removeAttr("disabled");
+	   	jQuery("#poblacionExt").removeAttr("disabled");
+	   	
+		//Preferencia
+		jQuery("#preferenteMail").removeAttr("disabled");
+	   	jQuery("#preferenteCorreo").removeAttr("disabled");
+	   	jQuery("#preferenteFax").removeAttr("disabled");
+	   	jQuery("#preferenteSms").removeAttr("disabled");
+
+		//Tipo Direccion
+		jQuery("#checkTipoDireccion_1").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+
+	}		
 
 	function limpiarDireccion(){
 
@@ -811,14 +849,18 @@
 		
 		if(document.datosGeneralesForm.direcciones.value == "-1"){
 	      	document.getElementById("textomod").className="ocultar";
-	      	document.getElementById("textomod").style.display="none";	      	
+	      	document.getElementById("textomod").style.display="none";	  
+	      	
+			//Se DESbloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
+			desBloquearDireccion();
 		}else{
 			document.getElementById("textomod").className="labelText";
 			document.getElementById("textomod").style.display="block";
+			
+			//Se bloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
+			bloquearDireccion();
 		}			
 
-		//Se bloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
-		bloquearDireccion();
 	}
 
 	function preAccionBusquedaNIF(){
@@ -856,6 +898,7 @@
 
 					//Datos direcciones
 					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
+						jQuery("#direcciones").append("<option selected value='-1'>-- Nueva</option>");
 						jQuery("#direcciones").attr("disabled","disabled");
 						document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 						document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
@@ -964,6 +1007,7 @@
 			bloquearDireccion();
 		}
 		document.busquedaCensoModalForm.poblacionValue.value = "";
+		document.getElementById("direcciones").onchange();
 	}
 	
 	function loadSelected(){
@@ -1576,8 +1620,9 @@
 	}
 
 	//Asociada al boton Guardar
-		function accionGuardar() {		
-			if (validarFormulario()) {
+		function accionGuardar() {	
+
+		if (validarFormulario()) {
 				if (validarDireccion()) {
 					document.busquedaCensoModalForm.numeroColegiado.value    =document.datosGeneralesForm.nColegiado.value;
 					document.busquedaCensoModalForm.colegiadoen.value    =datosGeneralesForm.colegiadoen.value;
@@ -1592,7 +1637,7 @@
 					document.busquedaCensoModalForm.codPostal.value    =document.datosGeneralesForm.codigoPostal.value;
 					document.busquedaCensoModalForm.pais.value         =document.datosGeneralesForm.pais.value;
 					document.busquedaCensoModalForm.provincia.value    =document.datosGeneralesForm.provincia.value;
-					document.busquedaCensoModalForm.poblacion.value    =document.datosGeneralesForm.poblacion.value;
+					document.busquedaCensoModalForm.poblacion.value    =jQuery('#poblacion').val();
 					document.busquedaCensoModalForm.poblacionExt.value =document.datosGeneralesForm.poblacionExt.value;
 					document.busquedaCensoModalForm.telefono.value     =document.datosGeneralesForm.telefono1.value;
 					document.busquedaCensoModalForm.telefono2.value    =document.datosGeneralesForm.telefono2.value;
@@ -1606,7 +1651,7 @@
 
 
 					//SI ES DE NUESTRO COLEGIO NO SE TOCA DIRECCIONES
-					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
+					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>" || document.datosGeneralesForm.idDireccion.value == ""){
 						//Rellenando preferencias
 						var preferencia = "";
 						if (document.datosGeneralesForm.preferenteMail.checked)
@@ -1636,7 +1681,7 @@
 							tipoDir +="7,";
 						if (document.getElementById("checkTipoDireccion_8").checked)
 							tipoDir +="8";
-	
+
 						 //Se valida que se seleccione un tipoDireccion
 						if (tipoDir == ""){
 						     var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -1648,7 +1693,7 @@
 						document.busquedaCensoModalForm.preferente.value = preferencia;
 						document.busquedaCensoModalForm.tipoDireccion.value = tipoDir;
 					}else{
-						if(document.datosGeneralesForm.idDireccion.value == null || document.datosGeneralesForm.idDireccion.value == "-1"){
+						if(document.datosGeneralesForm.idDireccion.value == null){
 						     var mensaje = "Seleccione una direccion";
 			 				 alert (mensaje);
 			 				 fin();
@@ -1785,7 +1830,7 @@
 				}
 
 				if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="") && 
-						(trim(document.datosGeneralesForm.poblacion.value)=="")) {						
+						(jQuery('#poblacion').val()=="")) {						
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 	 				 alert (mensaje);	 				
 					 return false;

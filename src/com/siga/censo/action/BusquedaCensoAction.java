@@ -245,7 +245,7 @@ public class BusquedaCensoAction extends MasterAction {
 
 			}else{	
 				//Solo se modifica/inserta direccion a los nuevos letrados o letrados que vienen de otro colegio
-				if(miForm.getIdInstitucion() != null && !miForm.getIdInstitucion().equals(usr.getLocation())){
+				if(miForm.getIdInstitucion() != null && (!miForm.getIdInstitucion().equals(usr.getLocation()) || miForm.getIdDireccion().equals("-1"))){
 				
 					Direccion direccion = new Direccion();
 					t = usr.getTransactionPesada();
@@ -1197,21 +1197,45 @@ public class BusquedaCensoAction extends MasterAction {
 		String idDireccion = request.getParameter("idDireccion");
 		
 		if(idDireccion.equals("-1")){
-			miForm.setFax1("");
-			miForm.setFax2("");
-			miForm.setMail("");
-			miForm.setPaginaWeb("");
-			miForm.setMovil("");
-			miForm.setTelefono("");
-			miForm.setTelefono2("");
-			miForm.setPoblacion("");
-			miForm.setProvincia("");
-			miForm.setPais("");
-			miForm.setDireccion("");
-			miForm.setCodPostal("");
-			miForm.setPreferente ("");
-			miForm.setTipoDireccion("");
-			miForm.setPoblacionExt("");
+			
+			//Se precarga la dirección publica si tuviera para añadirla como nueva
+			VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));			
+			Hashtable direccion = cliente.getDireccionVistaPublica(idPersona);
+			
+			if(direccion != null){
+				miForm.setFax1((String)direccion.get("FAX"));
+				miForm.setFax2("");
+				miForm.setMail((String)direccion.get("MAIL"));
+				miForm.setPaginaWeb("");
+				miForm.setMovil("");
+				miForm.setTelefono((String)direccion.get("TELEFONO"));
+				miForm.setTelefono2("");
+				miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+				miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
+				miForm.setPais((String)direccion.get("IDPAIS"));
+				miForm.setDireccion((String)direccion.get("DIR_PROFESIONAL"));
+				miForm.setCodPostal((String)direccion.get("COD_POSTAL"));
+				miForm.setPreferente ("");
+				miForm.setTipoDireccion ("3");
+				miForm.setPoblacionExt("");
+
+			}else{
+				miForm.setFax1("");
+				miForm.setFax2("");
+				miForm.setMail("");
+				miForm.setPaginaWeb("");
+				miForm.setMovil("");
+				miForm.setTelefono("");
+				miForm.setTelefono2("");
+				miForm.setPoblacion("");
+				miForm.setProvincia("");
+				miForm.setPais("");
+				miForm.setDireccion("");
+				miForm.setCodPostal("");
+				miForm.setPreferente ("");
+				miForm.setTipoDireccion("");
+				miForm.setPoblacionExt("");
+			}
 			
 		}else{
 			CenDireccionesAdm dirAdm = new CenDireccionesAdm(user);

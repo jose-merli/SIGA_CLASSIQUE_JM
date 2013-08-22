@@ -1878,7 +1878,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 						 " WHERE CEN_DIRECCIONES.IDPERSONA = "+idPersona+" AND CEN_DIRECCIONES.IDINSTITUCION = "+idInstitucion+" AND CEN_DIRECCIONES.FECHABAJA IS NULL"+
 				" UNION "+
 				
-						" Select -1, '-- ' || 'Seleccionar' "+
+						" Select -1, '-- Nueva' "+
 						" from dual "+
 				" ORDER BY nombre ";
 			rc = this.find(sql);

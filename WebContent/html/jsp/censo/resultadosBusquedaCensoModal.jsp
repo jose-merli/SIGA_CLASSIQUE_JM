@@ -267,8 +267,9 @@
 						estadoColegial = no;
 					}else if(UtilidadesHash.getString(registro,"EJERCIENTE").equalsIgnoreCase("No Colegiado")){
 						estadoColegial = "No Colegiado";
+					}else if(UtilidadesHash.getString(registro,"EJERCIENTE").equalsIgnoreCase("-")){
+						estadoColegial = "-";
 					}
-					
 					String institucion = (String)registro.get("ID_COLEGIO");
 					String mail = UtilidadesString.mostrarDatoJSP(registro.get("MAIL"));
 					String pais = UtilidadesString.mostrarDatoJSP(registro.get("PAIS"));
