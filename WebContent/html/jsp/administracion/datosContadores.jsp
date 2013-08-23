@@ -143,42 +143,7 @@
 				  cont.style.display="block";
 				}
 				return false;
-			}
-			
-			function showCalendarGeneral(inputElement){
-                var cont=document.getElementById("contadorSiguiente");
-				
-             	var resultado = showModalDialog("<%=app%>/html/jsp/general/calendarGeneral.jsp?valor="+inputElement.value,inputElement,"dialogHeight:295px;dialogWidth:360px;help:no;scroll:no;status:no;");	
-             	window.top.focus();
-             	if (resultado) {
-            		inputElement.value = resultado;
-        	    } 
-				if (inputElement.value==""){
-					gestionContadoresForm.reconfiguracionContador.value="0";
-				   	gestionContadoresForm.reconfiguracionPrefijo.value="";
-				   	gestionContadoresForm.reconfiguracionSufijo.value="";				  	  				  
-				  	cont.style.display="none";
-				} else {				
-				  <% if (bean.getReconfiguracionContador()!=null && !bean.getReconfiguracionContador().equals("")){%>
-				   gestionContadoresForm.reconfiguracionContador.value="<%=bean.getReconfiguracionContador()%>";
-				  
-				  <%}else{%>
-				   gestionContadoresForm.reconfiguracionContador.value="0";
-				  <%}%>
-				  <% if (bean.getReconfiguracionPrefijo()!=null && !bean.getReconfiguracionPrefijo().equals("")){%>
-				   gestionContadoresForm.reconfiguracionPrefijo.value="<%=bean.getReconfiguracionPrefijo()%>";
-				  <%}else{%>
-				   gestionContadoresForm.reconfiguracionPrefijo.value="";
-				  <%}%>
-				  <% if (bean.getReconfiguracionSufijo()!=null && !bean.getReconfiguracionSufijo().equals("")){%>
-				   gestionContadoresForm.reconfiguracionSufijo.value="<%=bean.getReconfiguracionSufijo()%>";
-				  <%}else{%>
-				   gestionContadoresForm.reconfiguracionSufijo.value="";
-				  <%}%>
-				  cont.style.display="block";
-				}
-				return false;
-			}	
+			}			
 	
 	       function inicio(){
 		     var cont=document.getElementById("contadorSiguiente");
