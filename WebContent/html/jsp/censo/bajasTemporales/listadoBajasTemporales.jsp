@@ -20,7 +20,7 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-
+<%@ page import="com.atos.utils.*"%>
 
 
 <!-- HEAD -->
@@ -77,13 +77,13 @@
 
 
 <table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'>
-	<%String fechaAct = UtilidadesBDAdm.getFechaBD("");%>
+	<%java.util.Date fechaActual = GstDate.convertirFecha(UtilidadesBDAdm.getFechaBD(""),ClsConstants.DATE_FORMAT_SHORT_SPANISH);%>
 	<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
 			<%index = index-1;%>
 			<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
 			<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
-			<c:set var="fechaActual" value="<%=fechaAct%>"/>
+			<c:set var="fechaActual" value="<%=fechaActual%>"/>
 			<c:set var="disab" value=""/>
 			<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
 			<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
@@ -94,10 +94,11 @@
 			<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
 			<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
 			
-			<c:if test="${fechaActual > bajaTemporalForm.fechaHasta}">
-				<%botones = "";%>
-				<c:set var="disab" value="disabled"/>
-			</c:if>
+			<%	java.util.Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				if (fechaActual.compareTo(fHasta) > 0){
+					botones = "";%>
+					<c:set var="disab" value="disabled"/>
+			<% } %>
 			
 			<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
 	  			pintarEspacio="no"
