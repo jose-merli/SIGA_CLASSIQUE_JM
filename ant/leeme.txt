@@ -19,3 +19,8 @@
  - Genera una entrega con la siguiente versión
  - Se alimenta del build.properties para coger el numero de la versión
  - Lo que genera se le puede pasar directamente a explotación
+
+* FAQ
+ - Fallo tipico: falta de configuracion del BusinessManager
+ - Fallo tipico de la primera vez que se despliega: comprobar donde se generan realmente 
+ los .class y comprobar las rutas origen en desplegarDESA.xml 
