@@ -23,13 +23,6 @@
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 <%@ page import="java.util.Properties"%>
 
-<%
-	HttpSession ses=request.getSession();
-	Integer alturaDatosTabla = 256;
-%>
-
-
-
 	<!-- HEAD -->
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -147,12 +140,19 @@
 				fin();		
 			}
 	
-			function calcularAltura() {		
-				var altura = document.getElementById("divInscripcionesDatos").offsetParent.offsetHeight;
-				document.getElementById("divInscripcionesDatos").style.height=altura-<%=alturaDatosTabla%>;
+			function calcularAltura() {			
+				if (jQuery('table.botonesDetalle').exists()) {
+					var tablaBotones = jQuery('table.botonesDetalle')[0];						
+					var tablaDatos = jQuery('#divInscripcionesDatos')[0];
+					
+					var posTablaBotones = tablaBotones.offsetTop;
+					var posTablaDatos = tablaDatos.offsetTop;
+					
+					jQuery('#divInscripcionesDatos').height(posTablaBotones - posTablaDatos);
+				}		
 				
 				validarAnchoTabla();
-			}				
+			}								
 	
 			function validarAnchoTabla() {
 				if (document.getElementById("inscripciones").clientHeight < document.getElementById("divInscripcionesDatos").clientHeight) {
@@ -515,7 +515,7 @@
 						<td class="labelText">
 							<siga:Idioma key="gratuita.gestionInscripciones.turno.literal" />
 						</td>
-						<td colspan = "3">
+						<td colspan="3">
 							<html:select styleId="turnosInscripcion" styleClass="boxCombo" style="width:320px;" property="idTurno">
 								<bean:define id="turnosInscripcion" name="InscripcionTGForm" property="turnosInscripcion" type="java.util.Collection" />
 								<html:optionsCollection name="turnosInscripcion" value="idTurno" label="nombre" />
@@ -537,7 +537,7 @@
 						<td class="labelText">
 							<siga:Idioma key="gratuita.gestionInscripciones.fechaDesde.literal"/>
 						</td>
-						<td colspan = "3">
+						<td colspan="3">
 							<siga:Fecha nombreCampo="fechaDesde"  />							
 						</td>
 		

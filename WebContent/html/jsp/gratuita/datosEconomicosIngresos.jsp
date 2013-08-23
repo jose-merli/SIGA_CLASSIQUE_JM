@@ -27,7 +27,6 @@
 <% 	
 	HttpSession ses=request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	Integer alturaDatosTabla = 96;
 
 	// para ver si tengo que buscar tras mostrar la pantalla
 	List listaIngresos = (List) request.getAttribute("LISTA_INGRESOS");
@@ -49,9 +48,6 @@
 	String anio = (String) request.getParameter("anio");
 	String numero = (String) request.getParameter("numero");
 %>	
-
-
-
  	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
