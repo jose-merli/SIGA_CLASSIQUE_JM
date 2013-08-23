@@ -714,10 +714,19 @@
 		}
 	}
 	
-	function calcularAltura() {		
-		var altura = document.getElementById("divCargos").offsetParent.offsetHeight;
-		document.getElementById("divCargos").style.height=altura-<%=alturaDatosTabla%>;
-	}	
+	function calcularAltura() {			
+		if (jQuery('table.botonesDetalle').exists()) {
+			var tablaBotones = jQuery('table.botonesDetalle')[0];						
+			var tablaDatos = jQuery('#divCargos')[0];
+			
+			var posTablaBotones = tablaBotones.offsetTop;
+			var posTablaDatos = tablaDatos.offsetTop;
+			
+			jQuery('#divCargos').height(posTablaBotones - posTablaDatos);
+		}		
+		
+		validarAnchoTabla();
+	}			
 
 	function validarAnchoTabla() {
 		if (document.getElementById("cargostabla").clientHeight < document.getElementById("divCargos").clientHeight) {
