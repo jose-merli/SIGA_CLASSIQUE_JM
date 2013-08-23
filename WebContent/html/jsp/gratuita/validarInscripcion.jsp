@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 <!-- validarInscripcion.jsp -->
@@ -37,8 +36,8 @@
 		function mostrarFechaSolicitud() {
 			if(document.getElementById("fechaCheck")) {
 				document.getElementById("fechaCheck").style.visibility="hidden";
-				if(document.getElementById("calendario_fechaCheck")) { 
-					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
+				if(document.getElementById("fechaCheck-datepicker-trigger")) { 
+					jQuery("#fechaCheck-datepicker-trigger").hide();
 				}
 			}
 			
@@ -87,7 +86,7 @@
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.InscripcionTGForm.denegar.checked = false;
 					document.getElementById("fechaCheck").style.visibility="visible";
-					document.getElementById("calendario_fechaCheck").style.visibility="visible";
+					jQuery("#fechaCheck-datepicker-trigger").show();
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -104,7 +103,7 @@
 					document.InscripcionTGForm.fechaValidacion.value = "";
 					document.getElementById('fechaCheck').value = "";
 					document.getElementById("fechaCheck").style.visibility="hidden";
-					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
+					jQuery("#fechaCheck-datepicker-trigger").hide();
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}
@@ -128,7 +127,7 @@
 					document.getElementById('fechaCheck').value = fechaActual;
 					document.getElementById('validar').checked = false;
 					document.getElementById("fechaCheck").style.visibility="visible";
-					document.getElementById("calendario_fechaCheck").style.visibility="visible";
+					jQuery("#fechaCheck-datepicker-trigger").show();
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
 	
 						document.InscripcionTGForm.syc[0].checked=false;
@@ -145,7 +144,7 @@
 						// document.getElementById('asterisco').innerHTML = '';
 					document.getElementById('fechaCheck').value = "";
 					document.getElementById("fechaCheck").style.visibility="hidden";
-					document.getElementById("calendario_fechaCheck").style.visibility="hidden";
+					jQuery("#fechaCheck-datepicker-trigger").hide();
 					if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 						document.getElementById('observacionesValidacion').style.display = "block";
 					}					
@@ -584,59 +583,60 @@
 			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">		 
 				 <table width="100%" border="0">
 				 	<tr>
-					 	<td width="25%"></td>
-					 	<td width="15%"></td>
-					 	<td width="25%"></td>
-					 	<td width="35%"></td>
-				 	
+					 	<td width="200px"></td>
+					 	<td width="150px"></td>
+					 	<td width="600px"></td>
 				 	</tr>
+				 	
 					<tr>
 					<!-- obtenemos los campos para el alta de turnos -->
 						<td class="labelText">
-							<siga:Idioma
-								key="gratuita.altaTurnos.literal.fsolicitud" />
-							</td>
+							<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
+						</td>
 						<td class="labelText">
 							<input type="text" name="fechaSol" class="boxConsulta" readOnly="true"/>
 						</td>
-						<c:choose>
-						<c:when test="${InscripcionTGForm.irpf=='0'}">
-							<td colspan="2">
-							<table>
-								<tr>
-									<td class="labelText" style="align:right">
-										<siga:Idioma key='gratuita.altaTurnos.literal.retencion' />
-									</td>
-					
-									<td align="left">
-										<logic:notEmpty name="InscripcionTGForm" property="retenciones">
-											<html:select property="idRetencion" styleClass="boxCombo" styleId="idRetencion">
-												<logic:iterate name="InscripcionTGForm" property="retenciones"
-													id="retencion" indexId="index">										
-														<html:option value="${retencion.idRetencion}">
-															<c:out value="${retencion.descripcion}"></c:out>
-														</html:option>
-													</logic:iterate>
-											</html:select>								
-										</logic:notEmpty>
-									</td>
-								</tr>
-							</table>
-							</td>
-						</c:when>
-						<c:otherwise>
-							<td class="labelText">&nbsp;</td>
-							<td class="labelText">&nbsp;</td>
-						</c:otherwise>
-						</c:choose>
+						
+						<td>
+							<c:choose>
+								<c:when test="${InscripcionTGForm.irpf=='0'}">									
+									<table>
+										<tr>
+											<td class="labelText" style="align:right">
+												<siga:Idioma key='gratuita.altaTurnos.literal.retencion' />
+											</td>
+							
+											<td align="left">
+												<logic:notEmpty name="InscripcionTGForm" property="retenciones">
+													<html:select property="idRetencion" styleClass="boxCombo" styleId="idRetencion">
+														<logic:iterate name="InscripcionTGForm" property="retenciones" id="retencion" indexId="index">										
+																<html:option value="${retencion.idRetencion}">
+																	<c:out value="${retencion.descripcion}"></c:out>
+																</html:option>
+															</logic:iterate>
+													</html:select>								
+												</logic:notEmpty>
+											</td>
+										</tr>
+									</table>									
+								</c:when>
+							
+								<c:otherwise>
+									&nbsp;
+								</c:otherwise>
+							</c:choose>
+						</td>
 					</tr>
+					
 					<tr>			
 						<td class="labelText">
 							<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud"/>
 						</td>
-						<td colspan="3">
+						<td colspan="2">
 							<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud"
-								onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
+								onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+								styleClass="box" readOnly="false"
+								style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 						</td>
 					</tr>
 				 </table>		 
@@ -645,34 +645,37 @@
 	
 		<c:if test="${InscripcionTGForm.solicitudBaja==true}">
 			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
-			 <table width="100%" border="0">
-			 	<tr>
-				 	<td width="25%"></td>
-				 	<td width="15%"></td>
-				 	<td width="25%"></td>
-				 	<td width="35%"></td>	 	
-			 	</tr>
-				<tr>
-				<!-- obtenemos los campos para el alta de turnos -->
-					<td class="labelText">
-						<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
-					</td>
-					<td class="labelText">
-						<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly="true"/>
-					</td>
-					<td class="labelText">&nbsp;</td>
-					<td class="labelText">&nbsp;</td>
-				</tr>
-				<tr>			
-					<td class="labelText">
-						<siga:Idioma key="gratuita.altaTurnos.literal.mbaja"/>
-					</td>
-					<td colspan="3"> 
-						<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
-							onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="false"></html:textarea>
-					</td>
-				</tr>
-			 </table>		 
+			 	<table width="100%" border="0">
+			 		<tr>
+					 	<td width="200px"></td>
+					 	<td width="150px"></td>
+					 	<td width="600px"></td>	 	
+				 	</tr>
+				 	
+					<tr>
+					<!-- obtenemos los campos para el alta de turnos -->
+						<td class="labelText">
+							<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
+						</td>
+						<td class="labelText">
+							<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly="true"/>
+						</td>
+						
+						<td>&nbsp;</td>
+					</tr>
+					
+					<tr>			
+						<td class="labelText">
+							<siga:Idioma key="gratuita.altaTurnos.literal.mbaja"/>
+						</td>
+						<td colspan="2"> 
+							<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
+								onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+								styleClass="box" readOnly="false"
+								style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
+						</td>
+					</tr>
+				 </table>		 
 			</siga:ConjCampos>		
 		</c:if>
 	
@@ -682,36 +685,34 @@
 					<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
 						<table width="100%" border="0">
 							<tr>
-								<td width="25%"></td>
-								<td width="15%"></td>
-								<td width="25%"></td>
-								<td width="35%"></td>
+								<td width="200px"></td>
+								<td width="150px"></td>
+								<td width="600px"></td>
 							</tr>
+							
 							<tr>
 								<!-- obtenemos los campos para el alta de turnos -->
 								<td class="labelText">
-									<siga:Idioma
-									key="gratuita.altaTurnos.literal.fsolicitud" />
+									<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
 								</td>
 								<td class="labelText">
 									<c:out value="${InscripcionTGForm.fechaSolicitudJsp}"></c:out>
 								</td>
-								<td class="labelText">&nbsp;</td>
-								<td class="labelText">&nbsp;</td>
+								<td>&nbsp;</td>
 							</tr>
+							
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud" />
 								</td>
-								<td colspan="3">
+								<td colspan="2">
 									<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud" 
-										onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" 
-										styleClass="box" style="overflow:auto;width=400;height=80"
-										disabled="true"></html:textarea>
+										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+										styleClass="box" disabled="true"
+										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
 							</tr>
-						</table>
-	
+						</table>	
 					</siga:ConjCampos>
 				</c:if>
 				
@@ -719,11 +720,11 @@
 					<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
 						<table width="100%" border="0">
 							<tr>
-								<td width="25%"></td>
-								<td width="15%"></td>
-								<td width="25%"></td>
-								<td width="35%"></td>
+								<td width="200px"></td>
+								<td width="150px"></td>
+								<td width="600px"></td>
 							</tr>
+							
 							<tr>
 								<!-- obtenemos los campos para el alta de turnos -->
 								<td class="labelText">
@@ -732,19 +733,18 @@
 								<td class="labelText">
 									<c:out value="${InscripcionTGForm.fechaSolicitudBajaJsp}"></c:out>
 								</td>
-								<td class="labelText">&nbsp;</td>
-								<td class="labelText">&nbsp;</td>
+								<td>&nbsp;</td>
 							</tr>
+							
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="gratuita.altaTurnos.literal.mbaja" />
 								</td>
-								<td colspan="3">
-									<html:textarea name="InscripcionTGForm" styleId="observacionesBaja"
-										property="observacionesBaja" onChange="cuenta(this,1024)"
-										cols="65" rows="2" onkeydown="cuenta(this,1024);"
-										styleClass="box" style="overflow:auto;width=400;height=80"
-										disabled="true"></html:textarea>
+								<td colspan="2">
+									<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
+										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
+										styleClass="box" disabled="true"
+										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
 							</tr>
 						</table>
@@ -754,10 +754,9 @@
 				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
 					<table width="100%" border="0">
 						<tr>
-							<td width="25%"></td>
-							<td width="15%"></td>
-							<td width="25%"></td>
-							<td width="35%"></td>
+							<td width="200px"></td>
+							<td width="150px"></td>
+							<td width="600px"></td>
 						</tr>
 	
 						<tr>
@@ -768,7 +767,7 @@
 								<siga:Fecha nombreCampo="fechaCheck" readOnly="true"></siga:Fecha>							
 							</td>
 							
-							<td colspan="2" align="left">
+							<td align="left">
 								<table>
 									<tr>
 										<td class="labelText">
@@ -820,6 +819,7 @@
 												<td>
 													<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden" />
 												</td>
+												
 												<td>&nbsp;</td>	
 												<td class="labelText">
 													<div id="capa1" style="visibility: hidden">								
@@ -836,8 +836,10 @@
 													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
 												</td>
 												<td>&nbsp;</td>
+												
 												<td>
-													<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden"></td>
+													<input type="checkbox" id="denegar" name="denegar" value="no" style="visibility: hidden">
+												</td>
 												<td>&nbsp;</td>	
 											</c:otherwise>
 										</c:choose>
@@ -853,13 +855,11 @@
 								<td class="labelText">
 									<siga:Idioma key="gratuita.altaTurnos.literal.ovalidacion" />
 								</td>
-								<td colspan="3">
+								<td colspan="2">
 									<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-										onChange="cuenta(this,1024)"
-										cols="65" rows="2" onkeydown="cuenta(this,1024);"
-										styleClass="box" style="overflow:auto; width=400; height=80"
-										readOnly="false">
-									</html:textarea>
+										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
+										styleClass="box" readOnly="false"
+										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
 							</tr>
 						</c:if>
@@ -869,24 +869,24 @@
 			
 			<!-- principio baja con validacion automatica  -->
 			<c:if test="${InscripcionTGForm.validarInscripciones=='N' && InscripcionTGForm.validacionBaja==true && (InscripcionTGForm.modo=='sbtComprobarInsertar' || InscripcionTGForm.modo=='sbgComprobarInsertar')}">
-				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
-					
-						<table width="100%" border="0">
+				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">					
+					<table width="100%" border="0">
 					 	<tr>
-						 	<td width="25%"></td>
-						 	<td width="15%"></td>
-						 	<td width="15%"></td>
-						 	<td width="35%"></td>
-					 	
+						 	<td width="200px"></td>
+						 	<td width="150px"></td>
+						 	<td width="150px"></td>
+						 	<td width="350px"></td>					 	
 					 	</tr>
+					 	
 						<tr>
-						<!-- obtenemos los campos para el alta de turnos -->
+							<!-- obtenemos los campos para el alta de turnos -->
 							<td class="labelText">
 								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
 							</td>
 							<td class="labelText">
 								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" readOnly="true"/>							
 							</td>
+							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
 							</td>
@@ -894,17 +894,17 @@
 								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true" />
 							</td>			
 						</tr>
+						
 						<tr>						
 							<td class="labelText">
 								<siga:Idioma key="gratuita.altaTurnos.literal.validacion"/>
 							</td>
 							<td colspan="3"> 
 								<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-									onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="true">
-								</html:textarea>
+									onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+									styleClass="box" readOnly="true"
+									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;"></html:textarea>
 							</td>
-							<td class="labelText">&nbsp;</td>
-							<td class="labelText">&nbsp;</td>
 						</tr>
 					 </table>			
 				</siga:ConjCampos>
@@ -912,10 +912,9 @@
 				<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.saltosycompensaciones">				
 					<table width="100%" border="0">
 					 	<tr>
-						 	<td width="35%"></td>
-						 	<td width="15%"></td>
-						 	<td width="10%"></td>
-						 	<td width="40%"></td>				 	
+						 	<td width="300px"></td>
+						 	<td width="150px"></td>
+						 	<td width="500px"></td>				 	
 					 	</tr>
 						<tr>
 							<td class="labelText">
@@ -925,9 +924,8 @@
 								<input type="Radio" name="syc" value="s"> si
 								<input type="Radio" name="syc" value="n"> no  
 							</td>
-							<td class="labelText"  align="left">
-							</td>					
-							<td class="labelText">&nbsp;</td>
+							
+							<td>&nbsp;</td>					
 						</tr>
 					 </table>			
 				</siga:ConjCampos>
@@ -940,9 +938,9 @@
 						<siga:ConjCampos leyenda="Guardia de grupo">
 							<table width="100%" border="0">
 								<tr>
-									<td width="25%"></td>
-									<td width="15%"></td>
-									<td width="60%"></td>
+									<td width="200px"></td>
+									<td width="150px"></td>
+									<td width="600px"></td>
 								</tr>
 								
 								<tr>
@@ -953,6 +951,7 @@
 									<td class="labelText">
 										<html:text property="numeroGrupo" styleId="numeroGrupo" size="6" maxlength="6" styleClass="box" />
 									</td>
+									
 									<td rowspan="2" align="center">
 										<div style="height: 140px; width: 100%; overflow-y: auto">
 											<table id='tabInscripcionesCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
@@ -976,6 +975,7 @@
 														property="gruposGuardiaLetrado" id="grupoGuardiaLetrado"
 														type="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"
 														indexId="index">
+														
 														<tr class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
 															<td align='center' width='8%'>
 																<c:choose>
@@ -985,6 +985,7 @@
 																	<c:otherwise>&nbsp;</c:otherwise>
 																</c:choose>													
 															</td>
+															
 															<td align='center' width='8%'>
 																<c:choose>
 																	<c:when test="${grupoGuardiaLetrado.ordenGrupo!=null&&grupoGuardiaLetrado.ordenGrupo!=''}">
@@ -993,9 +994,11 @@
 																	<c:otherwise>&nbsp;</c:otherwise>
 																</c:choose>					
 															</td>
+															
 															<td align='center' width='8%'>
 																<c:out value="${grupoGuardiaLetrado.persona.nombre}" />
 															</td>
+															
 															<td align='center' width='13%'>
 																<c:out value="${grupoGuardiaLetrado.persona.colegiado.NColegiado}"/>
 															</td>		
@@ -1016,8 +1019,7 @@
 										<html:text property="ordenGrupo" styleId="ordenGrupo" size="6" maxlength="6" styleClass="box" />
 									</td>
 								</tr>
-							</table>
-							
+							</table>							
 						</siga:ConjCampos> 
 					</c:when>
 					
