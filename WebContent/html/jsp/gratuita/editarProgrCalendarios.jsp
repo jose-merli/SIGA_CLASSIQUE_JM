@@ -38,7 +38,7 @@ String modo = (String) request.getSession().getAttribute("Modo");
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
@@ -50,6 +50,15 @@ String modo = (String) request.getSession().getAttribute("Modo");
 
 <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
 <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+	
+	<style type="text/css">
+#listadoConfDiv {
+	overflow-x: hidden;
+}
+#listadoHcoProgramacionDiv {
+	overflow-x: hidden;
+}
+</style>
 	
 	<script type="text/javascript">
 	
@@ -151,15 +160,11 @@ String modo = (String) request.getSession().getAttribute("Modo");
 		
 	
 		<tr>
-
 			<c:choose>
 				<c:when test="${ProgrCalendariosFormEdicion.modo!='consultarProgrCalendarios'}">
 					<td class="labelText"  style="align:left"><siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/></td>
-					<td><html:text property="fechaProgramacion" size="10" readonly="true"
-						styleClass="box" value="${ProgrCalendariosFormEdicion.fechaProgramacion}" />&nbsp; <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaProgramacion)" > <img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						border="0"> </a>
+					<td>
+						<siga:Fecha nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}"/>						
 						<html:text property="horaProgramacion" size="2" maxlength="2" styleClass="box" value="${ProgrCalendariosFormEdicion.horaProgramacion}" style="text-align:center"></html:text>					
 						:
 						<html:text property="minutoProgramacion"  size="2" maxlength="2" styleClass="box" value="${ProgrCalendariosFormEdicion.minutoProgramacion}" style="text-align:center"></html:text>	
@@ -170,8 +175,7 @@ String modo = (String) request.getSession().getAttribute("Modo");
 				</c:when>
 				<c:otherwise>
 					<td class="labelText"><siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/></td>
-					<td><html:text property="fechaProgramacion" size="10" readonly="true"
-						styleClass="boxConsulta" value="${ProgrCalendariosFormEdicion.fechaProgramacion}" />
+					<td><siga:Fecha nombreCampo="fechaProgramacion" valorInicial="${ProgrCalendariosFormEdicion.fechaProgramacion}" readOnly="true" disabled="true"/>
 						<html:text property="horaProgramacion" size="2" maxlength="2" styleClass="boxConsulta" readonly="true" value="${ProgrCalendariosFormEdicion.horaProgramacion}" style="text-align:center"></html:text>					
 						:
 						<html:text property="minutoProgramacion"  size="2" maxlength="2" styleClass="boxConsulta" readonly="true" value="${ProgrCalendariosFormEdicion.minutoProgramacion}" style="text-align:center"></html:text>
@@ -222,17 +226,13 @@ String modo = (String) request.getSession().getAttribute("Modo");
 				<c:when test="${ProgrCalendariosFormEdicion.modo!='consultarProgrCalendarios'}">
 					<td class="labelText"  style="align:left"><siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
 					<siga:Idioma key='general.literal.desde'/></td>
-					<td><html:text property="fechaCalInicio" size="10" readonly="true"
-						styleClass="box" value="${ProgrCalendariosFormEdicion.fechaCalInicio}"/>&nbsp; <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaCalInicio)"> <img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						border="0"> </a></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaCalInicio" valorInicial="${ProgrCalendariosFormEdicion.fechaCalInicio}"/>
+					</td>
 					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
-					<td><html:text property="fechaCalFin" size="10" readonly="true"
-						styleClass="box" value="${ProgrCalendariosFormEdicion.fechaCalFin}"/>&nbsp; <a href='javascript://'
-						onClick="return showCalendarGeneral(fechaCalFin)"> <img
-						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
-						border="0"> </a></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaCalFin" valorInicial="${ProgrCalendariosFormEdicion.fechaCalFin}"/>
+					</td>
 
 				</c:when>
 				<c:otherwise>
