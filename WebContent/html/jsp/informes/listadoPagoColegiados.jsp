@@ -145,12 +145,10 @@
 	<%
 		if (resultado == null || resultado.size() == 0) {
 	%>
-	<br>
-	<br>
-	<p class="titulitos" style="text-align: center"><siga:Idioma
-		key="messages.noRecordFound" /></p>
-	<br>
-	<br>
+	<tr>
+		<td class="titulitos" style="text-align: center; background-color: transparent;"><siga:Idioma
+			key="messages.noRecordFound" /></td>
+	</tr>
 	<%
 		} else {
 				for (int i = 0; i < resultado.size(); i++) {
@@ -162,14 +160,12 @@
 		visibleConsulta="no" visibleEdicion="no" visibleBorrado="no"
 		elementos='<%=elemento%>' pintarEspacio="no" clase="listaNonEdit">
 
-
-		<input type="hidden" name="idPersona<%="" + (i + 1)%>"
+		<td align="center">
+			<input type="hidden" name="idPersona<%="" + (i + 1)%>"
 			value="<%=fila.getString("IDPERSONASJCS")%>">
 			
-		<input type="hidden" name="idPago<%="" + (i + 1)%>"
-			value="<%=fila.getString("IDPAGOS")%>">
-
-		<td align="center">
+			<input type="hidden" name="idPago<%="" + (i + 1)%>"
+				value="<%=fila.getString("IDPAGOS")%>">
 		<%
 			String idInstitucionRow = fila.getString("IDINSTITUCION");
 			String idPersonaRow = fila.getString("IDPERSONASJCS");
