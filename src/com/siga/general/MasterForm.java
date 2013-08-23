@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -70,7 +69,10 @@ public class MasterForm extends AuxForm  {
 						StringTokenizer celdas = new StringTokenizer(campo, ",");
 						for (int j = 0; celdas.hasMoreElements(); j++) {
 							String celda = celdas.nextToken();
-							aux.add(celda.trim());
+							if (!celda.equalsIgnoreCase("&nbsp;"))
+								aux.add(celda.trim());
+							else 
+								aux.add(" ");
 						}
 						if (vFila.size() == 0) {
 							Vector aux1 = new Vector();
