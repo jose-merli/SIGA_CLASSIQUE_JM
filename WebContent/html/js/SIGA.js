@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.83 2013-08-23 08:52:20 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.84 2013-08-23 12:46:50 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -463,12 +463,14 @@ function jQueryLoaded(){
 					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
+					/*
 					datepickerInput.keydown(function(e) {
 						if(e.keyCode == 8 || e.keyCode == 46) {
 							jQueryTop.datepicker._clearDate(this);
 							return false;
 						}
 					});
+					*/
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("format")),
