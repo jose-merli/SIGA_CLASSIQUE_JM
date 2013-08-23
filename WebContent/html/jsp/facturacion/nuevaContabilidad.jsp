@@ -38,20 +38,13 @@
 <!-- HEAD -->
 
 	<title>Modificacion Retencion IRPF</title>
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript">
-		function mostrarCalendario(numfila){
-			var resultado;			
-			var tabla;
-			tabla = document.getElementById('listadoCalendario');
-			resultado = showCalendarGeneral(tabla.rows[numfila].cells[0].all[4]);
-		}		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript">		
 	
 	function confirmar()
 	{
@@ -116,7 +109,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fDesde"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaDesde" posicionX="250" posicionY="10"/>		
+				<siga:Fecha nombreCampo="fechaDesde"/>		
 			</td>
 		</tr>
 		<tr>
@@ -124,7 +117,7 @@
 				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fHasta"/>:&nbsp;(*)
 			</td>
 			<td>
-				<siga:Fecha nombreCampo="fechaHasta" posicionX="250" posicionY="10"/>
+				<siga:Fecha nombreCampo="fechaHasta"/>
 			</td>
 		</tr>
 	</table>
