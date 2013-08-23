@@ -164,7 +164,7 @@
 	</style>
 </head>
 
-<body>
+<body onload="inicioFechaResolucionCAJG();">
 <input type="hidden" id="isObligatorioResolucion" value='${ISOBLIGATORIORESOLUCION}'>
 
 
@@ -286,7 +286,7 @@
 										<%if (accion.equalsIgnoreCase("ver")){%>
 											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
 										<%} else {%>
-											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();"></siga:Fecha>
+											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();" ></siga:Fecha>
 										<%}%>
 									</td>
 									
@@ -574,6 +574,24 @@
 				}
 			}
 		}
+		function inicioFechaResolucionCAJG(){
+			if(document.getElementById("actasActivado")){
+				var acta =jQuery("#idActaComp option:selected").text().split(" - ");
+				if(acta[1]&& acta[1]!=''){
+				//	jQuery("#fechaResolucionCAJG").val(acta[1]);
+					jQuery("#fechaResolucionCAJG").removeClass("box");
+					jQuery("#fechaResolucionCAJG").addClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").attr("readOnly", true);
+					jQuery("#fechaResolucionCAJG-datepicker-trigger").hide();
+				}else{
+					//jQuery("#fechaResolucionCAJG").val('');
+					jQuery("#fechaResolucionCAJG").removeClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").addClass("box");
+					jQuery("#fechaResolucionCAJG").attr("readOnly", false);
+					jQuery("#fechaResolucionCAJG-datepicker-trigger").show();
+				}
+			}
+		}
 		
 		function resetActa(){
 			jQuery("#idActaComp").val('');
@@ -599,7 +617,7 @@
 							jQuery("#botonAbrirActa").removeAttr('disabled');
 					});
 		});
-		setFechaResolucionCAJG();
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
