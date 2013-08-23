@@ -115,6 +115,36 @@
 				window.top.close();
 			}
 			
+			function onChangeFechaReconfiguracion(){
+				var cont=document.getElementById("contadorSiguiente");
+				var inputElement = jQuery("#fechaReconfiguracion");
+				if (inputElement.val()==""){
+					gestionContadoresForm.reconfiguracionContador.value="0";
+				   	gestionContadoresForm.reconfiguracionPrefijo.value="";
+				   	gestionContadoresForm.reconfiguracionSufijo.value="";				  	  				  
+				  	cont.style.display="none";
+				} else {
+				  <% if (bean.getReconfiguracionContador()!=null && !bean.getReconfiguracionContador().equals("")){%>
+				   gestionContadoresForm.reconfiguracionContador.value="<%=bean.getReconfiguracionContador()%>";
+				  
+				  <%}else{%>
+				   gestionContadoresForm.reconfiguracionContador.value="0";
+				  <%}%>
+				  <% if (bean.getReconfiguracionPrefijo()!=null && !bean.getReconfiguracionPrefijo().equals("")){%>
+				   gestionContadoresForm.reconfiguracionPrefijo.value="<%=bean.getReconfiguracionPrefijo()%>";
+				  <%}else{%>
+				   gestionContadoresForm.reconfiguracionPrefijo.value="";
+				  <%}%>
+				  <% if (bean.getReconfiguracionSufijo()!=null && !bean.getReconfiguracionSufijo().equals("")){%>
+				   gestionContadoresForm.reconfiguracionSufijo.value="<%=bean.getReconfiguracionSufijo()%>";
+				  <%}else{%>
+				   gestionContadoresForm.reconfiguracionSufijo.value="";
+				  <%}%>
+				  cont.style.display="block";
+				}
+				return false;
+			}
+			
 			function showCalendarGeneral(inputElement){
                 var cont=document.getElementById("contadorSiguiente");
 				
@@ -310,7 +340,7 @@
 										</td>
 										<td class="labelTextValue" colspan="5">																																										
 											<% if (modo!=null && modo.equals("editar")){%>
-		                                     &nbsp;&nbsp;<siga:Fecha  nombreCampo="fechaReconfiguracion" valorInicial="<%=fechaReconf%>"/>
+		                                     &nbsp;&nbsp;<siga:Fecha  nombreCampo="fechaReconfiguracion" valorInicial="<%=fechaReconf%>" postFunction="onChangeFechaReconfiguracion()"/>
 											<%}else{%>
 												<siga:Fecha  nombreCampo="fechaReconfiguracion" valorInicial="<%=fechaReconf%>" disabled="true"/>
 											<%}%>
