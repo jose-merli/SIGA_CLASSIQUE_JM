@@ -1503,6 +1503,9 @@ public class DefinirEJGAction extends MasterAction
 				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.sinResolucion"));
 				tiposResolucion.add(1,option);
 				request.setAttribute("tiposResolucion", tiposResolucion);
+//				String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
+//				request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
+				
      		}
 			
      		

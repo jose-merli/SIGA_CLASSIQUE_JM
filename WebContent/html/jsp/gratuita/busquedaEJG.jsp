@@ -42,6 +42,7 @@
 	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList();
 	Hashtable miHash = new Hashtable();
 	boolean permisoEejg = false;
+	boolean accesoActa = false;
 	
 	// fechaApertura=UtilidadesBDAdm.getFechaBD("");
 	String anio = UtilidadesBDAdm.getYearBD("");
@@ -60,7 +61,8 @@
 	
 	if(request.getAttribute("permisoEejg")!=null)
 		permisoEejg = Boolean.parseBoolean(request.getAttribute("permisoEejg").toString());	
-	
+	if(request.getAttribute("accesoActa")!=null)
+		accesoActa = Boolean.parseBoolean(request.getAttribute("accesoActa").toString());
 	if(request.getAttribute("idremesa")!=null)
 		idremesa = (String) request.getAttribute("idremesa");	
 	String idTipoRatificacionEjg = "";
@@ -841,19 +843,29 @@ if(usr.isComision()){
 	
 <!-- INICIO: BOTONES BUSQUEDA -->	
 	<%if(ventanaCajg.equalsIgnoreCase("0")){%>
-	<%if(!esComision){%>
-		<%if(permisoEejg){ %>
-			<siga:ConjBotonesBusqueda botones="C,N,B,DEE, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<%if(!esComision){%>
+			<%if(permisoEejg){ %>
+				<siga:ConjBotonesBusqueda botones="C,N,B,DEE, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<%}else{ %>
+				<siga:ConjBotonesBusqueda botones="C,N,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			<%} %>
 		<%}else{ %>
-			<siga:ConjBotonesBusqueda botones="C,N,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
-		<%} %>
-	<%}else{ %>
-		<%if(permisoEejg){ %>
-			<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
-		<%}else{ %>
-			<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
-		<%} %>
-	<%} %>
+			<%if(permisoEejg){ 
+				if(accesoActa){	%>
+					<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			
+				<%}else{%>
+					<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+			
+				<%}
+			}else{
+				if(accesoActa){	%>
+					<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+				<%}else{ %>
+				<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+				<%} %>
+			<%} 
+		}%>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
 		<siga:ConjBotonesBusqueda botones="le,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
