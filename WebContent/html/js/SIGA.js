@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.82 2013-08-23 07:44:35 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.83 2013-08-23 08:52:20 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -438,9 +438,9 @@ function jQueryLoaded(){
 				jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
 			}
 			if (jQuery(this).hasClass("editable")){
-				console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
+				//console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
 				if (window == window.top){
-					console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
+					//console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
 					jQueryTop(this, this.ownerDocument).datepicker({
 						dateFormat: jQuery(this).data("format"),
 						regional: jQuery(this).data("regional"),
@@ -460,7 +460,7 @@ function jQueryLoaded(){
 						}
 					});
 				} else {
-					console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
+					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
 					datepickerInput.keydown(function(e) {
@@ -815,12 +815,12 @@ function formatDate(dateValue, dateFormat){
 	try{
 		if (!dateFormat || dateFormat == "")
 			dateFormat = defaultDateFormat;
-		console.debug("[formatDate] dateValue="+dateValue+"; dateFormat="+dateFormat);
+		//console.debug("[formatDate] dateValue="+dateValue+"; dateFormat="+dateFormat);
 		date = jQueryTop.datepicker.parseDate(dateFormat, dateValue);
-		console.debug("[formatDate] OK date="+date);
+		//console.debug("[formatDate] OK date="+date);
 	} catch (e){
 		date = "";
-		console.debug("[formatDate] FAIL");
+		console.debug("[formatDate] ERROR llamada formatDate("+dateValue+","+dateFormat+")");
 	}
 	return date;
 }
