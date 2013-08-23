@@ -3,7 +3,6 @@
 <head>
 <!-- comunicaciones.jsp-->
 
-<%@page import="com.atos.utils.ClsConstants"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -19,9 +18,9 @@
 <!-- JSP -->
 <!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	<script type='text/javascript' src="<html:rewrite page='/html/js/SIGA.js'/>"/>
+	<script type='text/javascript' src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 <title><siga:Idioma key="pestana.justiciagratuitaejg.comunicacion"/></title>
-<siga:TituloExt titulo="pestana.justiciagratuitaejg.comunicacion" localizacion="gratuita.busquedaEJG.localizacion"/>
+<siga:Titulo titulo="pestana.justiciagratuitaejg.comunicacion" localizacion="gratuita.busquedaEJG.localizacion"/>
 
 </head>
 
