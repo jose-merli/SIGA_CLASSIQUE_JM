@@ -24,7 +24,10 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	
+	<title><siga:Idioma key="gratuita.expedienteEJG.prestaciones.titulor"/></title>
+	<siga:Titulo 
+		titulo="gratuita.expedienteEJG.prestaciones.titulo" 
+		localizacion="gratuita.busquedaEJG.localizacion"/>
 </head>
 <body onload="inicio();">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
@@ -92,12 +95,19 @@
 			</siga:ConjCampos></td>
 		</tr>
 	</table>
-<siga:ConjBotonesAccion botones="R,G" clase="botonesDetalle" />
+<siga:ConjBotonesAccion botones="R,G,V" clase="botonesDetalle" />
 </div>
 </html:form>
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 <script type="text/javascript">
+function accionVolver()
+{
+	document.PrestacionRechazadaEjgForm.action="./JGR_EJG.do";	
+	document.PrestacionRechazadaEjgForm.modo.value="buscar";
+	document.PrestacionRechazadaEjgForm.target="mainWorkArea"; 
+	document.PrestacionRechazadaEjgForm.submit(); 
 
+}
 function refrescarLocal()
 {
 	document.PrestacionRechazadaEjgForm.target = 'mainPestanas';
