@@ -580,7 +580,10 @@ public class RecuperarConsultasAction extends MasterAction {
 			RecuperarConsultasForm form = (RecuperarConsultasForm)formulario;
 			
 			//pongo datos de la consulta en backup
-			HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
+			HashMap databackup = null;
+			if(request.getSession().getAttribute("DATABACKUP") != null){
+				databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
+			}
 			ConConsultaAdm conAdm = new ConConsultaAdm(this.getUserBean(request));
 			Hashtable h = new Hashtable();
 			h.put(ConConsultaBean.C_IDINSTITUCION,form.getIdInstitucion());
