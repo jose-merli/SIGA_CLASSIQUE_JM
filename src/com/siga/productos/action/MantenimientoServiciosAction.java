@@ -1316,90 +1316,92 @@ public class MantenimientoServiciosAction extends MasterAction {
 				//puede que no tenga criterios o la consulta luego metemos la consulta dentro de un try,
 				//en cuyo caso no debe devolver ningun String, pero tampoco es un fallo.
 				String criteriosString = "";
-				try {
-					String consultaCriterios = 
-						" select ca."+ConCampoConsultaBean.C_NOMBREENCONSULTA + " CAMPO, ca."
-								+ ConCampoConsultaBean.C_IDCAMPO + " IDCAMPO, ta."
-								+ ConTablaConsultaBean.C_IDTABLA + " IDTABLA, ta."
-								+ ConTablaConsultaBean.C_DESCRIPCION + " TABLA, ca."
-								+ ConCampoConsultaBean.C_TIPOCAMPO + " TIPOCAMPO, op."
-								+ ConOperacionConsultaBean.C_IDOPERACION + " OPERADOR, op."
-								+ ConOperacionConsultaBean.C_SIMBOLO + " SIMBOLO, ca."
-								+ ConCampoConsultaBean.C_SELECTAYUDA + " SELECTAYUDA, cr."
-								+ ConCriterioConsultaBean.C_VALOR + " VALOR, cr."
-								+ ConCriterioConsultaBean.C_ABRIRPAR+" ABRIRPAR, cr."
-								+ ConCriterioConsultaBean.C_CERRARPAR+" CERRARPAR, cr."
-								+ ConCriterioConsultaBean.C_OPERADOR + " CONECTOR, " 
-								+ UtilidadesMultidioma.getCampoMultidiomaSimple("op." + ConOperacionConsultaBean.C_DESCRIPCION, this.getLenguaje(request)) + " DESCRIPCION" +
-						" from "+ ConCriterioConsultaBean.T_NOMBRETABLA + " cr, "
-								+ ConTablaConsultaBean.T_NOMBRETABLA + " ta, "
-								+ ConCampoConsultaBean.T_NOMBRETABLA + " ca, "
-								+ ConOperacionConsultaBean.T_NOMBRETABLA + " op" +
-						" where ca." + ConCampoConsultaBean.C_IDCAMPO + " = cr." + ConCriterioConsultaBean.C_IDCAMPO +
-							" and op." + ConOperacionConsultaBean.C_IDOPERACION + " = cr." + ConCriterioConsultaBean.C_IDOPERACION +
-							" and ta." + ConTablaConsultaBean.C_IDTABLA + " = ca." + ConCampoConsultaBean.C_IDTABLA +
-							" and cr." + ConCriterioConsultaBean.C_IDINSTITUCION + " = "+ (String)miForm.getIdInstitucion() +
-							" and cr." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + ((Long)beanServInsti.getIdConsulta()).toString() + " "+
-						" order by cr."+ConCriterioConsultaBean.C_ORDEN+" asc";
-					
-					Vector vCriterios = (Vector)criteriosAdm.selectGenerico(consultaCriterios);
-					for (int cont = 0; cont < vCriterios.size(); cont++){
-						Hashtable criterio = (Hashtable)vCriterios.get(cont);
-	
-						// Ahora tenemos todos los campos a falta del idValor
-						// Ejecutamos la selectAyuda del campo, y recuperamos el ID 
-						// para el valor con descripcion = al valor que ya tenemos
-						ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(this.getUserBean(request));
-					
-						// Si tenemos la select buscamos el idvalor: 
-						if (criterio.get("SELECTAYUDA") != null && !((String)criterio.get("SELECTAYUDA")).equals("")) {
-							String con = (String)criterio.get("SELECTAYUDA");
-							con = con.replaceAll("@IDINSTITUCION@" , this.getUserBean(request).getLocation());
-							con = con.replaceAll("@IDIOMA@" , this.getUserBean(request).getLanguage());
-							Vector campos = (Vector)camposAdm.selectGenerico(con);
-							for (int contador=0; contador<campos.size(); contador++){
-								Hashtable campoHash = (Hashtable)campos.get(contador);
-								if (((String)campoHash.get("DESCRIPCION")).equalsIgnoreCase((String)criterio.get("VALOR"))){
-									contador = campos.size()+1;
-									String aux = (String)campoHash.get("ID");
-									
-									int p=-1;
-									if ((p = aux.indexOf("#"))!=-1) { 
-										aux=aux.substring(0,p) + "$" + aux.substring(p+1,aux.length());
-									}
-									// RGG criterio.put("IDVALOR", (String)campoHash.get("ID"));
-									criterio.put("IDVALOR", aux);
-								}
-							}//Fin del for interior
-						}
+				if (beanServInsti.getIdConsulta()!=null) {					
+					try {
+						String consultaCriterios = 
+							" select ca."+ConCampoConsultaBean.C_NOMBREENCONSULTA + " CAMPO, ca."
+									+ ConCampoConsultaBean.C_IDCAMPO + " IDCAMPO, ta."
+									+ ConTablaConsultaBean.C_IDTABLA + " IDTABLA, ta."
+									+ ConTablaConsultaBean.C_DESCRIPCION + " TABLA, ca."
+									+ ConCampoConsultaBean.C_TIPOCAMPO + " TIPOCAMPO, op."
+									+ ConOperacionConsultaBean.C_IDOPERACION + " OPERADOR, op."
+									+ ConOperacionConsultaBean.C_SIMBOLO + " SIMBOLO, ca."
+									+ ConCampoConsultaBean.C_SELECTAYUDA + " SELECTAYUDA, cr."
+									+ ConCriterioConsultaBean.C_VALOR + " VALOR, cr."
+									+ ConCriterioConsultaBean.C_ABRIRPAR+" ABRIRPAR, cr."
+									+ ConCriterioConsultaBean.C_CERRARPAR+" CERRARPAR, cr."
+									+ ConCriterioConsultaBean.C_OPERADOR + " CONECTOR, " 
+									+ UtilidadesMultidioma.getCampoMultidiomaSimple("op." + ConOperacionConsultaBean.C_DESCRIPCION, this.getLenguaje(request)) + " DESCRIPCION" +
+							" from "+ ConCriterioConsultaBean.T_NOMBRETABLA + " cr, "
+									+ ConTablaConsultaBean.T_NOMBRETABLA + " ta, "
+									+ ConCampoConsultaBean.T_NOMBRETABLA + " ca, "
+									+ ConOperacionConsultaBean.T_NOMBRETABLA + " op" +
+							" where ca." + ConCampoConsultaBean.C_IDCAMPO + " = cr." + ConCriterioConsultaBean.C_IDCAMPO +
+								" and op." + ConOperacionConsultaBean.C_IDOPERACION + " = cr." + ConCriterioConsultaBean.C_IDOPERACION +
+								" and ta." + ConTablaConsultaBean.C_IDTABLA + " = ca." + ConCampoConsultaBean.C_IDTABLA +
+								" and cr." + ConCriterioConsultaBean.C_IDINSTITUCION + " = "+ (String)miForm.getIdInstitucion() +
+								" and cr." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + ((Long)beanServInsti.getIdConsulta()).toString() + " "+
+							" order by cr."+ConCriterioConsultaBean.C_ORDEN+" asc";
 						
-						//para cada uno de los criterios el formato indicado:
-						//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
-						//	donde los siguientes campos tambien tienen un formato concreto:
-						//	idCampo: 		idCampo,tipoCampo,idTabla
-						//	idOperador: 	idOperador,simbolo
-						String abrirPar = (String)criterio.get("ABRIRPAR");
-						String cerrarPar = (String)criterio.get("CERRARPAR");
-						if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
-						if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
-
-						String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
-						criteriosString += "*" + conector + "_" +
-												(String)criterio.get("CAMPO")+"_"+
-												(String)criterio.get("DESCRIPCION")+"_"+
-												(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
-												(String)criterio.get("IDCAMPO")+","+
-												(String)criterio.get("TIPOCAMPO")+","+
-												(String)criterio.get("IDTABLA")+"_"+
-												(String)criterio.get("OPERADOR")+","+
-												(String)criterio.get("SIMBOLO")+"_"+
-												(String)criterio.get("IDVALOR")+"_"+
-												abrirPar+"_"+
-												cerrarPar+"_";
-					} // Fin del for principal
-				} 
-				catch(Exception e) {
-					e.printStackTrace();
+						Vector vCriterios = (Vector)criteriosAdm.selectGenerico(consultaCriterios);
+						for (int cont = 0; cont < vCriterios.size(); cont++){
+							Hashtable criterio = (Hashtable)vCriterios.get(cont);
+		
+							// Ahora tenemos todos los campos a falta del idValor
+							// Ejecutamos la selectAyuda del campo, y recuperamos el ID 
+							// para el valor con descripcion = al valor que ya tenemos
+							ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(this.getUserBean(request));
+						
+							// Si tenemos la select buscamos el idvalor: 
+							if (criterio.get("SELECTAYUDA") != null && !((String)criterio.get("SELECTAYUDA")).equals("")) {
+								String con = (String)criterio.get("SELECTAYUDA");
+								con = con.replaceAll("@IDINSTITUCION@" , this.getUserBean(request).getLocation());
+								con = con.replaceAll("@IDIOMA@" , this.getUserBean(request).getLanguage());
+								Vector campos = (Vector)camposAdm.selectGenerico(con);
+								for (int contador=0; contador<campos.size(); contador++){
+									Hashtable campoHash = (Hashtable)campos.get(contador);
+									if (((String)campoHash.get("DESCRIPCION")).equalsIgnoreCase((String)criterio.get("VALOR"))){
+										contador = campos.size()+1;
+										String aux = (String)campoHash.get("ID");
+										
+										int p=-1;
+										if ((p = aux.indexOf("#"))!=-1) { 
+											aux=aux.substring(0,p) + "$" + aux.substring(p+1,aux.length());
+										}
+										// RGG criterio.put("IDVALOR", (String)campoHash.get("ID"));
+										criterio.put("IDVALOR", aux);
+									}
+								}//Fin del for interior
+							}
+							
+							//para cada uno de los criterios el formato indicado:
+							//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
+							//	donde los siguientes campos tambien tienen un formato concreto:
+							//	idCampo: 		idCampo,tipoCampo,idTabla
+							//	idOperador: 	idOperador,simbolo
+							String abrirPar = (String)criterio.get("ABRIRPAR");
+							String cerrarPar = (String)criterio.get("CERRARPAR");
+							if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
+							if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
+	
+							String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
+							criteriosString += "*" + conector + "_" +
+													(String)criterio.get("CAMPO")+"_"+
+													(String)criterio.get("DESCRIPCION")+"_"+
+													(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
+													(String)criterio.get("IDCAMPO")+","+
+													(String)criterio.get("TIPOCAMPO")+","+
+													(String)criterio.get("IDTABLA")+"_"+
+													(String)criterio.get("OPERADOR")+","+
+													(String)criterio.get("SIMBOLO")+"_"+
+													(String)criterio.get("IDVALOR")+"_"+
+													abrirPar+"_"+
+													cerrarPar+"_";
+						} // Fin del for principal
+					} 
+					catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 	
 				//seleccionamos la consulta para futuras modificaciones
