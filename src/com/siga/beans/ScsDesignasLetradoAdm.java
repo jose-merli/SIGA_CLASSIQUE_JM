@@ -995,7 +995,10 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append("         AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 			sql.append("         AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append("         AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append(" AND (( EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
+			
+			
+			sql.append(" AND ( (  EJG.IDTIPORATIFICACIONEJG IN ( ");
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
@@ -1037,6 +1040,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append("                  AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
 			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_PTE_CAJG);
 			
@@ -1065,6 +1069,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append("                AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
 			sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
 			sql.append(",");
@@ -1161,7 +1166,8 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
 			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IS NULL ");
+			sql.append(" AND (EJG.IDTIPORATIFICACIONEJG IS NULL ");
+			sql.append(" OR EJG.FECHARESOLUCIONCAJG IS NULL) ");
 			sql.append(" ) ");
 			sql.append(" AND  ");
 			sql.append(" (SELECT COUNT(*) ");
