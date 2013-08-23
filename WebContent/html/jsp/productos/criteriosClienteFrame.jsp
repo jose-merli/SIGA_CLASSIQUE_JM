@@ -76,9 +76,8 @@
 						 	 	document.getElementById('caja').style.visibility='hidden';
 						 	 	document.getElementById('caja').style.width='0px';
 					 	 	}
-					 	 	if (document.getElementById('calendario_valor')){ 		
-					 	 		jQuery("#calendario_valor").hide();
-					 	 		document.getElementById('calendario_valor').style.visibility='hidden';	
+					 	 	if (document.getElementById('caja-datepicker-trigger')){ 		
+					 	 		jQuery("#caja-datepicker-trigger").hide();
 					 	 	}		
 					 	 	pasarvalor();	
 					   }	
@@ -88,8 +87,8 @@
 						document.getElementById('valor').value="";
 						document.getElementById('comb').style.visibility='hidden';
 						document.getElementById('caja').style.visibility='visible';
-						if (document.getElementById('calendario_valor')){ 	
-							document.getElementById('calendario_valor').style.visibility='visible';
+						if (document.getElementById('caja-datepicker-trigger')){ 	
+							jQuery("#caja-datepicker-trigger").show();
 						}
 						document.getElementById('caja').style.width='120px';
 					}
