@@ -4,9 +4,6 @@ package com.siga.beans;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -17,7 +14,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
@@ -47,13 +43,22 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * 
 	 */
 	protected String[] getCamposBean() {
-		String[] campos = {	ScsSaltosCompensacionesBean.C_FECHA,				ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,
-							ScsSaltosCompensacionesBean.C_FECHAMODIFICACION,	ScsSaltosCompensacionesBean.C_IDGUARDIA,
-							ScsSaltosCompensacionesBean.C_IDINSTITUCION,		ScsSaltosCompensacionesBean.C_IDPERSONA,
-							ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,		ScsSaltosCompensacionesBean.C_IDTURNO,
-							ScsSaltosCompensacionesBean.C_MOTIVOS,				ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION,
-							ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS, ScsSaltosCompensacionesBean.C_USUMODIFICACION,
-							ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION};
+		String[] campos = {	
+			ScsSaltosCompensacionesBean.C_FECHA,				
+			ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,
+			ScsSaltosCompensacionesBean.C_FECHAMODIFICACION,	
+			ScsSaltosCompensacionesBean.C_IDGUARDIA,
+			ScsSaltosCompensacionesBean.C_IDINSTITUCION,		
+			ScsSaltosCompensacionesBean.C_IDPERSONA,
+			ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,		
+			ScsSaltosCompensacionesBean.C_IDTURNO,
+			ScsSaltosCompensacionesBean.C_MOTIVOS,				
+			ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION,
+			ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS, 
+			ScsSaltosCompensacionesBean.C_USUMODIFICACION,
+			ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION, 
+			ScsSaltosCompensacionesBean.C_TIPOMANUAL
+		};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -61,7 +66,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * 
 	 */
 	protected String[] getClavesBean() {
-		String[] campos = {	ScsSaltosCompensacionesBean.C_IDINSTITUCION,		ScsSaltosCompensacionesBean.C_IDTURNO,
+		String[] campos = {	ScsSaltosCompensacionesBean.C_IDINSTITUCION,		
+							ScsSaltosCompensacionesBean.C_IDTURNO,
 							ScsSaltosCompensacionesBean.C_IDSALTOSTURNO};
 		return campos;
 	}
@@ -77,20 +83,22 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		try{
 			bean = new ScsSaltosCompensacionesBean();
 			bean.setFecha				(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_FECHA));
-			bean.setFechaCumplimiento	(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO));
-			bean.setFechaMod			(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_FECHAMODIFICACION));
+			bean.setFechaCumplimiento	(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO));			
 			bean.setIdGuardia			(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_IDGUARDIA));
 			bean.setIdInstitucion		(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_IDINSTITUCION));
 			bean.setIdPersona			(UtilidadesHash.getLong(hash, ScsSaltosCompensacionesBean.C_IDPERSONA));
 			bean.setIdSaltosTurno		(UtilidadesHash.getLong(hash, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO));
 			bean.setIdTurno				(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_IDTURNO));
 			bean.setMotivos				(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_MOTIVOS));
-			bean.setSaltoCompensacion	(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));
-			bean.setUsuMod				(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_USUMODIFICACION));
+			bean.setSaltoCompensacion	(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));			
 			bean.setIdCalendarioGuardias(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS));
 			bean.setIdCalendarioGuardiasCreacion(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION));
-		}
-		catch(Exception e){
+			bean.setTipoManual(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_TIPOMANUAL));
+			
+			bean.setFechaMod			(UtilidadesHash.getString (hash, ScsSaltosCompensacionesBean.C_FECHAMODIFICACION));
+			bean.setUsuMod				(UtilidadesHash.getInteger(hash, ScsSaltosCompensacionesBean.C_USUMODIFICACION));
+			
+		} catch(Exception e){
 			bean = null;
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -104,24 +112,26 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 */
 	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		Hashtable hash = null;
-		try{
+		try {
 			hash = new Hashtable();
 			ScsSaltosCompensacionesBean b = (ScsSaltosCompensacionesBean) bean;
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_FECHA, b.getFecha());
-			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, b.getFechaCumplimiento());
-			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, b.getFechaCumplimiento());			
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDGUARDIA, String.valueOf(b.getIdGuardia()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDPERSONA, String.valueOf(b.getIdPersona()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, String.valueOf(b.getIdSaltosTurno()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDTURNO, String.valueOf(b.getIdTurno()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_MOTIVOS, b.getMotivos());
-			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, b.getSaltoCompensacion());
-			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, b.getSaltoCompensacion());			
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS, String.valueOf(b.getIdCalendarioGuardias()));
 			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION, String.valueOf(b.getIdCalendarioGuardiasCreacion()));
-		}
-		catch (Exception e){
+			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_TIPOMANUAL, String.valueOf(b.getTipoManual()));
+			
+			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(hash, ScsSaltosCompensacionesBean.C_USUMODIFICACION, b.getUsuMod());
+			
+		} catch (Exception e){
 			hash = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
@@ -521,37 +531,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	/**
 	 * Quita el cumplimiento de saltos y compensaciones ya que se ha dado de baja en el turno SRL
 	 */
-
-	public boolean updateSaltosCompensacionesBajaTurno(ArrayList<ScsSaltosCompensacionesBean>  ibeanSaltosCompensaciones) throws ClsExceptions {
-		boolean salida = false;
-		StringBuffer sql = new StringBuffer();
-		
-		try {
-			for (Iterator<ScsSaltosCompensacionesBean> it = ibeanSaltosCompensaciones.iterator(); it.hasNext(); ) {
-				ScsSaltosCompensacionesBean syc = it.next();
-			    System.out.println(syc);
-
-				sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-				sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= SYSDATE");
-				sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
-				sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
-				sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+ syc.getIdInstitucion());
-				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+syc.getIdTurno());
-				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+syc.getIdPersona());
-				sql.append("    and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");
-				if (syc.getIdGuardia()!=null)
-					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+syc.getIdGuardia());
-
-				
-				updateSQL(sql.toString());
-				
-			}
-			salida = true;
-		} catch (Exception e) {
-			salida = false;
-		}
-		return salida;
-	}
 	
 	public boolean updateSaltosCompensacionesBajaTurno(Integer idinstitucion,Integer idturno,Long idpersona, Integer idguardia, String tipoSyC) throws ClsExceptions {
 		boolean salida = false;
@@ -655,48 +634,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		return salida;
 	}
 	
-	/**
-	 * A la hora de dar de baja de un turno se debe dar fecha de uso a los saltos y compensaciones
-	 * pendientes para que no se asignen 
-     *
-	 * @param Hashtable hash: tabla hash con los campos: 
-	 * - String idinstitucion
-	 * - String idpersona
-	 * - String idturno
-	 * - String fechaCumplimiento
-     * - String motivos  
-	 * @return boolean: true si ha ido todo bien.
-	 * @throws ClsExceptions
-	 */
-	public boolean updateCompensacionesSaltos(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idcalendarioguardias="", idturno="", fecha = "", idpersona, comentario;
-		boolean salida = false;
-		StringBuffer sql = new StringBuffer();
-		
-		try {
-			idinstitucion = (String)hash.get(ScsSaltosCompensacionesBean.C_IDINSTITUCION);
-			idturno = (String)hash.get(ScsSaltosCompensacionesBean.C_IDTURNO);
-			fecha = (String)hash.get(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
-			idpersona = (String)hash.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
-			comentario = (String)hash.get(ScsSaltosCompensacionesBean.C_MOTIVOS);
-
-			sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append(" set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= trunc(to_date('" + fecha + "', 'DD/MM/YYYY'))");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_MOTIVOS+"='"+comentario+"'");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
-			sql.append(" where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+idpersona);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL");
-					
-			this.updateSQL(sql.toString());
-			salida = true;
-		} catch (Exception e) {
-			salida = false;
-		}
-		return salida;
-	}
 	public void insertarSaltoPorBajaTemporal(CenBajasTemporalesBean bajaTemporaBean,ScsSaltosCompensacionesBean salto) throws ClsExceptions{
 		StringBuffer descripcion = new StringBuffer();
 		if(bajaTemporaBean.getTipo().equals(CenBajasTemporalesBean.TIPO_COD_VACACION)){

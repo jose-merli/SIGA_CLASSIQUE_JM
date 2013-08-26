@@ -466,6 +466,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 				miHash.put(ScsSaltosCompensacionesBean.C_FECHA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFecha()));
 				miHash.put(ScsSaltosCompensacionesBean.C_MOTIVOS,miForm.getMotivos());
 				miHash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,fechaCumplimiento);
+				miHash.put(ScsSaltosCompensacionesBean.C_TIPOMANUAL, (fechaCumplimiento == null || fechaCumplimiento.equals("")) ? "0" : "1");				
 				
 				tx=usr.getTransaction();
 	            tx.begin();                 
@@ -537,6 +538,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 				miHash.put(ScsSaltoCompensacionGrupoBean.C_FECHA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFecha()));
 				miHash.put(ScsSaltoCompensacionGrupoBean.C_MOTIVO,miForm.getMotivos());
 				miHash.put(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO,fechaCumplimiento);
+				miHash.put(ScsSaltoCompensacionGrupoBean.C_TIPOMANUAL, (fechaCumplimiento == null || fechaCumplimiento.equals("")) ? "0" : "1");	
 				
 				tx=usr.getTransaction();
 	            tx.begin();                 

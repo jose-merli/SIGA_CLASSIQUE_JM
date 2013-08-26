@@ -17,6 +17,7 @@ public class ScsSaltosCompensacionesBean extends MasterBean
 	private String  fechaCumplimiento;
 	private Integer idCalendarioGuardias;
 	private Integer idCalendarioGuardiasCreacion;
+	private Integer tipoManual;
 	
 	
 	// Nombre de Tabla
@@ -34,6 +35,7 @@ public class ScsSaltosCompensacionesBean extends MasterBean
 	static public final String  C_FECHACUMPLIMIENTO = 	"FECHACUMPLIMIENTO";
 	static public final String  C_IDCALENDARIOGUARDIAS = "IDCALENDARIOGUARDIAS";
 	static public final String  C_IDCALENDARIOGUARDIASCREACION = "IDCALENDARIOGUARDIASCREACION";
+	static public final String  C_TIPOMANUAL = "TIPOMANUAL";
 	
 	
 	// Constructor
@@ -100,6 +102,7 @@ public class ScsSaltosCompensacionesBean extends MasterBean
 	public String getFechaCumplimiento				()	{ return fechaCumplimiento; }
 	public Integer getIdCalendarioGuardias			()	{ return idCalendarioGuardias; }
 	public Integer getIdCalendarioGuardiasCreacion	()	{ return idCalendarioGuardiasCreacion; }
+	public Integer getTipoManual					()	{ return tipoManual; }
 	
 	// SETTERS
 	public void setIdInstitucion				(Integer valor)	{ this.idInstitucion				= valor; }
@@ -113,5 +116,6 @@ public class ScsSaltosCompensacionesBean extends MasterBean
 	public void setFechaCumplimiento			(String  valor)	{ this.fechaCumplimiento			= valor; }
 	public void setIdCalendarioGuardias			(Integer valor) { this.idCalendarioGuardias			= valor; }
 	public void setIdCalendarioGuardiasCreacion	(Integer valor)	{ this.idCalendarioGuardiasCreacion	= valor; }
+	public void setTipoManual					(Integer valor)	{ this.tipoManual					= valor; }
 
 }

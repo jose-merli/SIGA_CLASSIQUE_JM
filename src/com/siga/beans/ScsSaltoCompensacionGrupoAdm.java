@@ -3,7 +3,6 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
 
@@ -30,37 +29,35 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 	 * 
 	 * @param usuario Usuario "logado" en la aplicación. De tipo "Integer".  
 	 */
-	public ScsSaltoCompensacionGrupoAdm(UsrBean usuario)
-	{
+	public ScsSaltoCompensacionGrupoAdm(UsrBean usuario) {
 		super(ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA, usuario);
 	}
 
 	/** 
 	 * @return conjunto de datos con los nombres de todos los campos del bean
 	 */
-	protected String[] getCamposBean()
-	{
-		String[] campos =
-		{
-				ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,
-				ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA,
-				ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION,
-				ScsSaltoCompensacionGrupoBean.C_FECHA,
-				ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO,
-				ScsSaltoCompensacionGrupoBean.C_MOTIVO,
-				ScsSaltoCompensacionGrupoBean.C_MOTIVOCUMPLIMIENTO,
-				ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION,
-				ScsSaltoCompensacionGrupoBean.C_IDTURNO,
-				ScsSaltoCompensacionGrupoBean.C_IDGUARDIA,
-				ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS,
-				ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI,
-				ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI,
-				ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI,
-				ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI,
-				ScsSaltoCompensacionGrupoBean.C_FECHACREACION,
-				ScsSaltoCompensacionGrupoBean.C_USUCREACION,
-				ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION,
-				ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION
+	protected String[] getCamposBean() {
+		String[] campos = {	
+			ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO,
+			ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA,
+			ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION,
+			ScsSaltoCompensacionGrupoBean.C_FECHA,
+			ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO,
+			ScsSaltoCompensacionGrupoBean.C_MOTIVO,
+			ScsSaltoCompensacionGrupoBean.C_MOTIVOCUMPLIMIENTO,
+			ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION,
+			ScsSaltoCompensacionGrupoBean.C_IDTURNO,
+			ScsSaltoCompensacionGrupoBean.C_IDGUARDIA,
+			ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS,
+			ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI,
+			ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI,
+			ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI,
+			ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI,
+			ScsSaltoCompensacionGrupoBean.C_FECHACREACION,
+			ScsSaltoCompensacionGrupoBean.C_USUCREACION,
+			ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION,
+			ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION,
+			ScsSaltosCompensacionesBean.C_TIPOMANUAL
 		};
 		return campos;
 	}
@@ -68,8 +65,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 	/**
 	 *  @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 */
-	protected String[] getClavesBean()
-	{
+	protected String[] getClavesBean() {
 		String[] campos = {ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO};
 		return campos;
 	}
@@ -78,8 +74,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 	 *  @param hash Hashtable para crear el bean
 	 *  @return bean con la información de la hashtable
 	 */
-	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions
-	{
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		ScsSaltoCompensacionGrupoBean bean = null;
 		
 		try {
@@ -99,11 +94,13 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			bean.setIdTurno_Cumpli(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI));
 			bean.setIdGuardia_Cumpli(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI));
 			bean.setIdCalendarioGuardias_Cumpli(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI));
+			bean.setTipoManual(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_TIPOMANUAL));
 			
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, ScsSaltoCompensacionGrupoBean.C_FECHACREACION));
 			bean.setUsuCreacion(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_USUCREACION));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION));			
+			
 		} catch (Exception e) {
 			bean = null;
 			throw new ClsExceptions(e, "Error al construir el bean a partir del hashTable");
@@ -143,6 +140,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_USUCREACION, b.getUsuCreacion());
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION, b.getUsuMod());
+			
 		} catch (Exception e) {
 			hash = null;
 			throw new ClsExceptions(e, "Error al construir el hashTable a partir del bean");

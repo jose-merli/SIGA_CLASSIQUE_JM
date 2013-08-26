@@ -28,6 +28,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	private String	fechaCreacion;
 	private Integer	usuCreacion;
 	private Long	idGrupoGuardiaCreacion;
+	private Integer tipoManual;
 	
 	private ArrayList<LetradoInscripcion> letrados;
 	
@@ -54,7 +55,8 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	static public final String 	C_FECHACREACION					= "FECHACREACION";
 	static public final String 	C_USUCREACION					= "USUCREACION";
 	static public final String  C_IDCALENDARIOGUARDIASCREACION	= "IDCALENDARIOGUARDIASCREACION";
-	
+	static public final String  C_TIPOMANUAL 					= "TIPOMANUAL";
+
 	
 	// SETTERS
 	public void setIdSaltoCompensacionGrupo		(Long valor)	{this.idSaltoCompensacionGrupo		= valor;}
@@ -74,6 +76,8 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public void setIdCalendarioGuardias_Cumpli	(Integer valor)	{this.idCalendarioGuardias_Cumpli	= valor;}
 	public void setFechaCreacion				(String  valor)	{this.fechaCreacion					= valor;}
 	public void setUsuCreacion					(Integer valor)	{this.usuCreacion					= valor;}
+	public void setIdGrupoGuardiaCreacion		(Long valor) 	{this.idGrupoGuardiaCreacion 		= valor;}
+	public void setTipoManual					(Integer valor)	{this.tipoManual					= valor; }
 	
 	public void setLetrados(ArrayList<LetradoInscripcion> letrados) {this.letrados = letrados;}
 	
@@ -96,18 +100,12 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public Integer	getIdCalendarioGuardias_Cumpli	() {return idCalendarioGuardias_Cumpli;}
 	public String	getFechaCreacion				() {return fechaCreacion;}
 	public Integer	getUsuCreacion					() {return usuCreacion;}
+	public Long 	getIdGrupoGuardiaCreacion		() {return idGrupoGuardiaCreacion;}	
+	public Integer 	getTipoManual					() {return tipoManual;}
 	
 	public ArrayList<LetradoInscripcion> getLetrados() {return letrados;}
 	
-	
-	public Long getIdGrupoGuardiaCreacion() {
-		return idGrupoGuardiaCreacion;
-	}
-	public void setIdGrupoGuardiaCreacion(Long idGrupoGuardiaCreacion) {
-		this.idGrupoGuardiaCreacion = idGrupoGuardiaCreacion;
-	}
 	public String toString() {
 		return this.saltoCompensacion + " de grupo: " + this.getLetrados();
 	}
-
 }
