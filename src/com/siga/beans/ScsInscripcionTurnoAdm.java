@@ -2154,27 +2154,33 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			InscripcionTGForm miForm = new InscripcionTGForm();
 			GestionInscripcionesTGAction gInscripciones = new GestionInscripcionesTGAction();
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			String fechaBajaInscripciones = "";
 			
-			// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
-			miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
-			miForm.setIdTurno(insTurno.getIdTurno().toString());
-			miForm.setIdPersona(insTurno.getIdPersona().toString());
-			miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());
-			
-			// Obtengo la fecha de baja minima para la inscripcion de turno
-			String fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, this.usrbean);		
-			
-			// Obtengo la fecha actual y la convierto en el formato adecuado
 			Date dFechaHoy = new Date(); 										
-			String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy							
-			
-			// Comparo la fecha minima de baja del turno, con la fecha actual
-			int comparacion = GstDate.compararFechas(fechaBajaInscripciones, sFechaHoy);
-				
-			// Obtenemos la fecha mayor
-			if (comparacion < 0) {
+			String sFechaHoy = sdf.format(dFechaHoy); // Fecha con formato dd/MM/yyyy
+		
+			if (insTurno.getFechaValidacion() == null || insTurno.getFechaValidacion().equals("")) {
 				fechaBajaInscripciones = sFechaHoy;
-			}					
+				
+			} else {
+			
+				// Relleno con los datos necesarios para el metodo que calcula la fecha de baja 
+				miForm.setIdInstitucion(insTurno.getIdInstitucion().toString());
+				miForm.setIdTurno(insTurno.getIdTurno().toString());
+				miForm.setIdPersona(insTurno.getIdPersona().toString());
+				miForm.setFechaValidacionTurno(insTurno.getFechaValidacion());			
+				
+				// Obtengo la fecha de baja minima para la inscripcion de turno
+				fechaBajaInscripciones = gInscripciones.calcularFechaBajaInscripcionTurno(miForm, this.usrbean);								
+				
+				// Comparo la fecha minima de baja del turno, con la fecha actual
+				int comparacion = GstDate.compararFechas(fechaBajaInscripciones, sFechaHoy);
+					
+				// Obtenemos la fecha mayor
+				if (comparacion < 0) {
+					fechaBajaInscripciones = sFechaHoy;
+				}
+			}
 			
 			return fechaBajaInscripciones;
 			
