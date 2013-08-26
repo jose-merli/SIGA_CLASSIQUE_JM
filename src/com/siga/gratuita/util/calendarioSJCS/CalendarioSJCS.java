@@ -775,7 +775,6 @@ public class CalendarioSJCS
 	{
 		// Controles
 		ScsSaltoCompensacionGrupoAdm saltosCompenGruposAdm = new ScsSaltoCompensacionGrupoAdm(this.usrBean);
-		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 
 		// si esta de vacaciones, ...
 		if (isLetradoBajaTemporal(hmBajasTemporales.get(letradoGuardia.getIdPersona()), diasGuardia, letradoGuardia)) {
@@ -2095,7 +2094,6 @@ public class CalendarioSJCS
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrBean);
 		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(this.usrBean);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
-		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(this.usrBean); 
 
 
 		//generando el hash para tratar la guardia del calendario
