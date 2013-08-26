@@ -135,6 +135,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI, String.valueOf(b.getIdTurno_Cumpli()));
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI, String.valueOf(b.getIdGuardia_Cumpli()));
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI, String.valueOf(b.getIdCalendarioGuardias_Cumpli()));
+			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_TIPOMANUAL, String.valueOf(b.getTipoManual()));
 			
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_FECHACREACION, b.getFechaCreacion());
 			UtilidadesHash.set(hash, ScsSaltoCompensacionGrupoBean.C_USUCREACION, b.getUsuCreacion());
