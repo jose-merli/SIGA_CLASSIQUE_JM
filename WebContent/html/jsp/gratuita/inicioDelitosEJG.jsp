@@ -411,7 +411,7 @@
 			<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.defensajuridica">
 				<table width="100%" border="0">
 					<tr>
-						<td class="labelText" width="100px">
+						<td class="labelText" width="105px">
 							<siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
 <%
 								if (obligatorioPreceptivo) {
@@ -465,11 +465,11 @@
 <%
 							if(modopestanha.equals("editar")) {
 %>						 
-								<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="240" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
+								<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
 <%
 							} else { 
 %>
-								<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="240" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
+								<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="200" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
 <%	
 							}
 %>						    
@@ -864,7 +864,7 @@
 	frameborder="0"
 	marginheight="0"
 	marginwidth="0"					 				
-	style="position:relative;height:20%;width:100%;"></iframe>
+	style="position:relative;height:112px;width:100%;"></iframe>
 
 
 <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
@@ -874,7 +874,7 @@
 	frameborder="0"
 	marginheight="0"
 	marginwidth="0"					 
-	style="position:relative;height:20%;width:100%;"></iframe>	
+	style="position:relative;height:112px;width:100%;"></iframe>	
 <!-- FIN: IFRAME LISTA RESULTADOS -->
 
 <siga:ConjBotonesAccion botones="V"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	

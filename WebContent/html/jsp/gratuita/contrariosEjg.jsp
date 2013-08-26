@@ -108,7 +108,7 @@
 		frameborder="0"
 		marginheight="0"
 		marginwidth="0"					 				
-		style="position:relative;height:20%;width:100%;"></iframe>		
+		style="position:relative;width:100%;"></iframe>		
 	<!-- FIN: LISTA DE VALORES -->
 	
 	<!-- INICIO: SUBMIT AREA -->
