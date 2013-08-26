@@ -554,21 +554,6 @@ public class BusquedaClientesFiltrosAdm {
 		}
 		return idSaltoTurno;
 	}
-
-	private void updateCompensacion(String idInstitucion, String idTurno, String idSaltosTurno) throws ClsExceptions {
-		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
-		Hashtable hash = new Hashtable();
-		hash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, "SYSDATE");
-		hash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
-		hash.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
-		hash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, idSaltosTurno);
-		String[] claves = new String[]{ScsSaltosCompensacionesBean.C_IDINSTITUCION, ScsSaltosCompensacionesBean.C_IDTURNO, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO};
-		String[] campos = new String[]{ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO};
-		
-		if (!scsSaltosCompensacionesAdm.updateDirect(hash, claves, campos)) {
-			throw new ClsExceptions("No se ha podido actualizar el salto o compensación");
-		}
-	}
 	
 	/**
 	 * Busca el que menos asistencias ha hecho ese dia
