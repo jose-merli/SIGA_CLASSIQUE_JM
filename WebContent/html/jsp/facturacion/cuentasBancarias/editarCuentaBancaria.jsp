@@ -114,14 +114,6 @@
 	</c:if>
 	<table width="100%" border="0">
 		<tr>
-			<td width="35%">&nbsp; </td>
-			<td  width="20%">&nbsp; </td>
-			<td  width="20%">&nbsp; </td>
-			<td  width="25%">&nbsp; </td>
-	
-		</tr>		
-	
-		<tr>
 			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.banco" />(*)</td>
 			<td colspan="3">
 					<table>
