@@ -574,6 +574,7 @@ a.disabled {
   font-weight: bold;
   color: #dde0dd;
   font-size: 13px;
+  text-align: left;
   text-decoration: none;
   margin: 0px;
   height: 26px;
