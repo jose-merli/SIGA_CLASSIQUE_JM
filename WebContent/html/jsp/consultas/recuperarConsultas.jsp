@@ -58,7 +58,6 @@
 
 <!-- HEAD -->
 	
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet2.jsp">
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
