@@ -485,6 +485,9 @@
 			jQuery("#catalogo").change();
 			
 			mostrarColegio();
+			jQuery("#resultados").height(jQuery(window).height() - jQuery("#formulario").height());
+			//alert("Altura: "+jQuery(window).height()+" - " + jQuery("#formulario").height() + " = " + (jQuery(window).height() - jQuery("#formulario").height())+ "" + jQuery("#resultados").height());
+			//ajusteAlto("resultados");
 		});
 
 	</script>	
@@ -494,7 +497,7 @@
 </head>
 
 <body>
-
+<div id="formulario">
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -739,9 +742,10 @@
 		<!-- FILA -->
 	</html:form>
 </table>
-
-
-<!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
+</div>
+<div id="resultados">
+<div style="position:relative;height:50%;width:100%;">
+		<!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
 		<iframe align="center" src="<%=app%>/html/jsp/productos/productosEncontrados.jsp"
 			id="resultado1"
 			name="resultado1" 
@@ -749,12 +753,13 @@
 			frameborder="0"
 			marginheight="0"
 			marginwidth="0"
-			style="position:relative;height:38%;width:100%;"			 
+			style="position:relative;height:100%;width:100%;"			 
 			>					
 		</iframe>
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
-
-	<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
+</div>
+<div style="position:relative;height:50%;width:100%;">
+		<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
 		<iframe align="center" src="<%=app%>/html/jsp/productos/productosSolicitados.jsp"
 			id="resultado"
 			name="resultado" 
@@ -762,11 +767,11 @@
 			frameborder="0"
 			marginheight="0"
 			marginwidth="0"					 
-			style="position:relative;height:40%;width:100%;"
+			style="position:relative;height:100%;width:100%;"
 			>					
 		</iframe>
-
-
+</div>
+</div>
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
