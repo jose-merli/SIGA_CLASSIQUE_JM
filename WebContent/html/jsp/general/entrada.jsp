@@ -45,29 +45,27 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	</head>
 	<body style="background-color:#ffffff;">
-	<table class="labelTextValue" style="height:100%;width:100%;" border="0">
-	<tr>
-	<td colspan=2 align="center" valign="middle">
-<% if (lenguaje.equals("2")) { // en catalan %>	
-	<img src="<%=app%>/html/imagenes/logoSIGAblanco_CA.JPG" aling="center" valign="middle" />
-<% } else { %>	
-	<img src="<%=app%>/html/imagenes/logoSIGAblanco.JPG" aling="center" valign="middle" />
-<% } %>	
-	</td>
-	</tr>
-	<tr style="height:100px;">
-	<td class="labelEntrada"  style="width:500px">
+	
+	<div style="position:absolute;width:100%;">
+		<% if (lenguaje.equals("2")) { // en catalan %>	
+			<img src="<%=app%>/html/imagenes/logoSIGAblanco_CA.JPG" style="display:block;margin-left:auto;margin-right:auto;" />
+		<% } else { %>	
+			<img src="<%=app%>/html/imagenes/logoSIGAblanco.JPG" style="display:block;margin-left:auto;margin-right:auto;" />
+		<% } %>	
+	</div>
+	
+	<div style="position:absolute;left:20px;bottom:20px;">
 	<siga:Idioma key="messages.entrada.portada"/>
 	<br><br>
-	<img src="<%=app%>/html/imagenes/logoRedAbogacia.jpg" aling="center" valign="middle" />
-	</td>
-	<td class="labelEntrada" style="width:410px">
+	<img src="<%=app%>/html/imagenes/logoRedAbogacia.jpg" aling="center" valign="bottom" />
+	</div>
+	
+	<div style="position:absolute;right:20px;bottom:20px;">
 	<siga:Idioma key="messages.entrada.escrito"/>
 	<br><br>
-	<img src="<%=app%>/html/imagenes/logoMinisterio.jpg"  aling="center" valign="middle"/>
-	<img src="<%=app%>/html/imagenes/logoAvanza.jpg"  aling="center" valign="middle"/>
-	</td>
-	</tr>
-	</table>	
+	<img src="<%=app%>/html/imagenes/logoMinisterio.jpg"  aling="center" valign="bottom"/>
+	<img src="<%=app%>/html/imagenes/logoAvanza.jpg"  aling="center" valign="bottom"/>
+	</div>
+	
 	</body>
 </html>
