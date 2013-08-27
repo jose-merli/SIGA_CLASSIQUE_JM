@@ -124,7 +124,7 @@
 		//if(filtrarModulos.equals("S")){
 	    	comboJuzgados = "getJuzgadosTurnosModulos";
 	    	comboModulos = "getProcedimientosEnVigencia";
-	    	comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
+	    	comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
 	    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
 	    	comboPretensionesParentQueryIds = "idpretension";
 	    	
@@ -198,12 +198,10 @@
 				nig = beanDesigna.getNIG();
 			}
 			
-			if(beanDesigna.getProcedimiento() != null && !beanDesigna.getProcedimiento().equals("")) {
+			if(beanDesigna.getProcedimiento() != null && !beanDesigna.getProcedimiento().equals(""))
 				idProcedimiento = beanDesigna.getProcedimiento().toString();
-				idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+beanDesigna.getProcedimiento().toString()+"\"";
-			} else {
-				idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+"-2"+"\"";
-			}
+			
+			idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+idProcedimiento+"\"";
 			
 			anioProcedimiento = new String("");
 			if (beanDesigna.getAnioProcedimiento() != null)
