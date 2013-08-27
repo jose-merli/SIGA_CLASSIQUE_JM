@@ -176,63 +176,54 @@ jQuery.noConflict();
 
 		<table width="100%" border="0">
 			<tr>
-				<td width="10%"></td>
-				<td width="40%"></td>
-				<td width="10%"></td>
-				<td width="40%"></td>
-			</tr>
-			
-			
-			<tr>
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.banco" /></td>
-				<td colspan="3">
-					<table>
-						<tr>
-							<td><html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
-									<html:option value=""/>
-							
-						
-									<c:forEach items="${listaBancos}" var="banco">
-										<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
-									</c:forEach>
-								</html:select>
-							
-							<!--   <html:text styleId="bancoAjaxIn"	property="bancoAjaxIn"  maxlength="200"		styleClass="box" />
-							&nbsp;
-							<html:text styleId="codigoBanco" property="codigoBanco" size="4" maxlength="9" styleClass="box" />
-								-->
-								
-								
-								
-								
-							</td>
-							<td class="labelText">-</td>
-							<td><html:text styleId="sucursalBanco"
-									property="sucursalBanco" size="4" maxlength="4"
-									styleClass="box" /></td>
-							<td class="labelText">-</td>
-
-							<td><html:text styleId="digControlBanco"
-									property="digControlBanco" size="2" maxlength="2"
-									styleClass="box" /></td>
-							<td class="labelText">-</td>
-							<td><html:text styleId="cuentaBanco" property="cuentaBanco"
-									size="10" maxlength="10" styleClass="box" /></td>
-
-						</tr>
-					</table> </>
-
-
+				<td class="labelText">
+					<bean:message key="facturacion.cuentasBancarias.banco" />
+				</td>
+				<td>
+					<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
+						<html:option value=""/>
+						<c:forEach items="${listaBancos}" var="banco">
+							<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
+						</c:forEach>
+					</html:select>
+					<!--   <html:text styleId="bancoAjaxIn"	property="bancoAjaxIn"  maxlength="200"		styleClass="box" />
+					&nbsp;
+					<html:text styleId="codigoBanco" property="codigoBanco" size="4" maxlength="9" styleClass="box" />
+					-->
+				</td>
+				
+				<td class="labelText">-</td>
+				<td>
+					<html:text styleId="sucursalBanco" property="sucursalBanco" size="4" maxlength="4" styleClass="box" />
+				</td>
+				<td class="labelText">-</td>
+				<td>
+					<html:text styleId="digControlBanco" property="digControlBanco" size="2" maxlength="2" styleClass="box" />
+				</td>
+				<td class="labelText">-</td>
+				<td>
+					<html:text styleId="cuentaBanco" property="cuentaBanco"	size="10" maxlength="10" styleClass="box" />
 				</td>
 
-
-			</tr>
-
-			<tr>
-
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sjcs" /></td>
-				<td align="left"><html:select styleId="sjcs" property="sjcs"
-						styleClass="boxCombo">
+				<td class="labelText">
+					¿SJCS?<!--<bean:message key="facturacion.cuentasBancarias.sjcs" />-->
+				</td>
+				<td align="left">
+					<html:select styleId="sjcs" property="sjcs" styleClass="boxCombo">
+						<html:option value="" />
+						<html:option value="1">
+							<siga:Idioma key="general.boton.yes" />
+						</html:option>
+						<html:option value="0">
+							<siga:Idioma key="general.boton.no" />
+						</html:option>
+					</html:select>
+				</td>
+				<td class="labelText">
+					<bean:message key="facturacion.cuentasBancarias.baja" />
+				</td>
+				<td align="left">
+					<html:select styleId="baja" property="baja" styleClass="boxCombo">
 						<html:option value="">
 							
 						</html:option>
@@ -242,30 +233,10 @@ jQuery.noConflict();
 						<html:option value="0">
 							<siga:Idioma key="general.boton.no" />
 						</html:option>
-					</html:select></td>
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /></td>
-				<td align="left"><html:select styleId="baja"
-						property="baja" styleClass="boxCombo">
-						<html:option value="">
-							
-						</html:option>
-						<html:option value="1">
-							<siga:Idioma key="general.boton.yes" />
-						</html:option>
-						<html:option value="0">
-							<siga:Idioma key="general.boton.no" />
-						</html:option>
-					</html:select></td>
+					</html:select>
+				</td>
 
 			</tr>
-
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-			
 
 		</table>
 
@@ -273,7 +244,7 @@ jQuery.noConflict();
 
 		
 </html:form>
-		<div id="divListadoCuentasBancarias"	style='height: 48px; position: absolute; width: 100%; overflow-y: auto'>
+		<div id="divListadoCuentasBancarias"	style='height: 300px; position: absolute; width: 100%; overflow-y: auto'>
 			<table id='listadoCuentasBancarias' border='1' align='center' width='100%'
 				cellspacing='0' cellpadding='0' style='table-layout: fixed'>
 			</table>
