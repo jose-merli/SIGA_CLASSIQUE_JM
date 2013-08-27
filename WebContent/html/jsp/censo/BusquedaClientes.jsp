@@ -246,7 +246,7 @@
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
+	<div id="camposRegistro" class="posicionBusquedaSolo">
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
