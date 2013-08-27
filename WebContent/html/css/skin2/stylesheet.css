@@ -1112,16 +1112,12 @@ A.imageLink:active {
 }
 .boxConsultaPaginador {
   font-size: 13px;
+  font-family: Arial;
   font-weight: bold;
-  margin-top: 0px;
-  margin-left: 0px;
-  vertical-align: top;
   text-align: left;
   color: #eeeeee;
   background-color: #555555;
-  border: 0px solid #eeeeee;
-  padding-top: 0px;
-  padding-bottom: 0px;
+  border: 0px;
 }
 a.paginator:link {
   cursor: pointer;
