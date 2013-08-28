@@ -183,8 +183,8 @@
 				   <%=hash.get("ANIO")%>/<%=hash.get("NUMERO")%></td>
 				   <td><%= hash.get("TURNO")!=null&&!((String)hash.get("TURNO")).equals("")?hash.get("TURNO")+" / "+hash.get("GUARDIA"):"&nbsp;"%></td>
 				   <td align="center"><%=UtilidadesString.formatoFecha((String)hash.get("FECHAAPERTURA"), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
-				   <td><%=hash.get("SOLICITANTE")!=null&&!((String)hash.get("SOLICITANTE")).equals("")?(String)hash.get("SOLICITANTE"):"&nbsp;"%></td>
-				   <td><%=hash.get("RESOLUCION")!=null&&!((String)hash.get("RESOLUCION")).equals("")?(String)hash.get("RESOLUCION"):"&nbsp;"%></td>
+				   <td><%=hash.get("SOLICITANTE")!=null&&!((String)hash.get("SOLICITANTE")).trim().equals("")?(String)hash.get("SOLICITANTE"):"&nbsp;"%></td>
+				   <td><%=hash.get("RESOLUCION")!=null&&!((String)hash.get("RESOLUCION")).trim().equals("")?(String)hash.get("RESOLUCION"):"&nbsp;"%></td>
 				   
 			   </siga:FilaConIconos>
 		   <%}%>
