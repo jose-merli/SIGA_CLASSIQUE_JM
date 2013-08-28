@@ -174,7 +174,7 @@
 		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  	
 	</head>
 
-	<body onLoad="ajusteAlto('frameResultado');" onBeforeUnLoad="accionCerrar();">
+	<body onBeforeUnLoad="accionCerrar();">
 
 			<!-- TITULO -->
 			<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -196,13 +196,13 @@
 					<html:hidden property="criterios" value=""/>
 
 					<siga:ConjCampos leyenda="pys.mantenimientoServicios.leyenda">
-						<table class="tablaCampos">
+						<table class="tablaCampos" border="0">
 							<!-- FILA -->
 							<tr>				
 								<td class="labelText">
 									<siga:Idioma key="pys.mantenimientoServicios.literal.precio"/>&nbsp;(*)
 								</td>				
-								<td class="labelText">
+								<td class="labelText" width="110px">
 									<% if (modo.equalsIgnoreCase("insertar")){%>
 							  			<html:text property="precio" styleClass="boxNumber" maxlength="11" size="10" value="" />&nbsp;&euro;
 							  			
@@ -219,16 +219,16 @@
 								<td class="labelText">
 									<siga:Idioma key="pys.mantenimientoServicios.literal.periodicidad"/>&nbsp;(*)
 								</td>
-								<td class="labelText">
+								<td class="labelText" width="120px">
 									<% if (modo.equalsIgnoreCase("insertar")){%>
-										<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxCombo" obligatorio="true"/>
+										<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxCombo" obligatorio="true" ancho="110"/>
 										
 									<% } else { %>
 										<% if (modo.equalsIgnoreCase("modificar")){ %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true"/>
+											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true" ancho="110"/>
 											
 										<% } else { %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true"/>
+											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true" ancho="110"/>
 										<% } %>								  		
 									<% } %>
 								</td>
@@ -255,7 +255,7 @@
 									<% } %>
 								</td>	
 											
-								<td class="labelText">
+								<td class="labelText" width="120px">
 									<siga:Idioma key="productos.mantenimientoProductos.literal.precioDefecto"/>
 								</td>
 								<td class="labelText">
@@ -328,9 +328,7 @@
 				marginheight="0"
 				marginwidth="0"
 				class="frameGeneral"
-				style="height:480;"
-				>
-			</iframe>
+				style="height:480px;"></iframe>
 
 			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesDetalle"/>
 

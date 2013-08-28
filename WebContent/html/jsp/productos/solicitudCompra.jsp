@@ -41,8 +41,7 @@
 	String numero = (String) request.getAttribute("numero");
 	String nif = (String) request.getAttribute("nif");
 	Long lIdPersona = (Long) request.getAttribute("idPersona");
-	String deCertificado = (String) request.getSession().getAttribute(
-			"deCertificado");
+	String deCertificado = (String) request.getSession().getAttribute("deCertificado");
 	String idPersona = "";
 	if (lIdPersona != null) {
 		idPersona = String.valueOf(lIdPersona);
@@ -72,8 +71,7 @@
 		if (new Integer(idInstitucionP.substring(0, 1)).intValue() >= 3
 				|| idInstitucionP.equals("2000")) {// Si es CGAE o Consejos, se permite editar 
 			// el combo de colegio presentador
-			aux = (Integer) request
-					.getAttribute("idInstitucionPresentador");
+			aux = (Integer) request.getAttribute("idInstitucionPresentador");
 			idInstitucionPresentador.add(aux.toString());
 
 		} else {// Si es un colegio, el combo del colegio presentador no es editable y por defecto es el propio Colegio
@@ -361,10 +359,10 @@
 		function mostrarColegio() {
 			<%
 				String stylePresentador = "display:none;";
-				String styleCampoBlanco = "display:block;";
+				String styleCampoBlanco = "";
 			if (esConsejo && user.getStrutsTrans().equals("PYS_SolicitarCertificado")){%>
 				<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {
-					stylePresentador = "display:block;";
+					stylePresentador = "";
 					styleCampoBlanco = "display:none;";
 					request.getSession().setAttribute("volver","");
 				%>
@@ -380,15 +378,11 @@
 		
 		function mostrarPresentador(mostrar){
 			if (mostrar){
-				document.getElementById("campoBlanco").style.display="none";
-				document.getElementById("campoBlancoPresentador").style.display="block";
-				document.getElementById("comboPresentador").style.display="block";
-				document.getElementById("presentador").style.display="block";
+				jQuery("#campoBlanco").hide();
+				jQuery("#presentador").show();
 			} else {
-				document.getElementById("campoBlanco").style.display="block";
-				document.getElementById("campoBlancoPresentador").style.display="none";
-				document.getElementById("comboPresentador").style.display="none";
-				document.getElementById("presentador").style.display="none";
+				jQuery("#campoBlanco").show();
+				jQuery("#presentador").hide();				
 			}
 		}
 		
@@ -486,8 +480,6 @@
 			
 			mostrarColegio();
 			jQuery("#resultados").height(jQuery(window).height() - jQuery("#formulario").height());
-			//alert("Altura: "+jQuery(window).height()+" - " + jQuery("#formulario").height() + " = " + (jQuery(window).height() - jQuery("#formulario").height())+ "" + jQuery("#resultados").height());
-			//ajusteAlto("resultados");
 		});
 
 	</script>	
@@ -497,286 +489,283 @@
 </head>
 
 <body>
-<div id="formulario">
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-
-	<!-- INICIO: CAMPOS DE BUSQUEDA-->
-	<!-- Zona de campos de busqueda o filtro -->
-					<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
-						<table class="tablaCampos" align="center" border=0>
-						<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" type="">
-		  				<input type="hidden" id="actionModal"  name="actionModal" value="">
-		  				<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
-		  				<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
-						<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
-						<input type="hidden" id="clientes" name="clientes"	value="1">
-						<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" ></html:hidden>
-						<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif"></html:hidden>
-						 <tr>	
-							<%
-							if (esConsejo){
-						 		
-						 	%>	
-								
-								<td>
-								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" ></siga:BusquedaPersona>
-								</td>
-
-							<%
-							 	}else if (!esLetrado){ 
-							%>
-							 
-								<td>
-								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona"></siga:BusquedaPersona>
-								</td>
-
+	<div id="formulario">
+		<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 	
-							<%
-							 	}else{ 
-							%>
-
-							<!-- FILA -->
-								
-									<td class="labelText" width="180">
-										<siga:Idioma key="pys.solicitudCompra.literal.interesado"/>&nbsp;(*)
-									</td>
-									<td  width="150">
-										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readOnly="true"></html:text>
-									</td>
-							<%}%>
-									
-								</tr>	
-
-							</html:form>
-							</table>
-						</siga:ConjCampos>
-						
-
-
-<table class="tablaCampos" align="center" border="0">
-	<html:form action="/PYS_GenerarSolicitudes.do" method="POST"
-		target="resultado">
-
-		<html:hidden name="solicitudCompraForm" property="modo" value="" />
-		<html:hidden name="solicitudCompraForm" property="concepto" value="" />
-		<html:hidden name="solicitudCompraForm" property="idPersona"
-			value="<%=idPersona%>" />
-		<html:hidden name="solicitudCompraForm" property="numeroColegiado"
-			value="<%=numero%>" />
-		<html:hidden name="solicitudCompraForm" property="nombrePersona"
-			value="<%=nombre%>" />
-		<html:hidden name="solicitudCompraForm" property="nif"
-			value="<%=nif%>" />
-		<html:hidden name="solicitudCompraForm" property="idInstitucion"
-			value="<%=String.valueOf(idInstitucion.get(0))%>" />								 
-	    <input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
-		<tr>
-			<td>
-
-			<table class="tablaCampos" align="center" border="0">
-				<!-- FILA -->
+		<!-- INICIO: CAMPOS DE BUSQUEDA-->
+		<!-- Zona de campos de busqueda o filtro -->
+		<siga:ConjCampos leyenda="pys.solicitudCompra.leyenda.datosSolicitud">		
+			<table class="tablaCampos" align="center" border=0>
+				<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" type="">
+			  		<input type="hidden" id="actionModal"  name="actionModal" value="">
+			  		<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
+			  		<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
+					<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
+					<input type="hidden" id="clientes" name="clientes"	value="1">
+					<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" ></html:hidden>
+					<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif"></html:hidden>
+					<tr>	
+	<%
+						if (esConsejo){						 		
+	%>							
+							<td>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" ></siga:BusquedaPersona>
+							</td>
+	<%
+						} else if (!esLetrado) { 
+	%>						 
+							<td>
+								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona"></siga:BusquedaPersona>
+							</td>
+	<%
+					 	} else { 
+	%>
+							<td class="labelText" width="180px">
+								<siga:Idioma key="pys.solicitudCompra.literal.interesado"/>&nbsp;(*)
+							</td>
+							<td  width="150px">
+								<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readOnly="true" />
+							</td>
+	<%
+						}
+	%>								
+					</tr>	
+				</html:form>
+			</table>
+		</siga:ConjCampos>					
+	
+		<table class="tablaCampos" align="center" border="0">
+			<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="resultado">
+				<html:hidden name="solicitudCompraForm" property="modo" value="" />
+				<html:hidden name="solicitudCompraForm" property="concepto" value="" />
+				<html:hidden name="solicitudCompraForm" property="idPersona" value="<%=idPersona%>" />
+				<html:hidden name="solicitudCompraForm" property="numeroColegiado" value="<%=numero%>" />
+				<html:hidden name="solicitudCompraForm" property="nombrePersona" value="<%=nombre%>" />
+				<html:hidden name="solicitudCompraForm" property="nif" value="<%=nif%>" />
+				<html:hidden name="solicitudCompraForm" property="idInstitucion" value="<%=String.valueOf(idInstitucion.get(0))%>" />								 
+		    	<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)
-					</td>
-					<td id="catalogo_td">
-						<%
-						//cmbCatalogo= Select trim('P') AS ID, 'PRODUCTO' AS DESCRIPCION FROM DUAL UNION select trim('S') AS ID,'SERVICIO' AS DESCRIPCION FROM DUAL UNION select trim('C') AS ID,'CERTIFICADO' AS DESCRIPCION FROM DUAL
-						// CAMBIAMOS ESTE COMBO POR JSON (NO HACE FALTA IR A BASE DE DATOS)
-						List<KeyValue> catalogoOptions = new ArrayList<KeyValue>();
-						catalogoOptions.add(new KeyValue("C", "CERTIFICADO"));
-						catalogoOptions.add(new KeyValue("P", "PRODUCTO"));
-						catalogoOptions.add(new KeyValue("S", "SERVICIO"));
-						
-						String catalogoDisabled = "false";
-						String catalogoSelected = valorCatalog;
-						if (deCertificado.equals("1")){
-							catalogoDisabled = "true";
-							catalogoSelected = "C";
-						}
-						String productoStyle = "";
-						String servicioStyle = "display:none;";
-						if (catalogoSelected.equals("S")){
-							productoStyle = "display:none;";
-							servicioStyle = "";
-						}
-						%>
-						<siga:Select id="catalogo"
-									queryId="JSON" 
-									dataJSON="<%=UtilidadesString.createTagSelectDataJson(catalogoOptions)%>"
-									selectedIds="<%=catalogoSelected%>"
-									required="true"
-									disabled="<%=catalogoDisabled%>"
-									width="118"/>						
-					</td>
-					
-					<td><p class="labelText">></p></td>
-					<td id="tipo_td">
-						<div class="producto" style="<%=productoStyle%>" style="<%=productoStyle%>">
-						<siga:Select id="tipoProducto"
-									queryId="getTiposProductos"
-									queryParamId="idtipoproducto"
-									childrenIds="categoriaProducto"
-									selectedIds="<%=sIdTipoProducto%>"
-									width="120"/>
-						</div>				
-						<div class="servicio" style="<%=servicioStyle%>">
-						<siga:Select id="tipoServicio" 
-									queryId="getTiposServicios"
-									queryParamId="idtiposervicio"
-									childrenIds="categoriaServicio"
-									selectedIds="<%=sIdTipoServicio%>"
-									width="120"/>
-						</div>					
-					</td>
-					<td><p class="labelText">></p></td>
-					<td id="categoria_td">
-						<div class="producto" style="<%=productoStyle%>">
-						<siga:Select id="categoriaProducto"
-									queryId="getProductosDeTipo"
-									queryParamId="idproducto"
-									parentQueryParamIds="idtipoproducto"
-									params='<%=UtilidadesString.createJsonString("idtipoproducto", sIdTipoProducto) %>'
-									childrenIds="producto"
-									selectedIds="<%=sIdProducto%>"
-									width="120"/>
-						</div>						
-						<div class="servicio" style="<%=servicioStyle%>">
-						<siga:Select id="categoriaServicio"
-									queryId="getServiciosDeTipo"
-									queryParamId="idservicio"
-									parentQueryParamIds="idtiposervicio"
-									params='<%=UtilidadesString.createJsonString("idtiposervicio", sIdTipoServicio) %>'
-									childrenIds="servicio"
-									selectedIds="<%=sIdServicio%>"
-									width="120"/>
-						</div>				
-					</td>					
-					<td><p class="labelText">></p></td>
-					<td id="producto_servicio_td">
-						<%
-						HashMap<String, String> hmProductoParams = new HashMap<String, String>();
-						hmProductoParams.put("idtipoproducto", sIdTipoProducto);
-						hmProductoParams.put("idproducto", sIdProducto);
-						
-						HashMap<String, String> hmServicioParams = new HashMap<String, String>();
-						hmServicioParams.put("idtiposervicio", sIdTipoServicio);
-						hmServicioParams.put("idservicio", sIdServicio);
-						
-						String productoQueryId = "getProductosInstitucion";
-						String servicioQueryId = "getServiciosInstitucion";
-						if (catalogoSelected.equals("C") || catalogoSelected.equals("")){
-							productoQueryId = "getCertificadosInstitucion";
-						}
-						hmServicioParams.put("solicitaralta", DB_FALSE);
-						hmServicioParams.put("automatico", DB_TRUE);
-						if (esLetrado) {
-								dato[1] = DB_TRUE;
-								dato[2] = DB_FALSE;
-								
-								productoQueryId += "Letrado";
-	 							servicioQueryId += "Letrado";
-						} else {
- 							dato[1] = DB_FALSE;
- 							hmServicioParams.put("automatico", DB_FALSE);
-						}
-								
-						%>							
-							<div class="producto" style="<%=productoStyle%>">
-							<siga:Select id="producto"
-										queryId="<%=productoQueryId %>"
-										queryParamId="idproductoinstitucion"
-										parentQueryParamIds="idtipoproducto,idproducto"
-										params="<%=UtilidadesString.createJsonString(hmProductoParams) %>"
-										selectedIds="<%=sIdProductoInstitucion %>"
-										width="250"/>
-							</div>
-							<div class="servicio" style="<%=servicioStyle%>">
-							<siga:Select id="servicio"
-										queryId="<%=servicioQueryId %>"
-										queryParamId="idservicioinstitucion"
-										parentQueryParamIds="idtiposervicio,idservicio"
-										params="<%=UtilidadesString.createJsonString(hmServicioParams) %>"
-										selectedIds="<%=sIdServicioInstitucion %>"
-										width="250"/>
-							</div>
-					</td>
-
 					<td>
-						<html:button property="idButton" styleId="btnSolicitar" styleClass="button">
-							<siga:Idioma key="general.boton.solicitarCompra" />
-						</html:button>
-					</td>					
-
-				</tr>
-				<tr>																					
-					<td id ="presentador" class="labelText" width="50px" style="<%=stylePresentador%>">
-							<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
-					</td>
-					<td id = "comboPresentador" colspan="7" style="<%=stylePresentador%>">
-						<siga:Select id="idInstitucionPresentador"
-									queryId="getInstitucionesAbreviadas"
-									selectedIds="<%=idInstitucionPresentador%>"
-									readOnly="<%=soloLectura%>"
-									width="240"/>
-					</td>
-										
-					<td id="campoBlancoPresentador" style="<%=stylePresentador%>">&nbsp;</td>
-					<td id="campoBlanco" colspan="6" style="<%=styleCampoBlanco%>">&nbsp;</td>
+						<table class="tablaCampos" align="center" border="0">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="pys.solicitudCompra.literal.catalogo" />&nbsp;(*)
+								</td>
+								<td id="catalogo_td">
+	<%
+									//cmbCatalogo= Select trim('P') AS ID, 'PRODUCTO' AS DESCRIPCION FROM DUAL UNION select trim('S') AS ID,'SERVICIO' AS DESCRIPCION FROM DUAL UNION select trim('C') AS ID,'CERTIFICADO' AS DESCRIPCION FROM DUAL
+									// CAMBIAMOS ESTE COMBO POR JSON (NO HACE FALTA IR A BASE DE DATOS)
+									List<KeyValue> catalogoOptions = new ArrayList<KeyValue>();
+									catalogoOptions.add(new KeyValue("C", "CERTIFICADO"));
+									catalogoOptions.add(new KeyValue("P", "PRODUCTO"));
+									catalogoOptions.add(new KeyValue("S", "SERVICIO"));
+									
+									String catalogoDisabled = "false";
+									String catalogoSelected = valorCatalog;
+									if (deCertificado.equals("1")){
+										catalogoDisabled = "true";
+										catalogoSelected = "C";
+									}
+									
+									String productoStyle = "";
+									String servicioStyle = "display:none;";
+									if (catalogoSelected.equals("S")){
+										productoStyle = "display:none;";
+										servicioStyle = "";
+									}
+	%>
+									<siga:Select id="catalogo"
+										queryId="JSON" 
+										dataJSON="<%=UtilidadesString.createTagSelectDataJson(catalogoOptions)%>"
+										selectedIds="<%=catalogoSelected%>"
+										required="true"
+										disabled="<%=catalogoDisabled%>"
+										width="118"/>						
+								</td>
+						
+								<td class="labelText">></td>							
+								<td id="tipo_td">
+									<div class="producto" style="<%=productoStyle%>" style="<%=productoStyle%>">
+										<siga:Select id="tipoProducto"
+											queryId="getTiposProductos"
+											queryParamId="idtipoproducto"
+											childrenIds="categoriaProducto"
+											selectedIds="<%=sIdTipoProducto%>"
+											width="120"/>
+									</div>				
+							
+									<div class="servicio" style="<%=servicioStyle%>">
+										<siga:Select id="tipoServicio" 
+											queryId="getTiposServicios"
+											queryParamId="idtiposervicio"
+											childrenIds="categoriaServicio"
+											selectedIds="<%=sIdTipoServicio%>"
+											width="120"/>
+									</div>					
+								</td>
+								
+								<td class="labelText">></td>
+								<td id="categoria_td">
+									<div class="producto" style="<%=productoStyle%>">
+										<siga:Select id="categoriaProducto"
+											queryId="getProductosDeTipo"
+											queryParamId="idproducto"
+											parentQueryParamIds="idtipoproducto"
+											params='<%=UtilidadesString.createJsonString("idtipoproducto", sIdTipoProducto) %>'
+											childrenIds="producto"
+											selectedIds="<%=sIdProducto%>"
+											width="120"/>
+									</div>
+															
+									<div class="servicio" style="<%=servicioStyle%>">
+										<siga:Select id="categoriaServicio"
+											queryId="getServiciosDeTipo"
+											queryParamId="idservicio"
+											parentQueryParamIds="idtiposervicio"
+											params='<%=UtilidadesString.createJsonString("idtiposervicio", sIdTipoServicio) %>'
+											childrenIds="servicio"
+											selectedIds="<%=sIdServicio%>"
+											width="120"/>
+									</div>				
+								</td>		
+											
+								<td class="labelText">></td>
+								<td id="producto_servicio_td">
+	<%
+									HashMap<String, String> hmProductoParams = new HashMap<String, String>();
+									hmProductoParams.put("idtipoproducto", sIdTipoProducto);
+									hmProductoParams.put("idproducto", sIdProducto);
+									
+									HashMap<String, String> hmServicioParams = new HashMap<String, String>();
+									hmServicioParams.put("idtiposervicio", sIdTipoServicio);
+									hmServicioParams.put("idservicio", sIdServicio);
+									
+									String productoQueryId = "getProductosInstitucion";
+									String servicioQueryId = "getServiciosInstitucion";
+									if (catalogoSelected.equals("C") || catalogoSelected.equals("")){
+										productoQueryId = "getCertificadosInstitucion";
+									}
+									
+									hmServicioParams.put("solicitaralta", DB_FALSE);
+									hmServicioParams.put("automatico", DB_TRUE);
+									if (esLetrado) {
+											dato[1] = DB_TRUE;
+											dato[2] = DB_FALSE;
+											
+											productoQueryId += "Letrado";
+				 							servicioQueryId += "Letrado";
+									} else {
+			 							dato[1] = DB_FALSE;
+			 							hmServicioParams.put("automatico", DB_FALSE);
+									}								
+	%>							
+									<div class="producto" style="<%=productoStyle%>">
+										<siga:Select id="producto"
+											queryId="<%=productoQueryId %>"
+											queryParamId="idproductoinstitucion"
+											parentQueryParamIds="idtipoproducto,idproducto"
+											params="<%=UtilidadesString.createJsonString(hmProductoParams) %>"
+											selectedIds="<%=sIdProductoInstitucion %>"
+											width="250"/>
+									</div>
+									
+									<div class="servicio" style="<%=servicioStyle%>">
+										<siga:Select id="servicio"
+											queryId="<%=servicioQueryId %>"
+											queryParamId="idservicioinstitucion"
+											parentQueryParamIds="idtiposervicio,idservicio"
+											params="<%=UtilidadesString.createJsonString(hmServicioParams) %>"
+											selectedIds="<%=sIdServicioInstitucion %>"
+											width="250"/>
+									</div>
+								</td>
+	
+								<td>
+									<html:button property="idButton" styleId="btnSolicitar" styleClass="button">
+										<siga:Idioma key="general.boton.solicitarCompra" />
+									</html:button>
+								</td>					
+							</tr>
+							
+							<tr id="presentador" style="<%=stylePresentador%>">
+								<td class="labelText" width="50px">
+									<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
+								</td>
+								
+								<td colspan="5">
+									<siga:Select id="idInstitucionPresentador"
+										queryId="getInstitucionesAbreviadas"
+										selectedIds="<%=idInstitucionPresentador%>"
+										readOnly="<%=soloLectura%>"
+										width="240"/>
+								</td>
+								
+								<td align="left" id="nombreProducto" colspan="2">
+									<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
+							  			styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
+								</td>
+								
+								<td align="left" id="solicitarServicio1">
+									<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
+										<siga:Idioma key="general.boton.search" />
+									</html:button>
+								</td>
+							</tr>						
+							
+							<tr id="campoBlanco" style="<%=styleCampoBlanco%>">																														
+								<td colspan="6">&nbsp;</td>
 																																																							
-					<td align=left id="nombreProducto" colspan="2">
-						<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
-						  styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
-					</td>					
-					<td align=left id="solicitarServicio1">
-						<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
-							<siga:Idioma key="general.boton.search" />
-						</html:button>
-					</td>
+								<td align="left" id="nombreProducto" colspan="2">
+									<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
+							  			styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
+								</td>
+								
+								<td align="left" id="solicitarServicio1">
+									<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
+										<siga:Idioma key="general.boton.search" />
+									</html:button>
+								</td>							
+							</tr>
+						</table>	
+	
+						<input type="hidden" id="solicitaralta" value="<%=hmServicioParams.get("solicitaralta")%>" style="display:none"></input>
+						<input type="hidden" id="automatico" value="<%=hmServicioParams.get("automatico")%>" style="display:none"/></input>	
+					</td>											
 				</tr>
-		</table>	
-			<input type="hidden" id="solicitaralta" value="<%=hmServicioParams.get("solicitaralta")%>" style="display:none"></input>
-			<input type="hidden" id="automatico" value="<%=hmServicioParams.get("automatico")%>" style="display:none"/></input>	
-			</td>											
-		</tr>
-		<!-- FILA -->
-	</html:form>
-</table>
-</div>
-<div id="resultados">
-<div style="position:relative;height:50%;width:100%;">
-		<!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
-		<iframe align="center" src="<%=app%>/html/jsp/productos/productosEncontrados.jsp"
-			id="resultado1"
-			name="resultado1" 
-			scrolling="no"
-			frameborder="0"
-			marginheight="0"
-			marginwidth="0"
-			style="position:relative;height:100%;width:100%;"			 
-			>					
-		</iframe>
-		<!-- FIN: IFRAME LISTA RESULTADOS -->
-</div>
-<div style="position:relative;height:50%;width:100%;">
-		<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
-		<iframe align="center" src="<%=app%>/html/jsp/productos/productosSolicitados.jsp"
-			id="resultado"
-			name="resultado" 
-			scrolling="no"
-			frameborder="0"
-			marginheight="0"
-			marginwidth="0"					 
-			style="position:relative;height:100%;width:100%;"
-			>					
-		</iframe>
-</div>
-</div>
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+			</html:form>
+		</table>
+	</div>
+
+	<div id="resultados">
+		<div style="position:relative;height:50%;width:100%;">
+			<!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
+			<iframe align="center" src="<%=app%>/html/jsp/productos/productosEncontrados.jsp"
+				id="resultado1"
+				name="resultado1" 
+				scrolling="no"
+				frameborder="0"
+				marginheight="0"
+				marginwidth="0"
+				style="position:relative;height:100%;width:100%;"></iframe>
+			<!-- FIN: IFRAME LISTA RESULTADOS -->
+		</div>	
+		
+		<div style="position:relative;height:50%;width:100%;">
+			<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
+			<iframe align="center" src="<%=app%>/html/jsp/productos/productosSolicitados.jsp"
+				id="resultado"
+				name="resultado" 
+				scrolling="no"
+				frameborder="0"
+				marginheight="0"
+				marginwidth="0"					 
+				style="position:relative;height:100%;width:100%;"></iframe>
+		</div>
+	</div>
+
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
