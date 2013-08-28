@@ -39,6 +39,7 @@ body {
 }
 select {
   border: 1px solid #333333;
+  white-space: nowrap;
 }
 checkbox {
   font-size: 13px;
