@@ -239,7 +239,7 @@
 	String tamanosCol = "";
 	String nombresCol = "";
 	
-	tamanosCol = "8,9,12,11,17,6,8,8,7,7,10";
+	tamanosCol = "7,6,15,9,15";
 	nombresCol = "cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
 %>
 

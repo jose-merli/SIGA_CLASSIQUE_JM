@@ -1361,10 +1361,7 @@
 						</siga:ConjCampos>
 	
 <%
-						if (bEstado) {
-							String comboHijo = "";
-							if (bEstado)
-								comboHijo = "Hijo:comboEstados";
+						if (bEstado) {							
 %>
 							<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
 								<table class="tablaCampos" align="center" border="0">

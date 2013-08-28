@@ -139,7 +139,7 @@
 			 			 censo.resultadosSolicitudesModificacion.literal.idSolicitud,censo.resultadosSolicitudesModificacion.literal.tipoModificacion,
 			  			 censo.resultadosSolicitudesModificacion.literal.nColegiado,censo.resultadosSolicitudesModificacion.literal.Nombre,
 			  			 censo.resultadosSolicitudesModificacion.literal.fecha,censo.resultadosSolicitudesModificacion.literal.descripcion,"
-			columnSizes="6,8,6,16,8,18,8,20,10"
+			columnSizes="5,8,6,16,8,18,8,20,10"
 			modal="<%=tamanho%>">
 
 			<%if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ) {%>

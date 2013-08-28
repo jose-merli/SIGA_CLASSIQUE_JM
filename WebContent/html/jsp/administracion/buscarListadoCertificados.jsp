@@ -95,7 +95,7 @@
 		   	      name="tablaDatos"
 		   		  border="1"
 		   		  columnNames="administracion.certificados.literal.nombre,administracion.certificados.literal.numeroSerie,administracion.certificados.literal.fechaCaducidad,administracion.certificados.literal.pendienteRevocar,administracion.certificados.literal.roles,&nbsp;"
-		   		  columnSizes="20,35,10,10,15,10"
+		   		  columnSizes="20,40"
 		   		  modal="M">
 <%
 				if (resultado==null || resultado.size()==0)

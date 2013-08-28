@@ -85,15 +85,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript">
-		function mostrarCalendario(numfila){
-			var resultado;			
-			var tabla;
-			tabla = document.getElementById('listadoCalendario');
-			resultado = showCalendarGeneral(tabla.rows[numfila].cells[0].all[4]);
-		}		
-	</script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 </head>
 
 <body>

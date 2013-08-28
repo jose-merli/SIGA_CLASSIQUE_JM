@@ -102,15 +102,15 @@
 <siga:Table 
 	name="tablaDatos" 
 	border="1"
-	columnNames="	Fecha,
+	columnNames="Fecha,
 				Nombre Facturación,
 				informes.sjcs.pagos.literal.turnos,
 				informes.sjcs.pagos.literal.guardias,
 				informes.sjcs.pagos.literal.ejg,
 				informes.sjcs.pagos.literal.soj,
 		   		factSJCS.detalleFacturacion.literal.importe,"
-	columnSizes="18,38,8,8,8,8,8,4"
-	fixedHeight="90%">
+	columnSizes="18,38"
+	fixedHeight="95%">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<%

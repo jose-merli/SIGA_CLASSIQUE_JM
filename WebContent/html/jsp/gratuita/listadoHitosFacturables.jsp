@@ -222,6 +222,7 @@
     {
       initAB ();
       initC ();
+      ajusteAltoMain('scrollValores', 22);
     } //init ()
     
     /** 
@@ -1042,7 +1043,7 @@
   <!---------------------------------------------------------------->
   
 </head>
-<body onload="ajusteAltoBotones('scrollValores');init();" >
+<body onload="init()" >
   <table width="100%" cellspacing=0>
   	<tr class="titulitosDatos">
     <td width="50%">
@@ -1061,7 +1062,7 @@
     <html:hidden property = "importeMax" value = ""/>
     <html:hidden property = "actionModal" value = ""/>
     
-    <div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; border: white;">
+    <div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white;">
       <%
         if (existenHitos.equals ("0")) {
             tamano=25;

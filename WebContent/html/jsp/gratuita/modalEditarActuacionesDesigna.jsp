@@ -687,11 +687,16 @@
 						</td>
 						<td>	
 						<% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")) { %>
-						 <siga:Fecha nombreCampo="fechaJustificacion"  disabled="true" valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
-						 <%}else{%>
-							<siga:Fecha nombreCampo="fechaJustificacion"   valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
-						<%} %>
-						
+						<script type="text/javascript">
+						jQuery(function(){
+							jQuery("#fechaJustificacion").removeClass("box");
+							jQuery("#fechaJustificacion").addClass("boxConsulta");
+							jQuery("#fechaJustificacion").attr("disabled", true);
+							jQuery("#fechaJustificacion-datepicker-trigger").hide();
+						});
+						</script>
+						 <%}%>
+						<siga:Fecha nombreCampo="fechaJustificacion"   valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
 						
 												
 						</td>						
@@ -909,23 +914,21 @@
 
 		function validarJustificacion () {
 				if(document.forms[0].actuacionValidada.value=="1"){
-					document.forms[0].fechaJustificacion.className="box";
+					jQuery("#fechaJustificacion").removeClass("boxConsulta");
+					jQuery("#fechaJustificacion").addClass("box");
+					jQuery("#fechaJustificacion-datepicker-trigger").show();
+					jQuery("#fechaJustificacion").removeAttr("disabled");
+					
 					document.forms[0].actuacionValidada.value="0";
-					//document.getElementById("calendarioTd").style.visibility="visible";
 					
 					document.forms[0].fechaJustificacion.value="";
 					document.forms[0].estadoActuacion.value= "";
-					if (jQuery("#calendario_fechaJustificacion").length > 0){
-						jQuery("#calendario_fechaJustificacion").show();
-					} else {
-						jQuery("#fechaJustificacion").after('<a href="javascript://" onclick="return showCalendarGeneral(fechaJustificacion);"><img id="calendario_fechaJustificacion" src="/SIGA/html/imagenes/calendar.gif" border="0"></a>');
-					}
-					
 				}else{
-					document.forms[0].fechaJustificacion.className="boxConsulta";					
-					document.forms[0].actuacionValidada.value="1";
-					//document.getElementById("calendarioTd").style.visibility="hidden";
-					jQuery("#calendario_fechaJustificacion").hide();
+					jQuery("#fechaJustificacion").removeClass("box");
+					jQuery("#fechaJustificacion").addClass("boxConsulta");
+					jQuery("#fechaJustificacion-datepicker-trigger").hide();
+					jQuery("#fechaJustificacion").attr("disabled", true);
+					document.forms[0].actuacionValidada.value="1";					
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 					if((document.forms[0].fechaJustificacion.value==null)||(document.forms[0].fechaJustificacion.value=="")){					
 						document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
