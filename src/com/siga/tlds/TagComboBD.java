@@ -349,7 +349,7 @@ public class TagComboBD extends TagSupport {
 								aux += "<br>";
 							}
 							aux += " <input type=\"hidden\"  name=\"" + this.nombre + "\" value=\""+dato.getIdNombre()+"\"/>";
-							aux += " <input type=\"text\" readonly class=\""+this.clase+"\" value=\""+UtilidadesString.getMensajeIdiomaCombo(usrbean,dato.getNombre())+"\" style=\"width:" + this.ancho + ";\"/>";
+							aux += " <input type=\"text\" readonly class=\""+this.clase+"\" value=\""+UtilidadesString.getMensajeIdiomaCombo(usrbean,dato.getNombre())+"\" style=\"width:" + this.ancho + "px;\"/>";
 							varios = true;
 						}
 					}	
