@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.84 2013-08-23 12:46:50 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.85 2013-08-28 09:58:11 jose Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1890,8 +1890,7 @@ function ajusteAltoMain(nObj, menos) {
 				hCont =  windowHeight - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top;
 				//alert("final iframe mainWorkArea : "+hCont);
 				if (hCont > 0){
-					obj.style.height = hCont;
-			        obj.style.pixelHeight = hCont;
+					jQuery(obj).height(hCont);
 				}
 				
 			} else {
@@ -1900,8 +1899,7 @@ function ajusteAltoMain(nObj, menos) {
 				//hCont = jQuery.height(window) - jQuery.offset(obj, this.parent.document).top - menos;
 				//alert("final iframe other : "+hCont);
 				if (hCont > 0){
-					obj.style.height = hCont;
-					obj.style.pixelHeight = hCont;
+					jQuery(obj).height(hCont);
 				}
 			}
 			var innerFixedHeadertables = jQuery(obj).contents().find("table.fixedHeaderTable");
@@ -1938,11 +1936,11 @@ function ajusteAltoMain(nObj, menos) {
 			}
 			hCont = hCont - menos;
 			if (hCont > 0){
-			//alert("final height = "+hCont);
-			obj.style.height = hCont;
-			obj.style.pixelHeight = hCont;
+				//alert("final height = "+hCont);
+				jQuery(obj).height(hCont)
 			}
 		}
+		
 	}
 }
 
