@@ -2526,9 +2526,9 @@ public class EnvioInformesGenericos extends MasterReport {
 	}
 	
 	
-	public void enviarInformeGenericoTelematico(UsrBean usrBean,Vector vDestProgramInfBean, EnvProgramInformesBean programInfBean,Vector vPlantillasInforme,EnvEnvioProgramadoBean envioProgramadoBean) throws ClsExceptions,SIGAException {
-		for (int j = 0; j < vDestProgramInfBean.size(); j++) {//Se recorren los destinatarios (aunque en principio siempre será único para envios telematicos)
-			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean.get(j);
+	public void enviarInformeGenericoTelematico(UsrBean usrBean,EnvDestProgramInformesBean destProgramInfBean, EnvProgramInformesBean programInfBean,Vector vPlantillasInforme,EnvEnvioProgramadoBean envioProgramadoBean) throws ClsExceptions,SIGAException {
+//		for (int j = 0; j < vDestProgramInfBean.size(); j++) {//Se recorren los destinatarios (aunque en principio siempre será único para envios telematicos)
+//			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean.get(j);
 			ArrayList alClavesDestinatario = destProgramInfBean.getClavesDestinatario();
 			List<ScsDesigna> designas = new ArrayList<ScsDesigna>();
 			List<ScsEjg> ejgs = new ArrayList<ScsEjg>();
@@ -2906,7 +2906,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			}//Fin for claves destinatarios
 		
-		}//Fin for destinatarios
+//		}//Fin for destinatarios
 	}	
 	
 	public void enviarInformeGenericoSms(UsrBean usrBean,
@@ -8864,6 +8864,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								.getDestinatariosInformesGenericosProgramados(programInfGenericoBean);
 						Vector vPlantillas = admInformesGenericos
 								.getPlantillasInformesGenericosProgramados(programInfGenericoBean);
+						Vector<EnvDestProgramInformesBean> destProgramInformesBeanOrdinarios = new Vector<EnvDestProgramInformesBean>();
 						for (int j = 0; j < vDestinatarios.size(); j++) {
 							EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestinatarios
 									.get(j);
@@ -8879,29 +8880,24 @@ public class EnvioInformesGenericos extends MasterReport {
 											if(isCodigoEJIS.equals("1")){
  												//Tiene codigo ejis
 												try {
-                                                    envioInformeGenerico.enviarInformeGenericoTelematico(usr,vDestinatarios,programInfGenericoBean,vPlantillas, programInfGenericoBean.getEnvioProgramado());   
+                                                    envioInformeGenerico.enviarInformeGenericoTelematico(usr,destProgramInfBean,programInfGenericoBean,vPlantillas, programInfGenericoBean.getEnvioProgramado());   
                                                 
 												} catch (SIGAException e) {
                                                     ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "	+ destProgramInfBean.getIdPersona() + " " + e.getLiteral(), 3);
                                                 }
 												
 											}else if(isCodigoEJIS.equals("0")){
-												//No tiene codigo ejis
-												programInfGenericoBean.getEnvioProgramado().setIdTipoEnvios(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO));
-												envioInformeGenerico.enviarInformeGenericoOrdinario(usr,vDestinatarios,	programInfGenericoBean,vPlantillas, 
-																	programInfGenericoBean.getEnvioProgramado());
+												destProgramInformesBeanOrdinarios.add(destProgramInfBean);
 												
-												//Actualizar ECOM_COLA
-//												EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-//												EcomCola ecomCola = new EcomCola();
-//												ecomCola.setIdinstitucion(Short.valueOf(programInfGenericoBean.getIdInstitucion().toString()));
-//												ecomCola.setIdoperacion(AppConstants.OPERACION.EJIS_OBTENER_DESTINATARIOS.getId());
-//												ecomColaService.insert(ecomCola);
+												
+												
 											}
 										}
 								}else{	
-									envioInformeGenerico.enviarInformeGenericoTelematico(usr,vDestinatarios,programInfGenericoBean,vPlantillas, 
-											programInfGenericoBean.getEnvioProgramado());
+									//no esta 
+									ClsLogging.writeFileLogWithoutSession(
+											" ----------INFO ENVIOS TELEMATICOS SOLO PARA JUZGADOS ", 3);
+									
 								}
 								
 							} catch (Exception e) {
@@ -8913,6 +8909,19 @@ public class EnvioInformesGenericos extends MasterReport {
 													+ " " + e.toString(), 3);
 							}
 						}
+						try {
+							//No tiene codigo ejis
+							if(destProgramInformesBeanOrdinarios.size()>0){
+								programInfGenericoBean.getEnvioProgramado().setIdTipoEnvios(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO));
+								envioInformeGenerico.enviarInformeGenericoOrdinario(usr,destProgramInformesBeanOrdinarios,	programInfGenericoBean,vPlantillas, 
+										programInfGenericoBean.getEnvioProgramado());
+							}
+						} catch (Exception e) {
+							ClsLogging.writeFileLogWithoutSession(
+									" ----------ERROR ENVIO DE INFORMES GENERICOS telematicos de manera ordinaria PENDIENTES " + e.toString(), 3);
+						}
+ 
+											
 
 					}
 
