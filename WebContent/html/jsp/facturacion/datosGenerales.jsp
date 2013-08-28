@@ -46,14 +46,14 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <!-- JSP -->
-<% 
+<%
+	// Variables generales
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	
-
 	UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 	String idInstitucion = user.getLocation();
 	
+	// Obteniendo datos de la request
 	Vector datosSerie = (Vector)request.getAttribute("datosSerie");
 	Vector datosContador = (Vector)request.getAttribute("datosContador"); 
 	Vector datosPlantilla = (Vector)request.getAttribute("datosPlantilla");
@@ -61,15 +61,11 @@
 	request.removeAttribute("datosPlantilla");	
 	
 	String editable = (String)ses.getAttribute("editable");
-	boolean bEditable = true;
-	
-	if (editable!=null && !editable.equals(""))
-	{
-		bEditable = editable.equals("1");
-	}
+	boolean bEditable = (editable!=null && editable.equals("1"));
 	
 	String accion = (String)ses.getAttribute("accion");
 	
+	// Obteniendo datos de la serie para mostrarlos
 	String sAbreviatura="";
 	String sDescripcion="";
 	Integer iPlantilla=new Integer(-1);
@@ -86,10 +82,9 @@
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
 
-	FacSerieFacturacionBean beanSerie = null;
-
 	if (datosSerie!=null && datosSerie.size()>0) {
-		beanSerie = (FacSerieFacturacionBean)datosSerie.elementAt(0);
+		FacSerieFacturacionBean beanSerie = (FacSerieFacturacionBean)datosSerie.elementAt(0);
+		
 		sAbreviatura = beanSerie.getNombreAbreviado();
 		sDescripcion = beanSerie.getDescripcion();
 		iPlantilla = beanSerie.getIdPlantilla();
@@ -97,23 +92,19 @@
 		enviarFacturas = beanSerie.getEnvioFactura();
 		generarPDF = beanSerie.getGenerarPDF();
 		observaciones = beanSerie.getObservaciones();
-		/*
-		String sWhere = " where ";
-		sWhere += FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
-			  " and "+
-			  FacPlantillaFacturacionBean.T_NOMBRETABLA+"."+ FacPlantillaFacturacionBean.C_IDPLANTILLA+"="+iPlantilla;
 		
-		FacPlantillaFacturacionAdm admPlantilla = new FacPlantillaFacturacionAdm(user);
-		Vector datosPlantilla = admPlantilla.select(sWhere);*/
-		FacPlantillaFacturacionBean beanPlantilla = (FacPlantillaFacturacionBean)datosPlantilla.elementAt(0);
-		sPlantilla = beanPlantilla.getDescripcion();
-		
-		if(beanSerie.getIdTipoPlantillaMail() != null && !beanSerie.getIdTipoPlantillaMail().equals("")){	
-			plantillaEnviosSeleccionada.add(beanSerie.getIdTipoPlantillaMail()+","+user.getLocation() +",1");
+		if (datosPlantilla!=null && datosPlantilla.size()>0) {
+			FacPlantillaFacturacionBean beanPlantilla = (FacPlantillaFacturacionBean)datosPlantilla.elementAt(0);
+			sPlantilla = beanPlantilla.getDescripcion();
+			
+			if(beanSerie.getIdTipoPlantillaMail() != null && !beanSerie.getIdTipoPlantillaMail().equals("")){	
+				plantillaEnviosSeleccionada.add(beanSerie.getIdTipoPlantillaMail()+","+user.getLocation() +",1");
+			}
 		}	
 	
 	}
 
+	// Contadores
 	String idContador="";
 	String prefijo="";
 	String contador="";
@@ -124,9 +115,7 @@
 	
 	// datos seleccionados Combo
 	ArrayList contadorSel = new ArrayList();
-	
-	if (datosContador!=null && datosContador.size()>0)
-	{
+	if (datosContador!=null && datosContador.size()>0) {
 		AdmContadorBean beanContador = (AdmContadorBean)datosContador.elementAt(0);
 		contadorSel.add(beanContador.getIdContador());
 		idContador = beanContador.getIdContador();
@@ -139,35 +128,24 @@
 	parametro[0] = user.getLocation();
 	
 	
-	Enumeration enumTemp = null;
-	int haySec = 0;
-	Row rowTemp = new Row();
-
-	ArrayList vSec = new ArrayList(); // valores originales formas pago automática
-	
 	// Informacion sobre formas de pago automática
 	// Obtener informacion para rellenar en caso de modificacion o consulta
+	Enumeration enumTemp = null;
+	int haySec = 0;
+	Row rowTemp;
+	ArrayList vSec = new ArrayList(); // valores originales formas pago automática
+	
 	if ((accion.equalsIgnoreCase("editar"))||(accion.equalsIgnoreCase("ver"))){
-	//	enumTemp = ((Vector)request.getAttribute("container")).elements();
-		enumTemp = ((Vector) request.getAttribute("container_S"))
-			.elements();
+		enumTemp = ((Vector) request.getAttribute("container_S")).elements();
 		if (enumTemp.hasMoreElements()) {
 			haySec = 1;
 			while (enumTemp.hasMoreElements()) {
 				rowTemp = (Row) enumTemp.nextElement();
-				vSec.add(rowTemp
-						.getString(FacSerieFacturacionBean.C_IDFORMAPAGO));
+				vSec.add(rowTemp.getString(FacSerieFacturacionBean.C_IDFORMAPAGO));
 			}
 		}
 	}
-	String estiloCombo = "boxCombo";
-	boolean lectura = false;
-	if (accion.equalsIgnoreCase("consulta")) {
-		estiloCombo = "boxConsulta";
-		lectura = true;
-	}
 	
-	boolean check = false; 
 %>
 
 
@@ -203,15 +181,19 @@
 		
 			function actualiza() 
 			{
-				if (document.forms[0].envioFacturas.checked==true) {
-					document.forms[0].generarPDF.checked=true;
-					jQuery("#generarPDF").attr("disabled","disabled");
-					jQuery("#idTipoPlantillaMail").removeAttr("disabled");
-				} else {
-					jQuery("#generarPDF").removeAttr("disabled");
-					jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
-
-				}
+				jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
+				
+				<%if (bEditable){%>
+					if (document.forms[0].envioFacturas.checked==true) {
+						document.forms[0].generarPDF.checked=true;
+						jQuery("#generarPDF").attr("disabled","disabled");
+						jQuery("#idTipoPlantillaMail").removeAttr("disabled");
+					} else {
+						jQuery("#generarPDF").removeAttr("disabled");
+						jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
+					}
+				<%}%>
+				
 				return false;
 			}
 
@@ -221,7 +203,6 @@
 				var con = document.getElementById("conta")
 				var con2 = document.getElementById("conta2")
 				if (document.forms[0].configurarContador.checked==true) {
-					check = true;
 					con.style.display='block';
 					con2.style.display='block';
 					comprobarNuevo();
@@ -344,7 +325,7 @@
 											<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
 										</td>
 										<td>
-											<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
+											<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
 										</td>									
 									</tr>
 								</table>
@@ -369,14 +350,13 @@
 		</table>
 		<!-- FIN: CAMPOS DEL REGISTRO -->
 
-<% if (accion.equals("nuevo")) {  %>
-
-	<table class="tablaCentralCampos"style="display:none" >
-	
-<% } else {  %>
+		<% if (accion.equals("nuevo")) {  %>
+		<table class="tablaCentralCampos"style="display:none" >
+		
+		<% } else {  %>
 		<table class="tablaCentralCampos" border="0">
-
-<% }  %>
+		
+		<% }  %>
 
 				<tr border="1">
 					<td style="width:58%" border ="1">		
@@ -448,77 +428,59 @@
 				<table align="center" border="0">
 					<tr>
 						<td width="60%" class="labelText">
-						<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:  
+							<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:  
 						</td>
 						<td width="40%" class="labelText" align="right">
 						<%
-						 	if (vSec.isEmpty()) {
-						 					int i = 0;
-						 %>
-												<%
-													if (accion != "ver") {
-												%> <siga:ComboBD
-													nombre="formaPagoAutomática"
-													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"/> <%
-						 	} else {
-						 %> <siga:ComboBD
-													nombre="formaPagoAutomática"
-													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"
-													readOnly="true" /> <%
-						 	}
-						 %> <%
-						 	} else {
-						
-						 					ArrayList elementoSel = new ArrayList();
-						 					for (int kk = 0; kk < vSec.size(); kk++) {
-						 						elementoSel.add(vSec.get(kk));
-						 					}
-						 %> <%
-						 	if (accion != "ver") {
-						 %> <siga:ComboBD
-													nombre="formaPagoAutomática"
-													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true"/> <%
-						 	} else {
-						 %>
-												<siga:ComboBD nombre="formaPagoAutomática"
-													tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true"
-													readOnly="true" /> <%
-						 	}
-						 %> <%
-						 	}
-						 %> 
-						 <br/>
+							if (! vSec.isEmpty()) {
+			 					ArrayList elementoSel = new ArrayList();
+			 					for (int kk = 0; kk < vSec.size(); kk++) {
+			 						elementoSel.add(vSec.get(kk));
+			 					}
+							}
+			 					
+							if (vSec.isEmpty()) {
+								if (accion != "ver") {
+						%>
+							<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
+						<%
+								} else {
+						%>
+							<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true" readOnly="true" />
+						<%
+								}
+							} else { 
+								if (accion != "ver") {
+						%>
+							<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true"/>
+						<%
+								} else {
+						%>
+							<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" readOnly="true" />
+						<%
+								}
+							}
+						%> 
 						</td>
 					</tr>
 				</table>
 			</siga:ConjCampos>
 			</td>
 		</tr>
-	
-<% if (accion.equals("nuevo")) {  %>
-
-	</table>
-	
-<% } else {  %>
 	</table>
 
-<% }  %>	
 <% if (accion.equals("nuevo")) {  %>
 	<table class="tablaCentralCampos" >
 		<tr>
-			<td style="width:100%"><!-- SUBCONJUNTO DE DATOS --> <!-- Conjunto de campos recuadrado y con titulo -->
+			<td style="width:100%">
 				<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
 					<table align="center" border="0">
 						<tr>
-							<td width="60%" class="labelText" align="left"><siga:Idioma
-								key="facturacion.serios.literal.formaPagoSeleccionar" />:  
+							<td width="60%" class="labelText" align="left">
+								<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:  
 							</td>
 							<td width="40%" class="labelText" align="right">
-								<%
-								int i = 0;
-								%> <siga:ComboBD
-									nombre="formaPagoAutomática"
-									tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true"/>
+								<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
 								<br/>
 							</td> 
 						</tr>
