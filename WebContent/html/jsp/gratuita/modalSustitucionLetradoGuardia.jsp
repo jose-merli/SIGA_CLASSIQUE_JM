@@ -121,136 +121,135 @@
 				<siga:ConjCampos leyenda="gratuita.modalSustitucionLetrado.literal.informacionGuardia">
 					<table class="tablaCampos" align="left" border="0" width="100%">
 						<tr>
-									<td class="labelText">
-										<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.turno"/>:			
-									</td>
-									<td>
-										<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly="true" style="width:220px">
-									</td>		
-									<td class="labelText">
-										<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.guardia"/>:
-										
-									</td>
-									<td >
-										<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly="true"  style="width:220px">
-									</td>	
-						</tr>
-						<!-- SI A ESTA PAGINA LLEGAMOS DESDE LA PESTAÑA DE CALENDARIO DE GUARDIAS DE LA FICHA COLEGIAL MOSTRAMOS 
-						 LA FECHA DE INICIO Y LA FECHA DE FIN //-->
-						
-						<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>
-					
-						<tr>
 							<td class="labelText">
-								<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>:
+								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.turno"/>:			
 							</td>
-							<td >
-								<html:text name="PermutasForm" property="fechaInicio" styleId="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true"></html:text>
+							<td>
+								<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly="true" style="width:220px">
 							</td>		
+							
 							<td class="labelText">
-								<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>:
+								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.guardia"/>:								
 							</td>
 							<td >
-								<html:text name="PermutasForm" property="fechaFin" styleId="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true"></html:text>
-							</td>
+								<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly="true"  style="width:220px">
+							</td>	
 						</tr>
-					
+						
+						<!-- SI A ESTA PAGINA LLEGAMOS DESDE LA PESTAÑA DE CALENDARIO DE GUARDIAS DE LA FICHA COLEGIAL MOSTRAMOS LA FECHA DE INICIO Y LA FECHA DE FIN //-->						
+						<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>					
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>:
+								</td>
+								<td> 
+									<html:text name="PermutasForm" property="fechaInicio" styleId="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true" />
+								</td>
+										
+								<td class="labelText">
+									<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>:
+								</td>
+								<td>
+									<html:text name="PermutasForm" property="fechaFin" styleId="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true" />
+								</td>
+							</tr>					
 						<% } %>		
-
 					</table>
 				</siga:ConjCampos>		
 			</td>
 		</tr>
+		
 		<tr>
-			<td >
-				
-							<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
-								<table class="tablaCampos" border="0" >		
-									<tr id="mifila">
-										<td colspan="4"> 
-											<html:hidden  property="flagSalto" styleId="flagSalto" value=""></html:hidden>
-											<html:hidden  property="flagCompensacion" styleId="flagCompensacion" value=""></html:hidden>
-											<html:hidden  property="fecha" styleId="fecha" value="<%=fechaHoy%>"></html:hidden>
-											<siga:BusquedaSJCS nombre="<%=nombreForm%>" propiedad="seleccionLetrado" concepto="Guardia" operacion="Sustitucion"
-												botones="M,A" campoTurno="idTurno" campoGuardia="idGuardia" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado"
-												campoFecha="fecha" campoPersona="idPersona" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion"
-												campoCompensacion="compensacion" campoSalto="salto" mostrarNColegiado="true" mostrarNombreColegiado="true"
-												modo="editar"/>
-										</td> 
-									</tr>
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
-										</td>		
-										<td>
-											<input type="text" name="ncolegiado" id="ncolegiado" class="boxConsulta" readOnly value="" size="6">
-										</td>
-										<td class="labelText">
-											<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
-										</td>
-										<td>
-											<input type="text" name="nomColegiado" id="nomColegiado" class="boxConsulta" readOnly value="" size="50">
-										</td>			
-									</tr>									
-								</table>
-							</siga:ConjCampos>		
-				
+			<td>				
+				<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
+					<table class="tablaCampos" border="0" >		
+						<tr id="mifila">
+							<td colspan="4"> 
+								<html:hidden  property="flagSalto" styleId="flagSalto" value=""></html:hidden>
+								<html:hidden  property="flagCompensacion" styleId="flagCompensacion" value=""></html:hidden>
+								<html:hidden  property="fecha" styleId="fecha" value="<%=fechaHoy%>"></html:hidden>
+								<siga:BusquedaSJCS nombre="<%=nombreForm%>" propiedad="seleccionLetrado" concepto="Guardia" operacion="Sustitucion"
+									botones="M,A" campoTurno="idTurno" campoGuardia="idGuardia" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado"
+									campoFecha="fecha" campoPersona="idPersona" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion"
+									campoCompensacion="compensacion" campoSalto="salto" mostrarNColegiado="true" mostrarNombreColegiado="true"
+									modo="editar"/>
+							</td> 
+						</tr>
+						
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
+							</td>		
+							<td>
+								<input type="text" name="ncolegiado" id="ncolegiado" class="boxConsulta" readOnly value="" size="6">
+							</td>
+							
+							<td class="labelText">
+								<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
+							</td>
+							<td>
+								<input type="text" name="nomColegiado" id="nomColegiado" class="boxConsulta" readOnly value="" size="50">
+							</td>			
+						</tr>									
+					</table>
+				</siga:ConjCampos>						
 			</td>
 		</tr>
 	
-	
-								<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>
-	    								<tr>			
-	     									<td>
-											<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
-			  									<table class="tablaCampos" align="left" border="0" width="100%">
-												<tr>
-													<td class="labelText">
-										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
-													</td>
-													<td >
-														<html:textarea name="PermutasForm" property="comenSustitucion" styleId="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
-													</td>	
-										
-												</tr>
-												</table>
-				
-		    								</siga:ConjCampos>	
-											</td>		
-									  </tr>	
-									  
-								<% }else {%>
-								
-								<tr>			
-	     									<td>
-											<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
-			  									<table class="tablaCampos" align="left" border="0" width="100%">
-												<tr>
-													<td class="labelText">
-										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
-													</td>
-													<td >
-														<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" styleId="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
-													</td>	
-										
-												</tr>
-												</table>
-				
-		    								</siga:ConjCampos>	
-											</td>		
-									  </tr>								
-								<% }%>										
-		</table>	
-	</html:form>			
+		<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>
+			<tr>			
+				<td>
+					<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
+						<table class="tablaCampos" align="left" border="0" width="100%">
+							<tr>
+								<td class="labelText">
+				 					<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
+								</td>
+								<td>
+									<html:textarea name="PermutasForm" property="comenSustitucion" styleId="comenSustitucion"									
+										onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" 
+										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;" 
+										styleClass="box" readOnly="false" ></html:textarea>
+								</td>					
+							</tr>
+						</table>
+					</siga:ConjCampos>	
+				</td>		
+			  </tr>	
+			  
+		<% }else { %>		
+			<tr>			
+				<td>
+					<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
+						<table class="tablaCampos" align="left" border="0" width="100%">
+							<tr>
+								<td class="labelText">
+				 					<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
+								</td>
+								<td>
+									<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" styleId="comenSustitucion" 
+										onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" 
+										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;"
+										styleClass="box" readOnly="false" ></html:textarea>
+								</td>					
+							</tr>
+						</table>
+					</siga:ConjCampos>	
+				</td>		
+			 </tr>								
+		<% }%>										
+	</table>	
+</html:form>			
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
 	<!-- INICIO: BOTONES REGISTRO -->
 	<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
 	<!-- FIN: BOTONES REGISTRO -->
+	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
-		//Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {		
 			sub();
 			//Chequeo que ha seleccionado un valor de la lista:
@@ -289,7 +288,7 @@
 			}			
 		}
 
-		//Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}
@@ -306,7 +305,7 @@
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
 
 </body>
