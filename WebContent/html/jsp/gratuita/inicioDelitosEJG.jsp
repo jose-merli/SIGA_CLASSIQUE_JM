@@ -314,10 +314,22 @@
 			else
 				document.getElementById("codigoExtComisaria").value = "";
 		}	
+		
+		function calcularAltura() {			
+			if (jQuery('table.botonesDetalle').exists()) {
+				var tablaBotones = jQuery('table.botonesDetalle')[0];						
+				var tablaDatos = jQuery('#divResultados')[0];
+				
+				var posTablaBotones = tablaBotones.offsetTop;
+				var posTablaDatos = tablaDatos.offsetTop;
+				
+				jQuery('#divResultados').height(posTablaBotones - posTablaDatos);
+			}		
+		}			
 	</script>	
 </head>
 
-<body onload="refrescarLocal();">
+<body onload="refrescarLocal();calcularAltura();">
 	
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 
@@ -855,27 +867,29 @@
 	}
 %>
 
-	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-
-<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-	id="resultado"
-	name="resultado" 
-	scrolling="no"
-	frameborder="0"
-	marginheight="0"
-	marginwidth="0"					 				
-	style="position:relative;height:112px;width:100%;"></iframe>
-
-
-<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-	id="resultado1"
-	name="resultado1" 
-	scrolling="no"
-	frameborder="0"
-	marginheight="0"
-	marginwidth="0"					 
-	style="position:relative;height:112px;width:100%;"></iframe>	
-<!-- FIN: IFRAME LISTA RESULTADOS -->
+<div id="divResultados">
+	<div style="position:relative;height:50%;width:100%;">
+		<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+			id="resultado"
+			name="resultado" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"					 				
+			style="position:relative;height:100%;width:100%;"></iframe>
+	</div>	
+		
+	<div style="position:relative;height:50%;width:100%;">
+		<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+			id="resultado1"
+			name="resultado1" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"					 
+			style="position:relative;height:100%;width:100%;"></iframe>	
+	</div>
+</div>
 
 <siga:ConjBotonesAccion botones="V"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	
 		

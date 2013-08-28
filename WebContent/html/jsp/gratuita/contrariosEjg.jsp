@@ -81,7 +81,7 @@
 	</script>
 </head>
 
-<body class="tablaCentralCampos" onload="buscarContrarios()">
+<body class="tablaCentralCampos" onload="buscarContrarios();ajusteAlto('resultado');">
 	<!-- INICIO: LISTA DE VALORES -->
 	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 	<!-- Formulario de la lista de detalle multiregistro -->

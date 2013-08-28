@@ -20,13 +20,9 @@
 
 <!-- JSP -->
 
-
-
 <!-- HEAD -->
-
 	<title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -42,182 +38,173 @@
 
 <body>
 
-
-<!-- TITULO -->
-<!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.gestionInscripciones.consulta.titulo" />
-		</td>
-	</tr>
-</table>
-
-
-<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
-<!-- INICIO: CAMPOS -->
-<!-- Zona de campos de busqueda o filtro -->
-
-
-<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
-
-	<table width="100%" border="0">
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
-			<td width="25%"></td>
-			<td width="74%"></td>
-
-
-
-		</tr>
-		<tr>
-			<!-- obtenemos los campos para el alta de turnos -->
-			<td class="labelText"><siga:Idioma
-				key="gratuita.altaTurnos.literal.fsolicitud" /></td>
-			<td class="labelText"><c:out
-				value="${InscripcionTGForm.fechaSolicitudJsp}">
-			</c:out></td>
-
-		</tr>
-		<tr>
-
-
-			<td class="labelText"><siga:Idioma
-				key="gratuita.altaTurnos.literal.osolicitud" /></td>
-			<td><html:textarea name="InscripcionTGForm"
-				property="observacionesSolicitud" cols="65" rows="2"
-				onkeydown="cuenta(this,1024);" styleClass="box"
-				style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.gestionInscripciones.consulta.titulo" />
 			</td>
 		</tr>
-		<c:if test="${InscripcionTGForm.fechaValidacion!=null}">
-		
-		
-			<tr>
-				<td class="labelText"><siga:Idioma
-					key="gratuita.altaTurnos.literal.fvalidacion" /></td>
-				<td class="labelText"><c:out
-					value="${InscripcionTGForm.fechaValidacionJsp}">
-				</c:out></td>
-			</tr>
-			<tr>
-		
-	
-				<td class="labelText"><siga:Idioma
-					key="gratuita.altaTurnos.literal.ovalidacion" /></td>
-				<td><html:textarea name="InscripcionTGForm"
-					property="observacionesValidacion" onChange="cuenta(this,1024)"
-					cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
-					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
-				</td>
-	
-			</tr>
-		</c:if>
-		<c:if test="${InscripcionTGForm.fechaDenegacion!=null&&InscripcionTGForm.fechaSolicitudBaja==null}">
-		
-		
-			<tr>
-				<td class="labelText">Fecha Denegacion</td>
-				<td class="labelText"><c:out
-					value="${InscripcionTGForm.fechaDenegacionJsp}">
-				</c:out></td>
-			</tr>
-			<tr>
-		
-	
-				<td class="labelText">Obs. denegacion</td>
-				<td><html:textarea name="InscripcionTGForm"
-					property="observacionesDenegacion" onChange="cuenta(this,1024)"
-					cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
-					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
-				</td>
-	
-			</tr>
-		</c:if>
 	</table>
 
-</siga:ConjCampos>
-<c:if test="${InscripcionTGForm.fechaSolicitudBaja!=null&&InscripcionTGForm.fechaSolicitudBaja!=''}">
-	<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
+	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">
 		<table width="100%" border="0">
 			<tr>
 				<td width="25%"></td>
-				<td width="75%"></td>
-	
+				<td width="74%"></td>
 			</tr>
+			
 			<tr>
 				<!-- obtenemos los campos para el alta de turnos -->
-				<td class="labelText"><siga:Idioma
-					key="gratuita.altaTurnos.literal.fsolicitud" /></td>
-				<td class="labelText"><c:out
-					value="${InscripcionTGForm.fechaSolicitudBajaJsp}"></c:out></td>
-	
-	
+				<td class="labelText">
+					<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
+				</td>
+				<td class="labelText">
+					<c:out 	value="${InscripcionTGForm.fechaSolicitudJsp}"></c:out>
+				</td>	
 			</tr>
+		
 			<tr>
-	
-				<td class="labelText"><siga:Idioma
-					key="gratuita.altaTurnos.literal.mbaja" /></td>
-				<td><html:textarea name="InscripcionTGForm"
-					property="observacionesBaja" onChange="cuenta(this,1024)" cols="65"
-					rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
-					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.altaTurnos.literal.osolicitud" />
+				</td>
+				<td>
+					<html:textarea name="InscripcionTGForm" property="observacionesSolicitud"						
+						style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+						styleClass="boxConsulta" readonly="true"></html:textarea>
 				</td>
 			</tr>
-			<c:if test="${InscripcionTGForm.fechaDenegacion!=null&&InscripcionTGForm.fechaSolicitudBaja!=null}">
 		
-		
-			<tr>
-				<td class="labelText">Fecha Denegacion</td>
-				<td class="labelText"><c:out
-					value="${InscripcionTGForm.fechaDenegacionJsp}">
-				</c:out></td>
-			</tr>
-			<tr>
-		
-	
-				<td class="labelText">Obs. denegacion</td>
-				<td><html:textarea name="InscripcionTGForm"
-					property="observacionesDenegacion" onChange="cuenta(this,1024)"
-					cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
-					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
-				</td>
-	
-			</tr>
-		</c:if>
-			
-			<c:if test="${InscripcionTGForm.fechaBaja!=null}">
-			<tr>
-				<td class="labelText"><siga:Idioma
-					key="gratuita.altaTurnos.literal.fabaja" /></td>
-				<td class="labelText"><c:out
-					value="${InscripcionTGForm.fechaBajaJsp}">
-				</c:out></td>
-	
-			</tr>
-			<tr>
-		
-	
-				<td class="labelText">Obs. Baja</td>
-				<td><html:textarea name="InscripcionTGForm"
-					property="observacionesValBaja" onChange="cuenta(this,1024)"
-					cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
-					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
-				</td>
-	
-			</tr>
+			<c:if test="${InscripcionTGForm.fechaValidacion!=null}">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
+					</td>
+					<td class="labelText">
+						<c:out value="${InscripcionTGForm.fechaValidacionJsp}"></c:out>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.ovalidacion" />
+					</td>
+					<td>
+						<html:textarea name="InscripcionTGForm" property="observacionesValidacion"
+							style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+							styleClass="boxConsulta" readonly="true"></html:textarea>
+					</td>
+				</tr>				
 			</c:if>
-	
+			
+			<c:if test="${InscripcionTGForm.fechaDenegacion!=null && InscripcionTGForm.fechaSolicitudBaja==null}">
+				<tr>
+					<td class="labelText">
+						Fecha Denegacion
+					</td>
+					<td class="labelText">
+						<c:out value="${InscripcionTGForm.fechaDenegacionJsp}"></c:out>
+					</td>
+				</tr>
+			
+				<tr>
+					<td class="labelText">
+						Obs. denegacion
+					</td>
+					<td>
+						<html:textarea name="InscripcionTGForm" property="observacionesDenegacion" 
+							style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+							styleClass="boxConsulta" readonly="true"></html:textarea>
+					</td>	
+				</tr>
+			</c:if>
 		</table>
-	
 	</siga:ConjCampos>
-</c:if>
-<siga:ConjBotonesAccion botones="C"/>
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-<iframe name="submitArea"
-	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-	style="display: none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	
+	<c:if test="${InscripcionTGForm.fechaSolicitudBaja!=null&&InscripcionTGForm.fechaSolicitudBaja!=''}">
+		<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudBaja">
+			<table width="100%" border="0">
+				<tr>
+					<td width="25%"></td>
+					<td width="75%"></td>		
+				</tr>
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" /></td>
+					<td class="labelText">
+						<c:out value="${InscripcionTGForm.fechaSolicitudBajaJsp}"></c:out>
+					</td>
+				</tr>
+				
+				<tr>		
+					<td class="labelText">
+						<siga:Idioma key="gratuita.altaTurnos.literal.mbaja" />
+					</td>
+					<td>
+						<html:textarea name="InscripcionTGForm" property="observacionesBaja" 
+							style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+							styleClass="boxConsulta" readonly="true"></html:textarea>
+					</td>
+				</tr>
+				
+				<c:if test="${InscripcionTGForm.fechaDenegacion!=null && InscripcionTGForm.fechaSolicitudBaja!=null}">
+					<tr>
+						<td class="labelText">
+							Fecha Denegacion
+						</td>
+						<td class="labelText">
+							<c:out value="${InscripcionTGForm.fechaDenegacionJsp}"></c:out>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText">
+							Obs. denegacion
+						</td>
+						<td>
+							<html:textarea name="InscripcionTGForm" property="observacionesDenegacion" 
+								style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+								styleClass="boxConsulta" readonly="true"></html:textarea>
+						</td>			
+					</tr>
+				</c:if>
+				
+				<c:if test="${InscripcionTGForm.fechaBaja!=null}">
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.altaTurnos.literal.fabaja" />
+						</td>
+						<td class="labelText">
+							<c:out value="${InscripcionTGForm.fechaBajaJsp}"></c:out>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="labelText">
+							Obs. Baja
+						</td>
+						<td>
+							<html:textarea name="InscripcionTGForm" property="observacionesValBaja" 
+								style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
+								styleClass="boxConsulta" readonly="true"></html:textarea>
+						</td>		
+					</tr>
+				</c:if>		
+			</table>		
+		</siga:ConjCampos>
+	</c:if>
+	
+	<siga:ConjBotonesAccion botones="C"/>
+	
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 
 </body>
 </html>
