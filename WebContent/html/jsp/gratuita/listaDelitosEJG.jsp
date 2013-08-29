@@ -94,7 +94,6 @@
 	   border="2"
 	   columnNames="gratuita.mantenimientoTablasMaestra.literal.delito,"
 	   columnSizes="90,10"
-	   fixedHeight="59%"
 	   modal="P">
 
 <% 

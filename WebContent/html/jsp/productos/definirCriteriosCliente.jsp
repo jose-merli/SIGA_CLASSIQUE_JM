@@ -105,12 +105,9 @@
 				int cont = 0;
 				if (!seguir) {
 			%>
-			
-				<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+				<tr class="notFound">
+	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>	 
 			
 			<%
 				}else{
