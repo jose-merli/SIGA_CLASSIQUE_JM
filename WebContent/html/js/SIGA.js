@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.85 2013-08-28 09:58:11 jose Exp $
+	*	@version    $Id: SIGA.js,v 1.86 2013-08-29 06:53:33 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -2955,7 +2955,8 @@ document.getElementById = function(elemIdOrName) {
         // height and overflow property  
         var oTblDiv = jQuery("<div id='"+tblId+"_BodyDiv'/>");
         //console.debug(tblId+"_BodyDiv height: " + height);
-        oTblDiv.css('height', height);
+        //BNS: NO TENÍA EN CUENTA LA ALTURA DE LA CABECERA PARA EL CÁLCULO DE LA ALTURA DEL CUERPO
+        oTblDiv.css('height', height - oTbl.find("thead").height());
         oTblDiv.css('overflow-y', 'auto');
         oTblDiv.css('overflow-x', 'hidden');
         oTblDiv.css('white-space','break-word');
@@ -2998,7 +2999,9 @@ document.getElementById = function(elemIdOrName) {
         oTbl.find('tbody tr').each(function () {
             jQuery(this).addClass("tableTitle");
         });
-        //console.debug("oTbl html: " + jQuery("#"+tblId+"_tblFxHeadr").html());
+        //oTblDiv.css('height', oTblDiv.height() - newTbl.height());
+        //oTblDiv.height(oTblDiv.height() - newTbl.height());
+        console.debug("oTblDiv height["+tblId+"]: " + oTblDiv.height());
     }
 	function fixCellBorders (table){
 		var tableId = table.attr("id");
@@ -3046,6 +3049,9 @@ document.getElementById = function(elemIdOrName) {
     		} else {
 	    		//console.debug("loadFixedHeaderTables calculando altura..");
 	    		var fixedHeaderTableHeight = 0;
+	    		if (oTable.offset().top > 0){
+	    			fixedHeaderTableHeight -= oTable.offset().top;
+	    		}
 				var tableContainer = getCurrentIFrame();
 				if (tableContainer == null){
 					tableContainer = oTable;
