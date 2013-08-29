@@ -208,7 +208,6 @@
 		<siga:Table 
 		   name="listarTurnos"
 		   border="2"
-		   fixedHeight="95%"
 		   columnNames="<%=nC%>"
 		   columnSizes="<%=tC%>">		
 	
