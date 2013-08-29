@@ -71,7 +71,6 @@
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
 			   			  gratuita.mantenimientoTablasMaestra.literal.fax1,"
 			   columnSizes = "10,8,17,15,12,12,8,8,10"
-			   fixedHeight="95%"
 			   modal = "m">
 
 

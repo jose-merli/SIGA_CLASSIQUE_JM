@@ -69,7 +69,6 @@
 			   name="listadoPJ"
 			   border="2"
 			   columnNames="gratuita.busquedaMaestroPJ.literal.partido,"
-			   fixedHeight="95%"
 			   columnSizes="85,15">
 			   
 		<%

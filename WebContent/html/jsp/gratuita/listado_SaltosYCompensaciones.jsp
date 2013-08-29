@@ -68,7 +68,6 @@
 	   border="2"
 	   columnNames="gratuita.inicio_SaltosYCompensaciones.literal.turno,gratuita.inicio_SaltosYCompensaciones.literal.guardia,gratuita.inicio_SaltosYCompensaciones.literal.nColegiado,gratuita.inicio_SaltosYCompensaciones.literal.letrado,gratuita.inicio_SaltosYCompensaciones.literal.tipo,gratuita.inicio_SaltosYCompensaciones.literal.fecha,gratuita.inicio_SaltosYCompensaciones.literal.fechaUso,"
 	   columnSizes="18,18,7,20,11,8,8,10"
-	   fixedHeight="95%"
 	   modal="P">
 
 		<!-- INICIO: RESULTADO -->

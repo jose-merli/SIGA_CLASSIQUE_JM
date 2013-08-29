@@ -49,7 +49,6 @@
 			   border  = "1"
 			   columnNames="pys.mantenimientoCategorias.literal.tipoServicio,pys.busquedaServicios.literal.categoria,"
 			   columnSizes = "30,55,15"
-			   fixedHeight="95%"
 			   modal = "p">
 
 		<%if ((servicios != null) && (servicios.size() > 0)){ %>

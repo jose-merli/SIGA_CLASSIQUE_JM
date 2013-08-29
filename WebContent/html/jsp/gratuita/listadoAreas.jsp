@@ -68,8 +68,7 @@
 		   name="listadoAreas"
 		   border="2"
 		   columnNames="gratuita.busquedaAreas.literal.nombreArea,gratuita.busquedaAreas.literal.nombreMateria,gratuita.listadoAreas.literal.contenidoArea,"
-		   columnSizes="30,30,30,10"
-		   fixedHeight="95%">
+		   columnSizes="30,30,30,10">
 		   		   
   			<%
 	    	int recordNumber=1;

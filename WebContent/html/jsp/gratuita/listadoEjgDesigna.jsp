@@ -129,11 +129,9 @@
 			   columnSizes="5,20,10,25,10,20,10">
 		
 		<% if (obj==null || obj.size()==0){%>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	 		<tr class="notFound">
+	   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
 		<%}else{%>
 		
 		

@@ -68,7 +68,6 @@
   				border="2"
   				columnNames="administracion.parametrosGenerales.literal.codigo,administracion.parametrosGenerales.literal.nombre,administracion.parametrosGenerales.literal.descripcion,administracion.parametrosGenerales.literal.prefijo,administracion.parametrosGenerales.literal.contadorActual,administracion.parametrosGenerales.literal.sufijo,"  
    				columnSizes="15,25,27,5,15,5,8"
-   				fixedHeight="95%"
 				modal="G">
 		   			
 		   	<%	if ( (vDatos != null) && (vDatos.size() > 0) ) {

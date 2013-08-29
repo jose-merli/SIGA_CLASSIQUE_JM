@@ -103,14 +103,12 @@
 <iframe align="center" src="<%=app%>/html/jsp/gratuita/listadoEjgDesigna.jsp"
 			id="resultado"
 			name="resultado" 
-			height="100%"
-			width="1017px"
+			scrolling="no"
+			class="frameGeneral"
 			frameborder="0"
 			marginheight="0"
 			marginwidth="0"
-			style="padding:0;margin:0"
->
-</iframe>
+			style="padding:0;margin:0;width: 100%;"></iframe>
 	
 
 <!-- formulario para buscar Tipo SJCS -->
