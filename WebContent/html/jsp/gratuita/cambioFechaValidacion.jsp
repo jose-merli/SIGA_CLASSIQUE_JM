@@ -17,16 +17,12 @@
 
 <!-- JSP -->
 
-
 <!-- HEAD -->
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 </head>
 
 <body>
@@ -87,8 +83,8 @@
 								</td>
 								<td>
 									<html:textarea name="InscripcionTGForm" property="observacionesValidacion"
-										style="overflow:auto; width:300; height:80"
-										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 										
+										style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"
 										styleClass="box" readOnly="false"></html:textarea>
 								</td>							
 							</tr>
