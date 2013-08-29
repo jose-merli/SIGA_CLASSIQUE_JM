@@ -13,6 +13,7 @@
 	<property name="html.home"				value="${proyecto.home}/html"/>			
 	<property name="destinoapplet" 			value="${proyecto.home}/html/jsp/administracion/processTree/AppletPermisos.jar"/>
 	<property name="destinoappletIP" 		value="${proyecto.home}/html/jsp/general/AppletDireccionIP.jar"/>
+	<property name="destinoCSS" 			value="${iisdesarrollo.home}/css"/>
 
 	<!-- Rutas de destino: WL desarrollo -->
 	<property name="redeploy.name" 			value="SIGA"/>
@@ -59,6 +60,13 @@
 			<fileset dir="${services.home}/classes/org">
 			  <include name="**/*"/>
 			</fileset>
+			</copy>
+			<copy todir="${destinoCSS}" includeEmptyDirs="yes"  overwrite="yes">
+				<fileset dir="${html.home}/css">
+				  <include name="**/*.css"/>
+				  <include name="**/*.png"/>
+				  <include name="**/*.gif"/>
+				</fileset>
 			</copy>
 		</target>
 
