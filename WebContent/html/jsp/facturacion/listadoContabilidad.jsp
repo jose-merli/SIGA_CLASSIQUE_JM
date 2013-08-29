@@ -128,8 +128,7 @@
 		   name="listarAsistencias"
 		   border="2"
 		   columnNames="<%=nC%>"
-		   columnSizes="<%=tC%>"
-		   fixedHeight="95%">
+		   columnSizes="<%=tC%>">
 		<%if (obj != null && obj.size()>0){%>
 				<%
 				String fecha = "";

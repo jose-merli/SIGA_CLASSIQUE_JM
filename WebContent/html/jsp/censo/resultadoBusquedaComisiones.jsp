@@ -73,8 +73,7 @@
   				border="2"
   				columnNames="censo.busquedaClientes.literal.apellidos,censo.busquedaClientes.literal.nombre,censo.busquedaClientes.literal.nColegiado,censo.busquedaClientes.literal.institucion,censo.datosCV.literal.comision,censo.datosCV.literal.cargo,FactSJCS.mantRetencionesJ.literal.fechaInicio,gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin,"  
    				columnSizes="20,15,8,8,10,12,10,10,5"
-				modal="M"
-				fixedHeight="95%">
+				modal="M">
 		   			
 		   	<%	if ( (vDatos != null) && (vDatos.size() > 0) ) {
                    

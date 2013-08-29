@@ -375,7 +375,6 @@
 				   	border="1"
 				  	columnNames="facturacion.confirmarFacturacion.literal.sel,facturacion.confirmarFacturacion.literal.conceptosFacturables,facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,facturacion.confirmarFacturacion.literal.fechaPrevistaConfirmacion,facturacion.confirmarFacturacion.literal.fechaConfirmacion,facturacion.confirmarFacturacion.literal.estadoConfirmacion,facturacion.confirmarFacturacion.literal.estadoPDF,facturacion.confirmarFacturacion.literal.estadoEnvio,"
 				  	columnSizes="4,17,9,9,7,7,7,7,7,7,18"
-				  	fixedHeight="90%"
 				    modal="M">	 	
 					<%if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<tr class="notFound">

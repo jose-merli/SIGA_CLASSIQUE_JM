@@ -102,8 +102,7 @@
 				   	name="tabladatos"
 			   		border="1"
 			   		columnNames="facturacion.resultadoSeriesFacturacion.literal.nombreAbreviado,facturacion.resultadoSeriesFacturacion.literal.descripcion,"
-			   		columnSizes="30,60,10"
-			   		fixedHeight="95%">
+			   		columnSizes="30,60,10">
 			   					
 					<!-- INICIO: ZONA DE REGISTROS -->
 					<!-- Aqui se iteran los diferentes registros de la lista -->

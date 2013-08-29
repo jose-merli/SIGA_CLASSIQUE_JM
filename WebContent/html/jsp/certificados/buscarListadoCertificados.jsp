@@ -68,8 +68,7 @@
 		   	      name="tablaDatos"
 		   		  border="1"
 		   		  columnNames="certificados.mantenimiento.literal.certificado,certificados.mantenimiento.literal.tipoCertificado,&nbsp;"
-		   		  columnSizes="70,20,10"
-		   		  fixedHeight="95%">
+		   		  columnSizes="70,20,10">
 
 <%
 				if (vDatos==null || vDatos.size()==0)
