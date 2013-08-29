@@ -132,11 +132,9 @@
 					if(vArticulos == null || vArticulos.size()<1 ){
 						botones = ""; 
 %> 	
-			  		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div> 			 						
+			  		<tr class="notFound">
+						<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>		 						
 <% 
 					}else 
 					{ 						
@@ -146,9 +144,10 @@
 							Articulo a = (Articulo) vArticulos.get(i);
 							fila=i+1;
 %> 				
-							<input type="hidden" name="idPersona" 	value="<%=carro.getIdPersona()%>">	
+								
 							<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones='B' visibleConsulta='false' visibleEdicion='false' clase="listaNonEdit">
 						    <td> 
+						    		<input type="hidden" name="idPersona" 	value="<%=carro.getIdPersona()%>">
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_1' value='<%=String.valueOf((Integer)a.getIdTipo())%>'>	 							
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_2' value='<%=String.valueOf((Long)a.getIdArticulo())%>'>	
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_3' value='<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'>
