@@ -25,7 +25,10 @@ public class TagFecha extends TagSupport {
 	 *		nombreCampo="fechaDese"
 	 *  	/>
 	 */
-	
+	// OJO, LOS FORMATOS DE DATEPICKER SON DISTINTOS (ej: yy=yyyy) http://api.jqueryui.com/datepicker/#utility-formatDate
+	// SI SE QUIERE CAMBIAR EL FORMATO HAY QUE CAMBIAR LOS DOS: 
+	//	DATE_FORMAT => PARA EL SIMPLEDATEFORMAT (Y TEXTO DE ERROR)
+	//	DATEPICKER_DATE_FORMAT => PARA EL DATEPICKER
 	private static final String DATE_FORMAT = "dd/mm/yyyy";
 	private static final String DATEPICKER_DATE_FORMAT = "dd/mm/yy";
 	
@@ -102,7 +105,8 @@ public class TagFecha extends TagSupport {
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
 				sDatepicker += " data-cargarfechadesde=\""+	this.campoCargarFechaDesde+"\"";
 			}
-			sDatepicker += " data-format=\""+	DATEPICKER_DATE_FORMAT +"\"";
+			sDatepicker += " data-format=\""+	DATE_FORMAT +"\"";
+			sDatepicker += " data-datepickerformat=\""+	DATEPICKER_DATE_FORMAT +"\"";
 			//TODO: SELECCIONAR IDIOMA DEL USUARIO DEFINIDO EN SIGA.JS
 			sDatepicker += " data-regional=\""+	"es" +"\"";
 			sDatepicker += " />";

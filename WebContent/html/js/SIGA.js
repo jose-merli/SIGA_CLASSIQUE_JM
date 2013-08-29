@@ -44,7 +44,7 @@ var jqueryFileUri = 	"/SIGA/html/js/jquery.js";
 var jqueryUIfileUri = 	"/SIGA/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js";
 var jqueryUICSSfileUri = "/SIGA/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css";
 
-var defaultDateFormat = "dd/mm/yyyy";
+var defaultDateFormat = "dd/mm/yy";//FORMATO DATEPICKER SE CORRESPONDE CON dd/mm/yyyy: http://api.jqueryui.com/datepicker/#utility-formatDate 
 
 var optionCargando = 	"<option>Cargando...</option>";
 
@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.86 2013-08-29 06:53:33 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.87 2013-08-29 11:55:08 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -439,10 +439,10 @@ function jQueryLoaded(){
 			}
 			if (jQuery(this).hasClass("editable")){
 				//console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
-				if (window == window.top){
+				if (false && window == window.top){//DESACTIVAMOS EL DATEPICKER NORMAL PARA QUE TODOS FUNCINEN IGUAL
 					//console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
 					jQueryTop(this, this.ownerDocument).datepicker({
-						dateFormat: jQuery(this).data("format"),
+						dateFormat: jQuery(this).data("datepickerformat"),
 						regional: jQuery(this).data("regional"),
 						onSelect: function(dateText, datePickerInstance){
 							var fireOnChange = false;
@@ -452,6 +452,13 @@ function jQueryLoaded(){
 							datepickerInput.val(dateText);
 							if (fireOnChange)
 								datepickerInput.change();
+						},
+						'beforeShow': function(input, inst) {
+							jQueryTop('.menu-overlay').height(jQueryTop(document).height());
+							jQueryTop('.menu-overlay').toggle();
+							},
+						'onClose': function(dateText, inst) {
+							jQueryTop('.menu-overlay').toggle();
 						}
 					}).keydown(function(e) {
 						if(e.keyCode == 8 || e.keyCode == 46) {
@@ -473,7 +480,7 @@ function jQueryLoaded(){
 					*/
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						datepickerInput.datepicker("dialog",
-								formatDate(datepickerInput.val(),datepickerInput.data("format")),
+								formatDate(datepickerInput.val(),datepickerInput.data("datepickerformat")),
 								function(dateText, datePickerInstance){
 									var fireOnChange = false;
 									if (datepickerInput.val() !== dateText){
@@ -483,9 +490,18 @@ function jQueryLoaded(){
 									if (fireOnChange)
 										datepickerInput.change();
 								},{
-									dateFormat: datepickerInput.data("format"),
-									regional: datepickerInput.data("regional")
+									dateFormat: datepickerInput.data("datepickerformat"),
+									regional: datepickerInput.data("regional"),
+									'beforeShow': function(input, inst) {
+										jQueryTop('#main_overlay').toggle();
+										},
+									'onClose': function(dateText, inst) {
+										jQueryTop('#main_overlay').toggle();
+									}
 							});
+						jQueryTop("#main_overlay").on("click", function(e){
+							datepickerInput.datepicker("destroy");
+						});
 					});					
 				}
 			}
@@ -801,14 +817,14 @@ function jQueryUILoaded(){
 
 function datepickerMaskValueChanged(datepickerInput){
 	var dateFormat = defaultDateFormat;
-	if (datepickerInput.data("format") && datepickerInput.data("format") != "")
-		dateFormat = datepickerInput.data("format");
+	if (datepickerInput.data("datepickerformat") && datepickerInput.data("datepickerformat") != "")
+		dateFormat = datepickerInput.data("datepickerformat");
 	var dateValue = datepickerInput.val();
 	var date = formatDate(dateValue, dateFormat);
 	if (!date){
 		datepickerInput.val("");
 		datepickerInput.blur();
-		alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + dateFormat);		
+		alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
 	}
 }
 
@@ -1754,7 +1770,7 @@ function finsubicono(identificador) {
 function sub(w){
 	//var jQuery = window.top.jQuery;
 	if(w == undefined) {
-		w = this.top;
+		w = window.top;
 	}
 	try {
 		// disable links in current frame
@@ -1807,7 +1823,7 @@ function fin(w){
 	
 	//var jQuery = window.top.jQuery;
 	if(w == undefined) {
-		w = this.top;
+		w = window.top;
 	}
 	try {
 		// enable links and buttons in current frame
@@ -3001,7 +3017,7 @@ document.getElementById = function(elemIdOrName) {
         });
         //oTblDiv.css('height', oTblDiv.height() - newTbl.height());
         //oTblDiv.height(oTblDiv.height() - newTbl.height());
-        console.debug("oTblDiv height["+tblId+"]: " + oTblDiv.height());
+        //console.debug("oTblDiv height["+tblId+"]: " + oTblDiv.height());
     }
 	function fixCellBorders (table){
 		var tableId = table.attr("id");

@@ -57,6 +57,28 @@
 	.ui-datepicker {
 		z-index: 99 !important;
 	}
+	.overlay{
+		background-color: #FFF;
+		position: absolute;
+		z-index: 50;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+		/* IE 8 */
+	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+	
+	  /* IE 5-7 */
+	  filter: alpha(opacity=30);
+	
+	  /* Netscape */
+	  -moz-opacity: 0.30;
+	
+	  /* Safari 1.x */
+	  -khtml-opacity: 0.30;
+	
+	  /* Good browsers */
+	  opacity: 0.30;
+	}
 	</style>
 	
 	<script type="text/javascript">
@@ -125,6 +147,7 @@
 	</head>
 
 	<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
+	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<table>
 	<tr>
 		<td class="labelTextValor"><c:out value="Conectando con la Mutua de la Abogacía..." /> </td>
@@ -145,6 +168,5 @@
 	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:45%">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
-	
 	</body>
 </html>
