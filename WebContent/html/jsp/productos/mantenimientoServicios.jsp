@@ -744,11 +744,11 @@
 				   modal="G">
 						   				   
 					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
-						<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+				 		<tr class="notFound">
+							<td class="titulitos">
+								<siga:Idioma key="messages.noRecordFound"/>
+							</td>
+						</tr>		
 						
 					<% } else { %>
 						<%
@@ -838,11 +838,11 @@
 					modal="G">
 
 					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
-						<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+				 		<tr class="notFound">
+							<td class="titulitos">
+								<siga:Idioma key="messages.noRecordFound"/>
+							</td>
+						</tr>		
 							
 					<% } else {
 					   	Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();								    	
@@ -907,8 +907,12 @@
 				var antesAutomatico = <%= new Boolean(bAutomatico).toString()%>;
 				var antesBaja = <%= new Boolean(bFechaBaja).toString()%>;
 				
-				if ((document.forms[0].automatico.checked && !antesAutomatico) || (document.forms[0].bajaLogica.checked && !antesBaja)){		
-			      	var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
+				if ((document.forms[0].automatico.checked && !antesAutomatico) || (document.forms[0].bajaLogica.checked && !antesBaja)){
+					
+					document.forms[0].modo.value = "baja";
+					var fecha=ventaModalGeneral(document.forms[0].name, "P");
+			      	//var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");			      	
+			      	
 			      	window.top.focus();
 			      	if (fecha!=null) {				
 						document.forms[0].fechaEfectiva.value=fecha;
