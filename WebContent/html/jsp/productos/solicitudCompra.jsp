@@ -14,6 +14,7 @@
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="c.tld"					prefix = "c"%>
 
 <!-- IMPORTS --> 
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
@@ -197,7 +198,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -352,10 +353,6 @@
 			fin();
 		}
 		
-		//aalg: INC_09651. Se pierde el interesado al volver atrás en una solicitud de compra
-		jQuery("#numeroNifTagBusquedaPersonas").val('<%=numero%>');
-		jQuery("#nombrePersona").val('<%=nombre%>');
-
 		function mostrarColegio() {
 			<%
 				String stylePresentador = "display:none;";
@@ -387,6 +384,9 @@
 		}
 		
 		jQuery(function(){			
+			//aalg: INC_09651. Se pierde el interesado al volver atrás en una solicitud de compra
+			jQuery("#numeroNifTagBusquedaPersonas").val('<%=numero%>');
+			jQuery("#nombrePersona").val($('<div/>').html('<c:out value="<%=nombre%>" escapeXml="true"/>').text());
 			
 			jQuery("#catalogo").on("change", function(){
 				console.debug("#catalogo.change");
@@ -480,6 +480,8 @@
 			
 			mostrarColegio();
 			jQuery("#resultados").height(jQuery(window).height() - jQuery("#formulario").height());
+			jQuery("#resultado1").attr('src','<%=app%>/html/jsp/productos/productosEncontrados.jsp');
+			jQuery("#resultado").attr('src','<%=app%>/html/jsp/productos/productosSolicitados.jsp');
 		});
 
 	</script>	
@@ -739,7 +741,7 @@
 	<div id="resultados">
 		<div style="position:relative;height:50%;width:100%;">
 			<!-- INICIO: IFRAME LISTA RESULTADOS BUSQUEDA -->
-			<iframe align="center" src="<%=app%>/html/jsp/productos/productosEncontrados.jsp"
+			<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 				id="resultado1"
 				name="resultado1" 
 				scrolling="no"
@@ -752,7 +754,7 @@
 		
 		<div style="position:relative;height:50%;width:100%;">
 			<!-- INICIO: IFRAME LISTA ELEMENTOS SOLICITADOS -->
-			<iframe align="center" src="<%=app%>/html/jsp/productos/productosSolicitados.jsp"
+			<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 				id="resultado"
 				name="resultado" 
 				scrolling="no"
