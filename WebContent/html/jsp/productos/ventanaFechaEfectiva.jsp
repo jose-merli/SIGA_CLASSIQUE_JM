@@ -36,121 +36,82 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
-
 	String	botones="Y";
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 %>	
 
-
 <!-- HEAD -->
-	
 
-		
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
-		
-		
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
- 	
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<!--siga:Titulo 
-			titulo="censo.busquedaHistorico.literal.titulo1" 
-			localizacion="censo.busquedaHistorico.literal.titulo1"/-->
-		<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-	</head>
-
-	<body onload="quitarFoco()">
-
-			<!-- TITULO -->
-			<!-- Barra de titulo actualizable desde los mantenimientos -->
-			<table class="tablaTitulo" cellspacing="0" heigth="32">
-				<tr>
-					<td id="titulo" class="titulitosDatos">
-						<siga:Idioma key="pys.mantenimientoServicios.literal.fechaEfectiva"/>
-					</td>
-				</tr>
-			</table>
-		
-			<table  class="tablaCentralCamposPeque"  align="center">
-				<tr>
-					<td>
-						<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">
-							<tr>				
-								<td>
-								
-									<table class="tablaCampos">	
-										<!-- FILA -->
-										<tr>				
-											<td class="labelText">
-												<siga:Idioma key="pys.mantenimientoServicios.literal.fecha"/>&nbsp;(*)
-										    </td>
-											<td class="labelText">		
-									   		 <siga:Fecha nombreCampo="fechaEfectiva" valorInicial="<%=fecha%>"></siga:Fecha>
-											</td>
-										</tr>
-									</table>	
-								
-								</td>
-							</tr>
-						</html:form>
-					</td>
-				</tr>		
-				<!-- Botones de accion -->						
-				<tr>
-					<siga:ConjBotonesAccion botones='<%=botones%>' modo=''  modal="P"/>
-				</tr>																								
-			</table>
-		<!-- FIN: CAMPOS -->
-
-		<!-- INICIO: SCRIPTS BOTONES -->
-		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-		<script language="JavaScript">
-
-
-			
-			function accionGuardarCerrar() 
-			{	 
-			    if (window.top.returnValue=document.forms[0].fechaEfectiva.value=="") {
-				  var msg="<siga:Idioma key="messages.servicios.fechaEfectivaObligatoria"/>";
-				  alert(msg);
-				  fin();
-				  return false;
-				}else{  
-			    	window.top.returnValue=document.forms[0].fechaEfectiva.value;
-				
-					window.top.close();
-				}	
-					
-			}
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<!--siga:Titulo titulo="censo.busquedaHistorico.literal.titulo1" localizacion="censo.busquedaHistorico.literal.titulo1"/-->
+	<!-- FIN: TITULO Y LOCALIZACION -->
 	
-			
-			function quitarFoco() {	 
-				document.getElementById("fechaEfectiva").blur();
-			}
-			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES -->
-				
-		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-			
-		<!-- INICIO: SUBMIT AREA -->
-		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<!-- FIN: SUBMIT AREA -->
+</head>
 
-	</body>
+<body>
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="pys.mantenimientoServicios.literal.fechaEfectiva"/>
+			</td>
+		</tr>
+	</table>
+			
+	<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">
+		<table class="tablaCampos">	
+			<tr><td>&nbsp;</td></tr>
+				
+			<tr>				
+				<td class="labelText">
+					<siga:Idioma key="pys.mantenimientoServicios.literal.fecha"/>&nbsp;(*)
+			    </td>
+				<td>		
+					<siga:Fecha nombreCampo="fechaEfectiva" valorInicial="<%=fecha%>"></siga:Fecha>
+				</td>
+			</tr>
+		</table>									
+	</html:form>
+		
+	<siga:ConjBotonesAccion botones='<%=botones%>' modo=''  modal="P"/>
+
+	<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	<script language="JavaScript">			
+		function accionGuardarCerrar() {	 
+		    if (window.top.returnValue=document.forms[0].fechaEfectiva.value=="") {
+			  var msg="<siga:Idioma key="messages.servicios.fechaEfectivaObligatoria"/>";
+			  alert(msg);
+			  fin();
+			  return false;
+			}else{  
+		    	window.top.returnValue=document.forms[0].fechaEfectiva.value;
+			
+				window.top.close();
+			}						
+		}				
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->
+			
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+		
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

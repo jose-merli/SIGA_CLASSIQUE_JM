@@ -121,7 +121,11 @@
 			var tabla;
 			
 			<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
-				var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
+				document.forms[0].modo.value = "baja";
+				var fecha=ventaModalGeneral(document.forms[0].name, "P");
+				
+				//var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
+				
 				window.top.focus();
 				if( fecha!=null){ 
 		  	  		// document.forms[0].fechaEfectiva.value=fecha;

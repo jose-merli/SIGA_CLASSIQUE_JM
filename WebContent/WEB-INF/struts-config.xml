@@ -1399,6 +1399,7 @@
 			<forward name="abrir" path="/html/jsp/productos/solicitudBaja.jsp"/>
 			<forward name="buscarArticulos" path="/html/jsp/productos/consultaProductosServiciosSolicitados.jsp"/>
 			<forward name="solicitar" path="/html/jsp/productos/consultaProductosServiciosSolicitados.jsp"/>
+			<forward name="baja" path="/html/jsp/productos/ventanaFechaEfectiva.jsp"/>
 		</action>
 
 		<!-- ***** Productos y Servicios / Solicitudes ***** -->

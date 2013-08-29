@@ -75,7 +75,11 @@ public class SolicitudBajaAction extends MasterAction{
 					mapDestino = buscarArticulos(mapping, miForm, request, response);
 				
 				}else if (accion.equalsIgnoreCase("solicitar")){
-					mapDestino = solicitar(mapping, miForm, request, response);				
+					mapDestino = solicitar(mapping, miForm, request, response);			
+					
+				} else if (accion.equalsIgnoreCase("baja")){
+					mapDestino = "baja";
+					
 				} else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
