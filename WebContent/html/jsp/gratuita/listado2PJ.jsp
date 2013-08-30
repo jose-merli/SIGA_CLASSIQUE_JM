@@ -111,7 +111,6 @@
 	   border="1"
 	   columnNames="gratuita.consultarPJ.literal.poblacionesPartido,"
 	   columnSizes="90,10"
-	   fixedHeight="98%"
 	   modal="P">
 			   
 		<%if ((obj != null) && (obj.size()>0)) {

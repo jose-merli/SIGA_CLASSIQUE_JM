@@ -74,8 +74,7 @@
 			   name="listadoLG"
 			   border="1"
 			   columnNames="gratuita.listadoLG.literal.nombre,gratuita.listadoLG.literal.lugar,"
-			   columnSizes="35,35,10"
-			   fixedHeight="95%">
+			   columnSizes="35,35,10">
 				
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 		

@@ -129,7 +129,6 @@
 		   border="1"
 		   columnNames="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante,"
 		   columnSizes="10,15,8,15,15,8,8,8"
-		   fixedHeight="90%"
 		   modal="M">
 		   
 			<!-- INICIO: ZONA DE REGISTROS -->
@@ -206,7 +205,6 @@
 		   border="1"
 		   columnNames="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante,"
 		   columnSizes="10,15,8,15,15,8,8,8"
-		   fixedHeight="90%"
 		   modal="M">
 		   
 			<!-- INICIO: ZONA DE REGISTROS -->

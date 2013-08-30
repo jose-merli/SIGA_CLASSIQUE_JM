@@ -221,8 +221,7 @@
 		  				name="otro"
 		  				border="2"
 		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-		   				columnSizes="50,20,20,10"
-		   				fixedHeight="90%">
+		   				columnSizes="50,20,20,10">
 	<%				
 	 						for (int i = 0; i < vArticulos.size(); i++) {
 								Articulo a = (Articulo) vArticulos.get(i);		

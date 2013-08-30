@@ -79,7 +79,6 @@
 		   		  columnNames="consultas.recuperarconsulta.literal.modulo,
 		   		  consultas.recuperarconsulta.literal.descripcion,"
 		   		  columnSizes="15,72,13"
-		   		  fixedHeight="95%"
 		   		  modalScroll = "true">
 	   		     		    		  
 		   		  

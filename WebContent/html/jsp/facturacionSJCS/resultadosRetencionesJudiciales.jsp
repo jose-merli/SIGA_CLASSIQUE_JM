@@ -84,7 +84,6 @@
 		   border="2"
 		   columnNames="FactSJCS.mantRetencionesJ.literal.nColegiado,FactSJCS.mantRetencionesJ.literal.nombre,FactSJCS.mantRetencionesJ.literal.tipoRetencion,FactSJCS.mantRetencionesJ.literal.importe,FactSJCS.mantRetencionesJ.literal.fechaInicioRJ,FactSJCS.mantRetencionesJ.literal.fechaFinNotificacion,FactSJCS.mantRetencionesJ.literal.destinatario,"
 		   columnSizes="10,15,10,10,10,10,25,10"
-		   fixedHeight="95%"
 		   modal="M">
 		   
 		  <%if (obj.size()>0){%>

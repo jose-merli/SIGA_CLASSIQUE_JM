@@ -109,8 +109,7 @@
 				informes.sjcs.pagos.literal.ejg,
 				informes.sjcs.pagos.literal.soj,
 		   		factSJCS.detalleFacturacion.literal.importe,"
-	columnSizes="18,38"
-	fixedHeight="95%">
+	columnSizes="18,38">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<%

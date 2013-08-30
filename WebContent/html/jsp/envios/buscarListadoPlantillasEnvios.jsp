@@ -69,8 +69,7 @@
 	   	      name="tablaDatos"
 	   		  border="1"
 	   		  columnNames="envios.plantillas.literal.plantilla,envios.plantillas.literal.tipoenvio,"
-	   		  columnSizes="60,25,15"
-	   		  fixedHeight="95%">
+	   		  columnSizes="60,25,15">
 
 <%
 				if (vDatos==null || vDatos.size()==0)
