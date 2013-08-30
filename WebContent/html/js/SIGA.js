@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.87 2013-08-29 11:55:08 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.88 2013-08-30 10:22:37 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -214,7 +214,16 @@ function jQueryLoaded(){
 	Licensed under the MIT license (http://digitalbush.com/projects/masked-input-plugin/#license)
 	Version: 1.3.1
 	*/
+	/*
 	(function(e){function t(){var e=document.createElement("input"),t="onpaste";return e.setAttribute(t,""),"function"==typeof e[t]?"paste":"input"}var n,a=t()+".mask",r=navigator.userAgent,i=/iphone/i.test(r),o=/android/i.test(r);e.mask={definitions:{9:"[0-9]",a:"[A-Za-z]","*":"[A-Za-z0-9]"},dataName:"rawMaskFn",placeholder:"_"},e.fn.extend({caret:function(e,t){var n;if(0!==this.length&&!this.is(":hidden"))return"number"==typeof e?(t="number"==typeof t?t:e,this.each(function(){this.setSelectionRange?this.setSelectionRange(e,t):this.createTextRange&&(n=this.createTextRange(),n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select())})):(this[0].setSelectionRange?(e=this[0].selectionStart,t=this[0].selectionEnd):document.selection&&document.selection.createRange&&(n=document.selection.createRange(),e=0-n.duplicate().moveStart("character",-1e5),t=e+n.text.length),{begin:e,end:t})},unmask:function(){return this.trigger("unmask")},mask:function(t,r){var c,l,s,u,f,h;return!t&&this.length>0?(c=e(this[0]),c.data(e.mask.dataName)()):(r=e.extend({placeholder:e.mask.placeholder,completed:null},r),l=e.mask.definitions,s=[],u=h=t.length,f=null,e.each(t.split(""),function(e,t){"?"==t?(h--,u=e):l[t]?(s.push(RegExp(l[t])),null===f&&(f=s.length-1)):s.push(null)}),this.trigger("unmask").each(function(){function c(e){for(;h>++e&&!s[e];);return e}function d(e){for(;--e>=0&&!s[e];);return e}function m(e,t){var n,a;if(!(0>e)){for(n=e,a=c(t);h>n;n++)if(s[n]){if(!(h>a&&s[n].test(R[a])))break;R[n]=R[a],R[a]=r.placeholder,a=c(a)}b(),x.caret(Math.max(f,e))}}function p(e){var t,n,a,i;for(t=e,n=r.placeholder;h>t;t++)if(s[t]){if(a=c(t),i=R[t],R[t]=n,!(h>a&&s[a].test(i)))break;n=i}}function g(e){var t,n,a,r=e.which;8===r||46===r||i&&127===r?(t=x.caret(),n=t.begin,a=t.end,0===a-n&&(n=46!==r?d(n):a=c(n-1),a=46===r?c(a):a),k(n,a),m(n,a-1),e.preventDefault()):27==r&&(x.val(S),x.caret(0,y()),e.preventDefault())}function v(t){var n,a,i,l=t.which,u=x.caret();t.ctrlKey||t.altKey||t.metaKey||32>l||l&&(0!==u.end-u.begin&&(k(u.begin,u.end),m(u.begin,u.end-1)),n=c(u.begin-1),h>n&&(a=String.fromCharCode(l),s[n].test(a)&&(p(n),R[n]=a,b(),i=c(n),o?setTimeout(e.proxy(e.fn.caret,x,i),0):x.caret(i),r.completed&&i>=h&&r.completed.call(x))),t.preventDefault())}function k(e,t){var n;for(n=e;t>n&&h>n;n++)s[n]&&(R[n]=r.placeholder)}function b(){x.val(R.join(""))}function y(e){var t,n,a=x.val(),i=-1;for(t=0,pos=0;h>t;t++)if(s[t]){for(R[t]=r.placeholder;pos++<a.length;)if(n=a.charAt(pos-1),s[t].test(n)){R[t]=n,i=t;break}if(pos>a.length)break}else R[t]===a.charAt(pos)&&t!==u&&(pos++,i=t);return e?b():u>i+1?(x.val(""),k(0,h)):(b(),x.val(x.val().substring(0,i+1))),u?t:f}var x=e(this),R=e.map(t.split(""),function(e){return"?"!=e?l[e]?r.placeholder:e:void 0}),S=x.val();x.data(e.mask.dataName,function(){return e.map(R,function(e,t){return s[t]&&e!=r.placeholder?e:null}).join("")}),x.attr("readonly")||x.one("unmask",function(){x.unbind(".mask").removeData(e.mask.dataName)}).bind("focus.mask",function(){clearTimeout(n);var e;S=x.val(),e=y(),n=setTimeout(function(){b(),e==t.length?x.caret(0,e):x.caret(e)},10)}).bind("blur.mask",function(){y(),x.val()!=S&&x.change()}).bind("keydown.mask",g).bind("keypress.mask",v).bind(a,function(){setTimeout(function(){var e=y(!0);x.caret(e),r.completed&&e==x.val().length&&r.completed.call(x)},0)}),y()}))}})})(jQuery);		
+	*/
+	// jQuery Mask Plugin v1.1.2
+	// github.com/igorescobar/jQuery-Mask-Plugin
+	(function(b){var u=function(a,g,f){var c=this;a=b(a);var l;g="function"==typeof g?g(a.val(),f):g;c.init=function(){f=f||{};c.byPassKeys=[8,9,37,38,39,40,46];c.translation={0:{pattern:/\d/},9:{pattern:/\d/,optional:!0},A:{pattern:/[a-zA-Z0-9]/},S:{pattern:/[a-zA-Z]/}};c.translation=b.extend({},c.translation,f.translation);c=b.extend(!0,{},c,f);a.each(function(){a.attr("maxlength",g.length).attr("autocomplete","off");d.destroyEvents();d.events();d.isInput()||d.val(d.getMasked())})};var d={events:function(){a.on("keydown.mask",
+	function(){l=d.val()});a.on("keyup.mask",d.behaviour);a.on("paste.mask",function(){setTimeout(function(){a.keydown().keyup()},100)})},destroyEvents:function(){a.off("keydown.mask").off("keyup.mask").off("paste.mask")},isInput:function(){return"input"===a.get(0).tagName.toLowerCase()},val:function(s){return 0<arguments.length?d.isInput()?a.val(s):a.text(s):d.isInput()?a.val():a.text()},behaviour:function(a){a=a||window.event;if(-1===b.inArray(a.keyCode||a.which,c.byPassKeys))return d.val(d.getMasked()),
+	d.callbacks(a)},getMasked:function(){var a=[],b=d.val(),e=0,t=g.length,h=0,l=b.length,k=1,m="push",n;f.reverse?(m="unshift",k=-1,e=t-1,h=l-1,n=function(){return-1<e&&-1<h}):n=function(){return e<t&&h<l};for(;n();){var p=g.charAt(e),q=c.translation[p],r=b.charAt(h);q?(r.match(q.pattern)?(a[m](r),e+=k):!0==q.optional&&(e+=k,h-=k),h+=k):(a[m](p),r==p&&(h+=k),e+=k)}return a.join("")},callbacks:function(b){var c=d.val(),e=d.val()!==l;if(!0===e&&"function"==typeof f.onChange)f.onChange(c,b,a,f);if(!0===
+	e&&"function"==typeof f.onKeyPress)f.onKeyPress(c,b,a,f);if("function"===typeof f.onComplete&&c.length===g.length)f.onComplete(c,b,a,f)}};c.remove=function(){d.destroyEvents();d.val(c.getCleanVal()).removeAttr("maxlength")};c.getCleanVal=function(){for(var a=[],b=d.val(),e=0,f=g.length;e<f;e++)c.translation[g.charAt(e)]&&a.push(b.charAt(e));return a.join("")};c.init()};b.fn.mask=function(a,g){return this.each(function(){b(this).data("mask",new u(this,a,g))})};b.fn.unmask=function(){return this.each(function(){b(this).data("mask").remove()})};
+	b("input[data-mask]").each(function(){b(this).mask(b(this).attr("data-mask"))})})(window.jQuery||window.Zepto);
 	
 	/*
 	A simple jQuery function that can add listeners on attribute change.
@@ -431,7 +440,17 @@ function jQueryLoaded(){
 			// Descomentar para no permitir la edición de fechas por texto
 			//jQuery("input.datepicker").attr("readonly", "readonly");
 			// Comentar para no permitir la edición de fechas por texto	
-			jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQueryTop(this, window.document));}});
+			//jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQueryTop(this, window.document));}});
+			jQuery("input.datepicker").not(".boxConsulta").each(function(){
+				//var inputDatepicker = jQueryTop(this, window.document);
+				var inputDatepicker = jQuery(this);
+				inputDatepicker.mask('YY/YY/YYYY',{'translation': {            
+	                Y: {pattern: /[0-9]/}
+	              },
+	              onComplete: function(cep){datepickerMaskValueChanged(inputDatepicker);}
+	              });
+				inputDatepicker.on("blur", function(){datepickerMaskValueChanged(jQuery(this));});
+			});
 		}
 		jQuery("input.datepicker").each(function(){
 			if (jQuery(this).data("cargarfechadesde")){
@@ -470,6 +489,7 @@ function jQueryLoaded(){
 					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
+					var self = jQuery(this);
 					/*
 					datepickerInput.keydown(function(e) {
 						if(e.keyCode == 8 || e.keyCode == 46) {
@@ -499,6 +519,16 @@ function jQueryLoaded(){
 										jQueryTop('#main_overlay').toggle();
 									}
 							});
+						/*
+						self.bind('copy', function(e) {
+							alert("copy!");
+							jQuery(this).val("");
+						});
+						self.bind('keydown', function(e) {
+							alert("keydown");
+							jQuery(this).val("");
+						});
+						*/
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
@@ -820,11 +850,13 @@ function datepickerMaskValueChanged(datepickerInput){
 	if (datepickerInput.data("datepickerformat") && datepickerInput.data("datepickerformat") != "")
 		dateFormat = datepickerInput.data("datepickerformat");
 	var dateValue = datepickerInput.val();
-	var date = formatDate(dateValue, dateFormat);
-	if (!date){
-		datepickerInput.val("");
-		datepickerInput.blur();
-		alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
+	if (dateValue != ""){
+		var date = formatDate(dateValue, dateFormat);
+		if (!date){
+			datepickerInput.val("");
+			datepickerInput.blur();
+			alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
+		}
 	}
 }
 
