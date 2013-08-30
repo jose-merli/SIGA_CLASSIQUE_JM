@@ -108,7 +108,9 @@ public class TagFecha extends TagSupport {
 			sDatepicker += " data-format=\""+	DATE_FORMAT +"\"";
 			sDatepicker += " data-datepickerformat=\""+	DATEPICKER_DATE_FORMAT +"\"";
 			//TODO: SELECCIONAR IDIOMA DEL USUARIO DEFINIDO EN SIGA.JS
-			sDatepicker += " data-regional=\""+	"es" +"\"";
+			String regional = "es";
+			regional = usrbean.getLanguageExt().toLowerCase();
+			sDatepicker += " data-regional=\""+	regional +"\"";
 			sDatepicker += " />";
 			out.print(sDatepicker);			
 		} catch (Exception e) {

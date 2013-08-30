@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.88 2013-08-30 10:22:37 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.89 2013-08-30 12:55:02 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -801,25 +801,7 @@ function jQueryUILoaded(){
     }
     // CONFIGURACIÓN POR DEFECTO DE DATEPICKER
 	if (jQueryTop!=null&&jQueryTop.fn.datepicker){
-		console.debug("[jQueryUILoaded] JQUERY datepicker INI");
-		//TODO: DEFINIR EL RESTO DE LOS IDIOMAS
-		jQueryTop.datepicker.regional['es'] = {
-	      closeText: 'Cerrar',
-	      prevText: '&lt;Ant',
-	      nextText: 'Sig&gt;',
-	      currentText: 'Hoy',
-	      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-	      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-	      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-	      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-	      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-	      weekHeader: 'Sm',
-	      dateFormat: 'dd/mm/yy',
-	      firstDay: 1,
-	      isRTL: false,
-	      showMonthAfterYear: false,
-	      yearSuffix: ''};
-		var clearText = "Borrar";
+		console.debug("[jQueryUILoaded] JQUERY datepicker INI");		
 		
 		jQueryTop.datepicker.setDefaults(jQueryTop.datepicker.regional['es']);
 		jQueryTop.datepicker.setDefaults({
@@ -831,15 +813,20 @@ function jQueryUILoaded(){
 			buttonImage: '/SIGA/html/imagenes/calendar.gif',
 			buttonImageOnly: true,
 			yearRange: "c-100:c+10"
-		});		
+		});
 	   
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
 	   jQueryTop.datepicker._updateDatepicker = function(inst) {
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
+		   var clearText = "borrar";		   
+		   if (inst.settings.regional == "ca")
+			   clearText = "Esborrar";
+		   else if (inst.settings.regional == "eu")
+			   clearText = "Ezabatu";
 		   jQueryTop("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+clearText+"</button>").appendTo(buttonPane).click(function(ev) {
 			   jQueryTop.datepicker._clearDate(inst.input);
-		   		}) ;
+		   		});
 	   		};
 	}
 }
