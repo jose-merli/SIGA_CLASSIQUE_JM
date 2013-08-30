@@ -1346,6 +1346,7 @@
 			<forward name="configurarEliminacion" path="/html/jsp/productos/configurarEliminacion.jsp"/>
 			<forward name="condicionSuscripcionAutomatica" path="/html/jsp/productos/condicionSuscripcionAutomatica.jsp"/>
 			<forward name="mensajeInsertarPrecioPorDefecto" path="/html/jsp/productos/mensajeInsertarPrecioPorDefecto.jsp"/>
+			<forward name="baja" path="/html/jsp/productos/ventanaFechaEfectiva.jsp"/>
 		</action>
 
 		<!-- ***** Productos y Servicios / Mantenimiento Sufijos ***** -->
@@ -1386,6 +1387,7 @@
 			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
 			<forward name="mostrarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
 			<forward name="guardarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
+			<forward name="baja" path="/html/jsp/productos/ventanaFechaEfectiva.jsp"/>
 		</action>
 
 		<!-- ***** Productos y Servicios / Informes ***** -->

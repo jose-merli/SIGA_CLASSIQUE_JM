@@ -7,6 +7,10 @@
  */
 package com.siga.productos.action;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -20,14 +24,24 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysCompraAdm;
+import com.siga.beans.PysCompraBean;
+import com.siga.beans.PysPeticionCompraSuscripcionAdm;
+import com.siga.beans.PysPeticionCompraSuscripcionBean;
+import com.siga.beans.PysProductosSolicitadosAdm;
+import com.siga.beans.PysServiciosSolicitadosAdm;
+import com.siga.beans.PysSuscripcionAdm;
+import com.siga.beans.PysSuscripcionBean;
 import com.siga.general.Articulo;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.productos.form.GestionSolicitudesForm;
-import java.util.*;
 
 /**
  * @author daniel.campos
@@ -59,35 +73,40 @@ public class GestionSolicitudesAction extends MasterAction {
 				if (accion == null) {
 					mapDestino = "inicio";
 					break;
-				}
-				else if (accion.equalsIgnoreCase("buscarInit")){
+					
+				} else if (accion.equalsIgnoreCase("buscarInit")){
 					//borrarPaginador(request, paginador+miForm.getClass().getName());
 					String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 					borrarPaginador(request, idPaginador);
 					mapDestino = buscarPor(mapping, miForm, request, response);	
-				}
+				
 				// Confirmar
-				else if (accion.equalsIgnoreCase("confirmar")){
+				} else if (accion.equalsIgnoreCase("confirmar")){
 					mapDestino = confirmar(mapping, miForm, request, response);
 					break;
-				} // Denegar
-				else if (accion.equalsIgnoreCase("denegar")){
+					
+				// Denegar
+				} else if (accion.equalsIgnoreCase("denegar")){
 					mapDestino = denegar(mapping, miForm, request, response);
 					break;
-				}
+				
 				// Obtener el numero de cuenta
-				else if (accion.equalsIgnoreCase("modificarCuenta")){
+				} else if (accion.equalsIgnoreCase("modificarCuenta")){
 					mapDestino = modificarCuenta(mapping, miForm, request, response);
 					break;
-				}
+				
 				// Obtener el numero de cuenta
-				else if (accion.equalsIgnoreCase("mostrarAnticipos")){
+				} else if (accion.equalsIgnoreCase("mostrarAnticipos")){
 					mapDestino = mostrarAnticipos(mapping, miForm, request, response);
 					break;
-				}
+				
 				// Obtener el numero de cuenta
-				else if (accion.equalsIgnoreCase("guardarAnticipos")){
+				} else if (accion.equalsIgnoreCase("guardarAnticipos")){
 					mapDestino = guardarAnticipos(mapping, miForm, request, response);
+					break;
+				
+				} else if (accion.equalsIgnoreCase("baja")){
+					mapDestino = "baja";
 					break;
 				}
 

@@ -42,9 +42,6 @@
 	boolean letrado=usrbean.isLetrado();
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
@@ -53,7 +50,6 @@
 	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
 </head>
 
 <!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -84,26 +80,30 @@
 	
 	function confirmarSolicitudCompra (fila) {
 	
-	  var productoOservicio = document.getElementById('oculto' + fila + '_1');
-	  sub();
-   // if (!letrado){ 
-	     var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
-	     window.top.focus();
-	     if( fecha!=null){ 
-   	  		document.forms[0].fechaEfectiva.value=fecha;
-         }else{   
-         	fin();   
-		  	return;
-     	 } 
-	//  } 
+	  	var productoOservicio = document.getElementById('oculto' + fila + '_1');
+	  	sub();
+   		// if (!letrado){ 
+   			
+   			document.forms[0].modo.value = "baja";
+			var fecha=ventaModalGeneral(document.forms[0].name, "P");   			
+	    	//var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
+	    	
+	     	window.top.focus();
+	     	if( fecha!=null){ 
+   	  			document.forms[0].fechaEfectiva.value=fecha;
+         	} else {   
+         		fin();   
+		  		return;
+     	 	} 
+		//  } 
   
-	  var existePrecioAsociado=document.getElementById('oculto' + fila + '_' + 10);
-	  if (existePrecioAsociado.value == "0") { 
+	  	var existePrecioAsociado=document.getElementById('oculto' + fila + '_' + 10);
+	  	if (existePrecioAsociado.value == "0") { 
 			var mensaje='<siga:Idioma key="messages.pys.gestionSolicitud.errorProductoSinPrecio"/>';
 			alert(mensaje);
 			fin();
 			return(false);
-	  } else {
+	  	} else {
 				// Cogemos la forma de pago
 			  var aux = 'oculto' + fila + '_' + 7;
 			  var oculto = document.getElementById(aux);
@@ -364,7 +364,7 @@
 					
 					// Servicio
 					} else {
-						if(fechaEfectiva.equals("&nbsp;")){ 
+						if (fechaEfectiva==null||fechaEfectiva.equals("&nbsp;")||fechaEfectiva.equals(" ")||fechaEfectiva.equals("")) { 
 							elementos[0]=new FilaExtElement("confirmarSolicitudCompra", "confirmarSolicitudCompra", SIGAConstants.ACCESS_FULL);
 							elementos[1]=new FilaExtElement("denegarSolicitudCompra", "denegarSolicitudCompra", SIGAConstants.ACCESS_FULL);
 					  	}	
