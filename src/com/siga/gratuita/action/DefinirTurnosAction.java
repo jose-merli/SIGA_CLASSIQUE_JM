@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -307,23 +309,52 @@ public class DefinirTurnosAction extends MasterAction {
 		
 	}
 	
-	public Hashtable prepararHash(Hashtable hash){
+	private String obtenerValor (Hashtable hash, String sId) {
+		try {
+			String sAux = (String) hash.get(sId);		
+			if (sAux!= null && !sAux.equals("")) {
+				
+				if (sAux.startsWith("{")) {
+					HashMap<String, String> hmAux = new ObjectMapper().readValue(sAux, HashMap.class);
+					Integer iAux = Integer.parseInt(hmAux.get(sId.toLowerCase()));
+					if (iAux.intValue()>0)
+						return (String) hmAux.get(sId.toLowerCase());
+					
+				} else {
+					if ((UtilidadesHash.getInteger(hash,sId)).intValue()>0)
+						return (String) hash.get(sId);
+				}				
+			}
+		} catch (Exception e) {
+			return "null";				
+		}
+		
+		return "null";			
+	}
+	
+	public Hashtable prepararHash(Hashtable hash) {
 		Hashtable aux = new Hashtable();
+		
 		//IDAREA:
-		if ((UtilidadesHash.getInteger(hash,"IDAREA")).intValue()>0)aux.put("IDAREA",(hash.get("IDAREA")));
+		aux.put(ScsTurnoBean.C_IDAREA, this.obtenerValor(hash, ScsTurnoBean.C_IDAREA));		
+
 		//IDMATERIA:
-		if ((UtilidadesHash.getInteger(hash,"IDMATERIA")).intValue()>0)aux.put("IDMATERIA",(hash.get("IDMATERIA")));
+		aux.put(ScsTurnoBean.C_IDMATERIA, this.obtenerValor(hash, ScsTurnoBean.C_IDMATERIA));
+		
 		//IDZONA:
-		if ((UtilidadesHash.getInteger(hash,"IDZONA")).intValue()>0)aux.put("IDZONA",(hash.get("IDZONA")));
+		aux.put(ScsTurnoBean.C_IDZONA, this.obtenerValor(hash, ScsTurnoBean.C_IDZONA));
+
 		//IDSUBZONA:
-		try{
-			if ((UtilidadesHash.getInteger(hash,"IDSUBZONA")).intValue()>0)aux.put("IDSUBZONA",(hash.get("IDSUBZONA")));
-		}
-		catch(Exception e){
-			aux.put("IDSUBZONA","null");
-		}
+		aux.put(ScsTurnoBean.C_IDSUBZONA, this.obtenerValor(hash, ScsTurnoBean.C_IDSUBZONA));
+
 		//IDGRUPOFACTURACION:
-		if ((UtilidadesHash.getInteger(hash,"IDGRUPOFACTURACION")).intValue()>0)aux.put("IDGRUPOFACTURACION",(hash.get("IDGRUPOFACTURACION")));
+		aux.put(ScsTurnoBean.C_IDGRUPOFACTURACION, this.obtenerValor(hash, ScsTurnoBean.C_IDGRUPOFACTURACION));
+		
+		//IDPARTIDAPRESUPUESTARIA:
+		aux.put(ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA, this.obtenerValor(hash, ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA));
+		
+		//IDTIPOTURNO:
+		aux.put(ScsTurnoBean.C_IDTIPOTURNO, this.obtenerValor(hash, ScsTurnoBean.C_IDTIPOTURNO));
 		
 		//IDPERSONAULTIMO:
 		try{
@@ -331,8 +362,7 @@ public class DefinirTurnosAction extends MasterAction {
 		}catch(Exception e){
 			aux.put("IDPERSONAULTIMO","null");
 		}
-		//IDPARTIDAPRESUPUESTARIA:
-		if ((UtilidadesHash.getInteger(hash,"IDPARTIDAPRESUPUESTARIA")).intValue()>0)aux.put("IDPARTIDAPRESUPUESTARIA",(hash.get("IDPARTIDAPRESUPUESTARIA")));
+		
 		//VALIDARJUSTIFICACIONES:
 		try{
 			if (((String)hash.get("VALIDARJUSTIFICACIONES")).equalsIgnoreCase("on"))
@@ -371,7 +401,6 @@ public class DefinirTurnosAction extends MasterAction {
 		aux.put(ScsTurnoBean.C_LETRADOACTUACIONES,(hash.get(ScsTurnoBean.C_LETRADOACTUACIONES)));
 		aux.put(ScsTurnoBean.C_LETRADOASISTENCIAS,(hash.get(ScsTurnoBean.C_LETRADOASISTENCIAS)));
 		aux.put(ScsTurnoBean.C_VISIBILIDAD,(hash.get(ScsTurnoBean.C_VISIBILIDAD)));
-		aux.put(ScsTurnoBean.C_IDTIPOTURNO,(hash.get(ScsTurnoBean.C_IDTIPOTURNO)));
 		aux.put(ScsTurnoBean.C_CODIGOEXT,(hash.get(ScsTurnoBean.C_CODIGOEXT)));
 		return aux;
 	}
