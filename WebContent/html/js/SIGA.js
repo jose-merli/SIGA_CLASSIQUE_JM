@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.89 2013-08-30 12:55:02 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.90 2013-08-30 13:05:55 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -529,6 +529,7 @@ function jQueryLoaded(){
 							jQuery(this).val("");
 						});
 						*/
+						jQueryTop(".ui-datepicker").draggable();
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
