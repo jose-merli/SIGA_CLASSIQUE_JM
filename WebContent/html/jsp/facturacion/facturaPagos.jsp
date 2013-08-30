@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <!-- facturaPagos.jsp -->
@@ -224,12 +224,13 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			   name = "tablaResultados"
 			   border  = "2"
 			   columnNames="facturacion.pagosFactura.literal.Fecha,
-			   						Acción,
-			   						Estado,
+			   						facturacion.pagosFactura.literal.Accion,
+			   						facturacion.buscarFactura.literal.Estado,
+			   						facturacion.abonosPagos.datosPagoAbono.nCuenta,
 			   						facturacion.pagosFactura.literal.Importe,
 			   						facturacion.pagosFactura.literal.Pendiente,"
 
-			   columnSizes = "10,20,30,10,10,10"
+			   columnSizes = "8,15,15,27,8,8,9"
 			   fixedHeight="320"
 			   modal = "M"
 			   modalScroll="true">
@@ -263,7 +264,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 								}
 							}
 							else {
-								if ("DEVOLUCIÓN".equals(tabla.substring(0,10)) || tabla.equals("RENEGOCIACIÓN")) {
+								if ((tabla.length() > 10) && ("DEVOLUCIÓN".equals(tabla.substring(0,10)) || "RENEGOCIACIÓN".equals(tabla.substring(0,13)))) {
 									pendiente = new Double (importe.doubleValue());
 									importe = new Double(0);
 									if (pendiente.doubleValue() < 0.0) {
@@ -292,6 +293,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%></td>
 							<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
 							<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
+							<td><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
 							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
 							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(auxPendiente.doubleValue()))%></td>
 							</siga:FilaConIconos>
@@ -315,31 +317,31 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 	<div id="totales2" style="bottom:70px; left:580px; position:absolute; width:295px;">
 			<fieldset>
 
-			<table  align="left" border="0" width="295">
+			<table  align="left" border="0" width="270px">
 
 				<tr>				
-					<td width="150" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalAnticipado"/></td>
-					<td width="145" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%> &euro;</td>
+					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalAnticipado"/></td>
+					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%> &euro;</td>
 				</tr>
 
 				<tr>				
-					<td width="150" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCaja"/></td>
-					<td width="145" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCaja.toString(),2)))%> &euro;</td>
+					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCaja"/></td>
+					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCaja.toString(),2)))%> &euro;</td>
 				</tr>
 
 				<tr>				
-					<td width="150" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalTarjeta"/></td>
-					<td width="145" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%> &euro;</td>
+					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalTarjeta"/></td>
+					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%> &euro;</td>
 				</tr>
 					
 				<tr>				
-					<td width="150" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalBanco"/></td>
-					<td width="145" class="labelTextNum" ><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalBanco.toString(),2)))%> &euro;</td>
+					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalBanco"/></td>
+					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalBanco.toString(),2)))%> &euro;</td>
 				</tr>
 					
 				<tr>				
-					<td width="150" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCompensado"/></td>
-					<td width="145" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%> &euro;</td>
+					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCompensado"/></td>
+					<td width="180px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%> &euro;</td>
 				</tr>
 			</table>
 			</fieldset>

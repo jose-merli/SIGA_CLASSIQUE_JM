@@ -214,12 +214,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			// Obtención pagos por caja
 			String select3 = " SELECT 9 AS idtabla, 'PAGOS POR CAJA' AS TABLA, " +
 					 		 " case" +
-					 		 " when (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " +
+					 		 " when ((" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " - " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") > " +
 					 		" (select sum(pagocaja2 " + "." + FacPagosPorCajaBean.C_IMPORTE + ") as importepagado" +
 					 		 " from " + FacPagosPorCajaBean.T_NOMBRETABLA + " pagocaja2 " + 
 					 		 " where pagocaja2."    + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
 								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDFACTURA + " = '" + idFactura + "'" +
-								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " >  " +
+								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " <=  " +
 								FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
 							"))" + 
 					 		 " THEN 'Pendiente Cobro Caja' " +
@@ -253,7 +253,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							   "'' AS NUMEROABONO, " +
 							   "0 AS IDPAGO, "+
-							   "(select banco.nombre"+
+							   "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+ 
                                " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
                                " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                                " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
@@ -292,7 +292,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							 "'' AS NUMEROABONO, " +
 							 "0 AS IDPAGO, "+
-							 "(select banco.nombre"+
+							 "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+
                              " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
                              " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                              " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
@@ -317,7 +317,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta5 = select5 + from5 + where5;
 			
 			// Obtención renegociaciones
-			String select6 = " SELECT 9 AS idtabla, 'RENEGOCIACIÓN' AS tabla, " +
+			String select6 = " SELECT 9 AS idtabla, 'RENEGOCIACIÓN ' || renegociacion.comentario AS tabla, " +
 					 		 " case" +
 					 		 " when (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) " +
 					 		 " THEN 'Pendiente Cobro Caja' " +					 		 
@@ -327,7 +327,15 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 				  			 "renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, '' AS tarjeta, " +
 							 " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
-							 "'' AS NOMBREBANCO";
+							 "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+
+                             " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco, "+ FacRenegociacionBean.T_NOMBRETABLA + " renegocia2 " +
+                             " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
+                             " and renegociacion."+FacRenegociacionBean.C_IDINSTITUCION + "=" + "renegocia2."+ FacRenegociacionBean.C_IDINSTITUCION +
+                             " and renegociacion."+FacRenegociacionBean.C_IDFACTURA + "=" + "renegocia2."+ FacRenegociacionBean.C_IDFACTURA +
+                             " and renegociacion."+FacRenegociacionBean.C_IDRENEGOCIACION + "=" + "renegocia2."+ FacRenegociacionBean.C_IDRENEGOCIACION +
+                             " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA + "=" + "renegocia2."+ FacRenegociacionBean.C_IDCUENTA+") as NOMBREBANCO";
 
 			String from6 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " +
 							FacRenegociacionBean.T_NOMBRETABLA + " renegociacion " ;

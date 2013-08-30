@@ -4,22 +4,43 @@
  */
 package com.siga.facturacion.action;
 
+import java.io.BufferedWriter;
+import java.io.File;
+
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.bea.common.security.xacml.IOException;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.GestionarFacturaForm;
@@ -33,6 +54,8 @@ import com.siga.general.SIGAException;
  */
 public class GestionarFacturaPagosAction extends MasterAction {
 	
+	protected String nombreFichero = "";
+	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#executeInternal(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -40,6 +63,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		try {		
 			String mapDestino = "exception";
 			MasterForm miForm = null;
+
 		    
 			do {
 				miForm = (MasterForm) formulario;
@@ -53,6 +77,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					break;
 				}
 				if (accion.equalsIgnoreCase("renegociar")){
+					this.nombreFichero = "";
 					mapDestino = renegociar(mapping, miForm, request, response);
 					break;
 				}
@@ -83,8 +108,13 @@ public class GestionarFacturaPagosAction extends MasterAction {
 
 				if (accion.equalsIgnoreCase("insertarRenegociar")){
 				//	mapDestino = insertarRenegociar(mapping, miForm, request, response);
+					this.nombreFichero = "";
 					mapDestino = renegociar(mapping, miForm, request, response);
 					break;
+				}
+				
+				if (accion.equalsIgnoreCase("download")){
+					mapDestino = download(mapping, miForm, request, response);
 				}
 
 				return super.executeInternal(mapping, formulario, request, response);
@@ -442,46 +472,23 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		}				
 		return modo;
 	}
-
-	/**
-	 * Inserta en BD una nueva renegociacion de un pago
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 * @exception  SIGAException  Errores de aplicación
-	 */
-/*	protected String insertarRenegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-
-		try {
-			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
-			Integer idInstitucion 	= miForm.getIdInstitucion();
-			String idFactura 		= miForm.getIdFactura();
-			Integer estadoFactura 	= miForm.getDatosPagosRenegociarEstadoFactura();
-			String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();  
-			Facturacion facturacion = new Facturacion(this.getUserBean(request));
-			facturacion.insertarRenegociar(idInstitucion, idFactura, estadoFactura, 
-					nuevaFormaPago, miForm.getDatosPagosRenegociarIdCuenta().toString(),
-						miForm.getDatosPagosRenegociarImportePendiente(), 
-						miForm.getDatosPagosRenegociarObservaciones(),false,false,null);
-			
-		}catch (SIGAException e) { 
-			return exito(e.getLiteral(), request);
-			
-		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
-		}				
-		return exitoModal("messages.inserted.success", request);
-	}*/
+	
 	
 	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		String forward = "exception";
 		UserTransaction tx 	= null;
 		String strFacturas[]  = null;
 		String personasDiferentes = "";
+		Vector resultadoErrores = new Vector();
+		Vector resultadoNumFacturas = new Vector();
+		boolean comprobar = true;
+		int indice = 0;
+		File fichero = null;
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+		String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoRenegociacionesFallidasJava");		
+
+
 		try {
 			
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
@@ -513,7 +520,8 @@ public class GestionarFacturaPagosAction extends MasterAction {
         		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
         		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
         		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
-					if (factDevueltasYRenegociadas.size() == 1){
+        		String numeroFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_NUMEROFACTURA);
+				if (factDevueltasYRenegociadas.size() == 1){
 					try{	
 						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
 								nuevaFormaPago, idcuenta,	impTotalPorPagar, 
@@ -521,22 +529,34 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						
 					}catch (SIGAException e) { 
 						tx.rollback();
-						return exito(e.getLiteral(), request);
-						
+						if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA)) 
+							return forward=exito("facturacion.renegociar.aviso.cuentasDeBaja",request);
+						else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_PORCAJA)) 
+							return forward=exito("facturacion.renegociar.aviso.mismaformacaja" ,request);
+							else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE))
+								return forward=exito("facturacion.renegociar.aviso.cuentaNoExiste",request);	
 					}
 						
 					} else {
 						try {
-							if ((Integer.parseInt(personasDiferentes) > 1) && (nuevaFormaPago.equalsIgnoreCase("porOtroBanco"))) {
-								isTodasRenegociadas = false;
-								break;
-							} else {
-								facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
+							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
 										nuevaFormaPago, idcuenta,	impTotalPorPagar, 
 											miForm.getDatosPagosRenegociarObservaciones(),true,true,null);
-							}
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
+							resultadoNumFacturas.add(numeroFactura);
+							if (resultadoErrores.isEmpty()) {
+								resultadoErrores.add(e.getLiteral());
+							} else {
+								while ((comprobar) && (indice < resultadoErrores.size())) {
+									if (resultadoErrores.get(indice).equals(e.getLiteral())) 
+										comprobar = false;
+									else indice ++;
+								}
+								if (comprobar) {
+									resultadoErrores.add(e.getLiteral());
+								}
+							}
 							continue;
 						}
 					}
@@ -549,17 +569,269 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				forward = exito("facturacion.renegociacionMasiva.literal.procesoCorrectoRenegocia",request);
 				
 			}else if (isTodasRenegociadas == false) {
-				forward=exito("facturacion.renegociar.aviso.noRenegociadas",request);
+			
+			// Descargamos el fichero
+			fichero = this.obtenerFichero(idInstitucion, usr, resultadoNumFacturas);
+
+			this.nombreFichero = fichero.getName().toString();
+			
+			rutaServidor = sRutaFisicaJava + rutaServidor;
+			
+			String barra = "";
+			if (rutaServidor.indexOf("/") > -1){ 
+				barra = "/";
+			}
+			if (rutaServidor.indexOf("\\") > -1){ 
+				barra = "\\";
+			}
+			rutaServidor += barra + idInstitucion.toString();
+		
+
+				if (resultadoErrores.size() == 1){
+					if (resultadoErrores.get(0) == ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA)
+						forward=exitoRefresco("facturacion.renegociar.aviso.cuentasDeBaja" ,request);
+					else{
+						if (resultadoErrores.get(0) == ClsConstants.ERROR_RENEGOCIAR_PORCAJA)
+							forward=exitoRefresco("facturacion.renegociar.aviso.mismaformacaja",request);
+						else {
+							if (resultadoErrores.get(0) == ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE)
+								forward=exitoRefresco("facturacion.renegociar.aviso.cuentaNoExiste",request);
+						}
+					}
+				} else
+					forward=exito("facturacion.renegociar.aviso.noRenegociadas",request);
 				
-			} else return exitoModal("messages.inserted.success", request);
+			} else if (factDevueltasYRenegociadas.size() == 0) {
+				forward=exito("facturacion.renegociar.aviso.noEstadoCorrecto",request);
+			} else{
+				return exitoModal("messages.inserted.success", request);
+			}
 
 		}catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
 		}				
 		return forward;
 	}
+
+	/** 
+	 *  Funcion para generar el fichero de excel con las renegociaciones fallidas
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected File obtenerFichero(Integer idInstitucion, UsrBean usr, Vector resultadoNumFacturas) throws IOException ,SIGAException {
 	
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+		String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoRenegociacionesFallidasJava");
+		String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosRenegociaciones");
+		String sExtension 		= rp.returnProperty("facturacion.extension.ficherosRenegociaciones");
+		//String nombreFichero	= "";	
+		File fichero = null;
+        String fechaActual;	
+		
+		try{
+//		Generamos el nombre del fichero.
+		rutaServidor = sRutaFisicaJava + rutaServidor;
+		File fDirectorio = new File(rutaServidor);
+		
+		if (!fDirectorio.exists()){
+			fDirectorio.mkdirs();
+		}
+		
+		String barra = "";
+		if (rutaServidor.indexOf("/") > -1){ 
+			barra = "/";
+		}
+		if (rutaServidor.indexOf("\\") > -1){ 
+			barra = "\\";
+		}
+		rutaServidor += barra + idInstitucion.toString();
+		File fDirectorio2 = new File(rutaServidor);
+		
+		if (!fDirectorio2.exists()){
+			fDirectorio2.mkdirs();
+		}
+		
+		Date fecha = new Date();
+		
+		String fechastr = String.valueOf(fecha.getDate()) + String.valueOf(fecha.getMonth() + 1) + String.valueOf(fecha.getYear() + 1900) + "_"; 
+		
+		fechaActual = String.valueOf(Calendar.getInstance().getTimeInMillis());	
+		
+		this.nombreFichero = barra + sPrefijo + fechastr + fechaActual + "." + sExtension;
+		rutaServidor += this.nombreFichero;		
+		
+		// ***************************
+		// * INICIO GENERACION EXCEL *
+		// ***************************
+		HSSFWorkbook libro = new HSSFWorkbook();						
+		HSSFDataFormat df = libro.createDataFormat();			
+
+		
+		// GESTION DE FUENTES
+		HSSFFont fuenteCabeceras = libro.createFont();
+		HSSFFont fuenteNormal = libro.createFont();
+		
+		fuenteCabeceras.setFontHeightInPoints((short) 10);
+		fuenteCabeceras.setColor((short) HSSFFont.COLOR_NORMAL);
+		fuenteCabeceras.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		fuenteNormal.setFontHeightInPoints((short) 10);
+		fuenteNormal.setColor((short) HSSFFont.COLOR_NORMAL);
+		fuenteNormal.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+		
+		// GESTION DE ESTILOS
+		HSSFCellStyle estiloCeldaMoneda = libro.createCellStyle();
+		HSSFCellStyle estiloCeldaPorcentaje = libro.createCellStyle();
+		HSSFCellStyle estiloCeldaTexto = libro.createCellStyle();
+		HSSFCellStyle estiloCeldaTitulo = libro.createCellStyle();
+
+		estiloCeldaMoneda.setFont(fuenteNormal);
+		estiloCeldaMoneda.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		estiloCeldaMoneda.setDataFormat(df.getFormat("###,###,##0.00 €"));
+
+		estiloCeldaPorcentaje.setFont(fuenteNormal);
+		estiloCeldaPorcentaje.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		estiloCeldaPorcentaje.setDataFormat(df.getFormat("##0.00 %"));
+
+		estiloCeldaTexto.setFont(fuenteNormal);
+		estiloCeldaTexto.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));			
+		
+		estiloCeldaTitulo.setFont(fuenteCabeceras);
+		estiloCeldaTitulo.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		estiloCeldaTitulo.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+		estiloCeldaTitulo.setFillPattern((short) HSSFCellStyle.SOLID_FOREGROUND);
+		estiloCeldaTitulo.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex()); 						
+
+		
+		// GESTION DATOS
+		HSSFSheet hoja = libro.createSheet();
+		libro.setSheetName(0, "Renegociacion");
+
+		HSSFRow filas = null;
+		HSSFCell celdas = null;
+		
+		filas = hoja.createRow(0);
+		
+		celdas = filas.createCell(0);
+		celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usr, "facturacion.consultamorosos.literal.factura")));
+		celdas.setCellStyle(estiloCeldaTitulo);
+		celdas.setCellType(HSSFCell.CELL_TYPE_STRING);	
+		
+		for (int i = 0; i < resultadoNumFacturas.size(); i++) {										
+			String numeroFactura = (String) resultadoNumFacturas.get(i);;
+			
+			filas = hoja.createRow(1+i);
+			
+			celdas = filas.createCell(0);
+			celdas.setCellValue(new HSSFRichTextString(numeroFactura));					
+			celdas.setCellStyle(estiloCeldaTexto);
+			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+		}
 	
+	for (short i=0; i<1; i++)
+		hoja.autoSizeColumn(i);
+
+
+	
+	// ************************
+	// * FIN GENERACION EXCEL *
+	// ************************
+
+	
+	// Descargamos el fichero
+	fichero = new File(nombreFichero);
+	
+	if(fichero==null || fichero.exists()){
+		throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+	} else {
+		fichero.createNewFile();
+		FileOutputStream out = new FileOutputStream(rutaServidor);
+		libro.write(out);
+		out.close();
+	}	
+
+	}catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
+		}		
+	return fichero;
+	}
+	
+	/** 
+	 *  Funcion que atiende la accion download. Descarga los ficheros
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+					
+		String directorioFisico = "facturacion.directorioFisicoPagosBancosJava";
+		String directorio 		= "facturacion.directorioFisicoRenegociacionesFallidasJava";
+		//String nombreFichero 	= "";
+		String pathFichero		= "";
+		String idInstitucion	= "";
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		
+		try{		
+			GestionarFacturaForm form 		= (GestionarFacturaForm)formulario;
+			
+			if (this.nombreFichero != "")  {
+			
+			    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				pathFichero 		= p.returnProperty(directorioFisico) + p.returnProperty(directorio);			
+				
+				String barra = "";
+				if (pathFichero.indexOf("/") > -1){ 
+					barra = "/";
+				}
+				if (pathFichero.indexOf("\\") > -1){ 
+					barra = "\\";
+				}
+				
+				idInstitucion			= this.getIDInstitucion(request).toString();	
+				
+		/*		String rutaServidor = pathFichero + barra + idInstitucion.toString();
+				
+				File fDirectorio2 = new File(rutaServidor);
+				
+				String resultado[] = fDirectorio2.list();
+				
+				if (resultado.length > 0) 
+					nombreFichero = resultado[resultado.length - 1].toString();*/
+				
+				
+			//	pathFichero += File.separator + idInstitucion + File.separator + nombreFichero;
+				
+				pathFichero += File.separator + idInstitucion + File.separator + this.nombreFichero;
+				
+				// Descargamos el fichero
+				File fichero = new File(pathFichero);
+				
+				if(fichero==null || !fichero.exists()){
+					return exito("messages.general.error.ficheroNoExiste",request);
+				}
+
+			} else {
+				return exito("messages.general.error.ficheroNoExiste",request);
+			}
+
+			
+		}catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}
+
+		request.setAttribute("nombreFichero", nombreFichero);
+		request.setAttribute("rutaFichero", pathFichero);
+		
+		return "descargaFichero";
+	}		
 	
 	/**
 	 * Funcion que recupera los datos para la visualizacion de un pago por tarjeta

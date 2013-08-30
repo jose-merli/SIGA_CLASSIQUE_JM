@@ -202,6 +202,15 @@ public class ClsConstants {
 	public static final String ESTADO_FACTURA_ANULADA    = "8";
 	public static final String ESTADO_FACTURA_DEVUELTA   = "4";
 	
+	public static final String TIPO_RENEGOCIA_MASIVA   = "MASIVA";
+	public static final String TIPO_RENEGOCIA_MANUAL   = "MANUAL";
+	
+	public static final String ERROR_RENEGOCIAR_CUENTABAJA = "CUENTABAJA";
+	public static final String ERROR_RENEGOCIAR_PORCAJA = "PORCAJA";
+	public static final String ERROR_RENEGOCIAR_CUENTANOEXISTE = "CUENTANOEXISTE";
+	public static final String ERROR_RENEGOCIAR_EXITO ="EXITO";
+	public static final String ERROR_RENEGOCIAR_NORENEGOCIADAS = "NORENEGOCIADAS";
+	
 	public static final String ESTADO_ABONO_BANCO        = "5";
 	public static final String ESTADO_ABONO_CAJA         = "6";
 	

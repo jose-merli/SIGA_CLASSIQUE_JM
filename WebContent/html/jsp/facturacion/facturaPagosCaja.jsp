@@ -138,7 +138,7 @@
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/></td>
 							<td class="labelText">
-							<siga:Fecha  nombreCampo= "datosPagosCajaFecha" valorInicial="<%=fechaActual %>" posicionX="50" posicionY="10"/>
+							<siga:Fecha  nombreCampo= "datosPagosCajaFecha" valorInicial="<%=fechaActual %>" posicionX="50px" posicionY="10px"/>
 							</td>
 						</tr>
 						<tr>

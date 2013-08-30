@@ -1998,6 +1998,7 @@ public class Facturacion {
     		int idFormaPago			= 0;
     		int nuevoEstado         = 0;
     		boolean actualizarFacturaEnDisco = false;
+    		boolean cambioFormaPago = false;
     		// Recuperamos la factura asociada a la renegociacion
     		Hashtable claves = new Hashtable();
     		UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
@@ -2006,111 +2007,138 @@ public class Facturacion {
     		Vector vFacturas = facturaAdm.selectByPK(claves);
     		FacFacturaBean facturaBean = (FacFacturaBean) vFacturas.get(0);
     		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
+    		String resultado = ClsConstants.ERROR_RENEGOCIAR_EXITO;
     		
     		do {
+    			// Si la factura se encuentra Pendiente Cobro por Caja
     			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) { // 2
     				if (formaPago.equalsIgnoreCase("porCaja")) {
-    					throw new SIGAException("facturacion.renegociar.aviso.mismaformacaja");
-    					//break;
+    					throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_PORCAJA);
     				}
     				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
     					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					CenCuentasBancariasBean cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
-    					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null) {
-    						idCuenta = cuentaBancaria.getIdCuenta().toString();
-    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    					} else 
-    						throw new SIGAException("facturacion.renegociar.aviso.cuentaDeBaja");
+    					if (facturaBean.getIdCuenta() != null) {
+    						CenCuentasBancariasBean cuentaBancaria;
+    						if(isAutomatica){
+    							cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
+    						} else {
+    							cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
+    						}
+	    					 
+	    					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null) {
+	    						idCuenta = cuentaBancaria.getIdCuenta().toString();
+	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+	    					} else {
+	    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
+	    					}
+    					} else {
+    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA); 
+    					}
     					break;
     				}
     				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
-    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					if ((idCuenta == null) || (idCuenta == ""))
-    						throw new ClsExceptions("Imposible");
-    					else nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+    					if ((idCuenta == null) || (idCuenta == "")){
+    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
+    					}
+    					else{
+    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+    					}
     					break;
     				}    				
-    			}
-    			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) {
-    				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
-    					CenCuentasBancariasBean cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
-    					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null) {
-    						idCuenta = cuentaBancaria.getIdCuenta().toString();
-    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    					} else 
-    						throw new SIGAException("facturacion.renegociar.aviso.cuentaDeBaja");
-    					return;
-    				}
-    				if (formaPago.equalsIgnoreCase("porCaja")) {
-    					idCuenta = null;
-    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
-    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
-    					break;
-    				}
-    				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
-    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					if ((idCuenta == null) || (idCuenta == ""))
-    						throw new ClsExceptions("Imposible");
-    					else nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    					break;
-    				}
-    			}
-    			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)) {
-    				actualizarFacturaEnDisco = true;
-    				
-    				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
-    					
-    					CenCuentasBancariasBean cuentaBancaria = null;
-    					if(isAutomatica){
-    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-        					//idCuenta = facturaBean.getIdCuenta();
-        					cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
-        					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null){
-        						idCuenta = cuentaBancaria.getIdCuenta().toString();
-        						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-        					} else
-        						throw new SIGAException("facturacion.renegociar.aviso.cuentaDeBaja");
-        				}else{
-        					
-        					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-        					//idCuenta = facturaBean.getIdCuenta();
-        					cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
-        					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-        					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null)
-        						idCuenta = cuentaBancaria.getIdCuenta().toString();
-        					else 
-        						throw new SIGAException("facturacion.renegociar.aviso.cuentaDeBaja");
-        						
-        				}
-    					break;
-    				}
-    				if (formaPago.equalsIgnoreCase("porCaja")) {
-    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
-    					idCuenta = null;
-    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
-    					break;
-    				}
-    				if (formaPago.equalsIgnoreCase("porBanco")) {
-    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					if(idCuenta == null)
-    						throw new ClsExceptions("Imposible");
-    					else nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    					break;
-    				}
-    			}
-
-
-    			// Nunca deberia llegar aqui
-    			throw new ClsExceptions("Operacion no permitida");					
+    			} else {
+    				// El estado de la factura es Pendiente Cobro por Banco
+	    			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) {
+	    				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
+    						CenCuentasBancariasBean cuentaBancaria;
+    						if(isAutomatica){
+    							cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
+    						} else {
+    							cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
+    						}
+	    					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null) {
+	    						idCuenta = cuentaBancaria.getIdCuenta().toString();
+	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+	    					} else {
+	    						if (isAutomatica) {
+	    							idCuenta = null;
+	    	    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
+	    	    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+	    	    					cambioFormaPago = true;
+	    						} else {
+	    							throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
+	    						}
+	    					}
+	    					break;
+	    				}
+	    				if (formaPago.equalsIgnoreCase("porCaja")) {
+	    					idCuenta = null;
+	    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
+	    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+	    					break;
+	    				}
+	    				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
+	    					if ((idCuenta == null) || (idCuenta == "")){
+	    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
+	    					}
+	    					else{
+	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+	    					}
+	    					break;
+	    				}
+	    			} else {
+	    				//El estado de la factura es devuelta
+		    			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)) {
+		    				actualizarFacturaEnDisco = true;
+		    				
+		    				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
+		    					
+		    					CenCuentasBancariasBean cuentaBancaria = null;
+		    					if(isAutomatica){
+		        					cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
+		        					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null){
+		        						idCuenta = cuentaBancaria.getIdCuenta().toString();
+		        						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+			    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+		        					}else{
+		        						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
+		        					}
+		        				}else{
+		        					
+		        					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+		        					cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
+		        					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+		        					if(cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null)
+		        						idCuenta = cuentaBancaria.getIdCuenta().toString();
+		        					else{
+		        						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
+		        					}	
+		        				}
+		    					break;
+		    				}
+		    				if (formaPago.equalsIgnoreCase("porCaja")) {
+		    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
+		    					idCuenta = null;
+		    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+		    					break;
+		    				}
+		    				if (formaPago.equalsIgnoreCase("porBanco") || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
+		    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+		    					if(idCuenta == null){
+		    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
+		    					}
+		    					else nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+		    					break;
+		    				}
+		    			}
+	    			}
+    			}			
 
     		} while (false);
 
     		if(idCuenta!=null && idCuenta.equals(""))
     			throw new ClsExceptions("Imposible");
-    		
-    		/*if (nuevoEstado == 0) {
-    			throw new SIGAException("facturacion.renegociar.aviso.mismaformacaja");
-    		}*/
     			
     		if(htCuenta!=null && idCuenta!=null)
     			htCuenta.put("idCuenta", idCuenta);
@@ -2120,8 +2148,14 @@ public class Facturacion {
     		FacRenegociacionBean renegociacionBean = new FacRenegociacionBean ();
     		renegociacionBean.setComentario(observaciones);
     		renegociacionBean.setFechaRenegociacion("sysdate");
+    		if (isAutomatica) {
+    			renegociacionBean.setComentario(ClsConstants.TIPO_RENEGOCIA_MASIVA);
+    		} else {
+    			renegociacionBean.setComentario(ClsConstants.TIPO_RENEGOCIA_MANUAL);
+    		}
     		if(idCuenta!=null)
     			renegociacionBean.setIdCuenta(new Integer(idCuenta));
+    		
     		renegociacionBean.setIdFactura(idFactura);
     		renegociacionBean.setIdInstitucion(idInstitucion);
     		renegociacionBean.setIdPersona(facturaBean.getIdPersona());
@@ -2130,16 +2164,14 @@ public class Facturacion {
     		if(!isTransaccionCreada)
     			t.begin();
     		if(!renegociacionAdm.insert(renegociacionBean)) {
-    			throw new ClsExceptions("Error al insertar la renegociación: "+renegociacionAdm.getError());
-    			//throwExcp("messages.general.error",new String[] {"modulo.facturacion"},new ClsExceptions("messages.inserted.error"),t); 
+    			throw new ClsExceptions("Error al insertar la renegociación: "+renegociacionAdm.getError()); 
     		}
 
     		// Actualizamos la tabla FacFacturaInclidaEnDisquete
     		if (actualizarFacturaEnDisco ) {
     			FacFacturaIncluidaEnDisqueteAdm facturaDiscoAdm = new FacFacturaIncluidaEnDisqueteAdm (this.usrbean); 
     			if (!facturaDiscoAdm.updateRenegociacion(renegociacionBean.getIdInstitucion(), renegociacionBean.getIdFactura(), renegociacionBean.getIdRenegociacion())) {
-    				throw new ClsExceptions("Error al actualizar la factura incluida en disquete: "+facturaDiscoAdm.getError());
-    				//throwExcp("messages.general.error",new String[] {"modulo.facturacion"},new ClsExceptions("messages.inserted.error"),t); 
+    				throw new ClsExceptions("Error al actualizar la factura incluida en disquete: "+facturaDiscoAdm.getError()); 
     			}
     		}
 
@@ -2176,9 +2208,12 @@ public class Facturacion {
     		} else {
     			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
     		}
-    		if(!isTransaccionCreada)
+    		if(!isTransaccionCreada) {
     			t.commit();
-
+    		}
+			if (cambioFormaPago){
+				throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS);
+			}
 
     	}
     	catch (SIGAException e) {
@@ -2189,7 +2224,8 @@ public class Facturacion {
     			t.rollback();
     		throw e;
 
-    	}				
+    	}	
+
 
     }
     /** 

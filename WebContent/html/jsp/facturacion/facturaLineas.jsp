@@ -116,7 +116,8 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 										facturacion.lineasFactura.literal.Total,
 			   						facturacion.lineasFactura.literal.Anticipado,"
 			   columnSizes = "9,40,7,9,7,9,9,10"
-			   modal="M">
+			   modal="M"
+			   fixedHeight="420">
 	
 			<%	 
 				if ((vLineas != null) && (vLineas.size() > 0)) {

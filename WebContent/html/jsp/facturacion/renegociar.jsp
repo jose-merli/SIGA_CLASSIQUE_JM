@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <!-- renegociar.jsp -->
@@ -31,7 +31,8 @@
 	Integer estadoFactura = (Integer) request
 			.getAttribute("estadoFactura");
 	String pagoBanco = (String) request
-			.getAttribute("pagoBanco");	
+			.getAttribute("pagoBanco");
+
 
 	Integer idCuentaDeudor = (Integer) factura.getIdCuentaDeudor();
 
@@ -70,11 +71,30 @@
 			return 0;
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() {
-			sub();
+		<!-- Asociada al boton Guardar -->
+		function accionGuardar() {
+			document.all.GestionarFacturaForm.modo.value = "renegociar";
 			document.GestionarFacturaForm.submit();
+			self.location.reload(true);
+		}	
+		
+		
+		function refrescarLocal(){		
+			self.location.reload(true);			
 		}		
+		
+		<!-- Asociada al boton Descargar Fichero -->
+		function generarFichero() {
+			if (!confirm('<siga:Idioma key="facturacion.renegociacionfacturacion.literal.confirmarDescargaFichero"/>')) {
+				return false;
+			}
+
+
+			document.all.GestionarFacturaForm.modo.value = "download";
+	   		document.GestionarFacturaForm.submit();
+	   		self.location.reload(true);
+		}			
+		
 	</script>	
 </head>
 
@@ -90,7 +110,7 @@
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
-	<html:form action="/FAC_PagosFactura" method="POST" target="submitArea">
+	<html:form action="/FAC_PagosFactura.do" method="POST" target="submitArea">
 		<html:hidden property = "modo" 	value = "renegociar"/>
 		<html:hidden property="datosFacturas" value="${datosFacturas}"/>
 		
@@ -104,7 +124,14 @@
 						</tr>
 							<c:if test="${pagoBanco=='0' }">
 							<tr>
-								<td><input type="radio" id="radio1"
+								<td>
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" />
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+								</td>
+							</tr>						
+
+							<tr>						
+								<td><input type="radio" id="radio2"
 									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled"/>
 									<siga:Idioma key="facturacion.facturas.cuentabancaria.otra"/>
 								</td>									
@@ -116,7 +143,13 @@
 							</c:if>
 							<c:if test="${pagoBanco=='1' }">
 							<tr>
-								<td><input type="radio" id="radio1"
+								<td>
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled"/>
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+								</td>
+							</tr>								
+							<tr>
+								<td><input type="radio" id="radio2"
 									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked" />
 									<siga:Idioma key="facturacion.facturas.cuentabancaria.otra"/>
 								</td>									
@@ -128,7 +161,7 @@
 							</c:if>
 							<tr>
 								<td>
-								<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+								<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
 								<br>
 								
@@ -146,7 +179,8 @@
 					<table class="tablaCampos" border="0">
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-							<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""/></td>
+							<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""style="overflow-y:auto; overflow-x:hidden; resize:none; width:340px; height:60px;"/>
+							</td>
 						</tr>
 					</table>
 				</fieldset>
@@ -157,7 +191,10 @@
 	</html:form>
 	<!-- FIN: CAMPOS -->
 
-		<siga:ConjBotonesAccion botones='C,Y' modo='' modal="M" />	
+	<siga:ConjBotonesAccion botones='C,g,gf' modo='' modal="M" />
+
+
+
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <!-- facturaPagosRenegociar.jsp -->
@@ -261,7 +261,7 @@
 								<td class="labelText"><siga:Idioma
 									key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta" /></td>
 								<td class="labelText" style="text-align: left;">
-									<td class="labelText" style="text-align: left;" width="150">
+									<td class="labelText" style="text-align: left;" width="150px">
 									<%=UtilidadesString.mostrarDatoJSP(cuentaBancariaFactura)%>
 									</td>							
 
@@ -273,7 +273,7 @@
 							: ""%>></td>
 								<td class="labelText" colspan="2"><siga:Idioma
 									key="facturacion.facturas.cuentabancaria.unica" /></td>								
-								<td class="labelText" style="text-align: left;" width="150" >
+								<td class="labelText" style="text-align: left;" width="150px" >
 								<%=UtilidadesString.mostrarDatoJSP(numerocuentaBancariaUnica)%>
 								</td>	
 							</tr>
@@ -310,7 +310,8 @@
 					<table class="tablaCampos" border="0">
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-							<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""/></td>
+							<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="580" rows="3" styleClass="box" value=""style="overflow-y:auto; overflow-x:hidden; resize:none; width:530px; height:60px;"/>
+							</td>
 						</tr>
 					</table>
 				</fieldset>
