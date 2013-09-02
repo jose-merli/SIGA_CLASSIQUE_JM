@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.91 2013-09-02 12:36:14 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.92 2013-09-02 12:50:09 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -499,6 +499,15 @@ function jQueryLoaded(){
 					});
 					*/
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
+						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
+						options.dateFormat = datepickerInput.data("datepickerformat");
+						options.beforeShow = function(input, inst) {
+							jQueryTop('#main_overlay').toggle();
+						};
+						options.onClose = function(dateText, inst) {
+							jQueryTop('#main_overlay').toggle();
+						};
+						options.regional = datepickerInput.data("regional");
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("datepickerformat")),
 								function(dateText, datePickerInstance){
@@ -509,16 +518,7 @@ function jQueryLoaded(){
 									datepickerInput.val(dateText);
 									if (fireOnChange)
 										datepickerInput.change();
-								},{
-									dateFormat: datepickerInput.data("datepickerformat"),
-									regional: datepickerInput.data("regional"),
-									'beforeShow': function(input, inst) {
-										jQueryTop('#main_overlay').toggle();
-										},
-									'onClose': function(dateText, inst) {
-										jQueryTop('#main_overlay').toggle();
-									}
-							});
+								},options);
 						/*
 						self.bind('copy', function(e) {
 							alert("copy!");
