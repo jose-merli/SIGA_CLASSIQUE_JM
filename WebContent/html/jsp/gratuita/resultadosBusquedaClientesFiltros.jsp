@@ -180,11 +180,11 @@
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
 <%	if (resultado==null || resultado.isEmpty()) { %>			
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+			<tr class="notFound">
+				<td class="titulitos" colspan="10">
+						<siga:Idioma key="gratuita.retenciones.noResultados" />
+				</td>
+			</tr>
 <%	
 	} else { 
 	
