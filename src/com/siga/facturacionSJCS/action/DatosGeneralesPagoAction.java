@@ -2114,7 +2114,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 						.getIdentificadorColegiado(colegiadoBean));
 
 				// lo anhadimos
-				treeMap.put(colegiadoNew.getNombreColegiado(), colegiadoNew);
+				treeMap.put(colegiadoNew.getNombreColegiado().toUpperCase(), colegiadoNew);
 				
 //				colegiados.add(posicion, colegiadoNew);
 //				posicion++;
