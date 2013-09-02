@@ -4,13 +4,9 @@
  */
 package com.siga.facturacion.action;
 
-import java.io.BufferedWriter;
 import java.io.File;
 
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.sql.Timestamp;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +35,6 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.bea.common.security.xacml.IOException;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.facturacion.Facturacion;

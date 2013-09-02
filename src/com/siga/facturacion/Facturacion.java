@@ -2037,7 +2037,7 @@ public class Facturacion {
     					break;
     				}
     				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
-    					if ((idCuenta == null) || (idCuenta == "")){
+    					if ((idCuenta == null) || (idCuenta.equals(""))){
     						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
     					}
     					else{
