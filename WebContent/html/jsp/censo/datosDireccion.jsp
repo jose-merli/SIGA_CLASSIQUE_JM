@@ -174,40 +174,29 @@
 			if (modo.equals("editar")) {
 				desactivado = false;
 				editarCampos = true;
-				idPersona = String.valueOf((Long) request
-						.getAttribute("idPersona"));
-				idInstitucion = String.valueOf(htData
-						.get(CenDireccionesBean.C_IDINSTITUCION));
-
-				idProvincia.add(String.valueOf(htData
-						.get(CenDireccionesBean.C_IDPROVINCIA)));
-				sIdprovincia = String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA));
-				idPoblacion.add(String.valueOf(htData
-						.get(CenDireccionesBean.C_IDPOBLACION)));
-				ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String
-						.valueOf(
-								htData.get(CenDireccionesBean.C_IDPAIS))
-						.equals(""))
-						? ClsConstants.ID_PAIS_ESPANA
-						: String.valueOf(htData
-								.get(CenDireccionesBean.C_IDPAIS));
-				idPais.add(ididPais);
-
 			} else { // Ver
-
-				ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String
-						.valueOf(
-								htData.get(CenDireccionesBean.C_IDPAIS))
-						.equals(""))
-						? ClsConstants.ID_PAIS_ESPANA
-						: String.valueOf(htData
-								.get(CenDireccionesBean.C_IDPAIS));
-
 				desactivado = true;
 				clase = "boxConsulta";
 				desactivarCheckTipos = "disabled";
-
 			}
+			idPersona = String.valueOf((Long) request
+					.getAttribute("idPersona"));
+			idInstitucion = String.valueOf(htData
+					.get(CenDireccionesBean.C_IDINSTITUCION));
+
+			idProvincia.add(String.valueOf(htData
+					.get(CenDireccionesBean.C_IDPROVINCIA)));
+			sIdprovincia = String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA));
+			idPoblacion.add(String.valueOf(htData
+					.get(CenDireccionesBean.C_IDPOBLACION)));
+			ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String
+					.valueOf(
+							htData.get(CenDireccionesBean.C_IDPAIS))
+					.equals(""))
+					? ClsConstants.ID_PAIS_ESPANA
+					: String.valueOf(htData
+							.get(CenDireccionesBean.C_IDPAIS));
+			idPais.add(ididPais);
 		}
 	} else {
 		if (modo.equals("nuevo")) {
@@ -343,8 +332,22 @@
 	    }
 		
 		function selPaisInicio() {
-			var p = document.getElementById("pais");
-			selPais(p.value);
+			var valor = document.getElementById("pais").value;
+			if (valor!="" && valor!=idEspana) {
+		   		document.getElementById("poblacion").value="";
+		   		document.getElementById("provincia").value="";
+			   	//aalg: se quita la marca de obligatoriedad
+			   	document.getElementById("provinciaSinAsterisco").className="labelText";
+				document.getElementById("provinciaConAsterisco").className="ocultar";
+				document.getElementById("poblacionEspanola").className="ocultar";
+				document.getElementById("poblacionExtranjera").className="";
+	       } else {
+		   		document.getElementById("poblacionExt").value="";
+				document.getElementById("poblacionEspanola").className="";
+				document.getElementById("poblacionExtranjera").className="ocultar";
+				//aalg: se restaura la marca de obligatoriedad si es pertinente
+				comprobarTelefonoAsterico();
+	       }
 		}
 		
 		function comprobarTelefonoAsterico() {
