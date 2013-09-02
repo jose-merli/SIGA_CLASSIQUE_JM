@@ -60,18 +60,17 @@
 	String numero = (String)request.getAttribute("numero");
 	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
  	if (busquedaVolver==null) {
- 			 busquedaVolver = "volverNo";
- 		}
-	
+		 busquedaVolver = "volverNo";
+	}
 	
 	String formaPago[] = new String[6];
-		formaPago[0] = String.valueOf(idInstitucion);
-		formaPago[1] = ""+ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA;
-		if (esLetrado)	{		
-				formaPago[2] = ""+ClsConstants.TIPO_PAGO_INTERNET;
-		}else{
-				formaPago[2] = ""+ClsConstants.TIPO_PAGO_SECRETARIA;
-		}
+	formaPago[0] = String.valueOf(idInstitucion);
+	formaPago[1] = ""+ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA;
+	if (esLetrado)	{		
+			formaPago[2] = ""+ClsConstants.TIPO_PAGO_INTERNET;
+	}else{
+			formaPago[2] = ""+ClsConstants.TIPO_PAGO_SECRETARIA;
+	}
 
 /*
 		formaPago[1] = "'" + ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA + "'";
@@ -88,25 +87,20 @@
 	String parametroFuncion;
 	String validarCantidad;
 	String formaPagoNombre;
-	
 	String sIdCuenta;
 	String sFormaPago;
 	String sTipoCertificado;
 	String sIdTipoEnvios;
 	String sIdDireccion;
-
 	String sCuenta;	
 	String sCantidad;
 	String sPrecio;
 	String sPeriodicidad;
 	String sIva;
-
 	String desactivado = "readOnly";
 	String botones = "V,CC";
-	
 	String editar;
 	String fecha = UtilidadesBDAdm.getFechaBD("");
-	
 	
 	// Modificacion Precio del producto
 	GenParametrosAdm admGen = new GenParametrosAdm(user);
@@ -120,38 +114,27 @@
 	if (textoError == null)
 		textoError = "";
 	request.setAttribute("textoError", "");
-
 %>
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="pys.solicitudCompra.cabecera" 
-		localizacion="pys.solicitudCompra.ruta"/>
+	<siga:Titulo titulo="pys.solicitudCompra.cabecera" localizacion="pys.solicitudCompra.ruta"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
-	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	
-	<script language="JavaScript">
-	
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->	
+	<script language="JavaScript">	
 		function  convertirAFormato(n){
 			var d = n.replace(/,/,".");
 			d = new Number(n);
 			d = Number(d.toFixed(2));
 			d = d.toLocaleString();
-			if(String(d).indexOf(',') < 0){
+			if (String(d).indexOf(',') < 0) {
 				d += '.00'; // aqui puede variar segun la cantidad de decimales que desees;
 			}	
 			return d.replace(".","");	
@@ -163,12 +146,12 @@
 			direccion =eval("f.certificado" + fila +"_3");
 			
 			var resultado = ventaModalGeneral("RemitentesForm","G");					
-			if(resultado!= undefined && resultado[0]!=undefined){
-					tipoEnvio.value = resultado[12];
-					direccion.value = resultado[11];									
-			}else{			
-					tipoEnvio.value="";
-					direccion.value="";		
+			if (resultado!= undefined && resultado[0]!=undefined) {
+				tipoEnvio.value = resultado[12];
+				direccion.value = resultado[11];									
+			} else {			
+				tipoEnvio.value="";
+				direccion.value="";		
 			}
 			f.modo.value = "guardarCertificado";
 			f.submit();				
@@ -185,14 +168,17 @@
 			var flag = true;
 			j = 1;
 			while (flag) {
-			  var aux = 'certificado' + fila + '_' + j;
-			  var oculto = document.getElementById(aux);
-			  if (oculto == null)  { flag = false; }
-			  else { datos.value = datos.value + oculto.value + ','; }
-			  j++;
+			  	var aux = 'certificado' + fila + '_' + j;
+			  	var oculto = document.getElementById(aux);
+			  	if (oculto == null)  { 
+				  	flag = false; 
+				} else { 
+					datos.value = datos.value + oculto.value + ','; 
+				}
+			  	j++;
 			}
 			datos.value = datos.value + "%"
-		  f.modo.value = "consultarCertificado";
+		  	f.modo.value = "consultarCertificado";
 		 	ventaModalGeneral(document.forms[0].name,"M");	  
 		 	f.modo.value = "guardarCertificado";
 			f.submit(); 			
@@ -207,7 +193,7 @@
 			
 			f = document.solicitudCompraForm;
 			
-			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
+			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
 				nofacturable=eval("f.oculto" + j +"_7");
 				if(nofacturable.value=="0"){ //En el caso de que sea facturable
 					cuenta=eval("f.oculto" + j +"_5");	
@@ -221,12 +207,13 @@
 							cuenta.value=idcuenta.value;						
 							numeroCuenta.value=cuentaelegida.value;
 							document.getElementById("cuenta"+j).value = idcuenta.value;								
-						}
-					}else{
+						} 
+						
+					} else {
 					   	jQuery("#cuenta"+j).attr("disabled","disabled");
 						document.getElementById("cuenta"+j).style.display ='none';						
 					}
-				}else{
+				} else {
 				   	jQuery("#cuenta"+j).attr("disabled","disabled");
 					document.getElementById("cuenta"+j).style.display ='none';
 				}
@@ -241,18 +228,20 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-			if(pago.value==<%=factura%>){	
+			if (pago.value==<%=factura%>) {	
 			   	jQuery("#cuenta"+fila).removeAttr("disabled");
 				document.getElementById("cuenta" + fila).style.display ='block';
 				alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
 				cuenta.value=idcuenta.value;
-				numeroCuenta.value=cuentaelegida.value;		
-				if(document.getElementById("cuenta"+fila).childNodes.length > 2){
+				numeroCuenta.value=cuentaelegida.value;	
+				
+				if (document.getElementById("cuenta"+fila).childNodes.length > 2) {
 					document.getElementById("cuenta"+fila).value = 0;
-				}else{
+				} else {
 					document.getElementById("cuenta"+fila).value = idcuenta.value;
 				}
-			}else{
+				
+			} else {
 				jQuery("#cuenta"+fila).attr("disabled","disabled");			
 				document.getElementById("cuenta" + fila).style.display ='none';
 				cuenta.value="";
@@ -269,14 +258,14 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-			if(pago.value==<%=factura%>){	
+			if (pago.value==<%=factura%>) {	
 				jQuery("#cuenta"+fila).removeAttr("disabled");
 				document.getElementById("cuenta" + fila).style.display ='block';
 				cuenta.value=idcuenta.value;
 				numeroCuenta.value=cuentaelegida.value;		
-				if(document.getElementById("cuenta"+fila).childNodes.length > 2){
+				if (document.getElementById("cuenta"+fila).childNodes.length > 2) {
 					document.getElementById("cuenta"+fila).value = 0;
-				}else{
+				} else {
 					document.getElementById("cuenta"+fila).value = idcuenta.value;
 				}				
 			} else {
@@ -287,22 +276,16 @@
 			}	
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
- 		
- 		
- 		
 		
-		function validarPrecio()
-		{
+		function validarPrecio() {
 			f = document.solicitudCompraForm; 	
- 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				precio=eval("f.precio" + j); 				
  				precio.value = precio.value.replace(/,/,".");	
  				
  				tipo = document.getElementById("oculto" + j + "_4");
 			    // Si es producto
  				if (tipo.value == <%=Articulo.CLASE_PRODUCTO%>) {
- 				
- 				 					
 	 				if(precio.value==null || isNaN(precio.value) || (eval(precio.value) < 0)|| ((precio.value.indexOf(".")!=-1) && (precio.value.substring(precio.value.indexOf(".")+1).length > 2))){ 
 	 					nombre = document.getElementById("nombreArticulo" + j);
 		 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorPrecio"/>";
@@ -310,10 +293,9 @@
 	 					return false;
 					}
 					
- 				}
 				// Si es servicio
- 				else {  
-					if(precio.value==null || precio.value=="-"){ 
+ 				} else {  
+					if (precio.value==null || precio.value=="-") { 
 		 				var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.errorProductoSinPrecio"/>";
 						alert (mensaje);
 	 					return false;
@@ -322,36 +304,35 @@
 	 		}	 		
 	 		return true;
 	 	}
-
-<!-- --> 	
-		function obligatorioFormaPago(){
+ 	
+		function obligatorioFormaPago() {
 	 		f = document.solicitudCompraForm; 	
-	 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
-	 				pago=eval("f.formaPago" + j);
-	 					if(pago.value==null || pago.value==""){ 
-		 					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-							alert (mensaje);	 						
-							return false;	 	
-						}		
-		 		}	 		
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 				pago=eval("f.formaPago" + j);
+				if (pago.value==null || pago.value=="") { 
+ 					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					alert (mensaje);	 						
+					return false;	 	
+				}		
+	 		}	 		
 	 		return true;
  		}
-<!-- -->
 	 	
 	 	function validarFormaPagoANTIGUO(){
 	 		f = document.solicitudCompraForm; 
 	 		auxTarjeta="N";			
- 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				pago=eval("f.formaPago" + j);
- 					if(pago.value==null || pago.value==""){ 				
- 						var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-						alert (mensaje);	
-						return false;	 	
-					}	else if(pago.value==<%=tarjeta%>) {
-							auxTarjeta="S";
-					}			
+				if (pago.value==null || pago.value=="") { 				
+					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					alert (mensaje);	
+					return false;	 	
+				}	else if(pago.value==<%=tarjeta%>) {
+						auxTarjeta="S";
+				}			
 	 		}
-	 		if(auxTarjeta=="S"){
+ 			
+	 		if (auxTarjeta=="S") {
 	 			f.modo.value  = "validarTarjeta"; 		
 				var resultado = ventaModalGeneral("solicitudCompraForm","P");
 				if (resultado == null) return;
@@ -362,68 +343,68 @@
 	 		return true;
 	 	}	 	   
 
-	 	function validarFormaPago(){
-	 		
+	 	function validarFormaPago(){	 		
 	 		f = document.solicitudCompraForm; 
 	 		auxTarjeta="N";	
 	
 			testigo=0;
- 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
- 				
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				
 				nofacturable=eval("f.oculto" + j +"_7");
 				cuentaelegida=eval("f.oculto" + j +"_8");
 				cuenta=eval("f.cuenta" + j);
 				idcuenta=eval("f.oculto" + j +"_9");
-				if(nofacturable.value=="0"){ //En el caso de que sea facturable
+				
+				//En el caso de que sea facturable
+				if (nofacturable.value=="0") { 
 	 				pago=eval("f.formaPago" + j);
 	
-	 					if(pago.value==null || pago.value==""){ 				
-	 						var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-							alert (mensaje);	
-							return false;	 	
-						}	
-						else if(pago.value==<%=tarjeta%>) {
-								auxTarjeta="S";
-						}
-						else if(pago.value==<%=factura%>){
+ 					if(pago.value==null || pago.value==""){ 				
+ 						var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+						alert (mensaje);	
+						return false;	 
+						
+					} else if(pago.value==<%=tarjeta%>) {
+							auxTarjeta="S";
 							
-							if((testigo==0)&&(cuenta.value==null||cuenta.value=="")){
-								obtenerCuentaAccion(j);
-								testigo=j;
+					} else if(pago.value==<%=factura%>){
+						
+						if((testigo==0)&&(cuenta.value==null||cuenta.value=="")){
+							obtenerCuentaAccion(j);
+							testigo=j;
 
-							}
-							else if(cuenta.value==null||cuenta.value==""){
-								//alert("cuenta2="+cuenta.value);
-								//alert("cuentaelegida2="+cuentaelegida.value);
+						} else if(cuenta.value==null||cuenta.value==""){
+							//alert("cuenta2="+cuenta.value);
+							//alert("cuentaelegida2="+cuentaelegida.value);
 
-								actual=eval("f.cuenta"+j);
-								primero=eval("f.cuenta"+testigo)
-								actual.value=primero.value;
+							actual=eval("f.cuenta"+j);
+							primero=eval("f.cuenta"+testigo)
+							actual.value=primero.value;
 
-								actualidcuenta=eval("f.oculto" + j +"_5");
-								primeroidcuenta=eval("f.oculto" + testigo +"_5");
-								actualidcuenta.value=primeroidcuenta.value;
+							actualidcuenta=eval("f.oculto" + j +"_5");
+							primeroidcuenta=eval("f.oculto" + testigo +"_5");
+							actualidcuenta.value=primeroidcuenta.value;
 
-							}
 						}
+					}
 	   			}	
 			}	
-			if(testigo!=0){
+ 			
+			if (testigo!=0) {
 				return false;	
-			}else{
+			} else {
 		 		return true;
 		 	}	
 	 	}	
 	 	
-	 	function validarCertificado(){
+	 	function validarCertificado() {
 	 		f = document.solicitudCompraForm; 	 			
 	 		salida = true;
- 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				certificado=eval("f.certificado" + j +"_1"); 				
- 				if(certificado.value!=null && certificado.value!=""){ 			
+ 				if (certificado.value!=null && certificado.value!="") { 			
  					direccion=eval("f.certificado" + j +"_3"); 					
- 					if(direccion.value==null || direccion.value==""){		
+ 					if (direccion.value==null || direccion.value=="") {		
  						var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.certificados"/>";
 						alert (mensaje);	
 						return false;	 	
@@ -435,6 +416,7 @@
 					}
 				}			
 	 		}
+ 			
 			if (!salida) {
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.numeroCertificadosMal"/>";
 				alert (mensaje);	
@@ -442,9 +424,9 @@
 	 		return salida;
 	 	}	
 	 	
-	 	function abrirModal(){
-	 		 if(auxTarjeta=="S"){
-	 			f.modo.value  = "validarTarjeta"; 		
+	 	function abrirModal() {
+ 		 	if(auxTarjeta=="S"){
+				f.modo.value  = "validarTarjeta"; 		
 				var resultado = ventaModalGeneral("solicitudCompraForm","P");
 				if (resultado == null) return;
 				if (resultado[0] == 0) return;
@@ -458,17 +440,17 @@
  			varIvaTotal=0;
  			varPrecioTotal=0;
 
- 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  			
 	 			pago=eval("f.formaPago" + j);
 	 			
- 				if(pago){
+ 				if (pago) {
 	 				cantidad=eval("f.cantidad" + j); 		
 	 				precio=eval("f.precio" + j);
 	 				iva=eval("f.iva" + j);
 	 				precio.value = precio.value.replace(/,/,".");
 					iva.value = iva.value.replace(/,/,".");
-					if(!isNaN(parseFloat(precio.value))){			
+					if (!isNaN(parseFloat(precio.value))) {			
 						varIvaTotal = varIvaTotal +  (cantidad.value * parseFloat(precio.value) * (iva.value/100));
 						varPrecioTotal = varPrecioTotal + (cantidad.value * (parseFloat(precio.value) * (1 + (iva.value/100))));
 					}					
@@ -488,13 +470,12 @@
 				alert (mensaje);
 	//			valor.value = valorInicial;	   
 				valor.focus();
-			}else{
-
-					calcularImporte();
+				
+			} else {
+				calcularImporte();
 			}	
 		}
 
- 		
  		function accionfinalizarCompraANTIGUO(){
  			f = document.solicitudCompraForm;	 			
  			if(validarPrecio() && validarFormaPago()){							
@@ -507,14 +488,13 @@
  		function accionConfirmarCompra(){
  			sub();
  			f = document.solicitudCompraForm;
- 			if(validarPrecio() && validarFormaPago()&& validarCertificado()){							
+ 			if (validarPrecio() && validarFormaPago()&& validarCertificado()) {							
  				f.target = "mainWorkArea";
 				f.modo.value = "confirmarCompra";
 				f.submit();
-			}else{
+			} else {
 				fin();
-			}
-			
+			}			
  		}
  		
  		function acciondesglosePago(){
@@ -542,326 +522,348 @@
 	<table class="tablaTitulo" align="center" cellspacing="0" height="20">
 		<tr>
 			<td class="titulitosDatos">
-				<siga:Idioma key="pys.solicitudCompra.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP((String)request.getAttribute("nombrePersona"))%> &nbsp;&nbsp;
-		
+				<siga:Idioma key="pys.solicitudCompra.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP((String)request.getAttribute("nombrePersona"))%> &nbsp;&nbsp;		
 			</td>
 		</tr>
 	</table>
 
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="mainWorkArea" type="">
+		<input type="hidden" name="ventana" 				value="aceptacion">
+	  	<input type="hidden" name="actionModal" 		value=""> 
+	  	<input type="hidden" name="volver" 					value="">
+	  	<input type="hidden" name="numeroColegiado" value = "<%=numero%>">
+	  	<input type="hidden" name="nombrePersona" 	value = "<%=(String)request.getAttribute("nombrePersona")%>">
+	  	<input type="hidden" name="nif" 						value = "<%=(String)request.getAttribute("nif")%>">  
+	  	<input type="hidden" name="idInstitucionPresentador" 	value = "<%=(Integer)request.getAttribute("idInstitucionPresentador")%>">
+	  	 
+	  	<html:hidden name="solicitudCompraForm" property="modo"/>
+	  	
+	  	<!-- CAMPO PARA SABER SI ESTAMOS TRATANDO CON EL TPV -->
+	  	<html:hidden name="solicitudCompraForm" property = "idPersona" value = "<%=String.valueOf((Long)carro.getIdPersona())%>"/>
+	  	<html:hidden name="solicitudCompraForm" property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>				
+				
+<% 
+		String nombrecol1;
+		String tamanoCol1;
+		int var=1;
 
-  	
-	  <html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="mainWorkArea" type="">
-	  <input type="hidden" name="ventana" 				value="aceptacion">
-	  <input type="hidden" name="actionModal" 		value=""> 
-	  <input type="hidden" name="volver" 					value="">
-	  <input type="hidden" name="numeroColegiado" value = "<%=numero%>">
-	  <input type="hidden" name="nombrePersona" 	value = "<%=(String)request.getAttribute("nombrePersona")%>">
-	  <input type="hidden" name="nif" 						value = "<%=(String)request.getAttribute("nif")%>">  
-	  <input type="hidden" name="idInstitucionPresentador" 	value = "<%=(Integer)request.getAttribute("idInstitucionPresentador")%>"> 
-	 
-	  
-	  <html:hidden name="solicitudCompraForm" property="modo"/>
-	  <!-- CAMPO PARA SABER SI ESTAMOS TRATANDO CON EL TPV -->
-	  <html:hidden name="solicitudCompraForm" property = "idPersona" value = "<%=String.valueOf((Long)carro.getIdPersona())%>"/>
-	  <html:hidden name="solicitudCompraForm" property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>				
-	
-
+		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) { 
+			nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
+			tamanoCol1="13,16,19,8,8,7,7,15,8";
 			
-    			<% 
+		}else{
+		   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
+		   	tamanoCol1="13,16,19,8,8,7,7,8";
+		}
+%>
 
-    			
-    			String nombrecol1;
-  				String tamanoCol1;
-  				int var=1;
+		<siga:Table 
+			name="cabecera"
+			border="2"
+			columnNames="<%=nombrecol1%>"
+			columnSizes="<%=tamanoCol1%>"
+			fixedHeight="80%">
 
-  				if(!user.isLetrado()&&aprobarSolicitud.equals("S"))  { 
-  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
-  					tamanoCol1="13,16,19,8,8,7,7,15,8";
-				}else{
-				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-				   	tamanoCol1="13,16,19,8,8,7,7,8";
-				}%>
-
-   					<siga:Table 
-		  				name="cabecera"
-		  				border="2"
-						columnNames="<%=nombrecol1%>"
-		  				columnSizes="<%=tamanoCol1%>"
-		  				fixedHeight="80%">
-
-<% 					if(vArticulos == null || vArticulos.size()<1 ) 					{ 	
-  							botones = "V"; 
+<% 					
+			if(vArticulos == null || vArticulos.size()<1 ) { 	
+				botones = "V"; 
 %> 	
-			  		<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			  	<tr class="notFound">
+	   				<td class="titulitos">
+	   					<siga:Idioma key="messages.noRecordFound"/>
+	   				</td>
 				</tr>
 				 						
 <% 
- 						}else{
- 						botones = "V,CC";
- 						int fila; 	 								
- 						for (int i = 0; i < vArticulos.size(); i++) {
-							Articulo a = (Articulo) vArticulos.get(i);							
+			} else {
+				botones = "V,CC";
+				int fila; 	 								
+				for (int i = 0; i < vArticulos.size(); i++) {
+					Articulo a = (Articulo) vArticulos.get(i);							
+
+					ArrayList sIdFormaPago = new ArrayList();	
+					sPrecio = "-";
+					sIva = "-";		
+					desactivado = "readOnly";					
+
+					double precio=0;							
+					float iva=0;
+
+					sIdCuenta = "";								
+					if (a.getIdCuenta()!= null) {
+						sIdCuenta = String.valueOf((Integer)a.getIdCuenta());
+					}
+
+					sFormaPago = "";							
+					if (a.getFormaPago()!= null) {
+						sFormaPago = (String)a.getFormaPago();
+					}
+
+					sIdTipoEnvios = "";								
+					if (a.getIdTipoEnvios()!= null) {
+						sIdTipoEnvios = String.valueOf((Integer)a.getIdTipoEnvios());
+					}
+
+					sIdDireccion = "";								
+					if (a.getIdDireccion()!= null) {
+						sIdDireccion = String.valueOf((Long)a.getIdDireccion());
+					}
+	
+					if (a.getIdFormaPago()!= null) {
+						sIdFormaPago.add(String.valueOf((Integer)a.getIdFormaPago()));
+					}
+
+					sCuenta = "";								
+					if (a.getNumeroCuenta()!= null) {
+						sCuenta = a.getNumeroCuenta();
+					}
+							
+					sCantidad = Integer.toString(a.getCantidad());						
+					sPeriodicidad = UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
+					if (a.getPrecio()!= null) {
+						precio = (double)a.getPrecio().doubleValue();
+						sPrecio = a.getPrecio().toString();
+						desactivado = "";
+					}
+
+					if (a.getValorIva()!=null) {
+						iva = (float)a.getValorIva().floatValue();
+						sIva = a.getValorIva().toString();
+					}
 						
-							ArrayList sIdFormaPago = new ArrayList();	
-							sPrecio = "-";
-							sIva = "-";		
-							desactivado = "readOnly";					
-							
-							double precio=0;							
-							float iva=0;
-							
-							sIdCuenta = "";								
-							if(a.getIdCuenta()!= null){
-								sIdCuenta = String.valueOf((Integer)a.getIdCuenta());
-							}
-							
-							sFormaPago = "";							
-							if(a.getFormaPago()!= null){
-								sFormaPago = (String)a.getFormaPago();
-							}
-							
-							sIdTipoEnvios = "";								
-							if(a.getIdTipoEnvios()!= null){
-								sIdTipoEnvios = String.valueOf((Integer)a.getIdTipoEnvios());
-							}
-							
-							sIdDireccion = "";								
-							if(a.getIdDireccion()!= null){
-								sIdDireccion = String.valueOf((Long)a.getIdDireccion());
-							}
-								
-							if(a.getIdFormaPago()!= null){
-								sIdFormaPago.add(String.valueOf((Integer)a.getIdFormaPago()));
-							}
+					Vector datos=pysproductosinstitucion.obtenerInfoProducto(
+						String.valueOf(idInstitucion),
+						String.valueOf((Integer)a.getIdTipo()),
+						String.valueOf((Long)a.getIdArticulo()),
+						String.valueOf((Long)a.getIdArticuloInstitucion()));   							
 
-							
-							sCuenta = "";								
-							if(a.getNumeroCuenta()!= null){
-								sCuenta = a.getNumeroCuenta();
-							}
-														
-							sCantidad = Integer.toString(a.getCantidad());						
-							sPeriodicidad = UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
-							if(a.getPrecio()!= null) {
-								precio = (double)a.getPrecio().doubleValue();
-								sPrecio = a.getPrecio().toString();
-								desactivado = "";
-							}
+					String nofacturable="";
+					try{
+						nofacturable=(String)((Row)datos.get(0)).getRow().get(PysProductosInstitucionBean.C_NOFACTURABLE);
+					}catch(Exception e){
+						nofacturable="0";
+					}
 
-							if(a.getValorIva()!=null){
-								iva = (float)a.getValorIva().floatValue();
-								sIva = a.getValorIva().toString();
-							}
-    				
-							Vector datos=pysproductosinstitucion.obtenerInfoProducto(String.valueOf(idInstitucion),String.valueOf((Integer)a.getIdTipo()),String.valueOf((Long)a.getIdArticulo()),String.valueOf((Long)a.getIdArticuloInstitucion()));   							
-    				
-							
-							String nofacturable="";
-							try{
-								nofacturable=(String)((Row)datos.get(0)).getRow().get(PysProductosInstitucionBean.C_NOFACTURABLE);
-							}catch(Exception e){
-								nofacturable="0";
-							}
+					if (datos != null) {
+						if(nofacturable.equals(DB_FALSE)){
+							varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
+							varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
+						}
+					} else {
+						varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
+						varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
+					}
+
+									
+					fila=i+1;	
+					parametroFuncion = "obtenerCuenta(" + fila + ")";
+					formaPagoNombre = "formaPago" + fila; 	
+					validarCantidad = "validaNumeroPositivo(" + String.valueOf(a.getCantidad());		
+					
+					FilaExtElement[] elems=new FilaExtElement[2];
+					sTipoCertificado = "";
+					if (a.getTipoCertificado() != null && !String.valueOf(a.getTipoCertificado()).equals("")) {	
+						sTipoCertificado = String.valueOf(a.getTipoCertificado());		 
+								elems[0]=new FilaExtElement("editarCertificado","editarCertificado",SIGAConstants.ACCESS_READ);
+								elems[1]=new FilaExtElement("consultarCertificado","consultarCertificado",SIGAConstants.ACCESS_READ);  
+					}
+%> 				
+					<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones='' visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
+						<td title='<%=String.valueOf((Integer)a.getIdTipo())%>-<%=String.valueOf((Long)a.getIdArticulo())%>-<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'> 													
+							<input type='hidden' name='oculto<%=String.valueOf(fila)%>_1' value='<%=String.valueOf((Integer)a.getIdTipo())%>'>	 							
+							<input type='hidden' name='oculto<%=String.valueOf(fila)%>_2' value='<%=String.valueOf((Long)a.getIdArticulo())%>'>	
+							<input type='hidden' name='oculto<%=String.valueOf(fila)%>_3' value='<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'>	
+							<input type='hidden' name='oculto<%=String.valueOf(fila)%>_4' value='<%=String.valueOf(a.getClaseArticulo())%>'>																
+			  				<input type='hidden' name='oculto<%=String.valueOf(fila)%>_5' value='<%=sIdCuenta%>'>
+		  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_6' value='<%=sFormaPago%>'>
+		  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_7' value='<%=nofacturable%>'>
+		  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_8' value='<%=numcuenta%>'>				  					
+		  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_9' value='<%=idcuenta%>'>
+		  								  									  					
+		  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_1' value='<%=sTipoCertificado%>'>
+		  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_2' value='<%=sIdTipoEnvios%>'>
+		  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_3' value='<%=sIdDireccion%>'>
+			  					
+		  					<input type='hidden' name='nombreArticulo<%=String.valueOf(fila)%>' value='<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>'>
+				  					
+		  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+		  					&nbsp;
+		  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+		  				</td>
+		  				
+		  				<td>	
+<%
+							formaPago[3] = String.valueOf((Integer)a.getIdTipo());
+							formaPago[4] = String.valueOf((Long)a.getIdArticulo());
+							formaPago[5] = String.valueOf((Long)a.getIdArticuloInstitucion());	
 
 							if (datos != null) {
 								if(nofacturable.equals(DB_FALSE)){
-									varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-									varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
-								}
-							}else{
-								varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-								varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
-							}
+									if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
+%>									
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="150"/>
+<%	
+									} else {	
+%>
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="150"/>	
 
-																
-							fila=i+1;	
-							parametroFuncion = "obtenerCuenta(" + fila + ")";
-							formaPagoNombre = "formaPago" + fila; 	
-							validarCantidad = "validaNumeroPositivo(" + String.valueOf(a.getCantidad());		
-							
-							FilaExtElement[] elems=new FilaExtElement[2];
-							sTipoCertificado = "";
-							if(a.getTipoCertificado() != null && !String.valueOf(a.getTipoCertificado()).equals("")){	
-								sTipoCertificado = String.valueOf(a.getTipoCertificado());		 
-  		 					elems[0]=new FilaExtElement("editarCertificado","editarCertificado",SIGAConstants.ACCESS_READ);
-  		 					elems[1]=new FilaExtElement("consultarCertificado","consultarCertificado",SIGAConstants.ACCESS_READ);  
-							}
-							
-							
-
-														 				
-	%> 				
-								<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones='' visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
-								<td title='<%=String.valueOf((Integer)a.getIdTipo())%>-<%=String.valueOf((Long)a.getIdArticulo())%>-<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'> 													
-									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_1' value='<%=String.valueOf((Integer)a.getIdTipo())%>'>	 							
-									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_2' value='<%=String.valueOf((Long)a.getIdArticulo())%>'>	
-									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_3' value='<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'>	
-									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_4' value='<%=String.valueOf(a.getClaseArticulo())%>'>																
-					  				<input type='hidden' name='oculto<%=String.valueOf(fila)%>_5' value='<%=sIdCuenta%>'>
-				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_6' value='<%=sFormaPago%>'>
-				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_7' value='<%=nofacturable%>'>
-				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_8' value='<%=numcuenta%>'>				  					
-				  					<input type='hidden' name='oculto<%=String.valueOf(fila)%>_9' value='<%=idcuenta%>'>
-			  					
-				  					
-				  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_1' value='<%=sTipoCertificado%>'>
-				  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_2' value='<%=sIdTipoEnvios%>'>
-				  					<input type='hidden' name='certificado<%=String.valueOf(fila)%>_3' value='<%=sIdDireccion%>'>
-			  					
-				  					<input type='hidden' name='nombreArticulo<%=String.valueOf(fila)%>' value='<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>'>
-				  					
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
-			  				</td>
-			  				<td>	
-	<%
-	 								formaPago[3] = String.valueOf((Integer)a.getIdTipo());
-	 								formaPago[4] = String.valueOf((Long)a.getIdArticulo());
-	 								formaPago[5] = String.valueOf((Long)a.getIdArticuloInstitucion());	
-
-
-								if (datos != null) {
-									if(nofacturable.equals(DB_FALSE)){
-											if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
-			%>									<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>"/>
-
-												
-										<%	} else {	%>
-												<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>"/>	
-
-			<%								}
-									}else{%>
-									   <siga:Idioma key="estados.compra.noFacturable"/>&nbsp;
+<%								
+									}
+								} else{
+%>
+								   <siga:Idioma key="estados.compra.noFacturable"/>&nbsp;
 										
-	<%								}	
-								}%>				
-			  				</td>
-							<td align="center">								
-	<%							String parametro[] = new String[2];
-	   						 	parametro[0] = carro.getIdPersona().toString();
-	   						 	parametro[1] = idInstitucion.toString(); 
-	   						 	String n = "cuenta"+String.valueOf(fila);
-	   						 	if(sIdCuenta!= null && !sIdCuenta.equals("")){
-	   						 		ArrayList cuentaSel   = new ArrayList();
-  									cuentaSel.add(sIdCuenta);%>	
-  									<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" elementoSel="<%=cuentaSel%>" />
-	   						 	<%}else{
-	   						 		if(cuentaelegida.get("IDCUENTA")!=null && !cuentaelegida.get("IDCUENTA").equals("")){ 
-	   						 			ArrayList cuentaSel = new ArrayList();
-  										cuentaSel.add(cuentaelegida.get("IDCUENTA"));%>	
-	   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" elementoSel="<%=cuentaSel%>"/>
-	   						 		<%}else{ %>
-	   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false" />
-									<%} 
-								}%>
+<%								}	
+							}
+%>				
+		  				</td>
+		  				
+						<td align="center">								
+<%							
+							String parametro[] = new String[2];
+   						 	parametro[0] = carro.getIdPersona().toString();
+   						 	parametro[1] = idInstitucion.toString(); 
+   						 	String n = "cuenta"+String.valueOf(fila);
+   						 	if(sIdCuenta!= null && !sIdCuenta.equals("")){
+   						 		ArrayList cuentaSel   = new ArrayList();
+								cuentaSel.add(sIdCuenta);
+%>	
+								<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" elementoSel="<%=cuentaSel%>" />
+<%
+							} else {
+	   							if(cuentaelegida.get("IDCUENTA")!=null && !cuentaelegida.get("IDCUENTA").equals("")){ 
+	   						 		ArrayList cuentaSel = new ArrayList();
+  									cuentaSel.add(cuentaelegida.get("IDCUENTA"));
+%>	
+   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" elementoSel="<%=cuentaSel%>"/>
+<%
+								} else { 
+%>
+   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" />
+<%
+								} 
+							}
+%>
+						</td>
+						
+		  				<td align="center">
+							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
+		  				</td>
+		  				
+		  				<td align="center">
+							<% // Producto
+							   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
+									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
+								<%} else { %>
+									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
+								<%}  %>
+							<% }  // Servicio
+							   else { %>
+									 <input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
+							<% } %>
+             
+		  				</td>
+		  				
+		  				<td>
+		  					<%=sPeriodicidad%>
+		  				</td>
+		  				
+		  				<td align="center">
+		  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
+		  				</td>
+		  				
+<%
+						if (!user.isLetrado()&& aprobarSolicitud.equals("S")) { 			  				
+							String fechaEfectiva="fechaEfectivaCompra" +fila;				
+%>
+			  				<td class="labelText">
+								<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
 							</td>
-			  				<td align="center">
-								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
-			  				</td>
-			  				<td align="center">
-								<% // Producto
-								   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
-										<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
-									<%} else { %>
-										<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
-									<%}  %>
-								<% }  // Servicio
-								   else { %>
-										 <input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
-								<% } %>
-              
-			  				</td>
-			  				<td>
-			  					<%=sPeriodicidad%>
-			  				</td>
-			  				<td align="center">
-			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
-			  				</td>
-			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ 
-			  				
-								String fechaEfectiva="fechaEfectivaCompra" +fila;				
-			  				%>
-				  				<td class="labelText">
-									<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
-								</td>
-							<% }%>
-							<%if (elems.length <= 0){ %>
+<% 
+						}
+
+						if (elems.length <= 0) { 
+%>
+							<td></td>
+<%
+						} else {
+							boolean pintarCelda = true;
+							int l = 0;
+							while (pintarCelda && l < elems.length){
+								if (elems[l] != null)
+									pintarCelda = false;
+								l++;
+							}
+							if (pintarCelda){
+%>
 								<td></td>
-							<%} else {
-								boolean pintarCelda = true;
-								int l = 0;
-								while (pintarCelda && l < elems.length){
-									if (elems[l] != null)
-										pintarCelda = false;
-									l++;
-								}
-								if (pintarCelda){%>
-									<td></td>
-								<%}
-							}%>
-							</siga:FilaConIconos>
-							
-	 <%		}
-	 }
-	%>  			
-	  			</siga:Table>
+<%	
+							}
+						}
+%>
+					</siga:FilaConIconos>
+<%		
+				} // for
+	 		} // else
+%>  			
+	  	</siga:Table>
 				
-
-
-	<div id="camposRegistro2" style="position:absolute; width:240px; height:70px; z-index:2; bottom: 70px; left: 490px" align="center">
+		<div id="camposRegistro2" style="position:absolute; width:240px; height:70px; z-index:2; bottom: 70px; left: 490px" align="center">
 
 <%
-		varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
-		varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);		
+			varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
+			varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);		
 %>			
 			<fieldset>
-			<table>
-				<tr>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-					<td class="labelTextValue">					
-						<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formatoCampo(varIvaTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-					<td class="labelTextValue">
-						<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formatoCampo(varPrecioTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
-					</td>
-				</tr>
-			</table>
+				<table>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/>
+						</td>
+						<td class="labelTextValue">					
+							<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formatoCampo(varIvaTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="pys.solicitudCompra.literal.total"/>
+						</td>
+						<td class="labelTextValue">
+							<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formatoCampo(varPrecioTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
+						</td>
+					</tr>
+				</table>
 			</fieldset>
-	</div>	
-	<div id="camposRegistro2" style="position:absolute; width:100%; height:30px; z-index:2; bottom: 35px; left: 0px" align="center">
-
+		</div>
+			
+		<div id="camposRegistro2" style="position:absolute; width:100%; height:30px; z-index:2; bottom: 35px; left: 0px" align="center">
 			<table width="100%" align="center">
 				<tr>
-					<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
+					<td class="labelTextCentro" colspan="2" align="center">
+						<siga:Idioma key="messages.servicios.precioServicios"/>
+					</td>
 				</tr>
 			</table>
-	</div>		
-
-</html:form>
+		</div>		
+	</html:form>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/> 			
-		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+	<html:form action="/PYS_SolicitarDireccion.do" 	method="POST" target="submitArea" type="">  	
+	  	<input type="hidden" name="idInstitucion" 	value="<%=String.valueOf(idInstitucion)%>">
+	  	<input type="hidden" name="idPersona" 		value="<%=String.valueOf((Long)carro.getIdPersona())%>">
+	  	<input type="hidden" name="idTipoEnvio" 	value="">
+	  	<input type="hidden" name="actionModal" 	value="">
+	  	<input type="hidden" name="modo" 			value="buscar">
+	</html:form>
 
-<html:form action="/PYS_SolicitarDireccion.do" 	method="POST" target="submitArea" type="">  	
-  	<input type="hidden" name="idInstitucion" 	value="<%=String.valueOf(idInstitucion)%>">
-  	<input type="hidden" name="idPersona" 		value="<%=String.valueOf((Long)carro.getIdPersona())%>">
-  	<input type="hidden" name="idTipoEnvio" 	value="">
-  	<input type="hidden" name="actionModal" 	value="">
-  	<input type="hidden" name="modo" 			value="buscar">
-</html:form>
-
-
-<!-- Obligatoria en todas las páginas-->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

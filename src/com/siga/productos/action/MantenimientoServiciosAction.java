@@ -117,8 +117,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 					mapDestino = eliminarSuscripcionAutomatica(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("cerrarCriterio")){
 					mapDestino = cerrarCriterio(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("baja")){
-					mapDestino = "baja";		
+				}else if (accion.equalsIgnoreCase("fechaEfectiva")){
+					mapDestino = "fechaEfectiva";		
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,

@@ -105,8 +105,8 @@ public class GestionSolicitudesAction extends MasterAction {
 					mapDestino = guardarAnticipos(mapping, miForm, request, response);
 					break;
 				
-				} else if (accion.equalsIgnoreCase("baja")){
-					mapDestino = "baja";
+				} else if (accion.equalsIgnoreCase("fechaEfectiva")){
+					mapDestino = "fechaEfectiva";
 					break;
 				}
 

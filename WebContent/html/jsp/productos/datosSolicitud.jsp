@@ -84,7 +84,7 @@
 	  	sub();
    		// if (!letrado){ 
    			
-   			document.forms[0].modo.value = "baja";
+   			document.forms[0].modo.value = "fechaEfectiva";
 			var fecha=ventaModalGeneral(document.forms[0].name, "P");   			
 	    	//var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
 	    	
