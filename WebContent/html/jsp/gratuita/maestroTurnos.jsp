@@ -152,12 +152,12 @@
 
 		//Asociada al boton Cancelar
 		function accionCancelar() {		
-			document.forms[0].reset();
+			window.location.reload();
 		}
 		
 		//Asociada al boton Restablecer
 		function accionRestablecer() {		
-			document.forms[0].reset();
+			window.location.reload();
 		}
 		
 		//Asociada al boton Guardar
