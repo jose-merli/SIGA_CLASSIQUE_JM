@@ -248,7 +248,7 @@
 			function version()
 			{
 				MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1);
-				window.open('<%=pathVersiones%>', 'Versiones', 'width=800px,height=600px,scrollbars=1;resizable:no;top=100px;left=100px;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
+				window.open('<%=pathVersiones%>', 'Versiones');
 				window.top.focus();				
 				return false;
 			}
@@ -417,7 +417,7 @@
 	}
 	
 </script>
-<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
+
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
