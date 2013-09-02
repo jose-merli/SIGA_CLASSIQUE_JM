@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.90 2013-08-30 13:05:55 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.91 2013-09-02 12:36:14 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -816,8 +816,17 @@ function jQueryUILoaded(){
 			yearRange: "c-100:c+10"
 		});
 	   
+		// Botón Hoy
+	   jQueryTop.datepicker._gotoTodayOriginal = jQueryTop.datepicker._gotoToday;
+	   jQueryTop.datepicker._gotoToday = function(id) {
+		   jQueryTop.datepicker._gotoTodayOriginal.apply(this, [id]);
+		   jQueryTop.datepicker._selectDate.apply(this, [id]);
+	    };
+		
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
 	   jQueryTop.datepicker._updateDatepicker = function(inst) {
+		   var currentDatepicker = jQueryTop(this);
+		   // Botón Borrar
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
 		   var clearText = "borrar";		   
@@ -827,8 +836,84 @@ function jQueryUILoaded(){
 			   clearText = "Ezabatu";
 		   jQueryTop("<button type='button' class='ui-datepicker-clean ui-state-default ui-priority-primary ui-corner-all'>"+clearText+"</button>").appendTo(buttonPane).click(function(ev) {
 			   jQueryTop.datepicker._clearDate(inst.input);
-		   		});
-	   		};
+	   		});
+		   
+		   // Botones sig/ant año
+		   var header = jQueryTop(this).datepicker("widget").find(".ui-datepicker-header");
+		   var next = jQueryTop(this).datepicker("widget").find(".ui-datepicker-next");
+		   var prev = jQueryTop(this).datepicker("widget").find(".ui-datepicker-prev");
+		   var nextYear = next.clone();
+		   var prevYear = prev.clone();
+		   nextYear.attr("title", "Sig>>");
+		   //nextYear.removeClass("ui-datepicker-next");
+		   nextYear.addClass("ui-datepicker-year-next");
+		   nextYear.removeAttr("data-handler");
+		   nextYear.removeAttr("data-event");
+		   nextYear.css("float", "right");
+		   nextYear.removeData();
+		   prevYear.attr("title", "<<Ant");
+		   //prevYear.removeClass("ui-datepicker-prev");
+		   prevYear.addClass("ui-datepicker-year-prev");
+		   prevYear.removeAttr("data-handler");
+		   prevYear.removeAttr("data-event");
+		   prevYear.css("float", "left");
+		   prevYear.removeData();
+		   
+		   var header_title_month = jQueryTop(this).datepicker("widget").find(".ui-datepicker-title");
+		   var header_title_year = header_title_month.clone(true, true);
+		   
+		   header_title_month.find("select.ui-datepicker-year").remove();
+		   header_title_year.appendTo(header);
+		   header_title_year.find("select.ui-datepicker-month").remove();
+		   
+		   header_title_month.find("select.ui-datepicker-month").css("width", "100%");
+		   
+		   header_title_year.find("select.ui-datepicker-year").css("width", "40%");
+		   header_title_year.prepend("<input type='text' id='datepicker-change-year' value='"+ header_title_year.find("select.ui-datepicker-year").val()+"'/>");
+		   header_title_year.find("#datepicker-change-year").css("width", "40%");
+		   //No se quiere el combo, lo ocultamos
+		   header_title_year.find("select.ui-datepicker-year").hide();
+		   header_title_year.find("#datepicker-change-year").css("width", "30%");
+		   
+		   header_title_year.find("#datepicker-change-year").on("change", function(){
+			   console.debug("[datepicker-change-year] Change value: " + jQuery(this).val());
+			   var year = jQuery(this).val();
+			   if (year != ""){
+				   if (year.length == 2)
+					   year = "20" + year;
+				   if (year.length == 4){
+					   try{
+						   var iYear = parseInt(year);
+						   var currentYear = inst.selectedYear;
+						   var offsetYear = iYear - currentYear;
+						   console.debug("[datepicker-change-year] Change currentYear: "+currentYear+" iYear: "+iYear+" offsetYear: " + offsetYear);
+						   jQueryTop.datepicker._adjustInstDate(inst, offsetYear, "Y");
+						   jQueryTop.datepicker._updateDatepicker(inst);
+					   } catch (e){
+						   select_year.val("");
+					   }
+				   }
+			   }
+		   });
+		   
+		   prevYear.appendTo(header).click(function(e){
+			   jQueryTop.datepicker._adjustInstDate(inst, -1, "Y");
+			   jQueryTop.datepicker._updateDatepicker(inst);
+		   });
+		   nextYear.appendTo(header).click(function(e){
+			   jQueryTop.datepicker._adjustInstDate(inst, 1, "Y");
+			   jQueryTop.datepicker._updateDatepicker(inst);
+		   });
+		   
+		   /*
+		   prev.before(prevYear).click(function(e){
+			   currentDatepicker.datepicker( "setDate", "-1y" );
+		   });
+		   next.after(nextYear).click(function(e){
+			   currentDatepicker.datepicker( "setDate", "+1y" );
+		   });
+		   */
+   		};
 	}
 }
 

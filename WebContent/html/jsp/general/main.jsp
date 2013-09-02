@@ -114,8 +114,55 @@
 	}
 	.siga-datepicker-trigger{
 		cursor: pointer;
-	}	
-	.ui-datepicker {
+	}
+	.ui-datepicker .ui-datepicker-year-prev,
+	.ui-datepicker .ui-datepicker-year-next {
+		position: absolute;
+		top: 2em;
+		width: 1.8em;
+		height: 1.8em;
+	}
+	.ui-datepicker .ui-datepicker-year-prev-hover,
+	.ui-datepicker .ui-datepicker-year-next-hover {
+		top: 1px;
+	}
+	.ui-datepicker .ui-datepicker-year-prev {
+		left: 2px;
+	}
+	.ui-datepicker .ui-datepicker-year-next {
+		right: 2px;
+	}
+	.ui-datepicker .ui-datepicker-year-prev-hover {
+		left: 1px;
+	}
+	.ui-datepicker .ui-datepicker-year-next-hover {
+		right: 1px;
+	}
+	.ui-datepicker .ui-datepicker-year-prev span,
+	.ui-datepicker .ui-datepicker-year-next span {
+		display: block;
+		position: absolute;
+		left: 50%;
+		margin-left: -8px;
+		top: 50%;
+		margin-top: -8px;
+	}
+	.ui-datepicker-header{
+		cursor: move;
+	}
+	.ui-datepicker-year-next{
+		top: 2.2px;
+	}
+	.ui-datepicker-year-prev{
+		top: 2.2px;
+	}
+	.ui-datepicker-prev{
+		cursor: pointer;
+	}
+	.ui-datepicker-next{
+		cursor: pointer;
+	}
+	.ui-datepicker {		
 		z-index: 99 !important;
 	}
 	.overlay{
