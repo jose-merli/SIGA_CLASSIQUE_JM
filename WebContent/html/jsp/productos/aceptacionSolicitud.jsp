@@ -550,11 +550,11 @@
 
 		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) { 
 			nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
-			tamanoCol1="13,16,19,8,8,7,7,15,8";
+			tamanoCol1="13,16,19,8,8,7,7,13,10";
 			
 		}else{
 		   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-		   	tamanoCol1="13,16,19,8,8,7,7,8";
+		   	tamanoCol1="13,16,19,8,8,7,7,10";
 		}
 %>
 
