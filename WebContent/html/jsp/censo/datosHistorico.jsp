@@ -230,12 +230,20 @@
 										<td colspan="3">	
 										
 										<% if (remitente.equalsIgnoreCase("insertar")){ %>
- 												<html:textarea cols="50" rows="3" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" property="motivo" styleClass="box"></html:textarea> 
+ 												<html:textarea property="motivo"
+ 													onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+ 													style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
+ 												 	styleClass="box"></html:textarea> 
 										<% } else { %>
 					  						<% if (remitente.equalsIgnoreCase("modificar")){%>
-  					  						        <html:textarea cols="50" rows="3" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" property="motivo" styleClass="box" style="width:500px" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>"></html:textarea> 
-				  							 	<% } else{ %>
-   				  							 	   <html:textarea cols="50" rows="3" property="motivo" styleClass="boxConsulta" style="width:500px" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true" ></html:textarea> 
+			  						        	<html:textarea property="motivo"
+													onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"  
+													style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"
+													styleClass="box" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>"></html:textarea> 
+			  							 	<% } else{ %>
+  				  							   	<html:textarea property="motivo"
+  				  							   		style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
+   				  							 	   	styleClass="boxConsulta" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true" ></html:textarea> 
 												<% } %>				  					 				  					 				  					 
 							  	    	<% } %>				
 																						
@@ -246,7 +254,10 @@
 											<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
 										</td>
 										<td colspan="3">	
-											<textArea cols="10" rows="8" class="boxConsulta" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" readonly="" style="width:500px"><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
+											<textArea 
+												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
+												style="overflow-y:auto; overflow-x:hidden; width:500px; height:80px; resize:none;"
+												class="boxConsulta"  readonly=""><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
 										</td>
 									</tr>
 								</table>
