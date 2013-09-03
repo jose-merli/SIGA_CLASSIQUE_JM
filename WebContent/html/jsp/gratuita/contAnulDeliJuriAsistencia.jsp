@@ -156,9 +156,10 @@
 							<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
 						</td>	
 						<td class="labelTextValor" >	
-							<html:textarea name="AsistenciasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
-								property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxCombo" 
-								value="<%=VALORDATO%>" readOnly="false" styleId="<%=NOMBRETEXTAREA%>"></html:textarea>
+							<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" 
+								onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+								style="overflow-y:auto; overflow-x:hidden; width:750px; height:400px; resize:none;"  
+								styleClass="boxCombo" value="<%=VALORDATO%>" readOnly="false" styleId="<%=NOMBRETEXTAREA%>"></html:textarea>
 						</td>
 						</tr>
 					<%}else{%>
@@ -167,9 +168,9 @@
 							<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
 						</td>	
 						<td class="labelTextValor">	
-							<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" 
-								style="overflow:auto" styleClass="boxConsulta" value="<%=VALORDATO%>" readOnly="true" property="<%=NOMBRETEXTAREA%>">
-							</html:textarea>
+							<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" 
+								style="overflow-y:auto; overflow-x:hidden; width:750px; height:400px; resize:none;"
+								styleClass="boxConsulta" value="<%=VALORDATO%>" readOnly="true" property="<%=NOMBRETEXTAREA%>"></html:textarea>
 						</td>
 						</tr>
 					<%}%>
