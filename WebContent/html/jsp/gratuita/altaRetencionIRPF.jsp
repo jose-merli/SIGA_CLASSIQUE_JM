@@ -35,67 +35,25 @@
 	// Obtengo los datos para validar las fechas.
 	Vector obj = (Vector) request.getSession().getAttribute("fechas");
 	request.getSession().removeAttribute("fechas");
-
 %>	
-
-<script>
-	function validarFechas(fechaInicio, fechaFin) {
-		var fi = fechaInicio.substring(6,10)+fechaInicio.substring(3,5)+fechaInicio.substring(0,2);
-		var ff = fechaFin.substring(6,10)+fechaFin.substring(3,5)+fechaFin.substring(0,2);
-		if(fi>ff) {
-			alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert1'/>");
-			return false;
-		}
-		<%
-		String fInicio 	= "";
-		String fFin		= "";
-		Hashtable hash	= null;
-		if(obj!=null) {
-			for(int x=0;x<obj.size();x++) {
-				hash 	= (Hashtable)obj.get(x);
-				if(hash.get("FECHAINICIO") != null) {
-					fInicio = (String)hash.get("FECHAINICIO");
-					fFin	= (String)hash.get("FECHAFIN");
-					fInicio = fInicio.substring(0,4)+fInicio.substring(5,7)+fInicio.substring(8,10);
-					if(!fFin.equals(""))
-						fFin 	= fFin.substring(0,4)+fFin.substring(5,7)+fFin.substring(8,10);
-		%>
-				if(((fi > "<%=fInicio%>") && (fi < "<%=fFin%>" && "<%=fFin%>" != "")) ||
- 				  ((ff  	> "<%=fInicio%>") && (ff	< "<%=fFin%>" && "<%=fFin%>" != "")) ||
- 				  (fi == "<%=fInicio%>")
- 				  )	{
-					alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert2'/>");
-					return false;
-				} 
-		
-		<%      }//if
-				
-		    }//for
-		}
-		%>
-		return true;
-	}
-</script>
 
 <!-- HEAD -->
 
 	<title><siga:Idioma key="gratuita.altaRetencionIRPF.literal.aRetencionIRPF"/></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 </head>
 
 <body>
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.altaRetencionIRPF.literal.aRetencionIRPF"/>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.altaRetencionIRPF.literal.aRetencionIRPF"/>
+			</td>
+		</tr>
 	</table>
 
 
@@ -106,36 +64,37 @@
 	 "tablaTitulo" se deben modificar por "tablaCentralPeque" 
 -->
 	<fieldset>
-	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table  class="tablaCentralCampos"  align="center">
-	<html:form action="JGR_PestanaRetencionesIRPF.do" method="post" target="_self">
-	<input type="hidden" name="modo" value="insertar">
-	<tr>
-	<td>
-	 <table width="100%" border="0">
-		<tr>
-			<td width="35%" class="labelText" colspan="2">
-			<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
-			</td>
-			<td>
-				<siga:Fecha  nombreCampo= "fechaInicio" posicionX="10" posicionY="10"/>
-			</td>
-		</tr>
-		<tr>
-			<td width="35%" class="labelText" colspan="2">
-			<siga:Idioma key="gratuita.altaRetencionIRPF.literal.retencion"/>
-			</td>
-			<td>
-				<siga:ComboBD nombre="idRetencion" tipo="tiposirpf" estilo="true" clase="boxCombo" obligatorio="false"/>
-			</td>
-		</tr>
-	</table>
-   </td>
-   </tr>
-   	</html:form>
-	</table>
+		<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table  class="tablaCentralCampos"  align="center">
+			<html:form action="JGR_PestanaRetencionesIRPF.do" method="post" target="_self">
+				<input type="hidden" name="modo" value="insertar">
+				<tr>
+					<td>
+		 				<table width="100%" border="0" cellpadding="5" cellspacing="0">
+							<tr>
+								<td class="labelText" width="100px">
+									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
+								</td>
+								<td>
+									<siga:Fecha  nombreCampo= "fechaInicio" posicionX="10" posicionY="10"/>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.retencion"/>
+								</td>
+								<td>
+									<siga:ComboBD nombre="idRetencion" tipo="tiposirpf" estilo="true" clase="boxCombo" obligatorio="false" ancho="350"/>
+								</td>
+							</tr>
+						</table>
+	   				</td>
+	   			</tr>
+   			</html:form>
+		</table>
 	</fieldset>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>"  modal="P"/>	
@@ -149,39 +108,9 @@
 		}
 
 		function accionCancelar() {		
-			//window.top.cierraConParametros("NORMAL");
 			window.top.close();
 		}
 		
-	</script>
-	<!-- FIN: SCRIPTS BOTONES -->
-
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-<script>
-		<!-- Asociada al boton GuardarCerrar -->
-		/*function accionGuardarCerrar() 
-		{
-			if(document.forms[0].idRetencion.value == "")
-			{
-				alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert3'/>");
-				return false;
-			}
-			if(validarFechas(document.forms[0].fechaInicio.value,document.forms[0].fechaFin.value))
-			{
-				document.forms[0].submit();
-				window.top.returnValue="MODIFICADO";			
-			}
-		}
-		*/
 		function accionGuardarCerrar() {
 			sub();
 			if(document.forms[0].idRetencion.value == "") {
@@ -196,7 +125,16 @@
 				document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
 				document.forms[0].submit();
 			}
-		}
-</script>
+		}		
+		
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->
+	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+			
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

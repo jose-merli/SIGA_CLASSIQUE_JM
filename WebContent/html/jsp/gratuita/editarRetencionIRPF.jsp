@@ -62,11 +62,11 @@
 <body>
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.editarRetencionesIRPF.literal.titulo"/>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.editarRetencionesIRPF.literal.titulo"/>
+			</td>
+		</tr>
 	</table>
 
 
@@ -80,45 +80,47 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<fieldset>
-	<table  class="tablaCentralCampos"  align="center">
-	<html:form action="/JGR_PestanaRetencionesIRPF" method="post" target="_self">
-	<input type="hidden" name="modo" id="modo" value="modificar">
-	<tr>
-	<td>
-	 <table width="100%" border="0">
-		<tr>
-			<td width="35%" class="labelText" colspan="2">
-				<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
-			</td>
-			<td>
-				<html:text name="RetencionesIRPFForm" property="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaInicio%>"></html:text>
-			</td>
-		</tr>
-		<tr>
-			<td width="35%" class="labelText" colspan="2">
-				<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fHasta"/>
-			</td>
-			<td>
-				<html:text name="RetencionesIRPFForm" property="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaFin%>">></html:text>
-			</td>
-		</tr>
-		<tr>
-			<td width="35%" class="labelText" colspan="2">
-				<siga:Idioma key="gratuita.altaRetencionIRPF.literal.retencion"/>
-			</td>
-			<td>
-			<%
-				ArrayList seleccion = new ArrayList();
-				seleccion.add(idRetencion);
-			%>
-				<siga:ComboBD nombre="idRetencion" tipo="tiposirpf" estilo="true" clase="boxCombo" obligatorio="false" elementoSel="<%=seleccion %>" />
-			</td>
-		</tr>
-	</table>
-   </td>
-   </tr>
-   	</html:form>
-	</table>
+		<table  class="tablaCentralCampos"  align="center">
+			<html:form action="/JGR_PestanaRetencionesIRPF" method="post" target="_self">
+				<input type="hidden" name="modo" id="modo" value="modificar">
+				<tr>
+					<td>
+	 					<table width="100%" border="0" cellpadding="5" cellspacing="0">
+							<tr>
+								<td class="labelText" width="100px">
+									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
+								</td>
+								<td>
+									<html:text name="RetencionesIRPFForm" property="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaInicio%>" />
+								</td>
+							</tr>
+						
+							<tr>						
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fHasta"/>
+								</td>
+								<td>
+									<html:text name="RetencionesIRPFForm" property="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaFin%>" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.retencion"/>
+								</td>
+								<td>
+<%
+									ArrayList seleccion = new ArrayList();
+									seleccion.add(idRetencion);
+%>
+									<siga:ComboBD nombre="idRetencion" tipo="tiposirpf" estilo="true" clase="boxCombo" obligatorio="false" elementoSel="<%=seleccion %>" ancho="350"/>
+								</td>
+							</tr>
+						</table>
+   					</td>
+   				</tr>
+   			</html:form>
+		</table>
 	</fieldset>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>"   modal="P"/>	
@@ -127,39 +129,32 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<!-- SCRIPTS BOTONES -->
 	<script language="JavaScript">
-
 		function accionVolver() {
 		}
 
 		function accionCancelar() {		
 			window.top.close();
-		}
+		}		
 		
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {
+			sub();
+			if(document.getElementById("idRetencion").value == "") {
+				alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert3'/>");
+				fin();
+				return false;
+			}
+			document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
+			document.forms[0].submit();
+		}		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
-
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-<script>
-	<!-- Asociada al boton GuardarCerrar -->
-	function accionGuardarCerrar() {
-		sub();
-		if(document.getElementById("idRetencion").value == "") {
-			alert("<siga:Idioma key='gratuita.altaRetencionesIRPF.literal.alert3'/>");
-			fin();
-			return false;
-		}
-		document.forms[0].setAttribute("action","<%=app%>/JGR_PestanaRetencionesIRPF.do");
-		document.forms[0].submit();
-	}
-</script>
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
