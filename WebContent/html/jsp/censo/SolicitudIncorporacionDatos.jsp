@@ -2269,7 +2269,7 @@
 			</c:if>
 		</div>
 	
-		<div id='divDocumentoAPresentar' style="overflow-y: scroll">
+		<div id='divDocumentoAPresentar' style="overflow-y: auto; min-height: 60px;">
 			<table id='documentoAPresentar' border='1' width='100%' cellspacing='0' cellpadding='0'>
 				<tr class = 'tableTitle'>
 					<td align='center' width='10%' class="labelTextValor"><siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.estado"/></td>
@@ -2294,13 +2294,23 @@
 				   </tr>
 			  <%			} // if
 			   		} // for
-			    }else{%>
-			 		<br>
-			   		 <p class="titulitos" style="text-align:center" >
+			   		if (documentos.size() <= 0){
+			   		%>
+			   		<tr>
+			   		 <td class="titulitos" style="text-align:center" colspan="2" >
 			   		 	<!-- PENDIENTE No tiene documentos adjuntos. Pendiente de Validar-->
 			   		 	<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.aviso"/>
-			   		 </p>
-			 		<br>
+			   		 </td>
+			 		</tr>
+			   		<%
+			   		}
+			    }else{%>
+			 		<tr>
+			   		 <td class="titulitos" style="text-align:center" colspan="2">
+			   		 	<!-- PENDIENTE No tiene documentos adjuntos. Pendiente de Validar-->
+			   		 	<siga:Idioma key="censo.SolicitudIncorporacionDatos.literal.aviso"/>
+			   		 </td>
+			 		</tr>
 			  <%}%>
 			</table>	
 		</div>
