@@ -122,7 +122,7 @@
 			
 			<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
 				document.forms[0].modo.value = "fechaEfectiva";
-				var fecha=ventaModalGeneral(document.forms[0].name, "P");
+				var fecha=ventaModalGeneral(document.forms[0].name, "S");
 				
 				//var fecha = showModalDialog("/SIGA/html/jsp/productos/ventanaFechaEfectiva.jsp","","dialogHeight:200px;dialogWidth:400px;help:no;scroll:no;status:no;");
 				

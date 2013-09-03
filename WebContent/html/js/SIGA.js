@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.92 2013-09-02 12:50:09 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.93 2013-09-03 06:57:02 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1775,6 +1775,10 @@ function ventaModalGeneral(nombreFormulario, tamano, recursoMsg) {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
 				"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+	} else if (tamano == "S") {
+		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
+				formulario,
+				"dialogHeight:300px;dialogWidth:300px;help:no;scroll:no;status:no;");
 	} else if (tamano == "XS") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
