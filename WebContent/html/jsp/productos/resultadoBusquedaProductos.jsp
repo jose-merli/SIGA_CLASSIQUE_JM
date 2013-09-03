@@ -83,7 +83,7 @@
 			   columnNames="pys.resultadoBusquedaProductos.literal.tipo,pys.resultadoBusquedaProductos.literal.categoria,
 			   			  pys.busquedaProductos.literal.producto,pys.resultadoBusquedaProductos.literal.precio,
 			   			  pys.resultadoBusquedaProductos.literal.Estado,"
-			   columnSizes="20,20,20,10,20,10"
+			   columnSizes="15,25,30,9,7,12"
 			   modal="G">
 			   
 			<%
