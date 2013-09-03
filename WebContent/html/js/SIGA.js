@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.93 2013-09-03 06:57:02 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.94 2013-09-03 08:02:41 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -502,9 +502,11 @@ function jQueryLoaded(){
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						options.dateFormat = datepickerInput.data("datepickerformat");
 						options.beforeShow = function(input, inst) {
+							//console.debug("[DATEPICKER] beforeShow");
 							jQueryTop('#main_overlay').toggle();
 						};
 						options.onClose = function(dateText, inst) {
+							//console.debug("[DATEPICKER] onClose");
 							jQueryTop('#main_overlay').toggle();
 						};
 						options.regional = datepickerInput.data("regional");
@@ -518,17 +520,21 @@ function jQueryLoaded(){
 									datepickerInput.val(dateText);
 									if (fireOnChange)
 										datepickerInput.change();
-								},options);
-						/*
-						self.bind('copy', function(e) {
-							alert("copy!");
-							jQuery(this).val("");
-						});
-						self.bind('keydown', function(e) {
-							alert("keydown");
-							jQuery(this).val("");
-						});
-						*/
+								},
+								options);						
+						// MouseWheel
+					   jQueryTop("#ui-datepicker-div").on("mousewheel", function(e){
+						   var currentDatepicker = jQueryTop.datepicker._curInst;
+				   			if(e.wheelDelta/120 > 0) {
+				   	            //prev
+				   				jQueryTop.datepicker._adjustInstDate(currentDatepicker, -1, "M");					   
+				   	        } else{
+				   	            //next
+				   	        	jQueryTop.datepicker._adjustInstDate(currentDatepicker, 1, "M");
+				   	        }
+				   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
+				   		});
+					   
 						jQueryTop(".ui-datepicker").draggable();
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
@@ -821,11 +827,12 @@ function jQueryUILoaded(){
 	   jQueryTop.datepicker._gotoToday = function(id) {
 		   jQueryTop.datepicker._gotoTodayOriginal.apply(this, [id]);
 		   jQueryTop.datepicker._selectDate.apply(this, [id]);
-	    };
-		
+	    };	    	    
+	    
+	   // UI
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
 	   jQueryTop.datepicker._updateDatepicker = function(inst) {
-		   var currentDatepicker = jQueryTop(this);
+		   var currentDatepicker = jQueryTop(this);		   
 		   // Botón Borrar
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
@@ -869,7 +876,7 @@ function jQueryUILoaded(){
 		   header_title_month.find("select.ui-datepicker-month").css("width", "100%");
 		   
 		   header_title_year.find("select.ui-datepicker-year").css("width", "40%");
-		   header_title_year.prepend("<input type='text' id='datepicker-change-year' value='"+ header_title_year.find("select.ui-datepicker-year").val()+"'/>");
+		   header_title_year.prepend("<input type='text' id='datepicker-change-year' style='text-align: right;' value='"+ header_title_year.find("select.ui-datepicker-year").val()+"'/>");
 		   header_title_year.find("#datepicker-change-year").css("width", "40%");
 		   //No se quiere el combo, lo ocultamos
 		   header_title_year.find("select.ui-datepicker-year").hide();
@@ -878,13 +885,13 @@ function jQueryUILoaded(){
 		   header_title_year.find("#datepicker-change-year").on("change", function(){
 			   console.debug("[datepicker-change-year] Change value: " + jQuery(this).val());
 			   var year = jQuery(this).val();
+			   var currentYear = inst.selectedYear;
 			   if (year != ""){
 				   if (year.length == 2)
-					   year = "20" + year;
+					   year = currentYear.toString().substring(0,2) + year;
 				   if (year.length == 4){
 					   try{
-						   var iYear = parseInt(year);
-						   var currentYear = inst.selectedYear;
+						   var iYear = parseInt(year);						   
 						   var offsetYear = iYear - currentYear;
 						   console.debug("[datepicker-change-year] Change currentYear: "+currentYear+" iYear: "+iYear+" offsetYear: " + offsetYear);
 						   jQueryTop.datepicker._adjustInstDate(inst, offsetYear, "Y");
@@ -904,16 +911,8 @@ function jQueryUILoaded(){
 			   jQueryTop.datepicker._adjustInstDate(inst, 1, "Y");
 			   jQueryTop.datepicker._updateDatepicker(inst);
 		   });
-		   
-		   /*
-		   prev.before(prevYear).click(function(e){
-			   currentDatepicker.datepicker( "setDate", "-1y" );
-		   });
-		   next.after(nextYear).click(function(e){
-			   currentDatepicker.datepicker( "setDate", "+1y" );
-		   });
-		   */
-   		};
+		   		   
+   		};   		
 	}
 }
 

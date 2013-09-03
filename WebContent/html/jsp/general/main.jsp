@@ -147,7 +147,7 @@
 		top: 50%;
 		margin-top: -8px;
 	}
-	.ui-datepicker-header{
+	.ui-datepicker{
 		cursor: move;
 	}
 	.ui-datepicker-year-next{
@@ -417,7 +417,7 @@
 	}
 	
 </script>
-
+<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
