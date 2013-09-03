@@ -53,27 +53,19 @@
 	}
 %>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+		
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<% if(esFichaColegial){ %>
-		<siga:Titulo titulo="gratuita.EJG.delitos" 
-				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+		<siga:Titulo titulo="gratuita.EJG.delitos" localizacion="censo.gratuita.asistencias.literal.localizacion"/>
 	<% } else { %>
-		<siga:Titulo titulo="gratuita.EJG.delitos" 
-				 localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+		<siga:Titulo titulo="gratuita.EJG.delitos" localizacion="gratuita.mantAsistencias.literal.localizacion"/>
 	<% } %>	
 	<!-- FIN: TITULO Y LOCALIZACION -->			
 	
@@ -121,35 +113,37 @@
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0";					 
-					class="frameGeneral">
-	</iframe>
+		id="resultado"
+		name="resultado" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"					 
+		class="frameGeneral"></iframe>
 
 	<div style="position:absolute; width:60%;left:200px;bottom:32px;z-index:2;">
 		<table class="tablaCampos" align="center" border="0">
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.general.literal.comentariosDelitosFaltas"/>
-			</td>
-			<td style="width: 50%">
-			  <% if(modopestanha != null && modopestanha.equalsIgnoreCase("ver")){%>
-				<textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
-					id="delitoAux" cols="60" rows="3" style="overflow:auto" class="boxConsulta" readonly="true"></textarea>
-			  <%}else{ %>
-			    <textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
-			    	id="delitoAux" cols="60" rows="3" style="overflow:auto" class="box"></textarea> 
-			  <%}%>	
-			</td>
-		</tr>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.general.literal.comentariosDelitosFaltas"/>
+				</td>
+				<td style="width: 50%">
+				  	<% if(modopestanha != null && modopestanha.equalsIgnoreCase("ver")){%>
+						<textarea name="delitoAux" id="delitoAux" 
+							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+							style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;" 
+							class="boxConsulta" readonly="true"></textarea>
+							
+				  	<% } else { %>
+				    	<textarea name="delitoAux" id="delitoAux" 
+				    		onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+				    		style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;"  
+				    		class="box"></textarea> 
+				  <%}%>	
+				</td>
+			</tr>
 		</table>
 	</div>
-
-
 
 <%
 		String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
@@ -160,20 +154,20 @@
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada al boton accionRestablecer -->
+		// Funcion asociada al boton accionRestablecer
 		function accionRestablecer() {
 			document.getElementById("delitoAux").value = "";
 			document.forms[0].reset();
 		}		
 
-		<!-- Funcion asociada al refresco -->
+		// Funcion asociada al refresco
 		function refrescarLocal() {
 			document.forms[0].target = '_self';
 			document.forms[0].modo.value = "abrirAvanzada";
 			document.forms[0].submit();
 		}		
 
-		<!-- Funcion asociada a boton buscar -->
+		// Funcion asociada a boton buscar
 		function buscar() {
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_DelitosAsistenciaLetrado.do";
@@ -186,7 +180,7 @@
 			document.forms[0].submit();
 		}		
 
-		<!-- Funcion asociada a boton Nuevo -->
+		// Funcion asociada a boton Nuevo
 		function accionNuevo() {		
 <%			if (esFichaColegial) {%>
 				document.forms[0].action = "/SIGA/JGR_DelitosAsistenciaLetrado.do";
@@ -200,7 +194,7 @@
 				refrescarLocal();
 		}
 
-		<!-- Funcion asociada a boton Guardar -->
+		// Funcion asociada a boton Guardar
 		function accionGuardar() {
 			sub();		
 <%			if (esFichaColegial) {%>
@@ -234,9 +228,9 @@
 	</script>
 	<!-- FIN: SCRIPTS BOTONES ACCION -->
 	
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	<!-- FIN: SUBMIT AREA -->
 
 </body>
 </html>

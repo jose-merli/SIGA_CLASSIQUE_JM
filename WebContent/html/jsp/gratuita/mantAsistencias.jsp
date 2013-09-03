@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- mantAsistencias.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -37,8 +38,8 @@
 	boolean esFichaColegial = false;
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null)
-			&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true"))  )) {
+	if (sEsFichaColegial != null
+			&& (sEsFichaColegial.equalsIgnoreCase("1") || sEsFichaColegial.equalsIgnoreCase("true"))) {
 		esFichaColegial = true;
 	}
 
@@ -54,7 +55,9 @@
 
 	String GUARDIA 				= (String) hash.get("GUARDIA");
 	String FECHA 				= (String) hash.get("FECHA");
-	if(FECHA!= null) FECHA = GstDate.getFormatedDateShort("",FECHA);
+	if(FECHA!= null) 
+		FECHA = GstDate.getFormatedDateShort("",FECHA);
+	
 	String NIFASISTIDO 			= (String) hash.get("NIFASISTIDO");
 	String NOMBREAASISTIDO 		= (String) hash.get("NOMBREAASISTIDO");
 	String IDPERSONAJG 			= (String) hash.get("IDPERSONAJG");
@@ -72,7 +75,9 @@
 	String TIPOEJG 				= (String) hash.get("TIPOEJG");
 	String IDTIPOEJG 			= (String) hash.get("IDTIPOEJG");
 	String FECHAAPERTURA 		= (String) hash.get("FECHAAPERTURA");
-	if(FECHAAPERTURA!= null) FECHAAPERTURA = GstDate.getFormatedDateShort("",FECHAAPERTURA);
+	if(FECHAAPERTURA!= null) 
+		FECHAAPERTURA = GstDate.getFormatedDateShort("",FECHAAPERTURA);
+	
 	String DESIGNA_ANIO 		= (String) hash.get("DESIGNA_ANIO");
 	String DESIGNA_NUMERO 		= (String) hash.get("DESIGNA_NUMERO");
 	String DESIGNA_TURNO   		= (String) hash.get("DESIGNA_TURNO");
@@ -108,15 +113,14 @@
 	ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
 	String sql = "";
 	Vector vect = null;
-	if(TIPOASISTENCIA!=null && !TIPOASISTENCIA.equals(""))
-	{
+	if(TIPOASISTENCIA!=null && !TIPOASISTENCIA.equals("")) {
 		sql = " SELECT " + UtilidadesMultidioma.getCampoMultidioma("DESCRIPCION",usr.getLanguage()) + " FROM SCS_TIPOASISTENCIA WHERE IDTIPOASISTENCIA = "+TIPOASISTENCIA;
 		vect = scsAsistenciaAdm.ejecutaSelect(sql);
 		if(vect!=null && vect.size()>0)
 			TIPOASISTENCIASELDESC = (String)((Hashtable) vect.get(0)).get("DESCRIPCION");
 	}
-	if(TIPOASISTENCIACOLEGIO!=null && !TIPOASISTENCIACOLEGIO.equals(""))
-	{
+	
+	if(TIPOASISTENCIACOLEGIO!=null && !TIPOASISTENCIACOLEGIO.equals("")) {
 		sql = " SELECT " + UtilidadesMultidioma.getCampoMultidioma("DESCRIPCION",usr.getLanguage()) + " FROM SCS_TIPOASISTENCIACOLEGIO WHERE IDTIPOASISTENCIACOLEGIO = "+TIPOASISTENCIACOLEGIO+" AND IDINSTITUCION = "+usr.getLocation();
 		vect = scsAsistenciaAdm.ejecutaSelect(sql);
 		if(vect!=null && vect.size()>0)
@@ -126,32 +130,29 @@
 	//FECHA ANULACIÓN
 	boolean anulada=false;
 	String fechaAnulacion=(String) hash.get("FECHAANULACION");
-	if(fechaAnulacion.trim().equals(""))
-	{
+	if(fechaAnulacion.trim().equals("")) {
 		Date hoy = new Date();
 		SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
 		fechaAnulacion = sd.format(hoy);
-	}
-	else
-	{
+		
+	} else {
 		fechaAnulacion = GstDate.getFormatedDateShort("",fechaAnulacion);
 		anulada = true;
 	}
 	
-	if(PCAJG_ACTIVADO == 2){
+	if(PCAJG_ACTIVADO == 2) {
 		maxLenghtProc = "15";
 	}
 
 	String idTurno = (String) hash.get("IDTURNO");
 	String[] parametroJuzgado = {usr.getLocation(), "-1"};
-
 	
 	// Para cuando creamos la designacion
 	//idTurno = " ," + idTurno;
 	String nombreCompletoLetrado = NOMBRELETRADO + " " + APELLIDO1LETRADO + " " + APELLIDO2LETRADO;
 	String juzgado = (String) request.getAttribute("JUZGADO");
-	if (juzgado == null) juzgado = new String ("");
-	
+	if (juzgado == null) 
+		juzgado = new String ("");	
 
 	ArrayList estadoSel    = new ArrayList();
 	ArrayList juzgadoSel   = new ArrayList();
@@ -191,6 +192,7 @@
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
 		idcomisariaJSON = "{\"idcomisaria\":\""+comisariaAsi+"\"}";
 	}
+	
  	// Datos del estadoseleccionado:
 	String estadoAsi = (String) hash.get(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
 	if (estadoAsi!=null)
@@ -207,45 +209,34 @@
 		comboSize="550";
 	}
 	
-/*  String t_nombreEJG = "", t_apellido1EJG = "", t_apellido2EJG = "", t_anioEJG = "", t_numeroEJG = "", t_tipoEJG="";;
-						ScsEJGAdm ejgAdm = new ScsEJGAdm (usr);
-						Hashtable hTituloEJG = ejgAdm.getTituloPantallaEJG(usr.getLocation(), ANIOEJG, NUMEROEJG,IDTIPOEJG);
-
-						if (hTituloEJG != null) {
-							t_nombreEJG    = (String)hTituloEJG.get(ScsPersonaJGBean.C_NOMBRE);
-							t_apellido1EJG = (String)hTituloEJG.get(ScsPersonaJGBean.C_APELLIDO1);
-							t_apellido2EJG = (String)hTituloEJG.get(ScsPersonaJGBean.C_APELLIDO2);
-							t_anioEJG      = (String)hTituloEJG.get(ScsEJGBean.C_ANIO);
-							t_numeroEJG    = (String)hTituloEJG.get(ScsEJGBean.C_NUMEJG);
-							t_tipoEJG   = (String)hTituloEJG.get("TIPOEJG");
-						}
-*/
-					
-String t_nombreD = "", t_apellido1D = "", t_apellido2D = "";				
-if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
-	ScsDesignaAdm admD = new ScsDesignaAdm (usr);
-	Hashtable hTituloD = admD.getTituloPantallaDesigna(usr.getLocation(), DESIGNA_ANIO, DESIGNA_NUMERO,DESIGNA_TURNO);
-	if (hTituloD != null) {
-		t_nombreD    = (String)hTituloD.get(ScsPersonaJGBean.C_NOMBRE);
-		t_apellido1D = (String)hTituloD.get(ScsPersonaJGBean.C_APELLIDO1);
-		t_apellido2D = (String)hTituloD.get(ScsPersonaJGBean.C_APELLIDO2);
-	}	
-}
-
-
-
-
-
+	/*  String t_nombreEJG = "", t_apellido1EJG = "", t_apellido2EJG = "", t_anioEJG = "", t_numeroEJG = "", t_tipoEJG="";;
+							ScsEJGAdm ejgAdm = new ScsEJGAdm (usr);
+							Hashtable hTituloEJG = ejgAdm.getTituloPantallaEJG(usr.getLocation(), ANIOEJG, NUMEROEJG,IDTIPOEJG);
+	
+							if (hTituloEJG != null) {
+								t_nombreEJG    = (String)hTituloEJG.get(ScsPersonaJGBean.C_NOMBRE);
+								t_apellido1EJG = (String)hTituloEJG.get(ScsPersonaJGBean.C_APELLIDO1);
+								t_apellido2EJG = (String)hTituloEJG.get(ScsPersonaJGBean.C_APELLIDO2);
+								t_anioEJG      = (String)hTituloEJG.get(ScsEJGBean.C_ANIO);
+								t_numeroEJG    = (String)hTituloEJG.get(ScsEJGBean.C_NUMEJG);
+								t_tipoEJG   = (String)hTituloEJG.get("TIPOEJG");
+							}
+	*/
+						
+	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "";				
+	if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
+		ScsDesignaAdm admD = new ScsDesignaAdm (usr);
+		Hashtable hTituloD = admD.getTituloPantallaDesigna(usr.getLocation(), DESIGNA_ANIO, DESIGNA_NUMERO,DESIGNA_TURNO);
+		if (hTituloD != null) {
+			t_nombreD    = (String)hTituloD.get(ScsPersonaJGBean.C_NOMBRE);
+			t_apellido1D = (String)hTituloD.get(ScsPersonaJGBean.C_APELLIDO1);
+			t_apellido2D = (String)hTituloD.get(ScsPersonaJGBean.C_APELLIDO2);
+		}	
+	}
 %>
 
-
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -254,11 +245,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<% if(esFichaColegial){ %>
-		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" 
-				 localizacion="censo.gratuita.asistencias.literal.localizacion"/>
+		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" localizacion="censo.gratuita.asistencias.literal.localizacion"/>
 	<% } else { %>
-		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" 
-				 localizacion="gratuita.mantAsistencias.literal.localizacion"/>
+		<siga:Titulo titulo="gratuita.mantAsistencias.literal.titulo" localizacion="gratuita.mantAsistencias.literal.localizacion"/>
 	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
@@ -358,7 +347,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 <body onload="cargarComboModulo();">
 
-    <table class="tablaTitulo" align="center" cellspacing=0>
+    <table class="tablaTitulo" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="titulitosDatos">
 			
@@ -379,524 +368,533 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		</tr>
 	</table>	
 
-
-
-<table class="tablaCentralCampos" height="440">
+	<table class="tablaCentralCampos" height="440px" border="0" cellpadding="0" cellspacing="0">
 
 <%			
-	String sAction = esFichaColegial ? "JGR_MantenimientoAsistenciaLetrado.do" : "JGR_MantenimientoAsistencia.do";
+		String sAction = esFichaColegial ? "JGR_MantenimientoAsistenciaLetrado.do" : "JGR_MantenimientoAsistencia.do";
 %>
 
-<html:form action = "<%=sAction%>" method="POST" target="mainWorkArea">
-<html:hidden property = "actionModal" value = ""/>
-<html:hidden property = "tipoEJG" value = "<%=TIPOEJG%>"/>
-<html:hidden property = "idTipoEJG" value = "<%=IDTIPOEJG%>"/>
-<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
-<html:hidden property = "anio" 	value = "<%=ANIO%>"/>
-<html:hidden property = "numero" value = "<%=NUMERO%>"/>
-<html:hidden property = "modo" value = ""/>	
-<html:hidden property = "idPersonaJG" value = "<%=IDPERSONAJG%>"/>
-<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
-<input type="hidden" name="estadoAsinteciaAnterior" value="<%=estadoAsi%>" >
-<input type="hidden" id="tipoPcajg" value="<%=PCAJG_ACTIVADO%>" >
+		<html:form action = "<%=sAction%>" method="POST" target="mainWorkArea">
+			<html:hidden property = "actionModal" value = ""/>
+			<html:hidden property = "tipoEJG" value = "<%=TIPOEJG%>"/>
+			<html:hidden property = "idTipoEJG" value = "<%=IDTIPOEJG%>"/>
+			<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
+			<html:hidden property = "anio" 	value = "<%=ANIO%>"/>
+			<html:hidden property = "numero" value = "<%=NUMERO%>"/>
+			<html:hidden property = "modo" value = ""/>	
+			<html:hidden property = "idPersonaJG" value = "<%=IDPERSONAJG%>"/>
+			<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
+			<input type="hidden" name="estadoAsinteciaAnterior" value="<%=estadoAsi%>" >
+			<input type="hidden" id="tipoPcajg" value="<%=PCAJG_ACTIVADO%>" >
+			
+			<html:hidden property = "ejg_anio"    		value= "<%=ANIOEJG%>"/>
+			<html:hidden property = "ejg_numero"  		value= "<%=NUMEROEJG%>"/>
+			<html:hidden property = "ejg_idTipoEJG" 	value= "<%=IDTIPOEJG%>"/>
+			<html:hidden property = "ejg_idInstitucion" value= "<%=usr.getLocation()%>"/>
+			
+			<html:hidden property = "designa_anio"    		value= "<%=DESIGNA_ANIO%>"/>
+			<html:hidden property = "designa_numero"  		value= "<%=DESIGNA_NUMERO%>"/>
+			<html:hidden property = "designa_turno" 		value= "<%=DESIGNA_TURNO%>"/>
+			<html:hidden property = "designa_idInstitucion" value= "<%=usr.getLocation()%>"/>
+			
+			<html:hidden property = "idTurno"    		value= "<%=IDTURNO%>"/>
+			<html:hidden property = "idGuardia"    		value= "<%=IDGUARDIA%>"/>
+			<html:hidden property = "nombreColegiado"  	value= "<%=nombreCompletoLetrado%>"/>
+			<html:hidden property = "numeroColegiado"  	value= "<%=NUMEROCOLEGIADO%>"/>
+			<html:hidden property = "idPersona"  		value= "<%=IDPERSONACOLEGIADO%>"/>
+			<html:hidden property = "fechaHora"  		value= "<%=FECHAHORA%>"/>
 
-<html:hidden property = "ejg_anio"    		value= "<%=ANIOEJG%>"/>
-<html:hidden property = "ejg_numero"  		value= "<%=NUMEROEJG%>"/>
-<html:hidden property = "ejg_idTipoEJG" 	value= "<%=IDTIPOEJG%>"/>
-<html:hidden property = "ejg_idInstitucion" value= "<%=usr.getLocation()%>"/>
-
-<html:hidden property = "designa_anio"    		value= "<%=DESIGNA_ANIO%>"/>
-<html:hidden property = "designa_numero"  		value= "<%=DESIGNA_NUMERO%>"/>
-<html:hidden property = "designa_turno" 		value= "<%=DESIGNA_TURNO%>"/>
-<html:hidden property = "designa_idInstitucion" value= "<%=usr.getLocation()%>"/>
-
-<html:hidden property = "idTurno"    		value= "<%=IDTURNO%>"/>
-<html:hidden property = "idGuardia"    		value= "<%=IDGUARDIA%>"/>
-<html:hidden property = "nombreColegiado"  	value= "<%=nombreCompletoLetrado%>"/>
-<html:hidden property = "numeroColegiado"  	value= "<%=NUMEROCOLEGIADO%>"/>
-<html:hidden property = "idPersona"  		value= "<%=IDPERSONACOLEGIADO%>"/>
-<html:hidden property = "fechaHora"  		value= "<%=FECHAHORA%>"/>
-
-
-<tr>
-<td valign="top">	
-	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.titulo">
-		<table width="100%" border="0" style="table-layout:fixed">
 			<tr>
-			    <td class="labelText" width="12%">	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/> / <siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-				</td>
-				<td class="labelTextValor" width="17%">	
-					<%=ANIO%> / <%=NUMERO%>
-				</td>
-				<td class="labelText" style="width:70px">	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
-				</td>
-				<td class="labelTextValor"  style="width:200px">	
-					<%=NOMBRETURNO%>
-				</td>
-				<td class="labelText"  style="width:70px">	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.guardia'/>
-				</td>
-				<td class="labelTextValor"  style="width:200px">	
-					<%=GUARDIA%>
-				</td>
-				
-			</tr>
-		</table>
-		<table width="100%" border="0" style="table-layout:fixed">
-			<tr style="display:none">
-				<td class="labelText" width="20%">
-					<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
-				</td>			
-				
-				<td class="labelTextValor" width="80%">	
-				<% if(modo.equals("ver")){%>
-					<%=TIPOASISTENCIASELDESC%>
-				<%}else{%>
-					<siga:Select queryId="getTiposAsistencia" id="idTipoAsistencia" selectedIds="<%=TIPOASISTENCIASEL%>" width="600"/>
-				<%}%>
-				</td>	
-			</tr>
-	
-			<tr>			
-				<td class="labelText" width="20%">
-					<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
-				</td>
-				
-				<td class="labelTextValor" width="80%">					
-					<% 
-						boolean tipoasistenciaColegioDisabled = false;
-						if((modo.equals("ver"))||(!idfacturacion.equals("")))
-							tipoasistenciaColegioDisabled = true;
-					%>
-					<siga:Select id="idTipoAsistenciaColegio" 
-								queryId="getTiposAsistenciaDeColegio" 
-								selectedIds="<%=TIPOASISTENCIACOLEGIOSEL%>" 
-								disabled="<%=String.valueOf(tipoasistenciaColegioDisabled)%>" 
-								width="700"/>
-				</td>				
-			</tr>
-		</table>
-		<table width="100%" border="0" style="table-layout:fixed">
-			<tr>
-				<td class="labelText" >	
-					<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
-				</td>
-				<td class="labelTextValor">	
-					<%=FECHAHORA%>&nbsp;<%=horaAsistencia %>:<%=minutoAsistencia %>
-				</td>
-	
-				<td class="labelText" >	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
-				</td>
-				<td class="labelTextValor"  width="15%" >	
-					<% if(modo.equals("editar")){%>
-					<siga:Fecha  nombreCampo= "fechaCierre" valorInicial="<%=FECHACIERRE%>"/>
-				<%}else{%>
-						<%=FECHACIERRE%>
-					<%}%>
-				</td>
-				
-				<td class="labelText"  >
-					<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
-				</td>
-				
-				
-					<%if(usr.isLetrado()){%>
-						<td class="labelText">
-						<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="true"/>
-					<% 	}else{%>
-						<td class="labelTextValor">
-						<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="<%=readOnly%>"/>	
-					<% }%>
+				<td valign="top">	
+					<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.titulo">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+			    				<td class="labelText" width="12%">	
+									<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/> / <siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+								</td>
+								<td class="labelTextValor" width="17%">	
+									<%=ANIO%> / <%=NUMERO%>
+								</td>
+								
+								<td class="labelText" width="70px">	
+									<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
+								</td>								
+								<td class="labelTextValor" width="200px">	
+									<%=NOMBRETURNO%>
+								</td>
+								
+								<td class="labelText" width="70px">	
+									<siga:Idioma key='gratuita.mantAsistencias.literal.guardia'/>
+								</td>
+								<td class="labelTextValor" width="200px">	
+									<%=GUARDIA%>
+								</td>				
+							</tr>
+						</table>
+						
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr style="display:none">
+								<td class="labelText" width="20%">
+									<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
+								</td>											
+								<td class="labelTextValor" width="80%">	
+									<% if(modo.equals("ver")){%>
+										<%=TIPOASISTENCIASELDESC%>
+									<%}else{%>
+										<siga:Select queryId="getTiposAsistencia" id="idTipoAsistencia" selectedIds="<%=TIPOASISTENCIASEL%>" width="600"/>
+									<%}%>
+								</td>	
+							</tr>
 					
-				</td>
-				<td class="labelText" >
-					<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
-				</td>
-				<td class="labelTextValor" >
-					<html:text name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:text>
-				</td>
-				
-			</tr>
-		</table>
-	</siga:ConjCampos>
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr>
-			<td width="50%">	
-			<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.asistido">
-				<table width="100%" border="0">
-					<tr>
-						<td class="labelText" width="20%">	
-							<siga:Idioma key='gratuita.mantAsistencias.literal.nif'/>
-						</td>
-						<td class="labelTextValor" width="80%">	
-							<%=NIFASISTIDO%>
-						</td>
-					</tr>
-					<tr>
-						<td class="labelText">	
-							<siga:Idioma key='gratuita.mantAsistencias.literal.nombre'/>
-						</td>
-						<td class="labelTextValor">	
-							<%=NOMBREAASISTIDO%>&nbsp;<%=APELLIDO1ASISTIDO%>&nbsp;<%=APELLIDO2ASISTIDO%>
-						</td>
-					</tr>
-				</table>
-			</siga:ConjCampos>
-			</td>
-			<td width="50%">	
-			<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.letrado">
-				<table  width="100%" border="0">
-					<tr>
-						<td class="labelText" width="20%">	
-							<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-						</td>
-						<td class="labelTextValor" width="80%">	
-							<%=NUMEROCOLEGIADO%>
-						</td>
-					</tr>
-					<tr>
-						<td class="labelText">	
-							<siga:Idioma key='gratuita.mantAsistencias.literal.nombre'/>
-						</td>
-						<td class="labelTextValor">	
-							<%=NOMBRELETRADO%>&nbsp;<%=APELLIDO1LETRADO%>&nbsp;<%=APELLIDO2LETRADO%>
-						</td>
-					</tr>
-				</table>
-			</siga:ConjCampos>
-			</td>
-		</tr>
-	</table>
+							<tr>			
+								<td class="labelText" width="20%">
+									<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
+								</td>								
+								<td class="labelTextValor" width="80%">					
+									<% 
+										boolean tipoasistenciaColegioDisabled = false;
+										if((modo.equals("ver"))||(!idfacturacion.equals("")))
+											tipoasistenciaColegioDisabled = true;
+									%>
+									<siga:Select id="idTipoAsistenciaColegio" 
+										queryId="getTiposAsistenciaDeColegio" 
+										selectedIds="<%=TIPOASISTENCIACOLEGIOSEL%>" 
+										disabled="<%=String.valueOf(tipoasistenciaColegioDisabled)%>" 
+										width="700"/>
+								</td>				
+							</tr>
+						</table>
+						
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td class="labelText" width="110px">	
+									<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
+								</td>
+								<td class="labelTextValor" width="120px">	
+									<%=FECHAHORA%>&nbsp;<%=horaAsistencia %>:<%=minutoAsistencia %>
+								</td>
+					
+								<td class="labelText" width="90px">	
+									<siga:Idioma key='gratuita.mantAsistencias.literal.fcierre'/>
+								</td>
+								<td class="labelTextValor" width="120px">	
+									<% if(modo.equals("editar")){%>
+										<siga:Fecha  nombreCampo= "fechaCierre" valorInicial="<%=FECHACIERRE%>"/>
+									<%}else{%>
+										<%=FECHACIERRE%>
+									<%}%>
+								</td>
+								
+								<td class="labelText" width="50px">
+									<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
+								</td>																
+								<%if(usr.isLetrado()){%>
+									<td class="labelText" width="120px">
+										<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="true" width="100"/>
+									</td>
+								<% 	}else{%>
+									<td class="labelTextValor" width="120px">
+										<siga:Select id="estadoAsintecia" queryId="getEstadosAsistencia" selectedIds="<%=estadoSel%>" readOnly="<%=readOnly%>" width="100"/>
+									</td>	
+								<% }%>
+																	
+								<td class="labelText" width="90px">
+									<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
+								</td>
+								<td class="labelTextValor" width="80px">
+									<html:text name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true" style="width:70px"/>
+								</td>								
+							</tr>
+						</table>
+					</siga:ConjCampos>
+	
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="50%">	
+								<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.asistido">
+									<table width="100%" border="0" cellpadding="0" cellspacing="0">
+										<tr>
+											<td class="labelText" width="20%">	
+												<siga:Idioma key='gratuita.mantAsistencias.literal.nif'/>
+											</td>
+											<td class="labelTextValor" width="80%">	
+												<%=NIFASISTIDO%>
+											</td>
+										</tr>
+										
+										<tr>
+											<td class="labelText">	
+												<siga:Idioma key='gratuita.mantAsistencias.literal.nombre'/>
+											</td>
+											<td class="labelTextValor">	
+												<%=NOMBREAASISTIDO%>&nbsp;<%=APELLIDO1ASISTIDO%>&nbsp;<%=APELLIDO2ASISTIDO%>
+											</td>
+										</tr>
+									</table>
+								</siga:ConjCampos>
+							</td>
+							
+							<td width="50%">	
+								<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.letrado">
+									<table width="100%" border="0" cellpadding="0" cellspacing="0">
+										<tr>
+											<td class="labelText" width="20%">	
+												<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+											</td>
+											<td class="labelTextValor" width="80%">	
+												<%=NUMEROCOLEGIADO%>
+											</td>
+										</tr>
+										
+										<tr>
+											<td class="labelText">	
+												<siga:Idioma key='gratuita.mantAsistencias.literal.nombre'/>
+											</td>
+											<td class="labelTextValor">	
+												<%=NOMBRELETRADO%>&nbsp;<%=APELLIDO1LETRADO%>&nbsp;<%=APELLIDO2LETRADO%>
+											</td>
+										</tr>
+									</table>
+								</siga:ConjCampos>
+							</td>
+						</tr>
+					</table>
 
 
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr>
-			<!-- Busqueda automatica de juzgados-->
-			<td colspan="4">
-			   <siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
-			   <table width="100%">
-			   	<tr>
-			   		<td class="labelText" style="vertical-align:text-top;;width:200" id="tdNumeroDiligencia"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
-			   		</td>
-			   	<td>
-					<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
-				</td> 
-				
-				<td class="labelText" style="vertical-align:text-top;text-align: right">
-					<% if(!modo.equals("ver")){%>
-					<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
-					<%}%>
-				</td>
-				<td class="labelText" style="vertical-align:text-top;text-align: right">
-				
-				<siga:Select id="comisaria" 
-							queryId="getComisariasDeInstitucion" 
-							params="<%=idcomisariaJSON%>"
-							selectedIds="<%=comisariaSel%>"
-							showSearchBox="true"
-							searchkey="CODIGOEXT"
-							searchBoxMaxLength="10"
-							searchBoxWidth="8"
-							readOnly="<%=readOnly%>"
-							width="420"/>
-				</td>
-				</tr>
-			</table>
-	</siga:ConjCampos> 
-		</td>
-<!------------------>
+					<!-- Busqueda automatica de comisarias-->
+   					<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
+   						<table border="0" cellpadding="0" cellspacing="0">
+   							<tr>
+   								<td class="labelText" style="vertical-align:text-top;width:200px" id="tdNumeroDiligencia">
+   									<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
+   								</td>	
+   								<td>
+									<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
+								</td> 
 		
-		</tr>
-		<tr>
-			<!-- Busqueda automatica de juzgados-->
-			<td colspan="4">
-		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado"> 
-
-		   <table width="100%">
-		   	<tr>
-			   	<td class="labelText" style="vertical-align:text-top;width:200" id="tdNumeroProcedimiento" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;
-			   	</td>
-			   	
-			   	<td><input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
-				</td>
+								<td class="labelText" style="vertical-align:text-top; text-align:right">
+									<% if(!modo.equals("ver")){%>
+										<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
+									<%}%>
+								</td>
+								<td class="labelText" style="vertical-align:text-top; text-align:right">				
+									<siga:Select id="comisaria" 
+										queryId="getComisariasDeInstitucion" 
+										params="<%=idcomisariaJSON%>"
+										selectedIds="<%=comisariaSel%>"
+										showSearchBox="true"
+										searchkey="CODIGOEXT"
+										searchBoxMaxLength="10"
+										searchBoxWidth="8"
+										readOnly="<%=readOnly%>"
+										width="420"/>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos> 
 				
+					<!-- Busqueda automatica de juzgados-->
+					<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado"> 
+ 						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+   								<td class="labelText" style="vertical-align:text-top;width:200px" id="tdNumeroProcedimiento">
+   									<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;
+   								</td>			   	
+   								<td>
+   									<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+								</td>
+					
+								<td class="labelText" style="vertical-align:text-top; text-align:right">	
+									<% if(!modo.equals("ver")){%>	
+	   									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
+	   								<%}%>
+								</td>
+								<td class="labelText" style="vertical-align:text-top; text-align:right">
+									<%
+										String paramsJuzgadoJSON = "{\"idjuzgado\":\""+juzgadoAsi+"\"}";
+										juzgadoSel = new ArrayList();
+										juzgadoSel.add(0,"{\"idjuzgado\":\""+juzgadoAsi+"\",\"idinstitucion\":\""+juzgadoInstitucionAsi+"\"}");
+									%>
+									<siga:Select id="juzgado" 
+										queryParamId="idjuzgado"
+										queryId="getJuzgadosTurnos"
+										params="<%=paramsJuzgadoJSON%>"
+										selectedIds="<%=juzgadoSel%>"
+										showSearchBox="true"
+										searchkey="CODIGOEXT2"
+										searchBoxMaxLength="10"
+										searchBoxWidth="8"
+										readOnly="<%=readOnly%>"
+										width="420"/>
+								</td>   					
+							</tr>
+						</table>
+						
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td class="labelText" style="vertical-align:text-top;width:200px">
+									<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+								</td>											
+								<td> 
+									<% if (!modo.equalsIgnoreCase("ver")) { %>
+									 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
+									<%}else{%>
+										<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
+									<%}%>						
+								</td>
+								
+								<td class="labelText" >	
+									<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>&nbsp;&nbsp;&nbsp;
+								</td>
+								<td> 
+									<%
+										String idPretensionJSON = "{\"idpretension\":\""+idPretension+"\"}";
+									%>
+									<siga:Select id="idPretension" 
+										queryId="getPretensiones" 
+										selectedIds="<%=pretensionesSel%>"
+										params="<%=idPretensionJSON%>"
+										readOnly="<%=readOnly%>"/>
+								</td>															
+							</tr>	
+					  </table>
+				</siga:ConjCampos> 
 				
-				<td class="labelText" style="vertical-align:text-top;text-align: right">	
-					<% if(!modo.equals("ver")){%>	
-				   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-				   <%}%>
-				</td>
-				<td class="labelText" style="vertical-align:text-top;text-align: right">
-					<%
-					String paramsJuzgadoJSON = "{\"idjuzgado\":\""+juzgadoAsi+"\"}";
-					juzgadoSel = new ArrayList();
-					juzgadoSel.add(0,"{\"idjuzgado\":\""+juzgadoAsi+"\",\"idinstitucion\":\""+juzgadoInstitucionAsi+"\"}");
-					%>
-					<siga:Select id="juzgado" 
-								queryParamId="idjuzgado"
-								queryId="getJuzgadosTurnos"
-								params="<%=paramsJuzgadoJSON%>"
-								selectedIds="<%=juzgadoSel%>"
-								showSearchBox="true"
-								searchkey="CODIGOEXT2"
-								searchBoxMaxLength="10"
-								searchBoxWidth="8"
-								readOnly="<%=readOnly%>"
-								width="420"/>
-				</td>   
-					
-			</tr>
-			</table>
-			<table>
-				<tr>
-					<td class="labelText" style="vertical-align:text-top;width:200"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
-					</td>
-					
-					<td> 
-						<% if (!modo.equalsIgnoreCase("ver")) { %>
-						 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="50"/>
-						<%}else{%>
-							<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
-						<%}%>						
-					</td>
-					
-					<td class="labelText" >	
-						<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>&nbsp;&nbsp;&nbsp;
-					</td>
-					<td> 
-						<%
-						String idPretensionJSON = "{\"idpretension\":\""+idPretension+"\"}";
-						%>
-						<siga:Select id="idPretension" 
-									queryId="getPretensiones" 
-									selectedIds="<%=pretensionesSel%>"
-									params="<%=idPretensionJSON%>"
-									readOnly="<%=readOnly%>"/>
-					</td>				
-					
-				</tr>	
-		  </table>
-		</siga:ConjCampos> 
-		</td>
-<!------------------>
-			
-			
-		</tr>
-	</table>
-	<siga:ConjCampos leyenda="Otros datos"> 
-		<table width="100%" border="0" style="table-layout:fixed">
-	
-			<tr align="center">
-				<td class="labelText" >	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.observaciones'/>
-				</td>
-				<td class="labelTextValor" colspan="3">
-				<% if(modo.equals("ver")){%>
-					<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=OBSERVACIONES%>" readonly="true"></html:textarea>
-				<%}else{%>
-					<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=OBSERVACIONES%>" readOnly="false"></html:textarea>
-				<%}%>
-				</td>
-				<td class="labelText" >	
-					<siga:Idioma key='gratuita.mantAsistencias.literal.incidencias'/>
-				</td>
-				<td class="labelTextValor" colspan="3">
-				<% if(modo.equals("ver")){%>
-					<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" cols="70" rows="3" style="overflow:auto" styleClass="boxComboConsulta" value="<%=INCIDENCIAS%>" readOnly="true"></html:textarea>
-				<%}else{%>
-					<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=INCIDENCIAS%>" readOnly="false"></html:textarea>
-				<%}%>
-				</td>
-			</tr>
-		</table>
-	</siga:ConjCampos>
+				<siga:ConjCampos leyenda="Otros datos"> 
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr align="center">
+							<td class="labelText" >	
+								<siga:Idioma key='gratuita.mantAsistencias.literal.observaciones'/>
+							</td>
+							<td class="labelTextValor">
+								<% if(modo.equals("ver")){%>
+									<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones"
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;" 
+										styleClass="boxComboConsulta" value="<%=OBSERVACIONES%>" readonly="true"></html:textarea>
+								<%}else{%>
+									<html:textarea name="DefinirPermutaGuardiasForm" property="observaciones" 
+										onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;" 
+										styleClass="boxCombo" value="<%=OBSERVACIONES%>" readOnly="false"></html:textarea>
+								<%}%>
+							</td>
+							
+							<td class="labelText" >	
+								<siga:Idioma key='gratuita.mantAsistencias.literal.incidencias'/>
+							</td>
+							<td class="labelTextValor" colspan="3">
+								<% if(modo.equals("ver")){%>
+									<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" 
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;" 
+										styleClass="boxComboConsulta" value="<%=INCIDENCIAS%>" readOnly="true"></html:textarea>
+								<%}else{%>
+									<html:textarea name="DefinirPermutaGuardiasForm" property="incidencias" 
+										onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;"  
+										styleClass="boxCombo" value="<%=INCIDENCIAS%>" readOnly="false"></html:textarea>
+								<%}%>
+							</td>
+						</tr>
+					</table>
+				</siga:ConjCampos>
+				
 <%			
-	/////////////////////////
-	// DCG 
-	boolean hayEJG = false;
-	boolean hayDesigna = false;
-	
-	if ((ANIOEJG   != null) && (!ANIOEJG.equals("")))    hayEJG |= true;
-	if ((NUMEROEJG != null) && (!NUMEROEJG.equals("")))  hayEJG |= true;
-	if ((DESIGNA_ANIO   != null) && (!DESIGNA_ANIO.equals("")))    hayDesigna |= true;
-	if ((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))  hayDesigna |= true;
-
-	if (hayDesigna || hayEJG) { %>
-	<table width="100%">
-	<tr>
-	<td>
-	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.relacionado">
-	<%	if (hayEJG) { %>
-		<fieldset>
-		<table width="100%" border="0" >
-		<tr>
-			<td class="labelText"  width="100">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.ejg'/>
-			</td>
-			<td class="labelText" width="100">	
-			
-				<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
-			</td>
-			<td class="labelTextValor" width="200">	
-			<% if(TIPOEJG!=null && TIPOEJG.length()>70) TIPOEJG = TIPOEJG.substring(0,69); 	%>
-				<%=TIPOEJG%>
-			</td>
-			<%// Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de los EJG
-				String nombreIntEJG = "", apellido1IntEJG = "", apellido2IntEJG = "";
-				ScsEJGAdm admEJG = new ScsEJGAdm(usr);
-
-				Hashtable nombreInteresadoEJG = admEJG.getTituloPantallaEJG(usr.getLocation(),
-						ANIOEJG, NUMEROEJG, IDTIPOEJG);
-
-				if (hTitulo != null) {
-					nombreIntEJG = (String) nombreInteresadoEJG.get(ScsPersonaJGBean.C_NOMBRE);
-					apellido1IntEJG = (String) nombreInteresadoEJG
-							.get(ScsPersonaJGBean.C_APELLIDO1);
-					apellido2IntEJG = (String) nombreInteresadoEJG
-							.get(ScsPersonaJGBean.C_APELLIDO2);
-
-				}
-			%>
-			<td class="labelTextValue" width="300">	
-				
-				<%=UtilidadesString.mostrarDatoJSP(ANIOEJG)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO_EJG)%>
-					- <%=UtilidadesString.mostrarDatoJSP(nombreIntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntEJG)%>
-			</td>
-			<!--<td class="labelTextValor" width="50">	
-				< %=ANIOEJG%>
-			</td>-->
-			<td class="labelText" style="display:none">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-			</td>
-			<td class="labelTextValor" style="display:none">	
-				<%=NUMEROEJG%>
-			</td>
-			
-			<!--<td class="labelTextValor" width="100">	
-				< %=CODIGO_EJG%>
-			</td>-->			
-			
-			<!--<td class="labelTextValor" width="200">	
-				< %=TIPOEJG%>
-			</td>-->
-			<!--<td class="labelText">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
-			</td>-->
-			<!--<td class="labelTextValor" width="90">	
-				< %=FECHAAPERTURA%>
-			</td>-->
-<%		if (!esFichaColegial){ 
-			if (modo.equalsIgnoreCase("ver")) {
-%>
-				<td  align="right">
-					<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('ver')">
-				</td>
-			<% } else { %>
-				<td  align="right">
-					<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('ver')">
-					<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.EditarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('<%=modo%>')">
-					<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.BorrarEJG'/>" name="" border="0" onclick="borrarRelacionConEJG()">
-				</td>
-			<% } %>
-<%		}%>
-		</tr>
-		</table>
-		</fieldset>
-	<% } %>
-	<% if (hayDesigna) { %>
-		<fieldset>
-		<table width="100%" border="0" style="table-layout:fixed">
-		<tr >
-			<td class="labelText"  width="100">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.designa'/>
-			</td>
-			<td class="labelText" width="100">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
-			</td>
-			<td class="labelTextValor"  width="400">	
-				<%=DES_DESIGNA_TURNO%>
-			</td>
-			<td class="labelTextValue" >
-			
-			<% // Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de las designaciones
-				String nombreIntDes = "", apellido1IntDes = "", apellido2IntDes = "";
-				ScsDesignaAdm admDes = new ScsDesignaAdm(usr);
-				Hashtable nombreInteresadoDesigna = admDes.getTituloPantallaDesigna(usr.getLocation(),
-						DESIGNA_ANIO, DESIGNA_NUMERO, DESIGNA_TURNO);
-	
-				if (hTitulo != null) {
-					nombreIntDes = (String) nombreInteresadoDesigna.get(ScsPersonaJGBean.C_NOMBRE);
-					apellido1IntDes = (String) nombreInteresadoDesigna
-							.get(ScsPersonaJGBean.C_APELLIDO1);
-					apellido2IntDes = (String) nombreInteresadoDesigna
-							.get(ScsPersonaJGBean.C_APELLIDO2);
-				}
-			%>
-				<%=UtilidadesString.mostrarDatoJSP(DESIGNA_ANIO)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO)%> - <%=UtilidadesString.mostrarDatoJSP(nombreIntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntDes)%>
+					// DCG 
+					boolean hayEJG = false;
+					boolean hayDesigna = false;
 					
-					<!--<input type="text"  class="boxConsulta" value="< %=DESIGNA_ANIO%>" readOnly="true">/<input type="text"  class="boxConsulta" value="< %=DESIGNA_CODIGO%>" readOnly="true">-->
-			</td>
-			<!--<td class="labelText">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/>
-			</td>
-			<td class="labelTextValor" width="50">	
-				< %=DESIGNA_ANIO%>
-			</td>-->
-		   <td class="labelText"  style="display:none" width="0">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-			</td>
-			<td class="labelTextValor"  style="display:none" width="0">	
-				<%=DESIGNA_NUMERO%>
-			</td>
-			<!--<td class="labelText" >	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-			</td>-->
-			<!--<td class="labelTextValor" width="100">	
-				< %=CODIGO%>
-			</td>-->
-			
-			<!--<td class="labelText">	
-				<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
-			</td>
-			<td class="labelTextValor" width="90">	
-				< %=FECHAENTRADA%>
-			</td>-->
-
-<%		if (!esFichaColegial){ 
-			if (modo.equalsIgnoreCase("ver")) { 
+					if ((ANIOEJG   != null) && (!ANIOEJG.equals("")))    hayEJG |= true;
+					if ((NUMEROEJG != null) && (!NUMEROEJG.equals("")))  hayEJG |= true;
+					if ((DESIGNA_ANIO   != null) && (!DESIGNA_ANIO.equals("")))    hayDesigna |= true;
+					if ((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))  hayDesigna |= true;
+				
+					if (hayDesigna || hayEJG) { 
 %>
-			<td align="right">
-				<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('ver')">
-			</td>
-			<% } else { %>
-				<td  align="right">
-					<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('ver')">
-					<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('<%=modo%>')">
-					<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionConDesigna()">
-				</td>
-			<% } %>
-<%		}%>
-
-		</tr>
-		</table>
-		</fieldset>
-		<% } %>
-	</siga:ConjCampos>
-	</td>
-	</tr>
-	</table>
-
-	<% } %>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td>
+									<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.relacionado">
+										<% if (hayEJG) { %>
+											<fieldset>
+												<table width="100%" border="0" cellpadding="0" cellspacing="0">
+													<tr>
+														<td class="labelText" width="100px">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.ejg'/>
+														</td>
+														<td class="labelText" width="100px">				
+															<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
+														</td>
+														<td class="labelTextValor" width="200px">	
+															<% if(TIPOEJG!=null && TIPOEJG.length()>70) TIPOEJG = TIPOEJG.substring(0,69); 	%>
+															<%=TIPOEJG%>
+														</td>
+														<%// Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de los EJG
+															String nombreIntEJG = "", apellido1IntEJG = "", apellido2IntEJG = "";
+															ScsEJGAdm admEJG = new ScsEJGAdm(usr);
+											
+															Hashtable nombreInteresadoEJG = admEJG.getTituloPantallaEJG(usr.getLocation(),
+																	ANIOEJG, NUMEROEJG, IDTIPOEJG);
+											
+															if (hTitulo != null) {
+																nombreIntEJG = (String) nombreInteresadoEJG.get(ScsPersonaJGBean.C_NOMBRE);
+																apellido1IntEJG = (String) nombreInteresadoEJG
+																		.get(ScsPersonaJGBean.C_APELLIDO1);
+																apellido2IntEJG = (String) nombreInteresadoEJG
+																		.get(ScsPersonaJGBean.C_APELLIDO2);
+											
+															}
+														%>
+														<td class="labelTextValue" width="300px">	
+															
+															<%=UtilidadesString.mostrarDatoJSP(ANIOEJG)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO_EJG)%>
+																- <%=UtilidadesString.mostrarDatoJSP(nombreIntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntEJG)%>
+														</td>
+														<!--<td class="labelTextValor" width="50px">	
+															< %=ANIOEJG%>
+														</td>-->
+														<td class="labelText" style="display:none">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+														</td>
+														<td class="labelTextValor" style="display:none">	
+															<%=NUMEROEJG%>
+														</td>
+														
+														<!--<td class="labelTextValor" width="100px">	
+															< %=CODIGO_EJG%>
+														</td>-->			
+														
+														<!--<td class="labelTextValor" width="200px">	
+															< %=TIPOEJG%>
+														</td>-->
+														<!--<td class="labelText">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
+														</td>-->
+														<!--<td class="labelTextValor" width="90px">	
+															< %=FECHAAPERTURA%>
+														</td>-->
+														
+<%		
+														if (!esFichaColegial){ 
+															if (modo.equalsIgnoreCase("ver")) {
+%>
+																<td  align="right">
+																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('ver')">
+																</td>
+<% 
+															} else { 
+%>
+																<td align="right">
+																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('ver')">
+																	<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.EditarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('<%=modo%>')">
+																	<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.BorrarEJG'/>" name="" border="0" onclick="borrarRelacionConEJG()">
+																</td>
+<% 
+															} 
+														}
+%>
+													</tr>
+												</table>
+											</fieldset>
+<% 
+										} 
+										
+										if (hayDesigna) { 
+%>
+											<fieldset>
+												<table width="100%" border="0" cellpadding="0" cellspacing="0">
+													<tr>
+														<td class="labelText"  width="100px">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.designa'/>
+														</td>
+														<td class="labelText" width="100px">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
+														</td>
+														<td class="labelTextValor" width="400px">	
+															<%=DES_DESIGNA_TURNO%>
+														</td>
+														<td class="labelTextValue">
+														
+															<% // Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de las designaciones
+																String nombreIntDes = "", apellido1IntDes = "", apellido2IntDes = "";
+																ScsDesignaAdm admDes = new ScsDesignaAdm(usr);
+																Hashtable nombreInteresadoDesigna = admDes.getTituloPantallaDesigna(usr.getLocation(),
+																		DESIGNA_ANIO, DESIGNA_NUMERO, DESIGNA_TURNO);
+													
+																if (hTitulo != null) {
+																	nombreIntDes = (String) nombreInteresadoDesigna.get(ScsPersonaJGBean.C_NOMBRE);
+																	apellido1IntDes = (String) nombreInteresadoDesigna
+																			.get(ScsPersonaJGBean.C_APELLIDO1);
+																	apellido2IntDes = (String) nombreInteresadoDesigna
+																			.get(ScsPersonaJGBean.C_APELLIDO2);
+																}
+															%>
+															<%=UtilidadesString.mostrarDatoJSP(DESIGNA_ANIO)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO)%> - <%=UtilidadesString.mostrarDatoJSP(nombreIntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntDes)%>
+																
+																<!--<input type="text"  class="boxConsulta" value="< %=DESIGNA_ANIO%>" readOnly="true">/<input type="text"  class="boxConsulta" value="< %=DESIGNA_CODIGO%>" readOnly="true">-->
+														</td>
+														<!--<td class="labelText">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/>
+														</td>
+														<td class="labelTextValor" width="50px">	
+															< %=DESIGNA_ANIO%>
+														</td>-->
+													   <td class="labelText"  style="display:none" width="0px">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+														</td>
+														<td class="labelTextValor"  style="display:none" width="0px">	
+															<%=DESIGNA_NUMERO%>
+														</td>
+														<!--<td class="labelText" >	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
+														</td>-->
+														<!--<td class="labelTextValor" width="100px">	
+															< %=CODIGO%>
+														</td>-->
+														
+														<!--<td class="labelText">	
+															<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
+														</td>
+														<td class="labelTextValor" width="90px">	
+															< %=FECHAENTRADA%>
+														</td>-->
+											
+<%		
+														if (!esFichaColegial){ 
+															if (modo.equalsIgnoreCase("ver")) { 
+%>
+																<td align="right">
+																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('ver')">
+																</td>
+<% 
+															} else { 
+%>
+																<td  align="right">
+																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('ver')">
+																	<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('<%=modo%>')">
+																	<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionConDesigna()">
+																</td>
+<% 
+															} 
+														}
+%>							
+													</tr>
+												</table>
+											</fieldset>
+<% 
+										} 
+%>
+									</siga:ConjCampos>
+								</td>
+							</tr>
+						</table>
+<% 
+					} 
+%>	
 	
-
-</td>
-</tr>
-	</html:form>
-
-</table>
+				</td>
+			</tr>
+		</html:form>
+	</table>
 	
 	<html:form action = "/JGR_Designas.do" method="POST" target="submitArea">
 		<html:hidden property = "actionModal" value= ""/>
@@ -949,41 +947,40 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 	
 	 <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt2" value=""/>
+		<html:hidden property = "codigoExt2" value=""/>	
+	</html:form>
 		
-	</html:form>	
 	<html:form action = "/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarComisaria">
 		<html:hidden property = "codigoExtBusqueda" value=""/>
 	</html:form>
 	
 	<html:form action = "/JGR_Asistencia.do" method="POST" target="submitArea">
-	<input type="hidden" name="modo" value="editar">
+		<input type="hidden" name="modo" value="editar">
 	</html:form>
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Consultar Designa -->
+		// Asociada al boton Consultar Designa
 		function consultarDesignaFuncion(modo) {
 		   	document.forms[2].modo.value = modo;
 		   	document.forms[2].submit();
-	 	}
+		}
 
-		<!-- Asociada al boton Consultar EJG -->
+		// Asociada al boton Consultar EJG
 		function consultarEJGFuncion(modo) {
 		   	document.forms[3].modo.value = modo;
 		   	document.forms[3].submit();
 	 	}
 	
-		<!-- Asociada al boton Abrir -->
-		function accionCrearEJG()
-		{	
+		// Asociada al boton Abrir
+		function accionCrearEJG() {	
 			document.forms[0].modo.value = "editar";
 			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 //			refrescarLocal();
-			if(resultado && resultado[0]=="MODIFICADO"){
-				with(document.DefinirEJGForm){
+			if(resultado && resultado[0]=="MODIFICADO") {
+				with(document.DefinirEJGForm) {
 					numero.value        = resultado[1];
 					idTipoEJG.value     = resultado[2];
 					idInstitucion.value = resultado[3];
@@ -995,24 +992,21 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 
-		<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
+		// Funcion asociada a boton limpiar
+		function limpiar() {		
 			document.forms[0].reset();
 		}
 		
-		function accionRestablecer() 
-		{		
+		function accionRestablecer() {		
 			parent.buscar();
 		}
 		
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}
 
-		function accionGuardar() 
-		{	sub();	
+		function accionGuardar() {	
+			sub();	
 			// aqui numeroDilegencia numeroProcedimiento comboJuzgadosTurno
 			if (document.getElementById("tipoPcajg").value=="2"){
 				var idJuzgado = document.getElementsByName('juzgado')[0];
@@ -1032,31 +1026,31 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 					return false;
 				}
 				
-			}
-			
+			}			
 			
 			var fecha = "<%=FECHAHORA%>";
 			var fechaCierre = document.forms[0].fechaCierre.value;
 			var fi = fecha.substring(6,10)+fecha.substring(3,5)+fecha.substring(0,2);
 			var ff = fechaCierre.substring(6,10)+fechaCierre.substring(3,5)+fechaCierre.substring(0,2);
-			if(fechaCierre != "" && fi>ff)
-			{
+			
+			if(fechaCierre != "" && fi>ff) {
 				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert1'/>");
 				fin();
 				return false;
 			}
-			if(document.forms[0].idTipoAsistencia.value == "")
-			{
+			
+			if(document.forms[0].idTipoAsistencia.value == "") {
 				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert2'/>");
 				fin();
 				return false;
 			}
-			if(document.forms[0].idTipoAsistenciaColegio.value == "")
-			{
+			
+			if(document.forms[0].idTipoAsistenciaColegio.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert8' />");
 				fin();
 				return false;
 			}
+			
 			/*if(document.forms[0].idTipoAsistenciaColegio.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert3'/>");
@@ -1068,13 +1062,11 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			document.forms[0].submit();
 		}
 
-		function accionVolver()
-		{
-			<%
+		function accionVolver() {
+<%
 			// indicamos que es boton volver
 			ses.setAttribute("esVolver","1");
-			%>
-<%
+
 			String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
 %>
 			document.forms[0].action = "<%=sAction2%>";
@@ -1082,8 +1074,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			document.forms[0].submit();
 		}
 		
-		function accionCrearDesignacion()
-		{
+		function accionCrearDesignacion() {
 			document.forms[1].modo.value = "nuevo";
 			var resultado=ventaModalGeneral(document.forms[1].name,"M");
 //			refrescarLocal();
@@ -1099,8 +1090,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
-		function relacionarConEJG() 
-		{
+		function relacionarConEJG() {
 			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
            
@@ -1118,8 +1108,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
-		function borrarRelacionConEJG() 
-		{
+		function borrarRelacionConEJG() {
 			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>"))
 			{
 				document.forms[0].modo.value="borrarRelacionConEJG";
@@ -1128,11 +1117,9 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
-		function relacionarConDesigna() 
-		{
+		function relacionarConDesigna() {
 			document.BusquedaPorTipoSJCSForm.tipo.value="DESIGNA";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
-
    
 			if (resultado!= null  && resultado.length >= 4)
 			{   document.forms[0].designa_idInstitucion.value=resultado[0];
@@ -1146,19 +1133,16 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 		
-		function borrarRelacionConDesigna() 
-		{
-			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>"))
-			{
+		function borrarRelacionConDesigna() {
+			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>")) {
 				document.forms[0].modo.value="borrarRelacionConDesigna";
 				document.forms[0].target = "submitArea";
 				document.forms[0].submit();
 			}
 		}
 
-		<!-- Asociada al boton Nuevo-->
-		function accionNuevo()
-		{	
+		// Asociada al boton Nuevo
+		function accionNuevo() {	
 			document.forms[0].modo.value = "nuevo";
 			document.forms[0].target     = "mainWorkArea";
    			var resultado = ventaModalGeneral(document.forms[0].name,"M");
@@ -1169,7 +1153,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				
 	   		}
 		}
-		function actualizarTdNumeroProcedimiento(){
+		
+		function actualizarTdNumeroProcedimiento() {
 			if (document.getElementById("tipoPcajg").value=="2"){
 				var idJuzgado = document.getElementsByName('juzgado')[0];
 				if(idJuzgado.value!="")
@@ -1179,7 +1164,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 			
 		}
-		function actualizarTdNumeroDiligencia(){
+		
+		function actualizarTdNumeroDiligencia() {
 			if (document.getElementById("tipoPcajg").value=="2"){
 				var idComisaria = document.getElementsByName('comisaria')[0];
 				if(idComisaria.value!="")
@@ -1189,12 +1175,12 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			}
 		}
 	
-	function cargarComboModulo() {
-		<% if (!modo.equalsIgnoreCase("ver")) { %>
-			//document.getElementById("juzgado").onchange();
-			//document.getElementById("comisaria").onchange();	
-		<% } %>	
-	}	
+		function cargarComboModulo() {
+			<% if (!modo.equalsIgnoreCase("ver")) { %>
+				//document.getElementById("juzgado").onchange();
+				//document.getElementById("comisaria").onchange();	
+			<% } %>	
+		}	
 		
 		actualizarTdNumeroDiligencia();
 		
@@ -1203,11 +1189,12 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 	
 <!-- BOTONES DE CREACION DE DESIGNA O EJG -->
-<%	String botonesDesignaEJG = "";
+<%	
+	String botonesDesignaEJG = "";
 
 	if(accion != null && accion.equalsIgnoreCase("modificar")){
  		botonesDesignaEJG = esFichaColegial ? "g,r" : "n,g,r,v";
-	}else{
+	} else {
  		botonesDesignaEJG = esFichaColegial ? "" : "v";
 	}
 
@@ -1235,21 +1222,17 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			botonesDesignaEJG += ",ce,re";
 		}
 	}
-%>	
 
-<%
-		// String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
-		String sClasePestanas = "botonesDetalle";
+	// String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
+	String sClasePestanas = "botonesDetalle";
 %>
 	<!-- INICIO: BOTONES BUSQUEDA -->	
-		<siga:ConjBotonesAccion botones="<%=botonesDesignaEJG%>" clase="<%=sClasePestanas%>"/>
+	<siga:ConjBotonesAccion botones="<%=botonesDesignaEJG%>" clase="<%=sClasePestanas%>"/>
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 			
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

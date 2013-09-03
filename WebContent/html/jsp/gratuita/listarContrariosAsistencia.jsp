@@ -41,11 +41,10 @@
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
 	if ((sEsFichaColegial != null)
-			&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true"))  )) {
+			&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true")) )) {
 		esFichaColegial = true;
 	}
 %>	
-
 
 <!-- HEAD -->
 
@@ -113,41 +112,39 @@
 		   columnSizes="15,70,15"
 		   modal="G">
 
-		<% if (obj==null || obj.size()==0) { %>
-					<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-		<% } else { %>
-		
-			  <%
-		    	int recordNumber=1;
-				while ((recordNumber) <= obj.size()) {
-					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-			 	%>	
-				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modoPestanha%>">
-						<td>
-<!--						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPERSONA")%>'> -->
-
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS%>">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_7" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_8" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=miForm.getAnio() %>">
-							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_9" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=miForm.getNumero() %>">
-					
+			<% if (obj==null || obj.size()==0) { %>
+				<tr class="notFound">
+					<td class="titulitos" colspan="10">
+							<siga:Idioma key="gratuita.retenciones.noResultados" />
+					</td>
+				</tr>
+			<% } else { %>
+			
+				  <%
+			    	int recordNumber=1;
+					while ((recordNumber) <= obj.size()) {
+						Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+				 	%>	
+					  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modoPestanha%>">
+							<td>
+<!--							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPERSONA")%>'> -->
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.ASISTENCIA_CONTRARIOS%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_7" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_8" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=miForm.getAnio() %>">
+								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_9" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=miForm.getNumero() %>">
 						
-								&nbsp;<%=hash.get("NIF")%></td>
-						<td>&nbsp;<%=hash.get("NOMBRE")%></td>
-					</siga:FilaConIconos>	
-				<%recordNumber++;%>
-				<% } %>
-		<% } %>
-
+							
+									&nbsp;<%=hash.get("NIF")%></td>
+							<td>&nbsp;<%=hash.get("NOMBRE")%></td>
+						</siga:FilaConIconos>	
+					<%recordNumber++;%>
+					<% } %>
+			<% } %>
 		</siga:Table>
 
 
