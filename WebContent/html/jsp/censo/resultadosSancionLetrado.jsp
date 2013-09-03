@@ -194,7 +194,7 @@
  
    			<%String tamanosCol = "";
 			  String nombresCol = "";
-			 	  tamanosCol="8,28,12,6,8,8,10,10,10";
+			 	  tamanosCol="8,26,12,6,8,8,10,10,12";
 				  nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
 				  nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
 				  nombresCol+="censo.BusquedaSancionesLetrado.literal.refCGAE,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
