@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.97 2013-09-03 10:26:12 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.98 2013-09-03 11:33:30 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -344,7 +344,8 @@ function jQueryLoaded(){
 				});
 			} else if ('onpropertychange' in document.body) { //works only in IE		
 				return this.on('propertychange', function(e) {
-					e.attributeName = window.event.propertyName;
+					if (window.event && window.event.propertyName)
+						e.attributeName = window.event.propertyName;
 					//to set the attr old value
 					checkAttributes.call($(this), cfg.trackValues , e);
 					cfg.callback.call(this, e);
@@ -510,6 +511,9 @@ function jQueryLoaded(){
 							jQueryTop('#main_overlay').toggle();
 						};
 						options.regional = datepickerInput.data("regional");
+						if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
+							jQueryTop.datepicker._destroyDatepicker(jQueryTop.datepicker._curInst);
+						}
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("datepickerformat")),
 								function(dateText, datePickerInstance){
@@ -522,29 +526,6 @@ function jQueryLoaded(){
 										datepickerInput.change();
 								},
 								options);						
-						// MouseWheel
-					   jQueryTop("#ui-datepicker-div").on("mousewheel", function(e){
-						   try{
-							   var currentDatepicker = jQueryTop.datepicker._curInst;
-							   var offset = 0;
-							   var type = "M";
-					   			if(e.wheelDelta/120 > 0) {
-					   	            //prev
-					   				offset = -1;		   
-					   	        } else{
-					   	            //next
-					   	        	offset = 1;
-					   	        }
-					   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
-					   				type = "Y";
-					   			if (offset != 0){
-						   			jQueryTop.datepicker._adjustInstDate(currentDatepicker, offset, type);
-						   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
-						   			if (type == "Y")
-						   				jQueryTop(this).find("#datepicker-change-year").focus();
-					   			}
-						   } catch(e){}
-				   		});
 					   
 						jQueryTop(".ui-datepicker").draggable();
 						jQueryTop("#main_overlay").on("click", function(e){
@@ -554,6 +535,33 @@ function jQueryLoaded(){
 				}
 			}
 		});
+		if (window == window.top){
+		// MouseWheel
+		   jQueryTop(document).on("mousewheel", "#ui-datepicker-div", function(e){
+			   try{
+				   if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
+					   var currentDatepicker = jQueryTop.datepicker._curInst;
+					   var offset = 0;
+					   var type = "M";
+			   			if(e.wheelDelta/120 > 0) {
+			   	            //prev
+			   				offset = -1;		   
+			   	        } else{
+			   	            //next
+			   	        	offset = 1;
+			   	        }
+			   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
+			   				type = "Y";
+			   			if (offset != 0){
+				   			jQueryTop.datepicker._adjustInstDate(currentDatepicker, offset, type);
+				   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
+				   			if (type == "Y")
+				   				jQueryTop(this).find("#datepicker-change-year").focus();
+			   			}
+				   }
+			   } catch(e){}
+	   		});
+		}
 		// iFRAMEs POST
 		/*
 		jQuery("iframe").each(function(){
@@ -3171,10 +3179,10 @@ document.getElementById = function(elemIdOrName) {
 	}
 
 	function loadFixedHeaderTables (tableId, fixedHeight) {
-		console.debug(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
+		//console.debug(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){
-    		console.log("loadFixedHeaderTables table found");
+    		//console.log("loadFixedHeaderTables table found");
     		sub(window);
     		if (fixedHeight !== undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
