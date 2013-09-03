@@ -9,8 +9,7 @@
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -25,9 +24,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
 
-
 <% 
-
 	UsrBean usr=(UsrBean)session.getAttribute("USRBEAN");
 	String letrado = ((String)request.getAttribute("letrado")==null)?"":(String)request.getAttribute("letrado");
 	//String modoPestana = (String)request.getAttribute("MODOPESTANA");
@@ -35,39 +32,25 @@
 	String anio = UtilidadesBDAdm.getYearBD("");
 %>
 
-
-
-<!-- HEAD -->
-
-
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-<script
-	src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page="/html/js/validacionStruts.js"/>"
-	type="text/javascript"></script>
-<script src="<html:rewrite page="/html/js/validation.js"/>"
-	type="text/javascript"></script>
+	<!-- Incluido jquery en siga.js -->	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/validacionStruts.js"/>"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/js/validation.js"/>"></script>
 
-
-<!-- INICIO: TITULO Y LOCALIZACION -->
-<siga:TituloExt titulo="censo.fichaCliente.sjcs.asistencia.titulo"
-	localizacion="censo.fichaCliente.sjcs.asistencia.localizacion" />
-
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<siga:TituloExt titulo="censo.fichaCliente.sjcs.asistencia.titulo" localizacion="censo.fichaCliente.sjcs.asistencia.localizacion" />
 </head>
 
-<body onLoad="ajusteAlto('resultado');buscar();">
-
-	<html:form action="/JGR_AsistenciasLetrado.do" method="POST"
-		target="resultado">
-
+<body onLoad="ajusteAlto('resultado'); buscar();">
+	<html:form action="/JGR_AsistenciasLetrado.do" method="POST" target="resultado">
 		<html:hidden property="modo" />
 		<html:hidden property="letrado" value="<%=letrado%>" styleId="letrado"/>
+		
 		<table width="100%" border="0">
 			<tr>
 				<td>
@@ -107,27 +90,27 @@
 		}
 		
 		function buscarPaginador() {
-			document.forms[1].target			= "resultado";
-			document.forms[1].modo.value 		= "buscarPor";
+			document.forms[1].target = "resultado";
+			document.forms[1].modo.value = "buscarPor";
 			document.forms[1].submit();
 		}
 	
 	    function refrescarLocal() {
 			buscar();
-		}
+		} 
 	</script>
 
 	<siga:ConjBotonesBusqueda botones="B" titulo="" />
-	<iframe align="center"
+	
+	<iframe id="resultado" name="resultado" 
+		align="center" 
 		src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
-		id="resultado" name="resultado" scrolling="no" frameborder="0"
-		marginheight="0" marginwidth="0" ;					 
-					class="frameGeneral"></iframe>
+		scrolling="no" 
+		frameborder="0"
+		marginheight="0" 
+		marginwidth="0"					 
+		class="frameGeneral"></iframe>
 
-	<iframe name="submitArea"
-		src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
-		style="display: none"></iframe>
-
+	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display: none"></iframe>
 </body>
-
 </html>
