@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.96 2013-09-03 09:18:24 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.97 2013-09-03 10:26:12 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -524,22 +524,26 @@ function jQueryLoaded(){
 								options);						
 						// MouseWheel
 					   jQueryTop("#ui-datepicker-div").on("mousewheel", function(e){
-						   var currentDatepicker = jQueryTop.datepicker._curInst;
-						   var offset = 0;
-						   var type = "M";
-				   			if(e.wheelDelta/120 > 0) {
-				   	            //prev
-				   				offset = -1;		   
-				   	        } else{
-				   	            //next
-				   	        	offset = 1;
-				   	        }
-				   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
-				   				type = "Y";
-				   			jQueryTop.datepicker._adjustInstDate(currentDatepicker, -1, type);
-				   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
-				   			if (type == "Y")
-				   				jQueryTop(this).find("#datepicker-change-year").focus();
+						   try{
+							   var currentDatepicker = jQueryTop.datepicker._curInst;
+							   var offset = 0;
+							   var type = "M";
+					   			if(e.wheelDelta/120 > 0) {
+					   	            //prev
+					   				offset = -1;		   
+					   	        } else{
+					   	            //next
+					   	        	offset = 1;
+					   	        }
+					   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
+					   				type = "Y";
+					   			if (offset != 0){
+						   			jQueryTop.datepicker._adjustInstDate(currentDatepicker, offset, type);
+						   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
+						   			if (type == "Y")
+						   				jQueryTop(this).find("#datepicker-change-year").focus();
+					   			}
+						   } catch(e){}
 				   		});
 					   
 						jQueryTop(".ui-datepicker").draggable();
