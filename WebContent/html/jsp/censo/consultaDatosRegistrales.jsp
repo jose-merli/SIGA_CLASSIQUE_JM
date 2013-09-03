@@ -704,9 +704,10 @@
 										<siga:Idioma key="censo.consultaDatosRegistrales.literal.objSocial"/>&nbsp;<% if (SSPP.equals("1")){  %>(*)<%}%>
 									</td>
 									<td colspan="1" style="width:50%;">
-										<html:textarea cols="50" styleId="objetoSocial" rows="12" name="DatosRegistralesForm" 
-											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" property="objetoSocial" style="width:100%;" styleClass="<%=estiloCaja%>"
-											readonly="<%=breadonly%>"></html:textarea>
+										<html:textarea styleId="objetoSocial" name="DatosRegistralesForm" property="objetoSocial"
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  
+											style="overflow-y:auto; overflow-x:hidden; width:550px; height:150px; resize:none;"
+											styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>"></html:textarea>
 									</td>
 									<td colspan="2" style="width:30%">										
 										<!-- INICIO: IFRAME LISTA RESULTADOS -->

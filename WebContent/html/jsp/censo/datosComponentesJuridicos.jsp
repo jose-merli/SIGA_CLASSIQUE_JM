@@ -31,6 +31,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.ArrayList"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -99,6 +100,7 @@
 			tipo=String.valueOf(htData.get(CenComponentesBean.C_IDTIPOCOLEGIO));
 			capitalSocial=String.valueOf(htData.get(CenComponentesBean.C_CAPITALSOCIAL));
 		}
+		
 		if (modo.equals("ver")){
 			desactivado = true;
 			clase = "boxConsulta";
@@ -106,9 +108,11 @@
 			lectura="true";
 			botones = "C";
 		}
+		
 		if (!modo.equals("nuevo")){			
 			claseDatosIdentif = "boxConsulta";			
-		}		
+		}	
+		
 	} else {
 		if (modo.equals("nuevo")) {
 			desactivado  = false;
@@ -119,23 +123,18 @@
 	//String[] param = {idInstitucion, idInstitucion};	
 %>	
 
-
-<!-- HEAD -->
-
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
 	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
-	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<%=app%>/html/js/validation.js"></script>
+	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
+	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>	
 
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="componentesJuridicosForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -247,9 +246,9 @@
 			document.getElementById("nifcif").value = datos[3];
 			document.getElementById("numColegiado").value = datos[2];
 			document.getElementById("profesional").checked=true;
-			document.getElementById("colegiado").style.display="block";
-			document.getElementById("colegiadoabogacia").style.display="block";
-			document.getElementById("colegiadonoabogacia").style.display="none";
+			jQuery("#colegiado").show();
+			jQuery("#colegiadoabogacia").show();
+			jQuery("#colegiadonoabogacia").hide();
 			var lista_tipo = document.getElementById("idTipoColegio1").options;
 			for (i = 0; i < lista_tipo.length; i++) {
 				if (lista_tipo.options[i].value == "1" ) {
@@ -258,9 +257,9 @@
 					break;
 				}				
 			}			
-			document.getElementById("sjcs").style.display="block";
-			document.getElementById("colegio1").style.display="block";
-			document.getElementById("colegio2").style.display="block";			
+			jQuery("#sjcs").show();
+			jQuery("#colegio1").show();
+			jQuery("#colegio2").show();			
 		}
 		
 		function obtenerNif() {
@@ -281,55 +280,55 @@
 		
 		function profesionalCol(){
 			if (document.getElementById("profesional").checked){
-				document.getElementById("colegiado").style.display="block";
-				document.getElementById("provincia1").style.display="block";
-				document.getElementById("provincia2").style.display="block";
+				jQuery("#colegiado").show();
+				jQuery("#provincia1").show();
+				jQuery("#provincia2").show();
 				<%if (tipo.equals("1")) {%>
-				document.getElementById("colegiadoabogacia").style.display="block";
-				document.getElementById("colegiadonoabogacia").style.display="none";
+				jQuery("#colegiadoabogacia").show();
+				jQuery("#colegiadonoabogacia").hide();
 				if (document.getElementById("sociedad").checked==false){
-					document.getElementById("asteriscoCuenta").style.display="none";
+					jQuery("#asteriscoCuenta").hide();
 				} else {
-					document.getElementById("asteriscoCuenta").style.display="block";
+					jQuery("#asteriscoCuenta").show();
 				}
 				<%}	else { %>
-				document.getElementById("colegiadoabogacia").style.display="none";
-				document.getElementById("colegiadonoabogacia").style.display="block";
+				jQuery("#colegiadoabogacia").hide();
+				jQuery("#colegiadonoabogacia").show();
 				<%}	 %>
 			} else {
-				document.getElementById("colegiado").style.display="none";
-				document.getElementById("provincia1").style.display="none";
-				document.getElementById("provincia2").style.display="none";
+				jQuery("#colegiado").hide();
+				jQuery("#provincia1").hide();
+				jQuery("#provincia2").hide();
 			}
 		}
 		
 		function cargar() {			 
 			<% if (tipo.equals("")) {%>
-			document.getElementById("colegiado").style.display="none";
-			document.getElementById("provincia1").style.display="none";
-			document.getElementById("provincia2").style.display="none";
+			jQuery("#colegiado").hide();
+			jQuery("#provincia1").hide();
+			jQuery("#provincia2").hide();
 			<%}	else { %>
 			document.getElementById("profesional").checked=true;
 			<%if (tipo.equals("1")) {%>
-			document.getElementById("colegiado").style.display="block";
-			document.getElementById("colegio1").style.display="block";
-			document.getElementById("colegio2").style.display="block";
-			document.getElementById("colegiadoabogacia").style.display="block";
-			document.getElementById("colegiadonoabogacia").style.display="none";
-			document.getElementById("sjcs").style.display="block";
+			jQuery("#colegiado").show();
+			jQuery("#colegio1").show();
+			jQuery("#colegio2").show();
+			jQuery("#colegiadoabogacia").show();
+			jQuery("#colegiadonoabogacia").hide();
+			jQuery("#sjcs").show();
 			if (document.getElementById("sociedad").checked==false){
-				document.getElementById("asteriscoCuenta").style.display="none";
-				document.getElementById("sinasteriscoCuenta").style.display="block";
+				jQuery("#asteriscoCuenta").hide();
+				jQuery("#sinasteriscoCuenta").show();
 			} else {
-				document.getElementById("sinasteriscoCuenta").style.display="none";
-				document.getElementById("asteriscoCuenta").style.display="block";
+				jQuery("#sinasteriscoCuenta").hide();
+				jQuery("#asteriscoCuenta").show();
 			}
 			<%}	else { %>
-			document.getElementById("colegiado").style.display="block";
-			document.getElementById("provincia1").style.display="block";
-			document.getElementById("provincia2").style.display="block";
-			document.getElementById("colegiadoabogacia").style.display="none";
-			document.getElementById("colegiadonoabogacia").style.display="block";
+			jQuery("#colegiado").show();
+			jQuery("#provincia1").show();
+			jQuery("#provincia2").show();
+			jQuery("#colegiadoabogacia").hide();
+			jQuery("#colegiadonoabogacia").show();
 			<%}%>
 			<%}%>
 		}
@@ -337,28 +336,28 @@
 		function cambiar(){
 			var idtipoColegioAux = document.getElementById("idTipoColegio1").value.split("#");		 
 			if (idtipoColegioAux[0]!=1){			 
-				document.getElementById("colegio1").style.display="none";
-				document.getElementById("provincia1").style.display="block";
-				document.getElementById("colegio2").style.display="none";
-				document.getElementById("provincia2").style.display="block";
-				document.getElementById("sjcs").style.display="none";
+				jQuery("#colegio1").hide();
+				jQuery("#provincia1").show();
+				jQuery("#colegio2").hide();
+				jQuery("#provincia2").show();
+				jQuery("#sjcs").hide();
 			} else {
-			   	document.getElementById("colegio1").style.display="block";
-				document.getElementById("provincia1").style.display="none";
-				document.getElementById("colegio2").style.display="block";
-				document.getElementById("provincia2").style.display="none";
-				document.getElementById("sjcs").style.display="block";
+			   	jQuery("#colegio1").show();
+				jQuery("#provincia1").hide();
+				jQuery("#colegio2").show();
+				jQuery("#provincia2").hide();
+				jQuery("#sjcs").show();
 			}
 		}
 		
 		function cuenta(){
 			if (document.getElementById("sociedad").checked==true){
-				document.getElementById("sinasteriscoCuenta").style.display="none";
-				document.getElementById("asteriscoCuenta").style.display="block";
+				jQuery("#sinasteriscoCuenta").hide();
+				jQuery("#asteriscoCuenta").show();
 				jQuery("#idCuenta").removeAttr("disabled");
 			} else {
-				document.getElementById("asteriscoCuenta").style.display="none";
-				document.getElementById("sinasteriscoCuenta").style.display="block";
+				jQuery("#asteriscoCuenta").hide();
+				jQuery("#sinasteriscoCuenta").show();
 			   	jQuery("#idCuenta").attr("disabled","disabled");
 				
 			}
@@ -427,216 +426,201 @@
 		<html:hidden styleId="idTipoColegio" name="componentesJuridicosForm" property="idTipoColegio" value="<%=tipo%>"/>
 		<input type="hidden" id="actionModal" name="actionModal" value="" />
 
-	<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosIdentificacion">
-	<table class="tablaCampos" align="center" border="0">
-		<tr>		
-			<td class="labelText">
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nifcif"/>&nbsp;(*)
-			</td>
-			<td>
-				<html:text name="componentesJuridicosForm"  styleId="nifcif" property="nifcif" value='<%=nifcif%>' size="20" maxlength ="20" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" onBlur="obtenerNif();"></html:text>	
-			</td>
-			<td class="labelText">
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nombre"/>&nbsp;(*)
-			</td>
-			<td>
-				<html:text name="componentesJuridicosForm" styleId="nombre" property="nombre" value='<%=nombreCliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
-			</td>
-		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido1"/>&nbsp;(*)
-			</td>
-			<td>
-				<html:text name="componentesJuridicosForm" styleId="apellidos1" property="apellidos1" value='<%=apellidos1Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
-			</td>
-			<td class="labelText">
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido2"/>&nbsp;
-			</td>
-			<td>
-				<html:text name="componentesJuridicosForm" styleId="apellidos2" property="apellidos2" value='<%=apellidos2Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>"></html:text>
-			</td>
-			</tr>
-			<tr>
-		
-		</tr>
-	</table>
-	</siga:ConjCampos>
-	<table class="tablaCampos" align="center" border="0">
-		<tr>
-			<td width="20px">
-			&nbsp
-			</td>
-			
-			<td width="20px">
-				<html:checkbox name="componentesJuridicosForm" styleId="profesional" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
-			</td>
-			<td class="labelText" >
-				<siga:Idioma key="censo.consultaComponentesJuridicos.literal.esProfesionalColegiado"/>
-			</td>
-			<%if (modo.equals("nuevo")) {%>
-			<td>
-				&nbsp
-			</td>
-			<td>
-				&nbsp
-			</td>
-			<td>
-				&nbsp
-			</td>
-			<td class="tdBotones">
-				<input type="button" alt="<siga:Idioma key="general.boton.search"/>"  id="buscar" onclick="return buscarCliente();" class="button" value="<siga:Idioma key="general.boton.search"/>">
-			</td>
-		<% } %>
-		</tr>
-	</table>
-
- 
-	<table id="colegiado" style="display:none" class="tablaCampos" align="center" border="0">
-	  <tr>
-	  <td>
-		<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosColegiacion">
-		<table  class="tablaCampos"  border="0"  >
-			<tr>
-			
-				<td class="labelText" >
-					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.tipocolegio"/>
-				</td>
-				<% ArrayList elementoSelTipoColegio = new ArrayList(); 
-					elementoSelTipoColegio.add(idtipocolegioaux);
-					 %>
-				<td id="colegiadoabogacia" style="display:none">
-					<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 
-					
-				</td>
-				<td id="colegiadonoabogacia" style="display:none">
-					<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" />
-					
-				</td>
-				
-				
-				<td id="provincia1" class="labelText" style="display:none">
-					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.provincia"/>
-				</td>	
-				<td colspan="3" id="provincia2" style="display:none">
-					<siga:ComboBD nombre = "idProvincia" tipo="provincia" obligatorio="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idtipoprovincia%>"/>
-				</td>
-				
-				<td class="labelText" id="colegio1" style="display:none">
-					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.colegio"/>
-				</td>	
-				<td colspan="3" id="colegio2" style="display:none">
-					<siga:ComboBD nombre = "clienteIdInstitucion" tipo="cmbColegiosAbreviados" obligatorioSinTextoSeleccionar="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idInstitucionCli%>"/>
-				</td>
-			
-				<tr>
-					<td class="labelText" >
-						<siga:Idioma key="censo.consultaDatosColegiales.literal.colegiado"/>
+		<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosIdentificacion">
+			<table class="tablaCampos" align="center" border="0">
+				<tr>		
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nifcif"/>&nbsp;(*)
 					</td>
 					<td>
-						<html:text name="componentesJuridicosForm" styleId="numColegiado" property="numColegiado" value='<%=numeroColegiado%>' size="10" styleClass="<%=clase%>"></html:text>
+						<html:text name="componentesJuridicosForm"  styleId="nifcif" property="nifcif" value='<%=nifcif%>' size="20" maxlength ="20" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" onBlur="obtenerNif();" />	
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaComponentesJuridicos.literal.nombre"/>&nbsp;(*)
+					</td>
+					<td>
+						<html:text name="componentesJuridicosForm" styleId="nombre" property="nombre" value='<%=nombreCliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" />
 					</td>
 				</tr>
-			
-			</tr>
-			
-		
-		</table>
-		</siga:ConjCampos>
-	  </td>
-	  </tr>
-	</table>
-		
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido1"/>&nbsp;(*)
+					</td>
+					<td>
+						<html:text name="componentesJuridicosForm" styleId="apellidos1" property="apellidos1" value='<%=apellidos1Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" />
+					</td>
 					
-	<table class="tablaCampos" align="center" border ="0">	
-		<tr>
-			<td colspan="4">
-				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.cargo">
-				<table class="tablaCampos" align="center" border ="0">	
-					<tr>
-						<td class="labelText" width="185px" >
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaCargo"/>&nbsp;
-						</td>
-						
-						<td width="140px" colspan="2">
-							
-							<%if (!desactivado) {%>
-								<siga:Fecha  nombreCampo= "fechaCargo" valorInicial="<%=fechaCargo%>"/>
-							<%}else{%>
-								<siga:Fecha  nombreCampo= "fechaCargo"  valorInicial="<%=fechaCargo%>" disabled="true"/>
-							<%}%>								
-						</td>
-						
-						<td class="labelText" >
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cargo"/>&nbsp;
-						</td>	
-						<% String parametro1[] = new String[2];
-				   			parametro1[0] = idPersona;
-				   			parametro1[1] = idInstitucion; %>
-						<td>
-							<siga:ComboBD nombre="idCargo" tipo="cmbCenCargos" obligatorio="false"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idcargo%>"/>
-						</td>	
-					</tr>
-					<tr>
-						<td class="labelText" width="185px">
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.descripcioncargo"/>&nbsp;
-						</td>	
-						<td colspan="2">
-							<html:text name="componentesJuridicosForm" property="cargo" styleId="cargo" value='<%=cargo%>' size="50" maxlength ="255" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-						</td>
-						<td class="labelText" width="185px">
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.ParticipacionSociedad"/>&nbsp;
-						</td>	
-						<td >
-							<html:text name="componentesJuridicosForm" property="capitalSocial" styleId="capitalSocial" value='<%=capitalSocial%>' onkeypress="filterChars(this,false,true);" 
-								onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" size="7" maxlength ="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-						</td>
-						
-					</tr>
-				</table>
-				</siga:ConjCampos>
-			</td>
-		</tr>
-	</table>
-
-	<table id="sjcs" class="tablaCampos" align="center" border ="0" style="display:none">	
-		<tr>
-			<td colspan="4">
-				<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS">	
-				<table class="tablaCampos" align="center" border ="0">	
-					<tr>						
-						<td class="labelText" WIDTH=20%>
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.liquidarSJCS"/>
-						</td>
-						<td>
-							<html:checkbox name="componentesJuridicosForm" property="sociedad" styleId="sociedad" disabled="<%=desactivado%>" 
-											 onclick="cuenta();traeDatos()"/>
-						</td>
-					</tr>
-					<tr>
-						<td id="asteriscoCuenta" class="labelText" WIDTH=30%>
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> &nbsp;(*)
-						</td>
-						<td id="sinasteriscoCuenta" class="labelText" WIDTH=30%  style="display:none" >
-							<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
-						</td>
-						<td colspan="3">
-						<% String parametro[] = new String[2];
-						 	parametro[0] = idPersona;
-							parametro[1] = idInstitucion; %>
-						    <siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>" clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>"/>									
-						</td>
-					</tr>						
-		   		</table>
-				</siga:ConjCampos>
-			</td>
-		</tr>
-	</table>   		
-
-	<script>
-		rellenarCampos();
-	</script>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaComponentesJuridicos.literal.apellido2"/>&nbsp;
+					</td>
+					<td>
+						<html:text name="componentesJuridicosForm" styleId="apellidos2" property="apellidos2" value='<%=apellidos2Cliente%>' size="20" maxlength ="60" styleClass="<%=claseDatosIdentif%>" readOnly="<%=desactivado%>" />
+					</td>
+				</tr>
+			</table>	
+		</siga:ConjCampos>
 	
+		<table class="tablaCampos" align="center" border="0">
+			<tr>			
+				<td width="20px">
+					<html:checkbox name="componentesJuridicosForm" styleId="profesional" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
+				</td>
+				<td class="labelText" >
+					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.esProfesionalColegiado"/>
+				</td>
+				<%if (modo.equals("nuevo")) {%>
+					<td class="tdBotones">
+						<input type="button" alt="<siga:Idioma key="general.boton.search"/>"  id="buscar" onclick="return buscarCliente();" class="button" value="<siga:Idioma key="general.boton.search"/>">
+					</td>
+				<% } %>
+			</tr>
+		</table>
+	
+	 
+		<table id="colegiado" style="display:none" class="tablaCampos" align="center" border="0">
+		  	<tr>
+		  		<td>
+					<siga:ConjCampos leyenda="censo.busquedaClientes.literal.datosColegiacion">
+						<table class="tablaCampos" width="100%" border="0">
+							<tr>			
+								<td class="labelText" >
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.tipocolegio"/>
+								</td>
+	<% 
+								ArrayList elementoSelTipoColegio = new ArrayList(); 
+								elementoSelTipoColegio.add(idtipocolegioaux);
+	%>
+								<td id="colegiadoabogacia" style="display:none">
+									<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 								
+								</td>
+								<td id="colegiadonoabogacia" style="display:none">
+									<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" />								
+								</td>							
+								
+								<td id="provincia1" style="display:none" class="labelText">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.provincia"/>
+								</td>	
+								<td id="provincia2" style="display:none">
+									<siga:ComboBD nombre = "idProvincia" tipo="provincia" obligatorio="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idtipoprovincia%>"/>
+								</td>
+					
+								<td id="colegio1" style="display:none" class="labelText">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.colegio"/>
+								</td>	
+								<td id="colegio2" style="display:none">
+									<siga:ComboBD nombre = "clienteIdInstitucion" tipo="cmbColegiosAbreviados" obligatorioSinTextoSeleccionar="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idInstitucionCli%>"/>
+								</td>
+							</tr>
+				
+							<tr>
+								<td class="labelText" >
+									<siga:Idioma key="censo.consultaDatosColegiales.literal.colegiado"/>
+								</td>
+								<td>
+									<html:text name="componentesJuridicosForm" styleId="numColegiado" property="numColegiado" value='<%=numeroColegiado%>' size="10" styleClass="<%=clase%>" />
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+		  		</td>
+		  	</tr>
+		</table>
+			
+						
+		<table class="tablaCampos" align="center" border="0">	
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="censo.busquedaClientes.literal.cargo">
+						<table class="tablaCampos" align="center" border="0">	
+							<tr>
+								<td class="labelText" width="185px" >
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaCargo"/>&nbsp;
+								</td>						
+								<td width="140px" colspan="2">							
+									<%if (!desactivado) {%>
+										<siga:Fecha nombreCampo= "fechaCargo" valorInicial="<%=fechaCargo%>"/>
+									<%}else{%>
+										<siga:Fecha  nombreCampo= "fechaCargo"  valorInicial="<%=fechaCargo%>" disabled="true"/>
+									<%}%>								
+								</td>
+							
+								<td class="labelText" >
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cargo"/>&nbsp;
+								</td>	
+	<% 
+								String parametro1[] = new String[2];
+					   			parametro1[0] = idPersona;
+					   			parametro1[1] = idInstitucion; 
+	%>
+								<td>
+									<siga:ComboBD nombre="idCargo" tipo="cmbCenCargos" obligatorio="false"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idcargo%>"/>
+								</td>	
+							</tr>
+							
+							<tr>
+								<td class="labelText" width="185px">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.descripcioncargo"/>&nbsp;
+								</td>	
+								<td colspan="2">
+									<html:text name="
+									componentesJuridicosForm" property="cargo" styleId="cargo" value='<%=cargo%>' size="50" maxlength ="255" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+								</td>
+								
+								<td class="labelText" width="185px">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.ParticipacionSociedad"/>&nbsp;
+								</td>	
+								<td >
+									<html:text name="componentesJuridicosForm" property="capitalSocial" styleId="capitalSocial" value='<%=capitalSocial%>' onkeypress="filterChars(this,false,true);" 
+										onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" size="7" maxlength ="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+								</td>							
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</table>
+	
+		<table id="sjcs" class="tablaCampos" style="display:none" width="100%" border="0" cellpadding="0" cellspacing="0">	
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS">	
+						<table class="tablaCampos" width="100%" border="0" cellpadding="5" cellspacing="0">	
+							<tr>						
+								<td class="labelText" width="200px">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.liquidarSJCS"/>
+								</td>
+								<td>
+									<html:checkbox name="componentesJuridicosForm" property="sociedad" styleId="sociedad" disabled="<%=desactivado%>" onclick="cuenta();traeDatos()"/>
+								</td>
+							</tr>
+							
+							<tr>
+								<td id="asteriscoCuenta" class="labelText">
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> &nbsp;(*)
+								</td>
+								<td id="sinasteriscoCuenta" class="labelText" style="display:none" >
+									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.cuenta"/> 
+								</td>
+								<td>
+	<% 
+									String parametro[] = new String[2];
+							 		parametro[0] = idPersona;
+									parametro[1] = idInstitucion; 
+	%>
+							    	<siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>" clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>"/>									
+								</td>
+							</tr>						
+			   			</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</table>   		
+	
+		<script>
+			rellenarCampos();
+		</script>	
 	</html:form>
 	
 	<!-- FORMULARIO PARA RECOGER LOS DATOS DE LA BUSQUEDA -->
@@ -663,15 +647,13 @@
 	<!-- FIN: BOTONES REGISTRO -->	
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-
 </div>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	<!-- FIN: SUBMIT AREA -->
 
 </body>
 </html>
