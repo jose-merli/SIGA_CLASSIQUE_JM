@@ -961,9 +961,9 @@
 										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp(*)
 									</td>
 									<td>
-										<html:textarea cols="70" rows="2"
-											name="consultaDireccionesForm" property="domicilio" styleId="domicilio"
+										<html:textarea name="consultaDireccionesForm" property="domicilio" styleId="domicilio"
 											onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
+											style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;"
 											value="<%=domicilio%>" styleClass="<%=clase%>"
 											readOnly="<%=desactivado%>"></html:textarea>
 									</td>

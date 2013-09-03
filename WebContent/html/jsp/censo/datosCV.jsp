@@ -533,10 +533,10 @@
 								<tr>
 									<td class="labelText"><siga:Idioma
 											key="censo.datosCV.literal.descripcion" />&nbsp</td>
-									<td colspan="3"><textarea cols="70" rows="7"
-											id="descripcion" name="descripcion"
+									<td colspan="3"><textarea id="descripcion" name="descripcion"
 											onKeyDown="cuenta(this,500)" onChange="cuenta(this,500)"
-											class="<%=clase%>" style="width: 550"><%=descripcion%></textarea>
+											style="overflow-y:auto; overflow-x:hidden; width:550px; height:80px; resize:none;"
+											class="<%=clase%>"><%=descripcion%></textarea>
 									</td>
 								</tr>
 							</table>

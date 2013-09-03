@@ -681,7 +681,7 @@
 					<br>&nbsp;		
 					
 					<% if (!breadonly) { %>
-							<html:file name="datosGeneralesForm" styleId="foto" property="foto" size="8" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
+							<html:file name="datosGeneralesForm" styleId="foto" property="foto" style="width:200px" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
 							<br>&nbsp;		
 					<% } %>
 				</siga:ConjCampos>
@@ -957,7 +957,10 @@
 														<siga:Idioma key="censo.general.literal.anotaciones"/>
 													</td>
 													<td style="width:320px">
-														<html:textarea name="datosGeneralesForm" property="anotaciones" styleId="anotaciones" onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)" rows="2" style="width:300px" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
+														<html:textarea name="datosGeneralesForm" property="anotaciones" styleId="anotaciones" 
+															onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)"
+															style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;" 
+															styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
 													</td>
 												</tr>
 											</table>
