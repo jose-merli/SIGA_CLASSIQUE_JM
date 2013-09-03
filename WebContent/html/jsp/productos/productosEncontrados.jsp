@@ -136,7 +136,7 @@
 			<siga:Table 
 				name="productosEncontrados"
 				columnNames="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,"  
-				columnSizes="30,30,30,10">
+				columnSizes="28,30,30,12">
 
 <%
 			if(resultado==null || resultado.size()<1){								

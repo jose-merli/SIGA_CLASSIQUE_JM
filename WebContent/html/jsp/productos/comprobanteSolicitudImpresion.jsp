@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- comprobanteSolicitud.jsp -->
+<!-- comprobanteSolicitudImprimir.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -163,7 +163,7 @@
 										elementos = null;
 									}
 					%>				
-						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
+						<tr>
 							
 							<td>
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>						  								
@@ -195,12 +195,9 @@
 							<%}catch(Exception e){%>
 								<siga:Idioma key="pys.estadoPago.noFacturable"/>	
 							<%}%>
-			  				</td>
-			  				<td align="right">
-		  						<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;
-		  					</td>
+			  				</td>			  				
 			  				
-						</siga:FilaConIconos>						
+						</tr>						
 
 	 			<% }}
 

@@ -121,7 +121,7 @@
 			<siga:Table 
 			name="productosSolicitados"
 			columnNames="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
-			columnSizes="30,30,23,7,10">
+			columnSizes="28,30,23,7,12">
 <% 				
 				if(carro == null) 
 				{ 	

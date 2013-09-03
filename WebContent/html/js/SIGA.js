@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.95 2013-09-03 08:18:31 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.96 2013-09-03 09:18:24 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -3167,9 +3167,10 @@ document.getElementById = function(elemIdOrName) {
 	}
 
 	function loadFixedHeaderTables (tableId, fixedHeight) {
-		//console.debug(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
+		console.debug(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") BEGIN");
 		var oTable = jQuery('#'+tableId+'.fixedHeaderTable');
     	if (oTable.length > 0){
+    		console.log("loadFixedHeaderTables table found");
     		sub(window);
     		if (fixedHeight !== undefined && !isNaN(fixedHeight)){
     			//console.log("loadFixedHeaderTables fixedHeight: " + fixedHeight);
@@ -3368,7 +3369,11 @@ document.getElementById = function(elemIdOrName) {
     		}
     		//fixCellBorders(oTable);
     		//alert("hago visible la tabla");
-    		jQuery("#"+tableId+"_tblFxHeadr").find("table").css("visibility","visible");
+    		if (jQuery("#"+tableId+"_tblFxHeadr").length > 0) {
+    			jQuery("#"+tableId+"_tblFxHeadr").find("table").css("visibility","visible");
+    		} else if (jQuery('#'+tableId+'.fixedHeaderTable').length > 0){
+    			jQuery('#'+tableId+'.fixedHeaderTable').css("visibility","visible");
+    		}
     		fin(window);
     	}
     	//console.log(">>> loadFixedHeaderTables("+tableId+", "+fixedHeight+") END");

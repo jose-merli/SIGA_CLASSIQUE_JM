@@ -563,7 +563,7 @@
 			border="2"
 			columnNames="<%=nombrecol1%>"
 			columnSizes="<%=tamanoCol1%>"
-			fixedHeight="80%">
+			fixedHeight="83%">
 
 <% 					
 			if(vArticulos == null || vArticulos.size()<1 ) { 	
