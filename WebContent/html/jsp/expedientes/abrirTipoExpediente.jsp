@@ -88,7 +88,7 @@
 			   	      name="tablaDatos"
 			   		  border="1"
 			   		  columnNames="expedientes.literal.tiposexpedientes,expedientes.tiposexpedientes.literal.esgeneral,"
-			   		  columnSizes="80,10,10">
+			   		  columnSizes="80,8,12">
 <%
 			if (vDatos==null || vDatos.size()==0)
 			{

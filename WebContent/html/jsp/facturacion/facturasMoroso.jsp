@@ -374,12 +374,14 @@ elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_NONE);
 	  				clase="listaNonEdit">
 				<%-- fila <bean:write name='index'/> escribe la informacion de la linea de comunicacion--%>
 				
-				
-				<input type="hidden" name="idEnvioDoc<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDENVIODOC" />"/>
-				<input type="hidden" name="idDocumento<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDDOCUMENTO" />"/>
-				<input type="hidden" name="idInstitucion<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDINSTITUCION" />"/>
-				<input type="hidden" name="pathDocumento<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="PATHDOCUMENTO" />"/>
-				<td><bean:write name="lineaComunicacion" property="IDENVIO" /></td>
+								
+				<td>
+					<input type="hidden" name="idEnvioDoc<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDENVIODOC" />"/>
+					<input type="hidden" name="idDocumento<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDDOCUMENTO" />"/>
+					<input type="hidden" name="idInstitucion<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="IDINSTITUCION" />"/>
+					<input type="hidden" name="pathDocumento<bean:write name='index'/>" value="<bean:write name="lineaComunicacion" property="PATHDOCUMENTO" />"/>
+					<bean:write name="lineaComunicacion" property="IDENVIO" />
+				</td>
 					<bean:define id="fecha" name="lineaComunicacion" property="FECHA_ENVIO"/>
 				
 				<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateMedium(user.getLanguage(),fecha))%></td>

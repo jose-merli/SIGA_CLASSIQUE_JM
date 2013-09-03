@@ -80,7 +80,7 @@
 			   border="1"
 			   columnNames="pys.resultadoBusquedaServicios.literal.tipo,pys.resultadoBusquedaServicios.literal.categoria,
 			   			  pys.resultadoBusquedaServicios.literal.concepto,pys.resultadoBusquedaServicios.literal.Estado,"
-			   columnSizes="20,20,30,20,10"
+			   columnSizes="15,25,30,15,12"
 			   modal="G">
 			   
 			<%
