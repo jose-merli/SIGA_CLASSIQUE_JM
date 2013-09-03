@@ -947,7 +947,7 @@ function str_replace(search, replace, subject) {
 						<br>&nbsp;		
 
 				<% if (!breadonly) { %>
-						<html:file name="datosGeneralesForm" property="foto" size="8" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
+						<html:file name="datosGeneralesForm" property="foto" style="width:200px" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
 						<br>&nbsp;		
 				<% } %>
 			</siga:ConjCampos>
