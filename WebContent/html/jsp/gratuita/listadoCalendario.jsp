@@ -67,7 +67,7 @@
 		   name="listadoCalendario"
 		   border="2"
 		   columnNames="gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.nombre,gratuita.listadoCalendario.literal.fiestaLocalPartidoJudicial,"
-		   columnSizes="10,45,25,10"
+		   columnSizes="8,45,25,12"
 		   modal="P">
   			<%
 	    	int recordNumber=1;

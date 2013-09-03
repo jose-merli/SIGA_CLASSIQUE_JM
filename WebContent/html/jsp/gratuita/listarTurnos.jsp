@@ -170,14 +170,14 @@
 		//Entrada desde el menu de  SJCS:
 		if (isEntradaSJCS){
 			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,gratuita.listarTurnos.literal.letradosInscritos,Estado,";
-			tC="10,20,10,12,9,8,10,5,5,10";
+			tC="10,18,10,12,9,8,10,5,5,12";
 			botones="C,E,B";
 			alto="253";
 					
 		//Entrada desde el menu de Censo:
 		} else {	
 			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.subzona,gratuita.listaTurnosLetrados.literal.fechasolicitud,F. Valor,gratuita.altaTurnos.literal.fsbaja,F. Valor Baja,Estado Inscripción,Estado Turno,";
-			tC="15,15,7,7,8,8,8,8,8,5,10";
+			tC="12,15,7,7,8,8,8,8,8,5,12";
 			botones="C";
 			alto="326";
 		}%>

@@ -64,7 +64,7 @@
 		   name="listadoRetenciones"
 		   border="2"
 		   columnNames="gratuita.retenciones.descripcion,gratuita.retenciones.retencion,gratuita.retenciones.tipoSociedad,"
-		   columnSizes="60,10,20,10"
+		   columnSizes="60,8,20,12"
 		   modal="P" >
 				
 			<%if (obj.size()>0){   

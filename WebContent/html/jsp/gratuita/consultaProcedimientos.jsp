@@ -89,7 +89,7 @@
 		   name="tablaDatos"
 		   border="1"
 		   columnNames="gratuita.mantenimientoTablasMaestra.literal.codigoext,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.fechainicio,gratuita.procedimientos.literal.fechafin,gratuita.procedimientos.literal.importe,"
-		   columnSizes="10,45,10,10,15,10"
+		   columnSizes="10,45,10,10,13,12"
 		   modal="M">
 
 			<!-- INICIO: ZONA DE REGISTROS -->

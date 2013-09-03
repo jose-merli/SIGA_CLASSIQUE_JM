@@ -69,7 +69,7 @@
 			   name="listadoPJ"
 			   border="2"
 			   columnNames="gratuita.busquedaPJ.literal.partido,"
-			   columnSizes="90,10">
+			   columnSizes="88,12">
 			   
 		<%		int recordNumber=1;
 				while ((recordNumber) <= obj.size())

@@ -69,7 +69,7 @@
 			   			  gratuita.mantenimientoTablasMaestra.literal.poblacion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
 			   			  gratuita.mantenimientoTablasMaestra.literal.estado,"
-			   columnSizes = "10,8,17,17,18,8,12,10"
+			   columnSizes = "8,8,17,17,18,8,12,12"
 			   modal = "G">
 
 		<%  if ((vJuzgados != null) && (vJuzgados.size() > 0)){ %>

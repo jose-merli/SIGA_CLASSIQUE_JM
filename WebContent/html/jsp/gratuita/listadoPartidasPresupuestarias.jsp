@@ -65,7 +65,7 @@
 		   name="listadoPartidas"
 		   border="2"
 		   columnNames="gratuita.partidaPresupuestaria.literal.nombre,gratuita.partidaPresupuestaria.literal.descripcion,factSJCS.datosFacturacion.literal.importePartida,"
-		   columnSizes="30,45,15,10"
+		   columnSizes="28,45,15,12"
 		   modal="P">
 		   
   			<%

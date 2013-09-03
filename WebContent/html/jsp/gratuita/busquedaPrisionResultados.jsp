@@ -70,7 +70,7 @@
 			   			  gratuita.mantenimientoTablasMaestra.literal.poblacion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.telefono2,
 			   			  gratuita.mantenimientoTablasMaestra.literal.fax1,"
-			   columnSizes = "10,8,17,15,12,12,8,8,10"
+			   columnSizes = "8,8,17,15,12,12,8,8,12"
 			   modal = "m">
 
 
