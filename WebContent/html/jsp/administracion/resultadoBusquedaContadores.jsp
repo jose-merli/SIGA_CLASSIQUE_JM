@@ -67,7 +67,7 @@
   				name="cabecera"
   				border="2"
   				columnNames="administracion.parametrosGenerales.literal.codigo,administracion.parametrosGenerales.literal.nombre,administracion.parametrosGenerales.literal.descripcion,administracion.parametrosGenerales.literal.prefijo,administracion.parametrosGenerales.literal.contadorActual,administracion.parametrosGenerales.literal.sufijo,"  
-   				columnSizes="15,25,27,5,15,5,8"
+   				columnSizes="15,25,27,5,13,5,10"
 				modal="G">
 		   			
 		   	<%	if ( (vDatos != null) && (vDatos.size() > 0) ) {
