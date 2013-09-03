@@ -12,15 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.autogen.model.GenFichero;
-import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
-import org.redabogacia.sigaservices.app.vo.services.VoService;
 
-import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
-import com.atos.utils.UsrBean;
+import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
@@ -32,12 +25,7 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.general.form.FicheroForm;
-import com.siga.general.service.FicheroVoService;
-import com.siga.general.service.FicherosService;
 import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
-
-import es.satec.businessManager.BusinessManager;
 
 /**
  * Maneja las acciones que se pueden realizar sobre la tabla
@@ -356,9 +344,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			insertaDocumentacion(request, documento, nuevos, tipoDocumento.split(",")[0]);
 
 			admBean.delete(clave);
-			//Si ha seleccionado archivo lo añadimos
-			if(miForm.getNombreArchivo()!=null && !miForm.getNombreArchivo().equalsIgnoreCase(""))
-				upload(miForm);
+
 			tx.commit();
 
 		} catch (Exception e) {
@@ -367,23 +353,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 
 		return exitoModal("messages.updated.success", request);
 	}
-	protected void upload(DefinirDocumentacionEJGForm documentacionEJGForm) throws SIGAException
-   	{
-		try {
-			BusinessManager bm = getBusinessManager();
-			bm.endTransaction();
-			FicherosService ficherosService = (FicherosService)bm.getService(FicherosService.class);
-			VoService<FicheroForm, FicheroVo, GenFichero> voService = new FicheroVoService();
-			documentacionEJGForm.setIdDocumento(documentacionEJGForm.getIdDocumento().split(",")[0]);
-			documentacionEJGForm.setIdTipoDocumento(documentacionEJGForm.getIdTipoDocumento().split(",")[0]);
-			FicheroVo ficheroVo =  voService.getForm2Vo(documentacionEJGForm);
-			ficherosService.insert(ficheroVo);
 
-		}catch (BusinessException e) {
-			throw new SIGAException("No se ha podido insertar el fichero"); 
-		}
-	
-   	}
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y los borra de
 	 * la base de datos.
@@ -529,5 +499,4 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		}
 		return "inicio";
 	}
-	
 }
