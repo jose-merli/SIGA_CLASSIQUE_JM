@@ -90,13 +90,14 @@
 	  						visibleEdicion = "no"
 	  						visibleBorrado = "no"
 	  						clase="listaNonEdit" >
-	  					<input type="hidden" id ="idEnvio_${status.count}" value ="${listEntradaEnviosForm.idEnvio}"/>	
-	  					<input type="hidden" id ="idInstitucion_${status.count}" value ="${listEntradaEnviosForm.idInstitucion}"/>
-	  					<input type="hidden" id ="idEstado_${status.count}" value ="${listEntradaEnviosForm.idEstado}"/>
-	  					<input type="hidden" id ="anio_${status.count}" value ="${listEntradaEnviosForm.anioDesignaSel}"/>
-	  					<input type="hidden" id ="numero_${status.count}" value ="${listEntradaEnviosForm.numeroDesignaSel}"/>
-	  					<input type="hidden" id ="idTurno_${status.count}" value ="${listEntradaEnviosForm.idTurnoDesignaSel}"/>
+
 						<td align="center">
+							<input type="hidden" id ="idEnvio_${status.count}" value ="${listEntradaEnviosForm.idEnvio}"/>	
+		  					<input type="hidden" id ="idInstitucion_${status.count}" value ="${listEntradaEnviosForm.idInstitucion}"/>
+		  					<input type="hidden" id ="idEstado_${status.count}" value ="${listEntradaEnviosForm.idEstado}"/>
+		  					<input type="hidden" id ="anio_${status.count}" value ="${listEntradaEnviosForm.anioDesignaSel}"/>
+		  					<input type="hidden" id ="numero_${status.count}" value ="${listEntradaEnviosForm.numeroDesignaSel}"/>
+		  					<input type="hidden" id ="idTurno_${status.count}" value ="${listEntradaEnviosForm.idTurnoDesignaSel}"/>
 							<c:out value="${listEntradaEnviosForm.fechaPeticion}"/>
 						</td>
 						<td align="center">
