@@ -391,10 +391,16 @@
 											<td class="labelTextValue">
 												<% if (bEditable) { %>
 												
-													<textarea cols=80 rows=4 id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"  class="box" onKeyDown="cuenta(this,255)"  onChange="cuenta(this,255)"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
+													<textarea id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"
+														onKeyDown="cuenta(this,255)"  onChange="cuenta(this,255)"
+														style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;"  
+														class="box" ><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
 												
 												<% } else { %>
-													<textarea cols=80 rows=4 id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"  class="box" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" readonly="true"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
+													<textarea id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"
+														onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+														style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;"  
+														class="boxConsulta" readonly="true"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
 												<% } %>
 											</td>
 										</tr>	

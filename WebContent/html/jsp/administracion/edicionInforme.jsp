@@ -299,9 +299,9 @@
 				</td>
 				<td rowspan="3" colspan="3">
 					<html:textarea name="InformeFormEdicion" property="descripcion" 
-						maxlength="1000" onchange="cuenta(this,1000)" onkeydown="cuenta(this,1000);"
-						cols="65" rows="6" style="overflow=auto; width=375; height=80; resize:none;" 
-						styleClass="boxCombo"  readonly="false"/>
+						onchange="cuenta(this,1000)" onkeydown="cuenta(this,1000);"
+						style="overflow-y:auto; overflow-x:hidden; width:375px; height:80px; resize:none;"
+						styleClass="box" readonly="false"/>
 				</td>
 			</tr>
 			

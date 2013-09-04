@@ -148,7 +148,9 @@
 				</td>
 				<td class="labelTextValue">
 					<% String motivo = UtilidadesHash.getString(h, CenHistoricoBean.C_MOTIVO); %>
-					<html:textarea property="motivo" name="auditoriaUsuariosForm" cols="50" rows="3" styleClass="<%=estilo%>" style="width:500px" value="<%=motivo%>" ></html:textarea>
+					<html:textarea property="motivo" name="auditoriaUsuariosForm"
+						style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"
+						styleClass="<%=estilo%>" value="<%=motivo%>" ></html:textarea>
 				</td>
 			</tr>
 			<tr>
@@ -156,7 +158,8 @@
 					<siga:Idioma key="administracion.auditoriaUsuarios.literal.descripcion"/>
 				</td>
 				<td class="labelTextValue">
-					<textArea cols="10" rows="8" class="boxConsulta" readonly="" style="width:500px"><%=UtilidadesHash.getString(h, CenHistoricoBean.C_DESCRIPCION)%></textarea>
+					<textArea style="overflow-y:auto; overflow-x:hidden; width:500px; height:200px; resize:none;"
+						class="boxConsulta" readonly=""><%=UtilidadesHash.getString(h, CenHistoricoBean.C_DESCRIPCION)%></textarea>
 				</td>
 			</tr>
 				
