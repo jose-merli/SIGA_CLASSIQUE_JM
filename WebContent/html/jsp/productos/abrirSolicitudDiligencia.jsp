@@ -124,9 +124,10 @@
 								<td class="labelText" width="55"><siga:Idioma
 										key="certificados.solicitudes.literal.descripcion" /></td>
 								<td>
-									<!-- input type="text" name="descripcion" class="box" size="55" maxlength="4000"-->
-									<textarea COLS=80 ROWS=4 NAME="descripcion" class="box"
-										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"></textarea>
+									<textarea name="descripcion"
+										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:70px; resize:none;" 
+										class="box"></textarea>
 								</td>
 							</tr>
 						</table>

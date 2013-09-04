@@ -14,8 +14,7 @@
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -29,14 +28,10 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.*"%>
-<!--pilar-->
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.GstDate"%>
-
 <%@ page import="com.siga.general.*"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-
-
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 
 <!-- JSP -->
@@ -47,15 +42,10 @@
 	String modo = (String) request.getAttribute("ACCION");
 %>
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -67,8 +57,7 @@
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.fichaCliente.situacion.cabecera"
-		localizacion="censo.fichaLetrado.localizacion" />
+	<siga:Titulo titulo="censo.fichaCliente.situacion.cabecera" localizacion="censo.fichaLetrado.localizacion" />
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	<script type="text/javascript">
@@ -157,8 +146,6 @@
 </head>
 
 <body class="tablaCentralCampos">
-
-	<!--pilar-->
 	<!-- INICIO: LISTA RESULTADOS -->
 	<html:form action="/CEN_DatosColegiacion.do" method="POST" 
 		style="display:none">
@@ -169,165 +156,132 @@
 		<input type="hidden" id="letrado"  name="letrado" value="" />
 		<input type="hidden" id="actionModal" name="actionModal" value="">
 	</html:form>
+	
+	<table  class="tablaTitulo" cellpadding="0" cellspacing="0">
+		<tr>
+	   		<td class="titulosPeq">
+	       		<siga:Idioma key="censo.consultaDatosColegiacion.literal.colegiaciones"/>
+			</td>
+		</tr>
+	</table>		
 
 	<siga:Table name="tablaResultados" border="1"
 		columnNames="censo.consultaDatosColegiacion.literal.colegio,
-							censo.consultaDatosColegiacion.literal.numIden,
-							censo.consultaDatosColegiacion.literal.numColegiado,
-							censo.consultaDatosColegiacion.literal.nomyApellidos,
-							censo.consultaDatosColegiacion.literal.fechaIngreso,
-							censo.consultaDatosColegiacion.literal.estadoCol,
-							censo.solicitudIncorporacion.literal.fechaEstado,
-							censo.solicitudIncorporacion.literal.fechaAct,
-							censo.consultaDatosColegiacion.literal.residente,
-							censo.consultaDatosColegiacion.literal.fechaNac,"
+					censo.consultaDatosColegiacion.literal.numIden,
+					censo.consultaDatosColegiacion.literal.numColegiado,
+					censo.consultaDatosColegiacion.literal.nomyApellidos,
+					censo.consultaDatosColegiacion.literal.fechaIngreso,
+					censo.consultaDatosColegiacion.literal.estadoCol,
+					censo.solicitudIncorporacion.literal.fechaEstado,
+					censo.solicitudIncorporacion.literal.fechaAct,
+					censo.consultaDatosColegiacion.literal.residente,
+					censo.consultaDatosColegiacion.literal.fechaNac,"
 		columnSizes="10,8,7,10,8,8,8,8,8,8,12">
 
-		<%
-			if (request.getAttribute("DATESTADO") == null
-						|| ((Vector) request.getAttribute("DATESTADO")).size() < 1) {
-		%>
-		<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>
-		<%
-			} else {
-		%>
-		<%
-			Enumeration en = ((Vector) request
-							.getAttribute("DATESTADO")).elements();
-					int recordNumber = 1;
-					String iconosRegistro = "C";
-					FilaExtElement[] elementos = new FilaExtElement[4];
+<%
+		if (request.getAttribute("DATESTADO") == null || ((Vector) request.getAttribute("DATESTADO")).size() < 1) {
+%>
+			<tr class="notFound">
+   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		} else {
+			Enumeration en = ((Vector) request.getAttribute("DATESTADO")).elements();
+			int recordNumber = 1;
+			String iconosRegistro = "C";
+			FilaExtElement[] elementos = new FilaExtElement[4];
+			elementos[0] = new FilaExtElement("consultdatoscoleg", "consultdatoscoleg", SIGAConstants.ACCESS_READ);
+			while (en.hasMoreElements()) {
+				Row row = (Row) en.nextElement();
+				String institucion = CenVisibilidad.getAbreviaturaInstitucion(row.getString(CenColegiadoBean.C_IDINSTITUCION));
+				if (modo.equals("ver")) {// no se permite hacer nada al usuario, solo consultar su ficha colegial
+					elementos[1] = new FilaExtElement("insertarestado", "insertarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
+					elementos[2] = new FilaExtElement("borrarestado", "borrarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
+					elementos[3] = new FilaExtElement("modificarestado", "modificarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
 
-					elementos[0] = new FilaExtElement("consultdatoscoleg",
-							"consultdatoscoleg", SIGAConstants.ACCESS_READ);
-					while (en.hasMoreElements()) {
-						Row row = (Row) en.nextElement();
-						String institucion = CenVisibilidad
-								.getAbreviaturaInstitucion(row
-										.getString(CenColegiadoBean.C_IDINSTITUCION));
-						if (modo.equals("ver")) {// no se permite hacer nada al usuario, solo consultar su ficha colegial
-							elementos[1] = new FilaExtElement("insertarestado",
-									"insertarestado",
-									SIGAConstants.ACCESS_SIGAENPRODUCCION);
-							elementos[2] = new FilaExtElement("borrarestado",
-									"borrarestado",
-									SIGAConstants.ACCESS_SIGAENPRODUCCION);
-							elementos[3] = new FilaExtElement(
-									"modificarestado", "modificarestado",
-									SIGAConstants.ACCESS_SIGAENPRODUCCION);
+				} else {
+					if (row.getString("FECHAPRODUCCION") == null || row.getString("FECHAPRODUCCION").equals("")) {
+						elementos[1] = new FilaExtElement("insertarestado", "insertarestado", SIGAConstants.ACCESS_FULL);
+						elementos[3] = new FilaExtElement("modificarestado", "modificarestado", SIGAConstants.ACCESS_FULL);
+						if (Integer.parseInt((String) row.getString("NUMEROESTADO")) <= 1) {
+							elementos[2] = new FilaExtElement("borrarestado", "borrarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
 
 						} else {
-							if (row.getString("FECHAPRODUCCION") == null
-									|| row.getString("FECHAPRODUCCION").equals(
-											"")) {
-								elementos[1] = new FilaExtElement(
-										"insertarestado", "insertarestado",
-										SIGAConstants.ACCESS_FULL);
-								elementos[3] = new FilaExtElement(
-										"modificarestado", "modificarestado",
-										SIGAConstants.ACCESS_FULL);
-								if (Integer.parseInt((String) row
-										.getString("NUMEROESTADO")) <= 1) {
-									elementos[2] = new FilaExtElement(
-											"borrarestado",
-											"borrarestado",
-											SIGAConstants.ACCESS_SIGAENPRODUCCION);
-
-								} else {
-									elementos[2] = new FilaExtElement(
-											"borrarestado", "borrarestado",
-											SIGAConstants.ACCESS_FULL);
-
-								}
-
-							} else {
-								elementos[1] = new FilaExtElement(
-										"insertarestado", "insertarestado",
-										SIGAConstants.ACCESS_SIGAENPRODUCCION);
-
-								elementos[2] = new FilaExtElement(
-										"borrarestado", "borrarestado",
-										SIGAConstants.ACCESS_SIGAENPRODUCCION);
-								elementos[3] = new FilaExtElement(
-										"modificarestado", "modificarestado",
-										SIGAConstants.ACCESS_SIGAENPRODUCCION);
-
-							}
+							elementos[2] = new FilaExtElement("borrarestado", "borrarestado",SIGAConstants.ACCESS_FULL);
 						}
-		%>
 
-		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
-			elementos='<%=elementos%>' modo='<%=modo%>' botones=""
-			visibleBorrado="no" visibleConsulta="no" visibleEdicion="no"
-			pintarEspacio="no" clase="listaNonEdit">
-
-			<td>
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenPersonaBean.C_IDPERSONA)%>" /> 
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenColegiadoBean.C_IDINSTITUCION)%>" />
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=UtilidadesString.comaToAnd(row.getString(CenPersonaBean.C_NIFCIF))%>" />
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString("NCOLEGIADO")%>" /> 
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString(CenPersonaBean.C_NOMBRE)+" "+row.getString(CenPersonaBean.C_APELLIDOS1)+" "+row.getString(CenPersonaBean.C_APELLIDOS2)%>" />
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString("FECHAESTADO")%>" /> 
-				<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_7" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=row.getString("ESTADOCOLEGIAL")%>"/> 
-				<%=institucion%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(row
-									.getString(CenPersonaBean.C_NIFCIF))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(row
-									.getString("NCOLEGIADO"))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(row
-									.getString(CenPersonaBean.C_NOMBRE))
-									+ " "
-									+ UtilidadesString.mostrarDatoJSP(row
-											.getString(CenPersonaBean.C_APELLIDOS1))
-									+ " "
-									+ UtilidadesString.mostrarDatoJSP(row
-											.getString(CenPersonaBean.C_APELLIDOS2))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(
-									user.getLanguage(),
-									row.getString(CenColegiadoBean.C_FECHAINCORPORACION)))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(row
-									.getString("ESTADOCOLEGIAL"))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(GstDate
-									.getFormatedDateShort(user.getLanguage(),
-											row.getString("FECHAESTADO")))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(GstDate
-									.getFormatedDateShort(user.getLanguage(),
-											row.getString("FECHAACTUALIZ")))%>
-			</td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(
-											row.getString(CenColegiadoBean.C_SITUACIONRESIDENTE))
-									.equals("0") ? "No" : "Si"%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(
-									user.getLanguage(),
-									row.getString(CenPersonaBean.C_FECHANACIMIENTO)))%>
-			</td>
-		</siga:FilaConIconos>
-		<%
-			recordNumber++;
+					} else {
+						elementos[1] = new FilaExtElement("insertarestado", "insertarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
+						elementos[2] = new FilaExtElement("borrarestado", "borrarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
+						elementos[3] = new FilaExtElement("modificarestado", "modificarestado", SIGAConstants.ACCESS_SIGAENPRODUCCION);
 					}
 				}
 		%>
 
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
+					elementos='<%=elementos%>' modo='<%=modo%>' botones=""
+					visibleBorrado="no" visibleConsulta="no" visibleEdicion="no"
+					pintarEspacio="no" clase="listaNonEdit">
+
+					<td>
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenPersonaBean.C_IDPERSONA)%>" /> 
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenColegiadoBean.C_IDINSTITUCION)%>" />
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=UtilidadesString.comaToAnd(row.getString(CenPersonaBean.C_NIFCIF))%>" />
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString("NCOLEGIADO")%>" /> 
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString(CenPersonaBean.C_NOMBRE)+" "+row.getString(CenPersonaBean.C_APELLIDOS1)+" "+row.getString(CenPersonaBean.C_APELLIDOS2)%>" />
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_6" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString("FECHAESTADO")%>" /> 
+						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_7" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=row.getString("ESTADOCOLEGIAL")%>"/> 
+						<%=institucion%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString(CenPersonaBean.C_NIFCIF))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString("NCOLEGIADO"))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString(CenPersonaBean.C_NOMBRE)) + " " + 
+							UtilidadesString.mostrarDatoJSP(row.getString(CenPersonaBean.C_APELLIDOS1)) + " " + 
+							UtilidadesString.mostrarDatoJSP(row.getString(CenPersonaBean.C_APELLIDOS2))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(), row.getString(CenColegiadoBean.C_FECHAINCORPORACION)))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString("ESTADOCOLEGIAL"))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(), row.getString("FECHAESTADO")))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(), row.getString("FECHAACTUALIZ")))%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString(CenColegiadoBean.C_SITUACIONRESIDENTE)).equals("0") ? "No" : "Si"%>
+					</td>
+					
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(user.getLanguage(), row.getString(CenPersonaBean.C_FECHANACIMIENTO)))%>
+					</td>
+				</siga:FilaConIconos>
+<%
+				recordNumber++;
+			}
+		}
+%>
 	</siga:Table>
 
-
-	<!--pilar-->
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-		style="display: none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>

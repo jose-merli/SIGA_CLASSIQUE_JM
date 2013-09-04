@@ -146,15 +146,15 @@
 						<td>
 							<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera">
 								<table class="tablaCampos" align="center">
-									<!-- FILA -->
 									<tr>		
 										<td width="15%" class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;
 										</td>
 										<td width="35%">
-											<html:text property="titularO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_TITULAR))%>" styleClass="boxConsulta" readOnly="true" size="50"></html:text><br>
-											<html:text property="titularM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_TITULAR)%>" styleClass="boxConsultaRojo" readOnly="true" size="50"></html:text>
-										</td>						
+											<html:text property="titularO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_TITULAR))%>" styleClass="boxConsulta" readOnly="true" size="50" /><br>
+											<html:text property="titularM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_TITULAR)%>" styleClass="boxConsultaRojo" readOnly="true" size="50" />
+										</td>		
+														
 										<td width="15%" class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/>&nbsp;
 										</td>
@@ -174,7 +174,7 @@
 							   				</div>
 										</td>
 									</tr>	
-									<!-- FILA -->
+
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuenta"/>&nbsp;
@@ -201,30 +201,31 @@
 							   						<% } %>	
 							   					<% } %>
 							   				</div>
-										</td>							
+										</td>		
+															
 										<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>&nbsp;					
 										</td>
 										<td>
-					   						<siga:ComboBD nombre="bancoO" tipo="cmbBancos" clase="boxComboNormal" elementoSel="<%=bancoOrig%>" readOnly="true"/><br>
+					   						<siga:ComboBD nombre="bancoO" tipo="cmbBancos" clase="boxConsulta" elementoSel="<%=bancoOrig%>" readOnly="true"/><br>
 					   						<siga:ComboBD nombre="bancoM" tipo="cmbBancos" clase="boxComboRojo" elementoSel="<%=bancoDest%>" readOnly="true"/>					   						
 										</td>
 									</tr>
-					   				<!-- FILA -->
+
 					  				<tr>
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBanco"/>&nbsp;
 										</td>				
 					   					<td>
-											<html:text property="cboO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>' styleClass="boxConsulta" readOnly="true"></html:text><br>
-											<html:text property="cboM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_CBO_CODIGO)%>' styleClass="boxConsultaRojo" readOnly="true"></html:text>
+											<html:text property="cboO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>' styleClass="boxConsulta" readOnly="true" /><br>
+											<html:text property="cboM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_CBO_CODIGO)%>' styleClass="boxConsultaRojo" readOnly="true" />
 										</td>
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoSucursal"/>&nbsp;
 										</td>				
 					   					<td>
-											<html:text property="sucO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" styleClass="boxConsulta" readOnly="true"></html:text><br>
-											<html:text property="sucM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_CODIGOSUCURSAL)%>" styleClass="boxConsultaRojo" readOnly="true"></html:text>
+											<html:text property="sucO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" styleClass="boxConsulta" readOnly="true" /><br>
+											<html:text property="sucM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_CODIGOSUCURSAL)%>" styleClass="boxConsultaRojo" readOnly="true" />
 					   					</td>			   	
 					  				</tr>
 					   				<!-- FILA -->
@@ -233,28 +234,31 @@
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.digitoControl"/>&nbsp;
 										</td>				
 					   					<td>
-											<html:text property="controlO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>" styleClass="boxConsulta" readOnly="true"></html:text><br>
-											<html:text property="controlM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_DIGITOCONTROL)%>" styleClass="boxConsultaRojo" readOnly="true"></html:text>
+											<html:text property="controlO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>" styleClass="boxConsulta" readOnly="true" /><br>
+											<html:text property="controlM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_DIGITOCONTROL)%>" styleClass="boxConsultaRojo" readOnly="true" />
 					   					</td>	
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;
 										</td>				
 					   					<td>
-											<html:text property="cuentaO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>" styleClass="boxConsulta" readOnly="true"></html:text><br>
-											<html:text property="cuentaM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_NUMEROCUENTA)%>" styleClass="boxConsultaRojo" readOnly="true"></html:text>
+											<html:text property="cuentaO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>" styleClass="boxConsulta" readOnly="true" /><br>
+											<html:text property="cuentaM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_NUMEROCUENTA)%>" styleClass="boxConsultaRojo" readOnly="true" />
 					   					</td>	
 					 				</tr>
 				   				</table>
 							</siga:ConjCampos>
 							<!-- MOTIVO -->
 							<siga:ConjCampos leyenda="censo.datosCuentaBancaria.literal.motivo">
-								<table class="tablaCampos" align="center">														
+								<table class="tablaCampos" align="center" border="0">														
 					  				<tr>
 					   					<td width="10%" class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.motivo"/>&nbsp;
 										</td>											
 					   					<td width="90%">
-											<html:textarea property="motivo" value="<%=modificada.getString(CenSolicModiCuentasBean.C_MOTIVO)%>" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="boxConsulta" readOnly="true" size="80" rows="5"></html:textarea>
+											<html:textarea property="motivo" 
+												style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"
+												value="<%=modificada.getString(CenSolicModiCuentasBean.C_MOTIVO)%>" 
+												styleClass="boxConsulta" readOnly="true"></html:textarea>
 										</td>		   					
 					  				</tr>		  			 			 
 				   				</table>

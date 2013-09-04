@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- BusquedaClientes.jsp -->
+<!-- abrirColegiar.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -232,7 +232,10 @@
 					       <siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.observaciones"/>
    			         </td>
 		             <td colspan="3">
-			                <textarea COLS=80 ROWS=4 NAME="observaciones" class="box" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"></textarea>  
+			                <textarea name="observaciones"
+			                	onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+			                	style="overflow-y:auto; overflow-x:hidden; width:350px; height:70px; resize:none;" 
+			                	class="box"></textarea>  
 		             </td>
 				</tr>
 			</table>

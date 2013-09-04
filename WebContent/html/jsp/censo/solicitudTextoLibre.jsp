@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,43 +79,45 @@
 			<!-- INICIO: CAMPOS DEL REGISTRO -->
 			<fieldset>
 			<!-- Comienzo del formulario con los campos -->
-			<table class="tablaCentralCampos" align="center">
-				<html:form action="/CEN_ModificacionDatos.do" method="POST" target="submitArea">
-					<html:hidden property = "modo" value = "insertar"/>
-					<tr>		
-						<td>		
-							<table table style="border:0px; width:100%;">
-								<!-- FILA -->
-								<tr>				
-									<td class="labelText" style="width:20%;">
-										<siga:Idioma key="censo.solicitudTextoLibre.literal.tipoModificacion"/>&nbsp;(*)
-									</td>
-									<% if (idTipoSol == null){ %>
-									<td>	
-										<siga:ComboBD nombre ="cmbTipoModificacion" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
-									</td>	
-									<% } else { %>
-									<td>
-										<siga:ComboBD nombre ="cmbTipoModificacion" elementoSelstring="10" readonly="true" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
-									</td>
-									<% }%>	
-								</tr>
-								<!-- FILA -->
-								<tr>				
-									<td class="labelText" style="width:20%;">
-										<siga:Idioma key="censo.solicitudTextoLibre.literal.descripcion"/>&nbsp;(*)
-									</td colspan="1" style="width:50%;">				
-									<td>
-										<textarea name="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:100%;"  rows="24" cols="180"></textarea>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<html:hidden name="SolicitudesModificacionForm" property="idInstitucion"/>
-					<input type="hidden" name="idPersona" value="<%=idPersonaSol%>">
-				</html:form>
-			</table>
+				<table class="tablaCentralCampos" align="center">
+					<html:form action="/CEN_ModificacionDatos.do" method="POST" target="submitArea">
+						<html:hidden property = "modo" value = "insertar"/>
+						<html:hidden name="SolicitudesModificacionForm" property="idInstitucion"/>
+						<input type="hidden" name="idPersona" value="<%=idPersonaSol%>">					
+						
+						<tr>		
+							<td>		
+								<table border="0" width="100%">
+									<tr>				
+										<td class="labelText" width="200px">
+											<siga:Idioma key="censo.solicitudTextoLibre.literal.tipoModificacion"/>&nbsp;(*)
+										</td>
+										<% if (idTipoSol == null){ %>
+											<td>	
+												<siga:ComboBD nombre ="cmbTipoModificacion" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
+											</td>	
+										<% } else { %>
+											<td>
+												<siga:ComboBD nombre ="cmbTipoModificacion" elementoSelstring="10" readonly="true" tipo="cmbTipoModificacion" clase="boxCombo" obligatorio="true"/>
+											</td>
+										<% }%>	
+									</tr>
+									
+									<tr>				
+										<td class="labelText">
+											<siga:Idioma key="censo.solicitudTextoLibre.literal.descripcion"/>&nbsp;(*)
+										</td>				
+										<td>
+											<textarea name="descripcion" class="box" 
+												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+												style="overflow-y:auto; overflow-x:hidden; width:740px; height:400px; resize:none;"></textarea>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</html:form>
+				</table>
 			</fieldset>
 			<!-- FIN: CAMPOS DEL REGISTRO -->
 

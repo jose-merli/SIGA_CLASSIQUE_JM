@@ -112,11 +112,11 @@
 					alert(mensaje);
 					return;		
 			   	} 		   
-		       	document.getElementById("activo").style.display="none";
-			   	document.getElementById("baja").style.display="block";			   
-			   	document.getElementById("botonBaja").style.display="none";
-			   	document.getElementById("botonAlta").style.display="block";
-			   	document.getElementById("botonFallecido").style.display="none";			   
+		       	jQuery("#activo").hide();
+			   	jQuery("#baja").show();			   
+			   	jQuery("#botonBaja").hide();
+			   	jQuery("#botonAlta").show();
+			   	jQuery("#botonFallecido").hide();			   
 			   	document.DatosColegiacionForm.modo.value = "darBaja";	
 			   	document.DatosColegiacionForm.target="submitArea";
 			    document.DatosColegiacionForm.submit();
@@ -130,11 +130,11 @@
 					alert(mensaje);
 					return;
 				}   		   
-		       	document.getElementById("activo").style.display="none";
-			   	document.getElementById("baja").style.display="block";   
-			   	document.getElementById("botonBaja").style.display="none";
-			   	document.getElementById("botonAlta").style.display="block";
-			   	document.getElementById("botonFallecido").style.display="none";	   
+		       	jQuery("#activo").hide();
+			   	jQuery("#baja").show();   
+			   	jQuery("#botonBaja").hide();
+			   	jQuery("#botonAlta").show();
+			   	jQuery("#botonFallecido").hide();	   
 			   	document.DatosColegiacionForm.modo.value = "bajaFallecido";	
 			    document.getElementById("motivo").value='<siga:Idioma key="censo.consultaDatosColegiacion.literal.motivoFallecido"/>';
 			   	document.DatosColegiacionForm.target="submitArea";
@@ -148,11 +148,11 @@
 		  	}
 		  
 		  	function darAlta(){   
-		       	document.getElementById("activo").style.display="block";
-			   	document.getElementById("baja").style.display="none";
-			   	document.getElementById("botonBaja").style.display="block";
-			   	document.getElementById("botonAlta").style.display="none";
-			   	document.getElementById("botonFallecido").style.display="block";	  
+		       	jQuery("#activo").show();
+			   	jQuery("#baja").hide();
+			   	jQuery("#botonBaja").show();
+			   	jQuery("#botonAlta").hide();
+			   	jQuery("#botonFallecido").show();	  
 			   	jQuery.removeAttr("#fechaEstado","disabled");
 			   	jQuery.removeAttr("#motivo","disabled");
 			    document.getElementById("fechaEstado").value="";
@@ -164,45 +164,45 @@
 		  
 		  	function situacionLetrado(){ 
 		     	if (document.DatosColegiacionForm.activar.value=="1"){
-					document.getElementById("activo").style.display="none";
-			     	document.getElementById("baja").style.display="block";				
+					jQuery("#activo").hide();
+			     	jQuery("#baja").show();				
 			   <%if (modo.equals("ver")) {%>
-			       	document.getElementById("botonBaja").style.display="none";
-			       	document.getElementById("botonAlta").style.display="none";
-				   	document.getElementById("botonFallecido").style.display="none";		  
+			       	jQuery("#botonBaja").hide();
+			       	jQuery("#botonAlta").hide();
+				   	jQuery("#botonFallecido").hide();		  
 			   <%} else {%>	   
 			      <%if (!user.getAccessType().equalsIgnoreCase(SIGAConstants.ACCESS_FULL)) {%>	
-			   		document.getElementById("botonBaja").style.display="none";
-				    document.getElementById("botonAlta").style.display="none";
-					document.getElementById("botonFallecido").style.display="none";
+			   		jQuery("#botonBaja").hide();
+				    jQuery("#botonAlta").hide();
+					jQuery("#botonFallecido").hide();
 					jQuery.attr("#fechaEstado","disabled","disabled");
 			        jQuery.attr("#motivo","disabled","disabled");
 				 <%} else {%>	
-				    document.getElementById("botonBaja").style.display="none";
-				    document.getElementById("botonAlta").style.display="block";
-					document.getElementById("botonFallecido").style.display="none";
+				    jQuery("#botonBaja").hide();
+				    jQuery("#botonAlta").show();
+					jQuery("#botonFallecido").hide();
 			        jQuery.attr("#fechaEstado","disabled","disabled");
 			        jQuery.attr("#motivo","disabled","disabled");			
 				<%}
 					}%>		   
 			 }else{
-			     	document.getElementById("activo").style.display="block";
-			     	document.getElementById("baja").style.display="none";	     
+			     	jQuery("#activo").show();
+			     	jQuery("#baja").hide();	     
 				 <%if (modo.equals("ver")) {%>
-			       	document.getElementById("botonBaja").style.display="none";
-			       	document.getElementById("botonAlta").style.display="none";
-				   	document.getElementById("botonFallecido").style.display="none";		   
+			       	jQuery("#botonBaja").hide();
+			       	jQuery("#botonAlta").hide();
+				   	jQuery("#botonFallecido").hide();		   
 			   <%} else {
 						if (!user.getAccessType().equalsIgnoreCase(SIGAConstants.ACCESS_FULL)) {%>	
-				    document.getElementById("botonBaja").style.display="none";
-				    document.getElementById("botonAlta").style.display="none";
-					document.getElementById("botonFallecido").style.display="none";			
+				    jQuery("#botonBaja").hide();
+				    jQuery("#botonAlta").hide();
+					jQuery("#botonFallecido").hide();			
 			        jQuery.attr("#fechaEstado","disabled","disabled");
 			        jQuery.attr("#motivo","disabled","disabled");
 				 <%} else {%>
-			   	   document.getElementById("botonBaja").style.display="block";
-		     	   document.getElementById("botonAlta").style.display="none";
-				   document.getElementById("botonFallecido").style.display="block";
+			   	   jQuery("#botonBaja").show();
+		     	   jQuery("#botonAlta").hide();
+				   jQuery("#botonFallecido").show();
 			       jQuery.removeAttr("#fechaEstado","disabled");	  
 			       jQuery.removeAttr("#motivo","disabled");
 			       document.getElementById("fechaEstado").value="";
@@ -214,33 +214,50 @@
 			 	document.DatosColegiacionForm.target="resultadoDatosColegiacion";
 			 	document.DatosColegiacionForm.submit();
 		  	}
+		  	
+			function buscar() {
+				document.SancionesLetradoForm.submit();
+			}	  	
+			
+			function calcularAltura() {		
+				if(document.getElementById("idBotonesAccion")) {
+					var tablaBotones = jQuery('#idBotonesAccion')[0];						
+					var divResultados = jQuery('#resultados')[0];
+					
+					var posTablaBotones = tablaBotones.offsetTop;
+					var posTablaDatos = divResultados.offsetTop;
+					
+					jQuery('#resultados').height(posTablaBotones - posTablaDatos);					
+				}		
+			}				
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos" onLoad="situacionLetrado()";>
+	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();">
 	
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
-		<table class="tablaTitulo" align="center" cellspacing=0>
+		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
-				<td class="titulitosDatos"><siga:Idioma
-						key="censo.consultaDatosColegiacion.literal.titulo1" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;&nbsp;
-					<%
-						if (!numero.equalsIgnoreCase("")) {
-					%> <siga:Idioma
-						key="censo.fichaCliente.literal.colegiado" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%
-						} else {
-					%> <siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
-					<%
-						}
-					%>
+				<td class="titulitosDatos">
+					<siga:Idioma key="censo.consultaDatosColegiacion.literal.titulo1" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;&nbsp;
+<%
+					if (!numero.equalsIgnoreCase("")) {
+%> 
+						<siga:Idioma key="censo.fichaCliente.literal.colegiado" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+<%
+					} else {
+%> 
+						<siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
+<%
+					}
+%>
 				</td>
 			</tr>
 		</table>
 	
 		<!-- CAMPOS DEL REGISTRO -->
 		<html:form action="/CEN_DatosColegiacion.do" method="POST" target="submitArea33">
-			<table class="tablaCentralCampos" align="center" height="10%">		
+			<table class="tablaCentralCampos">		
 				<html:hidden property="modo" value="" />
 				<html:hidden property="idPersona" value="<%=idPersona.toString()%>" />
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>" />
@@ -248,86 +265,76 @@
 				<input type="hidden" name="activar" value="<%=activar%>">
 				<input type="hidden" name="nombre" value="<%=nombre%>">
 				<input type="hidden" name="numero" value="<%=numero%>">
-				<input type="hidden" name="accion"
-					value="<%=(String) request.getAttribute("ACCION")%>">
-				<input type="hidden" name="idInstitucionPersona"
-					value="<%=idInstitucion%>">
+				<input type="hidden" name="accion" value="<%=(String) request.getAttribute("ACCION")%>">
+				<input type="hidden" name="idInstitucionPersona" value="<%=idInstitucion%>">
 	
 				<tr>
-					<td width="100%" align="center">
+					<td>
 						<!-- SUBCONJUNTO DE DATOS --> 
 						<siga:ConjCampos leyenda="censo.consultaDatosColegiacion.literal.situacionLetrado">
-							<table align="center" width="100%" border="0" cellpadding="0"
-								cellspacing="0" height="20%">
+							<table width="100%" border="0" cellpadding="0" cellspacing="0">
 								<tr>
-									<td width="6%">
-										<table>
+									<td width="80px">
+										<table border="0" cellpadding="0" cellspacing="0">
 											<tr>
-												<td id="activo" valign="middle" style="display: block"
-													align="center" class="txGrandeActivo" width="30%">
+												<td id="activo" valign="middle" align="center" class="txGrandeActivo">
 													<siga:Idioma key="censo.consultaDatosColegiacion.literal.activo" />
 												</td>
-												<td id="baja" valign="middle" style="display: none"
-													align="center" class="txGrandeBaja" width="30%">
+												
+												<td id="baja" valign="middle" style="display: none" align="center" class="txGrandeBaja">
 													<siga:Idioma key="censo.consultaDatosColegiacion.literal.baja" />
 												</td>
 											</tr>
 										</table>
 									</td>
-									<td width="64%">
-										<table align="center" width="100%" border="0">
+									
+									<td>
+										<table border="0" cellpadding="2" cellspacing="0">
 											<tr>
 												<td class="labelText">
 													<siga:Idioma key="censo.consultaDatosColegiacion.literal.fechaBaja" />&nbsp;(*)
 												</td>
-												<td align="left" width="120">
-													<%
-														if (!modo.equals("ver")) {
-													%> 
-													<siga:Fecha
-														nombreCampo="fechaEstado" valorInicial="<%=fecha %>" /> 
-													<%
-													 	} else {
-													%>
-													<siga:Fecha nombreCampo="fechaEstado"
-														valorInicial="<%=fecha %>" disabled="true" /> 
-													<%
-													 	}
-													%>
+												<td align="left" width="120px">
+<%
+													if (!modo.equals("ver")) {
+%> 
+														<siga:Fecha nombreCampo="fechaEstado" valorInicial="<%=fecha%>" /> 
+<%
+												 	} else {
+%>
+														<siga:Fecha nombreCampo="fechaEstado" valorInicial="<%=fecha%>" disabled="true" /> 
+<%
+												 	}
+%>
 												</td>
+												
 												<td class="labelText">
 													<siga:Idioma key="censo.consultaDatosColegiacion.literal.motivoBaja" />
 												</td>
 												<td>
-													<html:text name="DatosColegiacionForm"
-														property="motivo" size="40" maxlength="255" styleId="motivo"
-														styleClass="<%=estilo%>" value="<%=motivo%>"></html:text>
+													<html:text name="DatosColegiacionForm" property="motivo" size="40" maxlength="255" styleId="motivo" styleClass="<%=estilo%>" value="<%=motivo%>" />
 												</td>
 											</tr>
 										</table>
 									</td>
-									<td width="30%">
-										<table cellpadding="0" cellspacing="0" align="center" width="100%">
+									
+									<td>
+										<table border="0" cellpadding="2" cellspacing="0">
 											<tr>
-												<td id="botonBaja" align="center" valign="middle"
-													style="display: none">
-													<html:button property="botonBaja"
-														onclick="return darBaja();" styleClass="button">
+												<td id="botonBaja" align="center" valign="middle" style="display: none">
+													<html:button property="botonBaja" onclick="return darBaja();" styleClass="button">
 														<siga:Idioma key="censo.consultaDatosColegiacion.literal.darBaja" />
 													</html:button>
 												</td>
-												<td id="botonAlta" align="center" valign="middle"
-													style="display: none">
-													<html:button property="botonAlta"
-														onclick="return darAlta();" styleClass="button">
+												
+												<td id="botonAlta" align="center" valign="middle" style="display: none">
+													<html:button property="botonAlta" onclick="return darAlta();" styleClass="button">
 														<siga:Idioma key="censo.consultaDatosColegiacion.literal.darAlta" />
 													</html:button>
 												</td>
-												<td id="botonFallecido" align="center" valign="middle"
-													style="display: none">
-													<html:button
-														property="botonFallecido" onclick="return bajaFallecido();"
-														styleClass="button">
+												
+												<td id="botonFallecido" align="center" valign="middle" style="display: none">
+													<html:button property="botonFallecido" onclick="return bajaFallecido();" styleClass="button">
 														<siga:Idioma key="censo.consultaDatosColegiacion.literal.bajaFallecido" />
 													</html:button>
 												</td>
@@ -341,73 +348,63 @@
 				</tr>
 			</table>
 		</html:form>
-		<table width="100%" align="center">
-			<tr>
-				<td width="100%" align="center">
-					<siga:ConjCampos leyenda="censo.consultaDatosColegiacion.literal.certificacion">
-						<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" height="20%">
-							<tr>
-								<%
-									if (estadoCertificacion) {
-								%>
-								<td class="labelText">
-									<siga:Idioma
-										key="censo.consultaDatosColegiacion.literal.certCorrecta" />
-								</td>
-								<%
-									} else {
-								%>
-								<td class="labelText">
-									<font color=red><b>
-										<siga:Idioma
-											key="censo.consultaDatosColegiacion.literal.certIncorrecta" /></b>
-									</font>
-								</td>
-								<td class="labelText">
-									<siga:Idioma
-										key="censo.consultaDatosColegiacion.literal.certEsperado" />:&nbsp;&nbsp;&nbsp;&nbsp;
-									<html:text name="DatosColegiacionForm"
-										property="certificadoCorrecto" styleClass="box" readonly="true"
-										size="30" value="<%=certificadoCorrecto%>"></html:text>
-									</td>
-								<%
-									}
-								%>
-							</tr>
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-		</table>
 		
-		<table width="100%" align="center">
-			<tr>
-				<td width="100%" align="center">
-					<siga:ConjCampos
-						leyenda="censo.consultaDatosColegiacion.literal.sancionesLetrado">
-						<!-- INICIO: IFRAME LISTA RESULTADOS -->
-						<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-							id="resultado" name="resultado" scrolling="no" frameborder="0"
-							marginheight="5" marginwidth="5"
-							style="width: 100%; height: 200px;"> </iframe>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-		</table>
-	
-		<table width="100%" align="center">
-			<tr>
-				<td width="100%" align="center">
-					<siga:ConjCampos leyenda="censo.consultaDatosColegiacion.literal.colegiaciones">
-						<!-- INICIO: IFRAME LISTA RESULTADOS -->
-						<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-							id="resultadoDatosColegiacion" name="resultadoDatosColegiacion"
-							scrolling="no" frameborder="0" marginheight="5" marginwidth="5"
-							style="width: 100%; height: 150px;"> </iframe>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-		</table>
+		<siga:ConjCampos leyenda="censo.consultaDatosColegiacion.literal.certificacion">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+<%
+					if (estadoCertificacion) {
+%>
+						<td class="labelText">
+							<siga:Idioma key="censo.consultaDatosColegiacion.literal.certCorrecta" />
+						</td>
+<%
+					} else {
+%>
+						<td class="labelText">
+							<font color=red>
+								<b> 
+									<siga:Idioma key="censo.consultaDatosColegiacion.literal.certIncorrecta" /> 
+								</b>
+							</font>
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="censo.consultaDatosColegiacion.literal.certEsperado" />:&nbsp;&nbsp;&nbsp;&nbsp;
+							<html:text name="DatosColegiacionForm"
+								property="certificadoCorrecto" styleClass="boxConsulta" readonly="true"
+								size="30" value="<%=certificadoCorrecto%>" />
+						</td>
+<%
+					}
+%>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+		
+		<div id="resultados">
+			<div style="position:relative;height:50%;width:100%;">		
+				<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+					id="resultado" 
+					name="resultado" 
+					scrolling="no" 
+					frameborder="0"
+					marginheight="0"
+					 marginwidth="0"
+					style="position:relative;height:100%;width:100%;"></iframe>
+			</div>
+			
+			<div style="position:relative;height:50%;width:100%;">
+				<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+					id="resultadoDatosColegiacion" 
+					name="resultadoDatosColegiacion"
+					scrolling="no" 
+					frameborder="0" 
+					marginheight="0" 
+					marginwidth="0"
+					style="position:relative;height:100%;width:100%;"> </iframe>
+			</div>
+		</div>				
 	
 		<siga:ConjBotonesAccion botones="<%=botonesAccion %>" modo="<%=modo%>"
 			idBoton="4#5" idPersonaBA="<%=idPersona.toString()%>"
@@ -419,32 +416,18 @@
 		<html:form action="/CEN_SancionesLetrado.do?noReset=true" method="POST" target="resultado">
 			<html:hidden property="modo" value="buscar" />
 			<input type="hidden" name="accionModal" value="">
-			<input type="hidden" name="accion"
-				value="<%=(String) request.getAttribute("ACCION")%>">
+			<input type="hidden" name="accion" 	value="<%=(String) request.getAttribute("ACCION")%>">
 			<html:hidden property="idPersona" value="<%=idPersona.toString() %>" />
-			<html:hidden property="idInstitucionAlta"
-				value="<%=user.getLocation() %>" />
-		</html:form>
+			<html:hidden property="idInstitucionAlta" value="<%=user.getLocation() %>" />
+		</html:form>	
 	
-	
-		<script type="text/javascript">
-			function buscar() {
-				document.SancionesLetradoForm.submit();
-			}
-			document.body.onLoad=buscar();
-		</script>
-	
-		<!-- FIN para buscar las sanciones -->
-	
-	
+		<!-- FIN para buscar las sanciones -->	
 		<!-- FIN para buscar las colegiaciones -->
 	
 		<!-- INICIO: SUBMIT AREA -->
 		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-			style="display: none"></iframe>
-		<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp"
-			style="display: none"></iframe>
+		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
+		<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
 	
 	</body>

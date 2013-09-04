@@ -384,10 +384,16 @@
 						</tr>
 						<tr>		
 							<td  colspan="2">
-						     	&nbsp;&nbsp;<html:textarea  onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"  style="width:410px" rows="13" property="texto" readOnly="<%=breadonly%>" styleclass="<%=estiloCaja %>" value="<%=texto%>"></html:textarea> 
+						     	&nbsp;&nbsp;<html:textarea property="texto" 
+						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		style="overflow-y:auto; overflow-x:hidden; width:400px; height:200px; resize:none;" 
+						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja %>" value="<%=texto%>"></html:textarea> 
 							</td>
 							<td colspan="2" valign="top">
-						     	&nbsp;&nbsp;<html:textarea  onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)" style="width:410px" rows="13" property="observaciones" readOnly="<%=breadonly%>"  styleclass="<%=estiloCaja%>" value="<%=observaciones%>"></html:textarea> 
+						     	&nbsp;&nbsp;<html:textarea property="observaciones"
+						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		style="overflow-y:auto; overflow-x:hidden; width:400px; height:200px; resize:none;" 
+						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja%>" value="<%=observaciones%>"></html:textarea> 
 							</td>
 						</tr>
 						

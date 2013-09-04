@@ -210,8 +210,7 @@
 		name="tablaDatos" 
 		border="1"
 		columnNames="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
-		columnSizes="20,12,10,8,8,8,10,8,8,8" 
-		fixedHeight="70%">
+		columnSizes="20,12,10,8,8,8,10,8,8,8">
 		
 		<% if (obj == null || obj.size() == 0) { %>
 			<tr class ='titulitos' id="noRecordFound">
@@ -220,6 +219,7 @@
    		 		
    		 		</td>
  			</tr>
+ 			
 		<% } else {
 			// consultamos si el colegiado esta dado de baja
 			String idper = (String) request.getSession().getAttribute("idPersonaTurno");
@@ -556,20 +556,18 @@
 					literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";
 		%>
 		
-			<siga:FilaConIconos pintarEspacio="false" visibleEdicion="false"
-				visibleBorrado="false" fila='<%=String.valueOf(recordNumber)%>'
-				botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit">
-
-				<input type='hidden' name='validaInscripciones' value='<%=htGuardia.get("VALIDARINSCRIPCIONES")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=htGuardia.get("IDTURNO")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=htGuardia.get("IDGUARDIA")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_22' name='oculto<%=String.valueOf(recordNumber)%>_22' value='<%=htGuardia.get("PORGRUPOS")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=htGuardia.get("GUARDIAS")%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaSolicitud%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_44' name='oculto<%=String.valueOf(recordNumber)%>_44' value='<%=fechaValidacion%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_55' name='oculto<%=String.valueOf(recordNumber)%>_55' value='<%=idper%>'>
+			<siga:FilaConIconos pintarEspacio="false" visibleEdicion="false" visibleBorrado="false" fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit">				
 				
 				<td>
+					<input type='hidden' name='validaInscripciones' value='<%=htGuardia.get("VALIDARINSCRIPCIONES")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=htGuardia.get("IDTURNO")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=htGuardia.get("IDGUARDIA")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_22' name='oculto<%=String.valueOf(recordNumber)%>_22' value='<%=htGuardia.get("PORGRUPOS")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=htGuardia.get("GUARDIAS")%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaSolicitud%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_44' name='oculto<%=String.valueOf(recordNumber)%>_44' value='<%=fechaValidacion%>'>
+					<input type='hidden' id='oculto<%=String.valueOf(recordNumber)%>_55' name='oculto<%=String.valueOf(recordNumber)%>_55' value='<%=idper%>'>
+					
 					<%=htGuardia.get("GUARDIA")%>
 				</td>
 				
