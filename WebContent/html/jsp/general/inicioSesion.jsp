@@ -48,10 +48,10 @@
 				var msg2 = '<siga:Idioma key="messages.noSession.modal"/>';
 				if (top.dialogArguments) {
 					// es ventana modal
-					alert(msg2);
+					alertStop(msg2);
 					top.cierraConParametros("MODIFICADO");
 				} else {
-					alert(msg1);
+					alertStop(msg1);
 					window.top.location="<%=pathInicio%>";
 				}
 			}
