@@ -123,9 +123,6 @@
 					
 <% String tamanio = "P";
 if(beanTablaMaestra.getNumeroTextoPlantillas()!=null ){
-	if(beanTablaMaestra.getNumeroTextoPlantillas()==1)
-		 tamanio = "M";
-	else if(beanTablaMaestra.getNumeroTextoPlantillas()>1)
 		tamanio = "G";
 }
 	
