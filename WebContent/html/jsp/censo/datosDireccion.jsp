@@ -789,7 +789,7 @@
 
 	//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 	function rellenarCampos() {
-		//document.getElementById("provincia").onchange();
+		document.getElementById("provincia").onchange();
 	}
 
 	function createProvince() {
@@ -1002,11 +1002,21 @@
 										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp
 									</td>
 									<td>
-										<siga:Select id="pais" 
-													queryParamId="idpais" 
-													queryId="getPaises"
-													disabled="<%=String.valueOf(!editarCampos)%>"
-													selectedIds="<%=idPais%>"/>										
+										<%
+											if (editarCampos) {
+										%> 
+										<siga:ComboBD nombre="pais" tipo="pais"
+											clase="boxCombo" obligatorio="false"
+											elementoSel="<%=idPais%>" accion="selPais(this.value);" /> 
+										<%
+ 											} else {
+ 										%>
+										<html:hidden property="pais" styleId="pais" value='<%=ididPais%>'></html:hidden>
+										<html:text name="consultaDireccionesForm" property="pais2" styleId="pais2"
+											value='<%=pais%>' size="40" styleClass="<%=clase%>"
+											readOnly="<%=desactivado%>"></html:text> <%
+											}
+										%>
 									</td>
 								</tr>
 
@@ -1018,12 +1028,20 @@
 										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp(*)
 									</td>
 									<td id="provinciaEspanola">
-										<siga:Select id="provincia" 
-													queryParamId="idprovincia"
-													queryId="getProvincias"
-													childrenIds="poblacion"
-													selectedIds="<%=idProvincia%>"
-													disabled="<%=String.valueOf(!editarCampos)%>"/>										
+										<%
+											if (editarCampos) {
+										%> 
+										<siga:ComboBD nombre="provincia"
+											tipo="provincia" clase="boxCombo" obligatorio="false"
+											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> <%
+ 											} else {
+ 										%> 
+ 										<html:text property="provincia" value="<%=provincia%>" styleId="provincia"
+											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+										</html:text>
+										<%
+											}
+										%>
 									</td>
 									<td class="labelText" id="poblacionSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp
@@ -1033,17 +1051,18 @@
 									</td>
 									<td id="poblacionEspanola">
 										<%
-										String idProvinciaJSON = "";
-										if (sIdprovincia != null && !"".equals(sIdprovincia)){
-											idProvinciaJSON = "{\"idprovincia\":\""+sIdprovincia+"\"}";
-										}
+											if (editarCampos) {
+										%> 
+										<siga:ComboBD nombre="poblacion"
+											tipo="poblacion" clase="boxCombo"
+											elementoSel="<%=idPoblacion%>" hijo="t" /> <%
+ 											} else {
+ 										%> 
+ 										<html:text property="poblacion" value="<%=poblacion%>" styleId="poblacion"
+											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+										<%
+											}
 										%>
-										<siga:Select id="poblacion"
-													queryId="getPoblacionesDeProvincia"
-													parentQueryParamIds="idprovincia"
-													params="<%=idProvinciaJSON%>"
-													selectedIds="<%=idPoblacion%>"
-													disabled="<%=String.valueOf(!editarCampos)%>"/>										
 									</td>
 									<td class="ocultar" id="poblacionExtranjera">
 										<html:text name="consultaDireccionesForm" property="poblacionExt" styleId="poblacionExt"

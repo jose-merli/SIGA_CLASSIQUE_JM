@@ -300,7 +300,7 @@ String app = request.getContextPath();
 				var tmp1 = document.getElementsByName("provincia");
 				var tmp2 = tmp1[0];
 				if (tmp2) {
-					//tmp2.onchange();
+					tmp2.onchange();
 				} 
 /*< %			   }%>*/
 		 <%}%>
@@ -692,14 +692,10 @@ String app = request.getContextPath();
 <%}%>
 
 				//Poblacion:				
-				jQuery("#poblacion").data("set-id-value", resultado[10]);
-				jQuery("#provincia").change();
-					/*
 				poblacionSeleccionada = resultado[10];
 				//alert("="+poblacionSeleccionada);
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
 				window.setTimeout("recargarComboHijo()",1000,"Javascript");
-				*/
 
 				if (resultado!=null && resultado[1]!="") {
 					var p1 = document.getElementById("resultado");					
@@ -716,12 +712,9 @@ String app = request.getContextPath();
 			 comprobarTipoIdent();
 		 }	
 		function recargarComboHijo() {
-			jQuery("#poblacion").val(poblacionSeleccionada);
-			/*
 			var acceso = poblacionFrame.document.getElementsByTagName("select");
 			acceso[0].value = poblacionSeleccionada;
 			document.forms[0].poblacion.value = poblacionSeleccionada;
-			*/
 		}
 
 		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
@@ -1017,17 +1010,16 @@ String app = request.getContextPath();
 			
 		var poblacionSeleccionada;
 		function recargarComboHijo() {
-			jQuery("#poblacion").val(poblacionSeleccionada);
-			/*
 			var acceso = poblacionFrame.document.getElementsByTagName("select");
 			acceso[0].value = poblacionSeleccionada;
 			document.PersonaJGForm.poblacion.value = poblacionSeleccionada;
-			*/
 		}
 
 		function postAccionBusquedaNIF(){
-			jQuery("#poblacion").data("set-id-value", document.PersonaJGForm.poblacion.value);
-			jQuery("#provincia").change();
+			poblacionSeleccionada = document.getElementById("poblacion").value;
+			document.getElementById("provincia").onchange();
+			window.setTimeout("recargarComboHijo()",500,"Javascript");	
+			document.getElementById("poblacion").value = document.PersonaJGForm.poblacion.value;		
 		}
 
 		function preAccionExisteNIF(){
@@ -1343,22 +1335,28 @@ String app = request.getContextPath();
 						</td>
 
 						<td>			
-<%
-						ArrayList tipoIdentificacionSel = new ArrayList();
-						if (miform.getNIdentificacion() != null) {
-							tipoIdentificacionSel.add(miform.getTipoId());
-						}
-						
-							String tipoIdent = (String) request.getAttribute("identificacion");
-%>
-							<script type="text/javascript">
-								jQuery(function(){
-									jQuery("#tipoId").on("change", comprobarTipoIdent());
-								});
-							</script>
-							<siga:Select queryId="getTiposIdentificacion" id="tipoId" selectedIds="<%=tipoIdentificacionSel%>" readOnly="<%=sreadonly%>" width="100"/>
-
-						</td>
+		<%
+			ArrayList tipoIdentificacionSel = new ArrayList();
+					if (miform.getNIdentificacion() != null) {
+						tipoIdentificacionSel.add(miform.getTipoId());
+					}
+			if (accion.equalsIgnoreCase("ver")) {
+				String tipoIdent = (String) request.getAttribute("identificacion");
+		%>			
+				<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacionConCIF" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"  accion="comprobarTipoIdent();"/>
+	    <%
+		 	} else {
+		  %>
+		   		<html:select styleId="identificadores"  name="PersonaJGForm"  styleClass="boxCombo"  readOnly="false" property="tipoId" onchange="comprobarTipoIdent();"  >
+					<bean:define id="identificadores" name="PersonaJGForm"
+						property="identificadores" type="java.util.Collection" />
+					<html:optionsCollection name="identificadores" value="idTipoIdentificacion"
+						label="descripcion" />
+				</html:select>
+		   <%
+		   	}
+		   %>
+		</td>
 						<td class="labelText">
 							<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" />
 						</td>
@@ -1429,16 +1427,17 @@ String app = request.getContextPath();
 						<td class="labelText" width="107px">
 							<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
 						</td>			
-<%
-						ArrayList selTipoVia = new ArrayList();
+
+			
+						<td>	
+						<%
+					ArrayList selTipoVia = new ArrayList();
 						if (miform.getTipoVia() != null)
 							selTipoVia.add(miform.getTipoVia());
 						String paramTipoVia[] = { usr.getLocation() };
-%>
-			
-						<td width="145px">
-							<siga:Select queryId="getTiposVia" id="tipoVia" selectedIds="<%=selTipoVia%>" readOnly="<%=sreadonly%>" width="123" />	
-						</td>
+				%>	
+				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readOnly="<%=sreadonly%>" estilo="width:120" />
+			</td>
 			
 						<td class="labelText" width="82px">
 							<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
@@ -1530,22 +1529,36 @@ String app = request.getContextPath();
 %>		
 						</td>
 						<td>
+			<%
+				ArrayList selProvincia = new ArrayList();
+						if (miform.getProvincia() != null)
+							selProvincia.add(miform.getProvincia());
+			%>
 <%
-							ArrayList selProvincia = new ArrayList();
-							if (miform.getProvincia() != null)
-								selProvincia.add(miform.getProvincia());
+	//LMS 13/09/2006
+			//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
+			String sHack = "";
+			if (esFichaColegial && bPestana.equals("true")) {
+				//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
+
+				sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
+				sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
+				sHack += "if(tam_provincia0==-1)";
+				sHack += "{";
+				sHack += "	tam_provincia0=destino_provincia0.length;";
+				sHack += "}";
+				sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
+				sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
+
+			} else {
+				sHack = "Hijo:poblacion";
+			}
+%>
 			
-							if (obligatorioPoblacion) {
-%>								
-								<siga:Select queryId="getProvincias" queryParamId="idprovincia" id="provincia" selectedIds="<%=selProvincia %>" required="true" readOnly="<%=sreadonly%>" childrenIds="poblacion" width="190"/>
-<%	
-							} else {					
-%>							
-		  						<siga:Select queryId="getProvincias" queryParamId="idprovincia" id="provincia" selectedIds="<%=selProvincia %>" readOnly="<%=sreadonly%>" childrenIds="poblacion" width="190"/>
-<%	
-							}					
-%>									  							 
-						</td>
+		  
+			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+		 
+		</td>
 						
 						<td colspan="8">
 							<table width="100%" cellpadding="0" cellspacing="0" border="0">			
@@ -1566,34 +1579,25 @@ String app = request.getContextPath();
  										}
 %>	
 									</td>
-									<td>
-<%
-										ArrayList selPoblacion = new ArrayList();
-										if (miform.getPoblacion() != null)
-											selPoblacion.add(miform.getPoblacion());
-		
-										if (accion.equalsIgnoreCase("ver")) {
-											String poblacion = (String) request.getAttribute("poblacion");
-%>
-				   							<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" />
-<%
-				   						} else {
-				   							String idPoblacionParamsJSON = "";
-				   							if (miform.getProvincia() != null)
-				   								idPoblacionParamsJSON = UtilidadesString.createJsonString("idprovincia", miform.getProvincia());
-				   							
-											if (obligatorioPoblacion) {
-%>								
-												<siga:Select queryId="getPoblacionesDeProvincia" id="poblacion" parentQueryParamIds="idprovincia" params="<%=idPoblacionParamsJSON%>" selectedIds="<%=selPoblacion%>" required="true" readOnly="<%=sreadonly%>" width="260"/>
-<%	
-											} else {					
-%>							
-		  										<siga:Select queryId="getPoblacionesDeProvincia" id="poblacion" parentQueryParamIds="idprovincia" params="<%=idPoblacionParamsJSON%>" selectedIds="<%=selPoblacion%>" readOnly="<%=sreadonly%>" width="260"/>
-<%	
-											}					
-				   						}
-%>
-									</td>
+									<td colspan="8">
+			<%
+				ArrayList selPoblacion = new ArrayList();
+						if (miform.getPoblacion() != null)
+							selPoblacion.add(miform.getPoblacion());
+
+						if (accion.equalsIgnoreCase("ver")) {
+							String poblacion = (String) request
+									.getAttribute("poblacion");
+			%>
+		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
+		   <%
+		   	} else {
+		   %>
+				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
+		   <%
+		   	}
+		   %>
+		</td>
 								</tr>
 							</table>
 						</td>
@@ -1639,18 +1643,18 @@ String app = request.getContextPath();
  							}
 %>		
 						</td>
-						<td width="220px">
-<%
-							ArrayList selPais = new ArrayList();
-							if (miform.getNacionalidad() != null) {
-								selPais.add(miform.getNacionalidad());
-							}/* else {// Aquí se quita la obligatoriedad al campo idPais y si no se selecciona ninguno NO se pone España por defecto
+						<td width="20%">
+			<%
+				ArrayList selPais = new ArrayList();
+						if (miform.getNacionalidad() != null) {
+							selPais.add(miform.getNacionalidad());
+						}/* else {// Aquí se quita la obligatoriedad al campo idPais y si no se selecciona ninguno NO se pone España por defecto
 																																		// RGG seleccion automática de España
 																																		selPais.add(ClsConstants.ID_PAIS_ESPANA);
 																																	}*/
-%>
-							<siga:Select queryId="getPaises" id="nacionalidad" selectedIds="<%=selPais%>" readOnly="<%=sreadonly%>" width="200"/>
-						</td>
+			%>
+			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="200" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
+		</td>
 						
 						<td class="labelText" width="140px">
 							<siga:Idioma key="gratuita.personaJG.literal.fechaNac"/>	
@@ -1718,13 +1722,13 @@ String app = request.getContextPath();
 %>			 
 						</td>
 						<td>
-<%
-							ArrayList selEstadoCiv = new ArrayList();
-							if (miform.getEstadoCivil() != null)
-								selEstadoCiv.add(miform.getEstadoCivil());
-%>
-							<siga:Select queryId="getEstadosCiviles" id="estadoCivil" selectedIds="<%=selEstadoCiv%>" readOnly="<%=sreadonly%>" width="200"/>
-						</td>
+			<%
+				ArrayList selEstadoCiv = new ArrayList();
+						if (miform.getEstadoCivil() != null)
+							selEstadoCiv.add(miform.getEstadoCivil());
+			%>
+			<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=classCombo%>" elementoSel="<%=selEstadoCiv%>" readOnly="<%=sreadonly%>"/>
+		</td>
 						
 						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.regimenConyugal"/>	
@@ -1779,17 +1783,27 @@ String app = request.getContextPath();
 		 						<siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
 	     					</td>		
 <%
-			    			if (miform.getTipoGrupoLaboral() != null) {
-		    					tipoGrupoLaboral = miform.getTipoGrupoLaboral();
-		    				} else {
-		    					tipoGrupoLaboral = "";
-		    				}
-		    				ArrayList selTipoGrupoLaboral = new ArrayList();
-		    				selTipoGrupoLaboral.add(tipoGrupoLaboral);
-%>		
-						    <td>
-						    	<siga:Select queryId="getTiposGrupoLaboral" id="tipoGrupoLaboral" selectedIds="<%=selTipoGrupoLaboral%>" readOnly="<%=sreadonly%>" width="150"/>	       
-					     	</td>
+			    	if (miform.getTipoGrupoLaboral() != null) {
+			    					tipoGrupoLaboral = miform.getTipoGrupoLaboral();
+			    				} else {
+			    					tipoGrupoLaboral = "";
+			    				}
+			    				ArrayList selTipoGrupoLaboral = new ArrayList();
+			    				selTipoGrupoLaboral.add(tipoGrupoLaboral);
+			    %>		
+	    <td>
+	       <%
+	       	if (!accion.equalsIgnoreCase("ver")) {
+	       %>
+		       <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral"  ancho="150" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>"   />	
+	       <%
+		       	} else {
+		       %>	
+	           <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" ancho="150" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
+  	       <%
+	  	       	}
+	  	       %>	
+     	</td>
 						</tr>
 	
 						<tr>
@@ -1797,29 +1811,29 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.personaJG.literal.idioma"/>		
 							</td>
 							<td>
-<%
-								if (miform.getSexo() != null) {
-									idioma = miform.getIdioma();
-								} else {
-									idioma = "";
-								}
-								ArrayList selIdioma = new ArrayList();
-								selIdioma.add(idioma);
-%>
-								<siga:Select queryId="getIdiomasInstitucion" id="idioma" selectedIds="<%=selIdioma%>" readOnly="<%=sreadonly%>" width="200"/>
-							</td>
+			<%
+				if (miform.getSexo() != null) {
+							idioma = miform.getIdioma();
+						} else {
+							idioma = "";
+						}
+						ArrayList selIdioma = new ArrayList();
+						selIdioma.add(idioma);
+			%>
+			<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+		</td>
 							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.personaJG.literal.profesion"/>		
 							</td>
 							<td>
-<%
-								ArrayList selProfe = new ArrayList();
-								if (miform.getProfesion() != null)
-									selProfe.add(miform.getProfesion());
-%>
-								<siga:Select queryId="getProfesiones" id="profesion" selectedIds="<%=selProfe%>" readOnly="<%=sreadonly%>"/>
-							</td>
+			<%
+				ArrayList selProfe = new ArrayList();
+						if (miform.getProfesion() != null)
+							selProfe.add(miform.getProfesion());
+			%>
+			<siga:ComboBD nombre = "profesion" tipo="cmbProfesion" clase="<%=classCombo%>" elementoSel="<%=selProfe%>" readOnly="<%=sreadonly%>"/>
+		</td>
 
      						<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
 <%
@@ -1852,8 +1866,8 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.personaJG.literal.enCalidadDe"/>		
 							</td>
 							<td>
-								<siga:Select queryId="getEnCalidadDe" id="enCalidadDe" readOnly="<%=sreadonly%>" width="150" />
-							</td>
+			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readOnly="<%=sreadonly%>"/>
+		</td>
 <%
 						} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
@@ -1872,15 +1886,15 @@ String app = request.getContextPath();
 								<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
 							</td>
 						
-							<td>
-<%
-								ArrayList selParentesco = new ArrayList();
-								if (miform.getParentesco() != null)
-									selParentesco.add(miform.getParentesco());
-								String paramParentesco[] = {usr.getLocation()};
-%>
-								<siga:Select queryId="getParentescos" id="parentesco" selectedIds="<%=selParentesco%>" readOnly="<%=sreadonly%>" width="150"/>
-							</td>
+							<td  >
+		<%
+			ArrayList selParentesco = new ArrayList();
+						if (miform.getParentesco() != null)
+							selParentesco.add(miform.getParentesco());
+						String paramParentesco[] = {usr.getLocation()};
+		%>
+			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+		</td>
 						
 <%
 						} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
@@ -1889,8 +1903,12 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.personaJG.literal.calidad"/>&nbsp;			
 							</td>		
 							<td>
-								<siga:Select queryId="getTiposCalidades" id="calidad2" selectedIds="<%=calidadSel%>" readOnly="<%=sreadonly%>" width="150"/>				
-							</td>
+				<%if(!accion.equalsIgnoreCase("ver")){%>
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="true"  obligatorioSinTextoSeleccionar="true" parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" readonly="false"/>           	   
+					<%}else{%>
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" readonly="true"/>           	   
+			<%}%>
+		</td>
 <%
 						}
 %>
@@ -1950,17 +1968,18 @@ String app = request.getContextPath();
 %>	
 						</td>
 						<td>
-<%
-							ArrayList selMinus = new ArrayList();
-							if (miform.getMinusvalia() != null) {
-								selMinus.add(miform.getMinusvalia());
-							} else {
-								if(minusDefecto!=null)
-									selMinus.add(minusDefecto);
-							}	
-%>
-							<siga:Select queryId="getMinusvalias" id="minusvalia" selectedIds="<%=selMinus%>" required="<%=String.valueOf(obligatorioMinusvalia)%>" readOnly="<%=sreadonly%>"/>
-						</td>
+		<%
+				ArrayList selMinus = new ArrayList();
+						if (miform.getMinusvalia() != null){
+							selMinus.add(miform.getMinusvalia());
+						}else{
+							if(minusDefecto!=null)
+							selMinus.add(minusDefecto);
+						}	
+			%>
+			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
+			
+		</td>
 		
 <% 
 						if (conceptoE.equals(PersonaJGAction.SOJ)) { 
@@ -1969,18 +1988,18 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.personaJG.literal.idioma"/>		
 							</td>			
 							<td>
-<%	
-								if (miform.getSexo() != null) {
-									idioma = miform.getIdioma();
-								} else {
-									idioma = "";
-								}
-									
-								ArrayList selIdioma = new ArrayList();
-								selIdioma.add(idioma);								
-%>
-								<siga:Select queryId="getIdiomasInstitucion" id="idioma" selectedIds="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
-							</td>		
+				<%	if (miform.getSexo() != null) {
+						idioma = miform.getIdioma();
+					} else {
+						idioma = "";
+					}
+					
+					ArrayList selIdioma = new ArrayList();
+					selIdioma.add(idioma);
+					
+				%>
+				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+			</td>	
 <% 
 						} 
 %>	
@@ -2115,14 +2134,20 @@ String app = request.getContextPath();
 									<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
 								</td>
 								<td>
-<%
-									ArrayList selProcu = new ArrayList();
-									if (miform.getIdProcurador() != null)
-										selProcu.add(miform.getIdProcurador());
-									String paramProcu[] = { usr.getLocation() };
-%>			
-									<siga:Select queryId="getProcuradores" id="idProcurador" selectedIds="<%=selProcu%>" readOnly="<%=sreadonly%>" width="500"/>
-								</td>
+			<%
+				ArrayList selProcu = new ArrayList();
+							if (miform.getIdProcurador() != null)
+								selProcu.add(miform.getIdProcurador());
+							String paramProcu[] = { usr.getLocation() };
+			%>
+			
+			<%
+				if (!accion.equalsIgnoreCase("ver")) {%>
+					<siga:ComboBD nombre = "idProcurador" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}else{%>		
+			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}%>			
+		</td>
 <%
 							}
 %>
@@ -2281,14 +2306,19 @@ String app = request.getContextPath();
 										<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
 									</td>
 									<td>
-<%
-										ArrayList selProcu = new ArrayList();
-										if (miform.getIdProcurador() != null)
-											selProcu.add(miform.getIdProcurador());
-										String paramProcu[] = { usr.getLocation() };
-%>	
-										<siga:Select queryId="getProcuradores" id="idProcurador" selectedIds="<%=selProcu%>" readOnly="<%=sreadonly%>" width="500"/>					
-									</td>							
+			<%
+				ArrayList selProcu = new ArrayList();
+							if (miform.getIdProcurador() != null)
+								selProcu.add(miform.getIdProcurador());
+							String paramProcu[] = { usr.getLocation() };
+			%>	
+			<%
+				if (!accion.equalsIgnoreCase("ver")) {%>
+					<siga:ComboBD nombre = "idProcurador" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}else{%>		
+			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}%>			
+		</td>							
 								</tr>		
 <%
 							}
@@ -2349,8 +2379,18 @@ String app = request.getContextPath();
 %>
 							</td>
 							<td>
-								<siga:Select queryId="getTiposIngreso" id="tipoIngreso" selectedIds="<%=selTipoIngreso%>" readOnly="<%=sreadonly%>"/>		
-							</td>
+		<%
+			if (!accion.equalsIgnoreCase("ver")) {
+		%>
+			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxCombo" elementoSel="<%=selTipoIngreso%>"/>
+		<%
+			} else {
+		%>
+			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxComboConsulta" elementoSel="<%=selTipoIngreso%>" readonly="true"/>
+		<%
+			}
+		%>
+		</td>
 						</tr>
 						
 						<tr>
@@ -2476,18 +2516,28 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoConoce"/>
 							</td>			
 <%
-							if (miform.getTipoConoce() != null) {
-								tipoConoce = miform.getTipoConoce();
-							} else {
-								tipoConoce = "";
-							}
-							ArrayList selTipoConoce = new ArrayList();
-							selTipoConoce.add(tipoConoce);
-%>
+					if (miform.getTipoConoce() != null) {
+											tipoConoce = miform.getTipoConoce();
+										} else {
+											tipoConoce = "";
+										}
+										ArrayList selTipoConoce = new ArrayList();
+										selTipoConoce.add(tipoConoce);
+				%>
 			   
-							<td width="30%">
-								<siga:Select queryId="getTiposConoce" id="tipoConoce" selectedIds="<%=selTipoConoce%>" readOnly="<%=sreadonly%>"/>	
-							</td>
+	<td width="30%">
+	<%
+		if (!accion.equalsIgnoreCase("ver")) {
+	%>
+		<siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
+	<%
+		} else {
+	%>
+	   <siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxComboConsulta"  readonly="true" parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
+	<%
+		}
+	%>	
+	</td>
 							
 							<td class="labelText" width="30%">
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaInfoJG"/>
@@ -2512,17 +2562,28 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
 							</td>		
 <%
-							if (miform.getTipoGrupoLaboral() != null) {
-								tipoGrupoLaboral = miform.getTipoGrupoLaboral();
-							} else {
-								tipoGrupoLaboral = "";
-							}
-							ArrayList selTipoGrupoLaboral = new ArrayList();
-							selTipoGrupoLaboral.add(tipoGrupoLaboral);
-%>		
-							<td>
-								<siga:Select queryId="getTiposGrupoLaboral" id="tipoGrupoLaboral" selectedIds="<%=selTipoGrupoLaboral%>" readOnly="<%=sreadonly%>"/>	  
-							</td>
+				if (miform.getTipoGrupoLaboral() != null) {
+										tipoGrupoLaboral = miform
+												.getTipoGrupoLaboral();
+									} else {
+										tipoGrupoLaboral = "";
+									}
+									ArrayList selTipoGrupoLaboral = new ArrayList();
+									selTipoGrupoLaboral.add(tipoGrupoLaboral);
+			%>		
+	<td>
+	  <%
+	  	if (!accion.equalsIgnoreCase("ver")) {
+	  %>
+		<siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" clase="boxCombo"   parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
+	 <%
+		 	} else {
+		 %>	
+	   <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" ancho="150"/>	
+	 <%
+		 	}
+		 %>	
+	</td>
 							
 							<td class="labelText">	
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.pideJG" />	
@@ -2547,28 +2608,27 @@ String app = request.getContextPath();
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.NsolicitaInfoJG"/>
 							</td>			
 <%
-							if (miform.getNumVecesSOJ() != null) {
-								numVecesSOJ = miform.getNumVecesSOJ();
-							} else {
-								numVecesSOJ = "";
-							}
-							ArrayList selNumVecesSOJ = new ArrayList();
-							selNumVecesSOJ.add(numVecesSOJ);
-%>		
-							<td colspan="3">
-<%
-								// cmbNumVecesSOJ
-								//select 1 as id, f_siga_getrecurso_etiqueta('gratuita.SOJ.literal.una',@idioma@) as descripcion from dual union select 2 as id , f_siga_getrecurso_etiqueta('gratuita.SOJ.literal.dos',@idioma@) as descripcion from dual union select 3 as id , f_siga_getrecurso_etiqueta('gratuita.SOJ.literal.mas',@idioma@) as descripcion from dual
-								HashMap<String, List<KeyValue>> hmNumVecesSOJ = new HashMap<String, List<KeyValue>>();
-								ArrayList<KeyValue> arlOptions = new ArrayList<KeyValue>();
-								arlOptions.add(new KeyValue("1", UtilidadesString.getMensajeIdioma(usr, "gratuita.SOJ.literal.una")));
-								arlOptions.add(new KeyValue("2", UtilidadesString.getMensajeIdioma(usr, "gratuita.SOJ.literal.dos")));
-								arlOptions.add(new KeyValue("3", UtilidadesString.getMensajeIdioma(usr, "gratuita.SOJ.literal.mas")));
-								hmNumVecesSOJ.put(TagSelect.DATA_JSON_OPTION_KEY,arlOptions);
-								String sNumVecesSOJJSON = UtilidadesString.createJsonString(hmNumVecesSOJ);
-%>		
-								<siga:Select queryId="JSONDATA" id="numVecesSOJ" dataJSON="<%=sNumVecesSOJJSON%>" selectedIds="<%=selNumVecesSOJ%>"/>	
-							</td>
+					if (miform.getNumVecesSOJ() != null) {
+											numVecesSOJ = miform.getNumVecesSOJ();
+										} else {
+											numVecesSOJ = "";
+										}
+										ArrayList selNumVecesSOJ = new ArrayList();
+										selNumVecesSOJ.add(numVecesSOJ);
+				%>		
+	<td colspan="3">
+	 <%
+	 	if (!accion.equalsIgnoreCase("ver")) {
+	 %>
+		<siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
+	<%
+			} else {
+		%>		
+	   <siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxComboConsulta" readonly="true" parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
+	<%
+			}
+		%>	 	
+	</td>
 						</tr>
 					</table>
 				</siga:ConjCampos>
