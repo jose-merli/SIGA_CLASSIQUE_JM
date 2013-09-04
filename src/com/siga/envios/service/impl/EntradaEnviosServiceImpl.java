@@ -115,11 +115,9 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			}
 			
 			if(entradaEnviosForm.getComisionAJG()!=null && entradaEnviosForm.getComisionAJG().equals(AppConstants.DB_TRUE)){
-
 				criteria.andComisionajgEqualTo(new Short(AppConstants.DB_TRUE));
 			}else{
-				entradaEnviosExample.or().andComisionajgEqualTo(new Short(AppConstants.DB_FALSE)).andComisionajgIsNull();
-//				sql += " AND (COMISIONAJG IS NULL OR COMISIONAJG = 0 ) ";	
+				criteria.andComisionajgEqualTo(new Short(AppConstants.DB_FALSE));
 			}
 			
 			entradaEnviosExample.orderByFechapeticionDESC();
@@ -164,7 +162,6 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			parametrosMap.put("anio", anio);
 			parametrosMap.put("idTurno", idTurno);
 			parametrosMap.put("numero", numero);
-			parametrosMap.put("comisionAJG", comisionAJG);
 			entradaEnvios = envEntradaEnviosMapper.getComunicacionesDesigna(parametrosMap);
 			
 		} catch (Exception e) {
