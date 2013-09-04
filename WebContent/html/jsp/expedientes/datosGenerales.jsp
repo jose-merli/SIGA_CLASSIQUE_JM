@@ -95,35 +95,34 @@
 	}
 	
 	String nombreTamanio=""+(form.getNombreDenunciado().length() + 3);
-	if(nombreTamanio.equals("0"))
-		nombreTamanio="30";
-	String ape1Tamanio=""+(form.getPrimerApellidoDenunciado().length() + 3);
-	if(ape1Tamanio.equals("0"))
-		ape1Tamanio="30";
-	String ape2Tamanio=""+form.getSegundoApellidoDenunciado().length();
-
-	String numColegiadoTamanio= ""+form.getnColDenunciado().length();
-	//if(numColegiadoTamanio.equals("0"))
-		numColegiadoTamanio="10";
-	String nifTamanio = ""+form.getNifDenunciado().length();
-	//if(nifTamanio.equals("0"))
-		nifTamanio="10";
+	if(nombreTamanio.equals("0") || (form.getNombreDenunciado().length()+3) > 30)
+		nombreTamanio="20";
 	
+	String ape1Tamanio=""+(form.getPrimerApellidoDenunciado().length() + 3);
+	if(ape1Tamanio.equals("0") || (form.getPrimerApellidoDenunciado().length()+3) > 30)
+		ape1Tamanio="25";
+	
+	String ape2Tamanio=""+form.getSegundoApellidoDenunciado().length();
+	if(ape2Tamanio.equals("0") || (form.getSegundoApellidoDenunciado().length()+3) > 30)
+		ape2Tamanio="10";
+
+	String numColegiadoTamanio= "8";
+	String nifTamanio = "12";
 	
 	String nombreDenuncianteTamanio=""+(form.getNombreDenunciante().length() + 3);
-	if(nombreDenuncianteTamanio.equals("0"))
-		nombreDenuncianteTamanio="30";
+	if(nombreDenuncianteTamanio.equals("0") || (form.getNombreDenunciante().length()+3) > 30)
+		nombreDenuncianteTamanio="20";
+	
 	String ape1DenuncianteTamanio=""+(form.getPrimerApellidoDenunciante().length() + 3);
-	if(ape1DenuncianteTamanio.equals("0"))
-		ape1DenuncianteTamanio="30";
+	if(ape1DenuncianteTamanio.equals("0") || (form.getPrimerApellidoDenunciante().length()+3) > 30)
+		ape1DenuncianteTamanio="25";
+	
 	String ape2DenuncianteTamanio=""+form.getSegundoApellidoDenunciante().length();
+	if(ape2DenuncianteTamanio.equals("0") || (form.getSegundoApellidoDenunciante().length()+3) > 30)
+		ape2DenuncianteTamanio="10";
 
-	String nColDenuncianteTamanio= ""+form.getnColDenunciante().length();
-	//if(nColDenuncianteTamanio.equals("0"))
-		nColDenuncianteTamanio="10";
-	String nifDenuncianteTamanio = ""+form.getNifDenunciante().length();
-	//if(nifDenuncianteTamanio.equals("0"))
-		nifDenuncianteTamanio="10";
+	String nColDenuncianteTamanio = "8";
+	String nifDenuncianteTamanio  = "12";
 	
 	String nombreRelacion ="";
 	Boolean tieneExpeRelacionado= false;
@@ -1571,7 +1570,7 @@
 						<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 							<table class="tablaCampos" align="center" border="0">
 								<tr>
-									<td class="labelText" width="55">
+									<td class="labelText" width="60">
 										<siga:Idioma key="<%=tipoIdentificacionDenunciado%>"/>&nbsp;&nbsp;(*)
 									</td>				
 									<td width="<%=nifTamanio%>">				
@@ -1641,7 +1640,7 @@
 							<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
 								<table class="tablaCampos" align="center" border="0">
 									<tr>
-										<td class="labelText" width="55">
+										<td class="labelText" width="60">
 											<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>
 										</td>															
 										<td width="<%=nifDenuncianteTamanio%>">				
