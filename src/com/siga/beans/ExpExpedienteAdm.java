@@ -1359,12 +1359,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    	sql += E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + idInstitucionTipoExpediente + " AND ";
 				    	sql += E_NUMEROEXPEDIENTE + " = " + numeroExpediente + " AND ";
 				    	sql += E_ANIOEXPEDIENTE + " = " + anioExpediente + " AND ";
-				    	sql += " E."+ExpExpedienteBean.C_IDINSTITUCION+" = D."+ExpDenunciadoBean.C_IDINSTITUCION+"(+) "+
-								 " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE+"(+) "+
-								 " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_IDTIPOEXPEDIENTE+"(+) "+
-								 " AND E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE+" = D."+ExpDenunciadoBean.C_NUMEROEXPEDIENTE+"(+) "+
-								 " AND E."+ExpExpedienteBean.C_ANIOEXPEDIENTE+" = D."+ExpDenunciadoBean.C_ANIOEXPEDIENTE+"(+) "+
-								 " AND 1 = D."+ExpDenunciadoBean.C_IDDENUNCIADO+"(+) ";
+				    	sql += " E." + ExpExpedienteBean.C_IDINSTITUCION + " = D."+ExpDenunciadoBean.C_IDINSTITUCION + "(+) AND " +
+							   " E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = D." + ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE + "(+) AND " +
+							   " E." + ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = D." + ExpDenunciadoBean.C_IDTIPOEXPEDIENTE + "(+) AND " +
+							   " E." + ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = D." + ExpDenunciadoBean.C_NUMEROEXPEDIENTE + "(+) AND " +
+							   " E." + ExpExpedienteBean.C_ANIOEXPEDIENTE + " = D." + ExpDenunciadoBean.C_ANIOEXPEDIENTE + "(+) AND " +
+							   " 1 = D."+ExpDenunciadoBean.C_IDDENUNCIADO + "(+) AND ";
 				    	sql += E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + T_IDINSTITUCION + " AND ";
 				    	sql += E_IDTIPOEXPEDIENTE + " = " + T_IDTIPOEXPEDIENTE;
 				    	

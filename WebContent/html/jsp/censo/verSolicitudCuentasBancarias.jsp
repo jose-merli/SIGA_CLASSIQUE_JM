@@ -220,6 +220,7 @@
 											<html:text property="cboO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>' styleClass="boxConsulta" readOnly="true" /><br>
 											<html:text property="cboM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_CBO_CODIGO)%>' styleClass="boxConsultaRojo" readOnly="true" />
 										</td>
+										
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoSucursal"/>&nbsp;
 										</td>				
@@ -228,7 +229,7 @@
 											<html:text property="sucM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_CODIGOSUCURSAL)%>" styleClass="boxConsultaRojo" readOnly="true" />
 					   					</td>			   	
 					  				</tr>
-					   				<!-- FILA -->
+					  				
 									<tr>
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.digitoControl"/>&nbsp;
@@ -237,6 +238,7 @@
 											<html:text property="controlO" value="<%=String.valueOf(original.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>" styleClass="boxConsulta" readOnly="true" /><br>
 											<html:text property="controlM" value="<%=modificada.getString(CenSolicModiCuentasBean.C_DIGITOCONTROL)%>" styleClass="boxConsultaRojo" readOnly="true" />
 					   					</td>	
+					   					
 					   					<td class="labelText">
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;
 										</td>				
@@ -247,7 +249,7 @@
 					 				</tr>
 				   				</table>
 							</siga:ConjCampos>
-							<!-- MOTIVO -->
+							
 							<siga:ConjCampos leyenda="censo.datosCuentaBancaria.literal.motivo">
 								<table class="tablaCampos" align="center" border="0">														
 					  				<tr>
@@ -256,7 +258,7 @@
 										</td>											
 					   					<td width="90%">
 											<html:textarea property="motivo" 
-												style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"
+												style="overflow-y:auto; overflow-x:hidden; width:880px; height:80px; resize:none;"
 												value="<%=modificada.getString(CenSolicModiCuentasBean.C_MOTIVO)%>" 
 												styleClass="boxConsulta" readOnly="true"></html:textarea>
 										</td>		   					
@@ -267,12 +269,9 @@
 					</tr>
 				</html:form>
 			</table>
-
 			<!-- FIN: CAMPOS -->
-
-
-
 		</div>
+		
 			<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->	
 			
 			<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
