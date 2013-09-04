@@ -102,7 +102,7 @@ function habilitarCampos(isHabilitar) {
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/js/jquery.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 <style media="screen" type="text/css">
