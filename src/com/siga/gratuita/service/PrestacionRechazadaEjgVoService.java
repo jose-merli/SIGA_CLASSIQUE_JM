@@ -101,6 +101,17 @@ public class PrestacionRechazadaEjgVoService implements VoService<PrestacionRech
 	}
 
 
+
+	/* (non-Javadoc)
+	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getVo2Db(java.lang.Object)
+	 */
+	@Override
+	public ScsEjgPrestacionRechazada getVo2Db(PrestacionRechazadaEjgVo objectVo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 
 	

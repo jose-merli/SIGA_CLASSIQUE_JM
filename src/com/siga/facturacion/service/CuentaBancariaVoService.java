@@ -181,6 +181,17 @@ public class CuentaBancariaVoService implements VoService<CuentasBancariasForm,C
 
 
 
+	/* (non-Javadoc)
+	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getVo2Db(java.lang.Object)
+	 */
+	@Override
+	public FacBancoinstitucion getVo2Db(CuentaBancariaVo objectVo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 
 	
 
