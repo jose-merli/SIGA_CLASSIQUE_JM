@@ -38,8 +38,7 @@
 
 
   		<!-- defaults for Autocomplete and displaytag -->
-  		<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-  		<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+  		<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<siga:Titulo titulo="gratuita.gestionInscripciones.menu"	localizacion="gratuita.gestionInscripciones.localizacion.literal" />
