@@ -1497,6 +1497,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    codigos.put(new Integer(contador),user.getLocation());
 		    	sql += ":"+contador;
 		    	sql += ", SYSDATE)||'%'";
+		    	sql += " AND P.IDPERSONA NOT IN (SELECT IDPERSONA FROM CEN_NOCOLEGIADO  NC WHERE NC.IDPERSONA = C.IDPERSONA AND NC.IDINSTITUCION = C.IDINSTITUCION) "; 
+		    	
 			    
 		    }
 		    if(form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")){

@@ -83,7 +83,7 @@
 			 <siga:Fecha nombreCampo="fechaHasta" /> 
 			</td>
 			<td width ="15%" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Estado"/></td>
-					<td colspan ="3"><siga:ComboBD nombre="cmbEstadosFactura" tipo="cmbEstadosFactura"  clase="boxCombo" obligatorio="false" />
+					<td colspan ="3"><siga:ComboBD nombre="cmbEstadosFactura" tipo="cmbEstadosFacturaMorosos"  clase="boxCombo" obligatorio="false" />
 			
 				
 		</tr>
@@ -144,13 +144,23 @@
 				
 					<table>
 					<tr>
-						<td ><siga:BusquedaPersona tipo="colegiado"	idPersona="letrado">
-						</siga:BusquedaPersona></td>
-						<td  class="labelText"><siga:Idioma
-							key="censo.consultaDatosColegiales.literal.estado" /></td>
-						<td><siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+						<td ><siga:BusquedaPersona tipo="colegiado"	idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor">
+							</siga:BusquedaPersona>
 						</td>
-					</tr>
+							<td>
+								<table>
+									<tr>
+										<td  class="labelText">
+							
+											<siga:Idioma
+												key="censo.consultaDatosColegiacion.literal.estadoCol" /></td>
+										<td>
+											<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
 					</table>
 			
 				</fieldset>
@@ -288,6 +298,8 @@
 		}
 		function seleccionarTodos(pagina) 
 		{
+			
+			
 			document.forms[0].seleccionarTodos.value = pagina;
 			buscar('buscarPor');
 				
@@ -309,6 +321,23 @@
 			document.RecuperarConsultasForm.submit();
 			
 		}
+		function preFunctionDeudor() 
+		{		
+			jQuery("#cmbEstadoColegial").prop("selectedIndex",0);
+			jQuery("#cmbEstadoColegial").attr("disabled","disabled");
+			
+			
+		}
+		function postFunctionDeudor() 
+		{	
+			if(document.getElementById('numeroNifTagBusquedaPersonas').value ==''){
+				jQuery("#cmbEstadoColegial").removeAttr("disabled");
+			}
+			
+			
+		}
+		
+		
 		
 			
 	</script>
