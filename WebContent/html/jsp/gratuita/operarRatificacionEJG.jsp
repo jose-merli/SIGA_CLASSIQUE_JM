@@ -535,7 +535,7 @@
 			var idTipo  = <%=idTipoEJG%>;
 			var numero = <%=numero%>;
 			var idTipoInforme  = document.InformesGenericosForm.idTipoInforme.value;
-			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme=="+idTipoInforme+"%%%";
+			var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==EJG%%%";
 			
 			document.InformesGenericosForm.datosInforme.value=datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
