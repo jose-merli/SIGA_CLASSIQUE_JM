@@ -90,7 +90,7 @@
 								</td>
 								<td> 
 									<html:textarea name="InscripcionTGForm" property="observacionesValBaja"
-										style="overflow:auto; width:300; height:80" 
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:80px; resize:none;"
 										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
 										styleClass="box" readOnly="false"></html:textarea>
 								</td>
