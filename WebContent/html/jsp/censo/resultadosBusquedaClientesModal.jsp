@@ -198,9 +198,10 @@
 		<%
 			if (resultado == null || resultado.size() == 0) {
 				%>			
-			 		<tr>
-			   		 <td class="titulitos" style="background-color:transparent; text-align:center;" ><siga:Idioma key="messages.noRecordFound"/></td>
-			 		<tr>	 		
+					<tr class="notFound">
+		   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>	 		
+					
 				<%
 			} else {
 				FilaExtElement[] elems = null;

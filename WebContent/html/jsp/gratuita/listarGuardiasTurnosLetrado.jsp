@@ -213,12 +213,9 @@
 		columnSizes="20,12,10,8,8,8,10,8,8,8">
 		
 		<% if (obj == null || obj.size() == 0) { %>
-			<tr class ='titulitos' id="noRecordFound">
-				<td class="titulitos" style="background-color:transparent; text-align:center;" colspan = "4">
-					<siga:Idioma key="messages.noRecordFound"/>
-   		 		
-   		 		</td>
- 			</tr>
+			<tr class="notFound">
+   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
  			
 		<% } else {
 			// consultamos si el colegiado esta dado de baja

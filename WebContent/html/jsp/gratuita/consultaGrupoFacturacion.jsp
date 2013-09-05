@@ -84,12 +84,8 @@
 			</siga:FilaConIconos>		
 			<% recordNumber++;} %>		
 		<%}else {%>
-			<tr>
-			<td colspan="4"  style="background-color:transparent; text-align:center">
-				<br>
-				<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-				<br>
-			</td>
+			<tr class="notFound">
+   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
 		<%}%>
 	</siga:Table>
