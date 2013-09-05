@@ -363,8 +363,6 @@
 	
 	<script language="JavaScript">
 	
-		jQuery.noConflict();
-		
 		<% if (ejisActivo>0) { %>
 			// Valida el numero de procedimiento (n/aaaa)
 			function validaProcedimiento (strValue) {
@@ -382,12 +380,13 @@
 				return objRegExp.test(strValue);
 			}		
 			
-			jQuery(function($) {
-				var defaultValue = $("#nig").val();
-				jQuery("#nig").mask("?***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
-				if($("#nig").val() == "" || defaultValue.length > 19){
-					$("#nig").val(defaultValue);
-				}					
+			jQuery(function() {
+				var defaultValue = jQuery("#nig").val();
+				if(jQuery("#nig").val() == "" || defaultValue.length > 19){
+					jQuery("#nig").val(defaultValue);
+				}
+				jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+				jQuery("#nig").keyup();
 			});			
 			
 		<% } else { %>

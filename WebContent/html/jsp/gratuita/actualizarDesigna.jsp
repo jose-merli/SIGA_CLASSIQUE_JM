@@ -184,11 +184,11 @@
 	}
 	jQuery(function($){
 		var defaultValue = jQuery("#nig").val();
-		jQuery("#nig").mask("?***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
 		if(jQuery("#nig").val() == "" || defaultValue.length > 19){
 			jQuery("#nig").val(defaultValue);
 		}
-			
+		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+		jQuery("#nig").keyup();	
 	});	
 </script>
 </head>

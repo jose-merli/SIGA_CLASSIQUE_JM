@@ -1069,12 +1069,13 @@
 <%
 	if (ejisActivo>0) {
 %>
-		jQuery(function($){
-			var defaultValue = jQuery("#nig2").val();
-			jQuery("#nig2").mask("?***** ** * **** *******",{placeholder:" "}); //10037 41 1 2012 0022668
+		jQuery(function(){
+			var defaultValue = jQuery("#nig2").val();			
 			if(jQuery("#nig2").val() == "" || defaultValue.length > 19){
 				jQuery("#nig2").val(defaultValue);
-			}				
+			}
+			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig2").keyup();
 		});			
 	
 		// Valida el numero de procedimiento (n/aaaa)
