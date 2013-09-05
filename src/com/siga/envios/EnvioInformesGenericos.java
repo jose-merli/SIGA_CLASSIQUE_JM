@@ -2534,7 +2534,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			List<ScsEjg> ejgs = new ArrayList<ScsEjg>();
 			for (int k = 0; k < alClavesDestinatario.size(); k++) {//Para cada destinatario se recorrer sus claves de itreacion
 				Hashtable htClavesProgramacion = (Hashtable) alClavesDestinatario.get(k);
-				
+				designas = new ArrayList<ScsDesigna>();
+				ejgs = new ArrayList<ScsEjg>();
 				for (int i = 0; i < vPlantillasInforme.size(); i++) {//Por ultimo se recorren las posible plantillas de cada registro de destinatario
 					AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme.get(i);	
 					
@@ -3035,6 +3036,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			List<ScsEjg> ejgs = new ArrayList<ScsEjg>();
 			for (int i = 0; i < alClavesDestinatario.size(); i++) {
 				Hashtable htClaves = (Hashtable) alClavesDestinatario.get(i);
+				ejgs = new ArrayList<ScsEjg>();
 				datosInforme.putAll(htClaves);
 				if (programInfBean.getIdTipoInforme().equals(
 						EnvioInformesGenericos.comunicacionesEjg)) {
