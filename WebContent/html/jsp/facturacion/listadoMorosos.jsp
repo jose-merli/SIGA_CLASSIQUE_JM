@@ -615,16 +615,11 @@
 		
 		
 	
-	function accionCerrar() 
-	{		
+	function accionCerrar() {		
 		window.top.close();
 	}
 	
-	function renegociar() 
-	{
-		var isConfirmado = confirm('<siga:Idioma key="facturacion.consultamorosos.mensaje.confirmaRenegociar"/>');
-		if(!isConfirmado)
-			return;
+	function renegociar() {
 		datos = "";
 		for (i = 0; i < ObjArray.length; i++) {
 			var idRegistros = ObjArray[i];

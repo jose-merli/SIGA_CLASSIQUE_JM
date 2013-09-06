@@ -237,11 +237,8 @@
 
 			<tr>
 				<td colspan="2">
-					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.Titulo">
+					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago">
 					<table class="tablaCampos" border="0">
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago"/>&nbsp;&euro;&nbsp;(*)</td>
-						</tr>
 					<tr>
 						<td class="labelText" colspan="2">
 						<table class="tablaCampos">
@@ -282,7 +279,7 @@
 									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"
 									<%=radioPorBancoOtra%>></td>
 								<td class="labelText" colspan="2"><siga:Idioma
-									key="facturacion.facturas.cuentabancaria.otra" /></td>									
+									key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" /></td>									
 								<td class="labelText" style="text-align: left;" ><siga:ComboBD
 									nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo"
 									clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" /></td>

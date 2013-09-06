@@ -275,11 +275,13 @@ public class DevolucionesAction extends MasterAction {
 			DevolucionesForm form = (DevolucionesForm) formulario;
 			UsrBean usr = this.getUserBean(request);
 			String personasDiferentes = "";
+			String cuentasPersona = "";
 			
 			Integer idInstitucion 	= new Integer(usr.getLocation());
 			String datosFacturas = form.getDatosFacturas();
 			String strFacturas[]  = null;
 			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
+			String modo="renegociarDevolucion";
 			
 			if (datosFacturas != null) {
 				strFacturas = datosFacturas.split("##");
@@ -299,8 +301,15 @@ public class DevolucionesAction extends MasterAction {
 				
 				if (Integer.parseInt(personasDiferentes) > 1) 
 					request.setAttribute("pagoBanco", "0");
-				else request.setAttribute("pagoBanco", "1");
+				else{ 
+					request.setAttribute("pagoBanco", "1");
+					cuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, strFacturas);
+					if (Integer.parseInt(cuentasPersona) > 0) 
+						request.setAttribute("cuentaCargo", "0");
+					else request.setAttribute("cuentaCargo", "1");
+				}
 
+				request.setAttribute("modo", modo);
 				
 				request.setAttribute("datosFacturas", datosFacturas);
 			} else{

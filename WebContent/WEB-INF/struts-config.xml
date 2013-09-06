@@ -1157,6 +1157,7 @@
 			<forward name="pagoPorCaja" path="/html/jsp/facturacion/facturaPagosCaja.jsp"/>
 			<forward name="pagoRenegociar" path="/html/jsp/facturacion/facturaPagosRenegociar.jsp"/>
 			<forward name="pagoPorTarjeta" path="/notImplemented.do"/>
+			<forward name="renegociar" path="/html/jsp/facturacion/renegociar.jsp"/>
 		</action>
 
 		<!-- ***** Facturación / Mantenimiento Factura / Lineas ***** -->
