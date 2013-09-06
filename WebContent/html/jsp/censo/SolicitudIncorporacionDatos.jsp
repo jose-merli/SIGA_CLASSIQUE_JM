@@ -74,10 +74,6 @@
 		ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 	else 
 		ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
-
-	String altoTabla = "80%";		
-	if (editar!=null && editar.equalsIgnoreCase("true"))
-		altoTabla = "75%";
 	
 	String idProvincia = "";
 	String idPoblacion = "";
@@ -1602,7 +1598,7 @@
 							<%} else {%>
 								onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
 							<%}%>	
-							style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+							style="overflow-y:auto; overflow-x:hidden; width:350px; height:40px; resize:none;"
 						><%=datosPersonales.getObservaciones()%></textarea>
 					</td>
 				</tr>
@@ -1672,18 +1668,17 @@
 				</tr>
 
 				<tr>
-					<td class="labelText">
+					<td class="labelText" colspan="2">
 						<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>
-					</td>
-					<%if(readonly){%>
-						<td class="labelTextValue">
-							<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
-						</td>
-					<%}else{%>
-						<td>
+						&nbsp;&nbsp;
+						<%if(readonly){%>
+							<font class="boxConsulta">
+								<%=UtilidadesString.mostrarDatoJSP(datosPersonales.getFechaEstadoColegial())%>
+							</font>
+						<%}else{%>
 							<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=datosPersonales.getFechaEstadoColegial() %>" />
-						</td>
-					<%}%>
+						<%}%>
+					</td>
 					
 					<td class="labelText">
 						<siga:Idioma key='censo.consultaDatosColegiacion.literal.residente'/>
