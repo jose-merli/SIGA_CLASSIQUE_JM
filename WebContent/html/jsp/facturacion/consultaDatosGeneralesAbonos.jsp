@@ -218,17 +218,27 @@ String path = actionMapping.getPath();
 									</td>				
 									<td>
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
-											<html:textarea property="motivos" size="100" rows="4" styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>" readOnly="true"></html:textarea>
+											<html:textarea property="motivos"
+												style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;" 
+												styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>" readOnly="true"></html:textarea>
 										<% } else { %>
-											<html:textarea property="motivos" size="100" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" rows="4" styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>"></html:textarea>
+											<html:textarea property="motivos" 
+												onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+												style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"												
+												styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>"></html:textarea>
 										<% } %>
 									</td>
 									<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/></td>
 									<td>
 										<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
-											<html:textarea property="observaciones" cols="120" rows="4" styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>" style="overflow:hidden"/>
+											<html:textarea property="observaciones" 
+												style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+												styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
 										<% } else { %>
-											<html:textarea property="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="120" rows="4" styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>" style="overflow:hidden"/>
+											<html:textarea property="observaciones" 
+												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+												style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+												styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
 										<% } %>
 									</td>
 								</tr>

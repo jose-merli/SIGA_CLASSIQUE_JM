@@ -74,25 +74,32 @@
 <!--		<html:hidden property = "fechaDesde" value = ""/>	-->
 <!--		<html:hidden property = "fechaHasta" value = ""/>	-->
 		<fieldset>
-		<table class="tablaCentralCampos" width="400px" border="0">
-			<tr>
-				<td class="labelText">	
-					<siga:Idioma key="gratuita.busquedaContabilidad.literal.fecha"/>:&nbsp;&nbsp;
-				</td>
-				<td class="labelText">	
-					<siga:Idioma key="gratuita.busquedaContabilidad.literal.entre"/>&nbsp;
-					<siga:Fecha  nombreCampo="fechaDesde"/>
-				</td>
-				<td class="labelText">	
-					<siga:Idioma key="gratuita.busquedaContabilidad.literal.y"/>&nbsp;
-					<siga:Fecha  nombreCampo="fechaHasta"/>
-				</td>
-				<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Estado"/></td>
-				<td><siga:ComboBD nombre="buscarIdEstado" tipo="cmbEstadosContab"  clase="boxCombo" obligatorio="false" elementoSel="<%=idEstadoSeleccionado%>"/>
-				</td>
-				
-			</tr>
-		</table>
+			<table class="tablaCentralCampos" border="0">
+				<tr>
+					<td>
+						<table align="left">
+							<tr>
+								<td class="labelText">	
+									<siga:Idioma key="gratuita.busquedaContabilidad.literal.fecha"/>:
+								</td>
+								<td class="labelText">	
+									<siga:Idioma key="gratuita.busquedaContabilidad.literal.entre"/>&nbsp;
+									<siga:Fecha  nombreCampo="fechaDesde"/>&nbsp;
+									<siga:Idioma key="gratuita.busquedaContabilidad.literal.y"/>&nbsp;
+									<siga:Fecha  nombreCampo="fechaHasta"/>
+								</td>
+								
+								<td class="labelText">
+									<siga:Idioma key="facturacion.buscarFactura.literal.Estado"/>
+								</td>
+								<td>
+									<siga:ComboBD nombre="buscarIdEstado" tipo="cmbEstadosContab"  clase="boxCombo" obligatorio="false" elementoSel="<%=idEstadoSeleccionado%>"/>
+								</td>
+							</tr>
+						</table>
+					</td>					
+				</tr>
+			</table>
 		</fieldset>
 	</html:form>
 
