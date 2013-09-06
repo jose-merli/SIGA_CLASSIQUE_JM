@@ -1119,7 +1119,7 @@
 				<tr>				
 					<td>	
 						<siga:ConjCampos leyenda="expedientes.auditoria.literal.datosgenerales">
-							<table class="tablaCampos" align="left" border="0">
+							<table class="tablaCampos" align="left" border="0" cellpadding="0" cellspacing="0">
 								<tr>
 									<td width="140px"></td>
 									<td width="150px"></td>
@@ -1363,7 +1363,7 @@
 						if (bEstado) {							
 %>
 							<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
-								<table class="tablaCampos" align="center" border="0">
+								<table class="tablaCampos" align="center" border="0" cellpadding="0" cellspacing="0">
 									<tr>					
 										<td class="labelText">
 											<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
@@ -1391,7 +1391,7 @@
 												selectedIds="<%=estadoSel%>" 
 												disabled="<%=readOnlyCombo%>" 
 												required="true" 
-												width="390"/>			
+												width="320"/>			
 							 			</td>			
 			
 										<td>
@@ -1479,7 +1479,7 @@
 							<siga:ConjCampos leyenda="expedientes.auditoria.literal.minuta">
 								<table class="tablaCampos" border="0">
 									<tr>
-										<td class="labelText" width="150">
+										<td class="labelText" width="150px">
 											<siga:Idioma key="expedientes.auditoria.literal.minuta"/>
 										</td>
 										<td class="labelTextValue">
@@ -1518,7 +1518,7 @@
 							<siga:ConjCampos leyenda="expedientes.auditoria.literal.minutafinal">
 								<table class="tablaCampos" border="0">
 									<tr>
-										<td class="labelText" width="150">
+										<td class="labelText" width="150px">
 											<siga:Idioma key="expedientes.auditoria.literal.minutafinal"/>
 										</td>
 										<td class="labelTextValue">
@@ -1570,21 +1570,21 @@
 						<siga:ConjCampos leyenda="<%=tituloDenunciado%>">
 							<table class="tablaCampos" align="center" border="0">
 								<tr>
-									<td class="labelText" width="60">
+									<td class="labelText" width="60px">
 										<siga:Idioma key="<%=tipoIdentificacionDenunciado%>"/>&nbsp;&nbsp;(*)
 									</td>				
-									<td width="<%=nifTamanio%>">				
-										<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>" property="nifDenunciado" styleId="nifDenunciado" styleClass="boxConsulta" readonly="true" />
+									<td>				
+										<html:text name="ExpDatosGeneralesForm" size="<%=nifTamanio%>" property="nifDenunciado" styleId="nifDenunciado" styleClass="boxConsulta" readonly="true" style="width:80px"  />
 									</td>
 
-									<td class="labelText"  NOWRAP  width="95">
+									<td class="labelText" nowrap width="95px">
 										<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 									</td>
-									<td width="<%=numColegiadoTamanio%>" >
-										<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" styleId="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true" />
+									<td>
+										<html:text name="ExpDatosGeneralesForm" property="nColDenunciado" styleId="nColDenunciado" size="<%=numColegiadoTamanio%>" styleClass="boxConsulta" readonly="true" style="width:80px" />
 									</td>
 
-									<td class="labelText" width="60">
+									<td class="labelText" width="60px">
 										<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciado" styleId="idPersonaDenunciado"/>
 										<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciado" styleId="idInstitucionOrigenDenunciado"/>
 										<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciado" styleId="idDireccionDenunciado"/>
@@ -1592,16 +1592,16 @@
 										<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 									</td>				
 			
-									<td width="<%=nombreTamanio%>">
-										<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" styleId="nombreDenunciado" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true" />																								 				 																										
+									<td>
+										<html:text name="ExpDatosGeneralesForm" property="nombreDenunciado" styleId="nombreDenunciado" size="<%=nombreTamanio%>" styleClass="boxConsulta" readonly="true" style="width:120px"/>																								 				 																										
 									</td>		
 			
-									<td width="<%=ape1Tamanio%>">
-										<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" styleId="primerApellidoDenunciado" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true" />
+									<td>
+										<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciado" styleId="primerApellidoDenunciado" size="<%=ape1Tamanio%>" styleClass="boxConsulta" readonly="true" style="width:120px" />
 									</td>
 									
-									<td width="<%=ape2Tamanio%>">
-										<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" styleId="segundoApellidoDenunciado" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true" />
+									<td>
+										<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciado" styleId="segundoApellidoDenunciado" size="<%=ape2Tamanio%>"styleClass="boxConsulta" readonly="true" style="width:120px" />
 									</td>			
 							 			
 <% 
@@ -1627,7 +1627,7 @@
 											<siga:Idioma key="expedientes.auditoria.literal.solicitanteEJG"/>
 										</td>
 										<td class="labelTextValor" width="85%">
-											<html:text name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleId="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500" readonly="true" />	
+											<html:text name="ExpDatosGeneralesForm" property="solicitanteEjgDescripcion" styleId="solicitanteEjgDescripcion" styleClass="boxConsulta" style="width:500px" readonly="true" />	
 										</td>																						
 									</tr>
 								</table>
@@ -1640,21 +1640,21 @@
 							<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
 								<table class="tablaCampos" align="center" border="0">
 									<tr>
-										<td class="labelText" width="60">
+										<td class="labelText" width="60px">
 											<siga:Idioma key="<%=tipoIdentificacionDenunciante%>"/>
 										</td>															
-										<td width="<%=nifDenuncianteTamanio%>">				
-											<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleId="nifDenunciante" styleClass="boxConsulta" readonly="true" />
+										<td>				
+											<html:text name="ExpDatosGeneralesForm" size="<%=nifDenuncianteTamanio%>"  property="nifDenunciante" styleId="nifDenunciante" styleClass="boxConsulta" readonly="true" style="width:80px" />
 										</td>
 							
-										<td class="labelText"  NOWRAP width="95">
+										<td class="labelText" nowrap width="95px">
 											<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
 										</td>
-										<td width="<%=nColDenuncianteTamanio%>" >
-											<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" styleId="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" />
+										<td>
+											<html:text name="ExpDatosGeneralesForm" property="nColDenunciante" styleId="nColDenunciante" size="<%=nColDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" style="width:80px"  />
 										</td>
 							
-										<td class="labelText" width="60">
+										<td class="labelText" width="60px">
 											<html:hidden name="ExpDatosGeneralesForm" property = "idPersonaDenunciante"/>
 											<html:hidden name="ExpDatosGeneralesForm" property = "idInstitucionOrigenDenunciante"/>
 											<html:hidden name="ExpDatosGeneralesForm" property = "idDireccionDenunciante"/>
@@ -1662,17 +1662,17 @@
 											<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 										</td>				
 										
-										<td width="<%=nombreDenuncianteTamanio%>">
-											<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" styleId="nombreDenunciante" size="<%=nombreDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" />																								 				 																										
+										<td>
+											<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" styleId="nombreDenunciante" size="<%=nombreDenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" style="width:120px" />																								 				 																										
 										</td>		
 										
 										
-										<td width="<%=ape1DenuncianteTamanio%>">
-											<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" styleId="primerApellidoDenunciante" size="<%=ape1DenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" />
+										<td>
+											<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" styleId="primerApellidoDenunciante" size="<%=ape1DenuncianteTamanio%>" styleClass="boxConsulta" readonly="true" style="width:120px" />
 										</td>
 										
-										<td width="<%=ape2DenuncianteTamanio%>">
-											<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" styleId="segundoApellidoDenunciante" size="<%=ape2DenuncianteTamanio%>"styleClass="boxConsulta" readonly="true" />
+										<td>
+											<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" styleId="segundoApellidoDenunciante" size="<%=ape2DenuncianteTamanio%>"styleClass="boxConsulta" readonly="true" style="width:120px" />
 										</td>
 																								 			
 <% 

@@ -214,6 +214,12 @@
 			   	document.RemitentesForm.target=auxTarget;
 			}
 		}		
+		
+		// Asociada al boton Volver 
+		function accionVolver() {		
+			top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
+		}
+		
 	</script>	
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>

@@ -45,31 +45,24 @@
 	
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-	
-	
-			<!-- Asociada al boton Volver -->
-			function accionVolver() 
-			{		
+			// Asociada al boton Volver 
+			function accionVolver() {		
 				top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
 			}
 
-			<!-- Asociada al boton Restablecer -->
-			function accionRestablecer() 
-			{		
+			// Asociada al boton Restablecer
+			function accionRestablecer() {		
 				PermisosTiposExpedientesForm.reset();
 			}
 			
-			<!-- Asociada al boton Guardar -->
-			function accionGuardar() 
-			{		
+			// Asociada al boton Guardar
+			function accionGuardar() {		
 				PermisosTiposExpedientesForm.submit();
 			}
 			
-			function refrescarLocal()
-			{			
+			function refrescarLocal() {			
 				document.location.reload();			
-			}
-			
+			}			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->		
 
