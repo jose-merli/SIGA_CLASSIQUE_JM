@@ -39,7 +39,7 @@ String modo = (String) request.getSession().getAttribute("Modo");
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	
@@ -48,8 +48,8 @@ String modo = (String) request.getSession().getAttribute("Modo");
 <script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
-<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 	
 	<style type="text/css">
 #listadoConfDiv {

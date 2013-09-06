@@ -41,9 +41,8 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 	
-	<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-	<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
-	
+	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 </head>
 
 <body onload="ajustarCabeceraTabla();ajusteAlto('listadoInformesDiv');inicio();">

@@ -104,7 +104,7 @@ function habilitarCampos(isHabilitar) {
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script
-		src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+		src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
@@ -116,8 +116,8 @@ function habilitarCampos(isHabilitar) {
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />	
-  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 	
 		
 	<script>

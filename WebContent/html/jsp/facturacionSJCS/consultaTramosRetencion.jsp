@@ -40,8 +40,8 @@
 
 <!--Step 3 -->
   <!-- defaults for Autocomplete and displaytag -->
-  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
-  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
+  <link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <siga:TituloExt titulo="menu.fcs.tramosLEC"	localizacion="fcs.tramosLEC.gestion.localizacion" />

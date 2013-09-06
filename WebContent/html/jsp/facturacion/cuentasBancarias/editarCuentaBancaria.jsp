@@ -28,7 +28,7 @@
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 <script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 
 <script type="text/javascript">

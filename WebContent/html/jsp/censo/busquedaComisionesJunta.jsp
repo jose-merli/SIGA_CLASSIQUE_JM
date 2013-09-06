@@ -59,8 +59,8 @@
 		<!-- Incluido jquery en siga.js -->
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<link 				type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>"/>
-  	<link	 			type="text/css" rel="stylesheet" href="<html:rewrite page='href="/html/css/displaytag.css'/>"/>
+	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>"/>
+  	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
