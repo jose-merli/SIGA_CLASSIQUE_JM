@@ -3,7 +3,6 @@ package com.siga.censo.ws.action;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -15,15 +14,19 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
+import com.siga.censo.ws.util.CombosCenWS;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -57,7 +60,11 @@ public class EdicionColegiadoAction extends MasterAction {
 			miForm = (MasterForm) formulario;
 			if (miForm != null) {
 				String accion = miForm.getModo();
-				return super.executeInternal(mapping,formulario,request,response);				
+				if (accion != null && accion.equals("archivar")) {
+					mapDestino = archivar(mapping, miForm, request, response);
+				} else {
+					return super.executeInternal(mapping,formulario,request,response);
+				}
 			}
 
 			// Redireccionamos el flujo a la JSP correspondiente
@@ -72,38 +79,170 @@ public class EdicionColegiadoAction extends MasterAction {
 		}
 	}
 	
-	protected String ver (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
-		return verEditar("ver", mapping, formulario, request, response);
+	protected String ver (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{		
+		return verEditar("ver", mapping, formulario, request, response, null);
 	}
 
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		return verEditar("editar", mapping, formulario, request, response);
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+		return verEditar("editar", mapping, formulario, request, response, null);
 	}
 	
-	protected String verEditar(String accion, ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
+	private String archivar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
+		
+		String accion = "ver";		
+		Long idcensodatos = null;
+		
 		try {
+			
+			EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm) formulario;
+			
+			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+			//recuperamos el registro de bdd
+			EcomCenDatos ecomCenDatos = cenWSService.getEcomCenDatosByPk(edicionColegiadoForm.getIdcensodatos());
+						
+			//insertamos en el histórico y lanzamos el proceso
+			EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
+			EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(edicionColegiadoForm.getIdcensodatos());
+			EcomCenDireccion ecomCenDireccion = ecomCenColegiadoService.getEcomCenDireccion(ecomCenDatos.getIdcensodireccion());
+			//actualizamos el nuevo estado
+			ecomCenDatos.setIdestadocolegiado(ECOM_CEN_MAESESTADOCOLEGIAL.ARCHIVADO.getCodigo());
+			
+			BusinessManager.getInstance().startTransaction();
+			ecomCenColegiado = ecomCenColegiadoService.insertHistorico(ecomCenColegiado, ecomCenDatos, ecomCenDireccion, null);			
+			
+			BusinessManager.getInstance().commitTransaction();
+			idcensodatos = ecomCenColegiado.getIdcensodatos();
+						
+		} catch (Exception e) {
+			BusinessManager.getInstance().endTransaction();
+			throwExcp("messages.general.error", e, null);
+		}
+		
+		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
+	}
+	
+	/** 
+	 *  Funcion que atiende la accion modificar
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String modificar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
+		
+		String accion = "editar";
+		Long idcensodatos = null;
+		
+		try {
+			
+			EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm) formulario;
+			
+			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+			//recuperamos el registro de bdd pq hay campos que no cambian
+			EcomCenDatos ecomCenDatos = cenWSService.getEcomCenDatosByPk(edicionColegiadoForm.getIdcensodatos());
+			
+			ecomCenDatos.setPublicarcolegiado(getCheckShort(edicionColegiadoForm.isPublicarcolegiado()));
+			ecomCenDatos.setNumsolicitudcolegiacion(edicionColegiadoForm.getNumsolicitudcolegiacion());
+			ecomCenDatos.setNcolegiado(edicionColegiadoForm.getNcolegiado());
+			ecomCenDatos.setNombre(edicionColegiadoForm.getNombre());
+			ecomCenDatos.setApellido1(edicionColegiadoForm.getApellido1());
+			ecomCenDatos.setApellido2(edicionColegiadoForm.getApellido2());
+			ecomCenDatos.setSexo(edicionColegiadoForm.getSexo());
+			ecomCenDatos.setFechanacimiento(GstDate.convertirFecha(edicionColegiadoForm.getFechanacimiento()));
+			ecomCenDatos.setIdcensotipoidentificacion(edicionColegiadoForm.getIdcensotipoidentificacion());
+			ecomCenDatos.setNumdocumento(edicionColegiadoForm.getNumdocumento());
+			ecomCenDatos.setPublicartelefono(getCheckShort(edicionColegiadoForm.isPublicartelefono()));
+			ecomCenDatos.setTelefono(edicionColegiadoForm.getTelefono());
+			ecomCenDatos.setPublicartelefonomovil(getCheckShort(edicionColegiadoForm.isPublicartelefonomovil()));
+			ecomCenDatos.setTelefonomovil(edicionColegiadoForm.getTelefonomovil());
+			ecomCenDatos.setPublicarfax(getCheckShort(edicionColegiadoForm.isPublicarfax()));
+			ecomCenDatos.setFax(edicionColegiadoForm.getFax());
+			ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
+			ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
+			ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
+			ecomCenDatos.setFechasituacion(GstDate.convertirFecha(edicionColegiadoForm.getFechasituacion()));
+			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
+			
+			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
+	//		ecomCenDireccion.setIdcensodireccion(edicionColegiadoForm.getIdcensodireccion());
+			ecomCenDireccion.setPublicar(getCheckShort(edicionColegiadoForm.isPublicardireccion()));
+			ecomCenDireccion.setDesctipovia(edicionColegiadoForm.getDesctipovia());
+			ecomCenDireccion.setDomicilio(edicionColegiadoForm.getDomicilio());
+			ecomCenDireccion.setCodigopostal(edicionColegiadoForm.getCodigopostal());
+			ecomCenDireccion.setCodigopaisextranj(edicionColegiadoForm.getCodigopaisextranj());
+			ecomCenDireccion.setCodigoprovincia(edicionColegiadoForm.getCodigoprovincia());
+			ecomCenDireccion.setCodigopoblacion(edicionColegiadoForm.getCodigopoblacion());
+			ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
+			
+			//insertamos en el histórico y lanzamos el proceso
+			EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
+			EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(edicionColegiadoForm.getIdcensodatos());
+			
+			BusinessManager.getInstance().startTransaction();
+			ecomCenColegiado = ecomCenColegiadoService.insertHistorico(ecomCenColegiado, ecomCenDatos, ecomCenDireccion, null);
+			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(getIDInstitucion(request).shortValue(), ecomCenColegiado);
+			BusinessManager.getInstance().commitTransaction();
+			idcensodatos = ecomCenColegiado.getIdcensodatos();
+						
+		} catch (Exception e) {
+			BusinessManager.getInstance().endTransaction();
+			throwExcp("messages.general.error", e, null);
+		}
+		
+		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
+	}
+	
+	private Short getCheckShort(boolean value) {
+		if (value) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	private boolean getCheckShort(Short value) {
+		if (value != null && value.shortValue() == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	protected String verEditar(String accion, ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, Long idcensodatos) throws SIGAException {
+
+		try {	
+			
 			HttpSession session = request.getSession();
 			session.removeAttribute(DATAPAGINADOR);
 			
 			EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm) formulario;
 						
-			Long idcensodatos = null;
 			
-			if (edicionColegiadoForm.getIdcensodatosPadre() != null) {
-				idcensodatos = edicionColegiadoForm.getIdcensodatosPadre();
-			} else {
-				// Recuperamos los datos del registro que hemos seleccionado
-				Vector ocultos = formulario.getDatosTablaOcultos(0);
-				if (ocultos != null && ocultos.size() > 0) {
-					idcensodatos = Long.valueOf(ocultos.get(0).toString());
+			if (idcensodatos == null) {
+				if (edicionColegiadoForm.getIdcensodatosPadre() != null) {
+					idcensodatos = edicionColegiadoForm.getIdcensodatosPadre();				
 				} else {
-					throw new IllegalArgumentException("No se ha recibido el identificador para editar el colegiado");
+					// Recuperamos los datos del registro que hemos seleccionado
+					Vector ocultos = formulario.getDatosTablaOcultos(0);
+					if (ocultos != null) {
+						if (ocultos.size() > 3) {					
+							idcensodatos = Long.valueOf(ocultos.get(3).toString());
+						}
+					} else {
+						throw new IllegalArgumentException("No se ha recibido el identificador para editar el colegiado");
+					}
 				}
 			}
 			
 			if (edicionColegiadoForm.isHistorico()) {
+				formulario.setAccion(formulario.getAccion());
 				edicionColegiadoForm.setIdcensodatosPadre(edicionColegiadoForm.getIdcensodatos());
+			} else {
+				formulario.setAccion(accion);
+				edicionColegiadoForm.setIdcensodatosPadre(null);
 			}
 			
 					
@@ -112,7 +251,7 @@ public class EdicionColegiadoAction extends MasterAction {
 						
 			edicionColegiadoForm.setIdcensodatos(ecomCenDatos.getIdcensodatos());
 			
-			edicionColegiadoForm.setPublicarcolegiado(getValue(ecomCenDatos.getPublicarcolegiado()));
+			edicionColegiadoForm.setPublicarcolegiado(getCheckShort(ecomCenDatos.getPublicarcolegiado()));
 			edicionColegiadoForm.setNumsolicitudcolegiacion(getValue(ecomCenDatos.getNumsolicitudcolegiacion()));
 			edicionColegiadoForm.setNcolegiado(getValue(ecomCenDatos.getNcolegiado()));
 			edicionColegiadoForm.setNombre(getValue(ecomCenDatos.getNombre()));
@@ -120,22 +259,23 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setApellido2(getValue(ecomCenDatos.getApellido2()));
 			edicionColegiadoForm.setSexo(getValue(ecomCenDatos.getSexo()));
 			edicionColegiadoForm.setFechanacimiento(getValue(ecomCenDatos.getFechanacimiento()));
-			edicionColegiadoForm.setIdcensotipoidentificacion(getValue(ecomCenDatos.getIdcensotipoidentificacion()));
-			edicionColegiadoForm.setPublicartelefono(getValue(ecomCenDatos.getPublicartelefono()));
+			edicionColegiadoForm.setIdcensotipoidentificacion(ecomCenDatos.getIdcensotipoidentificacion());
+			edicionColegiadoForm.setNumdocumento(ecomCenDatos.getNumdocumento());
+			edicionColegiadoForm.setPublicartelefono(getCheckShort(ecomCenDatos.getPublicartelefono()));
 			edicionColegiadoForm.setTelefono(getValue(ecomCenDatos.getTelefono()));
-			edicionColegiadoForm.setPublicartelefonomovil(getValue(ecomCenDatos.getPublicartelefonomovil()));
+			edicionColegiadoForm.setPublicartelefonomovil(getCheckShort(ecomCenDatos.getPublicartelefonomovil()));
 			edicionColegiadoForm.setTelefonomovil(getValue(ecomCenDatos.getTelefonomovil()));
-			edicionColegiadoForm.setPublicarfax(getValue(ecomCenDatos.getPublicarfax()));
+			edicionColegiadoForm.setPublicarfax(getCheckShort(ecomCenDatos.getPublicarfax()));
 			edicionColegiadoForm.setFax(getValue(ecomCenDatos.getFax()));
-			edicionColegiadoForm.setPublicaremail(getValue(ecomCenDatos.getPublicaremail()));
+			edicionColegiadoForm.setPublicaremail(getCheckShort(ecomCenDatos.getPublicaremail()));
 			edicionColegiadoForm.setEmail(getValue(ecomCenDatos.getEmail()));
-			edicionColegiadoForm.setIdecomcensosituacionejer(getValue(ecomCenDatos.getIdecomcensosituacionejer()));
+			edicionColegiadoForm.setIdecomcensosituacionejer(ecomCenDatos.getIdecomcensosituacionejer());
 			edicionColegiadoForm.setFechasituacion(getValue(ecomCenDatos.getFechasituacion()));
-			edicionColegiadoForm.setResidente(getValue(ecomCenDatos.getResidente()));
+			edicionColegiadoForm.setResidente(getCheckShort(ecomCenDatos.getResidente()));
 			
 			EcomCenDireccion ecomCenDireccion = cenWSService.getEcomCenDireccionesByPk(ecomCenDatos.getIdcensodireccion());
-			edicionColegiadoForm.setIdcensodireccion(getValue(ecomCenDatos.getIdcensodireccion()));
-			edicionColegiadoForm.setPublicardireccion(getValue(ecomCenDireccion.getPublicar()));
+			edicionColegiadoForm.setIdcensodireccion(ecomCenDatos.getIdcensodireccion());
+			edicionColegiadoForm.setPublicardireccion(getCheckShort(ecomCenDireccion.getPublicar()));
 			edicionColegiadoForm.setDesctipovia(getValue(ecomCenDireccion.getDesctipovia()));
 			edicionColegiadoForm.setDomicilio(getValue(ecomCenDireccion.getDomicilio()));
 			edicionColegiadoForm.setCodigopostal(getValue(ecomCenDireccion.getCodigopostal()));
@@ -144,10 +284,22 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setCodigopoblacion(getValue(ecomCenDireccion.getCodigopoblacion()));
 			edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));
 			
+			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
+			
 			edicionColegiadoForm.setIncidencias(cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos()));
-						
+			
+			edicionColegiadoForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
+			edicionColegiadoForm.setSituacionesEjerciente(CombosCenWS.getSituacionesEjeciente(getUserBean(request)));
+				
+			if (!edicionColegiadoForm.isColegiadoEditable()) {
+				accion = "ver";
+				edicionColegiadoForm.setAccion(accion);
+			}
+			
+			
+			
 			// Entramos al formulario en modo 'modificación'
-			session.setAttribute("accion", "editar");
+			//session.setAttribute("accion", accion);
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -169,7 +321,7 @@ public class EdicionColegiadoAction extends MasterAction {
 
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
-				String pagina = request.getParameter("paginaListaCol");
+				String pagina = request.getParameter("pagina");
 
 				if (paginador != null) {
 					if (pagina != null) {
@@ -193,6 +345,7 @@ public class EdicionColegiadoAction extends MasterAction {
 						ecf.setIdcensodatos(ecomCenDato.getIdcensodatos());
 						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));
 						ecf.setIncidencias(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos()));
+						ecf.setIdestadocolegiado(ecomCenDato.getIdestadocolegiado());
 						edicionColegiadoForms.add(ecf);
 					}
 				}
@@ -226,16 +379,16 @@ public class EdicionColegiadoAction extends MasterAction {
 	}
 
 
-	private String getValue(Object value) throws ClsExceptions {	
+	private String getValue(String value) {
+		return value!=null?value:"";
+	}
+		
+	
+	private String getValue(Date value) throws ClsExceptions {	
 		String ret = "";
 		if (value != null) {
-			if (value instanceof Date) {
-				ret = GstDate.getFormatedDateShort((Date)value);
-			} else {
-				ret = value.toString();
-			}
-		}
-		
+			ret = GstDate.getFormatedDateShort((Date)value);			
+		}		
 		return ret;
 	}
 

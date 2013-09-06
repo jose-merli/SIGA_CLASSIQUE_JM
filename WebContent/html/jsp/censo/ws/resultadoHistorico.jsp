@@ -28,6 +28,7 @@
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
 <%@ page import="com.siga.censo.ws.action.EdicionRemesasAction"%>
 <%@ page import="com.siga.censo.ws.form.EdicionColegiadoForm"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 
 
 
@@ -134,8 +135,8 @@
 		<siga:Table 		   
 		   name="listadoColegiados"
 		   border="1"
-		   columnNames="censo.ws.literal.fechaCambio,censo.ws.literal.incidencias,"
-		   columnSizes="15,20,20,20">
+		   columnNames="censo.ws.literal.fechaCambio,censo.ws.literal.incidencias,censo.ws.literal.estado,"
+		   columnSizes="15,40,30">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -158,13 +159,14 @@
 					<td>
 					<% if (edicionColegiadoForm.getIncidencias() != null &&  edicionColegiadoForm.getIncidencias().size() > 0) { 
 						for (String incidencia : edicionColegiadoForm.getIncidencias()) {%> 
-							<br><siga:Idioma key="<%=incidencia%>"/></br>
+							<siga:Idioma key="<%=incidencia%>"/><br/>
 						<%}
 						
 					} else {%>
 						&nbsp;
 					<%} %>
 					</td>
+					<td><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(edicionColegiadoForm.getIdestadocolegiado())%>"/></td>
 					
 				</siga:FilaConIconos>	
 							<% }

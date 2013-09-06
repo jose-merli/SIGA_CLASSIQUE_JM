@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionMapping;
 
 import com.siga.comun.vos.InstitucionVO;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
 public class BusquedaRemesasForm extends MasterForm {
@@ -26,6 +27,7 @@ public class BusquedaRemesasForm extends MasterForm {
 	private String idIncidencias = null;
 	
 	private List<InstitucionVO> instituciones;
+	private List<ValueKeyVO> tiposIdentificacion;
 	private String nombreColegio = null;
 	
 	public enum FILTRO_INCIDENCIAS {
@@ -130,6 +132,20 @@ public class BusquedaRemesasForm extends MasterForm {
 	}
 	public void setNombreColegio(String nombreColegio) {
 		this.nombreColegio = nombreColegio;
+	}
+
+
+
+
+	public List<ValueKeyVO> getTiposIdentificacion() {
+		return tiposIdentificacion;
+	}
+
+
+
+
+	public void setTiposIdentificacion(List<ValueKeyVO> tiposIdentificacion) {
+		this.tiposIdentificacion = tiposIdentificacion;
 	}
 	
 }

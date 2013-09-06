@@ -56,7 +56,7 @@
 			
 			function buscar() {				
 				sub();
-				document.forms[0].modo.value="buscarPor";
+				document.forms[0].modo.value="buscar";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();					
 			}
@@ -188,8 +188,11 @@
 									<td class="labelText">
 										<siga:Idioma key="censo.ws.literal.tipoIdentificacion"/>
 									</td>
-									<td>
-										<html:text name="BusquedaRemesasForm" property="idTipoIdentificacion" size="30" styleClass="box"/>
+									<td>										
+										<html:select property="idTipoIdentificacion" name="BusquedaRemesasForm" styleClass="boxCombo">
+											<html:option value="">&nbsp;</html:option>
+											<html:optionsCollection name="BusquedaRemesasForm" property="tiposIdentificacion" value="key" label="value"></html:optionsCollection>
+										</html:select>
 									</td>
 	
 									<td class="labelText">

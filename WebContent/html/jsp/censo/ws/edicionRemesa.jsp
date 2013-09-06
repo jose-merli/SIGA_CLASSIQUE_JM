@@ -193,8 +193,11 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 									<td class="labelText">
 										<siga:Idioma key="censo.ws.literal.tipoIdentificacion"/>
 									</td>
-									<td>
-										<html:text name="EdicionRemesaForm" property="idTipoIdentificacion" size="30" styleClass="box"/>
+									<td>										
+										<html:select property="idTipoIdentificacion" name="EdicionRemesaForm" styleClass="boxCombo">
+											<html:option value="">&nbsp;</html:option>
+											<html:optionsCollection name="EdicionRemesaForm" property="tiposIdentificacion" value="key" label="value"></html:optionsCollection>
+										</html:select>
 									</td>
 	
 									<td class="labelText">

@@ -1,5 +1,8 @@
 package com.siga.censo.ws.form;
 
+import java.util.List;
+
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
 public class EdicionRemesaForm extends MasterForm {
@@ -20,6 +23,8 @@ public class EdicionRemesaForm extends MasterForm {
 	private String idTipoIdentificacion = null;
 	private String identificacion = null;
 	private String idIncidencias = null;
+	
+	private List<ValueKeyVO> tiposIdentificacion;
 	
 	public void reset() {
 		idcensows = null;
@@ -126,5 +131,15 @@ public class EdicionRemesaForm extends MasterForm {
 	}
 	public void setIdIncidencias(String idIncidencias) {
 		this.idIncidencias = idIncidencias;
+	}
+
+
+	public List<ValueKeyVO> getTiposIdentificacion() {
+		return tiposIdentificacion;
+	}
+
+
+	public void setTiposIdentificacion(List<ValueKeyVO> tiposIdentificacion) {
+		this.tiposIdentificacion = tiposIdentificacion;
 	}
 }

@@ -24,6 +24,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ConModuloBean"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 
 
 
@@ -78,10 +79,10 @@
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
 		
-		<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="POST" target="resultado">	
+		<html:form action="/CEN_EdicionColegiado.do?noReset=false" method="POST" target="resultado">	
 		<c:set var="htmlTextReadOnly" value="false" />
 		<c:set var="htmlTextClass" value="box" />
-		<c:if test="${EdicionColegiadoForm.modo=='Ver' || EdicionColegiadoForm.modo=='ver'}">
+		<c:if test="${EdicionColegiadoForm.accion=='ver' || EdicionColegiadoForm.historico}">
 			<c:set var="htmlTextReadOnly" value="true" />
 			<c:set var="htmlTextClass" value="boxConsulta" />
 		</c:if>
@@ -100,7 +101,7 @@
 							<siga:Idioma key="censo.ws.literal.publicarInformacion"/>
 						</td>
 						<td>
-							<html:checkbox name="EdicionColegiadoForm" property="publicarcolegiado"  value="${EdicionColegiadoForm.publicarcolegiado}"  disabled="${htmlTextReadOnly}"/>							
+							<html:checkbox name="EdicionColegiadoForm" property="publicarcolegiado"  disabled="${htmlTextReadOnly}"/>							
 						</td>
 						
 						<td class="labelText">
@@ -164,8 +165,10 @@
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.tipoIdentificacion"/>
 						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="idcensotipoidentificacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
+						<td>							
+							<html:select property="idcensotipoidentificacion" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+								<html:optionsCollection name="EdicionColegiadoForm" property="tiposIdentificacion" value="key" label="value"></html:optionsCollection>
+							</html:select>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.identificacion"/>
@@ -180,7 +183,7 @@
 							<siga:Idioma key="censo.ws.literal.publicarTelefono"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefono" value="${EdicionColegiadoForm.publicartelefono}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicartelefono" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.telefono"/>
@@ -195,7 +198,7 @@
 							<siga:Idioma key="censo.ws.literal.publicarTelefonoMovil"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefonomovil" value="${EdicionColegiadoForm.publicartelefonomovil}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicartelefonomovil" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.telefonoMovil"/>
@@ -211,7 +214,7 @@
 							<siga:Idioma key="censo.ws.literal.publicarfax"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicarfax" value="${EdicionColegiadoForm.publicarfax}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicarfax"disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fax"/>
@@ -227,7 +230,7 @@
 							<siga:Idioma key="censo.ws.literal.publicaremail"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicaremail" value="${EdicionColegiadoForm.publicaremail}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicaremail" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.email"/>
@@ -242,8 +245,11 @@
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.situacionEjer"/>
 						</td>
-						<td>							
-							<html:text name="EdicionColegiadoForm" property="idecomcensosituacionejer" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
+						<td>						
+							
+							<html:select property="idecomcensosituacionejer" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+								<html:optionsCollection name="EdicionColegiadoForm" property="situacionesEjerciente" value="key" label="value"></html:optionsCollection>
+							</html:select>							
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fechasituacion"/>
@@ -259,14 +265,14 @@
 							<siga:Idioma key="censo.ws.literal.residente"/>
 						</td>
 						<td colspan="3">							
-							<html:checkbox name="EdicionColegiadoForm" property="residente" value="${EdicionColegiadoForm.residente}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="residente" disabled="${htmlTextReadOnly}"/>						
 						</td>											
 					</tr>
 					
 					
 				</table>			
 			</siga:ConjCampos>
-			<br/>
+			
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.direccion">			
 				<table class="tablaCampos" align="center">
 					<!-- FILA -->
@@ -275,7 +281,7 @@
 							<siga:Idioma key="censo.ws.literal.publicardireccion"/>
 						</td>
 						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicardireccion" value="${EdicionColegiadoForm.publicardireccion}" disabled="${htmlTextReadOnly}"/>						
+							<html:checkbox name="EdicionColegiadoForm" property="publicardireccion" disabled="${htmlTextReadOnly}"/>						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.tipovia"/>
@@ -334,61 +340,63 @@
 					</tr>
 				</table>			
 			</siga:ConjCampos>	
-			<br/>
-			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.incidencias">
-						
-				<table class="tablaCampos" align="center">
-					<c:forEach items="${EdicionColegiadoForm.incidencias}" var="incidencia" varStatus="i">							
-						<tr class="labelTextValue">
-							<td id="${i.index}">&nbsp;*&nbsp;<siga:Idioma key="${incidencia}"/></td>
-						</tr>
-					</c:forEach>
-				</table>
-			</siga:ConjCampos>			
-		</html:form>
 			
-		<!-- formulario para el botón volver -->
+			<bean:define id="idestadocolegiado" name="EdicionColegiadoForm" property="idestadocolegiado" type="Short"></bean:define>
+			
+			<siga:ConjCampos leyenda="censo.ws.literal.estado">								
+				<table class="tablaCampos" align="center">											
+					<tr class="labelTextValue">
+						<td>&nbsp;&nbsp;<siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(idestadocolegiado)%>"/></td>
+					</tr>					
+				</table>
+			</siga:ConjCampos>
+			
+			<c:choose>
+				<c:when test="${EdicionColegiadoForm.incidencias!=null}">				
+					<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.incidencias">								
+						<table class="tablaCampos" align="center">
+							<c:forEach items="${EdicionColegiadoForm.incidencias}" var="incidencia" varStatus="i">							
+								<tr class="labelTextValue">									
+									<td id="${i.index}">&nbsp;*&nbsp;<siga:Idioma key="${incidencia}"/></td>
+									
+								</tr>
+							</c:forEach>
+						</table>
+					</siga:ConjCampos>
+				</c:when>		
+			</c:choose>
+			
+			
+					
+		</html:form>
 		
+		<c:choose>
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='ver'}">
+				<siga:ConjBotonesAccion botones="G, AR" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>		
+			</c:when>
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='ver'}">
+				<siga:ConjBotonesAccion botones="" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>
+			</c:when>
+		</c:choose>
+			
+		<!-- formulario para el botón volver -->		
 		<c:choose>
 			<c:when test="${EdicionColegiadoForm.historico}">
 				<html:form action="/CEN_EdicionColegiado.do?noReset=true" method="POST" target="mainWorkArea">
 					<html:hidden property="volver" value="true"/>
-					<html:hidden property="modo" value="editar"/>
-										
+					<input type="hidden" name="historico"  id="historico"  value="false">
+					<input type="hidden" name="accion"  id="accion"  value="${EdicionRemesaForm.accion}">
+					<input type="hidden" name="modo"  id="modo"  value="${EdicionColegiadoForm.accion}">
 					<html:hidden property="idcensodatosPadre" value="${EdicionColegiadoForm.idcensodatosPadre }"/>
 				</html:form>		
 			</c:when>
 			<c:otherwise>
 				<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="mainWorkArea">
 					<html:hidden property="volver" value="true"/>
-					<html:hidden property="modo" value="editar"/>
+					<html:hidden property="modo" value="${EdicionRemesaForm.accion}"/>
 				</html:form>
 			</c:otherwise>
 		</c:choose>
-		
-			
-					
-
-		<!-- FIN: CAMPOS DE BUSQUEDA-->
-	
-		<!-- INICIO: BOTONES BUSQUEDA -->
-		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
-			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
-		-->
-		<%  
-			String botones = "B";
-							 
-		%>
-		
-		<c:choose>
-			<c:when test="${!EdicionColegiadoForm.historico}">
-				<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.gestioncolegiado.historicoCambios" />
-			</c:when>
-		</c:choose>
-		
-		
-		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	
@@ -417,10 +425,24 @@
 			 	function accionVolver() {
 					document.forms[1].submit();
 				}
+			 	
+			 	function accionGuardar() {
+			 		sub();
+					document.forms[0].modo.value="modificar";
+					document.forms[0].target="mainWorkArea";	
+					document.forms[0].submit();
+			 	}
+			 	
+			 	function accionArchivar() {
+			 		sub();
+					document.forms[0].modo.value="archivar";
+					document.forms[0].target="mainWorkArea";	
+					document.forms[0].submit();
+			 	}
 				
 			 </script>
 			 
-	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
 
 </body>
 </html>

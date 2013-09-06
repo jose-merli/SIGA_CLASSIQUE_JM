@@ -15,11 +15,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWs;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
@@ -28,7 +30,9 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.service.CensoService;
+import com.siga.censo.ws.form.EdicionColegiadoForm;
 import com.siga.censo.ws.form.EdicionRemesaForm;
+import com.siga.censo.ws.util.CombosCenWS;
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -88,29 +92,6 @@ public class EdicionRemesasAction extends MasterAction {
 		}
 	}
 
-
-	
-	/**
-	 * Recupera los colegios asociados a la institucion <code>idInstitucion</code>
-	 * @param idInstitucion Institucion para la cual se buscan sus colegios asociados
-	 * @return Una lista con los colegios dependientes de la institucion, o <code>null</code> si la institucion
-	 * no tiene colegios dependientes, es decir, si es un Colegio y no un Consejo.
-	 * @throws SIGAException 
-	 */
-	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
-		List<InstitucionVO> instituciones = null;
-		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
-		if (institucionEsGeneral(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
-			instituciones = service.getColegiosNoConsejo(idInstitucion);
-		}
-		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
-		else if (institucionEsConsejo(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
-			instituciones = service.getColegiosDeConsejo(idInstitucion);
-		}
-		return instituciones;
-	}
 	
 	protected String buscarPor (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
@@ -120,12 +101,12 @@ public class EdicionRemesasAction extends MasterAction {
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
 				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
-				PaginadorVector<EcomCenDatos> paginador = (PaginadorVector<EcomCenDatos>) databackup.get("paginador");
-				List<EcomCenDatos> datos = new ArrayList<EcomCenDatos>();
+				PaginadorVector<EdicionColegiadoForm> paginador = (PaginadorVector<EdicionColegiadoForm>) databackup.get("paginador");
+				List<EdicionColegiadoForm> datos = new ArrayList<EdicionColegiadoForm>();
 
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
-				String pagina = request.getParameter("paginaListaCol");
+				String pagina = request.getParameter("pagina");
 
 				if (paginador != null) {
 					if (pagina != null) {
@@ -140,9 +121,9 @@ public class EdicionRemesasAction extends MasterAction {
 				databackup.put("datos", datos);
 
 			} else {									
-				List<EcomCenDatos> datos = getDatos(edicionRemesaForm);																	
+				List<EdicionColegiadoForm> datos = getDatos(edicionRemesaForm);																	
 				
-				PaginadorVector<EcomCenDatos> paginador = new PaginadorVector(datos);
+				PaginadorVector<EdicionColegiadoForm> paginador = new PaginadorVector(datos);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -165,8 +146,11 @@ public class EdicionRemesasAction extends MasterAction {
 	}
 
 
-	private List<EcomCenDatos> getDatos(EdicionRemesaForm form) throws ParseException {
+	private List<EdicionColegiadoForm> getDatos(EdicionRemesaForm form) throws ParseException {
+		List<EdicionColegiadoForm> datos = new ArrayList<EdicionColegiadoForm>();
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+		EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
+		
 		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
 		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
 		
@@ -194,15 +178,44 @@ public class EdicionRemesasAction extends MasterAction {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
 		
-		return cenWSService.getEcomCenDatosList(Long.valueOf(form.getIdcensows()), ecomCenDatosExample);
+		List<EcomCenDatos> ecomCenDatos = cenWSService.getEcomCenDatosList(Long.valueOf(form.getIdcensows()), ecomCenDatosExample);
+		
+		if (ecomCenDatos != null) {
+			for (EcomCenDatos ecomCenDato : ecomCenDatos) {
+				EdicionColegiadoForm edicionColegiadoForm = new EdicionColegiadoForm();
+				edicionColegiadoForm.setIdcensodatos(ecomCenDato.getIdcensodatos());
+				edicionColegiadoForm.setNcolegiado(ecomCenDato.getNcolegiado());
+				edicionColegiadoForm.setNombre(ecomCenDato.getNombre());
+				edicionColegiadoForm.setApellido1(ecomCenDato.getApellido1());
+				edicionColegiadoForm.setApellido2(ecomCenDato.getApellido2());
+								
+				short idestadocolegiado = ecomCenDato.getIdestadocolegiado();
+				edicionColegiadoForm.setIdestadocolegiado(idestadocolegiado);
+				
+				if (idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ALTA_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ALTA_PERSONA_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_MENOS_NUMERO_DOCUMENTO.getCodigo()) {
+					EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(ecomCenDato.getIdcensodatos());
+					edicionColegiadoForm.setIdpersona(ecomCenColegiado.getIdpersona());
+					edicionColegiadoForm.setIdinstitucion(ecomCenColegiado.getIdinstitucion());
+				}				
+			
+				datos.add(edicionColegiadoForm);
+			}
+		}
+		
+		return datos;
 
 	}
 	
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {			
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		formulario.setAccion("ver");
 		return verEditar("ver", formulario, request);		
 	}
 	
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {			
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		formulario.setAccion("editar");
 		return verEditar("editar", formulario, request);		
 	}
 	
@@ -247,6 +260,8 @@ public class EdicionRemesasAction extends MasterAction {
 			} else {
 				edicionRemesaForm.setDescerror(UtilidadesString.getMensajeIdioma(getUserBean(request), "censo.ws.literal.sinIncidencia"));
 			}
+			
+			edicionRemesaForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 						
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);

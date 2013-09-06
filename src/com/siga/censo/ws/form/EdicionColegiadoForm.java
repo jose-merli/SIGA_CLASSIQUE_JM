@@ -2,13 +2,16 @@ package com.siga.censo.ws.form;
 
 import java.util.List;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
 
 public class EdicionColegiadoForm extends MasterForm {
 	private Long idcensodatos = null;
 	
-	private String publicarcolegiado = null;  
+	private boolean publicarcolegiado = false;  
 	private String ncolegiado = null;  
 	private String numsolicitudcolegiacion = null;  
 	private String nombre = null;  
@@ -16,26 +19,26 @@ public class EdicionColegiadoForm extends MasterForm {
 	private String apellido2 = null;  
 	private String sexo = null;  
 	private String fechanacimiento = null;  
-	private String idcensotipoidentificacion = null;  
+	private Short idcensotipoidentificacion = null;  
 	private String numdocumento = null;  
 	
-	private String idcensodireccion = null;
+	private Long idcensodireccion = null;
 
-	private String publicartelefono = null;  
+	private boolean publicartelefono = false;  
 	private String telefono = null;  
-	private String publicartelefonomovil = null;  
+	private boolean publicartelefonomovil = false;  
 	private String telefonomovil = null;  
-	private String publicarfax = null;  
+	private boolean publicarfax = false;  
 	private String fax = null;  
-	private String publicaremail = null;  
+	private boolean publicaremail = false;  
 	private String email = null;  
-	private String idecomcensosituacionejer = null;  
+	private Short idecomcensosituacionejer = null;  
 	private String fechasituacion = null;  
 	private String fechamodifrecibida = null;  
-	private String residente = null;  
-	private String idestadocolegiado = null;  
+	private boolean residente = false;  
+	private Short idestadocolegiado = null;  
 
-	private String publicardireccion = null;  
+	private boolean publicardireccion = false;  
 	private String desctipovia = null;  
 	private String domicilio = null;  
 	private String codigopostal = null;  
@@ -50,16 +53,15 @@ public class EdicionColegiadoForm extends MasterForm {
 	private String fechaCambio = null;
 	private List<String> incidencias = null;
 	
+	private Long idpersona = null;
+	private Short idinstitucion = null;
+	
 	private boolean historico = false;
 	private Long idcensodatosPadre = null;
 	
+	private List<ValueKeyVO> tiposIdentificacion;
+	private List<ValueKeyVO> situacionesEjerciente;
 	
-	public String getPublicarcolegiado() {
-		return publicarcolegiado;
-	}
-	public void setPublicarcolegiado(String publicarcolegiado) {
-		this.publicarcolegiado = publicarcolegiado;
-	}
 	public String getNcolegiado() {
 		return ncolegiado;
 	}
@@ -102,10 +104,10 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setFechanacimiento(String fechanacimiento) {
 		this.fechanacimiento = fechanacimiento;
 	}
-	public String getIdcensotipoidentificacion() {
+	public Short getIdcensotipoidentificacion() {
 		return idcensotipoidentificacion;
 	}
-	public void setIdcensotipoidentificacion(String idcensotipoidentificacion) {
+	public void setIdcensotipoidentificacion(Short idcensotipoidentificacion) {
 		this.idcensotipoidentificacion = idcensotipoidentificacion;
 	}
 	public String getNumdocumento() {
@@ -114,64 +116,44 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setNumdocumento(String numdocumento) {
 		this.numdocumento = numdocumento;
 	}
-	public String getIdcensodireccion() {
+	public Long getIdcensodireccion() {
 		return idcensodireccion;
 	}
-	public void setIdcensodireccion(String idcensodireccion) {
+	public void setIdcensodireccion(Long idcensodireccion) {
 		this.idcensodireccion = idcensodireccion;
 	}
-	public String getPublicartelefono() {
-		return publicartelefono;
-	}
-	public void setPublicartelefono(String publicartelefono) {
-		this.publicartelefono = publicartelefono;
-	}
+	
 	public String getTelefono() {
 		return telefono;
 	}
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-	public String getPublicartelefonomovil() {
-		return publicartelefonomovil;
-	}
-	public void setPublicartelefonomovil(String publicartelefonomovil) {
-		this.publicartelefonomovil = publicartelefonomovil;
-	}
+	
 	public String getTelefonomovil() {
 		return telefonomovil;
 	}
 	public void setTelefonomovil(String telefonomovil) {
 		this.telefonomovil = telefonomovil;
 	}
-	public String getPublicarfax() {
-		return publicarfax;
-	}
-	public void setPublicarfax(String publicarfax) {
-		this.publicarfax = publicarfax;
-	}
+	
 	public String getFax() {
 		return fax;
 	}
 	public void setFax(String fax) {
 		this.fax = fax;
 	}
-	public String getPublicaremail() {
-		return publicaremail;
-	}
-	public void setPublicaremail(String publicaremail) {
-		this.publicaremail = publicaremail;
-	}
+	
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getIdecomcensosituacionejer() {
+	public Short getIdecomcensosituacionejer() {
 		return idecomcensosituacionejer;
 	}
-	public void setIdecomcensosituacionejer(String idecomcensosituacionejer) {
+	public void setIdecomcensosituacionejer(Short idecomcensosituacionejer) {
 		this.idecomcensosituacionejer = idecomcensosituacionejer;
 	}
 	public String getFechasituacion() {
@@ -186,24 +168,14 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setFechamodifrecibida(String fechamodifrecibida) {
 		this.fechamodifrecibida = fechamodifrecibida;
 	}
-	public String getResidente() {
-		return residente;
-	}
-	public void setResidente(String residente) {
-		this.residente = residente;
-	}
-	public String getIdestadocolegiado() {
+	
+	public Short getIdestadocolegiado() {
 		return idestadocolegiado;
 	}
-	public void setIdestadocolegiado(String idestadocolegiado) {
+	public void setIdestadocolegiado(Short idestadocolegiado) {
 		this.idestadocolegiado = idestadocolegiado;
 	}
-	public String getPublicardireccion() {
-		return publicardireccion;
-	}
-	public void setPublicardireccion(String publicardireccion) {
-		this.publicardireccion = publicardireccion;
-	}
+	
 	public String getDesctipovia() {
 		return desctipovia;
 	}
@@ -294,5 +266,82 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setIdcensodatosPadre(Long idcensodatosPadre) {
 		this.idcensodatosPadre = idcensodatosPadre;
 	}
+	public boolean isPublicarcolegiado() {
+		return publicarcolegiado;
+	}
+	public void setPublicarcolegiado(boolean publicarcolegiado) {
+		this.publicarcolegiado = publicarcolegiado;
+	}
+	public boolean isPublicartelefono() {
+		return publicartelefono;
+	}
+	public void setPublicartelefono(boolean publicartelefono) {
+		this.publicartelefono = publicartelefono;
+	}
+	public boolean isPublicartelefonomovil() {
+		return publicartelefonomovil;
+	}
+	public void setPublicartelefonomovil(boolean publicartelefonomovil) {
+		this.publicartelefonomovil = publicartelefonomovil;
+	}
+	public boolean isPublicarfax() {
+		return publicarfax;
+	}
+	public void setPublicarfax(boolean publicarfax) {
+		this.publicarfax = publicarfax;
+	}
+	public boolean isPublicaremail() {
+		return publicaremail;
+	}
+	public void setPublicaremail(boolean publicaremail) {
+		this.publicaremail = publicaremail;
+	}
+	public boolean isPublicardireccion() {
+		return publicardireccion;
+	}
+	public void setPublicardireccion(boolean publicardireccion) {
+		this.publicardireccion = publicardireccion;
+	}
+	public boolean isResidente() {
+		return residente;
+	}
+	public void setResidente(boolean residente) {
+		this.residente = residente;
+	}
+	public List<ValueKeyVO> getTiposIdentificacion() {
+		return tiposIdentificacion;
+	}
+	public void setTiposIdentificacion(List<ValueKeyVO> tiposIdentificacion) {
+		this.tiposIdentificacion = tiposIdentificacion;
+	}
+	public List<ValueKeyVO> getSituacionesEjerciente() {
+		return situacionesEjerciente;
+	}
+	public void setSituacionesEjerciente(List<ValueKeyVO> situacionesEjerciente) {
+		this.situacionesEjerciente = situacionesEjerciente;
+	}
+	public boolean isColegiadoEditable() {
+		if (idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.INCIDENCIAS_DATOS_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ALTA_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ALTA_PERSONA_COLEGIADO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public Long getIdpersona() {
+		return idpersona;
+	}
+	public void setIdpersona(Long idpersona) {
+		this.idpersona = idpersona;
+	}
+	public Short getIdinstitucion() {
+		return idinstitucion;
+	}
+	public void setIdinstitucion(Short idinstitucion) {
+		this.idinstitucion = idinstitucion;
+	}
+	
 		
 }

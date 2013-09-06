@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,17 +13,24 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenTipoidentificacion;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenTipoidentificacionExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsExample;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomCenTipoIdentificacionService;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.service.CensoService;
 import com.siga.censo.ws.form.BusquedaRemesasForm;
+import com.siga.censo.ws.util.CombosCenWS;
 import com.siga.comun.vos.InstitucionVO;
+import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -108,6 +114,7 @@ public class BusquedaRemesasAction extends MasterAction {
 			busquedaRemesasForm.setIdColegio(getUserBean(request).getLocation());
 
 			busquedaRemesasForm.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
+			busquedaRemesasForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 			
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
@@ -139,11 +146,13 @@ public class BusquedaRemesasAction extends MasterAction {
 		return instituciones;
 	}
 	
+		
 	protected String buscar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
 		
+		request.getSession().removeAttribute(DATAPAGINADOR);
 		return buscarPor(mapping, formulario, request, response);
 		
 	}
