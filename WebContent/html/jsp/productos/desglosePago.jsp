@@ -121,7 +121,7 @@
 				</td>
 			</tr>
 	</table>						
-	<div  style="position:relative;width=100%;height:200px;">
+	<div style="position:relative;width:100%;height:200px;">
 					<siga:Table
 	  				name="tarjeta"
 	  				border="2"

@@ -312,9 +312,19 @@
 							</tr>
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/></td>
-								<td colspan="2"><html:textarea property="datosGeneralesObservaciones" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="120" rows="3" styleClass="<%=claseEditarCampos%>" value="<%=observaciones%>" style="overflow:hidden"/></td>
+								<td colspan="2">
+									<html:textarea property="datosGeneralesObservaciones" 
+										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+										styleClass="<%=claseEditarCampos%>" value="<%=observaciones%>"></html:textarea>
+								</td>
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observinforme"/></td>
-								<td colspan="2"><html:textarea property="datosGeneralesObservinforme" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="120" rows="3" styleClass="<%=claseEditarCampos%>" value="<%=observinforme%>" style="overflow:hidden"/></td>
+								<td colspan="2">
+								<html:textarea property="datosGeneralesObservinforme" 
+									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+									style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+									styleClass="<%=claseEditarCampos%>" value="<%=observinforme%>"></html:textarea>
+								</td>
 							</tr>							
 						</table>
 					</siga:ConjCampos>	

@@ -117,9 +117,7 @@
 
 		<siga:Table 
 		   name="tablaDatos"
-		   border="1"
-		    
-		   fixedHeight="243"	  
+		   border="1"  
 		   columnNames="<%=nombresCol %>"
 		   columnSizes="<%=tamanosCol %>"
 		   modal="M"
