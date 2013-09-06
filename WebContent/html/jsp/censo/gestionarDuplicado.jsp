@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- SolicitudIncorporacionDatos.jsp -->
+<!-- gestionarDuplicado.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">

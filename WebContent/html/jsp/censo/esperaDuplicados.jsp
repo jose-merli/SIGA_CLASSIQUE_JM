@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- resultadoBusquedaDuplicados.jsp -->
+<!-- esperaDuplicados.jsp -->
 
 <!-- CABECERA JSP -->
 <%@page import="org.apache.commons.validator.Form"%>
