@@ -231,7 +231,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			   						facturacion.pagosFactura.literal.Pendiente,"
 
 			   columnSizes = "8,15,15,27,8,8,9"
-			   fixedHeight="320"
+			   fixedHeight="70%"
 			   modal = "M"
 			   modalScroll="true">
 	
