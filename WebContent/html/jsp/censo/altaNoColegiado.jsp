@@ -67,7 +67,7 @@
 	String idInstitucionActual = user.getLocation();
 	String parametroidInstitucionActual[] = new String[1];
 	parametroidInstitucionActual[0] = idInstitucionActual;
-	String idInstitucionIdioma[] = {usr.getLocation()};
+	String idInstitucionIdioma[] = {user.getLocation()};
 	
 	String idPersona = "";
 	String nombre = "";
