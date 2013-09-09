@@ -102,7 +102,6 @@
 			</td>
 		</tr>
 	</table>
-  
 
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
@@ -112,98 +111,94 @@
 		</tr>
 	</table>		
 					
-	<div style="position:relative;width:100%;height:200px;">
-		<siga:Table
-	  		name="tarjeta"
-	  		border="2"
-	  		columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-	   		columnSizes="50,20,20,10"
-	   		fixedHeight="200">
+	<siga:Table
+  		name="tarjeta"
+  		border="2"
+  		columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
+   		columnSizes="50,20,20,10"
+   		fixedHeight="42%">
 <%				
-			boolean tieneArticulo = false;
- 			for (int i = 0; i < vArticulos.size(); i++) {
-				Articulo a = (Articulo) vArticulos.get(i);
-				a.getIdFormaPago();													
-				if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
-					double precio = (double)a.getPrecio().doubleValue();
-					float iva = (float)a.getValorIva().floatValue();
-					varIvaTotalTarjeta = varIvaTotalTarjeta +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-					varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * (precio * (1 + (iva / 100))));
-					sPeriodicidad = "";
-					sPrecio = "-";
-					if(a.getPrecio()!= null) {										
-						sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
-						if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
-							sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
-						}											
-					}
-					
-					tieneArticulo = true;
-%> 											
-					<tr class="listaNonEdit">
-						<td>
-  							<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
-  							&nbsp;
- 							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
-  						</td>					  				
-  						<td align="right"><%=a.getCantidad()%></td>
-  						<td align="right"><%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
-  						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%</td>					  				
-				 	</tr>							
-<%						
+		boolean tieneArticulo = false;
+		for (int i = 0; i < vArticulos.size(); i++) {
+			Articulo a = (Articulo) vArticulos.get(i);
+			a.getIdFormaPago();													
+			if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
+				double precio = (double)a.getPrecio().doubleValue();
+				float iva = (float)a.getValorIva().floatValue();
+				varIvaTotalTarjeta = varIvaTotalTarjeta +  (a.getCantidad() * ((float)(precio / 100)) * iva);
+				varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * (precio * (1 + (iva / 100))));
+				sPeriodicidad = "";
+				sPrecio = "-";
+				if(a.getPrecio()!= null) {										
+					sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
+					if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
+						sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
+					}											
 				}
-	 		}
-
-			if (!tieneArticulo) {
-%>
-	  			<tr class="notFound">
-	  				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>	
-<%
+				
+				tieneArticulo = true;
+%> 											
+				<tr class="listaNonEdit">
+					<td>
+								<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+								&nbsp;
+							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+							</td>					  				
+							<td align="right"><%=a.getCantidad()%></td>
+							<td align="right"><%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
+							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%</td>					  				
+			 	</tr>							
+<%						
 			}
+ 		}
+
+		if (!tieneArticulo) {
+%>
+  			<tr class="notFound">
+  				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
+<%
+		}
 %>	
-	  	</siga:Table>		
-	</div>
+  	</siga:Table>		
 
 <%
 	varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
 	varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
 %>
-	<div style="visibility:visible;width:100%; height:60;" align="center">
-		<table>
-			<tr>
-				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
-				<td>&nbsp;&nbsp;</td>
-				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
-			</tr>
-		 </table>
+	<table>
+		<tr>
+			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
+			<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
+			<td>&nbsp;&nbsp;</td>
+			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+			<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
+		</tr>
+	 </table>
 						 
-		<div id="datosTarjeta" style="visibility:<%=visibilidadTarjeta%>;position:relative;">
-			 <table>
-				<tr>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>
-					<td>
-						<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-						&nbsp;-
-						<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-						&nbsp;-
-						<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-						&nbsp;-
-						<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-					</td>
-					<td>&nbsp;&nbsp;</td>
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.caducidad"/> (<siga:Idioma key="pys.solicitudCompra.literal.formatoCaducidad"/>)&nbsp;(*)</td>
-					<td>
-						<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-						&nbsp;/
-						<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>		
+	<div id="datosTarjeta" style="visibility:<%=visibilidadTarjeta%>;position:relative;">
+		 <table>
+			<tr>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>
+				<td>
+					<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					&nbsp;-
+					<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					&nbsp;-
+					<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					&nbsp;-
+					<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.caducidad"/> (<siga:Idioma key="pys.solicitudCompra.literal.formatoCaducidad"/>)&nbsp;(*)</td>
+				<td>
+					<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					&nbsp;/
+					<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+				</td>
+			</tr>
+		</table>
+	</div>
 				
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
@@ -220,7 +215,7 @@
 		columnSizes="50,20,20,10"
 		fixedHeight="90%">
 <%			
-		tieneArticulo = false;
+		boolean tieneArticulo = false;
 		for (int i = 0; i < vArticulos.size(); i++) {
 			Articulo a = (Articulo) vArticulos.get(i);		
 			a.getIdFormaPago();							
