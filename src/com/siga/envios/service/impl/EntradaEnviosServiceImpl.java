@@ -162,6 +162,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			parametrosMap.put("anio", anio);
 			parametrosMap.put("idTurno", idTurno);
 			parametrosMap.put("numero", numero);
+			parametrosMap.put("comisionAJG", comisionAJG);
 			entradaEnvios = envEntradaEnviosMapper.getComunicacionesDesigna(parametrosMap);
 			
 		} catch (Exception e) {
