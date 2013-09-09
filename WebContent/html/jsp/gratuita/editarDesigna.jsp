@@ -899,8 +899,8 @@
 																	</td>
 																
 																<% } %>
-																	<td colspan="2">
-																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="500" childrenIds="idProcedimiento,idPretension" disabled="<%=modoVerReadOnly%>"/>
+																	<td colspan="2" nowrap="nowrap">
+																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento,idPretension" disabled="<%=modoVerReadOnly%>"/>
 																	</td> 
 															</tr>
 															
@@ -915,8 +915,8 @@
 																	</td>												
 																<% } %> 
 																
-																<td rowspan="2">
-																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" width="300" childrenIds="idProcedimiento" disabled="<%=modoVerReadOnly%>"/>
+																<td rowspan="2" nowrap="nowrap">
+																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento" disabled="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													<% } %>		
