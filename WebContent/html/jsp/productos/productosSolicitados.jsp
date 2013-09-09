@@ -92,7 +92,10 @@
 			}			
 		
 		function refrescarLocal(){
-			parent.solicitar("");
+			parent.document.solicitudCompraForm.target="resultado";
+			parent.document.solicitudCompraForm.modo.value = "solicitar";
+			parent.document.solicitudCompraForm.concepto.value = "";
+			parent.document.solicitudCompraForm.submit();
 		}	
 	</script>	
 	
