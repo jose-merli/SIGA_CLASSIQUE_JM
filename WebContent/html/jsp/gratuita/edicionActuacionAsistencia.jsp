@@ -20,9 +20,7 @@
 <%@ taglib uri="ajaxtags.tld" prefix="ajax"%>
 
 	<!-- HEAD -->
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	<link type="text/css" rel="stylesheet" href="<html:rewrite page="/html/css/ajaxtags.css"/>" />
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
 	<!-- Incluido jquery en siga.js -->
 	

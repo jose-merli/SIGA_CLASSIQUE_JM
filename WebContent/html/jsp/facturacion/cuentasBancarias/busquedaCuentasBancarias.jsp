@@ -20,8 +20,6 @@
 
 	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/js/themes/base/jquery-ui.css'/>" />
-	<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/jquery-ui.css'/>" />
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery-ui.js'/>"></script>

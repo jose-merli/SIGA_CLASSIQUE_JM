@@ -100,7 +100,6 @@ function habilitarCampos(isHabilitar) {
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
 
 <script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>

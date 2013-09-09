@@ -413,12 +413,6 @@
    }
   }
 </script>
-<script language=JavaScript>
-  if (document.all)
-    document.write('<link rel=stylesheet href=/estilo/estilosIE.css>');
-  else
-    document.write('<link rel=stylesheet href=/estilo/estilosNT.css>');
-</script>
 </HEAD>
 <BODY CLASS=BODY>
 <CENTER>

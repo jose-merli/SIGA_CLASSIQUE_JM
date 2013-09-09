@@ -40,9 +40,6 @@
 <script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/ajaxtags.css'/>" />
-<link type="text/css" rel="stylesheet" href="<html:rewrite page='/html/css/displaytag.css'/>" />
-
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo titulo="sjcs.guardias.programacionCalendarios.programacion" localizacion="sjcs.guardias.programacionCalendarios.localizacion"/>	
