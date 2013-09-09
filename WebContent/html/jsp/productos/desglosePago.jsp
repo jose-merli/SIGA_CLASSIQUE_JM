@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- desglosePago.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -61,36 +62,26 @@
 	}
 %>
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
+		
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="pys.solicitudCompra.cabecera" 
-		localizacion="pys.solicitudCompra.ruta"/>
+	<siga:Titulo titulo="pys.solicitudCompra.cabecera" localizacion="pys.solicitudCompra.ruta"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->	
-	<script language="JavaScript">	
-		
- 		function accionCerrar(){
+	<script language="JavaScript">			
+ 		function accionCerrar() {
  			window.top.close();
  		}
  		
-	    function validarAnchos()
-	    {
+	    function validarAnchos() {
 	        validarAncho_tarjeta();
 	        validarAncho_otro();
-	    }
- 		
+	    } 		
 	</script>	
 </head>
 
@@ -99,196 +90,213 @@
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
 <html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="mainWorkArea" type="">
-  <html:hidden name="solicitudCompraForm" property="modo" value="" />
-  <html:hidden name="solicitudCompraForm" property="pan" value="" />
-  <html:hidden name="solicitudCompraForm" property="fechaCaducidad" value="" />
-  <input type="hidden" name="pagoConTarjeta" value="<%=pagoConTarjeta%>" />
+  	<html:hidden name="solicitudCompraForm" property="modo" value="" />
+  	<html:hidden name="solicitudCompraForm" property="pan" value="" />
+  	<html:hidden name="solicitudCompraForm" property="fechaCaducidad" value="" />
+  	<input type="hidden" name="pagoConTarjeta" value="<%=pagoConTarjeta%>" />
   
-  	<table class="tablaTitulo" align="center" cellspacing="0" height="20">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="20">
 		<tr>
 			<td class="titulitosDatos">
-				<siga:Idioma key="pys.solicitudCompra.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP((String)request.getAttribute("nombrePersona"))%> &nbsp;&nbsp;
-		
+				<siga:Idioma key="pys.solicitudCompra.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP((String)request.getAttribute("nombrePersona"))%> &nbsp;&nbsp;		
 			</td>
 		</tr>
 	</table>
   
 
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-			<tr>
-				<td id="titulo" class="titulosPeq">
-					<siga:Idioma key="pys.desgloseCesta.literal.pagoTarjeta"/>
-				</td>
-			</tr>
-	</table>						
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<siga:Idioma key="pys.desgloseCesta.literal.pagoTarjeta"/>
+			</td>
+		</tr>
+	</table>		
+					
 	<div style="position:relative;width:100%;height:200px;">
-					<siga:Table
-	  				name="tarjeta"
-	  				border="2"
-	  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-	   				columnSizes="50,20,20,10"
-	   				fixedHeight="200">
+		<siga:Table
+	  		name="tarjeta"
+	  		border="2"
+	  		columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
+	   		columnSizes="50,20,20,10"
+	   		fixedHeight="200">
 <%				
- 						for (int i = 0; i < vArticulos.size(); i++) {
-							Articulo a = (Articulo) vArticulos.get(i);
-								a.getIdFormaPago();													
-								if(a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta){			
-									double precio = (double)a.getPrecio().doubleValue();
-									float iva = (float)a.getValorIva().floatValue();
-									varIvaTotalTarjeta = varIvaTotalTarjeta +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-									varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * (precio * (1 + (iva / 100))));
-									sPeriodicidad = "";
-									sPrecio = "-";
-									if(a.getPrecio()!= null) {										
-										sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
-										if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
-											sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
-										}											
-								}
+			boolean tieneArticulo = false;
+ 			for (int i = 0; i < vArticulos.size(); i++) {
+				Articulo a = (Articulo) vArticulos.get(i);
+				a.getIdFormaPago();													
+				if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
+					double precio = (double)a.getPrecio().doubleValue();
+					float iva = (float)a.getValorIva().floatValue();
+					varIvaTotalTarjeta = varIvaTotalTarjeta +  (a.getCantidad() * ((float)(precio / 100)) * iva);
+					varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * (precio * (1 + (iva / 100))));
+					sPeriodicidad = "";
+					sPrecio = "-";
+					if(a.getPrecio()!= null) {										
+						sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
+						if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
+							sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
+						}											
+					}
+					
+					tieneArticulo = true;
 %> 											
-								<tr class="listaNonEdit">
-									<td>
-				  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
-			  						<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
-				  				</td>					  				
-				  				<td align="right">
-				  					<%=a.getCantidad()%>
-				  				</td>
-				  				<td align="right">
-				  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
-				  				</td>
-				  				<td align="right">
-				  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;% 
-				  				</td>					  				
-		  				 </tr>							
+					<tr class="listaNonEdit">
+						<td>
+  							<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+  							&nbsp;
+ 							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+  						</td>					  				
+  						<td align="right"><%=a.getCantidad()%></td>
+  						<td align="right"><%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
+  						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%</td>					  				
+				 	</tr>							
+<%						
+				}
+	 		}
 
-<%						}
-	 					}
-%>  			
-	  			</siga:Table>		
+			if (!tieneArticulo) {
+%>
+	  			<tr class="notFound">
+	  				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>	
+<%
+			}
+%>	
+	  	</siga:Table>		
 	</div>
 
-	<%
-			varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
-			varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
-	%>
-					<div style="visibility:visible;width:100%; height:60;" align="center">
-						<table>
-							<tr>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-								<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
-								<td>&nbsp;&nbsp;</td>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-								<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
-							</tr>
-						 </table>
+<%
+	varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
+	varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
+%>
+	<div style="visibility:visible;width:100%; height:60;" align="center">
+		<table>
+			<tr>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
+				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
+				<td>&nbsp;&nbsp;</td>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
+			</tr>
+		 </table>
 						 
-					<div id="datosTarjeta" style="visibility:<%=visibilidadTarjeta%>;position:relative;">
-						 <table>
-							<tr>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>
-								<td>
-									<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-									&nbsp;-
-									<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-									&nbsp;-
-									<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-									&nbsp;-
-									<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-								</td>
-								<td>&nbsp;&nbsp;</td>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.caducidad"/> (<siga:Idioma key="pys.solicitudCompra.literal.formatoCaducidad"/>)&nbsp;(*)</td>
-								<td>
-									<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-									&nbsp;/
-									<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
-								</td>
-							</tr>
-						</table>
-					</div>
-					</div>		
-
-					
-						<table class="tablaTitulo" cellspacing="0" heigth="32">
-							<tr>
-								<td id="titulo" class="titulosPeq">
-									<siga:Idioma key="pys.desgloseCesta.literal.otrosPagos"/>
-								</td>
-							</tr>
-						</table>								
+		<div id="datosTarjeta" style="visibility:<%=visibilidadTarjeta%>;position:relative;">
+			 <table>
+				<tr>
+					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>
+					<td>
+						<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+						&nbsp;-
+						<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+						&nbsp;-
+						<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+						&nbsp;-
+						<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					</td>
+					<td>&nbsp;&nbsp;</td>
+					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.caducidad"/> (<siga:Idioma key="pys.solicitudCompra.literal.formatoCaducidad"/>)&nbsp;(*)</td>
+					<td>
+						<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+						&nbsp;/
+						<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>		
+				
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<siga:Idioma key="pys.desgloseCesta.literal.otrosPagos"/>
+			</td>
+		</tr>
+	</table>								
 						
-						<siga:Table
-		  				name="otro"
-		  				border="2"
-		  				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-		   				columnSizes="50,20,20,10"
-		   				fixedHeight="90%">
-	<%				
-	 						for (int i = 0; i < vArticulos.size(); i++) {
-								Articulo a = (Articulo) vArticulos.get(i);		
-								a.getIdFormaPago();							
-								if(a.getIdFormaPago() == null || a.getIdFormaPago().intValue() != tarjeta){						
-								
-									double precio = (double)a.getPrecio().doubleValue();
-									float iva = (float)a.getValorIva().floatValue();
-									if(a.getIdFormaPago() != null){
-										varIvaTotalOtro = varIvaTotalOtro +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-										varPrecioTotalOtro = varPrecioTotalOtro + (a.getCantidad() * (precio * (1 + (iva / 100))));
-									}
-									sPeriodicidad = "";
-									sPrecio = "-";
-									if(a.getPrecio()!= null) {										
-										sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
-										if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
-											sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
-										}											
-									}
+	<siga:Table
+		name="otro"
+		border="2"
+		columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
+		columnSizes="50,20,20,10"
+		fixedHeight="90%">
+<%			
+		tieneArticulo = false;
+		for (int i = 0; i < vArticulos.size(); i++) {
+			Articulo a = (Articulo) vArticulos.get(i);		
+			a.getIdFormaPago();							
+			if (a.getIdFormaPago() == null || a.getIdFormaPago().intValue() != tarjeta) {						
+			
+				double precio = (double)a.getPrecio().doubleValue();
+				float iva = (float)a.getValorIva().floatValue();
+				if(a.getIdFormaPago() != null){
+					varIvaTotalOtro = varIvaTotalOtro +  (a.getCantidad() * ((float)(precio / 100)) * iva);
+					varPrecioTotalOtro = varPrecioTotalOtro + (a.getCantidad() * (precio * (1 + (iva / 100))));
+				}
+				sPeriodicidad = "";
+				sPrecio = "-";
+				if(a.getPrecio()!= null) {										
+					sPrecio = UtilidadesString.mostrarDatoJSP(a.getPrecio());
+					if(a.getClaseArticulo()==Articulo.CLASE_SERVICIO){
+						sPeriodicidad = " / " + UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
+					}											
+				}
+				
+				tieneArticulo = true;
 	%> 											
-									<tr class="listaNonEdit">
-										<td>
-					  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>&nbsp;
-			  							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
-					  				</td>					  				
-					  				<td align="right">
-					  					<%=a.getCantidad()%>
-					  				</td>
-					  				<td align="right">
-					  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
-					  				</td>
-					  				<td align="right">
-					  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%  
-					  				</td>					  				
-			  				 </tr>							
-	
-	<%						}
-		 					}
-	%>  			
-		  			</siga:Table>					
+				<tr class="listaNonEdit">
+					<td>
+	  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+	  					&nbsp;
+ 							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+	  				</td>					  				
+	  				<td align="right">
+	  					<%=a.getCantidad()%>
+	  				</td>
+	  				<td align="right">
+	  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
+	  				</td>
+	  				<td align="right">
+	  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%  
+	  				</td>					  				
+ 				</tr>								
+<%							
+			}
+		}
 
-				<div style="position:absolute;bottom:30px;width:100%; height:60; z-index:2;" align="center">
+		if (!tieneArticulo) {
+%>
+	  		<tr class="notFound">
+	  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
+<%
+		}
+%>
+	</siga:Table>					
+
+	<div style="position:absolute;bottom:30px;width:100%; height:60; z-index:2;" align="center">
 <%
 		varIvaTotalOtro = UtilidadesNumero.redondea (varIvaTotalOtro, 2);
 		varPrecioTotalOtro = UtilidadesNumero.redondea (varPrecioTotalOtro, 2);
 %>
-						<table>
-							<tr>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-								<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalOtro)%>&nbsp;&euro;</td>
-								<td>&nbsp;&nbsp;</td>
-								<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-								<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalOtro)%>&nbsp;&euro;</td>
-							</tr>
-						</table>
-					</div>		
+		<table>
+			<tr>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
+				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalOtro)%>&nbsp;&euro;</td>
+				<td>&nbsp;&nbsp;</td>
+				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalOtro)%>&nbsp;&euro;</td>
+			</tr>
+		</table>
+	</div>		
 		
-			<siga:ConjBotonesAccion botones="V,FC" clase="botonesDetalle"/>
+	<siga:ConjBotonesAccion botones="V,FC" clase="botonesDetalle"/>
 
 	<script>
-			function pagoTarjeta(){
+			function pagoTarjeta() {
 				return (document.forms[0].pagoConTarjeta.value == "S");
 			}
 			
-			function validarDatos(){
+			function validarDatos() {
 		 		var f = document.forms[0];
 				var valido = true;
 
@@ -304,7 +312,7 @@
 				return valido;
 			}
 	
-	 		function accionfinalizarCompra(){
+	 		function accionfinalizarCompra() {
 				sub();
 		 		var f = document.forms[0];
 	 			if (pagoTarjeta()) {
@@ -321,25 +329,19 @@
 					} 
 	 			} else {
 		 			f.modo.value = "finalizarCompra";
-		 			f.submit();	 			
-					
+		 			f.submit();	 								
 	 			} 
 			}
 			
-			function accionVolver(){
+			function accionVolver() {
 				history.back();
-			}
-			
- 	</script>
-			
-	</html:form>	
-	
+			}			
+ 	</script>			
+</html:form>	
 
-
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

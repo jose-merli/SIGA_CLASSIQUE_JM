@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- productosSolicitados.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -23,6 +24,7 @@
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -108,11 +110,7 @@
 		<input type="hidden" name="modo" 				value="abrirBusquedaModal">	
 		<input type="hidden" name="ventana" 		value="solicitud">			
 		<input type="hidden" name="idInstitucion" 	value="">	
-		<input type="hidden" name="idInstitucionPresentador" 	value="">
-		
-		
-		
-          
+		<input type="hidden" name="idInstitucionPresentador" 	value="">  
 		
 		<table class="tablaTitulo" cellpadding="0" cellspacing="0">
 		 <tr>
@@ -126,11 +124,14 @@
 			columnNames="pys.solicitudCompra.literal.tipo,pys.solicitudCompra.literal.categoria,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,"  
 			columnSizes="28,30,23,7,12">
 <% 				
-				if(carro == null) 
-				{ 	
+				if(carro == null) { 	
 					botones = ""; 
-					
-				}else {
+%> 	
+			  		<tr class="notFound">
+						<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+					</tr>		 						
+<% 					
+				} else {
 					Vector vArticulos = carro.getListaArticulos();
 					if(vArticulos == null || vArticulos.size()<1 ){
 						botones = ""; 
@@ -139,8 +140,7 @@
 						<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 					</tr>		 						
 <% 
-					}else 
-					{ 						
+					} else 	{ 						
  						botones="CT";
  						for (int i = 0; i < vArticulos.size(); i++) {
  							int fila;

@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- seleccionSerieModal.jsp -->
+
 <!-- 
 	 Permite mostrar/editar datos sobre lols precios asociados a los servicios
 	 VERSIONES:
@@ -37,137 +38,108 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
-	
 	Vector series = (Vector)request.getSession().getAttribute("seriesCandidatas");
-	
 %>	
 
-
-<!-- HEAD -->
-	
-
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+</head>
 
-	
-	</head>
+<body>
 
-	<body>
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="informes.seleccionSerie.titulo"/>
+			</td>
+		</tr>
 
-			<!-- TITULO -->
-			<!-- Barra de titulo actualizable desde los mantenimientos -->
-			<table class="tablaTitulo" cellspacing="0" heigth="32">
-				<tr>
-					<td id="titulo" class="titulitosDatos">
-						<siga:Idioma key="informes.seleccionSerie.titulo"/>
-					</td>
-				</tr>
+		<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="submitArea">
+			<html:hidden property="idInstitucion"/>
+		</html:form>
+	</table>
 
-<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="submitArea">
-	<html:hidden property="idInstitucion"/>
-</html:form>
-
-
-			</table>
-
-			<siga:Table
-		   	      name="tablaDatos"
-		   		  border="1"
-		   		  columnNames="infomes.seleccionSerie.literal.sel,infomes.seleccionSerie.literal.descripcion"
-		   		  columnSizes="10,90"
-		   		  modal="G">
+	<siga:Table
+		name="tablaDatos"
+		border="1"
+		columnNames="infomes.seleccionSerie.literal.sel,infomes.seleccionSerie.literal.descripcion"
+		columnSizes="10,90"
+		modal="G">
 <%
-				if (series==null || series.size()==0)
-				{
+		if (series==null || series.size()==0) {
 %>
-				<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+			<tr class="notFound">
+	  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
 <%
-				} else 
-				{
-			 		for (int i=0; i<series.size(); i++)
-			   		{
-				  		FacSerieFacturacionBean bean = (FacSerieFacturacionBean)series.elementAt(i);
+		} else {
+			for (int i=0; i<series.size(); i++) {
+				FacSerieFacturacionBean bean = (FacSerieFacturacionBean)series.elementAt(i);
 %>
-			  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
-							<td>
-								<input type="radio" value="<%=bean.getIdSerieFacturacion()%>" name="chkPL">
-							</td>
-							<td>
-								<%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion()) %>
-							</td>
-			  			</siga:FilaConIconos>
+				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
+					<td><input type="radio" value="<%=bean.getIdSerieFacturacion()%>" name="chkPL"></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion()) %></td>
+			  	</siga:FilaConIconos>
 <%
-					}
-				}
+			}
+		}
 %>
 			
-			</siga:Table>
+	</siga:Table>
 			
-			<siga:ConjBotonesAccion botones='Y' modo=''  modal="P"/>
-
+	<siga:ConjBotonesAccion botones='Y' modo=''  modal="P"/>
 		<!-- FIN: CAMPOS -->
 
-		<!-- INICIO: SCRIPTS BOTONES -->
-		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-		<script language="JavaScript">
+	<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	<script language="JavaScript">		
+		function accionGuardarCerrar() {	 
+			var marcado = false;
 			
-			function accionGuardarCerrar() 
-			{	 
-				var marcado = false;
-				
-				var aDatos = new Array();
-				var oCheck = document.getElementsByName("chkPL");
-				
-				for(i=0; i<oCheck.length; i++)
+			var aDatos = new Array();
+			var oCheck = document.getElementsByName("chkPL");
+			
+			for(i=0; i<oCheck.length; i++) {
+				if (oCheck[i].checked)
 				{
-					if (oCheck[i].checked)
+					var indice=aDatos.length;
+					for (j=0; j<aDatos.length; j++)
 					{
-						var indice=aDatos.length;
-						for (j=0; j<aDatos.length; j++)
-						{
-							var dato1 = aDatos[j];
-							var dato2 = oCheck[i].value;
-						}
-						aDatos[j] = oCheck[i].value;
-						marcado = true;
+						var dato1 = aDatos[j];
+						var dato2 = oCheck[i].value;
 					}
-				}
-				if (marcado){
-					var auxi = "";
-					for (i=0; i<aDatos.length; i++)
-					{
-						auxi += aDatos[i] + "##";
-					}
-					if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
-			    	window.top.returnValue=auxi;
-					window.top.close();
-				}else{
-					// Debe haber un concepto marcado
-					alert('<siga:Idioma key="infomes.seleccionSerie.debeSeleccionar"/>');
+					aDatos[j] = oCheck[i].value;
+					marcado = true;
 				}
 			}
-	
 			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES -->
+			if (marcado) {
+				var auxi = "";
+				for (i=0; i<aDatos.length; i++) {
+					auxi += aDatos[i] + "##";
+				}
+				if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
+		    	window.top.returnValue=auxi;
+				window.top.close();
 				
-		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+			} else {
+				// Debe haber un concepto marcado
+				alert('<siga:Idioma key="infomes.seleccionSerie.debeSeleccionar"/>');
+			}
+		}
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->
 			
-		<!-- INICIO: SUBMIT AREA -->
-		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<!-- FIN: SUBMIT AREA -->
-
-	</body>
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+		
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

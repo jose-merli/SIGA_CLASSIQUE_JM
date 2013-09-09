@@ -285,6 +285,12 @@
 				<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(sumaAnticipado))%></td>
 			</siga:FilaConIconosExtExt>
 <%
+		} else {
+%>
+			<tr class="notFound">
+	  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
+<%
 		}
 %>
 	</siga:Table>

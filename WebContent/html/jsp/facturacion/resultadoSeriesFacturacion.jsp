@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- resultadoSeriesFacturacion.jsp -->
+
 <!-- VENTANA LISTA DE CABECERAS FIJAS -->
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
      Utilizando tags pinta una lista con cabeceras fijas -->
@@ -29,6 +30,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -40,115 +42,91 @@
 	request.removeAttribute("datosTab");
 %>
 
-
 	<!-- HEAD -->
-	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-			<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="AsignacionConceptosFacturablesForm" staticJavascript="false" />  
-			<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="AsignacionConceptosFacturablesForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:TituloExt 
-			titulo="facturacion.asignacionDeConceptosFacturables.titulo" 
-			localizacion="facturacion.busquedaSeriesFacturacion.literal.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
-		
-		<script>
-			function refrescarLocal()
-			{
-				parent.buscar();
-			}
-		</script>
-	</head>
-
-	<body class="tablaCentralCampos">
-
-		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
-
-		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/FAC_AsignacionConceptosFacturables.do" target="mainWorkArea" method="POST"  style="display:none">
-			<html:hidden property = "modo"  styleId = "modo"  value = "success"/>
-			<input type="hidden" name="actionModal"  id="actionModal"  value="">
-		</html:form>			
-
-			<%
-			if (vDatosTab==null || vDatosTab.size()==0)
-			{
-			%>
-				<div class="notFound">
-			<br><br>
-	   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-			<br><br>
-			</div>
-			<%
-			}
-			else
-			{
-			%>
-				<siga:Table 
-				   	name="tabladatos"
-			   		border="1"
-			   		columnNames="facturacion.resultadoSeriesFacturacion.literal.nombreAbreviado,facturacion.resultadoSeriesFacturacion.literal.descripcion,"
-			   		columnSizes="30,55,12">
-			   					
-					<!-- INICIO: ZONA DE REGISTROS -->
-					<!-- Aqui se iteran los diferentes registros de la lista -->
-
-					<%
-					for (int i=0; i<vDatosTab.size(); i++)
-			   		{
-			   			Hashtable miHash = (Hashtable)vDatosTab.elementAt(i);
-			   			String bots = "C,E,B";
-			   			if (((String)miHash.get("TIPOSERIE")).equals("G")) {
-				   			// No permimitmos borrar si es la genérica.
-			   				bots = "C,E";
-			   			}
-					%>
-						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=bots %>" clase="listaNonEdit">
-							<td>
-								<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDSERIEFACTURACION")%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("USUMODIFICACION")%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDPLANTILLA")%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("FECHAMODIFICACION")%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=UtilidadesString.comaToAnd((String)miHash.get("DESCRIPCION"))%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=UtilidadesString.comaToAnd((String)miHash.get("NOMBREABREVIADO"))%>">
-								<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=miHash.get("IDINSTITUCION")%>">
-								<%=miHash.get("NOMBREABREVIADO")%>
-							</td>
-							<td><%=miHash.get("DESCRIPCION")%></td>
-						</siga:FilaConIconos>
-					<%
-					}
-					%>
-					<!-- FIN REGISTRO -->
-
-					<!-- FIN: ZONA DE REGISTROS -->
-
-				</siga:Table>
-			<%
-			}
-			%>
-			
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:TituloExt titulo="facturacion.asignacionDeConceptosFacturables.titulo" localizacion="facturacion.busquedaSeriesFacturacion.literal.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
 	
-		<!-- FIN: LISTA DE VALORES -->
-		
+	<script>
+		function refrescarLocal() {
+			parent.buscar();
+		}
+	</script>
+</head>
+
+<body class="tablaCentralCampos">
+
+	<!-- INICIO: LISTA DE VALORES -->
+	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
+
+	<!-- Formulario de la lista de detalle multiregistro -->
+	<html:form action="/FAC_AsignacionConceptosFacturables.do" target="mainWorkArea" method="POST" style="display:none">
+		<html:hidden property = "modo"  styleId = "modo"  value = "success"/>
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+	</html:form>		
 	
-		<!-- INICIO: SUBMIT AREA -->
-		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<!-- FIN: SUBMIT AREA -->
-	</body>
+	<siga:Table 
+	   	name="tabladatos"
+		border="1"
+   		columnNames="facturacion.resultadoSeriesFacturacion.literal.nombreAbreviado,facturacion.resultadoSeriesFacturacion.literal.descripcion,"
+   		columnSizes="30,55,12">
+
+<%
+		if (vDatosTab==null || vDatosTab.size()==0)	{
+%>
+			<tr class="notFound">
+	  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	
+<%	
+		} else {
+			// INICIO: ZONA DE REGISTROS
+			// Aqui se iteran los diferentes registros de la lista
+			for (int i=0; i<vDatosTab.size(); i++) {
+	   			Hashtable miHash = (Hashtable)vDatosTab.elementAt(i);
+	   			String bots = "C,E,B";
+	   			if (((String)miHash.get("TIPOSERIE")).equals("G")) {
+		   			// No permimitmos borrar si es la genérica.
+	   				bots = "C,E";
+	   			}
+%>
+				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=bots %>" clase="listaNonEdit">
+					<td>
+						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDSERIEFACTURACION")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("USUMODIFICACION")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=miHash.get("IDPLANTILLA")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=miHash.get("FECHAMODIFICACION")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=UtilidadesString.comaToAnd((String)miHash.get("DESCRIPCION"))%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=UtilidadesString.comaToAnd((String)miHash.get("NOMBREABREVIADO"))%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=miHash.get("IDINSTITUCION")%>">
+						<%=miHash.get("NOMBREABREVIADO")%>
+					</td>
+					<td><%=miHash.get("DESCRIPCION")%></td>
+				</siga:FilaConIconos>
+<%
+			}
+			// FIN REGISTRO
+			// FIN: ZONA DE REGISTROS
+		}
+%>
+	</siga:Table>
+	<!-- FIN: LISTA DE VALORES -->
+		
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

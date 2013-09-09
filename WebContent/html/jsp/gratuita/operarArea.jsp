@@ -92,9 +92,14 @@
 	</td>
 	<td valign="top">
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="contenidoArea" rows="4" cols="60" readOnly="true" class="boxConsulta"><%=(String)miHash.get(ScsAreaBean.C_CONTENIDO)%></textarea>
+			<textarea name="contenidoArea" 				
+				style="overflow-y:auto; overflow-x:hidden; width:600px; height:80px; resize:none;" 
+				class="boxConsulta" readOnly="true"><%=(String)miHash.get(ScsAreaBean.C_CONTENIDO)%></textarea>
 		<%} else {%>
-			<textarea name="contenidoArea" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="4" cols="60" class="box"><%=(String)miHash.get(ScsAreaBean.C_CONTENIDO)%></textarea>
+			<textarea name="contenidoArea" 
+				onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+				style="overflow-y:auto; overflow-x:hidden; width:600px; height:80px; resize:none;" 
+				class="box"><%=(String)miHash.get(ScsAreaBean.C_CONTENIDO)%></textarea>
 		<%}%>
 	</td>
 	</tr>
@@ -183,7 +188,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";
+					marginwidth="0"
 					class="frameGeneral">
 	</iframe>
 

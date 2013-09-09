@@ -36,73 +36,77 @@
 </head>
 <body class="tablaCentralCampos">
 <%
-	if (modoaux.equals("borrar"))
-	{
-	%>
+	if (modoaux.equals("borrar")) {
+%>
 		<script>
 			window.parent.auditoriaAdminForm.reset();
 			var type = '<siga:Idioma key="<%=messageName%>"/>';
 			alert(type);
 		</script>
-	<%
-	}else{
-		if (request.getAttribute("Resultado") == null || ((List)request.getAttribute("Resultado")).size() <1 )
-	   		{
-	 %>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 <%		}
-	 	else
-	 		{
-	 %>
-			<siga:Table
-  				name="cabecera"
-  				border="2"
-  				columnNames="administracion.auditoria.institucion,administracion.auditoria.diripservidor,administracion.auditoria.diriplocal,administracion.auditoria.usuario,administracion.auditoria.nif,administracion.auditoria.rol,administracion.auditoria.fechayhora,administracion.auditoria.accion"
-   				columnSizes="14,9,9,13,8,10,11,19">
-	<%
+<%
+	} else {
+%>
+		<siga:Table
+			name="cabecera"
+			border="2"
+			columnNames="administracion.auditoria.institucion,administracion.auditoria.diripservidor,administracion.auditoria.diriplocal,administracion.auditoria.usuario,administracion.auditoria.nif,administracion.auditoria.rol,administracion.auditoria.fechayhora,administracion.auditoria.accion"
+			columnSizes="14,9,9,13,8,10,11,19">
+<%>		
+			if (request.getAttribute("Resultado") == null || ((List)request.getAttribute("Resultado")).size() <1 ) {
+%>
+	   			<tr class="notFound">
+	  				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>	
+<%			
+			} else {
 				List en = (List)request.getAttribute("Resultado");
-				for (int i=0; i<en.size(); i++)
-					{
+				for (int i=0; i<en.size(); i++) {
 	    			String linea = (String) en.get(i);
 	    			String[] cadena = SIGAAuditoriaAdmin.obtenerCadenas(linea, ";");
-	%>
-	   					<tr class="listaNonEdit">
-  						<td style="text-align:center">
-  							<%=	cadena[0]%>
+%>
+   					<tr class="listaNonEdit">
+ 							<td style="text-align:center">
+ 								<%=	cadena[0]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=	cadena[1]%>
+ 							<td style="text-align:center">
+ 								<%=	cadena[1]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=	cadena[2]%>
+ 							<td style="text-align:center">
+ 								<%=	cadena[2]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=	cadena[3]%>
+ 							<td style="text-align:center">
+ 								<%=	cadena[3]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=	cadena[4]%>
+ 							<td style="text-align:center">
+ 								<%=	cadena[4]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=	cadena[5]%>
+ 							<td style="text-align:center">
+ 								<%=	cadena[5]%>
 						</td>
-  						<td style="text-align:center">
-  							<%=com.atos.utils.GstDate.getFechaLenguaje("",cadena[6])%>
+ 							<td style="text-align:center">
+ 								<%=com.atos.utils.GstDate.getFechaLenguaje("",cadena[6])%>
 						</td>
 						<td style="text-align:left">
-  	<%						if (cadena[7]==null || cadena[7].trim().equals(""))
-  	%>
-  								&nbsp;
-  	<%
-							else
-	%>
+<%						
+							if (cadena[7]==null || cadena[7].trim().equals("")) {
+%>
+								&nbsp;
+<%
+							} else {
+%>
   								<%=	cadena[7]%>
+<%
+							}
+%>  									
 						</td>
 					</tr>
-	<%				}
-	%>
-				  </siga:Table>
-
-	<%	}
-	}%>
+<%				
+				}
+			}
+%>
+		</siga:Table>
+<% 
+	}
+%>
 </body>
 </html>
