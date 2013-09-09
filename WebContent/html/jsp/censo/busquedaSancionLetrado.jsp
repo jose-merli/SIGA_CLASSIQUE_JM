@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- busquedaSancionLetrado.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -21,7 +22,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- <%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Properties"%>
+ 
 <!-- JSP -->
 <%
 	String app=request.getContextPath();
@@ -44,211 +46,172 @@
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 	}			
-%>	
-	
-<%  
+
 	// locales
 	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getSession().getAttribute("SancionesLetradoForm");
 %>	
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="censo.busquedaSancionesLetrado.titulo" 
-		localizacion="censo.busquedaSancionesLetrado.localizacion"/>
+	<siga:Titulo titulo="censo.busquedaSancionesLetrado.titulo" localizacion="censo.busquedaSancionesLetrado.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="SancionesLetradoForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	<html:javascript formName="SancionesLetradoForm" staticJavascript="false" />  
+  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->		
 	
+	<script language="JavaScript">	
+		function limpiarCliente () {
+			document.getElementById('colegiadoBuscar').value = "";
+			document.getElementById('nombreMostrado').value = "";
+		}	
+	</script>	
 </head>
 
 <body onload="ajusteAlto('resultado')">
-
-
-
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
-	<table  class="tablaCentralCampos"  align="center" width="100%">
-	<tr>				
-	<td>
-
 	<siga:ConjCampos leyenda="censo.busquedaSancionesLetrado.literal.titulo1">
-
-	<table class="tablaCampos" align="center"  width="100%" border="0">
-
-	<html:form action="/CEN_SancionesLetrado.do?noReset=true" method="POST" target="resultado">
-		<html:hidden name="SancionesLetradoForm" property = "modo" value = ""/>
-		<input type="hidden" name= "actionModal" value = "">
-		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
-				
-	<!-- FILA -->
-	<tr>				
-
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/>&nbsp;&nbsp;<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>			
-		</td>		
-		
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
-		</td>				
-		<td >
-			<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
-		</td>
-		
-		<td class="labelText" align="center">
-			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>						
-			
-		</td>				
-		
-		<td>	
-			
-		    <html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
-			<script language="JavaScript">	
-
-			
-				function limpiarCliente () 
-				{
-					document.getElementById('colegiadoBuscar').value = "";
-					document.getElementById('nombreMostrado').value = "";
-				}	
-
-			</script>
-		
-			<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
-				 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
-				 necesidad de seleccionarlo por el botón -->
-			<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
-			<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>
-			
-		</td>	
-	</tr>
+		<html:form action="/CEN_SancionesLetrado.do?noReset=true" method="POST" target="resultado">
+			<table class="tablaCampos" align="center" width="100%" border="0">						
+				<html:hidden name="SancionesLetradoForm" property = "modo" value = ""/>
+				<input type="hidden" name= "actionModal" value = "">
+				<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 	
-	<tr>
-			<td id="busquedaLetrado" class="labelText" colspan="7">
-					<% 	if(user.isLetrado()){%>
+				<tr>				
+					<td class="labelText">
+						<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/>
+					</td>
+					<td>
+						<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>			
+					</td>		
+					
+					<td class="labelText">
+						<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
+					</td>				
+					<td>
+						<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>															
+					</td>						
+					<td>				
+   						<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false" />
+
+
+						<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
+	 					si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
+	 					necesidad de seleccionarlo por el botón -->
+						<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
+						<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>			
+					</td>	
+				</tr>
+
+				<tr>
+					<td id="busquedaLetrado" class="labelText" colspan="6">
+						<% if(user.isLetrado()) { %>
 							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>
-						<% 	}else{%>
+						<% } else { %>
 							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>									
-					<% 	}%>
-			</td>
-		</tr>
-	</table>
-	<table class="tablaCampos" align="center" width="100%">
-	<tr>
-		<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/>		
-			<html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>			
-		</td>
-		<td class="labelText" width="125" >
-			<siga:Idioma key="gratuita.listadoAsistencias.literal.fecha"/>
-		</td>
-		<td>
-		<html:select  name="SancionesLetradoForm" property="mostrarTiposFechas" styleClass="boxCombo" >			
-				<html:option value=""></html:option>
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ACUERDO%>"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.Acuerdo"/></html:option>
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIN%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fin"/></html:option>
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIRMEZA%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/></html:option>
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_IMPOSICION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.imposicion"/></html:option>				
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_INICIO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.inicio"/></html:option>										
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_REHABILITADO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/></html:option>
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_RESOLUCION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.resolucion"/></html:option>
-		</html:select>	
-		
-		</td>
-		<td class="labelText" >
-			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
-		</td>	
-		<td>
-			<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
-		</td>	
-		
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
-		</td>
-		<td>
-			<siga:Fecha  nombreCampo= "fechaFinBuscar" campoCargarFechaDesde="fechaInicioBuscar"/>
-		</td>			
-	</tr>	
-		
-	<% if(tienepermisoArchivo.equals("1")){%>
-	<tr>
-	   <td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>&nbsp;&nbsp;&nbsp;&nbsp;
-			<html:checkbox name="SancionesLetradoForm" property="mostrarSanciones" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>"></html:checkbox>
-		</td>	
-		<td class="labelText" colspan="2" align="center">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
-		</td>
-		
-		<td class="labelText">		
-		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
-		</td>
-		<td>
-		  <siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
-		</td>
-		
-		<td class="labelText">
-		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
-		</td>
-		<td>
-		  <siga:Fecha  nombreCampo= "fechaFinArchivada" campoCargarFechaDesde="fechaInicioArchivada"/>
-		</td>
-	</tr>
-	<%}else{%>
-	 <html:hidden name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
-	 <html:hidden name="SancionesLetradoForm" property="FechaFinArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
-	<%} %>
-	  
-	
+						<% } %>
+					</td>
+				</tr>
+			</table>
 
-	</html:form>
-	</table>
+			<table class="tablaCampos" align="center" width="100%">
+				<tr>
+					<td class="labelText" >
+						<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/>		
+						<html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>			
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="gratuita.listadoAsistencias.literal.fecha"/>
+					</td>
+					<td>
+						<html:select  name="SancionesLetradoForm" property="mostrarTiposFechas" styleClass="boxCombo" >			
+							<html:option value=""></html:option>
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ACUERDO%>"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.Acuerdo"/></html:option>
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIN%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fin"/></html:option>
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIRMEZA%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/></html:option>
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_IMPOSICION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.imposicion"/></html:option>				
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_INICIO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.inicio"/></html:option>										
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_REHABILITADO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/></html:option>
+							<html:option value="<%=ClsConstants.COMBO_MOSTRAR_RESOLUCION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.resolucion"/></html:option>
+						</html:select>			
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
+					</td>	
+					<td>
+						<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
+					</td>	
 
+					<td class="labelText">
+						<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
+					</td>
+					<td>
+						<siga:Fecha  nombreCampo= "fechaFinBuscar" campoCargarFechaDesde="fechaInicioBuscar"/>
+					</td>			
+				</tr>	
+
+				<% if(tienepermisoArchivo.equals("1")) { %>
+					<tr>
+ 						<td class="labelText" >
+							<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>&nbsp;&nbsp;&nbsp;&nbsp;
+							<html:checkbox name="SancionesLetradoForm" property="mostrarSanciones" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>"></html:checkbox>
+						</td>
+							
+						<td class="labelText" colspan="2" align="center">
+							<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+						</td>
+
+						<td class="labelText">		
+						  	<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
+						</td>
+						<td>
+						  	<siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
+						</td>
+
+						<td class="labelText">
+						  	<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
+						</td>
+						<td>
+						  	<siga:Fecha  nombreCampo= "fechaFinArchivada" campoCargarFechaDesde="fechaInicioArchivada"/>
+						</td>
+					</tr>
+				<% } else { %>
+						<html:hidden name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
+						<html:hidden name="SancionesLetradoForm" property="FechaFinArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
+				<% } %>						
+			</table>
+		</html:form>
 	</siga:ConjCampos>
-
-	</td>
-	</tr>
-	</table>
-
-
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
-	-->
-	
-	
-
-		<siga:ConjBotonesBusqueda botones="L,B,N"  titulo="" />
-
+	-->	
+	<siga:ConjBotonesBusqueda botones="L,B,N"  titulo="" />
 	<!-- FIN: BOTONES BUSQUEDA -->
 
-	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		function buscar() 
-		{					
+		function buscar() {					
 			 if ((document.forms[0].mostrarTiposFechas.value=="") && ((document.forms[0].fechaInicioBuscar.value!="")||(document.forms[0].fechaFinBuscar.value!=""))){ 
 				alert ('<siga:Idioma key="general.message.tipoFecha"/>');
 				return false;
@@ -258,8 +221,7 @@
 			document.forms[0].submit();	
 		}
 
-		function nuevo() 
-		{		
+		function nuevo()  {		
 			document.forms[0].modo.value="nuevo";
 			var resultado=ventaModalGeneral(document.forms[0].name,"G");
 			if (resultado!=undefined && resultado=="MODIFICADO")
@@ -268,26 +230,22 @@
 			}
 		}
 				
-		//<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
+		// Funcion asociada a boton limpiar
+		function limpiar()  {		
 			document.forms[0].reset();
-		}
-										
-	</script>
-	
+		}									
+	</script>	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	  <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0"							
-					class="frameGeneral">
-	</iframe>
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+		id="resultado"
+		name="resultado" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"							
+		class="frameGeneral"></iframe>
 
 	<!-- INICIO: FORMULARIO DE BUSQUEDA DE LETRADOS -->
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
@@ -297,10 +255,9 @@
 		<input type="hidden" name="busquedaSancion" value="1">
 	</html:form>
 
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
