@@ -1646,7 +1646,7 @@
 
 
 					//SI ES DE NUESTRO COLEGIO NO SE TOCA DIRECCIONES
-					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>" || document.datosGeneralesForm.idDireccion.value == ""){
+					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>" || document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == ""){
 						//Rellenando preferencias
 						var preferencia = "";
 						if (document.datosGeneralesForm.preferenteMail.checked)
