@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosProcedimientos.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -57,8 +58,6 @@
 		if(!fechaFin.equals("")){
 			fechaFin = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),(String)resultado.get(ScsProcedimientosBean.C_FECHAHASTAVIGOR)));
 		}
-		
-		
 	} catch (Exception e) {
 	}
 
@@ -66,170 +65,136 @@
 	String modo = "Modificar";
 	if ((nombre == null) || (nombre.equals("")))
 		modo = "Insertar";
-	int posBotonNuevo = 298;
 %>	
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+		
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<html:javascript formName="MantenimientoProcedimientosForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
- 	
-	
 </head>
 
 <body>
-
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulosPeq">
-			<siga:Idioma key="gratuita.procedimientos.mantenimiento.cabecera"/>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<siga:Idioma key="gratuita.procedimientos.mantenimiento.cabecera"/>
+			</td>
+		</tr>
 	</table>
 
-
-
 	<!-- INICIO: CAMPOS -->
-
 	<table  class="tablaCentralCamposMedia" cellspacing=0 cellpadding=0 align="center" border="0">
+		<html:javascript formName="MantenimientoProcedimientosForm" staticJavascript="false" />
+		
+		<html:form action="/JGR_MantenimientoProcedimientos.do" method="POST" target="submitArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "idProcedimiento" value = "<%=idProc%>"/>				
+			<html:hidden property = "idAcreditacion" value = ""/>
+			<html:hidden property = "porcentaje" value = ""/>				
+			<html:hidden property = "refresco" value = ""/>
 
-	<html:javascript formName="MantenimientoProcedimientosForm" staticJavascript="false" />
-	<html:form action="/JGR_MantenimientoProcedimientos.do" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "idProcedimiento" value = "<%=idProc%>"/>
-	
-	<html:hidden property = "idAcreditacion" value = ""/>
-	<html:hidden property = "porcentaje" value = ""/>
-	
-	<html:hidden property = "refresco" value = ""/>
-
-	<tr>				
-	<td>
-
-	<siga:ConjCampos leyenda="gratuita.procedimientos.leyenda">
-
-		<table class="tablaCampos" align="center" border="0" width="100%">
-	
-		<!-- FILA -->
-					<tr>
-
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.nombre" />&nbsp;(*)</td>
-						<td class="labelText" colspan="3"><html:text
-							name="MantenimientoProcedimientosForm" property="nombre"
-							size="80" maxlength="100" styleClass="box" readonly="false"
-							value="<%=nombre%>" /></td>
-					</tr>
-					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.codigo" /></td>
-						<td class="labelText"><html:text
-							name="MantenimientoProcedimientosForm" property="codigo"
-							maxlength="20" styleClass="box" readonly="false"
-							value="<%=codigo%>" /></td>
-
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.complemento" /></td>
-						<td class="labelText"><input type="checkbox"
-							name="complemento" value="<%=ClsConstants.DB_TRUE%>"
-							<%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
-						</td>
-
-					</tr>
-					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.importe" />&nbsp;(*)</td>
-						<td class="labelText"><html:text
-							name="MantenimientoProcedimientosForm" property="importe"
-							maxlength="11" styleClass="boxNumber" readonly="false"
-							value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
-						</td>
-					</tr>
-					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.fechainicio" />&nbsp;(*)</td>
-						<td class="labelText">
-							<siga:Fecha nombreCampo="fechaDesdeVigor" valorInicial="<%=fechaInicio%>" posicionX="100" posicionY="100"></siga:Fecha>
+			<tr>				
+				<td>
+					<siga:ConjCampos leyenda="gratuita.procedimientos.leyenda">
+						<table class="tablaCampos" align="center" border="0" width="100%">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.nombre" />&nbsp;(*)
+								</td>
+								<td class="labelText" colspan="3">
+									<html:text name="MantenimientoProcedimientosForm" property="nombre" size="80" maxlength="100" styleClass="box" readonly="false" value="<%=nombre%>" />
+								</td>
+							</tr>
 							
-						</td>
-						
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.fechafin" />&nbsp;
-							<siga:Fecha nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Fecha>
-						</td>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.codigo" />
+								</td>
+								<td class="labelText">
+									<html:text name="MantenimientoProcedimientosForm" property="codigo" maxlength="20" styleClass="box" readonly="false" value="<%=codigo%>" />
+								</td>
 
-					</tr>
-					<tr>
-						<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.Jurisdiccion" />&nbsp;(*)</td>
-						<td class="labelText">
-						<%
-							ArrayList juris = new ArrayList();
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.complemento" />
+								</td>
+								<td class="labelText">
+									<input type="checkbox" name="complemento" value="<%=ClsConstants.DB_TRUE%>" <%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.importe" />&nbsp;(*)
+								</td>
+								<td class="labelText">
+									<html:text name="MantenimientoProcedimientosForm" property="importe" maxlength="11" styleClass="boxNumber" readonly="false" value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.fechainicio" />&nbsp;(*)
+								</td>
+								<td class="labelText">
+									<siga:Fecha nombreCampo="fechaDesdeVigor" valorInicial="<%=fechaInicio%>" posicionX="100" posicionY="100"></siga:Fecha>							
+								</td>
+					
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.fechafin" />&nbsp;
+									<siga:Fecha nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Fecha>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.Jurisdiccion" />&nbsp;(*)
+								</td>
+								<td class="labelText">
+<%
+									ArrayList juris = new ArrayList();
 									juris.add(idJurisdiccion);
-						%> <siga:ComboBD nombre="jurisdiccion" ancho="200"
-							tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="true"
-							elementoSel="<%=juris%>"/></td>
-							
-							<td class="labelText"><siga:Idioma
-							key="gratuita.procedimientos.literal.permitirAniadirLetrado" />&nbsp;</td>
-						<td class="labelText"><input type="checkbox" name="permitirAniadirLetrado"
-							value="<%=ClsConstants.DB_TRUE%>"
-							<%if(permitirAniadirLetrado.equals(ClsConstants.DB_TRUE)){%> checked <%}%> /></td>
-					</tr>
-
-
-				</table>
-
-	</siga:ConjCampos>
-
-	</td> 
-	</tr>
-
+%> 
+									<siga:ComboBD nombre="jurisdiccion" ancho="200" tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="true" elementoSel="<%=juris%>"/>
+								</td>
+															
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.permitirAniadirLetrado" />&nbsp;
+								</td>
+								<td class="labelText">
+									<input type="checkbox" name="permitirAniadirLetrado" value="<%=ClsConstants.DB_TRUE%>" <%if(permitirAniadirLetrado.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td> 
+			</tr>
 		</html:form>	
 	</table>
 	
-<siga:ConjBotonesAccion botones="G,C" clase="botonesSeguido" modal="M" titulo="gratuita.procedimientos.literal.acreditaciones"/>
+	<siga:ConjBotonesAccion botones="G,C" clase="botonesSeguido" modal="M" titulo="gratuita.procedimientos.literal.acreditaciones"/>
 
 	<siga:Table 
-			   name="tablaResultados"
-			   border="1"
-			   columnNames="gratuita.procedimientos.literal.acreditacion,gratuita.procedimientos.literal.porcentaje,"
-			   columnSizes="42,42,16"
-			   fixedHeight="67"
-			   modal="P">
+		name="tablaResultados"
+		border="1"
+		columnNames="gratuita.procedimientos.literal.acreditacion,gratuita.procedimientos.literal.porcentaje,"
+		columnSizes="42,42,16"
+		fixedHeight="67"
+		modal="P">
 
 <%
-	if ((v != null) && (v.size() > 0)) {
+		if ((v != null) && (v.size() > 0)) {
 			for (int i = 0; i < v.size(); i++) {
 				Hashtable hash = (Hashtable) v.get(i);
 				if (hash != null) {
-					String acreDescripcion = UtilidadesHash.getString(
-							hash, ScsAcreditacionBean.C_DESCRIPCION);
-					Integer acrePorcentaje = UtilidadesHash
-							.getInteger(
-									hash,
-									ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
-					Integer idAcreditacion = UtilidadesHash
-							.getInteger(
-									hash,
-									ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
-					Integer idInstitucion = UtilidadesHash
-							.getInteger(
-									hash,
-									ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
-					String idProcedimiento = UtilidadesHash
-							.getString(
-									hash,
-									ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
+					String acreDescripcion = UtilidadesHash.getString(hash, ScsAcreditacionBean.C_DESCRIPCION);
+					Integer acrePorcentaje = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
+					Integer idAcreditacion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
+					Integer idInstitucion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
+					String idProcedimiento = UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
 %>
 					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" botones='E,B'  modo='<%=modo%>' clase="listaNonEdit">
 						<td>
@@ -237,50 +202,37 @@
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idInstitucion.intValue()%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="detalleAcreditacion">
-							<%=UtilidadesString
-														.mostrarDatoJSP(acreDescripcion)%></td>
+							<%=UtilidadesString.mostrarDatoJSP(acreDescripcion)%>
+						</td>
 						<td><%=acrePorcentaje.intValue()%></td>
 					</siga:FilaConIconos>
 <%
-	}
+				}
 			}
 		} else { // No hay registros 
-			posBotonNuevo = 327;
 %>
-		<table align="center">
-			<tr>
-				<td>
-					<br>
-					<font class="labelText" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></font>
-				</td>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
-			</table>
 <%
-	}
+		}
 %>
-
 	</siga:Table>
 	 
-	 <%
-	 	 	if (!modo.equalsIgnoreCase("Insertar")) {
-	 	 %>
+<%
+ 	if (!modo.equalsIgnoreCase("Insertar")) {
+%>
 	 	<siga:ConjBotonesAccion botones="N" modal="M" />
-	 <%
-	 	}
-	 %>
-	
-
-
-
-
+<%
+ 	}
+%>
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardar() 
-		{
+		// Asociada al boton GuardarCerrar
+		function accionGuardar() {
 			sub();		
 			if (validateMantenimientoProcedimientosForm(document.MantenimientoProcedimientosForm)){
 				if(validarFecha()){
@@ -293,16 +245,14 @@
 					return false;
 				}
 				
-			}else{
+			} else{
 			
 				fin();
-				return false;
-			
+				return false;			
 			}
 		}
 
 		function validarFecha() {
-
 			var fechaIni = trim(document.getElementById("fechaDesdeVigor").value);
 			var fechaFin = trim(document.getElementById("fechaHastaVigor").value);
 
@@ -319,9 +269,8 @@
 			return true;	
 		}		
 		
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		// Asociada al boton Cerrar
+		function accionCerrar() {		
 			// esta funcion cierra la ventana y devuelve 
 			// un valor a la ventana padre (USAR SIEMPRE)
 //			top.cierraConParametros("NORMAL");
@@ -331,16 +280,14 @@
 		}
 
 /*
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
 			document.forms[0].reset();
 		}
 */		
 
-		<!-- Asociada al boton Nuevo -->
-		function accionNuevo() 
-		{		
+		// Asociada al boton Nuevo
+		function accionNuevo() {		
 			document.forms[0].modo.value = "nuevoAcreditacion";
 			var resultado = ventaModalGeneral(document.forms[0].name,"P");
 			if (resultado != null && (resultado[0]== 1)) {
@@ -351,28 +298,20 @@
 			}
 		}	
 		
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			document.forms[0].target="modal";
 			document.forms[0].refresco.value="refresco";
 			document.forms[0].modo.value="editar";
 			document.forms[0].submit();
 		}			
-
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
-
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-
-</div>
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

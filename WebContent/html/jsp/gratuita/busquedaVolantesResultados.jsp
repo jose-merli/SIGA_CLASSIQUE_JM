@@ -213,11 +213,13 @@
 			<% } %>
 			
 		<!-- FIN: RESULTADO -->
-	<% } else { %>
-		<html:hidden property = "actionModal" value = "P"/>
-	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
+	<% } else { %>		
+	 	<tr class="notFound">
+			<td class="titulitos">
+				<html:hidden property = "actionModal" value = "P"/>
+				<siga:Idioma key="messages.noRecordFound"/>
+			</td>
+		</tr>
 	<% } %>
 
 			</siga:Table>
