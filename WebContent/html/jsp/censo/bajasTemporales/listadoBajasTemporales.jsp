@@ -72,7 +72,7 @@
 
 
 <table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'>
-	<%java.util.Date fechaActual = GstDate.convertirFecha(UtilidadesBDAdm.getFechaBD(""),ClsConstants.DATE_FORMAT_SHORT_SPANISH);%>
+	<% Date fechaActual = GstDate.convertirFecha(UtilidadesBDAdm.getFechaBD(""),ClsConstants.DATE_FORMAT_SHORT_SPANISH);%>
 	<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
 			<%index = index-1;%>
@@ -89,11 +89,13 @@
 			<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
 			<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
 			
-			<%	java.util.Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-				if (fechaActual.compareTo(fHasta) > 0){
-					botones = "";%>
-					<c:set var="disab" value="disabled"/>
-			<% } %>
+			<%	if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
+					Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);	
+					if (fechaActual.compareTo(fHasta) > 0){
+						botones = "";%>
+						<c:set var="disab" value="disabled"/>
+				<% } 
+			} %>
 			
 			<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
 	  			pintarEspacio="no"
