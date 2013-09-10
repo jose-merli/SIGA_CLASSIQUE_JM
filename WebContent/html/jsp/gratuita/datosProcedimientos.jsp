@@ -273,10 +273,9 @@
 		function accionCerrar() {		
 			// esta funcion cierra la ventana y devuelve 
 			// un valor a la ventana padre (USAR SIEMPRE)
-//			top.cierraConParametros("NORMAL");
-//			top.refrescarLocal();
-			window.top.returnValue="MODIFICADO";
-			window.top.close();
+			top.cierraConParametros("NORMAL");
+			//window.top.returnValue="MODIFICADO";
+			//window.top.close();
 		}
 
 /*

@@ -48,10 +48,12 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<title><siga:Idioma key="gratuita.partidaPresupuestaria.literal.partidaPresupuestaria"/></title>	
 	<script language="JavaScript">	
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}		
+		
+		function refrescarLocalArray(datos) {
+		}	
 	</script>
 </head>
 

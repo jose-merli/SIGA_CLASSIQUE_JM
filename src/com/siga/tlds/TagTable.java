@@ -249,6 +249,7 @@ public class TagTable extends TagSupport {
 				out.println("  	 	if (resultado==\"MODIFICADO\") {");
 				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(getUserBean(),"messages.updated.success")+"\",'success');");
 				out.println("   		refrescarLocal();");
+				out.println("       } else if (resultado==\"NORMAL\") {");
 				out.println("       } else if (resultado[0]) {");
 				out.println("   	    alert(\""+UtilidadesString.getMensajeIdioma(getUserBean(),"messages.updated.success")+"\",'success');");
 				out.println("      		refrescarLocalArray(resultado);");

@@ -158,15 +158,13 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
 			document.forms[0].reset();
 		}		
 		
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{		
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {		
 			if (validateDefinirPartidaPresupuestariaForm(document.DefinirPartidaPresupuestariaForm)){
 				document.forms[0].importePartida.value=document.forms[0].importePartida.value.replace(/,/,".");
 	        	document.forms[0].submit();	        
@@ -174,9 +172,8 @@
 			}
 		}
 		
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar()
-		{
+		// Asociada al boton Cerrar
+		function accionCerrar()	{
 			top.cierraConParametros("NORMAL");
 		}
 	</script>
@@ -184,11 +181,8 @@
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
-
 </html>
