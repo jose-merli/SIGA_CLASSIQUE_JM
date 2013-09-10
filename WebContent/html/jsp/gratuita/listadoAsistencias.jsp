@@ -21,6 +21,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
+
 <% 	
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -40,42 +41,41 @@
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
 	
- if (ses.getAttribute("DATAPAGINADOR")!=null){
-	 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-
+	 if (ses.getAttribute("DATAPAGINADOR")!=null){
+		 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
 	
-	
-	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  resultado = (Vector)hm.get("datos");
-	  
-	    PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
-		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-	
-	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-	
-	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-	  
-	
-	 	
-	 }else{
-	  resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
-	 }
-}else{
-      resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
-}	 
-		String action=app+"/JGR_Asistencia.do?noReset=true";
+		
+		
+		 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
+		  resultado = (Vector)hm.get("datos");
+		  
+		    PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+		
+		 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+		
+		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+		  
+		
+		 	
+		 }else{
+		  resultado =new Vector();
+		  paginaSeleccionada = "0";
+		
+		 	totalRegistros = "0";
+		
+		 	registrosPorPagina = "0";
+		 }
+	}else{
+	      resultado =new Vector();
+		  paginaSeleccionada = "0";
+		
+		 	totalRegistros = "0";
+		
+		 	registrosPorPagina = "0";
+	}	 
+	String action=app+"/JGR_Asistencia.do?noReset=true";
     /**************/
-	
 	
 	boolean esFichaColegial = false;
 
@@ -92,35 +92,29 @@
 	if (busquedaVolver==null || busquedaVolver.equals("") ) {
 		busquedaVolver = "volverNo";
 	}
-
 %>
-
 	
-	
-		<title><!--  <"listarAsistencias.title">--></title>
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<title><!--  <"listarAsistencias.title">--></title>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	</head>
+</head>
 
 <body class="tablaCentralCampos" >
 
-
-	<%
-		//Entrada desde el menu de Censo:
-		if (esFichaColegial) { 
-			Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");		
-			String nombrePestanha = "";
-			String numeroPestanha = "";
-			if (datosColegiado != null) {
-				nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
-				numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
-			}
-		%>
-		<table class="tablaTitulo" align="center" cellspacing=0>
+<%
+	//Entrada desde el menu de Censo:
+	if (esFichaColegial) { 
+		Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");		
+		String nombrePestanha = "";
+		String numeroPestanha = "";
+		if (datosColegiado != null) {
+			nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
+			numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
+		}
+%>
+		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.fichaCliente.asistencias.pestana.titulito"/>&nbsp;&nbsp;
@@ -133,123 +127,118 @@
 				</td>
 			</tr>
 		</table>
-	<% } %>
+<% 
+	} 
 
+	String nC="";
+	String tC="";
+	String botones="C,E,B";
+	String alto="243";
+  	nC="gratuita.listadoAsistencias.literal.turno,gratuita.listadoAsistencias.literal.guardia,gratuita.listadoAsistencias.literal.anio,gratuita.listadoAsistencias.literal.numero,gratuita.busquedaAsistencias.literal.fechaAsistencia,gratuita.mantAsistencias.literal.letrado,gratuita.busquedaAsistencias.literal.asistido,gratuita.mantAsistencias.literal.estado,gratuita.busquedaAsistencias.literal.validada,";
+	tC="13,13,5,8,7,15,15,8,6";
 
-	<% 	
-		String nC="";
-		String tC="";
-		String botones="C,E,B";
-		String alto="243";
-	  	nC="gratuita.listadoAsistencias.literal.turno,gratuita.listadoAsistencias.literal.guardia,gratuita.listadoAsistencias.literal.anio,gratuita.listadoAsistencias.literal.numero,gratuita.busquedaAsistencias.literal.fechaAsistencia,gratuita.mantAsistencias.literal.letrado,gratuita.busquedaAsistencias.literal.asistido,gratuita.mantAsistencias.literal.estado,gratuita.busquedaAsistencias.literal.validada,";
-		tC="13,13,5,8,7,15,15,8,6";
-	%>
+	String target = "mainWorkArea";
+	if (esFichaColegial) { 
+		target = "";
+	} 
 	
-	<% 
-		String target = "mainWorkArea";
-		if (esFichaColegial) { 
-				target = "";
-		} 
-	 %>
-
-		<html:form action="/JGR_Asistencia.do" method="post" target="<%=target%>"  style="display:none">
-
-			<input type="hidden" name="modo"  id="modo" />
-			<input type="hidden" name="esFichaColegial"  id="esFichaColegial"  value="<%=sEsFichaColegial%>" />
-			<input type="hidden" name="actionModal"  id="actionModal"  value="">
-		</html:form>	
-		
-		<%
-		String ajuste=(!busquedaVolver.equals("volverNo"))?"true":"false";
-		%>
-		
-		<!-- campos a pasar -->
-		<siga:Table 
-		   name="listarAsistencias"
-		   border="2"
-		   columnNames="<%=nC%>"
-		   columnSizes="<%=tC%>">
-		   
-		<%if (resultado.size()>0){%>
-  			<%
-				String fecha = "";
-				String nTurno = "";
-		    	int recordNumber=1;
-		    	String select = "";
-		    	Vector v = null;
-		    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
-				while (recordNumber-1 < resultado.size())
-				{	 
-					Row fila = (Row)resultado.elementAt(recordNumber-1);
-					Hashtable registro = (Hashtable) fila.getRow();
-					
-					String idFacturacion = (String)registro.get("IDFACTURACION");
-					
-					if (usr.isLetrado()) {
-						botones = "E";
-					} else { //Como administrador
-						botones = "C,E,B";
-					}
-					
-					nTurno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("IDTURNO"));
-	
+	String ajuste=(!busquedaVolver.equals("volverNo"))?"true":"false";
 %>
 
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit">
-						<td>
+	<html:form action="/JGR_Asistencia.do" method="post" target="<%=target%>"  style="display:none">
+		<input type="hidden" name="modo"  id="modo" />
+		<input type="hidden" name="esFichaColegial"  id="esFichaColegial"  value="<%=sEsFichaColegial%>" />
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+	</html:form>	
+		
+	<!-- campos a pasar -->
+	<siga:Table 
+	   name="listarAsistencias"
+	   border="2"
+	   columnNames="<%=nC%>"
+	   columnSizes="<%=tC%>">
+		   
+<%
+		if (resultado.size()>0) {
+			String fecha = "";
+			String nTurno = "";
+	    	int recordNumber=1;
+	    	String select = "";
+	    	Vector v = null;
+	    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
+			while (recordNumber-1 < resultado.size()) {	 
+				Row fila = (Row)resultado.elementAt(recordNumber-1);
+				Hashtable registro = (Hashtable) fila.getRow();
+				
+				String idFacturacion = (String)registro.get("IDFACTURACION");
+				
+				if (usr.isLetrado()) {
+					botones = "E";
+				} else { //Como administrador
+					botones = "C,E,B";
+				}
+				
+				nTurno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("IDTURNO"));	
+%>
+
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit">
+					<td>
 						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=registro.get("ANIO")%>'> 
 						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=registro.get("NUMERO")%>'> 
-						<%=nTurno%></td>
-						<td><%=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("IDTURNO"),(String)registro.get("IDGUARDIA")) %></td>
-						<td><%=registro.get("ANIO")%></td>
-						<td><%=registro.get("NUMERO")%></td>
-						<%
+						<%=nTurno%>
+					</td>
+					<td><%=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("IDTURNO"),(String)registro.get("IDGUARDIA")) %></td>
+					<td><%=registro.get("ANIO")%></td>
+					<td><%=registro.get("NUMERO")%></td>
+					<%
 						// Formateamos la fecha
 						fecha = GstDate.getFormatedDateShort(usr.getLanguage(),registro.get("FECHAHORA"));
-						%>
-						<td><%=fecha%></td>
-						<td><%=CenPersonaAdm.obtenerNombreApellidosJSP((String)registro.get("IDPERSONA")) %>&nbsp;</td>
-						<td><%=registro.get("NOMBRE")%>&nbsp;</td>
-						<td><%ArrayList estadoSel    = new ArrayList();	
-							estadoSel.add(registro.get("ESTADO"));%>
-							<siga:ComboBD nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxComboEnTabla" ReadOnly="true" obligatorioSinTextoSeleccionar="no"/>&nbsp;
-						</td>
-						<td><%=ScsAsistenciasAdm.obtenerActuacionesPendientesValidarJSP(usr.getLocation(),(String)registro.get("ANIO"),(String)registro.get("NUMERO")) %> &nbsp;</td>
-					</siga:FilaConIconos>
-					<% recordNumber++;
-				} %>
-		<%}else{%>
-		<tr>
-			<td colspan="10" align="center">
-				<p class="labelText" style="text-align:center">
-					<siga:Idioma key="gratuita.retenciones.noResultados"/>
-				</p>
-			</td>
-		</tr>
-		<%}%>
-		</siga:Table>
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-	  
-	  						
-		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								idioma="<%=idioma%>"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
-															
+					%>
+					<td><%=fecha%></td>
+					<td><%=CenPersonaAdm.obtenerNombreApellidosJSP((String)registro.get("IDPERSONA")) %>&nbsp;</td>
+					<td><%=registro.get("NOMBRE")%>&nbsp;</td>
+					<td>
+						<%ArrayList estadoSel    = new ArrayList();	
+						estadoSel.add(registro.get("ESTADO"));%>
+						<siga:ComboBD nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxComboEnTabla" ReadOnly="true" obligatorioSinTextoSeleccionar="no"/>&nbsp;
+					</td>
+					<td><%=ScsAsistenciasAdm.obtenerActuacionesPendientesValidarJSP(usr.getLocation(),(String)registro.get("ANIO"),(String)registro.get("NUMERO")) %> &nbsp;</td>
+				</siga:FilaConIconos>
+<% 
+				recordNumber++;
+			} 
+		} else { 
+%>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="gratuita.retenciones.noResultados"/></td>
+			</tr>
+<%
+		}
+%>
+	</siga:Table>
 	
-	 <%}%>	
-
-<% if (!busquedaVolver.equals("volverNo")) { %>
+<%
+	if ( hm.get("datos")!=null && !hm.get("datos").equals("")) {
+%>	  						
+		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+			registrosPorPagina="<%=registrosPorPagina%>" 
+			paginaSeleccionada="<%=paginaSeleccionada%>" 
+			idioma="<%=idioma%>"
+			modo="buscarPor"								
+			clase="paginator" 
+			divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+			distanciaPaginas=""
+			action="<%=action%>" />															
+<%
+	}
+	
+	if (!busquedaVolver.equals("volverNo")) { 
+%>
 	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
-<% } %>
+<% 
+	} 
+%>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-
-		
-	</body>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>	
+</body>
 </html>

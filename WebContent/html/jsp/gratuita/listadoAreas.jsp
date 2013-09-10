@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoAreas.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -34,77 +35,63 @@
 	Hashtable fila = new Hashtable();
 %>
 
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<title><siga:Idioma key="gratuita.listadoAreas.literal.listadoAreas"/></title>
 	
 	<script type="text/javascript">
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}
-	</script>
-	
+	</script>	
 </head>
 
 <body>
-	<%if (obj.size()>0){%>
+
 	<html:form action="/DefinirAreasMateriasAction.do" method="post" target="mainWorkArea" style="display:none">
 		<html:hidden property = "modo" styleId = "modo" value = ""/>
 		<html:hidden property = "accion"  styleId = "accion" value = "area"/>
 		<input type="hidden" name="actionModal"  id="actionModal" value="">
-		</html:form>	
-		
-		<siga:Table 		   
-		   name="listadoAreas"
-		   border="2"
-		   columnNames="gratuita.busquedaAreas.literal.nombreArea,gratuita.busquedaAreas.literal.nombreMateria,gratuita.listadoAreas.literal.contenidoArea,"
-		   columnSizes="28,30,30,12">
-		   		   
-  			<%
+	</html:form>	
+
+	<siga:Table 		   
+	   name="listadoAreas"
+	   border="2"
+	   columnNames="gratuita.busquedaAreas.literal.nombreArea,
+	   				gratuita.busquedaAreas.literal.nombreMateria,
+	   				gratuita.listadoAreas.literal.contenidoArea,"
+	   columnSizes="28,30,30,12">	   
+
+<%
+		if (obj.size()>0) {
 	    	int recordNumber=1;
 			while (recordNumber-1 < obj.size()) {
 				fila = (Hashtable)obj.get(recordNumber-1);
-			%>
+%>
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDINSTITUCION")%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("IDAREA")%>"><%=fila.get("NOMBRE")%>&nbsp;</td>
 					<td><%=fila.get("MATERIAS")%>&nbsp;</td>
 					<td><%=fila.get("CONTENIDO")%>&nbsp;</td>
 				</siga:FilaConIconos>		
-			<%  
+<%  
 				recordNumber++; 
 			}
-			%>
-		</siga:Table>
-
-	<%
-	}else {
-	%>
-	<siga:Table 		   
-		   name="listadoAreas"
-		   border="2"
-		   columnNames="gratuita.busquedaAreas.literal.nombreArea,gratuita.busquedaAreas.literal.nombreMateria,gratuita.listadoAreas.literal.contenidoArea,"
-		   columnSizes="30,30,30,10">
+			
+		} else {
+%>
 			<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	 </siga:Table>
-	<%
-	}
-	%>
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		}
+%>	
+	</siga:Table>
 	
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->	
-	
+	<!-- FIN: SUBMIT AREA -->		
 </body>	
 </html>

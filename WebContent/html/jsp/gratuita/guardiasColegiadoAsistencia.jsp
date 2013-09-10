@@ -23,7 +23,6 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 
-
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -39,8 +38,8 @@
 	FilaExtElement[] elems=new FilaExtElement[1];
 	elems[0]=new FilaExtElement("seleccionar","seleccionar",SIGAConstants.ACCESS_READ);  	
 %>
-<!-- HEAD -->
 
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -48,101 +47,92 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script language="JavaScript">
-	function seleccionar(fila) 
-	{
-   	    var cole 				= 'oculto' + fila + '_' + 1;
-		var aux = new Array();
-		aux[0]=document.getElementById(cole).value;
-		top.cierraConParametros(aux);
-	}
+		function seleccionar(fila) {
+   	    	var cole = 'oculto' + fila + '_' + 1;
+			var aux = new Array();
+			aux[0]=document.getElementById(cole).value;
+			top.cierraConParametros(aux);
+		}
 	</script>
 </head>
 
 <body>
-
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulitosDatos">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.titulo"/>
-		</td>
-	</tr>
+			</td>
+		</tr>
 	</table>
+	
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<% 	
 		String nC="";
 		String tC="";
 		String botones="";
-		String alto="235";
 	  	nC="gratuita.guardiasColegiadoAsistencia.literal.ncolegiado,gratuita.guardiasColegiadoAsistencialiteral.nombreyapellidos,";
 		tC="10,65,";
 	%>
 	<html:form action="/JGR_MantenimientoAsistencia.do" method="post" target="mainWorkArea">
-			<input type="hidden" name="modo" />
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+		<input type="hidden" name="modo" />
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" name="actionModal" value="">
+	</html:form>	
 		
-		<!-- campos a pasar -->
-		<siga:Table 
-		   name="guardiasColegiadoAsistencia"
-		   border="2"
-		   columnNames="<%=nC%>"
-		   columnSizes="<%=tC%>">
-		<%if (obj != null && obj.size()>0){
-				String fecha = "";
-		    	int recordNumber=1;
-				while ((recordNumber) <= obj.size())
-				{	 
-					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-				%>
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit">
-						<td  align="center"><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("NCOLEGIADO")%>'><%=hash.get("NCOLEGIADO")%></td>
-						<td  align="center"><%=hash.get("NOMBREYAPELLIDOS")%></td>
-					</siga:FilaConIconos>
-					<% recordNumber++;
-				} %>
-		<%}else{%>
-		<tr>
-			<td colspan="8" align="center">
-				<p class="nonEditRed" style="text-align:center">
-					<siga:Idioma key="gratuita.retenciones.noResultados"/>
-				</p>
-			</td>
-		</tr>
-		<%
-			}
-			if (obj!=null && obj.size()==1){
-				%>
-					<script>seleccionar(1);</script>
-				<%
-			}
-		%>
-		</siga:Table>
-	
-	<!-- FIN: CAMPOS DE BUSQUEDA-->	
+	<!-- campos a pasar -->
+	<siga:Table 
+		name="guardiasColegiadoAsistencia"
+		border="2"
+		columnNames="<%=nC%>"
+		columnSizes="<%=tC%>">
+<%
+		if (obj!=null && obj.size()>0){
+			String fecha = "";
+		    int recordNumber=1;
+			while ((recordNumber) <= obj.size()) {	 
+				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+%>
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit">
+					<td  align="center"><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("NCOLEGIADO")%>'><%=hash.get("NCOLEGIADO")%></td>
+					<td  align="center"><%=hash.get("NOMBREYAPELLIDOS")%></td>
+				</siga:FilaConIconos>
+<% 
+				recordNumber++;
+			} 
+		} else { 
+%>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="gratuita.retenciones.noResultados"/></td>
+			</tr>
+<%
+		}
 
+		if (obj!=null && obj.size()==1) {
+%>
+			<script>seleccionar(1);</script>
+<%
+		}
+%>
+	</siga:Table>	
+	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-		<!-- Funcion asociada a boton limpiar -->
-		function accionCerrar() 
-		{		
+		// Funcion asociada a boton limpiar
+		function accionCerrar() {		
 			window.top.close();
 		}
-
 	</script>
 
 	<!-- INICIO: BOTONES BUSQUEDA -->	
-		<siga:ConjBotonesAccion botones="c" clase="botonesDetalle"  modal="M"/>	
+	<siga:ConjBotonesAccion botones="c" clase="botonesDetalle"  modal="M"/>	
 	<!-- FIN: BOTONES BUSQUEDA -->
-
 			
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
