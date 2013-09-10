@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.98 2013-09-03 11:33:30 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.99 2013-09-10 09:45:44 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -394,7 +394,7 @@ function jQueryLoaded(){
 	        }
 	    });
 	    return o;
-	};
+	};		
 	
 	//*** END PLUGINS *** //
 	
@@ -503,14 +503,16 @@ function jQueryLoaded(){
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						options.dateFormat = datepickerInput.data("datepickerformat");
 						options.beforeShow = function(input, inst) {
-							//console.debug("[DATEPICKER] beforeShow");
-							jQueryTop('#main_overlay').toggle();
+							//console.debug("[DATEPICKER] beforeShow");							
+							jQueryTop('#main_overlay').show();
+							jQueryTop("input[id^=dp]").hide();
 						};
 						options.onClose = function(dateText, inst) {
 							//console.debug("[DATEPICKER] onClose");
-							jQueryTop('#main_overlay').toggle();
+							jQueryTop('#main_overlay').hide();
 						};
 						options.regional = datepickerInput.data("regional");
+						options.draggable = true;
 						if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
 							jQueryTop.datepicker._destroyDatepicker(jQueryTop.datepicker._curInst);
 						}
@@ -525,13 +527,42 @@ function jQueryLoaded(){
 									if (fireOnChange)
 										datepickerInput.change();
 								},
-								options);						
-					   
-						jQueryTop(".ui-datepicker").draggable();
+								options);
+						var vContainment = "#mainWorkArea";
+						if (jQueryTop(vContainment).length <= 0){
+						   if (jQueryTop("#modal").length > 0)
+							   vContainment = "#modal";
+						   else
+							   vContainment = "#main_overlay";
+						}
+						/*
+						vContainment = [];
+						vContainment.push(0);//x1
+						vContainment.push(0);//y1
+						var winW = 630, winH = 460;
+						if (document.body && document.body.offsetWidth) {
+						 winW = document.body.offsetWidth;
+						 winH = document.body.offsetHeight;
+						}
+						if (document.compatMode=='CSS1Compat' &&
+						    document.documentElement &&
+						    document.documentElement.offsetWidth ) {
+						 winW = document.documentElement.offsetWidth;
+						 winH = document.documentElement.offsetHeight;
+						}
+						if (window.innerWidth && window.innerHeight) {
+						 winW = window.innerWidth;
+						 winH = window.innerHeight;
+						}
+						vContainment.push(winW);//x2
+						vContainment.push(winH);//y2
+						alert("vContainment: "+vContainment);
+						*/
+						jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop(vContainment).contents().find("html"), scroll: false, snap: true });
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
-					});					
+					});
 				}
 			}
 		});
@@ -609,7 +640,7 @@ function jQueryLoaded(){
 		//console.debug("div.tagSelectDiv: " + jQuery("div.tagSelectDiv").length + " EN " + window.location);
 		jQuery("div.tagSelectDiv").each(function(){
 			//console.debug("--- BEGIN tagSelectDiv ---");			
-			var tagSelect_select = jQuery(this).find("select");			
+			var tagSelect_select = jQuery(this).find("select");
 			if (tagSelect_select.exists()){
 				var tagSelect_input = jQuery(this).find("input.tagSelect_disabled");
 				var tagSelect_searchBox = jQuery(this).find("input.tagSelect_searchBox");
@@ -633,6 +664,111 @@ function jQueryLoaded(){
 								}
 					});		
 				}
+				
+				//PAGINACION
+				if (tagSelect_select.data("paginated")){
+					console.debug("[tagSelect] construyendo paginación...");					
+					var paginatedDiv = jQuery(this).find("div.tagSelectPaginatedDiv");					
+					var page = tagSelect_select.data("page");
+					var pageSize = tagSelect_select.data("pagesize");
+					
+					//posicionar
+					var winW = 630, winH = 460;
+					if (document.body && document.body.offsetWidth) {
+					 winW = document.body.offsetWidth;
+					 winH = document.body.offsetHeight;
+					}
+					if (document.compatMode=='CSS1Compat' &&
+					    document.documentElement &&
+					    document.documentElement.offsetWidth ) {
+					 winW = document.documentElement.offsetWidth;
+					 winH = document.documentElement.offsetHeight;
+					}
+					if (window.innerWidth && window.innerHeight) {
+					 winW = window.innerWidth;
+					 winH = window.innerHeight;
+					}
+					//Ajuste por barra scroll
+					paginatedDiv.width(paginatedDiv.width() + 25 + "px");
+					console.debug("[tagSelect] Dimensiones window width: " + winW + "px; height: " + winH + "px");
+					console.debug("[tagSelect] Dimensiones paginatedDiv con left: " + paginatedDiv.offset().left + "px; width: " + paginatedDiv.width() + "px; top: " +paginatedDiv.offset().top+ "px; height: " +paginatedDiv.height()+ "px");
+					if (paginatedDiv.offset().left + paginatedDiv.width() > (winW + 20)){
+						var ajusteW = paginatedDiv.offset().left + paginatedDiv.width() - winW;
+						if (paginatedDiv.width() > winW || paginatedDiv.offset().left < ajusteW){
+							var widthMaxPercent = winW - (winW * 70 / 100);
+							paginatedDiv.css("left","0px");
+							paginatedDiv.height(widthMaxPercent+"px");
+							console.debug("[tagSelect] Ajustando paginatedDiv a left: 0px y height: " + widthMaxPercent + "px");
+						} else {
+							var ajusteLeft = paginatedDiv.offset().left - ajusteW;
+							paginatedDiv.css("left",ajusteLeft + "px");
+							console.debug("[tagSelect] Ajustando paginatedDiv a left: " + ajusteLeft + "px");
+						}
+					}
+					if (paginatedDiv.offset().top + paginatedDiv.height() > (winH + 20)){
+						var ajusteH = paginatedDiv.offset().top + paginatedDiv.height() - winH;
+						if (paginatedDiv.height() > winH || paginatedDiv.offset().top < ajusteH){
+							var heightMaxPercent = winH - (winH * 70 / 100);
+							paginatedDiv.css("top","0px");							
+							paginatedDiv.height(heightMaxPercent+"px");
+							console.debug("[tagSelect] Ajustando paginatedDiv a top: 0px y height: " + heightMaxPercent + "px");
+						} else {
+							var ajusteTop = paginatedDiv.offset().top - ajusteH;
+							paginatedDiv.css("top",ajusteTop + "px");
+							console.debug("[tagSelect] Ajustando paginatedDiv a top: " + ajusteTop + "px");
+						}
+					}
+					
+					jQueryTop("#"+tagSelect_select.attr("id")+"_paginated_div", window.document).position({
+						"my": "center",
+						"at": "center",
+						"of": jQueryTop("#"+tagSelect_select.attr("id")+"_tagSelectDiv", window.document),
+						"collision": "flipfit"
+					});
+					
+					jQuery(document).on("hover", "span.selectOptionText", function(){
+						jQuery("span.selectOptionText").css("background-color", "white");
+						jQuery(this).css("background-color", "blue");
+					});
+					paginatedDiv.on("click", "li.selectOption", function(){
+						console.debug("[tagSelect] Option click");
+						var tagSelectSelect = jQuery(this).parent().parent().parent().find("select");						
+						jQuery(this).parent().parent().find("li.selected").each(function(){
+							jQuery(this).removeClass("selected");
+							jQuery(this).addClass("notSelected");
+						});
+						jQuery(this).addClass("selected");
+						jQuery(this).removeClass("notSelected");
+						if (tagSelectSelect.find("option[value='"+jQuery(this).data("key")+"']").length <= 0){
+							tagSelectSelect.prepend("<option value='"+jQuery(this).data("key")+"'>"+jQuery(this).find("span").text()+"</option>");
+						}
+						tagSelectSelect.val(jQuery(this).data("key"));
+						console.debug("[tagSelect] selectOption ID: " + tagSelectSelect.attr("id") + " KEY: " + jQuery(this).data("key") + " VAL: " + tagSelectSelect.val());
+						tagSelectMostrarDesplegable(tagSelectSelect.attr("id"), false);	
+						return false;
+					});
+					
+					tagSelect_select.on("mousedown", function(e){
+						console.debug("[tagSelect] Select mousedown: " + jQuery(this).attr("id"));
+						tagSelectMostrarDesplegable(jQuery(this).attr("id"), true);
+						return false;
+					});
+					
+					jQuery(document).on("click", function(){
+						console.debug("document.click...");
+						jQuery("div.tagSelectPaginatedDiv.open").each(function(){
+							var id = jQuery(this).parent().find("select").attr("id");
+							console.debug("[tagSelect] div.tagSelectPaginatedDiv.open OCULTAR POR CLICK EN DOCUMENT ID: " + id);							
+							tagSelectMostrarDesplegable(id, false);					
+						});
+					});
+					paginatedDiv.bind('scroll', function() {
+                              if(jQuery(this).scrollTop() + jQuery(this).innerHeight() >= jQuery(this)[0].scrollHeight) {
+                            	  tagSelectLoadNextPage(jQuery(this).parent().find("select"));
+                              }
+                    });					
+				}
+				
 				// INPUT PARA BUSCAR/FILTRAR EL SELECT
 				if (tagSelect_searchBox.exists()){		
 					tagSelect_select.on("change",function(){
@@ -742,6 +878,118 @@ function jQueryLoaded(){
 	}); // READY
 	
 } // FIN JQUERY LOADED
+
+function tagSelectMostrarDesplegable(id, mostrar){
+	//var tagSelectDiv = jQuery(this).parent().parent();
+	var tagSelectPaginatedDiv = jQuery("#"+id+"_paginated_div");
+	var tagSelectSelect = jQuery("#"+id);
+	var tagSelectDisabled = jQuery("#"+id+"_disabled");
+	var keyupHandler = function(e){
+		console.debug("[tagSelect] KEYUP en paginated div");
+		jQueryTop.blockUI();
+		if (tagSelectPaginatedDiv.is(".open")){
+	        var searchValue = tagSelectPaginatedDiv.data("search");
+	        var regex = new RegExp("^[a-zA-Z0-9]+$");
+	        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+	        if (regex.test(str)) {
+	        	if (tagSelectPaginatedDiv.data("waitsearch")){
+	        		console.debug("[tagSelect]tagSelectMostrarDesplegable wait search: " + searchValue + str);
+	        		tagSelectPaginatedDiv.data("search", searchValue + str);
+	        	} else {
+	        		tagSelectPaginatedDiv.data("search", str);
+	        		tagSelectPaginatedDiv.data("waitsearch", true);
+	        		console.debug("[tagSelect]tagSelectMostrarDesplegable keyup search text: " + str);
+	        		searchPaginatedSelect(tagSelectPaginatedDiv);
+	        		/* NO HAY ESPERA, ACEPTAMOS SOLO UNA LETRA PARA FILTRAR
+	        		window.setTimeout(function(){
+	        			searchPaginatedSelect(tagSelectPaginatedDiv);
+	        		}, 100);
+	        		*/
+	        	}	        
+	        }
+		}
+	};
+	if (typeof mostrar == "undefined" && tagSelectPaginatedDiv.is(":visible") || 
+			typeof mostrar != "undefined" && !mostrar){
+		console.debug("[tagSelect] OCULTANDO OPCIONES ID: " + id + " por condiciones mostrar: " + mostrar + "; "+tagSelectPaginatedDiv.attr("id")+"_visible: " + tagSelectPaginatedDiv.is(":visible"));
+		tagSelectPaginatedDiv.css("visibility", "hidden");
+		tagSelectPaginatedDiv.removeClass("open");
+		tagSelectSelect.show();
+		tagSelectDisabled.hide();
+		jQuery(document).unbind("keyup");
+		console.debug("[tagSelect] UN-BIND KEY UP");
+	} else {
+		console.debug("[tagSelect] MOSTRANDO OPCIONES ID: " + id + " por condiciones mostrar: " + mostrar + "; "+tagSelectPaginatedDiv.attr("id")+"_visible: " + tagSelectPaginatedDiv.is(":visible"));
+		tagSelectPaginatedDiv.css("visibility", "visible");
+		tagSelectPaginatedDiv.addClass("open");
+		tagSelectSelect.hide();
+		tagSelectDisabled.show();
+		if (tagSelectPaginatedDiv.find("li.selected").length > 0){
+			var scrollToSelected = tagSelectPaginatedDiv.find("li.selected").offset().top - tagSelectPaginatedDiv.offset().top + tagSelectPaginatedDiv.scrollTop();
+			if (scrollToSelected - (tagSelectPaginatedDiv.width() / 2) > 0){
+				scrollToSelected = scrollToSelected - (tagSelectPaginatedDiv.width() / 2);
+			}
+			var ajusteScroll = (tagSelectPaginatedDiv.find("li.selected").height() * 2);
+			if (scrollToSelected > (tagSelectPaginatedDiv.width() / 2)){
+				scrollToSelected = scrollToSelected + ajusteScroll;
+			}
+			tagSelectPaginatedDiv.scrollTop(scrollToSelected);
+		}
+		console.debug("[tagSelect] BIND KEY UP");
+		jQuery(document).bind("keyup",keyupHandler);
+	}
+}
+
+function searchPaginatedSelect(paginatedDiv, lastPage, loadNextPageUrl){	
+	paginatedDiv.data("waitsearch", false);
+	var searchText = paginatedDiv.data("search").toLowerCase();
+	//console.debug("[tagSelect] searchPaginatedSelect: " + searchText);
+	var optionsFound = undefined;
+	if (lastPage){
+		optionsFound = paginatedDiv.find("ul:last").find("span[data-nav='"+searchText+"']");
+		/*
+		optionsFound = paginatedDiv.find("ul:last").find("span.selectOptionText").filter(function(){
+			return jQuery(this).text().toLowerCase().indexOf(searchText) == 0;
+		});
+		*/
+	} else {
+		optionsFound = paginatedDiv.find("span[data-nav='"+searchText+"']");
+		/*
+		optionsFound = paginatedDiv.find("span.selectOptionText").filter(function(){
+			return jQuery(this).text().toLowerCase().indexOf(searchText) == 0;
+		});
+		*/
+	}
+	if (optionsFound.exists()){
+		var optionFound = optionsFound.first().parent();
+		//console.debug("[tagSelect] searchPaginatedSelect: " + searchText + " FOUND ON DIV: " + optionsFound.first().text());
+		var scrollToSelected = optionFound.offset().top - paginatedDiv.offset().top + paginatedDiv.scrollTop();
+		if (scrollToSelected - (paginatedDiv.width() / 2) > 0){
+			scrollToSelected = scrollToSelected - (paginatedDiv.width() / 2);
+		}
+		var ajusteScroll = (optionFound.height() * 2);
+		if (scrollToSelected > (paginatedDiv.width() / 2)){
+			scrollToSelected = scrollToSelected + ajusteScroll;
+		}
+		paginatedDiv.scrollTop(scrollToSelected);
+		jQueryTop.unblockUI();
+	} else {
+		var tagSelectSelect = paginatedDiv.parent().find("select");
+		if (!tagSelectSelect.data("allPagesLoaded")){
+			var nextPage = parseInt(tagSelectSelect.data("page")) + 1;
+			//console.debug("[tagSelect] searchPaginatedSelect: " + searchText + " NOT FOUND ON DIV LOADING NEXT PAGE: " + nextPage);
+			if (typeof loadNextPageUrl != "undefined"){
+				loadNextPageUrl = loadNextPageUrl.replace("&page="+tagSelectSelect.data("page"), "&page="+nextPage);
+				tagSelectLoadNextPage(tagSelectSelect, nextPage, true, loadNextPageUrl);
+			} else {
+				tagSelectLoadNextPage(tagSelectSelect, nextPage, true);
+			}
+		} else {
+			jQueryTop.unblockUI();
+			alert("Ningún elemento encontrado por: " + searchText);
+		}
+	}
+}
 
 function tagSelect_searchBox_keyup(el){
 	console.debug("[searchBox] tagSelect_searchBox_keyup BEGIN");
@@ -895,10 +1143,10 @@ function jQueryUILoaded(){
 		   header_title_month.find("select.ui-datepicker-month").css("width", "100%");
 		   
 		   header_title_year.find("select.ui-datepicker-year").css("width", "40%");
-		   header_title_year.prepend("<input type='text' id='datepicker-change-year' style='text-align: right;' value='"+ header_title_year.find("select.ui-datepicker-year").val()+"'/>");
+		   header_title_year.prepend("<input type='text' id='datepicker-change-year' style='text-align: right;' value='"+ inst.selectedYear +"'/>");
 		   header_title_year.find("#datepicker-change-year").css("width", "40%");
 		   //No se quiere el combo, lo ocultamos
-		   header_title_year.find("select.ui-datepicker-year").hide();
+		   header_title_year.find("select.ui-datepicker-year").remove();
 		   header_title_year.find("#datepicker-change-year").css("width", "30%");
 		   
 		   header_title_year.find("#datepicker-change-year").on("change", function(){
@@ -916,7 +1164,8 @@ function jQueryUILoaded(){
 						   jQueryTop.datepicker._adjustInstDate(inst, offsetYear, "Y");
 						   jQueryTop.datepicker._updateDatepicker(inst);
 					   } catch (e){
-						   select_year.val("");
+						   //select_year.val("");
+						   jQuery(this).val(inst.selectedYear);
 					   }
 				   }
 			   }
@@ -1237,6 +1486,88 @@ function reloadSelect(childrenId, setValue, params){
 	if (setValue)
 		jQuery("#"+childrenId).data("set-id-value", setValue);
 	loadSelect(undefined, childrenId, undefined, params);
+}
+function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
+	if (select.exists()){
+		if (!select.data("loadingpage") && !select.data("allPagesLoaded")){
+			select.data("loadingpage", true);
+			var tagSelectPaginatedDiv = select.parent().find("div.tagSelectPaginatedDiv");
+			tagSelectPaginatedDiv.find(".loading").remove();
+			tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'><img id='"+select.attr("id")+"_loading_page' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='margin: 0px auto;' /></span></li>");
+			var incPage = 0;
+			if (typeof page == "undefined"){
+				page = select.data("page");
+				if (typeof page == "undefined")
+					page = 1;
+				else
+					incPage = 1;
+			}
+			try{
+				page = parseInt(page);
+			} catch(e){
+				page = 1;
+			}
+			page = page + incPage;
+			
+			var finalURL = "selectData.do?queryId="+select.data("queryid");
+			if (typeof loadNextPageUrl == "undefined"){
+				// parámetros de carga
+				var dataObject = {};
+				dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
+				jQuery("*[data-queryparamid]").each(function(){
+					var key = jQuery(this).data("queryparamid");
+					var value = jQuery(this).val();
+					if (value == "" && jQuery(this).is("select"))
+						value = jQuery(this).find("option:selected").val();				
+					dataObject[key] = value || '';
+				});
+				
+				if (params){
+					jQuery.each(params, function(index, param){
+						try{
+							dataObject[param.key] = param.value || '';
+						} catch (e){
+							console.error("Error al incluir algún parámetro en la carga del select");
+						}
+					});
+				}
+				
+				var data = JSON.stringify(dataObject);
+				var params = "";
+				if (typeof data != "undefined"){
+					params = "&paginated=true&page="+page+"&pagesize="+select.data("pagesize")+"&params="+encodeURIComponent(data);
+				}
+				finalURL += params;
+			} else {
+				finalURL = loadNextPageUrl;
+			}
+			
+			//Llamada al servidor
+			var jqxhr = jQuery.ajax({
+				url:finalURL
+			}).done(function(data, textStatus, jqXHR){
+				console.debug("[tagSelect]" + select.attr("id")+" load page "+page+" DONE!");
+				tagSelectPaginatedDiv.find(".loading").remove();
+				tagSelectPaginatedDiv.append("<ul class='selectOptions' data-page='"+page+"'></ul>");
+				tagSelectPaginatedDiv.find("ul:last")[0].innerHTML = data;
+				//tagSelectPaginatedDiv.find("ul").append(data);
+				select.data("page", page);				
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.debug("[tagSelect]" + select.attr("id")+" load page "+page+" FAIL! ERROR: " + errorThrown);
+				//alert("Se ha producido un error al cargar los datos");
+				tagSelectPaginatedDiv.find(".loading").remove();
+				tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'>Error, inténtelo de nuevo</span></li>");
+			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+				select.data("loadingpage", false);
+				if (tagSelectPaginatedDiv.find("li.notFound").exists()){
+					select.data("allPagesLoaded", true);
+				}
+				if (callSearch){
+					searchPaginatedSelect(tagSelectPaginatedDiv, true, finalURL);
+				}
+			});
+		}
+	}
 }
 
 function loadSelect(parentSelects, childrenId, setInitialValue, params){

@@ -1461,3 +1461,109 @@ table.fixedHeaderTable tbody td {
   padding-bottom: 0px;
   border: 0px solid #dde0dd;
 }
+div.tagSelectPaginatedDiv {
+  background-color: #777755;
+  color: #dde0dd;
+}
+ul.selectOptions {
+  background-color: #777755;
+  padding: 0px;
+  margin: 0px;
+  padding-left: 5px;
+  list-style-type: none;
+  cursor: pointer;
+}
+span.selectOptionText {
+  display: block;
+  background-color: #777755;
+  color: #dde0dd;
+}
+li.selectOption.notSelected > span.selectOptionText {
+  background-color: #777755;
+}
+li.selectOption.notSelected > span.selectOptionText:hover {
+  background-color: #EDEDED;
+  color: #000000;
+}
+li.selectOption.selected > span.selectOptionText {
+  background-color: #64C8FF;
+}
+.siga-datepicker-trigger {
+  cursor: pointer;
+}
+.ui-datepicker .ui-datepicker-year-prev,
+.ui-datepicker .ui-datepicker-year-next {
+  position: absolute;
+  top: 2em;
+  width: 1.8em;
+  height: 1.8em;
+}
+.ui-datepicker .ui-datepicker-year-prev-hover,
+.ui-datepicker .ui-datepicker-year-next-hover {
+  top: 1px;
+}
+.ui-datepicker .ui-datepicker-year-prev {
+  left: 2px;
+}
+.ui-datepicker .ui-datepicker-year-next {
+  right: 2px;
+}
+.ui-datepicker .ui-datepicker-year-prev-hover {
+  left: 1px;
+}
+.ui-datepicker .ui-datepicker-year-next-hover {
+  right: 1px;
+}
+.ui-datepicker .ui-datepicker-year-prev span,
+.ui-datepicker .ui-datepicker-year-next span {
+  display: block;
+  position: absolute;
+  left: 50%;
+  margin-left: -8px;
+  top: 50%;
+  margin-top: -8px;
+}
+.ui-datepicker-header {
+  cursor: move;
+}
+.ui-datepicker-year-next {
+  top: 2.2px;
+}
+.ui-datepicker-year-prev {
+  top: 2.2px;
+}
+.ui-datepicker-prev {
+  cursor: pointer;
+}
+.ui-datepicker-next {
+  cursor: pointer;
+}
+.ui-datepicker {
+  z-index: 99 !important;
+}
+.overlay {
+  background-color: #FFF;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+  /* IE 8 */
+
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+  /* IE 5-7 */
+
+  filter: alpha(opacity=30);
+  /* Netscape */
+
+  -moz-opacity: 0.30;
+  /* Safari 1.x */
+
+  -khtml-opacity: 0.30;
+  /* Good browsers */
+
+  opacity: 0.30;
+}

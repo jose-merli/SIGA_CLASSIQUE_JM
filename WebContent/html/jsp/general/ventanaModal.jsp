@@ -42,90 +42,17 @@
 		<title>
 			<siga:Idioma key="general.ventana.cgae"/>
 		</title>
-
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.blockUI.js'/>"></script> -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
 	
 	<style type="text/css">
-	.siga-datepicker-trigger{
-		cursor: pointer;
-	}
-	.ui-datepicker .ui-datepicker-year-prev,
-	.ui-datepicker .ui-datepicker-year-next {
-		position: absolute;
-		top: 2em;
-		width: 1.8em;
-		height: 1.8em;
-	}
-	.ui-datepicker .ui-datepicker-year-prev-hover,
-	.ui-datepicker .ui-datepicker-year-next-hover {
-		top: 1px;
-	}
-	.ui-datepicker .ui-datepicker-year-prev {
-		left: 2px;
-	}
-	.ui-datepicker .ui-datepicker-year-next {
-		right: 2px;
-	}
-	.ui-datepicker .ui-datepicker-year-prev-hover {
-		left: 1px;
-	}
-	.ui-datepicker .ui-datepicker-year-next-hover {
-		right: 1px;
-	}
-	.ui-datepicker .ui-datepicker-year-prev span,
-	.ui-datepicker .ui-datepicker-year-next span {
-		display: block;
-		position: absolute;
-		left: 50%;
-		margin-left: -8px;
-		top: 50%;
-		margin-top: -8px;
-	}
-	.ui-datepicker-header{
-		cursor: move;
-	}
-	.ui-datepicker-year-next{
-		top: 2.2px;
-	}
-	.ui-datepicker-year-prev{
-		top: 2.2px;
-	}
-	.ui-datepicker-prev{
-		cursor: pointer;
-	}
-	.ui-datepicker-next{
-		cursor: pointer;
-	}
-	.ui-datepicker {		
-		z-index: 99 !important;
-	}
-	.overlay{
-		background-color: #FFF;
-		position: absolute;
-		z-index: 50;
-		width: 100%;
-		height: 100%;
-		cursor: pointer;
-		/* IE 8 */
-	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
 	
-	  /* IE 5-7 */
-	  filter: alpha(opacity=30);
-	
-	  /* Netscape */
-	  -moz-opacity: 0.30;
-	
-	  /* Safari 1.x */
-	  -khtml-opacity: 0.30;
-	
-	  /* Good browsers */
-	  opacity: 0.30;
-	}
 	</style>
 	
 	<script type="text/javascript">
@@ -194,7 +121,6 @@
 	</head>
 
 	<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
-	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<table>
 	<tr>
 		<td class="labelTextValor"><c:out value="Conectando con la Mutua de la Abogacía..." /> </td>
@@ -215,5 +141,6 @@
 	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:45%">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
+	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	</body>
 </html>
