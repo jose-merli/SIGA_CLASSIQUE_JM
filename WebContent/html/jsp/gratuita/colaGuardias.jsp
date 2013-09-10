@@ -145,12 +145,12 @@
 					
 					td = tr.insertCell();	
 					td.id = "grupo_"+numFila;			
-					td.innerHTML ='<input type="text" value="" id=grupo_'+val+' size="1">'+
+					td.innerHTML ='<input type="text" value="" id=grupo_'+val+' style="width:30px" maxlength="4">' +
 								  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';			
 				
 					td = tr.insertCell();	
 					td.id = "orden_"+numFila;
-					td.innerHTML ='<input type="text" value="" id=orden_'+val+' size="1" maxlength="4">'+
+					td.innerHTML ='<input type="text" value="" id=orden_'+val+'  style="width:30px" maxlength="4">' +
 								  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
 				
 					td = tr.insertCell();	
@@ -210,17 +210,11 @@
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Ultimo letrado ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
-	<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
-  		<tr style="display:none">
-	  		<td width="59%" style="vertical-align: top"></td>
-	  		<td width="1%"  style="vertical-align: top"></td>
-	  		<td width="40%" style="vertical-align: top"></td>
-		</tr>
-		
+	<table width="100%" border="0" cellpadding="5" cellspacing="0">		
   		<tr>
-	  		<td colspan="3" style="vertical-align: top">
+	  		<td colspan="2">
 	  			<siga:ConjCampos leyenda="gratuita.turnos.literal.ultimo">
-		  			<table border="0" align="center" width="100%">
+		  			<table width="100%" border="0" cellpadding="5" cellspacing="0">
 						<tr>
 			  				<td class="labelText" nowrap>
 			  					<siga:Idioma key="gratuita.turnos.literal.nColegiado"/>: 
@@ -249,40 +243,39 @@
 		</tr>
 		
   		<tr>
-	  		<td rowspan="2" colspan="2" style="vertical-align: top; height:450px">	  
+	  		<td width="66%">	  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Letrados en Cola ---------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->
 
-				<table id="tituloTablaLetrados" border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom: none">
+				<table id="tituloTablaLetrados" width="100%" border="1" cellpadding="5" cellspacing="0">
 					<tr class='tableTitle'>
-						<%
-							if (porGrupos) {
-						%>
-							<td class="tdBotones" width='17%'><input type="button"
-								alt="Guardar" id="idButton" onclick="return accionGuardar();"
-								class="button" name="idButton" value="Guardar"></td>
-						<%
-							}
-						%>
-							<td width='22%'>
-								<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>"
-									onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
-								<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" />
+<%
+						if (porGrupos) {
+%>
+							<td class="tdBotones" width='17%'>
+								<input type="button" alt="Guardar" id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="Guardar">
 							</td>
+<%
+						}
+%>
+						<td width='22%'>
+							<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>" onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
+							<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" />
+						</td>
 							
-						<%
-							if (porGrupos) {
-						%>
+<%
+						if (porGrupos) {
+%>
 							<td align='center' width='61%'>
-						<%
-							} else {
-						%>
+<%
+						} else {
+%>
 							<td align='center' width='78%'>
-						<%
-							}
-						%>						
+<%
+						}
+%>						
 							<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos" />:&nbsp;&nbsp;<%=nListad%>
 						</td>
 					</tr>
@@ -296,375 +289,319 @@
 					<!-- INICIO: ZONA DE REGISTROS -->
 					<!-- Aqui se iteran los diferentes registros de la lista -->		
 
-					<%
-						ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
-						if (letradosColaGuardiaList == null || letradosColaGuardiaList.size() == 0) {
-					%>			
-	 		
+<%
+					ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
+					if (letradosColaGuardiaList == null || letradosColaGuardiaList.size() == 0) {
+%>				 		
 	 					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>	 		
+			   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+						</tr>	 		
 
-					<%
-	 					} else {
-		 					// recorro el resultado
-		 					String grupoAnt = "";
-		 					String ordenAnt = "";
-		 					String apellido1 = "";
-		 					String apellido2 = "";
-		 					String nombre = "";
-		 					String ncolegiado = "";
-		 					String idPersona = "";
-		 					String fechaSuscripcion = "";
-		 					String numeroColegiadoBusqueda = "";
-		 					String grupo = "";
-		 					String ordenGrupo = "";
-		 					String idGrupoGuardiaColegiado = "";
-		 					int nFila = 0;
-		 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
-		 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
+<%
+					} else {
+	 					// recorro el resultado
+	 					String grupoAnt = "";
+	 					String ordenAnt = "";
+	 					String apellido1 = "";
+	 					String apellido2 = "";
+	 					String nombre = "";
+	 					String ncolegiado = "";
+	 					String idPersona = "";
+	 					String fechaSuscripcion = "";
+	 					String numeroColegiadoBusqueda = "";
+	 					String grupo = "";
+	 					String ordenGrupo = "";
+	 					String idGrupoGuardiaColegiado = "";
+	 					int nFila = 0;
+	 					
+	 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
+	 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
+
+	 						// calculo de campos
+	 						apellido1 = letradoGuardia.getPersona().getApellido1();
+	 						apellido2 = letradoGuardia.getPersona().getApellido2();
+	 						nombre = letradoGuardia.getPersona().getNombre();
+	 						ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+	 						idPersona = letradoGuardia.getIdPersona().toString();
+	 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
+	 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+	 						grupo = letradoGuardia.getNumeroGrupo() != null ? letradoGuardia.getNumeroGrupo().toString() : "";
+	 						if (porGrupos) {
+	 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
+	 								nFila++;
+	 								grupoAnt = grupo;
+	 							}
+	 						} else {
+	 							nFila++;
+	 						}
+	 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null ? letradoGuardia.getOrdenGrupo().toString() : "";
+	 						idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado() != null ? letradoGuardia.getIdGrupoGuardiaColegiado().toString() : "";
+%>
 	
-		 						// calculo de campos
-		 						apellido1 = letradoGuardia.getPersona().getApellido1();
-		 						apellido2 = letradoGuardia.getPersona().getApellido2();
-		 						nombre = letradoGuardia.getPersona().getNombre();
-		 						ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
-		 						idPersona = letradoGuardia.getIdPersona().toString();
-		 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
-		 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-		 						grupo = letradoGuardia.getNumeroGrupo() != null ? letradoGuardia.getNumeroGrupo().toString() : "";
-		 						if (porGrupos) {
-		 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
-		 								nFila++;
-		 								grupoAnt = grupo;
-		 							}
-		 						} else {
-		 							nFila++;
-		 						}
-		 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null ? letradoGuardia.getOrdenGrupo().toString() : "";
-		 						idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado() != null ? letradoGuardia.getIdGrupoGuardiaColegiado().toString() : "";
-	 				%>
-	
-						<!-- REGISTRO  -->
-  						<tr class="<%=((nFila + 1) % 2 == 0 ? "filaTablaPar" : "filaTablaImpar")%>">
-  							<%
-  								if (porGrupos) {
-  							%>
-	  							<td>
-	  								<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
-	  							</td>
-	  					
-								<td>
-									<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1"/>
-									<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
-								</td>
+							<!-- REGISTRO  -->
+  							<tr class="<%=((nFila + 1) % 2 == 0 ? "filaTablaPar" : "filaTablaImpar")%>">
+<%
+								if (porGrupos) {
+%>
+	  								<td>
+	  									<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
+	  								</td>	  					
+									<td>
+										<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled style="width:30px" maxlength="4"/>
+										<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
+									</td>
 						
-								<td>
-									<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4"/>
-									<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
-								</td>
-							<%
+									<td>
+										<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled style="width:30px" maxlength="4"/>
+										<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
+									</td>
+<%
 								}
-							%>
+%>
 								
-							<td id="colegiado_<%=i%>">
-								<input name="numeroColegiadoBusqueda" type="hidden" class="box, numeroColegiadoBusqueda" size="10" value="<%=numeroColegiadoBusqueda%>" />
-								<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
-								<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
-								<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
-								<%=ncolegiado%>
-							</td>
+								<td id="colegiado_<%=i%>">
+									<input name="numeroColegiadoBusqueda" type="hidden" class="box, numeroColegiadoBusqueda" size="10" value="<%=numeroColegiadoBusqueda%>" />
+									<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
+									<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
+									<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
+									<%=ncolegiado%>
+								</td>
 							
-							<td id="nombre_<%=i%>">
-								<%=apellido1 + " " + apellido2 + ", " + nombre%>
-							</td>
+								<td id="nombre_<%=i%>">
+									<%=apellido1 + " " + apellido2 + ", " + nombre%>
+								</td>
 							
-							<td id="falta_<%=i%>">
-								<%
-									if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null
-														&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
-								%>
-									<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
-								<%
+								<td id="falta_<%=i%>">
+<%
+									if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null && !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
+%>
+										<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
+<%
 									} else {
-								%>
-									&nbsp;
-								<%
+%>
+										&nbsp;
+<%
 									}
-								%>
-							</td>
+%>
+								</td>
 							
-							<td id="fbaja_<%=i%>">
-								<%
-									if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null
-														&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
-								%>
-									<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
-								<%
+								<td id="fbaja_<%=i%>">
+<%
+									if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null && !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
+%>
+										<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
+<%
 									} else {
-								%>
-									&nbsp;
-								<%
+%>
+										&nbsp;
+<%
 									}
-								%>
-							</td>
+%>
+								</td>
 			
-							<td id="iconos_<%=i%>" align="center">
-								<!-- aalg: INC_10634_SIGA -->
-								<%if (!accionTurno.equalsIgnoreCase("Ver")){%>
-									<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
-									<% if (porGrupos) {	%>
-										<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
-									<% }} %>	
-							</td>
-						</tr>		
-						<!-- FIN REGISTRO -->
-						<!-- FIN: ZONA DE REGISTROS -->
-					<%		
-							} // del for			
-						} // del if
-					%>			
-				</siga:Table>
-	  
-<!-------------------------------------------------------------------------------------------------->	
+								<td id="iconos_<%=i%>" align="center">
+									<!-- aalg: INC_10634_SIGA -->
+<%
+									if (!accionTurno.equalsIgnoreCase("Ver")) {
+%>
+										<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
+<% 
+										if (porGrupos) {	
+%>
+											<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
+<% 
+										}
+									} 
+%>	
+								</td>
+							</tr>		
+							<!-- FIN REGISTRO -->
+							<!-- FIN: ZONA DE REGISTROS -->
+<%		
+						} // del for			
+					} // del else
+%>			
+				</siga:Table>	
 	  		</td>
-
-	  		<td style="vertical-align: top; height:220px">	  
-	  
+	  			  	  
+			<td width="34%">	  			  	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Compensaciones ------------------------------------------------------------------------>	
-<!-------------------------------------------------------------------------------------------------->	
-				<table id="tituloTablaCompensaciones" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
-		  			<tr class = 'tableTitle'>
+<!-------------------------------------------------------------------------------------------------->			
+				<table id="tituloTablaCompensaciones" width="100%" border="1" cellpadding="5" cellspacing="0">
+		  			<tr class='tableTitle'>
 						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
 		  			</tr>
 				</table> 
 				 
-				<% if (porGrupos) {	%>
+<% 
+				if (porGrupos) {	
+%>
 		 			<siga:Table
 		    			name="tablaCompensaciones"
 		    			border="1"
 	 					columnSizes="10,80,10"
 	     				columnNames="Gr,gratuita.turnos.literal.nombreSolo,Nº"
- 		    			fixedHeight="170">
-						<!-- INICIO: ZONA DE REGISTROS -->
-						<!-- Aqui se iteran los diferentes registros de la lista -->
-			
-						<%
-							Vector resultado = (Vector) request.getAttribute("vCompensaciones");
-							if (resultado == null || resultado.size() == 0) {
-						%>			
+ 		    			fixedHeight="48%">
+<%
+						Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+						if (resultado == null || resultado.size() == 0) {
+%>			
 	 						<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr> 		
-						<%
-	 						} else {
-	 							// recorro el resultado
-	 							for (int i = 0; i < resultado.size(); i++) {
-	 								String  nombre="", ncolegiado="", numero="";
-	 								Hashtable registro = (Hashtable) resultado.get(i);
-									if (registro != null){
-										nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
-		 								ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
-		 								numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
-									}
-	 					%>
-							<!-- REGISTRO  -->
-  							<tr class="listaNonEdit">
-								<td align="center">
-									<%=ncolegiado%>
-								</td>
-								<td>
-									<%=nombre%>
-								</td>
-								<td align="center">
-									<%=numero%>
-								</td>
-							</tr>		
-							<!-- FIN REGISTRO -->
-							<!-- FIN: ZONA DE REGISTROS -->
-						<%
-								} // del for
-							} // del if
-						%>			
+			   					<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+							</tr> 		
+<%
+ 						} else {
+ 							for (int i = 0; i < resultado.size(); i++) {
+ 								String  nombre="", ncolegiado="", numero="";
+ 								Hashtable registro = (Hashtable) resultado.get(i);
+								if (registro != null){
+									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+	 								ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+	 								numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+								}
+%>
+  								<tr class="listaNonEdit">
+									<td align="center"><%=ncolegiado%></td>
+									<td><%=nombre%></td>
+									<td align="center"><%=numero%></td>
+								</tr>		
+<%
+							} // for
+						} // else
+%>			
 					</siga:Table>
 		
-				<% } else { %>					
+<% 
+				} else { 
+%>					
 					<siga:Table
 		    			name="tablaCompensaciones"
 		    			border="1"
 						columnSizes="22,50,28"			
 						columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
-		    			fixedHeight="170">
-
-						<!-- INICIO: ZONA DE REGISTROS -->
-						<!-- Aqui se iteran los diferentes registros de la lista -->
-			
-						<%
-							Vector resultado = (Vector) request.getAttribute("vCompensaciones");
-							if (resultado == null || resultado.size() == 0) {
-						%>			
+		    			fixedHeight="48%">
+<%
+						Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+						if (resultado == null || resultado.size() == 0) {
+%>			
 	 						<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	 							 		
-						<%
-	 						} else {
-	 							// recorro el resultado
-	 							for (int i = 0; i < resultado.size(); i++) {
-	 								String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+			   					<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+							</tr>
+<%
+ 						} else {
+ 							for (int i = 0; i < resultado.size(); i++) {
+	 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
  							
-		 							Row registro = (Row) resultado.elementAt(i);
-		 							// calculo de campos
-		 							apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-		 							apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-		 							nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-		 							numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-	 					%>
-							<!-- REGISTRO  -->
-  							<tr class="listaNonEdit">
-								<td>
-									<%=ncolegiado%>
-								</td>
-								<td>
-									<%=nombre + " " + apellido1 + " " + apellido2%>
-								</td>
-								<td>
-									<%=numero%>
-								</td>
-							</tr>		
-							<!-- FIN REGISTRO -->
-							<!-- FIN: ZONA DE REGISTROS -->
-						<%
-								} // del for
-							} // del if
-						%>			
+		 						Row registro = (Row) resultado.elementAt(i);
+		 						// calculo de campos
+		 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+		 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+		 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+		 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+		 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+%>
+  								<tr class="listaNonEdit">
+									<td><%=ncolegiado%></td>
+									<td><%=nombre + " " + apellido1 + " " + apellido2%></td>
+									<td><%=numero%></td>
+								</tr>		
+<%
+							} // for
+						} // else
+%>			
 					</siga:Table>
-				<% } %>  
-<!-------------------------------------------------------------------------------------------------->	
-	  		</td>
-		</tr>
-		
-  		<tr>
-	  		<td style="vertical-align: top; height:220px">	  
+<% 
+				} 
+%>  
 	  
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Saltos -------------------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-				<table id="tituloTablaSaltos" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
-			  		<tr class = 'tableTitle'>
+				<table id="tituloTablaSaltos" width="100%" border="1" cellpadding="5" cellspacing="0">
+			  		<tr class='tableTitle'>
 						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
 			  		</tr>
 				</table>		
 			
-				<% if (porGrupos) {	%>		
+<% 
+				if (porGrupos) {	
+%>		
 					<siga:Table
 			   			name="tablaSaltos"
 			   			border="1"
 			   			columnSizes="10,80,10"
-		       			columnNames="Gr,gratuita.turnos.literal.nombreSolo,Nº"
-			   			fixedHeight="170">
-	
-						<!-- INICIO: ZONA DE REGISTROS -->
-						<!-- Aqui se iteran los diferentes registros de la lista -->
-				
-						<%
-							Vector resultado = (Vector) request.getAttribute("vSaltos");
-							if (resultado == null || resultado.size() == 0) {
-						%>			
+		       			columnNames="Gr,gratuita.turnos.literal.nombreSolo,Nº">
+<%
+						Vector resultado = (Vector) request.getAttribute("vSaltos");
+						if (resultado == null || resultado.size() == 0) {
+%>			
 		 					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr> 		
-				
-						<%
-		 					} else {
-		 						// recorro el resultado
-		 						for (int i = 0; i < resultado.size(); i++) {
-		 							String  nombre="", ncolegiado="", numero="";
-		 							Hashtable registro = (Hashtable) resultado.get(i);
-									if (registro != null){
-										nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
-			 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
-			 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
-									}
-		 				%>
-		 				
-							<!-- REGISTRO  -->
-	  						<tr class="listaNonEdit">
-								<td align="center">
-									<%=ncolegiado%>
-								</td>
-								<td >
-									<%=nombre%>
-								</td>
-								<td align="center">
-									<%=numero%>
-								</td>
-							</tr>		
-							<!-- FIN REGISTRO -->
-							<!-- FIN: ZONA DE REGISTROS -->
-						<%
-								} // del for
-							} // del if
-						%>			
+			   					<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+							</tr> 		
+<%
+	 					} else {
+	 						for (int i = 0; i < resultado.size(); i++) {
+	 							String  nombre="", ncolegiado="", numero="";
+	 							Hashtable registro = (Hashtable) resultado.get(i);
+								if (registro != null){
+									nombre =  UtilidadesString.mostrarDatoJSP(registro.get("LETRADO"));
+		 							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get("NUMERO"));
+		 							numero = UtilidadesString.mostrarDatoJSP(registro.get("REP"));									
+								}
+%>
+	  							<tr class="listaNonEdit">
+									<td align="center"><%=ncolegiado%></td>
+									<td><%=nombre%></td>
+									<td align="center"><%=numero%></td>
+								</tr>		
+<%
+							} // for
+						} // else
+%>			
 					</siga:Table>
 			
-				<%	} else { %>			
+<%	
+				} else { 
+%>			
 					<siga:Table
 					   name="tablaSaltos"
 					   border="1"
 					   columnSizes="22,50,28"
-					   columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
-					   fixedHeight="170">
-	
-						<!-- INICIO: ZONA DE REGISTROS -->
-						<!-- Aqui se iteran los diferentes registros de la lista -->
-				
-						<%
-							Vector resultado = (Vector) request.getAttribute("vSaltos");
-							if (resultado == null || resultado.size() == 0) {
-						%>			
+					   columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos">
+<%
+						Vector resultado = (Vector) request.getAttribute("vSaltos");
+						if (resultado == null || resultado.size() == 0) {
+%>			
 		 					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-		 						 		
-						<%
-		 					} else {
-		 						// recorro el resultado
-		 						for (int i = 0; i < resultado.size(); i++) {
-		 							String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
+			   					<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+							</tr>		 						 		
+<%
+		 				} else {
+		 					for (int i = 0; i < resultado.size(); i++) {
+		 						String apellido1="", apellido2="", nombre="", ncolegiado="", numero="";
 		 							
-			 						Row registro = (Row) resultado.elementAt(i);
-			 						// calculo de campos
-			 						apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-			 						apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-			 						nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-			 						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-			 						numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-		 				%>
-		 				
-							<!-- REGISTRO  -->
-				  			<tr class="listaNonEdit">
-								<td>
-									<%=ncolegiado%>
-								</td>
-								<td>
-									<%=nombre + " " + apellido1 + " " + apellido2%>
-								</td>
-								<td>
-									<%=numero%>
-								</td>
-							</tr>		
-							<!-- FIN REGISTRO -->
-							<!-- FIN: ZONA DE REGISTROS -->
-						<%
-								} // del for
-							} // del if
-						%>			
+			 					Row registro = (Row) resultado.elementAt(i);
+			 					// calculo de campos
+			 					apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+			 					apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+			 					nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+			 					ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+			 					numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+%>
+				  				<tr class="listaNonEdit">
+									<td><%=ncolegiado%></td>
+									<td><%=nombre + " " + apellido1 + " " + apellido2%></td>
+									<td><%=numero%></td>
+								</tr>		
+<%
+							} // for
+						} // else
+%>			
 					</siga:Table>		
-				<% } %>
-<!-------------------------------------------------------------------------------------------------->	
+<% 
+				} 
+%>
   			</td>
 		</tr>
 	</table>

@@ -60,13 +60,6 @@
 		nombrePestanha = "";
 		numeroPestanha = "";
 	}
-	
-	//Si entrada=2 venimos desde menu censo:
-	String alto = "100%";	
-	String entrada = (String) request.getSession().getAttribute("entrada");
-	if (entrada.equalsIgnoreCase("2")){
-		alto = "281";
-	}
 %>	
 
 
@@ -171,8 +164,7 @@
 		   name="tablaDatos"
 		   border="1"
 		   columnNames="<%=nC%>"
-		   columnSizes="<%=tC%>"
-		   fixedHeight="<%=alto%>">
+		   columnSizes="<%=tC%>">
 		
 		<% if (obj==null || obj.size()==0){%>
 				
