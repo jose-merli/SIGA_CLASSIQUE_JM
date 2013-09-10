@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoEJG_Remesa.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -19,23 +20,20 @@
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
 <%@ page import="com.siga.ws.CajgConfiguracion"%>
 <%@ page import="com.atos.utils.*"%>
-<%@page import="com.siga.beans.CajgEJGRemesaBean"%>
-<%@page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.beans.CajgEJGRemesaBean"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.ws.SIGAWSListener"%>
 <%@ page import="com.siga.ws.SIGAWSClientAbstract"%>
 <%@ page import="com.siga.gratuita.action.DefinirRemesasCAJGAction"%>
-
-
-
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 
 <!-- TAGLIBS -->
-<%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
-<%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
-<%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
-<%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
+<%@taglib uri =	"struts-bean.tld" 	prefix="bean" %>
+<%@taglib uri = "struts-html.tld" 	prefix="html" %>
+<%@taglib uri = "libreria_SIGA.tld" prefix="siga" %>
+<%@taglib uri =	"struts-logic.tld" 	prefix="logic" %>
 
 <!-- JSP -->
 <% 
@@ -65,19 +63,22 @@
 		    Paginador paginador = (Paginador)hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());	
 		 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());	
-		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());	 	
-		 }else{
+		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
+		 	
+		 } else {
 		    resultado =new Vector();
 		    paginaSeleccionada = "0";	
 		 	totalRegistros = "0";	
 		 	registrosPorPagina = "0";
 		 }
-	}else{
+		 
+	} else {
       	resultado =new Vector();
 	  	paginaSeleccionada = "0";	
 	 	totalRegistros = "0";	
 	 	registrosPorPagina = "0";
 	}	 
+ 	
 	String action=app+"/JGR_E-Comunicaciones_Gestion.do?noReset=true&idRemesa=" + idremesa;
 	
 	String modo=(String)request.getSession().getAttribute("accion");
@@ -98,7 +99,8 @@
 	
 	
 	if (modo.equals("consultar")) {
-		buttons="";			
+		buttons="";	
+		
 	} else if (idEstado == 0) {//INICIADA
 		if (cajgConfig != 0) {
 			buttons="g,ae";//guardar y añadir expedientes
@@ -120,6 +122,7 @@
 				buttons+=",val,ws";//envio WebService
 			}
 		}
+	
 	} else if (idEstado == 1) {//GENERADA
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
@@ -131,6 +134,7 @@
 				buttons+=",d";//descargar
 			}
 		}
+	
 	} else if (idEstado == 2) {//enviada
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
@@ -155,28 +159,15 @@
 			}
 		}
 	}
-	
-	
-	
-	
-    /**************/
-
-	
 %>
 
-
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+	
 	<script type="text/javascript">
 	
 		function refrescarLocal() {
@@ -194,8 +185,6 @@
 			miForm.target="mainWorkArea"; 
 			miForm.submit(); 
 		}
-		
-		
 				
 		function aniadirExpedientes(){
 			sub();
@@ -280,14 +269,10 @@
 				deshabilitaTodos();				
 			<%}%>			
 		}
-
 	</script>
 </head>
 
 <body onload="inicio()">
-
-	
-
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
 		<!-- RGG: cambio a formularios ligeros -->
@@ -298,8 +283,7 @@
 		<input type="hidden" name="anio" value="">
 		<input type="hidden" name="numero" value="">
 		<input type="hidden" name="idEjgRemesa" value="">		
-		<input type="hidden" name="volver" value="">
-		
+		<input type="hidden" name="volver" value="">		
 	</html:form>	
 	
 	<html:form action="/JGR_EJG.do" method="post" target="mainWorkArea" style="display:none">
@@ -315,22 +299,25 @@
 		<input type="hidden" name="filaSelD">
 		<input type="hidden" name="actionModal" value="">
 	</html:form>
-	
-	
 		
 	<siga:ConjBotonesAccion botones="<%= buttons %>" clase="botonesSeguido" titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa"/>	
 		
 	<siga:Table 		   
-		   name="tablaDatos"
-		   border="1"
-		   columnNames="gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, 
-		   	gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, 
-		   	gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante, gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,"
-		   columnSizes="13,12,4,5,15,9,8,13,7,13">
-		   
+		name="tablaDatos"
+		border="1"
+		columnNames="gratuita.busquedaEJG.literal.turno, 
+			gratuita.busquedaEJG.literal.guardia, 
+			gratuita.busquedaEJG.literal.anyo, 
+			gratuita.busquedaEJG.literal.codigo, 
+			gratuita.busquedaEJG.literal.tipoEJG, 
+			gratuita.listadoActuacionesAsistencia.literal.fecha, 
+			gratuita.busquedaEJG.literal.estadoEJG, 
+			gratuita.busquedaEJG.literal.solicitante, 
+			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,"
+		columnSizes="13,12,4,5,15,9,8,13,7,13">		   
 
-	<%if (resultado.size()>0){%>
-  			<%
+<%
+		if (resultado.size()>0) {
 	    	int recordNumber=1;
 	    	String select = "";
 	    	Vector v = null;
@@ -340,39 +327,35 @@
 	    		botones += ",E";
 	    		if (idEstado == 0) {
 	    			botones += ",B";	
-	    		}
-	    		
+	    		}	    		
 	    	}
 	    	
 	    	String fRatificacion = "";
-			while (recordNumber-1 < resultado.size())
-			{			
+			while (recordNumber-1 < resultado.size()) {			
 			  
-		    Row fila = (Row)resultado.elementAt(recordNumber-1);
-			Hashtable registro = (Hashtable) fila.getRow();
+		    	Row fila = (Row)resultado.elementAt(recordNumber-1);
+				Hashtable registro = (Hashtable) fila.getRow();
 			
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
 				
 				// Comprobamos el estado del idfacturacion
-	    	ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
+	    		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
 			
-	    	FilaExtElement[] elems = new FilaExtElement[1];
-			if (!registro.get("ERRORES").equals("0")) {
-	    		elems[0]=new FilaExtElement("descargaLog", "descargarLog", "gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio", SIGAConstants.ACCESS_FULL);
-			}
-			String CODIGO=null;
-			if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
-				CODIGO="&nbsp;";
-			else
-				CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
+	    		FilaExtElement[] elems = new FilaExtElement[1];
+				if (!registro.get("ERRORES").equals("0")) {
+	    			elems[0]=new FilaExtElement("descargaLog", "descargarLog", "gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio", SIGAConstants.ACCESS_FULL);
+				}
+				String CODIGO=null;
+				if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
+					CODIGO="&nbsp;";
+				else
+					CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
 			
-			String enNuevaRemesa = "Si";
-			if (((String)registro.get("EN_NUEVA_REMESA")).trim().equals("0")) {
-				enNuevaRemesa = "No";
-			}
-			
-
-			%>
+				String enNuevaRemesa = "Si";
+				if (((String)registro.get("EN_NUEVA_REMESA")).trim().equals("0")) {
+					enNuevaRemesa = "No";
+				}
+%>
 				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit" modo="<%=modo%>">
 					<td><%=(String)registro.get("TURNO")%>&nbsp;</td>
@@ -394,78 +377,74 @@
 					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
 					<td><%=enNuevaRemesa%></td>
 				</siga:FilaConIconos>		
-			<% 	recordNumber++;
-			} %>
-	<%
-	}else {
-	%>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<%
-	}
-	%>
+<% 	
+				recordNumber++;
+			} 
+		} else {
+%>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		}
+%>
 	</siga:Table>
 
-     <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-	  
-	  						
+<%
+	if ( hm.get("datos")!=null && !hm.get("datos").equals("")) {
+%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								idioma="<%=idioma%>"
-								modo="buscarPorEJG"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:28px; left: 0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
-															
+						registrosPorPagina="<%=registrosPorPagina%>" 
+						paginaSeleccionada="<%=paginaSeleccionada%>" 
+						idioma="<%=idioma%>"
+						modo="buscarPorEJG"								
+						clase="paginator" 
+						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:28px; left: 0px"
+						distanciaPaginas=""
+						action="<%=action%>" />
+<%
+	}
+%>
 	
-	 <%}%>	
-	 <siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />	
-<!-- INICIO: SUBMIT AREA -->
+	 <siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+	 	
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->	
-	
+	<!-- FIN: SUBMIT AREA -->		
 </body>	
 
-	<script type="text/javascript">
-		function consultar(fila) {			
-			document.forms[0].modo.value = "Ver";
-			consultaEdita(fila);
-		}
-		
-		function editar(fila) {
-			document.forms[0].modo.value = "Editar";
-			consultaEdita(fila)
-		}
-
-		function consultaEdita(fila) {
-			document.forms[0].target = document.forms[1].target;			
-			document.forms[0].action = document.forms[1].action;		
-			
-			document.forms[0].tablaDatosDinamicosD.value = document.forms[1].tablaDatosDinamicosD.value
-			document.forms[0].actionModal.value = document.forms[0].actionModal.value
-
-			var idTipoEJG = document.getElementById('oculto' + fila + '_1');
-			var idInstitucion = document.getElementById('oculto' + fila + '_2');
-			var anio = document.getElementById('oculto' + fila + '_3');
-			var numero = document.getElementById('oculto' + fila + '_4');
-			var idEjgRemesa = document.getElementById('oculto' + fila + '_5');
-			
-			document.forms[0].idTipoEJG.value = idTipoEJG.value;				
-			document.forms[0].idInstitucion.value = idInstitucion.value;
-			document.forms[0].anio.value = anio.value;				
-			document.forms[0].numero.value = numero.value;
-			document.forms[0].idEjgRemesa.value = idEjgRemesa.value;
-			
-			document.forms[0].submit();
-		}
+<script type="text/javascript">
+	function consultar(fila) {			
+		document.forms[0].modo.value = "Ver";
+		consultaEdita(fila);
+	}
 	
-		
+	function editar(fila) {
+		document.forms[0].modo.value = "Editar";
+		consultaEdita(fila)
+	}
 
-	</script>
-</html>
-	
+	function consultaEdita(fila) {
+		document.forms[0].target = document.forms[1].target;			
+		document.forms[0].action = document.forms[1].action;		
+		
+		document.forms[0].tablaDatosDinamicosD.value = document.forms[1].tablaDatosDinamicosD.value
+		document.forms[0].actionModal.value = document.forms[0].actionModal.value
+
+		var idTipoEJG = document.getElementById('oculto' + fila + '_1');
+		var idInstitucion = document.getElementById('oculto' + fila + '_2');
+		var anio = document.getElementById('oculto' + fila + '_3');
+		var numero = document.getElementById('oculto' + fila + '_4');
+		var idEjgRemesa = document.getElementById('oculto' + fila + '_5');
+		
+		document.forms[0].idTipoEJG.value = idTipoEJG.value;				
+		document.forms[0].idInstitucion.value = idInstitucion.value;
+		document.forms[0].anio.value = anio.value;				
+		document.forms[0].numero.value = numero.value;
+		document.forms[0].idEjgRemesa.value = idEjgRemesa.value;
+		
+		document.forms[0].submit();
+	}
+</script>
+
+</html>	

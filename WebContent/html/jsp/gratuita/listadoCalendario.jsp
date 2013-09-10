@@ -36,13 +36,8 @@
 	ses.removeAttribute("resultado");
 %>
 
-
-
-<!-- HEAD -->
-
-
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -53,26 +48,27 @@
 		function refrescarLocal() {
 			parent.buscar();
 		}
-	</script>
-	
+	</script>	
 </head>
 
 <body>
-<%if (obj.size()>0){%>
 	<html:form action="/CalendarioLaboralAction.do" method="post" target="submitArea" style="display:none">
 		<input type="hidden" name="modo"  id="modo"  value="">
 	</html:form>	
-		
-		<siga:Table 		   
-		   name="listadoCalendario"
-		   border="2"
-		   columnNames="gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.nombre,gratuita.listadoCalendario.literal.fiestaLocalPartidoJudicial,"
-		   columnSizes="8,45,25,12"
-		   modal="P">
-  			<%
-	    	int recordNumber=1;
-			while (recordNumber-1 < obj.size())
-			{			
+
+	<siga:Table 		   
+	   name="listadoCalendario"
+	   border="2"
+	   columnNames="gratuita.listadoCalendario.literal.fecha,
+	   				gratuita.listadoCalendario.literal.nombre,
+	   				gratuita.listadoCalendario.literal.fiestaLocalPartidoJudicial,"
+	   columnSizes="8,45,25,12"
+	   modal="P">
+
+<%
+		if (obj.size()>0){
+	   		int recordNumber=1;
+			while (recordNumber-1 < obj.size()) {			
 				ScsCalendarioLaboralBean fila = (ScsCalendarioLaboralBean)obj.get(recordNumber-1);
 				String nombrePartidoJudicial = "TODO EL COLEGIO";
 				try {
@@ -83,35 +79,27 @@
 					nombrePartidoJudicial = (String)(((Hashtable)resultado.elementAt(0)).get("NOMBRE"));
 				}
 				catch (Exception e) {};
-				
-			%>
-		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' visibleConsulta="no" pintarEspacio="no" botones="E,B" clase="listaNonEdit">
-			<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdentificativo()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdInstitucion()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getUsuMod()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getFechaMod()%>"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fila.getFecha())%></td>
-			<td><%=fila.getNombreFiesta()%>&nbsp;</td>
-			<td><%=nombrePartidoJudicial%></td>
-		</siga:FilaConIconos>		
-		<% recordNumber++;		   
-		} %>		
-		</siga:Table>
-
-	<%
-	}else {
-	%>
-	<siga:Table 		   
-		   name="listadoCalendario"
-		   border="2"
-		   columnNames="gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.nombre,gratuita.listadoCalendario.literal.fiestaLocalPartidoJudicial,"
-		   columnSizes="10,45,25,10"
-		   modal="P">  	    
+%>
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' visibleConsulta="no" pintarEspacio="no" botones="E,B" clase="listaNonEdit">
+					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdentificativo()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdInstitucion()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getUsuMod()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getFechaMod()%>"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fila.getFecha())%></td>
+					<td><%=fila.getNombreFiesta()%>&nbsp;</td>
+					<td><%=nombrePartidoJudicial%></td>
+				</siga:FilaConIconos>		
+<% 
+				recordNumber++;		   
+			} 
+		} else {
+%>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	 </siga:Table>
-	<%
-	}
-	%>	
-<!-- INICIO: SUBMIT AREA -->
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	 
+<%
+		}
+%>
+	</siga:Table>
+		
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->	
+	<!-- FIN: SUBMIT AREA -->	
 </body>	
 </html>

@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoDocumentos.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -17,12 +18,11 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.tlds.*"%>
 
-
 <!-- TAGLIBS -->
-<%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
-<%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
-<%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
-<%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
+<%@taglib uri =	"struts-bean.tld" 	prefix="bean"%>
+<%@taglib uri = "struts-html.tld" 	prefix="html"%>
+<%@taglib uri = "libreria_SIGA.tld" prefix="siga"%>
+<%@taglib uri =	"struts-logic.tld" 	prefix="logic"%>
 
 <!-- JSP -->
 <% 
@@ -43,80 +43,71 @@
 	if (accion == null || accion.equalsIgnoreCase("ver")){
 		botones = "C";
 		elems[0]=new FilaExtElement("consultar", "consultarDocumento", SIGAConstants.ACCESS_READ);
-	}
-	else {
+		
+	} else {
 		botones = "C,E,B";
 		elems[0]=new FilaExtElement("consultar", "consultarDocumento", SIGAConstants.ACCESS_READ);
 		elems[1]=new FilaExtElement("editar", "editarDocumento", SIGAConstants.ACCESS_READ);	
 		elems[2]=new FilaExtElement("borrar", "borrarDocumento", SIGAConstants.ACCESS_READ);	
 	}
+	
 	if (obj != null && obj.size()>0){
 		Hashtable miHash = (Hashtable) obj.get(0);
 		String tipodocu=(String)miHash.get("IDTIPODOCUMENTOEJG");
 		ses.setAttribute("idTipoDoc",tipodocu);
 	}
-	
-
-	
 %>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<title><siga:Idioma key="gratuita.retenciones.listadoRetenciones"/></title>
 
 	<script type="text/javascript">
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}
+		
 		function consultarDocumento(fila) {
-		   var datos;
-		   datos = document.getElementById('tablaDatosDinamicosD');
-		   datos.value = "";
-		   preparaDatos(fila, 'listadoMaterias', datos);
+			var datos;
+		   	datos = document.getElementById('tablaDatosDinamicosD');
+		   	datos.value = "";
+		   	preparaDatos(fila, 'listadoMaterias', datos);
 		   
-		   document.forms[0].modo.value = "verDocu";
-		   ventaModalGeneral(document.forms[0].name,"P");
-		 }
+		   	document.forms[0].modo.value = "verDocu";
+		   	ventaModalGeneral(document.forms[0].name,"P");
+		}
 
-		 function editarDocumento(fila) {
-		   var datos;
-		   datos = document.getElementById('tablaDatosDinamicosD');
-		   preparaDatos(fila, 'listadoMaterias', datos);
-		   document.forms[0].modo.value = "editarDocu";
-		   var resultado = ventaModalGeneral(document.forms[0].name,"P");
-		   if (resultado) {
+		function editarDocumento(fila) {
+		   	var datos;
+		   	datos = document.getElementById('tablaDatosDinamicosD');
+		   	preparaDatos(fila, 'listadoMaterias', datos);
+		   	document.forms[0].modo.value = "editarDocu";
+		   	var resultado = ventaModalGeneral(document.forms[0].name,"P");
+		   	if (resultado) {
 		  	 	if (resultado[0]) {
-		   		refrescarLocalArray(resultado);
+		   			refrescarLocalArray(resultado);
 		   	} else 
-		   	if (resultado=="MODIFICADO")
-		   	{
+		   		if (resultado=="MODIFICADO") {
 		      		refrescarLocal();
+		   		}
 		   	}
-		   }
 		 }
 		
 		 function borrarDocumento(fila) {
-		   var datos;
-		   if (confirm('¿Está seguro de que desea eliminar el registro?')){
-		   	datos = document.getElementById('tablaDatosDinamicosD');
-		    datos.value = ""; 
-		    preparaDatos(fila, 'listadoMaterias', datos);
-		   	var auxTarget = document.forms[0].target;
-		   	document.forms[0].target="submitArea";
-		   	document.forms[0].modo.value = "BorrarDocu";
-		   	document.forms[0].submit();
-		   	document.forms[0].target=auxTarget;
+		   	var datos;
+		   	if (confirm('¿Está seguro de que desea eliminar el registro?')){
+		   		datos = document.getElementById('tablaDatosDinamicosD');
+		    	datos.value = ""; 
+		    	preparaDatos(fila, 'listadoMaterias', datos);
+		   		var auxTarget = document.forms[0].target;
+		   		document.forms[0].target="submitArea";
+		   		document.forms[0].modo.value = "BorrarDocu";
+		   		document.forms[0].submit();
+		   		document.forms[0].target=auxTarget;
 		 	}
 		 }
 	</script>
@@ -126,21 +117,20 @@
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 	</html:form>
-		
-	<% if (obj != null && obj.size()>0) { %>
 	
-		<siga:Table
-		   name="listadoMaterias"
-		   border="2"
-		   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.nombre,"
-		   columnSizes="25,65,10"
-		   modal="M">
-  			<%
+	<siga:Table
+	   name="listadoMaterias"
+	   border="2"
+	   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.nombre,"
+	   columnSizes="25,65,10"
+	   modal="M">
+			
+<% 
+		if (obj != null && obj.size()>0) { 
 	    	int recordNumber=1;
-			while (recordNumber-1 < obj.size())
-			{			
+			while (recordNumber-1 < obj.size()) {			
 				Hashtable fila = (Hashtable)obj.get(recordNumber-1);
-			%>				
+%>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" elementos="<%=elems%>" pintarEspacio="no" clase="listaNonEdit">
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDTIPODOCUMENTOEJG")%>">
@@ -150,30 +140,22 @@
 					 </td>
 					<td><%=fila.get("DESCRIPCION")%></td>
 				</siga:FilaConIconos>		
-			<% recordNumber++;		   
-			} %>
-		</siga:Table>
+<% 
+				recordNumber++;		   
+			} 
 
-	<%
-	}else {
-	%>
-	<siga:Table
-		   name="listadoMaterias"
-		   border="2"
-		   columnNames="censo.fichaCliente.literal.abreviatura,gratuita.maestros.documentacionEJG.nombre,"
-		   columnSizes="25,65,10"
-		   modal="P">
+		} else {
+%>
 		   <tr class="notFound">
-	   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-			</tr>	
-  </siga:Table>
-	<%
-	}
-	%>
+	   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	  
+<%
+		}
+%>
+	</siga:Table>
 	
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->	
-	
+	<!-- FIN: SUBMIT AREA -->		
 </body>	
 </html>

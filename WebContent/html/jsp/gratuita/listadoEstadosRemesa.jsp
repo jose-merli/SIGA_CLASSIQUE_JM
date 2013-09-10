@@ -40,27 +40,19 @@
 
 	String iconos = "B,E";
 	String botones = "N";
-	String alto = "70";
 	
 	String idEstado = "";
 	
 	if (modoAnterior==null || modoAnterior.equalsIgnoreCase("consultar") || modoAnterior.equalsIgnoreCase("ver") || modoAnterior.equalsIgnoreCase("nuevaSociedad")) {
 		botones = "";
 		iconos = "";
-		if (vGrupos==null || vGrupos.isEmpty())
-			alto = "100";
 	}
 %>
 
-
-
 <!-- HEAD -->
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<script>
@@ -85,15 +77,13 @@
 		
 		
 		function validaTabla(){
-		  if (document.getElementById("tablaDatos").clientHeight < document.getElementById("tablaDatosDiv").clientHeight) {
-		   document.getElementById("tablaDatosCabeceras").width='100%';
-		  }
-		  else {
-		   document.getElementById("tablaDatosCabeceras").width='95%';
-		  }
+		  	if (document.getElementById("tablaDatos").clientHeight < document.getElementById("tablaDatosDiv").clientHeight) {
+		   		document.getElementById("tablaDatosCabeceras").width='100%';
+		  	} else {
+		   		document.getElementById("tablaDatosCabeceras").width='95%';
+		  	}
 		}
-	</script>
-	
+	</script>	
 </head>
 
 <body>
@@ -108,19 +98,21 @@
 	</html:form>
 
 	<!-- INICIO TABLA DE GRUPOS -->
-		<siga:Table 
-		   	name="tablaDatos"
-		  	columnNames="gratuita.BusquedaRemesas_CAJG.literal.fechaEstado,gratuita.BusquedaRemesas_CAJG.literal.estado,"
-		  	columnSizes="30,50,20"
-		     modal="P">  
+	<siga:Table 
+		name="tablaDatos"
+		columnNames="gratuita.BusquedaRemesas_CAJG.literal.fechaEstado,
+					gratuita.BusquedaRemesas_CAJG.literal.estado,"
+		columnSizes="30,50,20"
+		modal="P">  
 
- 	<% if(vGrupos==null || vGrupos.isEmpty())	{ %>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<% } else {	 
+<% 
+		if(vGrupos==null || vGrupos.isEmpty())	{ 
+%>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
+<% 
+		} else {	 
  			Enumeration en = vGrupos.elements();		
  			int i=0;  									
 			while(en.hasMoreElements()){
@@ -131,48 +123,30 @@
 	%> 				
 				
 				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=(i>1 && vGrupos.size()==i)?iconos:""%>' modo='<%=true?"consulta":modoAnterior%>' clase="listaNonEdit" visibleConsulta="no" pintarEspacio="false" >
-				<td>
-				
-					<%=GstDate.getFormatedDateShort("",UtilidadesString.mostrarDatoJSP(htData.get("FECHAREMESA")))%>
-				</td>
-				<td>
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get("IDREMESA")%>'>	
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION")%>'>
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_3' value='<%=(String)htData.get("IDESTADO")%>'>	
-					<input type='hidden' name='oculto<%=String.valueOf(i)%>_4' value='<%=GstDate.getFormatedDateShort("",UtilidadesString.mostrarDatoJSP(htData.get("FECHAREMESA")))%>'>	
-  					<%=UtilidadesString.mostrarDatoJSP(htData.get("DESCRIPCION"))%>
-  				</td>
-  				
+					<td><%=GstDate.getFormatedDateShort("",UtilidadesString.mostrarDatoJSP(htData.get("FECHAREMESA")))%></td>
+					<td>
+						<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get("IDREMESA")%>'>	
+						<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get("IDINSTITUCION")%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(i)%>_3' value='<%=(String)htData.get("IDESTADO")%>'>	
+						<input type='hidden' name='oculto<%=String.valueOf(i)%>_4' value='<%=GstDate.getFormatedDateShort("",UtilidadesString.mostrarDatoJSP(htData.get("FECHAREMESA")))%>'>	
+	  					<%=UtilidadesString.mostrarDatoJSP(htData.get("DESCRIPCION"))%>
+	  				</td>  				
 				</siga:FilaConIconos>
-
-    <% } } %>  			
-  		</siga:Table>
+<% 
+			} 
+		} 
+%>  			
+  	</siga:Table>
+ 	
  	<!-- FIN TABLA DE GRUPOS -->		
-  		<script>
-  			parent.ultimoEstado(<%=idEstado%>);
-  		</script>	
-
-	<!-- 
-	<table class="botonesDetalle">
-		<tr>
-			<td class="tdBotones">					
-		<% if ((modoAnterior!=null && (modoAnterior.equalsIgnoreCase("consultar") || modoAnterior.equalsIgnoreCase("nuevo") )) || idEstado.equals("0") || idEstado.equals("3")) { %>
-		&nbsp;
-		<% } else { %>
-		<input type='button' id="botonNuevo" onclick='return nuevo("<%=idEstado%>");' value='<siga:Idioma key="general.boton.new" />' alt='<siga:Idioma key="general.boton.new" />' class='button' />
-		<% } %>
-		</td>
-		</tr>
-	</table>
- -->
+  	<script>
+  		parent.ultimoEstado(<%=idEstado%>);
+  	</script>	
 	<!-- FIN: CAMPOS DEL REGISTRO -->
-
-
 	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

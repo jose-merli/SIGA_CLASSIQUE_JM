@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoHitosPagos.jsp -->
+
 <!-- EJEMPLO DE VENTANA DENTRO DE PESTAÑAS (MAESTRO MULTIREGISTRO) -->
 <!-- Contiene la zona de detalle multiregistro, sin botones de acciones, 
 	 y sin campos de filtro o busqueda 
@@ -54,85 +55,78 @@
 	
 	//Si entrada=2 venimos de la pestanha de SJCS:
 	String entrada = (String)ses.getAttribute("entrada");
-	//Si venimos del menu de Censo tenemos un alto menor ya que ponemos el nombre del colegiado:
-	String alto = "340";
-	if (entrada!=null && entrada.equals("2"))
-		alto = "320";
 %>	
 
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
-	<siga:TituloExt 
-		titulo="censo.fichaCliente.sjcs.guardias.pagos.cabecera" 
-		localizacion="censo.fichaCliente.sjcs.guardias.pagos.localizacion"/>
+	<siga:TituloExt titulo="censo.fichaCliente.sjcs.guardias.pagos.cabecera" localizacion="censo.fichaCliente.sjcs.guardias.pagos.localizacion"/>
 	
-<script>
+	<script>
 		function refrescarLocal(){
 			parent.buscar();
-		}
-				
-</script>
+		}			
+	</script>
 </head>
 
-<body  class="tablaCentralCampos">
+<body class="tablaCentralCampos">
 
-    <table class="tablaTitulo" align="center" cellspacing=0>
-	<%
+    <table class="tablaTitulo" align="center" cellspacing="0">
+<%
 		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { %>
+		if (entrada.equalsIgnoreCase("2")) { 
+%>
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
 					<% } else { %>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+						<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<% } %>
 				</td>
 			</tr>
-	<% } %>
+<% 
+		} 
+%>
+	</table>
 	
-		<html:form action="JGR_DefinirHitosPago.do" method="POST" target="mainPestanas"  style="display:none">	
+	<html:form action="JGR_DefinirHitosPago.do" method="POST" target="mainPestanas"  style="display:none">	
 		<html:hidden property = "modo" value = ""/>		
-		</html:form>	
+	</html:form>			
 		
-		
-			<siga:Table 
-				  name="tablaDatos"
-				  border="1"
-				  columnNames="gratuita.listadoHistosFacturables.literal.hito,gratuita.listadoHistosFacturables.literal.precio,"
-				  columnSizes="60,30,10"
-				  modal="P">
-				<% if (vHitos==null || vHitos.size()==0){%>				
-					<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
+	<siga:Table 
+		  name="tablaDatos"
+		  border="1"
+		  columnNames="gratuita.listadoHistosFacturables.literal.hito,
+		  				gratuita.listadoHistosFacturables.literal.precio,"
+		  columnSizes="60,30,10"
+		  modal="P">
+		  
+<% 
+		if (vHitos==null || vHitos.size()==0) {
+%>				
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
 					
-				<%}else{
-					for (int cont=0; cont<vHitos.size(); cont++){
-					Hashtable hash = (Hashtable)vHitos.get(cont);
-				%>
-				
-					<siga:FilaConIconos fila='<%=""+(cont+1)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modopestanha%>" >
-						<td><input type='hidden' name='oculto<%=String.valueOf(cont+1)%>_1' value='<%=hash.get("IDHITO")%>'><%=hash.get(ScsHitoFacturableBean.C_DESCRIPCION)%></td>
-						<td>&nbsp;<%=hash.get(ScsHitoFacturableGuardiaBean.C_PRECIOHITO)%></td>						
-					</siga:FilaConIconos>
+<%
+		} else{
+			for (int cont=0; cont<vHitos.size(); cont++){
+				Hashtable hash = (Hashtable)vHitos.get(cont);
+%>			
+				<siga:FilaConIconos fila='<%=""+(cont+1)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modopestanha%>" >
+					<td><input type='hidden' name='oculto<%=String.valueOf(cont+1)%>_1' value='<%=hash.get("IDHITO")%>'><%=hash.get(ScsHitoFacturableBean.C_DESCRIPCION)%></td>
+					<td>&nbsp;<%=hash.get(ScsHitoFacturableGuardiaBean.C_PRECIOHITO)%></td>						
+				</siga:FilaConIconos>
 					
-				<%}}%>
-			</siga:Table>
-
-	</table>	
-	
+<%
+			}
+		}
+%>
+	</siga:Table>
 </body>
 </html>

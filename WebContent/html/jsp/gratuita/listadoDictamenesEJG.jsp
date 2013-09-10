@@ -2,6 +2,7 @@
 <html>
 <head>
  <!-- listadoDictamenesEJG.jsp -->
+ 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -34,76 +35,60 @@
 	Hashtable fila = new Hashtable();
 %>
 
-
-
-<!-- HEAD -->
-
-
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<script type="text/javascript">
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			parent.buscar();
 		}
-	</script>
-	
+	</script>	
 </head>
 
 <body>
-	<%if (obj.size()>0){%>
 	<html:form action="/JGR_MantenimientoDictamenesEJG.do" method="POST" target="mainWorkArea">
-	<html:hidden property = "modo"  styleId = "modo"  value = ""/>
+		<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 		<input type="hidden" id="actionModal"  name="actionModal" value="">
-		</html:form>	
-		
-		<siga:Table 		   
-		   name="listadoAreas"
-		   border="2"
-		   columnNames="general.codeext,censo.fichaCliente.literal.abreviatura,general.description,"
-		   columnSizes="15,35,40,10">
-		   
-  			<%
+	</html:form>
+	
+	<siga:Table 		   
+	   name="listadoAreas"
+	   border="2"
+	   columnNames="general.codeext,
+	   				censo.fichaCliente.literal.abreviatura,
+	   				general.description,"
+	   columnSizes="15,35,40,10">
+<%
+		if (obj.size()>0) {
 	    	int recordNumber=1;
 			while (recordNumber-1 < obj.size()) {
 				fila = (Hashtable)obj.get(recordNumber-1);
-			%>
+%>
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDDICTAMEN")%>"><%=fila.get("CODIGOEXT")%>&nbsp;</td>
 					<td><%=fila.get("ABREVIATURA")%>&nbsp;</td>
 					<td><%=fila.get("DESCRIPCION")%>&nbsp;</td>
 					
 				</siga:FilaConIconos>		
-			<%  
+<%  
 				recordNumber++; 
 			}
-			%>
-		</siga:Table>
-
-	<%
-	}else {
-	%>
-	<siga:Table 		   
-		   name="listadoAreas"
-		   border="2"
-		   columnNames="general.codeext,censo.fichaCliente.literal.abreviatura,general.description,"
-		   columnSizes="15,35,40,10" >
-		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	 </siga:Table>
-	<%
-	}
-	%>
+		} else {
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	 
+<%
+		}
+%>
+	</siga:Table>
 	
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->	
-	
+	<!-- FIN: SUBMIT AREA -->		
 </body>	
 </html>
