@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- operarTipo.jsp -->
+<!-- operarDocumento.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -40,16 +41,10 @@
 	if (pcajgActivo == 5){
 		codigoExtObligatorio=true;
 	}	
-	
 %>	
 
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -58,22 +53,17 @@
  	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="gratuita.documentacionEJG.localizacion.mantenimiento" 
-		localizacion="gratuita.documentacionEJG.localizacion"/>
+	<siga:Titulo titulo="gratuita.documentacionEJG.localizacion.mantenimiento"localizacion="gratuita.documentacionEJG.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
-
 </head>
 
 <body onLoad="ajusteAlto('resultado'); ">
 	
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = ""/>	
-	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="tipoDocumento"/>
-	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="documento"/>	
-	<html:hidden property = "actionModal" value = ""/>
-
-	
+		<html:hidden property = "modo" value = ""/>	
+		<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="tipoDocumento"/>
+		<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="documento"/>	
+		<html:hidden property = "actionModal" value = ""/>	
 		
 		<!-- SUBCONJUNTO DE DATOS -->
 		<siga:ConjCampos leyenda="sjcs.ejg.documentacion.tipoDocumentacion">
@@ -91,9 +81,9 @@
 					</td>
 					<td valign="top" >	
 						<%if (accion.equalsIgnoreCase("ver")){%>				
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta"></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta" readonly="true" />
 						<%} else {%>
-						    <html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box"></html:text>
+						    <html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box"/>
 						<%}%>
 					</td>			
 				</tr>
@@ -104,12 +94,13 @@
 					</td>				
 					<td valign="top">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="boxConsulta"  readonly="true"></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="boxConsulta"  readonly="true" />
 						<%} else {%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="box" ></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="box" />
 						<%}%>
 					</td>	
 				</tr>
+				
 				<tr>
 					<td class="labelText" valign="top">
 						<siga:Idioma key="gratuita.maestros.documentacionEJG.nombre"/>&nbsp;(*)
@@ -125,31 +116,24 @@
 			</table>
 		</siga:ConjCampos>
 	</html:form>
-
-
-	
-
-
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
 		//Refresco
-		function refrescarLocal(){
+		function refrescarLocal() {
 			document.forms[0].target="mainWorkArea";
 			document.forms[0].modo.value = "editar";
 			document.forms[0].submit();
 		}
 	
-		//Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		//Asociada al boton Restablecer
+		function accionRestablecer() {		
 			document.DefinirMantenimDocumentacionEJGForm.reset();
 		}
 		
-		//Asociada al boton Guardar -->
-		function accionGuardarCerrar() 
-		{
+		//Asociada al boton Guardar 
+		function accionGuardarCerrar() {
 			var abreviatura = document.forms[0].abreviatura.value;
 			var descripcion = document.forms[0].descripcion.value;
 			var codigoExt = document.forms[0].codigoExt.value;
@@ -178,21 +162,16 @@
 			
 			document.forms[0].modo.value="modificarDocu";
 			document.forms[0].submit();
-			window.top.returnValue="MODIFICADO";
-			
+			window.top.returnValue="MODIFICADO";			
 		}			
 
-		function accionCerrar()
-		{
+		function accionCerrar() {
 			top.cierraConParametros("NORMAL");			
 		}
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
-
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-						
+	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->						
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- INICIO: BOTONES REGISTRO -->
@@ -201,12 +180,11 @@
 		<%} else {%>
 			<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  />
 		<%}%>
-
 	<!-- FIN: BOTONES REGISTRO -->
 	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->	
-	</body>
+	<!-- FIN: SUBMIT AREA -->	
+</body>
 </html>

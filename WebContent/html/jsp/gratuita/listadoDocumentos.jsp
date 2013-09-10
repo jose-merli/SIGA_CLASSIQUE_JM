@@ -87,14 +87,15 @@
 		   	preparaDatos(fila, 'listadoMaterias', datos);
 		   	document.forms[0].modo.value = "editarDocu";
 		   	var resultado = ventaModalGeneral(document.forms[0].name,"P");
-		   	if (resultado) {
-		  	 	if (resultado[0]) {
-		   			refrescarLocalArray(resultado);
-		   	} else 
-		   		if (resultado=="MODIFICADO") {
-		      		refrescarLocal();
-		   		}
-		   	}
+		   	
+			if (resultado) {
+				if (resultado=="MODIFICADO") {   	    
+					refrescarLocal();
+				} else if (resultado=="NORMAL") {
+				} else if (resultado[0]) {
+					refrescarLocalArray(resultado);
+				}
+			}
 		 }
 		
 		 function borrarDocumento(fila) {
