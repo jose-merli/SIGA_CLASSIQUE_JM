@@ -135,7 +135,6 @@
 	   border="1"
 	   columnNames="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
 	   columnSizes="10,30,24,24,12"
-	   fixedHeight="100%"
 	   modal="G">
 
 		<% if (obj==null || obj.size()==0){%>

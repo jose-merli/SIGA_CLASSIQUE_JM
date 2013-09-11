@@ -284,7 +284,8 @@
 				<siga:Table
 		   			name="tablaLetrados"
 		   			columnSizes="<%=tamanoCol%>"
-		   			columnNames="<%=nombreCol%>">
+		   			columnNames="<%=nombreCol%>"
+		   			width="650px">
 
 					<!-- INICIO: ZONA DE REGISTROS -->
 					<!-- Aqui se iteran los diferentes registros de la lista -->		
