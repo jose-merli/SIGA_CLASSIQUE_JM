@@ -460,7 +460,7 @@
 	   	border="1"
 		columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
 		columnSizes="35,45,10"
-		fixedHeight="60%"
+		fixedHeight="50%"
 		modal="P">
 		
 <% 
