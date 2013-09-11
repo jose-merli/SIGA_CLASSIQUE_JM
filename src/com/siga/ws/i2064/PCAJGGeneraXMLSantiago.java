@@ -66,6 +66,8 @@ import com.siga.ws.i2064.xsd.PARTECONTRARIATYPE;
 import com.siga.ws.i2064.xsd.PERSOATYPE;
 import com.siga.ws.i2064.xsd.PROCURADORTYPE;
 import com.siga.ws.i2064.xsd.REPRESENTANTELEGALTYPE;
+import com.siga.ws.i2064.xsd.SOLICITANTETYPE;
+import com.siga.ws.i2064.xsd.SOLICITANTETYPE.GENERO;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument;
 import com.siga.ws.i2064.xsd.SOLICITUDEAXGDocument.SOLICITUDEAXG;
 
@@ -480,7 +482,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);
 				if (TRUE.equals(map.get(IS_SOLICITANTE))) { //que no sea el solicitante
-					rellenaDatosPersonaType(datosPersoais.addNewSOLICITANTE(), map);
+					rellenaDatosSolicitanteType(datosPersoais.addNewSOLICITANTE(), map);
 				} else if (TRUE.equals(map.get(IS_CONYUGE))) {
 					if (numConyuge > 0) {
 						throw new IllegalArgumentException("El solicitante tiene más de un conyuge. Revise los datos introducidos.");
@@ -496,6 +498,17 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			}
 		}
 	}
+
+	private void rellenaDatosSolicitanteType(SOLICITANTETYPE solicitanteType,	Map<String, String> map) throws Exception {
+		rellenaDatosPersonaType(solicitanteType.addNewDATOSPERSOAIS(), map);
+		GENERO genero = solicitanteType.addNewGENERO();
+		genero.setESPERSONAFISICA(SIGAServicesHelper.getInteger("es persona física", map.get(ES_PERSONA_FISICA)));
+		String s = map.get(SEXO);
+		if (s != null && !s.trim().equals("")) {
+			genero.setSEXO(com.siga.ws.i2064.xsd.SOLICITANTETYPE.GENERO.SEXO.Enum.forString(s));
+		}
+	}
+
 
 	/**
 	 * 
@@ -519,7 +532,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	 * @throws Exception
 	 */
 	private void rellenaDatosPersonaType(PERSOATYPE personaType, Map<String, String> map) throws Exception {
-		//solicitante
+		
 		NOMEAPELIDOSTYPE nombreApeSol = personaType.addNewNOMEAPELIDOS();
 		nombreApeSol.setNOME(map.get(NOME));
 		nombreApeSol.setPRIMERAPELLIDO(map.get(APELLIDO1));

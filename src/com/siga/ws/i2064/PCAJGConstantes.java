@@ -107,6 +107,8 @@ public interface PCAJGConstantes {
 	public final String PROFESION = "PROFESION";
 	public final String EMPRESA = "EMPRESA";
 	public final String REGIMEN_COTIZACION = "REGIMEN_COTIZACION";
+	public final String ES_PERSONA_FISICA = "ES_PERSONA_FISICA";
+	public final String SEXO = "SEXO";
 	public final String PARENTESCO = "PARENTESCO";
 	public final String DE_INGRESO_IMP = "DE_INGRESO_IMP";
 	public final String DE_INGRESO_CONCEPTO = "DE_INGRESO_CONCEPTO";
