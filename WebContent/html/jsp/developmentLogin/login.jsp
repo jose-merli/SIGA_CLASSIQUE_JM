@@ -27,11 +27,9 @@
    	ArrayList idADM = new ArrayList();
    	idADM.add(0,"ADG");
 %>
-
-	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 
 		<script>
 		function entrar()
@@ -124,13 +122,13 @@
 		<table align="center">
 			<tr>
 				<td class="labelText">Institución</td>
-				<td><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"/></td>
+				<td><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" /></td>
 				<td valign="middle" align="center" ><input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos"></td>
 			</tr>
 			<tr>
 				<td class="labelText">¿Letrado?</td>
-				<td>
-					<select name="sLetrado" class="boxCombo">
+				<td colspan="2">
+					<select name="sLetrado" class="boxCombo" style="width:300px;">
 						<option value=N>NO, no soy Letrado</option>
 						<option value=S>SÍ, soy Letrado</option>
 					</select>
@@ -138,12 +136,12 @@
 			</tr>
 			<tr>
 				<td class="labelText">Perfil</td>
-				<td>
-					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
+				<td colspan="2">
+					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
 
-			<tr>
+			<!--tr>
 				<td colspan="3" valign="middle" align="center" >
 					<input type="button" class="button" value="Colegio Madrid" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
 					&nbsp;
@@ -158,7 +156,7 @@
 					</a>
 				</CENTER>
 			</td>
-			</tr>
+			</tr-->
 			
 		</table>
 		
