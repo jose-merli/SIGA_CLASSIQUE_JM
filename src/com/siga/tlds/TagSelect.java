@@ -302,7 +302,7 @@ public class TagSelect extends TagSupport {
 			divDataReadOnly = " data-readonly='true' ";
 			selectReadOnly = " disabled='disabled' data-readonly='true' ";
 			divClass = " class='tagSelect tagSelectDiv disabled' ";
-			selectClass = " class='tagSelect tagSelect_searchBox box disabled' ";
+			selectClass = " class='tagSelect tagSelect_searchBox boxConsulta disabled' readonly ";
 			divLoaderClass= " class='tagSelect tagSelect_loader disabled' ";
 			labelClass = "  class='tagSelect tagSelect_label disabled' ";
 			inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled disabled' ";
@@ -315,7 +315,7 @@ public class TagSelect extends TagSupport {
 				divDataReadOnly = " data-readonly='true' ";
 				selectReadOnly = " data-readonly='true' ";
 				divClass = " class='tagSelect tagSelectDiv' ";
-				selectClass = " class='tagSelect tagSelect_searchBox box' ";
+				selectClass = " class='tagSelect tagSelect_searchBox boxConsulta' readonly";
 				divLoaderClass= " class='tagSelect tagSelect_loader' ";
 				labelClass = "  class='tagSelect tagSelect_label' ";
 				inputDisabledClass= " class='tagSelect boxConsulta tagSelect_disabled' ";
