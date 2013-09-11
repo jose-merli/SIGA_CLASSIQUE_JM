@@ -687,10 +687,11 @@ String app = request.getContextPath();
 <%}%>
 
 				//Poblacion:				
-				poblacionSeleccionada = resultado[10];
+				var poblacionSeleccionada = resultado[10];
 				//alert("="+poblacionSeleccionada);
+				
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
-				window.setTimeout("recargarComboHijo()",1000,"Javascript");
+				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
 
 				if (resultado!=null && resultado[1]!="") {
 					var p1 = document.getElementById("resultado");					
@@ -706,11 +707,6 @@ String app = request.getContextPath();
  			}
 			 comprobarTipoIdent();
 		 }	
-		function recargarComboHijo() {
-			var acceso = poblacionFrame.document.getElementsByTagName("select");
-			acceso[0].value = poblacionSeleccionada;
-			document.forms[0].poblacion.value = poblacionSeleccionada;
-		}
 
 		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
 		function comprobarTipoPersona ()
@@ -1003,17 +999,30 @@ String app = request.getContextPath();
 			jQuery("#provincia").change();
 	} 
 			
-		var poblacionSeleccionada;
-		function recargarComboHijo() {
-			var acceso = poblacionFrame.document.getElementsByTagName("select");
-			acceso[0].value = poblacionSeleccionada;
-			document.PersonaJGForm.poblacion.value = poblacionSeleccionada;
+		function recargarComboHijo(poblacionSeleccionada) {	
+			var ok = false;
+			var timeout = undefined;
+			var intentos = window.setInterval(function(){
+				var poblacionFrame = jQuery("#poblacionFrame");
+				if (poblacionFrame.contents().find("select").length > 0){
+					var poblacionSelect = jQuery("#poblacionFrame").contents().find("select");
+					if (poblacionSelect.find("option[value='"+poblacionSeleccionada+"']").length > 0){
+						poblacionSelect.val(poblacionSeleccionada);
+						ok = true;
+					}
+				}				
+				if (ok){
+					window.clearTimeout(timeout);
+					window.clearInterval(intentos);
+				}
+			}, 1000);
+			timeout = window.setTimeout(function(){window.clearInterval(intentos);alert("Población no encontrada, por favor, inténtelo de nuevo o seleccione una población");}, 15000);
 		}
 
 		function postAccionBusquedaNIF(){
-			poblacionSeleccionada = document.getElementById("poblacion").value;
+			var poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
-			window.setTimeout("recargarComboHijo()",500,"Javascript");	
+			setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
 			document.getElementById("poblacion").value = document.PersonaJGForm.poblacion.value;		
 		}
 
