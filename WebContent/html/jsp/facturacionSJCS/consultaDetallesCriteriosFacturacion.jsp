@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaDetallesCriteriosFacturacion.jsp -->
+
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas -->
 	 
@@ -25,6 +26,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -58,141 +60,124 @@
 		if (!modo.equals("nuevo")){
 			hayDetalle = ((String)request.getSession().getAttribute("hayDetalle")).equals ("1");
 		}
-	}
-	catch(Exception e) {
+		
+	} catch(Exception e) {
 		hayDetalle = false;
 	}
 	
 	String prevision = ((String)request.getSession().getAttribute("prevision"));
-
 %>	
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
-
 		function refrescarLocal(){ 
 			parent.buscar();
 		}
-		
-	
 	</script>
-
 </head>
 
 <body class="tablaCentralCampos">
 
-		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
+	<!-- INICIO: LISTA DE VALORES -->
+	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 
-		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="resultado10" style="display:none">
+	<!-- Formulario de la lista de detalle multiregistro -->
+	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="resultado10" style="display:none">
 		<html:hidden property = "modo" value = ""/>
-
-		</html:form>	
+	</html:form>	
 		
-		<!-- Formulario de la lista de detalle multiregistro -->		
-		<% if (! hayDetalle) { %>
-			<br>
+	<!-- Formulario de la lista de detalle multiregistro -->		
+<% 
+	if (!hayDetalle) { 
+%>
+		<br>
 			<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.factSJCS.error.noExisteDetalleFacturacion"/></p>
-			<br>
-		<% } else {%>
-		
-			<table border="0" width="100%"><tr><td>
-					<siga:Table 
-					   name="tablaDatos"
-					   border="1"
-					   columnNames="Concepto,factSJCS.detalleFacturacion.literal.importe"
-					   columnSizes="70,30"
-					   fixedHeight="200"
-					   modal = "g"	
-					   modalScroll= "true">
-			
-						<!-- INICIO: ZONA DE REGISTROS -->
-						<!-- Aqui se iteran los diferentes registros de la lista -->
+		<br>
+<% 
+	} else {
+%>		
+		<siga:Table 
+			name="tablaDatos"
+			border="1"
+			columnNames="Concepto,factSJCS.detalleFacturacion.literal.importe"
+			columnSizes="70,30"
+			fixedHeight="80%"
+			modal = "g"	
+			modalScroll= "true">
+	
+			<!-- INICIO: ZONA DE REGISTROS -->
+			<!-- Aqui se iteran los diferentes registros de la lista -->
 						
-			<%	if (resultado==null || resultado.size()==0) { %>			
-				 		<tr class="notFound">
+<%	
+			if (resultado==null || resultado.size()==0) { 
+%>			
+		 		<tr class="notFound">
 			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-			<%	
-				} else { 
-					for (int cont=1;cont<=resultado.size();cont++) {
-						FcsFacturacionJGBean fila = (FcsFacturacionJGBean) resultado.get(cont-1);
-			
-						Double importeOficio =fila.getImporteOficio() == null?new Double(0.0):fila.getImporteOficio();
-						Double importeGuardia =fila.getImporteGuardia()== null?new Double(0.0):fila.getImporteGuardia();
-						Double importeSOJ =fila.getImporteSOJ()== null?new Double(0.0):fila.getImporteSOJ();
-						Double importeEJG =fila.getImporteEJG()== null?new Double(0.0):fila.getImporteEJG();
-						importeTotal = fila.getImporteTotal() != null?fila.getImporteTotal().doubleValue():0.0;
-			%>
+				</tr>
+<%	
+			} else { 
+				for (int cont=1;cont<=resultado.size();cont++) {
+					FcsFacturacionJGBean fila = (FcsFacturacionJGBean) resultado.get(cont-1);
+		
+					Double importeOficio =fila.getImporteOficio() == null?new Double(0.0):fila.getImporteOficio();
+					Double importeGuardia =fila.getImporteGuardia()== null?new Double(0.0):fila.getImporteGuardia();
+					Double importeSOJ =fila.getImporteSOJ()== null?new Double(0.0):fila.getImporteSOJ();
+					Double importeEJG =fila.getImporteEJG()== null?new Double(0.0):fila.getImporteEJG();
+					importeTotal = fila.getImporteTotal() != null?fila.getImporteTotal().doubleValue():0.0;
+%>
 			  		<tr>
 			  			<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_TURNO))%>"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeOficio.doubleValue())%>&nbsp;&euro;</td>
-					</tr>	
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeOficio.doubleValue())%>&nbsp;&euro;</td>
+					</tr>
+						
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_GUARDIA))%>"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeGuardia.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeGuardia.doubleValue())%>&nbsp;&euro;</td>
 					</tr>
+					
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_SOJ))%>"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeSOJ.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeSOJ.doubleValue())%>&nbsp;&euro;</td>
 					</tr>
+					
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_EJG))%>"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeEJG.doubleValue())%>&nbsp;&euro;</td>
-					</tr>
-			
-			<%		} // del for
-				} // del if 
-				valorFinal = String.valueOf(importeTotal);
-				%>			
-				</siga:Table>
-			</td></tr>
-			<tr><td>
-				<div >
-				<table border="0" width="100%">
-					<tr>	
-						<td width="70%"  align="right" valign="bottom">
-						</td>
-						<td width="30%" class="labelTextNum" style="text-align:right">
-							<fieldset>
-								<table align="right" border="0">
-								<tr>
-								<td class="labelTextNum"  style="text-align:right">
-								<b><siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;<%=UtilidadesNumero.formatoCampo(valorFinal)%> &euro;</B>
-								</td>
-								</tr>
-								</table>
-							</fieldset>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeEJG.doubleValue())%>&nbsp;&euro;</td>
+					</tr>			
+<%		
+				} // for
+			} // else 
+				
+			valorFinal = String.valueOf(importeTotal);
+%>			
+		</siga:Table>
+		
+		<div style="position:absolute; width:30%; bottom:0px; right:0px;">
+			<fieldset>
+				<table width="100%">
+					<tr>
+						<td class="labelTextNum" align="right">
+							<b><siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;<%=UtilidadesNumero.formatoCampo(valorFinal)%> &euro;</b>
 						</td>
 					</tr>
 				</table>
-				</div>
-			</td></tr></table>
-		<%}%>
+			</fieldset>
+		</div>
+<%
+	}
+%>
 		
-		
-<!-- FIN: LISTA DE VALORES -->
+	<!-- FIN: LISTA DE VALORES -->
 
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-		
-	
-	</body>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>
-		  
-		

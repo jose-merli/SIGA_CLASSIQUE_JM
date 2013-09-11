@@ -2,15 +2,13 @@
 <html>
 <head>
 <!-- datosGeneralesFacturacion.jsp -->
+
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
 	 VERSIONES: 
 -->
 
 <!-- CABECERA JSP -->
-<%@page import="org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionEstadoEnvio"%>
-<%@page import="org.redabogacia.sigaservices.app.AppConstants.FCS_MAESTROESTADOS_ENVIO_FACT"%>
-<%@page import="java.util.Properties"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -18,26 +16,24 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
-<%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri = "libreria_SIGA.tld" prefix = "siga"%>
+<%@ taglib uri = "struts-bean.tld"  prefix = "bean"%>
+<%@ taglib uri = "struts-html.tld" 	prefix = "html"%>
+<%@ taglib uri = "struts-logic.tld" prefix = "logic"%>
 
 <!-- IMPORTS -->
-
 <%@ page import = "com.atos.utils.ClsConstants"%>
-<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
-
-
-
+<%@ page import = "org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
+<%@ page import = "org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionEstadoEnvio"%>
+<%@ page import = "org.redabogacia.sigaservices.app.AppConstants.FCS_MAESTROESTADOS_ENVIO_FACT"%>
+<%@ page import = "java.util.Properties"%>
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import = "com.siga.beans.*"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.ws.CajgConfiguracion"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
+<%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
 
 <!-- JSP -->
 <% 
@@ -54,12 +50,10 @@
 	Boolean yaHaSidoEjecutada = (Boolean) request.getAttribute("yaHaSidoEjecutada");
 	boolean bYaHaSidoEjecutada = (yaHaSidoEjecutada!=null)?yaHaSidoEjecutada.booleanValue():false;
 	boolean bBorrar = false;
-	try{
+	try {
 		Boolean borrar = (Boolean)request.getAttribute("borrar");
 		 bBorrar = (borrar!=null)?borrar.booleanValue():false;
-	}
-	catch(Exception e){
-		
+	} catch(Exception e) {		
 		 bBorrar = false;
 	}
 
@@ -86,8 +80,7 @@
 	boolean consulta = false;
 	boolean readonly = false;
 	
-	try
-	{
+	try {
 		modo = (String)request.getAttribute("modo");
 		idInstitucion = (String)request.getAttribute("idInstitucion");
 		idFacturacion = (String)request.getAttribute("idFacturacion");
@@ -99,8 +92,7 @@
 		// Varibles que dependen del modo de la pagina (consulta, edicion, nuevo)
 		FcsFacturacionJGBean facturaBean = null;
 		
-		if (!modo.equalsIgnoreCase("nuevo"))
-		{
+		if (!modo.equalsIgnoreCase("nuevo")) {
 			//Al estar en edicion o consulta:
 			facturaBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
 			
@@ -119,32 +111,26 @@
 				importe = (String)request.getAttribute("importe");
 				String parteEntera = importe.substring(0,importe.indexOf("."));
 			}
-		}
-		
+		}	
 		 
-	}
-	catch(Exception e){}
+	} catch(Exception e){}
 	
 	//Para los modos de presentar los objetos de html
 	if (bRegularizacion || modo.equalsIgnoreCase("consulta")) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
-		clase = "boxConsulta";
-		
+		clase = "boxConsulta";		
 		botones ="GM";
-		
-		
 	}
 	
-	if ((idEstado!=null) && ( 
-			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo())) {
+	if ((idEstado!=null) && (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo())) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
-		clase = "boxConsulta";
-		
+		clase = "boxConsulta";		
 		botones ="GM";
+		
 		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 			//recuperamos el último estado de envío a la Xunta
 			FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
@@ -155,30 +141,28 @@
 					botones += ",EJ";//Envío Justificación
 				}
 			}
-			
 		}
 		
-	}
-	else if ((idEstado!=null) && (
-			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo() || 
-			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo())) {
+	} else if ((idEstado!=null) && (
+				idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo() || 
+				idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo())) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
-		clase = "boxConsulta";
-		
+		clase = "boxConsulta";		
 		botones ="";
-	}
-	else if ((idEstado!=null) && (
-			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo())) {
+		
+	} else if ((idEstado!=null) && (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo())) {
 		botones = "G,R,EF";
 		
-		if (!bRegularizacion) botonesAbajo = "V,N"; 
-		else botonesAbajo = "V";
+		if (!bRegularizacion) 
+			botonesAbajo = "V,N"; 
+		else 
+			botonesAbajo = "V";
 		
 		if (bYaHaSidoEjecutada) botones += ",LF";
-	}
-	else if ((idEstado!=null) && (
+		
+	} else if ((idEstado!=null) && (
 			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())
 			//|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()
 			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
@@ -187,8 +171,8 @@
 			) {
 		if (strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
 			botones = "EF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
-		}
-		else {
+			
+		} else {
 			consulta = true;
 			desactivado = "true";
 			readonly = true;
@@ -213,33 +197,28 @@
 					botones += "GM";
 				}
 				
-				
 				if (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
 						|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()) {				
 					botonesAbajo = "V,II";
 				}
+				
 			} else {
 				botones = "LC,GM";
 			}
+			
 			if(idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() && bBorrar)
 				botones += ",EF";
-			 
 		}
-	}
-	else {
+		
+	} else {
 		botones ="G";
-	}
-	
+	}	
 %>	
 
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 	<!-- Validaciones en Cliente -->
@@ -255,9 +234,7 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
-		
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer
 		function accionRestablecer(){		
 			document.all.DatosGeneralesFacturacionForm.reset();
 			<% if ((estado != null) && (!estado.equals(""))) { %>
@@ -265,9 +242,8 @@
 			<% } %>
 		}			
 		
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardar() 
-		{
+		// Asociada al boton GuardarCerrar
+		function accionGuardar() {
 			sub();
 			if (validateDatosGeneralesFacturacionForm(document.DatosGeneralesFacturacionForm)){
 
@@ -283,20 +259,19 @@
 						document.forms[0].modo.value = "<%=accion%>";
 						document.forms[0].target = "submitArea2";
 						document.forms[0].submit();
-				}else {
+				} else {
 					alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
 					fin();
 					return false;
 				}
-			}else{
-			
+				
+			} else {
 				fin();
 				return false;
 			}
 		}		
 		
-		function accionNuevo()
-		{
+		function accionNuevo() {
 			document.forms[0].modo.value = "nuevoCriterio";
             var resultado = showModalDialog("<%=app%>/html/jsp/facturacionSJCS/datosCriteriosFacturacion.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");                   
             //var resultado=ventaModalGeneral(document.forms[0].name,"P");
@@ -305,32 +280,30 @@
             }
 		}
 		
-		function buscar()
-		{	document.forms[0].modo.value = "abrir";
+		function buscar() {	
+			document.forms[0].modo.value = "abrir";
 			document.forms[0].target = "mainPestanas";
 			document.forms[0].submit();
 		}
-		function refrescarLocal(){
+		
+		function refrescarLocal() {
 			buscar();
 		}
 		
-		function accionListaConsejo()
-		{
+		function accionListaConsejo() {
 			sub();
 			document.forms[0].modo.value="listaConsejo";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
 		
-		function descargaLogFacturacion()
-		{
+		function descargaLogFacturacion() {
 			document.forms[0].modo.value="descargarLog";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
 
-		function accionEjecutaFacturacion()
-		{
+		function accionEjecutaFacturacion() {
 			sub();
 			<% if (regularizacion==null) { %>
 				document.forms[0].modo.value="ejecutarFacturacion";
@@ -355,7 +328,6 @@
 		}
 
 		function accionGenerarInforme() {
-			
 			document.forms[0].modo.value="descargaFicheroFact";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
@@ -388,7 +360,7 @@
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
-		</script>	
+	</script>	
 </head>
 
 <body>
@@ -398,7 +370,7 @@
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="factSJCS.datosFacturacion.titulo1"/> <%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
 				<% if (bRegularizacion) { %> 
-				- <%=nombreFacturacion%>
+					- <%=nombreFacturacion%>
 				<% } %>
 			</td>
 		</tr>
@@ -411,53 +383,58 @@
 		<html:hidden property ="idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property ="fechaHoy"	   value = '<%=UtilidadesBDAdm.getFechaBD("")%>'/>
 		
-				<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">				
-					<table class="tablaCampos" align="center" >	
-						<tr>		
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)</td>
-							<td colspan="3">
-								<html:text name="DatosGeneralesFacturacionForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>"></html:text>
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
-							<td>
-								<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Fecha>
-							</td>
-							
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
-							<td class="labelText" >								
-								<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Fecha>
-							</td>	
-						</tr>
-						<tr>						
-							<td class="labelText" >
-								<siga:Idioma key="factSJCS.datosFacturacion.literal.estado"/>&nbsp;
-							</td>				
-							<td>
-								<html:text name="DatosGeneralesFacturacionForm" property="estado" value="" maxlength="50" size="50" styleClass="boxConsulta" readOnly="true">
-								</html:text>
-
-							</td>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaEstado"/>&nbsp</td>				
-							<td class="labelText" >
-								<html:text name="DatosGeneralesFacturacionForm" property="fechaEstado" value='<%=fechaEstado%>' maxlength="10" size="10" styleClass="boxConsulta" readOnly="true"></html:text>
-							</td>
-						</tr>
-					</table>
-				</siga:ConjCampos>
+		<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">				
+			<table class="tablaCampos" align="center" >	
+				<tr>		
+					<td class="labelText">
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)
+					</td>
+					<td colspan="3">
+						<html:text name="DatosGeneralesFacturacionForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>" />
+					</td>
+				</tr>
 				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Fecha>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)
+					</td>	
+					<td>								
+						<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Fecha>
+					</td>	
+				</tr>
+				
+				<tr>						
+					<td class="labelText" >
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.estado"/>&nbsp;
+					</td>				
+					<td>
+						<html:text name="DatosGeneralesFacturacionForm" property="estado" value="" maxlength="50" size="50" styleClass="boxConsulta" readOnly="true" />
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaEstado"/>&nbsp;
+					</td>				
+					<td>
+						<html:text name="DatosGeneralesFacturacionForm" property="fechaEstado" value='<%=fechaEstado%>' maxlength="10" size="10" styleClass="boxConsulta" readOnly="true" />
+					</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>				
 	</html:form>
 	
 	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
 			
-		
-
-<!-- PARA LA FUNCION VOLVER -->
+	<!-- PARA LA FUNCION VOLVER -->
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 <% 
 	Vector obj = (Vector)request.getAttribute("vHito");
 	
@@ -471,76 +448,70 @@
 			bPrevision = true;
 		}
 	}
-	String alto = "192";
-	if (bPrevision) {
-		alto = "263";
-	}
 		
 	botones = "";
 	if (idEstado < 20) botones = "B";
 	
 	if ((regularizacion != null) && (regularizacion.equalsIgnoreCase("true"))) botones = "";
 %>	
-		<!-- INICIO TABLA -->
+	<!-- INICIO TABLA -->	
+	<siga:Table 
+		name="tablaDatos"
+	   	border="1"
+		columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
+		columnSizes="35,45,10"
+		fixedHeight="60%"
+		modal="P">
 		
-		<siga:Table 
-			   name="tablaDatos"
-			   border="1"
-			   columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
-			   columnSizes="35,45,10"
-			   fixedHeight="150"
-			   modal="P">
-		<% if (obj==null || obj.size()==0){%>
-					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-		<%}else{%>
-		
-			<!-- Campo obligatorio -->
-			  <%
-		    	int recordNumber=1;
-				while ((recordNumber) <= obj.size()){	 
-					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-			 	%>	
-				  	<siga:FilaConIconos visibleEdicion='no' visibleConsulta='no' fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
-						<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idFacturacion%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGRUPOFACTURACION")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDHITOGENERAL")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idInstitucion%>'><%=UtilidadesString.mostrarDatoJSP((String)hash.get("NOMBRE"))%></td>
-						<td><siga:Idioma key='<%=(String)hash.get("DESCRIPCION")%>'/></td>
-					</siga:FilaConIconos>	
-				<%recordNumber++;%>
-				<%}%>	
-		<%}%>
-		</siga:Table>
+<% 
+		if (obj==null || obj.size()==0) {
+%>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		} else { 
+	    	int recordNumber=1;
+			while ((recordNumber) <= obj.size()) {	 
+				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+%>	
+			  	<siga:FilaConIconos visibleEdicion='no' visibleConsulta='no' fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
+					<td>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idFacturacion%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGRUPOFACTURACION")%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDHITOGENERAL")%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idInstitucion%>'><%=UtilidadesString.mostrarDatoJSP((String)hash.get("NOMBRE"))%>
+					</td>
+					<td><siga:Idioma key='<%=(String)hash.get("DESCRIPCION")%>'/></td>
+				</siga:FilaConIconos>	
+<%
+				recordNumber++;
+			}
+		}
+%>
+	</siga:Table>
 
-<!-- FIN TABLA -->
-		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
-							id="resultado10"
-							name="resultado10" 
-							scrolling="auto"
-							frameborder="0"
-							marginheight="0"
-							marginwidth="0";					 
-							style="width:100%;height:320px;">
-		</iframe>
-
-</table>
-	
-	
-	
+	<!-- FIN TABLA -->
+	<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
+		id="resultado10"
+		name="resultado10" 
+		scrolling="auto"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"		
+		style="position:absolute;width:100%;bottom:30px;left:0px;height:200px"></iframe>	
 	
 	<siga:ConjBotonesAccion botones='<%=botonesAbajo%>' modo='<%=modo%>'/>
 
-<script>
-	<% if ((estado != null) && (!estado.equals(""))) { %>
-		document.forms[0].estado.value = "<siga:Idioma key='<%=estado%>'/>";
-	<% } %>
-	
-</script>
-
-			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<script>
+		<% if ((estado != null) && (!estado.equals(""))) { %>
+			document.forms[0].estado.value = "<siga:Idioma key='<%=estado%>'/>";
+		<% } %>	
+	</script>
+		
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea2"  src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
