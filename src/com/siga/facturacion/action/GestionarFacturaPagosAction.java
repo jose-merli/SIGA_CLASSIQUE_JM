@@ -11,6 +11,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -548,6 +549,9 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE)){
 							request.setAttribute("mensaje", "facturacion.renegociar.aviso.cuentaNoExiste");
 							forward = modo;
+						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO)){
+							request.setAttribute("mensaje", "facturacion.renegociar.aviso.formapago");
+							forward = modo;
 						}
 						modo = "renegociarDevolucion";
 						request.setAttribute("modo", modo);
@@ -577,7 +581,8 @@ public class GestionarFacturaPagosAction extends MasterAction {
 							}
 							continue;
 						}
-						tx.commit();
+						if (Status.STATUS_ACTIVE  == tx.getStatus())
+					    	tx.commit();
 					}
 			}
 			
@@ -629,7 +634,14 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				forward = modo;
 				modo = "renegociarDevolucion";
 				request.setAttribute("modo", modo);
-			} 
+			} else if((isTodasRenegociadas) && (factDevueltasYRenegociadas.size() == 1)){
+				request.setAttribute("mensaje", "facturacion.renegociacionMasiva.literal.procesoCorrectoRenegocia");
+				forward = "renegociar";
+				modo = "renegociarDevolucion";
+				request.setAttribute("modo", modo);
+
+				
+			}
 
 		}catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
@@ -764,6 +776,8 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						incidenciaFactura=UtilidadesString.getMensajeIdioma(usr, "facturacion.renegociar.aviso.cuentaNoExiste");
 					else if (resultadoErroresFichero.get(i) == ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS)
 						incidenciaFactura=UtilidadesString.getMensajeIdioma(usr, "facturacion.renegociar.aviso.noRenegociadas");
+						else if (resultadoErroresFichero.get(i) == ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO)
+							incidenciaFactura=UtilidadesString.getMensajeIdioma(usr, "facturacion.renegociar.aviso.formapago");
 				}
 			}
 			

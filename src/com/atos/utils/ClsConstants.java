@@ -210,6 +210,7 @@ public class ClsConstants {
 	public static final String ERROR_RENEGOCIAR_CUENTANOEXISTE = "CUENTANOEXISTE";
 	public static final String ERROR_RENEGOCIAR_EXITO ="EXITO";
 	public static final String ERROR_RENEGOCIAR_NORENEGOCIADAS = "NORENEGOCIADAS";
+	public static final String ERROR_RENEGOCIAR_FORMAPAGO = "FORMAPAGO";
 	
 	public static final String ESTADO_ABONO_BANCO        = "5";
 	public static final String ESTADO_ABONO_CAJA         = "6";

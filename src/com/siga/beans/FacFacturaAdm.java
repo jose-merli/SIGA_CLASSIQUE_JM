@@ -3313,7 +3313,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = f." + FacFacturaBean.C_IDINSTITUCION);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDPERSONA + " = f." + FacFacturaBean.C_IDPERSONA);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDCUENTA + " = f." + FacFacturaBean.C_IDCUENTA);
 			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
 			contador ++;
 			sql.append(contador);
@@ -3352,6 +3351,54 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	   		}	
 	    }
 	} // getSelectPersonas()		
+	
+	/**
+	 *Comprueba si se han seleccionado personas diferentes
+	 * @param form Formulario con los criterios
+	 * @param idInstitucionAlta,usuario
+	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * @throws ClsExceptions
+	 */
+	public String getCuentaPersona(Integer idInstitucion, Long idPersona) throws ClsExceptions,SIGAException {
+		String diferentes = "";
+		RowsContainer rc = new RowsContainer();
+		try {
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion.toString());
+		    StringBuffer sql = new StringBuffer();
+		    Hashtable codigosHashtable = new Hashtable();
+			int contador = 0;
+		    
+			sql.append  ("Select c." + CenCuentasBancariasBean.C_IDCUENTA + " as idcuenta");
+			sql.append  ("  From  " + CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append  (" c,  " + CenBancosBean.T_NOMBRETABLA);
+			sql.append  (" b  " );
+			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
+			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion );
+			sql.append  ("   And c." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona); 
+
+			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable resultado = fila.getRow();
+				return diferentes = (String) resultado.get("IDCUENTA").toString();
+			}
+			else {
+				return diferentes = "0";
+			}
+		} 	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
+	   			}
+	   		}	
+	    }
+	} // getSelectPersonas()	
 	
 	
 	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas) throws ClsExceptions,SIGAException

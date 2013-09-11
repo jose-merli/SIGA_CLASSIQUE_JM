@@ -148,13 +148,9 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 
 							<tr>						
 								<td><input type="radio" id="radio2"
-									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled"/>
+									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" />
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
 								</td>									
-								<td class="labelText" style="text-align: left;" ><siga:ComboBD readonly="true"
-									nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo"
-									clase="boxCombo" obligatorio="false"  parametro="<%=parametro%>" /></td>
-
 							</tr>
 							<tr>
 								<td>
@@ -166,22 +162,23 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 						</tr>								
 							</c:if>
 							<c:if test="${pagoBanco=='1' }">
+							<c:if test="${cuentaCargo=='0' }">		
 							<tr>
 								<td>
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled"/>
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
 								</td>
 							</tr>	
-							<c:if test="${cuentaCargo=='0' }">							
 							<tr>
 								<td><input type="radio" id="radio2"
-									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked" />
+									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-								</td>									
+								</td>	
+								<c:if test="${factura!=null }">						
 								<td class="labelText" style="text-align: left;" ><siga:ComboBD
 									nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo"
 									clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" /></td>
-
+								</c:if>
 							</tr>	
 							<tr>
 								<td>
@@ -193,6 +190,12 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 						</tr>							
 							</c:if>		
 							<c:if test="${cuentaCargo=='1' }">
+							<tr>
+								<td>
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+								</td>
+							</tr>								
 							<tr>
 								<td><input type="radio" id="radio2"
 									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
