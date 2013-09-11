@@ -135,8 +135,8 @@
 		<siga:Table 		   
 		   name="listadoColegiados"
 		   border="1"
-		   columnNames="censo.ws.literal.fechaCambio,censo.ws.literal.incidencias,censo.ws.literal.estado,"
-		   columnSizes="15,40,30">
+		   columnNames="censo.ws.literal.fechaCambio,censo.ws.literal.estado,censo.ws.literal.incidencias,"
+		   columnSizes="15,30,40">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -154,8 +154,15 @@
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=String.valueOf(edicionColegiadoForm.getIdcensodatos())%>">
+					
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionColegiadoForm.getIdpersona()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=edicionColegiadoForm.getIdinstitucion()%>">					
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="">
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
+					
 					<%=edicionColegiadoForm.getFechaCambio()!=null?edicionColegiadoForm.getFechaCambio():"&nbsp;"%></td>
+					
+					<td><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(edicionColegiadoForm.getIdestadocolegiado())%>"/></td>
 					<td>
 					<% if (edicionColegiadoForm.getIncidencias() != null &&  edicionColegiadoForm.getIncidencias().size() > 0) { 
 						for (String incidencia : edicionColegiadoForm.getIncidencias()) {%> 
@@ -166,7 +173,6 @@
 						&nbsp;
 					<%} %>
 					</td>
-					<td><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(edicionColegiadoForm.getIdestadocolegiado())%>"/></td>
 					
 				</siga:FilaConIconos>	
 							<% }
@@ -186,7 +192,7 @@
 								idioma="<%=idioma%>"
 								modo="buscarPor"								
 								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:55px; left: 0px"
+								divStyle="position:absolute; width:100%; height:20; z-index:3; left: 0px"
 								distanciaPaginas=""
 								action="<%=action%>" />
 																	

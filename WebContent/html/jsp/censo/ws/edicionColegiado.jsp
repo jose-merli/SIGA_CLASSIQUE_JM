@@ -151,7 +151,9 @@
 							<siga:Idioma key="censo.ws.literal.sexo"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="sexo" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
+							<html:select property="sexo" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+								<html:optionsCollection name="EdicionColegiadoForm" property="sexos" value="key" label="value"></html:optionsCollection>
+							</html:select>													
 						</td>						
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.fechanacimiento"/>

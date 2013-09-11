@@ -61,6 +61,7 @@ public class EdicionColegiadoForm extends MasterForm {
 	
 	private List<ValueKeyVO> tiposIdentificacion;
 	private List<ValueKeyVO> situacionesEjerciente;
+	private List<ValueKeyVO> sexos;
 	
 	public String getNcolegiado() {
 		return ncolegiado;
@@ -341,6 +342,12 @@ public class EdicionColegiadoForm extends MasterForm {
 	}
 	public void setIdinstitucion(Short idinstitucion) {
 		this.idinstitucion = idinstitucion;
+	}
+	public List<ValueKeyVO> getSexos() {
+		return sexos;
+	}
+	public void setSexos(List<ValueKeyVO> sexos) {
+		this.sexos = sexos;
 	}
 	
 		

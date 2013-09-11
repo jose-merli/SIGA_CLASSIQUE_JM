@@ -3,6 +3,7 @@ package com.siga.censo.ws.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_SEXO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejerciente;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejercienteExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenTipoidentificacion;
@@ -54,5 +55,16 @@ public class CombosCenWS {
 		valueKeyVO.setKey(key);
 		valueKeyVO.setValue(UtilidadesString.getMensajeIdioma(usrBean, value));
 		return valueKeyVO;
+	}
+	
+	
+
+	public static List<ValueKeyVO> getSexos(UsrBean userBean) {
+		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
+		for (ECOM_CEN_SEXO ecomCen_SEXO : ECOM_CEN_SEXO.values()) {
+			lista.add(getValueKeyVO(userBean, ecomCen_SEXO.getCodigo(), ecomCen_SEXO.getRecurso()));
+		}
+		
+		return lista;
 	}
 }

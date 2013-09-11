@@ -261,6 +261,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		if (isNotnull(form.getIdentificacion())) {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
+		ecomCenWsExample.orderByNumeropeticionDESC();
 				
 		return cenWSService.getEcomCenWsList(ecomCenWsExample, ecomCenDatosExample, form.getIdIncidencias());
 	}

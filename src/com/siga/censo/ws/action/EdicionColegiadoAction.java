@@ -290,6 +290,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 			edicionColegiadoForm.setSituacionesEjerciente(CombosCenWS.getSituacionesEjeciente(getUserBean(request)));
+			edicionColegiadoForm.setSexos(CombosCenWS.getSexos(getUserBean(request)));
 				
 			if (!edicionColegiadoForm.isColegiadoEditable()) {
 				accion = "ver";

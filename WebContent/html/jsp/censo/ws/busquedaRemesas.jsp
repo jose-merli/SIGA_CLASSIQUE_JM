@@ -35,7 +35,7 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.ws.gestionremesas.titulo" localizacion="censo.ws.gestionremesas.localizacion"/>
+	<siga:Titulo titulo="menu.censo.gestionCensoWS.gestionRemesas" localizacion="censo.ws.gestionremesas.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -100,7 +100,7 @@
 		<table  class="tablaCentralCampos"  align="center">
 			<tr>				
 				<td>
-					<siga:ConjCampos leyenda="censo.ws.gestionremesas.titulo">
+					<siga:ConjCampos leyenda="menu.censo.gestionCensoWS.gestionRemesas">
 						<table class="tablaCampos" align="center">
 							<html:form action="/CEN_BusquedaRemesas.do?noReset=true" method="POST" target="resultado">
 								<html:hidden name="BusquedaRemesasForm" property = "modo" value = ""/>
@@ -209,18 +209,14 @@
 										<siga:Idioma key="censo.ws.literal.incidencias"/>
 									</td>
 									<td colspan="3">																				
-										<html:select property="idIncidencias" styleClass="boxCombo">
+										<html:select name="BusquedaRemesasForm" property="idIncidencias" styleClass="boxCombo">
 											<html:option value=""/>
-											<option value="1"><siga:Idioma key="censo.ws.incidencia.conIncidencias"/></option>								
-											<option value="2"><siga:Idioma key="censo.ws.incidencia.conIncidencias.general"/></option>											
-											<option value="3"><siga:Idioma key="censo.ws.incidencia.conIncidencias.particular"/></option>
+											<html:option value="1"><siga:Idioma key="censo.ws.incidencia.conIncidencias"/></html:option>								
+											<html:option value="2"><siga:Idioma key="censo.ws.incidencia.conIncidencias.general"/></html:option>											
+											<html:option value="3"><siga:Idioma key="censo.ws.incidencia.conIncidencias.particular"/></html:option>
 										</html:select>
 									</td>
-	
-									
-								</tr>
-	
-								
+								</tr>								
 							</html:form>
 						</table>
 					</siga:ConjCampos>
@@ -246,7 +242,7 @@
 						 
 		%>
 
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.gestionremesas.titulo" />
+		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="menu.censo.gestionCensoWS.gestionRemesas" />
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
@@ -256,10 +252,9 @@
 				name="resultado" 
 				scrolling="no"
 				frameborder="0"
-				marginheight="0"
+				marginheight="0" 
 				marginwidth="0";					 
 				class="frameGeneral">
-			<!--style="position:absolute; width:964; height:297; z-index:2; top: 177px; left: 0px"> -->
 	  		</iframe>
 	  	
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
