@@ -686,6 +686,7 @@
 				
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
 				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
+				//document.getElementById("poblacion").value = poblacionSeleccionada;
 
 				if (resultado!=null && resultado[1]!="") {
 					var p1 = document.getElementById("resultado");					
@@ -1002,6 +1003,7 @@
 					var poblacionSelect = jQuery("#poblacionFrame").contents().find("select");
 					if (poblacionSelect.find("option[value='"+poblacionSeleccionada+"']").length > 0){
 						poblacionSelect.val(poblacionSeleccionada);
+						document.getElementById("poblacion").value = poblacionSeleccionada;	
 						ok = true;
 					}
 				}				
@@ -1017,7 +1019,7 @@
 			var poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
 			setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
-			document.getElementById("poblacion").value = document.PersonaJGForm.poblacion.value;		
+			//document.getElementById("poblacion").value = poblacionSeleccionada;	
 		}
 
 		function preAccionExisteNIF(){
