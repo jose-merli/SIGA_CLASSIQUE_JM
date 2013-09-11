@@ -118,7 +118,7 @@
 				  	envios.definir.literal.estado,
 				  	envios.definir.literal.tipoenvio,"
 		columnSizes="10,28,10,10,12,12,18"
-		fixedHeight="275">
+		fixedHeight="50%">
 
 		<c:choose>
 			<c:when test="${empty comunicacionesSalida}">
@@ -163,8 +163,7 @@
 					comunicaciones.etiqueta.asunto,
 					comunicaciones.etiqueta.respuesta,
 					comunicaciones.etiqueta.estado,'
-		columnSizes="10,20,35,10,13,12"
-		fixedHeight="275">
+		columnSizes="10,20,35,10,13,12">
 	   		  
 	    <!-- INICIO: ZONA DE REGISTROS -->
 	    <c:choose>
