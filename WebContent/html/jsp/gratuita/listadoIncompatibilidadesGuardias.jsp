@@ -62,8 +62,7 @@
   	<siga:Table name="listarAsistencias" 
 		border="2"
   		columnNames="<%=nC%>"
-        columnSizes="<%=tC%>"
-        fixedHeight="100%">
+        columnSizes="<%=tC%>">
   
 <% 
 		if (listaResultados != null && listaResultados.size()>0) {

@@ -182,7 +182,6 @@
 		border="1"
 		columnNames="gratuita.procedimientos.literal.acreditacion,gratuita.procedimientos.literal.porcentaje,"
 		columnSizes="42,42,16"
-		fixedHeight="67"
 		modal="P">
 
 <%
