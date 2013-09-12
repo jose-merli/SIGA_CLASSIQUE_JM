@@ -265,7 +265,6 @@
 			<html:hidden styleId="idInstitucion" name="AnticiposClienteForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
 
 			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 			<input type="hidden" id="incluirRegistrosConBajaLogica" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
 			</html:form>
 

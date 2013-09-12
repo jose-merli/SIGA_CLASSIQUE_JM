@@ -176,11 +176,8 @@
 			}
 		} else { // No hay registros 
 %>
-			<tr>
-				<td>
-					<br>
-					<font class="labelText" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></font>
-				</td>
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
 <% 
 		} 
