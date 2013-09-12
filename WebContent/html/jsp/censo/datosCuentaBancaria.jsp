@@ -27,6 +27,9 @@ VERSIONES: -->
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import = "java.util.Properties"%>
+<%@ page import = "java.util.Hashtable"%>
+<%@ page import = "java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -83,21 +86,14 @@ VERSIONES: -->
 			else 
 				fechaBaja = "";
 		}
-		
-		
-		
 	}
+	
 	if (modo.equals("editar")) {
 		desactivadoEdicion = true;
 		desactivado  = false;
 		editarCampos = true;	
 		botones += ",GAH";
 		claseEdicion = "boxConsulta";
-		
-		
-		
-		
-		
 		
 	}else if (modo.equals("ver")) {
 		desactivado = true;
@@ -117,19 +113,10 @@ VERSIONES: -->
 	}
 %>	
 
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.Hashtable"%>
-<%@page import="java.util.ArrayList"%>
-
-
-<!-- HEAD -->
-
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 	<!-- Validaciones en Cliente -->
@@ -139,26 +126,27 @@ VERSIONES: -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionCerrar(){ 		
 			window.parent.close();
 		}	
 		
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer
 		function accionRestablecer(){		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.cuentasBancariasForm.reset();
 				rellenarCampos();
+				cargarBancos();
 			}						
 		}			
 
-		<!-- Asociada al boton Guardar y añadir al histórico -->
+		// Asociada al boton Guardar y añadir al histórico
 		function accionGuardarAnyadirHistorico() {
 			var modo = "guardarInsertarHistorico";
 			guardar(modo);
 		}
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {		
 			<%if (modo.equals("editar")) {%>
 			var modo = "modificar";
@@ -216,7 +204,8 @@ VERSIONES: -->
 				return false;
 			}
 		}
-		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
+		
+		// Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 		function rellenarCampos(){
 			<%if (htData != null) {%>
 				// Obtenemos el valor para los check Tipo de Cuenta.
