@@ -38,13 +38,15 @@
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
 
-
-<!-- Incluido jquery en siga.js -->
-
-<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script><script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/jquery-1.7.1.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/jquery-ui.js'/>" type="text/javascript"></script>
 
 <style media="screen" type="text/css">
 	.ocultar { display: none }
