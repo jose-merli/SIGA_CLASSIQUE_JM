@@ -567,16 +567,6 @@
 		document.forms[0].target="mainWorkArea";
 		document.forms[0].submit();
 	}
- 
-	function accionRestablecer(){
-		if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
-			document.SolicitudIncorporacionForm.reset();
-			cargaPais(<%=datosPersonales.getIdPais()%>);
-			cargarChecksCuenta();
-			comprobarTipoIdent();
-			restablecerNColegiado();
-		}
-	}
 	
 	function refrescarLocal(){
 		document.forms[0].modo.value = "abrir";

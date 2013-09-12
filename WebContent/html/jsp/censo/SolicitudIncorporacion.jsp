@@ -277,21 +277,21 @@
 		return true;
 	}	
 	
-	//Asociada al boton Volver -->
+	//Asociada al boton Volver
 	function accionVolver() {		
 		window.location = "<html:rewrite page='/html/jsp/censo/SolicitudIncorporacionValidacion.jsp'/>";
 	}
-	//Asociada al boton Restablecer -->
+	
+	//Asociada al boton Restablecer
 	function accionRestablecer() {
 		if (confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 			document.getElementById("modo").value = "";
 			document.getElementById("SolicitudIncorporacionForm").reset();
 			cargaPais("");
-			document.getElementById("provincia").onchange();
 		}
 	}
 	
-	//Asociada al boton Guardar -->
+	//Asociada al boton Guardar
 	function accionGuardar() {
 		sub();
 		if (datosValidos()) {
