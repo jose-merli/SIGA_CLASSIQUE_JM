@@ -100,6 +100,7 @@
 				if(!bloqueado){
 // 					jQuery.blockUI({
 //						message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
+
 //						css:{border:0,left:'300px', background:'transparent'},
 //						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
 //					jQuery("#barraBloqueante").click(function() { 
@@ -138,7 +139,7 @@
 					style="position:absolute; width:100%; height:100%; z-index:2; top: 0px; left: 0px">
 	</iframe>
 	
-	<div id="divEspera" title="SIGA" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:45%">
+	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
 	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
