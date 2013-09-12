@@ -171,10 +171,10 @@
 		jQuery.noConflict();
 		var bLoadSelected = false;
 		function inicio(){
-		if(document.getElementById('idButtonGuardar'))
-			jQuery("#idButtonGuardar").attr("disabled","disabled");
-
-		jQuery("#idButtonB").removeAttr("disabled");
+			if(document.getElementById('idButtonGuardar'))
+				jQuery("#idButtonGuardar").attr("disabled","disabled");
+	
+			jQuery("#idButtonB").removeAttr("disabled");
 		}
 		
 		function buscarDesignados (){
@@ -660,10 +660,14 @@
 		//Datos direccion
 		jQuery("#domicilio").removeAttr("disabled");
 	   	jQuery("#codigoPostal").removeAttr("disabled");
+	   	
 	   	jQuery("#pais").removeAttr("disabled");
 	   	jQuery("#provincia").removeAttr("disabled");
 	   	jQuery("#poblacion").removeAttr("disabled");
-	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");   	
+	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled"); 
+	   	jQuery("#poblacionExt").removeAttr("disabled");
+	   	cargarProvincias(datosGeneralesForm.pais);	
+
 	   	jQuery("#movil").removeAttr("disabled");
 	   	jQuery("#telefono1").removeAttr("disabled");
 	   	jQuery("#telefono2").removeAttr("disabled");
@@ -671,7 +675,6 @@
 	   	jQuery("#fax2").removeAttr("disabled");
 	   	jQuery("#correoElectronico").removeAttr("disabled");
 	   	jQuery("#paginaWeb").removeAttr("disabled");
-	   	jQuery("#poblacionExt").removeAttr("disabled");
 	   	
 		//Preferencia
 		jQuery("#preferenteMail").removeAttr("disabled");
@@ -760,23 +763,9 @@
 	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
-
-
 	}
 
 	var poblacionSeleccionada;
-	/*
-	function recargarComboHijo() {
-		var acceso = poblacionFrame.document.getElementsByTagName("select");
-		acceso[0].value = poblacionSeleccionada;
-		document.datosGeneralesForm.poblacion.value = poblacionSeleccionada;
-		if (poblacionSeleccionada != ""){
-			jQuery("#poblacion").attr("disabled","disabled");
-			jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");
-		}
-	}
-	*/
-
 
 	function postAccionDirecciones() {	
 		restablecerComboPoblacion();
@@ -791,10 +780,7 @@
 		}else{
 			poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 			document.getElementById("provincia").onchange();
-			//window.setTimeout("recargarComboHijo()",750,"Javascript");	
-			//document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;
 			jQuery("#poblacion").attr("disabled","disabled");
-			//jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");
 		}
 
 		if(document.datosGeneralesForm.preferente.value != null && document.datosGeneralesForm.preferente.value != ""){
@@ -884,12 +870,13 @@
 					document.busquedaCensoModalForm.existeNIF.value = "";
 				}
 			}
+			
 		}else{				
 			if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){ //EXISTE LA PERSONA
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
 					formatearDocumento();
-					document.getElementById("tipoIdentificacion").value 		= document.busquedaCensoModalForm.idTipoIdentificacion.value;
+					document.getElementById("tipoIdentificacion").value = document.busquedaCensoModalForm.idTipoIdentificacion.value;
 
 					//Datos direcciones
 					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
@@ -918,7 +905,6 @@
 			
 					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){		
 						//SE DESHABILITAN LOS DATOS DE IDENTIFICACIÓN 
-						
 						jQuery("#tipoIdentificacion").attr("disabled","disabled");
 						jQuery("#numIdentificacion").attr("disabled","disabled");
 						jQuery("#idInstitucion").attr("disabled","disabled");
@@ -927,7 +913,6 @@
 						jQuery("#nombre").attr("disabled","disabled");
 						jQuery("#apellido1").attr("disabled","disabled");
 						jQuery("#apellido2").attr("disabled","disabled");
-
 					}
 	
 					//Aparecen los menus de abajo
@@ -936,12 +921,13 @@
 					document.getElementById("tdadicional").style.display="block";
 					document.getElementById("tddireccion").style.display="block";
 					jQuery("#idButtonB").attr("disabled","disabled");
+					
 					if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){	
 						// SE DESHABILITAN LOS DATOS DE INFORMACIÓN ADICIONAL
-					jQuery("#sexo").attr("disabled","disabled");
-					jQuery("#estadoCivil").attr("disabled","disabled");
-					jQuery("#lugarNacimiento").attr("disabled","disabled");
-					jQuery("#fechaNacimiento").attr("disabled","disabled");
+						jQuery("#sexo").attr("disabled","disabled");
+						jQuery("#estadoCivil").attr("disabled","disabled");
+						jQuery("#lugarNacimiento").attr("disabled","disabled");
+						jQuery("#fechaNacimiento").attr("disabled","disabled");
 					}
 					
 				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
@@ -1269,7 +1255,7 @@
 						</td>
 						<td colspan = "3">							
 							<html:select name="datosGeneralesForm" styleId="pais" styleClass="boxCombo"  property="pais" onchange="cargarProvincias(this);">
-									<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
+									<html:option value="">&nbsp;</html:option>
 								    <html:optionsCollection name="datosGeneralesForm" property="paises" value="idNombre" label="nombre" />
 							</html:select>
 						</td>
@@ -1284,7 +1270,7 @@
 						</td>
 						<td id="provinciaEspanola">
 							<html:select name="datosGeneralesForm" styleId="provincia" styleClass="boxCombo"  property="provincia" onchange="cargarPoblaciones(this);" style="wdth:150">
-									<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
+									<html:option value="">&nbsp;</html:option>
 								    <html:optionsCollection name="datosGeneralesForm" property="provincias" value="idNombre" label="nombre" />
 							</html:select>							
 						</td>
@@ -1551,11 +1537,7 @@
 		   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
-
-			
-
 		}
-
 	
 	function validarFormulario() {
 		var rc	= true;
@@ -1646,7 +1628,7 @@
 
 
 					//SI ES DE NUESTRO COLEGIO NO SE TOCA DIRECCIONES
-					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>" || document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == ""){
+					if(document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == "" || datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
 						//Rellenando preferencias
 						var preferencia = "";
 						if (document.datosGeneralesForm.preferenteMail.checked)
@@ -1763,100 +1745,97 @@
 	
 		 function validarDireccion() {
 
-		 	//Validamos que haya algun campo metido y en ese caso pasamos las otras validadciones
-		 	//si no devolvemos true. Como no hemos metido idTipoDireccion no insertara
-		 	
-		 	if(trim(document.datosGeneralesForm.telefono1.value)!='' ||
-		 	trim(document.datosGeneralesForm.telefono2.value)!='' ||
-		 	trim(document.datosGeneralesForm.domicilio.value)!='' ||
-		 	trim(document.datosGeneralesForm.codigoPostal.value)!='' ||
-		 	trim(document.datosGeneralesForm.poblacion.value)!='' ||
-		 	trim(document.datosGeneralesForm.provincia.value)!='' ||
-		 	trim(document.datosGeneralesForm.poblacionExt.value)!='' ||
-		 	trim(document.datosGeneralesForm.movil.value)!='' ||
-		 	trim(document.datosGeneralesForm.fax1.value)!='' ||
-		 	trim(document.datosGeneralesForm.fax2.value)!='' ||
-		 	document.datosGeneralesForm.preferenteFax.checked||document.datosGeneralesForm.preferenteSms.checked
-		 	||document.datosGeneralesForm.preferenteMail.checked||document.datosGeneralesForm.preferenteCorreo.checked){
-		 	
-			 	document.datosGeneralesForm.telefono1.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono1.value));
-			  	document.datosGeneralesForm.telefono2.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono2.value));
-				// Validamos los errores ///////////
-				// Campos Tipo de Direccion obligatorio -> no se usa validacion Struts pq es multiple seleccion
-				
-				
-	           document.datosGeneralesForm.idTipoDireccion.value=<%=ClsConstants.TIPO_DIRECCION_PUBLICA%>;
-			  
-			   
-				// VALIDAMOS QUE SOLO HAYAN INTRODUCIDO EN EL COMBO DE TIPO DE DIRECCION DIRECCION DE GUARDIA.
-				// SI ES ASI SOLO REALIZAMOS LA VALIDACION DEL CAMPO TELEFONO 1. EN CASO CONTRARIO SE REALIZAN
-				// EL RESTO DE VALIDACIONES TAMBIEN NECESARIAS PARA LOS OTROS TIPOS DE DIRECCION
-										
-				//VALIDACIONES GENERALES A TODOS LOS TIPOS DE DIRECCION SELECCIONADOS
-			  
-			   if (!validateDatosGeneralesDireccionForm(document.datosGeneralesForm)){
-					return false;
-				}
-			   
-			   if((document.datosGeneralesForm.preferenteMail.checked) &&  (trim(document.datosGeneralesForm.correoElectronico.value)=="")) {						
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);	 								 
-					 return false;
-				}
+			//Solo se aplica la validacion cuando la direccion del colegiado no es propia del colegio o es una nueva direccion
+		 	if(document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == "" || datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
 
-				if((document.datosGeneralesForm.preferenteCorreo.checked) && (trim(document.datosGeneralesForm.domicilio.value)=="")) {					 
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.direccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);					 
-					 return false;
-				}
-
-				// RGG 25/04/2005
-				if((trim(document.datosGeneralesForm.domicilio.value)!="") &&(trim(document.datosGeneralesForm.codigoPostal.value)=="")) {						
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);	 				 
-					 return false;
-				}
-
-				if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="" ) && 
-						(trim(document.datosGeneralesForm.provincia.value)=="")) {						
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.provincia"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);	 				
-					 return false;
-				}
-
-				if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="") && 
-						(jQuery('#poblacion').val()=="")) {						
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);	 				
-					 return false;
-				}
+		 		//Validamos que haya algun campo metido y en ese caso pasamos las otras validadciones si no devolvemos true. Como no hemos metido idTipoDireccion no insertara
+			 	if(trim(document.datosGeneralesForm.telefono1.value)!='' ||	trim(document.datosGeneralesForm.telefono2.value)!='' || trim(document.datosGeneralesForm.domicilio.value)!='' ||
+			 			trim(document.datosGeneralesForm.codigoPostal.value)!='' ||	trim(document.datosGeneralesForm.poblacion.value)!='' || trim(document.datosGeneralesForm.provincia.value)!='' ||
+			 			trim(document.datosGeneralesForm.poblacionExt.value)!='' ||	trim(document.datosGeneralesForm.movil.value)!='' || trim(document.datosGeneralesForm.fax1.value)!='' ||
+			 			trim(document.datosGeneralesForm.fax2.value)!='' ||	document.datosGeneralesForm.preferenteFax.checked||document.datosGeneralesForm.preferenteSms.checked ||
+			 			document.datosGeneralesForm.preferenteMail.checked||document.datosGeneralesForm.preferenteCorreo.checked){
+			 	
+				 	document.datosGeneralesForm.telefono1.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono1.value));
+				  	document.datosGeneralesForm.telefono2.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono2.value));
+					// Validamos los errores ///////////
+					// Campos Tipo de Direccion obligatorio -> no se usa validacion Struts pq es multiple seleccion
 					
-				if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)!=idEspana && trim(document.datosGeneralesForm.pais.value)!="") && 
-						(trim(document.datosGeneralesForm.poblacionExt.value)=="")) {						
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);	 				
-					 return false;
-				}
-
-				if((document.datosGeneralesForm.preferenteFax.checked) &&  (trim(document.datosGeneralesForm.fax1.value)=="")) {
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.fax1"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);
-					 return false;
-				}
-
-
-				// jbd 04/06/2009 opcion sms
-				if((document.datosGeneralesForm.preferenteSms.checked) && (trim(document.datosGeneralesForm.movil.value)=="")) {							 
-	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.movil"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-	 				 alert (mensaje);
-					 return false;
-				}
-
-				return true;
-			 
-			 }else{
-			 	return true;
-			 }
+					
+		           	document.datosGeneralesForm.idTipoDireccion.value=<%=ClsConstants.TIPO_DIRECCION_PUBLICA%>;
+				  
+				   
+					// VALIDAMOS QUE SOLO HAYAN INTRODUCIDO EN EL COMBO DE TIPO DE DIRECCION DIRECCION DE GUARDIA.
+					// SI ES ASI SOLO REALIZAMOS LA VALIDACION DEL CAMPO TELEFONO 1. EN CASO CONTRARIO SE REALIZAN
+					// EL RESTO DE VALIDACIONES TAMBIEN NECESARIAS PARA LOS OTROS TIPOS DE DIRECCION
+											
+					//VALIDACIONES GENERALES A TODOS LOS TIPOS DE DIRECCION SELECCIONADOS
+				  
+				   if (!validateDatosGeneralesDireccionForm(document.datosGeneralesForm)){
+						return false;
+					}
+				   
+				   if((document.datosGeneralesForm.preferenteMail.checked) &&  (trim(document.datosGeneralesForm.correoElectronico.value)=="")) {						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);	 								 
+						 return false;
+					}
+	
+					if((document.datosGeneralesForm.preferenteCorreo.checked) && (trim(document.datosGeneralesForm.domicilio.value)=="")) {					 
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.direccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);					 
+						 return false;
+					}
+	
+					// RGG 25/04/2005
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") &&(trim(document.datosGeneralesForm.codigoPostal.value)=="")) {						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);	 				 
+						 return false;
+					}
+	
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="" ) && 
+							(trim(document.datosGeneralesForm.provincia.value)=="")) {						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.provincia"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);	 				
+						 return false;
+					}
+	
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="") && 
+							(jQuery('#poblacion').val()=="")) {						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);	 				
+						 return false;
+					}
+						
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)!=idEspana && trim(document.datosGeneralesForm.pais.value)!="") && 
+							(trim(document.datosGeneralesForm.poblacionExt.value)=="")) {						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);	 				
+						 return false;
+					}
+	
+					if((document.datosGeneralesForm.preferenteFax.checked) &&  (trim(document.datosGeneralesForm.fax1.value)=="")) {
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.fax1"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+						 return false;
+					}
+	
+	
+					// jbd 04/06/2009 opcion sms
+					if((document.datosGeneralesForm.preferenteSms.checked) && (trim(document.datosGeneralesForm.movil.value)=="")) {							 
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.movil"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+						 return false;
+					}
+					return true;
+				 
+				 }else{
+				 	return true;
+				 }
+		 		
+		 	} else {
+		 		return true; //No se hace validacion para las direcciones propias del colegio
+		 	}
 		 }	
 		
 	</script>
@@ -1883,7 +1862,6 @@
 			document.datosGeneralesForm.apellido2.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.apellido1.onkeypress = submitConTeclaEnter;
 			document.datosGeneralesForm.nombre.onkeypress = submitConTeclaEnter;
-			//document.datosGeneralesForm.numIdentificacion.onkeypress = submitConTeclaEnter;
 		}
 		
 		function submitConTeclaEnter(){			
@@ -1899,10 +1877,11 @@
 		
 		function cargarProvincias(comboPais){
 			var idPais = jQuery(comboPais).val();
-			if (idPais == idEspana){
+			alert(idPais);
+			if (idPais == idEspana || idPais == ""){
 				restablecerComboPoblacion();
 				jQuery("#provincia").removeAttr("disabled");
-				jQuery("#provincia").val("-1");
+// 				jQuery("#provincia").val("-1");
 				jQuery("#poblacionEspanola").show();
 				jQuery("#poblacionExtranjera").hide();
 			} else {
