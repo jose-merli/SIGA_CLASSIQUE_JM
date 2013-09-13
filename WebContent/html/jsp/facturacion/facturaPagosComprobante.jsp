@@ -98,7 +98,7 @@
 
 			<tr>
 				<td class="labelText" width="150"><siga:Idioma key="facturacion.pagosFactura.Comprobante.literal.Fecha"/></td>
-				<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateMedium("", pago.getFecha()))%></td>
+				<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", pago.getFecha()))%></td>
 			</tr>
 
 			<tr>
