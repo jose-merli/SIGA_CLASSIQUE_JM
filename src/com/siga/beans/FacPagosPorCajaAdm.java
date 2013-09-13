@@ -176,8 +176,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Obteneción emisión factura
 			String select1 = " SELECT 1 AS idtabla, 'EMISIÓN FACTURA' AS tabla, " +
-							   "'Pendiente Cobro' AS estado, " +
+							   "'Pendiente Confirmación' AS estado, " +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
+							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
 							   "'' AS DEVUELTA, '' AS tarjeta, " +
 							   " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
@@ -189,6 +190,26 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
 
 			String consulta1 = select1 + from1 + where1;	
+
+			// Obteneción confirmacion factura
+			String select10 = " SELECT 1 AS idtabla, 'CONFIRMACIÓN FACTURA' AS tabla, " +
+							   "'Pendiente Cobro' AS estado, " +
+							   " NVL("+FacFacturacionProgramadaBean.T_NOMBRETABLA+".FECHAREALCONFIRM, "+FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_FECHACONFIRMACION   + ") AS FECHA, "   +
+							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
+							   "'' AS DEVUELTA, '' AS tarjeta, " +
+							   " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
+							   "'' AS NOMBREBANCO";
+
+			String from10 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA +" , " + FacFacturacionProgramadaBean.T_NOMBRETABLA; 
+
+			String where10 = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
+							" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + 
+							" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION +
+							" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
+			
+			String consulta10 = select10 + from10 + where10;				
 			
 			// Obtención de anticipos aplicados a una factura
 			String select2 = " SELECT 2 AS idtabla, 'APLICAR ANTICIPO' AS tabla, " +
@@ -198,6 +219,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 " ELSE 'Pagado' " +
 							 " end as estado, " +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
+							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " AS IMPORTE, " +
 							   "'' AS DEVUELTA, '' AS tarjeta, 0 AS idabono_idcuenta, '' AS numeroabono," +
 							   "0 AS idpago, '' AS NOMBREBANCO";
@@ -225,7 +247,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 					 		 " THEN 'Pendiente Cobro Caja' " +
 					 		 " ELSE 'Pagado' " +
 					 		 " end as estado, " +
-							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION   + " AS FECHA, "   +
+							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA  + " AS FECHA, "   +
+							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
 							   "'' AS DEVUELTA, " +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_TARJETA + " AS TARJETA, " +
@@ -246,7 +269,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Otención pagos por banco
 			String select4 = " SELECT 9 AS idtabla, 'PAGO POR BANCO' AS tabla, 'Pagado' AS estado, " + 
-							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+							   
+							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+
+							 "cargos." + FacDisqueteCargosBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +							   
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
 							 "'' AS TARJETA, " +
@@ -285,7 +309,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 					 		 " THEN 'Pendiente Cobro Banco' " +					 		 
 					 		 " ELSE 'Pendiente Cobro Caja' " +
 					 		 " end as estado, " +			
-							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAMODIFICACION   + " AS FECHA, "   + 
+							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION   + " AS FECHA, "   +
+							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   + 					 		 
 				  			 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " + 
 							 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
 							 "'' AS TARJETA, " +
@@ -324,6 +349,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 					 		 " ELSE 'Pendiente Cobro Banco' " +
 					 		 " end as estado, " +			
 							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA, "   + 
+							 "renegociacion." + FacRenegociacionBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   + 					 		 
 				  			 "renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, '' AS tarjeta, " +
 							 " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
@@ -350,7 +376,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			// Obtención devoluciones
 			String select7 = " SELECT 9 AS idtabla, 'ANULACIÓN' AS tabla, " +
 					 		 " 'Anulada' AS estado, " +		
-							 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA, "   + 
+							 "abono." + FacAbonoBean.C_FECHA   + " AS FECHA, "   +
+					 		 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 				  			 "abono." + FacAbonoBean.C_IMPTOTALABONADO + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, " +
 							 "'' AS TARJETA, " +
@@ -374,9 +401,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			String consulta7 = select7 + from7 + where7;			
 
-			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
-							   consulta1 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
-							   " ) ORDER BY idtabla ASC, FECHA ASC, IDPAGO ASC"; 
+			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
+							   consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
+							   " ) ORDER BY idtabla ASC, FECHA ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
 
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
