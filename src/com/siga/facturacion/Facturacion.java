@@ -2147,10 +2147,10 @@ public class Facturacion {
 
     		} while (false);
 
-    		if(idCuenta!=null && idCuenta.equals(""))
-    			throw new ClsExceptions("Imposible");
+    		if (idCuenta!=null && idCuenta.equals(""))
+    			throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
     			
-    		if(htCuenta!=null && idCuenta!=null)
+    		if (htCuenta!=null && idCuenta!=null)
     			htCuenta.put("idCuenta", idCuenta);
     		
     		// Insertamos un nuevo registro en Fac_Renegociacion
@@ -2218,26 +2218,23 @@ public class Facturacion {
     		} else {
     			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
     		}
+    		
     		if(!isTransaccionCreada) {
     			t.commit();
     		}
+    		
 			if (cambioFormaPago){
 				throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS);
 			}
+    	}
 
-    	}
-    	catch (SIGAException e) {
-    		throw e;
-    	}
     	catch (Exception e) {
     		if(!isTransaccionCreada)
     			t.rollback();
     		throw e;
-
-    	}	
-
-
+    	}	    	
     }
+    
     /** 
 	 * Aplica comisiones correspondientes a un determinado 
 	 * @param  institucion - identificador de la institucion

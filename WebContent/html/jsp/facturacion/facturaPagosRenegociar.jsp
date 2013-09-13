@@ -149,6 +149,11 @@
 				if (document.GestionarFacturaForm.datosPagosRenegociarNuevaFormaPago[i].checked)
 					break;
 			}
+			
+			if (document.GestionarFacturaForm.radio3.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
+				alert("Cuenta requerida");
+				return 0;
+			}				
 
 <%
 			if ((estadoFactura != null)
