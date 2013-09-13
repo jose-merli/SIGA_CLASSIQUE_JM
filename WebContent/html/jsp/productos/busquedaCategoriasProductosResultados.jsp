@@ -55,7 +55,7 @@
 			   border  = "1"
 			   columnNames="pys.mantenimientoCategorias.literal.tipoProducto,pys.busquedaProductos.literal.categoria,"
 			   columnSizes = "30,55,15"
-			   modal = "p">
+			   modal = "P">
 		<% if ((productos != null) && (productos.size() > 0)){ %>
 	
 				<%	 for (int i = 1; i <= productos.size(); i++) { 
