@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- modalMantenimiento_SaltosYCompensaciones.jsp -->
+<!-- modalMantenimientoGrupos_SaltosYCompensaciones.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -93,7 +93,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.titulo"/>
@@ -136,7 +136,7 @@
 				if(modo.equalsIgnoreCase("NUEVO")) { 
 %>
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.turno"/>&nbsp;(*)
 						</td>		
 						<td colspan="3">
@@ -145,7 +145,7 @@
 					</tr>
 					
 					<tr>
-						<td  class="labelText">
+						<td  class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.guardia"/>&nbsp;(*)
 						</td>		
 						<td colspan="3">
@@ -154,7 +154,7 @@
 					</tr>
 					
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key='gratuita.modalNuevo_SaltosYCompensaciones.literal.grupo'/>&nbsp;(*)
 						</td>
 						<td colspan="3">
@@ -163,30 +163,29 @@
 					</tr>
 					
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.letrados"/>
 						</td>
 						<td colspan="3">
 							<html:textarea property="letrado" 
-							style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="boxConsulta"
+							style="overflow-y:auto; overflow-x:hidden; width:380px; height:70px; resize:none;" styleClass="boxConsulta"
 							readOnly="true"></html:textarea>
 						</td>
 					</tr>		
 					
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 						</td>		
-						<td>
+						<td nowrap>
 							<siga:Fecha nombreCampo="fecha" posicionY="50" posicionX="50" readOnly="true" />
 						</td>
 						
 						<td class="labelText" colspan="2">
 							<html:radio name="SaltosYCompensacionesForm" property="salto" value="S" />				
-							&nbsp;
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.salto"/>
-							<html:radio name="SaltosYCompensacionesForm" property="salto" value="C" />		
 							&nbsp;
+							<html:radio name="SaltosYCompensacionesForm" property="salto" value="C" />		
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.compensacion"/>		
 						</td>
 					</tr>
@@ -204,7 +203,7 @@
 						<td colspan="3">
 							<html:textarea name="SaltosYCompensacionesForm" property="motivos"  
 							onChange="cuenta(this,1024)" onKeyDown="cuenta(this,1024);" 
-							style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="boxCombo" 
+							style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;" styleClass="boxCombo" 
 							value="" readOnly="false"></html:textarea>
 						</td>		
 					</tr>	
@@ -224,7 +223,7 @@
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.turno"/>
 						</td>
 						<td colspan="3">
-							<html:text name="SaltosYCompensacionesForm" property="turnosSinBaja" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true" style="width:400px" />
+							<html:text name="SaltosYCompensacionesForm" property="turnosSinBaja" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true" style="width:380px" />
 						</td>
 					</tr>
 					
@@ -233,7 +232,7 @@
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.guardia"/>
 						</td>
 						<td colspan="3">
-							<html:text name="SaltosYCompensacionesForm" property="guardia" size="50" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true" style="width:400px" />
+							<html:text name="SaltosYCompensacionesForm" property="guardia" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true" style="width:380px" />
 						</td>
 					</tr>
 					
@@ -248,13 +247,13 @@
 						<td class="labelText">
 							<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.tipo"/>
 						</td>
-						<td class="labelTextValor">
-<% 
-							if(salto.equals("SG")) {
+						<td class="labelTextValor" nowrap>
+<% 							
+							if(salto.equals("S")) {
 %>
 								<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupo"/>
 <% 
-							} else if(salto.equals("CG")) { 
+							} else if(salto.equals("C")) { 
 %>
 								<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupo"/>
 <% 
@@ -264,10 +263,10 @@
 					</tr>	
 						
 					<tr>
-						<td class="labelText" width="500px">
-							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/> (*)
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 						</td>
-						<td>
+						<td nowrap>
 <% 
 							if(modo.equalsIgnoreCase("EDITAR")) { 
 %>
@@ -281,10 +280,10 @@
 %>
 						</td>
 						
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fechaUso"/>
 						</td>
-						<td>
+						<td nowrap>
 <% 
 							if(modo.equalsIgnoreCase("EDITAR")) { 
 %>
@@ -309,13 +308,13 @@
 %>
 								<html:textarea name="SaltosYCompensacionesForm" property="motivos" 
 									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
-									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="box" 
+									style="overflow-y:auto; overflow-x:hidden; width:380px; height:100px; resize:none;" styleClass="box" 
 									value="<%=motivos%>" readOnly="false"></html:textarea>
 <% 
 							} else { 
 %>
 								<html:textarea name="SaltosYCompensacionesForm" property="motivos" 
-									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="boxConsulta" 
+									style="overflow-y:auto; overflow-x:hidden; width:380px; height:100px; resize:none;" styleClass="boxConsulta" 
 									value="<%=motivos%>" readOnly="true" />
 <% 
 							} 

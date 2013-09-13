@@ -89,7 +89,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.titulo"/>
@@ -132,11 +132,11 @@
 				if(modo.equalsIgnoreCase("NUEVO")) { 
 %>
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.turno"/>&nbsp;(*)
 						</td>		
 						<td colspan="3">
-							<siga:ComboBD nombre = "idTurno" tipo="turnosSinBaja" clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="400"/>
+							<siga:ComboBD nombre = "idTurno" tipo="turnosSinBaja" clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" ancho="380"/>
 						</td>		
 					</tr>
 					
@@ -145,25 +145,24 @@
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.guardia"/>
 						</td>		
 						<td colspan="3">
-							<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" obligatorio="false" hijo="t" ancho="400"/> 
+							<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" obligatorio="false" hijo="t" ancho="380"/> 
 						</td>		
 					</tr>
 		
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>&nbsp;(*)
 						</td>		
-						<td>
+						<td nowrap>
 						 	<siga:Fecha nombreCampo="fecha" valorInicial="<%=fecha%>" readOnly="true" posicionX="50" posicionY="50" />
 							
 						</td>
 						
 						<td class="labelText" colspan="2">
-							<html:radio name="SaltosYCompensacionesForm" property="salto" value="S" />				
-							&nbsp;
+							<html:radio name="SaltosYCompensacionesForm" property="salto" value="S" />											
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.salto"/>
-							<html:radio name="SaltosYCompensacionesForm" property="salto" value="C" />		
 							&nbsp;
+							<html:radio name="SaltosYCompensacionesForm" property="salto" value="C" />		
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.compensacion"/>			
 						</td>
 					</tr>		
@@ -175,7 +174,7 @@
 						<td colspan="3">
 							<html:textarea name="SaltosYCompensacionesForm" property="motivos"  
 								onChange="cuenta(this,1024)" onKeyDown="cuenta(this,1024);"
-								style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="boxCombo" 
+								style="overflow-y:auto; overflow-x:hidden; width:380px; height:70px; resize:none;" styleClass="boxCombo" 
 								value="" readOnly="false"></html:textarea>
 						</td>		
 					</tr>
@@ -191,7 +190,7 @@
 							<siga:Idioma key='gratuita.seleccionColegiadoJG.literal.colegiado'/>
 						</td>
 						<td colspan="3">
-							<input type="text" name="nombreMostrado" class="boxConsulta" readonly value="" style="width:400px;">
+							<input type="text" name="nombreMostrado" class="boxConsulta" readonly value="" style="width:380px;">
 						</td>	
 					</tr>
 					
@@ -215,8 +214,7 @@
 								campoNombreColegiado="nombreMostrado" 
 								campoFlagSalto="flagSalto" 
 								campoFlagCompensacion="flagCompensacion" 
-								modo="nuevo"
-							/>
+								modo="nuevo"/>
 						</td>
 					</tr>
 		
@@ -228,7 +226,7 @@
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.turno"/>
 						</td>
 						<td colspan="3">
-							<html:text name="SaltosYCompensacionesForm" property="turnosSinBaja" size="50" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true" />
+							<html:text name="SaltosYCompensacionesForm" property="turnosSinBaja" maxlength="100" styleClass="boxConsulta" value="<%=turno%>" readOnly="true" style="width:380px" />
 						</td>
 					</tr>
 					
@@ -237,7 +235,7 @@
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.guardia"/>
 						</td>
 						<td colspan="3">
-							<html:text name="SaltosYCompensacionesForm" property="guardia" size="50" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true" />
+							<html:text name="SaltosYCompensacionesForm" property="guardia" maxlength="100" styleClass="boxConsulta" value="<%=guardia%>" readOnly="true" style="width:380px" />
 						</td>
 					</tr>
 					
@@ -268,10 +266,10 @@
 					</tr>		
 					
 					<tr>
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/> (*)
 						</td>
-						<td>							
+						<td nowrap>							
 <% 
 							if(modo.equalsIgnoreCase("EDITAR")) { 
 %>
@@ -285,10 +283,10 @@
 %>
 						</td>
 						
-						<td class="labelText">
+						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fechaUso"/>
 						</td>
-						<td>
+						<td nowrap>
 <% 
 							if(modo.equalsIgnoreCase("EDITAR")) { 
 %>
@@ -313,13 +311,13 @@
 %>
 								<html:textarea name="SaltosYCompensacionesForm" property="motivos"  
 									onChange="cuenta(this,1024)" onKeyDown="cuenta(this,1024);"
-									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="box" 
+									style="overflow-y:auto; overflow-x:hidden; width:380px; height:70px; resize:none;" styleClass="box" 
 									value="<%=motivos%>" readOnly="false"></html:textarea>
 <% 
 							} else { 
 %>
 								<html:textarea name="SaltosYCompensacionesForm" property="motivos"  
-									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;" styleClass="boxConsulta" 
+									style="overflow-y:auto; overflow-x:hidden; width:380px; height:70px; resize:none;" styleClass="boxConsulta" 
 									value="<%=motivos%>" readOnly="true"></html:textarea>
 <% 
 							} 
