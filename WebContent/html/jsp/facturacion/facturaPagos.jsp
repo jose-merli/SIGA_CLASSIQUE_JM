@@ -102,46 +102,32 @@
 	boolean mostrarBotonPago = false , mostrarBotonTarjeta = false, mostrarBotonRenegociar = false ;
 	
 	String modoRegistroBusqueda = (String)request.getAttribute("modoRegistroBusqueda");
-	if ((modoRegistroBusqueda != null) && (!modoRegistroBusqueda.equalsIgnoreCase("ver"))) {
-	
-		if (estadoFactura != null) {
-			if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)  
-					|| ((formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO)
-							&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_ANULADA))
-							&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_PAGADA))
-							&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)))
-			    ) && !user.isLetrado()){
-				mostrarBotonPago = true;
-			}
+	if (modoRegistroBusqueda != null 
+		&& !modoRegistroBusqueda.equalsIgnoreCase("ver")) {
 		
-			if (((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))  
-					|| (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_TARJETA || formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO
-					&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_ANULADA))
-					&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_PAGADA))
-					&& !(estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA))
-			     ))&& !user.isLetrado()){
+		if (estadoFactura != null && !user.isLetrado()) {
+			
+			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
+				mostrarBotonPago = true;
 				mostrarBotonTarjeta = true;
 			}
 
-			if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))
-			     && !user.isLetrado() || (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO))){
+			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)
+			      || estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)
+			      || estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)){
 			    mostrarBotonRenegociar = true;
 			}
-			if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA) 
-				    ) && !user.isLetrado()){
-				mostrarBotonRenegociar = true;
-				}				
-			
 		}
 	}
 	
 	// MAV 7/7/05 a instancias de JG
-	if ((modoRegistroBusqueda != null) && (modoRegistroBusqueda.equalsIgnoreCase("ver"))) {
-	
-		if (estadoFactura != null) {
-			if ((estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) && user.isLetrado()){
-				mostrarBotonTarjeta = true;
-			}
+	if (modoRegistroBusqueda != null 
+		&& modoRegistroBusqueda.equalsIgnoreCase("ver")) {
+		
+		if (estadoFactura != null 
+			&& estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA) 
+			&& user.isLetrado()){
+			mostrarBotonTarjeta = true;
 		}
 	}
 	
