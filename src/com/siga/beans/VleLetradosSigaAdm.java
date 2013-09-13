@@ -328,14 +328,23 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 		Hashtable codigos = new Hashtable();
 		try {
 			
-			if ( (idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals(""))  && !(idInstitucionBuscar.trim().equals(idInstitucionActual)) ) { //SE HA SELECCIONADO UN COLEGIO DISTINTO AL ACTUAL
-			
+			if(formulario.getNif() != null && !formulario.getNif().equals("")){ //BUSQUEDA MULTIPLE
+				
 				sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
 							"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
 							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
 							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
 						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 			
+		    	sqlClientes += " AND (UPPER(L.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
+				
+			}else if ( (idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals(""))  && !(idInstitucionBuscar.trim().equals(idInstitucionActual)) ) { //SE HA SELECCIONADO UN COLEGIO DISTINTO AL ACTUAL
+			
+				sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
+							"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
+							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
+						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 			
     		   //Se buscan los colegiados del colegio seleccionado
 	       		contador++;
