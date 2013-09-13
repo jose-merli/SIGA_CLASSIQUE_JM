@@ -1877,7 +1877,6 @@
 		
 		function cargarProvincias(comboPais){
 			var idPais = jQuery(comboPais).val();
-			alert(idPais);
 			if (idPais == idEspana || idPais == ""){
 				restablecerComboPoblacion();
 				jQuery("#provincia").removeAttr("disabled");
