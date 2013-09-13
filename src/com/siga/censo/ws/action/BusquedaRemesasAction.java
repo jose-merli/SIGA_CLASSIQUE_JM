@@ -13,24 +13,21 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenTipoidentificacion;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenTipoidentificacionExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsExample;
+import org.redabogacia.sigaservices.app.model.EcomCenWsExtended;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
-import org.redabogacia.sigaservices.app.services.ecom.EcomCenTipoIdentificacionService;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.UsrBean;
+import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.service.CensoService;
 import com.siga.censo.ws.form.BusquedaRemesasForm;
+import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.censo.ws.util.CombosCenWS;
 import com.siga.comun.vos.InstitucionVO;
-import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -165,8 +162,8 @@ public class BusquedaRemesasAction extends MasterAction {
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
 				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
-				PaginadorVector<EcomCenWs> paginador = (PaginadorVector<EcomCenWs>) databackup.get("paginador");
-				List<EcomCenWs> datos = new ArrayList<EcomCenWs>();
+				PaginadorVector<EdicionRemesaForm> paginador = (PaginadorVector<EdicionRemesaForm>) databackup.get("paginador");
+				List<EdicionRemesaForm> datos = new ArrayList<EdicionRemesaForm>();
 
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
@@ -185,9 +182,9 @@ public class BusquedaRemesasAction extends MasterAction {
 				databackup.put("datos", datos);
 
 			} else {									
-				List<EcomCenWs> datos = getDatos(form);																	
+				List<EdicionRemesaForm> datos = getDatos(form);																	
 				
-				PaginadorVector<EcomCenWs> paginador = new PaginadorVector(datos);
+				PaginadorVector<EdicionRemesaForm> paginador = new PaginadorVector(datos);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -210,7 +207,9 @@ public class BusquedaRemesasAction extends MasterAction {
 	}
 
 
-	private List<EcomCenWs> getDatos(BusquedaRemesasForm form) throws ParseException {
+	private List<EdicionRemesaForm> getDatos(BusquedaRemesasForm form) throws ParseException, ClsExceptions {
+		
+		List<EdicionRemesaForm> lista = null;
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
 		EcomCenWsExample ecomCenWsExample = new EcomCenWsExample();
 		EcomCenWsExample.Criteria ecomWSCriteria = ecomCenWsExample.createCriteria();
@@ -263,11 +262,22 @@ public class BusquedaRemesasAction extends MasterAction {
 		}
 		ecomCenWsExample.orderByNumeropeticionDESC();
 				
-		return cenWSService.getEcomCenWsList(ecomCenWsExample, ecomCenDatosExample, form.getIdIncidencias());
-	}
-	
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
- 		return "editarRemesa";
+		List<EcomCenWsExtended> listaEcomCenWs = cenWSService.getEcomCenWsList(ecomCenWsExample, ecomCenDatosExample, form.isConIncidencia(), form.isConError());
+		if (listaEcomCenWs != null) {
+			lista = new ArrayList<EdicionRemesaForm>();
+			for (EcomCenWsExtended ecomCenWs : listaEcomCenWs) {
+				EdicionRemesaForm edicionRemesaForm = new EdicionRemesaForm();
+				edicionRemesaForm.setIdcensows(ecomCenWs.getIdcensows());
+				edicionRemesaForm.setIdinstitucion(ecomCenWs.getIdinstitucion());
+				edicionRemesaForm.setNumeroPeticion(ecomCenWs.getNumeropeticion());
+				edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWs.getFechapeticion()));
+				edicionRemesaForm.setCoderror(ecomCenWs.getCoderror());
+				edicionRemesaForm.setIncidencias(ecomCenWs.getIncidencias());
+				lista.add(edicionRemesaForm);
+			}
+		}
+		
+		return lista;
 	}
 
 

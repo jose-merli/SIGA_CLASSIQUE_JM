@@ -61,7 +61,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			if (miForm != null) {
 				String accion = miForm.getModo();
 				if (accion != null && accion.equals("archivar")) {
-					mapDestino = archivar(mapping, miForm, request, response);
+					mapDestino = archivar(mapping, miForm, request, response);				
 				} else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -238,10 +238,9 @@ public class EdicionColegiadoAction extends MasterAction {
 			}
 			
 			if (edicionColegiadoForm.isHistorico()) {
-				formulario.setAccion(formulario.getAccion());
 				edicionColegiadoForm.setIdcensodatosPadre(edicionColegiadoForm.getIdcensodatos());
 			} else {
-				formulario.setAccion(accion);
+				edicionColegiadoForm.setAccionPadre(accion);
 				edicionColegiadoForm.setIdcensodatosPadre(null);
 			}
 			
@@ -294,10 +293,9 @@ public class EdicionColegiadoAction extends MasterAction {
 				
 			if (!edicionColegiadoForm.isColegiadoEditable()) {
 				accion = "ver";
-				edicionColegiadoForm.setAccion(accion);
 			}
 			
-			
+			edicionColegiadoForm.setAccion(accion);
 			
 			// Entramos al formulario en modo 'modificación'
 			//session.setAttribute("accion", accion);

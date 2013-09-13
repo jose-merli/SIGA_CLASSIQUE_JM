@@ -58,7 +58,8 @@ public class EdicionColegiadoForm extends MasterForm {
 	
 	private boolean historico = false;
 	private Long idcensodatosPadre = null;
-	
+	private String accionPadre = null;
+		
 	private List<ValueKeyVO> tiposIdentificacion;
 	private List<ValueKeyVO> situacionesEjerciente;
 	private List<ValueKeyVO> sexos;
@@ -348,6 +349,12 @@ public class EdicionColegiadoForm extends MasterForm {
 	}
 	public void setSexos(List<ValueKeyVO> sexos) {
 		this.sexos = sexos;
+	}
+	public String getAccionPadre() {
+		return accionPadre;
+	}
+	public void setAccionPadre(String accionPadre) {
+		this.accionPadre = accionPadre;
 	}
 	
 		

@@ -24,7 +24,8 @@ public class BusquedaRemesasForm extends MasterForm {
 	private String segundoApellido = null;
 	private String idTipoIdentificacion = null;
 	private String identificacion = null;
-	private String idIncidencias = null;
+	private boolean conIncidencia = false;
+	private boolean conError = false;
 	
 	private List<InstitucionVO> instituciones;
 	private List<ValueKeyVO> tiposIdentificacion;
@@ -48,7 +49,8 @@ public class BusquedaRemesasForm extends MasterForm {
 		segundoApellido = null;
 		idTipoIdentificacion = null;
 		identificacion = null;
-		idIncidencias = null;	
+		conIncidencia = false;
+		conError = false;
 		nombreColegio = null;
 	}
 
@@ -115,12 +117,7 @@ public class BusquedaRemesasForm extends MasterForm {
 	public void setIdentificacion(String identificacion) {
 		this.identificacion = identificacion;
 	}
-	public String getIdIncidencias() {
-		return idIncidencias;
-	}
-	public void setIdIncidencias(String idIncidencias) {
-		this.idIncidencias = idIncidencias;
-	}
+	
 	public List<InstitucionVO> getInstituciones() {
 		return instituciones;
 	}
@@ -141,11 +138,36 @@ public class BusquedaRemesasForm extends MasterForm {
 		return tiposIdentificacion;
 	}
 
-
-
-
 	public void setTiposIdentificacion(List<ValueKeyVO> tiposIdentificacion) {
 		this.tiposIdentificacion = tiposIdentificacion;
 	}
-	
+
+
+
+
+	public boolean isConIncidencia() {
+		return conIncidencia;
+	}
+
+
+
+
+	public void setConIncidencia(boolean conIncidencia) {
+		this.conIncidencia = conIncidencia;
+	}
+
+
+
+
+	public boolean isConError() {
+		return conError;
+	}
+
+
+
+
+	public void setConError(boolean conError) {
+		this.conError = conError;
+	}
+
 }

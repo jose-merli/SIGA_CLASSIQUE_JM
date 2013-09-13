@@ -152,6 +152,24 @@
 								<!-- FILA -->
 								<tr>				
 									<td class="labelText">
+										<siga:Idioma key="censo.ws.literal.conIncidencia"/>
+									</td>
+									<td>
+										<html:checkbox name="BusquedaRemesasForm" property="conIncidencia"/>
+										<html:hidden name="BusquedaRemesasForm" property="conIncidencia" value="false"/>
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="censo.ws.literal.conError"/>
+									</td>
+									<td>
+										<html:checkbox name="BusquedaRemesasForm" property="conError"/>
+										<html:hidden name="BusquedaRemesasForm" property="conError" value="false"/>
+									</td>
+								</tr>		
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
 										<siga:Idioma key="censo.ws.literal.numeroColegiado"/>
 									</td>
 									<td>
@@ -203,20 +221,7 @@
 									</td>
 								</tr>
 								
-								<!-- FILA -->
-								<tr>				
-									<td class="labelText">
-										<siga:Idioma key="censo.ws.literal.incidencias"/>
-									</td>
-									<td colspan="3">																				
-										<html:select name="BusquedaRemesasForm" property="idIncidencias" styleClass="boxCombo">
-											<html:option value=""/>
-											<html:option value="1"><siga:Idioma key="censo.ws.incidencia.conIncidencias"/></html:option>								
-											<html:option value="2"><siga:Idioma key="censo.ws.incidencia.conIncidencias.general"/></html:option>											
-											<html:option value="3"><siga:Idioma key="censo.ws.incidencia.conIncidencias.particular"/></html:option>
-										</html:select>
-									</td>
-								</tr>								
+														
 							</html:form>
 						</table>
 					</siga:ConjCampos>

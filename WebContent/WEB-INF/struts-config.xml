@@ -736,13 +736,14 @@
 		
 		<action path="/CEN_BusquedaRemesas" type="com.siga.censo.ws.action.BusquedaRemesasAction" name="BusquedaRemesasForm" scope="session">
 			<forward name="inicio" path="/html/jsp/censo/ws/busquedaRemesas.jsp"/>		
-			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>						
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>									
 		</action>
 		
 		<action path="/CEN_EdicionRemesas" type="com.siga.censo.ws.action.EdicionRemesasAction" name="EdicionRemesaForm" scope="session">			
 			<forward name="ver" path="/html/jsp/censo/ws/edicionRemesa.jsp"/>
 			<forward name="editar" path="/html/jsp/censo/ws/edicionRemesa.jsp"/>
-			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaColegiados.jsp"/>									
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaColegiados.jsp"/>
+			<forward name="erroresCarga" path="/html/jsp/censo/ws/erroresCarga.jsp"/>									
 		</action>
 		
 		<action path="/CEN_EdicionColegiado" type="com.siga.censo.ws.action.EdicionColegiadoAction" name="EdicionColegiadoForm" scope="session">			

@@ -75,6 +75,8 @@ public class EdicionRemesasAction extends MasterAction {
 				} else if (accion.equalsIgnoreCase("buscarInit")){					
 					request.getSession().removeAttribute(DATAPAGINADOR);						
 					mapDestino = buscarPor(mapping, miForm, request, response);					
+				} else if (accion.equalsIgnoreCase("erroresCarga")){							
+					mapDestino = erroresCarga(mapping, miForm, request, response);
 				} else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -210,13 +212,26 @@ public class EdicionRemesasAction extends MasterAction {
 	}
 	
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		formulario.setAccion("ver");
 		return verEditar("ver", formulario, request);		
 	}
 	
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		formulario.setAccion("editar");
 		return verEditar("editar", formulario, request);		
+	}
+	
+	protected String erroresCarga(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			Long idcensows = edicionRemesaForm.getIdcensows();
+			
+			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+			EcomCenWs ecomCenWs = cenWSService.getEcomCenWsByPk(idcensows);
+			edicionRemesaForm.setCoderror(ecomCenWs.getCoderror());
+			edicionRemesaForm.setDescerror(ecomCenWs.getDescerror());
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+		return "erroresCarga";		
 	}
 	
 	private String verEditar(String accion, MasterForm formulario, HttpServletRequest request) throws SIGAException {
@@ -249,7 +264,7 @@ public class EdicionRemesasAction extends MasterAction {
 			EcomCenWs ecomCenWs = cenWSService.getEcomCenWsByPk(idcensows);
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
-			edicionRemesaForm.setIdcensows(ecomCenWs.getIdcensows().toString());
+			edicionRemesaForm.setIdcensows(ecomCenWs.getIdcensows());
 			edicionRemesaForm.setNombreColegio(institucionAdm.getNombreInstitucion(ecomCenWs.getIdinstitucion().toString()));
 			
 			edicionRemesaForm.setNumeroPeticion(ecomCenWs.getNumeropeticion());

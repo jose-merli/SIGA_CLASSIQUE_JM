@@ -6,6 +6,7 @@
 -->
 
 <!-- CABECERA JSP -->
+<%@page import="com.siga.censo.ws.form.EdicionRemesaForm"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -27,7 +28,6 @@
 
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="org.redabogacia.sigaservices.app.autogen.model.EcomCenWs"%>
 <%@ page import="com.siga.censo.ws.action.BusquedaRemesasAction"%>
 
 
@@ -49,7 +49,7 @@
 
 	String idioma=usr.getLanguage().toUpperCase();
 	/** PAGINADOR ***/
-	List<EcomCenWs> resultado= new ArrayList<EcomCenWs>();
+	List<EdicionRemesaForm> resultado= new ArrayList<EdicionRemesaForm>();
 	String paginaSeleccionada ="";
 	
 	String totalRegistros ="";
@@ -61,7 +61,7 @@
 		hm = (HashMap) ses.getAttribute(BusquedaRemesasAction.DATAPAGINADOR);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
-			resultado = (List<EcomCenWs>) hm.get("datos");
+			resultado = (List<EdicionRemesaForm>) hm.get("datos");
 
 			PaginadorVector paginador = (PaginadorVector) hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
@@ -71,7 +71,7 @@
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 
 		} else {
-			resultado = new ArrayList<EcomCenWs>();
+			resultado = new ArrayList<EdicionRemesaForm>();
 			paginaSeleccionada = "0";
 
 			totalRegistros = "0";
@@ -79,7 +79,7 @@
 			registrosPorPagina = "0";
 		}
 	} else {
-		resultado = new ArrayList<EcomCenWs>();
+		resultado = new ArrayList<EdicionRemesaForm>();
 		paginaSeleccionada = "0";
 		totalRegistros = "0";
 		registrosPorPagina = "0";
@@ -116,8 +116,15 @@
 	</head>
 	
 	<script type="text/javascript">
-					
-			
+		function erroresCarga(fila) {
+	    	var idcensows = document.getElementById('oculto' + fila + '_1');
+	    	
+	    	document.EdicionRemesaForm.modo.value="erroresCarga";	    	
+	    	document.EdicionRemesaForm.idcensows.value=idcensows.value;
+		   	
+			ventaModalGeneral(document.EdicionRemesaForm.name,'P')
+		}	
+		
 	</script>
 
 	<body>		
@@ -126,6 +133,7 @@
 	
 	<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="idcensows"  id="idcensows"  value="">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
@@ -140,24 +148,37 @@
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
+   					FilaExtElement[] elems = null;
+   					
    					for (int i=0; i<resultado.size(); i++) {
-   						EcomCenWs ecomCenWs = (EcomCenWs)resultado.get(i);
-  		
-		   		   		FilaExtElement[] elems = null;
+   						EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm)resultado.get(i);
+  				   		   		
 		   		   		botones = null;
 		   		   		String visibleConsulta = null;
 		   		   		String size = "&nbsp;";
 		   		   		
-	   		   			botones = "C,E";			
-	   		   			elems = new FilaExtElement[0];
+		   		   		botones = "C,E";
+	   		   			
+	   		   			if (edicionRemesaForm.getCoderror() != null) {
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0]=new FilaExtElement("descargaLog", "erroresCarga", "censo.ws.literal.errorFormato", SIGAConstants.ACCESS_FULL);	   		   				
+	   		   				botones = "";
+	   		   			} else if (edicionRemesaForm.getIncidencias() > 0) {
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0]=new FilaExtElement("alarma", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   				botones = "C";
+	   		   			} else {
+	   		   				elems = new FilaExtElement[0];	   		   				
+	   		   			}
+	   		   			
 	   		   			visibleConsulta = "true";		   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=ecomCenWs.getIdcensows()%>">
-					<%=institucionAdm.getNombreInstitucion(ecomCenWs.getIdinstitucion().toString())%></td>										
-					<td style="text-align: center"><%=ecomCenWs.getNumeropeticion()%></td>					
-					<td style="text-align: center"><%=GstDate.getFormatedDateShort(ecomCenWs.getFechapeticion())%></td>					
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionRemesaForm.getIdcensows()%>">
+					<%=institucionAdm.getNombreInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>										
+					<td style="text-align: center"><%=edicionRemesaForm.getNumeroPeticion()%></td>					
+					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>					
 				</siga:FilaConIconos>	
 							<% }
 		   				   } else { %>

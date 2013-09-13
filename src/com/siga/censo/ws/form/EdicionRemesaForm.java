@@ -7,8 +7,8 @@ import com.siga.general.MasterForm;
 
 public class EdicionRemesaForm extends MasterForm {
 	
-	private String idcensows = null;
-	private String idColegio = null;	
+	private Long idcensows = null;
+	private Short idinstitucion = null;	
 	private String numeroPeticion = null;
 	private String fechapeticion = null;
 	
@@ -25,10 +25,11 @@ public class EdicionRemesaForm extends MasterForm {
 	private String idIncidencias = null;
 	
 	private List<ValueKeyVO> tiposIdentificacion;
+	private Integer incidencias;
 	
 	public void reset() {
 		idcensows = null;
-		idColegio = null;	
+		idinstitucion = null;	
 		numeroPeticion = null;
 		fechapeticion = null;
 		
@@ -46,12 +47,7 @@ public class EdicionRemesaForm extends MasterForm {
 	}
 		
 	
-	public String getIdColegio() {
-		return idColegio;
-	}
-	public void setIdColegio(String idColegio) {
-		this.idColegio = idColegio;
-	}
+	
 	public String getNumeroPeticion() {
 		return numeroPeticion;
 	}
@@ -59,10 +55,10 @@ public class EdicionRemesaForm extends MasterForm {
 		this.numeroPeticion = numeroPeticion;
 	}
 	
-	public String getIdcensows() {
+	public Long getIdcensows() {
 		return idcensows;
 	}
-	public void setIdcensows(String idcensows) {
+	public void setIdcensows(Long idcensows) {
 		this.idcensows = idcensows;
 	}
 	public String getNombreColegio() {
@@ -141,5 +137,29 @@ public class EdicionRemesaForm extends MasterForm {
 
 	public void setTiposIdentificacion(List<ValueKeyVO> tiposIdentificacion) {
 		this.tiposIdentificacion = tiposIdentificacion;
+	}
+
+
+
+	public Short getIdinstitucion() {
+		return idinstitucion;
+	}
+
+
+
+	public void setIdinstitucion(Short idinstitucion) {
+		this.idinstitucion = idinstitucion;
+	}
+
+
+
+	public Integer getIncidencias() {
+		return incidencias;
+	}
+
+
+
+	public void setIncidencias(Integer incidencias) {
+		this.incidencias = incidencias;
 	}
 }
