@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- facturaPagosCaja.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -20,7 +21,6 @@
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 
-
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -35,33 +35,26 @@
 	String fechaActual = UtilidadesBDAdm.getFechaBD("");
 %>
 
-
-
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+		
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionCerrar(){ 
 			window.top.close();
 			return 0;
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
 
-			// Validamos los datos
-			
+			// Validamos los datos			
 			if (document.GestionarFacturaForm.datosPagosCajaObservaciones.value.length < 1) {
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Observaciones"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
@@ -90,25 +83,25 @@
 			document.GestionarFacturaForm.datosPagosCajaImporteCobrado.value = document.GestionarFacturaForm.datosPagosCajaImporteCobrado.value.replace(/,/,".");
 			var importeCobrado = document.GestionarFacturaForm.datosPagosCajaImporteCobrado.value;
 
-		  if (isNaN(importeCobrado)) {
+		  	if (isNaN(importeCobrado)) {
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImporteCobrado"/> <siga:Idioma key="messages.campoNumerico.error"/>";
 				alert (mensaje);
-		   	return false;
-		  }
+		   		return false;
+		  	}
 
 			if (eval(importeCobrado) <= 0) {
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImporteCobrado"/> no puede ser inferior o igual a 0";
 				alert (mensaje);
 				return false;
 			}
-
+		
 			var importePendiente = <%=importePendiente%>;
 			if (importeCobrado > importePendiente) {
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImporteCobrado"/> no puede ser superior a " + importePendiente;
 				alert (mensaje);
 				return false;
 			}
-
+		
 			document.GestionarFacturaForm.modo.value = "insertarPagoPorCaja";
 			document.GestionarFacturaForm.submit();
 			return 1;
@@ -141,13 +134,15 @@
 					<table class="tablaCampos" border="0">
 						<tr>
 							<td class="labelText" width="210px"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Observaciones"/>&nbsp;(*)</td>
-							<td class="labelText" colspan="3"><html:textarea property="datosPagosCajaObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:200px" rows="3" styleClass="box" value=""/></td>
+							<td>
+								<html:textarea property="datosPagosCajaObservaciones" 
+								onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+								style="overflow-y:auto; overflow-x:hidden; width:250px; height:50px; resize:none;"
+								styleClass="box" value=""/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/></td>
-							<td class="labelText">
-							<siga:Fecha  nombreCampo= "datosPagosCajaFecha" valorInicial="<%=fechaActual %>" posicionX="50px" posicionY="10px"/>
-							</td>
+							<td><siga:Fecha  nombreCampo= "datosPagosCajaFecha" valorInicial="<%=fechaActual %>" posicionX="50px" posicionY="10px"/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImportePendiente"/></td>
@@ -155,7 +150,7 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImporteCobrado"/></td>
-							<td class="labelTextNum"><input type="text" name="datosPagosCajaImporteCobrado"  maxlength="10" size="10" style="boxNumber" value="0"/>&nbsp;&euro;
+							<td><input type="text" name="datosPagosCajaImporteCobrado"  maxlength="10" size="10" style="boxNumber" value="0"/>&nbsp;&euro;
 						</tr>
 					</table>
 				</td>

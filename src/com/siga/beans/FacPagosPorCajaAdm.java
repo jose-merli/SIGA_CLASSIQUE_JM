@@ -171,13 +171,13 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 	
 	
 	public Vector getPagos (Integer idInstitucion, String idFactura, Long idPersona)  throws ClsExceptions,SIGAException {
-		
 		try {
 			
 			// Obteneción emisión factura
-			String select1 = " SELECT 1 AS idtabla, 'EMISIÓN FACTURA' AS tabla, " +
+			String select1 = " SELECT 1 AS idtabla, " +
+							   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.emisionFactura'," + this.usrbean.getLanguage() + ") AS tabla, " +
 							   "(select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 7) AS estado, " +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
@@ -194,8 +194,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta1 = select1 + from1 + where1;	
 
 			// Obteneción confirmacion factura
-			String select10 = " SELECT 1 AS idtabla, 'CONFIRMACIÓN FACTURA' AS tabla, " +
-							   "'Pendiente Cobro' AS estado, " +
+			String select10 = " SELECT 1 AS idtabla, " +
+							   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura'," + this.usrbean.getLanguage() + ") AS tabla, " +
+							   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") AS estado, " +
 							   " NVL("+FacFacturacionProgramadaBean.T_NOMBRETABLA+".FECHAREALCONFIRM, "+FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_FECHACONFIRMACION   + ") AS FECHA, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
@@ -214,12 +215,13 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta10 = select10 + from10 + where10;				
 			
 			// Obtención de anticipos aplicados a una factura
-			String select2 = " SELECT 2 AS idtabla, 'APLICAR ANTICIPO' AS tabla, " +
+			String select2 = " SELECT 2 AS idtabla, " +
+							 " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.aplicarAnticipo'," + this.usrbean.getLanguage() + ") AS tabla, " +
 							 " case" +
 							 " when (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ")" +
-							 " THEN 'Pendiente Cobro' " +
+							 " THEN " + " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") " + 
 							 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) end as estado, " +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
@@ -234,10 +236,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " > 0 ";
 
 			String consulta2 = select2 + from2 + where2;			
-			
-			
+						
 			// Obtención pagos por caja
-			String select3 = " SELECT 9 AS idtabla, 'PAGOS POR CAJA' AS TABLA, " +
+			String select3 = " SELECT 9 AS idtabla, " +
+					 		 " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS tabla, " +
 					 		 " case" +
 					 		 " when ((" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " - " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") > " +
 					 		" (select sum(pagocaja2 " + "." + FacPagosPorCajaBean.C_IMPORTE + ") as importepagado" +
@@ -248,10 +250,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 								FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
 							"))" + 
 					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
 					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) end as estado, " +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA  + " AS FECHA, "   +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
@@ -274,9 +276,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta3 = select3 + from3 + where3;
 			
 			// Otención pagos por banco
-			String select4 = " SELECT 9 AS idtabla, 'PAGO POR BANCO' AS tabla, " +
+			String select4 = " SELECT 9 AS idtabla, " +
+					" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagoBanco'," + this.usrbean.getLanguage() + ") AS tabla, " +
 					" (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) AS estado, " + 
 							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+
 							 "cargos." + FacDisqueteCargosBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +							   
@@ -305,25 +308,26 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta4 = select4 + from4 + where4;
 
 			// Obtención devoluciones
-			String select5 = " SELECT 9 AS idtabla, 'DEVOLUCIÓN. ' || lineadevolucion.DESCRIPCIONMOTIVOS AS tabla, " +
+			String select5 = " SELECT 9 AS idtabla, " + 
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.devolucion'," + this.usrbean.getLanguage() + ") || '. ' || lineadevolucion.DESCRIPCIONMOTIVOS AS tabla, " +
 					 		 " case" +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is null) " +
 					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
 					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is not null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
 					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +					 		 
 					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
 					 		 " end as estado, " +			
 							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION   + " AS FECHA, "   +
@@ -359,14 +363,15 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta5 = select5 + from5 + where5;
 			
 			// Obtención renegociaciones
-			String select6 = " SELECT 9 AS idtabla, 'RENEGOCIACIÓN ' || renegociacion.comentario AS tabla, " +
+			String select6 = " SELECT 9 AS idtabla, " +
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.renegociacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS tabla, " +
 					 		 " case" +
 					 		 " when (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) " +
 					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +					 		 
 					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +
 					 		 " end as estado, " +			
 							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA, "   + 
@@ -395,9 +400,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta6 = select6 + from6 + where6;	
 			
 			// Obtención devoluciones
-			String select7 = " SELECT 9 AS idtabla, 'ANULACIÓN' AS tabla, " +
+			String select7 = " SELECT 9 AS idtabla, " +
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS tabla, " +
 					 		 " (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
-							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 8) AS estado, " +		
 							 "abono." + FacAbonoBean.C_FECHA   + " AS FECHA, "   +
 					 		 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +

@@ -237,7 +237,9 @@
 				 	String medioPago = "";
 				 	Double devolucion = new Double(0);
 
-					if (tabla.equals("EMISIÓN FACTURA") || tabla.equals("CONFIRMACIÓN FACTURA")) { 
+					if (tabla.equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.emisionFactura")) || 
+						tabla.equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.confirmacionFactura"))) {
+						
 						pendiente	= new Double(total.doubleValue());
 						importe = new Double(0);
 						if (pendiente.doubleValue() < 0.0) {
@@ -245,7 +247,10 @@
 						}
 						
 					} else {
-						if ((tabla.length() > 10) && ("DEVOLUCIÓN".equals(tabla.substring(0,10)) || "RENEGOCIACIÓN".equals(tabla.substring(0,13)))) {
+						if (tabla.length() > 10 && 
+							(tabla.substring(0,10).equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.devolucion")) 
+							|| (tabla.substring(0,13).equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.renegociacion"))))) {
+							
 							pendiente = new Double (importe.doubleValue());
 							importe = new Double(0);
 							if (pendiente.doubleValue() < 0.0) {
