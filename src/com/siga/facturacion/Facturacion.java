@@ -1965,6 +1965,7 @@ public class Facturacion {
 		if(numServicios == 0){
 			
 			Hashtable cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
+			if (cuentaBancariaHashtable != null) {
 			String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
 			if(fechaBajaCuenta!=null && !fechaBajaCuenta.equals("") ){
 				List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
@@ -1980,6 +1981,7 @@ public class Facturacion {
 				return cuentaBancaria;
 				
 			}
+		}
 		}else{
 			//Este nmetodo devuelve si no es lamisma cuenta para todos los servicios
 			cuentaBancaria = cuentasBancariasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
@@ -2043,7 +2045,7 @@ public class Facturacion {
     						String idCuentaActiva = null;
     						if(isAutomatica){
     							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
-    							if ((idCuenta != null) && (!idCuenta.equals(""))){
+    							if ((idCuenta != null) && (!idCuenta.equals("0"))&& (!idCuenta.equals(""))){
     								cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),Integer.parseInt(idCuenta));
     	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
     	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
@@ -2147,7 +2149,7 @@ public class Facturacion {
 
     		} while (false);
 
-    		if (idCuenta!=null && idCuenta.equals(""))
+    		if (idCuenta==null || idCuenta.equals("") || idCuenta.equals("0"))
     			throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
     			
     		if (htCuenta!=null && idCuenta!=null)

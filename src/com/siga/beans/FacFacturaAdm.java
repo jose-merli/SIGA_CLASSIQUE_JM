@@ -3376,9 +3376,11 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			sql.append  (" b  " );
 			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion );
-			sql.append  ("   And c." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona); 
+			sql.append  ("   And c." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona);
+			sql.append  ("   And c." + CenCuentasBancariasBean.C_FECHABAJA + " is not null ");
+			sql.append  ("   order by c." + CenCuentasBancariasBean.C_FECHAMODIFICACION + " desc "); 
 
-			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
+			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() >= 1) {
 				Row fila = (Row) rc.get(0);
 				Hashtable resultado = fila.getRow();
 				return diferentes = (String) resultado.get("IDCUENTA").toString();
