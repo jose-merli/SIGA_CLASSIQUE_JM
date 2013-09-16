@@ -233,7 +233,7 @@
   					 facturacion.lineasFactura.literal.IVA,
 					 facturacion.lineasFactura.literal.Total,
   					facturacion.lineasFactura.literal.Anticipado,"
-		columnSizes="9,40,7,9,7,9,9" 
+		columnSizes="9,50,7,9,7,9,9" 
 		modal="M"
 		fixedHeight="50%">
 
