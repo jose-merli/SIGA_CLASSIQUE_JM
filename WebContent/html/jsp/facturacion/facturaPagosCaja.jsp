@@ -28,6 +28,7 @@
 	String  idFactura = (String)request.getAttribute("idFactura");
 	Integer idInstitucion = (Integer)request.getAttribute("idInstitucion");
 	Double importePendiente = (Double)request.getAttribute("importePendiente");
+	String ultimaFecha = (String)request.getAttribute("ultimaFecha");
 	
 	importePendiente = new Double(UtilidadesNumero.redondea(importePendiente.doubleValue(),2));
 	
@@ -77,6 +78,13 @@
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
 				return;
+			}
+			
+			var ultimaFecha = "<%=ultimaFecha%>";
+			if (compararFecha (document.GestionarFacturaForm.datosPagosCajaFecha, ultimaFecha) > 1) {
+				mensaje = 'La fecha debe ser mayor o igual que: '+ultimaFecha;
+				alert(mensaje);
+				return false;
 			}
 
 			document.GestionarFacturaForm.datosPagosCajaImporteCobrado.value = document.GestionarFacturaForm.datosPagosCajaImporteCobrado.value.replace(/,/,".");

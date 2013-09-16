@@ -264,20 +264,28 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	 * @exception  SIGAException  Errores de aplicación
 	 */
 	protected String pagoPorCaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-	
 		String modo = "";
+
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
 			FacFacturaAdm admFac = new FacFacturaAdm(this.getUserBean(request));
+			String ultimaFechaRequest = (String)request.getParameter("ultimaFecha");
 			modo = miForm.getModo();
 			request.setAttribute("idInstitucion", 		miForm.getIdInstitucion());
 			request.setAttribute("idFactura", 			miForm.getIdFactura());
 			//request.setAttribute("importePendiente", 	miForm.getDatosPagosCajaImportePendiente());
 			request.setAttribute("importePendiente", 	admFac.getImportePendientePago(miForm.getIdInstitucion().toString(),miForm.getIdFactura()));
-		} 
-		catch (Exception e) { 
+			
+			if(ultimaFechaRequest != null && !ultimaFechaRequest.equals("")){
+				ultimaFechaRequest = GstDate.getFormatedDateShort(ClsConstants.DATE_FORMAT_SHORT_SPANISH,ultimaFechaRequest);	
+			}
+			
+			request.setAttribute("ultimaFecha", ultimaFechaRequest);
+
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
-		}				
+		}		
+		
 		return modo;
 	}
 

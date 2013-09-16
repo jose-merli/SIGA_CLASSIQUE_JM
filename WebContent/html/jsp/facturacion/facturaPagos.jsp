@@ -54,6 +54,7 @@
 	Integer idInstitucion = (Integer)request.getAttribute("idInstitucion");
 	Integer estadoFactura = (Integer)request.getAttribute("estadoFactura");
 	String numeroFactura = (String)request.getAttribute("numeroFactura");
+	String ultimaFecha = "";
 	
 	Vector vPagos = null;
 	Hashtable hTotales = null;
@@ -64,10 +65,14 @@
 	Double totalBanco   = null;
 	Double totalAnticipado   = null;
 	int formaPagoFactura  = 0;
-
+	
 	if (datos != null) {
 		vPagos = (Vector) datos.get("PAGOS");
 		hTotales = (Hashtable) datos.get("TOTALES");
+		
+		//Se calcula la fecha de la ultima línea
+		Hashtable pagoAux = (Hashtable) vPagos.get(vPagos.size()-1);
+		ultimaFecha = UtilidadesHash.getString(pagoAux, "FECHA");				
 	}
 
 	if (hTotales != null) {	
@@ -196,6 +201,7 @@
 		<html:hidden styleId = "idInstitucion" property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>
 		<html:hidden styleId = "numeroFactura"  property = "numeroFactura" value = "<%=numeroFactura%>"/>
 		<html:hidden styleId = "datosPagosCajaImportePendiente"  property = "datosPagosCajaImportePendiente" value = "<%=String.valueOf(pendiente)%>"/>		
+		<input type="hidden" id="ultimaFecha" name="ultimaFecha" value="<%=ultimaFecha%>">
 	</html:form>
 
 	<siga:Table 
