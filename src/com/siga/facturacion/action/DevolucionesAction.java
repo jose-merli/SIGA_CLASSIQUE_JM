@@ -307,6 +307,11 @@ public class DevolucionesAction extends MasterAction {
 					if (Integer.parseInt(cuentasPersona) > 0) 
 						request.setAttribute("cuentaCargo", "0");
 					else request.setAttribute("cuentaCargo", "1");
+					cuentasPersona = facturaAdm.getCuentasAnteriorActivasPersona(idInstitucion, strFacturas);
+					if (Integer.parseInt(cuentasPersona) > 0) 
+						request.setAttribute("cuentaAnterior", "0");
+					else 
+						request.setAttribute("cuentaAnterior", "1");						
 				}
 
 				request.setAttribute("modo", modo);

@@ -36,6 +36,7 @@
 	String pagoBanco = (String) request.getAttribute("pagoBanco");
 	String mensaje = (String) request.getAttribute("mensaje");
 	String cuentaCargo = (String) request.getAttribute("cuentaCargo");
+	String cuentaAnterior = (String) request.getAttribute("cuentaAnterior");
 
 	Integer idCuentaDeudor = null;
 	String radioPorBancoOtra = "";
@@ -168,68 +169,123 @@
 							</c:if>
 						
 							<c:if test="${pagoBanco=='1'}">
-								<c:if test="${cuentaCargo=='0' }">		
-									<tr>
-										<td>
-											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-										</td>
-									</tr>
-										
-									<tr>
-										<td>
-											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-										</td>	
-										<c:if test="${factura!=null }">						
-											<td class="labelText" style="text-align: left;" >
-												<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
+								<c:if test="${cuentaAnterior=='0' }">
+									<c:if test="${cuentaCargo=='0' }">		
+										<tr>
+											<td>
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
 											</td>
-										</c:if>
-									</tr>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+											</td>
+										</tr>
+											
+										<tr>
+											<td>
+												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+											</td>	
+											<c:if test="${factura!=null }">						
+												<td class="labelText" style="text-align: left;" >
+													<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
+												</td>
+											</c:if>
+										</tr>
+											
+										<tr>
+											<td>
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+											</td>
+										</tr>							
+									</c:if>	
+									<c:if test="${cuentaCargo=='1'}">
+										<tr>
+											<td>
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+											</td>
+										</tr>
+																		
+										<tr>
+											<td>
+												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+											</td>									
+										</tr>
+											
+										<tr>
+											<td>
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+											</td>
+										</tr>																
+									</c:if>																			
+								</c:if>
+								<c:if test="${cuentaAnterior=='1' }">	
+										<tr>
+											<td>
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" width="100%"/>
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+											</td>
+										</tr>
+										<c:if test="${cuentaCargo=='0' }">			
+										<tr>
+											<td>
+												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+											</td>	
+											<c:if test="${factura!=null }">						
+												<td class="labelText" style="text-align: left;" >
+													<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
+												</td>
+											</c:if>
+										</tr>
+											
+										<tr>
+											<td>
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+											</td>
+										</tr>							
+									</c:if>	
 										
-									<tr>
-										<td>
-											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
-										</td>
-									</tr>							
-								</c:if>	
-									
-								<c:if test="${cuentaCargo=='1'}">
-									<tr>
-										<td>
-											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-										</td>
-									</tr>
-																	
-									<tr>
-										<td>
-											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-										</td>									
-									</tr>
-										
-									<tr>
-										<td>
-											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
-										</td>
-									</tr>																
-								</c:if>		
+									<c:if test="${cuentaCargo=='1'}">																	
+										<tr>
+											<td>
+												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+											</td>									
+										</tr>
+											
+										<tr>
+											<td>
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+											</td>
+										</tr>																
+									</c:if>									
+								</c:if>								
 							</c:if>
 						</table>
 					</siga:ConjCampos>

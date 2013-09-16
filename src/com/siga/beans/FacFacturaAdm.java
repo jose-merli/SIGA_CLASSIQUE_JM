@@ -3403,6 +3403,65 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 	} // getSelectPersonas()	
 	
+
+	/**
+	 *Comprueba si se han seleccionado personas diferentes
+	 * @param form Formulario con los criterios
+	 * @param idInstitucionAlta,usuario
+	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * @throws ClsExceptions
+	 */
+	public String getCuentasAnteriorActivasPersona(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
+		String diferentes = "";
+		RowsContainer rc = new RowsContainer();
+		try {
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion.toString());
+		    StringBuffer sql = new StringBuffer();
+		    Hashtable codigosHashtable = new Hashtable();
+			int contador = 0;
+		    
+			sql.append  ("Select Count(*) As numcuentas ");
+			sql.append  ("  From  " +FacFacturaBean.T_NOMBRETABLA + " f ");
+			sql.append  (" Where f." + FacFacturaBean.C_IDCUENTA + " IS NOT NULL");
+			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
+			contador ++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),idInstitucion);
+			sql.append  ("   And f." + FacFacturaBean.C_IDFACTURA + " in ( "); 
+			for (int i = 0; i < strFacturas.length; i++) {
+				String factura = strFacturas[i];
+				contador ++;
+				sql.append(":");
+				sql.append(contador);
+				if(i!=strFacturas.length-1)
+					sql.append(",");
+				codigosHashtable.put(new Integer(contador),factura);
+			}
+			sql.append(" )");
+
+			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable resultado = fila.getRow();
+				return diferentes = (String) resultado.get("NUMCUENTAS").toString();
+			}
+			else {
+				return diferentes = "0";
+			}
+		} 	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
+	   			}
+	   		}	
+	    }
+	} // getSelectPersonas()			
 	
 	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas) throws ClsExceptions,SIGAException
 	{
