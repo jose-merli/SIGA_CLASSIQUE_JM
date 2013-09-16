@@ -2149,7 +2149,7 @@ public class Facturacion {
 
     		} while (false);
 
-    		if (idCuenta==null || idCuenta.equals("") || idCuenta.equals("0"))
+    		if ((idCuenta==null || idCuenta.equals("") || idCuenta.equals("0")) && (idFormaPago!=ClsConstants.TIPO_FORMAPAGO_METALICO))
     			throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
     			
     		if (htCuenta!=null && idCuenta!=null)

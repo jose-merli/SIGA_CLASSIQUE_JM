@@ -426,7 +426,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 
 			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
 							   consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
-							   " ) ORDER BY idtabla ASC, FECHA ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
+							   " ) ORDER BY idtabla ASC, FECHA_ORDEN ASC, FECHA ASC, IDPAGO ASC"; 
 
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
