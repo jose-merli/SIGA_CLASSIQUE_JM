@@ -170,7 +170,7 @@
 %>
 
 			document.GestionarFacturaForm.modo.value = "insertarRenegociar";
-			document.forms[0].target = "submitArea";	
+			document.GestionarFacturaForm.target = "submitArea";	
 			document.GestionarFacturaForm.submit();
 		}				
 	</script>	

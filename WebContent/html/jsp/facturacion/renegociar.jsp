@@ -2,12 +2,14 @@
 <html>
 <head>
 <!-- renegociar.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
@@ -26,23 +28,16 @@
 
 <%
 	String app = request.getContextPath();
-HttpSession ses=request.getSession();
-UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));	
+	HttpSession ses=request.getSession();
+	UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));	
 
-	FacFacturaBean factura = (FacFacturaBean) request
-			.getAttribute("factura");
-	Integer estadoFactura = (Integer) request
-			.getAttribute("estadoFactura");
-	String pagoBanco = (String) request
-			.getAttribute("pagoBanco");
-	String mensaje = (String) request
-			.getAttribute("mensaje");
-	String cuentaCargo = (String) request
-			.getAttribute("cuentaCargo");
-
+	FacFacturaBean factura = (FacFacturaBean) request.getAttribute("factura");
+	Integer estadoFactura = (Integer) request.getAttribute("estadoFactura");
+	String pagoBanco = (String) request.getAttribute("pagoBanco");
+	String mensaje = (String) request.getAttribute("mensaje");
+	String cuentaCargo = (String) request.getAttribute("cuentaCargo");
 
 	Integer idCuentaDeudor = null;
-
 	String radioPorBancoOtra = "";
 	
 	String idFactura = "";
@@ -68,52 +63,55 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
-	<!-- Incluido jquery en siga.js -->
-	
+	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
-		function accionCerrar(){ 
+		// Asociada al boton Volver
+		function accionCerrar() { 
 			window.top.close();
 			return 0;
 		}	
 	
-		<!-- Asociada al boton Guardar -->
+		// Asociada al boton Guardar
 		function accionGuardar() {
-			 document.GestionarFacturaForm.submit();
-		}	
-		
+			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
+				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+				alert(mensaje);
+				return 0;
+			}					
+			
+			document.GestionarFacturaForm.target = "submitArea";	
+			document.GestionarFacturaForm.submit();
+		}			
 		
 		function onload(){		
-			<%  if (mensaje!=null){
+<%  
+			if (mensaje!=null){
 				String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
 				String estilo="notice";
-				if(mensaje.contains("error")){
+				if (mensaje.contains("error")) {
 					estilo="error";
-				}else if(mensaje.contains("success")||mensaje.contains("updated")){
+				} else if (mensaje.contains("success")||mensaje.contains("updated")) {
 					estilo="success";
 				} 
-	%>
-	alert(unescape("<%=msg %>"),"<%=estilo%>");		
-		<%}%>	
+%>
+				alert(unescape("<%=msg %>"),"<%=estilo%>");		
+<%
+			}
+%>	
 		}
 		
-		<!-- Asociada al boton Descargar Fichero -->
+		// Asociada al boton Descargar Fichero
 		function generarFichero() {
 			if (!confirm('<siga:Idioma key="facturacion.renegociacionfacturacion.literal.confirmarDescargaFichero"/>')) {
 				return false;
 			}
 
-
-			document.all.GestionarFacturaForm.modo.value = "download";
+			document.GestionarFacturaForm.modo.value = "download";
 	   		document.GestionarFacturaForm.submit();
-
 		}	
-		
-
-		
 	</script>	
 </head>
 
@@ -125,8 +123,10 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 				<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.pagosFactura.Renegociar.Titulo"/></td>
 		</tr>
 	</table>
-<bean:define id="datosFacturas" name="datosFacturas"  scope="request"/>
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	
+	<bean:define id="datosFacturas" name="datosFacturas"  scope="request"/>
+	
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<html:form action="/FAC_PagosFactura.do" method="POST">
@@ -135,123 +135,140 @@ UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		
 		<table class="tablaCentralCamposMedia" align="center">
 			<tr>
-				<td colspan="2">
+				<td>
 					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago">
-					<table class="tablaCampos" border="0">
-							<c:if test="${pagoBanco=='0' }">
-							<tr>
-								<td>
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" />
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-								</td>
-							</tr>						
+						<table border="0" cellpadding="5" cellspacing="0">	
+							<c:if test="${pagoBanco=='0'}">
+								<tr>
+									<td>
+										<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" />
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+									</td>
+								</tr>						
 
-							<tr>						
-								<td><input type="radio" id="radio2"
-									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" />
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-								</td>									
-							</tr>
-							<tr>
-								<td>
-								<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
-								<br>
+								<tr>						
+									<td>
+										<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" />
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+									</td>									
+								</tr>
 								
-							</td>
-						</tr>								
+								<tr>
+									<td>
+										<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>								
+									</td>
+								</tr>															
 							</c:if>
-							<c:if test="${pagoBanco=='1' }">
-							<c:if test="${cuentaCargo=='0' }">		
-							<tr>
-								<td>
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-								</td>
-							</tr>	
-							<tr>
-								<td><input type="radio" id="radio2"
-									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-								</td>	
-								<c:if test="${factura!=null }">						
-								<td class="labelText" style="text-align: left;" ><siga:ComboBD
-									nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo"
-									clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" /></td>
-								</c:if>
-							</tr>	
-							<tr>
-								<td>
-								<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
-								<br>
-								
-							</td>
-						</tr>							
-							</c:if>		
-							<c:if test="${cuentaCargo=='1' }">
-							<tr>
-								<td>
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-								</td>
-							</tr>								
-							<tr>
-								<td><input type="radio" id="radio2"
-									name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-								</td>									
-							</tr>	
-							<tr>
-								<td>
-								<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
-								<br>
-								
-							</td>
-						</tr>																
-							</c:if>		
+						
+							<c:if test="${pagoBanco=='1'}">
+								<c:if test="${cuentaCargo=='0' }">		
+									<tr>
+										<td>
+											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+										</td>
+									</tr>
+										
+									<tr>
+										<td>
+											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+										</td>	
+										<c:if test="${factura!=null }">						
+											<td class="labelText" style="text-align: left;" >
+												<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
+											</td>
+										</c:if>
+									</tr>
+										
+									<tr>
+										<td>
+											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+										</td>
+									</tr>							
+								</c:if>	
+									
+								<c:if test="${cuentaCargo=='1'}">
+									<tr>
+										<td>
+											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+										</td>
+									</tr>
+																	
+									<tr>
+										<td>
+											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+										</td>									
+									</tr>
+										
+									<tr>
+										<td>
+											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+										</td>
+									</tr>																
+								</c:if>		
 							</c:if>
-					</table>
+						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
 		
 			<tr>
 				<td>
-				<br>
-				<fieldset>
-					<table class="tablaCampos" border="0">
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-							<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""style="overflow-y:auto; overflow-x:hidden; resize:none; width:340px; height:60px;"/>
-							</td>
-						</tr>
-					</table>
-				</fieldset>
+					<fieldset>
+						<table border="0" cellpadding="5" cellspacing="0">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/>
+								</td>
+								<td>
+									<html:textarea property="datosPagosRenegociarObservaciones" 
+										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+										styleClass="box" value=""
+										style="overflow-y:auto; overflow-x:hidden; resize:none; width:340px; height:60px;"/>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
 				</td>
 			</tr>
-
-		</table>
-		
+		</table>		
 	</html:form>
 	<!-- FIN: CAMPOS -->
-<% if (modo.equals("renegociarDevolucion")){ %>
 	
-	<siga:ConjBotonesAccion botones='C,g' modo='' modal="M" />
-<%}else{%>
-		
-	<siga:ConjBotonesAccion botones='C,gf' modo='' modal="M" />
-<%}%>	
-
-
-
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<% if (modo.equals("renegociarDevolucion")) { %>	
+		<siga:ConjBotonesAccion botones='C,g' modo='' modal="M" />
+	<% } else { %>	
+		<siga:ConjBotonesAccion botones='C,gf' modo='' modal="M" />
+	<% } %>	
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-
-<!-- FIN: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

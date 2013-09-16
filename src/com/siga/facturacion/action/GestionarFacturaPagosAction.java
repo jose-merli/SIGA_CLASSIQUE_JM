@@ -657,6 +657,11 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					forward = "renegociar";
 					modo = "renegociarDevolucion";
 					request.setAttribute("modo", modo);
+					if (smsError.equals("")) { 
+						return exitoModal("messages.updated.success",request);
+					} else {
+						return exito(smsError, request);	
+					}					
 				}
 			}
 
