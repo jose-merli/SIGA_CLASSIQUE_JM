@@ -143,7 +143,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 		function refrescarLocal(){ 		
-			document.location.reload();
+			window.location.reload();
 		}
 
 		//Asociada al boton Pago por caja 
@@ -152,8 +152,8 @@
 			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";	 
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
-			fin();
-			if (rc == "MODIFICADO") refrescarLocal();
+			if (rc == "MODIFICADO") 
+				refrescarLocal();
 		}	
 
 		//Asociada al boton Pago por tarjeta
@@ -170,8 +170,8 @@
 			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");
-			fin();
-			if (rc == "MODIFICADO") refrescarLocal();
+			if (rc == "MODIFICADO") 
+				refrescarLocal();
 		}	
 	</script>	
 	
@@ -229,7 +229,7 @@
 				 	String medioPago = "";
 				 	Double devolucion = new Double(0);
 
-					if (tabla.equals("EMISIÓN FACTURA")) { 
+					if (tabla.equals("EMISIÓN FACTURA") || tabla.equals("CONFIRMACIÓN FACTURA")) { 
 						pendiente	= new Double(total.doubleValue());
 						importe = new Double(0);
 						if (pendiente.doubleValue() < 0.0) {
