@@ -152,6 +152,7 @@
 			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";	 
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
+			fin();
 			if (rc == "MODIFICADO") 
 				refrescarLocal();
 		}	
@@ -170,6 +171,7 @@
 			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");
+			fin();
 			if (rc == "MODIFICADO") 
 				refrescarLocal();
 		}	
