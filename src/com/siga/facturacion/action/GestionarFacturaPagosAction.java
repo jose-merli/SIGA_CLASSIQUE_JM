@@ -291,9 +291,9 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 * @exception  SIGAException  Errores de aplicación
 	 */
-	protected String insertarPagoPorCaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
-		UserTransaction t = this.getUserBean(request).getTransaction();
+	protected String insertarPagoPorCaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {		
+		UsrBean usr = this.getUserBean(request);
+		UserTransaction t = usr.getTransaction();
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
 			FacPagosPorCajaAdm pagosAdm = new FacPagosPorCajaAdm(this.getUserBean(request));
@@ -315,8 +315,9 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		    ht.put(FacFacturaBean.C_IDINSTITUCION,pagoBean.getIdInstitucion());
 		    ht.put(FacFacturaBean.C_IDFACTURA,pagoBean.getIdFactura());
 		    Vector v = facturaAdm.selectByPK(ht);
+
 		    if (v!=null && v.size()>0) {
-		        facturaBean = (FacFacturaBean) v.get(0);
+		    	facturaBean = (FacFacturaBean) v.get(0);
 		        
 		        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
 		        facturaBean.setImpTotalPagadoPorCaja(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
@@ -324,53 +325,38 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
 		        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
 		        
-		        if (facturaBean.getImpTotalPorPagar() >= 0) {
-			
-		        	if ((GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 1 )) { 
-		        			//|| (GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 0 )) {
-		        	
-			        	if(pagosAdm.insert(pagoBean)) {
-				        
+		        if (facturaBean.getImpTotalPorPagar() >= 0) {			
+		        	if ((GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) >= 0 )) { 		        	
+			        	if(pagosAdm.insert(pagoBean)) {				        
 			        		if (facturaAdm.update(facturaBean)) {
-					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
+			        			// Vamos a modificar el valor de estado
 			        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
 			        			t.commit();
+			        			
 			        		} else {
 			        			t.rollback();
 			        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 			        		}
-			        	} else {
+			        		
+		        		} else {
 			        		t.rollback();
 			        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
 			        	}
-		        	} else if (GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) == 0 ) {
-			        	if(pagosAdm.insert(pagoBean)) {
-					        
-			        		if (facturaAdm.update(facturaBean)) {
-					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-			        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
-			        			t.commit();
-			        		} else {
-			        			t.rollback();
-			        			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
-			        		}
-			        	} else {
-			        		t.rollback();
-			        		throw new ClsExceptions("Error al insertar el pago de la factura: "+pagosAdm.getError()); 
-			        	}
+			        	
 		        	} else {	
 		        		t.rollback();
-		        		return exito("error en la fecha", request);
-		        	}
-				
+		        		return exito(UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosFactura.PagoCaja.Error.Fecha"), request);		        		 
+		        	}				
 		        } 
+		        
 		    } else {
 				throw new ClsExceptions("No se ha encontrado la factura: "+pagosAdm.getError());
 			}
-		} 
-		catch (Exception e) { 
+		    
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, t); 
-		}				
+		}
+		
 		return exitoModal("messages.inserted.success", request);
 	}
 
@@ -523,7 +509,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				else request.setAttribute("cuentaCargo", "1");				
 			}
 			
-			boolean correcto = true; 
+			String smsError = ""; 
 			tx = usr.getTransactionPesada();
 			tx.begin();
 			for (int i = 0; i < factDevueltasYRenegociadas.size(); i++) {
@@ -537,75 +523,72 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					
 					//request.setAttribute("cuentaUnicaServicios","");
 					//request.setAttribute("numerocuentaBancariaUnica",numerocuentaBancariaUnica);
-					try{	
+					try {	
 						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
 								nuevaFormaPago, idcuenta,	impTotalPorPagar, 
 								miForm.getDatosPagosRenegociarObservaciones(),true,false,null);
 						
-					}catch (SIGAException e) { 
-						correcto = false;
+					} catch (SIGAException e) { 
 						tx.rollback();
 						
 						if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA)) {
-							request.setAttribute("mensaje", "facturacion.renegociar.aviso.cuentaNoExiste");
-							if (miForm.getModo().equalsIgnoreCase("insertarRenegociar"))
-								forward = "pagoRenegociar";
-								else forward = modo;
-						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_PORCAJA)){
-							request.setAttribute("mensaje", "facturacion.renegociar.aviso.mismaformacaja");
-							if (miForm.getModo().equalsIgnoreCase("insertarRenegociar"))
-								forward = "pagoRenegociar";
-								else forward = modo;
+							smsError = "facturacion.renegociar.aviso.cuentaNoExiste";
+							request.setAttribute("mensaje", smsError);
+							
+						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_PORCAJA)) {	
+							smsError = "facturacion.renegociar.aviso.mismaformacaja";
+							request.setAttribute("mensaje", smsError);
+							
 						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE)){
-							request.setAttribute("mensaje", "facturacion.renegociar.aviso.cuentaNoExiste");
-							if (miForm.getModo().equalsIgnoreCase("insertarRenegociar"))
-								forward = "pagoRenegociar";
-								else forward = modo;
+							smsError = "facturacion.renegociar.aviso.mismaformacaja";
+							request.setAttribute("mensaje", smsError);
+							
 						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO)){
-							request.setAttribute("mensaje", "facturacion.renegociar.aviso.formapago");
-							if (miForm.getModo().equalsIgnoreCase("insertarRenegociar"))
-								forward = "pagoRenegociarpagoRenegociar";
-								else forward = modo;
+							smsError = "facturacion.renegociar.aviso.mismaformacaja";
+							request.setAttribute("mensaje", smsError);
 						}
-						if (miForm.getModo().equalsIgnoreCase("insertarRenegociar"))
+						
+						if (miForm.getModo().equalsIgnoreCase("insertarRenegociar")) {
+							forward = "pagoRenegociar";
 							modo = "pagoRenegociar";
-							else { 
-								modo = "renegociarDevolucion";
-								request.setAttribute("modo", modo);
-							}
-					
+							
+						} else { 
+							forward = modo;
+							modo = "renegociarDevolucion";
+							request.setAttribute("modo", modo);
+						}					
 					}
 						
-					} else {
-						try {
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
-										nuevaFormaPago, idcuenta,	impTotalPorPagar, 
-											miForm.getDatosPagosRenegociarObservaciones(),true,true,null);
-						} catch (SIGAException e) {
-							isTodasRenegociadas = false;
-							resultadoNumFacturas.add(numeroFactura);
-							resultadoErroresFichero.add(e.getLiteral());
-							if (resultadoErrores.isEmpty()) {
-								resultadoErrores.add(e.getLiteral());
-							} else {
-								while ((comprobar) && (indice < resultadoErrores.size())) {
-									if (resultadoErrores.get(indice).equals(e.getLiteral())) 
-										comprobar = false;
-									else indice ++;
-								}
-								if (comprobar) {
-									resultadoErrores.add(e.getLiteral());
-								}
+				} else {
+					try {
+						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
+									nuevaFormaPago, idcuenta,	impTotalPorPagar, 
+										miForm.getDatosPagosRenegociarObservaciones(),true,true,null);
+					} catch (SIGAException e) {
+						isTodasRenegociadas = false;
+						resultadoNumFacturas.add(numeroFactura);
+						resultadoErroresFichero.add(e.getLiteral());
+						if (resultadoErrores.isEmpty()) {
+							resultadoErrores.add(e.getLiteral());
+						} else {
+							while ((comprobar) && (indice < resultadoErrores.size())) {
+								if (resultadoErrores.get(indice).equals(e.getLiteral())) 
+									comprobar = false;
+								else indice ++;
 							}
-							continue;
+							if (comprobar) {
+								resultadoErrores.add(e.getLiteral());
+							}
 						}
+						continue;
 					}
+				}
 			}
 			
 			if (Status.STATUS_ACTIVE  == tx.getStatus())
 		    	tx.commit();			
 						
-			if((isTodasRenegociadas) && (factDevueltasYRenegociadas.size() > 1)){
+			if ((isTodasRenegociadas) && (factDevueltasYRenegociadas.size() > 1)) {
 				request.setAttribute("mensaje", "facturacion.renegociacionMasiva.literal.procesoCorrectoRenegocia");
 				forward = "renegociar";
 				modo = "renegociarDevolucion";
@@ -655,8 +638,10 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			} else if((isTodasRenegociadas) && (factDevueltasYRenegociadas.size() == 1)){
 				if (miForm.getModo().equalsIgnoreCase("insertarRenegociar")) {
 					forward = "pagoRenegociar";					
-					if (correcto) { 
-						forward = exitoModal("messages.updated.success",request);
+					if (smsError.equals("")) { 
+						return exitoModal("messages.updated.success",request);
+					} else {
+						return exito(smsError, request);	
 					}
 					
 				} else {

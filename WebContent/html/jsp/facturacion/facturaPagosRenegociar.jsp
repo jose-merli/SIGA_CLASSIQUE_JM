@@ -151,7 +151,8 @@
 			}
 			
 			if (document.GestionarFacturaForm.radio3.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
-				alert("Cuenta requerida");
+				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+				alert(mensaje);
 				return 0;
 			}				
 
@@ -160,7 +161,7 @@
 				&& (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))) {
 %>
 				if (document.GestionarFacturaForm.datosPagosRenegociarNuevaFormaPago[i].value == "mismaCuenta") {
-					var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>";
+					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>';
 					alert(mensaje);
 					return 0;
 				}
