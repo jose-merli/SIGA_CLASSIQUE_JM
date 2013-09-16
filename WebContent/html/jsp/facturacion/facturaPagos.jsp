@@ -30,7 +30,6 @@
 	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
 	String path = actionMapping.getPath();		
 	// Obtencion del tipo de acceso sobre la pestanha del usuario de la aplicacion
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
 	String botonesAccion = "";
 
@@ -184,9 +183,9 @@
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
- 	<% 	if (usr.getStrutsTrans().equals("FAC_BusquedaFactura")) {%>
+ 	<% 	if (user.getStrutsTrans().equals("FAC_BusquedaFactura")) {%>
 			<siga:Titulo titulo="facturacion.facturas.pagos.cabecera"	localizacion="facturacion.facturas.localizacion"/>
-	<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
+	<% } else if (user.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
 			<siga:Titulo titulo="facturacion.facturas.pagos.cabecera"	localizacion="censo.facturacion.facturas.localizacion"/>
 	<% }%>		
 	<!-- FIN: TITULO Y LOCALIZACION -->	
@@ -237,8 +236,8 @@
 				 	String medioPago = "";
 				 	Double devolucion = new Double(0);
 
-					if (tabla.equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.emisionFactura")) || 
-						tabla.equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.confirmacionFactura"))) {
+					if (tabla.equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.emisionFactura")) || 
+						tabla.equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.confirmacionFactura"))) {
 						
 						pendiente	= new Double(total.doubleValue());
 						importe = new Double(0);
@@ -248,8 +247,8 @@
 						
 					} else {
 						if (tabla.length() > 10 && 
-							(tabla.substring(0,10).equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.devolucion")) 
-							|| (tabla.substring(0,13).equals(UtilidadesString.getMensajeIdioma(usrbean, "facturacion.pagosFactura.accion.renegociacion"))))) {
+							(tabla.substring(0,10).equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.devolucion")) 
+							|| (tabla.substring(0,13).equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.renegociacion"))))) {
 							
 							pendiente = new Double (importe.doubleValue());
 							importe = new Double(0);

@@ -401,7 +401,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Obtención devoluciones
 			String select7 = " SELECT 9 AS idtabla, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS tabla, " +
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS tabla, " +
 					 		 " (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
 							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 8) AS estado, " +		
