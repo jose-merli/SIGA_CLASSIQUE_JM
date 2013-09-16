@@ -176,7 +176,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Obteneción emisión factura
 			String select1 = " SELECT 1 AS idtabla, 'EMISIÓN FACTURA' AS tabla, " +
-							   "'Pendiente Confirmación' AS estado, " +
+							   "(select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 7) AS estado, " +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
@@ -216,8 +218,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 " case" +
 							 " when (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ")" +
 							 " THEN 'Pendiente Cobro' " +
-							 " ELSE 'Pagado' " +
-							 " end as estado, " +
+							 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) end as estado, " +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION   + " AS FECHA, "   +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							 FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " AS IMPORTE, " +
@@ -244,9 +247,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 								" AND pagocaja2."   + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " <=  " +
 								FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
 							"))" + 
-					 		 " THEN 'Pendiente Cobro Caja' " +
-					 		 " ELSE 'Pagado' " +
-					 		 " end as estado, " +
+					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
+					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) end as estado, " +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA  + " AS FECHA, "   +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 							   FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
@@ -268,7 +274,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta3 = select3 + from3 + where3;
 			
 			// Otención pagos por banco
-			String select4 = " SELECT 9 AS idtabla, 'PAGO POR BANCO' AS tabla, 'Pagado' AS estado, " + 
+			String select4 = " SELECT 9 AS idtabla, 'PAGO POR BANCO' AS tabla, " +
+					" (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) AS estado, " + 
 							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+
 							 "cargos." + FacDisqueteCargosBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +							   
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
@@ -300,14 +309,22 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 					 		 " case" +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is null) " +
-					 		 " THEN 'Pendiente Cobro Caja' " +
+					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
-					 		 " THEN 'Pendiente Cobro Banco' " +
+					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +
 					 		 " when (incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDRENEGOCIACION + " is not null " +
 					 		 " and   incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " is not null) " +
-					 		 " THEN 'Pendiente Cobro Banco' " +					 		 
-					 		 " ELSE 'Pendiente Cobro Caja' " +
+					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +					 		 
+					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +
 					 		 " end as estado, " +			
 							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION   + " AS FECHA, "   +
 							 "devoluciones." + FacDisqueteDevolucionesBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   + 					 		 
@@ -345,8 +362,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String select6 = " SELECT 9 AS idtabla, 'RENEGOCIACIÓN ' || renegociacion.comentario AS tabla, " +
 					 		 " case" +
 					 		 " when (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) " +
-					 		 " THEN 'Pendiente Cobro Caja' " +					 		 
-					 		 " ELSE 'Pendiente Cobro Banco' " +
+					 		 " THEN (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 2) " +					 		 
+					 		 " ELSE (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +
 					 		 " end as estado, " +			
 							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA, "   + 
 							 "renegociacion." + FacRenegociacionBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   + 					 		 
@@ -375,7 +396,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Obtención devoluciones
 			String select7 = " SELECT 9 AS idtabla, 'ANULACIÓN' AS tabla, " +
-					 		 " 'Anulada' AS estado, " +		
+					 		 " (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + ",1) from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 8) AS estado, " +		
 							 "abono." + FacAbonoBean.C_FECHA   + " AS FECHA, "   +
 					 		 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 				  			 "abono." + FacAbonoBean.C_IMPTOTALABONADO + " AS IMPORTE, " + 

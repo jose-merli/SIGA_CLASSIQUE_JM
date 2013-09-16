@@ -3313,6 +3313,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = f." + FacFacturaBean.C_IDINSTITUCION);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDPERSONA + " = f." + FacFacturaBean.C_IDPERSONA);
+			sql.append  (" and c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
 			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
 			contador ++;
 			sql.append(contador);
