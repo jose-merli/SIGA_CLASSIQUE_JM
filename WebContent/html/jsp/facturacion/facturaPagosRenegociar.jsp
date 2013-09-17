@@ -43,7 +43,8 @@
 	String codigoEntidad = (String) request.getAttribute("codigoEntidad");
 	String cuentaBancariaFactura = (String) request.getAttribute("cuentaBancariaFactura");	
 	String idCuentaUnica = (String) request.getAttribute("idCuentaUnica");		
-	String numerocuentaBancariaUnica = (String) request.getAttribute("numerocuentaBancariaUnica");		
+	String numerocuentaBancariaUnica = (String) request.getAttribute("numerocuentaBancariaUnica");
+	String cuentaCargo = (String) request.getAttribute("cuentaCargo");		
 
 	String idFactura = "";
 	Integer idInstitucion = new Integer(0);
@@ -262,10 +263,10 @@
 									<%=UtilidadesString.mostrarDatoJSP(numerocuentaBancariaUnica)%>
 								</td>	
 							</tr>
-							
+							<c:if test="${cuentaCargo=='0' }">	
 							<tr>
 								<td>
-									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" <%=radioPorBancoOtra%>>
+									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked"/>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" />
@@ -274,6 +275,17 @@
 									<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
 								</td>
 							</tr>
+							</c:if>
+							<c:if test="${cuentaCargo=='1' }">	
+							<tr>
+								<td>
+									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled"/>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" />
+								</td>									
+							</tr>
+							</c:if>
 							
 							<tr>
 								<td>

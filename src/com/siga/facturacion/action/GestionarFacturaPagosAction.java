@@ -381,6 +381,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	protected String pagoRenegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		String modo = "";
+		String[] strFacturas;
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
 			modo = miForm.getModo();
@@ -430,6 +431,12 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
 				cuentaBancariaFactura ="";
 			}
+			
+		
+			String cuentasPersona = facturaAdm.getCuentasActivas(idInstitucion, facturaBean.getIdFactura().toString());
+			if (Integer.parseInt(cuentasPersona) > 0) 
+				request.setAttribute("cuentaCargo", "0");
+			else request.setAttribute("cuentaCargo", "1");		
 			
 			FacFacturaAdm admFac = new FacFacturaAdm(this.getUserBean(request));
 			request.setAttribute("factura", 			facturaBean);
