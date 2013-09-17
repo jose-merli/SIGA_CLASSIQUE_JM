@@ -51,13 +51,13 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Cerrar -->
+		// Asociada al boton Cerrar
 		function accionCerrar(){ 
 			window.top.close();
 			return 0;
 		}	
 	
-		<!-- Asociada al boton Imprimir -->
+		// Asociada al boton Imprimir
 		function accionImprimir(){
 			var divBotones = document.getElementById("botones");
 			var divAreaImpresion = document.getElementById("areaImpresion");
