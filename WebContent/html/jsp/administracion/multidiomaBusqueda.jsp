@@ -103,7 +103,7 @@
 								<input type="text" id="descripcion" name="descripcion" size="30" value="" class="box"/>
 							<% } %>
 						</td>
-						<td class="labelText" width="">
+						<td class="labelText" width="" nowrap="nowrap">
 							<siga:Idioma key="administracion.multidioma.etiquetas.literal.idioma"/>
 						</td>
 						<td class="labelText" width="">
@@ -116,7 +116,7 @@
 	        							 selectedIds="<%=eleSel%>"
 	        							 required="true"/>
 						</td>
-						<td class="labelText" width="">
+						<td class="labelText" width="" nowrap="nowrap">
 							<siga:Idioma key="administracion.multidioma.etiquetas.literal.idiomaATraducir"/>
 						</td>
 						<td class="labelText" width="">

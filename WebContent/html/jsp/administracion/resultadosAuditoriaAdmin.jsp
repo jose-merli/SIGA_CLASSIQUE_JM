@@ -51,7 +51,7 @@
 			border="2"
 			columnNames="administracion.auditoria.institucion,administracion.auditoria.diripservidor,administracion.auditoria.diriplocal,administracion.auditoria.usuario,administracion.auditoria.nif,administracion.auditoria.rol,administracion.auditoria.fechayhora,administracion.auditoria.accion"
 			columnSizes="14,9,9,13,8,10,11,19">
-<%>		
+<%		
 			if (request.getAttribute("Resultado") == null || ((List)request.getAttribute("Resultado")).size() <1 ) {
 %>
 	   			<tr class="notFound">
