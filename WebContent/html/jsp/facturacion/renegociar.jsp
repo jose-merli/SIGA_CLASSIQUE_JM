@@ -68,6 +68,10 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<script language="JavaScript">
+	
+		function refrescarLocal() {
+			jQuery("#idBotonesAccion").find('input:eq(0)').show();
+		}
 
 		// Asociada al boton Volver
 		function accionCerrar() { 
@@ -75,13 +79,15 @@
 			return 0;
 		}	
 	
-		// Asociada al boton Guardar
-		function accionGuardar() {
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {
 			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
 				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
 				alert(mensaje);
 				return 0;
-			}					
+			}				
+			
+			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
 			
 			document.GestionarFacturaForm.target = "submitArea";	
 			document.GestionarFacturaForm.submit();
@@ -102,6 +108,7 @@
 <%
 			}
 %>	
+			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
 		}
 		
 		// Asociada al boton Descargar Fichero
@@ -121,7 +128,7 @@
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
-				<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.pagosFactura.Renegociar.Titulo"/></td>
+			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.pagosFactura.Renegociar.Titulo"/></td>
 		</tr>
 	</table>
 	
@@ -316,11 +323,7 @@
 	</html:form>
 	<!-- FIN: CAMPOS -->
 	
-	<% if (modo.equals("renegociarDevolucion")) { %>	
-		<siga:ConjBotonesAccion botones='C,g' modo='' modal="M" />
-	<% } else { %>	
-		<siga:ConjBotonesAccion botones='C,gf' modo='' modal="M" />
-	<% } %>	
+	<siga:ConjBotonesAccion botones='C,Y,gf' modo='' modal="M" />
 	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 	<!-- INICIO: SUBMIT AREA -->
