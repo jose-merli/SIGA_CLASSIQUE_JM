@@ -142,7 +142,7 @@
 							<c:if test="${pagoBanco=='0'}">
 								<tr>
 									<td>
-										<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" />
+										<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" />
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
@@ -160,7 +160,7 @@
 								
 								<tr>
 									<td>
-										<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+										<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" >
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>								
@@ -173,7 +173,7 @@
 									<c:if test="${cuentaCargo=='0' }">		
 										<tr>
 											<td>
-												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" width="100%"/>
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta"/>
 											</td>
 											<td class="labelText">
 												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
@@ -196,13 +196,14 @@
 											
 										<tr>
 											<td>
-												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked">
 											</td>
 											<td class="labelText">
 												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
 											</td>
 										</tr>							
 									</c:if>	
+									
 									<c:if test="${cuentaCargo=='1'}">
 										<tr>
 											<td>
@@ -258,7 +259,7 @@
 											
 										<tr>
 											<td>
-												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" >
+												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked">
 											</td>
 											<td class="labelText">
 												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
