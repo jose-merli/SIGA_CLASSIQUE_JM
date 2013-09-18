@@ -151,7 +151,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 		String idInstitucion = usr.getLocation();
 		String idioma = usr.getLanguage();
 		
-		BusquedaClientesFiltrosAdm adm = new BusquedaClientesFiltrosAdm();
+		BusquedaClientesFiltrosAdm adm = new BusquedaClientesFiltrosAdm(usr);
 		Vector resultado;
 		
 		try {
