@@ -32,6 +32,8 @@ import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -45,6 +47,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -86,6 +89,7 @@ import com.siga.envios.service.ca_sigp.IntercambiosInService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeAbono;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.MasterReport;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
@@ -1194,6 +1198,33 @@ public class DefinirEnviosAction extends MasterAction {
 				//envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
 				
 				// RGG envio.addDestinatarioIndividual(dest,null,true);
+			}else if (subModo!=null && subModo.equalsIgnoreCase("abono")){
+				
+				vDocs = new Vector(); 
+				// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
+				InformeAbono informeAbono = new InformeAbono(userBean);
+				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+				AdmInformeAdm adm = new AdmInformeAdm(userBean);
+				// mostramos la ventana con la pregunta
+				Vector plantillas=adm.obtenerInformesTipo(idInstitucion,"ABONO",null, null);
+				
+				// MODELO DE TIPO FOP: LLAMADA A MASTER REPORT
+				for (int i=0;i<plantillas.size();i++) {
+					AdmInformeBean b = (AdmInformeBean) plantillas.get(i); 
+					String idAbono = idSolicitud;
+					
+					File fileAbono = informeAbono.generarAbono(request,userBean.getLanguage(),userBean.getLocation(),idAbono,b.getIdPlantilla()); 
+					Documento doc = new Documento(fileAbono.getPath(),fileAbono.getName().substring(0,fileAbono.getName().indexOf(".")));
+					vDocs.add(doc);
+					
+				}
+				
+				
+				//vDocs = tratarFactura(request, idInstitucion,idFactura,this.getUserBean(request),subModo);
+				//Generamos el envío del certificado:
+				//Para idinstitucion=CGAE(2000) se realiza el commit aunque no tenga direccion:
+				Envio envio = new Envio(enviosBean,userBean);
+				tieneDireccion = envio.generarEnvioFactura(idPersona,vDocs,idFactura);	
 			} 
 			else {
 				//Generamos el envío

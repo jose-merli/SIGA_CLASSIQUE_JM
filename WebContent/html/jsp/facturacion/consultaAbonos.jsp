@@ -273,6 +273,7 @@
 		<html:hidden property = "tablaDatosDinamicosD" value = ""/>
 		<html:hidden property = "filaSelD" value = ""/>		
 		<html:hidden property = "idSolicitud" value = ""/>
+		<html:hidden property = "subModo" value = "abono"/>
 		<html:hidden property = "idPersona" value = ""/>
 		<html:hidden property = "descEnvio" value = ""/>
 		
