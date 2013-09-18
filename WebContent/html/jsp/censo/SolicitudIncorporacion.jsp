@@ -148,9 +148,9 @@
 		// Solo se genera el NIF o CIF de la persona
 		if( (document.getElementById("tipoIdentificacion").value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" )
 				|| (document.getElementById("tipoIdentificacion").value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>" )) {
-			document.getElementById("idButtonNif").style.visibility="visible";
+			jQuery("#idButtonNif").show();
 		} else {
-			document.getElementById("idButtonNif").style.visibility="hidden";
+			jQuery("#idButtonNif").hide();
 		}
 	}	
 	
@@ -1068,7 +1068,7 @@
 									<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value=""/>
 								</td>
 								<td style="vertical-align: middle;">
-									<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left;display:inline;visibility: hidden;">
+									<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand; align:left; display:none;">
 								</td>
 							</tr>
 						</table>

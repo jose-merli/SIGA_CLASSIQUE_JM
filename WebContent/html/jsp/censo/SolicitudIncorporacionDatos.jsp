@@ -183,25 +183,26 @@
 
 	function editarNColegiado(){
 		var numeroCol = jQuery("#numColBox");
-		var botNumeroCol = document.getElementById("botonNCol"); 
-		if (numeroCol[0].disabled){
+		var botNumeroCol = jQuery("#botonNCol"); 
+		if (numeroCol[0].disabled) {
 			numeroCol.removeAttr('disabled');
-			numeroCol.removeClass().addClass('box');			
-			botNumeroCol.style.visibility ="hidden";
+			numeroCol.removeClass().addClass('box');	
+			botNumeroCol.hide();
 		}
 	}
 	
 	function restablecerNColegiado(){
 		var numeroCol = jQuery("#numColBox");
-		var botNumeroCol = document.getElementById("botonNCol");
+		var botNumeroCol = jQuery("#botonNCol"); 
 		<%if(nColegiado==null || nColegiado.equalsIgnoreCase("")){%>
 			numeroCol.attr('disabled', 'disabled');
 			numeroCol.removeClass().addClass('boxDisabled');
-			botNumeroCol.style.visibility ="visible";
+			botNumeroCol.show();
+			
 		<%}else{%>
 			numeroCol.removeClass().addClass('box');
 			document.getElementById("numColBox").value=<%=nColegiado%>;
-			botNumeroCol.style.visibility ="hidden";
+			botNumeroCol.hide();
 		<%}%>
 	}
 /*aalg:función para controlar si el número de colegiado elegido se puede asignar o ya 
@@ -329,9 +330,9 @@
 			// Solo se genera el NIF o CIF de la persona
 			if((SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
 				(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-				document.getElementById("idButtonNif").style.visibility="visible";
+				jQuery("#idButtonNif").show();
 			}	else{
-				document.getElementById("idButtonNif").style.visibility="hidden";
+				jQuery("#idButtonNif").hide();
 			}
 		<%}%>
 	}	
@@ -1715,7 +1716,7 @@
 										<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
 									</td>
 									<td>
-										<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left;display:inline;visibility:hidden;">
+										<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand; align:left; display:none;">
 									</td>
 								<%}%>
 							</tr>

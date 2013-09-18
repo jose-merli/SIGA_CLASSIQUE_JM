@@ -62,11 +62,11 @@
 			var divBotones = document.getElementById("botones");
 			var divAreaImpresion = document.getElementById("areaImpresion");
 			
-			divBotones.style.visibility = "hidden";
+			jQuery("#botones").hide();
 			divAreaImpresion.style.height = "100%";
 			window.print();
 			divAreaImpresion.style.height = "275px";
-			divBotones.style.visibility = "visible";
+			jQuery("#botones").show();
 		}	
 	</script>	
 </head>
