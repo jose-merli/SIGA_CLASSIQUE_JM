@@ -43,7 +43,7 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
- 
+  
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/sigainit.do</url-pattern>
@@ -60,7 +60,7 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/sigainit.do</url-pattern>
 	</filter-mapping>
-
+ 
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/itcgaeinit.do</url-pattern>
@@ -95,6 +95,7 @@
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
 
+ <!--   -->
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -111,7 +112,7 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
-
+ <!--   -->
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
@@ -119,7 +120,7 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
- 
+
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
@@ -130,7 +131,7 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
 	
-<!-- -->
+
 
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
