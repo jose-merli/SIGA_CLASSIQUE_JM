@@ -102,30 +102,36 @@
 
 	<!-- INICIO: CAMPOS -->
 	<logic:notEmpty name="CambiosLetradosDesignasForm" property="nombreActual">
-	<siga:ConjCampos leyenda="gratuita.cambioLetrados.literal.letradoActual">
-	<table  width="100%">
-	<tr>				
-		<td class="labelText" width="140">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
-		</td>
-		<td class="boxConsulta">
-			<bean:write name="CambiosLetradosDesignasForm" property="NColegiadoActual"/>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
-		</td>
-		<td class="boxConsulta">
-			<bean:write name="CambiosLetradosDesignasForm" property="nombreActual"/>&nbsp;
-			<bean:write name="CambiosLetradosDesignasForm" property="apellido1Actual"/>&nbsp;
-			<bean:write name="CambiosLetradosDesignasForm" property="apellido2Actual"/>			
-		</td>		
-	</tr>
-	<tr>
-		<td class="labelText"><siga:Idioma key='gratuita.busquedaSJCS.literal.incluirCompensacion'/><input type="Checkbox" id="compensacionActual" name="compensacionActual"></td>
-	</tr>
-	</table>
-	</siga:ConjCampos>
+		<siga:ConjCampos leyenda="gratuita.cambioLetrados.literal.letradoActual">
+			<table  width="100%">
+				<tr>				
+					<td class="labelText" width="140px">
+						<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
+					</td>
+					<td class="boxConsulta">
+						<bean:write name="CambiosLetradosDesignasForm" property="NColegiadoActual"/>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
+					</td>
+					<td class="boxConsulta">
+						<bean:write name="CambiosLetradosDesignasForm" property="nombreActual"/>&nbsp;
+						<bean:write name="CambiosLetradosDesignasForm" property="apellido1Actual"/>&nbsp;
+						<bean:write name="CambiosLetradosDesignasForm" property="apellido2Actual"/>			
+					</td>		
+				</tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key='gratuita.busquedaSJCS.literal.incluirCompensacion'/>
+					</td>
+					<td>
+						<input type="Checkbox" id="compensacionActual" name="compensacionActual">
+					</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
 	</logic:notEmpty>
+	
 	<table border="0" width="100%">
 	<tr>
 	<td>

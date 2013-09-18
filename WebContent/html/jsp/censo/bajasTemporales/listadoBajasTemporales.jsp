@@ -63,6 +63,12 @@
 			censo.bajastemporales.fechaInicio,
 			censo.bajastemporales.fechaFin,
 			censo.bajastemporales.estadoBaja,">		
+			
+		<logic:empty name="BajasTemporalesForm"	property="bajasTemporales">
+			<tr class="notFound">
+   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	 	
+		</logic:empty>
 		
 		<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
 			<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">

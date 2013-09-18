@@ -116,7 +116,7 @@
 								<td class="labelText" width="16%">
 									<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" /></td>
 								<td width="15%">
-									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="anio" style="width:40" maxlength="4" value="<%=anioFiltro%>"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="anio" style="width:40px" maxlength="4" value="<%=anioFiltro%>"></html:text>
 									&nbsp;/&nbsp;<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="numero" size="8" maxlength="10"> </html:text>
 								</td>
 								<td class="labelText">
