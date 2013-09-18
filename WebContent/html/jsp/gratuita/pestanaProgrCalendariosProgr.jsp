@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- pestanaProgrCalendariosProg.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
@@ -19,26 +20,17 @@
  
 <!-- IMPORTS -->
 <!-- JSP -->
-
-
-	
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
-<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -46,152 +38,97 @@
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
-<style type="text/css">
-#listadoProgrDiv {
-	overflow-x: hidden;
-}
-</style>
+	<script language="JavaScript">
 
-<script language="JavaScript">
-
-function refrescarLocal (){
-
-	document.getElementById('idBuscarProgrCalendarios').onclick();
-}
-
-function preAccionBuscarProgrCalendarios (){
-	sub();
-	//document.ProgrCalendariosForm.target = 'mainPestanas';
-}
-function postAccionBuscarProgrCalendarios (){
-	fin();
-	document.ProgrCalendariosForm.modo.value ="";
-	ajustarCabeceraTabla();
-	ajusteAltoBotones('divProgrCalendarios');
-}
-
-
-function accionNuevaProgrCalendarios(){
-	document.ProgrCalendariosForm.modo.value="nuevaProgrCalendarios";
-	var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
-	if (resultado=='MODIFICADO') {
+		function refrescarLocal() {
+			document.getElementById('idBuscarProgrCalendarios').onclick();
+		}
+	
+		function preAccionBuscarProgrCalendarios() {
+			sub();
+			//document.ProgrCalendariosForm.target = 'mainPestanas';
+		}
 		
-		document.getElementById('idBuscarProgrCalendarios').onclick();
+		function postAccionBuscarProgrCalendarios() {
+			fin();
+			document.ProgrCalendariosForm.modo.value ="";
+		}
+	
+		function accionNuevaProgrCalendarios() {
+			document.ProgrCalendariosForm.modo.value="nuevaProgrCalendarios";
+			var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
+			if (resultado=='MODIFICADO') {
+				document.getElementById('idBuscarProgrCalendarios').onclick();
+			}
+		}
+	
+		function consultar(fila) {
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="consultarProgrCalendarios";
+			var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
+		}
 		
-	}
-
-	
-}
-
-function ajustarCabeceraTabla(){
-	if (document.getElementById("listadoProgr").clientHeight < document.getElementById("listadoProgrDiv").clientHeight) {
-		document.getElementById("listadoProgrCab").width='100%';
-		   
-	  } else {
-		  document.getElementById("listadoProgrCab").width='98.43%';
-		   
-	  }
-}
-
-
-function consultar(fila)
-{
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="consultarProgrCalendarios";
-	var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
-	
-	
-	
-}
-function borrar(fila)
-{
-	if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.borrarProgramacion'/>"))
-		return false;
-	sub();
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="borrarProgrCalendarios";
-	document.ProgrCalendariosForm.submit();
-	
-	
-	
-	
+		function borrar(fila) {
+			if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.borrarProgramacion'/>"))
+				return false;
+			sub();
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="borrarProgrCalendarios";
+			document.ProgrCalendariosForm.submit();
+		}
 		
-	
-}
-function editar(fila)
-{
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="editarProgrCalendarios";
-	var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
-	if(resultado=='MODIFICADO'){
-		document.getElementById('idBuscarProgrCalendarios').onclick();
-	}
-
-	
+		function editar(fila) {
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="editarProgrCalendarios";
+			var resultado = ventaModalGeneral(document.ProgrCalendariosForm.name,"G");
+			if(resultado=='MODIFICADO'){
+				document.getElementById('idBuscarProgrCalendarios').onclick();
+			}
+		}
 		
-	
-}
-function adelantarProgrCalendarios(fila)
-{	if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.adelantarProgramacion'/>"))
-		return false;
-	sub();
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="adelantarProgrCalendarios";
-	document.ProgrCalendariosForm.submit();
-	
-	
+		function adelantarProgrCalendarios(fila) {	
+			if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.adelantarProgramacion'/>"))
+				return false;
+			sub();
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="adelantarProgrCalendarios";
+			document.ProgrCalendariosForm.submit();
+		}
 		
-	
-}
-function reprogramarCalendarios(fila)
-{
-	if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.reprogramarProgramacion'/>"))
-		return false;
-	sub();
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="reprogramarCalendarios";
-	document.ProgrCalendariosForm.submit();
-	
+		function reprogramarCalendarios(fila) {
+			if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.reprogramarProgramacion'/>"))
+				return false;
+			sub();
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="reprogramarCalendarios";
+			document.ProgrCalendariosForm.submit();
+		}
 		
-	
-}
-function cancelarGeneracionCalendarios(fila)
-{
-	
-	if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.cancelarProgramacion'/>"))
-		return false;
-	sub();
-	var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
-	document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
-	document.ProgrCalendariosForm.modo.value="cancelarGeneracionCalendarios";
-	document.ProgrCalendariosForm.submit();
-	
-		
-	
-}
-
-
-
-
-</script>
-	
+		function cancelarGeneracionCalendarios(fila) {
+			if(!confirm("<siga:Idioma key='gratuita.calendarios.programacion.confirmar.cancelarProgramacion'/>"))
+				return false;
+			sub();
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="cancelarGeneracionCalendarios";
+			document.ProgrCalendariosForm.submit();
+		}
+	</script>
 </head>
  
 <body>
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<bean:define id="ConjuntoGuardiasForms" name="ConjuntoGuardiasForms" type="java.util.Collection" scope="request" />
 
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-<bean:define id="ConjuntoGuardiasForms" name="ConjuntoGuardiasForms" type="java.util.Collection" scope="request" />
-
-<html:form action="${path}"   method="POST" target="submitArea">
-
-<html:hidden property="idProgrCalendario" value=""/>
-<html:hidden property="modo" value=""/>
-<input type="hidden" name="actionModal" />
+	<html:form action="${path}"   method="POST" target="submitArea">
+		<html:hidden property="idProgrCalendario" value=""/>
+		<html:hidden property="modo" value=""/>
+		<input type="hidden" name="actionModal" />
 
 		<table width="100%" border="0">
 			<tr>
@@ -200,40 +137,29 @@ function cancelarGeneracionCalendarios(fila)
 				<td width="15%"></td>
 				<td width="35%"></td>
 			</tr>
-			<tr>				
 			
-					<td class="labelText">
+			<tr>				
+				<td class="labelText">
 					<siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/>
 					&nbsp;
 					<siga:Idioma key='general.literal.desde'/>
-					
-					</td>
-					<td >
-					
-						<siga:Fecha nombreCampo="fechaProgrDesde"></siga:Fecha>
-	
-					</td>
-		
-					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
-					<td>
-						<siga:Fecha nombreCampo="fechaProgrHasta" campoCargarFechaDesde="fechaProgrDesde"></siga:Fecha>
-					</td>
-					
-				</tr>
-			<tr>
+				</td>
+				<td><siga:Fecha nombreCampo="fechaProgrDesde"></siga:Fecha></td>		
+				<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
+				<td><siga:Fecha nombreCampo="fechaProgrHasta" campoCargarFechaDesde="fechaProgrDesde"></siga:Fecha></td>					
+			</tr>
+			
 			<tr>
 				<td class="labelText"><siga:Idioma key='gratuita.calendarios.programacion.conjuntoGuardias'/></td>
-				<td><html:select styleClass="boxCombo" style="width:320px;"
-								property="idConjuntoGuardia"  >
-								
+				<td>
+					<html:select styleClass="boxCombo" style="width:320px;" property="idConjuntoGuardia"  >
 						<html:option value="">&nbsp;</html:option>
-						<html:optionsCollection name="ConjuntoGuardiasForms" value="idConjuntoGuardia"
-									label="descripcion" />
+						<html:optionsCollection name="ConjuntoGuardiasForms" value="idConjuntoGuardia" label="descripcion" />
 					</html:select>
 				</td>
 				<td class="labelText"><siga:Idioma key="gratuita.calendarios.programacion.estado"/></td>
-				<td><html:select property="estado" styleClass="boxCombo">
-			
+				<td>
+					<html:select property="estado" styleClass="boxCombo">
 						<html:option value="">&nbsp;</html:option>
 						<html:option value="0"><siga:Idioma key="gratuita.calendarios.programacion.estado.programada"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.calendarios.programacion.estado.procesando"/></html:option>
@@ -241,77 +167,54 @@ function cancelarGeneracionCalendarios(fila)
 						<html:option value="3"><siga:Idioma key="gratuita.calendarios.programacion.estado.generada"/></html:option>
 						<html:option value="4"><siga:Idioma key="gratuita.calendarios.programacion.estado.cancelado"/></html:option>
 						<html:option value="5"><siga:Idioma key="gratuita.calendarios.programacion.estado.reprogramada"/></html:option>
-						
-						
-				</html:select>
+					</html:select>
 				</td>
-				
-				
 			</tr>
 			
-			
 			<tr>				
-					<td class="labelText">
+				<td class="labelText">
 					<siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
 					<siga:Idioma key='general.literal.desde'/>
-					</td>
-					<td>					
-						<siga:Fecha nombreCampo="fechaCalInicio"></siga:Fecha>
-	
-					</td>
-		
-					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
-					<td>						
-						<siga:Fecha nombreCampo="fechaCalFin" campoCargarFechaDesde="fechaCalInicio"></siga:Fecha>
-					</td>
-					
-				</tr>
-			<tr>
-			
+				</td>
+				<td><siga:Fecha nombreCampo="fechaCalInicio"></siga:Fecha></td>		
 				
+				<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>
+				<td><siga:Fecha nombreCampo="fechaCalFin" campoCargarFechaDesde="fechaCalInicio"></siga:Fecha></td>					
+			</tr>
 		</table>
-
-
-	</html:form>	
-<table class="botonesSeguido" align="center">
-<tr>
-	<td  style="width:900px;">
-		&nbsp;
-	</td>
-	<td class="tdBotones">
-		<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevaProgrCalendarios();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
-	</td>
-	<td class="tdBotones">
-		<input type='button'  id = 'idBuscarProgrCalendarios' name='idButton' class="button" value='Buscar' alt='Buscar' class='busquedaProgrCalendarios'>
-	</td>
-
-</tr>
-</table>
-<div id="divProgrCalendarios" style='position:absolute;width:100%; '>
-	<table id='progrCalendarios' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
-	</table>
-</div>	
-
-
-
-<ajax:htmlContent
-	baseUrl="/SIGA/JGR_ProgrCalendariosProgr.do?modo=getAjaxBusquedaProgrCalendarios"
-	source="idBuscarProgrCalendarios"
-	target="divProgrCalendarios"
-	preFunction="preAccionBuscarProgrCalendarios"
-	postFunction="postAccionBuscarProgrCalendarios"
-	parameters="idConjuntoGuardia={idConjuntoGuardia},fechaProgrDesde={fechaProgrDesde},fechaProgrHasta={fechaProgrHasta},fechaCalInicio={fechaCalInicio},fechaCalFin={fechaCalFin},estado={estado}"/>
-
-<!-- FIN: CAMPOS DE BUSQUEDA-->
-<!-- Formularios auxiliares -->
-
-
-
-			
-<!-- FIN: BOTONES BUSQUEDA -->
-	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+	</html:form>
 		
-				style="display: none"></iframe>
+	<table class="botonesSeguido" align="center">
+		<tr>
+			<td  style="width:900px;">
+				&nbsp;
+			</td>
+			<td class="tdBotones">
+				<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevaProgrCalendarios();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
+			</td>
+			<td class="tdBotones">
+				<input type='button'  id = 'idBuscarProgrCalendarios' name='idButton' class="button" value='Buscar' alt='Buscar' class='busquedaProgrCalendarios'>
+			</td>
+		</tr>
+	</table>
+	
+	<div id="divProgrCalendarios" style='position:absolute;width:100%;'>
+		<table id='progrCalendarios' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+		</table>
+	</div>	
 
+	<ajax:htmlContent
+		baseUrl="/SIGA/JGR_ProgrCalendariosProgr.do?modo=getAjaxBusquedaProgrCalendarios"
+		source="idBuscarProgrCalendarios"
+		target="divProgrCalendarios"
+		preFunction="preAccionBuscarProgrCalendarios"
+		postFunction="postAccionBuscarProgrCalendarios"
+		parameters="idConjuntoGuardia={idConjuntoGuardia},fechaProgrDesde={fechaProgrDesde},fechaProgrHasta={fechaProgrHasta},fechaCalInicio={fechaCalInicio},fechaCalFin={fechaCalFin},estado={estado}"/>
+
+	<!-- FIN: CAMPOS DE BUSQUEDA-->
+	<!-- Formularios auxiliares -->
+			
+	<!-- FIN: BOTONES BUSQUEDA -->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>
 </html>
