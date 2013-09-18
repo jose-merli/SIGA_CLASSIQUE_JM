@@ -790,36 +790,32 @@ public class TagBusquedaSJCS extends TagSupport {
 		//out.println("		tdCheckSalto.style.display=(res[5]=='1' && res[6]=='N'?'block':'none'); ");
 		out.println("	}");
        
-		if((concepto.equals("ASISTENCIA") || concepto.equals("EJG") || concepto.equals("SOJ")) && operacion.equals("ASIGNACION")){
+		if ((concepto.equals("ASISTENCIA") || concepto.equals("EJG") || concepto.equals("SOJ")) && operacion.equals("ASIGNACION")){
 			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
-		if(concepto.equals("GUARDIA") && operacion.equals("SUSTITUCION")){// inc-5917
+		
+		if ((concepto.equals("GUARDIA") || concepto.equals("DESIGNACION")) && operacion.equals("SUSTITUCION")){// inc-5917
 			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='visible'; ");
-			out.println("		tdCheckCompensacion.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.display='block'; ");
+			
 			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
-		if(concepto.equals("DESIGNACION") && operacion.equals("SUSTITUCION")){
-			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='visible'; ");
-			out.println("		tdCheckCompensacion.style.display='block'; ");
-			out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-			out.println("		tdCheckSalto.style.display='block'; ");
-		}
+
 		if(concepto.equals("DESIGNACION")  && !operacion.equals("ASIGNACION")){
 			out.println("		document.getElementById('"+campoCompensacion+"').checked=false;");
-			out.println("		tdCheckCompensacion.style.visibility='hidden'; ");
-			//out.println("		tdCheckCompensacion.style.display='none'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.visibility='hidden'; ");
+			out.println("		document.getElementById('tdCheckCompensacion').style.display='none'; ");
 		}
+		
 		if(concepto.equals("DESIGNACION")  && operacion.equals("ASIGNACION")){
 		    out.println("		document.getElementById('"+campoSalto+"').checked=false;");
-			out.println("		tdCheckSalto.style.visibility='visible'; ");
-		    out.println("		tdCheckSalto.style.display='block'; ");
+		    out.println("		document.getElementById('tdCheckSalto').style.visibility='visible'; ");
+			out.println("		document.getElementById('tdCheckSalto').style.display='block'; ");
 		}
 /*
  		out.println("	}else{");//si no hay respuesta ocultamos los resultados????
