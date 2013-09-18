@@ -289,20 +289,12 @@ String path = actionMapping.getPath();
 				</tr>
 
 			</html:form>		
-
-			<% if (idFactura!=null && !idFactura.trim().equals("")) { %>
 			<tr  width="100%">
 				<td>
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"/>" onclick="download();" class="button">
-					
-					
-					
+					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"/>" onclick="download();" class="button">	
 				</td>
 			</tr>
-			<% } %>
-			
-
 			</table>		
 
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
