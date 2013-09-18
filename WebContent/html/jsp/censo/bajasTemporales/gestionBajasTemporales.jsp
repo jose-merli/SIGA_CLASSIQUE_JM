@@ -222,9 +222,7 @@
 			postFunction="postAccionColegiado"
 			/>
 	
-		<div id="divBajasTemporales" style='height:480px;position:absolute;width:100%; overflow-y:auto'>
-			<table id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
-			</table>
+		<div id="divBajasTemporales" style='position:relative;height:100%;width:100%;'>
 		</div>	
 	</html:form>
 

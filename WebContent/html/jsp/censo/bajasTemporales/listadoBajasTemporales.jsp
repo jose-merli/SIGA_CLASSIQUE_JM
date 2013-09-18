@@ -9,9 +9,7 @@
 <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
-<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -21,15 +19,12 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- HEAD -->
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 
@@ -42,8 +37,8 @@
 	<!-- Step 4 -->
 	<!-- Importar el js propio de la pagina-->
 	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
-	<script>		
 	
+	<script>			
 		function borrar(fila){
 			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
 				return borrarFila(fila);
@@ -52,119 +47,116 @@
 	</script>
  </head>
 
-<body  onload="onInit();">
+<body onload="onInit();">
 
-<div>		
-	<table id='tabBajasTemporalesCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
-		<tr class = 'tableTitle'>
-			<td align='center' width='5%'><input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>
-			<td align='center' width='8%'><siga:Idioma key="censo.bajastemporales.colegiado.numero"/></td>
-			<td align='center' width='18%'><siga:Idioma key="censo.bajastemporales.colegiado.nombre"/></td>
-			<td align='center' width='17%'><siga:Idioma key="censo.bajastemporales.tipo"/></td>
-			<td align='center' width='16%'><siga:Idioma key="censo.bajastemporales.descripcion"/></td>
-			<td align='center' width='10%'><siga:Idioma key="censo.bajastemporales.fechaInicio"/></td>
-			<td align='center' width='10%'><siga:Idioma key="censo.bajastemporales.fechaFin"/></td>
-			<td align='center'  width='8%'><siga:Idioma key="censo.bajastemporales.estadoBaja"/></td>
-			<td align='center' >&nbsp;</td>
-		</tr>
-	</table>
-</div>
-
-
-<table class="tablaCampos" id='bajasTemporales' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'>
 	<% Date fechaActual = GstDate.convertirFecha(UtilidadesBDAdm.getFechaBD(""),ClsConstants.DATE_FORMAT_SHORT_SPANISH);%>
-	<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
-		<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
-			<%index = index-1;%>
-			<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
-			<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
-			<c:set var="fechaActual" value="<%=fechaActual%>"/>
-			<c:set var="disab" value=""/>
-			<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
-			<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
-			<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
-			<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
-			<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
-			<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
-			<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
-			<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
-			
-			<%	if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
-					Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);	
-					if (fechaActual.compareTo(fHasta) > 0){
-						botones = "";%>
-						<c:set var="disab" value="disabled"/>
-				<% } 
-			} %>
-			
-			<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
-	  			pintarEspacio="no"
-	  			visibleConsulta="no"
-	  			botones="<%=botones%>"
-	  			clase="listaNonEdit">
-	  			
-				<td align='center' width='5%'>
-					<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales" ${disab}>
- 				</td>
- 				
-				<td align='center' width='8%'>
-					<c:out value="${bajaTemporalForm.colegiadoNumero}"/>
-				</td>
+
+	<siga:Table
+		name="bajasTemporales"
+		border="1"
+		columnSizes="5,8,18,17,16,10,10,8,8"
+		columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,
+			censo.bajastemporales.colegiado.numero,
+			censo.bajastemporales.colegiado.nombre,
+			censo.bajastemporales.tipo,
+			censo.bajastemporales.descripcion,
+			censo.bajastemporales.fechaInicio,
+			censo.bajastemporales.fechaFin,
+			censo.bajastemporales.estadoBaja,">		
+		
+		<logic:notEmpty name="BajasTemporalesForm"	property="bajasTemporales">
+			<logic:iterate name="BajasTemporalesForm" property="bajasTemporales" id="bajaTemporalBean" indexId="index">
+				<%index = index-1;%>
+				<bean:define id="bajaTemporalForm" name="bajaTemporalBean" property="bajaTemporalForm" type="com.siga.censo.form.BajasTemporalesForm"/>
+				<bean:define id="botones" name="bajaTemporalForm" property="botones" type="java.lang.String"/>
 				
-				<td align='left' width='18%'>
-					<c:out value="${bajaTemporalForm.colegiadoNombre}"/>
-				</td>
+				<c:set var="fechaActual" value="<%=fechaActual%>"/>
+				<c:set var="disab" value=""/>
+				<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
+				<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
+				<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
+				<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
+				<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
+				<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
+				<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
+				<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
 				
-				<c:choose>
-					<c:when test="${BajasTemporalesForm.situacion=='B'||BajasTemporalesForm.fichaColegial==true}">
-						<td align='center' width='17%'>
-							<c:out value="${bajaTemporalForm.tipoDescripcion}"/>
-						</td>
-						
-						<td align='left' width='16%'>
-							<c:choose>
-								<c:when test="${bajaTemporalForm.descripcion!=null && bajaTemporalForm.descripcion!=''}">
-									<c:out value="${bajaTemporalForm.descripcion}" />
-								</c:when>
-								<c:otherwise>
-									  &nbsp;
-								</c:otherwise>
-							</c:choose>
-						</td>
-						
-						<td align='center' width='10%'>
-							<c:out value="${bajaTemporalForm.fechaDesde}"/>
-						</td>
-						<td align='center' width='10%'>
-							<c:out value="${bajaTemporalForm.fechaHasta}"/>
-						</td>
-						<td align='center'  width='8%'>
-							<c:out value="${bajaTemporalForm.estadoBajaTxt}"/>
-						</td>
-					</c:when>
-												
-					<c:otherwise>
-						<td align='center' width='17%'>
-							<c:choose>
-								<c:when test="${bajaTemporalForm.tipo!=null && bajaTemporalForm.tipo!=''}">
-									<c:out value="${bajaTemporalForm.tipo}" />
-								</c:when>
-								<c:otherwise>
-									  &nbsp;
-								</c:otherwise>
-							</c:choose>							
-						</td>
-						
-						<td align='left' width='16%'>&nbsp;</td>
-						<td align='center' width='10%'>&nbsp;</td>
-						<td align='center' width='10%'>&nbsp;</td>
-						<td align='center'  width='8%'>&nbsp;</td>  
-					</c:otherwise>
-				</c:choose>	
-			</siga:FilaConIconos>
-		</logic:iterate>
-	</logic:notEmpty>
-</table>
+				<%	if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
+						Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);	
+						if (fechaActual.compareTo(fHasta) > 0){
+							botones = "";%>
+							<c:set var="disab" value="disabled"/>
+					<% } 
+				} %>
+				
+				<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
+		  			pintarEspacio="no"
+		  			visibleConsulta="no"
+		  			botones="<%=botones%>"
+		  			clase="listaNonEdit">
+		  			
+					<td align='center' width='5%'>
+						<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales" ${disab}>
+	 				</td>
+	 				
+					<td align='center' width='8%'>
+						<c:out value="${bajaTemporalForm.colegiadoNumero}"/>
+					</td>
+					
+					<td align='left' width='18%'>
+						<c:out value="${bajaTemporalForm.colegiadoNombre}"/>
+					</td>
+					
+					<c:choose>
+						<c:when test="${BajasTemporalesForm.situacion=='B'||BajasTemporalesForm.fichaColegial==true}">
+							<td align='center' width='17%'>
+								<c:out value="${bajaTemporalForm.tipoDescripcion}"/>
+							</td>
+							
+							<td align='left' width='16%'>
+								<c:choose>
+									<c:when test="${bajaTemporalForm.descripcion!=null && bajaTemporalForm.descripcion!=''}">
+										<c:out value="${bajaTemporalForm.descripcion}" />
+									</c:when>
+									<c:otherwise>
+										  &nbsp;
+									</c:otherwise>
+								</c:choose>
+							</td>
+							
+							<td align='center' width='10%'>
+								<c:out value="${bajaTemporalForm.fechaDesde}"/>
+							</td>
+							<td align='center' width='10%'>
+								<c:out value="${bajaTemporalForm.fechaHasta}"/>
+							</td>
+							<td align='center'  width='8%'>
+								<c:out value="${bajaTemporalForm.estadoBajaTxt}"/>
+							</td>
+						</c:when>
+													
+						<c:otherwise>
+							<td align='center' width='17%'>
+								<c:choose>
+									<c:when test="${bajaTemporalForm.tipo!=null && bajaTemporalForm.tipo!=''}">
+										<c:out value="${bajaTemporalForm.tipo}" />
+									</c:when>
+									<c:otherwise>
+										  &nbsp;
+									</c:otherwise>
+								</c:choose>							
+							</td>
+							
+							<td align='left' width='16%'>&nbsp;</td>
+							<td align='center' width='10%'>&nbsp;</td>
+							<td align='center' width='10%'>&nbsp;</td>
+							<td align='center'  width='8%'>&nbsp;</td>  
+						</c:otherwise>
+					</c:choose>	
+				</siga:FilaConIconos>
+			</logic:iterate>
+		</logic:notEmpty>
+	</siga:Table>
 
 <c:if test="${BajasTemporalesForm.fichaColegial==true}">
 	<input type="hidden" id="colegiadoNumeroFichaColegial"
