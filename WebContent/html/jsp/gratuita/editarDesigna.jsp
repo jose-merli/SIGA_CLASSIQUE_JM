@@ -565,8 +565,8 @@
 			else{
 				if (document.forms[0].juzgado.value!='') {
 					if (confirm('<siga:Idioma key="messages.anular.confirmacion"/>')) {
-						document.getElementById("tdTextoAnulacion").style.visibility = "visible";
-						document.getElementById("tdFechaAnulacion").style.visibility = "visible";
+						jQuery("#tdTextoAnulacion").show();
+						jQuery("#tdFechaAnulacion").show();
 						document.forms[0].action="JGR_MantenimientoDesignas.do";
 						document.forms[0].modo.value="anularDesigna";
 						document.forms[0].target="submitArea";
@@ -588,8 +588,8 @@
 		function muestraFecAnulacion() {
 			var anulada=<%=anulada%>;
 			if(anulada) {
-				document.getElementById("tdTextoAnulacion").style.visibility = "visible";
-				document.getElementById("tdFechaAnulacion").style.visibility = "visible";
+				jQuery("#tdTextoAnulacion").show();
+				jQuery("#tdFechaAnulacion").show();
 			}
 		}
 		
