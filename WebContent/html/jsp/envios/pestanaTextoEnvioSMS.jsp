@@ -12,6 +12,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri = "c.tld" prefix="c"%>
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
@@ -116,7 +117,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td width = "30%">
-							<html:textarea property="cuerpo" onKeyUp="contar(this,151)" onChange="contar(this,151)" onKeyDown="contar(this,151)" value="<%=sCuerpo%>" styleClass="boxCombo" cols="210" rows="10"  value="<%=sCuerpo%>" readonly="<%=bReadOnly%>"/>
+							<html:textarea property="cuerpo" onKeyUp="contar(this,151)" onChange="contar(this,151)" onKeyDown="contar(this,151)" value="<%=sCuerpo%>" styleClass="boxCombo" cols="210" rows="10" readonly="<%=bReadOnly%>"/>
 						</td>
 						<td width = "65%">
 						</td>
