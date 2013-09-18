@@ -54,10 +54,10 @@
 	
 	String pagoConTarjeta = request.getAttribute("PAGOTARJETA")==null?"N":(String)request.getAttribute("PAGOTARJETA");
 	boolean visibilidad = true;
-	String estilo="box", visibilidadTarjeta="hidden";
+	String estilo="box", visibilidadTarjeta="none";
 	if (pagoConTarjeta.equals("S")) {
 		visibilidad = false;
-		visibilidadTarjeta="visible";
+		visibilidadTarjeta="inline";
 		//estilo = "boxConsulta";
 	}
 %>
@@ -176,7 +176,7 @@
 		</tr>
 	 </table>
 						 
-	<div id="datosTarjeta" style="visibility:<%=visibilidadTarjeta%>;position:relative;">
+	<div id="datosTarjeta" style="display:<%=visibilidadTarjeta%>; position:relative;">
 		 <table>
 			<tr>
 				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>

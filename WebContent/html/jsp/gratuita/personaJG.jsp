@@ -745,11 +745,9 @@
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
 				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
 				|| (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
-				//document.getElementById("idButtonNif").style.visibility="visible";
 				document.getElementById("textoInformativo").style.display="none";
 				//document.getElementById("textoInformativoEnBlanco").style.display="block";								
 			}	else{
-				//document.getElementById("idButtonNif").style.visibility="hidden";
 				document.getElementById("textoInformativo").style.display="block";
 				//document.getElementById("textoInformativoEnBlanco").style.display="none";											
 			}			
