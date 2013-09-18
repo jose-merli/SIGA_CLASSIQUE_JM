@@ -284,7 +284,7 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
 		</td>
 		<td class="labelText" >	
-			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTipoDesigna%>" />
+			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTipoDesigna%>"  ancho="480" />
 		</td>	
 	</tr>	
 	<%if (anioEJG!=null && !anioEJG.equals("")){%>

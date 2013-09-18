@@ -193,7 +193,7 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
 		</td>
 		<td>	
-			<html:text name="BuscarDesignasForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="BuscarDesignasForm" property="codigo" size="5" maxlength="10" styleClass="box" value="<%=codigo%>"></html:text> 
+			<html:text name="BuscarDesignasForm" property="anio" style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"/> / <html:text name="BuscarDesignasForm" property="codigo" style="width:50px" maxlength="10" styleClass="box" value="<%=codigo%>"/> 
 		</td>
 		<td class="labelText">
 			&nbsp;
