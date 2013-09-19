@@ -33,68 +33,71 @@
 	Hashtable sociedades = (Hashtable)request.getAttribute("sociedades");
 %>
 
-
-
 	<!-- HEAD -->
-	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
-		<title><siga:Idioma key="gratuita.retenciones.listadoRetenciones"/></title>
+	<title><siga:Idioma key="gratuita.retenciones.listadoRetenciones"/></title>
 
-		<script language="JavaScript">	
-			function refrescarLocal() {
-				parent.buscar();
-			}		
-		</script>
-	</head>
+	<script language="JavaScript">	
+		function refrescarLocal() {
+			parent.buscar();
+		}		
+	</script>
+</head>
 
-	<body>
+<body>
 		
-		<html:form action="/SolicitudRetencioAction.do" method="post" target="submitArea" style="display:none">
-			<input type="hidden" name="modo" id="modo" value="">
-			<input type="hidden" name="hiddenframe" id="hiddenframe" value="1">
-		</html:form>	
+	<html:form action="/SolicitudRetencioAction.do" method="post" target="submitArea" style="display:none">
+		<input type="hidden" name="modo" id="modo" value="">
+		<input type="hidden" name="hiddenframe" id="hiddenframe" value="1">
+	</html:form>	
 	
-		<siga:Table 		   
-		   name="listadoRetenciones"
-		   border="2"
-		   columnNames="gratuita.retenciones.descripcion,gratuita.retenciones.retencion,gratuita.retenciones.tipoSociedad,"
-		   columnSizes="60,8,20,12"
-		   modal="P" >
+	<siga:Table 		   
+	   	name="listadoRetenciones"
+	   	border="2"
+	   	columnNames="gratuita.retenciones.descripcion,gratuita.retenciones.retencion,gratuita.retenciones.tipoSociedad,"
+	   	columnSizes="60,8,20,12"
+	   	modal="P" >
 				
-			<%if (obj.size()>0){   
-		    	int recordNumber=1;
-				while (recordNumber-1 < obj.size()) {			
-					Hashtable registro = (Hashtable)obj.get(recordNumber-1);
-					ScsRetencionesBean fila = (ScsRetencionesBean)retencionesAdm.hashTableToBean(registro);
-					String nomSociedad=sociedades.get(fila.getLetraNifSociedad()) == null?"":(String)sociedades.get(fila.getLetraNifSociedad());
-				%>
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
-						<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdRetencion()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getUsuMod()%>">										   <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getFechaMod()%>"><%=fila.getDescripcion()%></td>
-						<td align="center"><%=fila.getRetencion()%></td>							
-						<td align="left"><%=nomSociedad%>&nbsp;</td>
-					</siga:FilaConIconos>
-							
-			<% 		recordNumber++;		   
-				} 
+<%
+		if (obj.size()>0) {   
+			int recordNumber=1;
+			while (recordNumber-1 < obj.size()) {			
+				Hashtable registro = (Hashtable)obj.get(recordNumber-1);
+				ScsRetencionesBean fila = (ScsRetencionesBean)retencionesAdm.hashTableToBean(registro);
+				String nomSociedad=sociedades.get(fila.getLetraNifSociedad()) == null?"":(String)sociedades.get(fila.getLetraNifSociedad());
+%>
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
+					<td>
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdRetencion()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getUsuMod()%>">										   
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getFechaMod()%>">
+						
+						<%=fila.getDescripcion()%>
+					</td>
+					<td align="center"><%=fila.getRetencion()%></td>							
+					<td align="left"><%=nomSociedad%>&nbsp;</td>
+				</siga:FilaConIconos>
+<% 		
+				recordNumber++;		   
+			} 
 				
-			} else { %>
-		 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>			
-			<%} %>
-		</siga:Table>
+		} else {
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<% 
+		}
+%>			 
+	</siga:Table>
 
-		<!-- INICIO: SUBMIT AREA -->
-		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
-		<!-- FIN: SUBMIT AREA -->		
-	</body>	
-</html>
-	
+	<!-- INICIO: SUBMIT AREA -->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+	<!-- FIN: SUBMIT AREA -->		
+</body>	
+</html>	
