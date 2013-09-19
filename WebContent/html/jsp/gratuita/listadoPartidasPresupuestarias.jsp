@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoPartidasPresupuestarias.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -35,18 +36,14 @@
 	Vector obj = (Vector) ses.getAttribute("resultado");
 %>
 
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<title><siga:Idioma key="gratuita.partidaPresupuestaria.literal.partidaPresupuestaria"/></title>	
+	
+	<title><siga:Idioma key="gratuita.partidaPresupuestaria.literal.partidaPresupuestaria"/></title>
+		
 	<script language="JavaScript">	
 		function refrescarLocal() {
 			parent.buscar();
@@ -58,54 +55,49 @@
 </head>
 
 <body>
-	<%if (obj.size()>0){%>
 	<html:form action="/PartidaPresupuestariaAction.do" method="post" target="submitArea"	 style="display:none">
 		<input type="hidden" name="modo"  id="modo"  value="">
 	</html:form>	
-		
-		<siga:Table 		   
-		   name="listadoPartidas"
-		   border="2"
-		   columnNames="gratuita.partidaPresupuestaria.literal.nombre,gratuita.partidaPresupuestaria.literal.descripcion,factSJCS.datosFacturacion.literal.importePartida,"
-		   columnSizes="28,45,15,12"
-		   modal="P">
+	
+	<siga:Table 		   
+	   name="listadoPartidas"
+	   border="2"
+	   columnNames="gratuita.partidaPresupuestaria.literal.nombre,gratuita.partidaPresupuestaria.literal.descripcion,factSJCS.datosFacturacion.literal.importePartida,"
+	   columnSizes="28,45,15,12"
+	   modal="P">
 		   
-  			<%
+<%
+		if (obj.size()>0) {
 	    	int recordNumber=1;
 	    	Hashtable registro = new Hashtable();
 			while (recordNumber-1 < obj.size()) {
 				ScsPartidaPresupuestariaBean fila = (ScsPartidaPresupuestariaBean)obj.get(recordNumber-1);
 				registro = fila.getOriginalHash();
-			%>
+%>
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdPartidaPresupuestaria()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getFechaMod()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getUsuMod()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getIdInstitucion()%>"><%=registro.get("NOMBREPARTIDA")%></td>
+					<td>
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdPartidaPresupuestaria()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getFechaMod()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getUsuMod()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getIdInstitucion()%>">
+						
+						<%=registro.get("NOMBREPARTIDA")%>
+					</td>
 					<td><%=registro.get("DESCRIPCION")%>&nbsp;</td>
-					<td align="right"><%=UtilidadesNumero.formatoCampo(registro.get("IMPORTEPARTIDA").toString())%>&nbsp;&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesNumero.formatoCampo(registro.get("IMPORTEPARTIDA").toString())%>&nbsp;&euro;</td>
 				</siga:FilaConIconos>		
-			<%  
+<%  
 				recordNumber++; 
 			}
-			%>
-		</siga:Table>
-
-	<%
-	}else {
-	%>
-	<siga:Table 		   
-		   name="listadoPartidas"
-		   border="2"
-		   columnNames="gratuita.partidaPresupuestaria.literal.nombre,gratuita.partidaPresupuestaria.literal.descripcion,factSJCS.datosFacturacion.literal.importePartida,"
-		   columnSizes="30,45,15,10"
-		   modal="P">
-  	    </siga:Table>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<%
-	}
-	%>	
+		} else {
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<% 
+		}
+%>			 
+	</siga:Table>
 
 	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

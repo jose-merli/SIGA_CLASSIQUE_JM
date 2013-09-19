@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoPJ.jsp-->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -34,26 +35,18 @@
 	Vector obj = (Vector) request.getAttribute("resultado");
 %>
 
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script>
 		//Refresco del iframe 	
-	 	function refrescarLocal()
-		{
+	 	function refrescarLocal() {
 			parent.buscar()
 		}
 	</script>
- 	
 </head>
 
 <body>
@@ -61,55 +54,57 @@
 	<html:form action="/JGR_MantenimientoPartidosJudiciales.do" method="post" target="mainWorkArea" style="display:none">
 		<html:hidden property = "modo" styleId = "modo"  value = ""/>
 		<input type="hidden" name="actionModal" id="actionModal"  value="">
-	</html:form>	
+	</html:form>
+	
+	<siga:Table 		   
+		name="listadoPJ"
+		border="2"
+		columnNames="gratuita.busquedaPJ.literal.partido,"
+		columnSizes="88,12">		
 		
 	<!-- INICIO: RESULTADO -->
-	<% if ((obj!= null) && (obj.size()>0)) { %>
-		<siga:Table 		   
-			   name="listadoPJ"
-			   border="2"
-			   columnNames="gratuita.busquedaPJ.literal.partido,"
-			   columnSizes="88,12">
-			   
-		<%		int recordNumber=1;
-				while ((recordNumber) <= obj.size())
-				{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-				%>
-			<!-- Campos ocultos por cada fila:      
-				1- IDPARTIDO
-				2- PARTIDOJUDICIAL
-				3- FECHAMODIFICACION
-				4- USUMODIFICACION
-				5- IDPROVINCIA
-				6- PROVINCIA
-			-->
-			<!-- Campos visibles por cada fila:
-				1- PROVINCIA
-				2- PARTIDOJUDICIAL
-			-->		
-	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
-				<td>
-					<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPARTIDO")%>'>
-					<%=hash.get(CenPartidoJudicialBean.C_NOMBRE)%>
-				</td>			
-			</siga:FilaConIconos>		
-				<% 		recordNumber++; %>
-				<% } %>
-			</siga:Table>
-		<!-- FIN: RESULTADO -->
-	<% } else { %>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<% } %>
-
+<% 
+		if ((obj!= null) && (obj.size()>0)) {
+			int recordNumber=1;
+			while ((recordNumber) <= obj.size()) {	 	
+				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+%>
+				<!-- Campos ocultos por cada fila:      
+					1- IDPARTIDO
+					2- PARTIDOJUDICIAL
+					3- FECHAMODIFICACION
+					4- USUMODIFICACION
+					5- IDPROVINCIA
+					6- PROVINCIA
+				-->
+				<!-- Campos visibles por cada fila:
+					1- PROVINCIA
+					2- PARTIDOJUDICIAL
+				-->		
+				
+		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
+					<td>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPARTIDO")%>'>
+						<%=hash.get(CenPartidoJudicialBean.C_NOMBRE)%>
+					</td>			
+				</siga:FilaConIconos>		
+<% 		
+				recordNumber++;
+			} 
+ 
+		} else {
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<% 
+		}
+%>			 
+	</siga:Table>
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	
 </body>	
 </html>
