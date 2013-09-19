@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoModalReserva_DefinirCalendarioGuardia.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -54,16 +55,11 @@
 	}
 %>
 
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<script>
@@ -71,7 +67,6 @@
 			parent.refrescarReservas();				
 		}
 	</script>
-			
 </head>
 
 <body>
@@ -94,32 +89,32 @@
 		<html:hidden property = "fechaInicio" value = ""/>
 		<html:hidden property = "fechaFin" value = ""/>
 		<html:hidden property = "idPersona" value = ""/>		
-			<!-- RGG: cambio a formularios ligeros -->
-			
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
-		
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" name="actionModal" value="">
+	</html:form>	
 		
 	<!-- INICIO: RESULTADO -->
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<siga:ConjBotonesBusqueda botones="N"  titulo="gratuita.listadoModal_DefinirCalendarioGuardia.literal.colegiadosReserva" modo="<%=modoOriginal%>" />
+	
+	<siga:Table 		   
+		name="listado"
+		border="2"
+		columnNames="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaPermuta,"
+		columnSizes="14,14,20,23,15,14"
+		modal="P">	
+	
 	<!-- FIN: BOTONES BUSQUEDA -->
-	<% if ((obj!= null) && (obj.size()>0)) { %>
-		<siga:Table 		   
-			   name="listado"
-			   border="2"
-			   columnNames="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaPermuta,"
-			   columnSizes="14,14,20,23,15,14"
-			   modal="P">
-				<%
-				int recordNumber=1;
-				String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
-				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-				String pl = "";
-				while ((recordNumber) <= obj.size())
-				{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-				%>
-			<!-- Campos ocultos por cada fila:      
+<% 
+	if ((obj!= null) && (obj.size()>0)) { 				
+		int recordNumber=1;
+		String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
+		String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
+		String pl = "";
+		while ((recordNumber) <= obj.size()) {	 	
+			Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+
+			/* Campos ocultos por cada fila:      
 				1- IDCALENDARIOGUARDIAS
 				2- IDTURNO
 				3- IDGUARDIA
@@ -129,38 +124,37 @@
 				7- FECHAINICIO
 				8- NUMERO PERMUTA
 				9- FECHA FIN
-			-->
-			<!-- Campos visibles por cada fila:
+			
+ 				Campos visibles por cada fila:
 				1- FECHAINICIO
 				2- FECHAFIN
 				3- Nº COLEGIADO
 				4- NOMBRE
 				5- FECHA PERMUTA
-			-->
-			<%
-				fechaInicio = ((String)hash.get("FECHAINICIO")).equals("")?"&nbsp;":(String)hash.get("FECHAINICIO");
-				fechaFin = ((String)hash.get("FECHAFIN")).equals("")?"&nbsp;":(String)hash.get("FECHAFIN");
-				fechaPermuta = ((String)hash.get("FECHAPERMUTA")).equals("")?"&nbsp;":(String)hash.get("FECHAPERMUTA");
-				idcalendarioguardias = ((String)hash.get("IDCALENDARIOGUARDIAS")).equals("")?"&nbsp;":(String)hash.get("IDCALENDARIOGUARDIAS");
-				idturno = ((String)hash.get("IDTURNO")).equals("")?"&nbsp;":(String)hash.get("IDTURNO");
-				idguardia = ((String)hash.get("IDGUARDIA")).equals("")?"&nbsp;":(String)hash.get("IDGUARDIA");
-				idinstitucion = ((String)hash.get("IDINSTITUCION")).equals("")?"&nbsp;":(String)hash.get("IDINSTITUCION");
-				numerocolegiado = ((String)hash.get("NUMEROCOLEGIADO")).equals("")?"&nbsp;":(String)hash.get("NUMEROCOLEGIADO");
-				nombre = ((String)hash.get("NOMBRE")).equals("")?"&nbsp;":(String)hash.get("NOMBRE");
-				observaciones = ((String)hash.get("OBSERVACIONES")).equals("")?"&nbsp;":(String)hash.get("OBSERVACIONES");
-				idpersona = ((String)hash.get("IDPERSONA")).equals("")?"&nbsp;":(String)hash.get("IDPERSONA");
-				numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
-				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
-				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
-				//PL:
-				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
-				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
-				if (!modoOriginal.equalsIgnoreCase("VER") && (pl!=null && pl.equals("5"))) {
-				    elems = new FilaExtElement[1];	
-					elems[0]=new FilaExtElement("cambiar","cambiar",SIGAConstants.ACCESS_FULL);	
-				}
-
-			%>
+			*/
+			
+			fechaInicio = ((String)hash.get("FECHAINICIO")).equals("")?"&nbsp;":(String)hash.get("FECHAINICIO");
+			fechaFin = ((String)hash.get("FECHAFIN")).equals("")?"&nbsp;":(String)hash.get("FECHAFIN");
+			fechaPermuta = ((String)hash.get("FECHAPERMUTA")).equals("")?"&nbsp;":(String)hash.get("FECHAPERMUTA");
+			idcalendarioguardias = ((String)hash.get("IDCALENDARIOGUARDIAS")).equals("")?"&nbsp;":(String)hash.get("IDCALENDARIOGUARDIAS");
+			idturno = ((String)hash.get("IDTURNO")).equals("")?"&nbsp;":(String)hash.get("IDTURNO");
+			idguardia = ((String)hash.get("IDGUARDIA")).equals("")?"&nbsp;":(String)hash.get("IDGUARDIA");
+			idinstitucion = ((String)hash.get("IDINSTITUCION")).equals("")?"&nbsp;":(String)hash.get("IDINSTITUCION");
+			numerocolegiado = ((String)hash.get("NUMEROCOLEGIADO")).equals("")?"&nbsp;":(String)hash.get("NUMEROCOLEGIADO");
+			nombre = ((String)hash.get("NOMBRE")).equals("")?"&nbsp;":(String)hash.get("NOMBRE");
+			observaciones = ((String)hash.get("OBSERVACIONES")).equals("")?"&nbsp;":(String)hash.get("OBSERVACIONES");
+			idpersona = ((String)hash.get("IDPERSONA")).equals("")?"&nbsp;":(String)hash.get("IDPERSONA");
+			numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
+			fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
+			fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
+			//PL:
+			pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
+			//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
+			if (!modoOriginal.equalsIgnoreCase("VER") && (pl!=null && pl.equals("5"))) {
+			    elems = new FilaExtElement[1];	
+				elems[0]=new FilaExtElement("cambiar","cambiar",SIGAConstants.ACCESS_FULL);	
+			}
+%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,B" elementos='<%=elems%>' clase="listaNonEdit" modo="<%=modoOriginal%>" visibleEdicion="no" >
 				<td align="center">
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
@@ -179,6 +173,7 @@
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>
 					<% } %>
 				</td>
+				
 				<td align="center">
 					<% //Si tengo permuta muestro las fechas de la permuta:
 					if (!numero.equals("NINGUNO")) { %>
@@ -187,8 +182,11 @@
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>
 					<% } %>
 				</td>
+				
 				<td align="center"><%=numerocolegiado%></td>
-				<td align="center"><%=nombre%></td>								
+				
+				<td align="center"><%=nombre%></td>	
+											
 				<td align="center">
 					<% //Si tengo permuta muestro las fechas de la permuta:
 					if (!numero.equals("NINGUNO")) { %>
@@ -198,20 +196,20 @@
 					<% } %>
 				</td>
 			</siga:FilaConIconos>
-				<% 		recordNumber++; %>
-				<% } %>
-			</siga:Table>
-		<!-- FIN: RESULTADO -->
-	<% } else { %>
-					
-	 		<div class="notFound">
-	 		<html:hidden property = "actionModal" value = "P"/>
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<% } %>
-
+<% 		
+			recordNumber++; 
+		} 
+	} else { 
+%>
+ 		<tr class="notFound">
+			<td class="titulitos">
+				<siga:Idioma key="messages.noRecordFound"/>
+			</td>
+		</tr>
+<% 
+	} 
+%>
+	</siga:Table>
 		
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
@@ -234,9 +232,8 @@
 			document.forms[0].fechaFin.value = document.getElementById(fechafin).value;
 		}
 
-		<!-- Funcion asociada a boton cambiar -->
-		function cambiar(fila) 
-		{		
+		// Funcion asociada a boton cambiar
+		function cambiar(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila)			
 			
@@ -250,24 +247,21 @@
 			document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";
 		}
 
-		<!-- Funcion asociada a boton Nuevo -->
-		function nuevo() 
-		{		
+		// Funcion asociada a boton Nuevo
+		function nuevo() {		
 			document.forms[0].accion.value = "modalReserva";
 			document.forms[0].modo.value = "nuevo";
 			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
 			if (salida == "MODIFICADO") 
 				refrescarLocal();
 		}
-		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->		
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas -->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	
 </body>	
 </html>
