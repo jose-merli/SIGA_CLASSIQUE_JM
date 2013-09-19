@@ -38,25 +38,7 @@
 			<logic:iterate name="InscripcionTGForm" property="inscripcionesGuardia" id="inscripcionGuardia" indexId="index">
 				<%index = index-1; %>
 				<bean:define id="inscripcionForm" name="inscripcionGuardia" property="inscripcion" type="com.siga.gratuita.form.InscripcionTGForm"/>
-				<bean:define id="elementosFila" name="inscripcionForm" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-			
-				<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idInstitucion" />">
-				<input type="hidden" id="idTurno_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idTurno" />">
-				<input type="hidden" id="idGuardia_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idGuardia" />">
-				<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idPersona" />">
-				<input type="hidden" id="fechaSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaSuscripcion" />">
-				<input type="hidden" id="observacionesSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesSuscripcion" />">
-				<input type="hidden" id="fechaValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaValidacion" />">
-				<input type="hidden" id="observacionesValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesValidacion" />">
-				<input type="hidden" id="fechaSolicitudBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaSolicitudBaja" />">
-				<input type="hidden" id="observacionesBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesBaja" />">
-				<input type="hidden" id="fechaBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaBaja" />">
-				<input type="hidden" id="observacionesValBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesValBaja" />">
-				<input type="hidden" id="observacionesDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesDenegacion" />">
-				<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaDenegacion" />">
-				<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.validarInscripciones" />">
-				<input type="hidden" id="tipoGuardias_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.guardias" />">
-				<input type="hidden" id='estado_<bean:write name="index"/>' value='<bean:write name="inscripcionGuardia" property="estado" />'>
+				<bean:define id="elementosFila" name="inscripcionForm" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>							
 				
 				<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>'
 	  				botones="" 
@@ -68,6 +50,24 @@
 	  				clase="listaNonEdit">
 	  				
 					<td align='center' width='4%'>
+						<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idInstitucion" />">
+						<input type="hidden" id="idTurno_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idTurno" />">
+						<input type="hidden" id="idGuardia_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idGuardia" />">
+						<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="idPersona" />">
+						<input type="hidden" id="fechaSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaSuscripcion" />">
+						<input type="hidden" id="observacionesSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesSuscripcion" />">
+						<input type="hidden" id="fechaValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaValidacion" />">
+						<input type="hidden" id="observacionesValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesValidacion" />">
+						<input type="hidden" id="fechaSolicitudBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaSolicitudBaja" />">
+						<input type="hidden" id="observacionesBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesBaja" />">
+						<input type="hidden" id="fechaBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaBaja" />">
+						<input type="hidden" id="observacionesValBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesValBaja" />">
+						<input type="hidden" id="observacionesDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesDenegacion" />">
+						<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaDenegacion" />">
+						<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.validarInscripciones" />">
+						<input type="hidden" id="tipoGuardias_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.guardias" />">
+						<input type="hidden" id='estado_<bean:write name="index"/>' value='<bean:write name="inscripcionGuardia" property="estado" />'>
+					
 						<c:choose>
 							<c:when test="${inscripcionGuardia.turno.guardias=='0'}">
 								<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkInscripcion" disabled="disabled" >

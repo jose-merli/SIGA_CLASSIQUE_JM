@@ -40,27 +40,27 @@
 			<logic:iterate name="InscripcionTGForm" property="inscripcionesTurno" id="inscripcionTurno" indexId="index">
 				<%index = index-1; %>
 				<bean:define id="inscripcionForm" name="inscripcionTurno" property="inscripcion" type="com.siga.gratuita.form.InscripcionTGForm"/>
-				<bean:define id="elementosFila" name="inscripcionForm" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
-				  
-				<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idInstitucion" />">
-				<input type="hidden" id="idTurno_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idTurno" />">
-				<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idPersona" />">
-				<input type="hidden" id="fechaSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaSolicitud" />">
-				<input type="hidden" id="observacionesSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesSolicitud" />">
-				<input type="hidden" id="fechaValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaValidacion" />">
-				<input type="hidden" id="observacionesValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesValidacion" />">
-				<input type="hidden" id="fechaSolicitudBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaSolicitudBaja" />">
-				<input type="hidden" id="observacionesBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesBaja" />">
-				<input type="hidden" id="observacionesValBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesValBaja" />">
-				<input type="hidden" id="fechaBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaBaja" />">
-				<input type="hidden" id="observacionesDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesDenegacion" />">
-				<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaDenegacion" />">
-				<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="turno.validarInscripciones" />">
-				<input type="hidden" id="tipoGuardias_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="turno.guardias" />">
-				<input type="hidden" id='estado_<bean:write name="index"/>' value='<bean:write name="inscripcionTurno" property="estado" />'>
+				<bean:define id="elementosFila" name="inscripcionForm" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>				
 				
 				<siga:FilaConIconos	fila='<%=String.valueOf(index.intValue()+1)%>' botones="" pintarEspacio="no" visibleConsulta="no" visibleEdicion = "no" visibleBorrado = "no" elementos="<%=elementosFila%>" clase="listaNonEdit">
 					<td align='center' width='4%'>
+						<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idInstitucion" />">
+						<input type="hidden" id="idTurno_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idTurno" />">
+						<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="idPersona" />">
+						<input type="hidden" id="fechaSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaSolicitud" />">
+						<input type="hidden" id="observacionesSolicitud_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesSolicitud" />">
+						<input type="hidden" id="fechaValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaValidacion" />">
+						<input type="hidden" id="observacionesValidacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesValidacion" />">
+						<input type="hidden" id="fechaSolicitudBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaSolicitudBaja" />">
+						<input type="hidden" id="observacionesBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesBaja" />">
+						<input type="hidden" id="observacionesValBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesValBaja" />">
+						<input type="hidden" id="fechaBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaBaja" />">
+						<input type="hidden" id="observacionesDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="observacionesDenegacion" />">
+						<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="fechaDenegacion" />">
+						<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="turno.validarInscripciones" />">
+						<input type="hidden" id="tipoGuardias_<bean:write name='index'/>" value="<bean:write name="inscripcionTurno" property="turno.guardias" />">
+						<input type="hidden" id='estado_<bean:write name="index"/>' value='<bean:write name="inscripcionTurno" property="estado" />'>
+					
 						<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkInscripcion" />
 					</td>
 					<td align='center' width='8%'>
