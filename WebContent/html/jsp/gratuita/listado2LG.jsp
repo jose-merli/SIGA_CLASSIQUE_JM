@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Definir Listas de Guardias: Modal: listado2LG.jsp-->
+<!-- listado2LG.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -33,27 +34,18 @@
 	Vector obj = (Vector) request.getAttribute("resultado");
 %>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
-
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
  	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo 
-		titulo="gratuita.busquedaLG.literal.titulo" 
-		localizacion="gratuita.busquedaLG.literal.titulo"/>
+	<siga:Titulo titulo="gratuita.busquedaLG.literal.titulo" localizacion="gratuita.busquedaLG.literal.titulo"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<script>
@@ -75,19 +67,19 @@
 		<input type="hidden" name="idPersonaSociedadInicial" value="">
 	</html:form>	
 
-		<siga:Table 		   
-			   name="listadoLG"
-			   border="2"
-			   columnNames=" ,gratuita.modalLG.literal.turno,gratuita.modalLG.literal.guardia"
-			   columnSizes="5,35,40">
-		
-		<!-- INICIO: RESULTADO -->
-	<% if ((obj!= null) && (obj.size()>0)) { %>
-				<%
-				int recordNumber=1;
-				while ((recordNumber) <= obj.size())
-				{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-				%>
+	<siga:Table 		   
+	   	name="listadoLG"
+	   	border="2"
+	   	columnNames=" ,gratuita.modalLG.literal.turno,gratuita.modalLG.literal.guardia"
+	   	columnSizes="5,35,40">
+	
+	<!-- INICIO: RESULTADO -->
+<% 
+		if ((obj!= null) && (obj.size()>0)) { 
+			int recordNumber=1;
+			while ((recordNumber) <= obj.size()) {	 	
+				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+%>
 			<!-- Campos ocultos por cada fila:      
 				1- IDTURNO
 				2- IDGUARDIA
@@ -97,30 +89,32 @@
 				1- TURNO
 				2- GUARDIA    
 			-->
-			<tr class="listaNonEdit">
-				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("ORDEN")%>'>
-				<td align="center"><input type="radio" name="guardiaEscogida" value="<%=String.valueOf(recordNumber)%>" onclick="activarOrden(document.getElementById('oculto<%=String.valueOf(recordNumber)%>_1').value,document.getElementById('oculto<%=String.valueOf(recordNumber)%>_2').value,document.getElementById('oculto<%=String.valueOf(recordNumber)%>_3').value)"></td>
-				<td><%=hash.get("TURNO")%></td>
-				<td><%=hash.get("GUARDIA")%></td>
-				
-			</tr>
-				<% 		recordNumber++; %>
-				<% } %>
-		<!-- FIN: RESULTADO -->
-	<% } else { %>
+				<tr class="listaNonEdit">				
+					<td align="center">
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("ORDEN")%>'>
+						<input type="radio" name="guardiaEscogida" value="<%=String.valueOf(recordNumber)%>" onclick="activarOrden(document.getElementById('oculto<%=String.valueOf(recordNumber)%>_1').value,document.getElementById('oculto<%=String.valueOf(recordNumber)%>_2').value,document.getElementById('oculto<%=String.valueOf(recordNumber)%>_3').value)">
+					</td>
+					<td><%=hash.get("TURNO")%></td>
+					<td><%=hash.get("GUARDIA")%></td>
+				</tr>
+<% 		
+				recordNumber++;
+			} 
+		} else { 
+%>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	<% } %>
-			</siga:Table>
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<% 
+		} 
+%>
+	</siga:Table>
 
-	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	
 </body>	
 </html>
