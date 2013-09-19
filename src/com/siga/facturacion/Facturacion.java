@@ -2091,9 +2091,22 @@ public class Facturacion {
 	    				}
 	    				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
 	    					if ((idCuenta == null) || (idCuenta == "")){
-	    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
-	    					}
-	    					else{
+	    						CenCuentasBancariasBean cuentaBancaria;
+	    						String idCuentaActiva = null;
+	    						if(isAutomatica){
+	    							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
+	    							if ((idCuenta != null) && (!idCuenta.equals("0"))&& (!idCuenta.equals(""))){
+	    								cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),Integer.parseInt(idCuenta));
+	    	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+	    	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+	    							} else{
+		    							idCuenta = null;
+		    	    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
+		    	    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+		    	    					cambioFormaPago = true;
+	    							}
+	    						} else throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
+	    					} else{
 	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
 	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
 	    					}
@@ -2138,7 +2151,21 @@ public class Facturacion {
 		    				if (formaPago.equalsIgnoreCase("porBanco") || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
 		    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
 		    					if(idCuenta == null){
-		    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
+		    						CenCuentasBancariasBean cuentaBancaria;
+		    						String idCuentaActiva = null;
+		    						if(isAutomatica){
+		    							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
+		    							if ((idCuenta != null) && (!idCuenta.equals("0"))&& (!idCuenta.equals(""))){
+		    								cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),Integer.parseInt(idCuenta));
+		    	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
+		    	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+		    							} else{
+			    							idCuenta = null;
+			    	    					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
+			    	    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+			    	    					cambioFormaPago = true;
+		    							}
+		    						} else throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
 		    					}
 		    					else nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
 		    					break;

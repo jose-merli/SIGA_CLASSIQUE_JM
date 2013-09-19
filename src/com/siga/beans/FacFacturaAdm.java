@@ -3372,7 +3372,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = f." + FacFacturaBean.C_IDINSTITUCION);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDPERSONA + " = f." + FacFacturaBean.C_IDPERSONA);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
+			sql.append  (" and (c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
+			sql.append  (" and c." + CenCuentasBancariasBean.C_FECHABAJA + " > sysdate) ");
 			sql.append  (" and c." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T', 'C') ");
 			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
 			contador ++;
@@ -3430,7 +3431,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
 			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion );
 			sql.append  ("   And c." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona);
-			sql.append  ("   And c." + CenCuentasBancariasBean.C_FECHABAJA + " is not null ");
+			sql.append  ("   And (c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
+			sql.append  ("   or c." + CenCuentasBancariasBean.C_FECHABAJA + " > sysdate) ");
+			sql.append  ("   And c." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('C', 'T') ");
 			sql.append  ("   order by c." + CenCuentasBancariasBean.C_FECHAMODIFICACION + " desc "); 
 
 			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() >= 1) {
