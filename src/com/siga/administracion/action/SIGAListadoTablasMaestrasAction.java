@@ -139,7 +139,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	                       ",BLOQUEADO AS BLOQUEADO ";
 	        
 	        if(beanTablaMaestra.getAceptabaja()==1)
-	        	sSQL += " ,FECHABAJA ";
+	        	sSQL += " ,FECHABAJA ";/*
 	        if(form.getNumeroTextoPlantillas()!=null && !form.getNumeroTextoPlantillas().equals("")&&!form.getNumeroTextoPlantillas().equals("null")){
 	        	int numeroTextoPlantillas = Integer.parseInt(form.getNumeroTextoPlantillas());
 	        	if(numeroTextoPlantillas>0)
@@ -153,7 +153,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 				}
 		        if(numeroTextoPlantillas>0)
 	        		sSQL += " TEXTOPLANTILLAS ";
-	        }
+	        }*/
 	        
 	        sSQL += " FROM " + idTabla +  " WHERE 1 = 1 "; 
 	                      
