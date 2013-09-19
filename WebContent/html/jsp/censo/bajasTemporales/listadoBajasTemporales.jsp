@@ -78,14 +78,6 @@
 				
 				<c:set var="fechaActual" value="<%=fechaActual%>"/>
 				<c:set var="disab" value=""/>
-				<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
-				<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
-				<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
-				<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
-				<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
-				<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
-				<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
-				<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
 				
 				<%	if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
 						Date fHasta = GstDate.convertirFecha(bajaTemporalForm.getFechaHasta(),ClsConstants.DATE_FORMAT_SHORT_SPANISH);	
@@ -102,6 +94,15 @@
 		  			clase="listaNonEdit">
 		  			
 					<td align='center' width='5%'>
+						<input type="hidden" id="idInstitucion_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idInstitucion" />">
+						<input type="hidden" id="idPersona_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="idPersona" />">
+						<input type="hidden" id="colegiadoNumero_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNumero" />">
+						<input type="hidden" id="colegiadoNombre_<bean:write name='index'/>" value="<bean:write name="bajaTemporalForm" property="colegiadoNombre" />">
+						<input type="hidden" id="fechaAlta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaAlta" />">
+						<input type="hidden" id="validado_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="validado" />">
+						<input type="hidden" id="fechaDesde_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaDesde" />">
+						<input type="hidden" id="fechaHasta_<bean:write name='index'/>" value="<bean:write name="bajaTemporalBean" property="fechaHasta" />">
+					
 						<input type="checkbox" value="<%=String.valueOf(index.intValue()+1)%>" name="chkBajasTemporales" ${disab}>
 	 				</td>
 	 				
