@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.99 2013-09-10 09:45:44 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.100 2013-09-19 15:55:47 carlos Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1103,7 +1103,7 @@ function jQueryUILoaded(){
 		   // Botón Borrar
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
-		   var clearText = "borrar";		   
+		   var clearText = "Borrar";		   
 		   if (inst.settings.regional == "ca")
 			   clearText = "Esborrar";
 		   else if (inst.settings.regional == "eu")
