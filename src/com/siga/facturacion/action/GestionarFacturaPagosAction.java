@@ -5,9 +5,12 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
-
 import java.io.FileOutputStream;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +40,15 @@ import com.atos.utils.UsrBean;
 import com.bea.common.security.xacml.IOException;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacPagosPorCajaAdm;
+import com.siga.beans.FacPagosPorCajaBean;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.GestionarFacturaForm;
 import com.siga.general.MasterAction;
@@ -334,7 +345,15 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
 		        
 		        if (facturaBean.getImpTotalPorPagar() >= 0) {			
-		        	if ((GstDate.compararFechas(pagoBean.getFecha(), facturaBean.getFechaEmision()) >= 0 )) { 		        	
+		        	
+		        	SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			        Date dFecha = GstDate.convertirFechaHora(pagoBean.getFecha());
+			        String sFecha = sdf.format(dFecha);
+			        
+			        Date dFechaEmision = GstDate.convertirFechaHora(facturaBean.getFechaEmision());
+			        String sFechaEmision = sdf.format(dFechaEmision);
+		        	
+		        	if ((GstDate.compararFechas(sFecha, sFechaEmision) >= 0 )) { 		        	
 			        	if(pagosAdm.insert(pagoBean)) {				        
 			        		if (facturaAdm.update(facturaBean)) {
 			        			// Vamos a modificar el valor de estado
