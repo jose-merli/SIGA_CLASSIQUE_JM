@@ -102,11 +102,7 @@
 		</logic:empty>
 		
 		<logic:notEmpty name="datosGeneralesPagoForm"	property="criterios">
-			<logic:iterate id="criterio" name="datosGeneralesPagoForm" property="criterios" indexId="index">
-				<input type="hidden" name="criterios" id="${index}" value="${index}" />
-				<input type="hidden" id="idGrupoFacturacion_${index}" value="${criterio.idGrupoFacturacion}" />
-				<input type="hidden" id="idHitoGeneral_${index}" value="${criterio.idHitoGeneral}" />
-				
+			<logic:iterate id="criterio" name="datosGeneralesPagoForm" property="criterios" indexId="index">				
 				<c:set var="disabledCriterio" value="" />
 				<c:set var="checkedCriterio" value="" />
 				
@@ -127,7 +123,13 @@
 					</c:otherwise>
 				</c:choose>
 								
-					<td><c:out value="${criterio.grupoFacturacion}"/></td>
+					<td>
+						<input type="hidden" name="criterios" id="${index}" value="${index}" />
+						<input type="hidden" id="idGrupoFacturacion_${index}" value="${criterio.idGrupoFacturacion}" />
+						<input type="hidden" id="idHitoGeneral_${index}" value="${criterio.idHitoGeneral}" />
+						
+						<c:out value="${criterio.grupoFacturacion}"/>
+					</td>
 					<td><c:out value="${criterio.hitoGeneral}"/></td>
 					<td align="center"><input type="checkbox"   id="checkCriterio_${index}" ${disabledCriterio} ${checkedCriterio}/></td>								
 				</tr>
