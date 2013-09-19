@@ -478,7 +478,7 @@ if(usr.isComision()){
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
 							<td style="vertical-align:middle">
-								<html:text name="<%=formulario%>" styleId="anio" styleClass="box" property="anio"  value="<%=anio%>" style="width:40" maxlength="4"></html:text>
+								<html:text name="<%=formulario%>" styleId="anio" styleClass="box" property="anio"  value="<%=anio%>" style="width:40px" maxlength="4"></html:text>
 								&nbsp;/&nbsp;
 								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" size="8" maxlength="10"> </html:text>
 							</td>
@@ -679,7 +679,7 @@ if(usr.isComision()){
 					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td style="vertical-align:middle">
-					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40" maxlength="4" value="<%=cajgAnio%>" />
+					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40px" maxlength="4" value="<%=cajgAnio%>" />
 					&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10" />
 				</td>
@@ -688,7 +688,7 @@ if(usr.isComision()){
 					<siga:Idioma key='gratuita.operarEJG.literal.acta'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td colspan="3" style="vertical-align:middle">
-					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40" maxlength="4" value="<%=anioActa%>" />
+					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40px" maxlength="4" value="<%=anioActa%>" />
 					&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10" />
 				</td>				

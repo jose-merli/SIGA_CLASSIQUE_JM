@@ -52,12 +52,7 @@
    			</c:when>
    			
    			<c:otherwise>
-				<c:forEach items="${calendariosForms}" var="calendariosForm" varStatus="status">                 
-					<input type="hidden" id="estado_${status.count}" value ="${calendariosForm.estado}">
-		  			<input type="hidden" id="idTurno_${status.count}" value ="${calendariosForm.idTurno}">
-		  			<input type="hidden" id="idGuardia_${status.count}" value ="${calendariosForm.idGuardia}">
-		  			<input type="hidden" id="idCalendarioGuardias_${status.count}" value ="${calendariosForm.idCalendarioGuardias}">
-					
+				<c:forEach items="${calendariosForms}" var="calendariosForm" varStatus="status">                 					
 					<siga:FilaConIconos	fila='${status.count}'
 		  				botones="${calendariosForm.botones}" 
 		  				elementos="${calendariosForm.elementosFila}"
@@ -98,6 +93,11 @@
 			  			</td>
 			  			
 			  			<td align="center">
+							<input type="hidden" id="estado_${status.count}" value ="${calendariosForm.estado}">
+		  					<input type="hidden" id="idTurno_${status.count}" value ="${calendariosForm.idTurno}">
+		  					<input type="hidden" id="idGuardia_${status.count}" value ="${calendariosForm.idGuardia}">
+		  					<input type="hidden" id="idCalendarioGuardias_${status.count}" value ="${calendariosForm.idCalendarioGuardias}">
+			  			
 			  				<c:choose>
 			  					<c:when test="${calendariosForm.observaciones!=''}">
 			  						<c:out value="${calendariosForm.observaciones}"/>
