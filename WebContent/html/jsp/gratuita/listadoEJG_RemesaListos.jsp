@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoEJG_RemesaListos.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -48,7 +49,6 @@
 	//Vector obj = (Vector) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	String valor="";
-	
 	
 	/** PAGINADOR ***/
 	Vector resultado=null;
@@ -97,7 +97,9 @@
 	
 	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	
 	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+	
 	<script type="text/javascript">
 		function refrescarLocal() {			
 			parent.buscar();
@@ -116,10 +118,18 @@
 	</html:form>	
 		
 	<siga:Table 		   
-	   name="listadoEJG"
-	   border="1"
-	   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante"
-	   columnSizes="5,15,15,5,6,15,9,10">
+	   	name="listadoEJG"
+	   	border="1"
+	   	columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,
+	   		gratuita.busquedaEJG.literal.turno, 
+	   		gratuita.busquedaEJG.literal.guardia, 
+	   		gratuita.busquedaEJG.literal.anyo, 
+	   		gratuita.busquedaEJG.literal.codigo, 
+	   		gratuita.busquedaEJG.literal.tipoEJG, 
+	   		gratuita.listadoActuacionesAsistencia.literal.fecha, 
+	   		gratuita.busquedaEJG.literal.estadoEJG, 
+	   		gratuita.busquedaEJG.literal.solicitante"
+	   	columnSizes="5,15,15,5,6,15,9,10">
 			
 <%
 		if (resultado.size()>0) {
@@ -146,7 +156,7 @@
 
 %>
 				<tr class=<% if (recordNumber % 2 == 0) { %>'filaTablaPar' <% } else { %>'filaTablaImpar' <% } %>>
-					<td>
+					<td align="center">
 <%
 						String valorCheck="";
 						valorCheck=registro.get(ScsEJGBean.C_ANIO)+"||"+registro.get(ScsEJGBean.C_NUMERO)+"||"+registro.get(ScsEJGBean.C_IDTIPOEJG);
