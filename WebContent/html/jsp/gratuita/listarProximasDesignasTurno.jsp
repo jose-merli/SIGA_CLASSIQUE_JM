@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listarProximasDesignasTurno.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -23,6 +24,9 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -39,139 +43,127 @@
 	String estadoColegial = (String)request.getAttribute("ESTADOCOLEGIAL");
 	//Si entrada=2 venimos de la pestanha de SJCS:
 	String entrada = (String)ses.getAttribute("entrada");
-	//Si venimos del menu de Censo tenemos un alto menor ya que ponemos el nombre del colegiado:
-	String alto = "330";
-	if (entrada!=null && entrada.equals("2"))
-		alto = "273";
 
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
 	if ((busquedaVolver==null)||(usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
-
 %>
 
-<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.sjcs.proximasDesignas.cabecera" 
-			localizacion="censo.fichaCliente.sjcs.proximasDesignas.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->		
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:TituloExt titulo="censo.fichaCliente.sjcs.proximasDesignas.cabecera" localizacion="censo.fichaCliente.sjcs.proximasDesignas.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->		
 </head>
 
 <body class="tablaCentralCampos">
-    <table class="tablaTitulo" align="center" cellspacing=0>
-	<%
+    <table class="tablaTitulo" align="center" cellspacing="0">
+<%
 		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { %>
+		if (entrada.equalsIgnoreCase("2")) { 
+%>
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.fichaCliente.proximasDesignas.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-						<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
+<% 
+					if (numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { 
+						if (estadoColegial!=null && !estadoColegial.equals("")){
+%>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-							 <%= UtilidadesString.mostrarDatoJSP(numeroPestanha)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
-						 <%}else{%> 
+							 <%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%> 
+							 &nbsp; 
+							 (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
+<%
+						} else {
+%> 
 						 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
-						 <%}%>
-					<% } else { %>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
+<%
+						}
+						
+					} else { 
+%>
+				   		<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+<% 
+					} 
+%>
 				</td>
 			</tr>
-	<% } %>
-
-<html:form action="JGR_PestanaDesignas.do" method="post" target="mainPestanas"	 style="display:none">
-		
-	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = "abrirAvanzada"/>
-			<!-- RGG: cambio a formularios ligeros -->
-			
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
-
-		<siga:Table 
-		   name="tablaDatos"
-		   border="1"
-		   columnNames="gratuita.definirTurnosIndex.literal.abreviatura,
-		   gratuita.listarProximasDesignas.literal.nombreTurno,
-		   gratuita.definirTurnosIndex.literal.area
-		   ,gratuita.definirTurnosIndex.literal.materia
-		   ,gratuita.definirTurnosIndex.literal.zona
-		   ,gratuita.definirTurnosIndex.literal.subzona
-		   ,gratuita.listarProximasDesignas.literal.posicion"
-		   columnSizes="17,20,15,15,12,11,11">
-
-	<% if ((resultado==null) || (resultado.size()==0)) { %>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	<% } else { %>
-		<%
-	    	int contador=1;
-			while ((contador) <= resultado.size())
-			{	 
-				ScsInscripcionTurnoBean inscripcionLetradoTurno = (ScsInscripcionTurnoBean)resultado.get(contador-1);
-		%>
-		<siga:FilaConIconos	fila='<%=String.valueOf(contador)%>'
-	  				botones="" 
-	  				pintarEspacio="no"
-	  				visibleConsulta="no"
-	  				visibleEdicion = "no"
-	  				visibleBorrado = "no"
-	  				clase="listaNonEdit">
-				<td ><%=inscripcionLetradoTurno.getTurno().getAbreviatura()%>&nbsp;</td>
-				<td ><%=inscripcionLetradoTurno.getTurno().getNombre()%>&nbsp;</td>
-				<td ><%=inscripcionLetradoTurno.getTurno().getArea().getNombre()%>&nbsp;</td>
-				<td ><%=inscripcionLetradoTurno.getTurno().getMateria().getNombre()%>&nbsp;</td>
-				<td><%=inscripcionLetradoTurno.getTurno().getZona().getNombre()%>&nbsp;</td>
-				<td><%=inscripcionLetradoTurno.getTurno().getSubZona().getNombre()%>&nbsp;</td>
-				<td ><%=inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()==null?"":inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()%>&nbsp;</td>
-		</siga:FilaConIconos>
-		<%	contador++;}%>
-	<% } %>
-
-		</siga:Table>
-
-
-<script language="JavaScript">
-		//function accionVolver() 
-		//{		
-		//	document.forms[0].action="JGR_DefinirTurnos.do";
-		//	document.forms[0].target="mainWorkArea";
-		//	document.forms[0].modo.value="abrirAvanzada";
-		//	document.forms[0].submit();
-		//}
-</script>
-
-<% if (!busquedaVolver.equals("volverNo")) { %>
-	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
-<% } %>
-
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-
+<% 
+		} 
+%>
 	</table>
+
+	<html:form action="JGR_PestanaDesignas.do" method="post" target="mainPestanas"	 style="display:none">
+		<!-- Campo obligatorio -->
+		<html:hidden property = "modo" value = "abrirAvanzada"/>
+		<!-- RGG: cambio a formularios ligeros -->
+		
+		<input type="hidden" name="actionModal" value="">
+	</html:form>	
+
+	<siga:Table 
+		name="tablaDatos"
+	   	border="1"
+	   	columnNames="gratuita.definirTurnosIndex.literal.abreviatura,
+	   		gratuita.listarProximasDesignas.literal.nombreTurno,
+	   		gratuita.definirTurnosIndex.literal.area,
+	   		gratuita.definirTurnosIndex.literal.materia,
+	   		gratuita.definirTurnosIndex.literal.zona,
+	   		gratuita.definirTurnosIndex.literal.subzona,
+	   		gratuita.listarProximasDesignas.literal.posicion"
+	   columnSizes="17,20,15,15,12,11,11">
+
+<% 
+		if ((resultado==null) || (resultado.size()==0)) { 
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<% 
+		} else {
+    		int contador=1;
+			while ((contador) <= resultado.size()) {	 
+				ScsInscripcionTurnoBean inscripcionLetradoTurno = (ScsInscripcionTurnoBean)resultado.get(contador-1);
+%>
+				<siga:FilaConIconos	fila='<%=String.valueOf(contador)%>'
+  					botones="" 
+  					pintarEspacio="no"
+  					visibleConsulta="no"
+  					visibleEdicion = "no"
+  					visibleBorrado = "no"
+  					clase="listaNonEdit">
+  					
+					<td><%=inscripcionLetradoTurno.getTurno().getAbreviatura()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getNombre()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getArea().getNombre()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getMateria().getNombre()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getZona().getNombre()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getSubZona().getNombre()%>&nbsp;</td>
+					<td><%=inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()==null?"":inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()%>&nbsp;</td>
+				</siga:FilaConIconos>
+<%	
+				contador++;
+			}
+		} 
+%>
+	</siga:Table>
+
+	<% if (!busquedaVolver.equals("volverNo")) { %>
+		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+	<% } %>
+
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 </body>
 </html>
