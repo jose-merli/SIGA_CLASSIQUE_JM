@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- modalCambiar_PestanaCalendarioGuardias.jsp-->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -53,13 +54,10 @@
 	String numeroColegiado = UtilidadesHash.getString(solicitante,"NUMEROCOLEGIADO");
 %>
 
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
@@ -74,11 +72,9 @@
 		function activarPermuta(fila) {
 		}
 	</script>
-
 </head>
 
 <body>
-
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
@@ -174,18 +170,18 @@
 		
 		<input type="hidden" id="actionModal"  name="actionModal" value="" />
 	</html:form>	
+
+	<siga:Table 		   
+	  	name="listado"
+	  	border="2"
+	  	columnNames="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,
+	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,
+	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,
+	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
+	  	columnSizes="20,20,22,28,10">
 		
-	<!-- FIN: BOTONES BUSQUEDA -->
 <% 
-	if ((obj!= null) && (obj.size()>0)) { 
-%>
-		<siga:Table 		   
-		   	name="listado"
-		   	border="2"
-		   	columnNames="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
-		   	columnSizes="20,20,22,28,10">
-		   	
-<%
+		if ((obj!= null) && (obj.size()>0)) { 
 			int recordNumber=1;
 			String fechaInicioConfirmador="", fechaFinConfirmador="", numeroColegiadoConfirmador="", nombreConfirmador="";
 			String idCalendarioGuardiasConfirmador="", idTurnoConfirmador="", idGuardiaConfirmador="", idPersonaConfirmador="";
@@ -238,20 +234,19 @@
 <% 		
 				recordNumber++;  
 			} 
+
+		} else { 
 %>
-		</siga:Table>
-		<!-- FIN: RESULTADO -->
-		
+			<tr class="notFound">
+				<td class="titulitos">
+					<html:hidden property = "actionModal" value = "P"/>
+					<siga:Idioma key="messages.noRecordFound"/>
+				</td>
+			</tr>
 <% 
-	} else { 
-%>
-		<html:hidden property = "actionModal" value = "P"/>
-		<p class="nonEditRed" style="text-align:center">
-			<siga:Idioma key="messages.noRecordFound"/>
-		</p>
-<% 
-	} 
+		} 
 %>			
+	</siga:Table>
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
