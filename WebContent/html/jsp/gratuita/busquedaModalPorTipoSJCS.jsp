@@ -2,9 +2,8 @@
 <html>
 <head>
 <!-- busquedaModalPorTipoSJCS.jsp -->
+
 <!-- CABECERA JSP -->
-
-
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -13,10 +12,10 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "c.tld" 			prefix="c"%>
+<%@ taglib uri="libreria_SIGA.tld" 	prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" 	prefix="bean"%>
+<%@ taglib uri="struts-html.tld" 	prefix="html"%>
+<%@ taglib uri="c.tld" 				prefix="c"%>
 
 <!-- IMPORTS -->
 <%@page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
@@ -25,8 +24,9 @@
 <%@ page import="com.siga.gratuita.form.BusquedaPorTipoSJCSForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- <%@ page import="java.util.Properties"%>
- <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -39,22 +39,15 @@
 	String datoTipoOrdinario[]={idordinario,idordinario};	
 	
 	String anioFiltro = UtilidadesBDAdm.getYearBD("");
-
 %>	
+	
 	<bean:define id="formulario" name="BusquedaPorTipoSJCSForm"  scope="request"/>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -83,14 +76,12 @@
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="BusquedaPersonaJGForm" staticJavascript="false" />  		
-	  	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
+	<html:javascript formName="BusquedaPersonaJGForm" staticJavascript="false" />  		
+	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
-
 </head>
 
 <body onLoad="ajusteAltoBotones('resultadoModal');">
-
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
@@ -114,18 +105,23 @@
 						<table align="center" width="100%" border="0" >
 							<tr>
 								<td class="labelText" width="16%">
-									<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" /></td>
-								<td width="15%">
-									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="anio" style="width:40px" maxlength="4" value="<%=anioFiltro%>"></html:text>
-									&nbsp;/&nbsp;<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="numero" size="8" maxlength="10"> </html:text>
+									<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />
+									/
+									<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
 								</td>
+								<td width="15%">
+									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="anio" style="width:40px" maxlength="4" value="<%=anioFiltro%>" />
+									/
+									<html:text name="BusquedaPorTipoSJCSForm" styleClass="box" property="numero" size="8" maxlength="10" />
+								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG" />
 								</td>
 								<td class="labelText">
 									<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>"clase="boxCombo" obligatorio="false" ancho="200"/>
 								</td>
-								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
 								</td>
@@ -134,7 +130,8 @@
 								</td>
 							</tr>
 						</table>	
-					</siga:ConjCampos>		
+					</siga:ConjCampos>	
+						
 					<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.solicitante">						
 						<table align="center" width="100%">
 							<tr>
@@ -142,16 +139,17 @@
 									<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
 								</td>
 								<td class="labelText">
-									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box" />
+								</td>
+								
+								<td class="labelText">
+									<siga:Idioma key="gratuita.busquedaEJG.literal.nombre" /> <html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="26" maxlength="100" styleClass="box" />
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.busquedaEJG.literal.nombre" /> <html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="26" maxlength="100" styleClass="box" ></html:text>
+									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="26" maxlength="100" styleClass="box" />
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="26" maxlength="100" styleClass="box" ></html:text>
-								</td>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido2" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="26" maxlength="100" styleClass="box" ></html:text>
+									<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido2" /> <html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="26" maxlength="100" styleClass="box" />
 								</td>
 							</tr>
 						</table>
@@ -162,12 +160,17 @@
 					<siga:ConjCampos leyenda="${leyenda}">
 						<table  align="center" width="100%" border="0">  		
 							<tr>	
-								<td class="labelText"  width="100" >
-									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>	
+								<td class="labelText"  width="100px" >
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> 
+									/ 
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>	
 								</td>
 								<td colspan="3">		
-									<html:text name="BusquedaPorTipoSJCSForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anioFiltro%>"></html:text> / <html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anioFiltro%>" /> 
+									/ 
+									<html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box" />
 								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
 								</td>				
@@ -176,7 +179,8 @@
 								</td>	
 							</tr>
 						</table>
-					</siga:ConjCampos>	
+					</siga:ConjCampos>
+						
 					<siga:ConjCampos leyenda="gratuita.busquedaSOJ.literal.solicitante">
 						<table  align="center" width="100%">
 							<tr>
@@ -184,25 +188,28 @@
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
 								</td>
 								<td class="labelText">
-									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box" ></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="20" styleClass="box" />
 								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
 								</td>
 								<td class="labelText">
-									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box" />
 								</td>
+								
 								<td class="labelText">	
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.apellido1"/>
 								</td>		
 								<td class="labelText">
-									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box" />
 								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.apellido2"/>
 								</td>
 								<td class="labelText"  colspan="2">
-									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box" />
 								</td>	
 							</tr>	
 						</table>
@@ -217,14 +224,18 @@
 									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
 								</td>
 								<td>	
-									<html:text name="BusquedaPorTipoSJCSForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anioFiltro%>"></html:text> / <html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box"></html:text> 
+									<html:text name="BusquedaPorTipoSJCSForm" property="anio"  style="width:40px" maxlength="4" styleClass="box" value="<%=anioFiltro%>" /> 
+									/ 
+									<html:text name="BusquedaPorTipoSJCSForm" property="numero" size="5" maxlength="10" styleClass="box" /> 
 								</td>
-								<td class="labelText">
+								
+								<td>
 									&nbsp;
 								</td>
-								<td class="labelText" >	
+								<td>	
 									&nbsp;
-								</td>	
+								</td>
+									
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaPorTipoSJCS.literal.turno"/>
 								</td>				
@@ -234,6 +245,7 @@
 							</tr>
 						</table>
 					</siga:ConjCampos>	
+					
 					<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.defendido">
 						<table width="100%">
 							<tr>
@@ -241,25 +253,28 @@
 									<siga:Idioma key="expedientes.auditoria.literal.nif"/>
 								</td>	
 								<td>
-									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="10" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nif" size="10" maxlength="10" styleClass="box" />
 								</td>
+								
 								<td class="labelText">
 									<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 								</td>
 								<td>	
-									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="nombre" size="15" maxlength="100" styleClass="box" />
 								</td>	
+								
 								<td class="labelText">
 									<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>
 								</td>
-								<td >	
-									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box"></html:text>
+								<td>	
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido1" size="15" maxlength="100" styleClass="box" />
 								</td>	
+								
 								<td class="labelText">	
 									<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>
 								</td>
 								<td>
-									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box"></html:text>
+									<html:text name="BusquedaPorTipoSJCSForm" property="apellido2" size="15" maxlength="100" styleClass="box" />
 								</td>
 							</tr>
 						</table>
@@ -268,58 +283,45 @@
 			</c:choose>						
 		</tr>				
 	</html:form>
-
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-
-		<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="${busc}" />
-
+	<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="${busc}" />
 	<!-- FIN: BOTONES BUSQUEDA -->
 
-	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-
-		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{		
+		// Funcion asociada a boton buscar
+		function buscar() {		
 			sub();
 			document.forms[0].modo.value="buscarPor";
 			document.forms[0].submit();			
 		}
 
-		
-		function accionCerrar() 
-		{		
+		function accionCerrar() {		
 			var aux = new Array();
 			aux[0] = "cerrar";
 			top.cierraConParametros(aux);
 		}
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 
-					id="resultadoModal"
-					name="resultadoModal" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0";					 
-					class="frameGeneral">
-	</iframe>
-
+		id="resultadoModal"
+		name="resultadoModal" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"					 
+		class="frameGeneral"></iframe>
 
 	<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
-
 </body>
 </html>
