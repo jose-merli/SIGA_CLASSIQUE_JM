@@ -481,7 +481,7 @@
 		 */
 		function ocultarConceptos(){
 			for (i=0;i<4;i++){					
-				document.getElementById("fila"+conceptos[i]).style.display="none";
+				jQuery("#fila"+conceptos[i]).hide();
 			}
 		}
 
@@ -672,7 +672,7 @@
 				</tr>
 				
 				<!-- OFICIO -->
-				<tr id="filaOficio" style="display:block">	
+				<tr id="filaOficio">	
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
 					</td>				
@@ -700,8 +700,9 @@
 						<input name="txtRestanteOficio" id="txtRestanteOficio" size="25" style="width:100%" class="boxConsultaNumber" readonly="true" />
 					</td>
 				</tr>
+				
 				<!-- GUARDIAS -->
-				<tr id="filaGuardias" style="display:block">		
+				<tr id="filaGuardias">		
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
 					</td>				
@@ -731,8 +732,9 @@
 						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
+				
 				<!-- EJG -->
-				<tr id="filaEJG" style="display:block">				
+				<tr id="filaEJG">				
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
 					</td>				
@@ -760,8 +762,9 @@
 						<input name="txtRestanteEJG" id="txtRestanteEJG" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
+				
 				<!-- SOJ -->
-				<tr id="filaSOJ" style="display:block">	
+				<tr id="filaSOJ">	
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
 					</td>				
@@ -788,8 +791,7 @@
 					<td class="labelTextNum">
 						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>
 					</td>
-				</tr>
-				
+				</tr>				
 			</table>			
 		</td>
 
@@ -885,9 +887,9 @@
 		function inicializaConceptos(){
 			for (i=0;i<4;i++){	
 				if (eval("total"+conceptos[i])==0)
-					document.getElementById("fila"+conceptos[i]).style.display = "none";
+					jQuery("#fila"+conceptos[i]).hide();
 				else{
-					document.getElementById("fila"+conceptos[i]).style.display = "inline";				
+					jQuery("#fila"+conceptos[i]).show();				
 					document.getElementById("txtTotal"+conceptos[i]).value = convertirAFormato(eval("total"+conceptos[i])+"") + '\u20AC';
 					document.getElementById("txtPendiente"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
 					document.getElementById("txtRestante"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
