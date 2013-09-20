@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoCAJG_EJG.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -17,6 +18,11 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.atos.utils.Row"%>
+<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
+<%@ page import="com.siga.beans.ScsTurnoAdm"%>
+<%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
+<%@ page import="com.siga.Utilidades.PaginadorBind"%>
+
 
 <!-- TAGLIBS -->
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
@@ -26,7 +32,6 @@
 
 <!-- JSP -->
 <% 
-	
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -48,64 +53,44 @@
 	HashMap hm=new HashMap();
 	Vector ejgSeleccionados=null;
 	
- if (ses.getAttribute("DATAPAGINADOR")!=null){
- 
-	 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-	 ejgSeleccionados=(Vector)ses.getAttribute("EJG_SELECCIONADOS");
-
-	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  	resultado = (Vector)hm.get("datos");
-	  	PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
-		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+	 if (ses.getAttribute("DATAPAGINADOR")!=null){
+		 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
+		 ejgSeleccionados=(Vector)ses.getAttribute("EJG_SELECCIONADOS");
 	
-	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-	
-	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-	
-	 	
-	 }else{
-
-	  resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
-	 }
-}else{
-      resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
-}	 
-		String action=app+"/JGR_E-Comunicaciones_Seleccion.do?noReset=true";
-    /**************/
-
-	
+		 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
+		  	resultado = (Vector)hm.get("datos");
+		  	PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+		 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+		 	
+		 } else {
+		  	resultado =new Vector();
+		  	paginaSeleccionada = "0";
+		 	totalRegistros = "0";
+		 	registrosPorPagina = "0";
+		 }
+		 
+	} else {
+		resultado =new Vector();
+		paginaSeleccionada = "0";
+	 	totalRegistros = "0";		
+		registrosPorPagina = "0";
+	}	 
+		
+	String action=app+"/JGR_E-Comunicaciones_Seleccion.do?noReset=true";
 %>
 
-<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%>
-<%@page import="com.siga.beans.ScsTurnoAdm"%>
-<%@page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
-<%@page import="com.siga.Utilidades.PaginadorBind"%>
-
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	
 	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+	
 	<script type="text/javascript">
-		function refrescarLocal()
-		{
-			
+		function refrescarLocal() {
 			parent.buscar();
 		}
 	</script>
@@ -117,143 +102,148 @@
 		<input type="hidden" name="modo"  id="modo" value="">
 		<input type="hidden" name="actionModal"  id="actionModal" value="a">
 		<input type="hidden" name="selDefinitivo" id="selDefinitivo"  value="">
-		
-		
 	</html:form>	
 		
-		<siga:Table 		   
-		   name="listadoEJG"
-		   border="1"
-		   columnNames=" <input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante"
-		   columnSizes="5,15,15,5,6,15,9,10">
+	<siga:Table 		   
+		name="listadoEJG"
+		border="1"
+		columnNames=" <input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,
+			gratuita.busquedaEJG.literal.turno, 
+			gratuita.busquedaEJG.literal.guardia, 
+			gratuita.busquedaEJG.literal.anyo, 
+			gratuita.busquedaEJG.literal.codigo, 
+			gratuita.busquedaEJG.literal.tipoEJG, 
+			gratuita.listadoActuacionesAsistencia.literal.fecha, 
+			gratuita.busquedaEJG.literal.estadoEJG, 
+			gratuita.busquedaEJG.literal.solicitante"
+		columnSizes="5,15,15,5,6,15,9,10">
 			
-	<%if (resultado.size()>0){%>
-  			<%
+<%
+		if (resultado.size()>0) {
 	    	int recordNumber=1;
 	    	String select = "";
 	    	Vector v = null;
 	    	String botones = "";
 	    	String fRatificacion = "";
-			while (recordNumber-1 < resultado.size())
-			{			
-			  
-		    Row fila = (Row)resultado.elementAt(recordNumber-1);
-			Hashtable registro = (Hashtable) fila.getRow();
+			while (recordNumber-1 < resultado.size()) {						  
+		    	Row fila = (Row)resultado.elementAt(recordNumber-1);
+				Hashtable registro = (Hashtable) fila.getRow();
 			
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
 				
 				// Comprobamos el estado del idfacturacion
-	    	ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
+	    		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
 
-	    	fRatificacion = (String)registro.get("FECHARATIFICACION");
-	    	String idFacturacion =  (String)registro.get("IDFACTURACION");;
-	    	boolean isModificable = ((idFacturacion==null||idFacturacion.equals("")) ||(idFacturacion!=null &&(fRatificacion==null||fRatificacion.equals(""))));
+	    		fRatificacion = (String)registro.get("FECHARATIFICACION");
+	    		String idFacturacion =  (String)registro.get("IDFACTURACION");;
+	    		boolean isModificable = ((idFacturacion==null||idFacturacion.equals("")) ||(idFacturacion!=null &&(fRatificacion==null||fRatificacion.equals(""))));
 
-				if(isModificable) botones = "C,E,B";
-				else botones = "C,B";
+				if(isModificable) 
+					botones = "C,E,B";
+				else 
+					botones = "C,B";
 
-			String CODIGO=null;
-			if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
-				CODIGO="&nbsp;";
-			else
-				CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
-
-			%>
-			<tr class=<% if (recordNumber % 2 == 0) { %>'filaTablaPar'
-					  <% } else { %>'filaTablaImpar'
-					<% } %>
-			>
-					<td>
-						<%
-							String valorCheck="";
-							valorCheck=registro.get(ScsEJGBean.C_ANIO)+"||"+registro.get(ScsEJGBean.C_NUMERO)+"||"+registro.get(ScsEJGBean.C_IDTIPOEJG);
-							boolean encontrado=false;
-							int z=0;
+				String CODIGO=null;
+				if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
+					CODIGO="&nbsp;";
+				else
+					CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
+%>
+				<tr class=<% if (recordNumber % 2 == 0) { %>'filaTablaPar' <% } else { %>'filaTablaImpar' <% } %>>
+					<td align="center">
+<%
+						String valorCheck="";
+						valorCheck=registro.get(ScsEJGBean.C_ANIO)+"||"+registro.get(ScsEJGBean.C_NUMERO)+"||"+registro.get(ScsEJGBean.C_IDTIPOEJG);
+						boolean encontrado=false;
+						int z=0;
 							
-							while (z<ejgSeleccionados.size() && !encontrado){
-								Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(z);
+						while (z<ejgSeleccionados.size() && !encontrado) {
+							Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(z);
 								
-								if ((registro.get(ScsEJGBean.C_ANIO).equals(clavesEJG.get(ScsEJGBean.C_ANIO)))&& (registro.get(ScsEJGBean.C_NUMERO).equals(clavesEJG.get(ScsEJGBean.C_NUMERO))) && (registro.get(ScsEJGBean.C_IDTIPOEJG).equals(clavesEJG.get(ScsEJGBean.C_IDTIPOEJG)))){
-									if (clavesEJG.get("SELECCIONADO").equals("1")){
-										encontrado=true;
-									}else{
-										encontrado=false;
-									}
-									break;
+							if ((registro.get(ScsEJGBean.C_ANIO).equals(clavesEJG.get(ScsEJGBean.C_ANIO))) && 
+								(registro.get(ScsEJGBean.C_NUMERO).equals(clavesEJG.get(ScsEJGBean.C_NUMERO))) && 
+								(registro.get(ScsEJGBean.C_IDTIPOEJG).equals(clavesEJG.get(ScsEJGBean.C_IDTIPOEJG)))){
+								
+								if (clavesEJG.get("SELECCIONADO").equals("1")){
+									encontrado=true;
 								}else{
 									encontrado=false;
 								}
-								z++;
+								break;
 								
-								
+							} else {
+								encontrado=false;
 							}
+							z++;
+						} // while
 							
-							if (encontrado){%>
-							
-								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" checked="true" onclick="pulsarCheck(this)">
-							<%}else{%>
-								<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" onclick="pulsarCheck(this)" >
-							<%}
-						%>
-						
+						if (encontrado) {
+%>						
+							<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" checked="true" onclick="pulsarCheck(this)">
+<%
+						} else {
+%>
+							<input type="checkbox" value="<%=valorCheck%>" name="chkGuardia" class="chkGuardia" onclick="pulsarCheck(this)" >
+<%
+						}
+%>						
 					</td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO")),usr) %>&nbsp;</td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"),(String)registro.get("GUARDIATURNO_IDGUARDIA")),usr) %>&nbsp;</td>
 					<td>
-					
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
-					<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'>
-					
-					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
+						<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'>
+						
+						<%=registro.get(ScsEJGBean.C_ANIO)%>
+					</td>
 					<td><%=CODIGO%></td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("TIPOEJG"),usr)%></td>
 					<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>					
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("DESC_ESTADO"), usr) %>&nbsp;</td>
 					<td><%=ScsEJGAdm.getUnidadEJG(usr.getLocation(),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
-			</tr>
-			<% 	recordNumber++;		   
-			} %>
-	<%
-	}else {
-	%>
+				</tr>
+<% 	
+				recordNumber++;		   
+			}
+			
+ 		} else {
+%>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	<%
-	}
-	
-	%>
-		
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		}
+%>
 	</siga:Table>
 
-     <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
+<%
+	if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
 	  	regSeleccionados = "0";
-	  	%>
+%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								registrosSeleccionados="<%=regSeleccionados%>"
-								idioma="<%=idioma%>"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
-															
-	
-	 <%}%>	
+			registrosPorPagina="<%=registrosPorPagina%>" 
+			paginaSeleccionada="<%=paginaSeleccionada%>" 
+			registrosSeleccionados="<%=regSeleccionados%>"
+			idioma="<%=idioma%>"
+			modo="buscarPor"								
+			clase="paginator" 
+			divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+			distanciaPaginas=""
+			action="<%=action%>" />
+<%
+	}
+%>	
 	 
-	 <script language="JavaScript">
+	<script language="JavaScript">
 		ObjArray = new Array();
 		
 		Array.prototype.indexOf = function(s) {
 			for (var x=0;x<this.length;x++) if(this[x] == s) return x;
 			return false;
 		}
- 
 	   
 	   function pulsarCheck(obj){
 		   if (!obj.checked ){
@@ -287,8 +277,7 @@
 			if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
 				document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 			}
-			
-	   }
+	   	}
 	   
 		function cargarChecksTodos(o){
 			var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
@@ -363,7 +352,6 @@
 		}
 	   
 	   function checkTodos(){
-		   
 			var todos=true;
 			jQuery('.chkGuardia').each(function(){
 				if(!this.checked){
@@ -375,10 +363,10 @@
 	   
 	   }
 	</script>
-<!-- INICIO: SUBMIT AREA -->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->	
 	
+	<!-- INICIO: SUBMIT AREA -->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->	
 </body>	
 </html>
 	
