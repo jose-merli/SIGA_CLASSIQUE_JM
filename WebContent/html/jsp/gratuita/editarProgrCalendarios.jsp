@@ -204,7 +204,7 @@
 		<c:choose>
 			<c:when test="${ProgrCalendariosFormEdicion.modo=='consultarProgrCalendarios'}">
 				<siga:ConjBotonesAccion botones="C" modal="P" />
-				<div id="divHcoProgramacion" style='position:absolute; width:100%;'>
+				<div id="divHcoProgramacion" style='position:relative;height:100%;width:100%;'>
 					<table id='hcoProgramacion' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 					</table>
 				</div>
@@ -212,7 +212,7 @@
 			
 			<c:otherwise>
 				<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
-				<div id="divConfConjuntoGuardias" style='position:absolute; width:100%;'>
+				<div id="divConfConjuntoGuardias" style='position:relative;height:100%;width:100%;'>
 					<table id='confConjuntoGuardias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 					</table>
 				</div>
