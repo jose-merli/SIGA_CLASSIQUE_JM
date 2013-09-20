@@ -336,20 +336,6 @@
 			<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg">
 				<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="peticionesEejg" id="peticion" indexId="indice" type="com.siga.beans.eejg.ScsEejgPeticionesBean">
 					<%indice = indice.intValue()+1; %>
-					<input type="hidden" name="peticion<%=indice%>_1" value="${peticion.idPersona}">
-					<input type="hidden" name="peticion<%=indice%>_2" value="${peticion.idInstitucion}">
-					<input type="hidden" name="peticion<%=indice%>_3" value="${peticion.idTipoEjg}">
-					<input type="hidden" name="peticion<%=indice%>_4" value="${peticion.anio}">
-					<input type="hidden" name="peticion<%=indice%>_5" value="${peticion.numero}">
-			
-					<c:choose>
-						<c:when test="${peticion.idPeticion!=null}">
-							<input type="hidden" name="peticion<%=indice%>_6" value="${peticion.idPeticion}">
-						</c:when>
-						<c:otherwise>
-				  			<input type="hidden" name="peticion<%=indice%>_6" value=" ">
-						</c:otherwise>
-					</c:choose>
 
 					<bean:define id="elementosFila" name="peticion" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
 					<siga:FilaConIconosExtExt 
@@ -364,6 +350,21 @@
 						nombreTablaPadre="listadoPeticiones">
 						
 						<td align="center">
+							<input type="hidden" name="peticion<%=indice%>_1" value="${peticion.idPersona}">
+							<input type="hidden" name="peticion<%=indice%>_2" value="${peticion.idInstitucion}">
+							<input type="hidden" name="peticion<%=indice%>_3" value="${peticion.idTipoEjg}">
+							<input type="hidden" name="peticion<%=indice%>_4" value="${peticion.anio}">
+							<input type="hidden" name="peticion<%=indice%>_5" value="${peticion.numero}">
+					
+							<c:choose>
+								<c:when test="${peticion.idPeticion!=null}">
+									<input type="hidden" name="peticion<%=indice%>_6" value="${peticion.idPeticion}">
+								</c:when>
+								<c:otherwise>
+						  			<input type="hidden" name="peticion<%=indice%>_6" value=" ">
+								</c:otherwise>
+							</c:choose>						
+						
 							<c:choose>
 								<c:when test="${peticion.idXml!=null&&peticion.personaUnidadFamiliar==true}">
 									<input type="checkbox" value="${peticion.idXml}" name="chkPersona">
