@@ -2,11 +2,12 @@
 <html>
 <head>
 <!-- listadoZonas.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -34,73 +35,63 @@
 	ScsZonaBean fila = new ScsZonaBean();
 %>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<title><siga:Idioma key="gratuita.listadoZonas.literal.listadoZonas"/></title>
 </head>
 
 <body>
-	<%if (obj.size()>0){%>
 	<html:form action="/JGR_DefinirZonasSubzonas.do" method="post" target="mainWorkArea" style="display:none">
 		<html:hidden property = "modo"  styleId = "modo"  value = ""/>
 		<html:hidden property = "accion"  styleId = "accion" value = "zona"/>
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 	</html:form>	
 		
-		<siga:Table 		   
-		   name="listadoZonas"
-		   border="2"
-		   columnNames="gratuita.busquedaZonas.literal.zona,"
-		   columnSizes="88,12">
+	<siga:Table 		   
+	   name="listadoZonas"
+	   border="2"
+	   columnNames="gratuita.busquedaZonas.literal.zona,"
+	   columnSizes="88,12">
 
-  			<%
-	    	int recordNumber=1;
+
+<%
+		if (obj.size()>0) {
+    		int recordNumber=1;
 			while (recordNumber-1 < obj.size()) {
 				fila = (ScsZonaBean)obj.get(recordNumber-1);
-			%>
+%>
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C,E,B" clase="listaNonEdit">
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdInstitucion()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdZona()%>"><%=fila.getNombre()%>&nbsp;</td>
+					<td>
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdInstitucion()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdZona()%>">
+						
+						<%=fila.getNombre()%>&nbsp;
+					</td>
 				</siga:FilaConIconos>		
-			<%  
+<%  
 				recordNumber++; 
 			}
-			%>
-		</siga:Table>
-	<%
-	}else {
-	%>
-	<siga:Table 		   
-		   name="listadoZonas"
-		   border="2"
-		   columnNames="gratuita.busquedaZonas.literal.zona,"
-		   columnSizes="90,10">
-  	    </siga:Table>
+		} else {
+%>
 	 		<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-	<%
-	}
-	%>
+			   	<td class="titulitos">
+			   		<siga:Idioma key="messages.noRecordFound"/>
+			   	</td>
+			</tr>
+<%
+		}
+%>
+	</siga:Table>
 	
-		<script language="JavaScript">
-
+	<script language="JavaScript">
 		//Funcion asociada al refresco
-		function refrescarLocal() 
-		{		
+		function refrescarLocal() {		
 			parent.buscar();
 		}		
-		
-		</script>
-	
+	</script>
 	
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
