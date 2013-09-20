@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- listarDefendidosDesignas.jsp -->
+<!-- listarActuacAsist.jsp -->
+
 <!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
 	 Utilizando tags pinta una lista con cabeceras fijas -->
 	 
@@ -44,121 +45,100 @@
 	 }
 %>	
 
-
 <!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:TituloExt 
-		titulo="gratuita.defendidosDesigna.literal.titulo" 
-		localizacion="gratuita.defendidosDesigna.literal.location"/>
+	<siga:TituloExt titulo="gratuita.defendidosDesigna.literal.titulo" localizacion="gratuita.defendidosDesigna.literal.location"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
-	
-		//Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		//Asociada al boton Cerrar
+		function accionCerrar() {		
 			window.top.close();
 		}	
-	
 	</script>
-
 </head>
 
 <body class="tablaCentralCampos">
+	<!-- INICIO: LISTA DE VALORES -->
+	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 
-		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
-
-		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/JGR_DefinirHitosFacturables.do" method="POST" target="mainPestanas" style="display:none">
-			<html:hidden property = "modo" value = ""/>
-		</html:form>	
-		
-          <table class="tablaTitulo" cellspacing="0" heigth="32">
-          <tr>
-	        <td id="titulo" class="titulosPeq">
-		     <% if (tipo.equals("asistencia")) { %>
-			   <siga:Idioma key="fcs.criteriosFacturacion.asistencia.tituloAsistencia"/>
-		     <% } else { %>
-			   <siga:Idioma key="fcs.criteriosFacturacion.asistencia.tituloActuacion"/>
-		     <% } %>
+	<!-- Formulario de la lista de detalle multiregistro -->
+	<html:form action="/JGR_DefinirHitosFacturables.do" method="POST" target="mainPestanas" style="display:none">
+		<html:hidden property = "modo" value = ""/>
+	</html:form>	
+	
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<% if (tipo.equals("asistencia")) { %>
+					<siga:Idioma key="fcs.criteriosFacturacion.asistencia.tituloAsistencia"/>
+				<% } else { %>
+					<siga:Idioma key="fcs.criteriosFacturacion.asistencia.tituloActuacion"/>
+				<% } %>
 			</td>
-    	</tr>
-  		</table>
-			
-			
-		
-    
+	 	</tr>
+	</table>
+ 		
+	<siga:Table 
+	   	name="tablaDatos"
+	   	border="1"
+	   	columnNames="<%=nombreCol%>"
+	   	columnSizes="<%=tamano%>"
+	   	modal="P">  		
 
-		<% if (obj==null || obj.size()==0){%>
-	 		<div class="notFound">
-<br><br>
-<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-<br><br>
-</div>
-	 		
-		<%}else{%>
-		  <!-- Campo obligatorio -->
-		 
-			<siga:Table 
-			   name="tablaDatos"
-			   border="1"
-			   columnNames="<%=nombreCol%>"
-			   columnSizes="<%=tamano%>"
-			   modal="P">
-			  
-		    <% if (tipo.equals("asistencia")){
-			  
-		    	int recordNumber=1;
-				while ((recordNumber) <= obj.size()){	 
+<% 
+		if (obj==null || obj.size()==0) {
+%>
+			<tr class="notFound">
+				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+ 		
+<%
+		} else {
+	    	if (tipo.equals("asistencia")){
+	    		int recordNumber=1;
+				while ((recordNumber) <= obj.size()) {	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-			 	%>	
-				  	<tr>
+%>	
+			  		<tr>
 						<td class="labelTextValue" >&nbsp;&nbsp;&nbsp;<%=hash.get("TIPOASISTENCIA")%></td>
 						<td class="labelTextValue" >&nbsp;&nbsp;&nbsp;<%=hash.get("IMPORTE")%></td>
 					</tr>
-				<%recordNumber++;%>
-				<%}
-			}else{
-			  int recordNumber=1;
-				while ((recordNumber) <= obj.size()){	 
+<%
+					recordNumber++;
+				}
+				
+			} else {
+		  		int recordNumber=1;
+				while ((recordNumber) <= obj.size()) {	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-			 	%>	
-				  	<tr>
+%>	
+			  		<tr>
 						<td class="labelTextValue" >&nbsp;&nbsp;&nbsp;<%=hash.get("TIPOASISTENCIA")%></td>
 						<td class="labelTextValue" >&nbsp;&nbsp;&nbsp;<%=hash.get("TIPOACTUACION")%></td>
 						<td class="labelTextValue" >&nbsp;&nbsp;&nbsp;<%=hash.get("IMPORTE")%></td>
 					</tr>
-				<%recordNumber++;%>
-				<%}
-			}%>	
+<%
+					recordNumber++;
+				}
+			}
+
+		}
+%>
+	</siga:Table>
 			
-			</siga:Table>
-		<%}%>
-
+	<siga:ConjBotonesAccion botones="C" modal="P" clase="botonesDetalle"/>
+	<!-- FIN: LISTA DE VALORES -->
 			
-		      <siga:ConjBotonesAccion botones="C" modal="P" clase="botonesDetalle"/>
-
-
-<!-- FIN: LISTA DE VALORES -->
-		
-	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	</body>
+</body>
 </html>
-		  
-		
