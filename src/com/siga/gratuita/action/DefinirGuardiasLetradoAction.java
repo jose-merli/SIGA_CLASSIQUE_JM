@@ -175,7 +175,8 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 						" AND IT.IDINSTITUCION = SCS_INSCRIPCIONGUARDIA.IDINSTITUCION " +
 						" AND IT.IDTURNO = SCS_INSCRIPCIONGUARDIA.IDTURNO " +
 						" AND IT.FECHABAJA IS NULL " +
-						" AND IT.FECHADENEGACION IS NULL) validacionTurno " +					
+						" AND IT.FECHADENEGACION IS NULL " +
+						" AND ROWNUM = 1) validacionTurno " +					
                         
 				" FROM SCS_GUARDIASTURNO, " +
 					" SCS_INSCRIPCIONGUARDIA, " +
