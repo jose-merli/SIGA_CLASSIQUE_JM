@@ -549,52 +549,82 @@ public class AbonosPagosAction extends MasterAction {
 			    throw new ClsExceptions("Error al actualizar el pago efectivo del abono: "+admin.getError());
 			}	
 			
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD (pago por caja de la factura)
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IDFACTURA, miForm.getIdFactura());
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOPORCAJA,adminPPC.getNuevoID(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura()));
-			datosPagoFactura.put(FacPagosPorCajaBean.C_FECHA, "sysdate");
-			datosPagoFactura.put(FacPagosPorCajaBean.C_TARJETA, "N");
-			//datosPagoFactura.put(FacPagosPorCajaBean.C_TIPOAPUNTE, FacPagosPorCajaBean.tipoApunteCompensado); // compensación
-			//datosPagoFactura.put(FacPagosPorCajaBean.C_OBSERVACIONES, "Compensado con abono nº "+abono);
-			//datosPagoFactura.put(FacPagosPorCajaBean.C_OBSERVACIONES, UtilidadesString.getMensajeIdioma(userBean,"messages.abonos.literal.compensa")+ " " + (String)refAbono.get(FacAbonoBean.C_NUMEROABONO));
-			datosPagoFactura.put(FacPagosPorCajaBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);		
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IMPORTE, miForm.getImporte());
-
-
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IDABONO, miForm.getIdAbono());
-			datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOABONO,hash.get(FacPagoAbonoEfectivoBean.C_IDPAGOABONO));
+			Vector vFactura = (Vector) adminFactura.getImpFactura(miForm.getIdInstitucion().toString(), miForm.getIdFactura().toString());
 			
-			if (adminPPC.insert(datosPagoFactura)){
-			    
-			    FacFacturaBean facturaBean = null;
-				FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
-			    Hashtable ht = new Hashtable();
-			    ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			    ht.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
-			    Vector v = facturaAdm.selectByPK(ht);
-			    if (v!=null && v.size()>0) {
+			FacFacturaBean bAFactura = null;
+			Double impTotalFactura = Double.valueOf((String) ((Row)vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTAL));
+			Double impTotalPagadoFactura = Double.valueOf((String)((Row)vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTALPAGADO));
+			
+			if (impTotalFactura - impTotalPagadoFactura > 0){
+				// Cargo la tabla hash con los valores del formulario para insertar en la BBDD (pago por caja de la factura)
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IDFACTURA, miForm.getIdFactura());
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOPORCAJA,adminPPC.getNuevoID(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura()));
+				datosPagoFactura.put(FacPagosPorCajaBean.C_FECHA, "sysdate");
+				datosPagoFactura.put(FacPagosPorCajaBean.C_TARJETA, "N");
+				datosPagoFactura.put(FacPagosPorCajaBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);		
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IMPORTE, miForm.getImporte());
+
+
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IDABONO, miForm.getIdAbono());
+				datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOABONO,hash.get(FacPagoAbonoEfectivoBean.C_IDPAGOABONO));				
+				
+				if (adminPPC.insert(datosPagoFactura)){
+					FacFacturaBean facturaBean = null;
+					FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+					Hashtable ht = new Hashtable();
+					ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+					ht.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
+					Vector v = facturaAdm.selectByPK(ht);
+					if (v!=null && v.size()>0) {
+					        facturaBean = (FacFacturaBean) v.get(0);
+					        
+					        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
+					        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+					        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+					        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+					        
+					        if (facturaAdm.update(facturaBean)) {
+						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
+								facturaAdm.actualizarEstadoFactura(facturaBean, new Integer(this.getUserBean(request).getUserName()));
+					        } else {
+					            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+					        }
+							
+										    
+					    } else {
+					        throw new ClsExceptions("No se ha encontrado la factura buscada: "+miForm.getIdInstitucion()+ " "+miForm.getIdFacturaCompensadora());
+					    }		
+				}
+			} else{
+			 
+			FacFacturaBean facturaBean = null;
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+			Hashtable ht = new Hashtable();
+			ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+			ht.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
+			Vector v = facturaAdm.selectByPK(ht);
+			if (v!=null && v.size()>0) {
 			        facturaBean = (FacFacturaBean) v.get(0);
 			        
 			        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-			        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-			        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-			        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+			        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)miForm.getImporte())).doubleValue()));
+			        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()));
+			        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()));
 			        
-			        if (facturaAdm.update(facturaBean)) {
-				        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-						facturaAdm.actualizarEstadoFactura(facturaBean, new Integer(this.getUserBean(request).getUserName()));
-			        } else {
-			            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
-			        }
+			        boolean correcto = facturaAdm.update(facturaBean);
+			        
+			        if (!correcto) {
+				        // No se ha realizado correctamente la actualizacion de la factura
+			        	throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+			        } 
 					
 								    
 			    } else {
 			        throw new ClsExceptions("No se ha encontrado la factura buscada: "+miForm.getIdInstitucion()+ " "+miForm.getIdFacturaCompensadora());
 			    }					    
-
-			}			
-			
+		
+			}	
 			tx.commit();
 			result=exitoModal("facturacion.abonosPagos.datosPagoAbono.abonoRealizado",request);
 		} 

@@ -313,6 +313,48 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+
+	/** 
+	 * Recoge toda informacion del registro seleccionado a partir de sus claves<br/> 
+	 * @param  institucion - identificador de la institucion
+	 * @param  factura - identificador de la factura	 	  
+	 * @return  Vector - Fila seleccionada  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public Vector getImpFactura (String institucion, String factura) throws ClsExceptions,SIGAException {
+		   
+		   Vector datos=new Vector();
+		   Hashtable codigosBind = new Hashtable();
+		   int contador = 0;
+		   
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+    						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + "," +
+			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALPAGADO + 
+							" FROM " + FacFacturaBean.T_NOMBRETABLA + 
+							" WHERE ";
+	            contador++;
+	            codigosBind.put(new Integer(contador), factura);
+						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + "= :"+contador;
+						sql+=" AND ";
+				contador++;
+				codigosBind.put(new Integer(contador), institucion);
+						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "= :"+contador;
+														
+	            if (rc.findBind(sql, codigosBind)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos.add(fila);
+	               }
+	            } 
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de Facturas.");
+	       }
+	       return datos;                        
+	    }	
+	
 	
 	/** 
 	 * Recoge toda informacion del registro seleccionado a partir de sus claves<br/> 
