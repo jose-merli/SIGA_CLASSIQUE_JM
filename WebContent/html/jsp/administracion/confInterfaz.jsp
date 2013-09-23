@@ -293,7 +293,7 @@
 	
 	<table align="left" border="0" width="100%">
 		<tr>
-			<td  align="left">
+			<td  align="left" style="display:none">
 			<siga:ConjCampos leyenda="confInterfaz.tipoLetra">
 				<table width="100%">
 				<tr>
