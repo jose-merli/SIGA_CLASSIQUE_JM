@@ -72,7 +72,7 @@
 					<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
 					<tr>				
-						<td class="labelText" width="40">
+						<td class="labelText" width="80">
 							<siga:Idioma key="certificados.mantenimiento.literal.certificado"/>
 						</td>				
 						<td>
