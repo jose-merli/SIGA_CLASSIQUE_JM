@@ -295,7 +295,7 @@
 					
 					String telefono = UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));
 					String sexo = UtilidadesString.mostrarDatoJSP(registro.get("SEXO"));
-					String tratamiento = UtilidadesString.mostrarDatoJSP(registro.get("TRATAMIENTO"));
+					String tratamiento = UtilidadesString.mostrarDatoJSP(registro.get("IDTRATAMIENTO"));
 					String fax1 = UtilidadesString.mostrarDatoJSP(registro.get("FAX"));
 					
 			 		%>
