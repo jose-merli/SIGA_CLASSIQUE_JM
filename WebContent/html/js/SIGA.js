@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.100 2013-09-19 15:55:47 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.101 2013-09-23 10:42:32 jose Exp $
 	**/
 	(function(jQuery)
 	{
@@ -2112,6 +2112,7 @@ function ventaModalGeneral(nombreFormulario, tamano, recursoMsg) {
 	formulario.actionModal.value = formulario.getAttribute("action");
 	// envio los campos del formulario como parametro con el action incluido en
 	// ellos
+	tamano=tamano.toUpperCase();
 	if (tamano == "G") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
