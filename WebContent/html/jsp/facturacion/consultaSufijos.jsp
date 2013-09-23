@@ -62,7 +62,7 @@
 			   border  = "1"
 			   columnNames="facturacion.sufijos.literal.sufijo,facturacion.datosGenerales.literal.descripcion,"
 			   columnSizes = "30,55,15"
-			   modal = "p" >
+			   modal = "P" >
 		<% if ((Vsufijos != null) && (Vsufijos.size() > 0)){ %>
 	
 				<%	 for (int i = 1; i <= Vsufijos.size(); i++) { 
