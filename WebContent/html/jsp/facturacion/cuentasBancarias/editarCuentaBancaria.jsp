@@ -33,8 +33,6 @@
 
 <script type="text/javascript">
 	function inicio() {
-		
-		ajusteAltoBotonesPaginador('divListadoSeriesFacturacion');
 		ajustarCabeceraTabla();
 		if(document.CuentasBancariasForm.modo.value=='abrir'){
 			habilitar(false);
@@ -224,6 +222,7 @@
 		
 		
 	</table>
+	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
 
 						<div>
@@ -236,7 +235,7 @@
 							</table>
 						</div>
 						<div id="divListadoSeriesFacturacion"
-							style='position: absolute; width: 100%; overflow-y: auto;'>
+							style='position: absolute; height:45%; width: 100%; overflow-y: auto;'>
 						<table class="tablaCampos" id='seriesFacturacion' border='1'
 							align='center' width='100%' cellspacing='0' cellpadding='0' style= "table-layout: fixed;">
 
