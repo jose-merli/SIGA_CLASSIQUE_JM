@@ -49,6 +49,7 @@ public class SelectDataAction extends SIGAActionBase {
 	public static final String SELECTED_IDS_PARAMETER = "selectedIds";
 	public static final String SHOW_SEARCH_BOX_PARAMETER = "showsearchbox";
 	public static final String REQUIRED_PARAMETER = "required";
+	public static final String FIRST_LABEL_PARAMETER = "firstlabel";
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -58,14 +59,18 @@ public class SelectDataAction extends SIGAActionBase {
 		String queryId = request.getParameter(QUERY_ID_PARAMETER);
 		String sParams = request.getParameter(QUERY_PARAMETERS_JSON_PARAMETER);
 		String selectedIds = request.getParameter(SELECTED_IDS_PARAMETER);
+		String firstlabel = request.getParameter(FIRST_LABEL_PARAMETER);
 		boolean bShowsearchbox = UtilidadesString.stringToBoolean(request.getParameter(SHOW_SEARCH_BOX_PARAMETER));
 		boolean required = UtilidadesString.stringToBoolean(request.getParameter(REQUIRED_PARAMETER));
 		
+		
+		HttpSession session = request.getSession();
+		UsrBean user=getUserBean(session);
 		List<KeyValue> options = new ArrayList<KeyValue>();
 		if (required){
-			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, UtilidadesString.getMensajeIdioma(user.getLanguage(), firstlabel!=null?firstlabel:KeyValue.REQUIRED_VALUE)));
 		} else {
-			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, firstlabel!=null?UtilidadesString.getMensajeIdioma(user.getLanguage(),firstlabel):KeyValue.DEFAULT_VALUE));
 		}
 		
 		if (queryId != null && !queryId.equals("")){
@@ -75,8 +80,8 @@ public class SelectDataAction extends SIGAActionBase {
 			
 			if (selectDataMethod != null){
 				//BUILD PARAMETERS
-				HttpSession session = request.getSession();
-				UsrBean user=getUserBean(session);
+				
+				
 				
 				HashMap<String, String> params = new HashMap<String, String>();
 				if (sParams != null && !sParams.equals("")){

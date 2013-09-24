@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.101 2013-09-23 10:42:32 jose Exp $
+	*	@version    $Id: SIGA.js,v 1.102 2013-09-24 13:59:42 jorge Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1638,6 +1638,10 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 		if (typeof childrenSelect.data("showsearchbox") != "undefined"){
 			sShowsearchbox ="&showsearchbox=true";
 		}
+		var sFirstLabel = "";
+		if (typeof childrenSelect.data("firstlabel") != "undefined"){
+			sFirstLabel ="&firstlabel="+childrenSelect.data("firstlabel");
+		}
 		// Funciona mucho mejor en IE que .html("");
 		childrenSelect.each(function(){this.innerHTML="";});
 		childrenSelect.html(optionCargando);
@@ -1647,7 +1651,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				jQuery("#"+jQuery(currentChild).attr("id")+"_tagSelectDiv").show();
 			}
 			var jqxhr = jQuery.ajax({
-				url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox
+				url:"selectData.do?queryId="+jQuery(currentChild).data("queryid")+params+selectedIds+required+sShowsearchbox+sFirstLabel
 			}).done(function(data, textStatus, jqXHR){
 				console.debug(jQuery(currentChild).attr("id")+" load DONE!");
 				//var start = +new Date();

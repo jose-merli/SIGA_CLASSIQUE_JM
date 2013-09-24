@@ -80,6 +80,8 @@ public class TagSelect extends TagSupport {
 	private String onLoadCallback = "";
 	
 	private UsrBean user;
+	private String firstLabel=null;
+	
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -92,10 +94,13 @@ public class TagSelect extends TagSupport {
 	public int doEndTag() throws JspException {
 		List<KeyValue> options = new ArrayList<KeyValue>();
 		if (this.required){
-			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.REQUIRED_VALUE));
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, UtilidadesString.getMensajeIdioma(user.getLanguage(), this.firstLabel!=null?this.firstLabel:KeyValue.REQUIRED_VALUE)));
 		} else {
-			options.add(new KeyValue(KeyValue.DEFAULT_KEY, KeyValue.DEFAULT_VALUE));
+			options.add(new KeyValue(KeyValue.DEFAULT_KEY, this.firstLabel!=null?UtilidadesString.getMensajeIdioma(user.getLanguage(),this.firstLabel):KeyValue.DEFAULT_VALUE));
 		}
+		
+		
+		
 		if (StringUtils.hasText(this.dataJSON)){
 			try {
 				final HashMap<String, List<KeyValue>> hmData = (HashMap<String, List<KeyValue>>) UtilidadesString.createHashMap(this.dataJSON, new TypeReference<HashMap<String, List<KeyValue>>>() {});
@@ -355,6 +360,11 @@ public class TagSelect extends TagSupport {
 		if (!selectStyle.equals(""))
 			selectStyle += "'";		
 		
+		String firstLabelData = "";
+		if (this.firstLabel != null){
+			firstLabelData = " data-firstlabel='"+this.firstLabel+"' ";
+		}
+		
 		// *** IMPRIME HTML *** //
 		PrintWriter out = pageContext.getResponse().getWriter();
 		out.println("<div id='"+this.id+"_tagSelectDiv' " + divClass + dataWidth + divDataReadOnly + wrapDivStyle + ">");
@@ -373,7 +383,7 @@ public class TagSelect extends TagSupport {
 		}
 		
 		out.println("<div id='"+this.id+"_loader' "+divLoaderClass+selectLoaderStyle+">");
-		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+">");
+		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+firstLabelData+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		String sInputMultiple = "";
 		while(iteraOptions.hasNext()){
@@ -783,5 +793,15 @@ public class TagSelect extends TagSupport {
 	public void setOnLoadCallback(String onLoadCallback) {
 		this.onLoadCallback = onLoadCallback.trim();
 	}
+
+	public String getFirstLabel() {
+		return firstLabel;
+	}
+
+	public void setFirstLabel(String firstLabel) {
+		this.firstLabel = firstLabel;
+	}
+
+	
 	
 }
