@@ -171,6 +171,13 @@
       <description>flag que indica si el select debe tener valor obligatoriamente</description>
     </attribute>
     <attribute>
+      <name>firstLabel</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>Label para primera linea del select</description>
+    </attribute>
+    
+    <attribute>
       <name>readOnly</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
