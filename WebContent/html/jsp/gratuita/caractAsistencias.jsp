@@ -793,7 +793,7 @@ function bloquearDesbloquear(o)
 			<siga:Idioma key="gratuita.caracteristicas.literal.si"/>
 			<input name="rEntrevistaLetradoDemandante" type=radio value="1" onclick="fEntrevistaLetradoDemandante(this);" <%=(entrevistaLetradoDemandante.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.no"/>
-			<input name="rEntrevistaLetradoDemandante" type=radio value="0" onclick="fEntrevistaLetradoDemandante(this);"  <%=(entrevistaLetradoDemandante.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>  			
+			<input name="rEntrevistaLetradoDemandante" type=radio value="0" onclick="fEntrevistaLetradoDemandante(this);"  <%=(entrevistaLetradoDemandante.equals("0"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>  			
 		</td>
 	</tr>
 	<tr>
@@ -894,7 +894,7 @@ function bloquearDesbloquear(o)
 				<tr>
 					<td class="labelText" >
 						<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					</td>
 					
 					<td> 
