@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <!-- mantenimientoProductos.jsp -->
@@ -385,12 +386,11 @@
 			//resetComboPagoInternet = document.getElementById ("formaPagoInternetFrame").src;
 			//resetComboPagoSecretaria = document.getElementById ("formaPagoSecretariaFrame").src;
 
-			 var cont=document.getElementById("contador");
 			// Mostramos el valor del contador cuando está relleno el combo Tipo Certificado 
 			<% if (tipoCertificado!=null && !tipoCertificado.equals("") && !tipoCertificado.equals("B")){%>
-			    cont.style.display="block";
+				jQuery("#contador").show();
 			<%}else{%>
-			    cont.style.display="none"; 
+			jQuery("#contador").hide();
 			<%}%>
 		}
 		
@@ -413,7 +413,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32px">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="pys.busquedaProductos.cabecera"/>
@@ -427,72 +427,69 @@
 		 Los elementos que copieis dentro, que tengan el estilo 
 		 "tablaTitulo" se deben modificar por "tablaCentralMedia" 
 	-->
+		
 	<div id="camposRegistro" class="posicionModalGrande" align="center">
-
-		<!-- INICIO: CAMPOS -->
-		<!-- Zona de campos de busqueda o filtro -->
-		<table  class="tablaCentralCamposGrande" align="center">
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="pys.busquedaProductos.cabecera">					
-					 	<table width="100%" cellspacing="0" cellpadding="0" border="0">
-							<html:form action="/PYS_MantenimientoProductos.do" method="POST" target="submitArea">
-								<html:hidden property="modo" value=""/>					
-								<html:hidden property="idContador" value="<%=row.getString(PysProductosInstitucionBean.C_IDCONTADOR)%>"/>					
-								<html:hidden property="idProdInst" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>"/>&nbsp;
-								<% 
-									if (remitente=="modificar") { 
-								%>
-										<html:hidden property="producto" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%>"/>
-										<html:hidden property="tipoProducto" value="<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%>"/>
-								<% 
-									} 
-								%>
-																
+	
+		<html:form action="/PYS_MantenimientoProductos.do" method="POST" target="submitArea">
+			<html:hidden property="modo" value=""/>					
+			<html:hidden property="idContador" value="<%=row.getString(PysProductosInstitucionBean.C_IDCONTADOR)%>"/>					
+			<html:hidden property="idProdInst" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>"/>
+<% 
+			if (remitente=="modificar") { 
+%>
+				<html:hidden property="producto" value="<%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%>"/>
+				<html:hidden property="tipoProducto" value="<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%>"/>
+<% 
+			} 
+%>		
+	
+			<table  class="tablaCentralCamposGrande" align="center">
+				<tr>
+					<td>
+						<siga:ConjCampos leyenda="pys.busquedaProductos.cabecera">					
+					 		<table width="100%" cellspacing="0" cellpadding="5" border="0" align="center">
 								<tr>							
-									<td width="19%" class="labelText">
+									<td width="130px" class="labelText">
 										<siga:Idioma key="pys.resultadoBusquedaProductos.literal.tipo"/>&nbsp;(*)
 									</td>
 										
-									<td width="29%" class="labelText">								
-										<% 
-											if ("insertar".equalsIgnoreCase(remitente)) { 
-										%>										
-											<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" width="200" required="true" />
-										
-										 
-										<% 
-											} else {										
-												vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
-										%> 
-											<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" disabled="true" selectedIds="<%=vTipoProducto%>" width="200" required="true" />																
-										<% 
-											} 
-										%>
+									<td width="310px" class="labelText">								
+<% 
+										if ("insertar".equalsIgnoreCase(remitente)) { 
+%>										
+											<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" width="300" required="true" />																				 
+<% 
+										} else {										
+											vTipoProducto.add(row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
+%> 
+											<siga:Select queryId="getTiposProductos" id="tipoProducto" queryParamId="idtipoproducto" childrenIds="producto" disabled="true" selectedIds="<%=vTipoProducto%>" width="300" required="true" />																
+<% 
+										} 
+%>
 									</td>
 									
-									<td width="18%" class="labelText">
+									<td width="130px" class="labelText">
 										<siga:Idioma key="pys.resultadoBusquedaProductos.literal.precio"/>&nbsp;(*)
 									</td>
 									
-									<td width="29%" class="labelText">
-										<% 
-											if (remitente=="insertar") { 
-										%>
+									<td class="labelText">
+<% 
+										if (remitente=="insertar") { 
+%>
 											<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="" />&nbsp;&euro;
-								  		<% 
-								  			} else { 
-								  				if (remitente=="modificar") { 
-								  		%>
-											<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesNumero.formatoCampo(precio)%>" />&nbsp;&euro;
-										<%		
-												} else { 
-										%>
+<% 
+							  			} else { 
+							  				if (remitente=="modificar") { 
+%>
+												<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesNumero.formatoCampo(precio)%>" />&nbsp;&euro;
+<%		
+											} else { 
+%>
 												<html:text property="precio" styleClass="boxConsultaNumber" size="10" value="<%=UtilidadesNumero.formatoCampo(precio)%>" readOnly="true" />&nbsp;&euro;
-										<% 		
-												} 
-								  			} 
-								  		%>
+<% 		
+											} 
+							  			} 
+%>
 									</td>
 								</tr>
 								
@@ -502,35 +499,42 @@
 									</td>
 									
 									<td class="labelText">
-										<% 
-											if ("insertar".equalsIgnoreCase(remitente)) {
-										%>										
-											<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" />
-										
-										<% 
-											} else {
-												vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); 
-												String productoParams = UtilidadesString.createJsonString("idtipoproducto", row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
-										%>
+<% 
+										if ("insertar".equalsIgnoreCase(remitente)) {
+%>										
+											<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" required="true" width="300" />										
+<% 
+										} else {
+											vProducto.add(row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)); 
+											String productoParams = UtilidadesString.createJsonString("idtipoproducto", row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
+%>
 											<siga:Select queryId="getProductosDeTipo" id="producto" parentQueryParamIds="idtipoproducto" params="<%=productoParams%>" required="true" width="300" selectedIds="<%=vProducto%>" disabled="true"/>										
-										<% 
-											} 
-										%>
+<% 
+										} 
+%>
 									</td>						
 									
 									<td class="labelText">
 										<siga:Idioma key="pys.resultadoBusquedaProductos.literal.IVA"/>&nbsp;(*)
 									</td>
 									<td class="labelText"> 									
-										<% if ("insertar".equalsIgnoreCase(remitente)){%>
+<% 
+										if ("insertar".equalsIgnoreCase(remitente)) {
+%>
 											<siga:Select queryId="getPorcentajesIva" id="iva" required="true"/>
-								  		<% } else { %>
-											<% if ("modificar".equalsIgnoreCase(remitente)){ %>
+<% 
+										} else { 
+											if ("modificar".equalsIgnoreCase(remitente)) { 
+%>
 												<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true"/>
-											<%}else{%>
+<%
+											} else { 
+%>
 												<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true" disabled="true" />
-											<% } %>
-								  		<% } %>
+<% 
+											}
+										} 
+%>
 									</td>
 								</tr>
 								
@@ -539,49 +543,72 @@
 										<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.producto"/>&nbsp;(*)
 									</td>
 									<td class="labelText"> 					
-										<% if (remitente=="insertar"){%>
+<% 
+										if (remitente=="insertar") {
+%>
 								  			<html:textarea property="nombre" styleClass="box" 
 								  				style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
-								  				onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>
-								  				
-								  		<% } else { %>
-											<% if (remitente=="modificar"){ %>
+								  				onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>								  				
+<% 
+										} else { 
+											if (remitente=="modificar"){ %>
 												<html:textarea property="nombre" styleClass="box" 
 													style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
 													onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" 
 													value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
 													
-											<%}else{%>
+<%
+											} else {
+%>
 												<html:textarea property="nombre" styleClass="boxConsulta" 
 													style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
 													value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"/>
-											<% } %>
-								  	<% } %>
-								  	</td>	
+<% 
+											}
+										} 
+%>
+								  	</td>
+								  		
 									<td class="labelText">
-										<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.cuenta"/>&nbsp;&nbsp;
-										</td>
+										<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.cuenta"/>
+									</td>
 									<td class="labelText"> 					
-										<% if (remitente=="insertar"){%>
-								  			<html:text property="cuentaContable" styleClass="box" size="20"  maxlength="20" value=""></html:text>
-								  		<% } else { %>
-											<% if (remitente=="modificar"){ %>
-												<html:text property="cuentaContable" styleClass="box" size="20"  maxlength="20"  value="<%=row.getString(PysProductosInstitucionBean.C_CUENTACONTABLE)%>"></html:text>
-											<%}else{%>
-												<html:text property="cuentaContable" styleClass="boxConsulta"  maxlength="20" size="20" value="<%=row.getString(PysProductosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true"></html:text>
-											<% } %>							  						  		
-								  	<% } %>
+<% 
+										if (remitente=="insertar") {
+%>
+								  			<html:text property="cuentaContable" styleClass="box" size="20"  maxlength="20" value="" />
+<% 
+										} else { 
+											if (remitente=="modificar") { 
+%>
+												<html:text property="cuentaContable" styleClass="box" size="20"  maxlength="20"  value="<%=row.getString(PysProductosInstitucionBean.C_CUENTACONTABLE)%>" />
+<%
+											} else {
+%>
+												<html:text property="cuentaContable" styleClass="boxConsulta"  maxlength="20" size="20" value="<%=row.getString(PysProductosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true" />
+<% 
+											}
+										} 
+%>
 									</td>
 								</tr>
 								
 								<tr>
 									<td class="labelText">
-										Identificador&nbsp;&nbsp;
+										Identificador
 									</td>
 									<td class="labelTextValue" title="Categoria:Tipo:Producto">
-										<% if (!remitente.equalsIgnoreCase("insertar")){%>
-											<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO) + delimitador + row.getString(PysProductosInstitucionBean.C_IDPRODUCTO) + delimitador +row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
-										<%} %>
+<% 
+										if (!remitente.equalsIgnoreCase("insertar")) {
+%>
+											<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO) + 
+												delimitador + 
+												row.getString(PysProductosInstitucionBean.C_IDPRODUCTO) + 
+												delimitador +
+												row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
+<%
+										} 
+%>
 									</td>
 								</tr>
 								
@@ -590,38 +617,56 @@
 										<siga:Idioma key="certificados.mantenimiento.literal.tipoCertificado"/>&nbsp;&nbsp;
 									</td>
 									<td class="labelText">
-										<% if (remitente=="insertar"){%>
+<% 
+										if (remitente=="insertar") {
+%>
 											<html:select name="MantenimientoProductosForm" property="tipoCertificado" styleClass="boxCombo" value="">
 												<html:option value=""></html:option>
 												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_CERTIFICADO  %>"> <siga:Idioma key="certificados.tipocertificado.literal.certificado"/></html:option>
 												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION %>"> <siga:Idioma key="certificados.tipocertificado.literal.comunicacion"/></html:option>
 												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA   %>"> <siga:Idioma key="certificados.tipocertificado.literal.diligencia"/></html:option>
 												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_GRATUITO      %>"> <siga:Idioma key="certificados.tipocertificado.literal.gratuito"/></html:option>
-											</html:select>											
-										<% } else { %>									
-										<% tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
-												if (remitente=="modificar"){ %>
-											<html:select name="MantenimientoProductosForm" property="tipoCertificado" styleClass="boxCombo" value="<%=tipoCertificado%>">
-												<html:option value=""></html:option>
-												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_CERTIFICADO  %>"> <siga:Idioma key="certificados.tipocertificado.literal.certificado"/></html:option>
-												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION %>"> <siga:Idioma key="certificados.tipocertificado.literal.comunicacion"/></html:option>
-												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA   %>"> <siga:Idioma key="certificados.tipocertificado.literal.diligencia"/></html:option>
-												<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_GRATUITO      %>"> <siga:Idioma key="certificados.tipocertificado.literal.gratuito"/></html:option>
-											</html:select>	
-											<%}else{ %>
-											<div class="boxConsulta">	
-												<% if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_CERTIFICADO)){%>
-													<siga:Idioma key="certificados.tipocertificado.literal.certificado"/>
-												<%}else if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMUNICACION)){%>
-													<siga:Idioma key="certificados.tipocertificado.literal.comunicacion"/>
-												<%}else if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_DILIGENCIA)){%>
-													<siga:Idioma key="certificados.tipocertificado.literal.diligencia"/>
-												<%}else if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_GRATUITO)){%>
-													<siga:Idioma key="certificados.tipocertificado.literal.gratuito"/>
-												<%}%>							
-											</div>										 		
-											<% } %>											
-										<% } %>
+											</html:select>																						
+<% 
+										} else { 
+											tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
+											if (remitente=="modificar") { 
+%>
+												<html:select name="MantenimientoProductosForm" property="tipoCertificado" styleClass="boxCombo" value="<%=tipoCertificado%>">
+													<html:option value=""></html:option>
+													<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_CERTIFICADO  %>"> <siga:Idioma key="certificados.tipocertificado.literal.certificado"/></html:option>
+													<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION %>"> <siga:Idioma key="certificados.tipocertificado.literal.comunicacion"/></html:option>
+													<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA   %>"> <siga:Idioma key="certificados.tipocertificado.literal.diligencia"/></html:option>
+													<html:option value="<%=PysProductosInstitucionAdm.TIPO_CERTIFICADO_GRATUITO      %>"> <siga:Idioma key="certificados.tipocertificado.literal.gratuito"/></html:option>
+												</html:select>	
+<%
+											} else { 
+%>
+												<div class="boxConsulta">	
+<% 
+													if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_CERTIFICADO)) {
+%>
+														<siga:Idioma key="certificados.tipocertificado.literal.certificado"/>
+<%
+													} else if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMUNICACION)) {
+%>
+														<siga:Idioma key="certificados.tipocertificado.literal.comunicacion"/>
+<%
+													} else if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_DILIGENCIA)) {
+%>
+														<siga:Idioma key="certificados.tipocertificado.literal.diligencia"/>
+<%
+													}else if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_GRATUITO)) {
+%>
+														<siga:Idioma key="certificados.tipocertificado.literal.gratuito"/>
+<%
+													}
+%>							
+												</div>										 		
+<% 
+												}
+											} 
+%>
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
@@ -632,100 +677,161 @@
 								</tr>	
 								
 								<tr>
-								<!-- INICIO: FILA DE LOS CHECKBOX-->
-									<td class="labelText" colspan="2">
-										<!-- ALTA -->
-										<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.alta"/>
-										&nbsp;
-										<% if (remitente=="insertar"){%>
-											<input type="checkbox" name="altaInternet" value="1" style="margin-left: -5px;">
-								  		<% } else { %>
-												<% if (remitente=="modificar"){ %>
-									  				<% if (row.getString(PysProductosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)){%>	
-									  					<input type="checkbox" name="altaInternet" value="1" checked  style="margin-left: -5px;">
-									  				<% } else { %>			  		
-														<input type="checkbox" name="altaInternet" value="1"  style="margin-left: -5px;">
-									  				<% } %>
-									  			<% }else{ %>
-									  				<% if (row.getString(PysProductosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)){%>	
-									  					<input type="checkbox" name="altaInternet" value="1" checked disabled >
-									  				<% } else { %>			  		
-														<input type="checkbox" name="altaInternet" value="1" disabled >
-									  				<% } %>
-									  			<% } %>
-								  		<% } %>		
-		
-								  		<!-- BAJA -->
-										<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.baja"/>
-										&nbsp;
-										<% if (remitente=="insertar"){%>
-											<input type="checkbox" name="bajaInternet" value="1"  style="margin-left: -5px;">								
-								  		<% } else { %>
-												<% if (remitente=="modificar"){ %>
-									  				<% if (row.getString(PysProductosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)){%>	
-									  					<input type="checkbox" name="bajaInternet"  value="1" checked  style="margin-left: -5px;">
-									  				<% } else { %>			  		
-														<input type="checkbox" name="bajaInternet" value="1"  style="margin-left: -5px;">
-									  				<% } %>
-									  			<% }else{ %>
-									  				<% if (row.getString(PysProductosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)){%>	
-									  					<input type="checkbox" name="bajaInternet"  value="1" checked disabled >
-									  				<% } else { %>			  		
-														<input type="checkbox" name="bajaInternet"  value="1" disabled >
-									  				<% } %>
-									  			<% } %>						  				
-								  		<% } %>	
-								 	</td>
-								 	<td class="labelText" colspan="2">
-								 
-										<!-- COMISION BANCARIA -->
-										<siga:Idioma key="certificados.tipocertificado.literal.comisionBancaria"/>
-										&nbsp;							
-										<% if (remitente=="insertar"){%>
-											<input type="checkbox" name="tipoCertificadoComision" value="1"  style="margin-left: -5px;">								
-								  		<% } else { %>
-												<% tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
-												   if (remitente=="modificar"){	 %>
-									  				<% 
-													if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)){%>	
-									  					<input type="checkbox" name="tipoCertificadoComision"  value="1" checked  style="margin-left: -5px;">
-									  				<% } else { %>			  		
-														<input type="checkbox" name="tipoCertificadoComision" value="1"  style="margin-left: -5px;">
-									  				<% } %>
-									  			<% }else{ %>
-									  				<% if(tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)){%>	
-									  					<input type="checkbox" name="tipoCertificadoComision"  value="1" checked disabled >
-									  				<% } else { %>			  		
-														<input type="checkbox" name="tipoCertificadoComision"  value="1" disabled >
-									  				<% } %>
-									  			<% } %>						  				
-								  		<% } %>																										
-									
-										<!-- NO FACTURABLE -->
-										<siga:Idioma key="pys.mantenimientoProductos.literal.noFacturable"/> 
-										&nbsp;	
-		
-										<% if (remitente=="insertar"){%>
-							  				<input type="checkbox" name="noFacturable"  value="1"  style="margin-left: -5px;">
-								  		<% } else { 
-								  			String nofacturable=row.getString(PysProductosInstitucionBean.C_NOFACTURABLE);
-								  			if (remitente=="modificar"){ %>
-								  				<%if(nofacturable.equals(ClsConstants.DB_TRUE)){%>	
-													<input type="checkbox" name="noFacturable"  value="1" checked style="margin-left: -5px;">
-												<%}else{%>
-													<input type="checkbox" name="noFacturable"  value="1" style="margin-left: -5px;">
-												<% } %>	
-											<%}else{%>
-												<%if(nofacturable.equals(ClsConstants.DB_TRUE)){%>	
-													<input type="checkbox" name="noFacturable"  value="1" checked disabled >
-												<%}else{%>
-													<input type="checkbox" name="noFacturable"  value="1" disabled >
-												<% } %>	
-											<% } %>
-								  		<% } %>											
-									</td>		
+									<td class="labelText" colspan="2" nowrap>
+										<table>
+											<tr>
+												<td>								
+													<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.alta"/>
+												</td>
+												<td>	
+<% 
+													if (remitente=="insertar") {
+%>
+														<input type="checkbox" name="altaInternet" value="1">
+<% 
+													} else { 
+														if (remitente=="modificar") { 
+															if (row.getString(PysProductosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)) {
+%>	
+									  							<input type="checkbox" name="altaInternet" value="1" checked>
+<% 
+															} else { 
+%>			  		
+																<input type="checkbox" name="altaInternet" value="1">
+<% 
+															}
+															
+														} else { 
+															if (row.getString(PysProductosInstitucionBean.C_SOLICITARALTA).equals(ClsConstants.DB_TRUE)) {
+%>	
+									  							<input type="checkbox" name="altaInternet" value="1" checked disabled>
+<% 
+															} else { 
+%>			  		
+																<input type="checkbox" name="altaInternet" value="1" disabled >
+<% 
+															}
+														}
+													} %>
+												</td>
 												
-								<!-- FIN: FILA DE LOS CHECKBOX-->
+												<td>		
+													<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.baja"/>
+												</td>
+												<td>
+<% 
+													if (remitente=="insertar") {
+%>
+														<input type="checkbox" name="bajaInternet" value="1">								
+<% 
+													} else { 
+														if (remitente=="modificar") {
+															if (row.getString(PysProductosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)) {
+%>	
+									  							<input type="checkbox" name="bajaInternet"  value="1" checked>
+<% 
+															} else { 
+%>			  		
+																<input type="checkbox" name="bajaInternet" value="1">
+<% 
+															}
+															
+														} else {
+															if (row.getString(PysProductosInstitucionBean.C_SOLICITARBAJA).equals(ClsConstants.DB_TRUE)) {
+%>	
+									  							<input type="checkbox" name="bajaInternet"  value="1" checked disabled>
+<% 
+															} else { 
+%>			  		
+																<input type="checkbox" name="bajaInternet"  value="1" disabled >
+<% 
+															}
+														}
+													} %>
+												</td>
+											</tr>
+										</table>	
+								 	</td>
+								 	
+								 	<td class="labelText" colspan="2" nowrap>
+								 		<table>
+								 			<tr>
+								 				<td>
+													<siga:Idioma key="certificados.tipocertificado.literal.comisionBancaria"/>
+												</td>
+												<td>
+<% 
+													if (remitente=="insertar") {
+%>
+														<input type="checkbox" name="tipoCertificadoComision" value="1">								
+<% 
+													} else {
+														tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
+												   		if (remitente=="modificar") {
+															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
+%>	
+									  							<input type="checkbox" name="tipoCertificadoComision" value="1" checked>
+<% 
+															} else { 
+%>			  		
+																<input type="checkbox" name="tipoCertificadoComision" value="1">
+<% 
+															} 
+
+														} else {
+															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
+%>	
+									  							<input type="checkbox" name="tipoCertificadoComision" value="1" checked disabled>
+<% 	
+															} else { 
+%>			  		
+																<input type="checkbox" name="tipoCertificadoComision" value="1" disabled>
+<% 
+															}
+														}
+													} 
+%>
+												</td>
+												
+												<td>																																						
+													<siga:Idioma key="pys.mantenimientoProductos.literal.noFacturable"/>
+												</td>
+												<td> 
+<% 
+													if (remitente=="insertar") {
+%>
+							  							<input type="checkbox" name="noFacturable" value="1">
+<% 
+													} else { 
+								  						String nofacturable=row.getString(PysProductosInstitucionBean.C_NOFACTURABLE);
+								  						if (remitente=="modificar") { 
+															if (nofacturable.equals(ClsConstants.DB_TRUE)) {
+%>	
+																<input type="checkbox" name="noFacturable" value="1" checked>
+<%
+															} else {
+%>
+																<input type="checkbox" name="noFacturable" value="1">
+<% 
+															}
+															
+														} else {
+															if (nofacturable.equals(ClsConstants.DB_TRUE)) {
+%>	
+																<input type="checkbox" name="noFacturable"  value="1" checked disabled>
+<%
+															} else {
+%>
+																<input type="checkbox" name="noFacturable"  value="1" disabled >
+<% 
+															}
+														}
+													} 
+%>
+												</td>
+											</tr>
+										</table>																				
+									</td>		
 								</tr>				
 								
 								<tr id="contador">
@@ -733,8 +839,9 @@
 								 		<siga:Idioma key="censo.consultaDatosGenerales.literal.contador"/>
 								 	</td>
 								 	<td class="labelText" colspan="3">
-								 		<html:text property="cuentaContable" styleClass="boxConsulta" size="20"  maxlength="20" value="<%=row.getString(PysProductosInstitucionBean.C_IDCONTADOR)%>"></html:text></td>
-									</tr>					
+								 		<html:text property="cuentaContable" styleClass="boxConsulta" size="20"  maxlength="20" value="<%=row.getString(PysProductosInstitucionBean.C_IDCONTADOR)%>" readonly="true"/>
+								 	</td>
+								</tr>					
 							</table>
 							
 							<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -746,46 +853,91 @@
 												<tr>
 													<td class="labelText">
 														<siga:Select queryId="JSON" id="momentoCargo" queryParamId="idformapago" dataJSON="<%=valorMomentoCargo%>" childrenIds="formaPagoSecretaria,formaPagoInternet"/>							
-														<% if (remitente=="insertar"){%>
-															<input type="radio" name="cargo" value="S" checked onclick="cambiarCombosMomentoPago(this);" ><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
-							  							<% } else { 
-							  									if (row.getString(PysProductosInstitucionBean.C_MOMENTOCARGO).equals(ClsConstants.MOMENTO_CARGO_SOLICITUD)) {	
-																	if (remitente=="modificar"){ %>
-																		<input type="radio" name="cargo" value="S" checked onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
-														<% 			} else { %>
-																		<input type="radio" name="cargo" value="S" checked disabled onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
-														<% 			}
-							  									} else { 
-																	if (remitente=="modificar"){ %>
-																		<input type="radio" name="cargo" value="S" onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
-														<% 			} else { %>
-																		<input type="radio" name="cargo" value="S" disabled onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
-														<% 			} 							  																												
-							  									} 
-						  									} %>																											
+<% 
+														if (remitente=="insertar") {
+%>
+															<input type="radio" name="cargo" value="S" checked onclick="cambiarCombosMomentoPago(this);" >
+															&nbsp;
+															<siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
+<% 
+														} else { 
+							  								if (row.getString(PysProductosInstitucionBean.C_MOMENTOCARGO).equals(ClsConstants.MOMENTO_CARGO_SOLICITUD)) {	
+																if (remitente=="modificar"){ 
+%>
+																	<input type="radio" name="cargo" value="S" checked onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
+<% 			
+																} else { 
+%>
+																	<input type="radio" name="cargo" value="S" checked disabled onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
+<% 			
+																}
+							  								} else { 
+																if (remitente=="modificar"){ 
+%>
+																	<input type="radio" name="cargo" value="S" onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
+<% 			
+																} else { 
+%>
+																	<input type="radio" name="cargo" value="S" disabled onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.alSolicitarlo"/>
+<% 			
+																} 							  																												
+							  								} 
+						  								} 
+%>																											
 													</td>
 												</tr>
 												
 												<tr>
 													<td class="labelText">
-														<% if (remitente=="insertar"){%>
-															<input type="radio" name="cargo" value="P" onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/></td>
-						  								<% } else { 
-						  										if (row.getString(PysProductosInstitucionBean.C_MOMENTOCARGO).equals(ClsConstants.MOMENTO_CARGO_PROXFACTURA)) {
-						  											valorFormaPago = ""+ClsConstants.TIPO_FORMAPAGO_FACTURA;
-																	if (remitente=="modificar"){ %>
-																		<input type="radio" name="cargo" value="P" checked onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
-														<% 			} else { %>
-																		<input type="radio" name="cargo" value="P" checked disabled onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
-														<% 			} 
-		 														} else { 
-																	if (remitente=="modificar") { %>
-																		<input type="radio" name="cargo" value="P" onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
-														<%			} else { %>
-																		<input type="radio" name="cargo" value="P" disabled onclick="cambiarCombosMomentoPago(this);"><siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
-														<% 			} 
+<% 
+														if (remitente=="insertar") {
+%>
+																<input type="radio" name="cargo" value="P" onclick="cambiarCombosMomentoPago(this);">
+																&nbsp;
+																<siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
+<% 
+														} else { 
+						  									if (row.getString(PysProductosInstitucionBean.C_MOMENTOCARGO).equals(ClsConstants.MOMENTO_CARGO_PROXFACTURA)) {
+						  										valorFormaPago = ""+ClsConstants.TIPO_FORMAPAGO_FACTURA;
+																if (remitente=="modificar") { 
+%>
+																	<input type="radio" name="cargo" value="P" checked onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
+<% 			
+																} else { 
+%>
+																	<input type="radio" name="cargo" value="P" checked disabled onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
+<% 			
 																} 
-															} %>
+																
+		 													} else { 
+																if (remitente=="modificar") { 
+%>
+																	<input type="radio" name="cargo" value="P" onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
+<%			
+																} else { 
+%>
+																	<input type="radio" name="cargo" value="P" disabled onclick="cambiarCombosMomentoPago(this);">
+																	&nbsp;
+																	<siga:Idioma key="productos.mantenimientoProductos.literal.proximoPeriodo"/>
+<% 			
+																} 
+															} 
+														} 
+%>
 													</td>
 												</tr>
 											</table>
@@ -798,21 +950,34 @@
 														<siga:Idioma key="productos.mantenimientoProductos.literal.bajaLogica"/>
 													</td>
 													<td class="labelText" align="left">
-														<% if (remitente=="insertar") {	%>
+<% 
+														if (remitente=="insertar") {	
+%>
 															<input type="checkbox" name="bajaLogica" value="1" disabled>
-														<% } else if (remitente=="modificar") {
-																if (fechaBaja!=null) {%>
-																	<input type="checkbox" name="bajaLogica" value="1" checked>
-														<% 		} else { %>
-																	<input type="checkbox" name="bajaLogica" value="1">
-														<%		}
-														   } else { 
-																if (fechaBaja!=null) {%>
-																	<input type="checkbox" name="bajaLogica" value="1" checked disabled>
-														<% 		} else { %>
-																	<input type="checkbox" name="bajaLogica" value="1" disabled>
-														<% 		}
-														   } %>
+<% 
+														} else if (remitente=="modificar") {
+															if (fechaBaja!=null) {
+%>
+																<input type="checkbox" name="bajaLogica" value="1" checked>
+<% 		
+															} else { 
+%>
+																<input type="checkbox" name="bajaLogica" value="1">
+<%		
+															}
+															
+														} else { 
+															if (fechaBaja!=null) {
+%>
+																<input type="checkbox" name="bajaLogica" value="1" checked disabled>
+<% 		
+															} else { 
+%>
+																<input type="checkbox" name="bajaLogica" value="1" disabled>
+<% 		
+															}
+														} 
+%>
 													</td>
 												</tr>
 											</table>
@@ -829,86 +994,92 @@
 														<siga:Idioma key="productos.mantenimientoProductos.literal.internet"/>&nbsp;&nbsp;
 													</td>
 													<td width="80%" class="labelText" align="left">
-														<% 
-															if (remitente=="insertar"){
-														%>
+<% 
+														if (remitente=="insertar"){
+%>
 															<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoInternet" multiple="true" lines="2" required="true" width="90%"/>
-														<% 
-															} else { 	
-																if (vInt.isEmpty()) {
-																	if (remitente=="modificar") { 
-														%>
-																		<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" multiple="true" lines="2" required="true" width="90%"/>
-														<%			
-																	} else { 
-														%>
-																		<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" multiple="true" lines="2" required="true" readOnly="true" width="90%"/>
-														<% 			}  
+<% 
+														} else { 	
+															if (vInt.isEmpty()) {
+																if (remitente=="modificar") { 
+%>
+																	<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" multiple="true" lines="2" required="true" width="90%"/>
+<%			
 																} else { 
-																	if (remitente=="modificar"){ %>
-																		<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" width="90%"/>
-														<%			
-																	} else { 
-														%>
-																		<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" readOnly="true" width="90%"/>
-														<% 			} 
+%>
+																	<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" multiple="true" lines="2" required="true" readOnly="true" width="90%"/>
+<% 			
 																}  
-															} 
-														%>
+																
+															} else { 
+																if (remitente=="modificar"){ 
+%>
+																	<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" width="90%"/>
+<%			
+																} else { 
+%>
+																	<siga:Select queryId="getFormaPagoInternet" parentQueryParamIds="idformapago"  params="<%=formaPagoParams%>" id="formaPagoInternet" selectedIds="<%=vInt%>" multiple="true" lines="2" required="true" readOnly="true" width="90%"/>
+<% 			
+																} 
+															}  
+														} 
+%>
 													</td>
 							  					</tr>
 							  					
 								  				<tr>
-													<td width="20%" class="labelText" align="left">
+													<td class="labelText" align="left">
 														<siga:Idioma key="productos.mantenimientoProductos.literal.secretaria"/>&nbsp;(*)
 													</td>
-													<td width="80%" class="labelText" align="left">
-														<% 
-															if (remitente=="insertar") {
-														%>
+													<td class="labelText" align="left">
+<% 
+														if (remitente=="insertar") {
+%>
 															<siga:Select queryId="getformaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" required="true" width="90%"/>
-														<% 
-															} else { 
-																if (vSec.isEmpty()) {
-																	if (remitente=="modificar") { 
-														%>
-																		<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" required="true" width="90%"/>
-														<%			
-																	} else { 
-														%>
-																		<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" required="true" readOnly="true" width="90%"/>
-														<% 			}  
+<% 
+														} else { 
+															if (vSec.isEmpty()) {
+																if (remitente=="modificar") { 
+%>
+																	<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" required="true" width="90%"/>
+<%			
 																} else { 
-															
-																	ArrayList elementoSel = new ArrayList();
-																	for (int kk = 0; kk < vSec.size(); kk ++) {
-																		elementoSel.add(vSec.get(kk));	
-																	}
+%>
+																	<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" required="true" readOnly="true" width="90%"/>
+<% 			
+																}
 																
-																	if (remitente=="modificar"){ 
-														%>
-																		<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" width="90%"/>
-														<%			
-																	} else { 
-														%>
-																		<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" readOnly="true" width="90%"/>
-														<% 			} 
-																}  
-															} 
-														%>																																				
+															} else { 
+																ArrayList elementoSel = new ArrayList();
+																for (int kk = 0; kk < vSec.size(); kk ++) {
+																	elementoSel.add(vSec.get(kk));	
+																}
+																
+																if (remitente=="modificar"){ 
+%>
+																	<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" width="90%"/>
+<%			
+																} else { 
+%>
+																	<siga:Select queryId="getFormaPagoSecretaria" parentQueryParamIds="idformapago" params="<%=formaPagoParams%>" id="formaPagoSecretaria" multiple="true" lines="7" selectedIds="<%=elementoSel%>" required="true" readOnly="true" width="90%"/>
+<% 			
+																} 
+															}  
+														} 
+%>																																				
 													</td>
 								  				</tr>	
 											</table>
 										</siga:ConjCampos>
 									</td>	
 									<td width="5%" class="labelText">&nbsp;	</td>				
-								</tr>
-							</html:form>
-						</table>	
-					</siga:ConjCampos>
-				</td>
-			</tr>	
-		</table>
+								</tr>							
+							</table>	
+						</siga:ConjCampos>
+					</td>
+				</tr>	
+			</table>
+		</html:form>
 		<!-- FIN: CAMPOS -->
 
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
