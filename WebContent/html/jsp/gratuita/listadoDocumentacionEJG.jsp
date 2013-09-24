@@ -52,17 +52,19 @@
 	ArrayList presentadorSel    = new ArrayList();
 
 		
-	
+	String numEjg = "";
 	try {
 		
 		anio = request.getParameter("ANIO").toString();
 		numero = request.getParameter("NUMERO").toString();
 		idTipoEJG = request.getParameter("IDTIPOEJG").toString();	
+		numEjg = request.getParameter("codigoDesignaNumEJG").toString();
 	}catch(Exception e){
 		Hashtable miHash = (Hashtable)request.getAttribute("DATOSEJG");
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		numEjg = miHash.get("NUMEJG").toString(); 
 		
 	};
 	String[] datoPresentador={usr.getLocation(),idTipoEJG,anio,numero};
@@ -95,9 +97,11 @@
 	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_DocumentacionEJG" method="post" target="mainPestanas" style="display:none">
 		<input type="hidden" name="modo" value="<%=accion%>">
+		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
 		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
 		<input type="hidden" name="anio" value="<%=anio%>">
 		<input type="hidden" name="numero" value="<%=numero%>">
+		<html:hidden styleId="numEJG" property = "numEJG" 	value ="<%=numEjg%>"/>
 	</html:form>	
 		
 		<tr>				
@@ -133,7 +137,7 @@
 		   border="1"
 		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,sjcs.ejg.documentacion.presentador,expedientes.auditoria.literal.documento,gratuita.documentacionEJG.regentrada,gratuita.documentacionEJG.regsalida,gratuita.operarEJG.literal.fechaPresentacion,"
 		   columnSizes="10,25,25,10,10,10"
-		   modal="M">
+		   modal="G">
 		   
   	<% if (obj.size()>0){
 	    	int recordNumber=1;
@@ -174,10 +178,12 @@
 										
 			%>				
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
+					
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdDocumentacion()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdDocumento()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getIdTipoDocumento()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getPresentador()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=numEjg%>">
 							<%=GstDate.getFormatedDateShort("",fila.getFechaLimite().toString())%>&nbsp;
 					</td>
 					<td>
@@ -247,7 +253,7 @@
 		{
 			document.forms[0].modo.value = "nuevo";
 			document.forms[0].target = "mainPestanas";
-			var resultado=ventaModalGeneral(document.forms[0].name,"M");
+			var resultado=ventaModalGeneral(document.forms[0].name,"G");
 			if(resultado=='MODIFICADO') buscar();
 		}
 		function buscar()

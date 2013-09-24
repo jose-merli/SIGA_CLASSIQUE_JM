@@ -551,6 +551,7 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
 				miForm.setOrigen("");
 				session.removeAttribute("origenEJG");
+				
 			} else {
 				session.removeAttribute("DATAPAGINADOR");
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
@@ -581,6 +582,7 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("solicitante", solicitante.toString());
 			miHash.put("ejgAnio", (String)hTitulo.get(ScsEJGBean.C_ANIO));
 			miHash.put("ejgNumEjg", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+			miHash.put("codigoDesignaNumEJG", (String)hTitulo.get(ScsEJGBean.C_NUMEJG));
 			
 			
 			

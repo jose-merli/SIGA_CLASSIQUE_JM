@@ -336,9 +336,6 @@
 		<form-bean name="PrestacionRechazadaEjgForm" type="com.siga.gratuita.form.PrestacionRechazadaEjgForm"/>
 		<form-bean name="ComunicacionesForm" type="com.siga.gratuita.form.ComunicacionesForm"/>
 		
-		
-		
-		
 	</form-beans>
 
 
@@ -2029,7 +2026,7 @@
 		<!--action path="/ADM_ConfigurarPermisosAplicacion" forward="/html/jsp/administracion/permisosAplicacion.jsp"/-->
 
 		<!--action path="/administrarPermisos" forward="/html/jsp/administracion/administrarPermisos.jsp"/-->
-		<action path="/ADM_ConfigurarPermisosAplicacion" type="com.siga.administracion.action.SIGAConfigurarPermisosAplicacionAction" name="configurarPermisosAplicacionForm" scope="request">
+		<action path="/ADM_ConfigurarPermisosAplicacion" type="com.siga.administracion.action.SIGAConfigurarPermisosAplicacionAction" name="configurarPermisosAplicacionForm" scope="session">
 			<forward name="abrir" path="/html/jsp/administracion/permisosAplicacion.jsp"/>
 			<forward name="buscar" path="/html/jsp/administracion/administrarPermisos.jsp"/>
 		</action>
@@ -2755,8 +2752,6 @@
 		<action path="/JGR_DocumentacionEJG" type="com.siga.gratuita.action.DefinirDocumentacionEJGAction" name="DefinirDocumentacionEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionEJG.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionEJG.jsp"/>
-			<forward name="ver" path="/html/jsp/gratuita/operarDocumentacionEJG.jsp"/>
-			<forward name="insertarDocumentacionEJG" path="/html/jsp/gratuita/insertarDocumentacionEJG.jsp"/>
 		</action>
 
 		<action path="/JGR_EstadosEJG" type="com.siga.gratuita.action.DefinirEstadosEJGAction" name="DefinirEstadosEJGForm" scope="request">
@@ -3382,7 +3377,9 @@
 		
 		<action path="/CEN_SJCS_RET_IRPF_NoColegiado" type="com.siga.gratuita.action.RetencionesIRPFAction" name="RetencionesIRPFForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/pestanasCenSJCSRetIRPFNoColegiado.jsp"/>
-		</action>					
+		</action>
+		
+		<action path="/JGR_FicherosDocumentacionEjg"/>							
 
 		<!-- ****************************************************************************
 -->

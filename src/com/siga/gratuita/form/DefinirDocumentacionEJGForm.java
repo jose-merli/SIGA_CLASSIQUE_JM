@@ -5,304 +5,147 @@
 
 package com.siga.gratuita.form;
 
-import com.siga.beans.*;
-import com.siga.general.MasterForm;
+import org.apache.struts.upload.FormFile;
+
+import com.siga.general.form.FicheroForm;
 
 /**
- * Maneja el formulario que mantiene la tabla SCS_EJGFORM
+ * Maneja el formulario que mantiene la tabla SCS_DefinirDocumentacionEJG
  */
-public class DefinirDocumentacionEJGForm extends MasterForm {
-
-	private String presentadorAnterior;
-	private String idTipoDocumentoAnterior;
-	private String idDocumentoAnterior;
-	/*
-	 * Metodos SET
-	 */
-	public void setPresentador(String regEntrada) {
-		this.datos.put(ScsDocumentacionEJGBean.C_PRESENTADOR, regEntrada);
+public class DefinirDocumentacionEJGForm extends FicheroForm {
+	private FormFile theFile;
+	private String borrarFichero;
+	private String  fechaLimite;
+	private String 	documentacion;
+	private String	fechaEntrega;
+	private String	idTipoEJG;
+	private String	anio;
+	private String	numero;
+	private String	idDocumentacion;
+	private String	idInstitucion;	
+	private String	regEntrada;
+	private String	regSalida;
+	private String	presentador;
+	private String	idDocumento;
+	private String	idTipoDocumento;
+	private String	presentadorAnterior;
+	private String	idDocumentoAnterior;
+	private String	idTipoDocumentoAnterior;
+	
+	
+	
+	
+	public FormFile getTheFile() {
+		return theFile;
 	}
-
-	public void setIdDocumento(String regEntrada) {
-		this.datos.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, regEntrada);
+	public void setTheFile(FormFile theFile) {
+		this.theFile = theFile;
 	}
-
-	public void setIdTipoDocumento(String regEntrada) {
-		this.datos.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, regEntrada);
+	public String getBorrarFichero() {
+		return borrarFichero;
 	}
-
-	/**
-	 * Almacena en la Hashtable el reg. entrada
-	 * 
-	 * @param valor
-	 *            reg. entrada
-	 * @return void
-	 */
-	public void setRegEntrada(String regEntrada) {
-		this.datos.put(ScsDocumentacionEJGBean.C_REGENTRADA, regEntrada);
+	public void setBorrarFichero(String borrarFichero) {
+		this.borrarFichero = borrarFichero;
 	}
-
-	/**
-	 * Almacena en la Hashtable el re. salida del EJG
-	 * 
-	 * @param valor
-	 *            reg.salida de la EJG.
-	 * @return void
-	 */
-	public void setRegSalida(String regSalida) {
-		this.datos.put(ScsDocumentacionEJGBean.C_REGSALIDA, regSalida);
+	public String getFechaLimite() {
+		return fechaLimite;
 	}
-
-	/**
-	 * Almacena en la Hashtable el anho del EJG
-	 * 
-	 * @param valor
-	 *            Anho de la EJG. De tipo "Integer".
-	 * @return void
-	 */
-	public void setAnio(String anio) {
-		this.datos.put(ScsDocumentacionEJGBean.C_ANIO, anio);
+	public void setFechaLimite(String fechaLimite) {
+		this.fechaLimite = fechaLimite;
 	}
-
-	/**
-	 * Almacena en la Hashtable el numero del EJG
-	 * 
-	 * @param valor
-	 *            Numero de la EJG. De tipo "String".
-	 * @return void
-	 */
-	public void setNumero(String numero) {
-		this.datos.put(ScsDocumentacionEJGBean.C_NUMERO, numero);
-	}
-
-	/**
-	 * Almacena en la Hashtable el identificador del tipo de EJG del dictamen
-	 * del EJG
-	 * 
-	 * @param valor
-	 *            Identificador del tipo de EJG del dictamen del EJG. De tipo
-	 *            "String".
-	 * @return void
-	 */
-	public void setIdTipoEJG(String idTipoEJG) {
-		this.datos.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, idTipoEJG);
-	}
-
-	/**
-	 * Almacena en la Hashtable el identificador de la documentacion
-	 * 
-	 * @param valor
-	 *            Identificador documentacion. De tipo "String".
-	 * @return void
-	 */
-	public void setIdDocumentacion(String idDocumentacion) {
-		this.datos.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION,
-				idDocumentacion);
-	}
-
-	/**
-	 * Almacena en la Hashtable la la fecha límite de presentación de
-	 * documentación del EJG
-	 * 
-	 * @param valor
-	 *            Fecha de limite presentación documentación. De tipo "String".
-	 * @return void
-	 */
-	public void setFechaLimitePresentacion(String fechaLimite) {
-		this.datos.put(ScsDocumentacionEJGBean.C_FECHALIMITE, fechaLimite);
-	}
-
-	/**
-	 * Almacena en la Hashtable la la fecha de presentación de documentación del
-	 * EJG
-	 * 
-	 * @param valor
-	 *            Fecha de ratifiacion de la EJG. De tipo "String".
-	 * @return void
-	 */
-	public void setFechaPresentacion(String fechaPresentacion) {
-		this.datos.put(ScsDocumentacionEJGBean.C_FECHAENTREGA,
-				fechaPresentacion);
-	}
-
-	/**
-	 * Almacena en la Hashtable la la fecha de presentación de documentación del
-	 * EJG
-	 * 
-	 * @param valor
-	 *            Fecha de ratifiacion de la EJG. De tipo "String".
-	 * @return void
-	 */
-	public void setDocumentacion(String documentacion) {
-		this.datos.put(ScsDocumentacionEJGBean.C_DOCUMENTACION, documentacion);
-	}
-
-	/**
-	 * Almacena en la Hashtable el identificador de la institucion del dictamen
-	 * del EJG
-	 * 
-	 * @param valor
-	 *            Identificador de la institucion del dictamen del EJG. De tipo
-	 *            "String".
-	 * @return void
-	 */
-	public void setIdInstitucion(String idInstitucion) {
-		this.datos.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, idInstitucion);
-	}
-
-	/*
-	 * Metodos GET
-	 */
-
-	public String getPresentador() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_PRESENTADOR).toString();
-	}
-
-	public String getIdDocumento() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_IDDOCUMENTO).toString();
-	}
-
-	public String getIdTipoDocumento() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO)
-				.toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el registro de entrada de la EJG
-	 * 
-	 * @return registro de entrada de la EJG
-	 */
-	public String getRegEntrada() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_REGENTRADA).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el registro de salida de la EJG
-	 * 
-	 * @return registro de salida de la EJG
-	 */
-	public String getRegSalida() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_REGSALIDA).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el anho de la EJG
-	 * 
-	 * @return Anho de la EJG
-	 */
-	public String getAnio() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_ANIO).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el numero de la EJG
-	 * 
-	 * @return Numero de la EJG
-	 */
-	public String getNumero() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_NUMERO).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el identificador del tipo de la EJG
-	 * 
-	 * @return Identificador del tipo de la EJG
-	 */
-	public String getIdTipoEJG() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_IDTIPOEJG).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable el identificador de la institucion de la EJG
-	 * 
-	 * @return Identificador de la institucion de la EJG
-	 */
-	public String getIdInstitucion() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_IDINSTITUCION)
-				.toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable la la fecha límite de presentación de
-	 * documentación del EJG
-	 * 
-	 * @return String
-	 */
-	public String getFechaLimitePresentacion() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_FECHALIMITE).toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable la la fecha de presentación de documentación del
-	 * EJG
-	 * 
-	 * @return String
-	 */
-	public String getFechaPresentacion() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_FECHAENTREGA)
-				.toString();
-	}
-
-	/**
-	 * Recupera de la Hashtable la la fecha de presentación de documentación del
-	 * EJG
-	 * 
-	 * @return String
-	 */
 	public String getDocumentacion() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_DOCUMENTACION)
-				.toString();
+		return documentacion;
 	}
-
-	/**
-	 * Recupera de la Hashtable del identificador de la documentación del EJG
-	 * 
-	 * @return String
-	 */
+	public void setDocumentacion(String documentacion) {
+		this.documentacion = documentacion;
+	}
+	public String getFechaEntrega() {
+		return fechaEntrega;
+	}
+	public void setFechaEntrega(String fechaEntrega) {
+		this.fechaEntrega = fechaEntrega;
+	}
+	public String getIdTipoEJG() {
+		return idTipoEJG;
+	}
+	public void setIdTipoEJG(String idTipoEJG) {
+		this.idTipoEJG = idTipoEJG;
+	}
+	public String getAnio() {
+		return anio;
+	}
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
+	public String getNumero() {
+		return numero;
+	}
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
 	public String getIdDocumentacion() {
-		return this.datos.get(ScsDocumentacionEJGBean.C_IDDOCUMENTACION)
-				.toString();
+		return idDocumentacion;
 	}
-
-	/**
-	 * @return the presentadorAnterior
-	 */
+	public void setIdDocumentacion(String idDocumentacion) {
+		this.idDocumentacion = idDocumentacion;
+	}
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
+	public String getRegEntrada() {
+		return regEntrada;
+	}
+	public void setRegEntrada(String regEntrada) {
+		this.regEntrada = regEntrada;
+	}
+	public String getRegSalida() {
+		return regSalida;
+	}
+	public void setRegSalida(String regSalida) {
+		this.regSalida = regSalida;
+	}
+	public String getPresentador() {
+		return presentador;
+	}
+	public void setPresentador(String presentador) {
+		this.presentador = presentador;
+	}
+	public String getIdDocumento() {
+		return idDocumento;
+	}
+	public void setIdDocumento(String idDocumento) {
+		this.idDocumento = idDocumento;
+	}
+	public String getIdTipoDocumento() {
+		return idTipoDocumento;
+	}
+	public void setIdTipoDocumento(String idTipoDocumento) {
+		this.idTipoDocumento = idTipoDocumento;
+	}
 	public String getPresentadorAnterior() {
 		return presentadorAnterior;
 	}
-
-	/**
-	 * @param presentadorAnterior the presentadorAnterior to set
-	 */
 	public void setPresentadorAnterior(String presentadorAnterior) {
 		this.presentadorAnterior = presentadorAnterior;
 	}
-
-	/**
-	 * @return the idTipoDocumentoAnterior
-	 */
-	public String getIdTipoDocumentoAnterior() {
-		return idTipoDocumentoAnterior;
-	}
-
-	/**
-	 * @param idTipoDocumentoAnterior the idTipoDocumentoAnterior to set
-	 */
-	public void setIdTipoDocumentoAnterior(String idTipoDocumentoAnterior) {
-		this.idTipoDocumentoAnterior = idTipoDocumentoAnterior;
-	}
-
-	/**
-	 * @return the idDocumentoAnterior
-	 */
 	public String getIdDocumentoAnterior() {
 		return idDocumentoAnterior;
 	}
-
-	/**
-	 * @param idDocumentoAnterior the idDocumentoAnterior to set
-	 */
 	public void setIdDocumentoAnterior(String idDocumentoAnterior) {
 		this.idDocumentoAnterior = idDocumentoAnterior;
 	}
+	public String getIdTipoDocumentoAnterior() {
+		return idTipoDocumentoAnterior;
+	}
+	public void setIdTipoDocumentoAnterior(String idTipoDocumentoAnterior) {
+		this.idTipoDocumentoAnterior = idTipoDocumentoAnterior;
+	}
+		
+	
+
+
+	
 }

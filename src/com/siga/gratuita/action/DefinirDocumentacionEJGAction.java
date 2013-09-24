@@ -1,31 +1,36 @@
-//Clase: DefinirDocumentacionEJGAction 
-//Autor: julio.vicente@atosorigin.com
-//Ultima modificación: 14/02/2005
-
 package com.siga.gratuita.action;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
+import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.UtilidadesHash;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
-import com.siga.beans.ScsDocumentacionEJGBean;
-import com.siga.beans.ScsDocumentoEJGAdm;
-import com.siga.beans.ScsDocumentoEJGBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
+import com.siga.gratuita.form.service.DocumentacionEjgVoService;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Maneja las acciones que se pueden realizar sobre la tabla
@@ -33,117 +38,170 @@ import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
  */
 public class DefinirDocumentacionEJGAction extends MasterAction {
 
-	/** Not implemented * */
-	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
+	
+	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try { 
+			
+			
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm != null) {
+					String accion = miForm.getModo();
+					String modo = request.getParameter("modo");
+					if(modo!=null)
+						accion = modo;
+					if(accion!=null && accion.equalsIgnoreCase("downloadFichero")){
+						mapDestino = downloadFichero(mapping, miForm, request, response);
+					}else if(accion!=null && accion.equalsIgnoreCase("borrarfichero")){ 
+						mapDestino = borrarFichero(mapping, miForm, request, response);
+					}else{
+						return super.executeInternal(mapping,formulario,request,response);
+					}
+					
+				}
+			} while (false);
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null)	{ 
+				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			return mapping.findForward(mapDestino);
+		} 
+		catch (SIGAException es) {
 
-		return null;
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		}
 	}
 
-	/**
-	 * Rellena un hash con los valores recogidos del formulario, almacenando
-	 * esta hash en la sesión con el nombre "elegido"
-	 * 
-	 * @param mapping
-	 *            Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario
-	 *            del que se recoge la información. De tipo MasterForm.
-	 * @param request
-	 *            Información de sesión. De tipo HttpServletRequest
-	 * @param response
-	 *            De tipo HttpServletResponse
-	 * 
-	 * @return String que indicará la siguiente acción a llevar a cabo.
-	 */
+	
 	protected String editar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
 		try {
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
-			DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			String idDocumentacion = (String)ocultos.get(0);
+			String idDocumento = (String)ocultos.get(1);
+			String idTipoDocumento = (String)ocultos.get(2);
+			String presentador = (String)ocultos.get(3);
+			String numEjg = (String)ocultos.get(4);
+			
+			definirDocumentacionEJGForm.setIdDocumentacion(idDocumentacion);
+			definirDocumentacionEJGForm.setIdDocumento(idDocumento);
+			definirDocumentacionEJGForm.setIdTipoDocumento(idTipoDocumento);
+			definirDocumentacionEJGForm.setPresentador(presentador);
+			definirDocumentacionEJGForm.setNumEjg(numEjg);
 
-			UsrBean usr = (UsrBean) request.getSession()
-					.getAttribute("USRBEAN");
-
-			ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-					.getUserBean(request));
-			// Entramos al formulario en modo 'modificación'
+			
+	
+			
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
+			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
+			definirDocumentacionEJGForm.setNumEjg(numEjg);
+			definirDocumentacionEJGForm.setModo("modificar");
+			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
+			
+			List<String> presentadorSelected = new ArrayList<String>();
+			presentadorSelected.add(definirDocumentacionEJGForm.getPresentador());
+			request.setAttribute("presentadorSelected",presentadorSelected );
+			
+			List<String> idTipoDocumentoSelected = new ArrayList<String>();
+			idTipoDocumentoSelected.add(definirDocumentacionEJGForm.getIdTipoDocumento());
+			request.setAttribute("idTipoDocumentoSelected",idTipoDocumentoSelected );
+			request.setAttribute("idTipoDocumentoJson", UtilidadesString.createJsonString("idTipoDocumento", definirDocumentacionEJGForm.getIdTipoDocumento())) ;
+			
+			List<String> idDocumentoSelected = new ArrayList<String>();
+			idDocumentoSelected.add(definirDocumentacionEJGForm.getIdDocumento());
+			request.setAttribute("idDocumentoSelected",idDocumentoSelected );
 			request.setAttribute("accionModo", "editar");
 
-			Hashtable miHash = new Hashtable();
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, miForm
-					.getIdTipoEJG());
-			miHash.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, usr
-					.getLocation());
-			miHash.put(ScsDocumentacionEJGBean.C_ANIO, miForm.getAnio());
-			miHash.put(ScsDocumentacionEJGBean.C_NUMERO, miForm.getNumero());
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, ocultos
-					.get(0));
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, ocultos.get(1));
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, ocultos
-					.get(2));
-			miHash.put(ScsDocumentacionEJGBean.C_PRESENTADOR, ocultos.get(3));
-			// Volvemos a obtener de base de datos la información, para que se
-			// la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectPorClave(miHash);
-			ScsDocumentacionEJGBean ejg = (ScsDocumentacionEJGBean) resultado
-					.get(0);
 
-			request.getSession().setAttribute("DATABACKUP",
-					admBean.beanToHashTable(ejg));
+			try {
+				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
+				request.setAttribute("permisoFicheros", permisoFicheros);
+			} catch (ClsExceptions e) {
+				throw new SIGAException(e.getMsg());
+			}finally{
+				//hacemos lo siguiente para setear el permiso de esta accion
+				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+			}
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
 		return "editar";
 
 	}
-
-	/**
-	 * No implementado
-	 */
+	
 	protected String ver(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
 		try {
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
-			DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+			
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			String idDocumentacion = (String)ocultos.get(0);
+			String idDocumento = (String)ocultos.get(1);
+			String idTipoDocumento = (String)ocultos.get(2);
+			String presentador = (String)ocultos.get(3);
+			String numEjg = (String)ocultos.get(4);
+			
+			definirDocumentacionEJGForm.setIdDocumentacion(idDocumentacion);
+			definirDocumentacionEJGForm.setIdDocumento(idDocumento);
+			definirDocumentacionEJGForm.setIdTipoDocumento(idTipoDocumento);
+			definirDocumentacionEJGForm.setPresentador(presentador);
+			definirDocumentacionEJGForm.setNumEjg(numEjg);
 
-			UsrBean usr = (UsrBean) request.getSession()
-					.getAttribute("USRBEAN");
-
-			ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-					.getUserBean(request));
-			// Entramos al formulario en modo 'modificación'
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
+			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
+			definirDocumentacionEJGForm.setNumEjg(numEjg);
+			definirDocumentacionEJGForm.setModo("modificar");
+			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
+			
+			List<String> presentadorSelected = new ArrayList<String>();
+			presentadorSelected.add(definirDocumentacionEJGForm.getPresentador());
+			request.setAttribute("presentadorSelected",presentadorSelected );
+			
+			List<String> idTipoDocumentoSelected = new ArrayList<String>();
+			idTipoDocumentoSelected.add(definirDocumentacionEJGForm.getIdTipoDocumento());
+			request.setAttribute("idTipoDocumentoSelected",idTipoDocumentoSelected );
+			request.setAttribute("idTipoDocumentoJson", UtilidadesString.createJsonString("idTipoDocumento", definirDocumentacionEJGForm.getIdTipoDocumento())) ;
+			
+			List<String> idDocumentoSelected = new ArrayList<String>();
+			idDocumentoSelected.add(definirDocumentacionEJGForm.getIdDocumento());
+			request.setAttribute("idDocumentoSelected",idDocumentoSelected );
+			
+			
 			request.setAttribute("accionModo", "ver");
-
-			Hashtable miHash = new Hashtable();
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, miForm
-					.getIdTipoEJG());
-			miHash.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, usr
-					.getLocation());
-			miHash.put(ScsDocumentacionEJGBean.C_ANIO, miForm.getAnio());
-			miHash.put(ScsDocumentacionEJGBean.C_NUMERO, miForm.getNumero());
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, ocultos
-					.get(0));
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, ocultos.get(1));
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, ocultos
-					.get(2));
-			miHash.put(ScsDocumentacionEJGBean.C_PRESENTADOR, ocultos.get(3));
-			// Volvemos a obtener de base de datos la información, para que se
-			// la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectPorClave(miHash);
-			ScsDocumentacionEJGBean ejg = (ScsDocumentacionEJGBean) resultado
-					.get(0);
-
-			request.getSession().setAttribute("DATABACKUP",
-					admBean.beanToHashTable(ejg));
+			
+			try {
+				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
+				request.setAttribute("permisoFicheros", permisoFicheros);
+			} catch (ClsExceptions e) {
+				throw new SIGAException(e.getMsg());
+			}finally{
+				//hacemos lo siguiente para setear el permiso de esta accion
+				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+			}
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
-		return "ver";
+		return "editar";
 	}
 
 	/**
@@ -165,195 +223,98 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
-		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-		Hashtable miHash = new Hashtable();
 		try {
-			miHash.put("ANIO", formulario.getDatos().get("ANIO"));
-			miHash.put("NUMERO", formulario.getDatos().get("NUMERO"));
-			miHash.put("IDTIPOEJG", formulario.getDatos().get("IDTIPOEJG"));
-			miHash
-					.put("IDINSTITUCION", this.getUserBean(request)
-							.getLocation());
+			DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+			UsrBean usr = (UsrBean) request.getSession()
+					.getAttribute("USRBEAN");
+			Hashtable miHash = new Hashtable();
 
+			miHash.put("ANIO", miForm.getAnio());
+			miHash.put("NUMERO", miForm.getNumero());
+			miHash.put("IDTIPOEJG", miForm.getIdTipoEJG());
+			miHash.put("IDINSTITUCION", usr.getLocation());
 			ScsEJGAdm admEjg = new ScsEJGAdm(this.getUserBean(request));
-			Vector v = admEjg.selectByPK(miHash);
-			if (v != null && v.size() > 0) {
-				ScsEJGBean b = (ScsEJGBean) v.get(0);
-				miHash.put("FECHALIMITE", b.getFechaLimitePresentacion());
+			Vector v3 = admEjg.selectByPK(miHash);
+			if (v3 != null && v3.size() > 0) {
+				ScsEJGBean b = (ScsEJGBean) v3.get(0);
+				miHash.put("NUMEJG", b.getNumEJG());
+				miForm.setNumEjg(b.getNumEJG());
 			}
-			request.getSession().setAttribute("EJG", miHash);
-
+			
+			
+			request.setAttribute("presentadorSelected",new ArrayList<String>() );
+			request.setAttribute("idTipoDocumentoSelected",new ArrayList<String>() );
+			request.setAttribute("idTipoDocumentoJson", "") ;
+			request.setAttribute("idDocumentoSelected",new ArrayList<String>() );
+			request.setAttribute("accionModo", "editar");
+			miForm.setModo("insertar");
+			request.setAttribute("permisoFicheros", "");
+			
 		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.gratuita" }, e, null);
+			throwExcp("messages.general.error", e, null);
 		}
-
-		return "insertarDocumentacionEJG";
+		return "editar";
 	}
 
 	/**
-	 * Rellena un hash con los valores recogidos del formulario y los inserta en
-	 * la base de datos.
 	 * 
-	 * @param mapping
-	 *            Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario
-	 *            del que se recoge la información. De tipo MasterForm.
-	 * @param request
-	 *            Información de sesión. De tipo HttpServletRequest
-	 * @param response
-	 *            De tipo HttpServletResponse
-	 * 
-	 * @return String que indicará la siguiente acción a llevar a cabo.
+	 * Metodo que inserta el registo en la tabla
 	 */
-	protected synchronized String insertar(ActionMapping mapping,
+	protected String insertar(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		UserTransaction tx = null;
-
-		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-
-		boolean faltaObligatorio = miForm.getPresentador() == null || miForm.getPresentador().trim().equals("");
-		faltaObligatorio = faltaObligatorio || miForm.getIdTipoDocumento() == null || miForm.getIdTipoDocumento().trim().equals("");
-		faltaObligatorio = faltaObligatorio || miForm.getIdDocumento() == null || miForm.getIdDocumento().trim().equals("");
-		
-		if (faltaObligatorio) {
-			throw new SIGAException("messages.ejg.documentacion.camposObligatorios");
-		}
-
-		
-		Hashtable miHash = new Hashtable();
-		
-		String documento = "", tipoDocumento = "";
-
 		try {
-			miHash = miForm.getDatos();
-			tx = usr.getTransaction();
-			tx.begin();
-
-			documento = (String) miHash.get("IDDOCUMENTO");
-			tipoDocumento = (String) miHash.get("IDTIPODOCUMENTO");
-			miHash.put("IDTIPODOCUMENTO", tipoDocumento.split(",")[0]);
-			UtilidadesHash.set(miHash, ScsDocumentacionEJGBean.C_FECHALIMITE, GstDate.getApplicationFormatDate("",
-					miHash.get(ScsDocumentacionEJGBean.C_FECHALIMITE).toString()));
-			
-			UtilidadesHash.set(miHash, ScsDocumentacionEJGBean.C_FECHAENTREGA, GstDate.getApplicationFormatDate("",
-					miHash.get(ScsDocumentacionEJGBean.C_FECHAENTREGA).toString()));
-			
-			insertaDocumentacion(request, documento, miHash, tipoDocumento.split(",")[0]);
-			
-			tx.commit();
-		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.gratuita" }, e, tx);
-		}
-		return exitoModal("messages.inserted.success", request);
-	}
-
-	private void insertaDocumentacion(HttpServletRequest request, String documento, Hashtable miHash,
-			String tipoDocumento) throws ClsExceptions, SIGAException {
-		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this.getUserBean(request));
-		if (documento.equals("0")) {
-			ScsDocumentoEJGAdm admDoc = new ScsDocumentoEJGAdm(this.getUserBean(request));
-			Hashtable hashDocs = new Hashtable();
-			// TODOS. Obtengo todos los documentos del tipo y los inserto.
-			hashDocs.put("IDINSTITUCION", getUserBean(request).getLocation());
-			hashDocs.put("IDTIPODOCUMENTOEJG", tipoDocumento);
-			Vector vDocs = admDoc.select(hashDocs);
-
-			ScsDocumentoEJGBean bDocs = null;
-			if (vDocs == null || vDocs.size() == 0) {
-				throw new SIGAException("gratuita.ejg.documentacion.noexiste");
-			}
-			for (int g = 0; vDocs != null && g < vDocs.size(); g++) {
-				bDocs = (ScsDocumentoEJGBean) vDocs.get(g);
-				miHash.put("IDDOCUMENTO", bDocs.getIdDocumentoEJG());
-				admBean.prepararInsert(miHash);
-				admBean.insert(miHash);
-			}
-
-		} else {
-			miHash.put("IDDOCUMENTO", documento.split(",")[0]);
-			admBean.prepararInsert(miHash);
-			admBean.insert(miHash);
-		}
-	}
-
-	/**
-	 * Rellena un hash con los valores recogidos del formulario y los modifica
-	 * en la base de datos.
-	 * 
-	 * @param mapping
-	 *            Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario
-	 *            del que se recoge la información. De tipo MasterForm.
-	 * @param request
-	 *            Información de sesión. De tipo HttpServletRequest
-	 * @param response
-	 *            De tipo HttpServletResponse
-	 * 
-	 * @return String que indicará la siguiente acción a llevar a cabo.
-	 */
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-
-		UserTransaction tx = null;
-		try {
-			DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-			ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this.getUserBean(request));
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			Hashtable nuevos = miForm.getDatos();
-			Hashtable clave = new Hashtable();
-
-			String documento = "", tipoDocumento = "";
-
-			clave.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, usr.getLocation());
-			clave.put(ScsDocumentacionEJGBean.C_ANIO, miForm.getAnio());
-			clave.put(ScsDocumentacionEJGBean.C_NUMERO, miForm.getNumero());
-			clave.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, miForm.getIdTipoEJG());
-			clave.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, miForm.getIdDocumentacion());
-
-			clave.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, miForm.getIdDocumentoAnterior());
-			clave.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, miForm.getIdTipoDocumentoAnterior());
-			clave.put(ScsDocumentacionEJGBean.C_PRESENTADOR, miForm.getPresentadorAnterior());
-
-			// Volvemos a obtener de base de datos la información, para que se
-			// la más actúal que hay en la base de datos
-			// Vector resultado = admBean.selectPorClave(clave);
-			// ScsDocumentacionEJGBean documentacion =
-			// (ScsDocumentacionEJGBean)resultado.get(0);
-			tx = usr.getTransaction();
-			tx.begin();
-
-			// UtilidadesHash.set(nuevos, "FECHALIMITE", GstDate
-			// .getApplicationFormatDate("", nuevos.get("FECHALIMITE")
-			// .toString()));
-			documento = (String) nuevos.get("IDDOCUMENTO");
-			tipoDocumento = (String) nuevos.get("IDTIPODOCUMENTO");
-			nuevos.put("IDDOCUMENTO", documento.split(",")[0]);
-			nuevos.put("IDTIPODOCUMENTO", tipoDocumento.split(",")[0]);
-
-			UtilidadesHash.set(nuevos, ScsDocumentacionEJGBean.C_FECHALIMITE, GstDate.getApplicationFormatDate("",
-					nuevos.get(ScsDocumentacionEJGBean.C_FECHALIMITE).toString()));
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
 			
-			UtilidadesHash.set(nuevos, ScsDocumentacionEJGBean.C_FECHAENTREGA, GstDate.getApplicationFormatDate("",
-					nuevos.get(ScsDocumentacionEJGBean.C_FECHAENTREGA).toString()));
-
-			insertaDocumentacion(request, documento, nuevos, tipoDocumento.split(",")[0]);
-
-			admBean.delete(clave);
-
-			tx.commit();
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			documentacionEjgService.insert(documentacionEjgVo);
+			
+			
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
 		return exitoModal("messages.updated.success", request);
 	}
+	/**
+	 * Metodo que modifica el registro de la tabla e inserta el fichero, si lo ha selecionado, en el sistema de ficheros	
+	 */
+	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
 
+		try {
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			DocumentacionEjgVo documentacionEjgVoOld = (DocumentacionEjgVo) documentacionEjgVo.clone();
+			documentacionEjgVoOld.setIdtipodocumento(Short.parseShort(definirDocumentacionEJGForm.getIdTipoDocumentoAnterior()));
+			documentacionEjgVoOld.setIddocumento(Short.parseShort(definirDocumentacionEJGForm.getIdDocumentoAnterior()));
+			documentacionEjgVoOld.setPresentador(Long.parseLong(definirDocumentacionEJGForm.getPresentadorAnterior()));
+			
+			documentacionEjgService.update(documentacionEjgVoOld,documentacionEjgVo);
+			
+			
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+
+		return exitoModal("messages.updated.success", request);
+	}
+	
+	
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y los borra de
 	 * la base de datos.
@@ -373,49 +334,85 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		UserTransaction tx = null;
-
-		Vector ocultos = formulario.getDatosTablaOcultos(0);
-		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-				.getUserBean(request));
-		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-
-		Hashtable miHash = new Hashtable();
-
+		
 		try {
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, (ocultos
-					.get(0)));
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, miForm
-					.getIdTipoEJG());
-			miHash.put(ScsDocumentacionEJGBean.C_ANIO, miForm.getAnio());
-			miHash.put(ScsDocumentacionEJGBean.C_NUMERO, miForm.getNumero());
-			miHash.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, usr
-					.getLocation());
-			miHash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, ocultos.get(1));
-			miHash.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, ocultos
-					.get(2));
-			miHash.put(ScsDocumentacionEJGBean.C_PRESENTADOR, ocultos.get(3));
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			tx = usr.getTransaction();
-			tx.begin();
-			admBean.delete(miHash);
-			tx.commit();
+			
+			Vector ocultos = formulario.getDatosTablaOcultos(0);
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			
+			definirDocumentacionEJGForm.setIdInstitucion(usr.getLocation());
+			definirDocumentacionEJGForm.setIdDocumentacion((String)ocultos.get(0));
+			definirDocumentacionEJGForm.setIdTipoDocumento((String)ocultos.get(2));
+			definirDocumentacionEJGForm.setIdDocumento((String)ocultos.get(1));
+			definirDocumentacionEJGForm.setPresentador((String)ocultos.get(3));
+			
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			
+			documentacionEjgService.borrar(documentacionEjgVo);
+			
+			
 
 		} catch (Exception e) {
-			throwExcp("messages.deleted.error", e, tx);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
+		
+		
+		
 
 		return exitoRefresco("messages.deleted.success", request);
 	}
 
-	/**
-	 * No implementado
-	 */
-	protected String buscar(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
-		return null;
+	
+	protected String abrirAvanzada(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+
+		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
+				.getUserBean(request));
+		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		Vector v = new Vector();
+		Hashtable miHash = new Hashtable();
+
+		miHash.put("ANIO", miForm.getAnio());
+		miHash.put("NUMERO", miForm.getNumero());
+		miHash.put("IDTIPOEJG", miForm.getIdTipoEJG());
+		miHash.put("IDINSTITUCION", usr.getLocation());
+		
+		request.setAttribute("DATOSEJG", miHash);
+
+		try {
+			
+			ScsEJGAdm admEjg = new ScsEJGAdm(this.getUserBean(request));
+			Vector v3 = admEjg.selectByPK(miHash);
+			if (v3 != null && v3.size() > 0) {
+				ScsEJGBean b = (ScsEJGBean) v3.get(0);
+				miHash.put("NUMEJG", b.getNumEJG());
+				request.setAttribute("NUMEJG",b.getNumEJG());
+			}
+			
+			
+			v = admBean.buscar(miHash);
+			request.setAttribute("resultado", v);
+			request.setAttribute("accion", formulario.getModo());
+			//aalg: Inc_10313.
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
+			if(informeBeans!=null && informeBeans.size()>1){
+				informeUnico = ClsConstants.DB_FALSE;				
+			}
+
+			request.setAttribute("informeUnico", informeUnico);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+		return "inicio";
 	}
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario,
@@ -438,6 +435,9 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		miHash.put("IDTIPOEJG", request.getParameter("IDTIPOEJG").toString());
 		miHash.put("IDINSTITUCION", request.getParameter("IDINSTITUCION")
 				.toString());
+		String numEjg = request.getParameter("codigoDesignaNumEJG");
+		miHash.put("NUMEJG", numEjg);
+		
 		
 		try {
 			v = admBean.buscar(miHash);
@@ -458,45 +458,52 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		return "inicio";
 
 	}
+	protected String downloadFichero(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		try {
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			File file = documentacionEjgService.getFile(documentacionEjgVo);
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getPath());
+			request.setAttribute("accion", "");
+			
 
-	/**
-	 * No implementadofeditar
-	 * 
-	 */
-	protected String abrirAvanzada(ActionMapping mapping,
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+
+		return forward;
+		
+		
+	}
+	protected String borrarFichero(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 
-		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-				.getUserBean(request));
-		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		Vector v = new Vector();
-		Hashtable miHash = new Hashtable();
-
-		miHash.put("ANIO", miForm.getAnio());
-		miHash.put("NUMERO", miForm.getNumero());
-		miHash.put("IDTIPOEJG", miForm.getIdTipoEJG());
-		miHash.put("IDINSTITUCION", usr.getLocation());
-
-		request.setAttribute("DATOSEJG", miHash);
-
 		try {
-			v = admBean.buscar(miHash);
-			request.setAttribute("resultado", v);
-			request.setAttribute("accion", formulario.getModo());
-			//aalg: Inc_10313.
-			String informeUnico = ClsConstants.DB_TRUE;
-			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
-			if(informeBeans!=null && informeBeans.size()>1){
-				informeUnico = ClsConstants.DB_FALSE;				
-			}
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			BusinessManager bm = getBusinessManager();
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			documentacionEjgService.borrarFichero(documentacionEjgVo);
 
-			request.setAttribute("informeUnico", informeUnico);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-		return "inicio";
+
+		return exitoModal("messages.deleted.success", request);
 	}
+
+
+	
+	
+	
 }

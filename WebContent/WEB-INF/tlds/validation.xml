@@ -2544,11 +2544,45 @@
 <!-- FIN: DefinirInteresadoEJGForm julio.vicente 08-03-2005 -->
 
 <!-- INICIO: DefinirDocumentacionEJGForm julio.vicente 19-02-2005 -->
+        
+	
+        
         <form name="DefinirDocumentacionEJGForm">  
-            <field property = "fechaLimitePresentacion" depends = "">
-                <arg0 key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>
-            </field>     
+            <field property = "presentador" depends = "required">
+                <arg0 key="sjcs.ejg.documentacion.presentador"/>
+            </field>
+            <field property = "idTipoDocumento" depends = "required">
+                <arg0 key="sjcs.ejg.documentacion.tipoDocumentacion"/>
+            </field>         
+            <field property = "regEntrada" depends = "maxlength">
+                <arg0 key="gratuita.documentacionEJG.regentrada"/>
+                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                      <var>
+                        <var-name>maxlength</var-name>
+                    	<var-value>30</var-value>
+                </var>
+            </field>
+            <field property = "regSalida" depends = "maxlength">
+                <arg0 key="gratuita.documentacionEJG.regsalida"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                      <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>30</var-value>
+                </var>
+                
+            </field>
+            <field property = "documentacion" depends = "maxlength">
+                <arg0 key="pestana.justiciagratuitaejg.documentacion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                      <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>1024</var-value>
+                </var>
+            </field>
         </form>
+        
+			
+        
 <!-- FIN: DefinirDocumentacionEJGForm julio.vicente 19-02-2005 -->
 
 
@@ -2558,7 +2592,7 @@
                 <field property = "observaciones" depends = "maxlength">
                 <arg0 key="gratuita.operarEJG.literal.observaciones"/>
                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                                <var>
+                    <var>
                         <var-name>maxlength</var-name>
                     <var-value>1024</var-value>
                 </var>

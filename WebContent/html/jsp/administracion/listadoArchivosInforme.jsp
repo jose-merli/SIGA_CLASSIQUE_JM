@@ -8,10 +8,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type"
-	content="text/html; charset=ISO-8859-15">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>

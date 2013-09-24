@@ -14,120 +14,67 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
-
-<!-- IMPORTS -->
-<%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.beans.ScsDocumentacionEJGBean"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
-
-<!-- JSP -->
-<% 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
-	String accion = (String)request.getAttribute("accionModo");
-		
-	String anio= "", numero="", idTipoEJG = "", fechaEntrega="", fechaLimite="", regEntrada="", regSalida="", documentacion="", idDocumentacion="";	
-	String presentador="", tipodocu="",documento="",nombredocumento="";
-	try {
-		idDocumentacion = miHash.get("IDDOCUMENTACION").toString();
-		anio = miHash.get("ANIO").toString();
-		numero = miHash.get("NUMERO").toString();
-		idTipoEJG = miHash.get("IDTIPOEJG").toString();
-		documentacion = miHash.get("DOCUMENTACION").toString();
-		fechaEntrega = GstDate.getFormatedDateShort("",miHash.get("FECHAENTREGA").toString());
-		fechaLimite = GstDate.getFormatedDateShort("",miHash.get("FECHALIMITE").toString());
-		regEntrada = miHash.get("REGENTRADA").toString();
-		regSalida = miHash.get("REGSALIDA").toString();
-		if (accion.equalsIgnoreCase("ver")) {
-			nombredocumento=(String)ses.getAttribute("NOMBREDOCUMENTO");
-		}
-	}
-	catch(Exception e){};
-	
-	ArrayList listapresentador    = new ArrayList();
-	ArrayList listatipodocu    = new ArrayList();
-	ArrayList listadocu    = new ArrayList();
-
-	if(miHash.containsKey("PRESENTADOR")){
-		presentador=miHash.get("PRESENTADOR").toString();
-		listapresentador.add(presentador);
-	}
-	if(miHash.containsKey("IDTIPODOCUMENTO")){
-		tipodocu=miHash.get("IDTIPODOCUMENTO").toString();
-		listatipodocu.add(tipodocu+","+usr.getLocation());
-	}
-	if(miHash.containsKey("IDDOCUMENTO")){
-		documento=miHash.get("IDDOCUMENTO").toString();
-		listadocu.add(documento+","+usr.getLocation());
-	}
-	
-	String[] dato = {usr.getLocation()};
-	String[] datos = {tipodocu,usr.getLocation()};
-	String[] datoPresentador={usr.getLocation(),idTipoEJG,anio,numero};		
-%>
-
-
-<!-- HEAD -->
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 
-	<html:javascript formName="DefinirDocumentacionEJGForm" staticJavascript="false" />  
-  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 </head>
 
-<body>
-
-	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+<body onload="onLoad();">
+	
+<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
+<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
 	<tr>
-	<td class="titulitosDatos">	
-		<siga:Idioma key="gratuita.insertarDocumentacion.literal.editarDocumentacion"/>
-	</td>
+		<td class="titulitosDatos">	
+			<siga:Idioma key="gratuita.insertarDocumentacion.literal.editarDocumentacion"/>
+		</td>
 	</tr>
-	</table>
+</table>
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-	<div id="campos" class="posicionModalPeque" align="center">
+<div id="campos" class="posicionModalPeque" align="center">
 
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<% 
 
-	<!-- Comienzo del formulario con los campos -->
-	<table class="tablaCentralCamposPeque" align="center">	
-	
-	<html:form action="/JGR_DocumentacionEJG" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = "Modificar"/>
-	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
-	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
-	<html:hidden property = "anio" value ="<%=anio%>"/>
-	<html:hidden property = "numero" value ="<%=numero%>"/>
-	<html:hidden property = "idDocumentacion" value ="<%=idDocumentacion%>"/>
-	
-	<html:hidden property = "presentador" 	value ="<%=presentador%>"/>
-	<html:hidden property = "idTipoDocumento" value ="<%=tipodocu%>"/>
-	<html:hidden property = "idDocumento" 	value ="<%=documento%>"/>
-	
-	<html:hidden property = "presentadorAnterior" 	value ="<%=presentador%>"/>
-	<html:hidden property = "idTipoDocumentoAnterior" value ="<%=tipodocu%>"/>
-	<html:hidden property = "idDocumentoAnterior" 	value ="<%=documento%>"/>
 
-	<table class="tablaCampos" align="center" border ="0" style="width:50">
-	<tr><td>			
+%>
+<html:javascript formName="DefinirDocumentacionEJGForm" staticJavascript="false" /> 
+<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="submitArea">
+	<html:hidden styleId="modo" property = "modo" />
+	<html:hidden styleId="idInstitucion" property = "idInstitucion" />
+	<html:hidden styleId="idTipoEJG" property = "idTipoEJG"/>
+	<html:hidden styleId="anio" property = "anio"/>
+	<html:hidden styleId="numero" property = "numero"/>
+	<html:hidden styleId="idDocumentacion" property = "idDocumentacion"/>
+	<html:hidden styleId="extensionArchivo" property = "extensionArchivo"/>
+	<html:hidden styleId="fechaArchivo" property = "fechaArchivo"/>
+	<html:hidden styleId="nombreArchivo" property = "nombreArchivo"/>
+	<html:hidden styleId="numEjg" property = "numEjg" />
+	<html:hidden styleId="borrarFichero" property = "borrarFichero" />
+	<html:hidden styleId="idFichero" property = "idFichero" />
+	
+	<html:hidden styleId="presentadorAnterior" property = "presentadorAnterior" value ="${DefinirDocumentacionEJGForm.presentador}"/>
+	<html:hidden styleId="idTipoDocumentoAnterior" property = "idTipoDocumentoAnterior" value ="${DefinirDocumentacionEJGForm.idTipoDocumento}"/>
+	<html:hidden styleId="idDocumentoAnterior" property = "idDocumentoAnterior" value ="${DefinirDocumentacionEJGForm.idDocumento}"/>
+	
+	<input type="hidden" id="modoEntrada" value="${DefinirDocumentacionEJGForm.modo}"/> 
+
+	<bean:define id="presentadorSelected" name="presentadorSelected" type="java.util.List"	 scope="request" />
+	<bean:define id="idTipoDocumentoSelected" name="idTipoDocumentoSelected" type="java.util.List"	 scope="request" />
+	<bean:define id="idDocumentoSelected" name="idDocumentoSelected" type="java.util.List"	 scope="request" />
+	
+
+		
 	<!-- SUBCONJUNTO DE DATOS -->
 	<!-- Ejemplo de conjunto de campos recuadrado y con titulo -->
 	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
+		
 	<table class="tablaCampos" align="center" border ="0">
 	<tr>
 	<td class="labelText">
@@ -135,22 +82,30 @@
 		
 	</td>
 	<td>
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="fechaLimitePresentacion" size="10" styleClass="boxConsulta" value="<%=fechaLimite%>" readonly="true"></html:text>
-		<%} else {%>
-			<siga:Fecha nombreCampo="fechaLimitePresentacion" valorInicial="<%=fechaLimite%>"></siga:Fecha>
-		<%}%>
+		<c:choose>
+			<c:when test="${accionModo=='ver'}">
+				<html:text name="DefinirDocumentacionEJGForm" property="fechaLimite" size="10" styleClass="boxConsulta"readonly="true"></html:text>
+			</c:when>
+			<c:otherwise>
+				<siga:Fecha nombreCampo="fechaLimite"  valorInicial="${DefinirDocumentacionEJGForm.fechaLimite}"></siga:Fecha>
+			</c:otherwise>
+		</c:choose>
 				
 	</td>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.operarEJG.literal.fechaPresentacion"/>
 	</td>
 	<td>
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="fechaPresentacion" size="10" styleClass="boxConsulta" value="<%=fechaEntrega%>" readonly="true"></html:text>
-		<%} else {%>
-			<siga:Fecha nombreCampo="fechaPresentacion" valorInicial="<%=fechaEntrega%>"></siga:Fecha>
-		<%}%>	
+		<c:choose>
+			<c:when test="${accionModo=='ver'}">
+				<html:text name="DefinirDocumentacionEJGForm" property="fechaEntrega" size="10" styleClass="boxConsulta" readonly="true"></html:text>
+			</c:when>
+			<c:otherwise>
+				<siga:Fecha nombreCampo="fechaEntrega" valorInicial="${DefinirDocumentacionEJGForm.fechaEntrega}"></siga:Fecha>
+			</c:otherwise>
+		</c:choose>
+		
+			
 	</td>
 	</tr>
 	<tr>
@@ -158,33 +113,46 @@
 		<siga:Idioma key="gratuita.documentacionEJG.regentrada"/>
 	</td>
 	<td>
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="regEntrada" size="20" styleClass="boxConsulta" value="<%=regEntrada%>" readonly="true"></html:text>&nbsp;&nbsp;
-		<%} else {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="regEntrada" size="20" styleClass="box" value="<%=regEntrada%>" readonly="false"></html:text>&nbsp;&nbsp;
-		<%}%>
+		<c:choose>
+			<c:when test="${accionModo=='ver'}">
+				<html:text name="DefinirDocumentacionEJGForm" property="regEntrada"  size="20" styleClass="boxConsulta" readonly="true"/>
+			</c:when>
+			<c:otherwise>
+				<html:text name="DefinirDocumentacionEJGForm" property="regEntrada"  size="20" styleClass="box"  readonly="false"/>
+			</c:otherwise>
+		</c:choose>
 	</td>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.documentacionEJG.regsalida"/>
 	</td>
 	<td>
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="regSalida" size="20" styleClass="boxConsulta" value="<%=regSalida%>" readonly="true"></html:text>&nbsp;&nbsp;
-		<%} else {%>
-			<html:text name="DefinirDocumentacionEJGForm" property="regSalida" size="20" styleClass="box" value="<%=regSalida%>" readonly="false"></html:text>&nbsp;&nbsp;
-		<%}%>
+		<c:choose>
+			<c:when test="${accionModo=='ver'}">
+				<html:text name="DefinirDocumentacionEJGForm" property="regSalida" size="20" styleClass="boxConsulta"  readonly="true"></html:text>&nbsp;&nbsp;
+			</c:when>
+			<c:otherwise>
+				<html:text name="DefinirDocumentacionEJGForm" property="regSalida" size="20" styleClass="box" readonly="false"></html:text>&nbsp;&nbsp;
+			</c:otherwise>
+		</c:choose>
 	</td>
 	</tr>	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.presentador'/>&nbsp;(*)
 		</td>
-		<td colspan="3">	
-			<%if (accion.equalsIgnoreCase("ver")) {%>
-				<siga:ComboBD nombre = "presentador" tipo="cmbPresentador"  ancho="300" clase="boxConsulta" pestana="t" obligatorio="true" hijo="t" parametro="<%=datoPresentador%>" elementoSel="<%=listapresentador%>" readOnly="true" obligatoriosintextoseleccionar="true"/>									
-			<%} else {%>
-				<siga:ComboBD nombre = "presentador" tipo="cmbPresentador"  ancho="300" clase="boxCombo" pestana="t" obligatorio="true" hijo="t" parametro="<%=datoPresentador%>" elementoSel="<%=listapresentador%>" obligatoriosintextoseleccionar="true"/>									
-			<%}%>		
+		<td colspan="3">
+			<c:choose>
+				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
+					<siga:Select id="presentador" queryId="getPresentador"  cssClass="boxConsulta"  required="true" width="300"   />
+				</c:when>
+				<c:when test="${accionModo=='ver'}">
+					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}" cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+				</c:when>
+				<c:otherwise>
+					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}" cssClass="boxConsulta"  required="true" width="300"  />
+				</c:otherwise>
+			</c:choose>
+				
 		</td>
 	</tr>
 	<tr>
@@ -192,11 +160,18 @@
 			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
 		</td>
 		<td colspan="3">
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<siga:ComboBD nombre = "idTipoDocumento" tipo="cmbTipoDocumentacion" ancho="300" clase="boxConsulta" obligatorio="true" hijo="t" accion="Hijo:idDocumento;" parametro="<%=dato%>" elementoSel="<%=listatipodocu%>" readOnly="true" obligatoriosintextoseleccionar="true"/>
-		<%} else {%>
-			<siga:ComboBD nombre = "idTipoDocumento" tipo="cmbTipoDocumentacion" ancho="300" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idDocumento;" parametro="<%=dato%>" elementoSel="<%=listatipodocu%>" obligatoriosintextoseleccionar="true"/>
-		<%}%>
+			<c:choose>
+				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento" cssClass="boxConsulta"  required="true"  width="300"   />
+				</c:when>
+				<c:when test="${accionModo=='ver'}">
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento" selectedIds="${idTipoDocumentoSelected}" cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+				</c:when>
+				<c:otherwise>
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento"  selectedIds="${idTipoDocumentoSelected}" cssClass="boxConsulta"  required="true"  width="300"   />
+				</c:otherwise>
+			</c:choose>
+		
 		</td>
 	</tr>					
 	<tr>
@@ -204,62 +179,126 @@
 			<siga:Idioma key='sjcs.ejg.documentacion.documentacion'/>&nbsp;(*)
 		</td>
 		<td colspan="3">
-		<%if (accion.equalsIgnoreCase("ver")) {%>
-			<siga:ComboBD nombre = "idDocumento" tipo="cmbDocumentoEdit" ancho="300" clase="boxConsulta" obligatorio="true" hijo="t" parametro="<%=datos%>" elementoSel="<%=listadocu%>" readOnly="true" obligatoriosintextoseleccionar="true"/>
-		<%} else {%>
-			<siga:ComboBD nombre = "idDocumento" tipo="cmbDocumentoEdit" ancho="300" clase="boxCombo" obligatorio="true" pestana="t" hijo="t" elementoSel="<%=listadocu%>" obligatoriosintextoseleccionar="true"/>
-		<%}%>
+			<c:choose>
+				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
+					<siga:Select  id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"    cssClass="boxConsulta"  required="true"  width="300"   />
+				</c:when>
+				<c:when test="${accionModo=='ver'}">
+					<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg" parentQueryParamIds="idtipodocumento" params="${idTipoDocumentoJson}"  selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+				</c:when>
+				<c:otherwise>
+				
+				<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"  params="${idTipoDocumentoJson}" selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true"  width="300"   />
+				
+				</c:otherwise>
+			</c:choose>
+		
 		</td>
 	</tr>
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="pestana.justiciagratuitaejg.documentacion"/>
+			<siga:Idioma key="pestana.justiciagratuitaejg.documentacion"/><c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
-	</tr>
-	<tr>
-		<td class="labelText" colspan="4">
-			<%if (accion.equalsIgnoreCase("ver")) {%>
-				<textarea name="documentacion" rows="6" cols="60" style="width:600" class="boxConsulta" readonly="true"><%=documentacion%></textarea>
-			<%} else {%>
-				<textarea name="documentacion" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="6" cols="60" style="width:600" class="box"><%=documentacion%></textarea>
-			<%}%>
+		<td class="labelText" colspan="3">
+			<c:choose>
+				<c:when test="${accionModo=='ver'}">
+				<html:textarea property="documentacion"  rows="6" cols="60" style="width:600" styleClass="boxConsulta" readonly="true"/>
+				</c:when>
+				<c:otherwise>
+				<html:textarea property="documentacion"  onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="6" cols="60" styleClass="box" style="width:600"/>
+				</c:otherwise>
+			</c:choose>
 		</td>	
 	</tr>
 	</table>
 	</siga:ConjCampos>
-	</td></tr>
-	</table>
-	</html:form>
-	</table>
+</div>
+<%@ include file="/html/jsp/general/ficheros.jsp"%>
+</html:form>
+
 	<!-- FIN: CAMPOS DEL REGISTRO -->
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- INICIO: BOTONES REGISTRO -->
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  modo="<%=accion%>"/>
+		<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  modo="${accionModo}"/>
 	<!-- FIN: BOTONES REGISTRO -->
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	
+	
 	<script language="JavaScript">	
+	
+	
+	
+	function upload() 
+	{	
+		
+		document.forms['DefinirDocumentacionEJGForm'].modo.value = "upload";
+		document.forms['DefinirDocumentacionEJGForm'].submit();
+		
+
+	}
+	function download()
+	{
+		document.forms['DefinirDocumentacionEJGForm'].target="submitArea";
+		document.forms['DefinirDocumentacionEJGForm'].modo.value = "download";
+		document.InformeForm.submit();
+
+	}
+	function borrar()
+	{
+		if(confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+			document.forms['DefinirDocumentacionEJGForm'].target="submitArea";
+			document.forms['DefinirDocumentacionEJGForm'].modo.value = "borrarArchivo";
+			document.forms['DefinirDocumentacionEJGForm'].submit();
+		}
+
+	}
+	
 	
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
-			document.forms[0].reset();
+			document.forms['DefinirDocumentacionEJGForm'].reset();
 		}
 		
 	//Asociada al boton Guardar y Cerrar -->
-		function accionGuardarCerrar() 
-		{
-			sub();
-			if (validateDefinirDocumentacionEJGForm(document.forms[0])){
-		       	document.forms[0].submit();
-				window.top.returnValue="MODIFICADO";		
-			}else{
-				fin();
-				return false;
+	function accionGuardarCerrar() 
+	{
+		sub();
+		document.forms['DefinirDocumentacionEJGForm'].modo.value = document.getElementById("modoEntrada").value; 
+		if(document.forms['DefinirDocumentacionEJGForm'].theFile && document.forms['DefinirDocumentacionEJGForm'].theFile.value!='' && !TestFileType(document.forms['DefinirDocumentacionEJGForm'].theFile.value, ['DOC','DOCX','PDF','JPG','PNG','RTF','TXT'])){
+			fin();
+			return false;
+		}
+		if (validateDefinirDocumentacionEJGForm(document.forms['DefinirDocumentacionEJGForm'])){
+				//si ya se habia seleccionado fichero y ahora nom cambia el docuemnto le avisamos que se va a borrar el anterior
+				
+				
+			if(document.forms['DefinirDocumentacionEJGForm'].theFile && document.forms['DefinirDocumentacionEJGForm'].theFile.value!=''){
+					//document.forms['DefinirDocumentacionEJGForm'].nombreArchivo.value = "Pendiente sacar el text del combo BD";
+				document.forms['DefinirDocumentacionEJGForm'].nombreArchivo.value = jQuery("#idDocumento").find("option:selected").text();
 			}
-		}		
+				//alertStop("iddoc sel:"+document.forms['DefinirDocumentacionEJGForm'].idDocumento.value);
+				//alertStop("iddoc ant:"+document.forms['DefinirDocumentacionEJGForm'].idDocumentoAnterior.value);
+			if(document.forms['DefinirDocumentacionEJGForm'].idFichero && document.forms['DefinirDocumentacionEJGForm'].idFichero.value!='' && (document.forms['DefinirDocumentacionEJGForm'].idDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idDocumentoAnterior.value ||
+					document.forms['DefinirDocumentacionEJGForm'].presentador.value!=document.forms['DefinirDocumentacionEJGForm'].presentadorAnterior.value ||
+					document.forms['DefinirDocumentacionEJGForm'].idTipoDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idTipoDocumentoAnterior.value) ){
+				
+				if(!confirm('El fichero relacionado se va a eliminar¿desea continual?')){
+					fin();
+					return false;
+				}
+				document.forms['DefinirDocumentacionEJGForm'].borrarFichero.value = 'true';
+			}
+	       	document.forms['DefinirDocumentacionEJGForm'].submit();
+			window.top.returnValue="MODIFICADO";		
+		}else{
+			fin();
+			return false;
+		}
+	}		
 		
 		//Asociada al boton Cerrar -->
 		function accionCerrar()
@@ -267,21 +306,48 @@
 			top.cierraConParametros("NORMAL");			
 		}	
 		
-		function inicio()
+		
+		function onLoad()
 		{
-			//var nombre = document.forms[0].idTipoDocumento;
-			//alert("TIPODOCUMENTO->"+DefinirDocumentacionEJGForm.idTipoDocumento);
-			//nombre.readOnly=true;		
-			//DefinirDocumentacionEJGForm.idTipoDocumento.readOnly=true;
-			//DefinirDocumentacionEJGForm.idTipoDocumento.onchange();
-		}		
+			if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+				jQuery("#divFicheros").css("display", "none");
+
+
+			}
+		}
+		jQuery(function(){
+			jQuery("#idDocumento").on("change", function(){
+				if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+					if(document.forms['DefinirDocumentacionEJGForm'].idDocumento.value=='')
+						jQuery("#divFicheros").css("display", "none");
+					else
+						jQuery("#divFicheros").css("display", "block");
+				}
+			});
+		});
+		
+		function eliminarFichero()
+		{
+			if(confirm('<siga:Idioma key="administracion.informes.mensaje.aviso.archivo.eliminar"/>')){
+				document.forms['DefinirDocumentacionEJGForm'].modo.value = "borrarFichero";	
+				document.forms['DefinirDocumentacionEJGForm'].submit();
+			}
+		}
+		function downloadFichero()
+		{
+			document.forms['DefinirDocumentacionEJGForm'].modo.value = "downloadFichero";
+			document.forms['DefinirDocumentacionEJGForm'].submit();
+		}
+		
+
+		
 		</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	
 <!-- INICIO: SUBMIT AREA -->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 
