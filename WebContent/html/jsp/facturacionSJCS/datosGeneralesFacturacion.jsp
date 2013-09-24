@@ -495,11 +495,11 @@
 	<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
 		id="resultado10"
 		name="resultado10" 
-		scrolling="auto"
+		scrolling="no"
 		frameborder="0"
 		marginheight="0"
 		marginwidth="0"		
-		style="position:absolute;width:100%;bottom:30px;left:0px;height:200px"></iframe>	
+		style="height:100%;width:100%;"></iframe>
 	
 	<siga:ConjBotonesAccion botones='<%=botonesAbajo%>' modo='<%=modo%>'/>
 

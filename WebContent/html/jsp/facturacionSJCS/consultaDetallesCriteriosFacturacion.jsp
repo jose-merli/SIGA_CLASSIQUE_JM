@@ -107,7 +107,6 @@
 			border="1"
 			columnNames="Concepto,factSJCS.detalleFacturacion.literal.importe"
 			columnSizes="70,30"
-			fixedHeight="80%"
 			modal = "g"	
 			modalScroll= "true">
 	
