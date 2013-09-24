@@ -82,7 +82,7 @@
 <body>
 	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_EJG.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
-		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="modo"  id="modo"  value="<%=modo%>">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 	</html:form>
 	

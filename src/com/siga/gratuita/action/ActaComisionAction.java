@@ -314,7 +314,11 @@ public class ActaComisionAction extends MasterAction{
 		String accion = actaForm.getModo();
 		if(accion!=null && accion.equalsIgnoreCase("ver")){
 			request.setAttribute("modo", "consulta");
+		
+		} else if(accion!=null && accion.equalsIgnoreCase("editar")){
+			request.setAttribute("modo", "editar");
 		}
+
 
 		String informeUnico = ClsConstants.DB_TRUE;
 		AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
