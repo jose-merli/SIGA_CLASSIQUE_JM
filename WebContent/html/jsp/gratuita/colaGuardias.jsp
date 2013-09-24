@@ -70,35 +70,38 @@
 			}
 			
 			function buscarLetradoEnColaLetrado() {
-				s = document.getElementById("buscarLetrado").value;
-				if (s) {
-					var inputBusqColegiado = jQuery("input.numeroColegiadoBusqueda[value$='_"+s+"']");
+				var valorBusqueda = document.getElementById("buscarLetrado").value;
+				if (valorBusqueda) {
+					var inputBusqColegiado = jQuery("#tablaLetrados_BodyDiv tbody tr td input#numeroColegiadoBusqueda[value$='_" + valorBusqueda + "']");
+					
 					if (inputBusqColegiado.exists()){
 						var inputBusqColegiado_fila = inputBusqColegiado.val().split("_")[0];
-						selectRow(parseInt(inputBusqColegiado_fila) + 1, "tablaLetrados");
+						selectRow(parseInt(inputBusqColegiado_fila) + numeroElementosNuevos + 1, "tablaLetrados");
+
 					} else
 						selectRow(-1, "tablaLetrados");
 				} else
 					selectRow(-1, "tablaLetrados");
-			}
+			}			
 		
 			function selectRowTablaLetrados(fila) {
-			   var tabla;
-			   tabla = document.getElementById('tablaLetrados');
-			   for (var i = 0; i < tabla.rows.length; i++) {
-			     tabla.rows[i].className = 'listaNonEdit';
-			   }
-			   if (fila >= 0 && fila < tabla.rows.length) {
-				   tabla.rows[fila].className = 'listaNonEditSelected';
-				   //tabla.rows[fila].scrollIntoView(false);
-			   }
+				var tablaDatos = jQuery("#tablaLetrados_BodyDiv tbody");
+				var numTotalElementos = tablaDatos.children().length;
+
+				for (var i=0; i<numTotalElementos; i++) {
+					tablaDatos.find("tr:eq(" + i + ")").attr("class", 'listaNonEdit');
+			   	}
+			   
+			   	if (fila>=0 && fila<numTotalElementos) {
+			   		tablaDatos.find("tr:eq(" + fila + ")").attr("class", 'listaNonEditSelected');
+			   	}
 			}
 
 			function limpiarTexto(t, limpiar) {
 				if (limpiar == 1) {
 					t.value= "";
-				}
-				else {
+					
+				} else {
 					if (!t.value) {
 						t.value = "<%=literalNColegiado%>";
 					}
@@ -125,66 +128,100 @@
 				document.forms[0].submit();
 			}
 
-			function anadirFilaLetrado(fila) {			
-				table = document.getElementById("tablaLetrados");
+			var numeroElementosNuevos = 0;
+			function anadirFilaLetrado(fila) {
+				var tablaDatos = jQuery("#tablaLetrados_BodyDiv tbody");
+				var numTotalElementos = tablaDatos.children().length;
+				var numSiguiente = numTotalElementos + 1;				
 				
-				if(table.rows.length>0){			
-					numFila = table.rows.length;
-				
-					tr = table.insertRow(numFila);
-					if(numFila % 2 == 0){
-						tr.className = "filaTablaPar";
-					}else{
-						tr.className = "filaTablaImPar";
+				if (numTotalElementos > 0) {
+
+					var elementoTr = "<tr";			
+					if (tablaDatos.find("tr:eq(0)").attr("class").indexOf("filaTablaPar") >= 0) {
+						elementoTr = elementoTr + " class='filaTablaImpar tableTitle'";
+					} else {
+						elementoTr = elementoTr + " class='filaTablaPar tableTitle'";
 					}
-					val = numFila + 1;
+					elementoTr = elementoTr + ">";					
+
+					var estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(0)").attr("style");
+					var elementoTd = "<td id='check_" + numTotalElementos + "' align='center' style='" + estiloTd + "'>";
+					elementoTd = elementoTd + "<input type='checkbox' id='checkGrupoOrden' value='" + numSiguiente + "' onclick='modificaParametro(this)' checked/>";
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;			
 					
-					td = tr.insertCell();	
-					td.id = "check_"+numFila;
-					td.innerHTML ='<input type="checkbox" id="checkGrupoOrden" value='+val+' onclick="modificaParametro(this)" checked/>';
 					
-					td = tr.insertCell();	
-					td.id = "grupo_"+numFila;			
-					td.innerHTML ='<input type="text" value="" id=grupo_'+val+' style="width:30px" maxlength="4">' +
-								  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';			
-				
-					td = tr.insertCell();	
-					td.id = "orden_"+numFila;
-					td.innerHTML ='<input type="text" value="" id=orden_'+val+'  style="width:30px" maxlength="4">' +
-								  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
-				
-					td = tr.insertCell();	
-					td.id = "colegiado_"+numFila;			
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(1)").attr("style");
+					elementoTd = "<td id='grupo_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";	
+					elementoTd = elementoTd + "<input type='text' value='' id='grupo_" + numSiguiente + "' style='width:30px' maxlength='4'/>" +
+					  						  "<input type='hidden' value='' id='grupoOriginal_" + numSiguiente + "'/>";
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(2)").attr("style");
+					elementoTd = "<td id='orden_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";	
+					elementoTd = elementoTd + "<input type='text' value='' id='orden_" + numSiguiente + "' style='width:30px' maxlength='4'/>" +
+					  						  "<input type='hidden' value='' id='ordenOriginal_" + numSiguiente + "'/>";
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					
 					numColBusqueda = document.getElementById("numeroColegiadoBusqueda").value;
-					person = document.getElementById("idPersona_"+(fila+1)).value;
-					fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
-					//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
-					td.innerHTML = document.getElementById("colegiado_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
-				
-					td.innerHTML = td.innerHTML +
-								   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
-								   ' <input name="idPersona_'+val+'" type="hidden" class="box" size="10" value="'+person+'" > '+
-								   ' <input name="fechaSuscripcion_'+val+'" type="hidden" class="box" size="20" value="'+fSuscr+'" > '+
-								   ' <input name="idGrupoGuardiaColegiado_'+val+'" type="hidden" class="box" size="10" value="" >';
-				
-					td = tr.insertCell();	
-					td.id = "nombre_"+numFila;
-					td.innerHTML = document.getElementById("nombre_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
-				
-					td = tr.insertCell();	
-					td.id = "falta_"+numFila;
-					td.innerHTML = document.getElementById("falta_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
-				
-					td = tr.insertCell();	
-					td.id = "fbaja_"+numFila;
-					td.innerHTML = document.getElementById("fbaja_"+fila).innerHTML.replace(/<[^>]+>/gi, '').replace(/\\n|\\t|^\\s*|\\s*$/gi,'');
-				
-					td = tr.insertCell();	
-					td.id = "iconos_"+numFila;
-					td.align="center";
-					td.innerHTML = '<img src=/SIGA/html/imagenes/bcambiarusuario.gif name="bcambiarusuario" onClick="fijarUltimoLetrado('+(numFila+1)+')" style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>" >'+
-					   			   '<img src=/SIGA/html/imagenes/icono+.gif          name="banadirlinea"    onClick="anadirFilaLetrado('+numFila+')"  style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>"         >';
-				
+					person = document.getElementById("idPersona_" + (fila+1)).value;
+					fSuscr = document.getElementById("fechaSuscripcion_" + (fila+1)).value;
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(3)").attr("style");
+					elementoTd = "<td id='colegiado_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";					
+					elementoTd = elementoTd + jQuery("#colegiado_" + fila).text();
+					elementoTd = elementoTd + "<input id='numeroColegiadoBusqueda' name='numeroColegiadoBusqueda' type='hidden' class='box' size='10' value='" + numColBusqueda + "'/> " +
+					   						  "<input id='idPersona_" + numSiguiente + "' name='idPersona_" + numSiguiente + "' type='hidden' class='box' size='10' value='" + person + "'/> " +
+					   						  "<input id='fechaSuscripcion_" + numSiguiente + "' name='fechaSuscripcion_" + numSiguiente + "' type='hidden' class='box' size='20' value='" + fSuscr + "'/> " +
+					   						  "<input id='idGrupoGuardiaColegiado_" + numSiguiente + "' name='idGrupoGuardiaColegiado_" + numSiguiente + "' type='hidden' class='box' size='10' value=''/>";
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(4)").attr("style");
+					elementoTd = "<td id='nombre_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";		
+					elementoTd = elementoTd + jQuery("#nombre_" + fila).text();
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(5)").attr("style");
+					elementoTd = "<td id='falta_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";		
+					elementoTd = elementoTd + jQuery("#falta_" + fila).text();
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(6)").attr("style");
+					elementoTd = "<td id='fbaja_" + numTotalElementos + "' align='left' style='" + estiloTd + "'>";		
+					elementoTd = elementoTd + jQuery("#fbaja_" + fila).text();
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					estiloTd = tablaDatos.find("tr:eq(0)").find("td:eq(7)").attr("style");
+					elementoTd = "<td id='iconos_" + numTotalElementos + "' align='center' style='" + estiloTd + "'>";
+					elementoTd = elementoTd + "<img src='/SIGA/html/imagenes/bcambiarusuario.gif'" +
+													" name='bcambiarusuario'" +
+													" onClick='fijarUltimoLetrado(" + numSiguiente + ")'" +
+													" style='cursor:hand;'" +
+													" title='<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>' " +
+													" alt='<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>' > " +
+		   			   						  "<img src='/SIGA/html/imagenes/icono+.gif'" +
+		   			   						  		" name='banadirlinea'" +
+		   			   						  		" onClick='anadirFilaLetrado(" + numTotalElementos + ")'" +
+		   			   						  		" style='cursor:hand;'" +
+		   			   						  		" title='<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>'" + 
+		   			   						  		" alt='<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>'>";
+					elementoTd = elementoTd + "</td>";
+					elementoTr = elementoTr + elementoTd;
+					
+					elementoTr = elementoTr + "</tr>";	
+
+					tablaDatos.prepend(elementoTr);
+					numeroElementosNuevos = numeroElementosNuevos + 1;
 				}
 			}				
 		</script>
@@ -262,7 +299,7 @@
 %>
 						<td width='22%'>
 							<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>" onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
-							<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" />
+							<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" title="<%=buscarLetrado%>"/>
 						</td>
 							
 <%
@@ -344,15 +381,15 @@
 <%
 								if (porGrupos) {
 %>
-	  								<td>
+	  								<td align="center">
 	  									<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
 	  								</td>	  					
-									<td>
+									<td align="left">
 										<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled style="width:30px" maxlength="4"/>
 										<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" />
 									</td>
 						
-									<td>
+									<td align="left">
 										<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled style="width:30px" maxlength="4"/>
 										<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" />
 									</td>
@@ -360,19 +397,19 @@
 								}
 %>
 								
-								<td id="colegiado_<%=i%>">
-									<input name="numeroColegiadoBusqueda" type="hidden" class="box, numeroColegiadoBusqueda" size="10" value="<%=numeroColegiadoBusqueda%>" />
-									<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
-									<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
-									<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
+								<td id="colegiado_<%=i%>" align="left">
+									<input id="numeroColegiadoBusqueda" name="numeroColegiadoBusqueda" type="hidden" class="box, numeroColegiadoBusqueda" size="10" value="<%=numeroColegiadoBusqueda%>" />
+									<input id="idPersona_<%=i + 1%>" name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" />
+									<input id="fechaSuscripcion_<%=i + 1%>" name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" />
+									<input id="idGrupoGuardiaColegiado_<%=i + 1%>" name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" />
 									<%=ncolegiado%>
 								</td>
 							
-								<td id="nombre_<%=i%>">
+								<td id="nombre_<%=i%>" align="left">
 									<%=apellido1 + " " + apellido2 + ", " + nombre%>
 								</td>
 							
-								<td id="falta_<%=i%>">
+								<td id="falta_<%=i%>" align="left">
 <%
 									if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null && !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
 %>
@@ -386,7 +423,7 @@
 %>
 								</td>
 							
-								<td id="fbaja_<%=i%>">
+								<td id="fbaja_<%=i%>" align="left">
 <%
 									if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null && !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
 %>
@@ -405,11 +442,11 @@
 <%
 									if (!accionTurno.equalsIgnoreCase("Ver")) {
 %>
-										<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>"/>
+										<img src="<html:rewrite page='/html/imagenes/bcambiarusuario.gif'/>" id="bcambiarusuario" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>" title="<%=literalFijarUltimoLetrado%>"/>
 <% 
 										if (porGrupos) {	
 %>
-											<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>"/>
+											<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" id="banadirlinea" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>" title="<%=literalAnadirFila%>"/>
 <% 
 										}
 									} 
@@ -611,8 +648,7 @@
   
   	<script>
 	  	function habilitarCambiarUsuario(valor) {
-	  		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
-	  		if(valor)
+	  		if (valor)
 	  		   	jQuery("#bcambiarusuario").attr("disabled","disabled");
 	  		else
 				jQuery("#bcambiarusuario").removeAttr("disabled");
@@ -665,34 +701,45 @@
 	
 		function accionGuardar() {
 			var datos = "";
-			var ele = document.getElementsByName("checkGrupoOrden");
-			for (i = 0; i < ele.length; i++) {
-				if (ele[i].checked) {						
-						if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
-						   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
-						   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
-							 document.getElementById("orden_" + ele[i].value).value.length<1) ){						 
-								alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
-								 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
-									   "<siga:Idioma key="general.y"/> " + 
-								 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
-								return;
-	
-						}else{
-							
-							if(document.getElementById("orden_" + ele[i].value).value.length>=1 && 
-							   document.getElementById("orden_" + ele[i].value).value<=0){
-								alert ("El orden debe ser un número comprendido entre 1 y 9999");
-								return;					
-							}
-						}
+			var elementosCheck = jQuery("#tablaLetrados_BodyDiv tbody tr td input#checkGrupoOrden");
+			
+			for (i = 0; i < elementosCheck.length; i++) {
+				if (elementosCheck[i].checked) {
+					var valorGrupo = jQuery("#tablaLetrados_BodyDiv tbody tr td input#grupo_" + elementosCheck[i].value).val();
+					var longitudValorGrupo = valorGrupo.length;
+					var valorOrden = jQuery("#tablaLetrados_BodyDiv tbody tr td input#orden_" + elementosCheck[i].value).val();
+					var longitudValorOrden = valorOrden.length;
+					
+					if ((longitudValorGrupo<1 || longitudValorOrden<1)) {						 						
+						alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
+						 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> " + 
+							   "<siga:Idioma key="general.y"/> " + 
+						 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> ");
+								return;	
+					}
+					
+					if (valorGrupo<1) {							
+						alert ("El grupo debe ser un número comprendido entre 1 y 9999");
+						return;					
+					}
+					
+					if (valorOrden<1) {							
+						alert ("El orden debe ser un número comprendido entre 1 y 9999");
+						return;					
+					}
 						
-						if (datos.length > 0) datos = datos + "#;;#";
-						datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
-							            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
-							            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
-								        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
-								        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
+					if (datos.length > 0) 
+						datos = datos + "#;;#";
+						
+					var valorGrupoGuardia = jQuery("#tablaLetrados_BodyDiv tbody tr td input#idGrupoGuardiaColegiado_" + elementosCheck[i].value).val();
+					var valorPersona = jQuery("#tablaLetrados_BodyDiv tbody tr td input#idPersona_" + elementosCheck[i].value).val();
+					var valorFechaSuscripcion = jQuery("#tablaLetrados_BodyDiv tbody tr td input#fechaSuscripcion_" + elementosCheck[i].value).val();
+						
+					datos = datos + valorGrupoGuardia + "#;#" + // idgrupoguardiacolegiado						
+						valorGrupo + "#;#" + // grupo
+						valorOrden + "#;#" + // orden
+						valorPersona + "#;#"+ // idPersona
+						valorFechaSuscripcion + "#;#"; // fechaSuscripcion
 				}
 			}
 			
@@ -700,6 +747,7 @@
 				alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
 				return;
 			}
+			
 			document.forms[0].datosModificados.value = datos;
 			document.forms[0].modo.value = "modificar";
 			document.forms[0].target = "submitArea";

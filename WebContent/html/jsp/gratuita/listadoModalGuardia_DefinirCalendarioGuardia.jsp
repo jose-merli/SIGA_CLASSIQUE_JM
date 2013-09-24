@@ -71,49 +71,43 @@
 			parent.buscar();		
 		}
 		
-		function buscarLetradoEnColaLetrado () {
-			s = document.getElementById("buscarLetrado").value;
-			if (s) {
-				var ele = document.getElementsByName ("numeroColegiadoBusqueda");
-				for (i = 0; i < ele.length; i++) {
-					var a = ele[i].value.split("_");
-					if (a) {
-						var fila = a[0];
-						var nColegiado = a[1];
-					//alert ("Texto: " + s + " Fila: " + fila + " nColegiado: " + nColegiado);
-						if(nColegiado == s) {
-							selectRowTablaLetrados(eval(fila));
-							return;
-						}
-					}
-				}
-			}
-			selectRowTablaLetrados(-1);
+		function buscarLetradoEnColaLetrado() {
+			var valorBusqueda = document.getElementById("buscarLetrado").value;
+			if (valorBusqueda) {
+				var inputBusqColegiado = jQuery("#listado_BodyDiv tbody tr td input#numeroColegiadoBusqueda[value$='_" + valorBusqueda + "']");
+				
+				if (inputBusqColegiado.exists()){
+					var inputBusqColegiado_fila = inputBusqColegiado.val().split("_")[0];
+					selectRow(parseInt(inputBusqColegiado_fila), "listado");
+
+				} else
+					selectRow(-1, "listado");
+			} else
+				selectRow(-1, "listado");
 		}
 		
 		function selectRowTablaLetrados(fila) {
-		   var tabla;
-		   tabla = document.getElementById('listado');
-		   for (var i = 0; i < tabla.rows.length; i++) {
-		      if (i % 2 == 0) { 
-					tabla.rows[i].className = 'filaTablaPar';
-			  } else { 
-					tabla.rows[i].className = 'filaTablaImpar';
-			  } 
-		     
-			
-		   }
-		   if (fila >= 0 && fila < tabla.rows.length) {
-			   tabla.rows[fila].className = 'listaNonEditSelected';
-			   tabla.rows[fila].scrollIntoView(false);
-		   }
-		}
+			var tablaDatos = jQuery("#listado_BodyDiv tbody");
+			var numTotalElementos = tablaDatos.children().length;
+
+			for (var i=0; i<numTotalElementos; i++) {
+				if (i % 2 == 0) { 
+					tablaDatos.find("tr:eq(" + i + ")").attr("class", 'filaTablaPar');
+				} else {
+					tablaDatos.find("tr:eq(" + i + ")").attr("class", 'filaTablaImpar');
+				}
+		   	}
+		   
+		   	if (fila>=0 && fila<numTotalElementos) {
+		   		tablaDatos.find("tr:eq(" + fila + ")").attr("class", 'listaNonEditSelected');
+		   	}
+		}		
 
 		function limpiarTexto(t, limpiar) {
 			if (limpiar == 1) {
 				t.value= "";
-			}
-			else {
+				
+			} else {
 				if (!t.value) {
 					t.value = "<%=literalNColegiado%>";
 				}
@@ -313,7 +307,7 @@
 					</td>
 				
 					<td align="center">
-						<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
+						<input id="numeroColegiadoBusqueda" name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 						<%=numerocolegiado%>
 					</td>
 					
