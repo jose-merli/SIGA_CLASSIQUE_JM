@@ -243,9 +243,9 @@ public class BusquedaCensoAction extends MasterAction {
 			if (cli==null) {
 				forward =  insertarNoColArticulo27(mapping, miForm, request, response, new Long(miForm.getIdPersona()));
 
-			}else{	
+			}else{
 				
-				CenDireccionesBean beanDir = new CenDireccionesBean ();
+				String idDireccion = miForm.getIdDireccion();
 				
 				//Solo se modifica/inserta direccion a los nuevos letrados o letrados que vienen de otro colegio
 				if(miForm.getIdInstitucion() != null && (!miForm.getIdInstitucion().equals(usr.getLocation()) || miForm.getIdDireccion().equals("-1"))){
@@ -253,6 +253,7 @@ public class BusquedaCensoAction extends MasterAction {
 					Direccion direccion = new Direccion();
 					t = usr.getTransactionPesada();
 					t.begin ();
+					CenDireccionesBean beanDir = new CenDireccionesBean ();
 					beanDir.setCodigoPostal (miForm.getCodPostal());
 					beanDir.setCorreoElectronico (miForm.getMail());
 					beanDir.setDomicilio (miForm.getDireccion());
@@ -294,6 +295,11 @@ public class BusquedaCensoAction extends MasterAction {
 					
 					//confirmando las modificaciones de BD
 					t.commit();		
+					
+					if(beanDir.getIdDireccion() != null){
+						idDireccion = beanDir.getIdDireccion().toString();
+					}
+					
 				}
 				
 				//Se actualiza si ha cambiado el tratamiento y el idioma
@@ -317,7 +323,7 @@ public class BusquedaCensoAction extends MasterAction {
 				request.setAttribute("colegioOrigen",colOrigen);
 				request.setAttribute("nColegiado",miForm.getNumeroColegiado());
 				request.setAttribute("nif",miForm.getNif());
-				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());							
+				request.setAttribute("idDireccion",idDireccion);							
 				forward = "exitoInsercionNoColegiadoArt27";
 			}	
 			
