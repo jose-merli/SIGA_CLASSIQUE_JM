@@ -12,16 +12,15 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
-import org.redabogacia.sigaservices.app.autogen.model.FacBancoinstitucion;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.vo.BancoVo;
-import org.redabogacia.sigaservices.app.vo.CuentaBancariaVo;
-import org.redabogacia.sigaservices.app.vo.services.VoService;
+import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
-import com.siga.facturacion.service.CuentaBancariaVoService;
+import com.siga.facturacion.form.service.CuentaBancariaVoService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -133,7 +132,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			List<CuentaBancariaVo> cuentaBancariaVos =cuentasBancariasService.getCuentasBancarias(voService.getForm2Vo(cuentasBancariasForm));
 			List<CuentasBancariasForm> cuentasBancarias = voService.getVo2FormList(cuentaBancariaVos);
 			
@@ -180,7 +179,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
@@ -213,7 +212,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			cuentasBancariasForm.setModo("modificar");
@@ -243,7 +242,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService bts = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo = bts.getCuentaBancaria(cuentaBancariaVo);
@@ -273,7 +272,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.insert(cuentaBancariaVo);
@@ -298,7 +297,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			VoService<CuentasBancariasForm, CuentaBancariaVo, FacBancoinstitucion> voService = new CuentaBancariaVoService();
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.update(cuentaBancariaVo);

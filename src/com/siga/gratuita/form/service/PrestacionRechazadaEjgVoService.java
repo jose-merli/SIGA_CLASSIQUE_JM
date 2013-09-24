@@ -1,4 +1,4 @@
-package com.siga.gratuita.service;
+package com.siga.gratuita.form.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgPrestacionRechazada;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionRechazadaEjgVo;
-import org.redabogacia.sigaservices.app.vo.services.VoService;
+import org.redabogacia.sigaservices.app.vo.services.VoDbService;
 
+
+import com.siga.comun.VoUiService;
 import com.siga.gratuita.form.PrestacionRechazadaEjgForm;
 /**
  * 
@@ -18,7 +20,7 @@ import com.siga.gratuita.form.PrestacionRechazadaEjgForm;
  *
  */
 
-public class PrestacionRechazadaEjgVoService implements VoService<PrestacionRechazadaEjgForm,PrestacionRechazadaEjgVo,ScsEjgPrestacionRechazada>{
+public class PrestacionRechazadaEjgVoService implements VoUiService<PrestacionRechazadaEjgForm,PrestacionRechazadaEjgVo>{
 
 	public List<PrestacionRechazadaEjgVo> getDb2VoList(List<ScsEjgPrestacionRechazada> dbList){
 			
@@ -102,15 +104,7 @@ public class PrestacionRechazadaEjgVoService implements VoService<PrestacionRech
 
 
 
-	/* (non-Javadoc)
-	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getVo2Db(java.lang.Object)
-	 */
-	@Override
-	public ScsEjgPrestacionRechazada getVo2Db(PrestacionRechazadaEjgVo objectVo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 
 	
 

@@ -8,19 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.autogen.model.ScsEjgPrestacionRechazada;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgPrestacionRechazadaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionRechazadaEjgVo;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionVo;
-import org.redabogacia.sigaservices.app.vo.services.VoService;
 
 import com.atos.utils.UsrBean;
+import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.PrestacionRechazadaEjgForm;
-import com.siga.gratuita.service.PrestacionRechazadaEjgVoService;
+import com.siga.gratuita.form.service.PrestacionRechazadaEjgVoService;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -68,7 +67,7 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			ScsEjgPrestacionRechazadaService prestacionService = (ScsEjgPrestacionRechazadaService)bm.getService(ScsEjgPrestacionRechazadaService.class);
-			VoService<PrestacionRechazadaEjgForm, PrestacionRechazadaEjgVo, ScsEjgPrestacionRechazada> voService = new PrestacionRechazadaEjgVoService();
+			VoUiService<PrestacionRechazadaEjgForm, PrestacionRechazadaEjgVo> voService = new com.siga.gratuita.form.service.PrestacionRechazadaEjgVoService();
 			PrestacionRechazadaEjgVo prestacionRechazadaVo =  voService.getForm2Vo(prestacionRechazadaForm);
 			prestacionRechazadaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			prestacionService.actualizarEjgPrestacionesRechazadas(prestacionRechazadaVo);
@@ -107,7 +106,7 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 			request.setAttribute("prestaciones", prestacionService.getList(prestacionVo));
 			
 			ScsEjgPrestacionRechazadaService prestacionRechazadaService = (ScsEjgPrestacionRechazadaService)bm.getService(ScsEjgPrestacionRechazadaService.class);
-			VoService<PrestacionRechazadaEjgForm, PrestacionRechazadaEjgVo, ScsEjgPrestacionRechazada> voService = new PrestacionRechazadaEjgVoService();
+			VoUiService<PrestacionRechazadaEjgForm, PrestacionRechazadaEjgVo> voService = new PrestacionRechazadaEjgVoService();
 			List<PrestacionRechazadaEjgVo> prestacionRechazadaVos =prestacionRechazadaService.getPrestacionesRechazadas(voService.getForm2Vo(prestacionesEJGForm));
 			List<PrestacionRechazadaEjgForm> prestacionesRechazadas = voService.getVo2FormList(prestacionRechazadaVos);
 			prestacionesEJGForm.setModo("modificar");

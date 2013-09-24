@@ -1,4 +1,4 @@
-package com.siga.facturacion.service;
+package com.siga.facturacion.form.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.FacBancoinstitucion;
-import org.redabogacia.sigaservices.app.vo.CuentaBancariaVo;
-import org.redabogacia.sigaservices.app.vo.services.VoService;
+import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
 /**
  * 
@@ -21,9 +21,9 @@ import com.siga.facturacion.form.CuentasBancariasForm;
  * La imaginación es más importante que el conocimiento
  *
  */
-public class CuentaBancariaVoService implements VoService<CuentasBancariasForm,CuentaBancariaVo,FacBancoinstitucion> {
+public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm,CuentaBancariaVo> {
 
-	public List<CuentaBancariaVo> getDb2VoList(List<FacBancoinstitucion> dbList){
+	public List<org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo> getDb2VoList(List<FacBancoinstitucion> dbList){
 			
 		List<CuentaBancariaVo> objectVos = new ArrayList<CuentaBancariaVo>();
 		CuentaBancariaVo  objectVo = null;
@@ -178,25 +178,6 @@ public class CuentaBancariaVoService implements VoService<CuentasBancariasForm,C
 			cuentasBancariasForm.setUso(String.valueOf(objectVo.getUso()));
 		return cuentasBancariasForm;
 	}
-
-
-
-	/* (non-Javadoc)
-	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getVo2Db(java.lang.Object)
-	 */
-	@Override
-	public FacBancoinstitucion getVo2Db(CuentaBancariaVo objectVo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-	
-
-	
-	
 	
 
 }
