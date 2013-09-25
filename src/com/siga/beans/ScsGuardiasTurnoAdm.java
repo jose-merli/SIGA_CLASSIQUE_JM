@@ -866,6 +866,178 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			throw new ClsExceptions(e, "Error al obtener la informacion sobre listas de guardias.");
 		}
 		return datos;
+	} // getDatosListaGuardias ()	
+
+	/** 
+	 * JPT: Recoge la informacion necesaria para realizar el informe de definicion de listas de guardias
+	 *  
+	 * @param  institucion - identificador de la institucion	 	  
+	 * @param  turno - identificador del turno	 	  
+	 * @param  guardia - identificador de la guardia
+	 * @param  fechaInicio - fecha de inicio del periodo
+	 * @param  fechaFin - fecha de finalizacion del periodo
+	 * @return  Vector - Filas seleccionadas  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public Vector getDatosDefinirListaGuardias(
+			String institucion,
+			String idlista,
+			Vector guardias,
+			String fechaInicio,
+			String fechaFin,
+			String idPersona
+		) throws ClsExceptions, SIGAException {
+		
+		Vector datos = new Vector();
+		String idcalendarioguardias = "", idturno = "", idguardia = "", idpersona = "";
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		TreeMap tmListaGuardias = new TreeMap();
+		
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			Hashtable codigos = new Hashtable();
+			int contador = 0;
+			String sql = " SELECT (" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " || " + 
+								"NVL2(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", ' ' || " + 
+									CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", '') || ', ' || "
+								+ CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") AS LETRADO,"
+							+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_NOMBRE + " AS GUARDIA,"
+							+ ScsTurnoBean.T_NOMBRETABLA + "." + ScsTurnoBean.C_NOMBRE + " AS TURNO, "
+							+ " NVL(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO + "," + 
+								CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + ") AS NCOLEGIADO, ";
+			
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 11) AS OFICINA1, ";
+
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 12) AS OFICINA2, ";
+			
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 1, 11) AS RESIDENCIA, ";
+			
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + "," + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 13) AS MOVIL, ";
+			
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 14) AS FAX1, ";
+			
+			contador++;
+			codigos.put(new Integer(contador), institucion);
+			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 15) AS FAX2, ";
+			
+			sql += ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " AS FECHA_INICIO, " +
+					ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " AS FECHA_FIN, " +
+					ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_ORDEN + " AS ORDEN, " +
+					ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " AS FECHA_FIN, " +
+					ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_POSICION + " AS POSICION ";
+			
+			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + ", " + 
+						CenPersonaBean.T_NOMBRETABLA + ", " + 
+						ScsCabeceraGuardiasBean.T_NOMBRETABLA + ", " + 
+						ScsTurnoBean.T_NOMBRETABLA + ", " + 
+						CenColegiadoBean.T_NOMBRETABLA + ", " + 
+						ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", " + 
+						ScsInscripcionGuardiaBean.T_NOMBRETABLA;
+			
+			sql += " WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
+						" AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + 
+						" AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDGUARDIA + 
+						" AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " = " + ScsTurnoBean.T_NOMBRETABLA + "." + ScsTurnoBean.C_IDINSTITUCION + 
+						" AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + " = " + ScsTurnoBean.T_NOMBRETABLA + "." + ScsTurnoBean.C_IDTURNO +
+						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + 
+						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
+						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + 
+						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
+						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDPERSONA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + 
+						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDTURNO + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + 
+						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDGUARDIA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDGUARDIA;
+			
+			/*
+			 * JPT y Adri: Mejorados los intervalos de fechas
+			 * 1. La fecha inicial de las cabeceras de guardia debe ser menor o igual que la fecha final indicada
+			 * 2. La fecha final de las cabeceras de guardia debe ser mayor o igual que la fecha inicial indicada 
+			 */
+			contador++;
+			codigos.put(new Integer(contador), fechaFin);
+			sql += " AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " <= TO_DATE(:" + contador + ",'DD/MM/YYYY') ";
+			
+			contador++;
+			codigos.put(new Integer(contador), fechaInicio);
+			sql += " AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " >= TO_DATE(:" + contador + ",'DD/MM/YYYY') ";
+			
+			/*
+			 * JPT y Adri: Mejorados los intervalos de fechas (la inscripcion de guardia debe estar incluida en el intervalo de fechas de la cabecera de guardia) 
+			 * 1. La fecha de validacion debe ser menor o igual que la fecha final de la cabecera de guardia
+			 * 2. La fecha de baja, en caso de tener, debe ser mayor o igual que la fecha inicial de la cabecera de guardia  
+			 */
+			sql += " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " <= " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN +		
+					" AND (" + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL " +
+						" OR " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " >= " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + ") ";
+
+			contador++;
+			codigos.put(new Integer(contador), institucion);			
+			sql += " AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "=:" + contador;
+
+			if (guardias != null && guardias.size() > 0) {
+				sql += " AND " + "(" + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + "," + 
+							ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA + ") IN (";
+				String aux = "";
+				for (int i = 0; i < guardias.size(); i++) {
+					Vector v = (Vector) guardias.get(i);
+					
+					contador++;
+					codigos.put(new Integer(contador), (String) v.get(0));
+					aux += "(:" + contador;
+					
+					contador++;
+					codigos.put(new Integer(contador), (String) v.get(1));
+					aux += ",:" + contador + "),";
+				}
+				
+				if (aux.length() > 0) {
+					aux = aux.substring(0, aux.length() - 1);
+				}
+				sql += aux + ") ";
+			}
+			
+			sql += " AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION + " = " + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION + 
+					" AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + " = " + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_IDTURNO + 
+					" AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA + " = " + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_IDGUARDIA + 
+					" AND " + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_IDLISTA + " = " + idlista;
+			
+			if (idPersona!=null && !idPersona.trim().equalsIgnoreCase("")) {
+				sql += " AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + " = " + idPersona;
+			}
+			
+			sql += " ORDER BY " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + ", " + 
+						ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + ", " +
+						ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_ORDEN + ", " +
+						ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_NOMBRE + ", " +
+						ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_POSICION + ", " +
+						" LETRADO";
+			
+			// jbd // inc7654
+			// Para evitar lo ocurrido en Murcia se cambia la forma de crear la lista de letrados de
+			// guardia. Se devuelve ya en el orden de salida, asi no hace falta hacer la ordenacion 
+			// a posteriori y evitamos usar un TreeMap intermedio que provocaba el error de eliminar
+			//un letrado si tenian el mismo nombre y guardia el mismo dia
+			if (rc.findBind(sql, codigos)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable resultado = fila.getRow();
+					datos.add(resultado);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion sobre listas de guardias.");
+		}
+		return datos;
 	} // getDatosListaGuardias ()
 
 	

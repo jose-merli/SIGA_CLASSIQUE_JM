@@ -767,7 +767,6 @@ public class DefinirListaGuardiasAction extends MasterAction {
 			String lugar =UtilidadesHash.getString(backupHash,"LUGAR");
 			String observaciones =UtilidadesHash.getString(backupHash,"OBSERVACIONES");
 			
-			
 			// Las listas de guardias a analizar
 			ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(this.getUserBean(request));
 			Hashtable paramBusqueda=new Hashtable();
@@ -780,36 +779,32 @@ public class DefinirListaGuardiasAction extends MasterAction {
 			
 			// Generacion de cartas propiamente dichas
 			if (listaResultados.hasMoreElements()){
-
 				String nombreFicheroPDF="";
-				
 				boolean correcto=true;
 				institucion=usr.getLocation();
 				
 				// Gestion de nombres de ficheros
 			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//				ReadProperties rp = new ReadProperties("SIGA.properties");			
-			    rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava");
+			    rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava") + rp.returnProperty("sjcs.directorioSJCSJava");
 	    		String barra = "";
-	    		String nombreFichero = "";
+	    		String nombreFichero = "";	    		
 	    		if (rutaServidor.indexOf("/") > -1){ 
 	    			barra = "/";
 	    		}
 	    		if (rutaServidor.indexOf("\\") > -1){ 
 	    			barra = "\\";
-	    		}    		
+	    		}
+	    		
 	     		rutaServidor += barra+institucion;
-				File rutaFOP=new File(rutaServidor);
+				File rutaFOP = new File(rutaServidor);
 				if (!rutaFOP.exists()){
 					if(!rutaFOP.mkdirs()){
 						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
 					}
 				}     		
-	     		
 				
-				Plantilla plantilla = new Plantilla(this.getUserBean(request));
-		    				
-			    String rutaPlantilla = rp.returnProperty("sjcs.directorioFisicoListaGuardiasJava")+rp.returnProperty("sjcs.directorioListaGuardiasJava");
+				Plantilla plantilla = new Plantilla(this.getUserBean(request));		    				
+			    String rutaPlantilla = rp.returnProperty("sjcs.directorioFisicoListaGuardiasJava") + rp.returnProperty("sjcs.directorioListaGuardiasJava");
 	    		if (rutaPlantilla.indexOf("/") > -1){
 	    			barra = "/";
 	    		}
@@ -848,131 +843,69 @@ public class DefinirListaGuardiasAction extends MasterAction {
 					guardia.add(fila.getIdGuardia().toString());
 					
 					guardias.add(guardia);
-					
 				}
 
-				// RGG
-				datos = admGT.getDatosListaGuardias(institucion,idlista,guardias,fechaInicio,fechaFin,null);  
-				
+				datos = admGT.getDatosDefinirListaGuardias(
+					institucion,
+					idlista,
+					guardias,
+					fechaInicio,
+					fechaFin,
+					null);  
 
 				Hashtable listaPorUsu;
+				nombreFichero = rutaServidor + barra + institucion + "_" + this.getUserName(request).toString() + ".fo";     		
+				ficFOP = new File(nombreFichero);
+				if (ficFOP.exists()){
+					if(!ficFOP.delete()){
+						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
+					}
+				}
 				
-				/*if(miForm.getComunicacion()!=null && miForm.getComunicacion().equalsIgnoreCase("true")){
-					
-					
-					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+"_todos.fo";     		
-					ficFOP = new File(nombreFichero);
-					if (ficFOP.exists()){
-						if(!ficFOP.delete()){
-							throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-						}
-					}
-	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
+	    		correcto = plantilla.obtencionPaginaInformeListaGuardias(
+					institucion, 
+					ficFOP, 
+					datos, 
+					nombreInstitucion, 
+					fechaInicio, 
+					fechaFin, 
+					datos.size(),
+					rutaPlantilla + barra + institucion + barra,
+					usr.getLanguage(), 
+					nombreLista, 
+					lugar, 
+					observaciones);
 	    		
-	    			// Obtencion fichero PDF
-					if (correcto){
-						nombreFicheroPDF="listaTotalGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
-						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-						plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
-						ficFOP.delete();
-					}
-					else{
-						ficFOP.delete();					
-					}
-					ficherosPDF.add(ficPDF);
-					listaPorUsu = calcularPersona(datos);
-					for (int cont=0; cont<datos.size(); cont++){
-	        			datos.removeElementAt(0);
-	        		} 
-					
-					Enumeration e = listaPorUsu.keys();
-					Object obj;
-					 while (e.hasMoreElements()) {
-						    obj = e.nextElement();
-						    datos= (Vector) listaPorUsu.get(obj);
-						    
-						    nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+obj+".fo";     		
-							ficFOP = new File(nombreFichero);
-							if (ficFOP.exists()){
-								if(!ficFOP.delete()){
-									throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-								}
-							}
-							
-							correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
-							// Obtencion fichero PDF
-							if (correcto){
-								nombreFicheroPDF="listaGuardias_"+obj+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
-								ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-								plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
-							}
-							ficherosPDF.add(ficPDF);
-					}
-						 
-					String idsesion=request.getSession().getId();
-					String nombreFicheroZIP = 
-						idsesion.replaceAll("!", "") + "_" +
-						UtilidadesBDAdm.getFechaCompletaBD("").
-								replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-	
-					
-					File ruta = new File(rutaServidor);
-					ruta.mkdirs();
-					Plantilla.doZip(rutaServidor+barra, nombreFicheroZIP, ficherosPDF);
-					File ficheroSalida = new File(rutaServidor +barra+ nombreFicheroZIP + ".zip");
-					request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
-					request.setAttribute("rutaFichero", rutaServidor +barra+ nombreFicheroZIP + ".zip");
-					request.setAttribute("generacionOK","OK");
-					resultado="descarga";				
+        		for (int cont=0; cont<datos.size(); cont++){
+        			datos.removeElementAt(0);
+        		}    			
+    		
+    			// Obtencion fichero PDF
+				if (correcto){
+					nombreFicheroPDF = "listaGuardias_" + UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_") + ".pdf";
+					ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
+					MasterReport masterReport = new  MasterReport();
+					masterReport.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
 					ficFOP.delete();
-					//miForm.setComunicacion("");
-				
-				}else{*/
-					nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+".fo";     		
-					ficFOP = new File(nombreFichero);
-					if (ficFOP.exists()){
-						if(!ficFOP.delete()){
-							throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-						}
-					}
-	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage(), nombreLista, lugar, observaciones);
-	        		for (int cont=0; cont<datos.size(); cont++){
-	        			datos.removeElementAt(0);
-	        		}    			
-	    		
-	    			// Obtencion fichero PDF
-					if (correcto){
-						nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","_").replaceAll(":","_").replaceAll(" ","_")+".pdf";
-						ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-						MasterReport masterReport = new  MasterReport();
-						masterReport.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
-						ficFOP.delete();
-					}
-					else{
-						ficFOP.delete();					
-					}
+				}
+				else{
+					ficFOP.delete();					
+				}
 					
 				request.setAttribute("nombreFichero", nombreFicheroPDF);
 				request.setAttribute("rutaFichero", rutaServidor+barra+nombreFicheroPDF);
 				request.setAttribute("generacionOK","OK");
 				resultado="descarga";
-				}
-			else{
-			    resultado = exito("messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error",request);
+				
+			} else {
+			    resultado = exito("messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error", request);
 				// Por el cambio 2417 Quitar este mensaje: throw new ClsExceptions("Se ha producido un error en la generación de informes.");
 			}
-			
-			
-
-			
 		// Insertamos fin documento
     	// Comentado por PDM, todo esta en las plantillas	
 		//correcto=plantilla.insercionPieSimpleDocumentoFOP(ficFOP);
-		
 			
-		}
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			ficFOP.delete();
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		} 
