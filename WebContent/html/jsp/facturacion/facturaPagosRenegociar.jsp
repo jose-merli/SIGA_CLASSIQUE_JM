@@ -85,12 +85,19 @@
 				if (factura.getIdFormaPago().intValue() == ClsConstants.TIPO_FORMAPAGO_FACTURA) {
 					descripcionFormaPagoActual = "facturacion.pagosFactura.Renegociar.literal.FormaPagoActualPendiente";
 					if (cuentaBancariaFactura == "") {
+						if ((idCuentaUnica == "") || (idCuentaUnica == null)) {
 						radioPorBancoOtra = "checked";
 						radioMismaCuentaMarcado = "";
-					}
-					
-					if ((idCuentaUnica == "") || (idCuentaUnica == null)) {
 						radioPorBancoUnica = "checked";
+						} else {
+							radioPorBancoOtra = "";
+							radioMismaCuentaMarcado = "";
+							radioPorBancoUnica = "";
+						}
+					} else {
+						radioMismaCuentaMarcado = "checked";
+						radioPorBancoUnica = "checked";
+						radioPorBancoOtra = "";
 					}
 				} else {
 					descripcionFormaPagoActual = "facturacion.pagosFactura.Renegociar.literal.FormaPagoActualPendienteCaja";
@@ -266,7 +273,8 @@
 							<c:if test="${cuentaCargo=='0' }">	
 							<tr>
 								<td>
-									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked"/>
+									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"
+									<%=radioPorBancoOtra%>>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" />
