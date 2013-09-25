@@ -77,7 +77,7 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 				e1.printStackTrace();
 			}
 		
-		if(objectForm.getFechaEntrega()!=null && !objectForm.getFechaEntrega().equals(""))
+		if(objectForm.getFechaEntrega()!=null && !objectForm.getFechaEntrega().equals("")){
 			try {
 				documentacionEjgVo.setFechaentrega(sdf.parse(objectForm.getFechaEntrega()));
 			} catch (ParseException e1) {
@@ -85,7 +85,7 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 				e1.printStackTrace();
 			}
 		
-		
+		}
 		
 		if(objectForm.getTheFile()!=null){
 			try {
@@ -102,13 +102,14 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		}else{
 			documentacionEjgVo.setNombreArchivo(objectForm.getNombreArchivo());
 			documentacionEjgVo.setExtensionArchivo(objectForm.getExtensionArchivo());
-			try {
-				documentacionEjgVo.setFechaArchivo(sdf.parse(objectForm.getFechaArchivo()));
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(objectForm.getFechaArchivo()!=null && !objectForm.getFechaArchivo().equals("")){
+				try {
+					documentacionEjgVo.setFechaArchivo(sdf.parse(objectForm.getFechaArchivo()));
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
-		
 		
 			
 		}

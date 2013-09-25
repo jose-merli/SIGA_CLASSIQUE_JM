@@ -44,6 +44,7 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	static public final String 	C_PRESENTADOR 	= 					"PRESENTADOR";	
 	static public final String 	C_IDDOCUMENTO 	= 					"IDDOCUMENTO";
 	static public final String 	C_IDTIPODOCUMENTO 	= 				"IDTIPODOCUMENTO";	
+	static public final String 	C_IDFICHERO 	= 				"IDFICHERO";
 		
 	
 	/*Metodos SET*/
@@ -204,5 +205,14 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	}
 	public void setIdTipoDocumento(String idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
+	}
+	Long idFichero;
+
+
+	public Long getIdFichero() {
+		return idFichero;
+	}
+	public void setIdFichero(Long idFichero) {
+		this.idFichero = idFichero;
 	}
 }

@@ -167,7 +167,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 							ScsDocumentacionEJGBean.C_FECHAMODIFICACION,	ScsDocumentacionEJGBean.C_USUMODIFICACION,
 							ScsDocumentacionEJGBean.C_REGENTRADA,			ScsDocumentacionEJGBean.C_REGSALIDA,
 							ScsDocumentacionEJGBean.C_PRESENTADOR,			ScsDocumentacionEJGBean.C_IDDOCUMENTO,
-						 	ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO};
+						 	ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO,ScsDocumentacionEJGBean.C_IDFICHERO};
 
 		return campos;
 	}
@@ -219,6 +219,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			bean.setPresentador(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_PRESENTADOR));			
 			bean.setIdDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDDOCUMENTO));
 			bean.setIdTipoDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO));
+			bean.setIdFichero(UtilidadesHash.getLong(hash,ScsDocumentacionEJGBean.C_IDFICHERO));
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -251,6 +252,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			htData.put(ScsDocumentacionEJGBean.C_PRESENTADOR, String.valueOf(b.getPresentador()));
 			htData.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, String.valueOf(b.getIdDocumento()));
 			htData.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, String.valueOf(b.getIdTipoDocumento()));
+			htData.put(ScsDocumentacionEJGBean.C_IDFICHERO, String.valueOf(b.getIdFichero()));
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
@@ -412,7 +414,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 						" WHERE P.IDINSTITUCION = U.IDINSTITUCION" +
 						" AND P.IDPARENTESCO = U.IDPARENTESCO)) AS SOLICITANTE_PARENTESCO" +
 				", DOC.DOCUMENTACION" +
-				", DOC.PRESENTADOR, DOC.IDDOCUMENTACION, TDOC.IDTIPODOCUMENTOEJG" +
+				", DOC.PRESENTADOR, DOC.IDDOCUMENTACION, DOC.IDFICHERO, TDOC.IDTIPODOCUMENTOEJG" +
 				", f_siga_getrecurso(TDOC.DESCRIPCION, " + idioma + ") DES_TIPODOC" +
 				", f_siga_getrecurso(DOCU.DESCRIPCION, " + idioma + ") DES_DOCU" +
 				", PER.NOMBRE, PER.APELLIDO1, PER.APELLIDO2" +
