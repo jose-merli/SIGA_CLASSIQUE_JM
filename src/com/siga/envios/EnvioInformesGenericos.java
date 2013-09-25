@@ -2360,8 +2360,17 @@ public class EnvioInformesGenericos extends MasterReport {
 					List<ScsDesigna> designas = new ArrayList<ScsDesigna>();
 					List<ScsEjg> ejgs = new ArrayList<ScsEjg>();
 					for (int i = 0; i < alClavesDestinatario.size(); i++) {
-						if (!programInfBean.getIdTipoInforme().equals(
+						
+						
+						if (programInfBean.getIdTipoInforme().equals(
 								EnvioInformesGenericos.comunicacionesMorosos)) {
+							Hashtable htClaves = (Hashtable) alClavesDestinatario
+									.get(i);
+							String idFactura = (String) htClaves
+									.get("idFactura");
+							alFacturas.add(idFactura);
+							
+						} else {
 							Hashtable htClaves = (Hashtable) alClavesDestinatario
 									.get(i);
 							datosInforme.putAll(htClaves);
@@ -2369,7 +2378,7 @@ public class EnvioInformesGenericos extends MasterReport {
 									datosInforme, vPlantillasInforme, usrBean,
 									EnvioInformesGenericos.docDocument,
 									programInfBean.getIdTipoInforme()));
-						} else {
+							
 							if (programInfBean.getIdTipoInforme().equals(
 									EnvioInformesGenericos.comunicacionesDesigna)) {
 								String idInstitucion = (String) datosInforme.get("idInstitucion");
@@ -2397,13 +2406,13 @@ public class EnvioInformesGenericos extends MasterReport {
 								ejg.setIdtipoejg(Short.parseShort(idTipoEJG));
 								ejg.setNumero(Long.parseLong(numero));
 								ejgs.add(ejg);
+								
 							}
 							
-							Hashtable htClaves = (Hashtable) alClavesDestinatario
-									.get(i);
-							String idFactura = (String) htClaves
-									.get("idFactura");
-							alFacturas.add(idFactura);
+							
+							
+							
+							
 
 						}
 

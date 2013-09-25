@@ -870,7 +870,30 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			Vector documentos = (Vector)htJuzgado.get(idPersona);
 			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO,documentos);
 			
-		}               
+		}    
+        if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
+	        BusinessManager bm = BusinessManager.getInstance();
+	        //bm.startTransaction();
+	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
+	        EnvEnvios envEnvios = new EnvEnvios();
+	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
+	        try {
+       		 if(getDesignas()!=null &&getDesignas().size()>0)
+    	        	comunicacionesService.insertarComunicacionDesigna(getDesignas(), envEnvios);
+    	        else if(getEjgs()!=null &&getEjgs().size()>0)
+    	        	comunicacionesService.insertarComunicacionEjg(getEjgs(), envEnvios);	
+            	if(this.usrBean.getTransaction().getStatus()==6)
+            		bm.commitTransaction();
+			} catch (Exception e) {
+				if(this.usrBean.getTransaction()==null){
+            		bm.endTransaction();
+				}
+				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
+				
+			}
+	       
+	        
+        }
                 
     }
     public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos) throws SIGAException,ClsExceptions
