@@ -47,6 +47,12 @@ import javax.mail.internet.MimePart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import org.redabogacia.sigaservices.app.autogen.mapper.ScsComunicacionesMapper;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -82,6 +88,8 @@ import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.sun.mail.smtp.SMTPAddressFailedException;
+
+import es.satec.businessManager.BusinessException;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -4883,5 +4891,192 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e,  e.getMessage());
 		}
 	}
+    private void insertarComunicacionDesignaSalida(ScsComunicaciones scsComunicaciones, UsrBean usr)throws BusinessException{
+    	StringBuffer s = new StringBuffer();
+    	s.append("insert into SCS_COMUNICACIONES (IDCOMUNICACION, IDINSTITUCION, IDENVIOSALIDA,  ");
+    	s.append(" DESIGNAANIO, DESIGNANUMERO, DESIGNAIDTURNO, FECHAMODIFICACION, " );
+    	s.append(" USUMODIFICACION ) values ((SELECT NVL(MAX(IDCOMUNICACION), 0) + 1 FROM scs_comunicaciones),");
+    	
+		s.append(scsComunicaciones.getIdinstitucion());
+		s.append(",");
+		s.append(scsComunicaciones.getIdenviosalida());
+		s.append(",");
+    	s.append(scsComunicaciones.getDesignaanio());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignanumero());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignaidturno());
+		s.append(",");
+		s.append("sysdate");
+		s.append(",");
+		s.append(usr.getUserName());
+		s.append(")");
+		try {
+			insertSQL(s.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertarComunicacionDesigna"+e.toString());
+		}
+    	
+    }
+    
+    public void insertarComunicacionDesignaSalida(List<ScsDesigna> designas,
+			Long idEnvio,UsrBean usrBean)  {
+		ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+		for (ScsDesigna scsDesigna : designas) {
+			
+			
+			scsComunicaciones.setDesignaanio(scsDesigna.getAnio());
+			scsComunicaciones.setDesignaidturno(scsDesigna.getIdturno());
+			scsComunicaciones.setDesignanumero(scsDesigna.getNumero());
+			scsComunicaciones.setIdinstitucion(scsDesigna.getIdinstitucion());
+			scsComunicaciones.setIdenviosalida(idEnvio);
+			insertarComunicacionDesignaSalida(scsComunicaciones,usrBean);
+			
+		}
+	}
+    
+    
+    private void insertarComunicacionDesignaEntrada(ScsComunicaciones scsComunicaciones, UsrBean usr)throws BusinessException{
+    	StringBuffer s = new StringBuffer();
+    	s.append("insert into SCS_COMUNICACIONES (IDCOMUNICACION, IDINSTITUCION, IDENVIOENTRADA,  ");
+    	s.append(" DESIGNAANIO, DESIGNANUMERO, DESIGNAIDTURNO, FECHAMODIFICACION, " );
+    	s.append(" USUMODIFICACION ) values (NVL(SELECT MAX(IDCOMUNICACION) + 1 FROM scs_comunicaciones), 1),");
+    	
+		s.append(scsComunicaciones.getIdinstitucion());
+		s.append(",");
+		s.append(scsComunicaciones.getIdenvioentrada());
+		s.append(",");
+    	s.append(scsComunicaciones.getDesignaanio());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignanumero());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignaidturno());
+		s.append(",");
+		s.append("sysdate");
+		s.append(",");
+		s.append(usr.getUserName());
+		try {
+			insertSQL(s.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertarComunicacionDesignaEntrada"+e.toString());
+		}
+    	
+    }
+    
+    public void insertarComunicacionDesignaEntrada(List<ScsDesigna> designas,
+    		Long idEnvio,UsrBean usrBean)  {
+		ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+		for (ScsDesigna scsDesigna : designas) {
+			
+			
+			scsComunicaciones.setDesignaanio(scsDesigna.getAnio());
+			scsComunicaciones.setDesignaidturno(scsDesigna.getIdturno());
+			scsComunicaciones.setDesignanumero(scsDesigna.getNumero());
+			scsComunicaciones.setIdinstitucion(scsDesigna.getIdinstitucion());
+			scsComunicaciones.setIdenvioentrada(idEnvio);
+			insertarComunicacionDesignaEntrada(scsComunicaciones,usrBean);
+			
+		}
+	}
+    
+    
+    
+	
+    private void insertarComunicacionEjgSalida(ScsComunicaciones scsComunicaciones, UsrBean usr)throws BusinessException{
+    	StringBuffer s = new StringBuffer();
+    	s.append("insert into SCS_COMUNICACIONES (IDCOMUNICACION, IDINSTITUCION, IDENVIOSALIDA,  ");
+    	s.append(" EJGANIO, EJGNUMERO,     EJGIDTIPO, FECHAMODIFICACION, " );
+    	s.append(" USUMODIFICACION ) values ((SELECT NVL(MAX(IDCOMUNICACION), 0) + 1 FROM scs_comunicaciones),");
+    	
+		s.append(scsComunicaciones.getIdinstitucion());
+		s.append(",");
+		s.append(scsComunicaciones.getIdenviosalida());
+		s.append(",");
+    	s.append(scsComunicaciones.getEjganio());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgnumero());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgidtipo());
+		s.append(",");
+		s.append("sysdate");
+		s.append(",");
+		s.append(usr.getUserName());
+		s.append(")");
+		
+		try {
+			insertSQL(s.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertarComunicacionEjgSalida"+e.toString());
+		}
+    	
+    }
+    
+    
+    
+    
+	
+
+	public void insertarComunicacionEjgSalida(List<ScsEjg> ejgs, Long idEnvio, UsrBean usr)
+			throws BusinessException {
+		ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+		for (ScsEjg scsEjg : ejgs) {
+			scsComunicaciones.setEjganio(scsEjg.getAnio());
+			scsComunicaciones.setEjgidtipo(scsEjg.getIdtipoejg());
+			scsComunicaciones.setEjgnumero(scsEjg.getNumero());
+			scsComunicaciones.setIdinstitucion(scsEjg.getIdinstitucion());
+			scsComunicaciones.setIdenviosalida(idEnvio);
+			scsComunicaciones.setFechamodificacion(new Date());
+			insertarComunicacionEjgSalida(scsComunicaciones, usr);
+		}
+		
+	}
+
+	
+	
+
+	
+	private void insertarComunicacionEjgEntrada(ScsComunicaciones scsComunicaciones, UsrBean usr)throws BusinessException{
+    	StringBuffer s = new StringBuffer();
+    	s.append("insert into SCS_COMUNICACIONES (IDCOMUNICACION, IDINSTITUCION, IDENVIOENTRADA,  ");
+    	s.append(" EJGANIO, EJGNUMERO,     EJGIDTIPO, FECHAMODIFICACION, " );
+    	s.append(" USUMODIFICACION ) values (NVL(SELECT MAX(IDCOMUNICACION) + 1 FROM scs_comunicaciones), 1),");
+    	
+		s.append(scsComunicaciones.getIdinstitucion());
+		s.append(",");
+		s.append(scsComunicaciones.getIdenvioentrada());
+		s.append(",");
+		s.append(scsComunicaciones.getEjganio());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgnumero());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgidtipo());
+		s.append(",");
+		s.append("sysdate");
+		s.append(",");
+		s.append(usr.getUserName());
+		try {
+			insertSQL(s.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertarComunicacionEjgEntrada"+e.toString());
+		}
+    	
+    }
+    
+    public void insertarComunicacionEjgEntrada(List<ScsEjg> ejgs,
+    		Long idEnvio,UsrBean usrBean)  {
+		ScsComunicaciones scsComunicaciones = new ScsComunicaciones();
+		for (ScsEjg scsEjg : ejgs) {
+			scsComunicaciones.setEjganio(scsEjg.getAnio());
+			scsComunicaciones.setEjgidtipo(scsEjg.getIdtipoejg());
+			scsComunicaciones.setEjgnumero(scsEjg.getNumero());
+			scsComunicaciones.setIdinstitucion(scsEjg.getIdinstitucion());
+			scsComunicaciones.setIdenvioentrada(idEnvio);
+			scsComunicaciones.setFechamodificacion(new Date());
+			insertarComunicacionEjgEntrada(scsComunicaciones, usrBean);
+		}
+	}
+	
+    
+    
     
 }
