@@ -656,7 +656,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos); 
         if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
 	        BusinessManager bm = BusinessManager.getInstance();
-	        bm.startTransaction();
+//	        bm.startTransaction();
 	        ComunicacionesService comunicacionesService = (ComunicacionesService)bm.getService(ComunicacionesService.class);
 	        EnvEnvios envEnvios = new EnvEnvios();
 	        envEnvios.setIdenvio(Long.parseLong(enviosBean.getIdEnvio().toString()));
