@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 <head>
 <!-- modalEditarActuacionesDesigna.jsp -->
@@ -691,7 +691,7 @@
 						jQuery(function(){
 							jQuery("#fechaJustificacion").removeClass("box");
 							jQuery("#fechaJustificacion").addClass("boxConsulta");
-							jQuery("#fechaJustificacion").attr("disabled", true);
+							jQuery("#fechaJustificacion").attr("readonly", true);
 							jQuery("#fechaJustificacion-datepicker-trigger").hide();
 						});
 						</script>
@@ -917,7 +917,7 @@
 					jQuery("#fechaJustificacion").removeClass("boxConsulta");
 					jQuery("#fechaJustificacion").addClass("box");
 					jQuery("#fechaJustificacion-datepicker-trigger").show();
-					jQuery("#fechaJustificacion").removeAttr("disabled");
+					jQuery("#fechaJustificacion").attr("readonly", false);
 					
 					document.forms[0].actuacionValidada.value="0";
 					
@@ -927,7 +927,7 @@
 					jQuery("#fechaJustificacion").removeClass("box");
 					jQuery("#fechaJustificacion").addClass("boxConsulta");
 					jQuery("#fechaJustificacion-datepicker-trigger").hide();
-					jQuery("#fechaJustificacion").attr("disabled", true);
+					jQuery("#fechaJustificacion").attr("readonly", true);
 					document.forms[0].actuacionValidada.value="1";					
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 					if((document.forms[0].fechaJustificacion.value==null)||(document.forms[0].fechaJustificacion.value=="")){					
