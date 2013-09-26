@@ -886,6 +886,13 @@
 						}
 					}
 				<%}%>
+				
+				var valorFechaJustificacion = jQuery("#fechaJustificacion").val();
+				if (valorFechaJustificacion != null && valorFechaJustificacion!='') {
+					document.forms[0].actuacionValidada.value="1";
+				} else {
+					document.forms[0].actuacionValidada.value="0";
+				}
 									
 				<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
 				document.forms[0].modo.value="modificar";
