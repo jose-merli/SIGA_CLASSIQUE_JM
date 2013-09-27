@@ -22,6 +22,7 @@
 <%@ page import="com.siga.gratuita.form.AsistenciasForm"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <%
 	String app = request.getContextPath();
@@ -61,8 +62,8 @@
 	String tipoAsistenciaColegio = request.getParameter("idTipoAsistenciaColegio")!=null?(String)request.getParameter("idTipoAsistenciaColegio"):"";
 	String idPersona = request.getParameter("idPersona")!=null?(String)request.getParameter("idPersona"):"";
 	
-	String fecha = request.getParameter("fechaHora")!=null ? (String)request.getParameter("fechaHora") : "";
-
+	String fecha = UtilidadesBDAdm.getFechaBD("");
+	fecha = request.getParameter("fechaHora")!=null ? (String)request.getParameter("fechaHora") : fecha;
 	
 	ArrayList comisariaSel = new ArrayList();
 	ArrayList juzgadoSel = new ArrayList();

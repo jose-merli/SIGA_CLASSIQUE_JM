@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.102 2013-09-24 13:59:42 jorge Exp $
+	*	@version    $Id: SIGA.js,v 1.103 2013-09-27 11:31:54 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -448,7 +448,10 @@ function jQueryLoaded(){
 				inputDatepicker.mask('YY/YY/YYYY',{'translation': {            
 	                Y: {pattern: /[0-9]/}
 	              },
-	              onComplete: function(cep){datepickerMaskValueChanged(inputDatepicker);}
+	              onComplete: function(cep){datepickerMaskValueChanged(inputDatepicker);},
+	              onChange: function(cep){
+	            	  inputDatepicker.change();
+	            	  }
 	              });
 				inputDatepicker.on("blur", function(){datepickerMaskValueChanged(jQuery(this));});
 			});
