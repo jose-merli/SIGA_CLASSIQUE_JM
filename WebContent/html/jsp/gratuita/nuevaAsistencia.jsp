@@ -41,16 +41,11 @@
 	ArrayList idGuardia = new ArrayList();
 	ArrayList tAsistencia = new ArrayList();
 	ArrayList tAsistenciaColegio = new ArrayList();
-	String nTipo = request.getAttribute("tipoAsistencia") == null ? ""
-			: (String) request.getAttribute("tipoAsistencia");
+	String nTipo = request.getAttribute("tipoAsistencia") == null ? "" : (String) request.getAttribute("tipoAsistencia");
 	tAsistencia.add(nTipo);	
 
-	boolean bEsFichaColegial = request.getParameter("esFichaColegial") != null
-			&& ((String) request.getParameter("esFichaColegial"))
-					.equals("1") ? true : false;
-	boolean bEsClonacion = request.getParameter("esFichaColegial") != null
-			&& ((String) request.getParameter("esFichaColegial"))
-					.equals("2") ? true : false;
+	boolean bEsFichaColegial = request.getParameter("esFichaColegial") != null && ((String) request.getParameter("esFichaColegial")).equals("1") ? true : false;
+	boolean bEsClonacion = request.getParameter("esFichaColegial") != null && ((String) request.getParameter("esFichaColegial")).equals("2") ? true : false;
 	
 	// Datos para precargar
 	String turno = request.getParameter("idTurno")!=null?(String)request.getParameter("idTurno"):"";
@@ -71,11 +66,10 @@
 		comisariaSel.add(0,comisaria);
 	}
 	
-	
-	
 	if (juzgado!=null && !juzgado.equalsIgnoreCase("")) {
 		juzgadoSel.add(0,juzgado);
 	}
+	
 	if(bEsClonacion){
 		if (turno!=null && !turno.equalsIgnoreCase("")) idTurno.add(0,usr.getLocation()+","+turno);
 		if (guardia!=null && !guardia.equalsIgnoreCase("")) idGuardia.add(0,usr.getLocation()+","+guardia);
@@ -89,18 +83,17 @@
 		paramsJuzgadoJSON = juzgado;		
 	}	
 %>
+
 <!-- JSP -->
 <script>
-
 	var contador=0;
 
-	function fLoad()
-	{
-		if("<%=request.getAttribute("mensaje")%>"!="null")
-		{
-		<% mensaje = (String)request.getAttribute("mensaje"); %>
+	function fLoad() {
+		if("<%=request.getAttribute("mensaje")%>"!="null") {
+			<% mensaje = (String)request.getAttribute("mensaje"); %>
 			alert("<%=mensaje%>");
 		}
+		
 		<%if(bEsClonacion){%>
 			var tmp1 = document.getElementsByName("turnos");
 			var tmp2 = tmp1[0]; 
@@ -109,16 +102,13 @@
 		<%}%>
 	}
 
-	function cargarColegiado()
-	{
+	function cargarColegiado() {
 		<%if(bEsClonacion){%>
 			document.getElementById("nomColegiado").value="<%=nombreColegiado%>";
 			document.getElementById("colegiado").value="<%=numeroColegiado%>";
 			document.getElementById("idPersona").value="<%=idPersona%>";
 		<%}%>
-		
 	}
-
 </script>
 
 
@@ -137,11 +127,11 @@
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="gratuita.nuevaAsistencia.literal.titulo"/>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+					<siga:Idioma key="gratuita.nuevaAsistencia.literal.titulo"/>
+			</td>
+		</tr>
 	</table>
 
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
@@ -152,153 +142,181 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<html:form action = "/JGR_MantenimientoAsistencia.do" method="POST">
-	
-	<input type="hidden" name="actionModal" value="">
-	<html:hidden property = "modo" value="buscar"/>	
-	<html:hidden property = "idTurno" />	
-	<html:hidden property = "idGuardia" />
-	<html:hidden property = "idPersona" />
-	<input type="hidden" name = "flagSalto" value=""/>
-	<input type="hidden" name = "flagCompensacion" value=""/>
-	<input type="hidden" name = "checkSalto" value=""/>
-	<input type="hidden" name = "checkCompensacion" value=""/>	
-	<input type="hidden" name = "esFichaColegial" value="<%=bEsFichaColegial%>"/>
+		<input type="hidden" name="actionModal" value="">
+		<html:hidden property = "modo" value="buscar"/>	
+		<html:hidden property = "idTurno" />	
+		<html:hidden property = "idGuardia" />
+		<html:hidden property = "idPersona" />
+		<input type="hidden" name = "flagSalto" value=""/>
+		<input type="hidden" name = "flagCompensacion" value=""/>
+		<input type="hidden" name = "checkSalto" value=""/>
+		<input type="hidden" name = "checkCompensacion" value=""/>	
+		<input type="hidden" name = "esFichaColegial" value="<%=bEsFichaColegial%>"/>
 		
+		<table  class="tablaCentralCamposMedia"  align="center" border="0">
+			<tr>
+				<td class="labelText" width="220px">
+					<siga:Idioma key="gratuita.nuevaAsistencia.literal.turno"/>&nbsp;(*)
+				</td>	
+				<td colspan="3" width="480px">
+<%
+					if (bEsFichaColegial) {
+%>
+						<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
+<%
+					} else {
+%>
+						<siga:ComboBD nombre="turnos" tipo="turnosAsistencia" clase="boxCombo" obligatorio="false"  ancho="480" accion="Hijo:guardias;"  parametro="<%=dato%>" elementoSel="<%=idTurno%>" />
+<%
+					}
+%>
+				</td>	
+			</tr>
+			
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.nuevaAsistencia.literal.guardia"/>&nbsp;(*)
+				</td>	
+				<td colspan="3">
+					<siga:ComboBD nombre="guardias" tipo="guardias" clase="boxCombo" hijo="t" ancho="480"  accion="parent.rellenarComboLetrado();" parametro="<%=dato%>" elementoSel="<%=idGuardia%>" />
+				</td>	
+			</tr>
+		
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
+				</td>	
+				<td colspan="3">
+					<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="480" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
+				</td>	
+			</tr>
 
-	<table  class="tablaCentralCamposMedia"  align="center" border="0">
-	<tr>
-		<td width="30%"></td>
-		<td width="20%"></td>
-		<td width="10%"></td>
-		<td width="40%"></td>
-		
-	</tr>
-	
-		<tr>
-			<td class="labelText" width="220px">
-				<siga:Idioma key="gratuita.nuevaAsistencia.literal.turno"/>&nbsp;(*)
-			</td>	
-			<td colspan="3" width="480px">
-				<%if (bEsFichaColegial) {%>
-					<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
-				<%} else {%>
-					<siga:ComboBD nombre="turnos" tipo="turnosAsistencia" clase="boxCombo" obligatorio="false"  ancho="480" accion="Hijo:guardias;"  parametro="<%=dato%>" elementoSel="<%=idTurno%>" />
-				<%}%>
-			</td>	
-		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.nuevaAsistencia.literal.guardia"/>&nbsp;(*)
-			</td>	
-			<td colspan="3">
-				<siga:ComboBD nombre="guardias" tipo="guardias" clase="boxCombo" hijo="t" ancho="480"  accion="parent.rellenarComboLetrado();" parametro="<%=dato%>" elementoSel="<%=idGuardia%>" />
-			</td>	
-		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
-			</td>	
-			<td colspan="3">
-				<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="480" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
-			</td>	
-		</tr>
-		
-
-<%if(bEsClonacion){%>
-		<tr>
-			<td class="labelText" style="vertical-align:text-top;text-align: left">
-				<siga:Idioma key="gratuita.mantAsistencias.literal.centroDetencion"/>
-			</td>
-			<td colspan="3">
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoCom%>" elementoSel="<%=comisariaSel%>"/>
-			</td>
-		</tr>
-		<tr>
-			<td class="labelText" style="vertical-align:text-top;text-align: left">
-				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
-			</td>
-			<td colspan="3">
-				<siga:Select id="juzgado" queryParamId="idjuzgado" queryId="getJuzgadosTurnos" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" 
-							searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="480"/>
-			</td>
-		</tr>
-<%}%>
-		
-		<tr>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
-			</td>	
-			<td >
-			 <siga:Fecha nombreCampo="fechaHora" valorInicial="<%=fecha%>" postFunction="rellenarComboLetrado();"></siga:Fecha>
-			</td>
-			<td   class="labelText">
-				<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
-			</td>
-			<td>
-				<html:text property="horaAsistencia" size="2" maxlength="2" styleClass="box" value="" style="text-align:center"></html:text>:<html:text 
-					property="minutoAsistencia"  size="2" maxlength="2" styleClass="box" value="" style="text-align:center"></html:text>
+<%
+			if(bEsClonacion) {
+%>
+				<tr>
+					<td class="labelText" style="vertical-align:text-top;text-align: left">
+						<siga:Idioma key="gratuita.mantAsistencias.literal.centroDetencion"/>
+					</td>
+					<td colspan="3">
+						<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" clase="boxCombo" ancho="480" obligatorio="false" parametro="<%=datoCom%>" elementoSel="<%=comisariaSel%>"/>
+					</td>
+				</tr>
 				
-			</td>
-		</tr>
+				<tr>
+					<td class="labelText" style="vertical-align:text-top;text-align: left">
+						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
+					</td>
+					<td colspan="3">
+						<siga:Select 
+							id="juzgado" 
+							queryParamId="idjuzgado" 
+							queryId="getJuzgadosTurnos" 
+							params="<%=paramsJuzgadoJSON%>" 
+							selectedIds="<%=juzgadoSel%>" 
+							showSearchBox="true" 
+							searchkey="CODIGOEXT2" 
+							searchBoxMaxLength="10" 
+							searchBoxWidth="8" 
+							width="480"/>
+					</td>
+				</tr>
+<%
+			}
+%>
 		
-		<tr style="display:none">
-			<td class="labelText">
-				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistencia'/>&nbsp;(*)
-			</td>	
-			<td colspan="3">
-				<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
-			</td>	
-		</tr>
-<%if (bEsFichaColegial) {%>
-		<tr>
-			<td class="labelText">	
-				<siga:Idioma key="gratuita.nuevaAsistencia.literal.ncolegiado"/>
-			</td>	
-			<td colspan="3">
-				<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
-			</td>
-		</tr>
-<%} else {%>
-		<tr>
-			<!--<html:hidden name="AsistenciasForm" property="colegiado" value="< %=nColegiado%>" ></html:hidden>			-->
-			<td colspan="4" width="700px">
-				<siga:ConjCampos
-					leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
-					<table width="100%" border="0">
-						<tr>
-							<td colspan="5"><siga:BusquedaSJCS nombre="AsistenciasForm"
-								propiedad="buscaLetrado" concepto="asistencia"
-								operacion="Asignacion" campoTurno="turnos"
-								campoGuardia="guardias" campoFecha="fechaHora"
-								campoPersona="idPersona" campoColegiado="colegiado"
-								campoFlagSalto="flagSalto"
-								campoFlagCompensacion="flagCompensacion" campoSalto="salto"
-								campoCompensacion="compensacion"
-								campoNombreColegiado="nomColegiado" diaGuardia="true"
-								modo="editar" />
-							</td>
-						</tr>
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key='gratuita.nuevaAsistencia.literal.ncolegiado' />
-						</td>
-						<td>
-							<input type="text" name="colegiado" class="boxConsulta" readOnly value="<%=numeroColegiado %>" style="width:100px">
-						</td>
-						<td class="labelText">
-							<siga:Idioma key='censo.colegiacion.colegiado' />
-						</td>
-						<td colspan="2">
-							<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreColegiado %>" style="width:240px">
-						</td>
-					</tr>
-				</table>
-				</siga:ConjCampos>
-			</td>
-		</tr>
-<%}%>
+			<tr>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
+				</td>	
+				<td>
+				 	<siga:Fecha nombreCampo="fechaHora" valorInicial="<%=fecha%>" postFunction="rellenarComboLetrado();"></siga:Fecha>
+				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
+				</td>
+				<td>
+					<html:text property="horaAsistencia" size="2" maxlength="2" styleClass="box" value="" style="text-align:center" />
+					:
+					<html:text property="minutoAsistencia" size="2" maxlength="2" styleClass="box" value="" style="text-align:center" />
+				</td>
+			</tr>
 		
-	</table>
+			<tr style="display:none">
+				<td class="labelText">
+					<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistencia'/>&nbsp;(*)
+				</td>	
+				<td colspan="3">
+					<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
+				</td>	
+			</tr>
+			
+<%
+			if (bEsFichaColegial) {
+%>
+				<tr>
+					<td class="labelText">	
+						<siga:Idioma key="gratuita.nuevaAsistencia.literal.ncolegiado"/>
+					</td>	
+					<td colspan="3">
+						<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true" />			
+					</td>
+				</tr>
+			
+<%
+			} else {
+%>
+				<tr>
+					<!--<html:hidden name="AsistenciasForm" property="colegiado" value="< %=nColegiado%>" ></html:hidden>			-->
+					<td colspan="4">
+						<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
+							<table width="100%" border="0">
+								<tr>
+									<td colspan="4">
+										<siga:BusquedaSJCS 
+											nombre="AsistenciasForm"
+											propiedad="buscaLetrado" 
+											concepto="asistencia"
+											operacion="Asignacion" 
+											campoTurno="turnos"
+											campoGuardia="guardias" 
+											campoFecha="fechaHora"
+											campoPersona="idPersona" 
+											campoColegiado="colegiado"
+											campoFlagSalto="flagSalto"
+											campoFlagCompensacion="flagCompensacion" 
+											campoSalto="salto"
+											campoCompensacion="compensacion"
+											campoNombreColegiado="nomColegiado" 
+											diaGuardia="true"
+											modo="editar" />
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key='gratuita.nuevaAsistencia.literal.ncolegiado' />
+									</td>
+									<td>
+										<input type="text" name="colegiado" class="boxConsulta" readOnly value="<%=numeroColegiado%>" style="width:100px">
+									</td>
+									
+									<td class="labelText">
+										<siga:Idioma key='censo.colegiacion.colegiado' />
+									</td>
+									<td>
+										<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreColegiado%>" style="width:240px">
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+<%
+			}
+%>		
+		</table>
 	</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
@@ -324,35 +342,32 @@
 				rellenarComboGuardia();
 			<%}%>
 		}
-		// Funcion asociada a boton limpiar -->
-		function accionCerrar() 
-		{		
+		
+		function accionCerrar() {		
 			window.top.close();
 		}
-		function refrescarLocal() 
-		{		
+		
+		function refrescarLocal() {		
 			fin();
 		}
-		//Funcion asociada a boton Guardar -->
-		function accionGuardarCerrar() 
-		{	
 		
+		function accionGuardarCerrar() {	
 			sub();	
 			
 			var idJuzgado = document.getElementsByName('juzgado')[0];
 			
-			if(document.forms[1].turnos.value == "")
-			{
+			if(document.forms[1].turnos.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1' />");
 				fin();
 				return false;
 			}
-			if(document.forms[1].guardias.value == "")
-			{
+			
+			if(document.forms[1].guardias.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert4' />");
 				fin();
 				return false;
 			}
+			
 			/* jbd Tras la incidencia 6502 el tipo asistencia desaparece y el tipo asistencia colegio pasa a ser obligatorio
 			if(document.forms[1].idTipoAsistencia.value == "")
 			{
@@ -360,46 +375,50 @@
 				fin();
 				return false;
 			}*/
-			if(document.forms[1].idTipoAsistenciaColegio.value == "")
-			{
+			
+			if(document.forms[1].idTipoAsistenciaColegio.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert8' />");
 				fin();
 				return false;
 			}
-			if(document.forms[1].fechaHora.value == "")
-			{
+			
+			if(document.forms[1].fechaHora.value == "") {
 				alert("<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia' />"+" "+"<siga:Idioma key='messages.campoObligatorio.error' />");
 				fin();
 				return false;
 			}
+			
 			//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
 			var horas = trim(document.forms[1].horaAsistencia.value);
 			var minutos = trim(document.forms[1].minutoAsistencia.value);
-			
-			
 
 			if (horas.length==1) {
 				document.forms[1].horaAsistencia.value = "0" + horas;
 			}
+			
 			if (minutos.length==1) {
 				document.forms[1].minutoAsistencia.value = "0" + minutos;
 			}
+			
 			if (horas!="" && (horas>23 || horas<0)) {
 				alert("<siga:Idioma key='messages.general.error.hora'/>");
 				fin();
 				return false;
 			}
+			
 			if (minutos!="" && (minutos>59 || minutos<0)) {
 				alert("<siga:Idioma key='messages.general.error.hora'/>");
 				fin();
 				return false;
 			}
+			
 			valor = trim(document.forms[1].horaAsistencia.value);
             if (valor!="" && !isNumero(valor)) {
             	alert ("<siga:Idioma key='messages.general.error.hora'/>");
             	fin();
             	return false;
 			}
+            
 			valor = trim(document.forms[1].minutoAsistencia.value);
             if (valor!="" && !isNumero(valor)) {
             	alert ("<siga:Idioma key='messages.general.error.hora'/>");
@@ -407,20 +426,13 @@
             	return false;
 			}
 			
-			
-			
-			
-			
-			
-			if(document.forms[1].colegiado.value == "")
-			{
+			if(document.forms[1].colegiado.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert7' />");
 				fin();
 				return false;
 			}
 			
-			if(<%=bEsFichaColegial%>==false&&<%=bEsClonacion%>==false)
-			{
+			if(<%=bEsFichaColegial%>==false&&<%=bEsClonacion%>==false) {
 				if(document.forms[1].salto.checked)
 					document.forms[1].checkSalto.value ="1";
 				else
@@ -431,10 +443,7 @@
 					document.forms[1].checkCompensacion.value ="0";	
 				
 				document.forms[1].action="JGR_MantenimientoAsistencia.do";
-			}
-			
-			else
-			{
+			} else {
 				document.forms[1].action="JGR_MantenimientoAsistenciaLetrado.do";
 			}
 			
@@ -448,19 +457,16 @@
 			return true;
 		}
 
-		function buscarCliente ()
-		{
+		function buscarCliente () {
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
 			var colegiado = document.getElementById('nColegiado');
-			if (resultado != null && resultado[2]!=null)
-			{
+			if (resultado != null && resultado[2]!=null) {
 				colegiado=resultado[2];
 			}
 			document.forms[1].colegiado.value = colegiado;
 		}
 		
-		function abrirGuardias ()
-		{
+		function abrirGuardias () {
 			document.forms[1].idTurno.value 	= document.forms[1].turnos.value;
 			document.forms[1].idGuardia.value 	= document.forms[1].guardias.value;
 			document.forms[1].modo.value		= "buscarPor";
@@ -485,17 +491,14 @@
 		fLoad();
 
 		cargarColegiado();
-		
-
 	</script>
+	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<siga:ConjBotonesAccion botones="y,c" modal="M"  />	
 	<!-- FIN: BOTONES BUSQUEDA -->
-
 			
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
