@@ -2,11 +2,12 @@
 <html>
 <head>
 <!-- nuevaAsistencia.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -21,7 +22,7 @@
 <%@ page import="com.siga.gratuita.form.AsistenciasForm"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession(true);
@@ -41,9 +42,7 @@
 	ArrayList tAsistenciaColegio = new ArrayList();
 	String nTipo = request.getAttribute("tipoAsistencia") == null ? ""
 			: (String) request.getAttribute("tipoAsistencia");
-	tAsistencia.add(nTipo);
-
-	String fecha = UtilidadesBDAdm.getFechaBD("");
+	tAsistencia.add(nTipo);	
 
 	boolean bEsFichaColegial = request.getParameter("esFichaColegial") != null
 			&& ((String) request.getParameter("esFichaColegial"))
@@ -61,7 +60,8 @@
 	String nombreColegiado = request.getParameter("nombreColegiado")!=null?(String)request.getParameter("nombreColegiado"):"";
 	String tipoAsistenciaColegio = request.getParameter("idTipoAsistenciaColegio")!=null?(String)request.getParameter("idTipoAsistenciaColegio"):"";
 	String idPersona = request.getParameter("idPersona")!=null?(String)request.getParameter("idPersona"):"";
-	fecha = request.getParameter("fechaHora")!=null?(String)request.getParameter("fechaHora"):fecha;
+	
+	String fecha = request.getParameter("fechaHora")!=null ? (String)request.getParameter("fechaHora") : "";
 
 	
 	ArrayList comisariaSel = new ArrayList();
@@ -174,10 +174,10 @@
 	</tr>
 	
 		<tr>
-			<td class="labelText" width="220">
+			<td class="labelText" width="220px">
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.turno"/>&nbsp;(*)
 			</td>	
-			<td colspan="3" width="480">
+			<td colspan="3" width="480px">
 				<%if (bEsFichaColegial) {%>
 					<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
 				<%} else {%>
@@ -260,7 +260,7 @@
 <%} else {%>
 		<tr>
 			<!--<html:hidden name="AsistenciasForm" property="colegiado" value="< %=nColegiado%>" ></html:hidden>			-->
-			<td colspan="4" width="700">
+			<td colspan="4" width="700px">
 				<siga:ConjCampos
 					leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
 					<table width="100%" border="0">
@@ -282,13 +282,13 @@
 							<siga:Idioma key='gratuita.nuevaAsistencia.literal.ncolegiado' />
 						</td>
 						<td>
-							<input type="text" name="colegiado" class="boxConsulta" readOnly value="<%=numeroColegiado %>" style="width:'100px';">
+							<input type="text" name="colegiado" class="boxConsulta" readOnly value="<%=numeroColegiado %>" style="width:100px">
 						</td>
 						<td class="labelText">
 							<siga:Idioma key='censo.colegiacion.colegiado' />
 						</td>
 						<td colspan="2">
-							<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreColegiado %>" style="width:'240px';">
+							<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreColegiado %>" style="width:240px">
 						</td>
 					</tr>
 				</table>

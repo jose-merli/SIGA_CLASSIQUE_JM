@@ -2,11 +2,12 @@
 <html>
 <head>
 <!-- busquedaAsistencias.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -272,7 +273,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaAsistencias.literal.numero"/>
 			</td>
 			<td>
-				<html:text name="AsistenciasForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
+				<html:text name="AsistenciasForm" property="anio"  style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
 			</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
@@ -408,7 +409,7 @@
 			</tr>
 			<tr>
 				<table border="0" align="center" width="100%">
-					<td class="labelText" width="125">
+					<td class="labelText" width="125px">
 						<siga:Idioma key="informes.cartaAsistencia.procedimiento" />
 					</td>
 					<td class="labelText">
@@ -460,7 +461,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 
