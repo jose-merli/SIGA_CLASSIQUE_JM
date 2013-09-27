@@ -95,7 +95,7 @@
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
 
- <!--   -->
+ <!-- COMENTAR LOS FILTROS SIGUIENTES EN LOCAL -->
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -112,7 +112,7 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
- <!--   -->
+ <!-- -->
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
