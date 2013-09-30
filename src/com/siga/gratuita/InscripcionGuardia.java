@@ -12,7 +12,9 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.MasterBean;
 import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
@@ -322,10 +324,8 @@ public class InscripcionGuardia {
 				else
 					laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, "");
 			}		
-			
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
-			
-			
+												
+			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);			
 			// JPT: Siempre viene idGuardia a este metodo, pero lo dejo por si se necesita en el futuro
 			if(idGuardia==null){
 				
@@ -340,13 +340,25 @@ public class InscripcionGuardia {
 						
 						Hashtable htGuardia = admGuardiasTurno.beanToHashTable(beanGuardia);
 						laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, new Integer((String)htGuardia.get(ScsInscripcionGuardiaBean.C_IDGUARDIA)));
-						insguardia.insert(laHash);
+						
+						// JPT: Comprobar que no exista ninguna guardia abierta (asi controlamos que no se pueda insertar dos veces)
+						if (this.comprobarNoGuardiaActiva(laHash)) {
+							insguardia.insert(laHash);
+						} else {
+							throw new ClsExceptions("messages.inserted.error");
+						}
 					}
 				}
 				
 			} else {
 				laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, idGuardia);
-				insguardia.insert(laHash);
+				
+				// JPT: Comprobar que no exista ninguna guardia abierta (asi controlamos que no se pueda insertar dos veces)
+				if (this.comprobarNoGuardiaActiva(laHash)) {
+					insguardia.insert(laHash);
+				} else {
+					throw new ClsExceptions("messages.inserted.error");
+				}
 				
 				if(this.getBean().getNumeroGrupo()!=null){
 					ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
@@ -365,6 +377,43 @@ public class InscripcionGuardia {
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar solicitarAlta()");
 		}				
+	}
+	
+	/**
+	 * JPT: Comprueba que no exista ninguna inscripcion de guardia activa, antes de insertar la nueva inscripcion de guardia
+	 * @param hash
+	 * @return
+	 */
+	private boolean comprobarNoGuardiaActiva(Hashtable hash) {
+		boolean resultado = true;
+		RowsContainer rc = new RowsContainer(); 	
+		
+		try {
+			String idInstitucion = hash.get(ScsInscripcionGuardiaBean.C_IDINSTITUCION).toString();
+			String idTurno = hash.get(ScsInscripcionGuardiaBean.C_IDTURNO).toString();
+			String idGuardia = hash.get(ScsInscripcionGuardiaBean.C_IDGUARDIA).toString();
+			String idPersona = hash.get(ScsInscripcionGuardiaBean.C_IDPERSONA).toString();
+			
+			String sql = "SELECT * " +
+				" FROM " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + 
+				" WHERE " + ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + ScsInscripcionGuardiaBean.C_IDTURNO + " = " + idTurno + 
+					" AND " + ScsInscripcionGuardiaBean.C_IDGUARDIA + " = " + idGuardia +
+					" AND " + ScsInscripcionGuardiaBean.C_IDPERSONA + " = " + idPersona +
+					" AND " + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL " +
+					" AND (" + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " IS NOT NULL OR " + ScsInscripcionGuardiaBean.C_FECHADENEGACION + " IS NULL) ";
+			
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					resultado = false;
+				}
+			}
+	
+		} catch (Exception e) {
+			resultado = false;
+		}				
+		
+		return resultado;
 	}
 	
 	/**
@@ -999,15 +1048,14 @@ public class InscripcionGuardia {
 	 * @throws ClsExceptions
 	 */
 	public boolean actualizarInscripcionesGuardias(Hashtable hash, String[] claves, String [] campos, UsrBean usr, String accion) throws ClsExceptions {
-		String sNombreTabla = "SCS_INSCRIPCIONGUARDIA";
 		hash.put(MasterBean.C_USUMODIFICACION, usr.getUserName()); 
 		hash.put(MasterBean.C_FECHAMODIFICACION, "sysdate");
 		
 		try {
 			Connection con = ClsMngBBDD.getConnection();
-			Hashtable dataTypes = ClsMngBBDD.tableDataTypesAsString(con, sNombreTabla);
+			Hashtable dataTypes = ClsMngBBDD.tableDataTypesAsString(con, ScsInscripcionGuardiaBean.T_NOMBRETABLA);
 			
-			String sql = " UPDATE " + sNombreTabla + " SET ";
+			String sql = " UPDATE " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + " SET ";
 			
 			String sqlSet = "";
 			for (int i = 0; i < campos.length; i++) {

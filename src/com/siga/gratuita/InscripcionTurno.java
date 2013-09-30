@@ -2,7 +2,6 @@ package com.siga.gratuita;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -12,6 +11,7 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenBajasTemporalesAdm;
@@ -289,16 +289,25 @@ public class InscripcionTurno {
 					miHash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, "");
 				}
 			}
+			
+			// JPT: Comprobar que no exista ningun turno abierto (asi controlamos que no se pueda insertar dos veces)
+			boolean resultado = this.comprobarNoTurnoActivo(miHash);
+			if (!resultado) {
+				throw new ClsExceptions("messages.inserted.error");
+			}
 	
 			// Realiza el alta de la inscripcion de turno
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);		
-			boolean result = inscripcionTurnoAdm.insert(miHash);						 
+			resultado = inscripcionTurnoAdm.insert(miHash);		
+			if (!resultado) {
+				throw new ClsExceptions("messages.inserted.error");
+			}
 			
-			// Comprueba que se ha realizado el alta de turno y tiene guardias
-			if (result && tipoGuardias!=null) {
+			// Comprueba que tiene guardias
+			if (tipoGuardias!=null) {
 				
 				// Indica que son guardias obligatorias
-				if ( tipoGuardias.intValue()==0){
+				if (tipoGuardias.intValue()==0){
 						
 					// Obtiene las guardias del turno
 					ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(usr);
@@ -384,24 +393,58 @@ public class InscripcionTurno {
 					miHash.put("IDINSTITUCION", usr.getLocation());
 					miHash.put("IDPERSONA", idPersona);
 					miHash.put("IDRETENCION", idRetencion);
-					miHash.put("DESCRIPCION", ".");
-					
+					miHash.put("DESCRIPCION", ".");					
 					miHash.put("FECHAINICIO", "sysdate");
 					// Antes estaba esta linea de codigo con una fecha fija: miHash.put("FECHAINICIO", GstDate.getApplicationFormatDate(usr.getLanguage(),"01/01/2005"));
-					
-				ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(usr);
-				result = scsRetencionesIRPFAdm.insert(miHash);
+													
 				idRetencion=null;
-			}
 				
-			if (!result) {
-				throw new ClsExceptions("messages.inserted.error");
-			}		
+				ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(usr);
+				resultado = scsRetencionesIRPFAdm.insert(miHash);
+				if (!resultado) {
+					throw new ClsExceptions("messages.inserted.error");
+				}
+			}
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar solicitarAlta()");
 		}				
 	} //solicitarAlta ()
+	
+	/**
+	 * JPT: Comprueba que no exista ninguna inscripcion de turno activa, antes de insertar la nueva inscripcion de turno
+	 * @param hash
+	 * @return
+	 */
+	private boolean comprobarNoTurnoActivo(Hashtable hash) {
+		boolean resultado = true;
+		RowsContainer rc = new RowsContainer(); 	
+		
+		try {
+			String idInstitucion = hash.get(ScsInscripcionTurnoBean.C_IDINSTITUCION).toString();
+			String idTurno = hash.get(ScsInscripcionTurnoBean.C_IDTURNO).toString();
+			String idPersona = hash.get(ScsInscripcionTurnoBean.C_IDPERSONA).toString();
+			
+			String sql = "SELECT * " +
+				" FROM " + ScsInscripcionTurnoBean.T_NOMBRETABLA + 
+				" WHERE " + ScsInscripcionTurnoBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + ScsInscripcionTurnoBean.C_IDTURNO + " = " + idTurno + 
+					" AND " + ScsInscripcionTurnoBean.C_IDPERSONA + " = " + idPersona +
+					" AND " + ScsInscripcionTurnoBean.C_FECHABAJA + " IS NULL " +
+					" AND (" + ScsInscripcionTurnoBean.C_FECHAVALIDACION + " IS NOT NULL OR " + ScsInscripcionTurnoBean.C_FECHADENEGACION + " IS NULL) ";
+			
+			if (rc.find(sql)) {
+				if (rc.size() > 0) {
+					resultado = false;
+				}
+			}
+	
+		} catch (Exception e) {
+			resultado = false;
+		}				
+		
+		return resultado;
+	}	
 	
 	/**
 	 * Valida la inscripcion de un colegiado a un turno
