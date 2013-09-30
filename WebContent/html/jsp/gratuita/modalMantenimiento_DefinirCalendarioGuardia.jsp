@@ -350,15 +350,16 @@
 			sub();
 			//Control de la fecha de generacion:
 			if (esFechaAnteriorHoy()){
-				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>'))
-					 window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
-				else{
+				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>')){
+					 document.DefinirCalendarioGuardiaForm.submit();	
+				}else{
 					calendarioCreado=1;
 					fin();
 					return false;
 				}
-			} else
-				 window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
+			} else {
+				document.DefinirCalendarioGuardiaForm.submit();	
+			}
 		}
 		
 		//Asociada al boton GuardarCerrar
