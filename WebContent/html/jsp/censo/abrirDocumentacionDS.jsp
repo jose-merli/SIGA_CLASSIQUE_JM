@@ -102,7 +102,7 @@
 		}
 	</script>
 
-	<body onload="cargarCollection()">
+	<body onload="cargarCollection();ajusteAlto('resultado1')">
 	
 		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 			<input type="hidden" name="modo" value="<%=modo%>">			
@@ -146,7 +146,7 @@
 							frameborder="0"
 							marginheight="0"
 							marginwidth="0";					 
-							style="width:100%; height:100%;">
+							style="position:relative;height:100%;width:100%;">
 			</iframe>
 			<!-- FIN: IFRAME LISTA RESULTADOS -->
 			
