@@ -136,28 +136,38 @@ public class VolantesExpressForm extends MasterForm
 	public void setUsrBean(UsrBean usrBean) {
 		this.usrBean = usrBean;
 	} 
+	
 	public VolantesExpressVo getVolanteExpressVo() throws ClsExceptions {
 		VolantesExpressVo volanteExpressVo=new VolantesExpressVo();
 		volanteExpressVo.setUsrBean(usrBean);
+		
 		if(idInstitucion!=null && !idInstitucion.equals(""))
 			volanteExpressVo.setIdInstitucion(new Integer(idInstitucion));
-		if(fechaGuardia!=null && !fechaGuardia.equals("")){
+		
+		if(fechaGuardia!=null && !fechaGuardia.equals(""))
 			volanteExpressVo.setFechaGuardia(GstDate.getApplicationFormatDate("", fechaGuardia));
-		}
-		if(idTurno!=null && !idTurno.equals("") && !idTurno.equals("-1"))
+		
+		if(idTurno!=null && !idTurno.equals("") && !idTurno.equals("-1") && !idTurno.equals("undefined"))
 			volanteExpressVo.setIdTurno(Integer.parseInt(idTurno));
+		
 		if(idGuardia!=null && !idGuardia.equals("")&& !idGuardia.equals("-1"))
 			volanteExpressVo.setIdGuardia(Integer.parseInt(idGuardia));
+		
 		if(idColegiado!=null && !idColegiado.equals("") && !idColegiado.equals("-1"))
 			volanteExpressVo.setIdColegiado(Long.parseLong(idColegiado));
+		
 		if(idColegiadoGuardia!=null && !idColegiadoGuardia.equals("") && !idColegiadoGuardia.equals("-1"))
 			volanteExpressVo.setIdColegiadoGuardia(Long.parseLong(idColegiadoGuardia));
+		
 		if(idColegiadoSustituido!=null && !idColegiadoSustituido.equals("-1")&& !idColegiadoSustituido.equals(""))
 			volanteExpressVo.setIdColegiadoSustituido(Long.parseLong( idColegiadoSustituido));
+		
 		if(idTipoAsistenciaColegio!=null && !idTipoAsistenciaColegio.equals("") && !idTipoAsistenciaColegio.equals("-1"))
 			volanteExpressVo.setIdTipoAsistenciaColegio(Integer.parseInt(idTipoAsistenciaColegio));
+		
 		if(idTipoAsistencia!=null && !idTipoAsistencia.equals("") && !idTipoAsistencia.equals("-1"))
 			volanteExpressVo.setIdTipoAsistencia(Integer.parseInt(idTipoAsistencia));
+		
 		if(lugar!=null && !lugar.equals(""))
 			volanteExpressVo.setLugar(lugar);
 		
@@ -167,13 +177,9 @@ public class VolantesExpressForm extends MasterForm
 		if(asistencias!=null && asistencias.size()>0)
 			volanteExpressVo.setAsistencias(asistencias);
 		
-		if(fechaJustificacion!=null && !fechaJustificacion.equals("")){
-			
+		if(fechaJustificacion!=null && !fechaJustificacion.equals("")){			
 			volanteExpressVo.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion));
 		}
-		
-		
-		
 		
 		return volanteExpressVo;
 	}

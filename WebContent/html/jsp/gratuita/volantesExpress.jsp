@@ -24,7 +24,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 
 	<!--Step 2 -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
@@ -43,7 +43,6 @@
 		   	jQuery("#colegiadosGuardia").attr("disabled","disabled");
 		   	jQuery("#turnos").attr("disabled","disabled");
 		   	jQuery("#guardias").attr("disabled","disabled");
-			
 		}
 		
 		function accionCalendario() {
@@ -135,8 +134,10 @@
 		}	
 		
 		function  postAccionFechaGuardia(){
-			if((document.VolantesExpressForm.fechaGuardia && document.VolantesExpressForm.fechaGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
-				actualizarResultados();
+			if((document.VolantesExpressForm.fechaGuardia && 
+				document.VolantesExpressForm.fechaGuardia.value != '' && 
+				document.VolantesExpressForm.idGuardia.value != '-1')){
+				limpiarColegiado();
 			}
 		}
 	

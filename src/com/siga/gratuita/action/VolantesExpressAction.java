@@ -266,17 +266,11 @@ public class VolantesExpressAction extends MasterAction
 			throw new ClsExceptions(""); }
 		fechaADevolver = day+separador+month+separador+year;
 		return fechaADevolver;
-		
-		
-	} 
-	protected void getAjaxTurnos (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-			{
-		
-		
+	}
+	
+	protected void getAjaxTurnos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, Exception {
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
+		
 		//Recogemos el parametro enviado por ajax
 		String fechaGuardia = request.getParameter("fechaGuardia");
 		try {
@@ -284,31 +278,28 @@ public class VolantesExpressAction extends MasterAction
 		} catch (ClsExceptions e) {
 			ClsLogging.writeFileLog("VOLANTES EXPRESS:Fecha mal formateada.getAjaxTurnos.fechaGuardia:"+fechaGuardia+"/", 10);
 			return;
-		}
-		
-		miForm.setFechaGuardia(fechaGuardia);
-		
-		
-		
-		
-		
+		}		
+		miForm.setFechaGuardia(fechaGuardia);		
 		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTurnos.fechaGuardia:"+fechaGuardia+"/", 10);
 		
 		//Sacamos los turnos
 		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
 		List<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
 		ClsLogging.writeFileLog("VOLANTES EXPRESS:Select Turnos", 10);
-		if(alTurnos==null){
+		if (alTurnos==null) {
 			alTurnos = new ArrayList<ScsTurnoBean>();
-		}else{
+			ScsTurnoBean turnoBean = new ScsTurnoBean();
+   			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(miForm.getUsrBean(), ""));
+   			turnoBean.setIdTurno(new Integer(-1));
+           	alTurnos.add(turnoBean);
+			
+		} else {
 			for(ScsTurnoBean turno:alTurnos){
 				ClsLogging.writeFileLog("VOLANTES EXPRESS:turno:"+turno.getNombre(), 10);
 			}
 		}
 		ClsLogging.writeFileLog("VOLANTES EXPRESS:Fin Select Turnos", 10);
 	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos,response);
-	    
-		
 	}
 	
 	protected void getAjaxGuardias (ActionMapping mapping, 		
