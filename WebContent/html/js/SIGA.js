@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.104 2013-09-30 10:07:21 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.105 2013-10-01 07:30:25 carlos Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1190,7 +1190,7 @@ function jQueryUILoaded(){
 
 function datepickerMaskValueChanged(datepickerInput){
 	var dateValue = datepickerInput.val();
-	if(dateValue.length < 12){
+	if(dateValue.length < 10){
 		var dateSplit = dateValue.split("/");
 		if(typeof dateSplit[0] != 'undefined' && typeof dateSplit[1] != 'undefined' && typeof dateSplit[2] != 'undefined'){ //Cambiar esta funcionalidad en el 2100 (ahora no es mi problema)..
 			year = 2000 + parseInt(dateSplit[2]);
