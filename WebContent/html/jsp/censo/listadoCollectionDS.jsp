@@ -128,7 +128,7 @@
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo 
 			titulo="censo.fichaCliente.docushare.cabecera" 
-			localizacion="censo.fichaCliente.docushare.localizacion"/>
+			localizacion="censo.fichaLetrado.localizacion"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
