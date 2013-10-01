@@ -954,72 +954,50 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	       	sqlClientesWhere += " AND ("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" = :"+contador+") ";
            }
 	       
-//         22 Tipo Apunte
-	       if (formulario.getTipoApunte()!=null && !formulario.getTipoApunte().equals("")){
-	       	contador++;
-	       	codigosBind.put(new Integer(contador),formulario.getTipoApunte());
-			sqlClientesWhere +=   " AND EXISTS (SELECT 1 "+
-										      " FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-											  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-				                                " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" "+
-			                                    " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador+
-												" AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";
-					
-					
-		   }
-//	       22 idTipoCVSubtipo1
-	       if (formulario.getIdTipoCVSubtipo1()!=null && !formulario.getIdTipoCVSubtipo1().equals("")){
-	    	   String[] datosCVSubtipo1;
-	    	   datosCVSubtipo1=formulario.getIdTipoCVSubtipo1().toString().split("@");
-				  idTipoCVSubtipo1=new Integer(datosCVSubtipo1[0]);
-				  idInstitucionSubtipo1=new Integer(datosCVSubtipo1[1]);
-			sqlClientesWhere +=   " AND EXISTS (SELECT 1 "+
-			 " FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-			  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-               " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" ";
-			contador++;
-	       	codigosBind.put(new Integer(contador),formulario.getTipoApunte());
-	       	sqlClientesWhere +=  " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador;
-	       	contador++;
-	       	codigosBind.put(new Integer(contador),idTipoCVSubtipo1.toString());
-	       	sqlClientesWhere +=   " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+"=:"+contador;
-	       	contador++;
-	       	codigosBind.put(new Integer(contador),idInstitucionSubtipo1.toString());
-	       	sqlClientesWhere +=   " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+"=:"+contador+
-				                  " AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";												
-			
-			
-			
-					
-		   }
-	      	       
-	       
-//	       22 idTipoCVSubtipo2
-	       if (formulario.getIdTipoCVSubtipo2()!=null && !formulario.getIdTipoCVSubtipo2().equals("")){
-	    	   String[] datosCVSubtipo2;
-				 datosCVSubtipo2=formulario.getIdTipoCVSubtipo2().toString().split("@");
-				 idTipoCVSubtipo2=new Integer(datosCVSubtipo2[0]);
-				 idInstitucionSubtipo2=new Integer(datosCVSubtipo2[1]);
-			sqlClientesWhere +=   " AND EXISTS (SELECT 1 "+
-			" FROM  "+CenDatosCVBean.T_NOMBRETABLA+"   "+
-			  " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDPERSONA+" "+
-             " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION+" ";
-			contador++;
-	       	codigosBind.put(new Integer(contador),formulario.getTipoApunte());
-	       	sqlClientesWhere += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCV+"=:"+contador;
-	       	contador++;
-	       	codigosBind.put(new Integer(contador),idTipoCVSubtipo2.toString());
-	       	sqlClientesWhere += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+"=:"+contador;
-	       	contador++;
-	       	codigosBind.put(new Integer(contador),idInstitucionSubtipo2.toString()); 
-	       	sqlClientesWhere += " AND "+CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_IDINSTITUCION_SUBT2+"=:"+contador;
-	       	
-	       	sqlClientesWhere +=  " AND "+ CenDatosCVBean.T_NOMBRETABLA+"."+CenDatosCVBean.C_FECHABAJA+" IS NULL)";
-												
-					
-					
-		   }	       
-	      
+	       	// 22 Tipo Apunte
+	       	if (formulario.getTipoApunte()!=null && !formulario.getTipoApunte().equals("")){
+	       		contador++;
+	       		codigosBind.put(new Integer(contador), formulario.getTipoApunte());
+	       		sqlClientesWhere += " AND EXISTS (" +
+	       								" SELECT 1 " +
+		       							" FROM  " + CenDatosCVBean.T_NOMBRETABLA +
+										" WHERE " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA +
+					                    	" AND " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION + " = " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION +
+					                    	" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCV + " = :" + contador +
+					                    	" AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + " IS NULL";
+
+	       		// 22 idTipoCVSubtipo1
+	       		if (formulario.getIdTipoCVSubtipo1()!=null && !formulario.getIdTipoCVSubtipo1().equals("")){
+	       			String[] datosCVSubtipo1 = formulario.getIdTipoCVSubtipo1().toString().split("@");
+
+	       			contador++;
+	       			idTipoCVSubtipo1 = new Integer(datosCVSubtipo1[0]);
+	       			codigosBind.put(new Integer(contador), idTipoCVSubtipo1.toString());
+	       			sqlClientesWhere += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO1 + " = :" + contador;
+	       		
+	       			contador++;
+	       			idInstitucionSubtipo1 = new Integer(datosCVSubtipo1[1]);
+	       			codigosBind.put(new Integer(contador), idInstitucionSubtipo1.toString());	       		
+	       			sqlClientesWhere += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT1 + " = :" + contador;		
+	       			
+	       			// 22 idTipoCVSubtipo2
+	       			if (formulario.getIdTipoCVSubtipo2()!=null && !formulario.getIdTipoCVSubtipo2().equals("")){
+	       				String[] datosCVSubtipo2 = formulario.getIdTipoCVSubtipo2().toString().split("@");
+
+       					contador++;
+       					idTipoCVSubtipo2 = new Integer(datosCVSubtipo2[0]);
+       					codigosBind.put(new Integer(contador), idTipoCVSubtipo2.toString());
+       					sqlClientesWhere += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO2 + " = :" + contador;
+       					
+				       	contador++;
+				       	idInstitucionSubtipo2 = new Integer(datosCVSubtipo2[1]);
+				       	codigosBind.put(new Integer(contador), idInstitucionSubtipo2.toString()); 
+				       	sqlClientesWhere += " AND " + CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT2 + " = :" + contador;
+	       			}		       			
+       			}
+	       		
+	       		sqlClientesWhere +=  ") ";
+	       	}
 	       
 //         23 Comision	       
 			if (formulario.getComision()!=null && !formulario.getComision().equals("")){
