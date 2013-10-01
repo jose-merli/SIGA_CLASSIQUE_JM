@@ -655,13 +655,11 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    return "exito";
 	}
 
-	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws ClsExceptions
-	{
+	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws ClsExceptions {
 			SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	        
 	        String sCodigoExt="";
-	        //String sDescripcion="";
 	        String sBloqueo="";
 	        
 	        String sNombreTabla = form.getNombreTablaMaestra();
@@ -675,10 +673,8 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sLongitudDescripcion = form.getLongitudDescripcion();
 	        String sTipoCodigo = form.getTipoCodigo();
 	        String sTipoCodigoExt = form.getTipoCodigoExt();
-	        
 	        String idTableRel = form.getIdTablaRel();
 	        String idCampoCodigoTablaRel = form.getIdCampoCodigoRel();
-	        
 	        
 	        String sDarDeBaja = "N";
 	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
@@ -686,28 +682,30 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        	sDarDeBaja = "S";
 	        }
 	       
-	        if (!bNuevo)
-	        {
+	        if (!bNuevo) {
 			    Vector vOcultos = form.getDatosTablaOcultos(0);
 			    
 			    sCodigoExt = (String)vOcultos.elementAt(0);
-			   // sDescripcion = (String)vOcultos.elementAt(1);
 			    sBloqueo = (String)vOcultos.elementAt(1);
 		        
-			    String sSQL = 	"SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + sNombreCampoCodigo + " AS CODIGO, F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + this.getUserBean(request).getLanguage() + ") AS DESCRIPCION "; 
+			    String sSQL = "SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + 
+			    				sNombreCampoCodigo + " AS CODIGO, " +
+			    				" F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + 
+			    				this.getUserBean(request).getLanguage() + ") AS DESCRIPCION"; 
 			    
 			    if(aceptaBaja == 1){
-			    	sSQL += " ,FECHABAJA ";           
+			    	sSQL += ", FECHABAJA ";           
 			    }
 			    
-			    if(form.getNumeroTextoPlantillas()!=null && !form.getNumeroTextoPlantillas().equals("")&&!form.getNumeroTextoPlantillas().equals("null")){
+			    if(form.getNumeroTextoPlantillas()!=null && !form.getNumeroTextoPlantillas().equals("") && !form.getNumeroTextoPlantillas().equals("null")){
 		        	int numeroTextoPlantillas = Integer.parseInt(form.getNumeroTextoPlantillas());
 		        	if(numeroTextoPlantillas>0)
 		        		sSQL += ", ";
+		        	
 			        for (int i = 0; i < numeroTextoPlantillas; i++) {
-			        	sSQL += "NVL(";
+			        	sSQL += "TO_CLOB(NVL(";
 			        	sSQL += i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1);
-			        	sSQL += ",' ')";
+			        	sSQL += ",' '))";
 			        	sSQL += i==numeroTextoPlantillas-1?"||'%%'":"||'%%'||";
 						
 					}

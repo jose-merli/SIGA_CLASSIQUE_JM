@@ -392,13 +392,13 @@
 												<% if (bEditable) { %>
 												
 													<textarea id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"
-														onKeyDown="cuenta(this,255)"  onChange="cuenta(this,255)"
+														onKeyDown="cuenta(this,4000)"  onChange="cuenta(this,4000)"
 														style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;"  
 														class="box" ><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
 												
 												<% } else { %>
 													<textarea id="numeroTextoPlantilla_<%=i%>" name="numeroTextoPlantilla_<%=i%>"
-														onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+														onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
 														style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;"  
 														class="boxConsulta" readonly="true"><%=arrayTextoPlantillas[i]!=null?arrayTextoPlantillas[i]:""%></textarea>
 												<% } %>
