@@ -147,127 +147,132 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-
-
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" SELECT PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
-			sql.append(" PER.NIFCIF, PER.IDTIPOIDENTIFICACION, TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO, ");
-			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO, "); 
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as O_A,");
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','o','a'),"+idioma+") as A_O,");
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','el','la'),"+idioma+") as EL_LA,");
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del','dela'),"+idioma+") as DEL_DELA,");	
-			sql.append(" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO,'H','del.contraccion','dela.contraccion'),"+idioma+") as DEL_DELA_CONTRACCION,");
-
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-			sql.append(" F_SIGA_GETRECURSO(EC.DESCRIPCION, :");
-			sql.append(keyContador);
-			sql.append(") DESC_ESTADOCIVIL, ");
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-
-			sql.append(" F_SIGA_GETRECURSO(TI.DESCRIPCION, :");
-			sql.append(keyContador);
-			sql.append(") DESC_TIPOIDENTIFICACION, ");
 			
-			sql.append(" TO_CHAR(CLI.FECHAALTA, 'dd-mm-yyyy') FECHAALTA, CLI.CARACTER,      CLI.PUBLICIDAD, ");
-			sql.append(" CLI.GUIAJUDICIAL, CLI.CARGOSBANCO, CLI.ABONOSBANCO,");
-			sql.append(" CLI.COMISIONES, CLI.IDTRATAMIENTO, CLI.IDLENGUAJE, CLI.FOTOGRAFIA, ");
-			sql.append(" CLI.ASIENTOCONTABLE, TO_CHAR(CLI.FECHACARGA, 'dd-mm-yyyy') FECHACARGA, CLI.LETRADO, TO_CHAR(CLI.FECHAACTUALIZACION, 'dd-mm-yyyy') FECHAACTUALIZACION, ");
-			sql.append(" TO_CHAR(CLI.FECHAEXPORTCENSO, 'dd-mm-yyyy') FECHAEXPORTCENSO, CLI.NOENVIARREVISTA, CLI.NOAPARECERREDABOGACIA, ");
-
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-			sql.append(" F_SIGA_GETRECURSO(TRA.DESCRIPCION, :");
-			sql.append(keyContador);
-			sql.append(") DESC_TRATAMIENTO, ");
-			
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-			sql.append(" F_SIGA_GETRECURSO(LEN.DESCRIPCION, :");
-			sql.append(keyContador);
-			sql.append(") DESC_LENGUAJE, ");
-			
-			
-			sql.append(" NCOL.SERIE, NCOL.NUMEROREF, NCOL.SOCIEDADSJ, NCOL.TIPO, "); 
-			sql.append(" NCOL.ANOTACIONES, NCOL.PREFIJO_NUMREG, NCOL.CONTADOR_NUMREG, ");
-			sql.append(" NCOL.SUFIJO_NUMREG, TO_CHAR(NCOL.FECHAFIN, 'dd-mm-yyyy') FECHAFIN, NCOL.IDPERSONANOTARIO, ");
-			sql.append(" NCOL.RESENA, NCOL.OBJETOSOCIAL, NCOL.SOCIEDADPROFESIONAL, ");
-			sql.append(" NCOL.PREFIJO_NUMSSPP, NCOL.CONTADOR_NUMSSPP, ");
-			sql.append(" NCOL.SUFIJO_NUMSSPP, NCOL.NOPOLIZA, NCOL.COMPANIASEG, ");
-		    
-			sql.append(" CLINOT.IDINSTITUCION IDINSTITUCION_NOTARIO, ");
-			sql.append(" TO_CHAR(CLINOT.FECHAALTA, 'dd-mm-yyyy') FECHAALTA_NOTARIO, CLINOT.CARACTER CARACTER_NOTARIO, ");
-			sql.append(" CLINOT.PUBLICIDAD PUBLICIDAD_NOTARIO, CLINOT.GUIAJUDICIAL GUIAJUDICIAL_NOTARIO, ");
-			sql.append(" CLINOT.CARGOSBANCO CARGOSBANCO_NOTARIO, ");
-			sql.append(" CLINOT.COMISIONES COMISIONES_NOTARIO, CLINOT.IDTRATAMIENTO IDTRATAMIENTO_NOTARIO, ");
-			sql.append(" CLINOT.IDLENGUAJE IDLENGUAJE_NOTARIO, CLINOT.FOTOGRAFIA FOTOGRAFIA_NOTARIO, ");
-			sql.append(" CLINOT.ASIENTOCONTABLE ASIENTOCONTABLE_NOTARIO,TO_CHAR(CLINOT.FECHACARGA, 'dd-mm-yyyy')  FECHACARGA_NOTARIO, ");
-			sql.append(" CLINOT.LETRADO LETRADO_NOTARIO, TO_CHAR(CLINOT.FECHAACTUALIZACION, 'dd-mm-yyyy') FECHAACTUALIZACION_NOTARIO, ");
-			sql.append(" TO_CHAR(CLINOT.FECHAEXPORTCENSO, 'dd-mm-yyyy') FECHAEXPORTCENSO_NOTARIO, CLINOT.NOENVIARREVISTA NOENVIARREVISTA_NOTARIO, ");
-			sql.append(" CLINOT.NOAPARECERREDABOGACIA NOAPARECERREDABOGACIA, ");
-		 
-			sql.append(" PERNOT.NOMBRE NOMBRE_NOTARIO, PERNOT.APELLIDOS1 APELLIDOS1_NOTARIO, ");
-			sql.append(" PERNOT.APELLIDOS2 APELLIDOS2_NOTARIO, PERNOT.NIFCIF NIFCIF_NOTARIO, ");
-			sql.append(" PERNOT.IDTIPOIDENTIFICACION IDTIPOIDENTIFICACION_NOTARIO, ");
-			sql.append(" TO_CHAR(PERNOT.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO_NOTARIO, ");
-			sql.append(" PERNOT.IDESTADOCIVIL IDESTADOCIVIL_NOTARIO, ");
-			sql.append(" PERNOT.NATURALDE NATURALDE_NOTARIO, PERNOT.FALLECIDO FALLECIDO_NOTARIO, ");
-			sql.append(" PERNOT.SEXO SEXO_NOTARIO  ");
-		       
-			sql.append(" FROM CEN_NOCOLEGIADO          NCOL, ");
-			sql.append(" CEN_CLIENTE            CLI, ");
-			sql.append(" CEN_PERSONA            PER, ");
-			sql.append(" CEN_ESTADOCIVIL        EC, ");
-			sql.append(" CEN_TIPOIDENTIFICACION TI, ");
-			sql.append(" CEN_TRATAMIENTO        TRA, ");
-			sql.append(" ADM_LENGUAJES          LEN ");
-			sql.append(" , CEN_CLIENTE            CLINOT, ");
-			sql.append(" CEN_PERSONA            PERNOT ");
-
-			sql.append(" WHERE NCOL.IDINSTITUCION(+) = CLI.IDINSTITUCION ");
-			sql.append(" AND NCOL.IDPERSONA(+) = CLI.IDPERSONA ");
-			//sql.append(" AND NCOL.IDPERSONA = PER.IDPERSONA ");
-			sql.append(" AND CLI.IDPERSONA = PER.IDPERSONA ");
-			sql.append(" AND PER.IDTIPOIDENTIFICACION = TI.IDTIPOIDENTIFICACION ");
-			sql.append(" AND PER.IDESTADOCIVIL = EC.IDESTADOCIVIL(+) ");
-			sql.append(" AND CLI.IDTRATAMIENTO = TRA.IDTRATAMIENTO ");
-			sql.append(" AND CLI.IDLENGUAJE = LEN.IDLENGUAJE ");
-			sql.append(" AND CLINOT.IDINSTITUCION(+) =  NCOL.IDINSTITUCION ");
-			sql.append(" AND CLINOT.IDPERSONA(+) = NCOL.IDPERSONANOTARIO ");
-			sql.append(" AND CLINOT.IDPERSONA = PERNOT.IDPERSONA(+) ");
+			String sql = "SELECT PER.NOMBRE, " +
+					" PER.APELLIDOS1," +
+					" PER.APELLIDOS2," + 
+					" PER.NIFCIF," +
+					" PER.IDTIPOIDENTIFICACION," +
+					" TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO," + 
+					" PER.IDESTADOCIVIL," +
+					" PER.NATURALDE," +
+					" PER.FALLECIDO," +
+					" PER.SEXO," +
+					" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO, 'H', 'o', 'a'), " + idioma + ") as O_A," + 
+					" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO, 'H', 'o', 'a'), " + idioma + ") as A_O," + 
+					" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO, 'H', 'el', 'la'), " + idioma + ") as EL_LA," + 
+					" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO, 'H', 'del', 'dela'), " + idioma + ") as DEL_DELA," +
+					" F_SIGA_GETRECURSO_ETIQUETA('censo.sexo.'||DECODE(PER.SEXO, 'H', 'del.contraccion', 'dela.contraccion'), " + idioma + ") as DEL_DELA_CONTRACCION," + 
+					" F_SIGA_GETRECURSO(EC.DESCRIPCION, " + idioma + ") DESC_ESTADOCIVIL," + 
+					" F_SIGA_GETRECURSO(TI.DESCRIPCION, " + idioma + ") DESC_TIPOIDENTIFICACION," + 
+					" TO_CHAR(CLI.FECHAALTA, 'dd-mm-yyyy') FECHAALTA," +
+					" CLI.CARACTER," +      
+					" CLI.PUBLICIDAD," +
+					" CLI.GUIAJUDICIAL," +
+					" CLI.CARGOSBANCO," +
+					" CLI.ABONOSBANCO," +
+					" CLI.COMISIONES," +
+					" CLI.IDTRATAMIENTO," +
+					" CLI.IDLENGUAJE," +
+					" CLI.FOTOGRAFIA," +
+					" CLI.ASIENTOCONTABLE," +
+					" TO_CHAR(CLI.FECHACARGA, 'dd-mm-yyyy') FECHACARGA," +
+					" CLI.LETRADO," +
+					" TO_CHAR(CLI.FECHAACTUALIZACION, 'dd-mm-yyyy') FECHAACTUALIZACION," + 
+					" TO_CHAR(CLI.FECHAEXPORTCENSO, 'dd-mm-yyyy') FECHAEXPORTCENSO," +
+					" CLI.NOENVIARREVISTA," +
+					" CLI.NOAPARECERREDABOGACIA," +
+					" F_SIGA_GETRECURSO(TRA.DESCRIPCION, " + idioma + ") DESC_TRATAMIENTO," +
+					" F_SIGA_GETRECURSO(LEN.DESCRIPCION, " + idioma + ") DESC_LENGUAJE," +
+					" NCOL.SERIE," +
+					" DECODE(NCOL.SOCIEDADPROFESIONAL, '1', NCOL.CONTADOR_NUMSSPP, DECODE(NCOL.SOCIEDADSJ, '1', NCOL.CONTADOR_NUMREG, '')) AS NUMEROREF," + // " NCOL.NUMEROREF," +
+					" NCOL.SOCIEDADSJ," +
+					" NCOL.TIPO," +
+					" NCOL.ANOTACIONES," +
+					" NCOL.PREFIJO_NUMREG," +
+					" NCOL.CONTADOR_NUMREG," + 
+					" NCOL.SUFIJO_NUMREG," +
+					" TO_CHAR(NCOL.FECHAFIN, 'dd-mm-yyyy') FECHAFIN," +
+					" NCOL.IDPERSONANOTARIO," +
+					" NCOL.RESENA," +
+					" NCOL.OBJETOSOCIAL," +
+					" NCOL.SOCIEDADPROFESIONAL," +
+					" NCOL.PREFIJO_NUMSSPP," +
+					" NCOL.CONTADOR_NUMSSPP," +
+					" NCOL.SUFIJO_NUMSSPP," +
+					" NCOL.NOPOLIZA," +
+					" NCOL.COMPANIASEG," +
+					" CLINOT.IDINSTITUCION IDINSTITUCION_NOTARIO," +
+					" TO_CHAR(CLINOT.FECHAALTA, 'dd-mm-yyyy') FECHAALTA_NOTARIO," +
+					" CLINOT.CARACTER CARACTER_NOTARIO," +
+					" CLINOT.PUBLICIDAD PUBLICIDAD_NOTARIO," +
+					" CLINOT.GUIAJUDICIAL GUIAJUDICIAL_NOTARIO," +
+					" CLINOT.CARGOSBANCO CARGOSBANCO_NOTARIO," +
+					" CLINOT.COMISIONES COMISIONES_NOTARIO," +
+					" CLINOT.IDTRATAMIENTO IDTRATAMIENTO_NOTARIO," +
+					" CLINOT.IDLENGUAJE IDLENGUAJE_NOTARIO," +
+					" CLINOT.FOTOGRAFIA FOTOGRAFIA_NOTARIO," +
+					" CLINOT.ASIENTOCONTABLE ASIENTOCONTABLE_NOTARIO," +
+					" TO_CHAR(CLINOT.FECHACARGA, 'dd-mm-yyyy') FECHACARGA_NOTARIO," +
+					" CLINOT.LETRADO LETRADO_NOTARIO," +
+					" TO_CHAR(CLINOT.FECHAACTUALIZACION, 'dd-mm-yyyy') FECHAACTUALIZACION_NOTARIO," +
+					" TO_CHAR(CLINOT.FECHAEXPORTCENSO, 'dd-mm-yyyy') FECHAEXPORTCENSO_NOTARIO, " +
+					" CLINOT.NOENVIARREVISTA NOENVIARREVISTA_NOTARIO," +
+					" CLINOT.NOAPARECERREDABOGACIA NOAPARECERREDABOGACIA," + 
+					" PERNOT.NOMBRE NOMBRE_NOTARIO," +
+					" PERNOT.APELLIDOS1 APELLIDOS1_NOTARIO," + 
+					" PERNOT.APELLIDOS2 APELLIDOS2_NOTARIO," +
+					" PERNOT.NIFCIF NIFCIF_NOTARIO," +
+					" PERNOT.IDTIPOIDENTIFICACION IDTIPOIDENTIFICACION_NOTARIO," + 
+					" TO_CHAR(PERNOT.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO_NOTARIO," +
+					" PERNOT.IDESTADOCIVIL IDESTADOCIVIL_NOTARIO," + 
+					" PERNOT.NATURALDE NATURALDE_NOTARIO," +
+					" PERNOT.FALLECIDO FALLECIDO_NOTARIO," + 
+					" PERNOT.SEXO SEXO_NOTARIO" +
+				" FROM CEN_NOCOLEGIADO NCOL," +
+					" CEN_CLIENTE CLI," +
+					" CEN_PERSONA PER," +
+					" CEN_ESTADOCIVIL EC," +
+					" CEN_TIPOIDENTIFICACION TI," +
+					" CEN_TRATAMIENTO TRA," +
+					" ADM_LENGUAJES LEN," +
+					" CEN_CLIENTE CLINOT," +
+					" CEN_PERSONA PERNOT" +
+				" WHERE NCOL.IDINSTITUCION(+) = CLI.IDINSTITUCION" +	
+					" AND NCOL.IDPERSONA(+) = CLI.IDPERSONA" + 
+					" AND CLI.IDPERSONA = PER.IDPERSONA" +
+					" AND PER.IDTIPOIDENTIFICACION = TI.IDTIPOIDENTIFICACION" +
+					" AND PER.IDESTADOCIVIL = EC.IDESTADOCIVIL(+)" + 
+					" AND CLI.IDTRATAMIENTO = TRA.IDTRATAMIENTO" +	
+					" AND CLI.IDLENGUAJE = LEN.IDLENGUAJE" +
+					" AND CLINOT.IDINSTITUCION(+) =  NCOL.IDINSTITUCION" +
+					" AND CLINOT.IDPERSONA(+) = NCOL.IDPERSONANOTARIO" +
+					" AND CLINOT.IDPERSONA = PERNOT.IDPERSONA(+)";
 			 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersona);
-			sql.append(" AND CLI.IDPERSONA = :");
-			sql.append(keyContador);
+			sql += " AND CLI.IDPERSONA = :" + keyContador;
 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" AND CLI.IDINSTITUCION = :");
-			sql.append(keyContador);
-
-
+			sql += " AND CLI.IDINSTITUCION = :" + keyContador;
 
 			if(isInforme){
 				HelperInformesAdm helperInformes = new HelperInformesAdm();	
-				datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 
+				datos = helperInformes.ejecutaConsultaBind(sql, htCodigos); 
 				
-			}else{
+			} else {
 				RowsContainer rc = new RowsContainer();
 				
-				if (rc.queryBind(sql.toString(), htCodigos)) {
+				if (rc.queryBind(sql, htCodigos)) {
 					datos = rc.getAll();
-					
 				}
 			}
 
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getDatosInformeNoColegiado.");
 		}
+		
 		return datos;
 	}
 	

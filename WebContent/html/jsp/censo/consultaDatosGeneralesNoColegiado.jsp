@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaDatosGeneralesNoColegiado.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -14,10 +15,7 @@
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
-
-<!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
-
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -31,9 +29,11 @@
 <%@ page import="com.siga.beans.CenInstitucionBean"%>
 <%@ page import="com.siga.beans.CenNoColegiadoBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
-
-
-
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.io.File"%>
 
 <!-- JSP -->
 <% 
@@ -218,7 +218,6 @@
 	String tipoCliente=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO;
 	String [] caracterParam = new String[1];
 	caracterParam[0] = tipoCliente;
-	
 
 	// Calculando estilos generales en funcion de Ver o Editar
 	String estiloCaja="", estiloCombo="";
@@ -242,26 +241,13 @@
 	
 	// Calculando estilos para controlar edicion de datos generales de persona
 	boolean bDatosGeneralesEditables = ((String) request.getAttribute("BDATOSGENERALESEDITABLES")).equals("true") ? true : false;
-
 %>
 
-
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Hashtable"%>
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.Vector"%>
-<%@page import="java.io.File"%>
-
-
-<!-- HEAD -->
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -278,7 +264,7 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 	<script>		
-		<!-- Funcion asociada a buscarGrupos() -->
+		// Funcion asociada a buscarGrupos()
 		function buscarGrupos(){
 			document.GruposClienteClienteForm.modo.value="buscar";
 			document.GruposClienteClienteForm.modoAnterior.value=document.forms[0].accion.value;				
@@ -289,132 +275,165 @@
 		}	
 		
 		function refrescarLocal() {
-			<% if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
-			document.forms[0].accion.value="editar";
-			<% } %>
+<% 
+			if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { 
+%>
+				document.forms[0].accion.value="editar";
+<% 
+			} 
+%>
 			document.forms[0].modo.value="abrir";
-			
 			document.forms[0].submit();
-				//Refresco el iframe de grupos:
+
+			//Refresco el iframe de grupos:
 			buscarGrupos();
 		}
 		
 		function deshabilitarCheckSociedad () {			  
-		 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>  
-		  <% if(valorSociedadSP.equals("1")){%>
-		    document.forms[0].sociedadSP.checked=true;
-			jQuery("#sociedadSJ").attr("disabled","disabled");
-			jQuery("#sociedadSP").attr("disabled","disabled");
-			document.getElementById("contadorSP").style.display="block";
-			document.getElementById("contadorSJ").style.display="none";			    
-		  <% }
-		  }%>
+<%
+			if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {
+				if(valorSociedadSP.equals("1")) {
+%>
+				    document.forms[0].sociedadSP.checked=true;
+					jQuery("#sociedadSJ").attr("disabled","disabled");
+					jQuery("#sociedadSP").attr("disabled","disabled");
+					jQuery("#contadorSP").show();
+					jQuery("#contadorSJ").hide();		    
+<% 
+				}
+		  	}
+%>
 			if (document.getElementById("tipoIdentificacion").disabled==true){
 		  		document.getElementById("tipoIdentificacion").focus();
 		  	}
 		}
 		
 		function refrescarLocal() {
-			<% if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
+<% 
+			if (modo.equalsIgnoreCase("NUEVASOCIEDAD")) { 
+%>
 				document.forms[0].accion.value="editar";
-			<% } %>
+<% 
+			} 
+%>
 			document.forms[0].modo.value="abrir";
 			document.forms[0].submit();
+			
 			buscarGrupos();
 		}
 			
-			function deshabilitarCheckSociedad (){
-			 <%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {  
-			   	if(valorSociedadSP.equals("1")){%>
-			     	document.forms[0].sociedadSP.checked=true;
+		function deshabilitarCheckSociedad (){
+<%
+			if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {  
+		   		if(valorSociedadSP.equals("1")) {
+%>
+		     		document.forms[0].sociedadSP.checked=true;
 					jQuery("#sociedadSJ").attr("disabled","disabled");
 					jQuery("#sociedadSP").attr("disabled","disabled");
-					  document.getElementById("contadorSP").style.display="block";
-					  document.getElementById("contadorSJ").style.display="none";			    
-			 <%}
-			  }%>
-			}
-			
-			function presentaContador(obj){
-				<%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>//En modo edicion no se permite modificar el check de SJ y SP
-			   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
-			   			document.getElementById("nombrenumregistro").style.display="block";
-			   			if (document.getElementById("sociedadSP").checked){
-			   				document.getElementById("sociedadSJ").checked=false;
-			   			}
-						jQuery("#sociedadSJ").attr("disabled","disabled");
-			   		}
-					<%if (modo.equalsIgnoreCase("VER")) {%>
-						jQuery("#sociedadSJ").attr("disabled","disabled");
-						jQuery("#sociedadSP").attr("disabled","disabled");
-			   		<%}%>
-				<%}%>
-				
-				if (obj){
-					if (obj.checked){
-						document.getElementById("sociedadSP").checked = false;
-						
-						if(document.getElementById("sociedadSJ").disabled==false){
-							document.getElementById("sociedadSJ").checked = false;
-				    	}
-						obj.checked = true;
-					}
+				  	jQuery("#contadorSP").show();
+				  	jQuery("#contadorSJ").hide();		    
+<%
 				}
+			}
+%>
+		}
+		
+		function presentaContador(obj){
+<%
+			if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {
+%>//En modo edicion no se permite modificar el check de SJ y SP
+		   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
+		   			jQuery("#nombrenumregistro").show();
+		   			if (document.getElementById("sociedadSP").checked){
+		   				document.getElementById("sociedadSJ").checked=false;
+		   			}
+					jQuery("#sociedadSJ").attr("disabled","disabled");
+		   		}
+<%
+				if (modo.equalsIgnoreCase("VER")) {
+%>
+					jQuery("#sociedadSJ").attr("disabled","disabled");
+					jQuery("#sociedadSP").attr("disabled","disabled");
+<%
+				}
+			}
+%>
+			
+			if (obj){
+				if (obj.checked){
+					document.getElementById("sociedadSP").checked = false;
+					
+					if(document.getElementById("sociedadSJ").disabled==false){
+						document.getElementById("sociedadSJ").checked = false;
+			    	}
+					obj.checked = true;
+				}
+			}
 			
 			if (document.getElementById("sociedadSP").checked) { 
 				if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro			    		
-					     document.getElementById("contadorSJ").style.display="none";
-						 document.getElementById("contadorSP").style.display="block";
-						 document.getElementById("numeroRegistro").style.display="block";
+					     jQuery("#contadorSJ").hide();
+						 jQuery("#contadorSP").show();
+						 jQuery("#numeroRegistro").show();
 						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
-						 document.getElementById("etiquetaNumReg").style.display="block";			 		
+						 jQuery("#etiquetaNumReg").show();			 		
 		  		} else {// si el modo de sociedad es Histórico
-						document.getElementById("contadorSJ").style.display="none";
-						document.getElementById("contadorSP").style.display="block";
-						document.getElementById("numeroRegistro").style.display="block";
-						document.getElementById("etiquetaNumReg").style.display="block";
+						jQuery("#contadorSJ").hide();
+						jQuery("#contadorSP").show();
+						jQuery("#numeroRegistro").show();
+						jQuery("#etiquetaNumReg").show();
 			    }
+				
 			} else {
-			 	document.getElementById("contadorSJ").style.display="none";
-				document.getElementById("contadorSP").style.display="none";				 	
+			 	jQuery("#contadorSJ").hide();
+				jQuery("#contadorSP").hide();			 	
 			 	if (document.getElementById("sociedadSJ").checked) { 
 					if (document.getElementById("modoSociedadSJ").value==0){// si el modo de sociedad es Registro			    		
-					     document.getElementById("contadorSJ").style.display="block";
-						 document.getElementById("contadorSP").style.display="none";
-						 document.getElementById("numeroRegistro").style.display="block";
+					     jQuery("#contadorSJ").show();
+						 jQuery("#contadorSP").hide();
+						 jQuery("#numeroRegistro").show();
 						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
-						 document.getElementById("etiquetaNumReg").style.display="block";				 		
+						 jQuery("#etiquetaNumReg").show();				 		
 		  			} else {// si el modo de sociedad es Histórico
-						document.getElementById("contadorSJ").style.display="block";
-						document.getElementById("contadorSP").style.display="none";
-						document.getElementById("numeroRegistro").style.display="block";
-						document.getElementById("etiquetaNumReg").style.display="block";
+						jQuery("#contadorSJ").show();
+						jQuery("#contadorSP").hide();
+						jQuery("#numeroRegistro").show();
+						jQuery("#etiquetaNumReg").show();
 			   		}
+					
 			 	} else {
-				 	document.getElementById("contadorSJ").style.display="none";
-					document.getElementById("contadorSP").style.display="none";
+				 	jQuery("#contadorSJ").hide();
+					jQuery("#contadorSP").hide();
 			 	}
 			}
+			
 			if (document.getElementById("sociedadSP").disabled==false){
 		  		document.getElementById("sociedadSP").focus();
 		  	}				
 		}
 		
 		function presentaContadorAux(obj) {				
-			<%if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {%>//En modo edicion no se permite modificar el check de SJ y SP
-		   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked){
-		   			document.getElementById("nombrenumregistro").style.display="block";
-		   			//document.getElementById("sociedadSJ").disabled=true;			   			
-		   			<%if (modo.equalsIgnoreCase("VER")) {%>
+<%
+			if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {
+%>//En modo edicion no se permite modificar el check de SJ y SP
+		   		if (document.getElementById("sociedadSP").checked || document.getElementById("sociedadSJ").checked) {
+		   			jQuery("#nombrenumregistro").show();	   			
+<%
+					if (modo.equalsIgnoreCase("VER")) {
+%>
 		   			   jQuery("#sociedadSP").attr("disabled","disabled");
 					   jQuery("#sociedadSJ").attr("disabled","disabled");
-					<%}%>
+<%
+					}
+%>
 		   		}					
-			<%}%>
+<%
+			}
+%>
 			
 			if (obj) {
 				if (obj.checked) {
@@ -428,147 +447,150 @@
 			
 			if (document.getElementById("sociedadSP").checked) { 
 				if (document.datosGeneralesForm.modoSociedadSP.value==0){// si el modo de sociedad es Registro			    		
-					document.getElementById("contadorSJ").style.display="none";
-					document.getElementById("contadorSP").style.display="block";
-					document.getElementById("numeroRegistro").style.display="block";
+					jQuery("#contadorSJ").hide();
+					jQuery("#contadorSP").show();
+					jQuery("#numeroRegistro").show();
 					 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
 					 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
 					 jQuery("#contadorNumRegSP").attr("disabled","disabled");
-					document.getElementById("etiquetaNumReg").style.display="block";			 		
+					jQuery("#etiquetaNumReg").show();			 		
 		  		} else {// si el modo de sociedad es Histórico
-					document.getElementById("contadorSJ").style.display="none";
-					document.getElementById("contadorSP").style.display="block";
-					document.getElementById("numeroRegistro").style.display="block";
-					document.getElementById("etiquetaNumReg").style.display="block";
+					jQuery("#contadorSJ").hide();
+					jQuery("#contadorSP").show();
+					jQuery("#numeroRegistro").show();
+					jQuery("#etiquetaNumReg").show();
 			    }
 			} else {
-			 	document.getElementById("contadorSJ").style.display="none";
-				document.getElementById("contadorSP").style.display="none";				 	
+			 	jQuery("#contadorSJ").hide();
+				jQuery("#contadorSP").hide();			 	
 			 	if (document.getElementById("sociedadSJ").checked) { 
 					if (document.getElementById("modoSociedadSJ").value==0){// si el modo de sociedad es Registro			    		
-					    document.getElementById("contadorSJ").style.display="block";
-						document.getElementById("contadorSP").style.display="none";
-						document.getElementById("numeroRegistro").style.display="block";
+					    jQuery("#contadorSJ").show();
+						jQuery("#contadorSP").hide();
+						jQuery("#numeroRegistro").show();
 						 jQuery("#prefijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#sufijoNumRegSP").attr("disabled","disabled");
 						 jQuery("#contadorNumRegSP").attr("disabled","disabled");
-						document.getElementById("etiquetaNumReg").style.display="block";			 		
+						jQuery("#etiquetaNumReg").show();			 		
 		  			} else {// si el modo de sociedad es Histórico
-						document.getElementById("contadorSJ").style.display="block";
-						document.getElementById("contadorSP").style.display="none";
-						document.getElementById("numeroRegistro").style.display="block";
-						document.getElementById("etiquetaNumReg").style.display="block";
+						jQuery("#contadorSJ").show();
+						jQuery("#contadorSP").hide();
+						jQuery("#numeroRegistro").show();
+						jQuery("#etiquetaNumReg").show();
 			   		}
 			 	} else {
-				 	document.getElementById("contadorSJ").style.display="none";
-					document.getElementById("contadorSP").style.display="none";
+				 	jQuery("#contadorSJ").hide();
+					jQuery("#contadorSP").hide();
 			 	}
 			}
 		}
 			
-									
-			//Funcion que quita blancos a derecha e izquierda de la cadena
-			function fTrim(Str)
-			{				 
-				Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
-				return Str;
-			}
+		//Funcion que quita blancos a derecha e izquierda de la cadena
+		function fTrim(Str) {				 
+			Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
+			return Str;
+		}
 			
-			
+		function cambioTipo() {																									
+			if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar") {		
+				document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
+				if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
+					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
+					) {
+					document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 
-			function cambioTipo()
-			{																									
-				if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
-				{		
-					document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
-					if(document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
-						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
-						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
-						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
-						|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
-						) 
-					{
-							document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
-
-							if (!(validarCIF(document.forms[0].numIdentificacion.value)))
-							{
-								//Ocultamos el select cuyo id es soloDos
-								document.getElementById("soloDos").style.display="none";
-
-								//mostramos el select cuyo id es todas	
-								 document.getElementById("todas").style.display="block";
-								
-								document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
-								document.forms[0].tipo.value = "0";
-								return;
-							}
-
-							if(document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar")
-							{
-								if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A")
-								{
-									document.forms[0].tipo.value = "A";
-									//Ocultamos el select cuyo id es soloDos	
-									 document.getElementById("soloDos").style.display="none";
-									//mostramos el select cuyo id es todas	
-									 document.getElementById("todas").style.display="block";									
-								}
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B")
-								{
-									document.forms[0].tipo.value = "B";
-									//Ocultamos el select cuyo id es soloDos	
-									 document.getElementById("soloDos").style.display="none";
-									//mostramos el select cuyo id es todas	
-									 document.getElementById("todas").style.display="block";
-								}
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F")
-								{
-									document.forms[0].tipo.value = "F";
-									//Ocultamos el select cuyo id es soloDos	
-									 document.getElementById("soloDos").style.display="none";
-									//mostramos el select cuyo id es todas	
-									 document.getElementById("todas").style.display="block";
-								}
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G")
-								{
-									document.forms[0].tipo.value = "G";
-									//Ocultamos el select cuyo id es soloDos	
-									 document.getElementById("soloDos").style.display="none";
-									//mostramos el select cuyo id es todas	
-									 document.getElementById("todas").style.display="block";
-								}
-								else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J")
-								{
-									 <%if (tipo.equals("J")){%>
-									 	document.forms[0].tipoJY.value = "J";
-									 	document.forms[0].tipo.value = "J";
-									 <%}else{%>
-									 	document.forms[0].tipoJY.value = "Y";
-									 	document.forms[0].tipo.value = "Y";
-									 <%}%>
-									 //mostramos el select cuyo id es soloDos
-									 document.getElementById("soloDos").style.display="block";
-									//Ocultamos el select cuyo id es todas	
-									 document.getElementById("todas").style.display="none";
-								}
-							}
-					}
-					else 
-					{
+					if (!(validarCIF(document.forms[0].numIdentificacion.value))) {
 						//Ocultamos el select cuyo id es soloDos
-						document.getElementById("soloDos").style.display="none";
-						//mostramos el select cuyo id es soloDos
-						 document.getElementById("todas").style.display="block";
+						jQuery("#soloDos1").hide();
+						jQuery("#soloDos2").hide();
 
+						//mostramos el select cuyo id es todas	
+						jQuery("#todas1").show();
+						jQuery("#todas2").show();
+							
 						document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 						document.forms[0].tipo.value = "0";
-					}					
-				}									
-			}
-			
+						return;
+					}
 
-		function adaptaTamanoFoto () 
-		{
+					if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar") {
+						if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A") {
+							document.forms[0].tipo.value = "A";
+							//Ocultamos el select cuyo id es soloDos	
+							jQuery("#soloDos1").hide();
+							jQuery("#soloDos2").hide();
+							
+							//mostramos el select cuyo id es todas	
+							 jQuery("#todas1").show();
+							 jQuery("#todas2").show();
+							
+						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B") {
+							document.forms[0].tipo.value = "B";
+							//Ocultamos el select cuyo id es soloDos	
+							jQuery("#soloDos1").hide();
+							jQuery("#soloDos2").hide();
+							
+							//mostramos el select cuyo id es todas	
+							 jQuery("#todas1").show();
+							 jQuery("#todas2").show();
+							
+						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F") {
+							document.forms[0].tipo.value = "F";
+							//Ocultamos el select cuyo id es soloDos	
+							jQuery("#soloDos1").hide();
+							jQuery("#soloDos2").hide();
+							
+							//mostramos el select cuyo id es todas	
+							 jQuery("#todas1").show();
+							 jQuery("#todas2").show();
+							
+						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G") {
+							document.forms[0].tipo.value = "G";
+							//Ocultamos el select cuyo id es soloDos	
+							jQuery("#soloDos1").hide();
+							jQuery("#soloDos2").hide();
+							
+							//mostramos el select cuyo id es todas	
+							 jQuery("#todas1").show();
+							 jQuery("#todas2").show();
+							
+						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J") {
+							 <%if (tipo.equals("J")){%>
+							 	document.forms[0].tipoJY.value = "J";
+							 	document.forms[0].tipo.value = "J";
+							 <%}else{%>
+							 	document.forms[0].tipoJY.value = "Y";
+							 	document.forms[0].tipo.value = "Y";
+							 <%}%>
+							//mostramos el select cuyo id es soloDos
+							jQuery("#soloDos1").show();
+							jQuery("#soloDos2").show();
+							 
+							//Ocultamos el select cuyo id es todas	
+							jQuery("#todas1").hide();
+							jQuery("#todas2").hide();
+						}
+					}
+					
+				} else {
+					//Ocultamos el select cuyo id es soloDos
+					jQuery("#soloDos1").hide();
+					jQuery("#soloDos2").hide();
+					
+					//mostramos el select cuyo id es todas
+					jQuery("#todas1").show();
+					jQuery("#todas2").show();
+
+					document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+					document.forms[0].tipo.value = "0";
+				}					
+			}									
+		}
+			
+		function adaptaTamanoFoto () {
 			widthMax = 180;
 			heightMax = 240;
 			foto = document.getElementById("fotoNueva");
@@ -586,65 +608,71 @@
 				}
 			}
 			return;
-		}
-				
-		</script>
+		}				
+	</script>
 
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.datosGenerales.cabecera" 
-			localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
-		
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:TituloExt titulo="censo.fichaCliente.datosGenerales.cabecera" localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
-
-
 
 <body class="tablaCentralCampos"  onload="adaptaTamanoFoto();buscarGrupos();presentaContador();cambioTipo();deshabilitarCheckSociedad();">
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center"  cellspacing="0">
-	<tr>
-		<td class="titulitosDatos">
-		<%	if (!formulario.getAccion().equalsIgnoreCase("NUEVASOCIEDAD")) { %>
+		<tr>
+			<td class="titulitosDatos">
+<%	
+				if (!formulario.getAccion().equalsIgnoreCase("NUEVASOCIEDAD")) { 
+%>
 					<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>
 					 &nbsp; 		
-					 <% String nombreaux="";
-					 	nombreaux=nombre;
-					 	if (!apellido1.equals("#NA")){
-					 		nombreaux=nombre+" "+ apellido1;
-					 	}
-					 	if (!apellido2.equals("#NA")){
-					 		nombreaux=nombre+" "+ apellido2;
-					 	}%>
+<% 
+					String nombreaux="";
+					nombreaux=nombre;
+					if (!apellido1.equals("#NA")){
+						nombreaux=nombre+" "+ apellido1;
+					}
+					
+					if (!apellido2.equals("#NA")){
+						nombreaux=nombre+" "+ apellido2;
+					}
+%>
 					 	
-					 <%=UtilidadesString.mostrarDatoJSP(nombreaux) %>
+					 <%=UtilidadesString.mostrarDatoJSP(nombreaux)%>
 					 &nbsp; 		
-			<% if (bColegiado) { %>
-					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-					 <%= UtilidadesString.mostrarDatoJSP(numeroColegiado) %>
-			<% } else { %>
-					<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-			<% } %>
-		<%	} else {  %>
+<% 
+					if (bColegiado) { 
+%>
+						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
+					 	<%=UtilidadesString.mostrarDatoJSP(numeroColegiado)%>
+<% 
+					} else { 
+%>
+						<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+<% 
+					}
+				} else {  
+%>
 					<siga:Idioma key="censo.altaDatosGenerales.cabecera"/>
-		<%	}  %>
-		</td>
-	</tr>
+<%	
+				}  
+%>
+			</td>
+		</tr>
 	</table>
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
-
 
 	<!------------------------------->
 	<!-- INICIO Tabla principal -->
 	<!------------------------------->
 
-<!------------------------------->
-<!-- Tabla central principal   -->
-<!------------------------------->
-	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" border="0">
-		<html:form  action="/CEN_DatosGenerales.do" method="POST" target="mainPestanas"  enctype="multipart/form-data">
+	<!------------------------------->
+	<!-- Tabla central principal   -->
+	<!------------------------------->
+	<html:form  action="/CEN_DatosGenerales.do" method="POST" target="mainPestanas"  enctype="multipart/form-data">
+		<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" border="0">		
 			<html:hidden name="datosGeneralesForm" property="modo"/>
 			<html:hidden name="datosGeneralesForm" property="idInstitucion"/>
 			<html:hidden name="datosGeneralesForm" property="idPersona"/>
@@ -659,334 +687,417 @@
 			<html:hidden name="datosGeneralesForm" property="longitudSP" styleId="longitudSP"/>
 			<html:hidden name="datosGeneralesForm" property="continuarAprobacion" styleId="continuarAprobacion" value = ""/>
 			
-		<tr>
-			<!-- COLUMNA: FOTO -->	
-			<td valign="top" style="width:200px">
-				<siga:ConjCampos leyenda="censo.consultaDatosGenerales.literal.imagencorporativa">
-					<br>
-					<% 	if (fotografia == null || fotografia.equals("")) { 
+			<tr>
+				<!-- COLUMNA: FOTO -->	
+				<td valign="top" style="width:200px">
+					<siga:ConjCampos leyenda="censo.consultaDatosGenerales.literal.imagencorporativa">
+						<br>
+<% 	
+						if (fotografia == null || fotografia.equals("")) { 
 							fotografia = app + "/html/imagenes/usuarioDesconocido.gif";
 						}
-					%>
-					<div style='height:245px; width:184px; overflow-x:auto; overflow-y:auto'>
-						<center>
-							<img id="fotoNueva" border="0" src="<%=fotografia%>" >	
-						</center>
-					</div>
-					<br>&nbsp;		
+%>
+						<div style='height:245px; width:184px; overflow-x:auto; overflow-y:auto'>
+							<center>
+								<img id="fotoNueva" border="0" src="<%=fotografia%>" >	
+							</center>
+						</div>
+						<br>
+						&nbsp;		
 					
-					<% if (!breadonly) { %>
-							<html:file name="datosGeneralesForm" styleId="foto" property="foto" style="width:200px" styleClass="<%=estiloCaja %>" accept="image/gif,image/jpg" ></html:file>		
+<% 
+						if (!breadonly) { 
+%>
+							<html:file name="datosGeneralesForm" styleId="foto" property="foto" style="width:200px" styleClass="<%=estiloCaja%>" accept="image/gif,image/jpg" ></html:file>		
 							<br>&nbsp;		
-					<% } %>
-				</siga:ConjCampos>
-			</td>
-			<!-- COLUMNA PRINCIPAL -->
-			<td>
-				<table border="0">
-					<!-- FILA CONJUNTO1 -->
-					<tr>
-						<td>
-							<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
-								<table border=0 width="100%">
-									<tr>
-										
-										<!-- NUMERO IDENTIFICACION NIF/CIF -->
-										<% String CIF=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF);
-										   String OTRO=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO);
-										%>
-										<td class="labelText" colspan="2" width="40%">
-											<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
-
-											<% if (!breadonly && bDatosGeneralesEditables) { %>
-												<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
-												<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="box" value="<%=nIdentificacion %>" onblur="cambioTipo();"></html:text>
-											<% } else { %>
-												<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
-											<% }  %>
-												
-											<% if (!breadonly && bDatosGeneralesEditables) { %>
-												<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
-													<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
-													<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
-												</html:select>
-											<% } else { %>
-												<html:hidden name="datosGeneralesForm" property="tipoIdentificacion" styleId="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
-												<% if (tipoIdentificacionSel.equals(CIF)) { %>
-												<siga:Idioma key="censo.fichaCliente.literal.cif"/>
-												<% } else if (tipoIdentificacionSel.equals(OTRO)) { %>
-												<siga:Idioma key="censo.fichaCliente.literal.otro"/>
-												<% } %>
-											<% }  %>
-												
+<% 
+						} 
+%>
+					</siga:ConjCampos>
+				</td>
+				
+				<!-- COLUMNA PRINCIPAL -->
+				<td>
+					<table border="0">
+						<!-- FILA CONJUNTO1 -->
+						<tr>
+							<td>
+								<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
+									<table border="0" width="100%">
+										<tr>										
+											<!-- NUMERO IDENTIFICACION NIF/CIF -->
+<% 
+											String CIF=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF);
+										   	String OTRO=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO);
+%>
+											<td class="labelText">
+												<siga:Idioma key="censo.fichaCliente.literal.identificacion"/>&nbsp;(*)
+											</td>
 											
-										</td>
+											<td>
+<% 
+												if (!breadonly && bDatosGeneralesEditables) { 
+%>
+													<input type="hidden" name="tipoIdentificacionBloqueada" value="<%=tipoIdentificacionSel%>"/>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="box" value="<%=nIdentificacion %>" onblur="cambioTipo();" />
+<% 
+												} else { 
+%>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" />
+<% 
+												}
+%>
 
+											</td>
+											
+											
+<%
+											if (!breadonly && bDatosGeneralesEditables) { 
+%>
+												<td>
+													<html:select name="datosGeneralesForm" property="tipoIdentificacion" value="<%=tipoIdentificacionSel%>" styleId="tipoIdentificacion"  styleClass="boxCombo" disabled="true">													
+														<html:option value="<%=OTRO%>"> <siga:Idioma key="censo.fichaCliente.literal.otro"/></html:option>	
+														<html:option value="<%=CIF%>" > <siga:Idioma key="censo.fichaCliente.literal.cif"/></html:option>
+													</html:select>
+<% 
+											} else { 
+%>
+												<td class="labelText">
+													<html:hidden name="datosGeneralesForm" property="tipoIdentificacion" styleId="tipoIdentificacion" value="<%=tipoIdentificacionSel%>"/>
+<% 
+													if (tipoIdentificacionSel.equals(CIF)) { 
+%>
+														<siga:Idioma key="censo.fichaCliente.literal.cif"/>
+<% 
+													} else if (tipoIdentificacionSel.equals(OTRO)) { 
+%>
+														<siga:Idioma key="censo.fichaCliente.literal.otro"/>
+<% 
+													}
+											}  
+%>
+											</td>
 
-										<td class="labelText" width="40%" id="todas">
-											<%
-												 String tipoEstilo="boxCombo";
-												 String tipoReadOnly="false";
-												 String tipoCombo="cmbTipoSociedadAlta";
-												 tipoDisabled = "true";
-												
+											<td class="labelText" id="todas1">
+<%
+												String tipoEstilo="boxCombo";
+												String tipoReadOnly="false";
+												String tipoCombo="cmbTipoSociedadAlta";
+												tipoDisabled = "true";
+													
 												if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER") || modo.equalsIgnoreCase("nuevaSociedad")) {												
 													if(tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")){
 														tipoEstilo="boxCombo";
 														tipoReadOnly="false";
 														tipoCombo="cmbTipoSociedadJ";														
 														//tipoDisabled = "true";
-													}else{
+													} else {
 														tipoEstilo="boxConsulta";
 														tipoReadOnly="true";
 														tipoCombo="cmbTipoSociedadAlta";														
 														//tipoDisabled = "true";
 													}
 												}
-											%>  
-											<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
-											<input type="hidden" id="tipoOriginal"  name="tipoOriginal" value="<%=tipoOriginal%>">
-
+%>  
+												<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
+												<input type="hidden" id="tipoOriginal"  name="tipoOriginal" value="<%=tipoOriginal%>">
+											</td>
 											
-											<% if (tipoDisabled.equals("false")) {%>
-												<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="false">
-													<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
-													<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
-												</html:select>
-											
-											<% } else {%>
-												<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="true">
-													<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
-													<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
-												</html:select>
-											<% } %>
+											<td id="todas2">
+												
+<% 
+												if (tipoDisabled.equals("false")) {
+%>
+													<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="false">
+														<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
+														<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
+													</html:select>
+<% 
+												} else {
+%>
+													<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="true">
+														<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
+														<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
+													</html:select>
+<% 
+												} 
+%>											
+											</td>
 										
-										</td>
-										
-										<!-- Combo que muestra solo Soc.Civil (J) y  Soc.Civil (J) IRPF Reducido (7%)-->										
-										<td class="labelText" width="40%" id="soloDos">
-											
-											<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
-											<input type="hidden" name="tipoOriginalJY" value="<%=tipoOriginal%>">
-											 
-											 <html:select styleId="tiposJY" styleClass="boxCombo" style="width:200px;" property="tipoJY" disabled="false">
+											<!-- Combo que muestra solo Soc.Civil (J) y  Soc.Civil (J) IRPF Reducido (7%)-->										
+											<td class="labelText" id="soloDos1">											
+												<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
+												<input type="hidden" name="tipoOriginalJY" value="<%=tipoOriginal%>">
+											</td>												
+											<td id="soloDos2">
+											 	<html:select styleId="tiposJY" styleClass="boxCombo" style="width:200px;" property="tipoJY" disabled="false">
 													<bean:define id="tiposJY" name="datosGeneralesForm" property="tiposJY" type="java.util.Collection" />
 													<html:optionsCollection name="tiposJY" value="letraCif" label="descripcion" />
-											 </html:select>																																
-										</td>
+											 	</html:select>																																
+											</td>
 										
 																																					
-										<td class="labelText" width="10%">
-											<!-- Fecha Alta -->
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
-										</td>
-										<td>	
-											<html:text name="datosGeneralesForm" property="fechaAlta" styleId="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
-										</td>
-									</tr>
+											<td class="labelText">
+												<!-- Fecha Alta -->
+												<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaAlta"/>
+											</td>
+											<td>	
+												<html:text name="datosGeneralesForm" property="fechaAlta" styleId="fechaAlta" style="width:70" styleClass="boxConsulta" readonly="true" value="<%=fechaAlta%>" />
+											</td>
+										</tr>										
 									</table>
-									<table border=0 width="100%">
-									<tr>
-										<td class="labelText" colspan="1" width="20%">
-											<!-- CheckBox de Sociedad SJ -->
-											<siga:Idioma key="censo.general.literal.sociedadSJ"/>&nbsp;
-											<html:checkbox name="datosGeneralesForm" property="sociedadSJ" styleId="sociedadSJ" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"    ></html:checkbox>
-										</td>	
-										<td class="labelText" colspan="2" width="40%">
-											<!-- CheckBox de Sociedad Profesional -->
-											<siga:Idioma key="censo.general.literal.sociedadProfesional"/>&nbsp;
-											<html:checkbox name="datosGeneralesForm" property="sociedadSP" styleId="sociedadSP" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"   ></html:checkbox> 
-										</td>
-										<span id="etiquetaNumReg" > 
-										<td id="nombrenumregistro" class="labelText" colspan="2">
-											<!-- NUMERO REGISTRO -->
-											<span id="numeroRegistro" >	
-												<span id="contadorSP" style="display:none">
-													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
-													<html:text name="datosGeneralesForm" property="prefijoNumRegSP" styleId="prefijoNumRegSP" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="contadorNumRegSP" styleId="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="sufijoNumRegSP" styleId="sufijoNumRegSP" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-												</span>
-												<span id="contadorSJ" style="display:none">
-													<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
-													<html:text name="datosGeneralesForm" property="prefijoNumRegSJ" styleId="prefijoNumRegSJ" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="contadorNumRegSJ" styleId="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-													<html:text name="datosGeneralesForm" property="sufijoNumRegSJ" styleId="sufijoNumRegSJ" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" ></html:text>
-												</span>
-											</span>
-						     			</td>
-										</span>
-									</tr>
-								</table>
-							</siga:ConjCampos>
-						</td>
-					</tr>
-					<!-- FILA CONJUNTO2 -->
-					<tr>
-						<td>
-							<siga:ConjCampos leyenda="censo.general.literal.informacionOrganizacion">
-								<table class="tablaCampos" align="center" cellpadding="0" cellspacing="0" border="0">
-									<tr>
-										<td class="labelText" width="90px">
-											<!-- DENOMINACION -->
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.denominacion"/>&nbsp;(*)
-										</td>
-										<td style="width:240px">
-											<% if (!breadonly && bDatosGeneralesEditables) { %>
-												<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="box"></html:text>
-											<% } else { %>
-												<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
-											<% }  %>
-										</td>
-										<td class="labelText">
-											<!-- Abreviatura -->
-											<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;
-										</td>
-										<td  class="labelText">
-											<% if (!breadonly && bDatosGeneralesEditables) { %>
-												<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="box"></html:text>
-											<% } else { %>
-												<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
-											<% }  %>
-										</td>
-										<td class="labelText">
-											<% if (!bDatosGeneralesEditables) { %> 
-												<img src="<%=app%>/html/imagenes/help.gif" 
-													alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
-													onclick="alertaNoEditable();"
-													style="cursor: hand;"/> 
-											<% } %>
-										</td>
-									</tr>
-									<tr>
-
-									</tr>
-								</table>
-							</siga:ConjCampos>
-						</td>
-					</tr>
-					<!-- INFORMACION ADICIONAL -->
-					<tr>
-						<td>
-							<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
-								<tr>
-									<td>
-										<siga:ConjCampos leyenda="censo.general.literal.informacionAdicional">
-											<table class="tablaCampos" cellpadding="0" cellpadding="0">
-												<tr>
-													<td class="labelText" style="width:100px">
-														<!-- IDIOMA -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
-													</td>
-													<td style="width:320px">
-														<siga:Select id="idioma"
-															queryId="getIdiomasInstitucion"
-															required="true"
-															selectedIds="<%=idiomaSel%>"
-															readOnly="<%=readonly%>"/>
-														&nbsp;
-													</td>
-												</tr>
-												<tr>
-													<td class="labelText" style="width:100px">				
-														<!-- Restriccion Visibilidad o caracter -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
-													</td>
-													<td style="width:320px">
-														<% 	
-															String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
-														%>
-															<siga:Select id="caracter"
-																		queryId="getCaracteres"
-																		params="<%=caracterParams%>"
-																		selectedIds="<%=caracterSel%>"
-																		required="true"
-																		readonly="true"/>
-													</td>
-												</tr>
-												<tr>
-													<td class="labelText" colspan="2">
-														<!-- GUIA JUDICIAL -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.guiaJudicial"/>
-														&nbsp;
-														<% if (guiaJudicial.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
-														<% } else { %>
-															<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
-														<% } %>
-														&nbsp;
-														<!-- PUBLICIDAD -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.publicidad"/>
-														<% if (publicidad.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
-														<% } else { %>
-															<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
-														<% } %>
-														&nbsp;
 									
-														<!-- COMISIONES -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.comisiones"/>
-														&nbsp;
-														<% if (comisiones.equals(ClsConstants.DB_TRUE)) { %>
-															<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
-														<% } else { %>
-															<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
-														<% } %>
-													</td>
-												</tr>
-												<tr>
-													<td class="labelText" style="width:100px">
-														<!-- CUENTA CONTABLE -->
-														<siga:Idioma key="censo.consultaDatosGenerales.literal.cuentaContable"/>
-													</td>
-													<td style="width:320px">
-														<% if (!user.isLetrado()) { %>
-																<html:text name="datosGeneralesForm" property="cuentaContable" styleId="cuentaContable" size="10" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" value="<%=cuentaContable %>"></html:text>
-														<% } else { %>
+									<table border="0">
+										<tr>
+											<td class="labelText">
+												<!-- CheckBox de Sociedad SJ -->
+												<siga:Idioma key="censo.general.literal.sociedadSJ"/>
+											</td>
+											<td>
+												<html:checkbox name="datosGeneralesForm" property="sociedadSJ" styleId="sociedadSJ" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"></html:checkbox>
+											</td>
+												
+											<td class="labelText">
+												<!-- CheckBox de Sociedad Profesional -->
+												<siga:Idioma key="censo.general.literal.sociedadProfesional"/>
+											</td>
+											<td>
+												<html:checkbox name="datosGeneralesForm" property="sociedadSP" styleId="sociedadSP" onclick="presentaContadorAux(this)" value="<%=ClsConstants.DB_TRUE%>"></html:checkbox> 
+											</td>
+											
+											<span id="etiquetaNumReg"> 
+												<td id="nombrenumregistro" class="labelText">
+													<!-- NUMERO REGISTRO -->
+													<span id="numeroRegistro" >	
+														<span id="contadorSP" style="display:none">
+															<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
+															<html:text name="datosGeneralesForm" property="prefijoNumRegSP" styleId="prefijoNumRegSP" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" />
+															<html:text name="datosGeneralesForm" property="contadorNumRegSP" styleId="contadorNumRegSP" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" />
+															<html:text name="datosGeneralesForm" property="sufijoNumRegSP" styleId="sufijoNumRegSP" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" />
+														</span>
+														<span id="contadorSJ" style="display:none">
+															<siga:Idioma key="censo.general.literal.numRegistro"/>&nbsp;(*) 
+															<html:text name="datosGeneralesForm" property="prefijoNumRegSJ" styleId="prefijoNumRegSJ" size="5" maxlength="8" styleClass="<%=estiloCaja%>" style="width:55px" readonly="<%=breadonly%>" />
+															<html:text name="datosGeneralesForm" property="contadorNumRegSJ" styleId="contadorNumRegSJ" size="5" maxlength="8" style="width:58px" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" />
+															<html:text name="datosGeneralesForm" property="sufijoNumRegSJ" styleId="sufijoNumRegSJ" style="width:58px" size="5" maxlength="8" styleClass="<%=estiloCaja%>" readonly="<%=breadonly%>" />
+														</span>
+													</span>
+						     					</td>
+											</span>
+										</tr>
+									</table>
+								</siga:ConjCampos>
+							</td>
+						</tr>
+						
+						<!-- FILA CONJUNTO2 -->
+						<tr>
+							<td>
+								<siga:ConjCampos leyenda="censo.general.literal.informacionOrganizacion">
+									<table class="tablaCampos" align="center" cellpadding="0" cellspacing="0" border="0">
+										<tr>
+											<td class="labelText" width="90px">
+												<!-- DENOMINACION -->
+												<siga:Idioma key="censo.consultaDatosGenerales.literal.denominacion"/>&nbsp;(*)
+											</td>
+											<td style="width:240px">
+<% 
+												if (!breadonly && bDatosGeneralesEditables) { 
+%>
+													<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="box" />
+<% 
+												} else { 
+%>
+													<html:text name="datosGeneralesForm" property="denominacion" styleId="denominacion" size="40" maxlength="100" styleClass="boxConsulta" readonly="true" />
+<% 
+												}  
+%>
+											</td>
+											<td class="labelText">
+												<!-- Abreviatura -->
+												<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;
+											</td>
+											<td  class="labelText">
+<% 
+												if (!breadonly && bDatosGeneralesEditables) { 
+%>
+													<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="box" />
+<% 
+												} else { 
+%>
+													<html:text name="datosGeneralesForm" property="abreviatura" styleId="abreviatura" size="15" maxlength="100" styleClass="boxConsulta" readonly="true" />
+<% 
+												}  
+%>
+											</td>
+											<td class="labelText">
+<% 
+												if (!bDatosGeneralesEditables) { 
+%> 
+													<img src="<%=app%>/html/imagenes/help.gif" 
+														alt="<siga:Idioma key='censo.consultaDatosGenerales.mensaje.noEditable'/>" 
+														onclick="alertaNoEditable();"
+														style="cursor: hand;"/> 
+<% 
+												} 
+%>
+											</td>
+										</tr>
+									</table>
+								</siga:ConjCampos>
+							</td>
+						</tr>
+						
+						<!-- INFORMACION ADICIONAL -->
+						<tr>
+							<td>
+								<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
+									<tr>
+										<td>
+											<siga:ConjCampos leyenda="censo.general.literal.informacionAdicional">
+												<table class="tablaCampos" cellpadding="0" cellpadding="0">
+													<tr>
+														<td class="labelText" style="width:100px">
+															<!-- IDIOMA -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>&nbsp;(*)
+														</td>
+														<td style="width:320px">
+															<siga:Select id="idioma"
+																queryId="getIdiomasInstitucion"
+																required="true"
+																selectedIds="<%=idiomaSel%>"
+																readOnly="<%=readonly%>"/>
+															&nbsp;
+														</td>
+													</tr>
+													
+													<tr>
+														<td class="labelText" style="width:100px">				
+															<!-- Restriccion Visibilidad o caracter -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
+														</td>
+														<td style="width:320px">
+<% 	
+															String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
+%>
+															<siga:Select id="caracter"
+																queryId="getCaracteres"
+																params="<%=caracterParams%>"
+																selectedIds="<%=caracterSel%>"
+																required="true"
+																readonly="true"/>
+														</td>
+													</tr>
+													
+													<tr>
+														<td class="labelText" colspan="2">
+															<!-- GUIA JUDICIAL -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.guiaJudicial"/>
+															&nbsp;
+<% 
+															if (guiaJudicial.equals(ClsConstants.DB_TRUE)) { 
+%>
+																<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+<% 
+															} else { 
+%>
+																<input type="checkbox" name="guiaJudicial" id="guiaJudicial" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+<% 
+															} 
+%>
+															&nbsp;
+														
+															<!-- PUBLICIDAD -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.publicidad"/>
+<% 
+															if (publicidad.equals(ClsConstants.DB_TRUE)) { 
+%>
+																<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+<% 
+															} else { 
+%>
+																<input type="checkbox" name="publicidad" id="publicidad" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+<% 
+															} 
+%>
+															&nbsp;
+									
+															<!-- COMISIONES -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.comisiones"/>
+															&nbsp;
+<% 
+															if (comisiones.equals(ClsConstants.DB_TRUE)) { 
+%>
+																<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> checked />
+<% 
+															} else { 
+%>
+																<input type="checkbox" name="comisiones" id="comisiones" value="<%=ClsConstants.DB_TRUE %>"  <%=checkreadonly %> />
+<% 
+															} 
+%>
+														</td>
+													</tr>
+												
+													<tr>
+														<td class="labelText" style="width:100px">
+															<!-- CUENTA CONTABLE -->
+															<siga:Idioma key="censo.consultaDatosGenerales.literal.cuentaContable"/>
+														</td>
+														<td style="width:320px">
+<% 
+															if (!user.isLetrado()) { 
+%>
+																<html:text name="datosGeneralesForm" property="cuentaContable" styleId="cuentaContable" size="10" styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" value="<%=cuentaContable %>" />
+<% 
+															} else { 
+%>
 																<html:hidden name="datosGeneralesForm" property="cuentaContable" styleId="cuentaContable" value="<%=cuentaContable %>"></html:hidden>
-														<% }  %>
-													</td>
-												</tr>
-												<tr>
-													<td class="labelText" style="width:100px">
-														<siga:Idioma key="censo.general.literal.anotaciones"/>
-													</td>
-													<td style="width:320px">
-														<html:textarea name="datosGeneralesForm" property="anotaciones" styleId="anotaciones" 
-															onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)"
-															style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;" 
-															styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
-													</td>
-												</tr>
-											</table>
-										</siga:ConjCampos>		
-									</td>
-									<td  style="width:300px">
+<% 
+															}  
+%>
+														</td>
+													</tr>
+													
+													<tr>
+														<td class="labelText" style="width:100px">
+															<siga:Idioma key="censo.general.literal.anotaciones"/>
+														</td>
+														<td style="width:320px">
+															<html:textarea name="datosGeneralesForm" property="anotaciones" styleId="anotaciones" 
+																onKeyDown="cuenta(this,2000)" onChange="cuenta(this,2000)"
+																style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;" 
+																styleClass="<%=estiloCaja %>" readonly="<%=breadonly %>" />
+														</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>		
+										</td>
+										<td  style="width:300px">
 											<!-- INICIO: IFRAME LISTA RESULTADOS -->
 											<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-															id="resultado"
-															name="resultado" 
-															scrolling="no"
-															frameborder="1"
-															marginheight="0"
-															marginwidth="0";					 
-															style="width:100%; height:100%;">
-											</iframe>
+												id="resultado"
+												name="resultado" 
+												scrolling="no"
+												frameborder="1"
+												marginheight="0"
+												marginwidth="0"					 
+												style="width:100%; height:100%;"></iframe>
 											<!-- FIN: IFRAME LISTA RESULTADOS -->
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table><!-- Tabla columna principal -->	
-			</td>
-		</tr>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table><!-- Tabla columna principal -->	
+				</td>
+			</tr>
+		</table>
+		
 		<input type="hidden" name="prefijoOld" id="prefijoOld" value="">
    		<input type="hidden" name="sufijoOld" id="sufijoOld" value="">
-   		<input type="hidden" name="tipoBloqueado" value="">
-   		   		
-		</html:form>
-	</table>
+   		<input type="hidden" name="tipoBloqueado" value="">   		   		
+	</html:form>
 
 <% 
 	// BOTONES ACCION
@@ -1004,8 +1115,6 @@
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
 		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />
 	</html:form>
-
-
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -1017,8 +1126,7 @@
 		}
 		
 		//Método que valida el CIF de una nueva sociedad
-		function validarCIF(cif)
-		{
+		function validarCIF(cif) {
         	var pares = 0; 
         	var impares = 0; 
         	var suma; 
@@ -1307,15 +1415,12 @@
 		}		
 	</script>
 
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-
-
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
