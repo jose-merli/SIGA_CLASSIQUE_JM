@@ -16,7 +16,6 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
@@ -28,10 +27,8 @@
 <!-- JSP -->
 <%
 	String titu = "censo.busquedaClientes.literal.titulo";
-	String busc = "censo.busquedaClientes.literal.titulo";
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
-
 	
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	ScsCabeceraGuardiasBean cabeceraGuardias = new ScsCabeceraGuardiasBean();
@@ -44,8 +41,8 @@
 
 	// Combo guardias = identificardor 2
 	ArrayList elementoSel = new ArrayList();
-	String aaaaaqaq = "" + institucion + "," + idguardia;
-	elementoSel.add(aaaaaqaq);
+	String aux = "" + institucion + "," + idguardia;
+	elementoSel.add(aux);
 	ses.setAttribute("art27","0");
 %>
 
@@ -74,7 +71,7 @@
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="<%=titu %>"/>
+				<siga:Idioma key="<%=titu%>"/>
 			</td>
 		</tr>
 	</table>
@@ -93,9 +90,9 @@
 
 		<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
 			<table class="tablaCampos" align="center">
-				<tr>
-					<logic:notEmpty name="busquedaClientesFiltrosForm" property="concepto">
-						<td class="labelText">
+				<logic:notEmpty name="busquedaClientesFiltrosForm" property="concepto">
+					<tr>					
+						<td class="labelText" width="90px">
 							<siga:Idioma key="gratuita.busquedaSJCS.literal.filtro" />&nbsp;
 						</td>
 						<td>
@@ -119,31 +116,29 @@
 									<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 								</logic:equal>
 							</select>
-						</td>
-					</logic:notEmpty>
-					
-					<logic:empty name="busquedaClientesFiltrosForm" property="concepto">
-						<td class="labelText" colspan="2">
-						</td>
-					</logic:empty>
-				</tr>
+						</td>					
+					</tr>
+				</logic:notEmpty>
 				
 				<tr>
-					<td id="labelTurno" class="labelText">
+					<td id="labelTurno" class="labelText" width="90px">
 						<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />
 					</td>
 					<td>
-						<div id="identificadorDiv" style="display: inline">
-							<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="240" />
+						<div id="identificadorDiv">
+							<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="850" />
 						</div>
 					</td>
-					
-					<td id="labelGuardia" class="labelText">
+				</tr>
+				
+				<tr>					
+					<td id="labelGuardia" class="labelText" width="90px">
 						<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />
 					</td>
 					<td>
-						<div id="selecGuardia" style="display: inline">
-							<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="240" /> &nbsp;
+						<div id="selecGuardia">
+							<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="850" /> 
+							&nbsp;
 							<img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>">
 						</div>
 					</td>
@@ -219,7 +214,7 @@
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
-	<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="<%=busc%>" />
+	<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="<%=titu%>" />
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
