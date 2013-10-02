@@ -75,8 +75,8 @@
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo 
-			titulo="expedientes.auditoria.documentacion.cabecera" 
-			localizacion="expedientes.auditoria.literal.localizacion"/>
+			titulo="censo.fichaCliente.regtel.cabecera" 
+			localizacion="gratuita.busquedaEJG.localizacion"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
@@ -91,7 +91,7 @@
 		
 	</script>
 
-	<body class="detallePestanas" onload="cargarCollection()">	
+	<body class="detallePestanas" onload="cargarCollection();ajusteAlto('resultado1')">	
 
 		<table class="tablaTitulo" align="center" cellspacing="0">
 		<html:form action="/JGR_EJG_DocumentacionRegTel.do?noReset=true" method="POST" target="submitArea">

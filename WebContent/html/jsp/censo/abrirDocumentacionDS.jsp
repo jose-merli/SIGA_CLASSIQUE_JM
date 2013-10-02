@@ -87,7 +87,7 @@
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:TituloExt 
+		<siga:Titulo 
 			titulo="censo.fichaCliente.regtel.cabecera" 
 			localizacion="censo.fichaLetrado.localizacion"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->

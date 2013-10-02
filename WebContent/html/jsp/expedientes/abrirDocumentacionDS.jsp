@@ -69,8 +69,8 @@
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<siga:Titulo 
-			titulo="expedientes.auditoria.documentacion.cabecera" 
-			localizacion="expedientes.auditoria.literal.localizacion"/>
+			titulo="censo.fichaCliente.regtel.cabecera" 
+			localizacion="expedientes.auditoria.localizacion"/>
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	</head>
@@ -83,7 +83,7 @@
 		}
 	</script>
 
-	<body class="detallePestanas" onload="cargarCollection()">	
+	<body class="detallePestanas" onload="cargarCollection();ajusteAlto('resultado1')">	
 
 		<table class="tablaTitulo" align="center" cellspacing="0">
 		<html:form action="/EXP_Auditoria_DocumentacionRegTel.do" method="POST" target="submitArea">
