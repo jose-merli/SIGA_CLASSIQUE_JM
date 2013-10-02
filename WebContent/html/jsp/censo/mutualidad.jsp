@@ -1095,7 +1095,6 @@ function habilitarCampos(isHabilitar) {
 			jQuery('#botonera').hide();
 		}
 		cargaCombos();
-		ajusteAlto('divSolicitud');
 		if("${MutualidadForm.idTipoSolicitud}"=="P" ){
 			jQuery('#divSolicitud').css("overflow-y","auto");
 		}
