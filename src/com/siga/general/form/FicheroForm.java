@@ -13,7 +13,9 @@ import com.siga.general.MasterForm;
  */
 public class FicheroForm extends MasterForm {
 	private FormFile theFile;
+	private String directorioArchivo;
 	private String nombreArchivo;
+	private String descripcionArchivo;
 	private String extensionArchivo;
 	private String fechaArchivo;
 	
@@ -117,4 +119,17 @@ public class FicheroForm extends MasterForm {
 	public void setIdFichero(String idFichero) {
 		this.idFichero = idFichero;
 	}
+	public String getDescripcionArchivo() {
+		return descripcionArchivo;
+	}
+	public void setDescripcionArchivo(String descripcionArchivo) {
+		this.descripcionArchivo = descripcionArchivo;
+	}
+	public String getDirectorioArchivo() {
+		return directorioArchivo;
+	}
+	public void setDirectorioArchivo(String directorioArchivo) {
+		this.directorioArchivo = directorioArchivo;
+	}
+	
 }

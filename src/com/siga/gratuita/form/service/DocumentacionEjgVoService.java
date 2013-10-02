@@ -7,10 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
-
-
 
 import com.siga.comun.VoUiService;
 import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
@@ -73,7 +70,6 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 			try {
 				documentacionEjgVo.setFechalimite(sdf.parse(objectForm.getFechaLimite()));
 			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		
@@ -81,37 +77,38 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 			try {
 				documentacionEjgVo.setFechaentrega(sdf.parse(objectForm.getFechaEntrega()));
 			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		
 		}
-		
-		if(objectForm.getTheFile()!=null){
-			try {
-				documentacionEjgVo.setFichero(objectForm.getTheFile().getFileData());
-				documentacionEjgVo.setNombreArchivo(objectForm.getNombreArchivo());
-				if(objectForm.getTheFile().getFileName().lastIndexOf(".")!=-1)
-					documentacionEjgVo.setExtensionArchivo(objectForm.getTheFile().getFileName().substring(objectForm.getTheFile().getFileName().lastIndexOf(".")+1));
+		try {
+			if(objectForm.getTheFile()!=null && objectForm.getTheFile().getFileData()!=null && objectForm.getTheFile().getFileData().length>0){
 				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else{
-			documentacionEjgVo.setNombreArchivo(objectForm.getNombreArchivo());
-			documentacionEjgVo.setExtensionArchivo(objectForm.getExtensionArchivo());
-			if(objectForm.getFechaArchivo()!=null && !objectForm.getFechaArchivo().equals("")){
-				try {
-					documentacionEjgVo.setFechaArchivo(sdf.parse(objectForm.getFechaArchivo()));
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					documentacionEjgVo.setFichero(objectForm.getTheFile().getFileData());
+					documentacionEjgVo.setDescripcionArchivo(objectForm.getDescripcionArchivo());
+					if(objectForm.getTheFile().getFileName().lastIndexOf(".")!=-1)
+						documentacionEjgVo.setExtensionArchivo(objectForm.getTheFile().getFileName().substring(objectForm.getTheFile().getFileName().lastIndexOf(".")+1));
+					
+				
+			}else{
+				documentacionEjgVo.setNombreArchivo(objectForm.getNombreArchivo());
+				documentacionEjgVo.setDirectorioArchivo(objectForm.getDirectorioArchivo());
+				documentacionEjgVo.setDescripcionArchivo(objectForm.getDescripcionArchivo());
+				documentacionEjgVo.setExtensionArchivo(objectForm.getExtensionArchivo());
+				if(objectForm.getFechaArchivo()!=null && !objectForm.getFechaArchivo().equals("")){
+					try {
+						documentacionEjgVo.setFechaArchivo(sdf.parse(objectForm.getFechaArchivo()));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
 				}
-			}
-		
 			
+				
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		documentacionEjgVo.setBorrarFichero(Boolean.parseBoolean(objectForm.getBorrarFichero()));
 		return documentacionEjgVo;
@@ -148,7 +145,9 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		if(objectVo.getIdfichero()!=null && !objectVo.getIdfichero().equals("")){
 			definirDocumentacionEJGForm.setIdFichero(objectVo.getIdfichero().toString());
 			definirDocumentacionEJGForm.setExtensionArchivo(objectVo.getExtensionArchivo());
+			definirDocumentacionEJGForm.setDirectorioArchivo(objectVo.getDirectorioArchivo());
 			definirDocumentacionEJGForm.setNombreArchivo(objectVo.getNombreArchivo());
+			definirDocumentacionEJGForm.setDescripcionArchivo(objectVo.getDescripcionArchivo());
 			
 			definirDocumentacionEJGForm.setFechaArchivo(sdf.format(objectVo.getFechaArchivo()));
 		}

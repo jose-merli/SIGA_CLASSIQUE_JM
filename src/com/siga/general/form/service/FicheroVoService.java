@@ -22,17 +22,7 @@ import com.siga.general.form.FicheroForm;
  *
  */
 public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
-	public List<FicheroVo> getDb2VoList(List<GenFichero> dbList){
-			
-		List<FicheroVo> objectVos = new ArrayList<FicheroVo>();
-		FicheroVo  objectVo = null;
-		for (GenFichero genFichero : dbList) {
-			objectVo = getDb2Vo(genFichero);
-			objectVos.add(objectVo);
-			
-		}
-		return objectVos;
-	}
+	
 	@Override
 	public List<FicheroForm> getVo2FormList(
 			List<FicheroVo> voList) {
@@ -79,6 +69,7 @@ public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
 		if(objectForm.getTheFile()!=null){
 			try {
 				objectVo.setFichero(objectForm.getTheFile().getFileData());
+				objectVo.setDescripcion(objectForm.getDescripcionArchivo());
 				objectVo.setNombre(objectForm.getNombreArchivo());
 				if(objectForm.getTheFile().getFileName().lastIndexOf(".")!=-1)
 					objectVo.setExtension(objectForm.getTheFile().getFileName().substring(objectForm.getTheFile().getFileName().lastIndexOf(".")+1));
@@ -106,8 +97,11 @@ public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
 			ficheroForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		ficheroForm.setExtensionArchivo(objectVo.getExtension());
+		ficheroForm.setNombreArchivo(objectVo.getNombre());
+		ficheroForm.setDirectorioArchivo(objectVo.getDirectorio());
 		if(objectVo.getFechamodificacion()!=null)
 			ficheroForm.setFechaArchivo(sdf.format(objectVo.getFechamodificacion()));
+		ficheroForm.setDescripcionArchivo(objectVo.getDescripcion());
 		ficheroForm.setNombreArchivo(objectVo.getNombre());
 		if(objectVo.getIdfichero()!=null)
 			ficheroForm.setIdFichero(objectVo.getIdfichero().toString());
@@ -115,33 +109,8 @@ public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
 			
 		return ficheroForm;
 	}
-	/* (non-Javadoc)
-	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getVo2Db(java.lang.Object)
-	 */
-	public GenFichero getVo2Db(FicheroVo objectVo) {
-		GenFichero genFichero = new GenFichero();
-		genFichero.setExtension(objectVo.getExtension());
-		genFichero.setNombre(objectVo.getNombre());
-		genFichero.setIdfichero(objectVo.getIdfichero());
-		genFichero.setIdinstitucion(objectVo.getIdinstitucion());
-		genFichero.setFechamodificacion(objectVo.getFechamodificacion());
-		genFichero.setUsumodificacion(objectVo.getUsumodificacion());
-		return genFichero;
-	}
-	/* (non-Javadoc)
-	 * @see org.redabogacia.sigaservices.app.vo.services.VoService#getDb2Vo(java.lang.Object)
-	 */
-	public FicheroVo getDb2Vo(GenFichero objectDb) {
-		FicheroVo ficheroVo = new FicheroVo();
-		ficheroVo.setExtension(objectDb.getExtension());
-		ficheroVo.setNombre(objectDb.getNombre());
-		ficheroVo.setIdfichero(objectDb.getIdfichero());
-		ficheroVo.setIdinstitucion(objectDb.getIdinstitucion());
-		ficheroVo.setFechamodificacion(objectDb.getFechamodificacion());
-		ficheroVo.setUsumodificacion(objectDb.getUsumodificacion());
-		return ficheroVo;
-	}
-
+	
+	
 
 
 

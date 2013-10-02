@@ -11,7 +11,7 @@
 <div id ="divFicheros">
 	<siga:ConjCampos leyenda="administracion.informes.literal.archivo">
 		<c:choose>
-			<c:when test="${FicheroForm.nombreArchivo==null }">
+			<c:when test="${FicheroForm.descripcionArchivo==null }">
 				<c:choose>
 					<c:when test="${action=='ver'}">
 						<table>
@@ -95,7 +95,7 @@
 						<tr class="filaTablaPar">
 							<td align='left'>
 							<html:hidden styleId="idFichero" property = "idFichero" />
-							<c:out value="${FicheroForm.nombreArchivo}"/></td>
+							<c:out value="${FicheroForm.descripcionArchivo}"/></td>
 							<td align='left'><c:out value="${FicheroForm.extensionArchivo}"/></td>
 							<td align='left'><c:out value="${FicheroForm.fechaArchivo}"/></td>
 							<td name='celda' id='idFilaBotones_1' align="left">	&nbsp;

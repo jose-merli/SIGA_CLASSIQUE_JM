@@ -55,6 +55,8 @@
 	<html:hidden styleId="extensionArchivo" property = "extensionArchivo"/>
 	<html:hidden styleId="fechaArchivo" property = "fechaArchivo"/>
 	<html:hidden styleId="nombreArchivo" property = "nombreArchivo"/>
+	<html:hidden styleId="descripcionArchivo" property = "descripcionArchivo"/>
+	<html:hidden styleId="directorioArchivo" property = "directorioArchivo"/>
 	<html:hidden styleId="numEjg" property = "numEjg" />
 	<html:hidden styleId="borrarFichero" property = "borrarFichero" />
 	<html:hidden styleId="idFichero" property = "idFichero" />
@@ -277,11 +279,8 @@
 				
 				
 			if(document.forms['DefinirDocumentacionEJGForm'].theFile && document.forms['DefinirDocumentacionEJGForm'].theFile.value!=''){
-					//document.forms['DefinirDocumentacionEJGForm'].nombreArchivo.value = "Pendiente sacar el text del combo BD";
-				document.forms['DefinirDocumentacionEJGForm'].nombreArchivo.value = jQuery("#idDocumento").find("option:selected").text();
+				document.forms['DefinirDocumentacionEJGForm'].descripcionArchivo.value = jQuery("#idDocumento").find("option:selected").text();
 			}
-				//alertStop("iddoc sel:"+document.forms['DefinirDocumentacionEJGForm'].idDocumento.value);
-				//alertStop("iddoc ant:"+document.forms['DefinirDocumentacionEJGForm'].idDocumentoAnterior.value);
 			if(document.forms['DefinirDocumentacionEJGForm'].idFichero && document.forms['DefinirDocumentacionEJGForm'].idFichero.value!='' && (document.forms['DefinirDocumentacionEJGForm'].idDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idDocumentoAnterior.value ||
 					document.forms['DefinirDocumentacionEJGForm'].presentador.value!=document.forms['DefinirDocumentacionEJGForm'].presentadorAnterior.value ||
 					document.forms['DefinirDocumentacionEJGForm'].idTipoDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idTipoDocumentoAnterior.value) ){
@@ -309,20 +308,19 @@
 		
 		function onLoad()
 		{
-			if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+			/*if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
 				jQuery("#divFicheros").css("display", "none");
-
-
 			}
+			*/
 		}
 		jQuery(function(){
 			jQuery("#idDocumento").on("change", function(){
-				if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+				/*if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
 					if(document.forms['DefinirDocumentacionEJGForm'].idDocumento.value=='')
 						jQuery("#divFicheros").css("display", "none");
 					else
 						jQuery("#divFicheros").css("display", "block");
-				}
+				}*/
 			});
 		});
 		

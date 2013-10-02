@@ -248,7 +248,15 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("idDocumentoSelected",new ArrayList<String>() );
 			request.setAttribute("accionModo", "editar");
 			miForm.setModo("insertar");
-			request.setAttribute("permisoFicheros", "");
+			try {
+				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
+				request.setAttribute("permisoFicheros", permisoFicheros);
+			} catch (ClsExceptions e) {
+				throw new SIGAException(e.getMsg());
+			}finally{
+				//hacemos lo siguiente para setear el permiso de esta accion
+				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+			}
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -467,7 +475,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
-			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();			
+			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			File file = documentacionEjgService.getFile(documentacionEjgVo);
 			request.setAttribute("nombreFichero", file.getName());
 			request.setAttribute("rutaFichero", file.getPath());
@@ -491,7 +500,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
-			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();		
+			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
 			documentacionEjgService.borrarFichero(documentacionEjgVo);
 
