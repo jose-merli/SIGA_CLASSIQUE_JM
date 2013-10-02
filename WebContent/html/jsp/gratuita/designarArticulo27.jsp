@@ -279,7 +279,7 @@
 					document.getElementById("fax1").value 	= resultado[16];
 					document.getElementById("telefono1").value 			= resultado[12];
 					document.getElementById("domicilio").value 			= resultado[7];
-					document.getElementById("codigoPostal").value 		= resultado[11];
+					document.getElementById("domicilio").value 			= resultado[11].replace(/\r\n|\r|\n/g, " ");
 					document.getElementById("pais").value 				= resultado[10];
 					selPais(resultado[10]);
 			
@@ -771,7 +771,7 @@
 		restablecerComboPoblacion();
 		document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 		document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
-		document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
+		document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value.replace(/\r\n|\r|\n/g, " ");
 		document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
 		selPais(document.datosGeneralesForm.pais.value);
 
@@ -884,8 +884,10 @@
 						jQuery("#direcciones").attr("disabled","disabled");
 						document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 						document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
-						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value;
 						document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
+						//QUitamos los salto de linea a la dirección
+						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value.replace(/\r\n|\r|\n/g, " ");
+						
 						selPais(datosGeneralesForm.pais.value);	
 						if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana){
 							datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
