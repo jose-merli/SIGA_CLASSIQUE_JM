@@ -495,7 +495,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
 				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
 			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
-				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
+				" EJG." + ScsEJGBean.C_NUMEJG + " ASC " + 
 			") DATOS";
 		
        try{    	   	    	   			
