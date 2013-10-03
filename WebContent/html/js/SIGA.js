@@ -153,7 +153,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.105 2013-10-01 07:30:25 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.106 2013-10-03 07:38:29 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -569,7 +569,7 @@ function jQueryLoaded(){
 				}
 			}
 		});
-		if (window == window.top){
+		if (window == window.top && jQueryTop != undefined){
 		// MouseWheel
 		   jQueryTop(document).on("mousewheel", "#ui-datepicker-div", function(e){
 			   try{
