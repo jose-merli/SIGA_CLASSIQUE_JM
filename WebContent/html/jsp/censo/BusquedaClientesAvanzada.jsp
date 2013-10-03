@@ -193,48 +193,19 @@
 	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->	
 		<script language="JavaScript">
-		
-			function validarFechas() {
-				if (document.forms[0].fechaNacimientoDesde.value != "" && validaFechafechaNacimientoDesde(document.forms[0].fechaNacimientoDesde) != 0)
-					return false;
-				
-				if (document.forms[0].fechaNacimientoHasta.value != "" && validaFechafechaNacimientoHasta(document.forms[0].fechaNacimientoHasta) != 0)
-					return false;
-				
-				<% if (colegiado.equals(ClsConstants.DB_TRUE) || colegiado.equals("2")){ %>
-					if (document.forms[0].fechaIncorporacionDesde.value != "" && validaFechafechaIncorporacionDesde(document.forms[0].fechaIncorporacionDesde) != 0)
-						return false;				
-				
-					if (document.forms[0].fechaIncorporacionHasta.value != "" && validaFechafechaIncorporacionHasta(document.forms[0].fechaIncorporacionHasta) != 0)
-						return false;
-				<%}%>					
-					
-				if (document.forms[0].fechaAltaDesde.value != "" && validaFechafechaAltaDesde(document.forms[0].fechaAltaDesde) != 0)
-					return false;				
-				
-				if (document.forms[0].fechaAltaHasta.value != "" && validaFechafechaAltaHasta(document.forms[0].fechaAltaHasta) != 0)
-					return false;
-				
-				return true;
-			}
 	
 			// Funcion asociada a boton buscar
 			function buscar(modo) {		
 				sub();
+							
+				if(modo)
+					document.forms[0].modo.value = modo;
+				else
+					document.forms[0].modo.value="buscarInit";
 				
-				if (validarFechas()) {				
-					if(modo)
-						document.forms[0].modo.value = modo;
-					else
-						document.forms[0].modo.value="buscarInit";
-					
-					document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
-					document.forms[0].target="mainWorkArea";	
-					document.forms[0].submit();
-				} else {
-					fin();
-					return false;
-				}
+				document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();
 			}
 			
 			function seleccionarTodos(pagina) {
