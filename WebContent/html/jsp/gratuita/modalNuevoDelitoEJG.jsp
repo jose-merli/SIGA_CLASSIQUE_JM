@@ -23,13 +23,13 @@
 <%@ page import="com.siga.gratuita.form.PestanaDelitoEJGForm"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="com.siga.Utilidades.*"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	String profile[]=usr.getProfile();
-	
 	
 	PestanaDelitoEJGForm formulario = (PestanaDelitoEJGForm)request.getAttribute("pestanaDelitoEJGForm");
 	String anio = formulario.getAnio().toString();
@@ -38,11 +38,7 @@
 	String parametro[] = {usr.getLocation(), usr.getLocation(), numero, anio, idTipoEJG};
 %>
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
@@ -50,78 +46,73 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
+
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 </head>
 
 <body>
-
-<!-- TITULO -->
-<!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
-<tr>
-	<td id="titulo" class="titulitosDatos">
-		<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
-	</td>
-</tr>
-</table>
-	
-<div id="camposRegistro" class="posicionModalPeque" align="center">
-
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center">
-	
-	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_DelitosEJG.do" method="post">
-		<html:hidden property = "modo" value = ""/>
-		<!-- Datos de la pestanha -->
-		<html:hidden name="pestanaDelitoEJGForm" property="anio" />
-		<html:hidden name="pestanaDelitoEJGForm" property="numero" />
-		<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
-
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
-	<tr>			
-		<td>		
-		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.delito">
-			<table class="tablaCampos" align="center">
-			<tr>
-				<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
-				</td>
-				<td>
-					<%
-					HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
-					hmDeligosparams.put("numero", numero);
-					hmDeligosparams.put("anio", anio);
-					hmDeligosparams.put("idtipoejg", idTipoEJG);
-					String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
-					%>
-					<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true"/>
-				</td>
-			</tr>
-			</table>
-		</siga:ConjCampos>		
-		</td>
-	</tr>
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
+			</td>
+		</tr>
 	</table>
-	</html:form>			
+	
+	<div id="camposRegistro" class="posicionModalPeque" align="center">
+
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table class="tablaCentralCamposPeque" align="center">
+	
+			<!-- Comienzo del formulario con los campos -->	
+			<html:form action="/JGR_DelitosEJG.do" method="post">
+				<html:hidden property = "modo" value = ""/>
+				<!-- Datos de la pestanha -->
+				<html:hidden name="pestanaDelitoEJGForm" property="anio" />
+				<html:hidden name="pestanaDelitoEJGForm" property="numero" />
+				<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
+
+				<!-- INICIO: CAMPOS DEL REGISTRO -->
+				<tr>			
+					<td>		
+						<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.delito">
+							<table class="tablaCampos" align="center">
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
+									</td>
+									<td>
+<%
+										HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
+										hmDeligosparams.put("numero", numero);
+										hmDeligosparams.put("anio", anio);
+										hmDeligosparams.put("idtipoejg", idTipoEJG);
+										String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
+%>
+										<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true" width="330"/>
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>		
+					</td>
+				</tr>
+			</table>
+		</html:form>			
 	
 		<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
 
-	<!-- FIN: BOTONES REGISTRO -->
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
-
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{	
+		<!-- FIN: BOTONES REGISTRO -->
+		<!-- INICIO: SCRIPTS BOTONES -->
+		<script language="JavaScript">
+	
+			// Asociada al boton GuardarCerrar
+			function accionGuardarCerrar() {	
 				sub();
 				if (validatePestanaDelitoEJGForm(document.pestanaDelitoEJGForm)) {
 						document.forms[0].modo.value = "insertar";
@@ -132,26 +123,23 @@
 					fin();
 					return false;
 				}
-		}
-
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-			top.cierraConParametros("NORMAL");
-		}		
-
-	</script>
-	<!-- FIN: SCRIPTS BOTONES -->
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-</div>
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-
+			}
+	
+			// Asociada al boton Cerrar
+			function accionCerrar()  {		
+				top.cierraConParametros("NORMAL");
+			}		
+	
+		</script>
+		<!-- FIN: SCRIPTS BOTONES -->
+		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	
+	</div>
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>
