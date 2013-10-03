@@ -20,7 +20,7 @@
 <%@page import="java.util.Hashtable"%>
 <%@page import="com.siga.beans.CenPersonaBean"%>
 <%@page import="com.siga.beans.CenClienteBean"%>
-<%@page import="java.io.File"%><html:html>
+<%@page import="java.io.File"%>
 
 <% 
 	String app=request.getContextPath();
