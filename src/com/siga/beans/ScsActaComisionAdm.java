@@ -358,7 +358,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(" and sol." + ScsPersonaJGBean.C_IDPERSONA+ "(+) = ejg." + ScsEJGBean.C_IDPERSONAJG);
 		consulta.append(" and ejg.idtiporatificacionejg =  r.idtiporesolucion(+) ");
 		
-		consulta.append(" order by NVL2(EJG.IDTIPORATIFICACIONEJG, 0,1) desc, ejg.ANIO, ejg.NUMERO  ");
+		consulta.append(" order by NVL2(EJG.IDTIPORATIFICACIONEJG, 0,1) desc, ejg.ANIO, ejg.NUMEJG  ");
 //		consulta.append(" order by  IDTIPORATIFICACIONEJG desc, ejg." + ScsEJGBean.C_ANIO + "  , ejg." + ScsEJGBean.C_NUMERO + " ");
 		
 		if (rc.find(consulta.toString())) {
