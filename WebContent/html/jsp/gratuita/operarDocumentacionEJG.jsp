@@ -308,19 +308,19 @@
 		
 		function onLoad()
 		{
-			/*if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+			if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
 				jQuery("#divFicheros").css("display", "none");
 			}
-			*/
+			
 		}
 		jQuery(function(){
 			jQuery("#idDocumento").on("change", function(){
-				/*if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
+				if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
 					if(document.forms['DefinirDocumentacionEJGForm'].idDocumento.value=='')
 						jQuery("#divFicheros").css("display", "none");
 					else
 						jQuery("#divFicheros").css("display", "block");
-				}*/
+				}
 			});
 		});
 		
