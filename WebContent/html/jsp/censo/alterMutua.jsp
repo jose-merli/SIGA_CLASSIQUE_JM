@@ -435,7 +435,7 @@ function habilitarCampos(isHabilitar) {
 				      <html:text styleId="IBAN" maxlength="30" property="iban" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 				
-				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.swift"/>SWIFT</td>	
+				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.swift"/></td>	
 				<td class="cuentaExtranjera labelText">
 				      <html:text styleId="SWIFT" maxlength="11" property="swift" styleClass="${estiloText} requiredText"></html:text>
 				</td>
