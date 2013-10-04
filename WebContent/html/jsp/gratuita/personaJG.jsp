@@ -1106,7 +1106,6 @@
 	<body class="tablaCentralCampos">
 		<script type="text/javascript">
 			jQuery(document).ready(function(){
-				ajusteAlto('resultado');
 				recargar();
 				comprobarTipoPersona();
 				proFechaNac();
@@ -2215,10 +2214,14 @@
 									<td rowspan=2>
 										<siga:ConjCampos leyenda="gratuita.personaJG.literal.telefonos">
 											<iframe align="top" 
-											src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
-											id="resultado" name="resultado" scrolling="no" frameborder="0"
-											marginheight="0" marginwidth="0"
-											style="width:500px; height:85px;" ></iframe>
+												src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
+												id="resultado" 
+												name="resultado" 
+												scrolling="no" 
+												frameborder="0"
+												marginheight="0" 
+												marginwidth="0"
+												style="width:400px; height:150px;" ></iframe>
 										</siga:ConjCampos>
 									</td>							
 								</tr>
@@ -2495,9 +2498,13 @@
 							<td colspan="2">
 								<siga:ConjCampos leyenda="gratuita.personaJG.literal.telefonos">
 									<iframe src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
-										id="resultado" name="resultado" scrolling="no" frameborder="0"
-										marginheight="0" marginwidth="0"
-										style="width:400px; height:90px;" ></iframe>
+										id="resultado" 
+										name="resultado" 
+										scrolling="no" 
+										frameborder="0"
+										marginheight="0" 
+										marginwidth="0"
+										style="width:400px; height:150px;"></iframe>
 								</siga:ConjCampos>
 							</td>
 						</tr>
@@ -3671,85 +3678,78 @@ function buscar() {
 		proFechaNac();
 	}
 }
-//función para obtener los valores de los telefonos para una persona
-function getDatos() {
-	table = resultado.document.getElementById("tablaTelefono");
-	filas = table.rows.length;
-	// Datos Lista de Telefonos.	
-	
-	var datos = "";
-	var accion = "";
 
-	 if(filas!=0){  
+	//función para obtener los valores de los telefonos para una persona
+	function getDatos() {
+		var tablaDatos = jQuery("#resultado").contents().find("#tablaTelefonos_BodyDiv tbody");	
+		var numTotalElementos = tablaDatos.children().length;
+		var datos = "";
+		
+		if (numTotalElementos > 0) {		
+			tablaDatos.find("tr").each(function(){
+				var identificadorFila = this.id;
+				var numeroFila = identificadorFila.split("_")[1];
+				
+				var validado = validarDatosFila (numeroFila);            
+				if (!validado) {			
+					fin();				
+					return false;
+				} 
+				
+				var nombreTelefonoJG = jQuery(this).find("#nombreTelefonoJG_" + numeroFila).val();
+				datos += 'nombreTelefonoJG=' + nombreTelefonoJG;
+				datos += '$$~';
+				
+				var numeroTelefonoJG = jQuery(this).find("#numeroTelefonoJG_" + numeroFila).val();
+				datos += 'numeroTelefonoJG='+numeroTelefonoJG;
+				datos += '$$~';
+				
+				var preferenteSms = jQuery(this).find("#preferenteSms_" + numeroFila).val();
+				datos += 'preferenteSms='+preferenteSms;		
+				datos += "%%%";
+			});			
 			
-		for (a = 0; a < filas ; a++) {
+		 } else { 
+			 return true;
+		 }
+		
+		document.PersonaJGForm.lNumerosTelefonos.value = datos;	 	
+		return datos;
+	}
 
-			i = table.rows[a].id.split("_")[1];
-
-			var validado = validarDatosFila (i);            
-			if (!validado) {			
-				fin();				
-				return false;
-			} 
-			
-			nombreTelefonoJG = resultado.document.getElementById("nombreTelefonoJG_" + i).value;
-			if(nombreTelefonoJG=='-1')
-				nombreTelefonoJG ="";				
-			datos += 'nombreTelefonoJG='+nombreTelefonoJG;
-			datos += '$$~';
-			
-			numeroTelefonoJG = resultado.document.getElementById("numeroTelefonoJG_" + i).value;
-			if(numeroTelefonoJG=='-1')
-				numeroTelefonoJG ="";			
-			datos += 'numeroTelefonoJG='+numeroTelefonoJG;
-			datos += '$$~';
-			
-			preferenteSms= resultado.document.getElementById("preferenteSms_" + i).value;
-			if(preferenteSms=='-1')
-				preferenteSms ="";		
-			datos += 'preferenteSms='+preferenteSms;		
-			datos += "%%%";
-			
-					
-		}
-	 }else return true;
-	document.PersonaJGForm.lNumerosTelefonos.value = datos;	 	
-	
-	return datos;
-}
-
-
-
-function validarDatosFila (fila)  
-{
-	var campo = "";
-	var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
-	
-	   
-	    if (resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='-1' || resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='') {
+	function validarDatosFila (fila) {		
+		var numeroTelefonoJG = jQuery("#resultado").contents().find("#nombreTelefonoJG_" + fila).val();
+		
+		var campo = "";
+		var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
+		
+		   
+		if (numeroTelefonoJG=='-1' || numeroTelefonoJG=='') {
 			campo = "<siga:Idioma key='gratuita.personaJG.literal.numeroTelefono'/>" ;
-			alert ( campo + " "+ obligatorio);			
+			alert (campo + " " + obligatorio);			
 			return false;
-		}    
-	    valor=validartelefono(resultado.document.getElementById("numeroTelefonoJG_"+fila).value);	 
-	    if(!valor){
-	    	campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.telefono'/>" ;
-			alert (campo);			
-		 return false;
 		}
-	 
-		  
- return true;	    
-}
+		
+		valor = validartelefono(numeroTelefonoJG);	 
+		if (!valor){
+			campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.telefono'/>" ;
+			alert (campo);			
+			return false;
+		}
+			  
+	 	return true;	    
+	}
 
-function validartelefono(valor){
-	if((/^\+\d+$/.test(valor)))					
-		return true;
-	if((/^\d+$/.test(valor)))					
-		return true;	
-	//otherwise
-	return false;
-}
+	function validartelefono(valor){
+		if((/^\+\d+$/.test(valor)))					
+			return true;
+		
+		if((/^\d+$/.test(valor)))					
+			return true;
+		
+		//otherwise
+		return false;
+	}
 
 function valorprimerdigito(valor){	
 	var premerdigito = valor.substring(0, 1);	
