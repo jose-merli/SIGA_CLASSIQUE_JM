@@ -251,7 +251,7 @@
 			var idFila = "preferenteSms_" + fila;
 			
 			jQuery("input:checkbox").each(function(){
-				if (this.id == idFila) {
+				if (this.id == idFila && this.checked) {
 					this.value = '1';
 				} else {
 					this.value = '0';
