@@ -52,7 +52,8 @@
 							" class='button'" + 
 							" name='idButtoninsertar'" +
 							" value='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "'" + 
-							" alt='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "'" + 
+							" alt='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "'" +
+							" title='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "'" +
 							" onclick='accioninsertar();'>";
 %>
 
@@ -63,7 +64,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
 
-<body>
+<body onload="iniciarVariablesTelefonos ()">
 	<!-- CAMPOS DEL REGISTRO -->
 	<html:form action="/JGR_TelefonosPersonasJG" method="POST" target="submitArea" style="display:none">
 		<html:hidden property="modo" value="" />
@@ -122,7 +123,8 @@
 						<td>
 							<img src='/SIGA/html/imagenes/bborrar_off.gif'
 								style='cursor:hand'
-								alt='<siga:Idioma key="general.borrar"/>' 
+								alt='<siga:Idioma key="general.borrar"/>'
+								title='<siga:Idioma key="general.borrar"/>'  
 								name='' 
 								border='0'
 								onclick='borrarFila(<bean:write name="index"/>)' />
@@ -171,7 +173,13 @@
 	}
 %>		
 
-	<script type="text/javascript">	
+	<script type="text/javascript">
+		var numMaximoElementos = 0;	
+		function iniciarVariablesTelefonos () {
+			var tablaDatos = jQuery("#tablaTelefonos_BodyDiv tbody");
+			numMaximoElementos = tablaDatos.children().length;
+		}
+	
 		function refrescarLocal(){
 			buscarTelefonos();
 		}	
@@ -185,13 +193,13 @@
 		//función que inserta una fila para introducir un numero de telefono
 		function accioninsertar() {		
 			var tablaDatos = jQuery("#tablaTelefonos_BodyDiv tbody");
+			numTotalElementos = tablaDatos.children().length;
 			var tablaHead = jQuery("#tablaTelefonos_HeaderDiv thead");
-			var numTotalElementos = tablaDatos.children().length;
-			var numSiguiente = numTotalElementos + 1;				
+			numMaximoElementos = numMaximoElementos + 1;				
 			
 			var tieneDatos = (numTotalElementos>0);
 			
-			var elementoTr = "<tr id='fila_" + numTotalElementos + "'";
+			var elementoTr = "<tr id='fila_" + numMaximoElementos + "'";
 			if (tieneDatos && tablaDatos.find("tr:eq(0)").attr("class").indexOf("filaTablaPar") >= 0) {
 				elementoTr = elementoTr + " class='filaTablaImpar tableTitle'";
 			} else {
@@ -206,7 +214,7 @@
 			else 
 				estiloTd = tablaHead.find("tr:eq(0)").find("th:eq(0)").attr("style");			
 			var elementoTd = "<td style='" + estiloTd + "'>";
-			elementoTd = elementoTd + "<input type='text' id='nombreTelefonoJG_" + numTotalElementos + "' class='box' maxLength='20' style='width:110px' value='' />";
+			elementoTd = elementoTd + "<input type='text' id='nombreTelefonoJG_" + numMaximoElementos + "' class='box' maxLength='20' style='width:110px' value='' />";
 			elementoTd = elementoTd + "</td>";
 			elementoTr = elementoTr + elementoTd;		
 			
@@ -215,7 +223,7 @@
 			else 
 				estiloTd = tablaHead.find("tr:eq(0)").find("th:eq(1)").attr("style");
 			elementoTd = "<td style='" + estiloTd + "'>";
-			elementoTd = elementoTd + "<input type='text' id='numeroTelefonoJG_" + numTotalElementos + "' class='box' maxLength='20' style='width:110px' value='' />";
+			elementoTd = elementoTd + "<input type='text' id='numeroTelefonoJG_" + numMaximoElementos + "' class='box' maxLength='20' style='width:110px' value='' />";
 			elementoTd = elementoTd + "</td>";
 			elementoTr = elementoTr + elementoTd;	
 			
@@ -224,7 +232,7 @@
 			else 
 				estiloTd = tablaHead.find("tr:eq(0)").find("th:eq(2)").attr("style");
 			elementoTd = "<td style='" + estiloTd + "'>";
-			elementoTd = elementoTd + "<input type='checkbox' id='preferenteSms_" + numTotalElementos + "' name='preferenteSms_" + numTotalElementos + "' class='preferenteSms' value='0' onClick='checkSms(" + numTotalElementos + ")' />";
+			elementoTd = elementoTd + "<input type='checkbox' id='preferenteSms_" + numMaximoElementos + "' name='preferenteSms_" + numMaximoElementos + "' class='preferenteSms' value='0' onClick='checkSms(" + numMaximoElementos + ")' />";
 			elementoTd = elementoTd + "</td>";
 			elementoTr = elementoTr + elementoTd;	
 			
@@ -236,9 +244,10 @@
 			elementoTd = elementoTd + "<img src='/SIGA/html/imagenes/bborrar_off.gif'" +
 											" style='cursor:hand'" +
 											" alt='<siga:Idioma key="general.borrar"/>'" +
+											" title='<siga:Idioma key="general.borrar"/>'" +
 											" name=''" +
 											" border='0'" +
-											" onclick='borrarFila(" + numSiguiente + ")' />";	
+											" onclick='borrarFila(" + numMaximoElementos + ")' />";	
 			elementoTd = elementoTd + "</td>";
 			elementoTr = elementoTr + elementoTd;	
 			
