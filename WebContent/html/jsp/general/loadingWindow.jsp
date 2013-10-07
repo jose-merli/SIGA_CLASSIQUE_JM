@@ -24,9 +24,13 @@
 	<c:set var="msg" value="${param.msg}" />
 </c:if>
 
-<table align="center" border="0" height="100%" width="100%">
-<tr><td align="center" class="labelText"><siga:Idioma key="${msg}"/></td></tr>
-<tr><td align="center"><img src="<html:rewrite page='/html/imagenes/loadingBar.gif'/>"></td></tr>
-</table>
+<span align="Left" class="labelText"><siga:Idioma key="${msg}"/></span>
+
+<div id="divEspera" title="<siga:Idioma key="${msg}"/>" style="z-index:100;position:absolute;top:45%;left:50%">
+	<div style="position:relative;left:-50%">
+		<br><img src="<html:rewrite page='/html/imagenes/loadingBar.gif'/>">
+	</div
+</div>
+	
 </body>
 </html>
