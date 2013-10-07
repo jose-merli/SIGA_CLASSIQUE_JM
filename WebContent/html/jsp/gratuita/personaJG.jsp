@@ -2221,7 +2221,7 @@
 												frameborder="0"
 												marginheight="0" 
 												marginwidth="0"
-												style="width:400px; height:150px;" ></iframe>
+												style="width:400px; height:100px;" ></iframe>
 										</siga:ConjCampos>
 									</td>							
 								</tr>
