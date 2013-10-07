@@ -166,7 +166,8 @@
 					
 				}
 			}else{
-				document.DefinirEnviosForm.submit();
+				document.forms['DefinirEnviosForm'].modo.value ="abrir";
+				document.forms['DefinirEnviosForm'].submit();
 			}
 
 				

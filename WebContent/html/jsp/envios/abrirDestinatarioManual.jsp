@@ -217,10 +217,7 @@
 			}
 		}		
 		
-		// Asociada al boton Volver 
-		function accionVolver() {		
-			top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
-		}
+		
 		
 	</script>	
 
