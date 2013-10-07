@@ -3684,6 +3684,7 @@ function buscar() {
 		var tablaDatos = jQuery("#resultado").contents().find("#tablaTelefonos_BodyDiv tbody");	
 		var numTotalElementos = tablaDatos.children().length;
 		var datos = "";
+		var resultado = true;
 		
 		if (numTotalElementos > 0) {		
 			tablaDatos.find("tr").each(function(){
@@ -3691,9 +3692,8 @@ function buscar() {
 				var numeroFila = identificadorFila.split("_")[1];
 				
 				var validado = validarDatosFila (numeroFila);            
-				if (!validado) {			
-					fin();				
-					return false;
+				if (!validado) {	
+					resultado = false;
 				} 
 				
 				var nombreTelefonoJG = jQuery(this).find("#nombreTelefonoJG_" + numeroFila).val();
@@ -3709,8 +3709,10 @@ function buscar() {
 				datos += "%%%";
 			});			
 			
-		 } else { 
-			 return true;
+			if (!resultado) {
+				fin();				
+				return false;
+			}
 		 }
 		
 		document.PersonaJGForm.lNumerosTelefonos.value = datos;	 	
@@ -3718,7 +3720,7 @@ function buscar() {
 	}
 
 	function validarDatosFila (fila) {		
-		var numeroTelefonoJG = jQuery("#resultado").contents().find("#nombreTelefonoJG_" + fila).val();
+		var numeroTelefonoJG = jQuery("#resultado").contents().find("#numeroTelefonoJG_" + fila).val();
 		
 		var campo = "";
 		var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
