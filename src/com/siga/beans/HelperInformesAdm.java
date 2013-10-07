@@ -307,6 +307,10 @@ public class HelperInformesAdm  {
 		       " JUZ2.IDPOBLACION AS ID_POBLACION_JUZGADO" + prolongarCampo + "," +
 		       " JUZ2.CODIGOEXT AS CODIGOJUZGADO" + prolongarCampo + "," +
 		       " JUZ2.CODIGOEXT2 AS CODIGOJUZGADO2" + prolongarCampo +
+		       " ,JUZ2.FAX1 AS FAX1_JUZGADO" + prolongarCampo +
+		       " ,JUZ2.TELEFONO1 AS TELEFONO1_JUZGADO" + prolongarCampo +
+		       " ,JUZ2.EMAIL AS EMAIL_JUZGADO" + prolongarCampo +
+		       " ,JUZ2.MOVIL AS MOVIL_JUZGADO" + prolongarCampo +
 		       " FROM SCS_JUZGADO JUZ2" +
 		       " WHERE JUZ2.IDINSTITUCION= :1 AND  JUZ2.IDJUZGADO = :2 ";
 			HelperInformesAdm helperInformes = new HelperInformesAdm();

@@ -4167,7 +4167,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" JUZ.DOMICILIO AS DIR_JUZGADO, ");
 			sql.append(" JUZ.CODIGOPOSTAL AS CP_JUZGADO, ");
 			sql.append(" JUZ.POBLACION_NOMBRE AS POBLACION_JUZGADO ");
-		    			
+			sql.append("  ,JUZ.FAX1 AS FAX1_JUZGADO" );
+			sql.append(" ,JUZ.TELEFONO1 AS TELEFONO1_JUZGADO");
+			sql.append(" ,JUZ.EMAIL AS EMAIL_JUZGADO");
+			sql.append(" ,JUZ.MOVIL AS MOVIL_JUZGADO");		    			
                                        
 			sql.append(" FROM V_SIGA_JUZGADOS JUZ ");
 			sql.append(" WHERE "); 
@@ -5780,6 +5783,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				registro.put("PROVINCIA_JUZGADO_D_J", " ");
 				registro.put("DIR_JUZGADO_D_J", " ");
 				registro.put("CP_JUZGADO_D_J", " ");
+				registro.put("FAX1_JUZGADO_D_J", " ");
+				registro.put("TELEFONO1_JUZGADO_D_J", " ");
+				registro.put("EMAIL_JUZGADO_D_J", " ");
+				registro.put("MOVIL_JUZGADO_D_J", " ");
+				
+				
 				registro.put("ID_PROVINCIA_JUZGADO_D_J", " ");
 				registro.put("ID_POBLACION_JUZGADO_D_J", " ");
 				registro.put("JUZGADO_D_J", " ");
