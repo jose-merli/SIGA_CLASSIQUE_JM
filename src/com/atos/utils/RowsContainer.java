@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-//import java.io.StringBufferInputStream;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,19 +22,18 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
-
-import com.atos.utils.ClsLogging;
 
 
 
@@ -895,30 +893,25 @@ public class RowsContainer implements Serializable {
 	 * @throws ClsExceptions
      * @throws UnsupportedEncodingException 
 	 */
+
 	public String getClob (String tableName, String nombreCampo, String select) throws ClsExceptions, UnsupportedEncodingException {
-	    Connection con = null;
-	    ByteArrayOutputStream os = null;
-	    String salida ="";
-	   try{
-	   	  con = ClsMngBBDD.getConnection();
-	      os = MngClob.getClobToStream(con,nombreCampo,select);
-		  try {
-			salida = os.toString("ISO-8859-15");
-		} catch (UnsupportedEncodingException e) {
-			
-			e.printStackTrace();
-			throw e;
+		Connection con = null;
+		ByteArrayOutputStream os = null;
+		String salida ="";
+		try{
+			con = ClsMngBBDD.getConnection();
+			salida = MngClob.getClobToSring(con,nombreCampo,select);
+
+		}catch (ClsExceptions ex){
+			throw ex;
+		}finally{
+			if (con!=null)
+			{
+				ClsMngBBDD.closeConnection(con);
+				con=null;
+			}
 		}
-	    }catch (ClsExceptions ex){
-	      throw ex;
-	    }finally{
-	      if (con!=null)
-	      {
-	          ClsMngBBDD.closeConnection(con);
-	          con=null;
-	      }
-	    }
-	    return salida;
+		return salida;
 	}
 
     public Hashtable getHashVacio (ResultSet rs) throws ClsExceptions {

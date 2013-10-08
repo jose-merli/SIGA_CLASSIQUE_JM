@@ -1,9 +1,20 @@
 package com.atos.utils;
 
 
-import java.io.*;
-import java.sql.*;
-//import java.util.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 //import oracle.jdbc.OraclePreparedStatement;
@@ -26,47 +37,46 @@ public class MngClob {
   public static final int StringEURO = 8364;
   
   /**
-   * Obtiene un OutputStream a partir de un campo CLOB
+   * Obtiene un String a partir de un campo CLOB
    * @param con Objeto Connection con el que se controla la transacción
    * @param fieldName Nombre del campo en base de datos
    * @param select Sentencia sql para obtener el campo
    * @return El OutputStream solicitado
    * @throws ClsExceptions Excepción genérica controlada por la aplicación
    */
-  public static ByteArrayOutputStream getClobToStream(Connection con, String fieldName, String select)
-      throws ClsExceptions {
+  
+  public static String getClobToSring(Connection con, String fieldName, String select)
+	      throws ClsExceptions {
 
-    ClsExceptions gEx=null;
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    Statement st=null;
-    ResultSet rs=null;
-    Clob dbClob=null;
+	    ClsExceptions gEx=null;
+	    ByteArrayOutputStream os = new ByteArrayOutputStream();
+	    Statement st=null;
+	    ResultSet rs=null;
+	    String  dbClobString=null;
 
-    try {
-      st= con.createStatement();
-      rs=st.executeQuery(select);
-      if( rs.next() ) {
-        dbClob=rs.getClob(fieldName);
-        if (dbClob!=null) {
-        	readClob(dbClob, os);
-        }
-        os.close();
+	    try {
+	      st= con.createStatement();
+	      rs=st.executeQuery(select);
+	      if( rs.next() ) {
+	    	  dbClobString = rs.getString(fieldName);
+	      } else {
+	        throw new ClsExceptions("BLOB ("+fieldName+") no existe en tabla ");
 
-      } else {
-        throw new ClsExceptions("BLOB ("+fieldName+") no existe en tabla ");
-
-      }
-    }catch (Exception ex) {
-      throw new ClsExceptions(ex,"Exception extracting OutputStream from clob field");
-    } finally {
-      try {if (rs!=null) rs.close(); }catch (SQLException ex) {}
-      try {if (st!=null) st.close(); }catch (SQLException ex) {}
-      if(gEx!=null){
-        throw gEx;
-      }
-    }
-    return os;
-  }
+	      }
+	    }catch (Exception ex) {
+	      throw new ClsExceptions(ex,"Exception extracting OutputStream from clob field");
+	    } finally {
+	      try {if (rs!=null) rs.close(); }catch (SQLException ex) {}
+	      try {if (st!=null) st.close(); }catch (SQLException ex) {}
+	      if(gEx!=null){
+	        throw gEx;
+	      }
+	    }
+	    return dbClobString;
+	  }
+ 
+  
+ 
 
 
   /**
@@ -226,6 +236,7 @@ public class MngClob {
   }
 
   protected static void readClob(Clob clob, OutputStream os) throws IOException, SQLException {
+	  
     InputStream is=clob.getAsciiStream();
     loopStream(is, os);
     is.close();
