@@ -502,7 +502,10 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	private void rellenaDatosSolicitanteType(SOLICITANTETYPE solicitanteType,	Map<String, String> map) throws Exception {
 		rellenaDatosPersonaType(solicitanteType.addNewDATOSPERSOAIS(), map);
 		GENERO genero = solicitanteType.addNewGENERO();
-		genero.setESPERSONAFISICA(SIGAServicesHelper.getInteger("es persona física", map.get(ES_PERSONA_FISICA)));
+		Integer in = SIGAServicesHelper.getInteger("es persona física", map.get(ES_PERSONA_FISICA));
+		if (in != null) {
+			genero.setESPERSONAFISICA(in);
+		}
 		String s = map.get(SEXO);
 		if (s != null && !s.trim().equals("")) {
 			genero.setSEXO(com.siga.ws.i2064.xsd.SOLICITANTETYPE.GENERO.SEXO.Enum.forString(s));
