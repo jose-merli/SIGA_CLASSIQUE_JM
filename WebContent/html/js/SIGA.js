@@ -146,6 +146,7 @@ function jQueryLoaded(){
     };
     
     //https://code.google.com/p/jquery-at-caret
+    // MODIFICADO PARA COMPATIBILIZAR IE <= 7 Y ANADIDO METODO REPLACE
     //This JQuery plugin provides cross-browser support for inserting and deleting text at the caret (to some, cursor) position, as well as getting and setting the caret position
     (function() {
     	  /*
@@ -351,7 +352,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.107 2013-10-08 11:09:13 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.108 2013-10-08 16:17:30 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -636,53 +637,38 @@ function jQueryLoaded(){
 			jQuery("table.pest").css("float", "left");
 		}
 		
-		jQuery("input.datepicker").each(function(){			
+		// *** TAGFECHA *** //
+		jQuery("input.datepicker").each(function(){
+			// Parámetro cargar fecha desde. Selecciona el ID desde el que se quiere cargar el valor
 			if (jQuery(this).data("cargarfechadesde")){
 				jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
 			}
+			
 			if (jQuery(this).hasClass("editable")){
+				// SI ES EDITABLE (READONLY/DISABLED)
 				//console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
 				
+				// ALMACENA EN DATA EL TEXTO SELECCIONADO DENTRO DEL INPUT TEXT
 				jQuery(this).on("select", function(e){
 					var selectedText = getSelected().toString();
-					jQuery(this).data("selectedText", selectedText);					
+					jQuery(this).data("selectedText", selectedText);
 				});
 				
+				// AL PERDER EL FOCO DEL EL INPUT DATEPICKER
 				jQuery(this).on("blur", function(){
 					//alertStop("DATEPICKER INPUT BLUR");
 					if (!jQuery(this).is(":focus")){
+						// IE LANZA EL EVENTO BLUR A VECES CUANDO SE MODIFICA EL CURSOR O EL VALOR
+						// COMPROBAMOS SI NO TIENE EL FOCO (REALMENTE ES UN BLUR) PARA HACER LAS VALIDACIONES 
+						// CORRESPONDIENTES AL PERDER EL FOCO
 						//console.debug("DATEPICKER INPUT BLUR BUENO!");
 						datepickerMaskValueChanged(jQuery(this));
-						var fecha = jQuery(this).val();
-						if (fecha){
-							var fechaArray = fecha.split("/");
-							var y = false;
-							var m = false;
-							var d = false;
-							if (typeof fechaArray[2] != "undefined")
-								y = fechaArray[2];
-							if (typeof fechaArray[1] != "undefined")
-								m = fechaArray[1];
-							if (typeof fechaArray[0] != "undefined")
-								d = fechaArray[0];
-							if (d.length < 2){
-								d = "0" + d;
-							}
-							if (m.length < 2){
-								m = "0" + m;
-							}
-							if (y.length < 4){
-								var hoy = new Date();
-								var siglo = new String(hoy.getFullYear());
-								var numDigitos = 4 - y.length;
-								siglo = siglo.substring(0, numDigitos);
-								y = siglo + y;
-							}											
-							jQuery(this).val(d+"/"+m+"/"+y);
-							jQuery(this).change();
-						}
 					} else if (typeof jQuery(this).data("caretpos") != "undefined"){
 						//console.debug("DATEPICKER INPUT BLUR! focus: " + jQuery(this).is(":focus") + "; CARET: " + jQuery(this).atCaret('getCaretPosition') + "; CARETPOS: " + jQuery(this).data("caretpos"));
+						// SOLO PARA IE. EL CAMBIO DEL CURSOR OCASIONA UN EVENTO BLUR, PARA DIFERENCIARLO
+						// DE UN BLUR 'DE VERDAD' YA HEMOS COMPROBADO SI TIENE O NO EL FOCO. SI NO TIENE
+						// EL FOCO, HAY QUE COMPROBAR SI TENEMOS QUE ACTUALIZAR LA POSICIÓN DEL CURSOR
+						// ALMACENADA EN DATA (caretpos). FINALMENTE ELIMINAMOS ESE DATA PARA NO ENTRAR EN BUCLE
 						jQuery(this).atCaret('setCaretPosition', jQuery(this).data("caretpos") + 1);
 						jQuery(this).removeData("caretpos");
 					}
@@ -690,43 +676,53 @@ function jQueryLoaded(){
 				});
 				jQuery(this).on("keyup",function(e){
 					//console.debug("keyup");
-					var actualizarCursor = false;
+					// EVENTO KEYUP SOBRE EL INPUT TEXT DATEPICKER
+					var actualizarCursor = false; // INDICA SI ES NECESARIO ACTUALIZAR LA POSICIÓN DEL CURSOR
 					if (typeof jQuery(this).data("selectedText") != "undefined"){
+						// INDICA SI EL CORRESPONDIENTE EVENTO keydown SE HA PRODUCIDO SOBRE UN TEXTO SELECCIONADO
+						// MEDIANTE EL DATA (selectedtext). ELIMINAMOS EL DATA E INDICAMOS QUE HAY QUE ACTUALIZAR
+						// EL CURSOR
 						jQuery(this).removeData("selectedText");
 						actualizarCursor = true;
 					} else if (code != 8 && code != 37 && code != 39){
+						// SI NO ES BORRAR O FLECHAS
 						var code = e.keyCode || e.which;					
 						var fecha = jQuery(this).val();
 						var fechaArray = fecha.split("/");
 						if (code == 86){
+							// SI ES PEGAR UN VALOR VALIDAMOS EL VALOR PEGADO
 							datepickerMaskValueChanged(jQuery(this));
 						} else {
+							// COMPROBAMOS SI ESTAMOS INTRODUCIENDO NUEVOS VALORES DENTRO DE UNA FECHA YA INTRODUCIDA
+							// PARA SUSTITUIRLOS
 							var y = false;
 							var m = false;
 							var d = false;
 							var sustituir = false;
 							if (typeof fechaArray[0] != "undefined"){
 								d = fechaArray[0];
-								if (d.length > 2){
+								if (d.length > 2){ // EL DIA TIENE MAS DE DOS DIGITOS
 									d = d.substring(0,2);
 									sustituir = true;
 								}
 							}
 							if (typeof fechaArray[1] != "undefined"){
 								m = fechaArray[1];
-								if (m.length > 2){
+								if (m.length > 2){// EL MES TIENE MAS DE DOS DIGITOS
 									m = m.substring(0,2);
 									sustituir = true;
 								}
 							}
 							if (typeof fechaArray[2] != "undefined"){
 								y = fechaArray[2];
-								if (y.length > 4){
+								if (y.length > 4){ // EL AÑO TIENE MAS DE DOS DIGITOS
 									y = y.substring(0,4);
 									sustituir = true;
 								}
 							}
 							if (sustituir){
+								// SI SE HA PRODUCIDO ALGUN REAJUSTE DE DIGITOS RECONSTRUIMOS LA FECHA
+								// Y ACTUALIZAMOS LA POSICION DEL CURSOR
 								var value = "";
 								if (d)
 									value = d;
@@ -740,6 +736,8 @@ function jQueryLoaded(){
 						}
 					}
 					if (actualizarCursor){
+						// ACTUALIZA EL CURSOR A LA POSICIÓN CORRECTA Y ALMACENA 
+						// ESTA POSICIÓN EN DATA
 						var caretpos = jQuery(this).data("caretpos") + 1;
 						jQuery(this).data("caretpos", caretpos);
 						jQuery(this).atCaret('setCaretPosition', caretpos);
@@ -748,12 +746,13 @@ function jQueryLoaded(){
 				});
 				
 				jQuery(this).on("keydown", function(e){
-					var permitirValor = false;
-					var caretpos = jQuery(this).atCaret('getCaretPosition');					
-					var code = e.keyCode || e.which;
-					var fecha = jQuery(this).val();
-					var fechaArray = fecha.split("/");
-					var charAtCaretPos = "";
+					// EVENTO KEYDOWN DEL INPUT TEXT DATEPICKER
+					var permitirValor = false; //INDICA SI SE PERMITE O NO EL VALOR DE LA TECLA
+					var caretpos = jQuery(this).atCaret('getCaretPosition'); // POSICIÓN DEL CURSOR (INDICE 0)				
+					var code = e.keyCode || e.which; // CÓDIGO DE LA TECLA PULSADA
+					var fecha = jQuery(this).val(); // VALOR ACTUAL DE LA FECHA
+					var fechaArray = fecha.split("/"); // ARRAY QUE CONTIENE 0-> Día, 1 -> Mes, 2 -> Año
+					var charAtCaretPos = ""; // CARACTER DEL VALOR ACTUAL DE LA FECHA EN LA POSICION ACTUAL DEL CURSOR
 					if (typeof fecha != "undefined" && 
 							typeof fecha.charAt(caretpos) != "undefined")
 						charAtCaretPos = fecha.charAt(caretpos);
@@ -762,39 +761,51 @@ function jQueryLoaded(){
 					// SUSTITUIR TEXTO SELECCIONADO
 					if (typeof jQuery(this).data("selectedText") != "undefined" && ((code >= 48 && code <= 57) || 
 							(code >= 96 && code <= 105))){
+						// SI TENEMOS EN DATA TEXTO SELECCIONADO Y PULSAMOS UN NÚMERO (NORMAL / NUMPAD)
 						var selectedText = jQuery(this).data("selectedText");
-						var selection = getSelected().toString();
+						var selection = getSelected().toString(); //OBTENEMOS EL TEXTO SELECCIONADO
+						// DESELECCIONA EL TEXTO
 						if (document.selection)
 							document.selection.empty();
 						else
 							window.getSelection().removeAllRanges();
+						// SI LA SELECCIÓN ES LA MISMA QUE SE HA GUARDADO EN EL CAMPO, NO SE HA SELECCIONADO OTRO TEXTO
+						// DE LA PÁGINA ENTRE MEDIAS...
 						if (selection == selectedText){
 							var keyCode = code;
 							if (keyCode >= 96)	
-								keyCode -= 48; // PARA EL NUMPAD
-							var replace = String.fromCharCode(keyCode);
+								keyCode -= 48; // AJUSTE PARA EL NUMPAD
+							var replace = String.fromCharCode(keyCode); // CARACTER TECLEADO A PARTIR DEL CÓDIGO
 							var value = jQuery(this).val().toString();
 							
+							// EL COMPORTAMIENTO EN IE Y EN LOS DEMAS NAVEGADORES ES DISTINTO RESPECTO A SELECCIONAR TEXTO.
+							// EN IE EL CURSOR PERMANECE EN EL LADO IZDO DE LA SELECCIÓN (EL FINAL) Y EN EL RESTO EN EL LADO
+							// DERECHO (AL PRINCIPIO). POR ESO, Y PARA NO HACER DESARROLLOS PARTICULARIZADOS POR EXPLORADOR,
+							// HAY QUE TENER EN CUENTA LOS DOS ESCENARIOS
 							if (value.length - selectedText.length > 2){
+								// SI LA SELECCIÓN ES PARCIAL (HAY MÁS DE 2 CARACTERES NO SELECCIONADOS)
 								var d = typeof fechaArray[0] != "undefined"?fechaArray[0]:"";
 								var m = typeof fechaArray[1] != "undefined"?fechaArray[1]:"";
 								var y = typeof fechaArray[2] != "undefined"?fechaArray[2]:"";
 								if (y != "")
 								if (caretpos >= 0 && caretpos <= 2){
-									// SELECCIÓN DE DIAS
+									// SELECCIÓN DE DIAS. POR LA POSICION DEL CURSOR
 									d = replace;
 									caretpos = 0;
 								} else if (caretpos >= 3 && caretpos <= 5){
-									// SELECCIÓN DE MES
+									// SELECCIÓN DE MES. POR LA POSICION DEL CURSOR
 									var indexSeparador = selectedText.indexOf("/");
 									if (indexSeparador != -1 && indexSeparador != 0){
-										//REEMPLAZA MES Y AÑO
+										// REEMPLAZA MES Y AÑO. LA POSICION DEL CURSOR INDICA QUE ESTA SELECCIONADO
+										// EL MES PERO ADEMAS ESTA SELECCIONADO AL MENOS PARTE DEL AÑO.
+										// SUSTITUIMOS EL MES Y ELIMINAMOS EL AÑO
 										y = "";
 									}
 									m = replace;
 									caretpos = d.length + 1;
 								} else {
 									// 8 <= caretpos<= 10
+									// LA POSICION DEL CURSOR INDICA QUE AL MENOS EL AÑO ESTA SELECCIONADO
 									var indexSeparador = selectedText.indexOf("/");
 									if (indexSeparador != -1 && indexSeparador != 0){
 										// REEMPLAZA MES Y AÑO
@@ -807,6 +818,7 @@ function jQueryLoaded(){
 										caretpos = d.length + m.length + 2;
 									}
 								}
+								// UNA VEZ REEMPLAZADOS LOS VALORES RECONSTRUIMOS LA FECHA
 								value = d;
 								if (m != ""){
 									value += "/"+m;
@@ -814,11 +826,13 @@ function jQueryLoaded(){
 										value += "/"+y;
 								}
 							} else {
-								// SELECCIÓN COMPLETA (O CASI)
+								// SELECCIÓN COMPLETA (O CASI). SIMPLEMENTE SE SUSTITUYE EL TEXTO SELECCIONADO POR EL VALOR
+								// INTRODUCIDO
 								caretpos = value.indexOf(selectedText) + 1;
 								value = value.replace(selectedText, replace);
 							}
-							
+							// FINALMENTE ACTUALIZAMOS EL VALOR DEL INPUT TEXT Y LA POSICIÓN DEL CURSOR
+							// ADEMAS ACABAMOS EL EVENTO YA QUE YA HEMOS INCORPORADO LA TECLA PULSADA
 							jQuery(this).val(value);
 							jQuery(this).data("caretpos",caretpos);
 							e.preventDefault();
@@ -828,7 +842,8 @@ function jQueryLoaded(){
 					
 					if ((caretpos == 2 || caretpos == 5) && charAtCaretPos == "/" && ((code >= 48 && code <= 57) || 
 							(code >= 96 && code <= 105))){
-						// REEMPLAZANDO LLEGA A UN SEPARADOR
+						// REEMPLAZANDO LLEGA A UN SEPARADOR. DEJAMOS EL SEPARADOR IGUAL Y SUSTITUIMOS EL SIGUIENTE VALOR
+						// POR EL NUEVO PULSADO
 						var keyCode = code;
 						if (keyCode >= 96)	
 							keyCode -= 48; // PARA EL NUMPAD
@@ -836,31 +851,35 @@ function jQueryLoaded(){
 						jQuery(this).data("caretpos",jQuery(this).atCaret('getCaretPosition'));
 					} else if (code == 8 && typeof fecha != "undefined" && 
 							typeof fecha.charAt(caretpos - 1) != "undefined" && fecha.charAt(caretpos - 1) == "/"){
-						// BORRANDO LLEGA A UN SEPARADOR
+						// BORRANDO LLEGA A UN SEPARADOR. SE BORRA EL SEPARADOR Y EL DIGITO ANTERIOR
 						jQuery(this).atCaret("backspace", 2);
 						jQuery(this).data("caretpos",jQuery(this).atCaret('getCaretPosition'));
 					} else {
-						jQuery(this).data("caretpos",caretpos);
+						jQuery(this).data("caretpos",caretpos); // ALMACENA LA POSICION DEL CURSOR
 						if ((code >= 48 && code <= 57) || 
 								(code >= 96 && code <= 105) ||
 								code == 8 || code == 9 || code == 18 || code == 16 || code == 17 ||  
 								code == 46 || code == 35 || code == 36 || code == 116 || 
 								code == 39 || code == 37 || code == 67 || code == 86){
-							// SE PERMITE
+							// CODIGOS DE TECLAS PERMITIDOS. BASICAMENTE SON LOS NUMEROS (NORMALES/NUMPAD) Y TECLAS DE 
+							// MOVIMIENTO/CONTROL: FLECHAS, BORRAR, COPIAR, PEGAR, SUPRIMIR, F5...
 							//console.debug("caracter permitido... CARET: " + caretpos);
 							if (code == 86 || code == 8 || code == 37 || code == 39){
 								// PEGAR || BORRAR || FLECHA IZDA || FLECHA DCHA
-								
+								// NO HAY QUE HACER NADA SIMPLEMENTE CONTINUAR EL EVENTO PARA QUE EL NAVEGADOR
+								// SE ENCARGUE DE LLEVAR A CABO LA ACCION CORRESPONDIENTE
 							} else if ((fecha.length == 2 && typeof fechaArray[1] == "undefined") || 
 									(fecha.length == 5 && typeof fechaArray[2] == "undefined")){
-								// INSERTAMOS SEPARADOR si procede
+								// INSERTAMOS SEPARADOR AL LLEGAR AL MES O AL AÑO
 								//console.debug("Inserto separador");
 								jQuery(this).val(fecha + "/");
 								jQuery(this).data("caretpos",caretpos + 1);
 							}
+							// INDICAMOS QUE PERMITA LA CONTINUACION DEL EVENTO
 							permitirValor = true;
-						} else if (fecha != "" && fecha.length < 11 && fecha.charAt(fecha.length-1) != "/"){
-							// INSERTAMOS SEPARADOR si procede
+						} else if (fecha != "" && fecha.length < 10 && fecha.charAt(fecha.length-1) != "/"){
+							// INSERTAMOS SEPARADOR SI PROCEDE Y LA TECLA NO ES PERMITIDA. ESTO PERMITE USAR CUALQUIER
+							// TECLA COMO SEPARADOR DE DIA, MES, AÑO
 							var y = false;
 							var m = false;
 							var d = false;
@@ -886,17 +905,22 @@ function jQueryLoaded(){
 							//console.debug("caracter NO permitido...");
 						} else {
 							//console.debug("caracter NO permitido...");
+							// TECLA NO PERMITIDA Y ADEMAS NO PROCEDE INSERTAR UN SEPARADOR
 						}
 					}
 					
 					if (!permitirValor){
+						// SI NO PERMITIMOS EL VALOR CORTAMOS EL EVENTO PARA QUE EL NAVEGADOR NO LO INSERTE EN
+						// EL INPUT TEXT
 						e.preventDefault();
 					}
 					//alertStop("acaba keydown");
 					return permitirValor;
 				});
 				
-				if (false && window == window.top){//DESACTIVAMOS EL DATEPICKER NORMAL PARA QUE TODOS FUNCINEN IGUAL
+				if (false && window == window.top){
+					//DESACTIVAMOS EL DATEPICKER NORMAL PARA QUE TODOS FUNCINEN IGUAL (DIALOG)
+					
 					//console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
 					/*
 					jQueryTop(this, this.ownerDocument).datepicker({
@@ -927,9 +951,10 @@ function jQueryLoaded(){
 					*/
 				} else {
 					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
+					// INSERTAMOS EL BOTON DEL DATEPICKER DESPUES DEL INPUT TEXT
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
-					var self = jQuery(this);
+					//var self = jQuery(this);
 					/*
 					datepickerInput.keydown(function(e) {
 						if(e.keyCode == 8 || e.keyCode == 46) {
@@ -939,23 +964,34 @@ function jQueryLoaded(){
 					});
 					*/
 					
+					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
+						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
+						// OBTENEMOS EL FORMATO DE LA FECHA SEGUN EL DATA DATEPICKERFORMAT (QUE RELLENA EL TAG)
 						options.dateFormat = datepickerInput.data("datepickerformat");
+						// ACCIONES ANTES DE MOSTRARSE EL DATEPICKER
 						options.beforeShow = function(input, inst) {
 							//console.debug("[DATEPICKER] beforeShow");	
+							// MUESTRA EL OVERLAY
 							jQueryTop('#main_overlay').show();
+							// PARA IE TRATA DE OCULTAR EL INPUT TEXT TEMPORAL QUE CREA EL DATEPICKER PERO 
+							// IE <= 7 SIGUE MOSTRANDOLO
 							jQueryTop("input[id^=dp]").hide();
 						};
 						options.onClose = function(dateText, inst) {
 							//console.debug("[DATEPICKER] onClose");
+							// OCULTA EL OVERLAY
 							jQueryTop('#main_overlay').hide();
 						};
+						// ID DEL REGIONAL SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG)
 						options.regional = datepickerInput.data("regional");
-						options.draggable = true;
+						//options.draggable = true;
+						// AUNQUE ESTO NO DEBERIA PASAR, SI EXISTE YA UN DATEPICKER SE DESTRUYE
 						if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
 							jQueryTop.datepicker._destroyDatepicker(jQueryTop.datepicker._curInst);
 						}
+						// CREACION DEL DATEPICKER DIALOG
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("datepickerformat")),
 								function(dateText, datePickerInstance){
@@ -968,6 +1004,7 @@ function jQueryLoaded(){
 										datepickerInput.change();
 								},
 								options);
+						
 						var vContainment = "#mainWorkArea";
 						if (jQueryTop(vContainment).length <= 0){
 						   if (jQueryTop("#modal").length > 0)
@@ -1004,11 +1041,15 @@ function jQueryLoaded(){
 						alert("vContainment: [0,0,"+winW+","+winH+"]");
 						*/
 						//BNS NO PERMITIMOS MOVER EL DATEPICKER EN LAS MODALES
+						// CONFIGURACIÓN DEL CONFINAMIENTO DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
 							jQueryTop(".ui-datepicker-header").css("cursor", "move");
 							jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#mainWorkArea"), scroll: false, snap: true });
-						} else
+						} else {
 							jQueryTop(".ui-datepicker-header").css("cursor", "default");
+							//jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#modal").html(), scroll: false, snap: false });
+						}
+						// EVENTO CLICK SOBRE EL OVERLAY PARA CERRAR EL DATEPICKER
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
@@ -1018,25 +1059,30 @@ function jQueryLoaded(){
 		});
 		if (window == window.top){
 		// MouseWheel
+			// CONTROL DEL EVENTO SOBRE LA RUEDA DEL RATON
 		   jQueryTop(document).on("mousewheel", "#ui-datepicker-div", function(e){
 			   try{
 				   if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
-					   var currentDatepicker = jQueryTop.datepicker._curInst;
+					   // SI HAY UN DATEPICKER ABIERTO
+					   var currentDatepicker = jQueryTop.datepicker._curInst; // INSTANCIA DEL DATEPICKER ACTUAL
 					   var offset = 0;
 					   var type = "M";
 					   var wheelDelta = e.wheelDelta;
 					   if (typeof wheelDelta == "undefined")
 						   wheelDelta = e.originalEvent.wheelDelta;
+					   // DIFERENCIAMOS EL SENTIDO DEL GIRO
 			   			if(wheelDelta/120 > 0) {
-			   	            //prev
-			   				offset = -1;		   
-			   	        } else{
 			   	            //next
-			   	        	offset = 1;
+			   				offset = 1;		   
+			   	        } else{
+			   	            //prev
+			   	        	offset = -1;
 			   	        }
+			   			// COMPROBAMOS SI ES EL AÑO EL QUE TIENE EL FOCO Y POR DEFECTO ASUMIMOS QUE CAMBIA EL MES
 			   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
 			   				type = "Y";
 			   			if (offset != 0){
+			   				// SI HAY DESPLAZAMIENTO LO APLICAMOS AL DATEPICKER
 				   			jQueryTop.datepicker._adjustInstDate(currentDatepicker, offset, type);
 				   			jQueryTop.datepicker._updateDatepicker(currentDatepicker);
 				   			if (type == "Y")
@@ -1647,14 +1693,47 @@ function datepickerMaskValueChanged(datepickerInput){
 	if (datepickerInput.data("datepickerformat") && datepickerInput.data("datepickerformat") != "")
 		dateFormat = datepickerInput.data("datepickerformat");
 	var dateValue = datepickerInput.val();
-	var error = false;
 	if (dateValue != ""){
+		// PARSE DE LA FECHA CON EL FORMATO
 		var date = formatDate(dateValue, dateFormat);
 		if (!date){
 			error = true;
 			datepickerInput.val("");
-			datepickerInput.blur();
 			alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
+		} else {
+			var fecha = datepickerInput.val();
+			if (fecha){
+				// LA FECHA HA VALIDADO, RELLENAMOS LOS 0 DE LOS DÍAS Y MESES COMO 
+				// CORRESPONDA. PARA EL AÑO SE RELLENAN LOS DÍGITOS INTRODUCIDOS CON
+				// EL AÑO ACTUAL, EJ: 3 -> 2013, 13 -> 2013, 013 -> 2013
+				var fechaArray = fecha.split("/");
+				var y = false;
+				var m = false;
+				var d = false;
+				if (typeof fechaArray[2] != "undefined")
+					y = fechaArray[2];
+				if (typeof fechaArray[1] != "undefined")
+					m = fechaArray[1];
+				if (typeof fechaArray[0] != "undefined")
+					d = fechaArray[0];
+				if (d.length < 2){
+					d = "0" + d;
+				}
+				if (m.length < 2){
+					m = "0" + m;
+				}
+				if (y.length < 4){
+					var hoy = new Date();
+					var siglo = new String(hoy.getFullYear());
+					var numDigitos = 4 - y.length;
+					siglo = siglo.substring(0, numDigitos);
+					y = siglo + y;
+				}							
+				datepickerInput.val(d+"/"+m+"/"+y);
+			}
+			// LLAMADA AL EVENTO CHANGE DEL INPUT TEXT DATEPICKER AL ACABAR EL BLUR Y YA CON
+			// EL FORMATO CORRECTO
+			datepickerInput.change();
 		}
 	}	
 }
