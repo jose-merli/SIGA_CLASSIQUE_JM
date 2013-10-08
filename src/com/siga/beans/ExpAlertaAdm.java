@@ -4,6 +4,8 @@
 */
 package com.siga.beans;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -19,6 +21,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.envios.EnvioInformesGenericos;
 import com.siga.expedientes.form.BusquedaAlertaForm;
 
@@ -501,9 +504,20 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
 		//getComboTipoExpediente nos está devolviendo (idinstitucion,idtipoexpediente)
 		String idinstitucion_tipoexpediente = "";
 		if (comboTipoExp!=null && !comboTipoExp.equals("")){
-			StringTokenizer st = new StringTokenizer(comboTipoExp,",");
-			idinstitucion_tipoexpediente=st.nextToken();
-			form.setTipoExpediente(st.nextToken());        	
+			String idTipoExpediente = "";
+			if (comboTipoExp.startsWith("{")){
+				HashMap<String, String> mapTipoExp;
+				try {
+					mapTipoExp = UtilidadesString.createHashMap(comboTipoExp);
+					idinstitucion_tipoexpediente = mapTipoExp.get("idinstitucion");
+					idTipoExpediente = mapTipoExp.get("idtipoexpediente");
+				} catch (IOException e) {}
+			} else {
+				StringTokenizer st = new StringTokenizer(comboTipoExp,",");
+				idinstitucion_tipoexpediente=st.nextToken();	
+				idTipoExpediente = st.nextToken();
+			}
+			form.setTipoExpediente(idTipoExpediente);
 		}else{
 			idinstitucion_tipoexpediente="";
 			form.setTipoExpediente("");  
@@ -558,6 +572,16 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
 		where = where.substring(0,where.length()-1);
 		where += ")";
 		if(form.getIdFase()!=null && !form.getIdFase().equals("")){
+			String idFase = "";
+			if (form.getIdFase().startsWith("{")){
+				HashMap<String, String> mapFase;
+				try {
+					mapFase = UtilidadesString.createHashMap(form.getIdFase());
+					idFase = mapFase.get("idfase");
+				} catch (IOException e) {}
+				form.setIdFase(idFase);
+			}
+			
 			where += " AND "+A_IDFASE+"="+form.getIdFase();
 		}
 		if(form.getIdEstado()!=null && !form.getIdEstado().equals("")){

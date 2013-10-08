@@ -4,9 +4,12 @@
 
 package com.siga.expedientes.form;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.MasterForm;
 
 /**
@@ -56,11 +59,21 @@ public class BusquedaAlertaForm extends MasterForm {
 	public void setComboEstados(String comboEstados) {
 		this.comboEstados = comboEstados;
 		if (comboEstados!=null && !comboEstados.equals("")){
-			StringTokenizer st = new StringTokenizer(comboEstados,",");
-			st.nextToken();//idinstitucion_tipoexpediente
-			st.nextToken();//idtipoexpediente
-			st.nextToken();//idfase
-			this.setIdEstado((st.nextToken()));        	
+			String sidEstado = "";
+			if (comboEstados.startsWith("{")){
+				HashMap<String, String> mapEstado;
+				try {
+					mapEstado = UtilidadesString.createHashMap(comboEstados);
+					sidEstado = mapEstado.get("idestado");
+				} catch (IOException e) {}
+			} else {
+				StringTokenizer st = new StringTokenizer(comboEstados,",");
+				st.nextToken();//idinstitucion_tipoexpediente
+				st.nextToken();//idtipoexpediente
+				st.nextToken();//idfase
+				sidEstado = st.nextToken();
+			}
+			this.setIdEstado(sidEstado);        	
 		}else{        	
 			this.setIdEstado("");  
 		}
@@ -73,10 +86,20 @@ public class BusquedaAlertaForm extends MasterForm {
 	public void setComboFases(String comboFases) {
 		this.comboFases = comboFases;
 		if (comboFases!=null && !comboFases.equals("")){
-			StringTokenizer st = new StringTokenizer(comboFases,",");
-			st.nextToken();//idinstitucion_tipoexpediente
-			st.nextToken();//idtipoexpediente
-			this.setIdFase(st.nextToken());        	
+			String sidFase = "";
+			if (comboFases.startsWith("{")){
+				HashMap<String, String> mapFase;
+				try {
+					mapFase = UtilidadesString.createHashMap(comboFases);
+					sidFase = mapFase.get("idfase");
+				} catch (IOException e) {}
+			} else {
+				StringTokenizer st = new StringTokenizer(comboFases,",");
+				st.nextToken();//idinstitucion_tipoexpediente
+				st.nextToken();//idtipoexpediente
+				sidFase = st.nextToken();
+			}
+			this.setIdFase(sidFase);
 		}else{        	
 			this.setIdFase("");  
 		}

@@ -5,9 +5,11 @@
  */
 package com.siga.beans;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -345,9 +347,19 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		//getComboTipoExpediente nos está devolviendo (idinstitucion,idtipoexpediente)
 		String idinstitucion_tipoexpediente = "";
 		if (comboTipoExp!=null && !comboTipoExp.equals("")){
-			StringTokenizer st = new StringTokenizer(comboTipoExp,",");
-			idinstitucion_tipoexpediente=st.nextToken();
-			form.setTipoExpediente(st.nextToken());        	
+			String sTipoExpediente = "";
+			if (comboTipoExp.startsWith("{")){
+				HashMap<String, String> mapTipoExp;
+				try {
+					mapTipoExp = UtilidadesString.createHashMap(comboTipoExp);
+					sTipoExpediente = mapTipoExp.get("idtipoexpediente");
+				} catch (IOException e) {}
+			} else {
+				StringTokenizer st = new StringTokenizer(comboTipoExp,",");
+				idinstitucion_tipoexpediente=st.nextToken();
+				sTipoExpediente = st.nextToken();
+			}
+			form.setTipoExpediente(sTipoExpediente);        	
 		}else{
 			idinstitucion_tipoexpediente="";
 			form.setTipoExpediente("");  
