@@ -1067,28 +1067,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return salida;
     }
     
-    public String getTextoCertificado(String idInstitucion, String idSolicitud) throws ClsExceptions {
-    	String salida="";
-		RowsContainer rows=new RowsContainer();
-    	try {
-    		CerSolicitudCertificadosTextoAdm admTx= new CerSolicitudCertificadosTextoAdm(this.usrbean);
-    		Hashtable ht = new Hashtable();
-    		ht.put(CerSolicitudCertificadosTextoBean.C_IDINSTITUCION,idInstitucion);
-    		ht.put(CerSolicitudCertificadosTextoBean.C_IDSOLICITUD,idSolicitud);
-    		Vector v = admTx.select(ht);
-    		if (v!=null && v.size()>0) {
-    			CerSolicitudCertificadosTextoBean b = (CerSolicitudCertificadosTextoBean) v.get(0); 
-    			//salida = b.getTexto();
-
-    			// CAMBIO PARA OBTENER UN BLOB
-    			salida = rows.getClob(CerSolicitudCertificadosTextoBean.T_NOMBRETABLA,CerSolicitudCertificadosTextoBean.C_TEXTO," SELECT "+CerSolicitudCertificadosTextoBean.C_TEXTO+" FROM " + CerSolicitudCertificadosTextoBean.T_NOMBRETABLA + " WHERE "+CerSolicitudCertificadosTextoBean.C_IDINSTITUCION+"="+idInstitucion+" AND "+CerSolicitudCertificadosTextoBean.C_IDSOLICITUD+"="+idSolicitud+" AND "+CerSolicitudCertificadosTextoBean.C_IDTEXTO+"="+b.getIdTexto());
-    		}
-			
-    	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener el Texto del certificado.");
-    	}
-		return salida;
-    }
+   
     public CerSolicitudCertificadosTextoBean getSolicitudCertificadosTexto(String idInstitucion, String idSolicitud) throws ClsExceptions {
     	String salida="";
 		RowsContainer rows=new RowsContainer();
@@ -1115,6 +1094,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
     	}
 		return beanSolicitudCertTexto;
     }
+    
+    
     
     public String obtenerTextoSancionesParaCertificado(String idInstitucion, String idPersona) throws ClsExceptions {
     	String salida="";
