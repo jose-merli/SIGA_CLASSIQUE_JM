@@ -197,7 +197,8 @@ public class EdicionRemesasAction extends MasterAction {
 				if (idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ALTA_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ALTA_PERSONA_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO.getCodigo()
-						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_MENOS_NUMERO_DOCUMENTO.getCodigo()) {
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_MENOS_NUMERO_DOCUMENTO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ARCHIVADO.getCodigo()) {
 					EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(ecomCenDato.getIdcensodatos());
 					edicionColegiadoForm.setIdpersona(ecomCenColegiado.getIdpersona());
 					edicionColegiadoForm.setIdinstitucion(ecomCenColegiado.getIdinstitucion());

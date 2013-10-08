@@ -21,6 +21,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -183,7 +184,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			BusinessManager.getInstance().startTransaction();
 			ecomCenColegiado = ecomCenColegiadoService.insertHistorico(ecomCenColegiado, ecomCenDatos, ecomCenDireccion, null);
-			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(getIDInstitucion(request).shortValue(), ecomCenColegiado);
+			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado), ecomCenColegiado);
 			BusinessManager.getInstance().commitTransaction();
 			idcensodatos = ecomCenColegiado.getIdcensodatos();
 						
@@ -278,7 +279,12 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setDesctipovia(getValue(ecomCenDireccion.getDesctipovia()));
 			edicionColegiadoForm.setDomicilio(getValue(ecomCenDireccion.getDomicilio()));
 			edicionColegiadoForm.setCodigopostal(getValue(ecomCenDireccion.getCodigopostal()));
-			edicionColegiadoForm.setCodigopaisextranj(getValue(ecomCenDireccion.getCodigopaisextranj()));
+			if (ecomCenDireccion.getCodigopaisextranj() != null) {
+				edicionColegiadoForm.setCodigopaisextranj(getValue(ecomCenDireccion.getCodigopaisextranj()));
+			} else {
+				edicionColegiadoForm.setCodigopaisextranj(ClsConstants.ID_PAIS_ESPANA);
+			}
+								
 			edicionColegiadoForm.setCodigoprovincia(getValue(ecomCenDireccion.getCodigoprovincia()));
 			edicionColegiadoForm.setCodigopoblacion(getValue(ecomCenDireccion.getCodigopoblacion()));
 			edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));

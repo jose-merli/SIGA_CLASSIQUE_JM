@@ -1,5 +1,6 @@
 package com.siga.censo.ws.form;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.redabogacia.sigaservices.app.AppConstants;
@@ -196,6 +197,11 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setCodigopostal(String codigopostal) {
 		this.codigopostal = codigopostal;
 	}
+	
+	public ArrayList<String> getCodigopoblacionList() {
+		return getList(codigopoblacion);
+	}
+	
 	public String getCodigopoblacion() {
 		return codigopoblacion;
 	}
@@ -208,6 +214,11 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setDescripcionpoblacion(String descripcionpoblacion) {
 		this.descripcionpoblacion = descripcionpoblacion;
 	}
+	
+	public ArrayList<String> getCodigoprovinciaList() {
+		return getList(this.codigoprovincia);		
+	}
+	
 	public String getCodigoprovincia() {
 		return codigoprovincia;
 	}
@@ -226,7 +237,19 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setDescripcionpoblacionextranj(String descripcionpoblacionextranj) {
 		this.descripcionpoblacionextranj = descripcionpoblacionextranj;
 	}
-	public String getCodigopaisextranj() {
+	
+	public ArrayList<String> getCodigopaisextranjList() {
+		return getList(this.codigopaisextranj);		
+	}
+	
+	private ArrayList<String> getList(String st) {
+		ArrayList<String> lista = new ArrayList<String>();
+		if (st != null && !st.trim().equals("")) {
+			lista.add(st);
+		}
+		return lista;
+	}
+	public String getCodigopaisextranj() {		
 		return codigopaisextranj;
 	}
 	public void setCodigopaisextranj(String codigopaisextranj) {
