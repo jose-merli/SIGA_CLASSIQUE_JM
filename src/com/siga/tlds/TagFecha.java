@@ -67,7 +67,7 @@ public class TagFecha extends TagSupport {
 			if(this.styleId == null || this.styleId.equals("")){
 				this.styleId = this.nombreCampo;
 			}			
-			String sDatepicker = "<input type='text' id='"+this.styleId+"' name='"+this.nombreCampo+"' maxlength='10'";
+			String sDatepicker = "<input type='text' id='"+this.styleId+"' name='"+this.nombreCampo+"' maxlength='11'";
 			if (this.atributos != null && !this.atributos.equals("")){
 				sDatepicker += " " + this.atributos;
 			}

@@ -106,7 +106,17 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
 {"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 "]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
 
-
+var getSelected = function(){
+    var t = '';
+    if(window.getSelection) {
+        t = window.getSelection();
+    } else if(document.getSelection) {
+        t = document.getSelection();
+    } else if(document.selection) {
+        t = document.selection.createRange().text;
+    }
+    return t;
+}
 /**
 *	Inicialización una vez cargado jquery en el iframe
 *	Esta función ya incluye un método de onload de jquery
@@ -126,6 +136,194 @@ function jQueryLoaded(){
 	// *** BEGIN PLUGINS *** //
 	// EXISTS FUNCTION
 	jQuery.fn.exists = function(){return this.length>0;};	
+	
+	// DISABLE SELECTION
+	jQuery.fn.disableSelection = function() {
+        return this
+                 .attr('unselectable', 'on')
+                 .css('user-select', 'none')
+                 .on('selectstart', false);
+    };
+    
+    //https://code.google.com/p/jquery-at-caret
+    //This JQuery plugin provides cross-browser support for inserting and deleting text at the caret (to some, cursor) position, as well as getting and setting the caret position
+    (function() {
+    	  /*
+    	  This JQuery plugin provides cross-browser support for inserting and deleting text at the caret (to some, cursor) position, as well as getting and setting the caret position.
+    	  */  var $, methods;
+    	  $ = jQuery;
+    	  methods = {
+    		replace: function(value) {
+    	      var after, before, o, pos;
+    	      o = this[0];
+    	      pos = methods['getCaretPosition'].apply(this);
+    	      before = o.value.substring(0, pos);
+    	      if (pos + value.length < o.value.length)
+    	    	  after = o.value.substring(pos + value.length, o.value.length);
+    	      else
+    	    	  after  = "";
+    	      $(o).val(before + value + after);
+    	      pos += value.length;
+    	      return methods['setCaretPosition'].apply(this, [pos]);
+    	    },  
+    	    insert: function(value) {
+    	      var after, before, o, pos;
+    	      o = this[0];
+    	      pos = methods['getCaretPosition'].apply(this);
+    	      before = o.value.substring(0, pos);
+    	      after = o.value.substring(pos, o.value.length);
+    	      $(o).val(before + value + after);
+    	      pos += value.length;
+    	      return methods['setCaretPosition'].apply(this, [pos]);
+    	    },
+    	    backspace: function(num) {
+    	      var after, before, o, pos;
+    	      if (typeof num == "undefined")
+    	    	  num = 1;
+    	      o = this[0];
+    	      pos = methods['getCaretPosition'].apply(this);
+    	      before = o.value.substring(0, pos - num);
+    	      after = o.value.substring(pos, o.value.length);
+    	      $(o).val(before + after);
+    	      pos -= num;
+    	      return methods['setCaretPosition'].apply(this, [pos]);
+    	    },
+    	    "delete": function() {
+    	      var after, before, o, pos;
+    	      o = this[0];
+    	      pos = methods['getCaretPosition'].apply(this);
+    	      before = o.value.substring(0, pos);
+    	      after = o.value.substring(pos + 1, o.value.length);
+    	      $(o).val(before + after);
+    	      return methods['setCaretPosition'].apply(this, [pos]);
+    	    },
+    	    getCaretPosition: function() {
+    	      var caretPos, o, sel;
+    	      o = this[0];
+    	      caretPos = 0;
+    	      if (document.selection) {
+    	        o.focus();
+    	        sel = document.selection.createRange();
+    	        sel.moveStart('character', -o.value.length);
+    	        caretPos = sel.text.length;
+    	      } else if (o.selectionStart || o.selectionStart === '0') {
+    	        caretPos = o.selectionStart;
+    	      }
+    	      return caretPos;
+    	    },
+    	    setCaretPosition: function(pos) {
+    	    	var f1, f2, o;
+    	    	  o = this[0];
+    	    	  if (o.setSelectionRange) {
+    	    	    o.focus();
+    	    	    return o.setSelectionRange(pos, pos);
+    	    	  } else if (o.createTextRange) {
+    	    	    f1 = function () {
+    	    	      return o.focus();
+    	    	    };
+    	    	    setTimeout(f1, 10);
+    	    	    f2 = function() {
+    	    	      var range;
+    	    	      range = o.createTextRange();
+    	    	      range.collapse(true);
+    	    	      range.moveEnd('character', pos);
+    	    	      range.moveStart('character', pos);
+    	    	      return range.select();
+    	    	    };
+    	    	    setTimeout(f2, 20);
+    	    	    return pos;
+    	    	  }
+    	    }
+    	  };
+    	  /*
+    	  Set up the plugin
+    	  */
+    	  $.fn.atCaret = function(method) {
+    	    if (methods[method]) {
+    	      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+    	    } else if (typeof method === 'object' || !method) {
+    	      return methods.init.apply(this, arguments);
+    	    } else {
+    	      return $.error('Method ' + method + ' does not exist on jQuery.atCaret');
+    	    }
+    	  };
+    	}).call(this);
+    
+	//http://plugins.jquery.com/caret/
+    // CARET PLUGIN NO FUNCIONA EN IE
+    //Manipulate the caret's position in a text box or content-editable element.
+    /*
+    (function($) {
+    	  $.fn.caret = function(pos) {
+    	    var target = this[0];
+    		var isContentEditable = target.contentEditable === 'true';
+    	    //get
+    	    if (arguments.length == 0) {
+    	      //HTML5
+    	      if (window.getSelection) {
+    	        //contenteditable
+    	        if (isContentEditable) {
+    	          target.focus();
+    	          var range1 = window.getSelection().getRangeAt(0),
+    	              range2 = range1.cloneRange();
+    	          range2.selectNodeContents(target);
+    	          range2.setEnd(range1.endContainer, range1.endOffset);
+    	          return range2.toString().length;
+    	        }
+    	        //textarea
+    	        return target.selectionStart;
+    	      }
+    	      //IE<9
+    	      if (document.selection) {
+    	        target.focus();
+    	        //contenteditable
+    	        if (isContentEditable) {
+    	            var range1 = document.selection.createRange(),
+    	                range2 = document.body.createTextRange();
+    	            range2.moveToElementText(target);
+    	            range2.setEndPoint('EndToEnd', range1);
+    	            return range2.text.length;
+    	        }
+    	        //textarea
+    	        var pos = 0,
+    	            range = target.createTextRange(),
+    	            range2 = document.selection.createRange().duplicate(),
+    	            bookmark = range2.getBookmark();
+    	        range.moveToBookmark(bookmark);
+    	        while (range.moveStart('character', -1) !== 0) pos++;
+    	        return pos;
+    	      }
+    	      //not supported
+    	      return 0;
+    	    }
+    	    //set
+    	    if (pos == -1)
+    	      pos = this[isContentEditable? 'text' : 'val']().length;
+    	    //HTML5
+    	    if (window.getSelection) {
+    	      //contenteditable
+    	      if (isContentEditable) {
+    	        target.focus();
+    	        window.getSelection().collapse(target.firstChild, pos);
+    	      }
+    	      //textarea
+    	      else
+    	        target.setSelectionRange(pos, pos);
+    	    }
+    	    //IE<9
+    	    else if (document.body.createTextRange) {
+    	      var range = document.body.createTextRange();
+    	      range.moveToElementText(target);
+    	      range.moveStart('character', pos);
+    	      range.collapse(true);
+    	      range.select();
+    	    }
+    	    if (!isContentEditable)
+    	      target.focus();
+    	    return pos;
+    	  }
+    	})(jQuery);
+    */
 	
 	/**
 	*	jQuery.noticeAdd() and jQuery.noticeRemove()
@@ -153,7 +351,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.106 2013-10-03 07:38:29 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.107 2013-10-08 11:09:13 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -437,33 +635,270 @@ function jQueryLoaded(){
 		if (jQuery("table.pest").length>0){
 			jQuery("table.pest").css("float", "left");
 		}
-		if(jQuery.fn.mask){
-			// Descomentar para no permitir la edición de fechas por texto
-			//jQuery("input.datepicker").attr("readonly", "readonly");
-			// Comentar para no permitir la edición de fechas por texto	
-			//jQuery("input.datepicker").not(".boxConsulta").mask('99/99/9999',{completed:function(){datepickerMaskValueChanged(jQueryTop(this, window.document));}});
-			jQuery("input.datepicker").not(".boxConsulta").each(function(){
-				//var inputDatepicker = jQueryTop(this, window.document);
-				var inputDatepicker = jQuery(this);
-				inputDatepicker.mask('YY/YY/YYYY',{'translation': {            
-	                Y: {pattern: /[0-9]/}
-	              },
-	              onComplete: function(cep){datepickerMaskValueChanged(inputDatepicker);},
-	              onChange: function(cep){
-	            	  inputDatepicker.change();
-	            	  }
-	              });
-				inputDatepicker.on("blur", function(){datepickerMaskValueChanged(jQuery(this));});
-			});
-		}
-		jQuery("input.datepicker").each(function(){
+		
+		jQuery("input.datepicker").each(function(){			
 			if (jQuery(this).data("cargarfechadesde")){
 				jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
 			}
 			if (jQuery(this).hasClass("editable")){
 				//console.debug("DATEPICKER: " + jQuery(this).attr("id") + " VALUE: " + jQuery(this).val());
+				
+				jQuery(this).on("select", function(e){
+					var selectedText = getSelected().toString();
+					jQuery(this).data("selectedText", selectedText);					
+				});
+				
+				jQuery(this).on("blur", function(){
+					//alertStop("DATEPICKER INPUT BLUR");
+					if (!jQuery(this).is(":focus")){
+						//console.debug("DATEPICKER INPUT BLUR BUENO!");
+						datepickerMaskValueChanged(jQuery(this));
+						var fecha = jQuery(this).val();
+						if (fecha){
+							var fechaArray = fecha.split("/");
+							var y = false;
+							var m = false;
+							var d = false;
+							if (typeof fechaArray[2] != "undefined")
+								y = fechaArray[2];
+							if (typeof fechaArray[1] != "undefined")
+								m = fechaArray[1];
+							if (typeof fechaArray[0] != "undefined")
+								d = fechaArray[0];
+							if (d.length < 2){
+								d = "0" + d;
+							}
+							if (m.length < 2){
+								m = "0" + m;
+							}
+							if (y.length < 4){
+								var hoy = new Date();
+								var siglo = new String(hoy.getFullYear());
+								var numDigitos = 4 - y.length;
+								siglo = siglo.substring(0, numDigitos);
+								y = siglo + y;
+							}											
+							jQuery(this).val(d+"/"+m+"/"+y);
+							jQuery(this).change();
+						}
+					} else if (typeof jQuery(this).data("caretpos") != "undefined"){
+						//console.debug("DATEPICKER INPUT BLUR! focus: " + jQuery(this).is(":focus") + "; CARET: " + jQuery(this).atCaret('getCaretPosition') + "; CARETPOS: " + jQuery(this).data("caretpos"));
+						jQuery(this).atCaret('setCaretPosition', jQuery(this).data("caretpos") + 1);
+						jQuery(this).removeData("caretpos");
+					}
+					//alertStop("acaba blur");
+				});
+				jQuery(this).on("keyup",function(e){
+					//console.debug("keyup");
+					var actualizarCursor = false;
+					if (typeof jQuery(this).data("selectedText") != "undefined"){
+						jQuery(this).removeData("selectedText");
+						actualizarCursor = true;
+					} else if (code != 8 && code != 37 && code != 39){
+						var code = e.keyCode || e.which;					
+						var fecha = jQuery(this).val();
+						var fechaArray = fecha.split("/");
+						if (code == 86){
+							datepickerMaskValueChanged(jQuery(this));
+						} else {
+							var y = false;
+							var m = false;
+							var d = false;
+							var sustituir = false;
+							if (typeof fechaArray[0] != "undefined"){
+								d = fechaArray[0];
+								if (d.length > 2){
+									d = d.substring(0,2);
+									sustituir = true;
+								}
+							}
+							if (typeof fechaArray[1] != "undefined"){
+								m = fechaArray[1];
+								if (m.length > 2){
+									m = m.substring(0,2);
+									sustituir = true;
+								}
+							}
+							if (typeof fechaArray[2] != "undefined"){
+								y = fechaArray[2];
+								if (y.length > 4){
+									y = y.substring(0,4);
+									sustituir = true;
+								}
+							}
+							if (sustituir){
+								var value = "";
+								if (d)
+									value = d;
+								if (m)
+									value += "/" + m;
+								if (y)
+									value += "/" + y;
+								jQuery(this).val(value);
+								actualizarCursor = true;
+							}
+						}
+					}
+					if (actualizarCursor){
+						var caretpos = jQuery(this).data("caretpos") + 1;
+						jQuery(this).data("caretpos", caretpos);
+						jQuery(this).atCaret('setCaretPosition', caretpos);
+					}
+					//alertStop("acaba keyup");
+				});
+				
+				jQuery(this).on("keydown", function(e){
+					var permitirValor = false;
+					var caretpos = jQuery(this).atCaret('getCaretPosition');					
+					var code = e.keyCode || e.which;
+					var fecha = jQuery(this).val();
+					var fechaArray = fecha.split("/");
+					var charAtCaretPos = "";
+					if (typeof fecha != "undefined" && 
+							typeof fecha.charAt(caretpos) != "undefined")
+						charAtCaretPos = fecha.charAt(caretpos);
+					//console.debug("input datepicker keydown CODE: " + code + "; caretpos: " + caretpos + "; fecha.charAt(caretpos): " + charAtCaretPos);
+
+					// SUSTITUIR TEXTO SELECCIONADO
+					if (typeof jQuery(this).data("selectedText") != "undefined" && ((code >= 48 && code <= 57) || 
+							(code >= 96 && code <= 105))){
+						var selectedText = jQuery(this).data("selectedText");
+						var selection = getSelected().toString();
+						if (document.selection)
+							document.selection.empty();
+						else
+							window.getSelection().removeAllRanges();
+						if (selection == selectedText){
+							var keyCode = code;
+							if (keyCode >= 96)	
+								keyCode -= 48; // PARA EL NUMPAD
+							var replace = String.fromCharCode(keyCode);
+							var value = jQuery(this).val().toString();
+							
+							if (value.length - selectedText.length > 2){
+								var d = typeof fechaArray[0] != "undefined"?fechaArray[0]:"";
+								var m = typeof fechaArray[1] != "undefined"?fechaArray[1]:"";
+								var y = typeof fechaArray[2] != "undefined"?fechaArray[2]:"";
+								if (y != "")
+								if (caretpos >= 0 && caretpos <= 2){
+									// SELECCIÓN DE DIAS
+									d = replace;
+									caretpos = 0;
+								} else if (caretpos >= 3 && caretpos <= 5){
+									// SELECCIÓN DE MES
+									var indexSeparador = selectedText.indexOf("/");
+									if (indexSeparador != -1 && indexSeparador != 0){
+										//REEMPLAZA MES Y AÑO
+										y = "";
+									}
+									m = replace;
+									caretpos = d.length + 1;
+								} else {
+									// 8 <= caretpos<= 10
+									var indexSeparador = selectedText.indexOf("/");
+									if (indexSeparador != -1 && indexSeparador != 0){
+										// REEMPLAZA MES Y AÑO
+										m = replace;
+										y = "";
+										caretpos = d.length + 1;
+									} else {
+										// REEMPLAZA AÑO
+										y = replace;
+										caretpos = d.length + m.length + 2;
+									}
+								}
+								value = d;
+								if (m != ""){
+									value += "/"+m;
+									if (y != "")
+										value += "/"+y;
+								}
+							} else {
+								// SELECCIÓN COMPLETA (O CASI)
+								caretpos = value.indexOf(selectedText) + 1;
+								value = value.replace(selectedText, replace);
+							}
+							
+							jQuery(this).val(value);
+							jQuery(this).data("caretpos",caretpos);
+							e.preventDefault();
+							return false;
+						}
+					}
+					
+					if ((caretpos == 2 || caretpos == 5) && charAtCaretPos == "/" && ((code >= 48 && code <= 57) || 
+							(code >= 96 && code <= 105))){
+						// REEMPLAZANDO LLEGA A UN SEPARADOR
+						var keyCode = code;
+						if (keyCode >= 96)	
+							keyCode -= 48; // PARA EL NUMPAD
+						jQuery(this).atCaret("replace","/"+String.fromCharCode(keyCode));
+						jQuery(this).data("caretpos",jQuery(this).atCaret('getCaretPosition'));
+					} else if (code == 8 && typeof fecha != "undefined" && 
+							typeof fecha.charAt(caretpos - 1) != "undefined" && fecha.charAt(caretpos - 1) == "/"){
+						// BORRANDO LLEGA A UN SEPARADOR
+						jQuery(this).atCaret("backspace", 2);
+						jQuery(this).data("caretpos",jQuery(this).atCaret('getCaretPosition'));
+					} else {
+						jQuery(this).data("caretpos",caretpos);
+						if ((code >= 48 && code <= 57) || 
+								(code >= 96 && code <= 105) ||
+								code == 8 || code == 9 || code == 18 || code == 16 || code == 17 ||  
+								code == 46 || code == 35 || code == 36 || code == 116 || 
+								code == 39 || code == 37 || code == 67 || code == 86){
+							// SE PERMITE
+							//console.debug("caracter permitido... CARET: " + caretpos);
+							if (code == 86 || code == 8 || code == 37 || code == 39){
+								// PEGAR || BORRAR || FLECHA IZDA || FLECHA DCHA
+								
+							} else if ((fecha.length == 2 && typeof fechaArray[1] == "undefined") || 
+									(fecha.length == 5 && typeof fechaArray[2] == "undefined")){
+								// INSERTAMOS SEPARADOR si procede
+								//console.debug("Inserto separador");
+								jQuery(this).val(fecha + "/");
+								jQuery(this).data("caretpos",caretpos + 1);
+							}
+							permitirValor = true;
+						} else if (fecha != "" && fecha.length < 11 && fecha.charAt(fecha.length-1) != "/"){
+							// INSERTAMOS SEPARADOR si procede
+							var y = false;
+							var m = false;
+							var d = false;
+							if (typeof fechaArray[2] != "undefined")
+								y = fechaArray[2];
+							if (typeof fechaArray[1] != "undefined")
+								m = fechaArray[1];
+							if (typeof fechaArray[0] != "undefined")
+								d = fechaArray[0];
+							if (d.length < 2){
+								d = "0" + d;
+							}
+							if (m.length < 2){
+								m = "0" + m;
+							}
+							if (typeof fechaArray[2] == "undefined"){
+								var value = d;
+								if (m)
+									value += "/" + m;							
+								jQuery(this).val(value + "/");
+								//console.debug("INSERTO SEPARADOR");
+							}
+							//console.debug("caracter NO permitido...");
+						} else {
+							//console.debug("caracter NO permitido...");
+						}
+					}
+					
+					if (!permitirValor){
+						e.preventDefault();
+					}
+					//alertStop("acaba keydown");
+					return permitirValor;
+				});
+				
 				if (false && window == window.top){//DESACTIVAMOS EL DATEPICKER NORMAL PARA QUE TODOS FUNCINEN IGUAL
 					//console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
+					/*
 					jQueryTop(this, this.ownerDocument).datepicker({
 						dateFormat: jQuery(this).data("datepickerformat"),
 						regional: jQuery(this).data("regional"),
@@ -489,6 +924,7 @@ function jQueryLoaded(){
 							return false;
 						}
 					});
+					*/
 				} else {
 					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
@@ -502,11 +938,12 @@ function jQueryLoaded(){
 						}
 					});
 					*/
+					
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						options.dateFormat = datepickerInput.data("datepickerformat");
 						options.beforeShow = function(input, inst) {
-							//console.debug("[DATEPICKER] beforeShow");							
+							//console.debug("[DATEPICKER] beforeShow");	
 							jQueryTop('#main_overlay').show();
 							jQueryTop("input[id^=dp]").hide();
 						};
@@ -543,15 +980,20 @@ function jQueryLoaded(){
 						vContainment.push(0);//x1
 						vContainment.push(0);//y1
 						var winW = 630, winH = 460;
-						if (document.body && document.body.offsetWidth) {
-						 winW = document.body.offsetWidth;
-						 winH = document.body.offsetHeight;
+						var curDoc = document;
+						if (jQueryTop("#mainWorkArea").length > 0)
+							curDoc = jQueryTop("#mainWorkArea")[0].ownerDocument;
+						else if (jQueryTop("#modal").length > 0)
+							curDoc = jQueryTop("#modal")[0].ownerDocument;
+						if (curDoc.body && curDoc.body.offsetWidth) {
+						 winW = curDoc.body.offsetWidth;
+						 winH = curDoc.body.offsetHeight;
 						}
-						if (document.compatMode=='CSS1Compat' &&
-						    document.documentElement &&
-						    document.documentElement.offsetWidth ) {
-						 winW = document.documentElement.offsetWidth;
-						 winH = document.documentElement.offsetHeight;
+						if (curDoc.compatMode=='CSS1Compat' &&
+								curDoc.documentElement &&
+								curDoc.documentElement.offsetWidth ) {
+						 winW = curDoc.documentElement.offsetWidth;
+						 winH = curDoc.documentElement.offsetHeight;
 						}
 						if (window.innerWidth && window.innerHeight) {
 						 winW = window.innerWidth;
@@ -559,9 +1001,14 @@ function jQueryLoaded(){
 						}
 						vContainment.push(winW);//x2
 						vContainment.push(winH);//y2
-						alert("vContainment: "+vContainment);
+						alert("vContainment: [0,0,"+winW+","+winH+"]");
 						*/
-						jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop(vContainment).contents().find("html"), scroll: false, snap: true });
+						//BNS NO PERMITIMOS MOVER EL DATEPICKER EN LAS MODALES
+						if (jQueryTop("#mainWorkArea").length > 0){
+							jQueryTop(".ui-datepicker-header").css("cursor", "move");
+							jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#mainWorkArea"), scroll: false, snap: true });
+						} else
+							jQueryTop(".ui-datepicker-header").css("cursor", "default");
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
@@ -569,7 +1016,7 @@ function jQueryLoaded(){
 				}
 			}
 		});
-		if (window == window.top && jQueryTop != undefined){
+		if (window == window.top){
 		// MouseWheel
 		   jQueryTop(document).on("mousewheel", "#ui-datepicker-div", function(e){
 			   try{
@@ -577,7 +1024,10 @@ function jQueryLoaded(){
 					   var currentDatepicker = jQueryTop.datepicker._curInst;
 					   var offset = 0;
 					   var type = "M";
-			   			if(e.wheelDelta/120 > 0) {
+					   var wheelDelta = e.wheelDelta;
+					   if (typeof wheelDelta == "undefined")
+						   wheelDelta = e.originalEvent.wheelDelta;
+			   			if(wheelDelta/120 > 0) {
 			   	            //prev
 			   				offset = -1;		   
 			   	        } else{
@@ -1102,7 +1552,7 @@ function jQueryUILoaded(){
 	   // UI
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
 	   jQueryTop.datepicker._updateDatepicker = function(inst) {
-		   var currentDatepicker = jQueryTop(this);		   
+		   var currentDatepicker = jQueryTop(this);
 		   // Botón Borrar
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
@@ -1182,33 +1632,31 @@ function jQueryUILoaded(){
 			   jQueryTop.datepicker._adjustInstDate(inst, 1, "Y");
 			   jQueryTop.datepicker._updateDatepicker(inst);
 		   });
-		   		   
+		   
+		   // Estilo del botón de hoy activo
+		   var btnToday = jQueryTop(this).datepicker("widget").find(".ui-datepicker-current");
+		   btnToday.removeClass("ui-priority-secondary");
+		   btnToday.addClass("ui-priority-primary");
    		};   		
 	}
 }
 
 
 function datepickerMaskValueChanged(datepickerInput){
-	var dateValue = datepickerInput.val();
-	if(dateValue.length < 10){
-		var dateSplit = dateValue.split("/");
-		if(typeof dateSplit[0] != 'undefined' && typeof dateSplit[1] != 'undefined' && typeof dateSplit[2] != 'undefined'){ //Cambiar esta funcionalidad en el 2100 (ahora no es mi problema)..
-			year = 2000 + parseInt(dateSplit[2]);
-			datepickerInput.val(dateSplit[0]+"/"+dateSplit[1]+"/"+year);
-		}	
-	}
-	
 	var dateFormat = defaultDateFormat;
 	if (datepickerInput.data("datepickerformat") && datepickerInput.data("datepickerformat") != "")
-		dateFormat = datepickerInput.data("datepickerformat");	
+		dateFormat = datepickerInput.data("datepickerformat");
+	var dateValue = datepickerInput.val();
+	var error = false;
 	if (dateValue != ""){
 		var date = formatDate(dateValue, dateFormat);
 		if (!date){
+			error = true;
 			datepickerInput.val("");
 			datepickerInput.blur();
 			alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
 		}
-	}
+	}	
 }
 
 function formatDate(dateValue, dateFormat){
@@ -1221,7 +1669,7 @@ function formatDate(dateValue, dateFormat){
 		//console.debug("[formatDate] OK date="+date);
 	} catch (e){
 		date = "";
-		console.debug("[formatDate] ERROR llamada formatDate("+dateValue+","+dateFormat+")");
+		//console.debug("[formatDate] ERROR llamada formatDate("+dateValue+","+dateFormat+")");
 	}
 	return date;
 }
