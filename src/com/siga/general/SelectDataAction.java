@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -48,6 +47,9 @@ public class SelectDataAction extends SIGAActionBase {
 	public static final String QUERY_PARAMETERS_JSON_PARAMETER = "params";
 	public static final String SELECTED_IDS_PARAMETER = "selectedIds";
 	public static final String SHOW_SEARCH_BOX_PARAMETER = "showsearchbox";
+	public static final String PAGINATED_PARAMETER = "paginated";
+	public static final String PAGE_NUMBER_PARAMETER = "page";
+	public static final String PAGE_SIZE_PARAMETER = "pageSize";
 	public static final String REQUIRED_PARAMETER = "required";
 	public static final String FIRST_LABEL_PARAMETER = "firstlabel";
 
@@ -61,6 +63,9 @@ public class SelectDataAction extends SIGAActionBase {
 		String selectedIds = request.getParameter(SELECTED_IDS_PARAMETER);
 		String firstlabel = request.getParameter(FIRST_LABEL_PARAMETER);
 		boolean bShowsearchbox = UtilidadesString.stringToBoolean(request.getParameter(SHOW_SEARCH_BOX_PARAMETER));
+		boolean bPaginated = UtilidadesString.stringToBoolean(request.getParameter(PAGINATED_PARAMETER));
+		String sPageNumber = request.getParameter(PAGE_NUMBER_PARAMETER);
+		String sPageSize = request.getParameter(PAGE_SIZE_PARAMETER);
 		boolean required = UtilidadesString.stringToBoolean(request.getParameter(REQUIRED_PARAMETER));
 		
 		
@@ -76,7 +81,7 @@ public class SelectDataAction extends SIGAActionBase {
 		if (queryId != null && !queryId.equals("")){
 			// GET SERVICE AND FIND METHOD
 			SelectDataService selectDataService = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
-			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(queryId, bShowsearchbox);
+			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(queryId, bShowsearchbox, bPaginated);
 			
 			if (selectDataMethod != null){
 				//BUILD PARAMETERS
@@ -108,8 +113,26 @@ public class SelectDataAction extends SIGAActionBase {
 					userProfiles = userProfiles.substring(1);
 					params.put("idperfil", userProfiles);
 				}
+				
+				if (bPaginated){
+					int pageNumber = 1;
+					int pageSize = Integer.valueOf(SelectDataService.DEFAULT_PAGE_SIZE_VALUE);
+					try{
+						pageNumber = Integer.valueOf(sPageNumber);
+						pageSize = Integer.valueOf(sPageSize);
+					} catch (Exception e){
+						
+					}
+					if (pageNumber < 1)
+						pageNumber = 1;
+					params.put(SelectDataService.PAGE_NUMBER_KEY, String.valueOf(pageNumber));
+					if (pageSize < 1)
+						pageSize = Integer.valueOf(SelectDataService.DEFAULT_PAGE_SIZE_VALUE);
+					params.put(SelectDataService.PAGE_SIZE_KEY, String.valueOf(pageSize));
+				}
+				
 				params = TagSelect.normalizeJSONparams(params);
-				// CALL SelectDataService				
+				// CALL SelectDataService
 				try {
 					options.addAll((List<KeyValue>) selectDataMethod.invoke(selectDataService, params));
 				} catch (IllegalArgumentException e) {
@@ -127,7 +150,7 @@ public class SelectDataAction extends SIGAActionBase {
 		}
 		
 		try{
-			writeSelect(options, response, selectedIds);
+			writeSelect(options, response, selectedIds, bPaginated);
 		} catch (IOException e){
 			ClsLogging.writeFileLogError("ERROR AL TRATAR DE ESCRIBIR LAS OPCIONES DEL SELECT", e, 10);
 		}
@@ -135,19 +158,34 @@ public class SelectDataAction extends SIGAActionBase {
 		return null;
 	}
 	
-	private void writeSelect(List<KeyValue> selectOptions, HttpServletResponse response, String selectedIds) throws IOException {
+	private void writeSelect(List<KeyValue> selectOptions, HttpServletResponse response, String selectedIds, boolean paginated) throws IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		List<String> selectedIdsList = null;
 		if (selectedIds != null && !selectedIds.equals(""))
 			selectedIdsList = Arrays.asList(selectedIds.replaceAll("\\[|\\]", "").split(","));
+		String oldLetterSelectNav = "";
 		while(iteraOptions.hasNext()){
 			KeyValue option = iteraOptions.next();
+			if (option == null)
+				option = new KeyValue();
+			String newLetterSelectNav = "";
+			if (option.getValue() != null && option.getValue().length() >= 1 && (oldLetterSelectNav.equals("") || !option.getValue().substring(0,1).equals(oldLetterSelectNav))){
+				newLetterSelectNav = option.getValue().substring(0,1);
+				oldLetterSelectNav = newLetterSelectNav;
+			}
 			boolean bSelected = false;
 			if (selectedIdsList != null && selectedIdsList.contains(option.getKey()))
 				bSelected = true;
-			response.getWriter().write(KeyValue.getHtmlOption(option, bSelected));
+			if (paginated)
+				response.getWriter().write(KeyValue.getHtmlLi(option, bSelected, newLetterSelectNav));
+			else
+				response.getWriter().write(KeyValue.getHtmlOption(option, bSelected));
+		}
+		if (selectOptions.size() <= 1 && paginated){
+			if (selectOptions.iterator().next().getKey().equals(KeyValue.DEFAULT_KEY))
+				response.getWriter().write("<li class='notFound'></li>");
 		}
 		response.getWriter().flush();
 	}

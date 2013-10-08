@@ -158,6 +158,24 @@
       <description>Número de lineas mostradas del select</description>
     </attribute>
     <attribute>
+      <name>paginated</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>flag que indica si deben paginarse las opciones</description>
+    </attribute>
+    <attribute>
+      <name>page</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>El número de página si deben paginarse las opciones</description>
+    </attribute>
+    <attribute>
+      <name>pageSize</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>El número de opciones recuperadas cada vez si deben paginarse las opciones</description>
+    </attribute>
+    <attribute>
       <name>disabled</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

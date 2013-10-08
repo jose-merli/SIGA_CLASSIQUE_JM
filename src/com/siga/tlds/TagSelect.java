@@ -59,7 +59,9 @@ public class TagSelect extends TagSupport {
 	private boolean multiple = false;
 	private int lines = 1;
 	// TODO: PAGINACIÓN
-	//private boolean showAll = false;
+	private boolean paginated = false;
+	private int page = 0;
+	private int pageSize = 1000;
 	// TODO: FILTRADO
 	//private boolean showFilterBox = false;
 	private boolean disabled = false;
@@ -111,7 +113,7 @@ public class TagSelect extends TagSupport {
 		} else {
 			SelectDataService selectDataService = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
 			String selectDataServiceMethodName = this.queryId;			
-			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(selectDataServiceMethodName, this.showSearchBox);
+			java.lang.reflect.Method selectDataMethod = TagSelect.getSelectDataServiceMethodIgnoreCase(selectDataServiceMethodName, this.showSearchBox, this.paginated);
 			
 			if (selectDataMethod != null){
 				//BUILD PARAMETERS
@@ -180,6 +182,20 @@ public class TagSelect extends TagSupport {
 							bGetSelectData = false;
 							break;
 						}
+					}
+				}
+				
+				if (this.paginated){
+					if (this.page < 1)
+						this.page = 1;
+					params.put(SelectDataService.PAGE_NUMBER_KEY, String.valueOf(this.page));
+					if (this.pageSize < 1)
+						this.pageSize = Integer.valueOf(SelectDataService.DEFAULT_PAGE_SIZE_VALUE);
+					params.put(SelectDataService.PAGE_SIZE_KEY, String.valueOf(this.pageSize));
+					if (this.selectedIds != null && this.selectedIds.size() == 1){
+						//TODO: Ojo, un select paginado no puede ser múltiple
+						//		habría que restringirlo de alguna forma en la configuración
+						params.put("selectedid", this.selectedIds.iterator().next());
 					}
 				}
 				
@@ -333,8 +349,17 @@ public class TagSelect extends TagSupport {
 		if (StringUtils.hasText(this.width)){			 			
 			selectWidth = this.width;
 			try{
-				 int iWidth = Integer.valueOf(this.width);
-				 divWidth = String.valueOf(iWidth + 20);
+				 int iWidth = Integer.valueOf(this.width) + 20;
+				 
+				 if (showSearchBox){
+					 if (this.searchBoxWidth != null && !this.searchBoxWidth.equals("")){
+						 iWidth += (Integer.valueOf(this.searchBoxWidth) * 5);
+					 } else {
+						 iWidth += 50;
+					 }
+				 }
+					 
+				divWidth = String.valueOf(iWidth);
 			} catch (Exception e){
 				divWidth = this.width;
 			}
@@ -349,7 +374,7 @@ public class TagSelect extends TagSupport {
 			disabledInputStyle += "'";			
 		
 		String dataWidth = " data-width = '"+divWidth+"' ";		
-		String wrapDivStyle = " style='display:inline; width:"+divWidth+";' ";		
+		String wrapDivStyle = " style='display:inline;' ";		
 		
 		if (multiple){
 			sMultiple = " multiple size='"+this.lines+"'";
@@ -382,14 +407,28 @@ public class TagSelect extends TagSupport {
 			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' "+selectClass+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
 		}
 		
+		String pagination = "";
+		if(this.paginated){
+			pagination += " data-paginated='true'";
+			pagination += " data-page='"+this.page+"'";
+			pagination += " data-pagesize='"+this.pageSize+"'";
+		}
+		
 		out.println("<div id='"+this.id+"_loader' "+divLoaderClass+selectLoaderStyle+">");
-		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+firstLabelData+">");
+		out.println("<select id='"+this.id+"' class='tagSelect "+cssClass+"' name='"+this.id+"' "+" data-queryId='"+this.queryId+"' data-iniVal='"+this.selectedIds+"' "+pagination+childrenInfo+sRequired+" "+queryParam+selectReadOnly+dataSelectParentMsg+sSearchKey+sMultiple+sShowSearchBox+sHideIfnoOptions+sOnloadCallback+selectStyle+firstLabelData+">");
 		Iterator<KeyValue> iteraOptions = selectOptions.iterator();
 		String sInputMultiple = "";
+		String sPaginatedDivHTML = "<div id='"+this.id+"_paginated_div' class='tagSelect tagSelectPaginatedDiv' style='visibility:hidden;z-index: 999; position: absolute; background: #fff; border-width: 1px; border-style: solid; overflow-y: auto; overflow-x: hidden;'><ul class='selectOptions'>";
+		String oldLetterSelectNav = "";
 		while(iteraOptions.hasNext()){
 			KeyValue keyValue = iteraOptions.next();
 			if (keyValue == null)
 				keyValue = new KeyValue();
+			String newLetterSelectNav = "";
+			if (keyValue.getValue() != null && keyValue.getValue().length() >= 1 && (oldLetterSelectNav.equals("") || !keyValue.getValue().substring(0,1).equals(oldLetterSelectNav))){
+				newLetterSelectNav = keyValue.getValue().substring(0,1);
+				oldLetterSelectNav = newLetterSelectNav;
+			}
 			boolean selected = false;
 			if (this.selectedIds != null && this.selectedIds.size() > 0)
 				selected = this.selectedIds.contains(keyValue.getKey());
@@ -405,10 +444,15 @@ public class TagSelect extends TagSupport {
 				}
 			}
 			out.println(KeyValue.getHtmlOption(keyValue,selected));
+			if (this.paginated){
+				sPaginatedDivHTML += KeyValue.getHtmlLi(keyValue, selected, newLetterSelectNav);
+			}
 		}
+		sPaginatedDivHTML += "</ul></div>";
+		
 		String loadingElement = "<img id='"+this.id+"_loading' src='html/imagenes/loading-spinner.gif' alt='Cargando...' style='visibility:hidden' />";
 					
-		out.println("</select>"+loadingElement+"</div>");
+		out.println("</select>"+(paginated?sPaginatedDivHTML:"")+loadingElement+"</div>");
 		if (!multiple)
 			out.println("<input type='text' readonly='readonly' "+inputDisabledClass+disabledInputStyle+" id='"+this.id+"_disabled' name='"+this.id+"_disabled' value='"+(selectedOption.getKey().equals(KeyValue.DEFAULT_KEY)?"":selectedOption.getValue())+"'/>");
 		else
@@ -416,13 +460,16 @@ public class TagSelect extends TagSupport {
 		out.println("</div>");// this.id_div;
 	}
 
-	public static java.lang.reflect.Method getSelectDataServiceMethodIgnoreCase(String methodName, boolean bShowSearchBox){
+	public static java.lang.reflect.Method getSelectDataServiceMethodIgnoreCase(String methodName, boolean bShowSearchBox, boolean bPaginated){
 		java.lang.reflect.Method SelectDataServiceMethod = null;
 		try{
 			Assert.hasText(methodName);
 			methodName = methodName.trim();
 			if (bShowSearchBox){
 				methodName += SelectDataService.WITH_SEARCH_KEY_METHOD_SUFIX;
+			}
+			if (bPaginated){
+				methodName += SelectDataService.WITH_PAGINATED_METHOD_SUFIX;
 			}
 			
 			java.lang.reflect.Method[] selectDataMethods = SelectDataService.class.getMethods();
@@ -793,7 +840,7 @@ public class TagSelect extends TagSupport {
 	public void setOnLoadCallback(String onLoadCallback) {
 		this.onLoadCallback = onLoadCallback.trim();
 	}
-
+	
 	public String getFirstLabel() {
 		return firstLabel;
 	}
@@ -801,7 +848,51 @@ public class TagSelect extends TagSupport {
 	public void setFirstLabel(String firstLabel) {
 		this.firstLabel = firstLabel;
 	}
-
 	
+
+	/**
+	 * @return the paginated
+	 */
+	public boolean isPaginated() {
+		return paginated;
+	}
+
+	/**
+	 * @param paginated the paginated to set
+	 */
+	public void setPaginated(boolean paginated) {
+		this.paginated = paginated;
+	}
+	public void setPaginated(String paginated) {
+		this.paginated = UtilidadesString.stringToBoolean(paginated);
+	}
+
+	/**
+	 * @return the page
+	 */
+	public int getPage() {
+		return page;
+	}
+
+	/**
+	 * @param page the page to set
+	 */
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	/**
+	 * @return the pageSize
+	 */
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	/**
+	 * @param pageSize the pageSize to set
+	 */
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 	
 }
