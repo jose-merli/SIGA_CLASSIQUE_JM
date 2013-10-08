@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- criteriosDinamicos.jsp -->
+<!-- criteriosDinamicosExperta.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -186,9 +186,11 @@
 					<%	}}%>					
 				</select>	
 			<%}else{%>				
-				<%if (fecha){%>					
-					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>"  name="criteriosDinamicos[<%=i%>].val" class="box" value="<%=valorDefecto%>" readonly="true"></input>
-					<a href='javascript://'onClick="return showCalendarGeneral(valor<%=i%>);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%if (fecha){
+					String styleId = "valor" + i;
+					String nombreCampo = "criteriosDinamicos[" + i + "].val";
+				%>				
+					<siga:Fecha nombreCampo="<%=nombreCampo%>" styleId="<%=styleId%>" valorInicial="<%=valorDefecto%>"></siga:Fecha>	
 				<%}else if (numerico){%>
 					<input type="text" id="valor<%=i%>" nulo="<%=valorNulo%>" name="criteriosDinamicos[<%=i%>].val" class="box" value="<%=valorDefecto%>" maxlength="<%=max%>"></input>
 					

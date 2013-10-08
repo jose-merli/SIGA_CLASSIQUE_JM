@@ -1312,7 +1312,7 @@
     <attribute>
       <name>styleId</name>
       <required>false</required>
-      <rtexprvalue>fecha</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>campoCargarFechaDesde</name>
