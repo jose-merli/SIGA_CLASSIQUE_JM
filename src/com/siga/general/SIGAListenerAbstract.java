@@ -176,7 +176,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 		
 		GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		GenParametrosExample genParametrosExample = new GenParametrosExample();
-		genParametrosExample.createCriteria().andIdinstitucionEqualTo(idInstitucion).andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(String.valueOf(valorDiasPorDefecto));
+		genParametrosExample.createCriteria().andIdinstitucionEqualTo(idInstitucion).andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(String.valueOf(getDiasIntervaloParam()));
 		
 		List<GenParametros> listaGenParametros = parametersService.getList(genParametrosExample);
 		
