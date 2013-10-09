@@ -132,7 +132,7 @@
 						renunciaSel.add(0,idRenuncia);	
 				}
 				
-				if (miHash.get(ScsEJGBean.C_IDPONENTE)!= null && !miHash.get(ScsEJGBean.C_IDPONENTE).toString().equalsIgnoreCase(""))
+				if (miHash.get(ScsEJGBean.C_IDPONENTE)!= null)
 					vPonente.add(0, miHash.get(ScsEJGBean.C_IDPONENTE).toString());			
 				
 				if (miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD)!=null&&miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD).equals("")) {
