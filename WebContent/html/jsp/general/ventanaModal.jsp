@@ -119,14 +119,15 @@
 				} 
 			}
 		</script>
-	</head>
+</head>
 
-	<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
+<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
+	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<table>
 	<tr>
 		<td class="labelTextValor"><c:out value="Conectando con la Mutua de la Abogacía..." /> </td>
 	</tr>
-</table>
+	</table>
 	
 	<!-- IFRAME GENERAL -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/loadingWindow.jsp?msg=<%=msg%>"
@@ -142,8 +143,7 @@
 	<div id="divEspera" title="Espere por favor" style="z-index:100;position:absolute;display:none;top:45%;left:50%">
 		<div style="position:relative;left:-50%">
 			<br><img src="<%=app%>/html/imagenes/loadingBar.gif"/>
-		</div
+		</div>
 	</div>
-	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
-	</body>
+</body>
 </html>
