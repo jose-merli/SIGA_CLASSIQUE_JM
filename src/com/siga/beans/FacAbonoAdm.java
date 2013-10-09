@@ -1171,7 +1171,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					nuevo.put("NOMBRE_CLIENTE","-");
 				}
 				
-				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)abono.get(FacAbonoBean.C_IDINSTITUCION),"2");
+				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)abono.get(FacAbonoBean.C_IDINSTITUCION),"8");
 				if (direccion.size()==0){// si no existe direccion de despacho, mostramos la de correo
 					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)abono.get(FacAbonoBean.C_IDINSTITUCION),"3");
 				}
