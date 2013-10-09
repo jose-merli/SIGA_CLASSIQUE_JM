@@ -28,16 +28,19 @@
 	}
 }());
 
-if (window == window.top && window.jQuery){
-	var jQueryTop = window.jQuery;
-} else {
-	var jQueryTop = window.top.jQueryTop;
-}
 
 if (typeof String.prototype.endsWith !== 'function') {
     String.prototype.endsWith = function(suffix) {
         return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
+}
+
+
+// CARGA JQUERY SOLO EN EL TOP
+if (window == window.top && window.jQuery){
+	var jQueryTop = window.jQuery;
+} else {
+	var jQueryTop = window.top.jQueryTop;
 }
 
 var jqueryFileUri = 	"/SIGA/html/js/jquery.js";
@@ -94,7 +97,7 @@ if (typeof jQuery == "undefined"){
 	// Se ha encontrado jQuery en top. Inicializa script
 	jQueryLoaded();
 }
-
+// FIN CARGA JQUERY
 
 //JSON FOR COMPATIBILITY MODE ON IE
 //http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.min.js
@@ -106,6 +109,7 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
 {"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 "]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
 
+// OBTIENE EL TEXTO SELECCIONADO DE UNA PÁGINA
 var getSelected = function(){
     var t = '';
     if(window.getSelection) {
@@ -352,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.108 2013-10-08 16:17:30 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.109 2013-10-09 16:48:59 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -641,7 +645,12 @@ function jQueryLoaded(){
 		jQuery("input.datepicker").each(function(){
 			// Parámetro cargar fecha desde. Selecciona el ID desde el que se quiere cargar el valor
 			if (jQuery(this).data("cargarfechadesde")){
-				jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
+				if (jQuery(this).val() == "")
+					jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
+				jQuery(this).on("focus", function(){
+					if (jQuery(this).val() == "")
+						jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
+				});
 			}
 			
 			if (jQuery(this).hasClass("editable")){
@@ -684,8 +693,8 @@ function jQueryLoaded(){
 						// EL CURSOR
 						jQuery(this).removeData("selectedText");
 						actualizarCursor = true;
-					} else if (code != 8 && code != 37 && code != 39){
-						// SI NO ES BORRAR O FLECHAS
+					} else if (code != 8 && code != 37 && code != 39 && code != 46){
+						// SI NO ES BORRAR/SUPRIMIR O FLECHAS
 						var code = e.keyCode || e.which;					
 						var fecha = jQuery(this).val();
 						var fechaArray = fecha.split("/");
@@ -859,10 +868,10 @@ function jQueryLoaded(){
 						if ((code >= 48 && code <= 57) || 
 								(code >= 96 && code <= 105) ||
 								code == 8 || code == 9 || code == 18 || code == 16 || code == 17 ||  
-								code == 46 || code == 35 || code == 36 || code == 116 || 
+								code == 35 || code == 36 || code == 116 || 
 								code == 39 || code == 37 || code == 67 || code == 86){
 							// CODIGOS DE TECLAS PERMITIDOS. BASICAMENTE SON LOS NUMEROS (NORMALES/NUMPAD) Y TECLAS DE 
-							// MOVIMIENTO/CONTROL: FLECHAS, BORRAR, COPIAR, PEGAR, SUPRIMIR, F5...
+							// MOVIMIENTO/CONTROL: FLECHAS, BORRAR, COPIAR, PEGAR, F5...
 							//console.debug("caracter permitido... CARET: " + caretpos);
 							if (code == 86 || code == 8 || code == 37 || code == 39){
 								// PEGAR || BORRAR || FLECHA IZDA || FLECHA DCHA
@@ -973,11 +982,9 @@ function jQueryLoaded(){
 						// ACCIONES ANTES DE MOSTRARSE EL DATEPICKER
 						options.beforeShow = function(input, inst) {
 							//console.debug("[DATEPICKER] beforeShow");	
-							// MUESTRA EL OVERLAY
+							// MUESTRA EL OVERLAY							
+							jQueryTop("input[id^=dp]").css({"display": "none", "position": "absolute", "top": "0"});
 							jQueryTop('#main_overlay').show();
-							// PARA IE TRATA DE OCULTAR EL INPUT TEXT TEMPORAL QUE CREA EL DATEPICKER PERO 
-							// IE <= 7 SIGUE MOSTRANDOLO
-							jQueryTop("input[id^=dp]").hide();
 						};
 						options.onClose = function(dateText, inst) {
 							//console.debug("[DATEPICKER] onClose");
@@ -1004,7 +1011,7 @@ function jQueryLoaded(){
 										datepickerInput.change();
 								},
 								options);
-						
+						/*
 						var vContainment = "#mainWorkArea";
 						if (jQueryTop(vContainment).length <= 0){
 						   if (jQueryTop("#modal").length > 0)
@@ -1012,7 +1019,7 @@ function jQueryLoaded(){
 						   else
 							   vContainment = "#main_overlay";
 						}
-						/*
+						
 						vContainment = [];
 						vContainment.push(0);//x1
 						vContainment.push(0);//y1
@@ -1040,15 +1047,45 @@ function jQueryLoaded(){
 						vContainment.push(winH);//y2
 						alert("vContainment: [0,0,"+winW+","+winH+"]");
 						*/
-						//BNS NO PERMITIMOS MOVER EL DATEPICKER EN LAS MODALES
-						// CONFIGURACIÓN DEL CONFINAMIENTO DEL MOVIMIENTO DEL DATEPICKER
+						
+						// CONFIGURACIÓN DEL DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
 							jQueryTop(".ui-datepicker-header").css("cursor", "move");
-							jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#mainWorkArea"), scroll: false, snap: true });
+							jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#mainWorkArea"), scroll: false});
 						} else {
-							jQueryTop(".ui-datepicker-header").css("cursor", "default");
-							//jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#modal").html(), scroll: false, snap: false });
+							var winW = 630, winH = 460;
+							
+							if (window.top.document.body && window.top.document.body.offsetWidth) {
+							 winW = window.top.document.body.offsetWidth;
+							 winH = window.top.document.body.offsetHeight;
+							}
+							if (window.top.document.compatMode=='CSS1Compat' &&
+									window.top.document.documentElement &&
+									window.top.document.documentElement.offsetWidth ) {
+							 winW = window.top.document.documentElement.offsetWidth;
+							 winH = window.top.document.documentElement.offsetHeight;
+							}
+							if (window.top.innerWidth && window.top.innerHeight) {
+							 winW = window.innerWidth;
+							 winH = window.innerHeight;
+							}
+							//jQueryTop(".ui-datepicker-header").css("cursor", "default");
+							jQueryTop(".ui-datepicker-header").css("cursor", "move");
+							jQueryTop("#ui-datepicker-div").draggable({
+								containment: jQueryTop("#main_overlay"),
+								scroll: false,
+								refreshPositions: true,
+								drag: function(e,ui){
+									alert("ui.position.top: " + ui.position.top);
+									jQueryTop('.notice-item-wrapper').remove();
+								}
+							});
 						}
+						/*
+						jQueryTop("#ui-datepicker-div").on( "dragstart", function( event, ui ) {
+							console.debug("ui.offset.top: " + ui.offset.top);
+						} );
+						*/
 						// EVENTO CLICK SOBRE EL OVERLAY PARA CERRAR EL DATEPICKER
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");

@@ -1526,16 +1526,16 @@ li.selectOption.selected > span.selectOptionText {
 .ui-datepicker-header {
   cursor: move;
 }
-.ui-datepicker-year-next {
-  top: 2.2px;
-}
-.ui-datepicker-year-prev {
-  top: 2.2px;
-}
 .ui-datepicker-prev {
   cursor: pointer;
 }
 .ui-datepicker-next {
+  cursor: pointer;
+}
+.ui-datepicker-year-prev {
+  cursor: pointer;
+}
+.ui-datepicker-year-next {
   cursor: pointer;
 }
 .ui-datepicker {
