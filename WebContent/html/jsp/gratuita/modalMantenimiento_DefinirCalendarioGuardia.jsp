@@ -351,6 +351,7 @@
 			//Control de la fecha de generacion:
 			if (esFechaAnteriorHoy()){
 				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>')){
+					desactivarBotonGenerar();
 					 document.DefinirCalendarioGuardiaForm.submit();	
 				}else{
 					calendarioCreado=1;
@@ -358,6 +359,7 @@
 					return false;
 				}
 			} else {
+				desactivarBotonGenerar();
 				document.DefinirCalendarioGuardiaForm.submit();	
 			}
 		}
@@ -394,6 +396,15 @@
 			var salida = ventaModalGeneral(document.DefinirCalendarioGuardiaForm.name,"M");	
 			if (salida == "MODIFICADO") 
 				buscar();
+		}
+		
+		// Funcion que quita de pantalla el boton de generar calendario para evitar doble pulsacion
+		// Lo quita por posicion, si se añaden o se cambia el orden fallara
+		function desactivarBotonGenerar() {
+			var botones = document.getElementsByName("idButton");
+			if(botones.length>4){
+				botones(3).style.display="none";
+			}
 		}
 
 	</script>
