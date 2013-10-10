@@ -98,22 +98,26 @@
 			
 			function mainSub(msg){
 				if(!bloqueado){
-// 					jQuery.blockUI({
-//						message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
-
-//						css:{border:0,left:'300px', background:'transparent'},
-//						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
-//					jQuery("#barraBloqueante").click(function() { 
-//						jQuery.unblockUI(); 
-//					}); 
-					jQuery("#divEspera").show();
+					if (typeof msg == "undefined")
+						msg = "";
+					try{
+ 						jQuery.blockUI({
+							message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
+							css:{border:0, background:'transparent'},
+							overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
+					} catch(e){
+						jQuery("#divEspera").show();
+					}
 					bloqueado=true;
 				}
 			}
 
 			function mainFin(){
 				if(bloqueado){
-// 					jQuery.unblockUI(); 
+					try{
+	 					jQuery.unblockUI();
+					} catch(e){
+					}
 					jQuery("#divEspera").hide();
 					bloqueado=false; 
 				} 

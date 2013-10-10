@@ -201,21 +201,38 @@
 
 			function mainSub(msg){
 				if(!bloqueado){
-// 					jQuery.blockUI({
-//						message: '<span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>', 
-//						css:{border:0,left:'300px', background:'transparent'},
-//						overlayCSS: { backgroundColor:'#000', opacity: .0} }); 
-//					jQuery("#barraBloqueante").click(function() { 
-//						jQuery.unblockUI(); 
-//					}); 
-					jQuery("#divEspera").show();
+					if (typeof msg == "undefined")
+						msg = "";
+					if (jQueryTop("#mainWorkArea").length > 0 && 
+							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
+							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
+						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
+						mainWorkAreaJquery.blockUI({
+							message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
+							css:{border:0, background:'transparent'},
+							overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
+						/* NO ES NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
+						mainWorkAreaJquery("#barraBloqueante").click(function() { 
+							mainWorkAreaJquery.unblockUI(); 
+							console.debug("[barraBloqueante] CLICK blockUI");
+						});
+						*/
+						console.debug("[mainSub] blockUI");
+					} else
+						jQuery("#divEspera").show();
 					bloqueado=true;
 				}
 			}
 
 			function mainFin(){
 				if(bloqueado){
-// 					jQuery.unblockUI(); 
+					if (jQueryTop("#mainWorkArea").length > 0 && 
+							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
+							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
+						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
+						mainWorkAreaJquery.unblockUI();
+						console.debug("[mainFin] unblockUI");
+					}
 					jQuery("#divEspera").hide();
 					bloqueado=false; 
 				} 
