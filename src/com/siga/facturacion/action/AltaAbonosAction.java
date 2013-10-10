@@ -446,6 +446,8 @@ public class AltaAbonosAction extends MasterAction {
 				ht.put(FacLineaFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 				ht.put(FacLineaFacturaBean.C_IDFACTURA,miForm.getIdFactura());
 				Vector vLineasFactura = adminLF.select(ht);
+				FacLineaAbonoAdm lineaAbonoAdm = new FacLineaAbonoAdm(this.getUserBean(request));
+				int numlinea = 1;
 			    // Inserto las lineas
 				for (int i=0; vLineasFactura!=null && i<vLineasFactura.size();i++) {
 					FacLineaFacturaBean blf=(FacLineaFacturaBean)vLineasFactura.get(i);
@@ -460,9 +462,11 @@ public class AltaAbonosAction extends MasterAction {
 				    htL.put(FacLineaAbonoBean.C_IDFACTURA,miForm.getIdFactura());
 				    htL.put(FacLineaAbonoBean.C_IVA,blf.getIva());
 					htL.put(FacLineaAbonoBean.C_LINEAFACTURA,blf.getNumeroLinea());
-					htL.put(FacLineaAbonoBean.C_NUMEROLINEA,new Integer(i+2).toString());
+					//htL.put(FacLineaAbonoBean.C_NUMEROLINEA,new Integer(i+1).toString());
+					//htL.put(FacLineaAbonoBean.C_NUMEROLINEA,blf.getNumeroLinea());
+					htL.put(FacLineaAbonoBean.C_NUMEROLINEA,((Long) lineaAbonoAdm.getNuevoID(miForm.getIdInstitucion(), ((Long)hash.get(FacAbonoBean.C_IDABONO)).toString())).toString());
 					htL.put(FacLineaAbonoBean.C_PRECIOUNITARIO,blf.getPrecioUnitario());
-	
+					numlinea++;
 					//importeNeto += blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue(); 
 					//importeIva += ((blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue())* blf.getIva().floatValue())/100; 
 					
