@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.109 2013-10-09 16:48:59 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.110 2013-10-10 09:07:35 tf2 Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1074,8 +1074,8 @@ function jQueryLoaded(){
 							jQueryTop("#ui-datepicker-div").draggable({
 								containment: jQueryTop("#main_overlay"),
 								scroll: false,
-								refreshPositions: true,
 								drag: function(e,ui){
+									// ÑAPA QUE ARREGLA EL DIAOLOG EN LAS MODALES
 									alert("ui.position.top: " + ui.position.top);
 									jQueryTop('.notice-item-wrapper').remove();
 								}
