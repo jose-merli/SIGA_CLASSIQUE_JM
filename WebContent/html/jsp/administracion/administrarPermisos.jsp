@@ -24,6 +24,11 @@
 	
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+		<script type="text/javascript">
+		jQuery(function(){
+			jQuery("embed").attr("height", jQuery("#resultado", window.parent.document).height());
+		});
+		</script>
 	</head>
 	
 	<body >
@@ -45,7 +50,8 @@
 			<param name="code" value="com.siga.gui.processTree.SIGAAppletAccess.class">
 			<param name="codebase" value="<%=scodebase%>">
 			
-			<param name="type" value="application/x-java-applet;jpi-version=1.3">
+			<param name="type" value="application/x-java-applet">
+			<param name="java_version" value="1.6.0_18">
 			<param name="URLservlet" value="<%=sURLservlet%>">
 			<param name="urlPrefix" value="<%=surlPrefix%>">
 			<param name="iconPrefix" value="<%=siconPrefix%>">
@@ -61,6 +67,34 @@
 			<param name="boxmessage" value="">
 			<param name="boxbgcolor" value="#DEDBE8">
 			<param name="boxfgcolor" value="red">
+			<comment>
+		      <embed archive="AppletPermisos.jar" 
+		      	code="com.siga.gui.processTree.SIGAAppletAccess.class"
+		      	codebase="<%=scodebase%>" 
+		      	type="application/x-java-applet"
+		      	URLservlet="<%=sURLservlet%>"
+		      	urlPrefix="<%=surlPrefix%>"
+		      	iconPrefix="<%=siconPrefix%>"
+		      	access="<%=saccess%>"
+		      	dnd="0"
+		      	initAction="loadprocess"
+		      	numberofparams="2"
+		      	param0="profile"
+		      	param1="<%=perfil%>"
+		      	process="accessright"
+		      	icontree="imagenes/"
+		      	progressbar="true"
+		      	boxmessage=""
+		      	boxbgcolor="#DEDBE8"
+		      	boxfgcolor="red"
+		      	pluginspage="#"
+		      	java_version="1.6.0_18"
+		        width="100%" height="98%">
+		        <noembed>
+		          No Java Support.
+		        </noembed>
+		      </embed>
+		    </comment>
 		</object>
 
 
