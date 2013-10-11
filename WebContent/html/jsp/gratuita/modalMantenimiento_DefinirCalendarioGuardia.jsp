@@ -347,12 +347,12 @@
 			document.DefinirCalendarioGuardiaForm.modo.value = "insertarCalendarioAutomaticamente";
 			document.DefinirCalendarioGuardiaForm.target = "submitAreaPrincipal";
 			var fname = document.getElementById("DefinirCalendarioGuardiaForm").name;
-			sub();
+			//sub();
 			//Control de la fecha de generacion:
 			if (esFechaAnteriorHoy()){
 				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>')){
 					desactivarBotonGenerar();
-					 document.DefinirCalendarioGuardiaForm.submit();	
+					window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 				}else{
 					calendarioCreado=1;
 					fin();
@@ -360,7 +360,7 @@
 				}
 			} else {
 				desactivarBotonGenerar();
-				document.DefinirCalendarioGuardiaForm.submit();	
+				window.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 			}
 		}
 		
@@ -401,10 +401,8 @@
 		// Funcion que quita de pantalla el boton de generar calendario para evitar doble pulsacion
 		// Lo quita por posicion, si se añaden o se cambia el orden fallara
 		function desactivarBotonGenerar() {
-			var botones = document.getElementsByName("idButton");
-			if(botones.length>4){
-				botones(3).style.display="none";
-			}
+			jQuery(".button").eq(3).hide();
+			
 		}
 
 	</script>
