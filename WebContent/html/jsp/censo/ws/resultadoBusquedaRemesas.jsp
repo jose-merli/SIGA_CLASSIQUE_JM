@@ -122,7 +122,7 @@
 	    	document.EdicionRemesaForm.modo.value="erroresCarga";	    	
 	    	document.EdicionRemesaForm.idcensows.value=idcensows.value;
 		   	
-			ventaModalGeneral(document.EdicionRemesaForm.name,'P')
+			ventaModalGeneral(document.EdicionRemesaForm.name,'P');
 		}	
 		
 	</script>
@@ -161,11 +161,11 @@
 	   		   			
 	   		   			if (edicionRemesaForm.getCoderror() != null) {
 	   		   				elems = new FilaExtElement[1];
-	   		   				elems[0]=new FilaExtElement("descargaLog", "erroresCarga", "censo.ws.literal.errorFormato", SIGAConstants.ACCESS_FULL);	   		   				
+	   		   				elems[0]=new FilaExtElement("error", "erroresCarga", "censo.ws.literal.errorFormato", SIGAConstants.ACCESS_FULL);	   		   				
 	   		   				botones = "";
 	   		   			} else if (edicionRemesaForm.getIncidencias() > 0) {
 	   		   				elems = new FilaExtElement[1];
-	   		   				elems[0]=new FilaExtElement("alarma", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
 	   		   				botones = "C";
 	   		   			} else {
 	   		   				elems = new FilaExtElement[0];	   		   				

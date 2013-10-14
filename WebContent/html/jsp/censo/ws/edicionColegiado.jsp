@@ -27,7 +27,6 @@
 <%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 
 
-
 <html>
 
 <!-- HEAD -->
@@ -51,6 +50,15 @@
 	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
+		
+		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
+		
+		jQuery(function(){
+			jQuery("#codigopaisextranj").on("change", function(){
+				selPais(jQuery(this).val());
+			});
+			
+		});
 	
 		function buscar() {
 			if (!${EdicionColegiadoForm.historico}) {
@@ -60,6 +68,57 @@
 				document.forms[0].submit();
 			}
 		}
+		
+		function inicio() {
+			document.getElementById("codigoprovincia").onchange();
+	 		var e = document.getElementById("codigoprovincia");
+			var prov = e.options[e.selectedIndex].text;					
+			document.getElementById("codigoprovincia2").value=prov;
+			selPaisInicio();
+		}
+		
+		function selPaisInicio() {
+			var valor = document.getElementById("codigopaisextranj").value;
+			if (valor!="" && valor!=idEspana) {
+		   		document.getElementById("codigopoblacion").value="";
+		   		document.getElementById("codigoprovincia").value="";
+			   	//aalg: se quita la marca de obligatoriedad
+			   	//document.getElementById("provinciaSinAsterisco").className="labelText";
+				//document.getElementById("provinciaConAsterisco").className="ocultar";
+				//document.getElementById("poblacionEspanola").className="ocultar";
+				//document.getElementById("poblacionExtranjera").className="";
+	       } else {
+		   		//document.getElementById("poblacionExt").value="";
+				//document.getElementById("poblacionEspanola").className="";
+				//document.getElementById("poblacionExtranjera").className="ocultar";
+				//aalg: se restaura la marca de obligatoriedad si es pertinente
+				//comprobarTelefonoAsterico();
+	       }
+		}
+		
+		function selPais(valor) {                                                                   
+		   if (valor!="" && valor!=idEspana) {
+		   		document.getElementById("codigopoblacion").value="";
+		   		document.getElementById("codigoprovincia").value="";
+			   	jQuery("#codigoprovincia").attr("disabled","disabled");
+			   	//aalg: se quita la marca de obligatoriedad
+			   	//document.getElementById("provinciaSinAsterisco").className="labelText";
+				//document.getElementById("provinciaConAsterisco").className="ocultar";
+				//document.getElementById("poblacionEspanola").className="ocultar";
+				//document.getElementById("poblacionExtranjera").className="";
+	       } else {
+		   		document.getElementById("codigopoblacion").value="";
+		   		document.getElementById("codigoprovincia").value="";
+				jQuery("#codigoprovincia").removeAttr("disabled");
+				//document.getElementById("poblacionEspanola").className="";
+				//document.getElementById("poblacionExtranjera").className="ocultar";
+				//aalg: se restaura la marca de obligatoriedad si es pertinente
+				//comprobarTelefonoAsterico();
+	       }
+		   document.getElementById("codigoprovincia").onchange();
+	    }
+		
+	 	
 			
 			
 		</script>
@@ -68,7 +127,7 @@
 
 
 
-<body onLoad="ajusteAlto('resultado');buscar();">
+<body onLoad="ajusteAlto('resultado');buscar();inicio();">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	
@@ -82,9 +141,16 @@
 		<html:form action="/CEN_EdicionColegiado.do?noReset=false" method="POST" target="resultado">	
 		<c:set var="htmlTextReadOnly" value="false" />
 		<c:set var="htmlTextClass" value="box" />		
+		<c:set var="comboBDClass" value="boxCombo" />
+		<c:set var="comboProvincia" value="block" />
+		<c:set var="textProvincia" value="none" />
+		
 		<c:if test="${EdicionColegiadoForm.accion!='editar' || EdicionColegiadoForm.historico}">
 			<c:set var="htmlTextReadOnly" value="true" />
 			<c:set var="htmlTextClass" value="boxConsulta" />
+			<c:set var="comboBDClass" value="boxComboConsulta" />
+			<c:set var="comboProvincia" value="none" />
+			<c:set var="textProvincia" value="block" />
 		</c:if>
 					
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.datosColegiado">			
@@ -322,13 +388,33 @@
 							<siga:Idioma key="censo.ws.literal.pais"/>
 						</td>  
 						<td>							
-							<html:text name="EdicionColegiadoForm" property="codigopaisextranj" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
+							<bean:define id="codigopaisextranjList" name="EdicionColegiadoForm" property="codigopaisextranjList" type="java.util.ArrayList"></bean:define>
+							
+							<siga:ComboBD nombre="codigopaisextranj" tipo="pais"
+											clase="${comboBDClass}" obligatorio="false"
+											readonly="${htmlTextReadOnly}"											
+											elementoSel="<%=codigopaisextranjList%>"
+											accion="selPais(this.value);" /> 						
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.provincia"/>
 						</td>
 						<td>
-							<html:text name="EdicionColegiadoForm" property="codigoprovincia" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
+							<bean:define id="codigoprovinciaList" name="EdicionColegiadoForm" property="codigoprovinciaList" type="java.util.ArrayList"></bean:define>
+							
+							
+							<div style="display: ${comboProvincia}">
+								<siga:ComboBD nombre="codigoprovincia"
+											tipo="provincia" clase="${comboBDClass}" obligatorio="false"
+											readonly="false"
+											elementoSel="<%=codigoprovinciaList%>"
+											accion="Hijo:codigopoblacion" />
+							</div>				
+							<div  style="display: ${textProvincia}">
+								<input type="text" name="codigoprovincia2" size="30" value="" readonly="readonly" class="boxConsulta">
+							</div>	
+																		
+										
 						</td>		
 					</tr>
 					
@@ -337,8 +423,17 @@
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.poblacion"/>
 						</td>  
-						<td>							
-							<html:text name="EdicionColegiadoForm" property="codigopoblacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
+						<td>		
+							<bean:define id="codigopoblacionList" name="EdicionColegiadoForm" property="codigopoblacionList" type="java.util.ArrayList"></bean:define>				
+							
+							<siga:ComboBD nombre="codigopoblacion"
+											tipo="poblacion" 
+											clase="${comboBDClass}"
+											readonly="${htmlTextReadOnly}"
+											elementoSel="<%=codigopoblacionList%>"						
+											hijo="t" />
+											
+											
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.poblacionRecibida"/>
@@ -380,10 +475,10 @@
 		</html:form>
 		
 		<c:choose>
-			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='ver'}">
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='editar'}">
 				<siga:ConjBotonesAccion botones="G, AR" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>		
 			</c:when>
-			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='ver'}">
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='editar'}">
 				<siga:ConjBotonesAccion botones="" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>
 			</c:when>
 		</c:choose>
@@ -446,8 +541,11 @@
 			 		sub();
 					document.forms[0].modo.value="archivar";
 					document.forms[0].target="mainWorkArea";	
-					document.forms[0].submit();
+					document.forms[0].submit();					
 			 	}
+			 	
+							
+				
 				
 			 </script>
 			 

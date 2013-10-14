@@ -163,7 +163,7 @@
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()) {
 	   		   					
 	   		   					elems = new FilaExtElement[1];
-	   		   					elems[0]=new FilaExtElement("alarma", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);	   		   				
+	   		   					elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);	   		   				
 	   		   				}
 	   		   			}
 	   		   			
