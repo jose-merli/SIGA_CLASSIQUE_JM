@@ -136,11 +136,14 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
 			miHash.put("IDINSTITUCION",usr.getLocation().toString());
+			if(request.getParameter("modoActa")!=null)
+				request.setAttribute("modoActa", request.getParameter("modoActa").toString());
 		}else{
 			miHash.put("ANIO",miForm.getAnio());
 			miHash.put("NUMERO",miForm.getNumero());
 			miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
 			miHash.put("IDINSTITUCION",miForm.getIdInstitucion());
+			request.setAttribute("modoActa", miForm.getModoActa());
 			
 		}
 		

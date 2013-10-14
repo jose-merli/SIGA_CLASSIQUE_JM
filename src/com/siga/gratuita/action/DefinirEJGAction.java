@@ -520,6 +520,9 @@ public class DefinirEJGAction extends MasterAction
 	 			request.setAttribute("elementoActivo","9");
 	 		}
 	 		
+	 		//Guardamos el modo de gestión del acta
+	 		miHash.put("modoActa", miForm.getModoActa());	 		
+	 		
 			// En EJG pasamos la clave principal a todas las pestanhas que constituyen el mantenimiento de un EJG
 			session.removeAttribute("origenEJG");
 			request.setAttribute("EJG",miHash);
@@ -638,6 +641,8 @@ public class DefinirEJGAction extends MasterAction
 	 			request.setAttribute("elementoActivo","9");
 	 		}
 			
+	 		//Guardamos el modo de gestión del acta
+	 		miHash.put("modoActa", miForm.getModoActa());
 			
 			// En EJG pasamos la clave principal a todas las pestanhas que constituyen el mantenimiento de un EJG
 			request.setAttribute("EJG",miHash);

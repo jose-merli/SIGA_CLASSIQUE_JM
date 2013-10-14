@@ -34,6 +34,7 @@
 	
 	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
 	String accion = (String)ses.getAttribute("accion");
+	String modoActa = request.getAttribute("modoActa")!=null?(String)request.getAttribute("modoActa"):"";
 	//aalg: INC_10624
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
@@ -468,7 +469,7 @@
 	</form>
 	
 	<html:form action="/JGR_ActasComision" target="mainWorkArea" method="post">
-		<html:hidden property="modo" value="<%=accion %>"/>
+		<html:hidden property="modo" value="<%=modoActa%>"/>
 		<html:hidden property="idInstitucion"/>
 		<html:hidden property="anioActa"/>
 		<html:hidden property="idActa"/>

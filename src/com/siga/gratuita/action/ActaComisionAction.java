@@ -314,9 +314,11 @@ public class ActaComisionAction extends MasterAction{
 		String accion = actaForm.getModo();
 		if(accion!=null && accion.equalsIgnoreCase("ver")){
 			request.setAttribute("modo", "consulta");
-		
+			request.setAttribute("modoActa", "ver");
+			
 		} else if(accion!=null && accion.equalsIgnoreCase("editar")){
 			request.setAttribute("modo", "editar");
+			request.setAttribute("modoActa", "editar");
 		}
 
 

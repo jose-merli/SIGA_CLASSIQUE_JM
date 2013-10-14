@@ -1043,5 +1043,15 @@ import com.siga.censo.form.DatosRegTelForm;
 		public void setIdTipoFundamento(String idTipoFundamento) {
 			this.idTipoFundamento = idTipoFundamento;
 		}
+		
+		String modoActa;
 
+		public String getModoActa() {
+			return modoActa;
+		}
+
+		public void setModoActa(String modoActa) {
+			this.modoActa = modoActa;
+		}
+		
 }

@@ -52,6 +52,7 @@
 	secretarioSel.add(idSecretario);
 	
 	String modo = request.getAttribute("modo")!=null?(String)request.getAttribute("modo"):"";
+	String modoActa = request.getAttribute("modoActa")!=null?(String)request.getAttribute("modoActa"):"";
 	String estiloNumber = "boxNumber";
 	String estilo = "box";
 	String estiloCombo = "boxCombo";
@@ -82,12 +83,13 @@
 <body>
 	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_EJG.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+		<html:hidden property = "modoActa"  value="<%=modoActa%>" />
 		<input type="hidden" name="modo"  id="modo"  value="<%=modo%>">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 	</html:form>
 	
 	<html:form action="/JGR_ActasComisionEd" method="POST" target="submitArea">
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modo" value="<%=modoActa%>" />
 		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property = "idActa" value = "<%=idActa %>"/>
 		<html:hidden property = "actionModal" value = ""/>
