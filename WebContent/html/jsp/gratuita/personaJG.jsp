@@ -2727,8 +2727,7 @@
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
  		
-			var lNumerosTelefonos=getDatos();				
-			if (!lNumerosTelefonos){
+			if (!validaTelefonos()){
                  fin();
                  return false;
 			}			
@@ -2878,10 +2877,9 @@
 			}
 		
 			
-			var lNumerosTelefonos=getDatos();			
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
+			if (!validaTelefonos()){
+                fin();
+                return false;
 			}		
 				
 		   	sub();
@@ -3045,11 +3043,9 @@
 
 	 		document.PersonaJGForm.existeDomicilio.value = "S";
 			
-			var lNumerosTelefonos=getDatos();	
-			
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
+	 		if (!validaTelefonos()){
+                fin();
+                return false;
 			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
@@ -3129,12 +3125,10 @@
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
 			
-			var lNumerosTelefonos=getDatos();	
-					
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
-			}		
+ 			if (!validaTelefonos()){
+                fin();
+                return false;
+			}	
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
@@ -3213,10 +3207,9 @@
 			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			
-			var lNumerosTelefonos=getDatos();						
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
+			if (!validaTelefonos()){
+                fin();
+                return false;
 			}				
 					
             sub();
@@ -3299,11 +3292,10 @@
 			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 				
-			var lNumerosTelefonos=getDatos();						
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
-			}				
+			if (!validaTelefonos()){
+                fin();
+                return false;
+			}			
 						
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
@@ -3379,10 +3371,9 @@
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
 			
-			var lNumerosTelefonos=getDatos();					
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
+ 			if (!validaTelefonos()){
+                fin();
+                return false;
 			}				
 
 			
@@ -3481,10 +3472,9 @@
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}
 			
-			var lNumerosTelefonos=getDatos();					
-			if (!lNumerosTelefonos){
-                 fin();
-                 return false;
+			if (!validaTelefonos()){
+                fin();
+                return false;
 			}				
 
 			
@@ -3579,11 +3569,10 @@ function accionGuardarCerrar()	{
 
 	document.PersonaJGForm.existeDomicilio.value = "S";
 	
-	var lNumerosTelefonos=getDatos();					
-	if (!lNumerosTelefonos){
-         fin();
-         return false;
-	}				
+	if (!validaTelefonos()){
+        fin();
+        return false;
+	}			
 
 	
 	sub();
@@ -3680,7 +3669,7 @@ function buscar() {
 }
 
 	//función para obtener los valores de los telefonos para una persona
-	function getDatos() {
+	function validaTelefonos() {
 		var tablaDatos = jQuery("#resultado").contents().find("#tablaTelefonos_BodyDiv tbody");	
 		var numTotalElementos = tablaDatos.children().length;
 		var datos = "";
@@ -3716,7 +3705,7 @@ function buscar() {
 		 }
 		
 		document.PersonaJGForm.lNumerosTelefonos.value = datos;	 	
-		return datos;
+		return resultado;
 	}
 
 	function validarDatosFila (fila) {		
