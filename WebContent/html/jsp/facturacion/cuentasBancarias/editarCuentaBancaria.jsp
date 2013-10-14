@@ -171,9 +171,6 @@
 				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sjcs" /> </td>
 				<td align="left"><html:select styleId="sjcs" property="sjcs" name ="CuentasBancariasForm" 
 						styleClass="boxCombo">
-						<html:option value="">
-							
-						</html:option>
 						<html:option value="1">
 							<siga:Idioma key="general.boton.yes" />
 						</html:option>
