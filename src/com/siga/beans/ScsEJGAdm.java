@@ -5985,6 +5985,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						UtilidadesHash.set(registro, "JUZGADO", "");
 						UtilidadesHash.set(registro, "DIR_JUZGADO", "");
 						UtilidadesHash.set(registro, "CP_JUZGADO", "");
+						
+						UtilidadesHash.set(registro, "FAX1_JUZGADO", "");
+						UtilidadesHash.set(registro, "TELEFONO1_JUZGADO", "");
+						UtilidadesHash.set(registro, "EMAIL_JUZGADO", "");
+						UtilidadesHash.set(registro, "MOVIL_JUZGADO", "");
+						
+						
+						
 						UtilidadesHash.set(registro, "POBLACION_JUZGADO", "");
 					}
 				}
@@ -5996,7 +6004,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(registro, "JUZGADO", "");
 				UtilidadesHash.set(registro, "DIR_JUZGADO", "");
 				UtilidadesHash.set(registro, "CP_JUZGADO", "");
+				UtilidadesHash.set(registro, "FAX1_JUZGADO", "");
+				UtilidadesHash.set(registro, "TELEFONO1_JUZGADO", "");
+				UtilidadesHash.set(registro, "EMAIL_JUZGADO", "");
+				UtilidadesHash.set(registro, "MOVIL_JUZGADO", "");
+				
 				UtilidadesHash.set(registro, "POBLACION_JUZGADO", "");
+				
+				
 				UtilidadesHash.set(registro, "CONTRARIOS", "");
 				UtilidadesHash.set(registro, "PROCURADOR_CONTRARIOS", "");
 				UtilidadesHash.set(registro, "ANIO_DESIGNA", "");
