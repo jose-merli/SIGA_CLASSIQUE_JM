@@ -163,16 +163,14 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			{
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		
-		try {
-			BusinessManager bm = getBusinessManager();
-			org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
-			request.setAttribute("listaBancos", bancosList);
-			cuentasBancariasForm.setModo("insertar");
+		
+//			BusinessManager bm = getBusinessManager();
+//			org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+//			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
+//			request.setAttribute("listaBancos", bancosList);
+		cuentasBancariasForm.setModo("insertar");
 			
-		}catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 			
-		}
+		
 		return "editar";
 	}
 	
@@ -194,10 +192,10 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setModo("abrir");
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
-			BancoVo banco = new BancoVo();
-			banco.setCodigo(cuentaBancariaVo.getCodBanco());
-			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos(banco);
-			request.setAttribute("listaBancos", bancosList);
+//			BancoVo banco = new BancoVo();
+//			banco.setCodigo(cuentaBancariaVo.getCodBanco());
+//			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos(banco);
+//			request.setAttribute("listaBancos", bancosList);
 			
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -225,8 +223,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setModo("modificar");
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
-			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
-			request.setAttribute("listaBancos", bancosList);
+//			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
+//			request.setAttribute("listaBancos", bancosList);
 			
 			
 		}catch (Exception e){
