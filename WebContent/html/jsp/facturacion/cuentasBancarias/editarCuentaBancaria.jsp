@@ -30,7 +30,6 @@
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
-
 <script type="text/javascript">
 	function inicio() {
 		ajustarCabeceraTabla();
@@ -111,48 +110,30 @@
 		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
 	</c:if>
 	<table width="100%" border="0">
-		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.banco" />(*)</td>
-			<td colspan="3">
-					<table>
-						<tr>
-							<td>
-							<!-- <html:text styleId="codigoBanco"
-									property="codigoBanco" name ="CuentasBancariasForm" size="4" maxlength="4"
-									styleClass="box" />-->
-								<html:select  styleId="codigoBanco" property="codigoBanco"  styleClass="boxCombo" disabled="${disabledPorEdicion}" style="width:250px;">
-									<html:option value=""><siga:Idioma key="general.combo.seleccionar" />	</html:option>
-									<c:forEach items="${listaBancos}" var="banco">
-										<html:option value="${banco.codigo}" ><c:out value="${banco.codigo}"/>&nbsp;<c:out value="${banco.nombre}"/></html:option>
-									</c:forEach>
-								</html:select>
-
-							</td>
-							<td class="labelText">-</td>
-							<td><html:text styleId="sucursalBanco"
-									property="sucursalBanco" name ="CuentasBancariasForm"  size="4" maxlength="4"
-									styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" /></td>
-							<td class="labelText">-</td>
-
-							<td><html:text styleId="digControlBanco"
-									property="digControlBanco" name ="CuentasBancariasForm"  size="2" maxlength="2"
-									styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"/></td>
-							<td class="labelText">-</td>
-							<td><html:text styleId="cuentaBanco" property="cuentaBanco" name ="CuentasBancariasForm"
-									size="10" maxlength="10" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"/></td>
-
-						</tr>
-					</table> </>
-
-
+	
+	<tr>
+				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
+				<td class="labelText" COLSPAN="3">
+					<html:text style="width:500px;" name="CuentasBancariasForm" property="bancoNombre" styleClass="boxConsulta"  readonly="true"/>
 				</td>
-			
-			
-			
-			
-			
-		</tr>
-		
+			</tr>
+
+			<!-- FILA -->
+			<tr>						
+				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBanco"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoSucursal"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.digitoControl"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.cuenta"/>&nbsp;(*)</td>
+			</tr>
+			<!-- FILA -->
+			<tr>						
+				<td >&nbsp;<html:text size="4"  maxlength="4"  name="CuentasBancariasForm" property="codigoBanco"     			styleClass="${clasePorEdicion}"  readonly="${disabledPorEdicion}" onChange="actualizarBanco();"></html:text></td>
+				<td ><html:text size="4"  maxlength="4" name="CuentasBancariasForm" property="sucursalBanco" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" ></html:text></td>
+				<td ><html:text size="5"  maxlength="2" name="CuentasBancariasForm" property="digControlBanco" 	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" ></html:text></td>
+				<td ><html:text size="11" maxlength="10" name="CuentasBancariasForm" property="cuentaBanco"  	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text></td>
+				
+			</tr>
+	
 		<tr>
 			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.nif" />(*)</td>
 			<td><html:text styleId="nif" property="nif"	name ="CuentasBancariasForm"	size="9" maxlength="9" styleClass="box" /></td>
@@ -288,9 +269,27 @@
 
 <script type="text/javascript">
 
+	function validarDigControl(){
+		mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+		
+		validacionNumControl = validarDigitoControl(document.CuentasBancariasForm.codigoBanco.value, document.CuentasBancariasForm.sucursalBanco.value , document.CuentasBancariasForm.digControlBanco.value , document.CuentasBancariasForm.cuentaBanco.value  );
+		
+		if (validacionNumControl<0){ 
+		 	alert(mensaje);
+		 	return false;
+		}
+		return true;
+	}
 	function accionGuardarCerrar() 
 	{
 		sub();
+		if(document.CuentasBancariasForm.modo.value=='insertar'){
+			if(!validarDigControl()){
+				fin();
+				return false;
+				 
+			}	
+		}
 		if(validateCuentasBancariasForm(document.CuentasBancariasForm)){
 			document.CuentasBancariasForm.submit();
 		}else{
@@ -320,6 +319,31 @@
 		}
 		
 	}
+	function actualizarBanco() {
+		var idBanco = document.CuentasBancariasForm.codigoBanco.value;
+		
+		var inputBancoNombre = document.getElementById("bancoNombre");
+		if (idBanco!=undefined&&idBanco!="") {
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+				data: "idBanco="+idBanco,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					inputBancoNombre.value = json.banco.nombre;
+					fin();
+				},
+				error: function(e){
+					alert('messages.general.error');
+					fin();
+				}
+			});
+		} else {
+			document.getElementById("codigoBanco").value = 'kk';
+			inputBancoNombre.value = 'pepe';
+		}
+	}		
 	
 	
 </script>

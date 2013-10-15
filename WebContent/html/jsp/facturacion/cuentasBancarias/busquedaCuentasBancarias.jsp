@@ -164,7 +164,7 @@
 		<siga:ConjBotonesBusqueda botones="B"/>
 	</html:form>
 	
-	<div id="divListadoCuentasBancarias" style='height: 300px; position: absolute; width: 100%; overflow-y: auto'>
+	<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
 		<table id='listadoCuentasBancarias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout: fixed'>
 		</table>
 	</div>

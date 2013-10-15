@@ -4857,6 +4857,10 @@
       </form>
       
 	<form name="CuentasBancariasForm">
+		<field property = "bancoNombre" depends = "required">
+           <arg0 key="facturacion.cuentasBancarias.banco"/>
+            
+        </field>
 		<field property = "codigoBanco" depends = "required">
            <arg0 key="facturacion.cuentasBancarias.banco"/>
             
