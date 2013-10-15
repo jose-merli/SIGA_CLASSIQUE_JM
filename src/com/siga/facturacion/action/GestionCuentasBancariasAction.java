@@ -287,7 +287,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			String idIntitucion = (String) cuentaBancariaVo.getIdinstitucion().toString();
 			String idModulo = "FCS";
 			String parametro = "BANCOS_CODIGO_ABONO";
-			String valor= (String) cuentaBancariaVo.getCodBanco();
+			String valor= (String) cuentaBancariaVo.getBancosCodigo();
 			String idRecurso = "administracion.parametro.bancosCodigoAbono";	
 
 			valor=UtilidadesString.replaceAllIgnoreCase(valor,"\u00A0","\u0020");	
@@ -341,8 +341,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			String idIntitucion = (String) cuentaBancariaVo.getIdinstitucion().toString();
 			String idModulo = "FCS";
 			String parametro = "BANCOS_CODIGO_ABONO";
-			String valor= (String) cuentaBancariaVo.getCodBanco();
-			String codBanco = (String) cuentaBancariaVo.getCodBanco();
+			String valor= (String) cuentaBancariaVo.getBancosCodigo();
+			String codBanco = (String) cuentaBancariaVo.getBancosCodigo();
 			String idRecurso = "administracion.parametro.bancosCodigoAbono";		
 			
 			valor=UtilidadesString.replaceAllIgnoreCase(valor,"\u00A0","\u0020");	
@@ -375,14 +375,14 @@ public class GestionCuentasBancariasAction extends MasterAction {
 				CuentaBancariaVo cuentaBancariaVoAux = new CuentaBancariaVo();
 				for (int i= 0; i < cuentaBancariaVos.size(); i++){
 					cuentaBancariaVoAux = (CuentaBancariaVo) cuentaBancariaVos.get(i);
-					if (!(cuentaBancariaVoAux.getCodBanco().equals(codBanco))){
+					if (!(cuentaBancariaVoAux.getBancosCodigo().equals(codBanco))){
 						if (fechaModificacion == null){
 							fechaModificacion = (Date) cuentaBancariaVoAux.getFechamodificacion();
-							valor = cuentaBancariaVoAux.getCodBanco();
+							valor = cuentaBancariaVoAux.getBancosCodigo();
 						} else {
 							if ((fechaModificacion.compareTo(cuentaBancariaVoAux.getFechamodificacion())) != 1){
 								fechaModificacion = cuentaBancariaVoAux.getFechamodificacion();
-								valor = cuentaBancariaVoAux.getCodBanco();
+								valor = cuentaBancariaVoAux.getBancosCodigo();
 							}
 						}
 					}
