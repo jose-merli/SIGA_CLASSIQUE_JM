@@ -543,5 +543,38 @@ function isFicheroPermitido( fileName, fileTypes ) {
 	var variable = fileTypes.join(".").indexOf(fileType) == -1;
 	return variable;
 }
+function getDigitoControl(valor){	
+	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+	  control = 0;
+	  for (i=0; i<=9; i++)
+	  	control += parseInt(valor.charAt(i)) * valores[i];		  
+	  	control = 11 - (control % 11);
+		if (control == 11) control = 0;
+		else if (control == 10) control = 1;
+		return control;
+	
+	}
+	
+	function getDigitosControl(codigoBanco,sucursal,numeroCuenta){
+		if(!isNumero(codigoBanco)||!isNumero(sucursal)||!isNumero(numeroCuenta))
+			return -3;
+		digitocontrol =  getDigitoControl('00'+codigoBanco+sucursal)+''+getDigitoControl(numeroCuenta);	
+	  	return digitocontrol;
+	  
+	}
+	function validarDigitoControl(codigoBanco,sucursal,digitoControl,numeroCuenta){
+		 
+		if (codigoBanco    == ''  || sucursal == '' || numeroCuenta == ''  || digitoControl   == '' ) 
+			 return -1;
+		else if(codigoBanco.length != 4 || sucursal.length != 4 ||digitoControl.length != 2 || numeroCuenta.length != 10)
+			return -2;
+		else if(!isNumero(codigoBanco)||!isNumero(sucursal)||!isNumero(digitoControl)||!isNumero(numeroCuenta))
+			return -3;
+		else if(digitoControl != getDigitosControl(codigoBanco,sucursal,numeroCuenta))
+			return -4;
+		else	
+			return 0;
+
+	}
 
   
