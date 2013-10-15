@@ -926,9 +926,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setIdInstitucionJuzgado(fila.getString(ExpExpedienteBean.C_IDINSTITUCION_JUZGADO));
 			form.setIdInstitucionProcedimiento(fila.getString(ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO));
 			form.setNumAsunto(fila.getString(ExpExpedienteBean.C_NUMASUNTO));
-			form.setFase(fila.getString(ExpExpedienteBean.C_IDFASE));
-			form.setEstado(fila.getString(ExpExpedienteBean.C_IDESTADO));
-			form.setClasificacion(fila.getString(ExpExpedienteBean.C_IDCLASIFICACION));
+
 			form.setFechaInicial(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAINICIALESTADO)));
 			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
 				request.setAttribute("idinst_idtipo_idfase",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+idTipoExpediente+","+fila.getString(ExpExpedienteBean.C_IDFASE));
@@ -936,8 +934,13 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}else{
 				request.setAttribute("idinst_idtipo_idfase",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDFASE));
 				request.setAttribute("idinst_idtipo_idfase_idestado",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDFASE)+","+fila.getString(ExpExpedienteBean.C_IDESTADO));
+				
+				//Si el expediente no es una copia se coge los datos del formulario
+				request.setAttribute("idclasificacion",fila.getString(ExpExpedienteBean.C_IDCLASIFICACION));
+				form.setFase(fila.getString(ExpExpedienteBean.C_IDFASE));
+				form.setEstado(fila.getString(ExpExpedienteBean.C_IDESTADO));
+				form.setClasificacion(fila.getString(ExpExpedienteBean.C_IDCLASIFICACION));
 			}
-			request.setAttribute("idclasificacion",fila.getString(ExpExpedienteBean.C_IDCLASIFICACION));
 			
 			request.setAttribute("idJuzgado", fila.getString(ExpExpedienteBean.C_JUZGADO));
 			request.setAttribute("idInstitucionJuzgado", fila.getString(ExpExpedienteBean.C_IDINSTITUCION_JUZGADO));
