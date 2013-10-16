@@ -131,7 +131,7 @@ public class TagSelect extends TagSupport {
 				while (requestParametersNames.hasMoreElements()){
 					String requestParameterName = requestParametersNames.nextElement();
 					String requestParameterValue = pageContext.getRequest().getParameter(requestParameterName);
-					params.put(requestParameterName, requestParameterValue);
+					params.put(requestParameterName.toLowerCase(), requestParameterValue);
 				}
 				//params.putAll(pageContext.getRequest().getParameterMap());
 				
