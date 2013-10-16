@@ -1492,7 +1492,7 @@ li.selectOption.selected > span.selectOptionText {
 .ui-datepicker .ui-datepicker-year-prev,
 .ui-datepicker .ui-datepicker-year-next {
   position: absolute;
-  top: 2em;
+  top: 2em !important;
   width: 1.8em;
   height: 1.8em;
 }
