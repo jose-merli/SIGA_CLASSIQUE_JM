@@ -648,11 +648,14 @@
 										productoQueryId = "getCertificadosInstitucion";
 									}
 									
-									hmServicioParams.put("solicitaralta", DB_FALSE);
-									hmServicioParams.put("automatico", DB_TRUE);
+									
+									hmServicioParams.put("solicitaralta", DB_TRUE);
+									hmServicioParams.put("automatico", DB_FALSE);
 									if (esLetrado) {
 											dato[1] = DB_TRUE;
 											dato[2] = DB_FALSE;
+											hmProductoParams.put("solicitaralta", DB_TRUE);
+											hmServicioParams.put("solicitaralta", DB_TRUE);
 											
 											productoQueryId += "Letrado";
 				 							servicioQueryId += "Letrado";
