@@ -220,7 +220,9 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	 */
 	protected String[] getOrdenDatosCV(){
 		String[] campos = { CenDatosCVBean.T_NOMBRETABLA +"."+ CenDatosCVBean.C_IDTIPOCV,
-				CenDatosCVBean.T_NOMBRETABLA +"."+ CenDatosCVBean.C_FECHAINICIO};
+							CenDatosCVBean.T_NOMBRETABLA +"."+ CenDatosCVBean.C_IDTIPOCVSUBTIPO1,
+							CenDatosCVBean.T_NOMBRETABLA +"."+ CenDatosCVBean.C_IDTIPOCVSUBTIPO2,
+							CenDatosCVBean.T_NOMBRETABLA +"."+ CenDatosCVBean.C_FECHAINICIO};
 		return campos;
 	}
 	
@@ -247,7 +249,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasDatosCV(), this.getCamposDatosCV());
 			
 			sql += where;
-			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenDatosCV());
+			sql += " ORDER BY IDTIPOCV, DESCSUBTIPO1, DESCSUBTIPO2, FECHAINICIO"; 
 
             // RGG cambio visibilidad
             rc = this.find(sql);
