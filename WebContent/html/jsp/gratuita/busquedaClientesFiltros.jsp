@@ -65,7 +65,7 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 </head>
 
-<body onLoad="ajusteAltoBotones('resultado'); cambiarValor();">
+<body onLoad="cambiarValor();">
 
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
@@ -191,7 +191,7 @@
 				</table>
 			</div>
 			
-			<div id="infoBusqueda">
+			<div id="infoBusqueda" style="display:none">
 				<table class="tablaCampos" align="center">
 					<tr>
 						<td class="labelText" width="1">
@@ -201,23 +201,37 @@
 							<siga:Idioma key="gratuita.busquedaSJCS.literal.infoCamposBusqueda" />
 						</td>
 					</tr>
-					
-					<tr>
-						<td colspan="2">
-							&nbsp;
-						</td>
-					</tr>
 				</table>
 			</div>
 		</siga:ConjCampos>
+
 	</html:form>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="<%=titu%>" />
 	<!-- FIN: BOTONES BUSQUEDA -->
+
+	<!-- INICIO: IFRAME LISTA RESULTADOS -->
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+		id="resultado"
+		name="resultado" 
+		scrolling="no"
+		frameborder="0"
+		marginheight="0"
+		marginwidth="0"		
+		class="frameGeneral"></iframe>
+		
+
+	<!-- INICIO: BOTONES REGISTRO -->
+	<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
+	<!-- FIN: BOTONES REGISTRO -->
 	
-	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+	
 	<script language="JavaScript">
 		// Funcion asociada a boton buscar
 		function buscar() {
@@ -266,7 +280,7 @@
 		function aplicarLogicaCombos(idFiltro) {
 			labelTurnos = jQuery("#labelTurno");
 			comboTurnos = jQuery("#identificadorDiv");
-			labelGuardias = jQuery("#labelGuardia");
+			labelGuardias = jQuery("#labelGuardia");			
 			divGuardias = jQuery("#selecGuardia");
 			divFiltrosBusqueda = jQuery("#filtrosBusqueda");
 			divInfoBusqueda = jQuery("#infoBusqueda");
@@ -300,6 +314,7 @@
 				labelTurnos.hide();
 				comboTurnos.hide();
 			}
+			ajusteAlto('resultado');
 		}
 
 		function cambiarValor() {
@@ -348,25 +363,6 @@
 			top.cierraConParametros("NORMAL");
 		}
 	</script>
-	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-
-	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-		id="resultado"
-		name="resultado" 
-		scrolling="no"
-		frameborder="0"
-		marginheight="0"
-		marginwidth="0"				 
-		class="frameGeneral"></iframe>
-
-	<!-- INICIO: BOTONES REGISTRO -->
-	<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
-	<!-- FIN: BOTONES REGISTRO -->
-
-	<!-- INICIO: SUBMIT AREA -->
-	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->
+	
 </body>
 </html>
