@@ -259,8 +259,7 @@
 	}
 	
 	
-	//Asociada al boton Restablecer -->
-	//Con este metodo se restablecerian los combos anidados del <siga:Select
+	//Asociada al boton Restablecer Con este metodo se restablecerian los combos anidados del siga:Select -->
 	function accionRestablecer() 
 	{		
 		document.forms['DefinirDocumentacionEJGForm'].reset();
