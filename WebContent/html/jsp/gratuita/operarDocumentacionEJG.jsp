@@ -145,13 +145,13 @@
 		<td colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
-					<siga:Select id="presentador" queryId="getPresentador"  cssClass="boxConsulta"  required="true" width="300"   />
+					<siga:Select id="presentador" queryId="getPresentador"   required="true" width="300"   />
 				</c:when>
 				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}" cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"  required="true" disabled="true"  width="300"   />
 				</c:when>
 				<c:otherwise>
-					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}" cssClass="boxConsulta"  required="true" width="300"  />
+					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"   required="true" width="300"  />
 				</c:otherwise>
 			</c:choose>
 				
@@ -164,13 +164,13 @@
 		<td colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento" cssClass="boxConsulta"  required="true"  width="300"   />
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento"   required="true"  width="300"   />
 				</c:when>
 				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento" selectedIds="${idTipoDocumentoSelected}" cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento" selectedIds="${idTipoDocumentoSelected}" required="true" disabled="true"  width="300"   />
 				</c:when>
 				<c:otherwise>
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento"  selectedIds="${idTipoDocumentoSelected}" cssClass="boxConsulta"  required="true"  width="300"   />
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento"  selectedIds="${idTipoDocumentoSelected}" required="true"  width="300"   />
 				</c:otherwise>
 			</c:choose>
 		
@@ -183,14 +183,14 @@
 		<td colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
-					<siga:Select  id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"    cssClass="boxConsulta"  required="true"  width="300"   />
+					<siga:Select  id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"  required="true"  width="300"   />
 				</c:when>
 				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg" parentQueryParamIds="idtipodocumento" params="${idTipoDocumentoJson}"  selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true" disabled="true"  width="300"   />
+					<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg" parentQueryParamIds="idtipodocumento" params="${idTipoDocumentoJson}"  selectedIds="${idDocumentoSelected}" required="true" disabled="true"  width="300"   />
 				</c:when>
 				<c:otherwise>
 				
-				<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg"  parentQueryParamIds="idtipodocumento"  params="${idTipoDocumentoJson}" selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true"  width="300"   />
+				<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg"  parentQueryParamIds="idtipodocumento"  params="${idTipoDocumentoJson}" selectedIds="${idDocumentoSelected}"  required="true"  width="300"   />
 				
 				</c:otherwise>
 			</c:choose>
