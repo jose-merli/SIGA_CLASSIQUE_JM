@@ -603,7 +603,7 @@ if(usr.isComision()){
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 					</td>
 					<td colspan="4">
-						<select style="width:700px;" id="idFundamentoJuridico">
+						<select style="width:700px;" id="idFundamentoJuridico" class="boxCombo">
 								<option value="">&nbsp;</option>
 						</select>
 					
@@ -619,7 +619,7 @@ if(usr.isComision()){
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
 							<td style="vertical-align:middle">
-								<select name="dictaminado" class="box">
+								<select name="dictaminado" class="boxCombo">
 									<option value="S" <%if (sDictaminado.equalsIgnoreCase("S")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.si" /></option>
 									<option value="N" <%if (sDictaminado.equalsIgnoreCase("N")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.no" /></option>
 									<option value="I" <%if (sDictaminado.equalsIgnoreCase("I")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.indiferente" /></option>				
