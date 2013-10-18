@@ -165,7 +165,7 @@
 	</style>
 </head>
 
-<body onload="inicioFechaResolucionCAJG();">
+<body>
 <input type="hidden" id="isObligatorioResolucion" value='${ISOBLIGATORIORESOLUCION}'>
 
 
@@ -285,7 +285,7 @@
 									</td>
 									<td width="200px">
 										<%if (accion.equalsIgnoreCase("ver")){%>
-											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true" ></siga:Fecha>
+											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" disabled="true"></siga:Fecha>
 										<%} else {%>
 											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="<%=fechaResolucionCAJG%>" postFunction="resetActa();" ></siga:Fecha>
 										<%}%>
@@ -575,11 +575,11 @@
 				}
 			}
 		}
-		function inicioFechaResolucionCAJG(){
+		function inicioFechaResolucionCAJG(){			
 			if(document.getElementById("actasActivado")){
 				var acta =jQuery("#idActaComp option:selected").text().split(" - ");
 				if(acta[1]&& acta[1]!=''){
-				//	jQuery("#fechaResolucionCAJG").val(acta[1]);
+				//	jQuery("#fechaResolucionCAJG").val(acta[1]);				
 					jQuery("#fechaResolucionCAJG").removeClass("box");
 					jQuery("#fechaResolucionCAJG").addClass("boxConsulta");
 					jQuery("#fechaResolucionCAJG").attr("readOnly", true);
@@ -607,17 +607,19 @@
 				document.ActaComisionForm.submit();
 			}
 		}
-		
-		jQuery(document).ready(function(){
-			// Añadimos un listener al combo del acta para habilitar el boton de "abrir" 
-			jQuery("#idActaComp").change(
-					function() {
-						if(jQuery("#idActaComp option:selected").val()==0)
-							jQuery("#botonAbrirActa").attr('disabled','disabled');
-						else
-							jQuery("#botonAbrirActa").removeAttr('disabled');
-					});
-		});
+		<%if(!accion.equalsIgnoreCase("ver")){%>
+			jQuery(document).ready(function(){
+				// Añadimos un listener al combo del acta para habilitar el boton de "abrir" 
+				jQuery("#idActaComp").change(
+						function() {
+							if(jQuery("#idActaComp option:selected").val()==0)
+								jQuery("#botonAbrirActa").attr('disabled','disabled');
+							else
+								jQuery("#botonAbrirActa").removeAttr('disabled');
+						});
+				inicioFechaResolucionCAJG();
+			});
+		<%}%>
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
