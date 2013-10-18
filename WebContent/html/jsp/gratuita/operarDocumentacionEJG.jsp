@@ -190,7 +190,7 @@
 				</c:when>
 				<c:otherwise>
 				
-				<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"  params="${idTipoDocumentoJson}" selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true"  width="300"   />
+				<siga:Select id="idDocumento" queryId="getTipoDocumentoEjg"  parentQueryParamIds="idtipodocumento"  params="${idTipoDocumentoJson}" selectedIds="${idDocumentoSelected}"  cssClass="boxConsulta"  required="true"  width="300"   />
 				
 				</c:otherwise>
 			</c:choose>
@@ -222,7 +222,7 @@
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- INICIO: BOTONES REGISTRO -->
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  modo="${accionModo}"/>
+		<siga:ConjBotonesAccion botones="Y,C" modal="P"  modo="${accionModo}"/>
 	<!-- FIN: BOTONES REGISTRO -->
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -259,17 +259,30 @@
 	}
 	
 	
-		//Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
-			document.forms['DefinirDocumentacionEJGForm'].reset();
-		}
+	//Asociada al boton Restablecer -->
+	//Con este metodo se restablecerian los combos anidados del <siga:Select
+	function accionRestablecer() 
+	{		
+		document.forms['DefinirDocumentacionEJGForm'].reset();
+		jQuery("#idDocumento").data("set-id-value",jQuery("#idDocumento").data("inival"));
+		jQuery("#idTipoDocumento").change();
+		
+	}
 		
 	//Asociada al boton Guardar y Cerrar -->
 	function accionGuardarCerrar() 
 	{
+		
 		sub();
-		document.forms['DefinirDocumentacionEJGForm'].modo.value = document.getElementById("modoEntrada").value; 
+		document.forms['DefinirDocumentacionEJGForm'].modo.value = document.getElementById("modoEntrada").value;
+		
+		if(document.forms['DefinirDocumentacionEJGForm'].modo.value =='modificar' && document.forms['DefinirDocumentacionEJGForm'].idDocumento.value==''){
+			error = "<siga:Idioma key='errors.required' arg0='sjcs.ejg.documentacion.documentacion'/>";
+			alert(error);
+			fin();
+			return false;
+		}
+		
 		if(document.forms['DefinirDocumentacionEJGForm'].theFile && document.forms['DefinirDocumentacionEJGForm'].theFile.value!='' && !TestFileType(document.forms['DefinirDocumentacionEJGForm'].theFile.value, ['DOC','DOCX','PDF','JPG','PNG','RTF','TXT'])){
 			fin();
 			return false;
@@ -285,7 +298,7 @@
 					document.forms['DefinirDocumentacionEJGForm'].presentador.value!=document.forms['DefinirDocumentacionEJGForm'].presentadorAnterior.value ||
 					document.forms['DefinirDocumentacionEJGForm'].idTipoDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idTipoDocumentoAnterior.value) ){
 				
-				if(!confirm('El fichero relacionado se va a eliminar¿desea continual?')){
+				if(!confirm("<siga:Idioma key='administracion.informes.mensaje.aviso.archivo.eliminar'/>")){
 					fin();
 					return false;
 				}
@@ -310,6 +323,8 @@
 		{
 			if(document.forms['DefinirDocumentacionEJGForm'].modo.value =="insertar"){
 				jQuery("#divFicheros").css("display", "none");
+			}else{
+				jQuery("#divFicheros").css("display", "block");
 			}
 			
 		}
@@ -322,6 +337,9 @@
 						jQuery("#divFicheros").css("display", "block");
 				}
 			});
+			
+			
+			
 		});
 		
 		function eliminarFichero()
@@ -337,7 +355,6 @@
 			document.forms['DefinirDocumentacionEJGForm'].submit();
 		}
 		
-
 		
 		</script>
 	<!-- FIN: SCRIPTS BOTONES -->

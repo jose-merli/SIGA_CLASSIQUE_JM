@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
@@ -168,7 +169,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
 			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
 			definirDocumentacionEJGForm.setNumEjg(numEjg);
-			definirDocumentacionEJGForm.setModo("modificar");
+			definirDocumentacionEJGForm.setModo("abrir");
 			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
 			
 			List<String> presentadorSelected = new ArrayList<String>();
@@ -483,8 +484,10 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("accion", "");
 			
 
+		}catch (BusinessException e) {
+			throwExcp(e.getMessage(), e,null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
 
 		return forward;

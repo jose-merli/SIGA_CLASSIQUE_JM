@@ -8,7 +8,7 @@
 	<c:when test="${permisoFicheros=='Acceso Total'||permisoFicheros=='Sólo Lectura'}">
 
 
-<div id ="divFicheros">
+<div id ="divFicheros" style="display:none">
 	<siga:ConjCampos leyenda="administracion.informes.literal.archivo">
 		<c:choose>
 			<c:when test="${FicheroForm.descripcionArchivo==null }">
@@ -100,10 +100,10 @@
 							<td align='left'><c:out value="${FicheroForm.fechaArchivo}"/></td>
 							<td name='celda' id='idFilaBotones_1' align="left">	&nbsp;
 							<c:choose>
-							<c:when test="${permisoFicheros=='Sólo Lectura'}">
+							<c:when test="${permisoFicheros=='Sólo Lectura'||action=='ver'}">
 								<img id="iconoboton_borrar2"  src="/SIGA/html/imagenes/bborrar_disable.gif" alt="Borrar" title="Borrar" name="borrar_2" border="0">
 							</c:when>
-							<c:when test="${permisoFicheros=='Acceso Total'}">
+							<c:when test="${permisoFicheros=='Acceso Total'&&action!='ver'}">
 								<img id="iconoboton_borrar1" src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" alt="Borrar" title="Borrar"  name="borrar_1" border="0" onClick="return eliminarFichero()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)">
 							</c:when>
 								
