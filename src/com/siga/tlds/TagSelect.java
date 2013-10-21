@@ -147,11 +147,11 @@ public class TagSelect extends TagSupport {
 					}
 				}
 				
-				if (!params.containsKey("idioma"))
+				if (!params.containsKey("idioma")|| params.get("idioma").equals(""))
 					params.put("idioma", user.getLanguage());
-				if (!params.containsKey("idinstitucion"))
+				if (!params.containsKey("idinstitucion") || params.get("idinstitucion").equals(""))
 					params.put("idinstitucion", user.getLocation());
-				if (!params.containsKey("idperfil")){
+				if (!params.containsKey("idperfil") || params.get("idperfil").equals("")){
 					String userProfiles = "";
 					for (String idperfil: user.getProfile()){
 						userProfiles += "," + idperfil;
