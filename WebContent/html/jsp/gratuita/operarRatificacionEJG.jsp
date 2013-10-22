@@ -595,7 +595,9 @@
 		}
 		
 		function resetActa(){
-			jQuery("#idActaComp").val('');
+			if(!document.getElementById("fechaResolucionCAJG").readOnly){
+				jQuery("#idActaComp").val('');
+			}
 		}
 		
 		function abrirActa(){
