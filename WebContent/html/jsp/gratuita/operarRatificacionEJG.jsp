@@ -563,13 +563,17 @@
 				if(acta[1]&& acta[1]!=''){
 					jQuery("#fechaResolucionCAJG").val(acta[1]);
 					jQuery("#fechaResolucionCAJG").removeClass("box");
+					jQuery("#fechaResolucionCAJG").removeClass("editable");
 					jQuery("#fechaResolucionCAJG").addClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").addClass("noEditable");
 					jQuery("#fechaResolucionCAJG").attr("readOnly", true);
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").hide();
 				}else{
 					jQuery("#fechaResolucionCAJG").val('');
 					jQuery("#fechaResolucionCAJG").removeClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").removeClass("noEditable");
 					jQuery("#fechaResolucionCAJG").addClass("box");
+					jQuery("#fechaResolucionCAJG").addClass("editable");
 					jQuery("#fechaResolucionCAJG").attr("readOnly", false);
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").show();
 				}
@@ -581,13 +585,17 @@
 				if(acta[1]&& acta[1]!=''){
 				//	jQuery("#fechaResolucionCAJG").val(acta[1]);				
 					jQuery("#fechaResolucionCAJG").removeClass("box");
+					jQuery("#fechaResolucionCAJG").removeClass("editable");
 					jQuery("#fechaResolucionCAJG").addClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").addClass("noEditable");
 					jQuery("#fechaResolucionCAJG").attr("readOnly", true);
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").hide();
 				}else{
 					//jQuery("#fechaResolucionCAJG").val('');
 					jQuery("#fechaResolucionCAJG").removeClass("boxConsulta");
+					jQuery("#fechaResolucionCAJG").removeClass("noEditable");
 					jQuery("#fechaResolucionCAJG").addClass("box");
+					jQuery("#fechaResolucionCAJG").addClass("editable");
 					jQuery("#fechaResolucionCAJG").attr("readOnly", false);
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").show();
 				}

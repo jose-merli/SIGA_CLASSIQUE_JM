@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.111 2013-10-10 11:26:37 tf2 Exp $
+	*	@version    $Id: SIGA.js,v 1.112 2013-10-22 08:45:07 carlos Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1291,7 +1291,12 @@ function jQueryLoaded(){
 						// COMPROBAMOS SI NO TIENE EL FOCO (REALMENTE ES UN BLUR) PARA HACER LAS VALIDACIONES 
 						// CORRESPONDIENTES AL PERDER EL FOCO
 						//console.debug("DATEPICKER INPUT BLUR BUENO!");
-						datepickerMaskValueChanged(jQuery(this));
+
+						//EJECUTAMOS LA FUNCION DE MASCARA SOLO SI EL IMPUT ES EDITABLE, ASI NO FORZAMOS INNECESARIAMENTE UN ONCHANGE
+						if (jQuery(this).hasClass("editable")){
+							datepickerMaskValueChanged(jQuery(this));
+						}						
+						
 					} else if (typeof jQuery(this).data("caretpos") != "undefined"){
 						//console.debug("DATEPICKER INPUT BLUR! focus: " + jQuery(this).is(":focus") + "; CARET: " + jQuery(this).atCaret('getCaretPosition') + "; CARETPOS: " + jQuery(this).data("caretpos"));
 						// SOLO PARA IE. EL CAMBIO DEL CURSOR OCASIONA UN EVENTO BLUR, PARA DIFERENCIARLO
