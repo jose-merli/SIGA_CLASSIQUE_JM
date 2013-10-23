@@ -990,60 +990,44 @@
 		<html:hidden property="numeroColegiado" styleId="numeroColegiado" value="" />		
 
 		<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
-			<table border="0" cellpadding="5" cellspacing="0">
+			<table>
 				<tr>
-					<td style="padding:0px">
-						<table border="0" cellpadding="5" cellspacing="0">
-							<tr>
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:80px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>" />(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="tipoSolicitud" tipo="solicitud" ancho="200" clase="boxCombo" obligatorio="true"/>
-								</td>
-							</tr>
-						</table>
-					</td>				
 					
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:128px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>" />(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.solicitudDe'/>&nbsp;(*)
+					</td>
+					<td>
+						<siga:ComboBD nombre="tipoSolicitud" tipo="solicitud" ancho="200" clase="boxCombo" obligatorio="true"/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.tipoColegiacion'/>&nbsp;(*)
 					</td>
 					<td>
 						<siga:ComboBD nombre="tipoColegiacion" ancho="125" tipo="colegiacion" clase="boxCombo" obligatorio="true" />
 					</td>
 					
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:170px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>" />(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.documentacion'/>&nbsp;(*)
 					</td>	
 					<td>
-						<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="170" 
-							clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>"/>
+						<siga:ComboBD nombre="tipoModalidadDocumentacion" tipo="modalidadDocumentacion" ancho="170" clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>"/>
 					</td>
 				</tr>
 				
 				<tr>
-					<td style="padding:0px">
-						<table border="0" cellpadding="5" cellspacing="0">
-							<tr>
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:158px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>" />
-								</td>
-								<td>
-									<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial=""/>
-								</td>
-							</tr>
-						</table>
+					
+					<td class="labelText">
+						<siga:Idioma key='censo.busquedaClientesAvanzada.literal.fechaIncorporacion'/>
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial=""/>
 					</td>
 					
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:125px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>" />
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaSolicitud'/>
 					</td>
-					<td colspan="3" class="boxLabel">
+					<td colspan="3">
 						<input value="<%=fechaSol%>" type="text" id="fechaSolicitud" name="fechaSolicitud" class="boxConsulta" readonly tabindex="-1" />
 					</td>
 				</tr>
@@ -1051,51 +1035,37 @@
 		</siga:ConjCampos>
 		
 		<siga:ConjCampos>
-			<table border="0" cellpadding="5" cellspacing="0">
+			<table width="100%">
 				<tr>
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:58px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>" />&nbsp;(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>&nbsp;(*)
 					</td>
-					<td colspan="6" style="padding:0px">
-						<table border="0" cellpadding="5" cellspacing="0">
-							<tr>									
-								<td style="vertical-align: middle;">
-									<siga:ComboBD nombre="tipoIdentificacion" tipo="identificacionSolicitud" ancho="100"
-										clase="<%=estiloCombo%>" obligatorio="true" accion="comprobarTipoIdent();"/>
-								</td>
-								<td style="vertical-align: middle;">
-									<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value=""/>
-								</td>
-								<td style="vertical-align: middle;">
-									<img id="idButtonNif" src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand; align:left; display:none;">
-								</td>
-							</tr>
-						</table>
+					<td colspan="5">
+						<siga:ComboBD nombre="tipoIdentificacion" tipo="identificacionSolicitud" ancho="100" clase="<%=estiloCombo%>" obligatorio="true" accion="comprobarTipoIdent();"/>
+						<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value=""/>
+
+						<span id="idButtonNif" style="display:none; margin:0;padding:0" >
+							<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">
+						</span>
 					</td>
 				</tr>				
-				
 				<tr>		
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:85px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>" />&nbsp;(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100"
-							clase="<%=estiloCombo%>" obligatorio="true" />
+						<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100" clase="<%=estiloCombo%>" obligatorio="true" />
 					</td>				
 					
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:55px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>" />&nbsp;(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>&nbsp;(*)
 					</td>
 					<td>
 						<html:text property="nombre" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 					</td>						
 					
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:65px" tabindex="-1" readonly
-							value="<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>" />&nbsp;(*)
+					<td class="labelText">
+						<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>&nbsp;(*)
 					</td>
 					<td>
 						<html:text property="apellido1" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
@@ -1104,68 +1074,51 @@
 						<html:text property="apellido2" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 					</td>
 				</tr>
-				
 				<tr>
-					<td colspan="7" style="padding:0px">
-						<table border="0" cellpadding="5" cellspacing="0">
-							<tr>			
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:140px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" />&nbsp;(*)
-								</td>						
-								<td>
-									<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""/>
-								</td>		
-								
-								<td style="width:13px">&nbsp;</td>												
-											
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:37px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>" />&nbsp;(*)
-								</td>
-								<td>
-									<html:select name="SolicitudIncorporacionForm" property="sexo" style="width:75px" styleClass="box" >
-								        <html:option value="0" >&nbsp;</html:option>
-										<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-										<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-									</html:select>	
-								</td>
-								
-								<td style="width:13px">&nbsp;</td>
-								
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:81px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>" />
-								</td>
-								<td>
-									<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100" clase="<%=estiloCombo%>" />
-								</td>								
-								
-								<td style="width:13px">&nbsp;</td>
-		
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:73px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>" />
-								</td>
-								<td>
-									<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
-								</td>
-							</tr>
-						</table>
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>&nbsp;(*)
 					</td>						
+					<td>
+						<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""/>
+					</td>		
+											
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>
+					</td>
+					<td>
+						<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100" clase="<%=estiloCombo%>" />
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>&nbsp;(*)
+					</td>
+					<td>
+						<html:select name="SolicitudIncorporacionForm" property="sexo" style="width:75px" styleClass="<%=estiloCombo%>" >
+					        <html:option value="0" >&nbsp;</html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+						</html:select>	
+						&nbsp;&nbsp;
+						<span class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>
+						</span>
+					</td>
+					<td>
+						<html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
+					</td>
+					
 				</tr>
 			</table>
 		</siga:ConjCampos>		
 		
 		<siga:ConjCampos>
-			<table border="0" cellpadding="0" cellspacing="0">
+			<table>
 				<tr>
 					<td>				
-						<table border="0" cellpadding="5" cellspacing="0">
+						<table>
 							<tr>
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:32px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.datosDireccion.literal.pais2'/>" />
+								<td class="labelText">
+									<siga:Idioma key='censo.datosDireccion.literal.pais2'/>
 								</td>	
 								<td>
 									<siga:ComboBD nombre="pais" tipo="pais" ancho="420" clase="<%=estiloCombo%>" obligatorio="false" accion="cargaPais(this.value);"/>
@@ -1174,8 +1127,7 @@
 							
 							<tr>
 								<td  class="boxLabel">
-									<input class="boxLabel" type="text" style="width:64px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>" />&nbsp;(*)
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.domicilio'/>&nbsp;(*)
 								</td>									
 								<td>
 									<html:text styleClass="<%=estiloBox%>" property="domicilio" style="width:420px" maxlength="100" value=""/>
@@ -1184,9 +1136,9 @@
 							
 							<tr>								
 								<td colspan="2" style="padding:0px">
-									<table border="0" cellpadding="5" cellspacing="0">
+									<table>
 										<tr id="trEspanol1">
-											<td class="boxLabel">
+											<td class="labelText">
 												CP&nbsp;(*)
 											</td>
 											<td>	
@@ -1195,9 +1147,8 @@
 													onblur="onBlurCP();" onfocus="onFocusCP();"/>
 											</td>					
 										
-											<td class="boxLabel">
-												<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
-													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+											<td class="labelText">
+												<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>&nbsp;(*)
 											</td>																		
 																	
 											<td>
@@ -1220,25 +1171,24 @@
 												<siga:ToolTip id='idAyudaPoblaciones' imagen="/SIGA/html/imagenes/botonAyuda.gif" texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "censo.SolicitudIncorporacion.ayudaPoblaciones"))%>' />
 											</td>  																																								
 
-											<td class="boxLabel">
-												<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
-													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>" />											
+											<td class="labelText">
+												<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>											
 											</td>
-											<td class="boxLabel">
+											<td class="labelText">
 												<input id="provincia_input" class="boxConsulta" type="text" style="width:310px" value="" readonly tabindex="-1" />
 											</td>
 										</tr>
 										
 										<tr id="trExtranjero" style="display:none">
-											<td class="boxLabel">
+											<td class="labelText">
 												CP&nbsp;(*)
 											</td>											
 											<td>	
 												<html:text property="CPExt" style="width:50px" styleClass="<%=estiloBox%>" maxlength="5" value=""/>
 											</td>						
 										
-											<td class="boxLabel">
-												<input class="boxLabel" type="text" style="width:68px" tabindex="-1" readonly
+											<td class="labelText">
+												<input type="text" style="width:68px" tabindex="-1" readonly
 													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
 											</td>																																													
 											<td>
@@ -1265,16 +1215,14 @@
 						<table border="0" cellpadding="5" cellspacing="0">
 							<tr>
 								<td  class="boxLabel">
-									<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>" />&nbsp;(*)
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>&nbsp;(*)
 								</td>									
 								<td>
 									<html:text property="telefono1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
 								</td>
 								
 								<td  class="boxLabel">
-									<input class="boxLabel" type="text" style="width:74px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>" />
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>
 								</td>									
 								<td>
 									<html:text property="telefono2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
@@ -1283,16 +1231,14 @@
 							
 							<tr>
 								<td  class="boxLabel">
-									<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>" />
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>
 								</td>									
 								<td>
 									<html:text property="fax1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
 								</td>
 								
 								<td  class="boxLabel">
-									<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>" />
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>
 								</td>
 								<td>
 									<html:text property="fax2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
@@ -1300,9 +1246,8 @@
 							</tr>
 							
 							<tr>
-								<td class="boxLabel">
-									<input class="boxLabel" type="text" style="width:45px" tabindex="-1" readonly
-										value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>" />								
+								<td class="labelText">
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>								
 								</td>
 								<td colspan="3">
 									<html:text property="telefono3" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
@@ -1313,8 +1258,7 @@
 								<td colspan="4" style="padding:0px;">
 									<table border="0" cellpadding="5" cellspacing="0">
 										<td  class="boxLabel">
-											<input class="boxLabel" type="text" style="width:126px" tabindex="-1" readonly
-												value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>" />&nbsp;(*)		
+											<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>&nbsp;(*)		
 										</td>
 										<td>
 											<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
@@ -1335,9 +1279,8 @@
 		<siga:ConjCampos>
 			<table border="0" cellpadding="5" cellspacing="0">
 				<tr>				
-					<td class="boxLabel">
-						<input class="boxLabel" type="text" style="width:100px" tabindex="-1" readonly
-								value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>" />
+					<td class="labelText">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.observaciones'/>
 					</td>
 					<td>
 						<textarea class="<%=estiloBox%>" name="observaciones" 
