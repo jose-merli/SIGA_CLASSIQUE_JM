@@ -97,7 +97,7 @@
 		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.delito">
 			<table class="tablaCampos" align="center">
 			<tr>
-				<td class="labelText">
+				<td class="labelText" nowrap>
 						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
 				</td>
 				<td>
@@ -107,7 +107,7 @@
 					hmDeligosparams.put("anio", anio);
 					String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
 					%>
-					<siga:Select queryId="getDelitosAsistencia" id="idDelito" params="<%=deligosparamsJSON%>" required="true"/>
+					<siga:Select queryId="getDelitosAsistencia" id="idDelito" params="<%=deligosparamsJSON%>" required="true" width="520"/>
 				</td>
 			</tr>
 			</table>

@@ -60,7 +60,7 @@
 		
 		function nuevo() {		
 			document.forms[0].modo.value = "nuevo";
-			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
+			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
 			if (salida == "MODIFICADO") 
 				refrescarLocal();
 		}
