@@ -39,6 +39,7 @@ import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsPermutaCabeceraAdm;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -743,6 +744,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
 		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(usr);
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(usr);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
 
 		String forward = "exito"; //retorno
@@ -796,11 +798,13 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					if (!numero.equals("NINGUNO")) {
 						//borrando permutas
 						if (admPermutaGuardias.delete(hashPermuta))
-							//borrando los dias de la guardia
-							if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))
-								//borrando las cabeceras de la guardia
-								if (admCabeceraGuardias.deleteCabeceraGuardiasCalendario(miHash))
-									borradosOK = true;
+							// revisando SCS_PERMUTA_CABECERA 
+							if (admPermutasCabeceras.revisarPermutasCalendario(idInstitucion)) 
+								//borrando los dias de la guardia
+								if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))
+									//borrando las cabeceras de la guardia
+									if (admCabeceraGuardias.deleteCabeceraGuardiasCalendario(miHash))
+										borradosOK = true;
 					} else {
 						//borrando los dias de la guardia
 						if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))

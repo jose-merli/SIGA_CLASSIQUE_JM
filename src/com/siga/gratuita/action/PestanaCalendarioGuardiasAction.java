@@ -2,7 +2,6 @@ package com.siga.gratuita.action;
 
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -29,15 +28,17 @@ import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
+import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsPermutaCabeceraAdm;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.beans.ScsCabeceraGuardiasBean;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -361,20 +362,10 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,miForm.getIdGuardiaSolicitante());
 			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
 			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
-			//solicitante ahora es el del confirmador
-			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioConfirmador());
-			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());			
-			
-			
-			if (usr.isLetrado()){
-				
+			//solicitante ahora es el del confirmador			
+			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());
+			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioSolicitante()));
-			
-			}else{
-				
-				miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioConfirmador()));
-				
-			}
 			
 			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE,miForm.getMotivosSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
@@ -400,14 +391,11 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,miForm.getIdGuardiaConfirmador());
 			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
 			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
-			//confirmador ahora es el del solicitante  
-			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioSolicitante());
+			//confirmador ahora es el del solicitante  			
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,miForm.getIdPersonaConfirmador());
-		    if (usr.isLetrado()){
-			    miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioConfirmador()));
-			}else{
-				miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioSolicitante()));	
-			}
+			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioConfirmador());
+			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioConfirmador()));
+
 			if (usr.isLetrado()){
 			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
 			}else{
@@ -629,14 +617,22 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 					if(!admGuardias.insert(guardiasColSolBean))
 						throw new ClsExceptions(admGuardias.getError());
 				}
-				
-					
-			
 			}
+			
 			if (admPermutas.insert(miHash)) {
-				//Caso de exito
-				texto="messages.inserted.success";
-				request.setAttribute("modal","1");
+				String resultado[] = EjecucionPLs.ejecutarPL_CrearPermutasCabeceras(miForm.getIdInstitucion(), numero);
+				
+				if (!resultado[0].equalsIgnoreCase("0")) {
+					//Caso de error
+					texto="messages.inserted.error";
+					request.setAttribute("sinrefresco","sinrefresco");
+					tx.rollback();
+					//throw new Exception(texto);
+				} else {				
+					//Caso de exito
+					texto="messages.inserted.success";
+					request.setAttribute("modal","1");
+				}
 			} else {
 				//Caso de error
 				texto="messages.inserted.error";
@@ -679,6 +675,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm) formulario;
 		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(this.getUserBean(request));
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(this.getUserBean(request));	
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		
@@ -708,6 +705,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		String idCalendarioGuardiasConfirmador = miForm.getIdCalendarioConfirmador();
 		String idPersonaConfirmador = miForm.getIdPersonaConfirmador();
 		String fechaInicioConfirmador = miForm.getFechaInicioConfirmador();
+		String motivoConfirmador = miForm.getMotivosConfirmador();
 		
 		String numeroPermuta = miForm.getNumero();
 		
@@ -765,18 +763,20 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			permuta.put(ScsPermutaGuardiasBean.C_IDINSTITUCION,idInstitucion);
 			permuta.put(ScsPermutaGuardiasBean.C_NUMERO,numeroPermuta);
 			
-			Vector permutaActual = admPermutas.selectByPK(permuta);
+			Vector permutaActual = admPermutas.selectByPK(permuta);			
+			ScsPermutaGuardiasBean beanPermuta = (ScsPermutaGuardiasBean)(permutaActual.elementAt(0));
+			Integer idPermutaCabeceraSolicitante = beanPermuta.getIdPermutaCabeceraSolicitante();
+			Integer idPermutaCabeceraConfirmador = beanPermuta.getIdPermutaCabeceraConfirmador();
 			
 			//-----------------------------------------------------------------
 			//Inicio de la transaccion. Primero vamos a borrar los registros de la tabla SCS_PERMUTASGUARDIAS, 
 			// SCS_GUARDIASCOLEGIADO Y SCS_CABECERAGUARDIAS tanto para el confirmador como para el solicitante.
 			//-----------------------------------------------------------------				
 			tx.begin();			
-												
 			
-			// Borramos el registro de permuta
-			ScsPermutaGuardiasBean beanPermuta = (ScsPermutaGuardiasBean)(permutaActual.elementAt(0));
-			if(!admPermutas.delete(beanPermuta))
+			// Borramos la permuta de SCS_PERMUTASGUARDIAS y hacemos las modificaciones previas a SCS_PERMUTA_CABECERA
+			if (!admPermutas.delete(beanPermuta) || 
+				!admPermutasCabeceras.modificarPrevioPermutasCalendario(beanPermuta))
 				throw new ClsExceptions(admPermutas.getError());
 			
 			// Borramos los registros de guardias colegiado correspondiente al solicitante
@@ -844,12 +844,22 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			// y poniendo como fecha de confirmacion la fecha actual
 			//------------------------------------------------------------------------------------------------------
 			
+			beanPermuta.setIdCalendarioGuardiasConfirmad(new Integer(idCalendarioGuardiasSolicitante));
+			beanPermuta.setIdCalendarioGuardiasSolicitan(new Integer(idCalendarioGuardiasConfirmador));
 			beanPermuta.setFechaInicioConfirmador(fechaInicioSolicitante);
 			beanPermuta.setFechaInicioSolicitante(fechaInicioConfirmador);
+			beanPermuta.setMotivosConfirmador(motivoConfirmador);			
 			beanPermuta.setFechaConfirmacion("SYSDATE");
-			if(!admPermutas.insert(beanPermuta))
-				throw new ClsExceptions(admPermutas.getError());
 			
+			// Creo la permuta de SCS_PERMUTASGUARDIAS y hacemos las modificaciones posteriores a SCS_PERMUTA_CABECERA
+			if (!admPermutasCabeceras.modificarPosteriorPermutasCalendario(beanPermuta) ||
+				!admPermutas.insert(beanPermuta))
+				throw new ClsExceptions(admPermutas.getError());	
+			
+			String resultado[] = EjecucionPLs.ejecutarPL_CrearPermutasCabeceras(idInstitucion, numeroPermuta);				
+			if (!resultado[0].equalsIgnoreCase("0")) {
+				throw new ClsExceptions(resultado[1]);
+			}
 			
 			tx.commit();
 			
@@ -868,7 +878,8 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 	 */
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm) formulario;
-		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(this.getUserBean(request));		
+		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(this.getUserBean(request));
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(this.getUserBean(request));	
 		
 		String forward = "exito";
 		UsrBean usr;
@@ -879,9 +890,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		boolean poolRW = false;	
 				
 		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			tx=usr.getTransaction();
-
 			//-------------------------------------------------------------
 			//Recuperamos los datos de la permuta
 			//-------------------------------------------------------------
@@ -908,14 +916,19 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			
 			//-----------------------------------------------------------------
 			//Inicio de la transaccion
-			//-----------------------------------------------------------------				
+			//-----------------------------------------------------------------		
+			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			tx=usr.getTransaction();
 			tx.begin();			
 												
-			//Insertamos la permuta
-			if (admPermutas.delete(miHash)) {
+			// JPT: 
+			// 1. Eliminamos la permuta que no ha sido confirmada 
+			// 2. Revisamos los registros de la tabla SCS_PERMUTA_CABECERA, y borramos los que no tengan relaciones con SCS_PERMUTAGUARDIAS
+			if (admPermutas.delete(miHash) && admPermutasCabeceras.revisarPermutasCalendario(miForm.getIdInstitucion())) {
 				//Caso de exito
 				texto="messages.deleted.success";
 				request.setAttribute("modal","1");
+				
 			} else {
 				//Caso de error
 				texto="messages.deleted.error";
@@ -1006,7 +1019,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//Elimino los registros con el valor FUNCIONPERMUTAS distinto de 1 o 5
 				while (i < registros.size()){
 					Integer permuta = new Integer((String)((Hashtable)registros.get(i)).get("FUNCIONPERMUTAS"));
-					if (permuta.intValue()!=1 && permuta.intValue()!=5)
+					if (permuta.intValue()!=1 && permuta.intValue()!=3 && permuta.intValue()!=5)
 						registros.removeElementAt(i);
 					i++;
 				}

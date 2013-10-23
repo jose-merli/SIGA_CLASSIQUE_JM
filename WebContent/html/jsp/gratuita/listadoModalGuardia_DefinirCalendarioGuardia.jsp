@@ -260,7 +260,7 @@
 				elems = new FilaExtElement[3];	
 				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
 				
-				if (!modoOriginal.equalsIgnoreCase("VER") && (pl!=null && pl.equals("5"))) {
+				if (!modoOriginal.equalsIgnoreCase("VER") && pl!=null && (pl.equals("5") || pl.equals("3"))) {
 					elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);	
 				}
 				

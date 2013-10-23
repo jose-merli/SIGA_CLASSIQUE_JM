@@ -50,6 +50,7 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaBean;
+import com.siga.beans.ScsPermutaCabeceraAdm;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
@@ -2092,7 +2093,6 @@ public class CalendarioSJCS
 		ScsCalendarioGuardiasAdm admCalendarioGuardiaAux = new ScsCalendarioGuardiasAdm(this.usrBean);
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.usrBean);
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrBean);
-		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(this.usrBean);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
 
 
@@ -2170,6 +2170,7 @@ public class CalendarioSJCS
 		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(usr);
 		ScsSaltoCompensacionGrupoAdm admSaltoCompensacionGrupo = new ScsSaltoCompensacionGrupoAdm(usr);
 		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(usr);
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(usr);
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
@@ -2191,7 +2192,7 @@ public class CalendarioSJCS
 		if (! admSaltoCompensacionGrupo.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
 			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de grupo de calendarios que ya no existen");
 
-		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
+		if (!admPermutaGuardias.deletePermutasCalendario(calendario) || !admPermutasCabeceras.revisarPermutasCalendario((String)calendario.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION)))
 			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");
 
 		if (! admGuardiasColegiado.deleteGuardiasCalendario(calendario))

@@ -1,6 +1,5 @@
 package com.siga.beans;
 
-import com.siga.consultas.action.Permutacion;
 import com.siga.gratuita.form.DefinirPermutaGuardiasForm;
 
 /**
@@ -13,10 +12,10 @@ import com.siga.gratuita.form.DefinirPermutaGuardiasForm;
 public class ScsPermutaGuardiasBean extends MasterBean{
 	
 	/* Variables */ 
-	
 	private Integer 	idInstitucion;
 	private Integer 	numero;
 	private Integer 	anulada;
+	
 	//Solicitante
 	private Integer 	idTurno_Solicitante;
 	private Integer 	idGuardia_Solicitante;
@@ -25,6 +24,8 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private String 		fechaInicio_Solicitante;
 	private String 		motivos_Solicitante;
 	private String 		fechaSolicitud;
+	private Integer		idPermutaCabeceraSolicitante;
+	
 	//Confirmador
 	private Integer 	idTurno_Confirmador;
 	private Integer 	idGuardia_Confirmador;
@@ -33,17 +34,13 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private String 		fechaInicio_Confirmador;
 	private String 		motivos_Confirmador;
 	private String 		fechaConfirmacion;
-	private String      nombrePermutaConfirmador;
-	
-
+	private String      nombrePermutaConfirmador;		
+	private Integer		idPermutaCabeceraConfirmador;
 	
 	/* Nombre de Tabla */
-	
 	static public String T_NOMBRETABLA = "SCS_PERMUTAGUARDIAS";
 	
-	
 	/* Nombre de campos de la tabla */
-	
 	static public final String	C_IDINSTITUCION = 					"IDINSTITUCION";
 	static public final String 	C_NUMERO = 							"NUMERO";
 	static public final String 	C_ANULADA = 						"ANULADA";
@@ -61,11 +58,10 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	static public final String 	C_FECHAINICIO_CONFIRMADOR =			"FECHAINICIO_CONFIRMADOR";
 	static public final String 	C_MOTIVOS_CONFIRMADOR =				"MOTIVOSCONFIRMADOR";
 	static public final String 	C_FECHACONFIRMACION =				"FECHACONFIRMACION";
-	
-	
+	static public final String 	C_IDPERCAB_SOLICITANTE = "ID_PER_CAB_SOLICITANTE";
+	static public final String 	C_IDPERCAB_CONFIRMADOR = "ID_PER_CAB_CONFIRMADOR";
 	
 	/* Metodos SET */
-	
 	public void setIdInstitucion (Integer valor) 					{ this.idInstitucion = valor;}
 	public void setNumero (Integer valor) 							{ this.numero = valor;}
 	public void setAnulada (Integer valor) 							{ this.anulada = valor;}
@@ -83,11 +79,10 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public void setMotivosConfirmador (String  valor)				{ this.motivos_Confirmador = valor;}
 	public void setIdPersonaConfirmador (Integer valor) 			{ this.idPersona_Confirmador = valor;}
 	public void setFechaConfirmacion (String  valor)				{ this.fechaConfirmacion = valor;}
-	
-
+	public void setIdPermutaCabeceraSolicitante (Integer  valor)	{ this.idPermutaCabeceraSolicitante = valor;}
+	public void setIdPermutaCabeceraConfirmador (Integer  valor)	{ this.idPermutaCabeceraConfirmador = valor;}
 	
 	/* Metodos GET */
-	
 	public Integer getIdInstitucion () 					{ return this.idInstitucion;}
 	public Integer getNumero () 						{ return this.numero;}
 	public Integer getAnulada () 						{ return this.anulada;}
@@ -105,6 +100,8 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public String  getMotivosConfirmador ()				{ return this.motivos_Confirmador;}
 	public Integer getIdPersonaConfirmador () 			{ return this.idPersona_Confirmador;}
 	public String  getFechaConfirmacion ()				{ return this.fechaConfirmacion;}
+	public Integer getIdPermutaCabeceraSolicitante ()	{ return this.idPermutaCabeceraSolicitante;}
+	public Integer getIdPermutaCabeceraConfirmador ()	{ return this.idPermutaCabeceraConfirmador;}
 	
 	public DefinirPermutaGuardiasForm getPermutaGuardiasForm(){
 		DefinirPermutaGuardiasForm permutaForm = new DefinirPermutaGuardiasForm();
@@ -151,11 +148,6 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 		if (idPersona_Confirmador!=null)
 			permutaForm.setIdPersonaConfirmador(idPersona_Confirmador.toString());
 		
-			
 		return permutaForm;
-		
-		
 	}
-	
-	
 }

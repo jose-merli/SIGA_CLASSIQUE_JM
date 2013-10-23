@@ -25,6 +25,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
@@ -1082,6 +1083,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		// Administradores
 
 		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(this.usrbean);
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(this.usrbean);
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.usrbean);
 		ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
 
@@ -1182,6 +1184,19 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 					throw new ClsExceptions(admPermutas.getError());
 			}
 		}
+		
+		ScsPermutaCabeceraBean beanPermutaCabecera = new ScsPermutaCabeceraBean();
+		beanPermutaCabecera.setIdInstitucion(new Integer(idInstitucion));
+		beanPermutaCabecera.setIdTurno(new Integer(idTurno));
+		beanPermutaCabecera.setIdGuardia(new Integer(idGuardia));
+		beanPermutaCabecera.setIdCalendarioGuardias(new Integer(idCalendarioGuardias));
+		beanPermutaCabecera.setIdPersona(new Integer(idPersonaSaliente));
+		beanPermutaCabecera.setFecha(GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
+		
+		// Realiza los cambios previos a la sustitucion de una guardia para SCS_PERMUTA_CABECERA
+		if (!admPermutasCabeceras.sustituirPrevioPermutasCalendario(beanPermutaCabecera))
+			throw new ClsExceptions(admPermutasCabeceras.getError());
+		
 		//----------------------------------------------------------------------------------------------------
 		// Borramos los registros de la tabla SCS_GUARDIASCOLEGIADO para el letrado saliente
 		//-----------------------------------------------------------------------------------------------------
@@ -1243,6 +1258,11 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		// solicitante cambiando le idpersona por el del letrado entrante.Sólo insertamos aquellos regstros
 		// cuya fecha de confirmación no sea null (las peticiones de permuta las desechamos, solo interesan permutas confirmadas)
 		//---------------------------------------------------------------------------------------------------
+		
+		// Realiza los cambios posteriores a la sustituacion de una guardia para SCS_PERMUTA_CABECERA
+		beanPermutaCabecera.setIdPersona(new Integer(idPersonaEntrante));
+		if (!admPermutasCabeceras.sustituirPosteriorPermutasCalendario(beanPermutaCabecera))
+				throw new ClsExceptions(admPermutasCabeceras.getError());
 		
 		if(permutasComoSolicitante != null && permutasComoSolicitante.size() > 0){
 			for(int i = 0; i < permutasComoSolicitante.size(); i++){

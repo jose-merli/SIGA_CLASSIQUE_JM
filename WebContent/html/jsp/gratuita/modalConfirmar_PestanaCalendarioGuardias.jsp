@@ -2,11 +2,12 @@
 <html>
 <head>
 <!-- modalConfirmar_PestanaCalendarioGuardias.jsp-->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -21,6 +22,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.atos.utils.GstDate"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 
@@ -29,7 +32,6 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	String profile[]=usr.getProfile();
 	
-
 	//Datos comunes:
 	String idInstitucion = (String)request.getAttribute("IDINSTITUCION");
 	String numeroPermuta = (String)request.getAttribute("NUMEROPERMUTA");
@@ -62,18 +64,10 @@
 	String numeroColegiadoConfirmador = UtilidadesHash.getString(confirmador,"NUMEROCOLEGIADO");
 %>
 
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.Hashtable"%>
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
@@ -84,7 +78,6 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-
 	<script>
 		//Variable Global que me dice si he pulsado en el radiobutton SI:
 		confirmar='SI';
@@ -96,190 +89,199 @@
 			return confirmar;
 		}
 	</script>
-
 </head>
 
 <body>
 
-<!-- TITULO -->
-<!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
-<tr>
-	<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.titulo"/>
-	</td>
-</tr>
-</table>
-	
-<div id="camposRegistro" class="posicionModalGrande" align="center">
-
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCampos" align="center">
-	
-	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_PestanaCalendarioGuardias.do" method="post">
-		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
-		<html:hidden property = "modo" value = "modificar"/>
-		
-		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
-		<html:hidden property = "numero" value = "<%=numeroPermuta%>"/>
-		<html:hidden property = "fechaSolicitud" value = "<%=fechaSolicitud%>"/>	
-		<html:hidden property = "anulada" value = "<%=anulada%>"/>					
-		
-		<html:hidden property = "idTurnoSolicitante" value = "<%=idTurnoSolicitante%>"/>
-		<html:hidden property = "idGuardiaSolicitante" value = "<%=idGuardiaSolicitante%>"/>
-		<html:hidden property = "idCalendarioGuardiasSolicitante" value = "<%=idCalendarioguardiasSolicitante%>"/>
-		<html:hidden property = "idPersonaSolicitante" value = "<%=idPersonaSolicitante%>"/>
-		<html:hidden property = "fechaInicioSolicitante" value = "<%=fechaInicioSolicitante%>"/>
-		<html:hidden property = "fechaFinSolicitante" value = "<%=fechaFinSolicitante%>"/>
-
-		<html:hidden property = "idTurnoConfirmador" value = "<%=idTurnoConfirmador%>"/>
-		<html:hidden property = "idGuardiaConfirmador" value = "<%=idGuardiaConfirmador%>"/>
-		<html:hidden property = "idCalendarioGuardiasConfirmador" value = "<%=idCalendarioguardiasConfirmador%>"/>
-		<html:hidden property = "idPersonaConfirmador" value = "<%=idPersonaConfirmador%>"/>
-		<html:hidden property = "fechaInicioConfirmador" value = "<%=fechaInicioConfirmador%>"/>
-		<html:hidden property = "fechaFinConfirmador" value = "<%=fechaFinConfirmador%>"/>
-		
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
-	<tr>			
-		<td class="labelText">
-			<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.texto1"/>:
-		</td>
-	</tr>
-	<tr>
-	<td>
-	<!-- SUBCONJUNTO DE DATOS -->
-	<siga:ConjCampos leyenda="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.solicitante">
-		<table class="tablaCampos" align="center">
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="numeroColegiadoSolicitante" size="10" maxlength="20" styleClass="box" value="<%=numeroColegiadoSolicitante%>" readOnly="true"></html:text>
-			</td>		
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="nombreSolicitante" size="70" maxlength="300" styleClass="box" value="<%=nombreYApellidosSolicitante%>" readOnly="true"></html:text>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.titulo"/>
 			</td>
 		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaInicioSolicitanteParseada" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioSolicitante)%>" readOnly="true"></html:text>
-			</td>		
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaFinSolicitanteParseada" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinSolicitante)%>" readOnly="true"></html:text>
-			</td>
-		</tr>		
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.motivos"/>:
-			</td>
-			<td class="labelText" colspan="3">
-				<html:textarea name="PermutasForm" property="motivosSolicitante" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="194" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=motivosSolicitante%>" readOnly="true" ></html:textarea>
-			</td>		
-		</tr>		
-		</table>
-	</siga:ConjCampos>		
-	</td>
-	</tr>
-	<tr>
-		<td>
-			&nbsp;
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.texto2"/>:
-		</td>
-	</tr>
-	<tr>
-	<td>
-	<!-- SUBCONJUNTO DE DATOS -->
-	<siga:ConjCampos leyenda="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.confirmador">
-		<table class="tablaCampos" align="center">
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="numeroColegiadoConfirmador" size="10" maxlength="20" styleClass="box" value="<%=numeroColegiadoConfirmador%>" readOnly="true"></html:text>
-			</td>		
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="nombreConfirmador" size="70" maxlength="300" styleClass="box" value="<%=nombreYApellidosConfirmador%>" readOnly="true"></html:text>
-			</td>
-		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaInicioConfirmadorParseada" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>" readOnly="true"></html:text>
-			</td>		
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
-			</td>
-			<td class="labelText">
-				<html:text name="PermutasForm" property="fechaFinConfirmadorParseada" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>" readOnly="true"></html:text>
-			</td>
-		</tr>		
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.motivos"/>:
-			</td>
-			<td class="labelText" colspan="3">
-				<html:textarea name="PermutasForm" property="motivosConfirmador" cols="194" rows="3" style="overflow:auto" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
-			</td>		
-		</tr>		
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.confirmar"/>:
-			</td>
-			<td class="labelText" colspan="3">
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.si"/>:
-				&nbsp;<input type="radio" name="confirmar" value="0" checked onclick="setConfirmar('SI')" />
-				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.no"/>:
-				&nbsp;<input type="radio" name="confirmar" value="1" onclick="setConfirmar('NO')" />				
-			</td>		
-		</tr>		
-		</table>
-	</siga:ConjCampos>		
-	</td>
-	</tr>
-	<tr>
-		<td>
-			&nbsp;
-		</td>
-	</tr>	
 	</table>
 	
+	<div id="camposRegistro" class="posicionModalGrande" align="center">
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table class="tablaCentralCampos" align="center">
+	
+			<!-- Comienzo del formulario con los campos -->	
+			<html:form action="/JGR_PestanaCalendarioGuardias.do" method="post">
+				<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
+				<html:hidden property = "modo" value = "modificar"/>
+		
+				<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
+				<html:hidden property = "numero" value = "<%=numeroPermuta%>"/>
+				<html:hidden property = "fechaSolicitud" value = "<%=fechaSolicitud%>"/>	
+				<html:hidden property = "anulada" value = "<%=anulada%>"/>					
+		
+				<html:hidden property = "idTurnoSolicitante" value = "<%=idTurnoSolicitante%>"/>
+				<html:hidden property = "idGuardiaSolicitante" value = "<%=idGuardiaSolicitante%>"/>
+				<html:hidden property = "idCalendarioGuardiasSolicitante" value = "<%=idCalendarioguardiasSolicitante%>"/>
+				<html:hidden property = "idPersonaSolicitante" value = "<%=idPersonaSolicitante%>"/>
+				<html:hidden property = "fechaInicioSolicitante" value = "<%=fechaInicioSolicitante%>"/>
+				<html:hidden property = "fechaFinSolicitante" value = "<%=fechaFinSolicitante%>"/>
 
+				<html:hidden property = "idTurnoConfirmador" value = "<%=idTurnoConfirmador%>"/>
+				<html:hidden property = "idGuardiaConfirmador" value = "<%=idGuardiaConfirmador%>"/>
+				<html:hidden property = "idCalendarioGuardiasConfirmador" value = "<%=idCalendarioguardiasConfirmador%>"/>
+				<html:hidden property = "idPersonaConfirmador" value = "<%=idPersonaConfirmador%>"/>
+				<html:hidden property = "fechaInicioConfirmador" value = "<%=fechaInicioConfirmador%>"/>
+				<html:hidden property = "fechaFinConfirmador" value = "<%=fechaFinConfirmador%>"/>
+		
+				<!-- INICIO: CAMPOS DEL REGISTRO -->
+				<tr>			
+					<td class="labelText">
+						<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.texto1"/>:
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<!-- SUBCONJUNTO DE DATOS -->
+						<siga:ConjCampos leyenda="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.solicitante">
+							<table class="tablaCampos" align="center">
+								<tr>
+									<td class="labelText" nowrap>
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="numeroColegiadoSolicitante" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoSolicitante%>" readOnly="true" />
+									</td>		
+									
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="nombreSolicitante" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosSolicitante%>" readOnly="true" />
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="fechaInicioSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioSolicitante)%>" readOnly="true" />
+									</td>
+											
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="fechaFinSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinSolicitante)%>" readOnly="true" />
+									</td>
+								</tr>		
+								
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.motivos"/>:
+									</td>
+									<td class="labelText" colspan="3">
+										<html:textarea name="PermutasForm" property="motivosSolicitante" 											 
+											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
+											styleClass="boxConsulta" 
+											value="<%=motivosSolicitante%>" readOnly="true"></html:textarea>
+									</td>		
+								</tr>		
+							</table>
+						</siga:ConjCampos>		
+					</td>
+				</tr>
 	
-	</html:form>			
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.texto2"/>:
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<!-- SUBCONJUNTO DE DATOS -->
+						<siga:ConjCampos leyenda="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.confirmador">
+							<table class="tablaCampos" align="center">
+								<tr>
+									<td class="labelText" nowrap>
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="numeroColegiadoConfirmador" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoConfirmador%>" readOnly="true" />
+									</td>		
+									
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="nombreConfirmador" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosConfirmador%>" readOnly="true" />
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="fechaInicioConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>" readOnly="true" />
+									</td>		
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
+									</td>
+									<td class="labelText">
+										<html:text name="PermutasForm" property="fechaFinConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>" readOnly="true" />
+									</td>
+								</tr>	
+									
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.motivos"/>:
+									</td>
+									<td class="labelText" colspan="3">
+										<html:textarea name="PermutasForm" property="motivosConfirmador" 
+											onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
+											value="" readOnly="false"></html:textarea>
+									</td>		
+								</tr>
+										
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.confirmar"/>:
+									</td>
+									<td class="labelText" colspan="3">
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.si"/>:
+										&nbsp;<input type="radio" name="confirmar" value="0" checked onclick="setConfirmar('SI')" />
+										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.no"/>:
+										&nbsp;<input type="radio" name="confirmar" value="1" onclick="setConfirmar('NO')" />				
+									</td>		
+								</tr>		
+							</table>
+						</siga:ConjCampos>		
+					</td>
+				</tr>
+			</html:form>
+		</table>				
 	
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<!-- Aqui comienza la zona de botones de acciones -->
-	<!-- INICIO: BOTONES REGISTRO -->
+		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		<!-- Aqui comienza la zona de botones de acciones -->
+		<!-- INICIO: BOTONES REGISTRO -->
 		<siga:ConjBotonesAccion botones="Y,C" modal="G"/>
-	<!-- FIN: BOTONES REGISTRO -->
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
+		<!-- FIN: BOTONES REGISTRO -->
+		
+		<!-- INICIO: SCRIPTS BOTONES -->
+		<script language="JavaScript">
 	
-		//Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() {		
-			sub();
+			//Asociada al boton GuardarCerrar
+			function accionGuardarCerrar() {		
+				sub();
 				//Valido el tamanho del textarea motivosSolicitud
 				if (validatePermutasConfirmadorForm(document.PermutasForm)){
 					//Si esta marcado el campo Confirmar como SI modificamos.					
@@ -294,25 +296,21 @@
 					fin();
 					return false;
 				}
-		}
-
-		//Asociada al boton Cerrar -->
-		function accionCerrar() {		
-			top.cierraConParametros("NORMAL");
-		}		
-
-	</script>
-	<!-- FIN: SCRIPTS BOTONES -->
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-</div>
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-
+			}
+	
+			//Asociada al boton Cerrar
+			function accionCerrar() {		
+				top.cierraConParametros("NORMAL");
+			}		
+		</script>
+		<!-- FIN: SCRIPTS BOTONES -->
+		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	</div>
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 	
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>

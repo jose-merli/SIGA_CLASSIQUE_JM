@@ -4,16 +4,13 @@
 package com.siga.general;
 
 import java.util.Hashtable;
-import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesHash;
 
 
 /**
@@ -1198,4 +1195,27 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 			throw new SIGAException ("error.messages.application",e);
 		}
 	}
+	
+	public static String[] ejecutarPL_CrearPermutasCabeceras(String idInstitucion, String idNumero) throws ClsExceptions{
+		String paramOut[] = null; 
+	
+		try {
+			paramOut = new String[2]; //Parametros de salida del PL
+			Object paramIn[] = new Object[2]; //Parametros de entrada del PL
+			paramIn[0] = idInstitucion;
+			paramIn[1] = idNumero;
+		        
+			//Ejecucion del PL
+		    paramOut = ClsMngBBDD.callPLProcedure("{call PROC_CREAR_PERMUTAS_CABECERAS(?,?,?,?)}", 2, paramIn);
+			if (!paramOut[0].equalsIgnoreCase("0")) {
+		    	throw new ClsExceptions(paramOut[1]);
+		    }
+			
+		} catch (Exception e){ 
+	    	throw new ClsExceptions(e.getMessage());
+		}
+	    
+	    //Resultado del PL        
+	    return paramOut;
+	}	
 }

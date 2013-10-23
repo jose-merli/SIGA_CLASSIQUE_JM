@@ -247,9 +247,9 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			consulta +=       " guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+", guard."+ScsCabeceraGuardiasBean.C_IDTURNO+", guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",";
 			consulta += 	  " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
 			if (!guardiasPasadas) {
-			    consulta+= 		  ")=5";
+			    consulta+= 		  ") IN (3,5)";
 			} else {
-			    consulta+= 		  ") in (1,5)";
+			    consulta+= 		  ") IN (1,5)";
 			}
 			//ORDEN
 			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;

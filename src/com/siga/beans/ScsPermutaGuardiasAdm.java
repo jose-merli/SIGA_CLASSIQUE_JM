@@ -2,15 +2,14 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
-import com.siga.Utilidades.UtilidadesHash;
-
-import java.util.Vector;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 
 /**
  * Bean de administracion de la tabla SCS_PERMUTAGUARDIAS
@@ -32,18 +31,27 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 	}
 
 	protected String[] getCamposBean() {
-		String[] campos = {	ScsPermutaGuardiasBean.C_IDINSTITUCION, 			ScsPermutaGuardiasBean.C_NUMERO,
+		String[] campos = {	ScsPermutaGuardiasBean.C_IDINSTITUCION, 			
+							ScsPermutaGuardiasBean.C_NUMERO,
 							ScsPermutaGuardiasBean.C_ANULADA,					
 							ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE,
-							ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,		ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,
-							ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,		ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE,
-							ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE,		ScsPermutaGuardiasBean.C_FECHASOLICITUD,
+							ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,		
+							ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,
+							ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,		
+							ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE,
+							ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE,		
+							ScsPermutaGuardiasBean.C_FECHASOLICITUD,
 							ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR,
-							ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,		ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,
-							ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,		ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,
-							ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,		ScsPermutaGuardiasBean.C_FECHACONFIRMACION,
+							ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,		
+							ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,
+							ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,		
+							ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,
+							ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,		
+							ScsPermutaGuardiasBean.C_FECHACONFIRMACION,
 							ScsPermutaGuardiasBean.C_FECHAMODIFICACION,		
-							ScsPermutaGuardiasBean.C_USUMODIFICACION};
+							ScsPermutaGuardiasBean.C_USUMODIFICACION,
+							ScsPermutaGuardiasBean.C_IDPERCAB_SOLICITANTE,
+							ScsPermutaGuardiasBean.C_IDPERCAB_CONFIRMADOR};
 		return campos;
 	}
 	
@@ -73,6 +81,8 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			bean.setMotivosConfirmador(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR));
 			bean.setFechaInicioConfirmador(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR));
 			bean.setFechaConfirmacion(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHACONFIRMACION));
+			bean.setIdPermutaCabeceraSolicitante(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDPERCAB_SOLICITANTE));
+			bean.setIdPermutaCabeceraConfirmador(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDPERCAB_CONFIRMADOR));
 		}
 		catch(Exception e){
 			bean = null;
@@ -104,6 +114,8 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			hash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR, b.getMotivosConfirmador());
 			hash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, b.getFechaInicioConfirmador());
 			hash.put(ScsPermutaGuardiasBean.C_FECHACONFIRMACION, b.getFechaConfirmacion());
+			hash.put(ScsPermutaGuardiasBean.C_IDPERCAB_SOLICITANTE, b.getIdPermutaCabeceraSolicitante());
+			hash.put(ScsPermutaGuardiasBean.C_IDPERCAB_CONFIRMADOR, b.getIdPermutaCabeceraConfirmador());
 		}
 		catch (Exception e){
 			hash = null;
