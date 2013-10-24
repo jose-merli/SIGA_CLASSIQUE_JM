@@ -328,15 +328,25 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 		Hashtable codigos = new Hashtable();
 		try {
 			
-			if(formulario.getNif() != null && !formulario.getNif().equals("")){ //BUSQUEDA MULTIPLE
+			if(formulario.getNif() != null && !formulario.getNif().equals("")){ //BUSQUEDA POR NIF
 				
-				sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
-							"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
-							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
-							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
-						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
-			
-		    	sqlClientes += " AND (UPPER(L.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
+				if(formulario.getMultiple() != null && formulario.getMultiple().equalsIgnoreCase("s")){ //BUSQUEDA MULTIPLE 
+					sqlClientes = "SELECT vc.id_letrado, vc.id_colegio, vc.num_colegiado,vc.residencia, vc.ejerciente, vc.descripcion,vc.idtratamiento, "
+							+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, "
+						    +"        TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
+							+" FROM V_CENSO_COLEGIADOS vc WHERE 1 = 1 ";
+					
+					sqlClientes += " AND (UPPER(vc.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
+					
+				}else{ //BUSQUEDA EN LA VISTA PUBLICA
+					sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
+								"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
+								" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+								" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
+							  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
+				
+			    	sqlClientes += " AND (UPPER(L.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
+				}
 				
 			}else if ( (idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals(""))  && !(idInstitucionBuscar.trim().equals(idInstitucionActual)) ) { //SE HA SELECCIONADO UN COLEGIO DISTINTO AL ACTUAL
 			
