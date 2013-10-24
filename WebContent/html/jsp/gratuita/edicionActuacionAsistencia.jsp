@@ -8,7 +8,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -357,11 +357,8 @@
 					</td>
 					<td colspan="2">
 						<c:choose>
-							<c:when
-								test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
-								<html:text property="fecha" size="10" readonly="true"
-									styleClass="box" styleId="fecha"
-									value="${ActuacionAsistenciaFormEdicion.fecha}" />
+							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+								<html:text property="fecha" size="10" readonly="true" styleClass="boxConsulta" styleId="fecha" value="${ActuacionAsistenciaFormEdicion.fecha}" />
 
 							</c:when>
 							<c:otherwise>
@@ -482,9 +479,18 @@
 						<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
 					</td>
 					<td> 
-						<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones" property="observaciones"
-							style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
-							styleClass="boxCombo"></html:textarea>
+						<c:choose>
+							<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
+								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones" property="observaciones"
+									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+									styleClass="boxConsulta"></html:textarea>
+							</c:when>
+							<c:otherwise>
+								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones" property="observaciones"
+									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+									styleClass="boxCombo"></html:textarea>
+							</c:otherwise>
+						</c:choose>						
 					</td>
 				</tr>
 			</table>
@@ -522,9 +528,18 @@
 								<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
 							</td>
 							<td class="labelTextValor">
-								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion"
-									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
-									styleClass="boxCombo"></html:textarea>
+								<c:choose>
+									<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
+										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion"
+											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+											styleClass="boxConsulta"></html:textarea>
+									</c:when>
+									<c:otherwise>
+										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion"
+											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+											styleClass="boxCombo"></html:textarea>
+									</c:otherwise>
+								</c:choose>		
 							</td>
 						</tr>
 					</table>
@@ -630,17 +645,13 @@
 				if(document.getElementById("tdValidada")){
 					document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
-				if(document.getElementById("calendario_fechaJustificacion")){
-					jQuery("#calendario_fechaJustificacion").hide();
-				}
+				jQuery("#fechaJustificacion-datepicker-trigger").hide();
 			} else {
 				document.getElementById('fechaJustificacion').className="box";
 				if(document.getElementById("tdValidada")) {
 					document.getElementById("tdValidada").innerHTML = "";
 				}
-				if(document.getElementById("calendario_fechaJustificacion")) {
-					jQuery("#calendario_fechaJustificacion").show();
-				}
+				jQuery("#fechaJustificacion-datepicker-trigger").show();
 			}
 			
 			// if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
@@ -650,10 +661,8 @@
 				if(document.getElementById('isLetrado').value=='false') {							
 					if(document.ActuacionAsistenciaFormEdicion.anulacion.value=="1") {
 						habilitarCampos(false);
-						document.getElementById('fechaJustificacion').className="boxConsulta";
-						if(document.getElementById("calendario_fechaJustificacion")){ 
-							jQuery("#calendario_fechaJustificacion").hide();
-						}
+						document.getElementById('fechaJustificacion').className="boxConsulta"; 
+						jQuery("#fechaJustificacion-datepicker-trigger").hide();
 						jQuery("#checkAnulacion").removeAttr("disabled");
 					}
 					/*mhg - INC_09789_SIGA
@@ -852,17 +861,13 @@
 				document.getElementById('fechaJustificacion').className="box";
 				document.ActuacionAsistenciaFormEdicion.validada.value="0";
 				document.getElementById("tdValidada").innerHTML = '';
-				if(document.getElementById("calendario_fechaJustificacion")){ 
-					jQuery("#calendario_fechaJustificacion").show();
-				}
+				jQuery("#fechaJustificacion-datepicker-trigger").show();
 				document.getElementById('fechaJustificacion').value="";			
 			} else {
 	
 				document.getElementById('fechaJustificacion').className="boxConsulta";
-				document.ActuacionAsistenciaFormEdicion.validada.value="1";
-				if(document.getElementById("calendario_fechaJustificacion")){ 
-					jQuery("#calendario_fechaJustificacion").hide();
-				}
+				document.ActuacionAsistenciaFormEdicion.validada.value="1"; 
+				jQuery("#fechaJustificacion-datepicker-trigger").hide();
 				document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				if(document.ActuacionAsistenciaFormEdicion.fechaJustificacion.value==''){
 					document.getElementById('fechaJustificacion').value=getFechaActualDDMMYYYY();
