@@ -178,13 +178,9 @@
 					<td class="labelText" width="250x">
 						<siga:Idioma key="expedientes.auditoria.literal.tipo" />
 					</td>
-					<td>
-						<siga:ComboBD nombre="comboTipoExpediente"
-							tipo="cmbTipoExpedienteLocaloGeneralPermisos"
-							elementoSel="<%=vTipoExp%>" parametrosIn="<%=aPerfiles%>"
-							parametro="<%=datoTipoExp%>" clase="boxCombo" ancho="200"
-							obligatorio="false" />
-					</td>					
+					<td>						
+						<siga:Select id="comboTipoExpediente" queryId="getTiposExpedientesLocalOgeneralConPermiso" selectedIds="<%=vTipoExp%>" width="200"/>
+					</td>
 					
 					<td class="labelText">
 						<siga:Idioma key="expedientes.auditoria.literal.otrainstitucion" /> 
