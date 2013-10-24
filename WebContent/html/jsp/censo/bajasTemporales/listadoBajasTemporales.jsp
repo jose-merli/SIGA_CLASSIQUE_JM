@@ -33,18 +33,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
- 
-	<!-- Step 4 -->
-	<!-- Importar el js propio de la pagina-->
-	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
-	
-	<script>			
-		function borrar(fila){
-			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
-				return borrarFila(fila);
-			}			
-		}		
-	</script>
+
  </head>
 
 <body onload="onInit();">
@@ -219,31 +208,36 @@
 			</div>
 	
 
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-	<html:form action="${path}"  name="FormBajasTemporales"
-		type="com.siga.censo.form.BajasTemporalesForm">
-		<html:hidden styleId="modo" property="modo" />
-		<html:hidden styleId="idInstitucion" property="idInstitucion" />
-		<html:hidden styleId="idPersona" property="idPersona" />
-		<html:hidden styleId="colegiadoNombre" property="colegiadoNombre" />
-		<html:hidden styleId="colegiadoNumero" property="colegiadoNumero" />
-		<html:hidden styleId="fechaAlta" property="fechaAlta" />
-		<html:hidden styleId="fechaDesde"   property="fechaDesde" />
-		<html:hidden styleId="fechaHasta"   property="fechaHasta" />
-		<html:hidden styleId="tipo" property="tipo" />
-		<html:hidden styleId="datosSeleccionados" property="datosSeleccionados" />
-		<html:hidden styleId="incluirRegistrosConBajaLogica"   property="incluirRegistrosConBajaLogica" />
-		<input type="hidden" id="actionModal" name="actionModal" />
-	</html:form>
-</c:if>
-<input type="hidden" id="deshabilitarValidaciones" value="false">
-<c:if test="${BajasTemporalesForm.usrBean.letrado==true}">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+		<html:form action="${path}"  name="FormBajasTemporales"
+			type="com.siga.censo.form.BajasTemporalesForm">
+			<html:hidden styleId="modo" property="modo" />
+			<html:hidden styleId="idInstitucion" property="idInstitucion" />
+			<html:hidden styleId="idPersona" property="idPersona" />
+			<html:hidden styleId="colegiadoNombre" property="colegiadoNombre" />
+			<html:hidden styleId="colegiadoNumero" property="colegiadoNumero" />
+			<html:hidden styleId="fechaAlta" property="fechaAlta" />
+			<html:hidden styleId="fechaDesde"   property="fechaDesde" />
+			<html:hidden styleId="fechaHasta"   property="fechaHasta" />
+			<html:hidden styleId="tipo" property="tipo" />
+			<html:hidden styleId="datosSeleccionados" property="datosSeleccionados" />
+			<html:hidden styleId="incluirRegistrosConBajaLogica"   property="incluirRegistrosConBajaLogica" />
+			<input type="hidden" id="actionModal" name="actionModal" />
+		</html:form>
+	</c:if>
+	
+	<input type="hidden" id="deshabilitarValidaciones" value="false">
+	
+	<c:if test="${BajasTemporalesForm.usrBean.letrado==true}">
 		<script>
 			document.getElementById('deshabilitarValidaciones').value=true;
 		</script>
 	</c:if>
+	
+	<!-- Importar el js propio de la pagina-->
+	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
 		var messageError='${BajasTemporalesForm.msgError}';
 
@@ -254,43 +248,49 @@
 		if (messageError)
 			alert(messageError);
 		
-if(document.getElementById("chkGeneral")){
-	  marcarDesmarcarTodos(document.getElementById("chkGeneral"));
-}
+		if(document.getElementById("chkGeneral")){
+			  marcarDesmarcarTodos(document.getElementById("chkGeneral"));
+		}
+		
+		if(!document.getElementById('idBusqueda')){
+			setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
+			setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
+		}
+		
+		// Funcion que agrega el concepto de baja logica
+		function incluirRegBajaLogica(o) {
+			if (o.checked) {
+				document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "S";
+			} else {
+				document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "N";
+			}
+			
+			document.FormBajasTemporales.idPersona.value="${BajasTemporalesForm.idPersona}";
+			document.FormBajasTemporales.modo.value = "verHistorico";
+			document.FormBajasTemporales.submit();
+		}
+		
+		function marcarDesmarcarTodos(o) 
+		{ 
+			var ele = document.getElementsByName("chkBajasTemporales");
+			for (i = 0; i < ele.length; i++) {
+				if(ele[i].disabled == false)
+					ele[i].checked = o.checked;
+			}
+		}
+		
+		function refrescarLocal() {	
+			document.FormBajasTemporales.target = "_self";	
+			document.FormBajasTemporales.submit();
+		}
+		
+		function borrar(fila){
+			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+				return borrarFila(fila);
+			}			
+		}	
 
-if(!document.getElementById('idBusqueda')){
-	setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
-	setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
-}
-
-// Funcion que agrega el concepto de baja logica
-function incluirRegBajaLogica(o) {
-	if (o.checked) {
-		document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "S";
-	} else {
-		document.FormBajasTemporales.incluirRegistrosConBajaLogica.value = "N";
-	}
-	
-	document.FormBajasTemporales.idPersona.value="${BajasTemporalesForm.idPersona}";
-	document.FormBajasTemporales.modo.value = "verHistorico";
-	document.FormBajasTemporales.submit();
-}
-
-function marcarDesmarcarTodos(o) 
-{ 
-	var ele = document.getElementsByName("chkBajasTemporales");
-	for (i = 0; i < ele.length; i++) {
-		if(ele[i].disabled == false)
-			ele[i].checked = o.checked;
-	}
-}
-
-function refrescarLocal() {	
-	document.FormBajasTemporales.target = "_self";	
-	document.FormBajasTemporales.submit();
-}
-
-</script>
+	</script>
 	
 </body>
 
