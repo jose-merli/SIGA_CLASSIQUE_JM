@@ -193,6 +193,7 @@
 					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
 					
 					alert(mensaje);
+					fin();
 					return false;
 				}
 	         
