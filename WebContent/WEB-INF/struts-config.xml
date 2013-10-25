@@ -2398,6 +2398,7 @@
 			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
 			<forward name="editarTelefonosGuardia" path="/html/jsp/gratuita/editarTelefonosGuardia.jsp"/>
 			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
 		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
 			<forward name="busquedaTurnosDisponiblesBaja" path="/html/jsp/gratuita/busquedaTurnosDisponiblesBaja.jsp"/>
@@ -2406,6 +2407,8 @@
 			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
 			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
 			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+			<forward name="trabajosSJCSPendientes" path="/html/jsp/gratuita/listadoTrabajosSJCSPendientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
 		
 		<action path="/JGR_InscribirseEnGuardia" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
@@ -2419,6 +2422,7 @@
 			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
 			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
 			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
 		
 		

@@ -33,6 +33,49 @@
 	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>	
 
 	<script type="text/javascript">	
+	jQuery.noConflict();
+		function mostrarTrabajosSJCSPendientes() {
+			if(document.InscripcionTGForm.modo.value == "sbtComprobarInsertar" || document.InscripcionTGForm.modo.value == "sbgComprobarInsertar"
+				|| document.InscripcionTGForm.modo.value == "smbtInsertarBaja"
+				|| document.InscripcionTGForm.modo.value == "vbtComprobarValidar" || document.InscripcionTGForm.modo.value == "vbgComprobarValidar"
+					|| document.InscripcionTGForm.modo.value == "vmbtComprobarValidar" || document.InscripcionTGForm.modo.value == "vmbgComprobarValidar"
+						|| document.InscripcionTGForm.modo.value == "comprobarAmfbgModificar" || document.InscripcionTGForm.modo.value == "comprobarAmfbtModificar"
+			) {
+				if((document.getElementById("fechaCheck") && document.getElementById("fechaCheck").value!='')||document.InscripcionTGForm.validarInscripciones.value=='N') {
+					
+					if(document.InscripcionTGForm.validarInscripciones.value=='N')
+						document.InscripcionTGForm.fechaBaja.value = getFechaActualDDMMYYYY();
+					else					
+						document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;
+					mostrarTrabajosPendientes();
+					ajusteAlto('divListadoTrabajosSJCSPendientes');	
+				}else{
+					jQuery('#divListadoTrabajosSJCSPendientes').html("");
+				}
+			}
+		}
+		function mostrarTrabajosPendientes() {
+			sub();
+			jQuery.ajax({
+	            type: "POST",
+	            url: "/SIGA/JGR_SolicitarBajaTurno.do?modo=trabajosSJCSPendientes",
+	            data:jQuery('form').serialize(),
+	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+	            success: function(json){
+	            	jQuery('#divListadoTrabajosSJCSPendientes').html(json);
+					fin();
+	            },
+	            error: function(e){
+					fin();
+	                alert('Error de comunicación',"error");
+	            }
+	        });
+			
+		}
+		function postFunctionFechaValidacion() {
+			mostrarTrabajosSJCSPendientes();
+		} 
+		
 		function mostrarFechaSolicitud() {
 			if(document.getElementById("fechaCheck")) {
 				jQuery("#fechaCheck").hide();
@@ -495,7 +538,7 @@
 			window.top.returnValue="MODIFICADO";			
 		}	
 		
-		function refrescarLocal() {			
+		function refrescarLocal() {	
 			fin();
 		}
 	
@@ -760,7 +803,7 @@
 								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
 							</td>
 							<td>
-								<siga:Fecha nombreCampo="fechaCheck" readOnly="true"></siga:Fecha>							
+								<siga:Fecha nombreCampo="fechaCheck" readOnly="true" postFunction="postFunctionFechaValidacion();"></siga:Fecha>							
 							</td>
 							
 							<td align="left">
@@ -788,7 +831,7 @@
 											
 											<c:when	test="${InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
 												<td>
-													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');">
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');mostrarTrabajosSJCSPendientes();">
 												</td>
 												
 												<td class="labelText">
@@ -809,7 +852,7 @@
 											
 											<c:when	test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'}">
 												<td>
-													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');">
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');mostrarTrabajosSJCSPendientes();">
 												</td>
 												<td>
 													<input type="checkbox" id="denegar" name="denegar" value="no" style="display:none;" />
@@ -827,7 +870,7 @@
 											
 											<c:otherwise>
 												<td>
-													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');">
+													<input type="checkbox" id="validar" name="validar" value="no" onClick="obtenerFecha('validar');mostrarTrabajosSJCSPendientes();">
 												</td>
 												<td>&nbsp;</td>
 												
@@ -878,14 +921,14 @@
 								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
 							</td>
 							<td class="labelText">
-								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" readOnly="true"/>							
+								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" postFunction="postFunctionFechaValidacion();" readOnly="true"/>							
 							</td>
 							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
 							</td>
 							<td class="labelText">
-								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true" />
+								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true"  />
 							</td>			
 						</tr>
 						
@@ -923,6 +966,7 @@
 						</tr>
 					 </table>			
 				</siga:ConjCampos>
+				<script>mostrarTrabajosSJCSPendientes();</script>
 			</c:if>
 			<!-- fin baja con validacion automatica-->
 			
@@ -1023,26 +1067,57 @@
 				</c:choose>
 			</div>
 		</c:if>
+		
+		
+	<div id="divListadoTrabajosSJCSPendientes" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
+
+	</div>
+		
+		
+		
 	</html:form>
 	
 	<c:choose>
-		<c:when test="${InscripcionTGForm.modo!='sitEditarTelefonosGuardia'&&InscripcionTGForm.modo!='smitEditarTelefonosGuardia'}">
-			<siga:ConjBotonesAccion botones="X,F" ordenar="false" />
-		</c:when>		
-	
-		<c:otherwise>
+		<c:when test="${InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'}">
+			
 			<siga:ConjBotonesAccion botones="X,S" ordenar="false" />
+
+		</c:when>		
+		<c:when test="${InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='sbgComprobarInsertar'
+			||InscripcionTGForm.modo=='smbtInsertarBaja'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'
+			||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'||InscripcionTGForm.modo=='comprobarAmfbgModificar'
+			||InscripcionTGForm.modo=='comprobarAmfbtModificar'}">
+				<siga:ConjBotonesAccion  botones="GX,X,F" ordenar="false" />
+		</c:when>
+		<c:otherwise>
+			<siga:ConjBotonesAccion  botones="X,F" ordenar="false" />			
 		</c:otherwise>
 	</c:choose>
-
+<html:form  action="${path}"  name="ExcelInscripcionTGForm" type="com.siga.gratuita.form.InscripcionTGForm">
+	<html:hidden property="modo" />
+</html:form>
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
 
 	<script>
+	
+	
 		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
 			jQuery("#divGuardiaGrupo").show();
+		function accionGenerarExcels(){
+			sub();
+			
+			document.ExcelInscripcionTGForm.modo.value = "generarExcelTrabajosSJCSPendientes";
+			
+			document.ExcelInscripcionTGForm.submit();
+			fin();
+			
+			
+
+		}
+		
 	</script>
 </body>
 </html>

@@ -17,15 +17,20 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
+import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenComponentesAdm;
 import com.siga.beans.CenComponentesBean;
 import com.siga.beans.CenDireccionTipoDireccionAdm;
@@ -34,6 +39,8 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsGuardiasColegiadoAdm;
+import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -46,6 +53,11 @@ import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsRetencionesIRPFBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.censo.form.BajasTemporalesForm;
+import com.siga.comun.VoUiService;
+import com.siga.comun.vos.ValueKeyVO;
+import com.siga.facturacion.form.CuentasBancariasForm;
+import com.siga.facturacion.form.service.CuentaBancariaVoService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -53,6 +65,8 @@ import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
+
+import es.satec.businessManager.BusinessManager;
 
 public class GestionInscripcionesTGAction extends MasterAction {
 	private final int tipoActualizacionBaja=0;
@@ -69,7 +83,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					String accion = miForm.getModo();
 					String modo = request.getParameter("modo");
 						
-					System.out.println(" SESSION: " + request.getSession().getAttributeNames()); 
+//					System.out.println(" SESSION: " + request.getSession().getAttributeNames()); 
 					if(modo!=null)
 						accion = modo;
 					
@@ -307,6 +321,12 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					}else if(accion.equalsIgnoreCase("borrarTurno")){
 						mapDestino =  borrarTurno(mapping,  miForm,  request,  response);						
+						
+					}else if(accion.equalsIgnoreCase("generarExcelTrabajosSJCSPendientes")){
+						mapDestino =  generarExcelTrabajosSJCSPendientes(mapping,  miForm,  request,  response);
+						
+					}else if(accion.equalsIgnoreCase("trabajosSJCSPendientes")){
+						mapDestino =  trabajosSJCSPendientes(mapping,  miForm,  request,  response);						
 						
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
@@ -833,7 +853,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setEstadoPendientes(estadoPendientes);
 			}
 			
-			if(miForm.getEstadoPendientes() != null && !miForm.getEstadoPendientes().equals("")) {
+			if(miForm.getEstadoPendientes() != null && !miForm.getEstadoPendientes().equals("") && miForm.getFechaDenegacion()==null) {
 				miForm.setModo("vbtValidar");
 				forward = ClsConstants.SMS_AVISO_ESTADO;
 				return forward;
@@ -1074,9 +1094,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			tx.commit();
 			
+			request.setAttribute("modal", "1");
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
-	        request.setAttribute("modal", "1");
+	        
 	        
 		} catch (Exception e) {
 			try {
@@ -1088,6 +1109,42 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 		return forward;
 	}
+	
+	
+	
+	
+	protected String generarExcelTrabajosSJCSPendientes(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		UsrBean usr = this.getUserBean(request);
+		
+		try {
+			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+			CenClienteAdm cenClienteAdm = new CenClienteAdm(this.getUserBean(request));
+			Vector trabajosSJCSPendientes = cenClienteAdm.getTrabajosSJCSPendientes(Long.valueOf(miForm.getIdPersona()), 
+					miForm.getIdTurno() != null && !miForm.getIdTurno().equalsIgnoreCase("") ? new Integer(	miForm.getIdTurno()) : null, 
+					miForm.getTurnosSel(), 
+					miForm.getIdGuardia() != null && !miForm.getIdGuardia().equalsIgnoreCase("") ? new Integer(	miForm.getIdGuardia()) : null
+					, miForm.getFechaBaja(), new Integer(miForm.getIdInstitucion()));
+			
+			request.setAttribute("datos",trabajosSJCSPendientes);
+
+			String nombreFichero = "incidencias"+miForm.getFechaBaja()+miForm.getIdPersona(); 
+			String[] cabeceras = {"INCIDENCIA","DESCRIPCION"};
+			
+			request.setAttribute("descripcion",nombreFichero);
+			request.setAttribute("cabeceras",cabeceras);
+
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
+		}
+		return "generaExcel";
+		
+	}
+	
 	
 	/**
 	 * 
@@ -1122,10 +1179,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			CenClienteAdm admCliente = new CenClienteAdm(usr);
 			String estado = null;
 			int nivelError = 0;
-			if(isGuardia)
+			if(isGuardia){
 				nivelError = admCliente.tieneGuardiasSJCSPendientes(idPersona, idInstitucion, idTurno,idGuardia,fechaDesde,fechaHasta);
+			}
 			else
-				nivelError = admCliente.tieneTrabajosSJCSPendientes(idPersona, idInstitucion, idTurno,fechaDesde,fechaHasta);
+				nivelError = admCliente.tieneTrabajosSJCSPendientes(idPersona, idInstitucion, idTurno,null,fechaDesde,fechaHasta);
 			
 			switch (nivelError) {
 				case 0:
@@ -5831,5 +5889,27 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		} 
 		
 		return resultado;
-	}					
+	}				
+	
+	protected String trabajosSJCSPendientes(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		String forward = "trabajosSJCSPendientes";
+		try {
+			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+			CenClienteAdm cenClienteAdm = new CenClienteAdm(this.getUserBean(request));
+			Vector trabajosSJCSPendientes = cenClienteAdm.getTrabajosSJCSPendientes(Long.valueOf(miForm.getIdPersona()), 
+					miForm.getIdTurno() != null && !miForm.getIdTurno().equalsIgnoreCase("") ? new Integer(	miForm.getIdTurno()) : null, 
+					miForm.getTurnosSel(), 
+					miForm.getIdGuardia() != null && !miForm.getIdGuardia().equalsIgnoreCase("") ? new Integer(	miForm.getIdGuardia()) : null
+					, miForm.getFechaBaja(), new Integer(miForm.getIdInstitucion()));
+			
+			request.setAttribute("trabajosSJCSPendientes",trabajosSJCSPendientes);
+
+		} catch (Exception e) {
+
+			throwExcp("messages.general.errorExcepcion", e, null);
+		}
+		return forward;
+	}
 }

@@ -16,6 +16,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -4178,98 +4179,162 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 */
 	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion,String fechaDesde,String fechaHasta)
 	{
-		return tieneTrabajosSJCSPendientes(idPersona, idInstitucion, null,fechaDesde,fechaHasta);
+		return tieneTrabajosSJCSPendientes(idPersona, idInstitucion, null,null,fechaDesde,fechaHasta);
 	}
-	
-	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno,String fechaDesde,String fechaHasta) {
+	/**
+	 * Devuelve el nivel de error:
+	 * -0: NO hay error
+	 * -1: Error, tiene guardias pendientes
+	 * -2: Error, tiene designas pendientes
+	 * -3: Excepcion
+	 */
+	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno,Integer idGuardia,String fechaDesde,String fechaHasta) {
 		//1.- Chequeo que no tiene guardias pendientes de realizar:
-		int error = tieneGuardiasSJCSPendientes(idPersona, idInstitucion, idTurno, null, fechaDesde, fechaHasta);
 		
+		int error = tieneGuardiasSJCSPendientes(idPersona, idInstitucion, idTurno,idGuardia,fechaDesde, fechaHasta);
 		//En caso de no tener error en la primera comprobacion:
 		if (error == 0) {
 			//2.- Chequeo que no tiene designas pendientes de realizar:
-			ScsDesignaAdm admDesignas = new ScsDesignaAdm(this.usrbean); 
-			StringBuffer sql2 = new StringBuffer();
-			sql2.append("SELECT COUNT(*) AS TOTAL FROM "+ScsDesignaBean.T_NOMBRETABLA+" des,"+ScsDesignasLetradoBean.T_NOMBRETABLA+" deslet");
-			sql2.append(" WHERE des."+ScsDesignaBean.C_IDINSTITUCION+"="+idInstitucion);
-			sql2.append(" AND des."+ScsDesignaBean.C_ESTADO+"<>'F'");
-			sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_IDPERSONA+"="+idPersona);
-			sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_FECHARENUNCIA+" IS NULL");
-			
-			if (idTurno!=null)
-			{
-				sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_IDTURNO+"="+idTurno);
-			}
-			
-			sql2.append(" AND des."+ScsDesignaBean.C_IDINSTITUCION+" = deslet."+ScsDesignasLetradoBean.C_IDINSTITUCION);
-			sql2.append(" AND des."+ScsDesignaBean.C_IDTURNO+" = deslet."+ScsDesignasLetradoBean.C_IDTURNO);
-			sql2.append(" AND des."+ScsDesignaBean.C_ANIO+" = deslet."+ScsDesignasLetradoBean.C_ANIO);
-			sql2.append(" AND des."+ScsDesignaBean.C_NUMERO+" = deslet."+ScsDesignasLetradoBean.C_NUMERO);
-			
-			if(fechaDesde!=null && fechaHasta!=null){
-				sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"' ");
-			}else if(fechaHasta!=null ){
-				if(fechaHasta.equalsIgnoreCase("sysdate"))
-					sql2.append(" AND des."+ScsDesignaBean.C_FECHAENTRADA+" > sysdate ");
-				else
-					sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") > '"+fechaHasta+"' ");
-					
-			} 
-			
-			
 			try {
-				Vector v2 = admDesignas.selectGenerico(sql2.toString());
-				if (v2!=null && !v2.isEmpty() && !((String)((Hashtable)v2.get(0)).get("TOTAL")).equals("0"))
-					error = 2;
-			} catch (Exception e) {
+				Vector designasPendientesVector = getDesignacionesSJCSPendientes(idPersona, idInstitucion, idTurno, fechaDesde, fechaHasta);
+				if (designasPendientesVector!=null && !designasPendientesVector.isEmpty() )
+					error = 2;	
+			} catch (SIGAException e) {
 				error = 3;
 			}
+		
 		}
 		
 		//Devuelvo el nivel del error:
 		return error;
 	}
 	
-	/**
-	 * Comprueba que tenga o no guardioas pendientes
-	 * 0: OK
-	 * 1: Error, tiene guardias pendientes
-	 * -1: Excepcion
-	 */
-	public int tieneGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia,String fechaDesde,String fechaHasta) {
-		int error = 0;
+	
+	public Vector getDesignacionesSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, String fechaDesde,String fechaHasta)throws SIGAException {
+		//2.- Chequeo que no tiene designas pendientes de realizar:
+		ScsDesignaAdm admDesignas = new ScsDesignaAdm(this.usrbean); 
+		StringBuffer sql2 = new StringBuffer();
+		sql2.append("SELECT 'DESIGNACION' INCIDENCIA, des.ANIO||'/'||des.CODIGO DESCRIPCION ");
+		
+		
+		sql2.append(" FROM "+ScsDesignaBean.T_NOMBRETABLA+" des,"+ScsDesignasLetradoBean.T_NOMBRETABLA+" deslet");
+		sql2.append(" WHERE des."+ScsDesignaBean.C_IDINSTITUCION+"="+idInstitucion);
+		sql2.append(" AND des."+ScsDesignaBean.C_ESTADO+"<>'F'");
+		sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_IDPERSONA+"="+idPersona);
+		sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_FECHARENUNCIA+" IS NULL");
+		
+		if (idTurno!=null)
+		{
+			sql2.append(" AND deslet."+ScsDesignasLetradoBean.C_IDTURNO+"="+idTurno);
+		}
+		
+		sql2.append(" AND des."+ScsDesignaBean.C_IDINSTITUCION+" = deslet."+ScsDesignasLetradoBean.C_IDINSTITUCION);
+		sql2.append(" AND des."+ScsDesignaBean.C_IDTURNO+" = deslet."+ScsDesignasLetradoBean.C_IDTURNO);
+		sql2.append(" AND des."+ScsDesignaBean.C_ANIO+" = deslet."+ScsDesignasLetradoBean.C_ANIO);
+		sql2.append(" AND des."+ScsDesignaBean.C_NUMERO+" = deslet."+ScsDesignasLetradoBean.C_NUMERO);
+		
+		if(fechaDesde!=null && fechaHasta!=null){
+			sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"' ");
+		}else if(fechaHasta!=null ){
+			if(fechaHasta.equalsIgnoreCase("sysdate"))
+				sql2.append(" AND des."+ScsDesignaBean.C_FECHAENTRADA+" > sysdate ");
+			else
+				sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") > '"+fechaHasta+"' ");
+				
+		} 
+		
+		Vector designasPendientesVector = null;
+		try {
+			designasPendientesVector = admDesignas.selectGenerico(sql2.toString());
+			
+		} catch (Exception e) {
+			throw new SIGAException("Error al obtener las designaciones pendientes");
+		}
+		return designasPendientesVector;
+	}
+	public int tieneGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno,Integer idGuardia,String fechaDesde,String fechaHasta) {
+		//1.- Chequeo que no tiene guardias pendientes de realizar:
+		
+		int error =0;
+		try {
+			Vector guardiasPendientesVector = getGuardiasSJCSPendientes(idPersona, idInstitucion, idTurno,idGuardia,fechaDesde,fechaHasta);
+			if (guardiasPendientesVector!=null && !guardiasPendientesVector.isEmpty())
+				error = 1;	
+		} catch (SIGAException e) {
+			error = 3;
+		}
+
+		return error;
+	}
+	public int tieneDesignacionesPendientes(Long idPersona, Integer idInstitucion, Integer idTurno,String fechaDesde,String fechaHasta) {
+		//1.- Chequeo que no tiene guardias pendientes de realizar:
+		
+		int error =0;
+		try {
+			Vector designasPendientesVector = getDesignacionesSJCSPendientes(idPersona, idInstitucion, idTurno,fechaDesde,fechaHasta);
+			if (designasPendientesVector!=null && !designasPendientesVector.isEmpty())
+				error = 2;	
+		} catch (SIGAException e) {
+			error = 3;
+		}
+
+		return error;
+	}
+	
+	
+	
+	public Vector getGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia,String fechaDesde,String fechaHasta)throws SIGAException {
+	
 	
 		//1.- Chequeo que no tiene guardias pendientes de realizar:
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrbean); 
 		StringBuffer sql = new StringBuffer();
-		sql.append("WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-		sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
+		sql.append(" SELECT TO_CHAR(GC.FECHAINICIO,'dd/mm/yyyy')||'-'||TO_CHAR(GC.FECHAFIN,'dd/mm/yyyy') DESCRIPCION, ");
+		sql.append(" GT.NOMBRE INCIDENCIA ");
+		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC,SCS_GUARDIASTURNO GT ");
+		sql.append(" WHERE  ");
+		sql.append(" GC.IDINSTITUCION = GT.IDINSTITUCION ");
+		sql.append(" AND GC.IDTURNO = GT.IDTURNO ");
+		sql.append(" AND GC.IDGUARDIA = GT.IDGUARDIA ");
+	 
+		sql.append("AND GC."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
+		sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
 		if(fechaDesde!=null && fechaHasta!=null){
-			sql.append(" AND TRUNC("+ScsGuardiasColegiadoBean.C_FECHAFIN+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"'  ");
+			sql.append(" AND TRUNC(GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"'  ");
 		}else if(fechaHasta!=null && !fechaHasta.equalsIgnoreCase("sysdate")){
-			sql.append(" AND TRUNC("+ScsGuardiasColegiadoBean.C_FECHAFIN+") > '"+fechaHasta+"' ");
+			sql.append(" AND TRUNC(GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+") > '"+fechaHasta+"' ");
 		}else{
-			sql.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAFIN+" > SYSDATE ");
+			sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+" > SYSDATE ");
 		}
 		if(idGuardia!=null)
-			sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
+			sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
 		
 		if (idTurno!=null)
 		{
-			sql.append(" AND " + ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
+			sql.append(" AND GC." + ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
 		}
-		
-		try {
-			Vector v = admGuardiasColegiado.select(sql.toString());
-			if (v!=null && !v.isEmpty())
-				error = 1;
+		Vector vGuardiasPendientes =  new Vector(); 
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(sql.toString())) {
+				
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+
+					 
+					vGuardiasPendientes.add(fila.getRow());
+				}
+			}
 		} 
-		catch (Exception e) {
-			error = 3;
+		catch (Exception e) { 	
+			throw new SIGAException("Error al obtener las guardias pendientes"); 
 		}
-		//Devuelvo el nivel del error:
-		return error;
+		return vGuardiasPendientes;
+		
 	}
+	
 	
 	/** 
 	 * Recoge informacion sobre los estados colegiales de un determinado cliente colegiado <br/>
@@ -5609,6 +5674,72 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			ht=((Row)rc.get(0)).getRow();
 		}
 		return ht;		
+	}
+	public Vector getTrabajosSJCSPendientes(Long idPersona,Integer idTurno,String idTurnosMasivos, 
+			Integer idGuardia, String fechaBaja,Integer idInstitucion)throws SIGAException{
+		
+//		try {
+			Vector trabajosSJCSPendientes = new Vector();
+			if(idTurno!=null){
+				trabajosSJCSPendientes.addAll(getGuardiasSJCSPendientes(idPersona,
+								idInstitucion, idTurno,
+								idGuardia, null, fechaBaja));
+			}else if(idTurnosMasivos!=null && !idTurnosMasivos.equals("")){
+				GstStringTokenizer st1 = new GstStringTokenizer(idTurnosMasivos,",");
+
+				
+				while (st1.hasMoreTokens()) {
+					String registro = st1.nextToken();
+					String d[]= registro.split("##");
+					trabajosSJCSPendientes.addAll(getGuardiasSJCSPendientes(idPersona,
+									idInstitucion, Integer.valueOf(d[0]),
+									null, null,fechaBaja));
+					
+				}
+					
+			}
+//			List<Hashtable> trabajosSJCSPendientes = new ArrayList<Hashtable>();
+//			ValueKeyVO trabajoSJCSPendientes = null;
+//			for (int i = 0; i < guardiasPendientesVector.size(); i++) {
+////				Hashtable guardiaPendiente = (Hashtable) guardiasPendientesVector
+////						.get(i);
+////				trabajoSJCSPendientes = new ValueKeyVO();
+////				trabajoSJCSPendientes.setKey("GUARDIA: "+(String) guardiaPendiente.get("NOMBRE"));
+////				trabajoSJCSPendientes.setValue((String)guardiaPendiente.get("PERIODO"));
+//				trabajosSJCSPendientes.add((Hashtable)guardiasPendientesVector.get(i));
+//
+//			}
+			if(idGuardia==null){
+				Vector designacionesPendientesVector = new Vector();
+				if(idTurno!=null){
+					trabajosSJCSPendientes.addAll(getDesignacionesSJCSPendientes(idPersona,
+										idInstitucion, idTurno,
+										null,fechaBaja));
+				}else if(idTurnosMasivos!=null && !idTurnosMasivos.equals("")){
+					GstStringTokenizer st1 = new GstStringTokenizer(idTurnosMasivos,",");
+					while (st1.hasMoreTokens()) {
+						String registro = st1.nextToken();
+						String d[]= registro.split("##");
+						trabajosSJCSPendientes.addAll(getDesignacionesSJCSPendientes(idPersona,
+											idInstitucion, Integer.valueOf(d[0]),
+											null, fechaBaja));
+					}
+				}
+//				for (int i = 0; i < designacionesPendientesVector.size(); i++) {
+//					Hashtable designaPendiente = (Hashtable) designacionesPendientesVector
+//							.get(i);
+//					trabajoSJCSPendientes = new ValueKeyVO();
+//					trabajoSJCSPendientes.setKey("DESIGNACIÓN");
+//					trabajoSJCSPendientes.setValue((String)designaPendiente.get("DESIGNACION"));
+//					trabajosSJCSPendientes.add(trabajoSJCSPendientes);
+//					trabajosSJCSPendientes.add((Hashtable) designacionesPendientesVector.get(i));
+	
+//				}
+			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+		return trabajosSJCSPendientes;
 	}
 	
 
