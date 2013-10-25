@@ -116,10 +116,7 @@
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.custom.js'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
+	
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
 		<% 
@@ -678,13 +675,13 @@
 	
 			function accionCalendario() {
 				// Abrimos el calendario 
-				if (document.getElementById('fechaConsulta').value!='') {
+				if (formatDate(document.getElementById('fechaConsulta'),"") && document.getElementById('fechaConsulta').value!='') {
 					document.DefinirTurnosLetradoForm.fechaConsulta.value =document.getElementById('fechaConsulta').value;
 				 	document.DefinirTurnosLetradoForm.modo.value = 'abrir';
 				 	document.DefinirTurnosLetradoForm.submit();
 				
 		 		}else{
-					if(document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
+					if(formatDate(document.DefinirTurnosLetradoForm.fechaConsulta,"") && document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
 						fechaActual = getFechaActualDDMMYYYY();
 						document.getElementById('fechaConsulta').value = fechaActual;
 						document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;

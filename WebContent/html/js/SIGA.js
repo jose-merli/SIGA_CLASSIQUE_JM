@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.112 2013-10-22 08:45:07 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.113 2013-10-25 10:41:39 carlos Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1291,9 +1291,9 @@ function jQueryLoaded(){
 						// COMPROBAMOS SI NO TIENE EL FOCO (REALMENTE ES UN BLUR) PARA HACER LAS VALIDACIONES 
 						// CORRESPONDIENTES AL PERDER EL FOCO
 						//console.debug("DATEPICKER INPUT BLUR BUENO!");
-
+						
 						//EJECUTAMOS LA FUNCION DE MASCARA SOLO SI EL IMPUT ES EDITABLE, ASI NO FORZAMOS INNECESARIAMENTE UN ONCHANGE
-						if (jQuery(this).hasClass("editable")){
+						if (!jQuery(this).hasClass("noEditable")){
 							datepickerMaskValueChanged(jQuery(this));
 						}						
 						
