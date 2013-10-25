@@ -340,8 +340,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				
 		try {
 			String sFechaInicioSolicitante = GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaInicioSolicitante());
-			String sFechaInicioConfirmador = GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaInicioConfirmador());					
-			
+			String sFechaInicioConfirmador = GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaInicioConfirmador());						
 			
 			//comprobamos que el solicitante no esta de vacaciones la fecha que del confirmador
 			Map<String,CenBajasTemporalesBean> mBajasTemporalesSolicitante =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(miForm.getIdPersonaSolicitante()), new Integer(miForm.getIdInstitucion()));
@@ -370,7 +369,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE, sFechaInicioSolicitante);			
 			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE,miForm.getMotivosSolicitante());
 			
-			//DUPLICADO 2
+			// Consulta SCS_GUARDIASCOLEGIADO solicitante
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
@@ -379,6 +378,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			Vector guardiasColegSolic = admGuardias.select(solicitanteGuardiaHash);
 			
+			// Consulta SCS_CABECERAGUARDIAS solicitante
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
@@ -400,12 +400,10 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			if (usr.isLetrado()){
 				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
 			} else {
-				//miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"Permuta validada por un Agente");	
-				//Esto es para que aparezca con el motivo del solicitante
 				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,miForm.getMotivosSolicitante());
 			}						
 			
-			//DUPLICADO 1
+			// Consulta SCS_GUARDIASCOLEGIADO confirmador
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoConfirmador());
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,miForm.getIdGuardiaConfirmador());
@@ -414,6 +412,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());
 			Vector guardiasColegiadoConfirmador = admGuardias.select(confirmadorGuardiaHash);
 			
+			// Consulta SCS_CABECERAGUARDIAS confirmador
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioConfirmador());
@@ -421,6 +420,12 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			Vector cabeceraGuarConfirmador = admCabeceraGuardias.selectByPK(confirmadorCGHash);
+			
+			if (cabeceraGuarSolicitante==null || cabeceraGuarSolicitante.size()==0 || cabeceraGuarConfirmador==null || cabeceraGuarConfirmador.size()==0) {
+				request.setAttribute("sinrefresco","sinrefresco");				
+				request.setAttribute("mensaje", UtilidadesString.getMensajeIdioma(usr, "error.messages.noupdated"));	
+				return "exito"; 
+			}
 			
 			//Datos comunes:
 			miHash.put(ScsPermutaGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
@@ -475,10 +480,11 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				}
 				
 				// Hacemos las modificaciones previas a SCS_PERMUTA_CABECERA
-				if (beanPermutasGuardias.getIdPermutaCabeceraSolicitante() > 0 || beanPermutasGuardias.getIdPersonaConfirmador() > 0) {									
-					if (!admPermutasCabeceras.modificarPrevioPermutasCalendario(beanPermutasGuardias)) {
-						throw new ClsExceptions(admPermutas.getError());
-					}
+				if ((beanPermutasGuardias.getIdPermutaCabeceraSolicitante()!=null && beanPermutasGuardias.getIdPermutaCabeceraSolicitante()>0) || 
+					(beanPermutasGuardias.getIdPermutaCabeceraConfirmador()!=null && beanPermutasGuardias.getIdPermutaCabeceraConfirmador()>0)) {					
+						if (!admPermutasCabeceras.modificarPrevioPermutasCalendario(beanPermutasGuardias)) {
+							throw new ClsExceptions(admPermutas.getError());
+						}
 				}
 																
 				// Borramos los registros de guardias colegiado correspondiente al solicitante
@@ -506,11 +512,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				ScsCabeceraGuardiasBean cabecerasGuarConf = (ScsCabeceraGuardiasBean)(cabeceraGuarConfirmador.elementAt(0));
 				if (!admCabeceraGuardias.delete(cabecerasGuarConf))
 					throw new ClsExceptions(admCabeceraGuardias.getError());	
-				
-//				insertamos los registros de cabecera de guardias y guardias colegiado para el solicitante y el confirmador
-				/*solicitanteCGHash.remove(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
-				solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioConfirmador()));
-				solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_FIN,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaFinConfirmador()));*/
 				
 				cabecerasGuarSol.setIdPersona(new Long(miForm.getIdPersonaConfirmador()));
 				cabecerasGuarSol.setLetradoSustituido(new Long(miForm.getIdPersonaSolicitante()));
