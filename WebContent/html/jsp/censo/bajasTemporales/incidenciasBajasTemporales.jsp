@@ -37,7 +37,14 @@
 </head>
 
 <body onload="onLoad()">
-
+<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<tr>
+		<td id="titulo" class="titulitosDatos">
+							<siga:Idioma
+					key="censo.bajastemporales.incidencias.titulo" />
+		</td>
+	</tr>
+</table>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <html:form  action="${path}"  name="BajasTemporalesForm" type="com.siga.censo.form.BajasTemporalesForm">
 	<html:hidden property="modo" />
@@ -150,8 +157,9 @@
 <script>
 
 function onLoad(){
-	window.dialogHeight = "440px";
-	window.dialogWidth = "700px";
+	
+	window.dialogHeight = "650px";
+	window.dialogWidth = "1000px";
 }
 function accionCerrar(){
 	window.top.close();
