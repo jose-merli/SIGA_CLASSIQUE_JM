@@ -480,7 +480,7 @@
 					</td>
 					<td> 
 						<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
+							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones" property="observaciones"
 									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
 									styleClass="boxConsulta"></html:textarea>
@@ -529,7 +529,7 @@
 							</td>
 							<td class="labelTextValor">
 								<c:choose>
-									<c:when test="${ActuacionAsistenciaForm.modo=='ver'}">
+									<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion"
 											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
 											styleClass="boxConsulta"></html:textarea>
@@ -582,9 +582,19 @@
 								<siga:Idioma key='gratuita.mantActuacion.literal.observaciones' />
 							</td>
 							<td class="labelTextValor">
-								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion" 
-									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
-									styleClass="boxCombo"></html:textarea>
+								<c:choose>
+									<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion" 
+											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+											styleClass="boxConsulta"></html:textarea>
+									</c:when>
+									<c:otherwise>
+										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion" 
+											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
+											styleClass="boxCombo"></html:textarea>
+									</c:otherwise>
+								</c:choose>	
+								
 							</td>
 						</tr>
 					</table>
