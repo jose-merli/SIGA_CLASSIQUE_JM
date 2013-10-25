@@ -865,7 +865,8 @@ function habilitarCampos(isHabilitar) {
 				habilitaCampos();
 				return false;		
 			}
-			habilitaCampos();
+			// Quitamos los botones //
+			jQuery(".botonesDetalle").hide();
 			document.MutualidadForm.submit();
 		}else{
 			fin();
