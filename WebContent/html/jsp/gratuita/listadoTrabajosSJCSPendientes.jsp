@@ -37,7 +37,7 @@
 	<siga:Table 
 				name="listado" 
 				border="1" 
-				columnNames="INCIDENCIA,DESCRIPCION" 
+				columnNames="gratuita.gestionInscripciones.trasbajosSJCSPendientes.incidencia,gratuita.gestionInscripciones.trasbajosSJCSPendientes.descripcion" 
 				columnSizes="50,50">
 		<c:choose>
    				<c:when test="${empty trabajosSJCSPendientes}">

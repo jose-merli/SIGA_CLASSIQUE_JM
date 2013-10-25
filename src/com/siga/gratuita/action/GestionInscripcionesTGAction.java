@@ -1131,11 +1131,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			request.setAttribute("datos",trabajosSJCSPendientes);
 
-			String nombreFichero = "incidencias"+miForm.getFechaBaja()+miForm.getIdPersona(); 
-			String[] cabeceras = {"INCIDENCIA","DESCRIPCION"};
+			String nombreFichero = "incidencias"+miForm.getFechaBaja()+miForm.getIdPersona();
+//			columnNames=",gratuita.gestionInscripciones.trasbajosSJCSPendientes.descripcion
+			String[] cabecerasMultidioma = {UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.trasbajosSJCSPendientes.incidencia"),UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.trasbajosSJCSPendientes.descripcion")};
+			String[] cabeceras = { "INCIDENCIA","DESCRIPCION"};
 			
 			request.setAttribute("descripcion",nombreFichero);
-			request.setAttribute("cabeceras",cabeceras);
+			request.setAttribute("campos",cabeceras);
+			request.setAttribute("cabeceras",cabecerasMultidioma);
 
 
 		} catch (Exception e) {
