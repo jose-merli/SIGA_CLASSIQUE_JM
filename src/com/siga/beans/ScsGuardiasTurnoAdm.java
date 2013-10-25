@@ -762,9 +762,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			
 			sql += " FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + ","
 					+ ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " + ScsTurnoBean.T_NOMBRETABLA + ", "
-					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ","
-					+ ScsInscripcionGuardiaBean.T_NOMBRETABLA + 
-					" WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION
+					+ CenColegiadoBean.T_NOMBRETABLA + "," + ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA 
+					+" WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION
 					+ "=guardias2." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND "
 					+ ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + "=guardias2."
 					+ ScsCabeceraGuardiasBean.C_IDTURNO + " AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "."
@@ -777,13 +776,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " AND "
 					+ CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + "=guardias2."
 					+ ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND " + CenColegiadoBean.T_NOMBRETABLA + "."
-					+ CenColegiadoBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND " 
-					+  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDINSTITUCION + "=guardias2."
-					+ ScsCabeceraGuardiasBean.C_IDINSTITUCION + " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "."
-					+ ScsInscripcionGuardiaBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND "
-					+  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDTURNO + "=guardias2."
-					+ ScsCabeceraGuardiasBean.C_IDTURNO + " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "."
-					+ ScsInscripcionGuardiaBean.C_IDGUARDIA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " AND ";
+					+ CenColegiadoBean.C_IDPERSONA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDPERSONA + " AND " ;
+					 
 			contador++;
 			codigos.put(new Integer(contador), fechaInicio);
 
@@ -804,15 +798,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 
 			sql += "guardias2." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " >= TO_DATE(:" + contador + ",'DD/MM/YYYY')))"
 					+ " AND ";
-			contador++;
-			codigos.put(new Integer(contador), fechaFin);
 			
-			sql += "(" + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL OR " +  ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " >  TO_DATE(:" + contador + ",'DD/MM/YYYY') "
-					+ ") AND ";
-			contador++;
-			codigos.put(new Integer(contador), fechaFin);
-			
-			sql += ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " <  TO_DATE(:" + contador + ",'DD/MM/YYYY') AND ";
 			contador++;
 			codigos.put(new Integer(contador), institucion);
 			
