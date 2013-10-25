@@ -4674,17 +4674,14 @@
           <field property = "correoElectronico" depends = "required">
                  <arg0 key="censo.mutualidad.literal.email"/>
          </field>
-          <field 	property = "codigoPostal" depends = "required,maxlength,mask"> 	
+ 
+          <field property = "codigoPostal" depends = "required,maxlength,minlength,mask"> 	
 					<arg0 key="censo.mutualidad.literal.codigoPostal"/>
 					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-					<var>
-						<var-name>maxlength</var-name>
-						<var-value>5</var-value>
-					</var>
-					<var>
-						<var-name>mask</var-name>
-						<var-value>^[0-9]*$</var-value>
-		            </var>
+					<arg1 key="${var:minlength}" name="minlength" resource="false"/>
+					<var><var-name>maxlength</var-name><var-value>5</var-value></var>
+					<var><var-name>minlength</var-name><var-value>5</var-value></var>
+					<var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>
 			</field>
 			 <field 	property = "numeroHijos" depends = "mask"> 	
 					<arg0 key="censo.mutualidad.literal.numeroHijos"/>
