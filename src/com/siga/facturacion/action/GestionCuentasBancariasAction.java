@@ -1,7 +1,6 @@
 package com.siga.facturacion.action;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,18 +12,12 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
-import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
-import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.BancoVo;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.GenParametrosBean;
-import com.siga.censo.action.CuentasBancariasAction;
 import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
 import com.siga.facturacion.form.service.CuentaBancariaVoService;
@@ -174,7 +167,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		return "editar";
 	}
 	
-	protected String consultar (ActionMapping mapping, 		
+protected String consultar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
@@ -276,41 +269,13 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			
-			GenParametrosService parametrosService = (GenParametrosService)bm.getService(GenParametrosService.class);
-			GenParametros genParametros = new GenParametros();
-			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
-			String sjcs = (String) cuentaBancariaVo.getSjcs();
-			String idIntitucion = (String) cuentaBancariaVo.getIdinstitucion().toString();
-			String idModulo = "FCS";
-			String parametro = "BANCOS_CODIGO_ABONO";
-			String valor= (String) cuentaBancariaVo.getBancosCodigo();
-			String idRecurso = "administracion.parametro.bancosCodigoAbono";	
-
-			valor=UtilidadesString.replaceAllIgnoreCase(valor,"\u00A0","\u0020");	
-			if (valor.trim()!=null && !valor.trim().equals("")) {
-			 
-			  valor = valor.trim();	
-			}else{
-			 valor="\u0020";
-			}			
-			
-			if (sjcs.equals("1")){
-
-				genParametros.setIdinstitucion(new Short(idIntitucion));
-				genParametros.setModulo(idModulo);
-				genParametros.setParametro(parametro);
-				genParametros.setValor(valor);
-				genParametros.setIdrecurso(idRecurso);	
-				if (parametrosService.update(genParametros)!=1){
-					throw new ClsExceptions ("messages.updated.error");
-				}				
-				cuentasBancariasService.insert(cuentaBancariaVo);
-			}
+			cuentasBancariasService.insert(cuentaBancariaVo);
 			forward = exitoModal("messages.updated.success",request);
+			
 			
 		}catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
@@ -329,76 +294,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			
-			GenParametrosService parametrosService = (GenParametrosService)bm.getService(GenParametrosService.class);
-			GenParametros genParametros = new GenParametros();
-			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
-			
-			String sjcs = (String) cuentaBancariaVo.getSjcs();
-			String idIntitucion = (String) cuentaBancariaVo.getIdinstitucion().toString();
-			String idModulo = "FCS";
-			String parametro = "BANCOS_CODIGO_ABONO";
-			String valor= (String) cuentaBancariaVo.getBancosCodigo();
-			String codBanco = (String) cuentaBancariaVo.getBancosCodigo();
-			String idRecurso = "administracion.parametro.bancosCodigoAbono";		
-			
-			valor=UtilidadesString.replaceAllIgnoreCase(valor,"\u00A0","\u0020");	
-			if (valor.trim()!=null && !valor.trim().equals("")) {
-			 
-			  valor = valor.trim();	
-			}else{
-			 valor="\u0020";
-			}			
-			
-			if (sjcs.equals("1")){
-
-				genParametros.setIdinstitucion(new Short(idIntitucion));
-				genParametros.setModulo(idModulo);
-				genParametros.setParametro(parametro);
-				genParametros.setValor(valor);
-				genParametros.setIdrecurso(idRecurso);
-
-				if (parametrosService.update(genParametros)!=1){
-					throw new ClsExceptions ("messages.updated.error");
-				}
-				cuentasBancariasService.update(cuentaBancariaVo);
-			} else {
-				CuentasBancariasForm cuentasBancariasFormulario = new CuentasBancariasForm();
-				Date fechaModificacion = null;
-				valor = "0";
-				cuentasBancariasFormulario.setIdInstitucion(cuentasBancariasForm.getIdInstitucion());
-				cuentasBancariasFormulario.setSjcs("1");
-				List<CuentaBancariaVo> cuentaBancariaVos =cuentasBancariasService.getCuentasBancarias(voService.getForm2Vo(cuentasBancariasFormulario));
-				CuentaBancariaVo cuentaBancariaVoAux = new CuentaBancariaVo();
-				for (int i= 0; i < cuentaBancariaVos.size(); i++){
-					cuentaBancariaVoAux = (CuentaBancariaVo) cuentaBancariaVos.get(i);
-					if (!(cuentaBancariaVoAux.getBancosCodigo().equals(codBanco))){
-						if (fechaModificacion == null){
-							fechaModificacion = (Date) cuentaBancariaVoAux.getFechamodificacion();
-							valor = cuentaBancariaVoAux.getBancosCodigo();
-						} else {
-							if ((fechaModificacion.compareTo(cuentaBancariaVoAux.getFechamodificacion())) != 1){
-								fechaModificacion = cuentaBancariaVoAux.getFechamodificacion();
-								valor = cuentaBancariaVoAux.getBancosCodigo();
-							}
-						}
-					}
-				}
-
-				genParametros.setIdinstitucion(new Short(idIntitucion));
-				genParametros.setModulo(idModulo);
-				genParametros.setParametro(parametro);
-				genParametros.setValor(valor);
-				genParametros.setIdrecurso(idRecurso);
-
-				if (parametrosService.update(genParametros)!=1){
-					throw new ClsExceptions ("messages.updated.error");
-				}
-				cuentasBancariasService.update(cuentaBancariaVo);
-			}
+			cuentasBancariasService.update(cuentaBancariaVo);
 			forward = exitoModal("messages.updated.success",request);
 			
 			
