@@ -130,7 +130,9 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 				" SET " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_FECHA + " = NULL, " +
 					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDCALENDARIOGUARDIAS + " = NULL " +
 				" WHERE " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDINSTITUCION + " = " + idInstitucion +				
-					" AND " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDPERMUTACABECERA + " IN (" + idPermutaCabeceraSolicitante + ", " + idPermutaCabeceraConfirmador + ")";
+					" AND " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDPERMUTACABECERA + " IN (" +
+						(idPermutaCabeceraSolicitante==null?"-1":idPermutaCabeceraSolicitante) + ", " + 
+						(idPermutaCabeceraConfirmador==null?"-1":idPermutaCabeceraConfirmador) + ")";
 						
 			salida = updateSQL(sql);
 			
@@ -147,12 +149,15 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 	 */
 	public boolean modificarPosteriorPermutasCalendario(ScsPermutaGuardiasBean beanPermutasGuardias) {
 		Integer idInstitucion = beanPermutasGuardias.getIdInstitucion();
+		
+		Integer idPermutaCabeceraSolicitante = beanPermutasGuardias.getIdPermutaCabeceraSolicitante();
 		Integer idCalendarioSolicitante = beanPermutasGuardias.getIdCalendarioGuardiasSolicitan();
+		String fechaSolicitante = beanPermutasGuardias.getFechaInicioSolicitante();		
+		
+		Integer idPermutaCabeceraConfirmador = beanPermutasGuardias.getIdPermutaCabeceraConfirmador();
 		Integer idCalendarioConfirmador = beanPermutasGuardias.getIdCalendarioGuardiasConfirmad();
 		String fechaConfirmador = beanPermutasGuardias.getFechaInicioConfirmador();
-		String fechaSolicitante = beanPermutasGuardias.getFechaInicioSolicitante();
-		Integer idPermutaCabeceraSolicitante = beanPermutasGuardias.getIdPermutaCabeceraSolicitante();
-		Integer idPermutaCabeceraConfirmador = beanPermutasGuardias.getIdPermutaCabeceraConfirmador();
+		
 		boolean salida = false;
 		
 		try {			
