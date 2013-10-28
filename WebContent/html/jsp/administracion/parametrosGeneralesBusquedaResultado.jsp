@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- parametrosGeneralesBusquedaResultados.jsp -->
+<!-- parametrosGeneralesBusquedaResultado.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -133,7 +133,7 @@
 			 
 				<siga:FilaConIconos fila='<%=(""+i)%>' botones="<%=botones%>" visibleConsulta="no" visibleEdicion="no" pintarEspacio="no" clase="listaNonEdit" >
 					<td align="center">
-						<input type=checkbox id="checkParametrosGenerales" value="<%=i%>" onclick="modificaParametro(this)"/>
+						<input type=checkbox name="checkParametrosGenerales" value="<%=i%>" onclick="modificaParametro(this)"/>
 						
 						<input type="hidden" value="<%=UtilidadesString.mostrarDatoJSP(b.getModulo())%>"        id="oculto<%=i%>_1" >
 						<input type="hidden" value="<%=UtilidadesString.mostrarDatoJSP(b.getIdInstitucion())%>" id="oculto<%=i%>_2" >

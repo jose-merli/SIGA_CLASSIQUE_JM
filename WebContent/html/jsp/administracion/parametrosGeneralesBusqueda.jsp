@@ -34,11 +34,11 @@
 		<script language="JavaScript">
 	 		function buscar()
 	 		{
-				var combo = document.getElementById("idModulo");
 				var combo = jQuery("#idModulo");
 				sub();
 				if (combo.val() == '' || combo.val() == '-1') {
-					alert("<siga:Idioma key="administracion.parametrosGenerales.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error"/>");
+					alert("<siga:Idioma key="administracion.parametrosGenerales.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error"/>");+
+					fin();
 					return;
 				}
 				c = document.getElementById("checkGeneral");
