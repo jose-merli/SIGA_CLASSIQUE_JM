@@ -138,7 +138,7 @@ public class TagBusquedaPersona extends TagSupport
 				out.println("				</td>");
 			}
 			out.println("<td>");
-			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\""+ getPreFunction()+"obtenerPersonas();\"/>");				
+			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\""+ getPreFunction()+"obtenerPersonas();"+ getPostFunction()+"\"/>");				
 			out.println("</td>");
 			out.println("<td>");
 			out.println("	<input type=\"text\" id=\"nombrePersona\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");							
@@ -240,6 +240,8 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("		{");
 //			out.println("			   alert(\"<-buscarPersona->\"+vForm);");	
 			out.println("			   		if (!vForm) vForm=creaForm();");
+			out.println("			   vForm.modo.value=\"abrirBusquedaModal\";");	
+			
 			out.println("					var resultado = ventaModalGeneral(vForm.name,\"G\");	");		
 			out.println("					if (resultado != null && resultado[2]!=null)");
 			out.println("					{");
@@ -269,6 +271,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("		function buscarPersonaDni () ");
 			out.println("		{");
 			out.println("			   		if (!vForm) vForm=creaForm();");
+			out.println("			      vForm.modo.value=\"abrirBusquedaModal\";");
 			out.println("					var resultado = ventaModalGeneral(vForm.name,\"G\");	");		
 			out.println("					if (resultado != null && resultado[3]!=null)");
 			out.println("					{");
