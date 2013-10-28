@@ -313,11 +313,11 @@
         	
 	 }
 	 
-	
 	function marcarDesmarcarTodos(o) 
 	{ 
 		var ele = document.getElementsByName("chkBajasTemporales");
 		for (i = 0; i < ele.length; i++) {
-			ele[i].checked = o.checked;
+			if(ele[i].disabled == false)
+				ele[i].checked = o.checked;
 		}
-   }
+	}

@@ -270,14 +270,7 @@
 			document.FormBajasTemporales.submit();
 		}
 		
-		function marcarDesmarcarTodos(o) 
-		{ 
-			var ele = document.getElementsByName("chkBajasTemporales");
-			for (i = 0; i < ele.length; i++) {
-				if(ele[i].disabled == false)
-					ele[i].checked = o.checked;
-			}
-		}
+		
 		
 		function refrescarLocal() {	
 			document.FormBajasTemporales.target = "_self";	
