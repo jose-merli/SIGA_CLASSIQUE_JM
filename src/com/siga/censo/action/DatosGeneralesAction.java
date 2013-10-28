@@ -500,6 +500,9 @@ public class DatosGeneralesAction extends MasterAction {
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 			UsrBean usr = this.getUserBean(request);
 			
+			//Se poner articulo 27 a 1 para saberlo al crear la designacion
+			request.getSession().setAttribute("art27","1");
+			
 			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
     		CenPersonaBean cenPersona = adminPer.getPersona(miForm.getNumIdentificacion());
     		if(cenPersona!=null){
@@ -551,6 +554,7 @@ public class DatosGeneralesAction extends MasterAction {
 			
 
 	   } catch (Exception e) {
+		   request.getSession().removeAttribute("art27");
 		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 		return forward;

@@ -323,6 +323,9 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			Hashtable direccionGuardia=new Hashtable();
 			direccionGuardia = tipoDirAdm.selectDireccionGuardia(idInstitucion,idPersona,new Integer(ClsConstants.TIPO_DIRECCION_GUARDIA));
 			
+			//Se poner articulo 27 a 0 para saberlo al crear la designacion
+			request.getSession().setAttribute("art27","0");			
+			
 			if(direccionGuardia != null && direccionGuardia.size() > 0){//solo debe haber un registro
 				CenDireccionesAdm dirAdm=new CenDireccionesAdm(this.getUserBean(request));
 				//CenDireccionTipoDireccionBean beanTipoDirec=(CenDireccionTipoDireccionBean)v.elementAt(0);
@@ -346,7 +349,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 
 		}
 		catch(Exception e){
-			 throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+			request.getSession().removeAttribute("art27");
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return "editarTelefono";
 	}

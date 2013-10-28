@@ -235,6 +235,9 @@ public class BusquedaCensoAction extends MasterAction {
    			CenClienteBean cli = null;
    			UserTransaction t = null; 
    			
+			//Se poner articulo 27 a 1 para saberlo al crear la designacion
+			request.getSession().setAttribute("art27","1");   			
+   			
    			if(miForm.getIdPersona()!=null && !miForm.getIdPersona().equals("")){
    				cli = clienteAdm.existeCliente(new Long(miForm.getIdPersona()),new Integer(usr.getLocation()));
    			}
@@ -328,9 +331,11 @@ public class BusquedaCensoAction extends MasterAction {
 			}	
 			
 		} catch (SIGAException es) {
+			request.getSession().removeAttribute("art27");
 			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, null);	
 	   
 	    } catch (Exception e) {
+	       request.getSession().removeAttribute("art27");
 		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	    }
 		return forward;

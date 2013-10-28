@@ -43,7 +43,6 @@
 	ArrayList elementoSel = new ArrayList();
 	String aux = "" + institucion + "," + idguardia;
 	elementoSel.add(aux);
-	ses.setAttribute("art27","0");
 %>
 
 <!-- HEAD -->

@@ -123,7 +123,6 @@
 	}  
 	String [] caracterParam = new String[1];
 	caracterParam[0] = tipoCliente;
-	ses.setAttribute("art27","1");
 	
 %>
 	   	

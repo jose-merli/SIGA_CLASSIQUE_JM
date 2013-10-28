@@ -673,6 +673,11 @@ public class BusquedaDesignasAction extends MasterAction {
 			
 			boolean isManual = true;
 			if (idPersonaSel.equals("")) {
+				
+					//Se poner articulo 27 a 0 para saberlo al crear la designacion. Al ser automatica la seleccion no se trata de art27
+					request.getSession().setAttribute("art27","0");
+					
+					
 					isManual = false;
 					String fecha = (String)formDesignaHash.get("FECHAENTRADAINICIO");
 					//busqueda automatica
