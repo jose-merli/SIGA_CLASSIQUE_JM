@@ -623,7 +623,7 @@ MDB Microsoft Access Database
   public static final String ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO="ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO";  
   public static final String GEN_PARAM_NUM_MESES_PAGO_TRAMO_LEC="NUM_MESES_PAGO_TRAMO_LEC";
   
-  public static int MAX_SIZE_IMAGE_EMBEBED=100000;
+//  public static int MAX_SIZE_IMAGE_EMBEBED=1000000;
   
   
 //Permisos de Archivar.
