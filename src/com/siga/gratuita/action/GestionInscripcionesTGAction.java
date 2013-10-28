@@ -17,20 +17,15 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
-import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenClienteAdm;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenComponentesAdm;
 import com.siga.beans.CenComponentesBean;
 import com.siga.beans.CenDireccionTipoDireccionAdm;
@@ -39,8 +34,6 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.ScsGuardiasColegiadoAdm;
-import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -53,11 +46,6 @@ import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsRetencionesIRPFBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.censo.form.BajasTemporalesForm;
-import com.siga.comun.VoUiService;
-import com.siga.comun.vos.ValueKeyVO;
-import com.siga.facturacion.form.CuentasBancariasForm;
-import com.siga.facturacion.form.service.CuentaBancariaVoService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -65,8 +53,6 @@ import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
-
-import es.satec.businessManager.BusinessManager;
 
 public class GestionInscripcionesTGAction extends MasterAction {
 	private final int tipoActualizacionBaja=0;
@@ -1612,9 +1598,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + Observaciones Solicitud + FechaValidacion + ObservacionesValidacion
 			InscripcionGuardia inscripcion = new InscripcionGuardia(insGuardiaBean);
 			
-			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")) {				
+			
+			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("") ) {				
 				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")) {
-					inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					int numeroGuardiasSel =0;
+					if(miForm.getGuardiasSel()!=null && !miForm.getGuardiasSel().equals(""))
+						numeroGuardiasSel = miForm.getGuardiasSel().split("@").length;
+					if(numeroGuardiasSel == 1)
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
 				}
 			}
 			
@@ -1685,7 +1676,12 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
 				
 				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
-					inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					int numeroGuardiasSel =0;
+					if(miForm.getGuardiasSel()!=null && !miForm.getGuardiasSel().equals(""))
+						numeroGuardiasSel = miForm.getGuardiasSel().split("@").length;
+					if(numeroGuardiasSel == 1)
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					
 				}
 					
 				inscripcion.validarAlta(usr);
@@ -1938,6 +1934,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
 				//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 				miForm.setModo("sigInsertar");
+				
+
+				
+				
 				forward = "validarInscripcion";
 				
 			} catch (Exception e) {

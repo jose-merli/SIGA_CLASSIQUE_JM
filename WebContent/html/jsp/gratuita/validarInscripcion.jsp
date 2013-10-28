@@ -110,8 +110,11 @@
 		}	
 		
 		function comprobarGuardiaGrupo(checkValidar) {			
+			
 			if(document.InscripcionTGForm.porGrupos.value=='1'){
-				if(checkValidar.checked){
+				numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
+				
+				if(checkValidar.checked&&numGuardiasSel.length-1 ==1){
 					jQuery("#divGuardiaGrupo").show();
 				} else {
 					jQuery("#divGuardiaGrupo").hide();				
@@ -121,7 +124,7 @@
 		
 		function obtenerFecha(tipoAccion) {			
 			if(tipoAccion == 'validar') {				
-				comprobarGuardiaGrupo(this);
+				comprobarGuardiaGrupo(document.getElementById('validar'));
 				
 				if(document.getElementById('validar').checked) {
 					// if(document.getElementById('asterisco'))
@@ -245,7 +248,10 @@
 				
 			if((document.getElementById('validar')&&document.getElementById('validar').checked)||!document.getElementById('validar')){
 				if(document.InscripcionTGForm.porGrupos.value=='1'){
-					if(document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar'){
+					numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
+					
+					
+					if((document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar') &&numGuardiasSel.length-1 ==1){
 						if(document.InscripcionTGForm.numeroGrupo.value == "") {
 								fin();
 								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
@@ -513,7 +519,11 @@
 			}
 			if((document.getElementById('validar')&&document.getElementById('validar').checked)||!document.getElementById('validar')){
 				if(document.InscripcionTGForm.porGrupos.value=='1'){
-					if(document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar'){
+					numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
+					
+					 
+					
+					if((document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar')&&numGuardiasSel.length-1 ==1){
 							if(document.InscripcionTGForm.numeroGrupo.value == "") {
 								fin();
 								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
@@ -617,6 +627,7 @@
 		<html:hidden property="observacionesDenegacion" styleId="observacionesDenegacion"/>
 		<html:hidden property="observacionesValBaja" styleId="observacionesValBaja"/>
 		<html:hidden property="tipoActualizacionSyC" styleId="tipoActualizacionSyC"/>	
+		<html:hidden property="guardiasSel" styleId="guardiasSel"/>
 		
 		<c:if test="${(InscripcionTGForm.fechaSolicitud==null || InscripcionTGForm.fechaSolicitud=='')&& InscripcionTGForm.solicitudAlta==true}">
 			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">		 
@@ -1034,11 +1045,13 @@
 															</td>
 															
 															<td align='center' width='8%'>
-																<c:out value="${grupoGuardiaLetrado.persona.nombre}" />
+																<c:out value="${grupoGuardiaLetrado.persona.colegiado.NColegiado}"/>
+																
 															</td>
 															
-															<td align='center' width='13%'>
-																<c:out value="${grupoGuardiaLetrado.persona.colegiado.NColegiado}"/>
+															<td align='center' width='13%'><c:out 
+																value="${grupoGuardiaLetrado.persona.nombre}" />&nbsp;<c:out value="${grupoGuardiaLetrado.persona.apellido1}" />
+																
 															</td>		
 														</tr>
 													</logic:iterate>
@@ -1104,13 +1117,14 @@
 	<script>
 	
 	
-		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
-			jQuery("#divGuardiaGrupo").show();
+		if(document.getElementById("divGuardiaGrupo") && document.InscripcionTGForm.validarInscripciones.value=='N'){
+			numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
+			if(numGuardiasSel.length-1 ==1)
+				jQuery("#divGuardiaGrupo").show();
+		}
 		function accionGenerarExcels(){
 			sub();
-			
 			document.ExcelInscripcionTGForm.modo.value = "generarExcelTrabajosSJCSPendientes";
-			
 			document.ExcelInscripcionTGForm.submit();
 			fin();
 			
