@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -196,7 +198,9 @@ public class EnvImagenPlantillaAdm extends MasterBeanAdministrador
   	  	public void insertar(EnvImagenPlantillaBean imagenPlantilla) throws SIGAException
    	{
    		FormFile theFile = imagenPlantilla.getTheFile();
-   		if(theFile.getFileSize()>ClsConstants.MAX_SIZE_IMAGE_EMBEBED && imagenPlantilla.isEmbebed()){
+   		ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+   		String MAX_SIZE_IMAGE_EMBEBED = properties.returnProperty("env.maxsizefileembebed");
+   		if(theFile.getFileSize()>Integer.parseInt(MAX_SIZE_IMAGE_EMBEBED) && imagenPlantilla.isEmbebed()){
    			throw new SIGAException("envios.imagenes.aviso.bytesExcedidos");
    		}
    			InputStream stream =null;
