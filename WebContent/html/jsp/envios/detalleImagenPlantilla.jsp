@@ -56,14 +56,7 @@
 						fin();
 						return false;
 					}
-					if(document.ImagenPlantillaForm.theFile.size><%=ClsConstants.MAX_SIZE_IMAGE_EMBEBED%>){
-						var mensaje = "<siga:Idioma key="envios.imagenes.aviso.bytesExcedidos"/>" + "<%=ClsConstants.MAX_SIZE_IMAGE_EMBEBED%>";
-						alert (mensaje);
-						fin();
-						return false;
 					
-					
-					}
 					
 				}else{
 					if(document.ImagenPlantillaForm.nombre.value=="")
@@ -96,7 +89,7 @@
 			</td>
 		</tr>
 	</table>	
-			
+		
 			<html:form action="/ENV_ImagenesPlantilla" method="POST" target="submitArea" enctype="multipart/form-data">
 				 <bean:define id="botonesEdicion" name="ImagenPlantillaForm" property="botonesEdicion" type="java.lang.String"/>
 				

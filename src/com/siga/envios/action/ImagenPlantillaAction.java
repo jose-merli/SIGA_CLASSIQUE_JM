@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -237,11 +239,7 @@ public class ImagenPlantillaAction extends MasterAction
 
 
 		    }
-		    catch(SIGAException e)
-		    {
-		    	forward = exitoModalSinRefresco(e.getLiteral(),request);
-		    	
-		    }
+		    
 		    catch(Exception e)
 		    {
 				throwExcp("messages.general.error", new String[] {"modulo.envios"}, e, null); 
@@ -292,6 +290,7 @@ public class ImagenPlantillaAction extends MasterAction
 
 	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws ClsExceptions
 	{
+		
 		return "mostrar";
 	}
 	

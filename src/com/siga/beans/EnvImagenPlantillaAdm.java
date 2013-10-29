@@ -15,12 +15,12 @@ import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.envios.form.ImagenPlantillaForm;
 import com.siga.general.SIGAException;
 
@@ -201,7 +201,7 @@ public class EnvImagenPlantillaAdm extends MasterBeanAdministrador
    		ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
    		String MAX_SIZE_IMAGE_EMBEBED = properties.returnProperty("env.maxsizefileembebed");
    		if(theFile.getFileSize()>Integer.parseInt(MAX_SIZE_IMAGE_EMBEBED) && imagenPlantilla.isEmbebed()){
-   			throw new SIGAException("envios.imagenes.aviso.bytesExcedidos");
+   			throw new SIGAException(UtilidadesString.getMensajeIdioma(this.usrbean, "envios.imagenes.aviso.bytesExcedidos")+ " "+MAX_SIZE_IMAGE_EMBEBED);
    		}
    			InputStream stream =null;
    			OutputStream bos = null;
