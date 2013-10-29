@@ -202,52 +202,46 @@
 	</table>
 	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
-
-						<div>
-							<table id='tabCuentasBancarias' border='1' width='100%'
-								cellspacing='0' cellpadding='0' style= "table-layout: fixed;" >
-								<tr class='tableTitle'>
-									<td align='center' width='50%'>Serie</td>
-									<td align='center' width='50%'>Descripción</td>
-								</tr>
-							</table>
-						</div>
-						<div id="divListadoSeriesFacturacion"
-							style='position: absolute; height:45%; width: 100%; overflow-y: auto;'>
-						<table class="tablaCampos" id='seriesFacturacion' border='1'
-							align='center' width='100%' cellspacing='0' cellpadding='0' style= "table-layout: fixed;">
-
-							<c:choose>
-								<c:when test="${empty seriesFacturacion}">
-									<tr class="notFound">
-						 				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-									</tr>
-								</c:when>
-								<c:otherwise>
-									<tr>
-										<td width='50%'></td>
-										<td width='50%'></td>
-									</tr>
-									<c:forEach items="${seriesFacturacion}" var="serieFacturacion"
-										varStatus="status">
-										<c:choose>
-											<c:when test="${status.count%2==0}">
-												<tr class="filaTablaPar">
-											</c:when>
-											<c:otherwise>
-												<tr class="filaTablaImpar">
-											</c:otherwise>
-										</c:choose>
-										<td align='left'><c:out
-												value="${serieFacturacion.nombreabreviado}" /></td>
-										<td align='left' style="white-space: pre-line;"><c:out
-												value="${serieFacturacion.descripcion}" /></td>
-										</tr>
-									</c:forEach>
-								</c:otherwise>
-							</c:choose>
-						</table>
+						
+			<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
+					<siga:Table 
+						name="listado" 
+						border="1" 
+						columnNames="Serie,Descripción" 
+						columnSizes="50,50">
+	
+					<c:choose>
+		   				<c:when test="${empty seriesFacturacion}">
+			   				<tr class="notFound">
+				   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+							</tr>	 		
+				 			
+			   			</c:when>
+			   			<c:otherwise>
+				   			
+							<c:forEach items="${seriesFacturacion}" var="serieFacturacion" varStatus="status">
+									
+								<siga:FilaConIconos	fila='${status.count}'				    
+						  			pintarEspacio="no"
+						  			botones=""
+						  			visibleBorrado="N"
+						  			visibleEdicion="N"
+						  			visibleConsulta="N"
+						  			clase="listaNonEdit">
+									<td align='left'><c:out
+													value="${serieFacturacion.nombreabreviado}" /></td>
+											<td align='left' style="white-space: pre-line;"><c:out
+													value="${serieFacturacion.descripcion}" /></td>
+								</siga:FilaConIconos>
+							</c:forEach>
+							
+						</c:otherwise>
+					</c:choose>
+	
+				</siga:Table>
 			</div>
+						
+						
 		</c:if>
 
 
@@ -340,8 +334,8 @@
 				}
 			});
 		} else {
-			document.getElementById("codigoBanco").value = 'kk';
-			inputBancoNombre.value = 'pepe';
+			document.getElementById("codigoBanco").value = '';
+			inputBancoNombre.value = '';
 		}
 	}		
 	
