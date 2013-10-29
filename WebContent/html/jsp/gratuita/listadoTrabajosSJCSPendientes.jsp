@@ -30,7 +30,7 @@
 </head> 
 
 <body  >
-<siga:ConjCampos leyenda="Trabajos SJCS Pendientes">
+<siga:ConjCampos leyenda="gratuita.gestionInscripciones.trasbajosSJCSPendientes.leyenda">
 
 	
 		
