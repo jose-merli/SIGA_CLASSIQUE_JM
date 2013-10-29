@@ -7,11 +7,6 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -26,8 +21,6 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.ScsGrupoGuardiaAdm;
-import com.siga.beans.ScsGrupoGuardiaBean;
 import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
 import com.siga.beans.ScsGrupoGuardiaColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
@@ -351,7 +344,6 @@ public class ColaGuardiasAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		ColaGuardiasForm form = (ColaGuardiasForm) formulario;
 		ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
-		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(usr);
 		ScsInscripcionGuardiaAdm inscrpAdm = new ScsInscripcionGuardiaAdm(usr);
 		String a = form.getDatosModificados();
 		
@@ -362,12 +354,10 @@ public class ColaGuardiasAction extends MasterAction {
 		String[] elementos = a.split("#;;#");
 		String idGrupoGuardiaColegiado;
 		String numeroGrupo;
-		String idGrupo;
 		String orden;
 		String idPersona;
 		String fechaSuscripcion;
 		Hashtable hash = null;
-		String[] campos = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, ScsGrupoGuardiaColegiadoBean.C_ORDEN};
 		String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
 		// iniciando transaccion
 		tx = usr.getTransactionPesada();
@@ -401,17 +391,44 @@ public class ColaGuardiasAction extends MasterAction {
 						numeroGrupo, 
 						orden, 
 						idGrupoGuardiaColegiado);
-					
-					if(inscrpAdm.getGrupoGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
-						throw new SIGAException ("messages.grupoguardiacolegiado.existepersonagrupo");
-					}
-					
-					if(inscrpAdm.getOrdenGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
-						throw new SIGAException ("messages.grupoguardiacolegiado.existeordengrupo");
-					}
+//			(JTA)INICIALMENTE SE HACIA AQUI ESTA VALIDACION PERO DABA LOS PROBLEMAS DE INC_11539_SIGA POR ESO SE INSERTA AQUI Y SE VALIDA DEBAJO 
+//			RECORRIENDO DE NUEVO. SI NO SE VALIDA CORRECTAMENTE, COMO ESTA EN TRANSACCION NO SE REALIZAN LOS CAMBIOS		
+//					if(inscrpAdm.getGrupoGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+//						throw new SIGAException ("messages.grupoguardiacolegiado.existepersonagrupo");
+//					}
+//					
+//					if(inscrpAdm.getOrdenGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+//						throw new SIGAException ("messages.grupoguardiacolegiado.existeordengrupo");
+//					}
 					
 				}
 			}
+			for (int i = 0; i < elementos.length; i++) {
+				hash=new Hashtable();
+				String []aux = elementos[i].split("#;#");
+				idGrupoGuardiaColegiado = aux[0];
+				numeroGrupo = aux[1];
+				orden = aux[2];
+				idPersona=aux[3];
+				fechaSuscripcion=aux[4];
+					
+				String idInstitucion = form.getIdInstitucion();
+				String idTurno = form.getIdTurno();
+				String idGuardia = form.getIdGuardia();
+				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO,idGrupoGuardiaColegiado);
+				
+				if(inscrpAdm.getGrupoGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+					throw new SIGAException ("messages.grupoguardiacolegiado.existepersonagrupo");
+				}
+				
+				if(inscrpAdm.getOrdenGuardia(idInstitucion,idTurno,idGuardia,form.getFechaConsulta())){
+					throw new SIGAException ("messages.grupoguardiacolegiado.existeordengrupo");
+				}
+					
+				
+			}
+			
+			
 			tx.commit();
 			
 		}catch (SIGAException e) { //Se lanza la excepción para lanzar una alerta al usuario únicamente. 
