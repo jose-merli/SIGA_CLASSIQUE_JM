@@ -700,6 +700,7 @@
 		}	
 	
 		function accionGuardar() {
+			sub()
 			var datos = "";
 			var elementosCheck = jQuery("#tablaLetrados_BodyDiv tbody tr td input#checkGrupoOrden");
 			
@@ -710,21 +711,24 @@
 					var valorOrden = jQuery("#tablaLetrados_BodyDiv tbody tr td input#orden_" + elementosCheck[i].value).val();
 					var longitudValorOrden = valorOrden.length;
 					
-					if ((longitudValorGrupo<1 || longitudValorOrden<1)) {						 						
+					/* if ((longitudValorGrupo<1 || longitudValorOrden<1)) {						 						
 						alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
 						 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> " + 
 							   "<siga:Idioma key="general.y"/> " + 
 						 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> ");
 								return;	
 					}
+					*/
 					
-					if (valorGrupo<1) {							
+					if (valorGrupo!='' && valorGrupo<1) {							
 						alert ("El grupo debe ser un número comprendido entre 1 y 9999");
+						fin();
 						return;					
 					}
 					
-					if (valorOrden<1) {							
+					if (valorGrupo!='' && valorOrden<1) {							
 						alert ("El orden debe ser un número comprendido entre 1 y 9999");
+						fin();
 						return;					
 					}
 						
@@ -745,6 +749,7 @@
 			
 			if (datos.length < 1) {
 				alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
+				fin();
 				return;
 			}
 			
