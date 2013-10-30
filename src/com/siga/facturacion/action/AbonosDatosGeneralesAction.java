@@ -45,6 +45,7 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String accion = (String)request.getParameter("accion");
 			String idAbono = (String)request.getParameter("idAbono");
+			String idPagoJG = (String)request.getParameter("idPagoJG");
 			String idInstitucionAbono = (String)request.getParameter("idInstitucion");
 			String idFactura = (String)request.getParameter("idfactura");
 			String volver = null;
@@ -66,6 +67,7 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			
 			// Paso de parametros empleando request
 			request.setAttribute("IDABONO", idAbono);
+			request.setAttribute("idPagoJG", idPagoJG);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
 			request.setAttribute("IDFACTURA", idFactura);
 			request.setAttribute("ACCION", accion);
@@ -76,8 +78,11 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			// mostramos la ventana con la pregunta
-			
-			Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"ABONO",null, null);
+			String tipoInforme = "ABONO";
+			if(idPagoJG!=null &&!idPagoJG.equals(""))
+				tipoInforme = "CPAGO";
+				
+			Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,tipoInforme,null, null);
 			if(informeBeans!=null && informeBeans.size()>1){
 				informeUnico = ClsConstants.DB_FALSE;
 				

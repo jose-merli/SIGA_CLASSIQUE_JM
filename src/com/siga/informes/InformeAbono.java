@@ -57,16 +57,24 @@ public class InformeAbono extends MasterReport {
 		return ht;
 	}
 	
+	public Hashtable getDatosInformeAbono(UsrBean usr, Hashtable htDatos) throws ClsExceptions
+	{
+		Hashtable ht = new Hashtable();
+		String idioma = usr.getLanguage().toUpperCase();
+		String institucion =usr.getLocation();
+		String idAbono =(String)htDatos.get("idAbono");
+		htDatos.put("IDABONO_INFORME", idAbono);
+		FacAbonoAdm aboAdm = new FacAbonoAdm(usr);
+		htDatos.putAll(aboAdm.getDatosImpresionInformeAbono(institucion,idAbono));
+		return htDatos;
+	}
+	
+	protected String reemplazarDatos(UsrBean usr, String plantillaFO, Hashtable htDatos) throws ClsExceptions{
 
-
-	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions{
-		Hashtable htDatos= null;
-				
+		
 		String plantilla=plantillaFO;
 		
-		HttpSession ses = request.getSession();
-		String idAbono =  (String)request.getAttribute("IDABONO_INFORME");
-		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+		String idAbono =  (String)htDatos.get("IDABONO_INFORME");
 		
 		String institucion =usr.getLocation();
 		
@@ -98,6 +106,20 @@ public class InformeAbono extends MasterReport {
 		
 		plantilla = this.reemplazaVariables(htDatos, plantilla);
 		return plantilla;
+		
+	}
+	
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions{
+		Hashtable htDatos= new Hashtable();
+		String idAbono =  (String)request.getAttribute("IDABONO_INFORME");
+		htDatos.put("IDABONO_INFORME", idAbono);		
+		
+		HttpSession ses = request.getSession();
+		
+		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+		return reemplazarDatos(usr, plantillaFO, htDatos);
+		
+		
 	}
 
 	/**
@@ -176,5 +198,37 @@ public class InformeAbono extends MasterReport {
 		}
         return fPdf;
 	}
+	public File getInformeGenericoFo (AdmInformeBean beanInforme,
+			Hashtable htDatosInforme, String idiomaExt, String nombreFileOut,
+			UsrBean usr) throws SIGAException, ClsExceptions{
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
+			+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+			+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+
+// MODELO DE TIPO FO:
+		String carpetaInstitucion = "";
+		if(beanInforme.getIdInstitucion()==null || beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0))==0){
+			carpetaInstitucion = "2000";
+		}else{
+			carpetaInstitucion = ""+beanInforme.getIdInstitucion();
+		}
+		String rutaPlantillaInstitucion = rutaPlantilla + ClsConstants.FILE_SEP
+			+ carpetaInstitucion + ClsConstants.FILE_SEP
+				+ beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
+		String nombrePlantilla = beanInforme.getNombreFisico() + "_"
+			+ idiomaExt + ".fo";
+		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP
+			+ carpetaInstitucion + ClsConstants.FILE_SEP
+				+ beanInforme.getDirectorio();
+
+		UtilidadesHash.set(htDatosInforme,"RUTA_LOGO",rutaPlantillaInstitucion+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg");
+		String contenidoPlantilla = obtenerContenidoPlantilla(rutaPlantillaInstitucion,nombrePlantilla);
+		File fPdf = generarInforme(usr,htDatosInforme,rutaAlm,contenidoPlantilla,rutaAlm,beanInforme.getNombreSalida()+"_"+nombreFileOut);
+		return fPdf;
+
+	}
+	
 
 }

@@ -32,8 +32,6 @@ import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -47,7 +45,6 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -895,6 +892,9 @@ public class DefinirEnviosAction extends MasterAction {
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
 					envioInformesGenericos.gestionarComunicacionPagoColegiados(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturaRectificativa)){
+					envioInformesGenericos.gestionarComunicacionFacturasRectificativas(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
 					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);

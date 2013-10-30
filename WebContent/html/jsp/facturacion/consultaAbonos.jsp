@@ -115,37 +115,66 @@
 			{
 				parent.buscar();
 			}			
-		
+			
+					
+			
 			function enviar(fila)
 			{
-			   	
-			   	var auxSol = 'oculto' + fila + '_1';
-			    var idSolic = document.getElementById(auxSol);			          		
-			   				   	
-			   	var auxPers = 'oculto' + fila + '_3';
-			    var idPers = document.getElementById(auxPers);	
-			    	    
-			    var auxDesc = 'oculto' + fila + '_4';
-			    var desc = document.getElementById(auxDesc);			    
-			    
-			    document.DefinirEnviosForm.idSolicitud.value=idSolic.value;
-			   	document.DefinirEnviosForm.idPersona.value=idPers.value;
-			   	document.DefinirEnviosForm.descEnvio.value="Abono ";
-			   	
-			   	document.DefinirEnviosForm.modo.value='envioModal';		   	
-			   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
- 			   	if (resultado==undefined||resultado[0]==undefined||resultado[0]=="M"){			   		
-			   	} else {
-			   		var idEnvio = resultado[0];
-				    var idTipoEnvio = resultado[1];
-				    var nombreEnvio = resultado[2];				    
-					//alert(idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio);
-				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-				   	document.DefinirEnviosForm.modo.value='editar';
-				   	document.DefinirEnviosForm.submit();
-			   	}
+				var idPago = "idPago"+fila;
+				
+				if(document.getElementById(idPago).value!=''){
+					var auxPers = 'oculto' + fila + '_3';
+				    var idPersona = document.getElementById(auxPers).value;
+					
+					
+					
+					var idInst = "oculto"+fila+"_2";
+					idPago = document.getElementById(idPago).value;
+					idInstitucion =  document.getElementById(idInst).value;
+					
+					datos = "idPersona=="+idPersona + "##idPago==" +idPago + "##idInstitucion==" +document.InformesGenericosForm.idInstitucion.value + "##idTipoInforme==CPAGO%%%";
+					
+					document.InformesGenericosForm.datosInforme.value =datos;
+					document.InformesGenericosForm.idTipoInforme.value = 'CPAGO';
+					
+					
+					
+				}else{
+					// EJEMPLO: var dat="idAbono==25##idinstitucion==2040%%%idAbono==26##idinstitucion==2040%%%idAbono==27##idinstitucion==2040%%%idAbono==28##idinstitucion==2040";
+					
+				
+				
+					var auxPers = 'oculto' + fila + '_3';
+				    var idPersona = document.getElementById(auxPers).value;
+					var idAbono = "oculto" + fila + "_1";
+					datos = "idPersona=="+idPersona +"##idAbono=="+ document.getElementById(idAbono).value+ "##idInstitucion=="+ document.InformesGenericosForm.idInstitucion.value + "##idTipoInforme==ABONO%%%";
+					
+					document.InformesGenericosForm.datosInforme.value =datos;
+					document.InformesGenericosForm.idTipoInforme.value = 'ABONO';
+				}
+//				if(document.getElementById("informeUnico").value=='1'){
+	//				document.InformesGenericosForm.submit();
+		//		}else{
+					var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+					if (arrayResultado==undefined||arrayResultado[0]==undefined){
+					   		
+				   	} 
+				   	else {
+				   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+				   		if(confirmar){
+				   			var idEnvio = arrayResultado[0];
+						    var idTipoEnvio = arrayResultado[1];
+						    var nombreEnvio = arrayResultado[2];				    
+						    
+						   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+						   	document.DefinirEnviosForm.modo.value='editar';
+						   	document.DefinirEnviosForm.submit();
+				   		}
+				   	}
+				// }
+
 			}
-		
+			
 		</script>
 
 	</head>
@@ -224,7 +253,9 @@
 							<input type="hidden" name="oculto<%=(i+1)%>_3" value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
 							<input type="hidden" name="oculto<%=(i+1)%>_4" value="<%=row.getString(FacAbonoBean.C_IDFACTURA)%>">
 							<input type="hidden" name="oculto<%=(i+1)%>_5" value=" ">
-
+							<input type="hidden" name="oculto<%=(i+1)%>_6" value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>">
+							<input type="hidden" name="oculto<%=(i+1)%>_7" value="<%=row.getString(FacAbonoBean.C_IDPERSONA)%>">
+							<input type="hidden" name="idPago<%=(i+1)%>" id="idPago<%=(i+1)%>"	value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
 							<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_NUMEROABONO))%>
 						</td>
 						<td>
@@ -277,6 +308,15 @@
 		<html:hidden property = "idPersona" value = ""/>
 		<html:hidden property = "descEnvio" value = ""/>
 		
+	</html:form>
+	<html:form action="/INF_InformesGenericos" method="post"  target="submitArea">
+		<html:hidden property="idInstitucion" styleId="idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property="idTipoInforme"  styleId="idTipoInforme"/>
+		<html:hidden property="enviar"   styleId="enviar" value="1"/>
+		<html:hidden property="descargar"  styleId="descargar" value="1"/>
+		<html:hidden property="datosInforme"  styleId="datosInforme"/>
+		<html:hidden property="modo"  styleId="modo" value = "preSeleccionInformes"/>
+		<input type='hidden' name='actionModal' id='actionModal'>
 	</html:form>
 
 	</body>

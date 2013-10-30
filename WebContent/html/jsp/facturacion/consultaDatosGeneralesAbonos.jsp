@@ -49,7 +49,8 @@ String path = actionMapping.getPath();
 	String numeroAbono=(String)request.getAttribute("NUMEROABONO"); // Obtengo el número del abono
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
-	String idFactura = (String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la factura 
+	String idFactura = (String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la factura
+	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
 	Hashtable datosAbono= new Hashtable();
 
 	
@@ -123,6 +124,7 @@ String path = actionMapping.getPath();
 
 	<body class="tablaCentralCampos">
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
+<input type="hidden" id = "idPagoJG" value ="<%=idPagoJG%>" />
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 	
 		<!-- CAMPOS DEL REGISTRO -->
@@ -292,7 +294,7 @@ String path = actionMapping.getPath();
 			<tr  width="100%">
 				<td>
 					<br>&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"/>" onclick="download();" class="button">	
+					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="general.boton.download"/>" onclick="download();" class="button">	
 				</td>
 			</tr>
 			</table>		
@@ -311,10 +313,34 @@ String path = actionMapping.getPath();
 
 		<script language="JavaScript">
 		
+		
+		
+		
+		
+		
+		
+		
+		
 		function download()
 		{
-			
 			sub();
+			
+			if(document.getElementById("idPagoJG").value!=''){
+				
+			
+				
+				idPago = document.getElementById("idPagoJG").value;
+				idPersona = document.AbonosDatosGeneralesForm.idPersona.value;
+				var idInstitucion = document.AbonosDatosGeneralesForm.idInstitucion.value;
+				
+				datos = "idPersona=="+idPersona+"##idPago==" +idPago + "##idInstitucion==" +idInstitucion + "##idTipoInforme==CPAGO%%%";
+				
+				document.InformesGenericosForm.datosInforme.value =datos;
+				document.InformesGenericosForm.idTipoInforme.value = 'CPAGO';
+				
+				
+				
+			}else{
 				var idInst = document.AbonosDatosGeneralesForm.idInstitucion.value;
 				var idAbono = document.AbonosDatosGeneralesForm.idAbono.value;
 				datos = 'idAbono=='+ idAbono+ "##idinstitucion=="+ idInst + "##idTipoInforme==ABONO%%%";
@@ -322,6 +348,8 @@ String path = actionMapping.getPath();
 				document.InformesGenericosForm.datosInforme.value =datos;
 				document.InformesGenericosForm.idTipoInforme.value = 'ABONO';
 			
+				
+			}
 			if(document.getElementById("informeUnico").value=='1'){
 				document.InformesGenericosForm.submit();
 			}else{
@@ -333,8 +361,10 @@ String path = actionMapping.getPath();
 			   	}
 			   	
 			}
+		
 
 		}
+			
 		
 			//Asociada al boton Restablecer
 			function accionRestablecer() 

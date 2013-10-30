@@ -130,12 +130,14 @@ public class GenerarAbonosAction extends MasterAction {
 			String idAbono = (String)fila.get(0);
 			String idInstitucion = (String)fila.get(1);
 			String idFactura = (String)fila.get(3);
+			String idPagoJG = (String)fila.get(5);
 
 			modo = "editar";
 			datosAbonos.put("accion",modo);
 			datosAbonos.put("idAbono",idAbono);
 			datosAbonos.put("idInstitucion",idInstitucion);
 			datosAbonos.put("idfactura",idFactura);
+			datosAbonos.put("idPagoJG",idPagoJG);
 			datosAbonos.put("botonVolver", "SI");
 	
 			request.setAttribute("datosAbonos", datosAbonos);		
@@ -163,11 +165,13 @@ public class GenerarAbonosAction extends MasterAction {
 			Vector fila = miform.getDatosTablaOcultos(0);
 			String idAbono = (String)fila.get(0);
 			String idInstitucion = (String)fila.get(1);
+			String idPagoJG = (String)fila.get(5);
 
 			modo = "consulta";
 			datosAbonos.put("accion",modo);
 			datosAbonos.put("idAbono",idAbono);
 			datosAbonos.put("idInstitucion",idInstitucion);
+			datosAbonos.put("idPagoJG",idPagoJG);
 			datosAbonos.put("botonVolver", "SI");
 			
 			request.setAttribute("datosAbonos", datosAbonos);					

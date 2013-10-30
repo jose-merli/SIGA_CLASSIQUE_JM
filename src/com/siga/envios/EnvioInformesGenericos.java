@@ -118,6 +118,7 @@ import com.siga.gratuita.form.ActuacionDesignaForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+import com.siga.informes.InformeAbono;
 import com.siga.informes.InformeCertificadoIRPF;
 import com.siga.informes.InformeColegiadosFacturaciones;
 import com.siga.informes.InformeColegiadosPagos;
@@ -156,6 +157,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesActaComision = "ACTAC";
 	public static final String comunicacionesAvisoExpedientes = "EXPAV";
 	public static final String comunicacionesIRPF = "IRPF";
+	public static final String comunicacionesFacturaRectificativa = "ABONO";
 	
 	public static final int tipoPlantillaWord = 1;
 	public static final int tipoPlantillaFo = 2;
@@ -283,6 +285,11 @@ public class EnvioInformesGenericos extends MasterReport {
 		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
 			InformeColegiadosPagos infColegiado = new InformeColegiadosPagos();
 			datosInforme = infColegiado.getDatosInformeColegiado(usrBean, datosInforme);
+			htDatosInforme.put("row", datosInforme);
+
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesFacturaRectificativa)) {
+			InformeAbono infColegiado = new InformeAbono();
+			datosInforme = infColegiado.getDatosInformeAbono(usrBean,datosInforme);
 			htDatosInforme.put("row", datosInforme);
 
 		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)) {
@@ -2140,6 +2147,26 @@ public class EnvioInformesGenericos extends MasterReport {
 							htDatosInformeFinal, idiomaExt,
 							identificador.toString(), usrBean, tipoPlantillaFo);
 
+				}else if (tipoComunicacion
+						.equals(EnvioInformesGenericos.comunicacionesFacturaRectificativa)) {
+//					String nColegiado = (String) datosInforme.get("NCOLEGIADO");
+					// String idPago = (String) datosInforme.get("IDPAGOS");
+					String idTipoInforme = (String) datosInforme
+							.get("idTipoInforme");
+					identificador = new StringBuffer();
+//					identificador.append(nColegiado);
+//					identificador.append("_");
+					identificador.append(idInstitucion);
+					identificador.append("_");
+					identificador.append(idPersona);
+					identificador.append("_");
+					String hoy = UtilidadesString.formatoFecha(new Date(),
+							"yyyyMMddhhmmssSSS");
+					identificador.append(hoy);
+					fileDocumento = getInformeGenerico(beanInforme,
+							htDatosInformeFinal, idiomaExt,
+							identificador.toString(), usrBean, tipoPlantillaFo);
+
 				} else if (tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)) {
 					String nColegiado = (String) datosInforme.get("NCOLEGIADO");
@@ -3942,6 +3969,12 @@ public class EnvioInformesGenericos extends MasterReport {
 				htDatosInforme = (Hashtable) htDatosInforme.get("row");
 				f = infColegiadoFo.getInformeGenericoFo(beanInforme,
 						htDatosInforme, idiomaExt, identificador, usr);
+			}else if (beanInforme.getIdTipoInforme().equals(
+					comunicacionesFacturaRectificativa)) {
+				InformeAbono informeAbono = new InformeAbono();
+				htDatosInforme = (Hashtable) htDatosInforme.get("row");
+				f = informeAbono.getInformeGenericoFo(beanInforme,
+						htDatosInforme, idiomaExt, identificador, usr);
 			}
 			break;
 
@@ -5226,6 +5259,79 @@ public class EnvioInformesGenericos extends MasterReport {
 		// return isEnvioBatch;
 
 	}
+	public void gestionarComunicacionFacturasRectificativas(DefinirEnviosForm form,
+			Locale locale, UsrBean userBean) throws ClsExceptions,
+			SIGAException {
+
+		MasterReport masterReport = new MasterReport();
+		Vector datosInformeVector = masterReport.getDatosInforme(form
+				.getDatosInforme());
+		String idPersona = getIdColegiadoUnico(datosInformeVector);
+		String idInstitucion = userBean.getLocation();
+
+		String datosEnvios = form.getDatosEnvios();
+		String[] datosEnvio = datosEnvios.split("##");
+		Hashtable<String, List> enviosHashtable = new Hashtable<String, List>();
+		List<String> informesList = null;
+		for (int i = 0; i < datosEnvio.length; i++) {
+			String lineaEnvio = datosEnvio[i];
+			String[] parametrosEnvios = lineaEnvio.split(",");
+
+			String idTipoEnvio = parametrosEnvios[0];
+			String idPlantillaEnvio = parametrosEnvios[1];
+			String idInforme = parametrosEnvios[2];
+			String idInstitucionInforme = parametrosEnvios[3];
+			
+			String acuseRecibo = parametrosEnvios[4];
+			String key = idTipoEnvio + "_" + idPlantillaEnvio+"_"+acuseRecibo;
+			if (enviosHashtable.containsKey(key)) {
+				informesList = enviosHashtable.get(key);
+			} else {
+				informesList = new ArrayList<String>();
+
+			}
+			informesList.add(idInforme + "," + idInstitucionInforme);
+			enviosHashtable.put(key, informesList);
+
+		}
+		
+		Vector<AdmInformeBean> informesVector = null;
+		String keyEnvios = null;
+		
+		
+
+			Vector vDocumentos = new Vector();
+			
+			Iterator iteEnvios = enviosHashtable.keySet().iterator();
+			keyEnvios = (String) iteEnvios.next();
+			informesList = enviosHashtable.get(keyEnvios);
+			informesVector = this.getInformes(informesList, userBean);			
+			for (int i = 0; i < datosInformeVector.size(); i++) {
+				Hashtable datosInforme = (Hashtable) datosInformeVector.get(i);
+				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,
+						informesVector, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesFacturaRectificativa));
+
+			}
+			
+			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
+			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
+			form.setAcuseRecibo(keyEnvios.split("_")[2]);
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);	
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre()+" "+nombreyapellidos);
+			
+			Envio envio = getEnvio(form, true, locale, userBean);
+
+			// Genera el envio:
+			envio.generarEnvio(idPersona,
+					EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,
+					vDocumentos);
+
+	
+		// return isEnvioBatch;
+
+	}
+	
 
 	public void gestionarComunicacionFacturacionColegiados(
 			DefinirEnviosForm form, Locale locale, UsrBean userBean)

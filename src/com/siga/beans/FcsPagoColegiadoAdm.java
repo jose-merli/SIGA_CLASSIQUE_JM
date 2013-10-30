@@ -213,7 +213,10 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		} catch (ClsExceptions e) {
 			throw new ClsExceptions (e, "Error al obtener el IRPF");
 		}
-		return ((Hashtable)resultado.get(0)).get("IMPIRPF").toString();
+		if(resultado!=null && resultado.size()>0 && ((Hashtable)resultado.get(0)).get("IMPIRPF")!=null)
+			return ((Hashtable)resultado.get(0)).get("IMPIRPF").toString();
+		else 
+			return "";
 	}
 	
 

@@ -2107,6 +2107,7 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.sjcs.facturaRectificativa.asunto");
 			}else if(idTipoInforme.equals("ACTAC")){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
