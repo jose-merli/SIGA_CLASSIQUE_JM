@@ -399,9 +399,11 @@ public class DefinirEnviosAction extends MasterAction {
 		try {
 
 			/***** PAGINACION*****/
-			HashMap databackup=new HashMap();
-			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-				databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			String idPaginador = getIdPaginador(super.paginador,getClass().getName());
+			request.setAttribute(ClsConstants.PARAM_PAGINACION,idPaginador);
+			HashMap databackup=getPaginador(request, idPaginador);
+			if (databackup!=null){
+//			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
 				Paginador paginador = (Paginador)databackup.get("paginador");
 				datos=new Vector();
 
@@ -436,7 +438,8 @@ public class DefinirEnviosAction extends MasterAction {
 				if (resultado!=null){ 
 					datos = resultado.obtenerPagina(1);
 					databackup.put("datos",datos);
-					request.getSession().setAttribute("DATAPAGINADOR",databackup);
+					setPaginador(request, idPaginador, databackup);
+//					request.getSession().setAttribute("DATAPAGINADOR",databackup);
 				}   
 
 

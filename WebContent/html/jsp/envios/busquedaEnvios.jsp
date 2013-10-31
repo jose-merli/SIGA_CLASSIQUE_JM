@@ -59,11 +59,12 @@
 	String totalRegistros ="";
 	
 	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
- if (ses.getAttribute("DATAPAGINADOR")!=null){
-	 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-
 	
+	
+	HashMap hm=new HashMap();
+	String idPaginador = (String)request.getAttribute(ClsConstants.PARAM_PAGINACION);
+	if (ses.getAttribute(idPaginador)!=null) {
+		hm = (HashMap)ses.getAttribute(idPaginador);
 	
 	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
 	  resultado = (Vector)hm.get("datos");
@@ -243,7 +244,7 @@
 					<% } %>
 					</td>
 					<td>
-					<% if (fechaProgramada!=null && !fechaProgramada.equals("")) { %>
+					<% if (fechaProgramada!=null && !fechaProgramada.equals("")&& !fechaProgramada.equals("null")) { %>
 						<%=GstDate.getFormatedDateMedium(userBean.getLanguage(),fechaProgramada)%>
 					<% } else { %>
 						&nbsp;
