@@ -1046,8 +1046,7 @@
 				var dt2  = fFecha.substring(3,5);
 				var dt3  = fFecha.substring(6,10);
 	
-				var mes = parseInt (dt2) - 1;
-	
+				var mes = parseInt (dt2,10) - 1;
 	
 				var Fecha= new Date(fFecha);
 				var iYear = Fecha.getFullYear();	
