@@ -190,6 +190,7 @@
 	            		// Ademas comprobamos que sea la cuenta por defecto
 	            		boolean bsel=false;
 	            		if (row.getString("BANCOS_CODIGO")!=null && row.getString("BANCOS_CODIGO").equalsIgnoreCase(bdCuenta)) {
+	            			bsjcs=true;
 	            			bsel=true;
 	            		}           		
 					%>
