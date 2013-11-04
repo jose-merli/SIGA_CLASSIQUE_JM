@@ -115,7 +115,7 @@
 							<siga:Idioma key="envios.plantillas.literal.asunto"/>
 						</td>
 						<td width="70%">
-							<html:text property="asunto"  styleClass="boxCombo" style="width:640" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
+							<html:text property="asunto"  styleClass="boxCombo" style="width:640px" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
 						<td width="15%" align="left">
 			 			 <a href="javascript:abrirAyuda();"><img border=0 src="<html:rewrite page='/html/imagenes/help.gif'/>"  alt="<siga:Idioma key="general.ayuda.normativa"/>"></a>
