@@ -191,6 +191,10 @@ public class DefinirEnviosAction extends MasterAction {
 				}else if (accion.equalsIgnoreCase("descargarLogComunicacion")){
 					ClsLogging.writeFileLog("descargarLogComunicacion. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = descargarLogComunicacion(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("buscarInicio")){
+					String idPaginador = getIdPaginador(super.paginador,getClass().getName());
+					request.getSession().removeAttribute(idPaginador);
+					mapDestino = buscar(mapping, miForm, request, response);
 				}
 				
 				/*else if (accion.equalsIgnoreCase("procesarCorreoOrdinario"))
