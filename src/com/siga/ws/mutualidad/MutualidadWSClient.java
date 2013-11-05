@@ -253,15 +253,22 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			datosSolicitud = rellenarDatosSolicitud(ht.get("datosSolicitudEstados"));
 			datosBancarios = new Integracion_DatosBancarios();
 			datosPoliza = new Integracion_DatosPoliza();
-			datosBeneficiarios = new Integracion_Beneficiarios();
+			// jbd 28/10/2013 // A peticion de la mutualidad ahora se deben pasar tambien los beneficiarios del seguro gratuito
+			// datosBeneficiarios = new Integracion_Beneficiarios();
+			datosBeneficiarios = rellenarDatosBeneficiarios(ht.get("datosBeneficiarios"));
 			datosSolicitudEstados = new Integracion_Solicitud_Estados();
 			datosSolicitud.setIdTipoSolicitud(ACCIDENTES_GRATUITO);
 			
 			Integracion_Solicitud_Respuesta response = stub.MGASolicitudPolizaAccuGratuitos(datosBancarios, datosPoliza, datosDirecciones, datosPersona, datosSolicitud, datosSolicitudEstados, datosBeneficiarios);
 			
-			respuesta.setCorrecto(true);
-			respuesta.setIdSolicitud(response.getIdSolicitud());
-			respuesta.setPDF(response.getPDF());
+			if(response.getIdSolicitud()!=null && response.getIdSolicitud()!=0){
+				respuesta.setCorrecto(true);
+				respuesta.setIdSolicitud(response.getIdSolicitud());
+				respuesta.setPDF(response.getPDF());
+			}else{
+				respuesta.setCorrecto(false);
+				respuesta.setMensajeError(response.getValorRespuesta());	
+			}
 			
 		}catch (Exception e) {
 			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e.getMessage());

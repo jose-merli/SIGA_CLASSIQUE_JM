@@ -10,6 +10,7 @@ import com.siga.Utilidades.UtilidadesString;
 /**
  * Tag que implementa un conjunto de campos (etiqueta fieldset + legend) 
  * @author raul.ggonzalez 07-12-04
+ * @author jose.barrientos 29/10/2013 Añadimos clases al conjunto de campos para poder ocultar/mostrar mediante jQuery
  */
 
 public class TagConjCampos extends TagSupport {
@@ -20,6 +21,7 @@ public class TagConjCampos extends TagSupport {
 	boolean oculto;
 	private String preFunction;
 	private String postFunction;
+	private String clase="";
 	
 	/**
 	 * Da valor al atributo 
@@ -71,6 +73,23 @@ public class TagConjCampos extends TagSupport {
 	public void setPostFunction(String postFunction) {
 		this.postFunction = postFunction;
 	}
+	
+	/**
+	 * Da valor al atributo 
+	 * @author jose.barrientos 9-12-09
+	 * @param dato 
+	 */
+	public void setClase(String clase) {
+		this.clase = clase;
+	}
+
+	/**
+	 * Devuelve el valor de la clase o clases del conjunto de campos
+	 * @return
+	 */
+	public String getClase() {
+		return clase;
+	}
 
 /**
  * Acciones a pintar antes del tag 
@@ -88,9 +107,9 @@ public class TagConjCampos extends TagSupport {
 			
 			out.println("	<!-- SUBCONJUNTO DE DATOS -->");
 			if (oculto){
-				out.println("<fieldset class=\"legendNoBorder\">");
+				out.println("<fieldset class='legendNoBorder,"+getClase()+"'>");
 			}else{
-				out.println("<fieldset>");
+				out.println("<fieldset class='"+getClase()+"'>");
 			}
 			if (this.leyenda!=null) {
 				
