@@ -532,10 +532,10 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 						form.setNumeroCuenta(cuentaBean.getNumeroCuenta());
 					}
 					
-					String estadoCivil = perAdm.getEstadoCivil(idPersona);
+					String estadoCivil = form.getIdEstadoCivil();
 					if(estadoCivil!=null && !estadoCivil.equalsIgnoreCase("")){
 						form.setIdEstadoCivil(String.valueOf(AlterMutuaHelper.getEstadoCivilAM(estadoCivil)));
-						form.setEstadoCivil(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_ESTADOCIVIL, form.getIdEstadoCivil()));
+						form.setEstadoCivil(catAdm.getValor(AlterMutuaHelper.CATALOGO, AlterMutuaHelper.CONJUNTO_ESTADOCIVIL, estadoCivil));
 					}else{
 						form.setIdEstadoCivil("");
 						form.setEstadoCivil("");
