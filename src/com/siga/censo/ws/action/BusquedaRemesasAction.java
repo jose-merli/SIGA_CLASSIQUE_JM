@@ -13,9 +13,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenWs;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsExample;
-import org.redabogacia.sigaservices.app.model.EcomCenWsExtended;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvioExample;
+import org.redabogacia.sigaservices.app.model.EcomCenWsEnvioExtended;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 
 import com.atos.utils.ClsExceptions;
@@ -211,8 +210,8 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		List<EdicionRemesaForm> lista = null;
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-		EcomCenWsExample ecomCenWsExample = new EcomCenWsExample();
-		EcomCenWsExample.Criteria ecomWSCriteria = ecomCenWsExample.createCriteria();
+		EcomCenWsEnvioExample ecomCenWsEnvioExample = new EcomCenWsEnvioExample();
+		EcomCenWsEnvioExample.Criteria ecomWSCriteria = ecomCenWsEnvioExample.createCriteria();
 		
 		
 		//colegio
@@ -225,11 +224,11 @@ public class BusquedaRemesasAction extends MasterAction {
 		}
 		//fecha peticion desde
 		if (isNotnull(form.getFechaPeticionDesde())) {
-			ecomWSCriteria.andFechapeticionGreaterThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionDesde()));
+			ecomWSCriteria.andFechacreacionGreaterThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionDesde()));
 		}			
 		//fecha peticion hasta
 		if (isNotnull(form.getFechaPeticionHasta())) {
-			ecomWSCriteria.andFechapeticionLessThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionHasta()));
+			ecomWSCriteria.andFechacreacionLessThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionHasta()));
 		}
 		
 		//busqueda referente a los datos del colegiado
@@ -260,19 +259,20 @@ public class BusquedaRemesasAction extends MasterAction {
 		if (isNotnull(form.getIdentificacion())) {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
-		ecomCenWsExample.orderByNumeropeticionDESC();
+		ecomCenWsEnvioExample.orderByNumeropeticionDESC();
 				
-		List<EcomCenWsExtended> listaEcomCenWs = cenWSService.getEcomCenWsList(ecomCenWsExample, ecomCenDatosExample, form.isConIncidencia(), form.isConError());
-		if (listaEcomCenWs != null) {
+		List<EcomCenWsEnvioExtended> listaEcomCenWsEnvio = cenWSService.getEcomCenWsEnvioList(ecomCenWsEnvioExample, ecomCenDatosExample, form.isConIncidencia(), form.isConError());
+		if (listaEcomCenWsEnvio != null) {
 			lista = new ArrayList<EdicionRemesaForm>();
-			for (EcomCenWsExtended ecomCenWs : listaEcomCenWs) {
+			for (EcomCenWsEnvioExtended ecomCenWsEnvio : listaEcomCenWsEnvio) {
 				EdicionRemesaForm edicionRemesaForm = new EdicionRemesaForm();
-				edicionRemesaForm.setIdcensows(ecomCenWs.getIdcensows());
-				edicionRemesaForm.setIdinstitucion(ecomCenWs.getIdinstitucion());
-				edicionRemesaForm.setNumeroPeticion(ecomCenWs.getNumeropeticion());
-				edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWs.getFechapeticion()));
-				edicionRemesaForm.setCoderror(ecomCenWs.getCoderror());
-				edicionRemesaForm.setIncidencias(ecomCenWs.getIncidencias());
+				edicionRemesaForm.setIdcensowsenvio(ecomCenWsEnvio.getIdcenwsenvio());
+				edicionRemesaForm.setIdinstitucion(ecomCenWsEnvio.getIdinstitucion());
+				edicionRemesaForm.setNumeroPeticion(ecomCenWsEnvio.getNumeropeticion());
+				edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWsEnvio.getFechacreacion()));
+				edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(ecomCenWsEnvio.getIdcenwsenvio()));
+				edicionRemesaForm.setIncidencias(ecomCenWsEnvio.getIncidencias());
+				edicionRemesaForm.setConerrores(ecomCenWsEnvio.getConerrores());
 				lista.add(edicionRemesaForm);
 			}
 		}

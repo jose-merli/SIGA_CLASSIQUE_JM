@@ -7,14 +7,14 @@ import com.siga.general.MasterForm;
 
 public class EdicionRemesaForm extends MasterForm {
 	
-	private Long idcensows = null;
+	private Long idcensowsenvio = null;
 	private Short idinstitucion = null;	
 	private String numeroPeticion = null;
 	private String fechapeticion = null;
 	
 	private String nombreColegio = null;	
-	private String coderror = null;
-	private String descerror = null;
+	private List<String> listaErrores = null;
+	private Short conerrores = null;
 	
 	private String numeroColegiado = null;
 	private String nombre = null;
@@ -28,14 +28,13 @@ public class EdicionRemesaForm extends MasterForm {
 	private Integer incidencias;
 	
 	public void reset() {
-		idcensows = null;
+		idcensowsenvio = null;
 		idinstitucion = null;	
 		numeroPeticion = null;
 		fechapeticion = null;
 		
 		nombreColegio = null;	
-		coderror = null;
-		descerror = null;
+		listaErrores = null;		
 		
 		numeroColegiado = null;
 		nombre = null;
@@ -55,12 +54,7 @@ public class EdicionRemesaForm extends MasterForm {
 		this.numeroPeticion = numeroPeticion;
 	}
 	
-	public Long getIdcensows() {
-		return idcensows;
-	}
-	public void setIdcensows(Long idcensows) {
-		this.idcensows = idcensows;
-	}
+	
 	public String getNombreColegio() {
 		return nombreColegio;
 	}
@@ -74,18 +68,7 @@ public class EdicionRemesaForm extends MasterForm {
 	public void setFechapeticion(String fechapeticion) {
 		this.fechapeticion = fechapeticion;
 	}
-	public String getCoderror() {
-		return coderror;
-	}
-	public void setCoderror(String coderror) {
-		this.coderror = coderror;
-	}
-	public String getDescerror() {
-		return descerror;
-	}
-	public void setDescerror(String descerror) {
-		this.descerror = descerror;
-	}
+	
 	public String getNumeroColegiado() {
 		return numeroColegiado;
 	}
@@ -161,5 +144,41 @@ public class EdicionRemesaForm extends MasterForm {
 
 	public void setIncidencias(Integer incidencias) {
 		this.incidencias = incidencias;
+	}
+
+
+
+	public Long getIdcensowsenvio() {
+		return idcensowsenvio;
+	}
+
+
+
+	public void setIdcensowsenvio(Long idcensowsenvio) {
+		this.idcensowsenvio = idcensowsenvio;
+	}
+
+
+
+	public List<String> getListaErrores() {
+		return listaErrores;
+	}
+
+
+
+	public void setListaErrores(List<String> listaErrores) {
+		this.listaErrores = listaErrores;
+	}
+
+
+
+	public Short getConerrores() {
+		return conerrores;
+	}
+
+
+
+	public void setConerrores(Short conerrores) {
+		this.conerrores = conerrores;
 	}
 }

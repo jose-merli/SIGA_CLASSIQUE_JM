@@ -18,8 +18,9 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criteria;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenWs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsPaginaWithBLOBs;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
@@ -29,11 +30,9 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
-import com.siga.censo.service.CensoService;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
 import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.censo.ws.util.CombosCenWS;
-import com.siga.comun.vos.InstitucionVO;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -180,7 +179,7 @@ public class EdicionRemesasAction extends MasterAction {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
 		
-		List<EcomCenDatos> ecomCenDatos = cenWSService.getEcomCenDatosList(Long.valueOf(form.getIdcensows()), ecomCenDatosExample);
+		List<EcomCenDatos> ecomCenDatos = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample);
 		
 		if (ecomCenDatos != null) {
 			for (EcomCenDatos ecomCenDato : ecomCenDatos) {
@@ -222,19 +221,24 @@ public class EdicionRemesasAction extends MasterAction {
 	
 	protected String erroresCarga(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
-			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
-			Long idcensows = edicionRemesaForm.getIdcensows();
-			
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-			EcomCenWs ecomCenWs = cenWSService.getEcomCenWsByPk(idcensows);
-			edicionRemesaForm.setCoderror(ecomCenWs.getCoderror());
-			edicionRemesaForm.setDescerror(ecomCenWs.getDescerror());
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			Long idcensowsenvio = edicionRemesaForm.getIdcensowsenvio();
+			
+			List<String> listaErrores = cenWSService.getListaErrores(idcensowsenvio);
+			edicionRemesaForm.setListaErrores(listaErrores);
+			
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
 		return "erroresCarga";		
 	}
 	
+	
+
+
 	private String verEditar(String accion, MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		try {
 			
@@ -253,30 +257,27 @@ public class EdicionRemesasAction extends MasterAction {
 			
 			Hashtable miHash = new Hashtable();
 			
-			Long idcensows = null;
+			Long idcensowsenvio = null;
 			
 			if (ocultos != null && ocultos.size() > 0) {
-				idcensows = Long.valueOf(ocultos.get(0).toString());
+				idcensowsenvio = Long.valueOf(ocultos.get(0).toString());
 			} else {
 				throw new IllegalArgumentException("No se ha recibido el identificador para editar la remesa");
 			}
 					
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-			EcomCenWs ecomCenWs = cenWSService.getEcomCenWsByPk(idcensows);
+			EcomCenWsEnvio ecomCenWsEnvio = cenWSService.getEcomCenWsEnvioByPk(idcensowsenvio);
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
-			edicionRemesaForm.setIdcensows(ecomCenWs.getIdcensows());
-			edicionRemesaForm.setNombreColegio(institucionAdm.getNombreInstitucion(ecomCenWs.getIdinstitucion().toString()));
+			edicionRemesaForm.setIdcensowsenvio(ecomCenWsEnvio.getIdcenwsenvio());
+			edicionRemesaForm.setNombreColegio(institucionAdm.getNombreInstitucion(ecomCenWsEnvio.getIdinstitucion().toString()));
 			
-			edicionRemesaForm.setNumeroPeticion(ecomCenWs.getNumeropeticion());
-			edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWs.getFechapeticion()));
-			if (ecomCenWs.getCoderror() != null && !ecomCenWs.getCoderror().trim().equals("")) {
-				edicionRemesaForm.setCoderror(ecomCenWs.getCoderror());
-				edicionRemesaForm.setDescerror(ecomCenWs.getDescerror());
-			} else {
-				edicionRemesaForm.setDescerror(UtilidadesString.getMensajeIdioma(getUserBean(request), "censo.ws.literal.sinIncidencia"));
-			}
+			edicionRemesaForm.setNumeroPeticion(ecomCenWsEnvio.getNumeropeticion());
+			edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWsEnvio.getFechacreacion()));
 			
+			edicionRemesaForm.setConerrores(ecomCenWsEnvio.getConerrores());
+			edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(idcensowsenvio));
+			 			
 			edicionRemesaForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 						
 		} catch (Exception e) {

@@ -13,6 +13,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.CajgRespuestaEJGRemesaBean"%>
@@ -69,12 +70,13 @@
 		
 			
 		<div id='listadoEJGDiv' style='height:100%; position:absolute; width:100%; overflow:auto'>
-		<table border='1' width='100%' cellspacing='0' cellpadding='0' align='center'>
-				<tr class="filaTablaImpar">					
-					<td>${EdicionRemesaForm.descerror}&nbsp;</td>	
-				</tr>				
-					
-		 </table>
+			<table border='1' width='100%' cellspacing='0' cellpadding='0' align='center'>		
+				<c:forEach items="${EdicionRemesaForm.listaErrores}" var="error" varStatus="i">							
+					<tr class="labelTextValue">									
+						<td id="${i.index}">${error}"</td>						
+					</tr>
+				</c:forEach>					
+		 	</table>
 		 </div>
 
 	<!-- FIN: CAMPOS DEL REGISTRO -->

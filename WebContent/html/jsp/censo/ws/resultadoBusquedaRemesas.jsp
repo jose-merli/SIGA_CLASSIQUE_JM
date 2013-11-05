@@ -117,10 +117,10 @@
 	
 	<script type="text/javascript">
 		function erroresCarga(fila) {
-	    	var idcensows = document.getElementById('oculto' + fila + '_1');
+	    	var idcensowsenvio = document.getElementById('oculto' + fila + '_1');
 	    	
 	    	document.EdicionRemesaForm.modo.value="erroresCarga";	    	
-	    	document.EdicionRemesaForm.idcensows.value=idcensows.value;
+	    	document.EdicionRemesaForm.idcensowsenvio.value=idcensowsenvio.value;
 		   	
 			ventaModalGeneral(document.EdicionRemesaForm.name,'P');
 		}	
@@ -133,7 +133,7 @@
 	
 	<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo"  id="modo"  value="">
-		<input type="hidden" name="idcensows"  id="idcensows"  value="">
+		<input type="hidden" name="idcensowsenvio"  id="idcensowsenvio"  value="">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
@@ -159,11 +159,11 @@
 		   		   		
 		   		   		botones = "C,E";
 	   		   			
-	   		   			if (edicionRemesaForm.getCoderror() != null) {
+	   		   			if (edicionRemesaForm.getConerrores() != null && edicionRemesaForm.getConerrores() > 0) {
 	   		   				elems = new FilaExtElement[1];
 	   		   				elems[0]=new FilaExtElement("error", "erroresCarga", "censo.ws.literal.errorFormato", SIGAConstants.ACCESS_FULL);	   		   				
 	   		   				botones = "";
-	   		   			} else if (edicionRemesaForm.getIncidencias() > 0) {
+	   		   			} else if (edicionRemesaForm.getIncidencias() != null && edicionRemesaForm.getIncidencias() > 0) {
 	   		   				elems = new FilaExtElement[1];
 	   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
 	   		   				botones = "C";
@@ -175,7 +175,7 @@
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionRemesaForm.getIdcensows()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionRemesaForm.getIdcensowsenvio()%>">
 					<%=institucionAdm.getNombreInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>										
 					<td style="text-align: center"><%=edicionRemesaForm.getNumeroPeticion()%></td>					
 					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>					

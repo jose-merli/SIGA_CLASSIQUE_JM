@@ -14,6 +14,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -23,7 +24,6 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ConModuloBean"%>
-<%@ page import="org.redabogacia.sigaservices.app.autogen.model.EcomCenWs"%>
 
 
 
@@ -124,12 +124,14 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 										<siga:Idioma key="censo.ws.literal.incidenciaGeneral"/>										
 									</td>				
 									<td width="300">
-										<logic:empty property="coderror" name="EdicionRemesaForm">	
-											<html:text readonly="true" name="EdicionRemesaForm" property="descerror" styleClass="boxConsulta" size="60"/>
-										</logic:empty>
-										<logic:notEmpty property="coderror" name="EdicionRemesaForm">								
-											<html:textarea readonly="true" name="EdicionRemesaForm" property="descerror" styleClass="boxConsulta" rows="5" size="60" cols="4"/>
-										</logic:notEmpty>																				
+										<logic:equal property="conerrores" value="1" name="EdicionRemesaForm">		
+											<c:forEach items="${EdicionRemesaForm.listaErrores}" var="incidencia" varStatus="i">												
+												<c:out value="${incidencia}"/><br/>
+											</c:forEach>
+										</logic:equal>
+										<logic:equal property="conerrores" value="0" name="EdicionRemesaForm">
+											<siga:Idioma key="censo.ws.literal.sinIncidencia"/>
+										</logic:equal>		
 									</td>
 													
 									<td class="labelText" nowrap="nowrap">
@@ -147,7 +149,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 						<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="resultado">
 							<table class="tablaCampos" align="center">							
 								
-								<input type="hidden" name="idcensows" value="<bean:write name="EdicionRemesaForm" property="idcensows"/>"/>
+								<input type="hidden" name="idcensowsenvio" value="<bean:write name="EdicionRemesaForm" property="idcensowsenvio"/>"/>
 								<input type="hidden" name="modo" value="<bean:write name="EdicionRemesaForm" property="modo"/>"/>
 								
 								
