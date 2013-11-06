@@ -406,7 +406,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 8) AS estado, " +		
 							 "abono." + FacAbonoBean.C_FECHA   + " AS FECHA, "   +
-					 		 "factura." + FacFacturaBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+					 		 "abono." + FacAbonoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 				  			 "abono." + FacAbonoBean.C_IMPTOTALABONADO + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, " +
 							 "'' AS TARJETA, " +
