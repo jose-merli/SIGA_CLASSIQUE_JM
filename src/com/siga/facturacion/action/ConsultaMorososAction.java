@@ -257,9 +257,17 @@ public class ConsultaMorososAction extends MasterAction {
 	
 	
 	
-				if (paginador!=null){	 
+				if (paginador!=null){	
+					int paginaInt;
+					try{
+						paginaInt = Integer.parseInt(pagina);
+					}catch (Exception e) {
+						// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+						// cargamos la primera y no evitamos mostrar un error
+						paginaInt = 1;
+					}
 					if (pagina!=null){
-						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+						datos = paginador.obtenerPagina(paginaInt);
 					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}

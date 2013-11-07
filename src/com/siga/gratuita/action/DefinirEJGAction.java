@@ -362,7 +362,15 @@ public class DefinirEJGAction extends MasterAction
 						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admBean.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
 						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						int pagina;
+						try{
+							pagina = Integer.parseInt(miFormulario.getSeleccionarTodos());
+						}catch (Exception e) {
+							// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+							// cargamos la primera y no evitamos mostrar un error
+							pagina = 1;
+						}
+						datos = resultado.obtenerPagina(pagina);
 						miFormulario.setSeleccionarTodos("");
 						
 					}else{
