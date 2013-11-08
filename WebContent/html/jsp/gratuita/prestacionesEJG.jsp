@@ -23,7 +23,7 @@
 <!-- HEAD -->
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<title><siga:Idioma key="gratuita.expedienteEJG.prestaciones.titulor"/></title>
 	<siga:Titulo 
 		titulo="gratuita.expedienteEJG.prestaciones.titulo" 

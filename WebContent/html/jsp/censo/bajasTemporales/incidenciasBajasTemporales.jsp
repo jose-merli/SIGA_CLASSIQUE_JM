@@ -29,7 +29,7 @@
 
 <!-- Incluido jquery en siga.js -->
 
-<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 <!-- Step 4 -->
  <!-- Importar el js propio de la pagina-->
@@ -158,8 +158,8 @@
 
 function onLoad(){
 	
-	window.dialogHeight = "650px";
-	window.dialogWidth = "1000px";
+	window.dialogHeight = "650";
+	window.dialogWidth = "1000";
 }
 function accionCerrar(){
 	window.top.close();

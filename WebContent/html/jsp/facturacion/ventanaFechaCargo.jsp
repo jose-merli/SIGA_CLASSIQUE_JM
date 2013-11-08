@@ -34,7 +34,7 @@
 	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script language="JavaScript">
 			//Asociada al boton GuardarCerrar -->

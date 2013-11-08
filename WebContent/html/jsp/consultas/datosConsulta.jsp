@@ -124,7 +124,7 @@
 	
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<%=app%>/html/js/SIGA.js?v=${sessionScope.VERSIONJS}" type="text/javascript"></script>
 		
 		<!-- Validaciones en Cliente -->
 		<html:javascript formName="EditarConsultaForm" staticJavascript="false" />  

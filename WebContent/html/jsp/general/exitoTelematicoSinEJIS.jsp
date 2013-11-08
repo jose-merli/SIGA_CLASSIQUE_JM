@@ -17,7 +17,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 
-<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 
 
 
@@ -27,7 +27,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 <script type="text/javascript">
 		
 		function onload(){	

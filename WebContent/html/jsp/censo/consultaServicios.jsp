@@ -125,7 +125,7 @@ String app = request.getContextPath();
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">

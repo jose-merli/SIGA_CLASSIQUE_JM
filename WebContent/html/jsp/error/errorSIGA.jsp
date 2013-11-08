@@ -27,7 +27,7 @@ UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	</head>
 

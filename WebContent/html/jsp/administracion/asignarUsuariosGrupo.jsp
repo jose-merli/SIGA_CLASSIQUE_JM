@@ -22,7 +22,7 @@
 
 	
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+		<script src="<%=app%>/html/js/SIGA.js?v=${sessionScope.VERSIONJS}" type="text/javascript"></script>	
 	</head>
 	
 	<body>

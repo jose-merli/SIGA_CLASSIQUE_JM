@@ -23,7 +23,7 @@
 
 	
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
+		<script src="<%=app%>/html/js/SIGA.js?v=${sessionScope.VERSIONJS}" type="text/javascript"></script>	
 		<script type="text/javascript">
 		jQuery(function(){
 			jQuery("embed").attr("height", jQuery("#resultado", window.parent.document).height());

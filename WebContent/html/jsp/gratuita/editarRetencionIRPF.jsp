@@ -56,7 +56,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>	
 </head>
 
 <body>

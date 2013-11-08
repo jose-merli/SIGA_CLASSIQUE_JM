@@ -31,7 +31,7 @@
 	<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/css/calendar.css'/>">	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script src="<html:rewrite page='/html/js/validation.js'/>" type="text/javascript"></script>
 	
 </head>

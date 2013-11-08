@@ -63,7 +63,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<logic:notEqual name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">	
 		<!-- INICIO: TITULO Y LOCALIZACION -->

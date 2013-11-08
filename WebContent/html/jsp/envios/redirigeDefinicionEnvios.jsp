@@ -11,7 +11,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 
 	<script type="text/javascript" src="<html:rewrite page="/html/js/jquery-1.7.1.js"/>" ></script>
-	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/SIGA.js?v=${sessionScope.VERSIONJS}"/>" type="text/javascript"></script>
 </head>
 <body>
 <%

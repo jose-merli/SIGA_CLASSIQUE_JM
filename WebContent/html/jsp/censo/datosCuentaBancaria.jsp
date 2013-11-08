@@ -117,7 +117,7 @@ VERSIONES: -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 	<!-- Validaciones en Cliente -->
@@ -323,7 +323,6 @@ VERSIONES: -->
 			<html:hidden property="idCuenta" 		value="<%=idCuenta%>"/> 
 			<html:hidden property="idPersona" 		value="<%=idPersona%>"/> 
 			<html:hidden property="idInstitucion" 	value="<%=idInstitucion%>"/> 
-			<html:hidden property="titular" 	value="<%=titular%>"/>
 			<html:hidden property="motivo" 			value=""/> 
 		<%}%>
 		<input type="hidden" name="abonoCargoOrig" value="<%=UtilidadesHash.getString(htData,CenCuentasBancariasBean.C_ABONOCARGO)%>">

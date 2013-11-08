@@ -29,7 +29,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<css:css 		relativePath="/html/css/" 				files="ajaxtags.css" />
 	<css:css 	   	relativePath="/html/css/themes/" 		files="default.css,mac_os_x.css" />	
 	<js:javascript 	relativePath="/html/js/overlibmws/"		files="overlibmws.js" />
