@@ -39,6 +39,7 @@ import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.GenParametrosAdm;
 
 public class SIGAAuthItcgaeAction extends Action
 {
@@ -419,15 +420,17 @@ public class SIGAAuthItcgaeAction extends Action
 		String icon="logoconsejo2.gif";
 		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
+		GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)ses.getAttribute("USRBEAN"));
 		try
 		{
 			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
-		
+			String version=paramAdm.getValor(String.valueOf(ClsConstants.INSTITUCION_CGAE),"GEN",SIGAConstants.VERSIONJS,"0");
 			java.util.Properties stylesheet = interfazGestor.getInterfaceOptions();
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
-			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css");
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css?v="+version);
+			ses.setAttribute(SIGAConstants.VERSIONJS, version);
 		}
 		catch(com.atos.utils.ClsExceptions ex)
 		{

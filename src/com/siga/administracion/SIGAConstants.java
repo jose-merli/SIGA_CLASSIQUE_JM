@@ -16,6 +16,7 @@ public interface SIGAConstants
 	 */	
 	public static final String STYLESHEET_REF="SIGA_STYLESHEET";
 	public static final String STYLESHEET_SKIN="SKIN";
+	public static final String VERSIONJS="VERSIONJS";
 	public static final String PATH_LOGO="SIGA_LOGO";
 	public static final String STYLESHEET_PATH="directorios.carpeta.css";
 	public static final String ID_ANALYTICS="administracion.entorno.analytics";

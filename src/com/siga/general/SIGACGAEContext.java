@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionServlet;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -49,6 +50,7 @@ import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.GenParametrosAdm;
 
 
 /**
@@ -341,30 +343,6 @@ System.setProperties(properties);
 			bean.setIdPersona(idPersona.longValue());
 			retorno=idPersona.longValue();
 
-			/* RGG 07-09-2005 Cambio para comprobar solamente el NIF
-			
-			// Nos aseguramos que hay cierto parecido en los nombres
-			CenPersonaBean persona=(CenPersonaBean)vec.elementAt(0);
-			String apellido1=persona.getApellido1().toUpperCase();
-			String apellido2=persona.getApellido2().toUpperCase();
-			String nombre=persona.getNombre().toUpperCase();
-			_nombre=_nombre.toUpperCase();
-			int parecido=0;
-			if(_nombre.indexOf(apellido1)!=-1) parecido++;
-			if(_nombre.indexOf(apellido1)!=-1)parecido++;
-			if(_nombre.indexOf(nombre)!=-1)parecido++;
-			try{
-			if (parecido>2){
-				Long idPersona=persona.getIdPersona();
-				bean.setIdPersona(idPersona.longValue());
-				retorno=idPersona.longValue();
-			}
-			}catch(Exception e){
-				// Si se produce una excepción, el usuario quedará en -1
-				e.printStackTrace();
-			}
-			
-			*/
 
 		} else if (vec.size()>1) { // esto no se debe dar nunca
 			throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
@@ -512,42 +490,18 @@ System.setProperties(properties);
 		String icon="logoconsejo2.gif";
 		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
-		/*
-		if(location.equals("5"))
-		{
-			icon="logoMurcia.gif";
-		}
-
-		else if(location.equals("2"))
-		{
-			icon="logoGijon.gif";
-		}
-
-		else if(location.equals("3"))
-		{
-			icon="logoMalaga.gif";
-		}
-
-		else if(location.equals("6"))
-		{
-			icon="logoZaragoza.gif";
-		}
-
-		else if(location.equals("4"))
-		{
-			icon="logoMelilla.gif";
-		}
-
-		ses.setAttribute(SIGAConstants.LOCATION_ICON_REF, iconsPath+icon);
-		*/
+		GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)ses.getAttribute("USRBEAN"));
+		
 		try
 		{
 			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
+			String version=paramAdm.getValor(String.valueOf(ClsConstants.INSTITUCION_CGAE),"GEN",SIGAConstants.VERSIONJS,"0");
 			java.util.Properties stylesheet = interfazGestor.getInterfaceOptions();
 			icon = interfazGestor.getLogoImg();
 			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
 			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
-			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css");
+			ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin" + stylesheet.get("color")+"/stylesheet.css?v="+version);
+			ses.setAttribute(SIGAConstants.VERSIONJS, version);
 		}
 
 		catch(com.atos.utils.ClsExceptions ex)
