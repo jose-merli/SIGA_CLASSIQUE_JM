@@ -18,16 +18,14 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criteria;
-import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsPaginaWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
@@ -178,6 +176,10 @@ public class EdicionRemesasAction extends MasterAction {
 		if (isNotnull(form.getIdentificacion())) {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
+		
+		ecomCenDatosExample.orderByApellido1();
+		ecomCenDatosExample.orderByApellido2();
+		ecomCenDatosExample.orderByNombre();
 		
 		List<EcomCenDatos> ecomCenDatos = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample);
 		
