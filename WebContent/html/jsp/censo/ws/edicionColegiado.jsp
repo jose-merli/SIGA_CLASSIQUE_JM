@@ -39,7 +39,14 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="censo.ws.gestioncolegiado.titulo" localizacion="censo.ws.gestioncolegiado.localizacion"/>
+	<c:if test="${!EdicionColegiadoForm.historico}">
+		<siga:Titulo titulo="censo.ws.gestioncolegiado.titulo" localizacion="censo.ws.gestioncolegiado.localizacion"/>
+	</c:if>
+	
+	<c:if test="${EdicionColegiadoForm.historico}">
+		<siga:Titulo titulo="censo.ws.gestioncolegiado.historico.titulo" localizacion="censo.ws.gestioncolegiado.historico.localizacion"/>
+	</c:if>
+	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
