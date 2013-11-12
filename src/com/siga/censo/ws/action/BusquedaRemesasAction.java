@@ -106,7 +106,7 @@ public class BusquedaRemesasAction extends MasterAction {
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
 			String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
-//			busquedaRemesasForm.setNombreInstitucion(nombreInstitucionAcceso);
+			busquedaRemesasForm.setNombreColegio(nombreInstitucionAcceso);
 			busquedaRemesasForm.setIdColegio(getUserBean(request).getLocation());
 
 			busquedaRemesasForm.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
