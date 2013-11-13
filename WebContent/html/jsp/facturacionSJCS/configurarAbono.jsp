@@ -182,8 +182,9 @@
 	            		Row row = (Row) en.nextElement(); 
 	            		// Comprobamos que se trate de una cuenta para SJCS
 	            		String sjcs = row.getString("SJCS");
+	            		String activa = row.getString("ACTIVA");
 	            		boolean bsjcs=false;
-	            		if (sjcs!=null && !sjcs.equals("0")) {
+	            		if ((activa!=null && activa.equals("1")) && (sjcs!=null && !sjcs.equals("0"))) {
 	            			bsjcs=true;
 	            		}
 	            		

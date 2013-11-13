@@ -106,7 +106,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			request.setAttribute("modo", accion);
 			
 			FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(this.getUserBean(request));
-			Vector datosBancos = admBancoFac.obtenerBancos(idInstitucion);
+			Vector datosBancos = admBancoFac.obtenerBancosConBaja(idInstitucion);
 			request.setAttribute("bancosInstitucion", datosBancos);
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));

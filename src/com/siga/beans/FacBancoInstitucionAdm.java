@@ -345,4 +345,42 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+	
+	public Vector obtenerBancosConBaja(String idInstitucion) throws ClsExceptions,SIGAException {
+		   Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
+							"DECODE(BI." + FacBancoInstitucionBean.C_FECHABAJA + ",NULL,1,0) ACTIVA,"+ //Si esta de baja ->0, si esta activa ->1
+	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
+	            			"BI." + FacBancoInstitucionBean.C_NIF + "," +
+	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
+	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
+	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
+	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
+	            			"BI." + FacBancoInstitucionBean.C_SJCS + "," +
+	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
+							"BI.IMPCOMISIONPROPIACARGO COMISIONPROPIA, "+ 
+							"BI.IMPCOMISIONAJENACARGO COMISIONAJENA, "+		
+						    "BI.COD_BANCO, " +
+						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
+						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO ) AS SELECCIONADO "+ 
+
+							" FROM " + 
+							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
+	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion;
+							
+	            if (rc.find(sql)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos.add(fila);
+	               }
+	            }
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error ");
+	       }
+	       return datos;                        
+	    }	
 }
