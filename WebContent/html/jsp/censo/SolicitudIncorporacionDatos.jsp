@@ -1837,7 +1837,7 @@
 							
 							<tr>
 								<td colspan="2" style="padding:0px">
-									<table border="0" cellpadding="5" cellspacing="0">
+									<table>
 										<tr id="trEspanol1">
 											<td class="labelText">
 												CP&nbsp;(*)
@@ -1909,8 +1909,6 @@
 						</table>
 					</td>
 					
-					<td>&nbsp;</td>
-					
 					<td style="vertical-align: middle;">							
 						<table>
 							<tr>
@@ -1920,7 +1918,7 @@
 					</td>
 
 					<td>
-						<table border="0" cellpadding="5" cellspacing="0">
+						<table>
 							<tr>
 								<td  class="labelText">
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>&nbsp;(*)
