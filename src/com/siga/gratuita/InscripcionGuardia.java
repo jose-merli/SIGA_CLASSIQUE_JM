@@ -341,9 +341,26 @@ public class InscripcionGuardia {
 						Hashtable htGuardia = admGuardiasTurno.beanToHashTable(beanGuardia);
 						laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA, new Integer((String)htGuardia.get(ScsInscripcionGuardiaBean.C_IDGUARDIA)));
 						
+						
+						
 						// JPT: Comprobar que no exista ninguna guardia abierta (asi controlamos que no se pueda insertar dos veces)
 						if (this.comprobarNoGuardiaActiva(laHash)) {
 							insguardia.insert(laHash);
+							if(this.getBean().getNumeroGrupo()!=null){
+
+								
+								ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
+								admGrupoColegiado.insertaGrupoGuardiaColegiado(
+									this.getBean().getIdInstitucion(),
+									this.getBean().getIdTurno(),
+									beanGuardia.getIdGuardia(),
+									this.getBean().getIdPersona(), 
+									(String) laHash.get(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION), 
+									this.getBean().getNumeroGrupo(), 
+									this.getBean().getOrdenGrupo().toString(), 
+									null);
+							}
+							
 						} else {
 							throw new ClsExceptions("messages.inserted.error");
 						}
@@ -361,6 +378,8 @@ public class InscripcionGuardia {
 				}
 				
 				if(this.getBean().getNumeroGrupo()!=null){
+
+					
 					ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
 					admGrupoColegiado.insertaGrupoGuardiaColegiado(
 						this.getBean().getIdInstitucion(),
@@ -371,6 +390,28 @@ public class InscripcionGuardia {
 						this.getBean().getNumeroGrupo(), 
 						this.getBean().getOrdenGrupo().toString(), 
 						null);
+//					HAY QUE VALIDAR SI EL NUMERO GRUPO / ORDEN CUMPLE LAS VALIDACIONES.
+//					El tema es que no esta en transaccion y no se puede anular la insercion de la guardia- 
+//					Habia pensado borrar el grupo en caso que falle la validacion, pero para eso habria que informar
+//					al usuario por pantalla, ¿cómo? ya veremos 
+//					ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
+//					if(insguardia.getGrupoGuardia(idInstitucion.toString(),idTurno.toString(),idGuardia.toString(),fechaValidacion)){
+//						String idGrupoGuardiaColegiado = admGrupoColegiado.getUltimoGrupo(idInstitucion);
+//						Hashtable hash=new Hashtable();
+//						String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
+//						hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO,idGrupoGuardiaColegiado);
+//						admGrupoColegiado.deleteDirect(hash, claves);
+//						throw new SIGAException ("messages.grupoguardiacolegiado.existepersonagrupo");
+//					}
+//					
+//					if(insguardia.getOrdenGuardia(idInstitucion.toString(),idTurno.toString(),idGuardia.toString(),fechaValidacion)){
+//						String idGrupoGuardiaColegiado = admGrupoColegiado.getUltimoGrupo(idInstitucion);
+//						Hashtable hash=new Hashtable();
+//						String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
+//						hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO,idGrupoGuardiaColegiado);
+//						admGrupoColegiado.deleteDirect(hash, claves);
+//						throw new SIGAException ("messages.grupoguardiacolegiado.existeordengrupo");
+//					}
 				}
 			}
 			

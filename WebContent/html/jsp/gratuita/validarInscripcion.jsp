@@ -33,6 +33,8 @@
 	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>	
 
 	<script type="text/javascript">	
+	
+	
 	jQuery.noConflict();
 		function mostrarTrabajosSJCSPendientes() {
 			if(document.InscripcionTGForm.modo.value == "sbtComprobarInsertar" || document.InscripcionTGForm.modo.value == "sbgComprobarInsertar"
@@ -247,11 +249,12 @@
 			}
 				
 			if((document.getElementById('validar')&&document.getElementById('validar').checked)||!document.getElementById('validar')){
+				
 				if(document.InscripcionTGForm.porGrupos.value=='1'){
 					numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
 					
 					
-					if((document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar') &&numGuardiasSel.length-1 ==1){
+					if(numGuardiasSel.length-1 ==1){
 						if(document.InscripcionTGForm.numeroGrupo.value == "") {
 								fin();
 								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
@@ -523,7 +526,7 @@
 					
 					 
 					
-					if((document.InscripcionTGForm.modo.value=='sigInsertar'||document.InscripcionTGForm.modo.value=='vigValidar')&&numGuardiasSel.length-1 ==1){
+					if(numGuardiasSel.length-1 ==1){
 							if(document.InscripcionTGForm.numeroGrupo.value == "") {
 								fin();
 								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
@@ -983,7 +986,7 @@
 			
 			<div id="divGuardiaGrupo" style="display:none">
 				<c:choose>
-					<c:when test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='sigInsertar') }">
+					<c:when test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='vitValidar') }">
 						<siga:ConjCampos leyenda="Guardia de grupo">
 							<table width="100%" border="0">
 								<tr>
@@ -1074,11 +1077,12 @@
 						</siga:ConjCampos> 
 					</c:when>
 					
-					<c:when test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia' ) }">
-						<input type="hidden" name="mostrarAvisoPorGrupo" id="mostrarAvisoPorGrupo" />
-					</c:when>			
+								
 				</c:choose>
 			</div>
+		</c:if>
+		<c:if test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia' ) }">
+			<input type="hidden" name="mostrarAvisoPorGrupo" id="mostrarAvisoPorGrupo" />
 		</c:if>
 		
 		
@@ -1115,8 +1119,6 @@
 	<!-- FIN: SUBMIT AREA -->
 
 	<script>
-	
-	
 		if(document.getElementById("divGuardiaGrupo") && document.InscripcionTGForm.validarInscripciones.value=='N'){
 			numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
 			if(numGuardiasSel.length-1 ==1)

@@ -457,9 +457,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			// comprobando si alguna de las guardias es por grupo
 			boolean isAlgunaGuardiaPorGrupo = false;
 			String guardiasSeleccionadas = miForm.getGuardiasSel();
+			List<String> guardiasSeleccionadasList = null;
 			if (guardiasSeleccionadas != null && !guardiasSeleccionadas.equals("")) {
 				guardiasSeleccionadas = guardiasSeleccionadas.substring(0, guardiasSeleccionadas.lastIndexOf("@"));
-				List<String> guardiasSeleccionadasList = null;
+				
 				if (guardiasSeleccionadas != null && !guardiasSeleccionadas.equals("")) {
 					String[] guardiasSel = guardiasSeleccionadas.split("@");
 					guardiasSeleccionadasList = Arrays.asList(guardiasSel);
@@ -481,6 +482,23 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			} else {
 				miForm.setPorGrupos("0");
 			}
+			if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1") &&guardiasSeleccionadasList!=null &&guardiasSeleccionadasList.size()==1 ){
+				String idGuardia = (String)guardiasSeleccionadasList.get(0);
+				ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(
+						new Integer(miForm.getIdInstitucion()),
+						new Integer(miForm.getIdTurno()), 
+						new Integer(idGuardia), 
+						"sysdate",
+						"sysdate", 
+						this.getUserBean(request));
+				
+				if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
+					miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
+				}else{
+					miForm.setGruposGuardiaLetrado(new ArrayList<LetradoInscripcion>());
+				}
+			}	
+			
 			
 			// guardando la retencion seleccionada en el formulario (o "0" si no existe)
 			comprobarRetencion(miForm, this.getUserBean(request));
@@ -605,8 +623,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			tx = usr.getTransaction();
 			tx.begin();
 			
+			
+			
 			// Solicito el alta de la inscripcion de turno
 			InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
+			
+			if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("") ) {				
+				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")) {
+					int numeroGuardiasSel =0;
+					if(miForm.getGuardiasSel()!=null && !miForm.getGuardiasSel().equals(""))
+						numeroGuardiasSel = miForm.getGuardiasSel().split("@").length;
+					if(numeroGuardiasSel == 1)
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+				}
+			}
+			
 			inscripcion.solicitarAlta(miForm, usr);
 			
 			Hashtable original = (Hashtable) request.getSession().getAttribute("ORIGINALDIR");
@@ -693,6 +724,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					usr);	
 					
 			} else if(miForm.getFechaValidacion() != null && !miForm.getFechaValidacion().equals("")) {
+					if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")) {
+						int numeroGuardiasSel =0;
+						if(miForm.getGuardiasSel()!=null && !miForm.getGuardiasSel().equals(""))
+							numeroGuardiasSel = miForm.getGuardiasSel().split("@").length;
+						if(numeroGuardiasSel == 1)
+							inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					}
+				
+				
 				inscripcion.validarAlta(
 					miForm.getFechaValidacion(), 
 					miForm.getObservacionesValidacion(), 
@@ -2115,9 +2155,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.setModo("vitValidar");
 			boolean isAlgunaGuardiaPorGrupo = false;
 			String guardiasSeleccionadas = miForm.getGuardiasSel();
+			List<String> guardiasSeleccionadasList = null;
 			if(guardiasSeleccionadas!=null&&!guardiasSeleccionadas.equals("")){
 				guardiasSeleccionadas = guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
-				List<String> guardiasSeleccionadasList = null;
+				
 				if(guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
 					String[] guardiasSel = guardiasSeleccionadas.split("@");
 					guardiasSeleccionadasList= Arrays.asList(guardiasSel);
@@ -2138,6 +2179,23 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setPorGrupos("0");
 				
 			}
+			if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1") &&guardiasSeleccionadasList!=null &&guardiasSeleccionadasList.size()==1 ){
+				String idGuardia = (String)guardiasSeleccionadasList.get(0);
+				ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(
+						new Integer(miForm.getIdInstitucion()),
+						new Integer(miForm.getIdTurno()), 
+						new Integer(idGuardia), 
+						"sysdate",
+						"sysdate", 
+						this.getUserBean(request));
+				
+				if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
+					miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
+				}else{
+					miForm.setGruposGuardiaLetrado(new ArrayList<LetradoInscripcion>());
+				}
+			}	
+			
 			
 //			FIXME AAAÑADIR SELECCIÓN DE GRUPO vitDatos ok
 			//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO

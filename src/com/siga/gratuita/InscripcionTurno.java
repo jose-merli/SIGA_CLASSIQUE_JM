@@ -15,6 +15,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
@@ -70,6 +71,34 @@ public class InscripcionTurno {
 	////////////////////
 	public ScsInscripcionTurnoBean getBean() { return bean; }
 	public void setBean(ScsInscripcionTurnoBean bean) { this.bean = bean; }
+	
+	private Integer	ordenGrupo;
+	private String	numeroGrupo;
+	
+ 
+	
+	public Integer getOrdenGrupo() {
+		return ordenGrupo;
+	}
+
+	public void setOrdenGrupo(Integer ordenGrupo) {
+		this.ordenGrupo = ordenGrupo;
+	}
+
+	
+
+	public String getNumeroGrupo() {
+		return numeroGrupo;
+	}
+
+	public void setNumeroGrupo(String numeroGrupo) {
+		this.numeroGrupo = numeroGrupo;
+	}
+
+	public void setDatosGrupo(String numeroGrupo, Integer ordenGrupo) {
+		this.setNumeroGrupo(numeroGrupo);
+		this.setOrdenGrupo(ordenGrupo);		
+	}	
 	
 	////////////////////
 	// METODOS DE CLASE
@@ -329,10 +358,14 @@ public class InscripcionTurno {
 								beanInscripcionGuardia.setFechaSuscripcion(fechaInscripcion);
 							
 							// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud 
-							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
+							InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);	
+							
 							
 							// Introduce los datos del alta
 							if (!fechaValidacion.equals("")) {
+								if(this.getNumeroGrupo()!=null)
+									inscripcionGuardia.setDatosGrupo(this.getNumeroGrupo(), this.getOrdenGrupo());
+								
 								inscripcionGuardia.setAltas(
 									(String) miHash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD),
 									(String) miHash.get(ScsInscripcionTurnoBean.C_FECHAVALIDACION), 
@@ -372,6 +405,8 @@ public class InscripcionTurno {
 									
 							// Introduce los datos del alta
 							if (!fechaValidacion.equals("")) {
+								if(this.getNumeroGrupo()!=null)
+									inscripcionGuardia.setDatosGrupo(this.getNumeroGrupo(), this.getOrdenGrupo());
 								inscripcionGuardia.setAltas(
 									(String) miHash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD),
 									(String) miHash.get(ScsInscripcionTurnoBean.C_FECHAVALIDACION), 
@@ -523,7 +558,10 @@ public class InscripcionTurno {
 					ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
 					
 					// Creo el objeto inscripcion con idInstitucion + idTurno + idGuardia + idPersona + fechaSolicitud + FechaValidacion + ObservacionesValidacion
-					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);							
+					InscripcionGuardia inscripcionGuardia = new InscripcionGuardia(beanInscripcionGuardia);		
+					if(this.getNumeroGrupo()!=null)
+						inscripcionGuardia.setDatosGrupo(this.getNumeroGrupo(), this.getOrdenGrupo());
+					
 					inscripcionGuardia.setAltas(null, 
 						(String) htInscTurno.get(ScsInscripcionTurnoBean.C_FECHAVALIDACION), 
 						(String) htInscTurno.get(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION));
