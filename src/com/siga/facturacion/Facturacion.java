@@ -1993,7 +1993,7 @@ public class Facturacion {
 		
     }
     
-    public void insertarRenegociar(Integer idInstitucion,String idFactura,Integer estadoFactura, String formaPago,String idCuenta,Double importePtePagar,String observaciones,boolean isTransaccionCreada,boolean isAutomatica,Hashtable htCuenta) throws SIGAException, Exception{
+    public void insertarRenegociar(Integer idInstitucion,String idFactura,Integer estadoFactura, String formaPago,String idCuenta,Double importePtePagar,String observaciones, String fechaRenegociar, boolean isTransaccionCreada,boolean isAutomatica,Hashtable htCuenta) throws SIGAException, Exception{
     	UserTransaction t = this.usrbean.getTransaction();
 
     	try {
@@ -2186,7 +2186,11 @@ public class Facturacion {
     		FacRenegociacionAdm renegociacionAdm = new FacRenegociacionAdm (this.usrbean);
     		FacRenegociacionBean renegociacionBean = new FacRenegociacionBean ();
     		renegociacionBean.setComentario(observaciones);
-    		renegociacionBean.setFechaRenegociacion("sysdate");
+    		if ((fechaRenegociar == "") || (fechaRenegociar == null)) {
+    			renegociacionBean.setFechaRenegociacion("sysdate");
+    		} else {
+    			renegociacionBean.setFechaRenegociacion(fechaRenegociar);
+    		}
     		if (isAutomatica) {
     			renegociacionBean.setComentario(ClsConstants.TIPO_RENEGOCIA_MASIVA);
     		} else {

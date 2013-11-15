@@ -137,6 +137,15 @@ public class GestionarFacturaForm extends MasterForm{
 		public void setIdCuentaUnica (String a) {
 			this.idCuentaUnica = a;		
 		}		
+		public void setDatosRenegociarFecha (String a) {
+			try {
+				a = GstDate.getApplicationFormatDate("", a);
+				UtilidadesHash.set(this.datos,"_pagosRenegociar_FECHA_", a);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}		
 		
 
 		public Integer getDatosPagosRenegociarEstadoFactura () {
@@ -160,6 +169,10 @@ public class GestionarFacturaForm extends MasterForm{
 		public String getDatosPagosRenegociarObservaciones () {
 			return UtilidadesHash.getString(this.datos,"_pagosRenegociar_OBSERVACIONES_");		
 		}
+		public String getDatosRenegociarFecha () {
+			return UtilidadesHash.getString(this.datos,"_pagosRenegociar_FECHA_");		
+		}		
+		
 	
 	// LINEAS ////////////////////////////////////////////////////////////////
 	public void setDatosLineaDescripcion (String a) {

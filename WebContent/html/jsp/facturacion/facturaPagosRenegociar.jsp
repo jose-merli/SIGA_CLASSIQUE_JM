@@ -25,6 +25,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.CenCuentasBancariasBean"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 
 
@@ -50,6 +51,8 @@
 	Integer idInstitucion = new Integer(0);
 	String parametro[] = new String[2];
 	boolean formaPagoActualPorBanco = false;
+	String fechaActual = UtilidadesBDAdm.getFechaBD("");
+	String ultimaFecha = (String)request.getAttribute("ultimaFecha");
 
 	if (factura != null) {
 		Integer idCuentaDeudor = (Integer) factura.getIdCuentaDeudor();		
@@ -176,6 +179,20 @@
 <%
 			}
 %>
+
+			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
+				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				alert (mensaje);
+				return;
+			}
+			
+			var ultimaFecha = "<%=ultimaFecha%>";
+			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFecha) > 1) {
+				mensaje = 'La fecha debe ser mayor o igual que: '+ultimaFecha;
+				alert(mensaje);
+				return false;
+			}			
+
 
 			document.GestionarFacturaForm.modo.value = "insertarRenegociar";
 			document.GestionarFacturaForm.target = "submitArea";	
@@ -312,6 +329,10 @@
 				<td>
 					<fieldset>
 						<table border="0" cellpadding="5" cellspacing="0">
+						<tr>
+							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/>&nbsp;(*)</td>
+							<td><siga:Fecha  nombreCampo= "datosRenegociarFecha" valorInicial="<%=fechaActual %>" posicionX="50px" posicionY="10px"/></td>
+						   </tr>						
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/>

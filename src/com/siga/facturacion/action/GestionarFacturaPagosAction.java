@@ -411,6 +411,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
 			FacFacturaAdm facturaAdm = new FacFacturaAdm (this.getUserBean(request));
+			String ultimaFechaRequest = (String)request.getParameter("ultimaFecha");
 			Vector vFactura = facturaAdm.select(claves);
 			FacFacturaBean facturaBean = null;
 			if (vFactura != null) 
@@ -450,6 +451,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				cuentaBancariaFactura ="";
 			}
 			
+			
 		
 			String cuentasPersona = facturaAdm.getCuentasActivas(idInstitucion, facturaBean.getIdFactura().toString());
 			if (Integer.parseInt(cuentasPersona) > 0) 
@@ -464,6 +466,12 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			request.setAttribute("numeroCuenta", 		numeroCuenta);
 			request.setAttribute("codigoEntidad", 		codigoEntidad);
 			request.setAttribute("cuentaBancariaFactura", 		cuentaBancariaFactura);
+			
+			if(ultimaFechaRequest != null && !ultimaFechaRequest.equals("")){
+				ultimaFechaRequest = GstDate.getFormatedDateShort(ClsConstants.DATE_FORMAT_SHORT_SPANISH,ultimaFechaRequest);	
+			}
+			
+			request.setAttribute("ultimaFecha", ultimaFechaRequest);
 			
 			CenCuentasBancariasBean cuentaBancaria = cuentasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
 			if(cuentaBancaria!=null){
@@ -574,7 +582,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						facturacion.insertarRenegociar(
 							new Integer(idInstitucion), idFactura, estadoFactura, 
 							nuevaFormaPago, idcuenta,	impTotalPorPagar, 
-							miForm.getDatosPagosRenegociarObservaciones(),
+							miForm.getDatosPagosRenegociarObservaciones(),miForm.getDatosRenegociarFecha(),
 							true, false, null);
 						
 					} catch (SIGAException e) { 
@@ -612,7 +620,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					try {
 						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
 									nuevaFormaPago, idcuenta,	impTotalPorPagar, 
-										miForm.getDatosPagosRenegociarObservaciones(),true,true,null);
+										miForm.getDatosPagosRenegociarObservaciones(),"",true,true,null);
 					} catch (SIGAException e) {
 						isTodasRenegociadas = false;
 						resultadoNumFacturas.add(numeroFactura);

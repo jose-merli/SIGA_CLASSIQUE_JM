@@ -489,7 +489,7 @@ public class DevolucionesAction extends MasterAction {
 							//El idCuenta modifica en este metodo asiq ue sera a esta cuenta la que se aplicara la comision
 							htCuenta = new Hashtable();
 							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
-									nuevaFormaPago, null,	impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(),true,true,htCuenta);
+									nuevaFormaPago, null,	impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(),"",true,true,htCuenta);
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;

@@ -375,7 +375,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 5) " +
 					 		 " end as estado, " +			
 							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA, "   + 
-							 "renegociacion." + FacRenegociacionBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   + 					 		 
+							 "renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION   + " AS FECHA_ORDEN, "   + 					 		 
 				  			 "renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, '' AS tarjeta, " +
 							 " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
