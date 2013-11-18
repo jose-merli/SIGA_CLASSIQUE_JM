@@ -72,7 +72,7 @@ public class MngClob {
 	        throw gEx;
 	      }
 	    }
-	    return dbClobString;
+	    return dbClobString==null?"":dbClobString;
 	  }
  
   
