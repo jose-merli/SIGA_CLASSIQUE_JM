@@ -915,8 +915,11 @@
 		}
 	
 		// Asociada al boton Restablecer
-		function accionRestablecer() {		
+		function accionRestablecer() {
 			document.ActuacionAsistenciaFormEdicion.reset();
+			document.getElementById("checkDiaDespues").checked = document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S';
+			document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
+			
 			if(document.ActuacionAsistenciaFormEdicion.validada.value != "1"){ 
 				inicio();
 			}
