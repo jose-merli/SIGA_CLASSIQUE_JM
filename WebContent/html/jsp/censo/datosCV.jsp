@@ -261,14 +261,13 @@
 					fin();
 					return false;
 				}
-				
+
 				if (jQuery("#tipoApunte").val()==""){
 				    aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte1"/>'
 					alert(aux);
 					fin();
 					return false;
-				} else if ( (jQuery("#idTipoCVSubtipo1").is(":visible") && jQuery("#idTipoCVSubtipo1").val() == "") || 
-							(jQuery("#idTipoCVSubtipo2").is(":visible") && jQuery("#idTipoCVSubtipo2").val() == "") ){
+				} else if ( (jQuery("#idTipoCVSubtipo1").is(":visible") && jQuery("#idTipoCVSubtipo1").val() == "") ){
 					aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
 					alert(aux);
 					fin();
