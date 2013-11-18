@@ -31,51 +31,7 @@
 		
 		
 		
-			//Asociada al boton GuardarCerrar
-			function accionGuardarCerrar() 
-			{
-			    sub();
-				if(document.ImagenPlantillaForm.modo.value=='insertar'){
-					
-					if (!TestFileType(document.ImagenPlantillaForm.theFile.value, ['JPG', 'GIF','PNG','BMP'])){
-						fin();
-						return false;
-					}
-					if(document.ImagenPlantillaForm.nombre.value=="")
-					{
-						var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-		
-						alert (mensaje);
-						fin();
-						return false;
-					}
-					if(document.ImagenPlantillaForm.theFile.value=="")
-						{
-						var mensaje = "<siga:Idioma key="envios.imagenes.literal.archivo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-						alert (mensaje);
-						fin();
-						return false;
-					}
-					
-					
-				}else{
-					if(document.ImagenPlantillaForm.nombre.value=="")
-					{
-						var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-						alert (mensaje);
-						fin();
-						return false;
-					}
-				}
-				document.ImagenPlantillaForm.submit();
-				window.top.returnValue="MODIFICADO";
-			}
 			
-			//Asociada al boton Cerrar
-			function accionCerrar() 
-			{		
-				window.top.close();
-			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
@@ -117,7 +73,7 @@
 											<siga:Idioma key="envios.imagenes.literal.nombre"/>&nbsp;(*)
 										</td>
 										<td>
-											<html:text property="nombre"  styleClass="boxCombo"/>
+											<html:text name="ImagenPlantillaForm"  property="nombre"  styleClass="box"/>
 										</td>
 									</tr>
 									<c:if test="${ImagenPlantillaForm.idImagen==null}">
@@ -128,7 +84,7 @@
 											<siga:Idioma key="envios.imagenes.literal.archivo"/>&nbsp;(*)
 										</td>				
 										<td>
-											<html:file property="theFile" styleClass="boxCombo"/>
+											<html:file name="ImagenPlantillaForm" property="theFile" styleClass="box"/>
 										</td>
 									</tr>
 									
@@ -139,7 +95,7 @@
 											
 										</td>
 										<td>
-										<html:checkbox property="embebed" styleClass="boxCombo"/>
+										<html:checkbox name="ImagenPlantillaForm" property="embebed" />
 																				
 											
 										</td>
@@ -152,10 +108,61 @@
 
 
 			<siga:ConjBotonesAccion botones="<%=botonesEdicion%>" modal="P"/>
-			</html:form>		
+</html:form>					
 		<iframe name="submitArea"
 				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 				style="display: none"></iframe>
+				<script type="text/javascript">
+				
+				//Asociada al boton GuardarCerrar
+				function accionGuardarCerrar() 
+				{
+				    sub();
+				    alertStop("pepep");
+					if(document.ImagenPlantillaForm.modo.value=='insertar'){
+						
+						if (!TestFileType(document.ImagenPlantillaForm.theFile.value, ['JPG', 'GIF','PNG','BMP'])){
+							fin();
+							return false;
+						}
+						if(document.ImagenPlantillaForm.nombre.value=="")
+						{
+							var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+			
+							alert (mensaje);
+							fin();
+							return false;
+						}
+						if(document.ImagenPlantillaForm.theFile.value=="")
+							{
+							var mensaje = "<siga:Idioma key="envios.imagenes.literal.archivo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+							alert (mensaje);
+							fin();
+							return false;
+						}
+						
+						
+					}else{
+						if(document.ImagenPlantillaForm.nombre.value=="")
+						{
+							var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+							alert (mensaje);
+							fin();
+							return false;
+						}
+					}
+					document.ImagenPlantillaForm.submit();
+					window.top.returnValue="MODIFICADO";
+				}
+				
+				//Asociada al boton Cerrar
+				function accionCerrar() 
+				{		
+					window.top.close();
+				}
+				a.a();
+				</script>
+				
 	</body>
 	
 </html>

@@ -104,7 +104,7 @@
 					<bean:message key="facturacion.cuentasBancarias.banco" />
 				</td>
 				<td>
-					<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:250px;">
+					<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:400px;">
 						<html:option value=""/>
 						<c:forEach items="${listaBancos}" var="banco">
 							<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
