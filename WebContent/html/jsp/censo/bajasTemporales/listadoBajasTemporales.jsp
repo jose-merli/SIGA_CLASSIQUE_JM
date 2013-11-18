@@ -235,7 +235,7 @@
 	</c:if>
 	
 	<!-- Importar el js propio de la pagina-->
-	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 
 	<script type="text/javascript">
 
@@ -282,6 +282,7 @@
 				return borrarFila(fila);
 			}			
 		}	
+		
 
 	</script>
 	

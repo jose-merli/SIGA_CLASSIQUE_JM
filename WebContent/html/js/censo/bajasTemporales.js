@@ -154,7 +154,6 @@
 		var ele = document.getElementsByName('chkBajasTemporales');
 		var datos='';
 		
-		
 		for (fila = 0; fila < ele.length; fila++) {
 		    if(ele[fila].checked){
 				var idInstitucion = 'idInstitucion_' + fila ;
@@ -178,7 +177,10 @@
 		}
 		datos=datos.substring(2);
 		document.FormBajasTemporales.target="submitArea";
-		document.FormBajasTemporales.idPersona.value = '';
+		if(document.getElementById('idPersonaFichaColegial'))
+			document.FormBajasTemporales.idPersona.value = document.getElementById('idPersonaFichaColegial').value;
+		else
+			document.FormBajasTemporales.idPersona.value = '';
 		document.FormBajasTemporales.datosSeleccionados.value=datos;
 		document.FormBajasTemporales.modo.value="denegarSolicitud";
 		document.FormBajasTemporales.submit();
@@ -186,7 +188,6 @@
 	}
 	function accionValidarSolicitud(msjSeleccionar){
 		var ele = document.getElementsByName('chkBajasTemporales');
-		
 		var datos='';
 		for (fila = 0; fila < ele.length; fila++) {
 		    if(ele[fila].checked){
@@ -211,7 +212,10 @@
 		}
 		datos=datos.substring(2);
 		document.FormBajasTemporales.target="submitArea";
-		document.FormBajasTemporales.idPersona.value = '';
+		if(document.getElementById('idPersonaFichaColegial'))
+			document.FormBajasTemporales.idPersona.value = document.getElementById('idPersonaFichaColegial').value;
+		else
+			document.FormBajasTemporales.idPersona.value = '';
 		document.FormBajasTemporales.datosSeleccionados.value=datos;
 		document.FormBajasTemporales.modo.value="validarSolicitud";
 		document.FormBajasTemporales.submit();

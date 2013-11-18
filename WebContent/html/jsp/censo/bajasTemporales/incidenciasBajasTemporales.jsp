@@ -33,7 +33,7 @@
 
 <!-- Step 4 -->
  <!-- Importar el js propio de la pagina-->
-<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
+<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 </head>
 
 <body onload="onLoad()">
@@ -158,8 +158,8 @@
 
 function onLoad(){
 	
-	window.dialogHeight = "650";
-	window.dialogWidth = "1000";
+	window.dialogHeight = "500px";
+	window.dialogWidth = "760px";
 }
 function accionCerrar(){
 	window.top.close();

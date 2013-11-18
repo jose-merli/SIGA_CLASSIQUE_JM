@@ -36,7 +36,7 @@
 	
 	<!-- Step 4 -->
 	 <!-- Importar el js propio de la pagina-->
-	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js'/>" type="text/javascript"></script>
+	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="menu.sjcs.bajasTemporales"	localizacion="censo.bajastemporales.gestion.localizacion" />
