@@ -52,7 +52,9 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	
 	<style type="text/css">
-	
+	.sinScroll {
+		  overflow:hidden;
+		}
 	</style>
 	
 	<script type="text/javascript">
@@ -125,7 +127,7 @@
 		</script>
 </head>
 
-<body class="tablaCentralCampos" onLoad="cargaContenidoModal();">
+<body class="tablaCentralCampos sinScroll" onLoad="cargaContenidoModal();">
 	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<table>
 	<tr>
