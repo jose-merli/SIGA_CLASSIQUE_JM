@@ -37,8 +37,8 @@
 	<siga:Table 
 				name="listado" 
 				border="1" 
-				columnNames="gratuita.gestionInscripciones.trasbajosSJCSPendientes.incidencia,gratuita.gestionInscripciones.trasbajosSJCSPendientes.descripcion" 
-				columnSizes="50,50">
+				columnNames="gratuita.gestionInscripciones.trasbajosSJCSPendientes.incidencia,gratuita.gestionInscripciones.trasbajosSJCSPendientes.fecha,gratuita.gestionInscripciones.trasbajosSJCSPendientes.descripcion" 
+				columnSizes="20,20,60">
 		<c:choose>
    				<c:when test="${empty trabajosSJCSPendientes}">
    				<tr class="notFound">
@@ -57,8 +57,13 @@
 			  				visibleEdicion="N"
 			  				visibleConsulta="N"
 			  				clase="listaNonEdit">
-							<td align='left'><c:out value="${trabajoSJCSPendientes.INCIDENCIA}"/></td>
-							<td align='left'><c:out value="${trabajoSJCSPendientes.DESCRIPCION}"/></td>
+			  					<td align="left"><c:out value="${trabajoSJCSPendientes.DESCRIPCION}"/></td>
+			  					<td align='center'><c:out value="${trabajoSJCSPendientes.FECHA}"/></td>
+			  					<td align='left'><c:out value="${trabajoSJCSPendientes.INCIDENCIA}"/></td>
+			  				
+			  				
+			  				
+							
 					</siga:FilaConIconos>
 				</c:forEach>
 				
