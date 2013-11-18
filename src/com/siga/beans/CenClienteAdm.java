@@ -3238,6 +3238,36 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	}
+	/**
+	 * Devuelve el campo idioma de cen_cleinte. Si no tiene devuelve null
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public String getIdiomaPersonaInforme (String idInstitucion, String idPersona) throws ClsExceptions, SIGAException 
+	{
+		try {
+			CenClienteBean salida = null;
+			// obtengo los beasn de cliente y persona del mismo hash
+			String lenguaje = null;
+			Hashtable datos = new Hashtable();
+			datos.put("IDPERSONA",idPersona);
+			datos.put("IDINSTITUCION",idInstitucion);
+			Vector v = this.select(datos);
+			if (v!=null && v.size()>0) {
+				salida = (CenClienteBean) v.get(0);
+				lenguaje = salida.getIdLenguaje();
+			}
+			return lenguaje;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	}
+	
+	
 
 	/**
 	 * Comprueba si existe un cliente a traves de idpersona para una
@@ -4212,9 +4242,12 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	
 	public Vector getDesignacionesSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, String fechaDesde,String fechaHasta)throws SIGAException {
 		//2.- Chequeo que no tiene designas pendientes de realizar:
-		ScsDesignaAdm admDesignas = new ScsDesignaAdm(this.usrbean); 
+		ScsDesignaAdm admDesignas = new ScsDesignaAdm(this.usrbean);
+		String designacion= UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"gratuita.busquedaDesignas.literal.designa");
 		StringBuffer sql2 = new StringBuffer();
-		sql2.append("SELECT 'DESIGNACION' INCIDENCIA, des.ANIO||'/'||des.CODIGO DESCRIPCION ");
+		sql2.append("SELECT des.ANIO||'/'||des.CODIGO INCIDENCIA ");
+		sql2.append(",TO_CHAR(des.FECHAENTRADA,'dd/mm/yyyy') FECHA ");
+		sql2.append(",'"+designacion+"' DESCRIPCION ");
 		
 		
 		sql2.append(" FROM "+ScsDesignaBean.T_NOMBRETABLA+" des,"+ScsDesignasLetradoBean.T_NOMBRETABLA+" deslet");
@@ -4288,31 +4321,34 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	
 		//1.- Chequeo que no tiene guardias pendientes de realizar:
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrbean); 
+		String guardia= UtilidadesString.getMensajeIdioma(this.usrbean.getLanguageInstitucion(),"gratuita.gestionInscripciones.guardia.literal");
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT TO_CHAR(GC.FECHAINICIO,'dd/mm/yyyy')||'-'||TO_CHAR(GC.FECHAFIN,'dd/mm/yyyy') DESCRIPCION, ");
-		sql.append(" GT.NOMBRE INCIDENCIA ");
-		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC,SCS_GUARDIASTURNO GT ");
+		sql.append(" SELECT TO_CHAR(GC.FECHAINICIO,'dd/mm/yyyy')||' - '||TO_CHAR(GC.FECHA_FIN,'dd/mm/yyyy') FECHA ");
+		sql.append(" ,GT.NOMBRE INCIDENCIA ");
+		sql.append(" ,'"+guardia+"' DESCRIPCION ");
+		sql.append(" FROM SCS_CABECERAGUARDIAS GC,SCS_GUARDIASTURNO GT ");
 		sql.append(" WHERE  ");
 		sql.append(" GC.IDINSTITUCION = GT.IDINSTITUCION ");
 		sql.append(" AND GC.IDTURNO = GT.IDTURNO ");
 		sql.append(" AND GC.IDGUARDIA = GT.IDGUARDIA ");
 	 
-		sql.append("AND GC."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-		sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
+		sql.append("AND GC."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idInstitucion);
+		sql.append(" AND GC."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idPersona);
 		if(fechaDesde!=null && fechaHasta!=null){
-			sql.append(" AND TRUNC(GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"'  ");
+			sql.append(" AND TRUNC(GC."+ScsCabeceraGuardiasBean.C_FECHA_FIN+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"'  ");
 		}else if(fechaHasta!=null && !fechaHasta.equalsIgnoreCase("sysdate")){
-			sql.append(" AND TRUNC(GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+") > '"+fechaHasta+"' ");
+			sql.append(" AND TRUNC(GC."+ScsCabeceraGuardiasBean.C_FECHA_FIN+") > '"+fechaHasta+"' ");
 		}else{
-			sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_FECHAFIN+" > SYSDATE ");
+			sql.append(" AND GC."+ScsCabeceraGuardiasBean.C_FECHA_FIN+" > SYSDATE ");
 		}
 		if(idGuardia!=null)
-			sql.append(" AND GC."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
+			sql.append(" AND GC."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idGuardia);
 		
 		if (idTurno!=null)
 		{
-			sql.append(" AND GC." + ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
+			sql.append(" AND GC." + ScsCabeceraGuardiasBean.C_IDTURNO+"="+idTurno);
 		}
+		sql.append(" ORDER BY GC.FECHAINICIO DESC");
 		Vector vGuardiasPendientes =  new Vector(); 
 		// Acceso a BBDD
 		RowsContainer rc = null;
@@ -5620,7 +5656,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			"p."+CenPersonaBean.C_APELLIDOS1+ " APELLIDO1_LETRADO,"+
 			"p."+CenPersonaBean.C_APELLIDOS2+ " APELLIDO2_LETRADO,"+
 			"p."+CenPersonaBean.C_NOMBRE+ " N_LETRADO,"+
-			" F_SIGA_GETRECURSO(tra."+CenTratamientoBean.C_DESCRIPCION +", 1) TRATAMIENTO, "+
+			" F_SIGA_GETRECURSO(tra."+CenTratamientoBean.C_DESCRIPCION +", "+lenguaje+") TRATAMIENTO, "+
 			"tra."+CenTratamientoBean.C_IDTRATAMIENTO +" IDTRATAMIENTO,"+
 			"d2.*,"+
 			"d6."+CenDireccionesBean.C_TELEFONO1+" TELEFONO1_LETRADO,"+
