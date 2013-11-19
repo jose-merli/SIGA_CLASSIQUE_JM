@@ -671,7 +671,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			consulta += "	designa.IDPROCEDIMIENTO AS DES_IDPROCEDIMIENTO, ";
 			consulta += "	designa.IDPRETENSION AS DES_IDPRETENSION, ";
 			consulta += "	designa.IDINSTITUCION AS DES_IDINSTITUCION, ";
-			consulta += "	f_siga_getletrado_designa(designa.idinstitucion,designa.idturno,designa.anio, designa.numero) AS TRAMITADOR, ";
+			consulta += "	f_siga_getnomapeletra_designa(designa.idinstitucion,designa.idturno,designa.anio, designa.numero) AS TRAMITADOR, ";
 			consulta += " 	designa.codigo CODIGO ";
 			
 			consulta += " from scs_designa        designa, ";
@@ -687,7 +687,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			consulta += "   and ejgd.anioejg = " + miHash.get("ANIO") ;
 			consulta += "   and ejgd.numeroejg = " + miHash.get("NUMERO");
 			
-			consulta += "order by designa.estado desc, designa.fechaentrada desc ";
+			consulta += " order by designa.estado desc, designa.fechaentrada desc ";
 			
 			// jbd // INC_10830_SIGA // Metemos las designas en la request. Si no hay designas metemos lo mismo campos de designa0
 			Vector designas = admBean.selectGenerico(consulta);
