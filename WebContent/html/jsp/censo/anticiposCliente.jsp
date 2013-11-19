@@ -363,7 +363,7 @@
 				boolean lineas = (gastadoDouble>0)?true:false;
 				
 				if(lineas) {
-					botones = "C,E";	
+					botones = "C";	
 				} else{
 					botones= "C,E,B";
 				}
