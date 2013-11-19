@@ -13,7 +13,9 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -64,8 +66,7 @@
 
 	ArrayList TIPOEJGCOLEGIOSEL = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
-	Hashtable hash = (Hashtable) request.getSession().getAttribute(
-			"DATABACKUP");
+	Hashtable hash = (Hashtable) request.getSession().getAttribute("EJGDATA");
 
 	String DESIGNA_IDJUZGADO = "";
 	String DESIGNA_IDJUZGADOINSTITUCION = "";
@@ -244,20 +245,6 @@
 	if (idPretension != null && idInstitucion != null)
 		pretensionesSel.add(0, idPretension + "," + idInstitucion);
 
-	//Obtenemos el letrado tramitador de la designa
-	ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usr);
-
-	if (!(designaAnio == null || designaAnio.equals("")
-			|| designaNumero == null || designaNumero.equals("")
-			|| designaIdTurno == null || designaIdTurno.equals(""))) {
-		Hashtable hastramitadordesigna = scsDesignaAdm
-				.obtenerLetradoDesigna(usr.getLocation(),
-						designaIdTurno, designaAnio, designaNumero);
-		numtramidesig = (String) hastramitadordesigna.get("NCOLEGIADO");
-		nombretramidesig = (String) hastramitadordesigna.get("NOMBRE");
-		designaExiste = true;
-	}
-
 	Object obj = null;
 
 	String idTurno = (String) hash.get("IDTURNO");
@@ -305,27 +292,7 @@
 		readOnly = "true";
 	}
 	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "", t_idpersonaD = "", t_ncolegiadoD = "";
-	ScsDesignaAdm admD = new ScsDesignaAdm(usr);
 
-	if (!(designaAnio == null || designaAnio.equals("")
-			|| designaNumero == null || designaNumero.equals("")
-			|| designaIdTurno == null || designaIdTurno.equals(""))) {
-		Hashtable hTituloD = admD.obtenerLetradoDesigna(
-				usr.getLocation(), designaIdTurno, designaAnio,
-				designaNumero);
-		//String t_nombreD = "", t_apellido1D = "", t_apellido2D = "";
-		if (hTituloD != null) {
-			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
-			t_apellido1D = (String) hTituloD
-					.get(CenPersonaBean.C_APELLIDOS1);
-			t_apellido2D = (String) hTituloD
-					.get(CenPersonaBean.C_APELLIDOS2);
-			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
-			t_idpersonaD = (String) hTituloD
-					.get(CenPersonaBean.C_IDPERSONA);
-			t_ncolegiadoD = (String) hTituloD.get("ncolegiado");
-		}
-	}
 	ArrayList vIntFDict = new ArrayList();
 	if (hash.containsKey("IDTIPODICTAMENEJG")) {
 		try {
@@ -462,7 +429,22 @@
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo titulo="gratuita.busquedaEJG.datosGenerales" localizacion="gratuita.busquedaEJG.localizacion"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->	
+	<!-- FIN: TITULO Y LOCALIZACION -->
+	
+	<bean:define id="designas" name="DESIGNAS" scope="request" />
+	
+	<style>
+		.literalDesigna{display:inline-block;width:100px;padding:0px;padding-left:10px;}
+		.literalTurno{display:inline-block;width:60px;padding:0px}
+		.turnoDesigna{display:inline-block;width:170px;padding:0px}
+		.numDesigna{display:inline-block;width:100px;padding:0px}
+		.tramitadorDesigna{display:inline-block;width:260px;padding:0px}
+		.estadoDesigna{display:inline-block;width:90px;padding:0px}
+		.botonera{display:inline-block;width:100px;padding:0px}
+		.toggleButton{display:inline-block;width:25px;padding:0px}
+		.botonDesplegar{cursor:pointer;width:16px;display:inline;padding:0;margin:0}
+		.red{color:red}
+	</style>	
 </head>
 
 
@@ -876,83 +858,45 @@
 						</siga:ConjCampos>
 					</siga:ConjCampos>		
 		
-					<%
-										if (((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))) {
-									%>
-						<!-- Pinta relacion con designa -->
+					<!-- Pinta relacion con designa -->
+					<logic:notEmpty name="DESIGNAS" scope="request">
 		        		<siga:ConjCampos leyenda="gratuita.operarEJG.literal.relacionado">
-			
-							<%
-											if ((DESIGNA_NUMERO != null)
-																&& (!DESIGNA_NUMERO.equals(""))) {
-										%>
-					
-			 					<!--<fieldset>-->
-								<table width="100%" border="0"> 			
-									<tr>	
-										<td class="labelText">
-											<siga:Idioma key='gratuita.operarEJG.literal.designa'/>
-										</td>
-										<td class="labelText" >
-											<siga:Idioma key='gratuita.operarEJG.literal.turno'/>
-										</td>
-										<td>
-											<input type="text" cols="20" class="boxConsulta" value="<%=DESIGNA_TURNO_NOMBRE%>" readOnly="true">
-										</td>
-										<%
-											if (ESTADO != null && ESTADO.trim().equals("A")) {
-										%>
-											<td style="color:red" class="labelText">
-												<siga:Idioma key='gratuita.designa.estado.anulado'/>
-											</td>
-										<%
-											}
-										%>
-		
-										<td class="labelTextValue" >
-											<%=UtilidadesString
-									.mostrarDatoJSP(DESIGNA_ANIO)%>
-											/<%=UtilidadesString
-									.mostrarDatoJSP(DESIGNA_CODIGO)%> 
-											-<%=UtilidadesString
-									.mostrarDatoJSP(t_nombreD)%> 
-											<%=UtilidadesString
-									.mostrarDatoJSP(t_apellido1D)%> 
-											<%=UtilidadesString
-									.mostrarDatoJSP(t_apellido2D)%>					
-										</td>
-										<td class="labelText" style="display:none">	
-											<siga:Idioma key='gratuita.operarEJG.literal.numer'/>
-										</td>
-										<td style="display:none">
-											<input type="text" cols="5" class="boxConsulta" value="<%=DESIGNA_NUMERO%>" readOnly="true">
-										</td>
-										<%
-											if (modo.equalsIgnoreCase("ver")) {
-										%>
-											<td colspan="3" align="right">
-												<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="consultarDesignaFuncion('ver')">
-											</td>
-										<%
-											} else {
-										%>
-											<td colspan="3" align="right" >
-												<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="consultarDesignaFuncion('ver')">
-												<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('<%=modo%>')">
-												<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionConDesigna()">
-											</td>
-										<%
-											}
-										%>
-									</tr>					 		
-								</table>			
-							<%
-											}
-										%>
+
+							<logic:iterate name="DESIGNAS" id="designa" scope="request" indexId="index"> 
+							<logic:equal name="index" value="0">
+							<div class="contenedorPrimeraDesigna">
+								<span class="labelText literalDesigna"><siga:Idioma key='gratuita.operarEJG.literal.designa'/></span>
+								<span id="botonToggleDesignas" class="toggleButton"><img src="<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>" onclick="mostrarDesignas();" class="botonDesplegar"/></span>
+							</logic:equal>
+							<logic:notEqual name="index" value="0">
+							<div class="contenedorDesignaOtros" style="display:none">
+								<span class="labelText literalDesigna">&nbsp;</span>
+								<span class="toggleButton">&nbsp;</span>
+								<script></script>
+							</logic:notEqual>
+								<span class="labelText literalTurno"><siga:Idioma key='gratuita.operarEJG.literal.turno'/></span>
+								<span class="labelTextValue turnoDesigna">${designa.DESIGNA_TURNO_NOMBRE}</span>
+								<span class="labelTextValue numDesigna">${designa.DESIGNA_ANIO}/${designa.CODIGO}</span>
+								<logic:equal name="designa" property="ESTADO" value="V"><span class="labelTextValue estadoDesigna"><siga:Idioma key="gratuita.designa.estado.abierto"/></span></logic:equal>
+								<logic:equal name="designa" property="ESTADO" value="F"><span class="labelTextValue estadoDesigna"><siga:Idioma key="gratuita.designa.estado.finalizado"/></span></logic:equal>
+								<logic:equal name="designa" property="ESTADO" value="A"><span class="labelTextValue red estadoDesigna"><siga:Idioma key="gratuita.designa.estado.anulado"/></span></logic:equal>
+								<span class="labelTextValue tramitadorDesigna">${designa.TRAMITADOR} </span>
+								<span class="labelTextValue botonera">
+									<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="abrirDesigna('ver','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+								</span>
+							</div>
+							</logic:iterate>
+							<script type="text/javascript">
+								if (jQuery('.contenedorDesignaOtros')[0]) {
+									jQuery("#botonToggleDesignas").show();
+								}else{
+									jQuery("#botonToggleDesignas").hide();
+								}
+							</script>
 						</siga:ConjCampos>
-					<%
-						}
-					%>
+					</logic:notEmpty>
 	
 					<siga:ConjCampos leyenda="gratuita.operarEJG.literal.ServicioTramitacion">
 						<table width="100%" border="0">
@@ -1244,6 +1188,39 @@
 		   	document.forms[2].modo.value = modo;
 		   	document.forms[2].submit();
 	 	}
+		
+		//Asociada al boton Consultar Designa
+		function abrirDesigna(modo, anio, numero, turno) {
+			document.MaestroDesignasForm.modo.value= modo;
+			document.MaestroDesignasForm.anio.value= anio;
+			document.MaestroDesignasForm.numero.value= numero;
+			document.MaestroDesignasForm.idTurno.value= turno;
+			document.MaestroDesignasForm.desdeEjg.value= "si";
+			document.MaestroDesignasForm.submit();
+	 	}
+		
+		function borrarRelacionDesigna(anio, numero, turno) {
+			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>")) {
+				document.DefinirMantenimientoEJGForm.modo.value="borrarRelacionConDesigna";
+				document.DefinirMantenimientoEJGForm.designa_anio.value= anio;
+				document.DefinirMantenimientoEJGForm.designa_numero.value= numero;
+				document.DefinirMantenimientoEJGForm.designa_turno.value= turno;
+				document.DefinirMantenimientoEJGForm.target = "submitArea";
+				document.DefinirMantenimientoEJGForm.submit();
+			}
+		}
+		
+		
+		function mostrarDesignas(){
+			jQuery('.contenedorDesignaOtros').show();		
+			jQuery("#botonToggleDesignas").html("<img src=\"<html:rewrite page='/html/imagenes/iconoOcultar.gif'/>\" onclick=\"ocultarDesignas();\" class=\"botonDesplegar\"/>");
+		}
+		
+		function ocultarDesignas(){
+			jQuery('.contenedorDesignaOtros').hide();
+			jQuery("#botonToggleDesignas").html("<img src=\"<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>\" onclick=\"mostrarDesignas();\" class=\"botonDesplegar\"/>");
+
+		}
 
 		//Asociada al boton Consultar Asistencia
 		function consultarAsistenciaFuncion(modo) {

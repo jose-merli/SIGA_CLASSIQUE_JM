@@ -583,7 +583,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			}
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
-			String consulta = "select ejg.ANIO, ejg.NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
+			String consulta = "select ejg.ANIO, ejg.NUMEJG,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
 							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+
@@ -592,9 +592,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
                               "colegiado.NCOLEGIADO AS NCOLEGIADO, PERSONA.IDPERSONA AS IDPERSONA, persona.NOMBRE AS NOMBRELETRADO, " +
 							  "persona.APELLIDOS1 AS APELLIDO1LETRADO, persona.APELLIDOS2 AS APELLIDO2LETRADO, soj.ANIO AS ANIOSOJ, soj.NUMERO AS NUMEROSOJ, soj.NUMSOJ AS CODIGOSOJ, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tiposoj.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOSOJ, tiposoj.IDTIPOSOJ AS IDTIPOSOJ, " +
 							  "soj.FECHAAPERTURA AS FECHAAPERTURASOJ, asistencia.ANIO AS ANIOASISTENCIA, asistencia.NUMERO AS ASISTENCIANUMERO, asistencia.FECHAHORA AS ASISTENCIAFECHA, " +
-							  " ejgd.aniodesigna AS DESIGNA_ANIO,ejgd.idturno AS DESIGNA_IDTURNO,ejgd.numerodesigna AS DESIGNA_NUMERO," +
-							  "(SELECT ABREVIATURA FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejg.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, " +
-							  "designa.FECHAENTRADA AS FECHAENTRADADESIGNA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejgcolegio.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJGCOLEGIO," +
+							  UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejgcolegio.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJGCOLEGIO," +
 							  "ejg.FECHAPRESENTACION, ejg.FECHALIMITEPRESENTACION, ejg.PROCURADORNECESARIO, ejg.OBSERVACIONES, ejg.DELITOS"+
 							  ",ejg."+ScsEJGBean.C_IDPROCURADOR+
 							  ",ejg."+ScsEJGBean.C_IDINSTITUCIONPROCURADOR+
@@ -610,20 +608,13 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  ",ejg."+ScsEJGBean.C_GUARDIATURNO_IDTURNO + " IDTURNO " +
 							  ",ejg."+ScsEJGBean.C_SUFIJO + " SUFIJO " + 
 							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " +
-							  ",ejg."+ScsEJGBean.C_NIG + " NIG " +
-							  //BNS: INC_10286_SIGA SACAMOS LOS DATOS DE ASUNTO JUDICIAL DE LA DESIGNACIÓN
-							  ",designa."+ScsDesignaBean.C_IDJUZGADO+" AS DES_IDJUZGADO" +
-							  ",designa."+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+" AS DES_IDJUZGADOINSTITUCION" +
-							  ",designa."+ScsDesignaBean.C_NUMPROCEDIMIENTO+" AS DES_NUMPROCEDIMIENTO" +
-							  ",designa."+ScsDesignaBean.C_ANIOPROCEDIMIENTO+" AS DES_ANIOPROCEDIMIENTO" +
-							  ",designa."+ScsDesignaBean.C_IDPROCEDIMIENTO+" AS DES_IDPROCEDIMIENTO" +
-							  ",designa."+ScsDesignaBean.C_IDPRETENSION+" AS DES_IDPRETENSION" +
-							  ",designa."+ScsDesignaBean.C_IDINSTITUCION+" AS DES_IDINSTITUCION" +
-							  ",designa.codigo codigo";
+							  ",ejg."+ScsEJGBean.C_NIG + " NIG ";
+							  // jbd // INC_10830_SIGA // Quito la designa de la consulta para que devuelva un unico registro
+							  		 				   // Luego ya recuperaré solo los datos de las designas
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +
-					   "scs_soj soj, scs_designa designa, scs_tipoejg tipoejg, scs_tiposoj tiposoj, scs_asistencia asistencia, scs_tipoejgcolegio tipoejgcolegio, " +
-					   "cen_persona persona,scs_ejgdesigna ejgd";
+					   "scs_soj soj, scs_tipoejg tipoejg, scs_tiposoj tiposoj, scs_asistencia asistencia, scs_tipoejgcolegio tipoejgcolegio, " +
+					   "cen_persona persona";
 			// Y por último efectuamos la join
 			consulta += " where ejg.idinstitucion             = turno.idinstitucion(+) and " +
 					      " ejg.guardiaturno_idturno      = turno.idturno(+) and " +     
@@ -641,17 +632,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 						  "soj.ejgnumero(+)        = ejg.numero and " +
 						  "asistencia.idinstitucion (+)= ejg.idinstitucion and " +
 						  "asistencia.ejganio (+)= ejg.anio and " +
-						  "asistencia.ejgnumero (+)= ejg.numero " +
-						 
-						  "and designa.idinstitucion(+) = ejgd.idinstitucion " +
-						  "and designa.anio(+) = ejgd.aniodesigna " +
-						  "and designa.numero(+) = ejgd.numerodesigna " +
-						  "and designa.idturno(+) = ejgd.idturno " +
-						  
-						  "and ejg.idinstitucion=ejgd.idinstitucion(+) " +
-						  "and ejg.anio=ejgd.anioejg(+) " +
-						  "and ejg.numero=ejgd.numeroejg(+) " +
-						  "and ejg.idtipoejg=ejgd.idtipoejg(+) and " +
+						  "asistencia.ejgnumero (+)= ejg.numero and " +
 
 						  "tipoejgcolegio.idinstitucion (+)= ejg.idinstitucion and " +
 						  "tipoejgcolegio.idtipoejgcolegio (+)= ejg.idtipoejgcolegio and "+
@@ -663,8 +644,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			consulta += " ejg.idtipoejg = " + miHash.get("IDTIPOEJG") + " and ejg.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg.anio = " + miHash.get("ANIO") + " and ejg.numero = " + miHash.get("NUMERO");
 			
 			// jbd inc-6803 Ordenamos para quedarnos solo con la mas moderna
-			consulta += " order by designa.fechaentrada desc";
-			
+			// jbd // INC_10830_SIGA // Solo vamos a recuperar un registro
+			// consulta += " order by designa.fechaentrada desc";
 			
 			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos			
 			Vector resultado = admBean.selectGenerico(consulta);
@@ -674,6 +655,63 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}
+			
+			// jbd // INC_10830_SIGA // Recogemos las designas relacionadas
+			
+			consulta = " select designa.ESTADO, ";
+			consulta += "  ejgd.aniodesigna AS DESIGNA_ANIO, ";
+			consulta += "   ejgd.idturno AS DESIGNA_IDTURNO, ";
+			consulta += "   ejgd.numerodesigna AS DESIGNA_NUMERO, ";
+			consulta += "   (SELECT ABREVIATURA  FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejgd.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, ";
+			consulta += "   to_char(designa.FECHAENTRADA,'dd\\MM\\yyyy') AS FECHAENTRADADESIGNA, ";
+			consulta += "	designa.IDJUZGADO AS DES_IDJUZGADO, ";
+			consulta += "	designa.IDINSTITUCION_JUZG AS DES_IDJUZGADOINSTITUCION, ";
+			consulta += "	designa.NUMPROCEDIMIENTO AS DES_NUMPROCEDIMIENTO, ";
+			consulta += "	designa.ANIOPROCEDIMIENTO AS DES_ANIOPROCEDIMIENTO, ";
+			consulta += "	designa.IDPROCEDIMIENTO AS DES_IDPROCEDIMIENTO, ";
+			consulta += "	designa.IDPRETENSION AS DES_IDPRETENSION, ";
+			consulta += "	designa.IDINSTITUCION AS DES_IDINSTITUCION, ";
+			consulta += "	f_siga_getletrado_designa(designa.idinstitucion,designa.idturno,designa.anio, designa.numero) AS TRAMITADOR, ";
+			consulta += " 	designa.codigo CODIGO ";
+			
+			consulta += " from scs_designa        designa, ";
+			consulta += "      scs_ejgdesigna     ejgd ";
+			
+			consulta += " where designa.idinstitucion(+) = ejgd.idinstitucion ";
+			consulta += "   and designa.anio(+) = ejgd.aniodesigna ";
+			consulta += "   and designa.numero(+) = ejgd.numerodesigna ";
+			consulta += "   and designa.idturno(+) = ejgd.idturno ";
+			
+			consulta += "   and ejgd.idtipoejg = " + miHash.get("IDTIPOEJG") ;
+			consulta += "   and ejgd.idinstitucion = " + miHash.get("IDINSTITUCION") ; 
+			consulta += "   and ejgd.anioejg = " + miHash.get("ANIO") ;
+			consulta += "   and ejgd.numeroejg = " + miHash.get("NUMERO");
+			
+			consulta += "order by designa.estado desc, designa.fechaentrada desc ";
+			
+			// jbd // INC_10830_SIGA // Metemos las designas en la request. Si no hay designas metemos lo mismo campos de designa0
+			Vector designas = admBean.selectGenerico(consulta);
+			Hashtable designa0 = new Hashtable();
+			if(designas!=null && designas.size()>0){
+				designa0 = (Hashtable)designas.get(0);
+			}else{
+				designa0.put("ESTADO","");
+				designa0.put("DESIGNA_ANIO","");
+				designa0.put("DESIGNA_IDTURNO","");
+				designa0.put("DESIGNA_NUMERO","");
+				designa0.put("DESIGNA_TURNO_NOMBRE","");
+				designa0.put("FECHAENTRADADESIGNA","");
+				designa0.put("DES_IDJUZGADO","");
+				designa0.put("DES_IDJUZGADOINSTITUCION","");
+				designa0.put("DES_NUMPROCEDIMIENTO","");
+				designa0.put("DES_ANIOPROCEDIMIENTO","");
+				designa0.put("DES_IDPRETENSION","");
+				designa0.put("DES_IDINSTITUCION","");
+				designa0.put("CODIGO","");
+			}
+			ejg.putAll(designa0);
+			request.setAttribute("DESIGNAS",designas);
+			
 			
 //			consulta = "SELECT " + UtilidadesMultidioma.getCampoMultidioma("descripcion",this.getUserBean(request).getLanguage()) + " FROM SCS_MAESTROESTADOSEJG WHERE IDESTADOEJG = ( SELECT DISTINCT IDESTADOEJG " +
 //					   "FROM SCS_ESTADOEJG ejg1 WHERE ejg1.idtipoejg = " + miHash.get("IDTIPOEJG") + " and ejg1.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg1.anio = " + miHash.get("ANIO") + " and ejg1.numero = " + miHash.get("NUMERO") + " and ejg1.fechainicio =( SELECT MAX(FECHAINICIO) FROM SCS_ESTADOEJG ejg WHERE ejg.idtipoejg = " 
@@ -709,7 +747,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			
 			
 			// En DATABACKUP se almacenan todos los campos de la consulta para mostralos en la jsp de edición
-			request.getSession().setAttribute("DATABACKUP",ejg);
+			// jbd // cambio DATABACKUP por EJGDATA
+			request.getSession().setAttribute("EJGDATA",ejg);
 			// En NOMBREESTADO se almacenan el nombre del estado
 			request.setAttribute("NOMBREESTADO",estado);
 			
@@ -830,7 +869,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			Vector resultado = admBean.selectGenerico(consulta);
 			ScsEJGBean ejg = (ScsEJGBean)resultado.get(0);
 			
-			request.setAttribute("DATABACKUP",admBean.beanToHashTable(ejg));
+			request.setAttribute("EJGDATA",admBean.beanToHashTable(ejg));
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}			
