@@ -432,15 +432,16 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	<bean:define id="designas" name="DESIGNAS" scope="request" />
+	<bean:define id="modoBean" name="MODO" scope="request" />
 	
 	<style>
 		.literalDesigna{display:inline-block;width:100px;padding:0px;padding-left:10px;}
 		.literalTurno{display:inline-block;width:60px;padding:0px}
-		.turnoDesigna{display:inline-block;width:170px;padding:0px}
+		.turnoDesigna{display:inline-block;width:220px;padding:0px}
 		.numDesigna{display:inline-block;width:100px;padding:0px}
-		.tramitadorDesigna{display:inline-block;width:260px;padding:0px}
+		.tramitadorDesigna{display:inline-block;width:210px;padding:0px}
 		.estadoDesigna{display:inline-block;width:90px;padding:0px}
-		.botonera{display:inline-block;width:100px;padding:0px}
+		.botonera{display:inline-block;width:100px;padding:0px;text-align:right}
 		.toggleButton{display:inline-block;width:25px;padding:0px}
 		.botonDesplegar{cursor:pointer;width:16px;display:inline;padding:0;margin:0}
 		.red{color:red}
@@ -883,8 +884,8 @@
 								<span class="labelTextValue tramitadorDesigna">${designa.TRAMITADOR} </span>
 								<span class="labelTextValue botonera">
 									<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="abrirDesigna('ver','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
-									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
-									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" class="botonEditarDesigna" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" class="botonBorrarDesigna" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
 								</span>
 							</div>
 							</logic:iterate>
@@ -1277,6 +1278,11 @@
 				document.forms[0].target = "submitArea";
 				document.forms[0].submit();
 			}
+		}
+		/* Esto se hace al final, pero sin esperar a que carguen todos los combos */
+		if("${modoBean}"!="ver"){
+			jQuery(".botonEditarDesigna").show();
+			jQuery(".botonBorrarDesigna").show();
 		}
 	</script>
 
