@@ -393,7 +393,8 @@ public class BusquedaClientesAction extends MasterAction {
 			}
 			
 			
-			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()){
+			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()
+					|| tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO).intValue() ){
 				  
 				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
 				  request.setAttribute("pestanasOcultas",pestanasOcultas);
