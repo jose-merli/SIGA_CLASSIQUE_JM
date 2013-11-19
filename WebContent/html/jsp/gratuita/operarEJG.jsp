@@ -705,7 +705,7 @@
 							</tr>
 						</table>
 						
-						<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.defensajuridica">
+						<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.defensajuridica" desplegable="true">
 							<table width="100%" style="table-layout:fixed" border=0>
 								<tr>
 									<td class="labelText">
