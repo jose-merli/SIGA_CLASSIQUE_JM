@@ -219,6 +219,12 @@
 	
 <%	 
 		if ((vPagos != null) && (vPagos.size() > 0)){			
+			
+			String textoEmision = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.emisionFactura");
+			String textoConfirmacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.confirmacionFactura");
+			String textoDevolucion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.devolucion");
+			String textoRenegociacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.renegociacion");
+			
 			for (int i = 1; i <= vPagos.size(); i++) { 					
 				 Hashtable pago = (Hashtable) vPagos.get(i-1);
 				 
@@ -236,8 +242,7 @@
 				 	String medioPago = "";
 				 	Double devolucion = new Double(0);
 
-					if (tabla.equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.emisionFactura")) || 
-						tabla.equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.confirmacionFactura"))) {
+					if (tabla.startsWith(textoEmision) ||  tabla.startsWith(textoConfirmacion)) {
 						
 						pendiente	= new Double(total.doubleValue());
 						importe = new Double(0);
@@ -246,9 +251,7 @@
 						}
 						
 					} else {
-						if (tabla.length() > 10 && 
-							(tabla.substring(0,10).equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.devolucion")) 
-							|| (tabla.substring(0,13).equals(UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.renegociacion"))))) {
+						if (tabla.startsWith(textoDevolucion)  || tabla.startsWith(textoRenegociacion)) {
 							
 							pendiente = new Double (importe.doubleValue());
 							importe = new Double(0);
