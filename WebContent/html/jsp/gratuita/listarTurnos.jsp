@@ -675,13 +675,13 @@
 	
 			function accionCalendario() {
 				// Abrimos el calendario 
-				if (formatDate(document.getElementById('fechaConsulta'),"") && document.getElementById('fechaConsulta').value!='') {
+				if (formatDate(document.getElementById('fechaConsulta').value,"") && document.getElementById('fechaConsulta').value!='') {
 					document.DefinirTurnosLetradoForm.fechaConsulta.value =document.getElementById('fechaConsulta').value;
 				 	document.DefinirTurnosLetradoForm.modo.value = 'abrir';
 				 	document.DefinirTurnosLetradoForm.submit();
 				
 		 		}else{
-					if(formatDate(document.DefinirTurnosLetradoForm.fechaConsulta,"") && document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
+					if(formatDate(document.DefinirTurnosLetradoForm.fechaConsulta.value,"") && document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
 						fechaActual = getFechaActualDDMMYYYY();
 						document.getElementById('fechaConsulta').value = fechaActual;
 						document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;
