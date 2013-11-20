@@ -425,7 +425,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			 */
 			if (cabeceraGuarSolicitante==null || cabeceraGuarSolicitante.size()==0 || 
 					cabeceraGuarConfirmador==null || cabeceraGuarConfirmador.size()==0 || 
-					!admPermutas.existeSolicitanteCompradorPermutadosPendiente((ScsCabeceraGuardiasBean)(cabeceraGuarSolicitante.elementAt(0)), (ScsCabeceraGuardiasBean)(cabeceraGuarConfirmador.elementAt(0)))) {
+					admPermutas.existeSolicitanteCompradorPermutadosPendiente((ScsCabeceraGuardiasBean)(cabeceraGuarSolicitante.elementAt(0)), (ScsCabeceraGuardiasBean)(cabeceraGuarConfirmador.elementAt(0)))) {
 				request.setAttribute("sinrefresco","sinrefresco");				
 				request.setAttribute("mensaje", UtilidadesString.getMensajeIdioma(usr, "error.messages.noupdated"));	
 				return "exito"; 
