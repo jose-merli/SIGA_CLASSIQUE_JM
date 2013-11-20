@@ -7,7 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -119,14 +119,14 @@
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero"/>		
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="numeroColegiadoSolicitante"  styleId="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="box" value="<%=numeroColegiado%>" readOnly="true" />
+						<html:text name="PermutasForm" property="numeroColegiadoSolicitante"  styleId="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiado%>" readOnly="true" />
 					</td>
 							
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="nombreSolicitante" styleId="nombreSolicitante" size="30" maxlength="300" styleClass="box" value="<%=nombreYApellidos%>" readOnly="true" />
+						<html:text name="PermutasForm" property="nombreSolicitante" styleId="nombreSolicitante" size="30" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidos%>" readOnly="true" />
 					</td>
 				</tr>
 				
@@ -135,14 +135,14 @@
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="fechaInicioSolicitante" styleId="fechaInicioSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true" />
+						<html:text name="PermutasForm" property="fechaInicioSolicitante" styleId="fechaInicioSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true" />
 					</td>		
 					
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="fechaFinSolicitante" styleId="fechaFinSolicitante" size="10" maxlength="10" styleClass="box" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true" />
+						<html:text name="PermutasForm" property="fechaFinSolicitante" styleId="fechaFinSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true" />
 					</td>
 				</tr>	
 			

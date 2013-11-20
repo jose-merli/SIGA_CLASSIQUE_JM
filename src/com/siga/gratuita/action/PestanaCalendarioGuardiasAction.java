@@ -395,13 +395,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//confirmador ahora es el del solicitante  			
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,miForm.getIdPersonaConfirmador());
 			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioConfirmador());
-			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, sFechaInicioConfirmador);
-
-			if (usr.isLetrado()){
-				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
-			} else {
-				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,miForm.getMotivosSolicitante());
-			}						
+			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, sFechaInicioConfirmador);					
 			
 			// Consulta SCS_GUARDIASCOLEGIADO confirmador
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
@@ -439,8 +433,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			tx=usr.getTransaction();
 			tx.begin();		
 						
-			if (!usr.isLetrado()) {
-				miHash.put(ScsPermutaGuardiasBean.C_FECHACONFIRMACION,"SYSDATE");
+			if (!usr.isLetrado()) {				
 				beanPermutasGuardias.setIdInstitucion(new Integer(miForm.getIdInstitucion()));	
 				
 				// Trato los datos del solicitante, miro si existe porque habria que hacer un tratamiento
@@ -572,6 +565,21 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				// Creo la permuta de SCS_PERMUTASGUARDIAS y hacemos las modificaciones posteriores a SCS_PERMUTA_CABECERA
 				if (!admPermutasCabeceras.modificarPosteriorPermutasCalendario(beanPermutasGuardias))
 					throw new ClsExceptions(admPermutas.getError());	
+				
+				// Datos que se insertaran en la permuta
+				miHash.put(ScsPermutaGuardiasBean.C_FECHACONFIRMACION,"SYSDATE");
+				
+				//Datos del solicitante:
+				miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN, new Integer(miForm.getIdCalendarioConfirmador()));
+				miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE, sFechaInicioConfirmador);
+				
+				//Datos del confirmador:			
+				miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD, new Integer(miForm.getIdCalendarioSolicitante()));
+				miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, sFechaInicioSolicitante);
+				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
+						
+			} else {
+				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,miForm.getMotivosSolicitante());
 			}
 			
 			// Insertamos la permuta
@@ -1025,7 +1033,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				confirmadorHash.put("RESERVA",permutasForm.getReserva());
 				registros.clear();				
 				registros = admPermutas.selectGenerico(admPermutas.buscarDatosConfirmador(confirmadorHash));
-				temporalHash = (Hashtable)registros.get(0);
+				temporalHash = (Hashtable)registros.get(registros.size()-1);
 				confirmadorHash.put("NOMBREYAPELLIDOS",UtilidadesHash.getString(temporalHash,"NOMBRE"));
 				confirmadorHash.put("NUMEROCOLEGIADO",UtilidadesHash.getString(temporalHash,CenColegiadoBean.C_NCOLEGIADO));
 				confirmadorHash.put("FECHAFIN",UtilidadesHash.getString(temporalHash,ScsCabeceraGuardiasBean.C_FECHA_FIN));					
@@ -1038,7 +1046,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				registros.clear();
 				temporalHash.clear();
 				registros = admPermutas.selectGenerico(admPermutas.buscarDatosSolicitanteDesdeConfirmador(confirmadorHash));
-				temporalHash = (Hashtable)registros.get(0);
+				temporalHash = (Hashtable)registros.get(registros.size()-1);
 				solicitanteHash.put("IDINSTITUCION",UtilidadesHash.getString(temporalHash,ScsPermutaGuardiasBean.C_IDINSTITUCION));
 				solicitanteHash.put("IDTURNO",UtilidadesHash.getString(temporalHash,ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE));
 				solicitanteHash.put("IDGUARDIA",UtilidadesHash.getString(temporalHash,ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE));
