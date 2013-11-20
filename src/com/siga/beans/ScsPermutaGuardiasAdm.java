@@ -4,6 +4,7 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -686,44 +687,79 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 		
 	}
 		
+	/** Funcion ejecutaSelect(String select)
+	 *	@param select sentencia "select" sql valida, sin terminar en ";"
+	 *  @return Vector todos los registros que se seleccionen 
+	 *  en BBDD debido a la ejecucion de la sentencia select
+	 *
+	 */
+	public Vector ejecutaSelect(String select) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
 		
-		/** Funcion ejecutaSelect(String select)
-		 *	@param select sentencia "select" sql valida, sin terminar en ";"
-		 *  @return Vector todos los registros que se seleccionen 
-		 *  en BBDD debido a la ejecucion de la sentencia select
-		 *
-		 */
-		public Vector ejecutaSelect(String select) throws ClsExceptions 
-		{
-			Vector datos = new Vector();
-			
-			// Acceso a BBDD
-			RowsContainer rc = null;
-			try { 
-				rc = new RowsContainer(); 
-				if (rc.query(select)) {
-					for (int i = 0; i < rc.size(); i++)	{
-						Row fila = (Row) rc.get(i);
-						Hashtable registro = (Hashtable) fila.getRow(); 
-						if (registro != null) 
-							datos.add(registro);
-					}
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(select)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
 				}
-			} 
-			catch (Exception e) { 	
-				throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 			}
-			return datos;
-		}		
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return datos;
+	}
 		
-		
-		
-	}	
-		
-		
-		
-	
-	
-	
-	
-	
+	/**
+	 * Funcion que comprueba si existe en SCS_PERMUTAGUARDIAS, el solicitante o el confirmador permutado pendiente
+	 * @param beanCabeceraGuardiasSolicitante
+	 * @param beanCabeceraGuardiaConfirmador
+	 * @return
+	 */
+	public boolean existeSolicitanteCompradorPermutadosPendiente(ScsCabeceraGuardiasBean beanCabeceraGuardiasSolicitante, ScsCabeceraGuardiasBean beanCabeceraGuardiaConfirmador) {
+		boolean salida = true;		
+		try {			
+			String sql = " SELECT " + ScsPermutaGuardiasBean.T_NOMBRETABLA + ".* " + 
+				" FROM " + ScsPermutaGuardiasBean.T_NOMBRETABLA + 
+				" WHERE " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDINSTITUCION + " = " + beanCabeceraGuardiasSolicitante.getIdInstitucion() +
+					 " AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE + " = " + beanCabeceraGuardiasSolicitante.getIdTurno() +
+					 " AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE + " = " + beanCabeceraGuardiasSolicitante.getIdGuardia() +
+					 " AND " + ScsPermutaGuardiasBean.C_FECHACONFIRMACION + " IS NULL " +
+					 " AND ( " +
+						" ( " + 
+							ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN + " = " + beanCabeceraGuardiasSolicitante.getIdCalendario() +
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE + " = " + beanCabeceraGuardiasSolicitante.getIdPersona() + 
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE + " = TO_DATE('" + beanCabeceraGuardiasSolicitante.getFechaInicio() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') " + 
+						" ) OR ( " +
+							ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN + " = " + beanCabeceraGuardiaConfirmador.getIdCalendario() +
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE + " = " + beanCabeceraGuardiaConfirmador.getIdPersona() + 
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE + " = TO_DATE('" + beanCabeceraGuardiaConfirmador.getFechaInicio() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') " + 
+						" ) OR ( " +
+							ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD + " = " + beanCabeceraGuardiasSolicitante.getIdCalendario() +
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR + " = " + beanCabeceraGuardiasSolicitante.getIdPersona() + 
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR + " = TO_DATE('" + beanCabeceraGuardiasSolicitante.getFechaInicio() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') " + 
+						" ) OR ( " +
+							ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD + " = " + beanCabeceraGuardiaConfirmador.getIdCalendario() +
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR + " = " + beanCabeceraGuardiaConfirmador.getIdPersona() + 
+							" AND " + ScsPermutaGuardiasBean.T_NOMBRETABLA + "." + ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR + " = TO_DATE('" + beanCabeceraGuardiaConfirmador.getFechaInicio() + "', '" + ClsConstants.DATE_FORMAT_SQL + "') " + 
+						" ) " + 
+					" ) ";		
+			
+			Vector vPermutas = selectSQL(sql);
+			
+			if (vPermutas.size() == 0) {
+				salida = false;
+			}
+			
+		} catch (Exception e) {
+			salida = true;
+		}
+		return salida;
+	}		
+}	

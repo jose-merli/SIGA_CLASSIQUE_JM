@@ -352,8 +352,14 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			if(mBajasTemporalesConfirmador.containsKey(miForm.getFechaInicioSolicitante()))
 				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 			
+			//-----------------------------------------------------------------
+			//Inicio de la transaccion
+			//-----------------------------------------------------------------		
+			tx=usr.getTransaction();
+			tx.begin();				
+			
 			//Calculamos el nuevo identificador numero de la tabla scs_permutaguardias:
-			numero = admPermutas.getNuevoNumero(miForm.getIdInstitucion());
+			numero = admPermutas.getNuevoNumero(miForm.getIdInstitucion());			
 
 			//-------------------------------------------------------------
 			//Recuperamos los datos de la permuta
@@ -361,38 +367,33 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//Datos del solicitante:
 			miHash.put(ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE,miForm.getIdTurnoSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,miForm.getIdGuardiaSolicitante());
-			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
-			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
-			//solicitante ahora es el del confirmador			
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE, sFechaInicioSolicitante);			
 			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE,miForm.getMotivosSolicitante());
 			
 			// Consulta SCS_GUARDIASCOLEGIADO solicitante
+			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_FECHAINICIO, sFechaInicioSolicitante);
-			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());
-			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());			
 			Vector guardiasColegSolic = admGuardias.select(solicitanteGuardiaHash);
 			
 			// Consulta SCS_CABECERAGUARDIAS solicitante
+			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO, sFechaInicioSolicitante);
-			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());
-			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());			
+			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());					
 			Vector cabeceraGuarSolicitante = admCabeceraGuardias.selectByPK(solicitanteCGHash);
 
+			
 			//Datos del confirmador:			
 			miHash.put(ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR,miForm.getIdTurnoConfirmador());
-			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,miForm.getIdGuardiaConfirmador());
-			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
-			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
-			//confirmador ahora es el del solicitante  			
+			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,miForm.getIdGuardiaConfirmador());		
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,miForm.getIdPersonaConfirmador());
 			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioConfirmador());
 			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, sFechaInicioConfirmador);					
@@ -407,31 +408,35 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			Vector guardiasColegiadoConfirmador = admGuardias.select(confirmadorGuardiaHash);
 			
 			// Consulta SCS_CABECERAGUARDIAS confirmador
+			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO, sFechaInicioConfirmador);
-			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());
-			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());			
 			Vector cabeceraGuarConfirmador = admCabeceraGuardias.selectByPK(confirmadorCGHash);
 			
-			if (cabeceraGuarSolicitante==null || cabeceraGuarSolicitante.size()==0 || cabeceraGuarConfirmador==null || cabeceraGuarConfirmador.size()==0) {
+			
+			/*
+			 * JPT: Aqui se comprueba las siguientes cuestiones:
+			 * 1. Que tenga los mismos datos del solicitante que cuando se ha realizado la operacion.
+			 * 2. Que tenga los mismos datos del confirmador que cuando se ha realizado la operacion.
+			 * 3. Que no exista una permuta con los datos que se estan utilizando pendiente
+			 */
+			if (cabeceraGuarSolicitante==null || cabeceraGuarSolicitante.size()==0 || 
+					cabeceraGuarConfirmador==null || cabeceraGuarConfirmador.size()==0 || 
+					!admPermutas.existeSolicitanteCompradorPermutadosPendiente((ScsCabeceraGuardiasBean)(cabeceraGuarSolicitante.elementAt(0)), (ScsCabeceraGuardiasBean)(cabeceraGuarConfirmador.elementAt(0)))) {
 				request.setAttribute("sinrefresco","sinrefresco");				
 				request.setAttribute("mensaje", UtilidadesString.getMensajeIdioma(usr, "error.messages.noupdated"));	
 				return "exito"; 
-			}
+			}						
+			
 			
 			//Datos comunes:
 			miHash.put(ScsPermutaGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			miHash.put(ScsPermutaGuardiasBean.C_FECHASOLICITUD,"SYSDATE");
 			miHash.put(ScsPermutaGuardiasBean.C_NUMERO,numero);
-			miHash.put(ScsPermutaGuardiasBean.C_ANULADA,"0");
-			
-			//-----------------------------------------------------------------
-			//Inicio de la transaccion
-			//-----------------------------------------------------------------		
-			tx=usr.getTransaction();
-			tx.begin();		
+			miHash.put(ScsPermutaGuardiasBean.C_ANULADA,"0");	
 						
 			if (!usr.isLetrado()) {				
 				beanPermutasGuardias.setIdInstitucion(new Integer(miForm.getIdInstitucion()));	
