@@ -1954,6 +1954,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setValidacionBaja(false);
 				miForm.setMasivo(false);
 				
+				
+				
 				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
 					ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(
 							new Integer(miForm.getIdInstitucion()),
@@ -1968,6 +1970,35 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else{
 						miForm.setGruposGuardiaLetrado(new ArrayList<LetradoInscripcion>());
 					}
+				}else{
+					boolean isAlgunaGuardiaPorGrupo = false;
+					String guardiasSeleccionadas = miForm.getGuardiasSel();
+					List<String> guardiasSeleccionadasList = null;
+					if (guardiasSeleccionadas != null && !guardiasSeleccionadas.equals("")) {
+						guardiasSeleccionadas = guardiasSeleccionadas.substring(0, guardiasSeleccionadas.lastIndexOf("@"));
+						
+						if (guardiasSeleccionadas != null && !guardiasSeleccionadas.equals("")) {
+							String[] guardiasSel = guardiasSeleccionadas.split("@");
+							guardiasSeleccionadasList = Arrays.asList(guardiasSel);
+						}
+						if (guardiasSeleccionadasList != null && guardiasSeleccionadasList.size() > 0) {
+							for (ScsInscripcionGuardiaBean insGuardia : miForm.getInscripcionesGuardia()) {
+								if (guardiasSeleccionadasList.contains(insGuardia.getGuardia().getIdGuardia().toString())
+										&& insGuardia.getGuardia().getPorGrupos() != null
+										&& insGuardia.getGuardia().getPorGrupos().equals("1")) {
+									isAlgunaGuardiaPorGrupo = true;
+									break;
+								}
+							}
+						}
+					}
+					
+					if (isAlgunaGuardiaPorGrupo) {
+						miForm.setPorGrupos("1");
+					} else {
+						miForm.setPorGrupos("0");
+					}
+					
 				}			
 					
 				//seteamos el paso siguiente

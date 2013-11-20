@@ -269,7 +269,7 @@
 							}
 					} else {
 						if(document.getElementById('mostrarAvisoPorGrupo')){
-							alert("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");							
+							alertStop("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");							
 						}		
 					}			
 				}
@@ -541,7 +541,7 @@
 							}
 					} else {
 						if(document.getElementById('mostrarAvisoPorGrupo')){
-							alert("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");
+							alertStop("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");
 						}		
 					}			
 				}
@@ -631,6 +631,7 @@
 		<html:hidden property="observacionesValBaja" styleId="observacionesValBaja"/>
 		<html:hidden property="tipoActualizacionSyC" styleId="tipoActualizacionSyC"/>	
 		<html:hidden property="guardiasSel" styleId="guardiasSel"/>
+		
 		
 		<c:if test="${(InscripcionTGForm.fechaSolicitud==null || InscripcionTGForm.fechaSolicitud=='')&& InscripcionTGForm.solicitudAlta==true}">
 			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.solicitudAlta">		 
@@ -1081,7 +1082,7 @@
 				</c:choose>
 			</div>
 		</c:if>
-		<c:if test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia' ) }">
+		<c:if test="${InscripcionTGForm.porGrupos=='1'&&(InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar')  }">
 			<input type="hidden" name="mostrarAvisoPorGrupo" id="mostrarAvisoPorGrupo" />
 		</c:if>
 		

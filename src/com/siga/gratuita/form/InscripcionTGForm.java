@@ -88,6 +88,13 @@ public class InscripcionTGForm extends MasterForm {
 	String tipoActualizacionSyC = null;
 	
 	private String porGrupos;
+	private String unaGuardiaporGrupos;
+	public String getUnaGuardiaporGrupos() {
+		return unaGuardiaporGrupos;
+	}
+	public void setUnaGuardiaporGrupos(String unaGuardiaporGrupos) {
+		this.unaGuardiaporGrupos = unaGuardiaporGrupos;
+	}
 	List<LetradoInscripcion> gruposGuardiaLetrado;
 	
 	
