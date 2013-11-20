@@ -1379,15 +1379,13 @@ public class BusquedaCensoAction extends MasterAction {
 						// Comprobamos si está colegiado en colegiadoen
 						boolean bEncontrado = false;
 						int i = 0;
-						while (i < vColegiaciones.size() && !(bEncontrado && bColegiadoEnActual)){
+						while (i < vColegiaciones.size() && !bEncontrado && !bColegiadoEnActual){
 							String colegiacion = vColegiaciones.get(i).toString();
 							if (colegiacion != null && colegiacion.equals(colegiadoen))
 								bEncontrado = true;
-							if (colegiacion != null && colegiacion.equals(idInstitucion))
-								bColegiadoEnActual = true;
 							i++;
 						}
-						bMultiple = !bEncontrado || !bColegiadoEnActual;
+						bMultiple = !bEncontrado && !bColegiadoEnActual;
 					}
 					if(bMultiple){ //Se debe realizar una búsqueda multiple		
 						miForm.setMultiple("S");

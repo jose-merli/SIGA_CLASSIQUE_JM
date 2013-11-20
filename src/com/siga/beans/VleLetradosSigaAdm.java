@@ -401,10 +401,11 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 						    +"        TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
 							+" FROM V_CENSO_COLEGIADOS vc WHERE 1 = 1 ";
 			
-		
-				contador++;
-				codigos.put(new Integer(contador), idInstitucionActual.trim());
-				sqlClientes += "    AND vc.id_colegio = :" + contador;
+				if(idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals("")){ 
+					contador++;
+					codigos.put(new Integer(contador), idInstitucionActual.trim());
+					sqlClientes += "    AND vc.id_colegio = :" + contador;
+				}
 			       
 		        if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
 		          	contador++;
