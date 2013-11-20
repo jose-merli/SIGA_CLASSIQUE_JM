@@ -1900,7 +1900,7 @@
 												<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>&nbsp;(*)
 											</td>																																													
 											<td>
-												<html:text styleId="poblacionExt" property="poblacionExt" style="width:310px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
+												<html:text styleId="poblacionExt" property="poblacionExt" style="width:300px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getPoblacionExtranjera()%>" readOnly="<%=readonly%>"/>
 											</td>
 										</tr>								
 									</table>
@@ -1961,15 +1961,9 @@
 							</tr>
 							
 							<tr>
-								<td colspan="4" style="padding:0px;">
-									<table border="0" cellpadding="5" cellspacing="0">
-										<td  class="labelText">
-											<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>&nbsp;(*)		
-										</td>
-										<td>
-											<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
-										</td>
-									</table>
+								<td  class="labelText" colspan="4">
+									<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>&nbsp;(*)		
+									<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value="<%=datosPersonales.getCorreoElectronico()%>" readOnly="<%=readonly%>"/>
 								</td>
 							</tr>				
 						</table>

@@ -1153,11 +1153,11 @@
 																	
 											<td>
 												<html:hidden property="poblacion" value=""/>
-												<input class="boxDisabled" id="poblacion_input" type="text" style="width:310px;" value="" maxlength="100" disabled
+												<input class="boxDisabled" id="poblacion_input" type="text" style="width:300px;" value="" maxlength="100" disabled
 													onblur="onBlurPoblacionInput();" onkeydown="onKeyDownPoblacionInput(event);" onkeyup="onKeyUpPoblacionInput();" 
 													onfocus="onFocusPoblacionInput();" />
 												<div id="poblacion_div">
-													<select class="box" style="width:310px" id="poblacion_select"
+													<select class="box" style="width:300px" id="poblacion_select"
 														onblur="onBlurPoblacionSelect();" onchange="onChangePoblacionSelect(true);" onclick="onClickPoblacionSelect();" 
 														onkeypress="onKeyPressPoblacionSelect(event);" onkeydown="onKeyDownPoblacionSelect(event);" onmouseover="onMouseDownPoblacionSelect();" onmousedown="onMouseDownPoblacionSelect();">																		
 													</select>					
@@ -1174,8 +1174,8 @@
 											<td class="labelText">
 												<siga:Idioma key='censo.SolicitudIncorporacion.literal.provincia'/>											
 											</td>
-											<td class="labelText">
-												<input id="provincia_input" class="boxConsulta" type="text" style="width:310px" value="" readonly tabindex="-1" />
+											<td>
+												<input id="provincia_input" class="boxConsulta" type="text" style="width:300px" value="" readonly tabindex="-1" />
 											</td>
 										</tr>
 										
@@ -1188,11 +1188,10 @@
 											</td>						
 										
 											<td class="labelText">
-												<input type="text" style="width:68px" tabindex="-1" readonly
-													value="<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>" />&nbsp;(*)
+												<siga:Idioma key='censo.SolicitudIncorporacion.literal.poblacion'/>&nbsp;(*)
 											</td>																																													
 											<td>
-												<html:text styleId="poblacionExt" property="poblacionExt" style="width:310px" maxlength="100" styleClass="<%=estiloBox%>" value="" />
+												<html:text styleId="poblacionExt" property="poblacionExt" style="width:300px" maxlength="100" styleClass="<%=estiloBox%>" value="" />
 											</td>
 										</tr>								
 									</table>
@@ -1216,14 +1215,14 @@
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono1'/>&nbsp;(*)
 								</td>									
 								<td>
-									<html:text property="telefono1" style="width:100px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
+									<html:text property="telefono1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
 								</td>
 								
 								<td  class="labelText" width="80px">
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono2'/>
 								</td>									
 								<td>
-									<html:text property="telefono2" style="width:100px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
+									<html:text property="telefono2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
 								</td>
 							</tr>
 							
@@ -1232,14 +1231,14 @@
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax1'/>
 								</td>									
 								<td>
-									<html:text property="fax1" style="width:100px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
+									<html:text property="fax1" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value="" />
 								</td>
 								
 								<td  class="labelText">
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.fax2'/>
 								</td>
 								<td>
-									<html:text property="fax2" style="width:100px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
+									<html:text property="fax2" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
 								</td>		
 							</tr>
 							
@@ -1248,14 +1247,14 @@
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.telefono3'/>								
 								</td>
 								<td colspan="3">
-									<html:text property="telefono3" style="width:100px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
+									<html:text property="telefono3" style="width:110px" maxlength="15" styleClass="<%=estiloBox%>" value=""/>
 								</td>	
 							</tr>
 							
 							<tr>
 								<td class="labelText" colspan="4">
 									<siga:Idioma key='censo.SolicitudIncorporacion.literal.email'/>&nbsp;(*)&nbsp;	&nbsp;
-									<html:text property="mail" style="width:230px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
+									<html:text property="mail" style="width:270px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 								</td>
 							</tr>				
 						</table>
