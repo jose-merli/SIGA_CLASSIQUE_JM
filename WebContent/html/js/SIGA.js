@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.113 2013-10-25 10:41:39 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.114 2013-11-21 17:27:08 jorgepaez Exp $
 	**/
 	(function(jQuery)
 	{
@@ -1260,6 +1260,18 @@ function jQueryLoaded(){
 		if (jQuery("table.pest").length>0){
 			jQuery("table.pest").css("float", "left");
 		}
+		
+		// *** Eliminar backspace de select *** //
+		jQuery("select").each(function(){
+			jQuery(this).on("keydown", function(e){
+				var tecla = (document.all) ? e.keyCode : e.which;				
+				if (tecla == 8) {
+					//e.returnValue = false; 
+		  			//e.cancelBubble = true; 
+		  			return false;
+				}
+			});
+		});	
 		
 		// *** TAGFECHA *** //
 		jQuery("input.datepicker").each(function(){
