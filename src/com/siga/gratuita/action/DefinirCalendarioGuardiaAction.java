@@ -769,6 +769,20 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				String fechaInicio = GstDate.getFormatedDateShort(usr.getLanguage(), (String)ocultos.get(6));
 				String numero = ((String)ocultos.get(7)).trim();
 				String fechaFin = GstDate.getFormatedDateShort(usr.getLanguage(), (String)ocultos.get(8));
+				String fechaInicioPermuta = GstDate.getFormatedDateShort(usr.getLanguage(), (String)ocultos.get(9));
+				String fechaFinPermuta = GstDate.getFormatedDateShort(usr.getLanguage(), (String)ocultos.get(10));
+				
+				/*
+				 * Si la fecha final es igual que la fecha final de la permuta, entonces esta en alguno de los siguientes estados:
+				 * - Pendiente de realizar
+				 * - Permutada
+				 * ... Pero no está en Pendiente de Confirmar
+				 * 
+				 * Entonces tomamos como fecha inicial, la inicial de la permuta, ya que fechaInicio es la fecha original.
+				 */
+				if (fechaFin.equals(fechaFinPermuta)) {
+					fechaInicio = fechaInicioPermuta;
+				}
 				
 				//generando el hash para tratar la guardia del calendario
 				Hashtable miHash = new Hashtable();
