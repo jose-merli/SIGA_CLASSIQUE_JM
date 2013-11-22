@@ -18,7 +18,6 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.beans.FacLineaFacturaBean"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 
 
 <!-- JSP -->
@@ -44,24 +43,17 @@
 	if ((modo != null) && (modo.equalsIgnoreCase("ver"))) {
 		botones = "C";
 		readOnly = true;
-	}
-	else {
+	} else {
 		if ((bEditarDescripcion != null) && (bEditarDescripcion.booleanValue())) { claseEditarDes    = "box"; readOnlyDes=false; }
 		if ((bEditarPrecio != null)      && (bEditarPrecio.booleanValue()))      { claseEditarPrecio = "box"; readOnlyPre=false; }
 		if ((bEditarIVA != null)         && (bEditarIVA.booleanValue()))         { claseEditarIVA    = "box"; readOnlyIva=false; }
 	}
-	
 %>
 
-
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
@@ -79,13 +71,13 @@
 			document.GestionarFacturaForm.datosLineaTotal.value=document.GestionarFacturaForm.datosLineaTotal.value.replace(/,/,".");						
 		}
 
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionCerrar(){ 
 			window.top.close();
 			return 0;
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {			
 			if (validateGestionarFacturaForm(document.GestionarFacturaForm)) {
 				validarPrecios();
@@ -100,9 +92,13 @@
 			d = new Number(n);
 			d = Number(d.toFixed(2));
 			d = d.toLocaleString();
-			if(String(d).indexOf(',') < 0){
-				d += '.00'; // aqui puede variar segun la cantidad de decimales que desees;
-			}	
+			if (d.indexOf(',') < 0) {
+				d += ',00'; // Si no tiene decimales le pongo dos ceros
+			} else {
+				if (d.indexOf(',') + 3 > d.length){
+					d += '0'; // Si tiene un decimal le pongo otro decimal
+				}
+			}
 			return d.replace(".","");	
 		}
 		
@@ -126,119 +122,110 @@
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
-				<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.lineasFactura.Datos.Titulo"/></td>
+			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.lineasFactura.Datos.Titulo"/></td>
 		</tr>
 	</table>
 
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<div id="camposRegistro" class="posicionModalMedia" align="center">
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<html:form action="/FAC_LineasFactura.do" method="POST" target="submitArea">
+			<html:hidden property="modo" value = ""/>
+			<table class="tablaCentralCamposMedia">
+				<tr>
+					<td>
+						<siga:ConjCampos leyenda="facturacion.lineasFactura.Datos.Titulo">
+							<table class="tablaCampos" border="0">
+								<tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Orden"/></td>
+									<td class="labelText"><html:text property="datosLineaOrden" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getNumeroOrden())%>" readonly="true"/></td>
+								</tr>
 
-<div id="camposRegistro" class="posicionModalMedia" align="center">
+								<tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Descripcion"/></td>
+									<td class="labelText">
+										<html:textarea property="datosLineaDescripcion" styleClass="<%=claseEditarDes%>"  readonly="<%=readOnlyDes%>"
+											value="<%=linea.getDescripcion()%>" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+											style="overflow-y:auto; overflow-x:hidden; width:550px; height:50px; resize:none;"/>
+									</td>
+								</tr>
 
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<html:form action="/FAC_LineasFactura.do" method="POST" target="submitArea">
-		
-		<html:hidden property = "modo" 					value = ""/>
-		<table class="tablaCentralCamposMedia">
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="facturacion.lineasFactura.Datos.Titulo">
-					<table class="tablaCampos" border="0">
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Orden"/></td>
-							<td class="labelText">
-									<html:text property="datosLineaOrden" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getNumeroOrden())%>" readonly = "true"/>
-							</td>
-						</tr>
+								<tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Cantidad"/></td>
+									<td class="labelText"><html:text property="datosLineaCantidad" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getCantidad())%>" readOnly="true" /></td>
+								</tr>
+							</table>					
+						</siga:ConjCampos>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>					
+						<fieldset>
+							<table class="tablaCampos" border="0">
+								<tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Precio"/></td>
+									<td class="labelText">
+										<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
+											value="<%=UtilidadesNumero.formatoCampo(String.valueOf(linea.getPrecioUnitario()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
+									</td>
 
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Descripcion"/></td>
-							<td class="labelText" colspan="3">
-								<html:textarea property="datosLineaDescripcion" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="75" rows="2" styleClass="<%=claseEditarDes%>" value="<%=linea.getDescripcion()%>" readonly="<%=readOnlyDes%>" style="overflow:hidden"/>
-							</td>
-						</tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.TotalNeto"/></td>
+									<td class="labelText"><html:text property="datosLineaTotalNeto" styleClass="boxConsultaNumber" value="" readonly="true"/>&nbsp;&euro;</td>
+								</tr>
 
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Cantidad"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaCantidad" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getCantidad())%>" readOnly="true" />
-							</td>
-						</tr>
-					</table>
-					</siga:ConjCampos>
-					<br>
+								<tr>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.IVA"/></td>
+									<td class="labelText">
+										<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
+											value="<%=String.valueOf(linea.getIva().intValue())%>" onChange="calculaPrecios();"/>
+									</td>
 
-					<fieldset>
-					<table class="tablaCampos" border="0">
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Precio"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" value="<%=UtilidadesNumero.formatoCampo(String.valueOf(linea.getPrecioUnitario()))%>" readonly="<%=readOnlyPre%>" onChange="calculaPrecios();"/>
-								&nbsp;&euro;
-							</td>
-							
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.importeIVA"/></td>
+									<td class="labelText"><html:text property="datosLineaTotalIVA" styleClass="boxConsultaNumber" value="" readonly="true"/>&nbsp;&euro;</td>
+								</tr>
 
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.TotalNeto"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaTotalNeto" styleClass="boxConsultaNumber" value="" readonly = "true"/>
-								&nbsp;&euro;
-							</td>
-						</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td colspan="2">
+										<hr width="100%" size="1">
+									</td>
+								</tr>
+								
+								<tr>						
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></td>
+									<td class="labelText"><html:text property="datosLineaTotal" styleClass="boxConsultaNumber" value="" readonly = "true"/>&nbsp;&euro;</td>
+								</tr>
 
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.IVA"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" value="<%=UtilidadesNumero.formatoCampo(String.valueOf(linea.getIva()))%>" readonly="<%=readOnlyIva%>" onChange="calculaPrecios();"/>
-							</td>
-
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.importeIVA"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaTotalIVA" styleClass="boxConsultaNumber" value="" readonly = "true"/>
-								&nbsp;&euro;
-							</td>
-						</tr>
-
-						<tr>
-							<td>&nbsp;</td><td>&nbsp;</td><td colspan="2"><hr align="left" width="100%" size="1" class="boxConsultaNumber"></td>
-						<tr>
-						
-							<td>&nbsp;</td><td>&nbsp;</td>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></td>
-							<td class="labelText">
-								<html:text property="datosLineaTotal" styleClass="boxConsultaNumber" value="" readonly = "true"/>
-								&nbsp;&euro;
-							</td>
-						</tr>
-
-						<tr>
-							<td>&nbsp;</td><td>&nbsp;</td>
-							<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Anticipado"/></td>
-							<td class="labelText">
-									<html:text property="datosLineaAnticipado" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getImporteAnticipado().doubleValue()))%>" readonly = "true"/>
-									&nbsp;&euro;
-							</td>
-						</tr>
-					</table>
-					</fieldset>
-					
-				</td>
-			</tr>
-		</table>
-	</html:form>
-	<!-- FIN: CAMPOS -->
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Anticipado"/></td>
+									<td class="labelText"><html:text property="datosLineaAnticipado" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getImporteAnticipado().doubleValue()))%>" readonly = "true"/>&nbsp;&euro;</td>
+								</tr>
+							</table>
+						</fieldset>					
+					</td>
+				</tr>
+			</table>
+		</html:form>
+		<!-- FIN: CAMPOS -->
 	
-	<script>
-		calculaPrecios();
-	</script>
+		<script>			
+			calculaPrecios();
+		</script>
 
-	<siga:ConjBotonesAccion botones='<%=botones%>' modo='' modal="M" />
-
-</div>
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+		<siga:ConjBotonesAccion botones='<%=botones%>' modo='' modal="M" />
+	</div>
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

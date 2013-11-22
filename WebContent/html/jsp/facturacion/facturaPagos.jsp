@@ -284,8 +284,8 @@
 						<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(auxPendiente.doubleValue()))%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(auxPendiente.doubleValue()))%>&nbsp;&euro;</td>
 					</siga:FilaConIconos>
 <%	 		 
 				} // if

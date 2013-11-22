@@ -32,7 +32,6 @@
 <%@ page import="com.siga.beans.FacAbonoBean"%>
 <%@ page import="org.apache.struts.action.ActionMapping"%>
 
-
 <!-- JSP -->
 <% 		
 	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
@@ -195,12 +194,8 @@
 	//}
 %>
 
-
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
 	
 	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
@@ -264,14 +259,14 @@
 		<table class="tablaCampos" border="0">
 			<% if (abonoAnulacion!=null && !abonoAnulacion.equals("null")) { %>
 				<tr>
-					<td colspan="3" class="titulitosDatos">
+					<td class="titulitosDatos">
 						<siga:Idioma key="facturacion.literal.avisoAbonoAnulacion"/>&nbsp;<%=abonoAnulacion%>
 					</td>
 				</tr>
 			<% } %>
 
 			<tr>
-				<td colspan="3">
+				<td>
 					<siga:ConjCampos leyenda="facturacion.datosFactura.leyenda">	
 						<table class="tablaCampos" border="0">														
 							<tr>
@@ -288,8 +283,9 @@
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Cliente"/></td>
 								<td class="labelTextValor" ><%=UtilidadesString.mostrarDatoJSP(nifcif)%> - <%=UtilidadesString.mostrarDatoJSP(nombreColegiado)%></td>
+								
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Deudor"/></td>
-								<td class="labelTextValor" colspan="2"><%=UtilidadesString.mostrarDatoJSP(nifcifDeudor)%> - <%=UtilidadesString.mostrarDatoJSP(nombreDeudor)%></td>
+								<td class="labelTextValor" colspan="3"><%=UtilidadesString.mostrarDatoJSP(nifcifDeudor)%> - <%=UtilidadesString.mostrarDatoJSP(nombreDeudor)%></td>
 							</tr>
 
 							<tr>
@@ -310,6 +306,7 @@
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.NumeroCuenta"/></td>
 								<td class="labelTextValor" colspan="3"><%=codEntidad%><%=UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuenta)%></td>
 							</tr>
+							
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/></td>
 								<td colspan="2">
@@ -318,12 +315,13 @@
 										style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
 										styleClass="<%=claseEditarCampos%>" value="<%=observaciones%>"></html:textarea>
 								</td>
+								
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observinforme"/></td>
 								<td colspan="2">
-								<html:textarea property="datosGeneralesObservinforme" 
-									onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
-									style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
-									styleClass="<%=claseEditarCampos%>" value="<%=observinforme%>"></html:textarea>
+									<html:textarea property="datosGeneralesObservinforme" 
+										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+										style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
+										styleClass="<%=claseEditarCampos%>" value="<%=observinforme%>"></html:textarea>
 								</td>
 							</tr>							
 						</table>
@@ -331,90 +329,114 @@
 				</td>
 			</tr>
 							
-			<tr  width="100%">
+			<tr width="100%">
 				<td>
 					<html:button property="idButton" onclick="abrirPDF();" styleClass="button"><siga:Idioma key="facturacion.datosFactura.boton.DescargarFacturaPDF"/> </html:button>
 				</td>
 			</tr>
 			
-			<tr>			
-				<td> <!-- Pagos -->
-					<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Pagos">	
-						<table class="tablaCampos" border="0">	
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosAnticipado"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosAnticipado.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorCaja"/></td>
-								<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(pagosSoloCaja.doubleValue())%>&nbsp;&euro;</td>
-							</tr>
-							
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorTarjeta"/></td>
-								<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(pagosSoloTarjeta.doubleValue())%>&nbsp;&euro;</td>
-							</tr>
-
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorBanco"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosPorBanco.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-							
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosCompensado"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosCompensado.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-						</table>
-					</siga:ConjCampos>
-				</td>
-		
+			<tr>		
 				<td>
-					<table class="tablaCampos" border="0">	
+					<table border="0" width="100%">
 						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalFactura"/></td>
-							<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalFactura.doubleValue()))%>&nbsp;&euro;</td>
+							<td width="33%">
+								<table>
+									<tr>
+										<td> <!-- Pagos -->
+											<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Pagos">	
+												<table class="tablaCampos" border="0">	
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosAnticipado"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosAnticipado.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorCaja"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesNumero.formatoCampo(pagosSoloCaja.doubleValue())%>&nbsp;&euro;</td>
+													</tr>
+													
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorTarjeta"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesNumero.formatoCampo(pagosSoloTarjeta.doubleValue())%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorBanco"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosPorBanco.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+													
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosCompensado"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pagosCompensado.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td width="33%">
+								<table>
+									<tr>
+										<td align="center">
+											<table class="tablaCampos" border="0">	
+												<tr>
+													<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalFactura"/></td>
+													<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalFactura.doubleValue()))%>&nbsp;&euro;</td>
+												</tr>
+						
+												<tr>
+													<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalPagos"/></td>
+													<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagos.doubleValue()))%>&nbsp;&euro;</td>
+												</tr>
+						
+												<tr>
+													<td class="labelTextValor" colspan="2"><hr size="1"></td>
+												</tr>
+							
+												<tr>
+													<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PedientePagar"/></td>
+													<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pedientePagar.doubleValue()))%>&nbsp;&euro;</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</td>
+					
+							<td width="33%">
+								<table>
+									<tr>
+										<td align="right"> <!-- Totales -->
+											<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Totales">	
+												<table class="tablaCampos" border="0">	
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteNeto"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesImporteNeto.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteIVA"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesImporteIVA.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelTextValor" colspan="2"><hr size="1"></td>
+													</tr>
+							
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesTotalFactura"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesTotalFactura.doubleValue()))%>&nbsp;&euro;</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>
+										</td>
+									</tr>
+								</table>
+							</td>
 						</tr>
-
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalPagos"/></td>
-							<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagos.doubleValue()))%>&nbsp;&euro;</td>
-						</tr>
-
-						<tr>
-							<td class="labelTextValor" colspan="2"><hr align="left" width="100%" size="1" class="boxConsulta"></td>
-						</tr>
-	
-						<tr>
-							<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PedientePagar"/></td>
-							<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pedientePagar.doubleValue()))%>&nbsp;&euro;</td>
-						</tr>
-					</table>
-				</td>
-		
-				<td> <!-- Totales -->
-					<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Totales">	
-						<table class="tablaCampos" border="0">	
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteNeto"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesImporteNeto.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteIVA"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesImporteIVA.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-
-							<tr>
-								<td class="labelTextValor" colspan="2"><hr align="left" width="100%" size="1" class="boxConsulta"></td>
-							</tr>
-	
-							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesTotalFactura"/></td>
-								<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalesTotalFactura.doubleValue()))%>&nbsp;&euro;</td>
-							</tr>
-						</table>
-					</siga:ConjCampos>
+					</table>					
 				</td>
 			</tr>
 			

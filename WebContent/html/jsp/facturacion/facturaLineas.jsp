@@ -26,9 +26,9 @@
 
 <!-- JSP -->
 <% 
-ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
-String path = actionMapping.getPath();	
-String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
+	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+	String path = actionMapping.getPath();	
+	String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
 
 	// Obtencion del tipo de acceso sobre la pestanha del usuario de la aplicacion
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -135,14 +135,26 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 						</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(linea.getDescripcion())%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(cantidad)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(iva.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(anticipado.doubleValue()))%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(iva.intValue())%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(anticipado.doubleValue()))%>&nbsp;&euro;</td>
 					</siga:FilaConIconos>							 		
 <%	 		 
 				} // if
 			 }  // for
+%>
+			<tr class="listaNonEditSelected" style="height:30px">
+				<td>&nbsp;</td>
+				<td><b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaTotal,2)))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaAnticipado,2)))%>&nbsp;&euro;</b></td>
+				<td>&nbsp;</td>
+			</tr>				
+<%			 
 		} else {  
 %>
 			<tr class="notFound">
@@ -151,23 +163,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 <% 
 		}
 %>
-
 	</siga:Table>
-
-	<div id="totales" style="bottom:50px; height:50px; left:0; position:absolute; width:100%;">
-		<table align="right" width=100%>
-			<tr>			
-				<td class="labelTextNum" width="9%">&nbsp;</td>
-				<td class="labelTextNum" width="40%">&nbsp;</td>
-				<td class="labelTextNum" width="7%">&nbsp;</td>
-				<td class="labelTextNum" width="9%">&nbsp;</td>
-				<td class="labelTextNum" width="7%">&nbsp;</td>
-				<td class="labelTextNum" width="9%"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaTotal,2)))%>&nbsp;&euro;</td>
-				<td class="labelTextNum" width="9%"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaAnticipado,2)))%>&nbsp;&euro;</td>
-				<td class="labelTextNum" width="10%">&nbsp;</td>
-			</tr>
-		</table>
-	</div>		
 	<!-- FIN: CAMPOS -->
 
 	<siga:ConjBotonesAccion clase="botonesDetalle" botones='<%=botonesAccion %>' modo=''/>
