@@ -609,10 +609,10 @@ public class InformesGenericosAction extends MasterAction {
 
 									}else{
 										datosconsulta=ejgAdm.getDatosInformeEjg(usr.getLocation(),idTipoEJG,anio,numero,
-												idioma,isSolicitantes,isaContrarios,null,null,isGenerarInformeSindireccion);
+												isSolicitantes,isaContrarios,null,null,isGenerarInformeSindireccion,beanInforme.getDestinatarios());
 										
-										regionUF = ejgAdm.getDatosRegionUF(usr.getLocation(),idTipoEJG,anio,numero);
-										regionConyuge = ejgAdm.getDatosRegionConyuge(usr.getLocation(),idTipoEJG,anio,numero);
+										regionUF = ejgAdm.getDatosRegionUF(usr.getLocation(),idTipoEJG,anio,numero,idioma);
+										regionConyuge = ejgAdm.getDatosRegionConyuge(usr.getLocation(),idTipoEJG,anio,numero,idioma);
 										hashConsultasHechas.put(keyConsultasHechas, datosconsulta);
 										hashConsultasHechas.put("regionUF", regionUF);
 										hashConsultasHechas.put("regionConyuge", regionConyuge);
@@ -779,11 +779,14 @@ public class InformesGenericosAction extends MasterAction {
 						String numero="";
 						String idTipoSOJ="";
 						String anio="";
-
+						String destinatario =  beanInforme.getDestinatarios();
+						ScsDefinirSOJAdm definirSOJAdm= new ScsDefinirSOJAdm(usr);
+						String idioma ="1";
+						String idiomaInforme ="ES";
 						for (int z=0; z<datos.size(); z++){							
-							ScsDefinirSOJAdm definirSOJAdm= new ScsDefinirSOJAdm(usr);
-							String idioma=usr.getLanguageInstitucion();
-							String idiomaDatos="1";
+							
+							
+							
 							//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
 							if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
 								Hashtable aux  = (Hashtable)datos.get(z);
@@ -797,16 +800,32 @@ public class InformesGenericosAction extends MasterAction {
 									
 										anio= (String)aux.get("anio");
 										numero= (String)aux.get("numero");
-
-
+										
+										
+										
+										if(destinatario.equals("S")){
+											Hashtable solicitante =  definirSOJAdm.getSolicitanteSOJ(usr.getLocation(), numero, anio, idTipoSOJ);
+											String idPersona = (String) solicitante.get("IDPERSONAJG");
+											HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+											helperInformesAdm.setIdiomaInforme(usr.getLocation(), idPersona, AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,solicitante, usr);
+											idioma = (String)solicitante.get("idioma");
+											idiomaInforme= (String)solicitante.get("idiomaExt");
+										}else{
+											Hashtable letradoTramitador =  definirSOJAdm.existeTramitadorSOJ(usr.getLocation(), numero, anio, idTipoSOJ);
+											String idPersona = (String) letradoTramitador.get("IDPERSONA");
+											HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+											helperInformesAdm.setIdiomaInforme(usr.getLocation(), idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA,letradoTramitador, usr);
+											idioma = (String)letradoTramitador.get("idioma");
+											idiomaInforme= (String)letradoTramitador.get("idiomaExt");
+											
+										}
+										
 									Hashtable sojHashtable =definirSOJAdm.getDatosInformeSOJ(new Integer(usr.getLocation()),
-											new Integer(idTipoSOJ),new Integer(anio),new Integer(numero));
+											new Integer(idTipoSOJ),new Integer(anio),new Integer(numero),idioma);
 
 									 
 
-									HelperInformesAdm helperInformes = new HelperInformesAdm();
 									
-									String idiomainforme="ES";
 									if (sojHashtable!=null && sojHashtable.size()>0) {
 										
 										
@@ -820,7 +839,7 @@ public class InformesGenericosAction extends MasterAction {
 											}
 								
 											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
-											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
+											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomaInforme+".doc";
 											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
 											MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
 											Document doc=words.nuevoDocumento(); 

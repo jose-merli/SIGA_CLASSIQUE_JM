@@ -2087,7 +2087,7 @@ public class DefinirEnviosAction extends MasterAction {
 			anio = (String)ht.get("anio");
 			idTurno = (String) ht.get("idTurno");
 			numero = (String)ht.get("numero");
-			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(new Integer(idInstitucion), new Integer(anio),new Integer(numero), new Integer(idTurno));
+			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(new Integer(idInstitucion), new Integer(anio),new Integer(numero), new Integer(idTurno),null);
 			if(vDefendidos!=null)
 				numSolicitantes += vDefendidos.size();
 			if(numSolicitantes>1){

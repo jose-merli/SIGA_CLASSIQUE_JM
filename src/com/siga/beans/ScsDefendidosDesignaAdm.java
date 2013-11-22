@@ -250,12 +250,12 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 		}
 		return datos;                        
 	}
-	public Vector getDefendidosDesigna(Integer institucion, Integer anio, Integer numero, Integer turno) throws ClsExceptions,SIGAException {
+	public Vector getDefendidosDesigna(Integer institucion, Integer anio, Integer numero, Integer turno,String idPersonaJG) throws ClsExceptions,SIGAException {
 		Vector datos=new Vector();
 		try {
 			
 			StringBuffer sql = new StringBuffer();
-			sql.append(" select def.idpersona  ");
+			sql.append(" select def.idpersona IDPERSONAINTERESADO,def.idpersona ");
 			sql.append(" from SCS_DEFENDIDOSDESIGNA def  ");
  
 			sql.append(" WHERE def.idinstitucion = ");
@@ -267,6 +267,10 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 			
 			sql.append(" and def.IDTURNO = ");
 			sql.append(turno);
+			if(idPersonaJG!=null){
+				sql.append(" and def.IDPERSONA = ");
+				sql.append(idPersonaJG);
+			}
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.find(sql.toString())) {
 				for (int i = 0; i < rc.size(); i++){

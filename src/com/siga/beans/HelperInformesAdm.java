@@ -4,11 +4,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.general.SIGAException;
 
 public class HelperInformesAdm  {
@@ -1219,7 +1221,85 @@ public class HelperInformesAdm  {
 			throw new ClsExceptions(e, "Error al ejecutar getImplicadosDireccionesExpediente");
 		}
 
-			} //getImplicadosDireccionesExpediente()
+	} //getImplicadosDireccionesExpediente()
+	private String getIdiomaInforme(String idInstitucion, String idPersona, String idTipoPersona,UsrBean usrBean) 
+	{
+
+		String idioma = null;
+		try {
+			if (idTipoPersona.equalsIgnoreCase(
+					AdmInformeBean.TIPODESTINATARIO_CENPERSONA)) {
+				CenClienteAdm cenClienteAdm = new CenClienteAdm(usrBean);
+				if(idPersona!=null)
+					idioma = cenClienteAdm.getIdiomaPersonaInforme(idInstitucion,idPersona);
+				if(idioma ==null){
+					CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
+					CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
+					idioma = institucionBean.getIdLenguaje();
+				}
+	
+			} else if (idTipoPersona
+					.equalsIgnoreCase(
+							AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)) {
+				ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(usrBean);
+				if(idPersona!=null)
+					idioma = personaJGAdm.getIdiomaPersonaInforme(idInstitucion,idPersona);
+				if(idioma ==null){
+					CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
+					CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
+					idioma = institucionBean.getIdLenguaje();
+				}
+	
+	
+			} else if (idTipoPersona.equalsIgnoreCase(
+					AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
+				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
+				CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
+				idioma = institucionBean.getIdLenguaje();
+	
+			}else if (idTipoPersona.equalsIgnoreCase(
+					AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
+				CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
+				idioma = institucionBean.getIdLenguaje();
+	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(idioma ==null ||idioma.equals("")){
+				idioma = ClsConstants.LENGUAJE_ESP;
+			}
+		}
+		return idioma;
+
+	}
+	public Hashtable setIdiomaInforme(String idInstitucion, String idPersona, String idTipoPersona,Hashtable datosInformeHashtable, UsrBean usrBean){
+		String idioma = getIdiomaInforme(idInstitucion, idPersona,idTipoPersona, usrBean);
+		datosInformeHashtable.put("idioma", idioma);
+		String idiomaExt = "";
+		switch (Integer.parseInt(idioma)) {
+			case 1:
+				idiomaExt = "ES";
+				break;
+			case 2:
+				idiomaExt = "CA";
+				break;
+			case 3:
+				idiomaExt = "EU";
+				break;
+			case 4:
+				idiomaExt = "GL";
+				break;
+			default:
+				idiomaExt = "ES";
+				break;
+		}
+		datosInformeHashtable.put("idiomaExt", idiomaExt);
+		return datosInformeHashtable;
+		
+		
+	}
 	
 
 }

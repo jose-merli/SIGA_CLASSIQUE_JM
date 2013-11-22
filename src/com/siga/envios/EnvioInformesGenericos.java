@@ -551,11 +551,10 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			boolean isSolicitantes = aSolicitantes != null
 					&& aSolicitantes.equalsIgnoreCase("S");
-			String languageInstitucion = (String) usrBean
-					.getLanguageInstitucion();
+			String idiomaExt =(String) datosInforme.get("idiomaExt");
 			Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
 					idinstitucion, idTurno, anio, numero, null, isSolicitantes,
-					idPersonaJG, languageInstitucion);
+					idPersonaJG, idioma,idiomaExt);
 			if(!isSolicitantes && datosconsulta.size()>0){
 				Hashtable registro = (Hashtable) datosconsulta.get(0);
 				if(registro.get("defendido")!=null){
@@ -598,20 +597,41 @@ public class EnvioInformesGenericos extends MasterReport {
 			boolean isGenerarInformeSinDireccion = generarInformeSinDireccion != null
 					&& generarInformeSinDireccion.equalsIgnoreCase("S");
 					
-			
-			String languageInstitucion = (String) usrBean
-					.getLanguageInstitucion();
+			String tipoDestinatarioInforme = (String) datosInforme.get("tipoDestinatarioInforme");
+//			String languageInstitucion = (String) usrBean
+//					.getLanguageInstitucion();
+			//quitar el idioma de la siguiente consulta, sacarlo abajo
 			Vector datosconsulta = ejgAdm.getDatosInformeEjg(
-					usrBean.getLocation(), idTipoEJG, anio, numero,
-					languageInstitucion, isSolicitantes, isAcontrarios, idPersona,tipoDestinatario,isGenerarInformeSinDireccion);
+					usrBean.getLocation(), idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
+					idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme);
+			Hashtable<String,Vector> htIdiomasUF = new Hashtable<String, Vector>();
+			Hashtable<String,Vector> htIdiomasConyuge = new Hashtable<String,Vector>();
 			 if( datosconsulta.size()>0){
+				 Hashtable registro = (Hashtable) datosconsulta.get(0);
 				 
 				 for (int i = 0; i < datosconsulta.size(); i++) {
-					 Hashtable registro = (Hashtable) datosconsulta.get(i);
+					 registro = (Hashtable) datosconsulta.get(i);
+					 idioma = (String)registro.get("idioma");
 					 if(i==0){
 						 setAlgunRepresentanteLegal(registro.get("isAlgunRepresentanteLegal")!=null && (Boolean)registro.get("isAlgunRepresentanteLegal"));
 						 setAlgunInformeNoGenerado(registro.get("isAlgunInformeNoGenerado")!=null && (Boolean)registro.get("isAlgunInformeNoGenerado"));
 					 }
+					 Vector regionUF = null;
+					 Vector regionConyuge = null;
+					 if(htIdiomasUF.containsKey(idioma)){
+						  regionUF =   htIdiomasUF.get(idioma);
+						  regionConyuge =   htIdiomasConyuge.get(idioma);
+					 }else{
+						 regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),
+									idTipoEJG, anio, numero,idioma);
+						 regionConyuge = ejgAdm.getDatosRegionConyuge(
+									usrBean.getLocation(), idTipoEJG, anio, numero,idioma);
+						 htIdiomasUF.put(idioma,regionUF);
+						 htIdiomasConyuge.put(idioma,regionConyuge);
+					 }
+						 
+					 registro.put("unidadfamiliar", regionUF);
+					 registro.put("conyuge", regionConyuge);
 						 
 					 
 //					if(!isSolicitantes ){
@@ -634,12 +654,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			
 			
-			Vector regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),
-					idTipoEJG, anio, numero);
-			Vector regionConyuge = ejgAdm.getDatosRegionConyuge(
-					usrBean.getLocation(), idTipoEJG, anio, numero);
-			htDatosInforme.put("unidadfamiliar", regionUF);
-			htDatosInforme.put("conyuge", regionConyuge);
+			
+			
 			htDatosInforme.put("row", datosconsulta);
 
 		}else if (idTipoInforme
@@ -1247,7 +1263,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		return htDatosInforme;
 
 	}
-
+	
+	
 	/**
 	 * Devuelve un Vector con los documentos a Enviar(o descargar) ya generados
 	 * en formato File o Document dependiendo del parametro de entrada
@@ -1338,8 +1355,17 @@ public class EnvioInformesGenericos extends MasterReport {
 				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesListadoGuardias)
 				&& !tipoComunicacion
-						.equals(EnvioInformesGenericos.comunicacionesEjg))
+						.equals(EnvioInformesGenericos.comunicacionesEjg)
+				&& !tipoComunicacion
+						.equals(EnvioInformesGenericos.comunicacionesCenso)){
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+		}else if(tipoComunicacion	.equals(EnvioInformesGenericos.comunicacionesCenso)){
+			HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+			helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA,datosInforme, usrBean);
+			idioma =  (String)datosInforme.get("idioma");
+			idiomaExt = (String)datosInforme.get("idiomaExt");
+			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+		}
 
 		Hashtable hashConsultasHechas = new Hashtable();
 		for (int i = 0; i < vPlantillas.size(); i++) {
@@ -1366,8 +1392,16 @@ public class EnvioInformesGenericos extends MasterReport {
 
 						for (int k = 0; k < datosFormulario.size(); k++) {
 							Hashtable htDatoInforme = new Hashtable();
-							Hashtable datoInform = (Hashtable) datosFormulario
-									.get(k);
+							Hashtable datoInform = (Hashtable) datosFormulario.get(k);
+							
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme((String)datoInform.get("idInstitucion") ,(String)datoInform.get("idPersona") , AdmInformeBean.TIPODESTINATARIO_CENPERSONA,datoInform, usrBean);
+							datoInforme.put("idioma", datoInform.get("idioma"));
+							datoInforme.put("idiomaExt", datoInform.get("idiomaExt"));
+						
+							
+							
+							
 							datoInform.put("aSolicitantes",
 									beanInforme.getASolicitantes());
 							datoInform.put("idTipoInforme", tipoComunicacion);
@@ -1412,7 +1446,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append(hoy);
 
 							File fileDocumento = getInformeGenerico(
-									beanInforme, htDatoInforme, idiomaExt,
+									beanInforme, htDatoInforme, (String)datoInform.get("idiomaExt"),
 									identificador.toString(), usrBean,
 									tipoPlantillaWord);
 							String pathDocumento = fileDocumento.getPath();
@@ -1451,9 +1485,13 @@ public class EnvioInformesGenericos extends MasterReport {
 								(String) datoInforme.get("idLista"));
 						datos.put("idPersona",
 								(String) datoInforme.get("idPersona"));
+					
+						
 						datos.put("aSolicitantes",
 								beanInforme.getASolicitantes());
 						datos.put("idTipoInforme", tipoComunicacion);
+						datos.put("idioma", datosInforme.get("idioma"));
+						datos.put("idiomaExt", datosInforme.get("idiomaExt"));
 
 						htDatosInformeFinal = getDatosInformeFinal(datos,
 								usrBean);
@@ -1490,7 +1528,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						identificador.append(hoy);
 
 						File fileDocumento = getInformeGenerico(beanInforme,
-								htDatosInformeFinal, idiomaExt,
+								htDatosInformeFinal, (String)datosInforme.get("idiomaExt"),
 								identificador.toString(), usrBean,
 								tipoPlantillaWord);
 						String pathDocumento = fileDocumento.getPath();
@@ -1518,6 +1556,9 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					datos.put("idInstitucion",
 							(String) datosInforme.get("idInstitucion"));
+					HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+					
+					
 					datos.put("fechaIni", (String) datosInforme.get("fechaIni"));
 					datos.put("fechaFin", (String) datosInforme.get("fechaFin"));
 					datos.put("idLista", (String) datosInforme.get("idLista"));
@@ -1525,6 +1566,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							(String) datosInforme.get("idPersona"));
 					datos.put("aSolicitantes", beanInforme.getASolicitantes());
 					datos.put("idTipoInforme", tipoComunicacion);
+					helperInformesAdm.setIdiomaInforme((String)datos.get("idInstitucion") ,(String)datos.get("idPersona") , AdmInformeBean.TIPODESTINATARIO_CENPERSONA,datos, usrBean);
+					datosInforme.put("idioma", datos.get("idioma"));
+					datosInforme.put("idiomaExt", datos.get("idiomaExt"));
+					
+					
 
 					htDatosInformeFinal = getDatosInformeFinal(datos, usrBean);
 					htDatosInformeFinal.remove("hDatosListaGuardias");
@@ -1542,7 +1588,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					identificador.append(hoy);
 
 					File fileDocumento = getInformeGenerico(beanInforme,
-							htDatosInformeFinal, idiomaExt,
+							htDatosInformeFinal, (String)datosInforme.get("idiomaExt"),
 							identificador.toString(), usrBean,
 							tipoPlantillaWord);
 					String pathDocumento = fileDocumento.getPath();
@@ -1569,153 +1615,285 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			} else if (tipoComunicacion
 					.equals(EnvioInformesGenericos.comunicacionesDesigna)) {
-				
+				String idiomacolegiado = "";
 				String tipoDestinatarioEnvio = (String) datosInforme
 						.get("tipoDestinatario");
-				char[] tipoDestinatario = beanInforme.getDestinatarios()
-						.toCharArray();
+				String tipoDestinatario = beanInforme.getDestinatarios().toString();
 				boolean añadir = tipoDestinatarioEnvio == null;
-				for (int jta = 0; jta < tipoDestinatario.length && !añadir; jta++) {
-					if (String.valueOf(tipoDestinatario[jta]).equalsIgnoreCase(
-							AdmInformeBean.TIPODESTINATARIO_CENPERSONA)) {
-						añadir = tipoDestinatarioEnvio
-								.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+				if(!añadir){
+					if (tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)) {
+						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
 
-					} else if (String
-							.valueOf(tipoDestinatario[jta])
-							.equalsIgnoreCase(
-									AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)) {
+					} else if (tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)) {
 						añadir = tipoDestinatarioEnvio
 								.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
 
-					} else if (String
-							.valueOf(tipoDestinatario[jta])
+					} else if (tipoDestinatario
 							.equalsIgnoreCase(
 									AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)) {
 						añadir = tipoDestinatarioEnvio
 								.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
 
-					} else if (String.valueOf(tipoDestinatario[jta])
+					} else if (tipoDestinatario
 							.equalsIgnoreCase(
 									AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
 						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
 					}
-
 				}
-
-				if (añadir) {
+				if(añadir){
 					idInstitucion = (String) datosInforme.get("idInstitucion");
 					String anio = (String) datosInforme.get("anio");
 					String idTurno = (String) datosInforme.get("idTurno");
 					String numero = (String) datosInforme.get("numero");
-					boolean isSolicitantes = beanInforme.getASolicitantes() != null
-							&& beanInforme.getASolicitantes().equalsIgnoreCase(
-									"S");
-					String keyConsultasHechas = idInstitucion + anio + idTurno
-							+ numero + isSolicitantes;
-					datosInforme.put("aSolicitantes",
-							beanInforme.getASolicitantes());
-
-					if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
-						htDatosInformeFinal = (Hashtable) hashConsultasHechas
-								.get(keyConsultasHechas);
-
-					} else {
-						// datosconsulta =
-						// clase.getDatosPlantillas(idinstitucion,anio,idturno,numero,
-						// usr.getLanguage(),isSolicitantes,idPersonaJG,
-						// codigo);
-						htDatosInformeFinal = getDatosInformeFinal(
-								datosInforme, usrBean);
-						hashConsultasHechas.put(keyConsultasHechas,
-								htDatosInformeFinal);
-					}
-
-					Vector datosInformeDesigna = (Vector) htDatosInformeFinal
-							.get("row");
-					for (int k = 0; k < datosInformeDesigna.size(); k++) {
-						Hashtable datosInformeK = (Hashtable) datosInformeDesigna
-								.get(k);
-						Hashtable htDatosInforme = new Hashtable();
-						htDatosInforme.put("row", datosInformeK);
-						Vector regionDefendido = (Vector) htDatosInformeFinal
-						.get("defendido");
-						if(regionDefendido!=null)
-						htDatosInforme.put("defendido", regionDefendido);
-						
-						String codigo = (String) datosInformeK.get("CODIGO");
-						String ncolegiado = "";
-						String idiomaLetrado = (String) datosInformeK
-								.get("IDIOMA_LETRADO");
-						if (datosInformeK.get("NCOLEGIADO_LETRADO") != null) {
-							ncolegiado = (String) UtilidadesHash.getString(
-									datosInformeK, "NCOLEGIADO_LETRADO");
-						} else {
-							if (datosInformeK.get("") != null)
-								ncolegiado = ((String) datosInformeK.get(""))
-										.split(" - ")[0];
-						}
-						// esta dato lo devuelve la funcion getDatosInformeFinal
-						// y nos dice que plantilla debemos coger, pudiendo ser
-						// CA,ES,EU,GA
-						idiomaExt = (String) UtilidadesHash.getString(
-								datosInformeK, "CODIGOLENGUAJE");
-
-						identificador = new StringBuffer();
-						identificador.append(ncolegiado);
-						identificador.append("-");
-						identificador.append(k);
-						identificador.append("_");
-						identificador.append(codigo);
-						identificador.append("_");
-						identificador.append(anio);
-						identificador.append("_");
-						identificador.append(idTurno);
-						identificador.append("_");
-						identificador.append(anio);
-						identificador.append("_");
-						identificador.append(idInstitucion);
-						identificador.append("_");
-						identificador.append(new Integer(i).toString());
-						identificador.append("_");
-						String hoy = UtilidadesString.formatoFecha(new Date(),
-								"yyyyMMddhhmmssSSS");
-						identificador.append(hoy);
-						File fileDocumento = null;
-//						if(beanInforme.getTipoformato()!=null&&beanInforme.getTipoformato().equals("X")){
-//							TODO               AAAAAAAAAAAAAAAAAAAAAAACAMBIAR
-//							InformeFacturasEmitidas informeFacturasEmitidas = new InformeFacturasEmitidas(usrBean);
-//							fileDocumento = informeFacturasEmitidas.generarComunicacionOficioPdfFromXmlToFoXsl(beanInforme,identificador.toString());
-//						}else{
-						
-							fileDocumento = getInformeGenerico(beanInforme,
-									htDatosInforme, idiomaExt,
-									identificador.toString(), usrBean,
-									tipoPlantillaWord);
+					Hashtable datosInformeSeleccionado = new Hashtable();
+					datosInformeSeleccionado.put("idTipoInforme", (String)datosInforme.get("idTipoInforme"));
+					if(tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+						ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
+						Vector solicitantesVector = designaAdm.getDefendidosDesignaInforme(idInstitucion, anio,idTurno, numero,idPersonaJG );
+						if(solicitantesVector==null || solicitantesVector.size()==0)
+							throw new SIGAException("gratuita.envio.ordinario.noDestinatario");
+						for (int j = 0; j < solicitantesVector.size(); j++) {
+							Hashtable solicitante = (Hashtable)solicitantesVector.get(j);
+							String idPersonaJGInteresarado = (String)solicitante.get("IDPERSONAINTERESADO");
+							datosInformeSeleccionado.put("idPersonaJG",idPersonaJGInteresarado);
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme(idInstitucion, idPersonaJGInteresarado, AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,datosInforme, usrBean);
+							idioma = (String) datosInforme.get("idioma");
+							idiomaExt = (String) datosInforme.get("idiomaExt");
 							
-//						}
-						String pathDocumento = fileDocumento.getPath();
-						// Creacion documentos
-						int indice = pathDocumento
-								.lastIndexOf(ClsConstants.FILE_SEP);
-						String descDocumento = "";
-						if (indice > 0)
-							descDocumento = pathDocumento.substring(indice + 1);
-
-						switch (tipoDocumento) {
-						case 1:
-							vDocumentos.add(fileDocumento);
-							break;
-						case 2:
-							Documento documento = new Documento(pathDocumento,
-									descDocumento);
-							vDocumentos.add(documento);
-							break;
-
-						default:
-							break;
+							datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
+							datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
+							datosInformeSeleccionado.put("aSolicitantes", "S");
+							
+							String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJG+idioma; 
+							
+							
+							
+							
+							if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
+								htDatosInformeFinal = (Hashtable) hashConsultasHechas
+										.get(keyConsultasHechas);
+							} else {
+								htDatosInformeFinal = getDatosInformeFinalOficio(
+										datosInforme, datosInformeSeleccionado,usrBean);
+								hashConsultasHechas.put(keyConsultasHechas,
+										htDatosInformeFinal);
+							}
+							
+		
+							Vector datosInformeDesigna = (Vector) htDatosInformeFinal
+									.get("row");
+							for (int k = 0; k < datosInformeDesigna.size(); k++) {
+								Hashtable datosInformeK = (Hashtable) datosInformeDesigna
+										.get(k);
+								Hashtable htDatosInforme = new Hashtable();
+								htDatosInforme.put("row", datosInformeK);
+								Vector regionDefendido = (Vector) htDatosInformeFinal
+								.get("defendido");
+								if(regionDefendido!=null)
+								htDatosInforme.put("defendido", regionDefendido);
+								
+								String codigo = (String) datosInformeK.get("CODIGO");
+								String ncolegiado = "";
+//								String idiomaLetrado = (String) datosInformeK
+//										.get("IDIOMA_LETRADO");
+								if (datosInformeK.get("NCOLEGIADO_LETRADO") != null) {
+									ncolegiado = (String) UtilidadesHash.getString(
+											datosInformeK, "NCOLEGIADO_LETRADO");
+								} else {
+									if (datosInformeK.get("") != null)
+										ncolegiado = ((String) datosInformeK.get(""))
+												.split(" - ")[0];
+								}
+								// esta dato lo devuelve la funcion getDatosInformeFinal
+								// y nos dice que plantilla debemos coger, pudiendo ser
+								// CA,ES,EU,GA
+//								idiomaExt = (String) UtilidadesHash.getString(
+//										datosInformeK, "CODIGOLENGUAJE");
+		
+								identificador = new StringBuffer();
+								identificador.append(ncolegiado);
+								identificador.append("-");
+								identificador.append(k);
+								identificador.append("_");
+								identificador.append(codigo);
+								identificador.append("_");
+								identificador.append(anio);
+								identificador.append("_");
+								identificador.append(idTurno);
+								identificador.append("_");
+								identificador.append(anio);
+								identificador.append("_");
+								identificador.append(idInstitucion);
+								identificador.append("_");
+								identificador.append(new Integer(i).toString());
+								identificador.append("_");
+								String hoy = UtilidadesString.formatoFecha(new Date(),
+										"yyyyMMddhhmmssSSS");
+								identificador.append(hoy);
+								File fileDocumento = null;
+		//						if(beanInforme.getTipoformato()!=null&&beanInforme.getTipoformato().equals("X")){
+		//							TODO               AAAAAAAAAAAAAAAAAAAAAAACAMBIAR
+		//							InformeFacturasEmitidas informeFacturasEmitidas = new InformeFacturasEmitidas(usrBean);
+		//							fileDocumento = informeFacturasEmitidas.generarComunicacionOficioPdfFromXmlToFoXsl(beanInforme,identificador.toString());
+		//						}else{
+								
+									fileDocumento = getInformeGenerico(beanInforme,
+											htDatosInforme, idiomaExt,
+											identificador.toString(), usrBean,
+											tipoPlantillaWord);
+									
+		//						}
+								String pathDocumento = fileDocumento.getPath();
+								// Creacion documentos
+								int indice = pathDocumento
+										.lastIndexOf(ClsConstants.FILE_SEP);
+								String descDocumento = "";
+								if (indice > 0)
+									descDocumento = pathDocumento.substring(indice + 1);
+		
+								switch (tipoDocumento) {
+								case 1:
+									vDocumentos.add(fileDocumento);
+									break;
+								case 2:
+									Documento documento = new Documento(pathDocumento,
+											descDocumento);
+									vDocumentos.add(documento);
+									break;
+		
+								default:
+									break;
+								}
+							
+							}
+							
 						}
-
+						
+						
+					}else{
+						//si es colegiado buscamos su idioma y lo seteamos como idioma del informe, si no ira en el de la institucion
+						if(tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+							ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
+							idPersona =  designaAdm.getIDLetradoDesig(idInstitucion, idTurno, anio, numero);
+							if(idPersona==null || idPersona.equalsIgnoreCase(""))
+								throw new SIGAException("gratuita.envio.ordinario.noDestinatario");
+							
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA,datosInforme, usrBean);
+							idioma = (String) datosInforme.get("idioma");
+							idiomaExt = (String) datosInforme.get("idiomaExt");
+						}else if(tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme(idInstitucion, null, AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR,datosInforme, usrBean);
+							idioma = (String) datosInforme.get("idioma");
+							idiomaExt = (String) datosInforme.get("idiomaExt");
+						}
+						datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
+						datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
+						datosInformeSeleccionado.put("aSolicitantes", beanInforme.getASolicitantes() != null? beanInforme.getASolicitantes():"N");
+						boolean isSolicitantes = beanInforme.getASolicitantes() != null	&& beanInforme.getASolicitantes().equalsIgnoreCase("S");
+						String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + isSolicitantes;
+						datosInforme.put("aSolicitantes",beanInforme.getASolicitantes());
+						
+						
+						
+						if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
+							htDatosInformeFinal = (Hashtable) hashConsultasHechas
+									.get(keyConsultasHechas);
+						} else {
+							htDatosInformeFinal = getDatosInformeFinalOficio(
+									datosInforme, datosInformeSeleccionado,usrBean);
+							hashConsultasHechas.put(keyConsultasHechas,
+									htDatosInformeFinal);
+						}
+	
+						Vector datosInformeDesigna = (Vector) htDatosInformeFinal
+								.get("row");
+						for (int k = 0; k < datosInformeDesigna.size(); k++) {
+							Hashtable datosInformeK = (Hashtable) datosInformeDesigna
+									.get(k);
+							Hashtable htDatosInforme = new Hashtable();
+							htDatosInforme.put("row", datosInformeK);
+							Vector regionDefendido = (Vector) htDatosInformeFinal
+							.get("defendido");
+							if(regionDefendido!=null)
+							htDatosInforme.put("defendido", regionDefendido);
+							
+							String codigo = (String) datosInformeK.get("CODIGO");
+							String ncolegiado = "";
+//							String idiomaLetrado = (String) datosInformeK
+//									.get("IDIOMA_LETRADO");
+							if (datosInformeK.get("NCOLEGIADO_LETRADO") != null) {
+								ncolegiado = (String) UtilidadesHash.getString(
+										datosInformeK, "NCOLEGIADO_LETRADO");
+							} else {
+								if (datosInformeK.get("") != null)
+									ncolegiado = ((String) datosInformeK.get(""))
+											.split(" - ")[0];
+							}
+							// esta dato lo devuelve la funcion getDatosInformeFinal
+							// y nos dice que plantilla debemos coger, pudiendo ser
+							// CA,ES,EU,GA
+//							idiomaExt = (String) UtilidadesHash.getString(
+//									datosInformeK, "CODIGOLENGUAJE");
+	
+							identificador = new StringBuffer();
+							identificador.append(ncolegiado);
+							identificador.append("-");
+							identificador.append(k);
+							identificador.append("_");
+							identificador.append(codigo);
+							identificador.append("_");
+							identificador.append(anio);
+							identificador.append("_");
+							identificador.append(idTurno);
+							identificador.append("_");
+							identificador.append(anio);
+							identificador.append("_");
+							identificador.append(idInstitucion);
+							identificador.append("_");
+							identificador.append(new Integer(i).toString());
+							identificador.append("_");
+							String hoy = UtilidadesString.formatoFecha(new Date(),
+									"yyyyMMddhhmmssSSS");
+							identificador.append(hoy);
+							File fileDocumento = null;
+	//						if(beanInforme.getTipoformato()!=null&&beanInforme.getTipoformato().equals("X")){
+	//							TODO               AAAAAAAAAAAAAAAAAAAAAAACAMBIAR
+	//							InformeFacturasEmitidas informeFacturasEmitidas = new InformeFacturasEmitidas(usrBean);
+	//							fileDocumento = informeFacturasEmitidas.generarComunicacionOficioPdfFromXmlToFoXsl(beanInforme,identificador.toString());
+	//						}else{
+							
+								fileDocumento = getInformeGenerico(beanInforme,
+										htDatosInforme, idiomaExt,
+										identificador.toString(), usrBean,
+										tipoPlantillaWord);
+								
+	//						}
+							String pathDocumento = fileDocumento.getPath();
+							// Creacion documentos
+							int indice = pathDocumento
+									.lastIndexOf(ClsConstants.FILE_SEP);
+							String descDocumento = "";
+							if (indice > 0)
+								descDocumento = pathDocumento.substring(indice + 1);
+	
+							switch (tipoDocumento) {
+							case 1:
+								vDocumentos.add(fileDocumento);
+								break;
+							case 2:
+								Documento documento = new Documento(pathDocumento,
+										descDocumento);
+								vDocumentos.add(documento);
+								break;
+	
+							default:
+								break;
+							}
+	
+						}
 					}
 				}
 			} else if (tipoComunicacion
@@ -1753,6 +1931,10 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 
 				if (añadir) {
+					
+					Hashtable datosInformeSeleccionado = new Hashtable();
+					datosInformeSeleccionado.put("idTipoInforme", (String)datosInforme.get("idTipoInforme"));
+					
 					idInstitucion = (String) datosInforme.get("idinstitucion");
 					if (idInstitucion == null)
 						idInstitucion = (String) datosInforme
@@ -1775,6 +1957,11 @@ public class EnvioInformesGenericos extends MasterReport {
 						numero = datosEjg.get("CODIGO").toString();
 					}					
 					// END BNS
+					
+					
+					
+					datosInformeSeleccionado.put("aSolicitantes", beanInforme.getASolicitantes() != null? beanInforme.getASolicitantes():"N");
+					
 					boolean isSolicitantes = beanInforme.getASolicitantes() != null
 							&& beanInforme.getASolicitantes().equalsIgnoreCase(
 									"S");
@@ -1784,10 +1971,11 @@ public class EnvioInformesGenericos extends MasterReport {
 					boolean isGenerarInformesSindireccion = beanInforme.getGenerarInformeSinDireccion()!=null && beanInforme.getGenerarInformeSinDireccion().equalsIgnoreCase("S");
 					
 					String keyConsultasHechas = idInstitucion + anio
-							+ idTipoEJG + numero + isSolicitantes+isAContrarios+isGenerarInformesSindireccion;
-					datosInforme.put("aSolicitantes",beanInforme.getASolicitantes());
-					datosInforme.put("aContrarios",	beanInforme.getaContrarios());
-					datosInforme.put("generarInformeSinDireccion",	beanInforme.getGenerarInformeSinDireccion());
+							+ idTipoEJG + numero + isSolicitantes+isAContrarios+isGenerarInformesSindireccion+tipoDestinatario;
+					
+					datosInformeSeleccionado.put("aContrarios",	beanInforme.getaContrarios());
+					datosInformeSeleccionado.put("generarInformeSinDireccion",	beanInforme.getGenerarInformeSinDireccion());
+					datosInformeSeleccionado.put("tipoDestinatarioInforme",tipoDestinatario);
 					
 					if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
 						// como esto se recorre para cada plantilla (for (int
@@ -1798,8 +1986,8 @@ public class EnvioInformesGenericos extends MasterReport {
 								.get(keyConsultasHechas);
 
 					} else {
-						htDatosInformeFinal = getDatosInformeFinal(
-								datosInforme, usrBean);
+						htDatosInformeFinal = getDatosInformeEjgFinal(
+								datosInforme,datosInformeSeleccionado, usrBean);
 
 						hashConsultasHechas.put(keyConsultasHechas,
 								htDatosInformeFinal);
@@ -1808,27 +1996,38 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					Vector datosInformeEjg = (Vector) htDatosInformeFinal
 							.get("row");
+					
+					
 
-					Vector regionUF = (Vector) htDatosInformeFinal
-							.get("unidadfamiliar");
-					Vector regionConyuge = (Vector) htDatosInformeFinal
-							.get("conyuge");
+//					Vector regionUF = (Vector) datosInformeEjg
+//							.get("unidadfamiliar");
+//					Vector regionConyuge = (Vector) htDatosInformeFinal
+//							.get("conyuge");
 					Vector regionDefendido = (Vector) htDatosInformeFinal.get("defendido");
 					Vector regionContrarios = (Vector) htDatosInformeFinal.get("contrarios");
 					
 					HelperInformesAdm helperInformes = new HelperInformesAdm();
-					String idiomainteresado = "";
-					String idiomainforme = "";
+//					String idiomainteresado = "";
+//					String idiomainforme = "";
 					if (datosInformeEjg != null && datosInformeEjg.size() > 0) {
+						
+						
 						for (int k = 0; k < datosInformeEjg.size(); k++) {
+							
 
-							Hashtable datosInformeK = (Hashtable) datosInformeEjg
-									.get(k);
+							Hashtable datosInformeK = (Hashtable) datosInformeEjg.get(k);
+							
+//							idioma =(String) datosInformeK.get("idioma");
+							idiomaExt =(String) datosInformeK.get("idiomaExt");
+							Vector regionUF = (Vector) datosInformeK.get("unidadfamiliar");
+							Vector regionConyuge = (Vector) datosInformeK.get("conyuge");
+							
+							
 							String idPersonaDesigna = (String) datosInformeK
 									.get("IDPERSONA_DESIGNA");
-							if (idPersona != null && idPersonaDesigna != null
-									&& !idPersona.equals(idPersonaDesigna))
-								continue;
+//							if (idPersona != null && idPersonaDesigna != null
+//									&& !idPersona.equals(idPersonaDesigna))
+//								continue;
 							// idPersona
 							Hashtable htDatosInforme = new Hashtable();
 							htDatosInforme.put("row", datosInformeK);
@@ -1838,6 +2037,8 @@ public class EnvioInformesGenericos extends MasterReport {
 								htDatosInforme.put("defendido", regionDefendido);
 							if(regionContrarios!=null)
 								htDatosInforme.put("contrarios", regionContrarios);
+							else
+								htDatosInforme.put("contrarios", new Vector());
 							identificador = new StringBuffer();
 							identificador.append(idInstitucion);
 							identificador.append("_");
@@ -2643,7 +2844,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						
 	                    
 	                    
-	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, false, null, usrBean.getLanguageInstitucion());
+	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, false, null, "1","ES");
 	                    Hashtable designaHash = (Hashtable) designaVector.get(0);
 	                   
 	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){	                       
@@ -2749,7 +2950,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                    
 	                    
 	                    
-	                    Vector ejgVector = ejgAdm.getDatosInformeEjg(usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG,usrBean.getLanguageInstitucion(), false,false, null,null,true);
+	                    Vector ejgVector = ejgAdm.getDatosInformeEjg(usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG, false,false, null,null,true,AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO);
 	                    Hashtable ejgHash = (Hashtable) ejgVector.get(0);
 	                   
 	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){
@@ -2789,15 +2990,17 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
 	                        descripcion.append("Nº EJG:");
-	                        descripcion.append(anioEJG);
-	                        descripcion.append("/");
-	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+//	                        descripcion.append(anioEJG);
+//	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO_EJG"));
 	                        descripcion.append(" ");
 	                        if(designaProvisionalBean.getAnio()!=null){
 	                            descripcion.append("Nº OFICIO:");
-	                            descripcion.append(designaProvisionalBean.getAnio());
-	                            descripcion.append("/");
-	                            descripcion.append(designaProvisionalBean.getNumero());
+	                            descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO_DESIGNA"));
+		                        descripcion.append(" ");
+//	                            descripcion.append(designaProvisionalBean.getAnio());
+//	                            descripcion.append("/");
+//	                            descripcion.append(designaProvisionalBean.getNumero());
 	                        }else{
 	                            throw new SIGAException("No se puede comunicar una designacion provisional desde EJG sin designacion asociada!!"+descripcion);
 	                           
@@ -2832,9 +3035,9 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
 	                        descripcion.append("Nº EJG:");
-	                        descripcion.append(anioEJG);
-	                        descripcion.append("/");
-	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+//	                        descripcion.append(anioEJG);
+//	                        descripcion.append("/");
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO_EJG"));
 	                       
 	                        
 	                        
@@ -2864,9 +3067,10 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append(TipoIntercambioEnum.CAJG_SGP_SOL_IMP_AJG.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
 	                        descripcion.append("Nº EJG:");
-	                        descripcion.append(anioEJG);
-	                        descripcion.append("/");
-	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+//	                        descripcion.append(anioEJG);
+//	                        descripcion.append("/");
+//	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO_EJG"));
 	                       
 	                        object = new Object[2];
 	                        object[0] =descripcion.toString();
@@ -2894,9 +3098,10 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        descripcion.append(TipoIntercambioEnum.CAJG_SGP_COM_RESOL_SOL_AJG.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
 	                        descripcion.append("Nº EJG:");
-	                        descripcion.append(anioEJG);
-	                        descripcion.append("/");
-	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+//	                        descripcion.append(anioEJG);
+//	                        descripcion.append("/");
+//	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO"));
+	                        descripcion.append(UtilidadesHash.getString(ejgHash,"NUMERO_EJG"));
 	                       
 	                        object = new Object[2];
 	                        object[0] =descripcion.toString();
@@ -3487,6 +3692,10 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			if (programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)) {
 				datosInforme.put("aSolicitantes", "N");
+				datosInforme.put("tipoDestinatarioInforme",AdmInformeBean.TIPODESTINATARIO_CENPERSONA);
+				datosInforme.put("generarInformeSinDireccion", "S");
+
+				
 				Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
 				
 				
@@ -5886,10 +6095,11 @@ public class EnvioInformesGenericos extends MasterReport {
 				Vector list = (Vector) datosLista.get(keyListaGuardia);
 				int tam = 0;
 				CenColegiadoAdm admCol = new CenColegiadoAdm(usrBean);
-
+//				HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+//				helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA,datosInforme, usrBean);
 				Hashtable htCol = admCol.obtenerDatosColegiado(
 						idInstitucion.toString(), idPersona,
-						usrBean.getLanguage());
+						(String)datosInforme.get("idioma"));
 				// se añade esta linea para que recupere todos los campos de la
 				// select que esta en la función obtenerDatosColegiado(..)
 				// y posteriormente utilizarla en las plantillas.
@@ -6324,7 +6534,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					idTurno, anio, numero);
 			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(
 					new Integer(idInstitucion), new Integer(anio), new Integer(
-							numero), new Integer(idTurno));
+							numero), new Integer(idTurno),null);
 			ht.put("defendidosDesigna", vDefendidos);
 			ht.put("idPersona", idPersonaDesigna);
 			String idProcurador = desigAdm.getIDProcuradorDesig(idInstitucion,
@@ -6375,7 +6585,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				idTurno, anio, numero);
 		Vector vDefendidos = defendidosAdm.getDefendidosDesigna(new Integer(
 				idInstitucion), new Integer(anio), new Integer(numero),
-				new Integer(idTurno));
+				new Integer(idTurno),null);
 		// ht.put("defendidosDesigna", vDefendidos);
 		// ht.put("idPersona", idPersonaDesigna);
 		// String idProcurador =
@@ -6465,7 +6675,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			numero = (String) ht.get("numero");
 			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(
 					new Integer(idInstitucion), new Integer(anio), new Integer(
-							numero), new Integer(idTurno));
+							numero), new Integer(idTurno),null);
 			if (vDefendidos != null)
 				alSolicitantes.addAll(vDefendidos);
 			if (alSolicitantes.size() > 1) {
@@ -6913,6 +7123,8 @@ public class EnvioInformesGenericos extends MasterReport {
 													.get(jta);
 											String idPersonaJG = (String) htDefendido
 													.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+											if(idPersonaJG==null)
+												idPersonaJG =(String) htDefendido.get("IDPERSONAINTERESADO");
 											destProgramInformes = new EnvDestProgramInformesBean();
 											destProgramInformes
 													.setIdProgram(programInformes
@@ -9844,6 +10056,136 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
         return fPdf;
 	}
+	private Hashtable getDatosInformeFinalOficio(Hashtable datosDesignacion,Hashtable datosInformeSeleccionado,UsrBean usrBean) 
+			throws ClsExceptions, SIGAException {
+
+		Hashtable htDatosInforme = new Hashtable();
+
+		// Velores comunes para la obttencion de los datos del informe
+		String idTipoInforme = (String) datosInformeSeleccionado.get("idTipoInforme");
+		String idioma = (String) datosInformeSeleccionado.get("idioma");
+		String idiomaExt =(String) datosInformeSeleccionado.get("idiomaExt");
+		String aSolicitantes = (String) datosInformeSeleccionado.get("aSolicitantes");
+		String idPersonaJG = (String) datosInformeSeleccionado.get("idPersonaJG");
+		
+		ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usrBean);
+		String idinstitucion = (String) datosDesignacion.get("idInstitucion");
+		String anio = (String) datosDesignacion.get("anio");
+		String idTurno = (String) datosDesignacion.get("idTurno");
+		String numero = (String) datosDesignacion.get("numero");
+		
+
+		boolean isSolicitantes = aSolicitantes.equalsIgnoreCase("S");
+		Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
+				idinstitucion, idTurno, anio, numero, null, isSolicitantes,
+				idPersonaJG, idioma,idiomaExt);
+		if(!isSolicitantes && datosconsulta.size()>0){
+			Hashtable registro = (Hashtable) datosconsulta.get(0);
+			if(registro.get("defendido")!=null){
+				htDatosInforme.put("defendido", registro.get("defendido"));
+				registro.remove("defendido");
+			}
+		}
+		htDatosInforme.put("row", datosconsulta);
+		return htDatosInforme;
+
+	}
+	
+	private Hashtable getDatosInformeEjgFinal(Hashtable datosInforme,Hashtable datosInformeSeleccionado,
+			UsrBean usrBean) throws ClsExceptions, SIGAException {
+
+		Hashtable htDatosInforme = new Hashtable();
+
+		// Velores comunes para la obttencion de los datos del informe
+		String idTipoInforme = (String) datosInformeSeleccionado.get("idTipoInforme");
+		String tipoDestinatarioInforme = (String) datosInformeSeleccionado.get("tipoDestinatarioInforme");
+		String aSolicitantes = (String) datosInformeSeleccionado.get("aSolicitantes");
+		String aContrarios = (String) datosInformeSeleccionado.get("aContrarios");
+		String generarInformeSinDireccion = (String) datosInformeSeleccionado.get("generarInformeSinDireccion");
+
+
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+		String idTipoEJG = "s";
+		if (datosInforme.get("idtipo") != null) {
+			idTipoEJG = (String) datosInforme.get("idtipo");
+		} else {
+			idTipoEJG = (String) datosInforme.get("idTipoEJG");
+		}
+		String anio = (String) datosInforme.get("anio");
+		String numero = (String) datosInforme.get("numero");
+
+		String idPersona = null;
+		String tipoDestinatario = null;
+		if (datosInforme.get("idPersonaJG") != null) {
+			idPersona = (String) datosInforme.get("idPersonaJG");
+			tipoDestinatario = EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG;
+		}
+		String idPersonaContrario = null;
+		if (datosInforme.get("idContrario") != null) {
+			idPersona = (String) datosInforme.get("idContrario");
+			tipoDestinatario = EnvDestinatariosBean.TIPODESTINATARIO_SCSCONTRARIOSJG;
+		}
+
+
+		boolean isSolicitantes = aSolicitantes != null	&& aSolicitantes.equalsIgnoreCase("S")||(String) datosInforme.get("sms")!=null;
+		boolean isAcontrarios = aContrarios != null	&& aContrarios.equalsIgnoreCase("S");
+		boolean isGenerarInformeSinDireccion = generarInformeSinDireccion != null && generarInformeSinDireccion.equalsIgnoreCase("S");
+
+
+		//			String languageInstitucion = (String) usrBean
+		//					.getLanguageInstitucion();
+		//quitar el idioma de la siguiente consulta, sacarlo abajo
+		Vector datosconsulta = ejgAdm.getDatosInformeEjg(
+				usrBean.getLocation(), idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
+				idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme);
+		Hashtable<String,Vector> htIdiomasUF = new Hashtable<String, Vector>();
+		Hashtable<String,Vector> htIdiomasConyuge = new Hashtable<String,Vector>();
+		if(datosconsulta.size()>0){
+			Hashtable registro = (Hashtable) datosconsulta.get(0);
+
+			for (int i = 0; i < datosconsulta.size(); i++) {
+				registro = (Hashtable) datosconsulta.get(i);
+				String idioma = (String)registro.get("idioma");
+				if(i==0){
+					setAlgunRepresentanteLegal(registro.get("isAlgunRepresentanteLegal")!=null && (Boolean)registro.get("isAlgunRepresentanteLegal"));
+					setAlgunInformeNoGenerado(registro.get("isAlgunInformeNoGenerado")!=null && (Boolean)registro.get("isAlgunInformeNoGenerado"));
+				}
+				Vector regionUF = null;
+				Vector regionConyuge = null;
+				if(htIdiomasUF.containsKey(idioma)){
+					regionUF =   htIdiomasUF.get(idioma);
+					regionConyuge =   htIdiomasConyuge.get(idioma);
+				}else{
+					regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),
+							idTipoEJG, anio, numero,idioma);
+					regionConyuge = ejgAdm.getDatosRegionConyuge(
+							usrBean.getLocation(), idTipoEJG, anio, numero,idioma);
+					htIdiomasUF.put(idioma,regionUF);
+					htIdiomasConyuge.put(idioma,regionConyuge);
+				}
+
+				registro.put("unidadfamiliar", regionUF);
+				registro.put("conyuge", regionConyuge);
+
+
+
+				if(registro.get("defendido")!=null){
+					htDatosInforme.put("defendido", registro.get("defendido"));
+					registro.remove("defendido");
+				}
+
+				if(registro.get("contrarios")!=null){
+					htDatosInforme.put("contrarios", registro.get("contrarios"));
+					registro.remove("contrarios");
+				}
+			}
+
+		}
+		htDatosInforme.put("row", datosconsulta);
+		return htDatosInforme;
+
+	}
+	
 
 	public boolean isAlgunRepresentanteLegal() {
 		return algunRepresentanteLegal;

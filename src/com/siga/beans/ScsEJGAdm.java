@@ -3421,7 +3421,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	public Vector getEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero,String idioma) throws ClsExceptions {
+	public Vector getEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero) throws ClsExceptions {
 			RowsContainer rc = new RowsContainer();
 			Vector datos = new Vector();
 			
@@ -3429,7 +3429,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" EJGD.IDTURNO DES_IDTURNO, " +
 				" EJGD.ANIODESIGNA DES_ANIO, " + 
 				" EJGD.NUMERODESIGNA DES_NUMERO, " + 
-				" EJG.IDPERSONA, " +
+				" F_SIGA_GETIDLETRADO_DESIGNA(d.idinstitucion,d.idturno,d.anio  , d.numero) IDPERSONADESIGNADO,"+
+				" EJG.IDPERSONA IDPERSONATRAMITADOR, " +
 				" EJG.idfundamentocalif, " +
 				" EJG.IDPROCURADOR, " + 
 				" EJG.IDINSTITUCION_PROC, "+ 
@@ -3496,14 +3497,21 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" FUND.TEXTOPLANTILLA2, " +
 				" FUND.TEXTOPLANTILLA3, " +
 				" FUND.TEXTOPLANTILLA4, " +
-				" F_SIGA_GETRECURSO (FUND.DESCRIPCION, " + idioma + ") AS FUNDAMENTO_JURIDICO " +
+				" FUND.TEXTOPLANTILLA4, " +
+				" FUND.DESCRIPCION AS FUNDAMENTO_JURIDICO_DESCR " +
 			" FROM SCS_EJG EJG, " +
 				" SCS_EJGDESIGNA EJGD, " +
-				" SCS_TIPOFUNDAMENTOS FUND " +
+				" SCS_TIPOFUNDAMENTOS FUND, scs_designa d " +
 			" WHERE EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+) " +
 				" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) " + 
 				" AND EJG.ANIO = EJGD.ANIOEJG(+) " + 
 				" AND EJG.NUMERO = EJGD.NUMEROEJG (+) " +
+				" and  EJGD.IDINSTITUCION = d.idinstitucion(+) " +
+				" AND  EJGD.Aniodesigna =  d.anio(+) " +
+				" AND  EJGD.Idturno = d.idturno(+) " +
+				" AND  EJGD.NUMERODESIGNA = d.numero(+) " +
+				
+				
 				" AND fund.idfundamento(+)=ejg.idfundamentojuridico " + 
 				" AND fund.idinstitucion(+)=ejg.idinstitucion " + 
 				" AND EJG.idinstitucion = " + idInstitucion +
@@ -3683,7 +3691,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' || ");
 			sql.append("  INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO, ");
-			sql.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+this.usrbean.getLanguage()+"), '') || ");
+			sql.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+idioma+"), '') || ");
 			sql.append(" NVL2(PERSONAJG.DIRECCION, ' ' || PERSONAJG.DIRECCION, '') || ");
 			sql.append(" NVL2(PERSONAJG.NUMERODIR, ' ' || PERSONAJG.NUMERODIR, '') || ");
 			sql.append(" NVL2(PERSONAJG.ESCALERADIR, ' ' || PERSONAJG.ESCALERADIR, '') || ");
@@ -3806,6 +3814,55 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjgSalida.");
 		}
 	}
+	public Vector getInteresadosEjg(String idInstitucion, String tipoEjg,
+			String anio, String numero) throws ClsExceptions  
+	{
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int keyContador = 0;
+			/*htCodigos.put(new Integer(1), idInstitucion);
+			htCodigos.put(new Integer(2), anio);
+			htCodigos.put(new Integer(3), numero);
+			htCodigos.put(new Integer(4), tipoEjg);
+			keyContador = 4;*/
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			
+			sql.append(" SELECT  ");
+            sql.append(" INTERESADO.IDPERSONAJG IDPERSONA ");
+            sql.append(",INTERESADO.IDINSTITUCION ");
+			sql.append(" FROM V_SIGA_INTERESADOS_EJG    INTERESADO ");
+			sql.append(" WHERE ");
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idInstitucion);
+			sql.append(" INTERESADO.IDINSTITUCION = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), tipoEjg);
+			sql.append(" and INTERESADO.IDTIPOEJG = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), anio);
+			sql.append(" and INTERESADO.ANIO = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), numero);
+			sql.append(" and INTERESADO.NUMERO = :");
+			sql.append(keyContador);
+			
+           
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjg.");
+		}
+	}
 	
 	
 	private Vector getDesignaEjgSalida (String idInstitucion, String idTurno,
@@ -3901,7 +3958,76 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getDesignaEjgSalida.");
 		}
 	}
-	
+	private Vector getLetradoDesignadoEjg (String idInstitucion, String idTurno,
+			String anioDesigna, String numeroDesigna) throws ClsExceptions  
+	{
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int keyContador = 0;
+			
+		
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT ");
+			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA  ");
+			sql.append(" ,des.anio||'/'||des.codigo NUMERO_DESIGNA ");
+			sql.append(" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET ");
+			sql.append(" WHERE  ");
+			sql.append(" des.IDINSTITUCION = LET.IDINSTITUCION(+) ");
+			sql.append(" AND DES.IDTURNO = LET.IDTURNO(+) ");
+			sql.append(" AND DES.ANIO = LET.ANIO(+) ");
+			sql.append(" AND DES.NUMERO = LET.NUMERO(+) ");
+			sql.append(" AND (LET.FECHADESIGNA IS NULL OR ");
+			sql.append(" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA) ");
+			sql.append(" FROM SCS_DESIGNASLETRADO LET2 ");
+			sql.append(" WHERE LET2.IDINSTITUCION = :");
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idInstitucion);
+			sql.append(keyContador);
+			
+			sql.append(" AND LET2.IDTURNO =:");
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idTurno);
+			sql.append(keyContador);
+			sql.append(" AND LET2.ANIO = :");
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), anioDesigna);
+			sql.append(keyContador);
+			
+			sql.append(" AND LET2.NUMERO = :");
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), numeroDesigna);
+			sql.append(keyContador);
+			sql.append(" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
+
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idInstitucion);
+			sql.append(" and DES.IDINSTITUCION = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idTurno);
+			sql.append(" and DES.IDTURNO = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), anioDesigna);
+			sql.append(" and DES.ANIO = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), numeroDesigna);
+			sql.append(" and DES.NUMERO = :");
+			sql.append(keyContador);
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getLetradoDesignadoEjg.");
+		}
+	}
 	
 	
 	
@@ -4195,7 +4321,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public Vector getDatosRegionConyuge(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg) throws ClsExceptions {	 
+	public Vector getDatosRegionConyuge(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma) throws ClsExceptions {	 
 
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
@@ -4204,13 +4330,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(2), tipoEjg);
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
-			
+//		String textoNoConsta = UtilidadesMultidioma.getCampoMultidioma("informes.sjcs.parentesco.noConsta",idioma);
+		String textoSolicitante = UtilidadesMultidioma.getDatoMaestroIdioma("gratuita.busquedaSOJ.literal.solicitante",idioma);
 		StringBuffer sql = new StringBuffer();		
 		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
-		sql.append(" 	PER2.NOMBRE as CONYUGE_UF,PER2.NIF as NIF_CONYUGE_UF,(select f_siga_getrecurso(descripcion, 1) from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
+		sql.append(" 	PER2.NOMBRE as CONYUGE_UF,PER2.NIF as NIF_CONYUGE_UF,(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
 		sql.append(" 	trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION,");
-		sql.append("    decode(UFA.SOLICITANTE,1, 'Solicitante', null) AS SOLICITANTE, ");
+		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
 		sql.append("	PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
 		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
@@ -4241,7 +4368,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-		public Vector getDatosRegionUF(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg) throws ClsExceptions {	 
+		public Vector getDatosRegionUF(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma) throws ClsExceptions {	 
 
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
@@ -4251,12 +4378,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
 			
+		String textoNoConsta = UtilidadesMultidioma.getDatoMaestroIdioma("informes.sjcs.parentesco.noConsta",idioma);
+		String textoSolicitante = UtilidadesMultidioma.getDatoMaestroIdioma("gratuita.busquedaSOJ.literal.solicitante",idioma);
+		
+		
 		StringBuffer sql = new StringBuffer();		
 		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
-		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, 'No consta',(select f_siga_getrecurso(descripcion, 1) from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
+		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, '"+textoNoConsta+"',(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
 		sql.append("    trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, ");
-		sql.append("    decode(UFA.SOLICITANTE,1, 'Solicitante', null) AS SOLICITANTE, ");
+		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
 		sql.append("    PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
 		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
@@ -4287,18 +4418,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 
-	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma,boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion) throws ClsExceptions {	 
+	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme) throws ClsExceptions {	 
 		Vector vSalida = null;		
-		UsrBean usrBean = new UsrBean();		
-		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 		Hashtable htFuncion = new Hashtable();
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		ScsUnidadFamiliarEJGAdm admUniFam = new ScsUnidadFamiliarEJGAdm(this.usrbean);
 		ScsPersonaJGAdm scsPersonaJGAdm = null; 
 		String idPersonaJG = null;
 		String idContrario = null;
-		
-		
+
 		boolean isAlgunInformeNoGenerado = false;
 		boolean isAlgunRepresentanteLegal =false;
 		if(tipoDestinatario!=null){
@@ -4308,151 +4436,120 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				idContrario = idDestinatario;
 			} 
 		}
-		
+
 		try {
-			
+
 			vSalida = new Vector();
-			Vector vEjg = getEjgSalida(idInstitucion, tipoEjg,anioEjg, numeroEjg,idioma); 
-			String idiomainforme="";
+			Vector vEjg = getEjgSalida(idInstitucion, tipoEjg,anioEjg, numeroEjg); 
+			String idiomainforme="ES";
 			for (int j = 0; j < vEjg.size(); j++) {
 				Hashtable registro = (Hashtable) vEjg.get(j);
-				//Aniadimos los datos del colegiado del ejg				
-				String idLetradoEjg  = (String)registro.get("IDPERSONA");
-				if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
-					helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, idLetradoEjg,"LETRADO"));
-					String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO");
-					sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);					
-					String o_a = (String)registro.get("O_A");
-					String el_la = (String)registro.get("EL_LA");
-					registro.put("SEXO_LETRADO", sexoLetradoEjg);
-					registro.put("O_A_LETRADO", o_a);
-					registro.put("EL_LA_LETRADO", el_la);
-					Vector dirCorreo = getDireccionLetradoSalidaCorreo(idLetradoEjg,idInstitucion,"LETRADO");
-					if(dirCorreo.size() > 0 && ((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO")!=null &&!((String)((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO")).trim().equals("") ){
-						helperInformes.completarHashSalida(registro,dirCorreo);
+				String idioma = "1";
+				if(tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+					if(registro.get("DES_ANIO")!=null && !((String)registro.get("DES_ANIO")).equals("") ){
+						Vector colegiadoDestinatarios = getLetradoDesignadoEjg((String)registro.get("DES_INSTITUCION"), (String)registro.get("DES_IDTURNO"), (String)registro.get("DES_ANIO"), (String)registro.get("DES_NUMERO"));
+						if(colegiadoDestinatarios!=null && colegiadoDestinatarios.size()>0){
+							Hashtable colegiadoDestinatario = (Hashtable)colegiadoDestinatarios.get(0);
+							registro.putAll(colegiadoDestinatario);
+							String idPersonaDesignada = (String)colegiadoDestinatario.get("IDPERSONA_DESIGNA");
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme((String)registro.get("DES_INSTITUCION"), idPersonaDesignada, AdmInformeBean.TIPODESTINATARIO_CENPERSONA,registro, usrbean);
+							idioma = (String)registro.get("idioma");
+							idiomainforme= (String)registro.get("idiomaExt");
+
+							if(idPersonaDesignada!=null && !idPersonaDesignada.trim().equalsIgnoreCase("")){
+								helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, idPersonaDesignada,"LETRADO_DESIGNADO"));
+								String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO_DESIGNADO");
+								sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);					
+								String o_a = (String)registro.get("O_A");
+								String el_la = (String)registro.get("EL_LA");
+								registro.put("SEXO_LETRADO_DESIGNADO", sexoLetradoEjg);
+								registro.put("O_A_LETRADO_DESIGNADO", o_a);
+								registro.put("EL_LA_LETRADO_DESIGNADO", el_la);
+								Vector dirCorreo = getDireccionLetradoSalidaCorreo(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO");
+								if(dirCorreo.size() > 0 && ((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO_DESIGNADO")!=null &&!((String)((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO_DESIGNADO")).trim().equals("") ){
+									helperInformes.completarHashSalida(registro,dirCorreo);
+								}else{
+									helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO"));
+								}
+
+								helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO"));			
+
+								String pobLetradoEjg = (String)registro.get("POBLACION_LETRADO_DESIGNADO");
+								if(pobLetradoEjg==null ||pobLetradoEjg.trim().equalsIgnoreCase("")){
+									String idPobLetradoEjg = (String)registro.get("ID_POBLACION_LETRADO_DESIGNADO");
+									helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetradoEjg,"POBLACION_LETRADO_DESIGNADO"));
+									String idProvLetradoEjg = (String)registro.get("ID_PROVINCIA_LETRADO_DESIGNADO");
+									if(idProvLetradoEjg!=null && !idProvLetradoEjg.trim().equalsIgnoreCase(""))
+										helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetradoEjg,"PROVINCIA_LETRADO_DESIGNADO"));
+									else
+										UtilidadesHash.set(registro, "PROVINCIA_LETRADO_DESIGNADO", "");
+								}else{
+									UtilidadesHash.set(registro, "PROVINCIA_LETRADO_DESIGNADO", "");
+
+								}
+
+								///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
+
+								registro.put("NOMBRE_DEST", (String) registro.get("NOMBRE_D_LETRADO_DESIGNADO"));
+								registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("NOMBRE_D_LETRADO_DESIGNADO")).toUpperCase());
+
+								registro.put("APELLIDO1_DEST", (String) registro.get("APELLIDOS1_D_LETRADO_DESIGNADO"));
+								registro.put("APELLIDO1_DEST_MAYUS", ((String) registro.get("APELLIDOS1_D_LETRADO_DESIGNADO")).toUpperCase());
+
+								registro.put("APELLIDO2_DEST", (String) registro.get("APELLIDOS2_D_LETRADO_DESIGNADO"));
+								registro.put("APELLIDO2_DEST_MAYUS", ((String) registro.get("APELLIDOS2_D_LETRADO_DESIGNADO")).toUpperCase());
+
+								registro.put("SEXO_DEST", (String) registro.get("SEXO_LETRADO_DESIGNADO"));
+								registro.put("O_A_DEST", (String) registro.get("O_A_LETRADO_DESIGNADO"));
+								registro.put("EL_LA_DEST", (String) registro.get("EL_LA_LETRADO_DESIGNADO"));
+
+								registro.put("NIFCIF_DEST", (String) registro.get("NIFCIF_LETRADO_DESIGNADO"));
+								registro.put("IDPERSONA_DEST", idPersonaDesignada);
+								registro.put("IDDIRECCION_DEST", (String) registro.get("IDDIRECCION_LETRADO_DESIGNADO"));
+
+								registro.put("DOMICILIO_DEST", (String) registro.get("DOMICILIO_LETRADO_DESIGNADO"));
+								registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_LETRADO_DESIGNADO"));
+								registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_LETRADO_DESIGNADO"));
+								registro.put("TELEFONO2_DEST", (String) registro.get("TELEFONO2_LETRADO_DESIGNADO"));
+								registro.put("MOVIL_DEST", (String) registro.get("MOVIL_LETRADO_DESIGNADO"));
+								registro.put("FAX1_DEST", (String) registro.get("FAX_LETRADO_DESIGNADO"));
+
+								registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_LETRADO_DESIGNADO"));
+								registro.put("PAGINAWEB_DEST", (String) registro.get("PAGINAWEB_LETRADO_DESIGNADO"));
+								registro.put("POBLACIONEXTRANJERA_DEST", (String) registro.get("PEXTRANJERA_LETRADO_DESIGNADO"));
+								registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_LETRADO_DESIGNADO"));
+								registro.put("NOMBRE_PROVINCIA_DEST", (String) registro.get("PROVINCIA_LETRADO_DESIGNADO"));
+
+
+								////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+							}else{
+								continue;
+							}
+
+						}else{
+							continue;
+						}
 					}else{
-						helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
+						continue;
 					}
-					
-					helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));			
-					String telefonoDespacho = (String)registro.get("TELDESPACHO_LETRADO");
-					if(telefonoDespacho!=null)
-						UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", telefonoDespacho);
-					else
-						UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", "");
-					
-					String pobLetradoEjg = (String)registro.get("POBLACION_LETRADO");
-					if(pobLetradoEjg==null ||pobLetradoEjg.trim().equalsIgnoreCase("")){
-						String idPobLetradoEjg = (String)registro.get("ID_POBLACION_LETRADO");
-						helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetradoEjg,"POBLACION_LETRADO"));
-						String idProvLetradoEjg = (String)registro.get("ID_PROVINCIA_LETRADO");
-						if(idProvLetradoEjg!=null && !idProvLetradoEjg.trim().equalsIgnoreCase(""))
-							helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetradoEjg,"PROVINCIA_LETRADO"));
-						else
-							UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
-					}else{
-						UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
-						
-					}
-					
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
-					registro.put("NOMBRE_DEST", (String) registro.get("NOMBRE_D_LETRADO"));
-					registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("NOMBRE_D_LETRADO")).toUpperCase());
-					
-					registro.put("APELLIDO1_DEST", (String) registro.get("APELLIDOS1_D_LETRADO"));
-					registro.put("APELLIDO1_DEST_MAYUS", ((String) registro.get("APELLIDOS1_D_LETRADO")).toUpperCase());
-					
-					registro.put("APELLIDO2_DEST", (String) registro.get("APELLIDOS2_D_LETRADO"));
-					registro.put("APELLIDO2_DEST_MAYUS", ((String) registro.get("APELLIDOS2_D_LETRADO")).toUpperCase());
-					
-					registro.put("SEXO_DEST", (String) registro.get("SEXO_LETRADO"));
-					registro.put("O_A_DEST", (String) registro.get("O_A_LETRADO"));
-					registro.put("EL_LA_DEST", (String) registro.get("EL_LA_LETRADO"));
-					// .. resto de campos obtenidos.
-					//registro.put("TRATAMIENTO_DEST", (String) registro.get("TRATAMIENTO"));
-					registro.put("NIFCIF_DEST", (String) registro.get("NIFCIF_LETRADO"));
-					registro.put("IDPERSONA_DEST", idLetradoEjg);
-					registro.put("IDDIRECCION_DEST", (String) registro.get("IDDIRECCION_LETRADO"));
-					
-					registro.put("DOMICILIO_DEST", (String) registro.get("DOMICILIO_LETRADO"));
-					registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_LETRADO"));
-					registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_LETRADO"));
-					registro.put("TELEFONO2_DEST", (String) registro.get("TELEFONO2_LETRADO"));
-					registro.put("MOVIL_DEST", (String) registro.get("MOVIL_LETRADO"));
-					registro.put("FAX1_DEST", (String) registro.get("FAX_LETRADO"));
-//					registro.put("FAX2_DEST", (String) registro.get("FAX_LETRADO"));
-					registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_LETRADO"));
-					registro.put("PAGINAWEB_DEST", (String) registro.get("PAGINAWEB_LETRADO"));
-					registro.put("POBLACIONEXTRANJERA_DEST", (String) registro.get("PEXTRANJERA_LETRADO"));
-					registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_LETRADO"));
-					registro.put("NOMBRE_PROVINCIA_DEST", (String) registro.get("PROVINCIA_LETRADO"));
-					//registro.put("NOMBRE_PAIS_DEST", (String) registro.get("NOMBRE_PAIS"));
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					
-				}else{
-					UtilidadesHash.set(registro, "NCOLEGIADO_LETRADO", "");
-					UtilidadesHash.set(registro, "NOMBRE_LETRADO", "");
-					UtilidadesHash.set(registro, "NIFCIF_LETRADO", "");
-					UtilidadesHash.set(registro, "SEXO_LETRADO", "");
-					UtilidadesHash.set(registro, "DOMICILIO_LETRADO", "");
-					UtilidadesHash.set(registro, "CP_LETRADO", "");
-					UtilidadesHash.set(registro, "POBLACION_LETRADO", "");
-					UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
-					UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", "");
-					UtilidadesHash.set(registro, "EMAIL_LETRADO", "");
-					UtilidadesHash.set(registro, "FAX_LETRADO", "");
-					UtilidadesHash.set(registro, "TELEFONO1_LETRADO", "");
-					UtilidadesHash.set(registro, "TELEFONO2_LETRADO", "");
-					UtilidadesHash.set(registro, "MOVIL_LETRADO", "");
-					
-					registro.put("NOMBRE_DEST", "");
-					registro.put("NOMBRE_DEST_MAYUS","");
-					registro.put("APELLIDO1_DEST","");
-					registro.put("APELLIDO1_DEST_MAYUS","");
-					registro.put("APELLIDO2_DEST","");
-					registro.put("APELLIDO2_DEST_MAYUS","");
-					registro.put("SEXO_DEST", "");
-					registro.put("O_A_DEST", "");
-					registro.put("EL_LA_DEST","");
-					// .. resto de campos obtenidos.
-					//registro.put("TRATAMIENTO_DEST", "");
-					registro.put("NIFCIF_DEST","");
-					registro.put("IDPERSONA_DEST", "");
-					registro.put("IDDIRECCION_DEST", "");
-					registro.put("DOMICILIO_DEST", "");
-					registro.put("CODIGOPOSTAL_DEST", "");
-					registro.put("TELEFONO1_DEST", "");
-					registro.put("TELEFONO2_DEST","");
-					registro.put("MOVIL_DEST","");
-					registro.put("FAX1_DEST", "");
-//					registro.put("FAX2_DEST", "");
-					registro.put("CORREOELECTRONICO_DEST", "");
-					registro.put("PAGINAWEB_DEST","");
-					registro.put("POBLACIONEXTRANJERA_DEST", "");
-					registro.put("NOMBRE_POBLACION_DEST", "");
-					registro.put("NOMBRE_PROVINCIA_DEST", "");
-					//registro.put("NOMBRE_PAIS_DEST", "");
-				}		
-				
-				// JPT: OBTIENE LA ULTIMA FECHA CON ESTADO 'Remitido Comision': FECHAREMITIDO_COMISION y FECHAREMITIDO_COMISION_LETRA				
-				Hashtable hFechaRemitidoComision = getFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
-				registro.put("FECHAREMITIDO_COMISION", "");
-				registro.put("FECHAREMITIDO_COMISION_LETRA", "");
-				registro.putAll(hFechaRemitidoComision);
-				
-				
-				// JPT: OBTIENE LA FECHA DE REUNION DEL ACTA DEL EJG: FECHAREUNION_ACTA y FECHAREUNION_ACTA_LETRA
-				Hashtable hFechaReunion = getFechaReunionActaEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
-				registro.put("FECHAREUNION_ACTA", "");
-				registro.put("FECHAREUNION_ACTA_LETRA", "");
-				registro.putAll(hFechaReunion);
-				
-				Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
-				Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
-				
-				if(isSolicitantes || isAcontrarios){
-					if(isSolicitantes){
-						if(!isAcontrarios){
+					actualizarDatosFundamentoJuridico(idioma, registro);
+					//Aniadimos los datos del colegiado tramitador del ejg				
+					String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
+					actualizarDatosLetradoTramitador(idLetradoTramitadorEjg,idInstitucion,registro);
+					actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+					actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
+
+					if(isSolicitantes || isAcontrarios){
+						if(isSolicitantes){
 							registro.put("NOMBRE_CONTRARIO", "");
 							registro.put("DOMICILIO_CONTRARIO", "");
 							registro.put("CP_CONTRARIO", "");
@@ -4461,385 +4558,76 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("O_A_CONTRARIO", "");
 							registro.put("NIF_CONTRARIO", "");
 							registro.put("TELEFONO1_CONTRARIO", "");
+							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+								registro.put("contrarios", contrariosEjgVector);
+							}	
+
+							if(vDefendidos!=null && vDefendidos.size()>0){
+								if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).trim().equalsIgnoreCase(""))continue;
+								for (int k = 0; k < vDefendidos.size(); k++) {
+									Hashtable clone = (Hashtable) registro.clone();
+									Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+									registro.putAll(registroDefendido);
+									String Idpersona=(String)registroDefendido.get("IDPERSONA");		
+
+
+									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+
+									// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
+									try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+										if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
+											Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,Idpersona);
+											if(vDestinatario!=null && vDestinatario.size()>0){
+												Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+												clone.putAll(destinatario);										
+											}
+										}
+
+									}catch (Exception e) {
+
+									}
+									clone.putAll(registroDefendido);
+									vSalida.add(clone);
+
+								}  // END FOR
+
+							}else{
+								continue;
+							}	
 						}
+						if(isAcontrarios){
+							actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
+							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+								for (int k = 0; k < contrariosEjgVector.size(); k++) {
+									Hashtable clone = (Hashtable) registro.clone();
+									Hashtable registroContrario = (Hashtable) contrariosEjgVector.get(k);
+									clone.putAll(registroContrario);
+									vSalida.add(clone);
+
+								}  // END FOR
+
+							}else{
+								continue;
+							}	
+						}
+
+					}else{
+
+						/**Idiomas del Solicitante principal si lo tiene**/
+						Hashtable hastejg = new Hashtable();
+						hastejg.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
+						hastejg.put(ScsEJGBean.C_IDTIPOEJG,tipoEjg);
+						hastejg.put(ScsEJGBean.C_ANIO,anioEjg);
+						hastejg.put(ScsEJGBean.C_NUMERO,numeroEjg);					
+						if(scsPersonaJGAdm==null)
+							scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);	
+
+						
+						actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
+						
 						if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 							registro.put("contrarios", contrariosEjgVector);
-						}	
-						
-						if(vDefendidos!=null && vDefendidos.size()>0){
-							if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).trim().equalsIgnoreCase(""))continue;
-							for (int k = 0; k < vDefendidos.size(); k++) {
-								Hashtable clone = (Hashtable) registro.clone();
-								Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
-								registro.putAll(registroDefendido);
-								String Idpersona=(String)registroDefendido.get("IDPERSONA");		
-								
-								String idLenguaje="";	
-								String lenguajeinteresado=(String)registroDefendido.get("LENGUAJE_INTERESADO");
-								
-								if (lenguajeinteresado!=null && !lenguajeinteresado.trim().equals(""))								
-									idLenguaje=(String)registroDefendido.get("LENGUAJE_INTERESADO");
-								else
-									idLenguaje=idioma;												         
-								
-								/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
-								String 	idiomaExt="";
-								switch (Integer.parseInt(idLenguaje)) {
-									case 1:  idiomaExt="ES"; break;
-									case 2:  idiomaExt="CA"; break;
-									case 3:  idiomaExt="EU"; break;
-									case 4:  idiomaExt="GL"; break;	
-								}
-							
-								registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idLenguaje,idPersonaJG,registro);
-								/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-								registroDefendido.put("CODIGOLENGUAJE", idiomaExt);
-								
-								// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
-								try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
-									if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
-										Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idLenguaje,Idpersona);
-										if(vDestinatario!=null && vDestinatario.size()>0){
-											Hashtable destinatario = (Hashtable) vDestinatario.get(0);
-											clone.putAll(destinatario);										
-										}
-									}
-									
-								}catch (Exception e) {
-									
-								}
-								
-								
-								
-								
-								clone.putAll(registroDefendido);
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////								
-								if(registroDefendido.get("IDREPRESENTANTEJG")!=null && !registroDefendido.get("IDREPRESENTANTEJG").equals("")){
-									isAlgunRepresentanteLegal = true;
-									if(scsPersonaJGAdm==null)
-										scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
-									Hashtable representanteLegalDefendido = scsPersonaJGAdm.getDatosPersonaJG((String)clone.get("IDREPRESENTANTEJG"),(String)clone.get("IDINSTITUCION"));
-									clone.put("NOMBRE_DEST", (String) representanteLegalDefendido.get("NOMBRE_PJG"));
-									clone.put("NOMBRE_DEST_MAYUS", ((String) representanteLegalDefendido.get("NOMBRE_PJG")).toUpperCase());
-									clone.put("APELLIDO1_DEST", (String) representanteLegalDefendido.get("APELLIDO1_PJG"));
-									clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO1_PJG")).toUpperCase());
-									clone.put("APELLIDO2_DEST", (String) representanteLegalDefendido.get("APELLIDO2_PJG"));
-									clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO2_PJG")).toUpperCase());
-									clone.put("SEXO_DEST", (String) representanteLegalDefendido.get("SEXO_PJG"));
-									clone.put("O_A_DEST", (String) representanteLegalDefendido.get("O_A_PJG"));
-									clone.put("EL_LA_DEST", (String) representanteLegalDefendido.get("EL_LA_PJG"));
-									
-									// .. resto de campos obtenidos.
-	//								clone.put("TRATAMIENTO_DEST", (String) clone.get("TRATAMIENTO"));
-									
-									clone.put("NIFCIF_DEST", (String) representanteLegalDefendido.get("NIF_PJG"));
-									clone.put("IDPERSONA_DEST", (String) representanteLegalDefendido.get("IDPERSONA_PJG"));
-									clone.put("IDDIRECCION_DEST", (String) representanteLegalDefendido.get("IDDIRECCION_PJG"));
-									clone.put("DOMICILIO_DEST", (String) representanteLegalDefendido.get("DOMICILIO_PJG"));
-									clone.put("CODIGOPOSTAL_DEST", (String) representanteLegalDefendido.get("CP_PJG"));
-									clone.put("TELEFONO1_DEST", (String) representanteLegalDefendido.get("TELEFONO1_PJG"));
-									clone.put("TELEFONO2_DEST", (String) representanteLegalDefendido.get("TELEFONO2_PJG"));
-									clone.put("MOVIL_DEST", (String) representanteLegalDefendido.get("MOVIL_PJG"));
-									clone.put("FAX1_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
-//									clone.put("FAX2_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
-									clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalDefendido.get("CORREOELECTRONICO_PJG"));
-	//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
-//									clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("PEXTRANJERA"));
-									clone.put("NOMBRE_POBLACION_DEST", (String) representanteLegalDefendido.get("POBLACION_PJG"));
-									clone.put("NOMBRE_PROVINCIA_DEST", (String) representanteLegalDefendido.get("PROVINCIA_PJG"));
-	//								clone.put("NOMBRE_PAIS_DEST", (String) clone.get("NOMBRE_PAIS"));
-									
-									
-									
-								
-								}else{
-									
-									clone.put("NOMBRE_DEST", (String) clone.get("NOMBRE_PJG"));
-									clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("NOMBRE_PJG")).toUpperCase());
-									clone.put("APELLIDO1_DEST", (String) clone.get("APELLIDO1_PJG"));
-									clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
-									clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
-									clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
-									clone.put("SEXO_DEST", (String) clone.get("SEXOINTERESADO"));
-									clone.put("O_A_DEST", (String) clone.get("O_A_INTERESADO"));
-									clone.put("EL_LA_DEST", (String) clone.get("EL_LA_INTERESADO"));
-									
-									// .. resto de campos obtenidos.
-	//								clone.put("TRATAMIENTO_DEST", (String) clone.get("TRATAMIENTO"));
-									
-									clone.put("NIFCIF_DEST", (String) clone.get("NIF_DEFENDIDO"));
-									clone.put("IDPERSONA_DEST", (String) clone.get("IDPERSONA"));
-									clone.put("IDDIRECCION_DEST", (String) clone.get("IDDIRECCION_PJG"));
-									clone.put("DOMICILIO_DEST", (String) clone.get("DOMICILIO_DEFENDIDO"));
-									clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_DEFENDIDO"));
-									clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_PJG"));
-									clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
-									clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
-									clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
-//									clone.put("FAX2_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
-									clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
-	//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
-//									clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("POBLACIONEXTRANJERA"));
-									clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_DEFENDIDO"));
-									clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_DEFENDIDO"));
-	//								clone.put("NOMBRE_PAIS_DEST", (String) clone.get("NOMBRE_PAIS"));
-									
-										
-								}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-								if(generarInformeSinDireccion ||(clone.get("IDDIRECCION_DEST")!=null&& !((String)clone.get("IDDIRECCION_DEST")).equals("")) )
-									vSalida.add(clone);
-								else
-									isAlgunInformeNoGenerado = true;
-							}  // END FOR
-							
 						}else{
-							
-							/**Idiomas del Solicitante principal si lo tiene**/
-							Hashtable hastejg = new Hashtable();
-							hastejg.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-							hastejg.put(ScsEJGBean.C_IDTIPOEJG,tipoEjg);
-							hastejg.put(ScsEJGBean.C_ANIO,anioEjg);
-							hastejg.put(ScsEJGBean.C_NUMERO,numeroEjg);					
-									
-							if(scsPersonaJGAdm==null)
-								scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
-							String idelenguajesolicitanteprincipal = scsPersonaJGAdm.getLenguajeSolicitante(hastejg);
-							 if (idelenguajesolicitanteprincipal!=null && !idelenguajesolicitanteprincipal.trim().equals("")){
-								 idioma=idelenguajesolicitanteprincipal;
-							 }					
-							//registro=getregistrodatos(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-							switch (Integer.parseInt(idioma)) {
-									case 1:  idiomainforme="ES"; break;
-									case 2:  idiomainforme="CA"; break;
-									case 3:  idiomainforme="EU"; break;
-									case 4:  idiomainforme="GL"; break;	
-							}	
-							
-							registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-							
-							registro.put("CODIGOLENGUAJE", idiomainforme);
-							registro.put("NIF_DEFENDIDO", "");
-							registro.put("NOMBRE_DEFENDIDO", "");
-							registro.put("FECHANAC_DEFENDIDO", "");
-							registro.put("ESTADOCIVIL_DEFENDIDO", "");
-							registro.put("DOMICILIO_DEFENDIDO", "");
-							registro.put("CP_DEFENDIDO", "");
-							registro.put("POBLACION_DEFENDIDO", "");
-							registro.put("TELEFONO1_DEFENDIDO", "");
-							registro.put("PROVINCIA_DEFENDIDO", "");
-							registro.put("SEXO_INTERESADO", "");
-							registro.put("LENGUAJE_INTERESADO", "");
-							registro.put("CALIDAD_INTERESADO", "");
-							//registro.put("CODIGOLENGUAJE", "");
-							registro.put("PROFESION_DEFENDIDO", "");
-							registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
-							
-							
-							
-							registro.put("NOMBRE_DEST", "");
-							registro.put("NOMBRE_DEST_MAYUS","");
-							registro.put("APELLIDO1_DEST","");
-							registro.put("APELLIDO1_DEST_MAYUS","");
-							registro.put("APELLIDO2_DEST","");
-							registro.put("APELLIDO2_DEST_MAYUS","");
-							registro.put("SEXO_DEST", "");
-							registro.put("O_A_DEST", "");
-							registro.put("EL_LA_DEST","");
-							// .. resto de campos obtenidos.
-							//registro.put("TRATAMIENTO_DEST", "");
-							registro.put("NIFCIF_DEST","");
-							registro.put("IDPERSONA_DEST", "");
-							registro.put("IDDIRECCION_DEST", "");
-							registro.put("DOMICILIO_DEST", "");
-							registro.put("CODIGOPOSTAL_DEST", "");
-							registro.put("TELEFONO1_DEST", "");
-							registro.put("TELEFONO2_DEST","");
-							registro.put("MOVIL_DEST","");
-							registro.put("FAX1_DEST", "");
-							//registro.put("FAX2_DEST", "");
-							registro.put("CORREOELECTRONICO_DEST", "");
-							//registro.put("PAGINAWEB_DEST","");
-							//registro.put("POBLACIONEXTRANJERA_DEST", "");
-							registro.put("NOMBRE_POBLACION_DEST", "");
-							registro.put("NOMBRE_PROVINCIA_DEST", "");
-							//registro.put("NOMBRE_PAIS_DEST", "");
-							
-							if(generarInformeSinDireccion ||(registro.get("IDDIRECCION_DEST")!=null&& !((String)registro.get("IDDIRECCION_DEST")).equals("")) )
-								vSalida.add(registro);
-							else
-								isAlgunInformeNoGenerado = true;
-							
-						}	
-					}
-					if(isAcontrarios){
-						
-						if(!isSolicitantes){
-							registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-
-							registro.put("CODIGOLENGUAJE", idiomainforme);
-							registro.put("NIF_DEFENDIDO", "");
-							registro.put("NOMBRE_DEFENDIDO", "");
-							registro.put("FECHANAC_DEFENDIDO", "");
-							registro.put("ESTADOCIVIL_DEFENDIDO", "");
-							registro.put("DOMICILIO_DEFENDIDO", "");
-							registro.put("CP_DEFENDIDO", "");
-							registro.put("POBLACION_DEFENDIDO", "");
-							registro.put("TELEFONO1_DEFENDIDO", "");
-							registro.put("PROVINCIA_DEFENDIDO", "");
-							registro.put("SEXO_INTERESADO", "");
-							registro.put("LENGUAJE_INTERESADO", "");
-							registro.put("CALIDAD_INTERESADO", "");
-							//registro.put("CODIGOLENGUAJE", "");
-							registro.put("PROFESION_DEFENDIDO", "");
-							registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
-							
-							
-						}
-						if(vDefendidos!=null && vDefendidos.size()>0){
-							for (int k = 0; k < vDefendidos.size(); k++) {
-								if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).equalsIgnoreCase(""))continue;
-								Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
-								String Idpersona=(String)registroDefendido.get("IDPERSONA");						
-							
-								registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-								/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-								registroDefendido.put("CODIGOLENGUAJE", "");
-								
-								// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
-								try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
-									if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
-										Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,Idpersona);
-										if(vDestinatario!=null && vDestinatario.size()>0){
-											Hashtable destinatario = (Hashtable) vDestinatario.get(0);
-											registroDefendido.putAll(destinatario);										
-										}
-									}								
-								}catch (Exception e) {
-									
-								}							
-							}
-							
-							registro.put("defendido", vDefendidos);
-						}
-						
-						
-						if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
-							for (int k = 0; k < contrariosEjgVector.size(); k++) {
-								Hashtable clone = (Hashtable) registro.clone();
-								
-								
-								
-								Hashtable registroContrario = (Hashtable) contrariosEjgVector.get(k);
-								clone.putAll(registroContrario);
-								if(registroContrario.get("IDREPRESENTANTEJG")!=null && !registroContrario.get("IDREPRESENTANTEJG").equals("")){
-									isAlgunRepresentanteLegal = true;
-									if(scsPersonaJGAdm==null)
-										scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
-									Hashtable representanteLegalContrario = scsPersonaJGAdm.getDatosPersonaJG((String)registroContrario.get("IDREPRESENTANTEJG"),(String)registroContrario.get("IDINSTITUCION"));
-									clone.put("NOMBRE_DEST", (String) representanteLegalContrario.get("NOMBRE_PJG"));
-									clone.put("NOMBRE_DEST_MAYUS", ((String) representanteLegalContrario.get("NOMBRE_PJG")).toUpperCase());
-									clone.put("APELLIDO1_DEST", (String) representanteLegalContrario.get("APELLIDO1_PJG"));
-									clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO1_PJG")).toUpperCase());
-									clone.put("APELLIDO2_DEST", (String) representanteLegalContrario.get("APELLIDO2_PJG"));
-									clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO2_PJG")).toUpperCase());
-									clone.put("SEXO_DEST", (String) representanteLegalContrario.get("SEXO_PJG"));
-									clone.put("O_A_DEST", (String) representanteLegalContrario.get("O_A_PJG"));
-									clone.put("EL_LA_DEST", (String) representanteLegalContrario.get("EL_LA_PJG"));
-									
-									// .. resto de campos obtenidos.
-	//								clone.put("TRATAMIENTO_DEST", (String) clone.get("TRATAMIENTO"));
-									
-									clone.put("NIFCIF_DEST", (String) representanteLegalContrario.get("NIF_PJG"));
-									clone.put("IDPERSONA_DEST", (String) representanteLegalContrario.get("IDPERSONA_PJG"));
-									clone.put("IDDIRECCION_DEST", (String) representanteLegalContrario.get("IDDIRECCION_PJG"));
-									clone.put("DOMICILIO_DEST", (String) representanteLegalContrario.get("DOMICILIO_PJG"));
-									clone.put("CODIGOPOSTAL_DEST", (String) representanteLegalContrario.get("CP_PJG"));
-									clone.put("TELEFONO1_DEST", (String) representanteLegalContrario.get("TELEFONO1_PJG"));
-									clone.put("TELEFONO2_DEST", (String) representanteLegalContrario.get("TELEFONO2_PJG"));
-									clone.put("MOVIL_DEST", (String) representanteLegalContrario.get("MOVIL_PJG"));
-									clone.put("FAX1_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
-									clone.put("FAX2_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
-									clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalContrario.get("CORREOELECTRONICO_PJG"));
-	//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
-	//								clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("POBLACIONEXTRANJERA"));
-									clone.put("NOMBRE_POBLACION_DEST", (String) representanteLegalContrario.get("POBLACION_PJG"));
-									clone.put("NOMBRE_PROVINCIA_DEST", (String) representanteLegalContrario.get("PROVINCIA_PJG"));
-	//								clone.put("NOMBRE_PAIS_DEST", (String) clone.get("NOMBRE_PAIS"));
-									
-									
-								
-									
-									
-								
-								}else{
-									
-									clone.put("NOMBRE_DEST", (String) clone.get("NOMBRE_PJG"));
-									clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("NOMBRE_PJG")).toUpperCase());
-									clone.put("APELLIDO1_DEST", (String) clone.get("APELLIDO1_PJG"));
-									clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
-									clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
-									clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
-									clone.put("SEXO_DEST", (String) clone.get("SEXO_PJG"));
-									clone.put("O_A_DEST", (String) clone.get("O_A_PJG"));
-									clone.put("EL_LA_DEST", (String) clone.get("EL_LA_PJG"));
-									
-									// .. resto de campos obtenidos.
-	//								clone.put("TRATAMIENTO_DEST", (String) clone.get("TRATAMIENTO"));
-									
-									clone.put("NIFCIF_DEST", (String) clone.get("NIF_PJG"));
-									clone.put("IDPERSONA_DEST", (String) clone.get("IDPERSONA_PJG"));
-									
-									clone.put("IDDIRECCION_DEST", (String) clone.get("IDDIRECCION_PJG"));
-									
-									clone.put("DOMICILIO_DEST", (String) clone.get("DOMICILIO_PJG"));
-									clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_PJG"));
-									clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_PJG"));
-									clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
-									clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
-									clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
-//									clone.put("FAX2_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
-									clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
-	//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
-	//								clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("POBLACIONEXTRANJERA"));
-									clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_PJG"));
-									clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_PJG"));
-	//								clone.put("NOMBRE_PAIS_DEST", (String) clone.get("NOMBRE_PAIS"));
-									
-									
-									
-									
-								}
-								if(generarInformeSinDireccion ||(clone.get("IDDIRECCION_DEST")!=null&& !((String)clone.get("IDDIRECCION_DEST")).equals("")) )
-									vSalida.add(clone);
-								else
-									isAlgunInformeNoGenerado = true;
-							}  // END FOR
-							
-						}else{
-							
-							/**Idiomas del Solicitante principal si lo tiene**/
-							Hashtable hastejg = new Hashtable();
-							hastejg.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-							hastejg.put(ScsEJGBean.C_IDTIPOEJG,tipoEjg);
-							hastejg.put(ScsEJGBean.C_ANIO,anioEjg);
-							hastejg.put(ScsEJGBean.C_NUMERO,numeroEjg);					
-							if(scsPersonaJGAdm==null)
-								scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
-							String idelenguajesolicitanteprincipal = scsPersonaJGAdm.getLenguajeSolicitante(hastejg);
-							 if (idelenguajesolicitanteprincipal!=null && !idelenguajesolicitanteprincipal.trim().equals("")){
-								 idioma=idelenguajesolicitanteprincipal;
-							 }					
-							//registro=getregistrodatos(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-							switch (Integer.parseInt(idioma)) {
-									case 1:  idiomainforme="ES"; break;
-									case 2:  idiomainforme="CA"; break;
-									case 3:  idiomainforme="EU"; break;
-									case 4:  idiomainforme="GL"; break;	
-							}	
-							
-							
-							registro.put("CODIGOLENGUAJE", idiomainforme);
 							registro.put("NOMBRE_CONTRARIO", "");
 							registro.put("DOMICILIO_CONTRARIO", "");
 							registro.put("CP_CONTRARIO", "");
@@ -4849,98 +4637,182 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("NIF_CONTRARIO", "");
 							registro.put("TELEFONO1_CONTRARIO", "");
 							
-							registro.put("NOMBRE_DEST", "");
-							registro.put("NOMBRE_DEST_MAYUS","");
-							registro.put("APELLIDO1_DEST","");
-							registro.put("APELLIDO1_DEST_MAYUS","");
-							registro.put("APELLIDO2_DEST","");
-							registro.put("APELLIDO2_DEST_MAYUS","");
-							registro.put("SEXO_DEST", "");
-							registro.put("O_A_DEST", "");
-							registro.put("EL_LA_DEST","");
-							// .. resto de campos obtenidos.
-							//registro.put("TRATAMIENTO_DEST", "");
-							registro.put("NIFCIF_DEST","");
-							registro.put("IDPERSONA_DEST", "");
-							registro.put("IDDIRECCION_DEST", "");
-							registro.put("DOMICILIO_DEST", "");
-							registro.put("CODIGOPOSTAL_DEST", "");
-							registro.put("TELEFONO1_DEST", "");
-							registro.put("TELEFONO2_DEST","");
-							registro.put("MOVIL_DEST","");
-							registro.put("FAX1_DEST", "");
-							//registro.put("FAX2_DEST", "");
-							registro.put("CORREOELECTRONICO_DEST", "");
-							//registro.put("PAGINAWEB_DEST","");
-							registro.put("POBLACIONEXTRANJERA_DEST", "");
-							registro.put("NOMBRE_POBLACION_DEST", "");
-							registro.put("NOMBRE_PROVINCIA_DEST", "");
-							//registro.put("NOMBRE_PAIS_DEST", "");    
-							
-							if(generarInformeSinDireccion ||(registro.get("IDDIRECCION_DEST")!=null&& !((String)registro.get("IDDIRECCION_DEST")).equals("")) )
-								vSalida.add(registro);
-							else
-								isAlgunInformeNoGenerado = true;
-						}	
-					}
-					
-				}else{
-					
-
-					
-					
-					/**Idiomas del Solicitante principal si lo tiene**/
-					Hashtable hastejg = new Hashtable();
-					hastejg.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-					hastejg.put(ScsEJGBean.C_IDTIPOEJG,tipoEjg);
-					hastejg.put(ScsEJGBean.C_ANIO,anioEjg);
-					hastejg.put(ScsEJGBean.C_NUMERO,numeroEjg);					
-					if(scsPersonaJGAdm==null)
-						scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);	
-					
-					String idelenguajesolicitanteprincipal = scsPersonaJGAdm.getLenguajeSolicitante(hastejg);
-					 if (idelenguajesolicitanteprincipal!=null && !idelenguajesolicitanteprincipal.trim().equals("")){
-						 idioma=idelenguajesolicitanteprincipal;
-					 }					
-					//registro=getregistrodatos(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-					switch (Integer.parseInt(idioma)) {
-							case 1:  idiomainforme="ES"; break;
-							case 2:  idiomainforme="CA"; break;
-							case 3:  idiomainforme="EU"; break;
-							case 4:  idiomainforme="GL"; break;	
-					}					
-					
-					if(vDefendidos!=null && vDefendidos.size()>0){
-						for (int k = 0; k < vDefendidos.size(); k++) {
-							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
-							String Idpersona=(String)registroDefendido.get("IDPERSONA");						
-						
-							registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
-							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-							registroDefendido.put("CODIGOLENGUAJE", "");
-							
-							// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
-							try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
-								if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
-									Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,Idpersona);
-									if(vDestinatario!=null && vDestinatario.size()>0){
-										Hashtable destinatario = (Hashtable) vDestinatario.get(0);
-										registroDefendido.putAll(destinatario);										
-									}
-								}								
-							}catch (Exception e) {
-								
-							}							
 						}
-						
-						registro.put("defendido", vDefendidos);
+
+						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+
+						registro.put("CODIGOLENGUAJE", idiomainforme);
+						registro.put("NIF_DEFENDIDO", "");
+						registro.put("NOMBRE_DEFENDIDO", "");
+						registro.put("FECHANAC_DEFENDIDO", "");
+						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+						registro.put("DOMICILIO_DEFENDIDO", "");
+						registro.put("CP_DEFENDIDO", "");
+						registro.put("POBLACION_DEFENDIDO", "");
+						registro.put("TELEFONO1_DEFENDIDO", "");
+						registro.put("PROVINCIA_DEFENDIDO", "");
+						registro.put("SEXO_INTERESADO", "");
+						registro.put("LENGUAJE_INTERESADO", "");
+						registro.put("CALIDAD_INTERESADO", "");
+						//registro.put("CODIGOLENGUAJE", "");
+						registro.put("PROFESION_DEFENDIDO", "");
+						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+
+						registro.put("NOMBRE_CONTRARIO", "");
+						registro.put("DOMICILIO_CONTRARIO", "");
+						registro.put("CP_CONTRARIO", "");
+						registro.put("POBLACION_CONTRARIO", "");
+						registro.put("PROVINCIA_CONTRARIO", "");
+						registro.put("O_A_CONTRARIO", "");
+						registro.put("NIF_CONTRARIO", "");
+						registro.put("TELEFONO1_CONTRARIO", "");
+						if(generarInformeSinDireccion ||(registro.get("IDDIRECCION_DEST")!=null&& !((String)registro.get("IDDIRECCION_DEST")).equals("")) )
+							vSalida.add(registro);
+						else
+							isAlgunInformeNoGenerado = true;
 					}
+				}else if(tipoDestinatarioInforme.equals("S")){
+					//					Sacamos los interesados el EJG  y los recorremos
+
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
+					registro.put("NOMBRE_CONTRARIO", "");
+					registro.put("DOMICILIO_CONTRARIO", "");
+					registro.put("CP_CONTRARIO", "");
+					registro.put("POBLACION_CONTRARIO", "");
+					registro.put("PROVINCIA_CONTRARIO", "");
+					registro.put("O_A_CONTRARIO", "");
+					registro.put("NIF_CONTRARIO", "");
+					registro.put("TELEFONO1_CONTRARIO", "");
+
 					if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 						registro.put("contrarios", contrariosEjgVector);
-					}
-					
+					}	
+
+					if(vDefendidos!=null && vDefendidos.size()>0){
+						for (int k = 0; k < vDefendidos.size(); k++) {
+
+							Hashtable clone = (Hashtable) registro.clone();
+							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							idPersonaJG=(String)registroDefendido.get("IDPERSONA");
+							helperInformesAdm.setIdiomaInforme(idInstitucion,idPersonaJG, AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,clone, usrbean);
+							idioma = (String)clone.get("idioma");
+							idiomainforme= (String)clone.get("idiomaExt");
+							Vector defendidoVector = getInteresadosEjgSalida(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, idPersonaJG);
+							//solo hay uno ya que filtramos por PK
+							Hashtable registroDefendidoConDatos = (Hashtable) defendidoVector.get(0);
+							clone.putAll(registroDefendidoConDatos);
+							registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+
+
+							// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
+							try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+
+								Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+								if(vDestinatario!=null && vDestinatario.size()>0){
+									Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+									clone.putAll(destinatario);										
+								}
+
+
+							}catch (Exception e) {
+
+							}
+
+
+
+
+							clone.putAll(registroDefendido);
+							///////////////////////////////////////////////////////////////////////////////////////////////////////////////////								
+							if(registroDefendido.get("IDREPRESENTANTEJG")!=null && !registroDefendido.get("IDREPRESENTANTEJG").equals("")){
+								isAlgunRepresentanteLegal = true;
+								if(scsPersonaJGAdm==null)
+									scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
+								Hashtable representanteLegalDefendido = scsPersonaJGAdm.getDatosPersonaJG((String)clone.get("IDREPRESENTANTEJG"),(String)clone.get("IDINSTITUCION"));
+								clone.put("NOMBRE_DEST", (String) representanteLegalDefendido.get("NOMBRE_PJG"));
+								clone.put("NOMBRE_DEST_MAYUS", ((String) representanteLegalDefendido.get("NOMBRE_PJG")).toUpperCase());
+								clone.put("APELLIDO1_DEST", (String) representanteLegalDefendido.get("APELLIDO1_PJG"));
+								clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO1_PJG")).toUpperCase());
+								clone.put("APELLIDO2_DEST", (String) representanteLegalDefendido.get("APELLIDO2_PJG"));
+								clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO2_PJG")).toUpperCase());
+								clone.put("SEXO_DEST", (String) representanteLegalDefendido.get("SEXO_PJG"));
+								clone.put("O_A_DEST", (String) representanteLegalDefendido.get("O_A_PJG"));
+								clone.put("EL_LA_DEST", (String) representanteLegalDefendido.get("EL_LA_PJG"));
+								clone.put("NIFCIF_DEST", (String) representanteLegalDefendido.get("NIF_PJG"));
+								clone.put("IDPERSONA_DEST", (String) representanteLegalDefendido.get("IDPERSONA_PJG"));
+								clone.put("IDDIRECCION_DEST", (String) representanteLegalDefendido.get("IDDIRECCION_PJG"));
+								clone.put("DOMICILIO_DEST", (String) representanteLegalDefendido.get("DOMICILIO_PJG"));
+								clone.put("CODIGOPOSTAL_DEST", (String) representanteLegalDefendido.get("CP_PJG"));
+								clone.put("TELEFONO1_DEST", (String) representanteLegalDefendido.get("TELEFONO1_PJG"));
+								clone.put("TELEFONO2_DEST", (String) representanteLegalDefendido.get("TELEFONO2_PJG"));
+								clone.put("MOVIL_DEST", (String) representanteLegalDefendido.get("MOVIL_PJG"));
+								clone.put("FAX1_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
+							
+								clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalDefendido.get("CORREOELECTRONICO_PJG"));
+							
+								clone.put("NOMBRE_POBLACION_DEST", (String) representanteLegalDefendido.get("POBLACION_PJG"));
+								clone.put("NOMBRE_PROVINCIA_DEST", (String) representanteLegalDefendido.get("PROVINCIA_PJG"));
+
+							}else{
+
+								clone.put("NOMBRE_DEST", (String) clone.get("NOMBRE_PJG"));
+								clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("NOMBRE_PJG")).toUpperCase());
+								clone.put("APELLIDO1_DEST", (String) clone.get("APELLIDO1_PJG"));
+								clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
+								clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
+								clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
+								clone.put("SEXO_DEST", (String) clone.get("SEXOINTERESADO"));
+								clone.put("O_A_DEST", (String) clone.get("O_A_INTERESADO"));
+								clone.put("EL_LA_DEST", (String) clone.get("EL_LA_INTERESADO"));
+								clone.put("NIFCIF_DEST", (String) clone.get("NIF_DEFENDIDO"));
+								clone.put("IDPERSONA_DEST", (String) clone.get("IDPERSONA"));
+								clone.put("IDDIRECCION_DEST", (String) clone.get("IDDIRECCION_PJG"));
+								clone.put("DOMICILIO_DEST", (String) clone.get("DOMICILIO_DEFENDIDO"));
+								clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_DEFENDIDO"));
+								clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_PJG"));
+								clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
+								clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
+								clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
+								//									clone.put("FAX2_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
+								clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
+								//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
+								//									clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("POBLACIONEXTRANJERA"));
+								clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_DEFENDIDO"));
+								clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_DEFENDIDO"));
+								//								clone.put("NOMBRE_PAIS_DEST", (String) clone.get("NOMBRE_PAIS"));
+
+
+							}
+							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+							if(generarInformeSinDireccion ||(clone.get("IDDIRECCION_DEST")!=null&& !((String)clone.get("IDDIRECCION_DEST")).equals("")) ){
+								actualizarDatosFundamentoJuridico(idioma, clone);
+								//Aniadimos los datos del colegiado tramitador del ejg				
+								String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
+								actualizarDatosLetradoTramitador(idLetradoTramitadorEjg,idInstitucion,clone);
+
+								actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+								actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+
+
+
+								vSalida.add(clone);
+							}
+							else
+								isAlgunInformeNoGenerado = true;
+						}  // END FOR
+
+					}else{
+
+						continue;
+
+					}	
+
+				}else if(tipoDestinatarioInforme.equals("X")){
+
+					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
 					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
-					
 					registro.put("CODIGOLENGUAJE", idiomainforme);
 					registro.put("NIF_DEFENDIDO", "");
 					registro.put("NOMBRE_DEFENDIDO", "");
@@ -4954,23 +4826,362 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("SEXO_INTERESADO", "");
 					registro.put("LENGUAJE_INTERESADO", "");
 					registro.put("CALIDAD_INTERESADO", "");
-					//registro.put("CODIGOLENGUAJE", "");
 					registro.put("PROFESION_DEFENDIDO", "");
 					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
-					
-					registro.put("NOMBRE_CONTRARIO", "");
-					registro.put("DOMICILIO_CONTRARIO", "");
-					registro.put("CP_CONTRARIO", "");
-					registro.put("POBLACION_CONTRARIO", "");
-					registro.put("PROVINCIA_CONTRARIO", "");
-					registro.put("O_A_CONTRARIO", "");
-					registro.put("NIF_CONTRARIO", "");
-					registro.put("TELEFONO1_CONTRARIO", "");
-					if(generarInformeSinDireccion ||(registro.get("IDDIRECCION_DEST")!=null&& !((String)registro.get("IDDIRECCION_DEST")).equals("")) )
-						vSalida.add(registro);
-					else
-						isAlgunInformeNoGenerado = true;
+
+					if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+						for (int k = 0; k < contrariosEjgVector.size(); k++) {
+							Hashtable clone = (Hashtable) registro.clone();
+							Hashtable registroContrario = (Hashtable) contrariosEjgVector.get(k);
+							clone.putAll(registroContrario);
+							if(registroContrario.get("IDREPRESENTANTEJG")!=null && !registroContrario.get("IDREPRESENTANTEJG").equals("")){
+								isAlgunRepresentanteLegal = true;
+								if(scsPersonaJGAdm==null)
+									scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);
+								Hashtable representanteLegalContrario = scsPersonaJGAdm.getDatosPersonaJG((String)registroContrario.get("IDREPRESENTANTEJG"),(String)registroContrario.get("IDINSTITUCION"));
+								HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+								helperInformesAdm.setIdiomaInforme(idInstitucion, (String)registroContrario.get("IDREPRESENTANTEJG"), AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,clone, usrbean);
+								idioma = (String)registro.get("idioma");
+								idiomainforme= (String)registro.get("idiomaExt");
+
+								clone.put("NOMBRE_DEST", (String) representanteLegalContrario.get("NOMBRE_PJG"));
+								clone.put("NOMBRE_DEST_MAYUS", ((String) representanteLegalContrario.get("NOMBRE_PJG")).toUpperCase());
+								clone.put("APELLIDO1_DEST", (String) representanteLegalContrario.get("APELLIDO1_PJG"));
+								clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO1_PJG")).toUpperCase());
+								clone.put("APELLIDO2_DEST", (String) representanteLegalContrario.get("APELLIDO2_PJG"));
+								clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO2_PJG")).toUpperCase());
+								clone.put("SEXO_DEST", (String) representanteLegalContrario.get("SEXO_PJG"));
+								clone.put("O_A_DEST", (String) representanteLegalContrario.get("O_A_PJG"));
+								clone.put("EL_LA_DEST", (String) representanteLegalContrario.get("EL_LA_PJG"));
+								clone.put("NIFCIF_DEST", (String) representanteLegalContrario.get("NIF_PJG"));
+								clone.put("IDPERSONA_DEST", (String) representanteLegalContrario.get("IDPERSONA_PJG"));
+								clone.put("IDDIRECCION_DEST", (String) representanteLegalContrario.get("IDDIRECCION_PJG"));
+								clone.put("DOMICILIO_DEST", (String) representanteLegalContrario.get("DOMICILIO_PJG"));
+								clone.put("CODIGOPOSTAL_DEST", (String) representanteLegalContrario.get("CP_PJG"));
+								clone.put("TELEFONO1_DEST", (String) representanteLegalContrario.get("TELEFONO1_PJG"));
+								clone.put("TELEFONO2_DEST", (String) representanteLegalContrario.get("TELEFONO2_PJG"));
+								clone.put("MOVIL_DEST", (String) representanteLegalContrario.get("MOVIL_PJG"));
+								clone.put("FAX1_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
+								clone.put("FAX2_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
+								clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalContrario.get("CORREOELECTRONICO_PJG"));
+								clone.put("NOMBRE_POBLACION_DEST", (String) representanteLegalContrario.get("POBLACION_PJG"));
+								clone.put("NOMBRE_PROVINCIA_DEST", (String) representanteLegalContrario.get("PROVINCIA_PJG"));
+
+							}else{
+								HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+								helperInformesAdm.setIdiomaInforme(idInstitucion, (String)clone.get("IDPERSONA_PJG"), AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,clone, usrbean);
+								idioma = (String)clone.get("idioma");
+								idiomainforme= (String)clone.get("idiomaExt");
+
+								clone.put("NOMBRE_DEST", (String) clone.get("NOMBRE_PJG"));
+								clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("NOMBRE_PJG")).toUpperCase());
+								clone.put("APELLIDO1_DEST", (String) clone.get("APELLIDO1_PJG"));
+								clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
+								clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
+								clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
+								clone.put("SEXO_DEST", (String) clone.get("SEXO_PJG"));
+								clone.put("O_A_DEST", (String) clone.get("O_A_PJG"));
+								clone.put("EL_LA_DEST", (String) clone.get("EL_LA_PJG"));
+								clone.put("NIFCIF_DEST", (String) clone.get("NIF_PJG"));
+								clone.put("IDPERSONA_DEST", (String) clone.get("IDPERSONA_PJG"));
+								clone.put("IDDIRECCION_DEST", (String) clone.get("IDDIRECCION_PJG"));
+								clone.put("DOMICILIO_DEST", (String) clone.get("DOMICILIO_PJG"));
+								clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_PJG"));
+								clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_PJG"));
+								clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
+								clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
+								clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
+								clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
+								clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_PJG"));
+								clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_PJG"));
+
+							}
+							Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+							
+							actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, clone);
+							
+							actualizarDatosFundamentoJuridico(idioma, clone);
+
+							//Aniadimos los datos del colegiado tramitador del ejg				
+							String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
+							actualizarDatosLetradoTramitador(idLetradoTramitadorEjg,idInstitucion,clone);
+							actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+							actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+							
+							if(generarInformeSinDireccion ||(clone.get("IDDIRECCION_DEST")!=null&& !((String)clone.get("IDDIRECCION_DEST")).equals("")) )
+								vSalida.add(clone);
+							else
+								isAlgunInformeNoGenerado = true;
+						}  // END FOR
+
+					}else{
+						continue;
+					}	
+
+
+
+					//					Sacamos los CONTRARIOS y los recorremos
+				}else if(tipoDestinatarioInforme.equals("J")){
+					//					Sacamos el Juzgado
+
+					HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+					helperInformesAdm.setIdiomaInforme(idInstitucion, null, AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO,registro, usrbean);
+					idioma = (String)registro.get("idioma");
+					idiomainforme= (String)registro.get("idiomaExt");
+
+
+					if(registro.get("DES_ANIO")!=null && !((String)registro.get("DES_ANIO")).equals("") ){
+						Vector colegiadoDestinatarios = getLetradoDesignadoEjg((String)registro.get("DES_INSTITUCION"), (String)registro.get("DES_IDTURNO"), (String)registro.get("DES_ANIO"), (String)registro.get("DES_NUMERO"));
+						if(colegiadoDestinatarios!=null && colegiadoDestinatarios.size()>0){
+							Hashtable colegiadoDestinatario = (Hashtable)colegiadoDestinatarios.get(0);
+							registro.putAll(colegiadoDestinatario);
+							String idPersonaDesignada = (String)colegiadoDestinatario.get("IDPERSONA_DESIGNA");
+
+
+							if(idPersonaDesignada!=null && !idPersonaDesignada.trim().equalsIgnoreCase("")){
+								helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, idPersonaDesignada,"LETRADO_DESIGNADO"));
+								String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO_DESIGNADO");
+								sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);					
+								String o_a = (String)registro.get("O_A");
+								String el_la = (String)registro.get("EL_LA");
+								registro.put("SEXO_LETRADO_DESIGNADO", sexoLetradoEjg);
+								registro.put("O_A_LETRADO_DESIGNADO", o_a);
+								registro.put("EL_LA_LETRADO_DESIGNADO", el_la);
+								Vector dirCorreo = getDireccionLetradoSalidaCorreo(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO");
+								if(dirCorreo.size() > 0 && ((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO_DESIGNADO")!=null &&!((String)((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO_DESIGNADO")).trim().equals("") ){
+									helperInformes.completarHashSalida(registro,dirCorreo);
+								}else{
+									helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO"));
+								}
+
+								helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idPersonaDesignada,idInstitucion,"LETRADO_DESIGNADO"));			
+
+								String pobLetradoEjg = (String)registro.get("POBLACION_LETRADO_DESIGNADO");
+								if(pobLetradoEjg==null ||pobLetradoEjg.trim().equalsIgnoreCase("")){
+									String idPobLetradoEjg = (String)registro.get("ID_POBLACION_LETRADO_DESIGNADO");
+									helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetradoEjg,"POBLACION_LETRADO_DESIGNADO"));
+									String idProvLetradoEjg = (String)registro.get("ID_PROVINCIA_LETRADO_DESIGNADO");
+									if(idProvLetradoEjg!=null && !idProvLetradoEjg.trim().equalsIgnoreCase(""))
+										helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetradoEjg,"PROVINCIA_LETRADO_DESIGNADO"));
+									else
+										UtilidadesHash.set(registro, "PROVINCIA_LETRADO_DESIGNADO", "");
+								}else{
+									UtilidadesHash.set(registro, "PROVINCIA_LETRADO_DESIGNADO", "");
+
+								}
+
+							}
+
+						}
+					}
+				
+					actualizarDatosFundamentoJuridico(idioma, registro);
+					//Aniadimos los datos del colegiado tramitador del ejg				
+					String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
+					actualizarDatosLetradoTramitador(idLetradoTramitadorEjg,idInstitucion,registro);
+					actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+					actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
+
+					if(isSolicitantes || isAcontrarios){
+						if(isSolicitantes){
+							registro.put("NOMBRE_CONTRARIO", "");
+							registro.put("DOMICILIO_CONTRARIO", "");
+							registro.put("CP_CONTRARIO", "");
+							registro.put("POBLACION_CONTRARIO", "");
+							registro.put("PROVINCIA_CONTRARIO", "");
+							registro.put("O_A_CONTRARIO", "");
+							registro.put("NIF_CONTRARIO", "");
+							registro.put("TELEFONO1_CONTRARIO", "");
+							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+								registro.put("contrarios", contrariosEjgVector);
+							}	
+
+							if(vDefendidos!=null && vDefendidos.size()>0){
+								if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).trim().equalsIgnoreCase(""))continue;
+								for (int k = 0; k < vDefendidos.size(); k++) {
+									Hashtable clone = (Hashtable) registro.clone();
+									Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+									registro.putAll(registroDefendido);
+									String Idpersona=(String)registroDefendido.get("IDPERSONA");		
+
+
+									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+
+									// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
+									try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+										if (Idpersona!=null&&(!Idpersona.trim().equals(""))){								
+											Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,Idpersona);
+											if(vDestinatario!=null && vDestinatario.size()>0){
+												Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+												clone.putAll(destinatario);										
+											}
+										}
+
+									}catch (Exception e) {
+
+									}
+									clone.putAll(registroDefendido);
+									clone.put("NOMBRE_DEST", (String) clone.get("JUZGADO"));
+									clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("JUZGADO")).toUpperCase());
+									clone.put("APELLIDO1_DEST", "");
+									clone.put("APELLIDO1_DEST_MAYUS","");
+									clone.put("APELLIDO2_DEST","");
+									clone.put("APELLIDO2_DEST_MAYUS", "");
+									clone.put("SEXO_DEST","");
+									clone.put("O_A_DEST", "");
+									clone.put("EL_LA_DEST", "");
+									clone.put("NIFCIF_DEST", "");
+									clone.put("IDDIRECCION_DEST", "");
+									clone.put("DOMICILIO_DEST", (String) clone.get("DIR_JUZGADO"));
+									clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_JUZGADO"));
+									clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_JUZGADO"));
+									clone.put("TELEFONO2_DEST", "");
+									clone.put("MOVIL_DEST", (String) clone.get("MOVIL_JUZGADO"));
+									clone.put("FAX1_DEST", (String) clone.get("FAX1_JUZGADO"));
+									clone.put("CORREOELECTRONICO_DEST", (String) clone.get("EMAIL_JUZGADO"));
+									clone.put("PAGINAWEB_DEST", "");
+									clone.put("POBLACIONEXTRANJERA_DEST","");
+									clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_JUZGADO"));
+									clone.put("NOMBRE_PROVINCIA_DEST", "");
+
+									if(generarInformeSinDireccion ||(clone.get("DOMICILIO_DEST")!=null&& !((String)clone.get("DOMICILIO_DEST")).equals("")) )
+										vSalida.add(clone);
+
+								}  // END FOR
+
+							}
+						}
+						if(isAcontrarios){
+							actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
+
+							registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
+							registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
+
+							registro.put("APELLIDO1_DEST", "");
+							registro.put("APELLIDO1_DEST_MAYUS","");
+
+							registro.put("APELLIDO2_DEST","");
+							registro.put("APELLIDO2_DEST_MAYUS", "");
+
+							registro.put("SEXO_DEST","");
+							registro.put("O_A_DEST", "");
+							registro.put("EL_LA_DEST", "");
+
+							registro.put("NIFCIF_DEST", "");
+							registro.put("IDDIRECCION_DEST", "");
+
+							registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
+							registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
+							registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
+							registro.put("TELEFONO2_DEST", "");
+							registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
+							registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+
+							registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
+							registro.put("PAGINAWEB_DEST", "");
+							registro.put("POBLACIONEXTRANJERA_DEST","");
+							registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
+							registro.put("NOMBRE_PROVINCIA_DEST", "");
+
+
+
+							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+								for (int k = 0; k < contrariosEjgVector.size(); k++) {
+									Hashtable clone = (Hashtable) registro.clone();
+									Hashtable registroContrario = (Hashtable) contrariosEjgVector.get(k);
+									clone.putAll(registroContrario);
+									if(generarInformeSinDireccion ||(clone.get("DOMICILIO_DEST")!=null&& !((String)clone.get("DOMICILIO_DEST")).equals("")) )
+										vSalida.add(clone);
+									else
+										isAlgunInformeNoGenerado = true;
+
+
+								}  // END FOR
+
+							}else{
+								continue;
+							}	
+						}
+
+					}else{
+						actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
+						
+						if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
+							registro.put("contrarios", contrariosEjgVector);
+						}
+
+						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
+
+						registro.put("CODIGOLENGUAJE", idiomainforme);
+						registro.put("NIF_DEFENDIDO", "");
+						registro.put("NOMBRE_DEFENDIDO", "");
+						registro.put("FECHANAC_DEFENDIDO", "");
+						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+						registro.put("DOMICILIO_DEFENDIDO", "");
+						registro.put("CP_DEFENDIDO", "");
+						registro.put("POBLACION_DEFENDIDO", "");
+						registro.put("TELEFONO1_DEFENDIDO", "");
+						registro.put("PROVINCIA_DEFENDIDO", "");
+						registro.put("SEXO_INTERESADO", "");
+						registro.put("LENGUAJE_INTERESADO", "");
+						registro.put("CALIDAD_INTERESADO", "");
+						//registro.put("CODIGOLENGUAJE", "");
+						registro.put("PROFESION_DEFENDIDO", "");
+						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+
+						registro.put("NOMBRE_CONTRARIO", "");
+						registro.put("DOMICILIO_CONTRARIO", "");
+						registro.put("CP_CONTRARIO", "");
+						registro.put("POBLACION_CONTRARIO", "");
+						registro.put("PROVINCIA_CONTRARIO", "");
+						registro.put("O_A_CONTRARIO", "");
+						registro.put("NIF_CONTRARIO", "");
+						registro.put("TELEFONO1_CONTRARIO", "");
+
+						registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
+						registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
+
+						registro.put("APELLIDO1_DEST", "");
+						registro.put("APELLIDO1_DEST_MAYUS","");
+
+						registro.put("APELLIDO2_DEST","");
+						registro.put("APELLIDO2_DEST_MAYUS", "");
+
+						registro.put("SEXO_DEST","");
+						registro.put("O_A_DEST", "");
+						registro.put("EL_LA_DEST", "");
+
+						registro.put("NIFCIF_DEST", "");
+						registro.put("IDDIRECCION_DEST", "");
+
+						registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
+						registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
+						registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
+						registro.put("TELEFONO2_DEST", "");
+						registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
+						registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+
+						registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
+						registro.put("PAGINAWEB_DEST", "");
+						registro.put("POBLACIONEXTRANJERA_DEST","");
+						registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
+						registro.put("NOMBRE_PROVINCIA_DEST", "");
+
+
+
+
+
+						if(generarInformeSinDireccion ||(registro.get("DOMICILIO_DEST")!=null&& !((String)registro.get("DOMICILIO_DEST")).equals("")) )
+							vSalida.add(registro);
+						else
+							isAlgunInformeNoGenerado = true;
+					}
+
 				}
+
 			}//fin del for.
 		}
 		catch (Exception e) {
@@ -4980,10 +5191,126 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable primerRegistro = (Hashtable) vSalida.get(0);
 			primerRegistro.put("isAlgunRepresentanteLegal", isAlgunRepresentanteLegal);
 			primerRegistro.put("isAlgunInformeNoGenerado", isAlgunInformeNoGenerado);
-			
+
 		}
-		
+
 		return vSalida;
+	}
+	private void actualizarDefendidos(String idInstitucion,String tipoEjg,String anioEjg,String numeroEjg,String idPersonaJG,Vector vDefendidos, String idioma, String idiomaInforme, Hashtable registro) throws ClsExceptions{
+
+		if(vDefendidos!=null && vDefendidos.size()>0){
+			for (int k = 0; k < vDefendidos.size(); k++) {
+				Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+				if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).equalsIgnoreCase(""))continue;
+				String idPersona=(String)registroDefendido.get("IDPERSONA");						
+	
+				registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+				/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
+				registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);
+	
+				try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+					if (idPersona!=null&&(!idPersona.trim().equals(""))){
+						ScsUnidadFamiliarEJGAdm admUniFam = new ScsUnidadFamiliarEJGAdm(this.usrbean);
+						Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersona);
+						if(vDestinatario!=null && vDestinatario.size()>0){
+							Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+							registroDefendido.putAll(destinatario);										
+						}
+					}								
+				}catch (Exception e) {
+	
+				}							
+			}
+	
+			registro.put("defendido", vDefendidos);
+		}
+	}
+	
+	private void actualizarDatosFundamentoJuridico(String idioma, Hashtable registro) throws ClsExceptions{
+		
+		registro.put("FUNDAMENTO_JURIDICO", "");
+		if(registro.get("FUNDAMENTO_JURIDICO_DESCR")!=null && !((String)registro.get("FUNDAMENTO_JURIDICO_DESCR")).equals("")){
+			Hashtable htFuncion = new Hashtable();
+			htFuncion.put(new Integer(1), (String)registro.get("FUNDAMENTO_JURIDICO_DESCR"));
+			htFuncion.put(new Integer(2), idioma);
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETRECURSO", "FUNDAMENTO_JURIDICO"));
+		}
+	}
+	
+	private void actualizarDatosFechaRemitidoComision(String idInstitucion,String tipoEjg,String anioEjg,String numeroEjg,String idioma, Hashtable registro) throws ClsExceptions{
+		// JPT: OBTIENE LA ULTIMA FECHA CON ESTADO 'Remitido Comision': FECHAREMITIDO_COMISION y FECHAREMITIDO_COMISION_LETRA
+		Hashtable hFechaRemitidoComision = getFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
+		registro.put("FECHAREMITIDO_COMISION", "");
+		registro.put("FECHAREMITIDO_COMISION_LETRA", "");
+		registro.putAll(hFechaRemitidoComision);
+
+
+		
+	}
+	private void actualizarDatosFechaReunionActa(String idInstitucion,String tipoEjg,String anioEjg,String numeroEjg,String idioma, Hashtable registro) throws ClsExceptions{
+		// JPT: OBTIENE LA FECHA DE REUNION DEL ACTA DEL EJG: FECHAREUNION_ACTA y FECHAREUNION_ACTA_LETRA
+		Hashtable hFechaReunion = getFechaReunionActaEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma);
+		registro.put("FECHAREUNION_ACTA", "");
+		registro.put("FECHAREUNION_ACTA_LETRA", "");
+		registro.putAll(hFechaReunion);
+		
+	}
+	
+	private void actualizarDatosLetradoTramitador(String idLetradoTramitador,String idInstitucion, Hashtable registro) throws ClsExceptions{
+		if(idLetradoTramitador!=null && !idLetradoTramitador.trim().equalsIgnoreCase("")){
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, idLetradoTramitador,"LETRADO"));
+			String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO");
+			sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);					
+			String o_a = (String)registro.get("O_A");
+			String el_la = (String)registro.get("EL_LA");
+			registro.put("SEXO_LETRADO", sexoLetradoEjg);
+			registro.put("O_A_LETRADO", o_a);
+			registro.put("EL_LA_LETRADO", el_la);
+			Vector dirCorreo = getDireccionLetradoSalidaCorreo(idLetradoTramitador,idInstitucion,"LETRADO");
+			if(dirCorreo.size() > 0 && ((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO")!=null &&!((String)((Hashtable)dirCorreo.get(0)).get("IDDIRECCION_LETRADO")).trim().equals("") ){
+				helperInformes.completarHashSalida(registro,dirCorreo);
+			}else{
+				helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idLetradoTramitador,idInstitucion,"LETRADO"));
+			}
+			
+			helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idLetradoTramitador,idInstitucion,"LETRADO"));			
+			String telefonoDespacho = (String)registro.get("TELDESPACHO_LETRADO");
+			if(telefonoDespacho!=null)
+				UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", telefonoDespacho);
+			else
+				UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", "");
+			
+			String pobLetradoEjg = (String)registro.get("POBLACION_LETRADO");
+			if(pobLetradoEjg==null ||pobLetradoEjg.trim().equalsIgnoreCase("")){
+				String idPobLetradoEjg = (String)registro.get("ID_POBLACION_LETRADO");
+				helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida(idPobLetradoEjg,"POBLACION_LETRADO"));
+				String idProvLetradoEjg = (String)registro.get("ID_PROVINCIA_LETRADO");
+				if(idProvLetradoEjg!=null && !idProvLetradoEjg.trim().equalsIgnoreCase(""))
+					helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida(idProvLetradoEjg,"PROVINCIA_LETRADO"));
+				else
+					UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
+			}else{
+				UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
+				
+			}
+		}else{
+			UtilidadesHash.set(registro, "NCOLEGIADO_LETRADO", "");
+			UtilidadesHash.set(registro, "NOMBRE_LETRADO", "");
+			UtilidadesHash.set(registro, "NIFCIF_LETRADO", "");
+			UtilidadesHash.set(registro, "SEXO_LETRADO", "");
+			UtilidadesHash.set(registro, "DOMICILIO_LETRADO", "");
+			UtilidadesHash.set(registro, "CP_LETRADO", "");
+			UtilidadesHash.set(registro, "POBLACION_LETRADO", "");
+			UtilidadesHash.set(registro, "PROVINCIA_LETRADO", "");
+			UtilidadesHash.set(registro, "TELEFONODESPACHO_LET", "");
+			UtilidadesHash.set(registro, "EMAIL_LETRADO", "");
+			UtilidadesHash.set(registro, "FAX_LETRADO", "");
+			UtilidadesHash.set(registro, "TELEFONO1_LETRADO", "");
+			UtilidadesHash.set(registro, "TELEFONO2_LETRADO", "");
+			UtilidadesHash.set(registro, "MOVIL_LETRADO", "");
+		}
 	}
 	
 	public Vector getFisrtAsistencia (Hashtable htCodigos,String salida) throws ClsExceptions  

@@ -1094,7 +1094,26 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	        return resultado;      
 		}	
 
-	
+	public String getIdiomaPersonaInforme (String idInstitucion, String idPersona)throws SIGAException 
+	{
+		try {
+			ScsPersonaJGBean salida = null;
+			// obtengo los beasn de cliente y persona del mismo hash
+			String lenguaje = null;
+			Hashtable datos = new Hashtable();
+			datos.put("IDPERSONA",idPersona);
+			datos.put("IDINSTITUCION",idInstitucion);
+			Vector v = this.select(datos);
+			if (v!=null && v.size()>0) {
+				salida = (ScsPersonaJGBean) v.get(0);
+				lenguaje = salida.getIdioma();
+			}
+			return lenguaje;
+		}
+		catch (Exception e) {
+			throw new SIGAException ( "Error al consultar datos en B.D.getIdiomaPersonaInforme");
+		}
+	}
 	
 	
 }

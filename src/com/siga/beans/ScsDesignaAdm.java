@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionMapping;
 
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -2089,7 +2088,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	
 			
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma,String idiomaInforme) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
@@ -2097,7 +2096,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			vSalida = new Vector();	
 			Vector vDesigna = getDesignaSalidaOficio(idInstitucion,idturno, anio, numero, codigoDesigna, idioma); 
 			
-			String idiomainforme="";
 			Hashtable htCodigo = new Hashtable();
 			for (int j = 0; j < vDesigna.size(); j++) {
 				Hashtable registro = (Hashtable) vDesigna.get(j);
@@ -2106,7 +2104,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
 				String idPersona  = (String)registro.get("IDPERSONA");
-				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
+//				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
 				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
 								
 				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
@@ -2120,29 +2118,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							if (turnodefendido!=null && !turnodefendido.trim().equals("")){
 								registro.putAll(registroDefendido);
 							}
-							String idpersonainteresado=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");							
-							/****
-							  	Se modifica para que salgan los informes de los interesados en el idioma que tenga dicho interesado, 
-								si no tiene idioma se imprime en el idioma del usuario. y los delitos también salen en el idioma del interesado.								
-							***/							
-							String idLenguaje="";							
-							if (idpersonainteresado!=null && !idpersonainteresado.trim().equals("")){
-									idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
-							}else{
-									idLenguaje=idioma;
-							}
-							/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
-							String 	idiomaExt="";
-							switch (Integer.parseInt(idLenguaje)) {
-								case 1:  idiomaExt="ES"; break;
-								case 2:  idiomaExt="CA"; break;
-								case 3:  idiomaExt="EU"; break;
-								case 4:  idiomaExt="GL"; break;	
-							}				
-							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
-							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idLenguaje);
+//							
+							
+							
+							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);							
+							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);							
 							
 							htCodigo = new Hashtable();
 							String sexoDefendico="";
@@ -2190,7 +2171,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								registroDefendido.put("IDPERSONAINTERESADO", "");
 							}
 							
-							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idLenguaje);
+							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idioma);
 							String estadoCivilDefendido = "";
 							if(estadodCivilDefendidoVector.size()>0){
 								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
@@ -2203,16 +2184,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						
 					// SI ENTRA AL ELSE NO TIENE DEFENDIDOS 
 					}else{						
-						if (idiomaletrado != null && !idiomaletrado.equals("")) {
-							idioma = idiomaletrado;
-						}
+						
 						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma));
-						switch (Integer.parseInt(idioma)) {
-							case 1:  idiomainforme="ES"; break;
-							case 2:  idiomainforme="CA"; break;
-							case 3:  idiomainforme="EU"; break;
-							case 4:  idiomainforme="GL"; break;
-						}
+						
 						
 						// Control de datos para el informe
 						if((String)registro.get("FECHARESOLUCIONCAJG")!=null && !((String)registro.get("FECHARESOLUCIONCAJG")).trim().equals(""))
@@ -2234,7 +2208,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 						
 						// Como no tiene defendidos, no muestra las siguientes etiquetas
-						registro.put("CODIGOLENGUAJE", idiomainforme);	
+						registro.put("CODIGOLENGUAJE", idiomaInforme);	
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");						
 						registro.put("NIF_DEFENDIDO", "");
 						registro.put("NOMBRE_DEFENDIDO", "");
@@ -2258,22 +2232,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE NO DESDOBLA POR SOLICITANTE
 				}else{	
-					if (idiomaletrado!=null && !idiomaletrado.equals("")){
-						idioma=idiomaletrado;		
-					}		
+						
 					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma));				
-					switch (Integer.parseInt(idioma)) {
-							case 1:  idiomainforme="ES"; break;
-							case 2:  idiomainforme="CA"; break;
-							case 3:  idiomainforme="EU"; break;
-							case 4:  idiomainforme="GL"; break;	
-					}					
+										
 					
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);								
 							
-							String idpersonainteresado=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");							
+														
 							/****
 							  	Se modifica para que salgan los informes de los interesados en el idioma que tenga dicho interesado, 
 								si no tiene idioma se imprime en el idioma del usuario. y los delitos también salen en el idioma del interesado.								
@@ -2283,7 +2250,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								
 							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
-							registroDefendido.put("CODIGOLENGUAJE", idiomainforme);								
+							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);								
 							htCodigo = new Hashtable();
 							String sexoDefendico="";
 							if((String)registroDefendido.get("SEXO_DEFENDIDO")!=null && !((String)registroDefendido.get("SEXO_DEFENDIDO")).trim().equals("")){
@@ -2343,26 +2310,32 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					}
 					
 					// Control de datos para el informe
-					if((String)registro.get("FECHARESOLUCIONCAJG")!=null && !((String)registro.get("FECHARESOLUCIONCAJG")).trim().equals(""))
+					if(registro.get("FECHARESOLUCIONCAJG")==null)
+//					if((String)registro.get("FECHARESOLUCIONCAJG")!=null && !((String)registro.get("FECHARESOLUCIONCAJG")).trim().equals(""))
 						registro.put("FECHARESOLUCIONCAJG", "");
 					
-					if((String)registro.get("FECHARESOLUCIONCAJGLETRA")!=null && !((String)registro.get("FECHARESOLUCIONCAJGLETRA")).trim().equals(""))
+//					if((String)registro.get("FECHARESOLUCIONCAJGLETRA")!=null && !((String)registro.get("FECHARESOLUCIONCAJGLETRA")).trim().equals(""))
+					if(registro.get("FECHARESOLUCIONCAJGLETRA")==null)
 						registro.put("FECHARESOLUCIONCAJGLETRA", "");
 					
-					if((String)registro.get("NUMERO_EJG")!=null && !((String)registro.get("NUMERO_EJG")).trim().equals(""))
+//					if((String)registro.get("NUMERO_EJG")!=null && !((String)registro.get("NUMERO_EJG")).trim().equals(""))
+					if(registro.get("NUMERO_EJG")==null)
 						registro.put("NUMERO_EJG", "");
 					
-					if((String)registro.get("FECHAAPERTURA_EJG")!=null && !((String)registro.get("FECHAAPERTURA_EJG")).trim().equals(""))
+//					if((String)registro.get("FECHAAPERTURA_EJG")!=null && !((String)registro.get("FECHAAPERTURA_EJG")).trim().equals(""))
+					if(registro.get("FECHAAPERTURA_EJG")==null)
 						registro.put("FECHAAPERTURA_EJG", "");
 					
-					if((String)registro.get("FECHAAPERTURA_EJG_LETRA")!=null && !((String)registro.get("FECHAAPERTURA_EJG_LETRA")).trim().equals(""))
+//					if((String)registro.get("FECHAAPERTURA_EJG_LETRA")!=null && !((String)registro.get("FECHAAPERTURA_EJG_LETRA")).trim().equals(""))
+					if(registro.get("FECHAAPERTURA_EJG_LETRA")==null)
 						registro.put("FECHAAPERTURA_EJG_LETRA", "");
 					
-					if((String)registro.get("PARRAFO_LETRADO_PROCURADOR")!=null && !((String)registro.get("PARRAFO_LETRADO_PROCURADOR")).trim().equals(""))
+//					if((String)registro.get("PARRAFO_LETRADO_PROCURADOR")!=null && !((String)registro.get("PARRAFO_LETRADO_PROCURADOR")).trim().equals(""))
+					if(registro.get("PARRAFO_LETRADO_PROCURADOR")==null)
 						registro.put("PARRAFO_LETRADO_PROCURADOR", "");					
 					
 					// Como desdobla, no muestra las siguientes etiquetas individualmente
-					registro.put("CODIGOLENGUAJE", idiomainforme);
+					registro.put("CODIGOLENGUAJE", idiomaInforme);
 					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					registro.put("NIF_DEFENDIDO", "");
 					registro.put("NOMBRE_DEFENDIDO", "");
@@ -2499,19 +2472,19 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try {
 
 			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG, idPersona);
-
+			Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 			if (defendidos != null && defendidos.size() > 0) {
 				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
 				int ejgs = Integer.parseInt((String)htPrimerDefendido.get("COUNT_EJG"));
 				if (ejgs>=1) {
-					Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 					// Recorrer los defendidos
 					for (int i = 0; i < defendidos.size(); i++) {
-						if(((Hashtable) defendidos.get(i)).get("ANIO_EJG") == null ||((Hashtable) defendidos.get(i)).get("ANIO_EJG").equals("")){
-							((Hashtable) defendidos.get(i)).put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
+						Hashtable htDefendido = (Hashtable) defendidos.get(0);
+						if(htDefendido.get("ANIO_EJG") == null ||htDefendido.get("ANIO_EJG").equals("")){
+							htDefendido.put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
 						} 
-						if(((Hashtable) defendidos.get(i)).get("NUMERO_EJG")== null ||((Hashtable) defendidos.get(i)).get("NUMERO_EJG").equals("")){
-							((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
+						if(htDefendido.get("NUMERO_EJG")== null ||htDefendido.get("NUMERO_EJG").equals("")){
+							htDefendido.put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
 						} 
 					}
 				}
@@ -2594,6 +2567,29 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDefendidosDesignaSalidaOficio.");
 		}
 	}
+	
+	public Vector getDefendidosDesignaInforme(String idInstitucion, String anio, String idTurno, String numero,String idPersonaJG)
+			throws ClsExceptions {
+		try {
+			ScsDefendidosDesignaAdm defendidosDesignaAdm = new ScsDefendidosDesignaAdm(usrbean);
+			Vector defendidos = defendidosDesignaAdm.getDefendidosDesigna(Integer.valueOf(idInstitucion),Integer.valueOf(anio), Integer.valueOf(numero), Integer.valueOf(idTurno) ,idPersonaJG);
+
+			if (defendidos != null && defendidos.size() > 0) {
+				return defendidos;
+
+			} else {
+				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio,idPersonaJG);
+				return solicitantes;
+			}
+				
+			
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDefendidosDesigna.");
+		}
+	}
+	
 	
 	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG, String idPersona){
 		Hashtable h = new Hashtable();
@@ -2813,6 +2809,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 
 		return solicitantes;
 	}
+	
+	
+	
+	
+	
+	
 	
 	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
 
@@ -3225,6 +3227,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			            	" EJG.idpersona as IDPERSONA, " +
 		        			" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, " +
 		        			" EJG.anio || '/' || EJG.numejg ANIONUMEROEJG, " +
+		        			" EJG.anio || '/' || EJG.numejg NUMERO_EJG, " +
 			            	" EJG.numejg || '/' || EJG.anio NUMEROANIOEJG, " +
 		        			" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG, " +
 			            	" EJG.anio ANIOEJG, " + 
@@ -3379,6 +3382,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
 			    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
 			    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
+			    String numeroEJG = (String)registroejg.get("NUMERO_EJG");
 			    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
 			    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
 			    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
@@ -3433,8 +3437,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
 					}						
 				}
+				if (numeroEJG!=null && !numeroEJG.equals("")){
+					UtilidadesHash.set(registro, "NUMERO_EJG", numeroEJG);
+				} else {
+					UtilidadesHash.set(registro, "NUMERO_EJG", "");
+				}
 			}//FIN FOR
-			
+			if(ejgsdesingna.size()!=1)
+				UtilidadesHash.set(registro, "NUMERO_EJG", "");
+				
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
 			UtilidadesHash.set(registro, "FECHAAPERTURA_EJG", sListadoFechaAperturaEjg);
@@ -3445,6 +3456,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			} else {
 				UtilidadesHash.set(registro, "PROCURADOR_EJG", "");
 			}
+			
+			
 				
 			if (Listadotramitador!=null && !Listadotramitador.equals("")){
 				Listadotramitador =Listadotramitador.substring(1);					

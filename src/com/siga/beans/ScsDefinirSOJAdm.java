@@ -384,6 +384,44 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		
 		return h;
 	}	
+	public Hashtable getSolicitanteSOJ(String institucion,String numero, String anio, String tipoSOJ){
+		
+		//ScsDefinirSOJAdm admBean =  new ScsDefinirSOJAdm(this.getUserBean(request));
+		
+		Vector v=new Vector();
+		Hashtable h=new Hashtable();
+		
+//		String sql="SELECT persona.idpersona AS IDPERSONA" +
+//		"  FROM scs_soj soj, cen_colegiado colegiado, cen_persona persona" +
+//		" WHERE soj.idpersona = persona.idpersona(+)" +//
+//		"   and soj.idinstitucion = colegiado.idinstitucion(+)" +//
+//		"   and soj.idpersona = colegiado.idpersona(+)" +//
+//		"   and soj.idinstitucion = "+institucion+
+//		"   and soj.anio = "+anio+
+//		"   and soj.numero = "+ numero +
+//		"   and soj.idtiposoj = "+ tipoSOJ;
+		
+		String sql="SELECT soj.IDPERSONAJG AS IDPERSONAJG" +
+		"  FROM scs_soj soj" +
+		" WHERE soj.idinstitucion = "+institucion+
+		"   and soj.anio = "+anio+
+		"   and soj.numero = "+ numero +
+		"   and soj.idtiposoj = "+ tipoSOJ;
+		
+		try {
+			v=super.selectGenerico(sql);
+			if(v.size()>0)
+				h=(Hashtable)v.get(0);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+		catch (SIGAException e1) {
+			e1.printStackTrace();
+		}
+		
+		return h;
+	}
+	
 	
 	public PaginadorBind getBusquedaSOJ(String idInstitucion, Hashtable miHash) throws ClsExceptions , SIGAException{
 		
@@ -640,25 +678,25 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	public Hashtable getDatosInformeSOJ(Integer idInstitucion,
 			Integer idTipoSOJ,
 			Integer anio,
-			Integer numero) throws ClsExceptions
+			Integer numero,String idioma) throws ClsExceptions
 	{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT SOJ.*, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOSOJ, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOSOJCOLEGIO, ");
-		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPOCONSULTA, ");
-		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, NVL(PERS.IDLENGUAJE,"+usrbean.getLanguage()+")) DESCRIPCIONTIPORESPUESTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, "+idioma+") DESCRIPCIONTIPOSOJ, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION,"+idioma+") DESCRIPCIONTIPOSOJCOLEGIO, ");
+		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, "+idioma+") DESCRIPCIONTIPOCONSULTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, "+idioma+") DESCRIPCIONTIPORESPUESTA, ");
 		sql.append(" EJG.NUMEJG ");
 		sql.append(" FROM SCS_SOJ       SOJ, ");
 		sql.append(" SCS_TIPOSOJ        TIPOSOJ, ");
 		sql.append(" SCS_TIPOSOJCOLEGIO TIPOSOJC, ");
 		sql.append(" SCS_TIPOCONSULTA   TC, ");
 		sql.append(" SCS_TIPORESPUESTA  TR, ");
-		sql.append(" SCS_EJG            EJG, ");
-		sql.append(" SCS_PERSONAJG 		PERS ");
+		sql.append(" SCS_EJG            EJG ");
+//		sql.append(" SCS_PERSONAJG 		PERS ");
 		sql.append(" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION(+) ");
 		sql.append(" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG(+) ");
 		sql.append(" AND SOJ.EJGANIO = EJG.ANIO(+) ");
@@ -670,8 +708,8 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		sql.append(" AND SOJ.IDINSTITUCION = TIPOSOJC.IDINSTITUCION(+) ");
 		sql.append(" AND SOJ.IDTIPOSOJCOLEGIO = TIPOSOJC.IDTIPOSOJCOLEGIO(+) ");	      
 		sql.append(" AND SOJ.IDTIPOSOJ = TIPOSOJ.IDTIPOSOJ ");
-		sql.append(" AND SOJ.IDINSTITUCION = PERS.IDINSTITUCION(+) ");
-		sql.append(" AND SOJ.IDPERSONAJG = PERS.IDPERSONA(+) ");
+//		sql.append(" AND SOJ.IDINSTITUCION = PERS.IDINSTITUCION(+) ");
+//		sql.append(" AND SOJ.IDPERSONAJG = PERS.IDPERSONA(+) ");
 	    
 		sql.append(" AND SOJ.IDINSTITUCION = :");
 		contador++;
@@ -702,7 +740,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 					Row fila = (Row) rc.get(i);
 					sojHashtable = fila.getRow();
 					
-					actualizarDatosSOJ(sojHashtable);
+					actualizarDatosSOJ(sojHashtable,idioma);
 				}
 			}
 		} catch (Exception e) {
@@ -711,15 +749,15 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		return sojHashtable;
 
 	}
-	private void actualizarDatosGeneralesSOJ(Hashtable sojHashtable) throws ClsExceptions{
+	private void actualizarDatosGeneralesSOJ(Hashtable sojHashtable,String idioma) throws ClsExceptions{
 		String fechaAPertura = UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_FECHAAPERTURA);
 		UtilidadesHash.set(sojHashtable, ScsSOJBean.C_FECHAAPERTURA, GstDate.getFormatedDateShort("", fechaAPertura));
 		if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("A")){
-			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.abierto"));
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(idioma,"gratuita.SOJ.estado.abierto"));
 		}else if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("P")){
-			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.pendiente"));
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(idioma,"gratuita.SOJ.estado.pendiente"));
 		}else if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("C")){
-			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.cerrado"));
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(idioma,"gratuita.SOJ.estado.cerrado"));
 		}
 		
 		String numSOJ  = (String)sojHashtable.get(ScsSOJBean.C_NUMSOJ);
@@ -778,16 +816,16 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		
 		
 	}
-	private void actualizarDatosSOJ(Hashtable sojHashtable) throws ClsExceptions{
-		actualizarDatosGeneralesSOJ(sojHashtable);
+	private void actualizarDatosSOJ(Hashtable sojHashtable,String idioma) throws ClsExceptions{
+		actualizarDatosGeneralesSOJ(sojHashtable,idioma);
 		actualizarDatosGuardiaSOJ(sojHashtable);
 		actualizarDatosTurnoSOJ(sojHashtable);
-		actualizarDatosLetrado(sojHashtable);
+		actualizarDatosLetrado(sojHashtable,idioma);
 		actualizarDatosPersonaJG(sojHashtable);
 		actualizarDatosDocumentacion(sojHashtable);
 		
 	}
-	private void actualizarDatosLetrado(Hashtable sojHashtable) throws ClsExceptions{
+	private void actualizarDatosLetrado(Hashtable sojHashtable,String idioma) throws ClsExceptions{
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		String idLetradoEjg  = (String)sojHashtable.get("IDPERSONA");
 		String idInstitucion  = UtilidadesHash.getString(sojHashtable,"IDINSTITUCION");
@@ -796,7 +834,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 			helperInformes.completarHashSalida(sojHashtable,ejgAdm.getColegiadoSalida(idInstitucion, 
 					idLetradoEjg,"LETRADO"));
 			String sexoLetradoEjg  = (String)sojHashtable.get("SEXO_ST_LETRADO");
-			sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);
+			sexoLetradoEjg = UtilidadesString.getMensajeIdioma(idioma, sexoLetradoEjg);
 			sojHashtable.put("SEXO_LETRADO", sexoLetradoEjg);
 			helperInformes.completarHashSalida(sojHashtable,ejgAdm.getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
 			
