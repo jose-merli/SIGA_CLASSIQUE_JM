@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.SIGAException;
 
@@ -44,7 +47,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 				CenComponentesBean.C_SOCIEDAD, 			CenComponentesBean.C_IDCUENTA, 
 				CenComponentesBean.C_IDTIPOCOLEGIO,		CenComponentesBean.C_NUMCOLEGIADO,
 				CenComponentesBean.C_CAPITALSOCIAL,		CenComponentesBean.C_IDCARGO,
-				CenComponentesBean.C_IDPROVINCIA,     
+				CenComponentesBean.C_IDPROVINCIA,     	CenComponentesBean.C_FECHABAJA,
 				CenComponentesBean.C_FECHAMODIFICACION,	CenComponentesBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -90,6 +93,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 			bean.setCapitalSocial(UtilidadesHash.getFloat(hash, CenComponentesBean.C_CAPITALSOCIAL));
 			bean.setIdCargo(UtilidadesHash.getString(hash, CenComponentesBean.C_IDCARGO));
 			bean.setIdProvincia(UtilidadesHash.getString(hash, CenComponentesBean.C_IDPROVINCIA));
+			bean.setFechaBaja(UtilidadesHash.getString(hash,CenComponentesBean.C_FECHABAJA));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenComponentesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenComponentesBean.C_USUMODIFICACION));
 		}
@@ -132,6 +136,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 			
 			UtilidadesHash.set(hash, CenComponentesBean.C_IDCARGO, b.getIdCargo());
 			UtilidadesHash.set(hash, CenComponentesBean.C_IDPROVINCIA, b.getIdProvincia());
+			UtilidadesHash.set(hash, CenComponentesBean.C_FECHABAJA, b.getFechaBaja());	
 			UtilidadesHash.set(hash, CenComponentesBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CenComponentesBean.C_USUMODIFICACION, b.getUsuMod());	
 		}
@@ -152,6 +157,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDCOMPONENTE,				
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CARGO,	
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_FECHACARGO,	
+							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_FECHABAJA,	
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA,		
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION,
 							CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_SOCIEDAD,
@@ -229,13 +235,18 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 	 * @author nuria.rgonzalez 18-01-05	
 	 * @version 2 
 	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
-	 * @param idInstitucion, es el identificador de la institucion de la persona de la que vamos a obtener los datos. 
+	 * @param idInstitucion, es el identificador de la institucion de la persona de la que vamos a obtener los datos.
+	 * @param incluirHistorico, true si queremos los componentes dados de baja, false si solo queremos los activos
 	 */	
-	public Vector selectComponentes(Long idPersona, Integer idInstitucion)  throws ClsExceptions, SIGAException{
+	public Vector selectComponentes(Long idPersona, Integer idInstitucion, boolean incluirHistorico)  throws ClsExceptions, SIGAException{
 		Vector v = new Vector();
 		RowsContainer rc = null;
 		String where = " WHERE " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDPERSONA + " = " + idPersona +
-					   " AND "   + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION + " = " + idInstitucion; 
+					   " AND "   + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION + " = " + idInstitucion;
+		if(!incluirHistorico){
+			where += " AND (" + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_FECHABAJA + " IS NULL or "
+					 + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_FECHABAJA + " > SYSDATE)";
+		}
 					   
 		try{
 			rc = new RowsContainer(); 
@@ -447,7 +458,10 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 	{
 		try {
 			CenComponentesBean beanComponente = (CenComponentesBean) this.selectByPK(clavesComponente).get(0);
-			if (delete(clavesComponente)) {
+			// Cambiamos el borrado fisico por una baja logica añadiendo la fechaBaja
+			beanComponente.setFechaBaja(UtilidadesString.getTimeStamp(ClsConstants.DATE_FORMAT_JAVA));
+			if(update(beanComponente)){
+			// if (delete(clavesComponente)) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 				if (admHis.insertCompleto(beanHis, beanComponente, CenHistoricoAdm.ACCION_DELETE, idioma)) {
 					return true;

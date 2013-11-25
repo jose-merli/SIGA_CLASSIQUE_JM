@@ -303,9 +303,9 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		Vector v= null;
 		Hashtable total=new Hashtable();
 		try {
-			//Se recogen los componentes si los hubiera de BBDD
+			//Se recogen los componentes si los hubiera de BBDD (que no esten de baja)
 			CenComponentesAdm componentesAdm = new CenComponentesAdm(usrbean);
-			v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion));									
+			v= componentesAdm.selectComponentes(new Long(idPersona), new Integer(idInstitucion), false);									
 												
 			//Se recogen los datos paa el informe del No Colegiado
 			vInforme = getDatosInformeNoColegiado(idInstitucion, idPersona, idioma, isInforme); 			

@@ -114,7 +114,7 @@ public class TagFila extends TagSupport
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
 			
-			this.clase = (this.fila%2==0?"filaTablaPar":"filaTablaImpar");
+			this.clase += (this.fila%2==0?" filaTablaPar":" filaTablaImpar");
 			
 			out.println("	<tr class=\""+ this.clase+"\"" );
 			if(this.id!=null && !this.id.equals("")){

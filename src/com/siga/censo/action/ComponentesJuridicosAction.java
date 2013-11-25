@@ -111,7 +111,8 @@ public class ComponentesJuridicosAction extends MasterAction{
 		//Comprobamos que el cliente no sea componente de otra sociedad en la qu el campo SOCIEDAD sea = 1(que actue como sociedad)
 		String where = " where CEN_CLIENTE_IDINSTITUCION ="+insti+
 		   			   "   and CEN_CLIENTE_IDPERSONA = "+idClientePersona
-		             + "   and "+CenComponentesBean.C_SOCIEDAD +"="+ClsConstants.DB_TRUE;
+		             + "   and "+CenComponentesBean.C_SOCIEDAD +"="+ClsConstants.DB_TRUE
+					+ "   and ("+CenComponentesBean.C_FECHABAJA +" is null OR FECHABAJA > SYSDATE)";
 		CenComponentesAdm componentesAdm = new CenComponentesAdm(user);
 		Vector v2 = componentesAdm.select(where);
 		
@@ -174,12 +175,13 @@ public class ComponentesJuridicosAction extends MasterAction{
 			Vector vCliente = null;
 			String nombre = null;
 			String numero = "";
+			boolean incluirHistorico = true; // Recuperamos siempre todos los componentes y los gestionamos en la jsp
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (user);
 			CenColegiadoBean bean = colegiadoAdm.getDatosColegiales(idPersona, idInstitucionPersona);
 			numero = colegiadoAdm.getIdentificadorColegiado(bean);
 			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
 			
-			v = componentesAdm.selectComponentes(idPersona,idInstitucionPersona);
+			v = componentesAdm.selectComponentes(idPersona,idInstitucionPersona, incluirHistorico);
 			request.setAttribute("idPersona", idPersona);
 			request.setAttribute("idInstitucion", idInstitucionPersona);
 			request.setAttribute("accion", accion);
@@ -334,11 +336,12 @@ public class ComponentesJuridicosAction extends MasterAction{
 			tx.begin();
 			if ((miForm.getClienteIdPersona()!=null) &&  (!miForm.getClienteIdPersona().equals(""))){
 				
-				UtilidadesHash.set(claves1, CenComponentesBean.C_IDPERSONA, miForm.getIdPersona());
-				UtilidadesHash.set(claves1, CenComponentesBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-				UtilidadesHash.set(claves1, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, miForm.getClienteIdPersona());
-				UtilidadesHash.set(claves1, CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION, miForm.getClienteIdInstitucion());
-				Vector v1 = componentesAdm.select(claves1);
+				String whereExiste = " where " + CenComponentesBean.C_FECHABAJA + " is null and ";
+				whereExiste += CenComponentesBean.C_IDPERSONA + " = " + miForm.getIdPersona() + " and ";
+				whereExiste += CenComponentesBean.C_IDINSTITUCION + " = " + miForm.getIdInstitucion() + " and ";
+				whereExiste += CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + " = " + miForm.getClienteIdPersona() + " and ";
+				whereExiste += CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION + " = " + miForm.getClienteIdInstitucion();
+				Vector v1 = componentesAdm.select(whereExiste);
 				if ((v1 != null) && (v1.size() > 0)) {
 					throw new SIGAException ("messages.censo.componentes.errorExisteComponente");
 				}

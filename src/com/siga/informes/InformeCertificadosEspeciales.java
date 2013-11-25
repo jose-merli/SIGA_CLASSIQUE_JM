@@ -411,6 +411,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		" 	       JOIN CEN_CUENTASBANCARIAS ON CEN_COMPONENTES.IDINSTITUCION = CEN_CUENTASBANCARIAS.IDINSTITUCION "+
 		" 	                                AND CEN_COMPONENTES.IDPERSONA = CEN_CUENTASBANCARIAS.IDPERSONA "+
 		" 	      WHERE CEN_COMPONENTES.CEN_CLIENTE_IDPERSONA = c.idpersona  "+
+		"           AND CEN_COMPONENTES.FECHABAJA IS NULL "+
 		" 	        AND CEN_COMPONENTES.CEN_CLIENTE_IDINSTITUCION = c.idinstitucion) )"+
 		" ORDER BY CB.TITULAR ";
 		
@@ -430,6 +431,7 @@ public class InformeCertificadosEspeciales extends MasterReport
         " and cp.CEN_CLIENTE_IDPERSONA = N.IDPERSONA  "+
         " and cp.IDPERSONA =@idpersona@ "+
 		" and cp.IDINSTITUCION = @idinstitucion@ "+
+		" and (cp.FECHABAJA IS NULL OR cp.FECHABAJA > SYSDATE)"+
 		" AND no.idinstitucion=cp.IDINSTITUCION "+
         " AND no.idpersona=cp.IDPERSONA "+
 		" ORDER BY p.NIFCIF ";

@@ -2814,7 +2814,8 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			CenComponentesAdm cenComponentesAdm = new CenComponentesAdm(usrBean);
 			where = " where CEN_CLIENTE_IDINSTITUCION ="+usrBean.getLocation()+
 			" and CEN_CLIENTE_IDPERSONA = "+miForm.getIdPersona() +
-			" and SOCIEDAD = " + ClsConstants.DB_TRUE;
+			" and SOCIEDAD = " + ClsConstants.DB_TRUE +
+			" and (FECHABAJA IS NULL OR FECHABAJA > SYSDATE) ";
 			Vector vCenComponentes = cenComponentesAdm.select(where);
 			
 			if(vCenComponentes.size() == 0) {

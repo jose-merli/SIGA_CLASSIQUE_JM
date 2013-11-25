@@ -317,6 +317,7 @@ public class RetencionesIRPFAction extends MasterAction {
 			
 			String where = " where CEN_CLIENTE_IDINSTITUCION ="+usr.getLocation()+
 						   "   and CEN_CLIENTE_IDPERSONA = "+request.getSession().getAttribute("idPersonaTurno")
+						   + " and ("+CenComponentesBean.C_FECHABAJA + " is null OR FECHABAJA > SYSDATE) "
 						   + " and "+CenComponentesBean.C_SOCIEDAD +"=1";
 			Vector vCenComponentes = cenComponentesAdm.select(where);
 			// Si es 0, el letrado actua en modo propio

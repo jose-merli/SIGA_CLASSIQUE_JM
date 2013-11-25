@@ -70,6 +70,7 @@
 	String idInstitucion ="";
 	String tipo="";
 	String capitalSocial="";
+	String fechaBaja="";
 	
 	ArrayList idBanco = new ArrayList();
 	ArrayList idtipocolegio = new ArrayList();
@@ -99,12 +100,14 @@
 			idcargo.add (String.valueOf(htData.get(CenComponentesBean.C_IDCARGO)));
 			tipo=String.valueOf(htData.get(CenComponentesBean.C_IDTIPOCOLEGIO));
 			capitalSocial=String.valueOf(htData.get(CenComponentesBean.C_CAPITALSOCIAL));
+			fechaBaja = GstDate.getFormatedDateShort("",(String)htData.get(CenComponentesBean.C_FECHABAJA));
+			
 		}
 		
 		if (modo.equals("ver")){
 			desactivado = true;
 			clase = "boxConsulta";
-			claseCombo="BoxComboConsulta";
+			claseCombo="boxConsulta";
 			lectura="true";
 			botones = "C";
 		}
@@ -302,7 +305,7 @@
 			}
 		}
 		
-		function cargar() {			 
+		function cargar() {
 			<% if (tipo.equals("")) {%>
 			jQuery("#colegiado").hide();
 			jQuery("#provincia1").hide();
@@ -330,6 +333,9 @@
 			jQuery("#colegiadoabogacia").hide();
 			jQuery("#colegiadonoabogacia").show();
 			<%}%>
+			<%}%>
+			<%if(!fechaBaja.equalsIgnoreCase("")){%>
+			jQuery("#divBaja").show();
 			<%}%>
 		}
 		
@@ -577,6 +583,12 @@
 								</td>							
 							</tr>
 						</table>
+						<div id="divBaja" style="left:2px;display:none">
+							<div style="padding:3px">
+								<span class="labelText" style="width:175px;display: inline-block;"><siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaBaja"/></span>
+								<span class="labelTextValue"><%=fechaBaja%></span>
+							</div>
+						</div>
 					</siga:ConjCampos>
 				</td>
 			</tr>
@@ -617,7 +629,7 @@
 				</td>
 			</tr>
 		</table>   		
-	
+		
 		<script>
 			rellenarCampos();
 		</script>	

@@ -85,7 +85,11 @@
 			  titulo="pestana.fichaCliente.componentesJuridicos" 
 			  localizacion="censo.fichaCliente.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->	
+
+	<style type="text/css">
+		.registroBaja{font-style:italic}
 		
+	</style>		
 
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
@@ -104,6 +108,31 @@
 			document.componentesJuridicosForm.modo.value = "abrir";
 			document.componentesJuridicosForm.submit();
 		}
+		
+		function incluirRegBajaLogica(o){
+			if (o.checked) {
+				jQuery(".registroBaja").show();
+			} else {
+				jQuery(".registroBaja").hide();
+			}
+			pintaFilas();
+		}
+		
+		jQuery(document).ready(function() {
+			if(jQuery(".registroBaja")[0]){
+				jQuery("#checkHistorico").show();
+			}
+			jQuery(".registroBaja").hide();
+			pintaFilas();
+		});
+		
+		function pintaFilas(){
+			jQuery(".filaTablaPar").removeClass("filaTablaPar").addClass("filaTabla");
+			jQuery(".filaTablaImpar").removeClass("filaTablaImpar").addClass("filaTabla");
+			jQuery(".filaTabla:visible:odd").addClass("filaTablaPar");
+			jQuery(".filaTabla:visible:even").addClass("filaTablaImpar");
+		}
+		
 
 	</script>
 
@@ -149,7 +178,7 @@
 		<siga:Table 
 		   name="tablaDatos"
 		   border="1"
-		   columnNames="censo.consultaComponentesJuridicos.literal.nifcif,censo.consultaComponentesJuridicos.literal.nombre,censo.consultaComponentesJuridicos.literal.cargo,censo.consultaComponentesJuridicos.literal.fechaCargo,censo.consultaComponentesJuridicos.literal.sociedad,censo.consultaComponentesJuridicos.literal.ejerciente,censo.consultaComponentesJuridicos.literal.ParticipacionSociedad%,"
+		   columnNames="censo.consultaComponentesJuridicos.literal.nifcif,censo.consultaComponentesJuridicos.literal.nombre,censo.consultaComponentesJuridicos.literal.cargo,censo.consultaComponentesJuridicos.literal.fechaCargoBaja,censo.consultaComponentesJuridicos.literal.sociedad,censo.consultaComponentesJuridicos.literal.ejerciente,censo.consultaComponentesJuridicos.literal.ParticipacionSociedad%,"
 		   columnSizes="10,25,15,10,10,10,10,10"
 		   modal="G">  
 		 
@@ -160,44 +189,58 @@
 	 <%	} else {	 
 			Enumeration en = vDatos.elements();		
  			int i=0;  									
+			String claseBaja = "";
+			String fechaCargo ="";
+			String fechaBaja ="";
+			String ejerciente= "";
+			String sociedad= "";
+			String nombreCompleto="";
 			while(en.hasMoreElements()){
 				Hashtable htData = (Hashtable)en.nextElement();
 				if (htData == null) continue;
 				i++;
-				String nombreCompleto = htData.get(CenPersonaBean.C_NOMBRE) + " " + htData.get(CenPersonaBean.C_APELLIDOS1) + " " + htData.get(CenPersonaBean.C_APELLIDOS2);
- 				String sociedad= "";
+				fechaCargo = com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenComponentesBean.C_FECHACARGO));
+				fechaBaja = com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenComponentesBean.C_FECHABAJA));
+				if(fechaBaja.equalsIgnoreCase("")){
+					claseBaja = "";
+					iconos = "C, E, B";
+				}else{
+					fechaCargo = fechaCargo.equalsIgnoreCase("")?"":fechaCargo+" - ";
+					fechaCargo += "("+fechaBaja+")";
+					claseBaja ="registroBaja";
+					iconos = "C";
+				}
+				nombreCompleto = htData.get(CenPersonaBean.C_NOMBRE) + " " + htData.get(CenPersonaBean.C_APELLIDOS1) + " " + htData.get(CenPersonaBean.C_APELLIDOS2);
+ 				
  				if(((String)htData.get(CenComponentesBean.C_SOCIEDAD)).equals(DB_FALSE)){	
  					sociedad = UtilidadesString.getMensajeIdioma(usr,"general.no");
  				}else{		   	 					
  					sociedad = UtilidadesString.getMensajeIdioma(usr,"general.yes");							   	 				
  				} 
- 				String ejerciente= "";
+ 				
  				if(((String)htData.get("EJERCIENTE")).equals("1")){	
  					ejerciente = UtilidadesString.getMensajeIdioma(usr,"censo.consultaDatosGenerales.literal.ejerciente");
  				}else{		   	 					
  					ejerciente = "";							   	 				
  				} 
-								
-	%> 		
-	<!-- INICIO: ZONA DE REGISTROS -->
+ 				%> 		
+			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 
 			<!-- REGISTRO  -->		
-				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo='<%=modo%>' clase="listaNonEdit" visibleConsulta="no">
-					<td>
-					
-					<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenComponentesBean.C_IDCOMPONENTE)%>'>
-					  	<%=UtilidadesString.mostrarDatoJSP(htData.get(CenPersonaBean.C_NIFCIF))%>
-	  				</td>
+				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' clase="<%=claseBaja%>" botones='<%=iconos%>' modo='<%=modo%>' visibleConsulta="no">
+					<td> <input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenComponentesBean.C_IDCOMPONENTE)%>'>
+					  	<%=UtilidadesString.mostrarDatoJSP(htData.get(CenPersonaBean.C_NIFCIF))%></td>
 	  				<td><%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%></td>
 	  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CARGO))%></td>
-	  				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenComponentesBean.C_FECHACARGO)))%></td>
+	  				<td><%=UtilidadesString.mostrarDatoJSP(fechaCargo)%></td>
 	  				<td><%=UtilidadesString.mostrarDatoJSP(sociedad)%></td>  			
 	  			   	<td><%=UtilidadesString.mostrarDatoJSP(ejerciente)%></td> 
 					<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenComponentesBean.C_CAPITALSOCIAL))%></td> 										
 				</siga:FilaConIconos>
 				<!-- FIN REGISTRO -->
- <%		}
+ 			<%
+ 		}
  	}%>  			
   			</siga:Table>
   				<!-- FIN: ZONA DE REGISTROS -->
@@ -208,7 +251,18 @@
 		 	<script> alert ("<siga:Idioma key="message.censo.componentes.noJuridico"/>");</script>	 	 
 	 	<% }  
 	 %>
-		<siga:ConjBotonesAccion botones="<%=botones%>" modo='<%=modo%>' clase="botonesDetalle"/>		
+	 
+	 <div id="checkHistorico" style="position: absolute; left: 400px; bottom: 5px; z-index: 99; display:none">
+		<table align="center" border="0">
+			<tr>
+				<td class="labelText"><label for="bajaLogica"><siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /></label>
+					<input type="checkbox" name="bajaLogica" id="bajaLogica" onclick="incluirRegBajaLogica(this);">
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo='<%=modo%>' clase="botonesDetalle"/>		
 
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 

@@ -164,7 +164,8 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 				 "  from CEN_PERSONA P, CEN_COMPONENTES C " +
 				 " where C.IDPERSONA = P.IDPERSONA " +
 				 "   and C.CEN_CLIENTE_IDPERSONA = " +idPersona+
-				 "   and C.CEN_CLIENTE_IDINSTITUCION = "+idInstitucion;
+				 "   and C.CEN_CLIENTE_IDINSTITUCION = "+idInstitucion+
+				 "   and (C.FECHABAJA IS NULL or C.FECHABAJA > SYSDATE)";
 			 rc = new RowsContainer(); 
 			 rc.find(sql);
 			 if(rc!=null && rc.size()>0){
