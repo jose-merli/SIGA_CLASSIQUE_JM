@@ -85,6 +85,7 @@
 		//Asociada al boton Pagar -->
 		function accionRealizarPago() {
 
+			document.forms[0].importe.value=document.forms[0].importe.value.replace(".","");
 			if (validateAbonosPagosForm(document.AbonosPagosForm)){
 				document.forms[0].modo.value="realizarPagoBanco";
 				document.forms[0].importe.value=document.forms[0].importe.value.replace(/,/,".");
@@ -125,7 +126,7 @@
 									<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
 								</td>
 								<td class="labelText">
-									<html:text property="importe" size="11" maxlength="11" styleClass="boxConsultaNumber" value="<%=UtilidadesNumero.formatoCampo(importePendiente)%>" readOnly="true"></html:text>&nbsp;&euro;
+									<html:text property="importe" size="11" maxlength="11" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente))%>" readOnly="true"></html:text>&nbsp;&euro;
 								</td>
 							</tr>
 							<tr>

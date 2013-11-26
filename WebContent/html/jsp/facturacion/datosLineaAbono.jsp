@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosLineaAbono.jsp -->
+
 <!-- 
 	 Muestra el formulario de edicion de lines de abonos
 	 VERSIONES:
@@ -154,7 +155,7 @@
 							<html:hidden property = "idAbono" value = "<%=idAbono%>"/>
 							<html:hidden property = "numeroLinea" value = "<%=numeroLinea%>"/>
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.mantenimientoLineas.literal.contabilizado"/>&nbsp;(*)
 								</td>
 								<td class="labelTextValue">
@@ -165,13 +166,13 @@
 									<% } else { %>
 										<html:textarea property="descripcion" styleClass="<%=estiloBox%>" readonly="<%=breadonly%>"  value="<%=registro.getString(FacLineaAbonoBean.C_DESCRIPCIONLINEA)%>" 
 											onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
-											style="overflow-y:auto; overflow-x:hidden; width:550px; height:50px; resize:none;"></html:textarea> 
+											style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"></html:textarea> 
 						  	    	<% } %>
 								</td>
 							</tr>
 
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.lineasAbonos.literal.cantidad"/>&nbsp;(*)
 								</td>	
 								<td class="labelTextValue">
@@ -186,7 +187,7 @@
 							</tr>
 
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.lineasAbonos.literal.precioUnit"/>&nbsp;(*)
 								</td>	
 								<td class="labelTextValue">
@@ -195,50 +196,68 @@
 											value="" onchange="calcularNeto();" />&nbsp;&euro;
 									<% } else { %>
 										<html:text property="precio" size="13" maxlength="11" styleClass="<%=estiloBoxNumber%>" readonly="<%=breadonly%>" 
-											value="<%=UtilidadesNumero.formatoCampo(registro.getString(FacLineaAbonoBean.C_PRECIOUNITARIO))%>" onchange="calcularNeto();" />&nbsp;&euro;
+											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(registro.getString(FacLineaAbonoBean.C_PRECIOUNITARIO)))%>" onchange="calcularNeto();" />&nbsp;&euro;
 						  	    	<% } %>
 								</td>
 							</tr>
 
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.importeNeto"/>
 								</td>	
 								<td class="labelTextValue">
-									<html:text property="impNeto" size="13" maxlength="13" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" value="<%=UtilidadesNumero.formatoCampo(impNeto)%>" />&nbsp;&euro;
+									<html:text property="impNeto" size="13" maxlength="13" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" 
+										value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impNeto))%>" />&nbsp;&euro;
 								</td>
 							</tr>
 								
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.lineasAbonos.literal.iva"/>&nbsp;(*)
 								</td>	
 								<td class="labelTextValue">
-									<% if (nextModo.equalsIgnoreCase("insertar")){ %>
+<% 
+									if (nextModo.equalsIgnoreCase("insertar")) { 
+%>
 										<!--html:text property="iva" size="5" maxlength="5" styleClass="<%=estiloBox%>" value="" onchange="calcularIva();"!--><!--/html:text--><!--&nbsp;&nbsp;%-->
 										<siga:ComboBD nombre="iva" tipo="porcentajeIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" obligatorio="true" accion="calcularIva();"/>
-									<% } else { %>
+<% 
+									} else { 
+										if (readonly.equalsIgnoreCase("true")) {
+%>			
+											<input type="text" size="13" class="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(registro.getString(FacLineaAbonoBean.C_IVA)))%>" readonly>
+<%
+										} else {
+%>
+									
 										<!--html:text property="iva" size="5" maxlength="5" styleClass="<%=estiloBox%>" value="<%=registro.getString(FacLineaAbonoBean.C_IVA)%>" onchange="calcularIva();"--><!--/html:text--><!--&nbsp;&nbsp;%-->
 										<siga:ComboBD nombre="iva" tipo="porcentajeIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" elementoSel="<%=valorIva%>" obligatorio="true" accion="calcularIva();"/>
-						  	    	<% } %>
+										
+<% 
+										}
+									}
+%>
+									%
 								</td>
 							</tr>
 							
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.importeIva"/>
 								</td>	
 								<td class="labelTextValue">
-									<html:text property="impIva" size="13" maxlength="12" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" value="<%=UtilidadesNumero.formatoCampo(impIva)%>" />&nbsp;&euro;
+									<html:text property="impIva" size="13" maxlength="12" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" 
+										value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impIva))%>" />&nbsp;&euro;
 								</td>
 							</tr>
 							
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.mantenimientoLineas.literal.totalConcepto"/>
 								</td>	
 								<td class="labelTextValue">
-									<html:text property="impTotal" size="13" maxlength="12" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" value="<%=UtilidadesNumero.formatoCampo(impTotal)%>" />&nbsp;&euro;
+									<html:text property="impTotal" size="13" maxlength="12" styleClass="boxConsultaNumber" readonly="<%=breadonly%>" 
+										value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impTotal))%>" />&nbsp;&euro;
 								</td>
 							</tr>
 						</html:form>	

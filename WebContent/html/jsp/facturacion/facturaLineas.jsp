@@ -61,9 +61,7 @@
 	String modoRegistroBusqueda = (String)request.getAttribute("modoRegistroBusqueda");
 	if ((modoRegistroBusqueda != null) && (modoRegistroBusqueda.equalsIgnoreCase("ver"))) {
 		botones = "C";
-	}
-	
-	double sumaTotal = 0, sumaAnticipado = 0;
+	}	
 %>
 
 	<!-- HEAD -->
@@ -101,44 +99,51 @@
 	   columnNames="facturacion.lineasFactura.literal.Orden,
 					facturacion.lineasFactura.literal.Descripcion,
 					facturacion.lineasFactura.literal.Cantidad,
-					facturacion.lineasFactura.literal.Precio,
+					facturacion.lineasFactura.literal.precioUnitario,
+					facturacion.lineasFactura.literal.importeNeto,
 					facturacion.lineasFactura.literal.IVA,
-					facturacion.lineasFactura.literal.Total,
+					facturacion.lineasFactura.literal.importeIVA,
+					facturacion.lineasFactura.literal.importeTotal,
 					facturacion.lineasFactura.literal.Anticipado,"
-	   columnSizes = "9,40,7,9,7,9,9,10"
-	   modal="M"
-	   fixedHeight="85%">
+	   columnSizes = "6,20,8,10,10,6,10,10,10,10"
+	   modal="M">
 	
 <%	 
+		double dSumaTotal=0, dSumaAnticipado=0, dSumaImporteNeto=0, dSumaImporteIVA=0;
+
 		if ((vLineas != null) && (vLineas.size() > 0)) {								 
 			for (int i = 1; i <= vLineas.size(); i++) { 
 				 FacLineaFacturaBean linea = (FacLineaFacturaBean) vLineas.get(i-1);
-				 if (linea != null) { 
-					Double importe = linea.getPrecioUnitario();
-					Integer cantidad = linea.getCantidad();
-					Float iva = linea.getIva();
-					Double anticipado = linea.getImporteAnticipado();
+				 if (linea != null) {
+					int iCantidad = linea.getCantidad().intValue();
+					double dPrecioUnitario = linea.getPrecioUnitario();					
+					double dImporteNeto =  dPrecioUnitario * iCantidad;
+					double dIVA = linea.getIva().doubleValue();
+					double dImporteIVA = dImporteNeto * dIVA / 100;
+					double dImporteTotal = dImporteIVA + dImporteNeto;
+					double dAnticipado = linea.getImporteAnticipado().doubleValue();
 					
-					double aux = cantidad.intValue() * importe.doubleValue() * (1 +  iva.floatValue() / 100);
-					Double total = new Double (UtilidadesNumero.redondea(aux ,2));
-					
-					sumaTotal = sumaTotal + total.doubleValue();
-					sumaAnticipado = sumaAnticipado + anticipado.doubleValue();
+					dSumaTotal = dSumaTotal + dImporteTotal;
+					dSumaAnticipado = dSumaAnticipado + dAnticipado;
+					dSumaImporteNeto = dSumaImporteNeto + dImporteNeto;
+					dSumaImporteIVA = dSumaImporteIVA + dImporteIVA;
 %>
 
 					<siga:FilaConIconos fila='<%=""+i%>' botones="<%=botones%>" visibleBorrado="false" clase="listaNonEdit"> 
-						<td><!-- Datos ocultos tabla -->
+						<td align="right"><!-- Datos ocultos tabla -->
 								<input type="hidden" id="oculto<%=i%>_1" value="<%=String.valueOf(linea.getIdInstitucion())%>">
 								<input type="hidden" id="oculto<%=i%>_2" value="<%=linea.getIdFactura()%>">
 								<input type="hidden" id="oculto<%=i%>_3" value="<%=String.valueOf(linea.getNumeroLinea())%>">
 								<%=UtilidadesString.mostrarDatoJSP(linea.getNumeroOrden())%>
 						</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(linea.getDescripcion())%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(cantidad)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%>&nbsp;&euro;</td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(iva.intValue())%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%>&nbsp;&euro;</td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(anticipado.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(iCantidad)%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dPrecioUnitario))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dImporteNeto))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dIVA))%>&nbsp;%</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dImporteIVA))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dImporteTotal))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dAnticipado))%>&nbsp;&euro;</td>
 					</siga:FilaConIconos>							 		
 <%	 		 
 				} // if
@@ -149,9 +154,11 @@
 				<td><b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dSumaImporteNeto))%>&nbsp;&euro;</b></td>
 				<td>&nbsp;</td>
-				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaTotal,2)))%>&nbsp;&euro;</b></td>
-				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(sumaAnticipado,2)))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dSumaImporteIVA))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dSumaTotal))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dSumaAnticipado))%>&nbsp;&euro;</b></td>
 				<td>&nbsp;</td>
 			</tr>				
 <%			 

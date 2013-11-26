@@ -24,6 +24,8 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="org.apache.struts.action.ActionMapping"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
 
 <!-- JSP -->
 <% 
@@ -179,6 +181,16 @@
 			if (rc == "MODIFICADO") 
 				refrescarLocal();
 		}	
+		
+		function datosImpresion(fila) {
+			var datos;
+			datos = document.getElementById('tablaDatosDinamicosD');
+			datos.value = ""; 
+			preparaDatos(fila, 'tablaResultados', datos);
+			
+			document.forms[0].modo.value = "Ver";
+			ventaModalGeneral(document.forms[0].name,"P");
+		}			
 	</script>	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -212,10 +224,9 @@
 					facturacion.abonosPagos.datosPagoAbono.nCuenta,
 					facturacion.pagosFactura.literal.Importe,
 					facturacion.pagosFactura.literal.Pendiente,"
-	   columnSizes = "8,15,15,27,8,8,9"
+	   columnSizes = "8,18,18,30,11,11,4"
 	   fixedHeight="70%"
-	   modal = "M"
-	   modalScroll="true">
+	   modal = "M">
 	
 <%	 
 		if ((vPagos != null) && (vPagos.size() > 0)){			
@@ -269,14 +280,23 @@
 					
 					Double auxPendiente = new Double (UtilidadesNumero.redondea(pendiente.doubleValue(),2));
 					
-					String botones="";
+					FilaExtElement[] elementos=new FilaExtElement[1];
 					if ((idPago != null) && (idPago.intValue() > 0)){
-						botones = "C";
-					}
+  						elementos[0]=new FilaExtElement("datosImpresion","datosImpresion",SIGAConstants.ACCESS_FULL);
+	  				}
 %>
 
 
-					<siga:FilaConIconos fila='<%=""+i%>' botones="<%=botones%>" visibleEdicion="false" visibleBorrado="false" clase="listaNonEdit"  >
+					<siga:FilaConIconos 
+						fila='<%=""+i%>'
+						botones=''
+						elementos='<%=elementos%>' 
+						visibleConsulta='no'
+						visibleEdicion="no" 
+						visibleBorrado="no"
+						pintarEspacio='no' 
+						clase="listaNonEdit">
+						
 						<td>
 							<input type="hidden" id="oculto<%=i%>_1" value="<%=idPago%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%>
@@ -284,8 +304,15 @@
 						<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%>&nbsp;&euro;</td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(auxPendiente.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(auxPendiente.doubleValue()))%>&nbsp;&euro;</td>
+<%						
+						if (idPago == null || idPago.intValue()<=0){
+%>						
+							<td>&nbsp;</td>	
+<%
+						}
+%>
 					</siga:FilaConIconos>
 <%	 		 
 				} // if
@@ -300,43 +327,43 @@
 %>								
 	</siga:Table> 
 	
-	<div id="totales" style="bottom:70px; left:200px; position:absolute; width:295px">
+	<div id="totales" style="bottom:70px; left:200px; position:absolute; width:250px">
 		<fieldset>
-			<table  align="left" border="0" width="295px">
+			<table  align="left" border="0" width="100%">
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalFactura"/></td>
-					<td width="145px" class="labelTextNum" align="left"><%=UtilidadesString.formatoImporte(total)%>&euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalFactura"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.formatoImporte(total)%>&euro;</td>
 				</tr>
 			</table>
 		</fieldset>
 	</div>
 	
-	<div id="totales2" style="bottom:70px; left:580px; position:absolute; width:295px;">
+	<div id="totales2" style="bottom:70px; left:580px; position:absolute; width:250px;">
 		<fieldset>
-			<table  align="left" border="0" width="270px">
+			<table  align="left" border="0" width="100%">
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalAnticipado"/></td>
-					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%> &euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalAnticipado"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%> &euro;</td>
 				</tr>
 
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCaja"/></td>
-					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCaja.toString(),2)))%> &euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalCaja"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCaja.toString(),2)))%> &euro;</td>
 				</tr>
 
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalTarjeta"/></td>
-					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%> &euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalTarjeta"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%> &euro;</td>
 				</tr>
 					
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalBanco"/></td>
-					<td width="145px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalBanco.toString(),2)))%> &euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalBanco"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalBanco.toString(),2)))%> &euro;</td>
 				</tr>
 					
 				<tr>				
-					<td width="150px" class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalCompensado"/></td>
-					<td width="180px" class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%> &euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalCompensado"/></td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%> &euro;</td>
 				</tr>
 			</table>
 		</fieldset>			

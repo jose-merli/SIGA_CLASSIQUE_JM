@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- facturaLineasDatos.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -92,6 +93,8 @@
 			d = new Number(n);
 			d = Number(d.toFixed(2));
 			d = d.toLocaleString();
+			
+			//Tratamiento decimales
 			if (d.indexOf(',') < 0) {
 				d += ',00'; // Si no tiene decimales le pongo dos ceros
 			} else {
@@ -99,15 +102,24 @@
 					d += '0'; // Si tiene un decimal le pongo otro decimal
 				}
 			}
-			return d.replace(".","");	
+			
+			return d;	
 		}
 		
 		function calculaPrecios () {
-			var totalNeto = document.GestionarFacturaForm.datosLineaCantidad.value * document.GestionarFacturaForm.datosLineaPrecio.value.replace(/,/,".");
-			document.GestionarFacturaForm.datosLineaTotalNeto.value = parseInt(totalNeto*100) / 100;
-			var totalIVA = document.GestionarFacturaForm.datosLineaTotalNeto.value * document.GestionarFacturaForm.datosLineaIVA.value.replace(/,/,".") /100;
-			document.GestionarFacturaForm.datosLineaTotalIVA.value = parseInt(totalIVA*100) / 100;
-			document.GestionarFacturaForm.datosLineaTotal.value = parseInt((totalNeto + totalIVA)*100) / 100;
+			var totalNeto = document.GestionarFacturaForm.datosLineaPrecio.value.replace(".","").replace(".","");
+			totalNeto = totalNeto.replace(/,/,".");
+			var nTotalNeto = new Number(totalNeto);
+			nTotalNeto = new Number(document.GestionarFacturaForm.datosLineaCantidad.value * nTotalNeto);
+			
+			var totalIVA = document.GestionarFacturaForm.datosLineaIVA.value.replace(".","").replace(".","");
+			totalIVA = totalIVA.replace(/,/,".");
+			var nTotalIVA = new Number(totalIVA);
+			nTotalIVA = new Number(nTotalNeto * nTotalIVA / 100);
+			
+			document.GestionarFacturaForm.datosLineaTotalNeto.value = parseInt(nTotalNeto*100) / 100;			
+			document.GestionarFacturaForm.datosLineaTotalIVA.value = parseInt(nTotalIVA*100) / 100;
+			document.GestionarFacturaForm.datosLineaTotal.value = parseInt((nTotalNeto + nTotalIVA)*100) / 100;
 			
 			//convierto al formato correcto:
 			document.GestionarFacturaForm.datosLineaTotalNeto.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalNeto.value);
@@ -167,8 +179,19 @@
 								<tr>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Precio"/></td>
 									<td class="labelText">
-										<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
-											value="<%=UtilidadesNumero.formatoCampo(String.valueOf(linea.getPrecioUnitario()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
+<%
+										if (readOnlyPre) {
+%>										
+											<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
+												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
+<%
+										} else {
+%>
+											<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
+												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
+<%
+										}
+%>											
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.TotalNeto"/></td>
@@ -178,8 +201,20 @@
 								<tr>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.IVA"/></td>
 									<td class="labelText">
-										<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
-											value="<%=String.valueOf(linea.getIva().intValue())%>" onChange="calculaPrecios();"/>
+<%
+										if (readOnlyIva) {
+%>										
+											<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
+												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>
+<%
+										} else {
+%>
+											<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
+												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>
+<%
+										}
+%>										
+										%														
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.importeIVA"/></td>
@@ -189,9 +224,7 @@
 								<tr>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
-									<td colspan="2">
-										<hr width="100%" size="1">
-									</td>
+									<td colspan="2"><hr size="1"></td>
 								</tr>
 								
 								<tr>						
@@ -205,7 +238,7 @@
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Anticipado"/></td>
-									<td class="labelText"><html:text property="datosLineaAnticipado" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getImporteAnticipado().doubleValue()))%>" readonly = "true"/>&nbsp;&euro;</td>
+									<td class="labelText"><html:text property="datosLineaAnticipado" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getImporteAnticipado().doubleValue()))%>" readonly = "true"/>&nbsp;&euro;</td>
 								</tr>
 							</table>
 						</fieldset>					

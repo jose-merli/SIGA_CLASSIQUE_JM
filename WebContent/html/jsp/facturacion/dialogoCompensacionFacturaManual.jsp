@@ -141,7 +141,7 @@
 										
 									</td>
 									<td class="labelTextValor" colspan ="3">
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importePendiente)) %>
+										<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente)) %>
 									</td>
 									
 								</tr>

@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaDatosGeneralesAbonos.jsp -->
+
 <!-- 
 	 Muestra los datos generales de un abono
 	 VERSIONES:
@@ -59,10 +60,9 @@
 	// Manejadores de BBDD
 	ConsPLFacturacion cpl = new ConsPLFacturacion(usr);
 	CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
+	CenPersonaBean beanPersona = new CenPersonaBean();
 
-	String totalNeto="";
-	String totalIva="";
-	String total="";
+	String totalNeto="", totalIva="", total="", pendientePorAbonar="", totalAbonado="", totalAbonadoEfectivo="", totalAbonadoPorBanco="";
 
 	// Obtencion de la informacon relacionada con el abono
 	if (request.getAttribute("container") != null){	
@@ -70,6 +70,12 @@
 		totalNeto=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTALNETO")).doubleValue(),2)).toString();
 		totalIva=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTALIVA")).doubleValue(),2)).toString();
 		total=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTAL")).doubleValue(),2)).toString();
+		pendientePorAbonar=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("PENDIENTEPORABONAR")).doubleValue(),2)).toString();
+		totalAbonado=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTALABONADO")).doubleValue(),2)).toString();
+		totalAbonadoEfectivo=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTALABONADOEFECTIVO")).doubleValue(),2)).toString();
+		totalAbonadoPorBanco=new Double(UtilidadesNumero.redondea(new Double((String)datosAbono.get("TOTALABONADOPORBANCO")).doubleValue(),2)).toString();		
+		
+		beanPersona = personaAdm.getPersonaPorId((String)datosAbono.get(FacAbonoBean.C_IDPERSONA));
 	}
 
 	//String idFactura = (String)datosAbono.get(FacAbonoBean.C_IDFACTURA);
@@ -118,7 +124,7 @@
 	<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 	
 	<!-- CAMPOS DEL REGISTRO -->
-	<table class="tablaCentralCampos" align="center">		
+	<table class="tablaCampos" border="0">		
 
 		<html:form action="<%=path%>" method="POST">
 			<html:hidden property = "modo" value = ""/>
@@ -128,170 +134,252 @@
 			<html:hidden property="idFactura" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDFACTURA)%>"/>		
 	
 			<tr>				
-				<td width="100%" align="center">
+				<td>
 					<!-- SUBCONJUNTO DE DATOS -->
 					<siga:ConjCampos leyenda="facturacion.datosGeneralesAbonos.literal.cabecera">
+						<table class="tablaCampos" border="0">
 	
-						<% if (request.getAttribute("container") == null){%>
-							<div class="notFound">
-								<br><br>
-		   						<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-								<br><br>
-							</div>
-						
-						<% } else { %>						
-							<table align="center" width="100%">
+<% 
+							if (request.getAttribute("container") == null) { 
+%>
+						 		<tr class="notFound">
+									<td class="titulitos">
+										<siga:Idioma key="messages.noRecordFound"/>
+									</td>
+								</tr>							
+<% 
+							} else { 
+%>						
 								<tr>				
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>&nbsp;
-									</td>				
-									<td>
-										<html:text property="numeroAbono" size="10" styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_NUMEROABONO)%>" readOnly="true" />
-									</td>
+									<td class="labelText" width="125px"><siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/></td>				
+									<td class="labelTextValor"><html:text property="numeroAbono" size="10" styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_NUMEROABONO)%>" readOnly="true" /></td>
 									
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>&nbsp;
-									</td>
+									<td class="labelText"><siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/></td>
 									<td>
-									 	<% fecha=GstDate.getFormatedDateShort("",(String)datosAbono.get(FacAbonoBean.C_FECHA));%>
-										<% if (fecha.equalsIgnoreCase("")){ %>									 	
+<% 
+										fecha=GstDate.getFormatedDateShort("",(String)datosAbono.get(FacAbonoBean.C_FECHA));
+										if (fecha.equalsIgnoreCase("")) { 
+%>									 	
 											<html:text property="fecha" size="10" styleClass="boxConsulta" value="" readOnly="true" />
-										<% } else { %>	
+<% 
+										} else { 
+%>	
 											<html:text property="fecha" size="10" styleClass="boxConsulta" value="<%=fecha%>" readOnly="true" />
-										<% } %>
+<% 
+										} 
+%>
 									</td>
 									
-									<td class="labelText">
-										<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.contabilizado"/>&nbsp;
-									</td>
+									<td class="labelText"><siga:Idioma key="facturacion.datosGeneralesAbonos.literal.contabilizado"/></td>
 									<td>									
-										<% if (((String)datosAbono.get(FacAbonoBean.C_CONTABILIZADA)).equalsIgnoreCase(ClsConstants.FACTURA_ABONO_CONTABILIZADA)) { %>
+<% 
+										if (((String)datosAbono.get(FacAbonoBean.C_CONTABILIZADA)).equalsIgnoreCase(ClsConstants.FACTURA_ABONO_CONTABILIZADA)) { 
+%>
 											<input type="checkbox" name="contabilizada" value="<%=ClsConstants.FACTURA_ABONO_CONTABILIZADA%>" checked disabled>
-										<% } else { %>
+<% 
+										} else { 
+%>
 											<input type="checkbox" name="contabilizada" value="<%=ClsConstants.FACTURA_ABONO_CONTABILIZADA%>" disabled>
-										<% } %>
+<% 
+										} 
+%>
 									</td>	
 																	
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.estado"/>
-									</td>
-									<td>							
-										<html:text property="estado" size="40" styleClass="boxConsulta" value="<%=cpl.obtenerEstadoFacAbo(new Integer(idInstitucion).intValue(),new Long(idAbono).longValue(),ConsPLFacturacion.ABONO)%>" readOnly="true" />
-									</td>
+									<td class="labelText"><siga:Idioma key="facturacion.busquedaAbonos.literal.estado"/></td>
+									<td><html:text property="estado" size="40" styleClass="boxConsulta" value="<%=cpl.obtenerEstadoFacAbo(new Integer(idInstitucion).intValue(),new Long(idAbono).longValue(),ConsPLFacturacion.ABONO)%>" readOnly="true" /></td>
 								</tr>
 								
 								<tr>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.cliente"/>&nbsp;
-									</td>
-									<td colspan="7">
-										<html:text property="cliente" size="60" styleClass="boxConsulta" value="<%=personaAdm.obtenerNombreApellidos((String)datosAbono.get(FacAbonoBean.C_IDPERSONA))%>" readOnly="true" />
-									</td>
-								</tr>
-							</table>								
-						<% } %>																				
+									<td class="labelText"><siga:Idioma key="facturacion.busquedaAbonos.literal.cliente"/></td>
+									<td colspan="7" class="labelTextValor"><%=beanPersona.getNIFCIF()%> - <%=beanPersona.getNombreCompleto()%></td>
+								</tr>														
+<% 
+							} 
+%>		
+						</table>																		
 					</siga:ConjCampos>
 				</td>
 			</tr>
 			
 			<tr>				
-				<td width="100%" align="center">
+				<td>
 					<!-- SUBCONJUNTO DE DATOS -->
 					<siga:ConjCampos leyenda="facturacion.altaAbonos.literal.motivos">
+						<table class="tablaCampos" border="0">
 	
-					<% if (request.getAttribute("container") == null){%>
-						<div class="notFound">
-							<br><br>
-		   					<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-							<br><br>
-						</div>
-					<% } else { %>						
-						<table align="center" width="100%">
-							<tr>				
-								<td class="labelText" width="150">
-									<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
-								</td>				
-								<td>
-									<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
-										<html:textarea property="motivos"
-											style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;" 
-											styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>" readOnly="true"></html:textarea>
-									<% } else { %>
-										<html:textarea property="motivos" 
-											onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
-											style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"												
-											styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>"></html:textarea>
-									<% } %>
-								</td>
-								
-								<td class="labelText">
-									<siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/>
-								</td>
-								<td>
-									<% if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ %>
-										<html:textarea property="observaciones" 
-											style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
-											styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
-									<% } else { %>
-										<html:textarea property="observaciones" 
-											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
-											style="overflow-y:auto; overflow-x:hidden; width:350px; height:45px; resize:none;"
-											styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
-									<% } %>
-								</td>
-							</tr>
-							</table>								
-						<% } %>																				
-					</siga:ConjCampos>
-				</td>
-			</tr>
-					
-			<tr>				
-				<td width="100%" align="center">
-					<!-- SUBCONJUNTO DE DATOS -->
-					<siga:ConjCampos leyenda="facturacion.datosGeneralesAbonos.literal.totales">
-						<% if (request.getAttribute("container") == null){%>
-							<div class="notFound">
-								<br><br>
-						   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
-								<br><br>
-							</div>
-							
-						<% } else { %>						
-							<table align="center" width="100%">
-								<tr>				
-									<td class="labelText">
-										<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.importeNeto"/>
-									</td>				
-									<td class="labelTextValue">
-										<html:text property="importeNeto" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(totalNeto)%>' readOnly="true" />&nbsp;&euro;
+<% 
+							if (request.getAttribute("container") == null) { 
+%>
+								<tr class="notFound">
+									<td class="titulitos">
+										<siga:Idioma key="messages.noRecordFound"/>
 									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.importeIva"/>&nbsp;
-									</td>
-									<td class="labelTextValue">
-										<html:text property="importeIva" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(totalIva)%>' readOnly="true" />&nbsp;&euro;
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.datosGeneralesAbonos.literal.importeAbono"/>&nbsp;
-									</td>
-									<td class="labelTextValue">
-										<html:text property="importeIva" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(total)%>' readOnly="true" />&nbsp;&euro;
-									</td>									
 								</tr>
-							</table>								
-						<% } %>																				
+<% 
+							} else { 
+%>						
+								<tr>				
+									<td class="labelText" width="125px">
+										<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
+									</td>				
+									<td>
+<% 
+										if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")) { 
+%>
+											<html:textarea property="motivos"
+												style="overflow-y:auto; overflow-x:hidden; width:820px; height:50px; resize:none;" 
+												styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>" readOnly="true"></html:textarea>
+<% 
+										} else { 
+%>
+											<html:textarea property="motivos" 
+												onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+												style="overflow-y:auto; overflow-x:hidden; width:820px; height:50px; resize:none;"												
+												styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_MOTIVOS)%>"></html:textarea>
+<% 
+										} 
+%>
+									</td>
+								</tr>
+								
+								<tr>									
+									<td class="labelText">
+										<siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/>
+									</td>
+									<td>
+<% 
+										if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")) { 
+%>
+											<html:textarea property="observaciones" 
+												style="overflow-y:auto; overflow-x:hidden; width:820px; height:50px; resize:none;"
+												styleClass="boxConsulta" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
+<% 
+										} else { 
+%>
+											<html:textarea property="observaciones" 
+												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+												style="overflow-y:auto; overflow-x:hidden; width:820px; height:50px; resize:none;"
+												styleClass="box" value="<%=(String)datosAbono.get(FacAbonoBean.C_OBSERVACIONES)%>"/>
+<% 
+										} 
+%>
+									</td>
+								</tr>
+<% 
+							} 
+%>
+						</table>																				
 					</siga:ConjCampos>
 				</td>
 			</tr>
-		</html:form>		
-	
-		<tr  width="100%">
-			<td>
-				<br>&nbsp;&nbsp;&nbsp;&nbsp;
+			
+			<tr>
+				<td>
 					<input type="button" name="idButton" id ="idButton" value="<siga:Idioma key="general.boton.download"/>" onclick="download();" class="button">	
-			</td>
-		</tr>
+				</td>
+			</tr>	
+			
+			<tr>		
+				<td>
+					<table class="tablaCampos" border="0">
+						<tr>
+							<td width="33%">
+								<table>
+									<tr>
+										<td> <!-- Pagos -->
+											<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Pagos">	
+												<table class="tablaCampos" border="0">	
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorCaja"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalAbonadoEfectivo))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PagosPorBanco"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalAbonadoPorBanco))%>&nbsp;&euro;</td>
+													</tr>
+													
+													<tr>
+														<td colspan="2"><hr size="1"></td>
+													</tr>
+													
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalPagos"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalAbonado))%>&nbsp;&euro;</td>
+													</tr>													
+												</table>
+											</siga:ConjCampos>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td width="33%">
+								<table align="center">
+									<tr>
+										<td> <!-- Total Pagos -->
+											<siga:ConjCampos leyenda="facturacion.datosFactura.literal.TotalPagos">
+												<table class="tablaCampos" border="0">	
+													<tr>
+														<td class="labelText" width="120px"><siga:Idioma key="facturacion.datosFactura.literal.TotalesTotalAbono"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(total))%>&nbsp;&euro;</td>
+													</tr>
+							
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalPagos"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalAbonado))%>&nbsp;&euro;</td>
+													</tr>
+							
+													<tr>
+														<td colspan="2"><hr size="1"></td>
+													</tr>
+								
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.PedientePagar"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(pendientePorAbonar))%>&nbsp;&euro;</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>
+										</td>
+									</tr>
+								</table>
+							</td>
+					
+							<td width="33%">
+								<table align="right">
+									<tr>
+										<td> <!-- Totales -->
+											<siga:ConjCampos leyenda="facturacion.datosFactura.literal.Totales">	
+												<table class="tablaCampos" border="0">	
+													<tr>
+														<td class="labelText" width="120px"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteNeto"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalNeto))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesImporteIVA"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalIva))%>&nbsp;&euro;</td>
+													</tr>
+						
+													<tr>
+														<td colspan="2"><hr size="1"></td>
+													</tr>
+							
+													<tr>
+														<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.TotalesTotalAbono"/></td>
+														<td class="labelTextNum" align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(total))%>&nbsp;&euro;</td>
+													</tr>
+												</table>
+											</siga:ConjCampos>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>					
+				</td>
+			</tr>						
+		</html:form>		
 	</table>		
 
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">

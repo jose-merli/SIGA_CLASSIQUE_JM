@@ -146,7 +146,7 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImportePendiente"/></td>
-							<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importePendiente.doubleValue()))%>&nbsp;&euro;</td>
+							<td class="labelTextNum"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente.doubleValue()))%>&nbsp;&euro;</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.ImporteCobrado"/></td>

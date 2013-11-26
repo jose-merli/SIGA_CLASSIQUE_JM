@@ -18,9 +18,9 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
@@ -132,7 +132,7 @@
 						<siga:Idioma key="facturacion.abonosPagos.impresionAbono.pagoCaja"/>
 					</td>
 					<td class="labelTextValue">
-						<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(registro.getString(FacPagoAbonoEfectivoBean.C_IMPORTE)))%>&nbsp;&euro;
+						<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(registro.getString(FacPagoAbonoEfectivoBean.C_IMPORTE)))%>&nbsp;&euro;
 					</td>	
 				</tr>
 			</table>			

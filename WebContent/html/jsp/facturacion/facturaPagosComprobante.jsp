@@ -112,7 +112,7 @@
 	
 				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Comprobante.literal.ImportePagado"/></td>
-					<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(pago.getImporte().doubleValue()))%>&nbsp;&euro;</td>
+					<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(pago.getImporte().doubleValue()))%>&nbsp;&euro;</td>
 				</tr>
 			</table>
 		</div>

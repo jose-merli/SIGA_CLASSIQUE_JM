@@ -230,7 +230,7 @@
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.ImportePendiente"/>
 								</td>
 								<td  class="labelTextValue">									
-									&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importePendiente.doubleValue()))%>&nbsp;&euro;
+									&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente.doubleValue()))%>&nbsp;&euro;
 								</td>
 							</tr>
 							

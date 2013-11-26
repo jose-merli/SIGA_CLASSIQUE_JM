@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaPagosAbonos.jsp -->
+
 <!-- 
 	 Muestra la pestranha de pagos de los abonos
 	 VERSIONES:
@@ -39,8 +40,7 @@
 	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
 	String path = actionMapping.getPath();
 	String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
-
-	String fecha="";
+	
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 		
@@ -109,8 +109,7 @@
 		function refrescarLocal () {
 			parent.buscar();
 		}
-			
-		// Asociada al icono ModificarDatos						
+							
 		function datosImpresion(fila) {
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
@@ -148,9 +147,12 @@
 	   	name="tablaDatos"
 	   	border="1"
 	   	columnNames="facturacion.abonosPagos.literal.fecha,
-	   		facturacion.abonosPagos.literal.medioPago,
-			facturacion.abonosPagos.literal.importe,"
-		columnSizes="10,60,20,10"
+	   		facturacion.abonosPagos.literal.accion,
+	   		facturacion.abonosPagos.literal.estado,
+	   		facturacion.abonosPagos.datosPagoAbono.nCuenta,
+	   		facturacion.abonosPagos.literal.importe,
+			facturacion.abonosPagos.literal.pendiente,"
+		columnSizes="10,20,20,20,10,10,10"
 		modal="M">
 <%
 		if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ) {
@@ -160,14 +162,63 @@
 			</tr>
 <%
 	   	} else { 
+	   		String textoEmision = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.emisionPago");
+			String textoPagoCaja = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pagosCaja");
+			String textoPagoBanco = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pagosBanco");
+			String textoCompensacion = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.compensacion");			
+			String textoPendienteCaja = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pendienteCaja");
+			String textoPendienteBanco = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pendienteBanco");
+			
+			String sEstadoRevision = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.estado.revision");
+			String sEstadoPagado = UtilidadesString.getMensajeIdioma(usr, "general.literal.pagado");
+			String sEstadoPendienteBanco = UtilidadesString.getMensajeIdioma(usr, "general.literal.pendienteabonobanco");
+			String sEstadoPendienteCaja = UtilidadesString.getMensajeIdioma(usr, "general.literal.pendienteabonocaja");
+			
+			Double dTotal = new Double(UtilidadesNumero.redondea(new Double(total).doubleValue(),2));
+			//Double dTotalAbonado = new Double(UtilidadesNumero.redondea(new Double(totalAbonado).doubleValue(),2));
+			//Double dPendiente = new Double(UtilidadesNumero.redondea(new Double(pendiente).doubleValue(),2));
+	   		
     		Enumeration en = ((Vector)request.getAttribute("container")).elements();
 			int recordNumber=1;	
 			while (en.hasMoreElements()) {
 				Row row = (Row) en.nextElement();
+				
 				FilaExtElement[] elementos=new FilaExtElement[1];
-				if (row.getString("MODO").equalsIgnoreCase("CAJA")){
-  					elementos[0]=new FilaExtElement("consultar","datosImpresion",SIGAConstants.ACCESS_FULL);
+				if (row.getString("MODO").equals(textoPagoCaja)){
+  					elementos[0]=new FilaExtElement("datosImpresion", "datosImpresion", SIGAConstants.ACCESS_FULL);
 	  			}
+				
+				String fecha = GstDate.getFormatedDateShort("",row.getString("FECHA"));
+				String sModo = row.getString("MODO");
+				Double dImporte=new Double(UtilidadesNumero.redondea(new Double(row.getString("IMPORTE")).doubleValue(),2));
+				Double dImporteFinal = new Double(0);
+				String sEstado = "";
+				String sNombreBanco = row.getString("NOMBRE_BANCO");
+				
+				if (sModo.equals(textoEmision)) {
+					sEstado = sEstadoRevision;
+					
+				} else if (sModo.equals(textoPendienteCaja)) {
+					sEstado = sEstadoPendienteCaja;
+					
+				} else if (sModo.equals(textoPendienteBanco)) {
+					sEstado = sEstadoPendienteBanco;
+				
+				} else {
+					dImporteFinal = dImporte;
+					dTotal = dTotal - dImporte;
+					
+					if (sModo.equals(textoPagoCaja) || sModo.startsWith(textoCompensacion)) {
+						sEstado = sEstadoPendienteCaja;	
+						
+					} else if (sModo.equals(textoPagoBanco)) {
+						sEstado = sEstadoPendienteBanco;	
+					}
+				}				
+				
+				if (dTotal <= 0) {
+					sEstado = sEstadoPagado;
+				}
 %>
 
 				<siga:FilaConIconos
@@ -186,16 +237,20 @@
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value='<%=row.getString("IDENTIFICADOR")%>'>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=idFactura%>">
-						<% fecha=GstDate.getFormatedDateShort("",row.getString("FECHA"));%>
 						<%=UtilidadesString.mostrarDatoJSP(fecha)%>
 					</td>
-					<td align="left"><%=UtilidadesString.mostrarDatoJSP(row.getString("MODO"))%></td>
-					<td align="right">
-						<% String valorMostrado=new Double(UtilidadesNumero.redondea(new Double(row.getString("IMPORTE")).doubleValue(),2)).toString();%>
-						<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(valorMostrado))%>&nbsp;&euro;
+					<td align="left"><%=UtilidadesString.mostrarDatoJSP(sModo)%></td>
+					<td align="left"><%=UtilidadesString.mostrarDatoJSP(sEstado)%></td>
+					<td align="left"><%=UtilidadesString.mostrarDatoJSP(sNombreBanco)%></td>					
+					<td align="right">						
+						<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dImporteFinal))%>&nbsp;&euro;
 					</td>
+					<td align="right">
+						<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dTotal))%>&nbsp;&euro;
+					</td>				
+					
 <%					
-					if (!row.getString("MODO").equalsIgnoreCase("CAJA")){
+					if (!row.getString("MODO").equals(textoPagoCaja)) {
 %>
 						<td>&nbsp;</td>
 <%
@@ -209,22 +264,22 @@
 %>
 	</siga:Table>
 
-	<div id='tablaImportes' style='position:absolute;width:360px;left:545px;height:100px; bottom: 60px;'>
+	<div id='tablaImportes' style='position:absolute; width:360px; left:545px; height:100px; bottom: 60px;'>
 		<fieldset>
 			<table width="100%" border="0">
 				<tr>
-					<td class="labelText"  width="25%"><siga:Idioma key="facturacion.abonosPagos.literal.importeTotalAbono"/></td>				
-					<td class="labelTextNum" width="10%"><html:text property="importeAbono" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(total)%>' readOnly="true" />&nbsp;&euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.abonosPagos.literal.importeTotalAbono"/></td>				
+					<td class="labelTextNum" nowrap><html:text property="importeAbono" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(total))%>' readOnly="true" />&nbsp;&euro;</td>
 				</tr>
 				
 				<tr>
-					<td class="labelText"><siga:Idioma key="facturacion.abonosPagos.literal.totalAbonado"/></td>				
-					<td class="labelTextNum"><html:text property="importeAbonado" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(totalAbonado)%>' readOnly="true" />&nbsp;&euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.abonosPagos.literal.totalAbonado"/></td>				
+					<td class="labelTextNum" nowrap><html:text property="importeAbonado" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(totalAbonado))%>' readOnly="true" />&nbsp;&euro;</td>
 				</tr>
 				
 				<tr>
-					<td class="labelText"><siga:Idioma key="facturacion.abonosPagos.literal.pendienteAbonado"/></td>				
-					<td class="labelTextNum"><html:text property="importePendiente" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesNumero.formatoCampo(pendiente)%>' readOnly="true" />&nbsp;&euro;</td>
+					<td class="labelText" nowrap><siga:Idioma key="facturacion.abonosPagos.literal.pendienteAbonado"/></td>				
+					<td class="labelTextNum" nowrap><html:text property="importePendiente" size="13" styleClass="boxConsultaNumber" value='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(pendiente))%>' readOnly="true" />&nbsp;&euro;</td>
 				</tr>
 			</table>
 		</fieldset>

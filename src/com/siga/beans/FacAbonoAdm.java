@@ -459,6 +459,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALNETO + " AS TOTALNETO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALIVA + " AS TOTALIVA," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTAL + " AS TOTAL," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS PENDIENTEPORABONAR," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADO + " AS TOTALABONADO," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADOEFECTIVO + " AS TOTALABONADOEFECTIVO," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADOPORBANCO + " AS TOTALABONADOPORBANCO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + //"," +
 	            			//"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS ESTADO" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTALNETO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALNETO" + "," +
@@ -653,111 +657,139 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA," +
-							" 'Caja' AS MODO, " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE" +
+	            String sql ="SELECT 2 AS IDTABLA, " + 
+	            				FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
+								" '' AS NOMBRE_BANCO " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
+							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
+								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
+							
 							" MINUS (" + 
-				            "SELECT " +				
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA," +
-							" 'Caja' AS MODO, " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE" +
+				            "SELECT 2 AS IDTABLA, " + 
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
+								" '' AS NOMBRE_BANCO " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "," + FacPagosPorCajaBean.T_NOMBRETABLA +
-							" WHERE " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDABONO +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDPAGOABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDPAGOABONO + ")" +							
+							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
+							" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
+							" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
+							" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDABONO +
+							" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDPAGOABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDPAGOABONO + ")" +		
+							
 							" UNION " +
-				            "SELECT " +				
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR," +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA," +
-							" 'Compensación Factura nº '||" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " AS MODO, " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE" +
+				            "SELECT 2 AS IDTABLA, " + 
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDABONO + " AS ABONO, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + " AS IDENTIFICADOR, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.compensacion'," + this.usrbean.getLanguage() + ") || " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " AS MODO, " +								
+								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
+								" '' AS NOMBRE_BANCO " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "," + FacPagosPorCajaBean.T_NOMBRETABLA + "," + FacFacturaBean.T_NOMBRETABLA +
-							" WHERE " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDABONO +
-							" AND " +
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDPAGOABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDPAGOABONO +
-							" AND " +
-							FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
-							" AND " +
-							FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDFACTURA +
+							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
+								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
+								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
+								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDABONO +
+								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDPAGOABONO + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDPAGOABONO +
+								" AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDINSTITUCION +
+								" AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + "=" + FacPagosPorCajaBean.T_NOMBRETABLA +"."+ FacPagosPorCajaBean.C_IDFACTURA +
+							
 							" UNION " +
-				            "SELECT " +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + "," +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDABONO + "," +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + "," +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_FECHAMODIFICACION + "," +
-							" 'Banco', " +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO +
-							" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + "=" + institucion +
+				            "SELECT 2 AS IDTABLA, " + 
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDABONO + " AS ABONO, " +
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + " AS IDENTIFICADOR, " +
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_FECHAMODIFICACION + " AS FECHA, " +
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO + " AS IMPORTE, " +
+								"(SELECT " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + 
+									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO +
+									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL +
+									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL +
+									" || ' ' || LPAD(SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ", 7), 10, '*') " + 
+									" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + ", " +
+										CenBancosBean.T_NOMBRETABLA +
+									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO " +
+							" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + ", " + 
+										FacAbonoBean.T_NOMBRETABLA +
+							" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDABONO + "=" + abono +
+								" AND " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + "=" + institucion +
+								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " = " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDABONO +
+								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " = " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION +													
+								
 							" UNION " +
-				            "SELECT " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
-							"SYSDATE," +
-							" 'Pendiente de Generar Fichero Bancario', " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +
-//	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ")" +
+				            "SELECT 3 AS IDTABLA, " + 
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " AS ABONO, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + " AS IDENTIFICADOR, " +
+								" SYSDATE AS FECHA, " +
+								" SYSDATE AS FECHA_ORDEN, " +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.cambioBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE, " +
+								"(SELECT " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + 
+									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO +
+									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL +
+									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL +
+									" || ' ' || LPAD(SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ", 7), 10, '*') " + 
+									" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + ", " +
+										CenBancosBean.T_NOMBRETABLA +
+									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO " +
 							" FROM " + FacAbonoBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDCUENTA + " IS NOT NULL" +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + ">0 " +
-//	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") > 0" +
+							" WHERE " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " = " + abono +
+								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " = " + institucion +
+								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + " IS NOT NULL " +
+								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " > 0 " +
+							
+								/*
 							" UNION " +
-				            "SELECT " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
-							"SYSDATE," +
-							" 'Pendiente de Abonar por Caja', " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +
-//	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ")" +
+				            "SELECT 3 AS IDTABLA, " + 
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " AS ABONO, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + " AS IDENTIFICADOR, " +
+								" SYSDATE AS FECHA, " +
+								" SYSDATE AS FECHA_ORDEN, " +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pendienteCaja'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE " +
 							" FROM " + FacAbonoBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + abono +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDCUENTA + " IS NULL" +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR  + ">0 ";
-//	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") > 0";
+							" WHERE " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + abono +
+							" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
+							" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDCUENTA + " IS NULL" +
+							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR  + " > 0 " +
+							*/
+							
+							" UNION " +
+							" SELECT 1 AS IDTABLA, " + 
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " AS INSTITUCION, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " AS ABONO, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + " AS IDENTIFICADOR, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHA + " AS FECHA, " +
+								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.emisionPago'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								" 0 AS IMPORTE, " +
+								" '' AS NOMBRE_BANCO " + 
+							" FROM " + FacAbonoBean.T_NOMBRETABLA + 
+							" WHERE " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + abono +
+								" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
+							" ORDER BY IDTABLA ASC, FECHA ASC, FECHA_ORDEN ASC, IDENTIFICADOR ASC";
 														
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){

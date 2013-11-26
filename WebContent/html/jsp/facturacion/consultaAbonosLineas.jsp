@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaAbonosLineas.jsp -->
+
 <!-- 
 	 Muestra el desglose de un abono
 	 VERSIONES:
@@ -134,14 +135,14 @@
 	<siga:Table 
 	   	name="tablaDatos"
 	   	border="1"
-	   	columnNames="facturacion.lineasAbonos.literal.cantidad,
-	   		facturacion.lineasAbonos.literal.Descripcion,
+	   	columnNames="facturacion.lineasAbonos.literal.Descripcion,
+	   		facturacion.lineasAbonos.literal.cantidad,
 			facturacion.lineasAbonos.literal.precioUnit,
 			facturacion.datosGeneralesAbonos.literal.importeNeto,
 	   		facturacion.lineasAbonos.literal.iva,
 	   		facturacion.datosGeneralesAbonos.literal.importeIva,
 	   		facturacion.lineasAbonos.literal.importeTotal,"
-	   	columnSizes="10,30,10,10,10,10,10,10"
+	   	columnSizes="30,8,11,11,8,11,11,10"
 	   	modal="M">
 <%
     	if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ) {
@@ -177,14 +178,14 @@
 						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
 						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(FacLineaAbonoBean.C_NUMEROLINEA)%>">
 						<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=idFactura%>">
-						<%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_CANTIDAD))%>
+						<%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_DESCRIPCIONLINEA))%>
 					</td>
-					<td><%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_DESCRIPCIONLINEA))%></td>
-					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(row.getString(FacLineaAbonoBean.C_PRECIOUNITARIO)))%>&nbsp;&euro;</td>
-					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(impNeto))%>&nbsp;&euro;</td>
-					<td align="right"><%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_IVA))%></td>
-					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(impIva))%>&nbsp;&euro;</td>
-					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(impTotal))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaAbonoBean.C_CANTIDAD))%></td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(row.getString(FacLineaAbonoBean.C_PRECIOUNITARIO)))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impNeto))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(row.getString(FacLineaAbonoBean.C_IVA)))%>&nbsp;%</td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impIva))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(impTotal))%>&nbsp;&euro;</td>
 				</siga:FilaConIconos>
 <% 
 				recordNumber++;
@@ -194,12 +195,12 @@
 				<td>&nbsp;</td>
 				<td align="right"><b><siga:Idioma key="facturacion.lineasAbonos.literal.total"/></b></td>
 				<td>&nbsp;</td>
-				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(new Double(UtilidadesNumero.redondea (sumatorioNeto, 2)).toString()))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(new Double(UtilidadesNumero.redondea (sumatorioNeto, 2)).toString()))%>&nbsp;&euro;</b></td>
 				<td>&nbsp;</td>
-				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(new Double(UtilidadesNumero.redondea (sumatorioIva, 2)).toString()))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(new Double(UtilidadesNumero.redondea (sumatorioIva, 2)).toString()))%>&nbsp;&euro;</b></td>
 				<td align="right">
 					<html:hidden property="importeTotal" value="<%=new Double(UtilidadesNumero.redondea (sumatorioTotal, 2)).toString()%>"/>	
-					<b><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(new Double(UtilidadesNumero.redondea (sumatorioTotal, 2)).toString()))%>&nbsp;&euro;</b>
+					<b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(new Double(UtilidadesNumero.redondea (sumatorioTotal, 2)).toString()))%>&nbsp;&euro;</b>
 				</td>
 				<td>&nbsp;</td>
 			</tr>	
