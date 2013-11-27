@@ -309,6 +309,19 @@ a.disabled {
 #tablaDatos td {
   overflow: hidden;
 }
+.listaNonEdit {
+  font-size: 13px;
+  font-weight: normal;
+  margin: auto;
+  padding-right: 4px;
+  padding-left: 3px;
+  vertical-align: middle;
+  text-align: left;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background-color: #eeeeee;
+  color: #333333;
+}
 .filaTablaPar {
   font-size: 13px;
   font-weight: normal;
@@ -1099,17 +1112,6 @@ A.imageLink:active {
 }
 .pestanaTD a.here {
   background: url(pestahover.gif) no-repeat right;
-}
-.listaNonEdit {
-  font-size: 13px;
-  font-weight: normal;
-  margin: auto;
-  padding-right: 4px;
-  padding-left: 3px;
-  vertical-align: middle;
-  text-align: left;
-  padding-top: 0px;
-  padding-bottom: 0px;
 }
 .posicionPest {
   position: absolute;
