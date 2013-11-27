@@ -17,8 +17,13 @@ import org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsJuzgadoProcedimientoAdm;
+import com.siga.beans.ScsProcedimientosBean;
+import com.siga.gratuita.form.MaestroDesignasForm;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -48,6 +53,8 @@ public class JuzgadosAction extends MasterAction{
 				getAjaxJuzgado4 (request, response);
 			} else if (modo!=null && modo.equalsIgnoreCase("getAjaxTiposFundamento")){
 				getAjaxTiposFundamento (request, response);
+			}  else if (modo!=null && modo.equalsIgnoreCase("getAjaxModulos")){
+				getAjaxModulos(request, response) ;
 			} 
 		} catch (SIGAException es) {
 			throw es;
@@ -189,6 +196,45 @@ public class JuzgadosAction extends MasterAction{
 		response.setHeader("Content-Type", "application/json");
 	    response.setHeader("X-JSON", jsonObject.toString());
 		response.getWriter().write(jsonObject.toString()); 		
+	}
+	protected void getAjaxModulos (
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		UsrBean usr = this.getUserBean(request);
+		//Recogemos el parametro enviado por ajax
+		
+		String idJuzgado = "-1";
+		if(request.getParameter("idJuzgado")!=null && !request.getParameter("idJuzgado").equals("")){
+			idJuzgado = request.getParameter("idJuzgado");
+		}
+		
+		String idProcedimiento = "-1";
+		if(request.getParameter("procedimiento")!=null && !request.getParameter("procedimiento").equals("")){
+			idProcedimiento = request.getParameter("procedimiento");
+		}
+		String fecha = "SYSDATE";
+		
+		//Comprobamos el valor del parametro 
+		GenParametrosAdm adm = new GenParametrosAdm (usr);
+		String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+		if(filtrarModulos.equalsIgnoreCase("S")){
+			fecha = "'" + request.getParameter("fecha") + "'";
+		}
+		
+		
+		//Sacamos las guardias si hay algo selccionado en el turno
+		List<ScsProcedimientosBean> modulosList = null;
+		if(idJuzgado!= null && !idJuzgado.equals("-1")&& !idJuzgado.equals("")){
+			ScsJuzgadoProcedimientoAdm admModulos = new ScsJuzgadoProcedimientoAdm(usr);
+			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha);
+		}
+		if(modulosList==null){
+			modulosList = new ArrayList<ScsProcedimientosBean>();
+			
+		}
+		respuestaAjax(new AjaxCollectionXmlBuilder<ScsProcedimientosBean>(), modulosList,response);
+		
 	}
 	
 }

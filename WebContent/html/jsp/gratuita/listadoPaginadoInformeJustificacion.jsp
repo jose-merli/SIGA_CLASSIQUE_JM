@@ -1698,7 +1698,7 @@ function downloadDocumentoResolucion(docResolucion) {
 
 </html:form>
 
-<html:form action="/JGR_MantenimientoDesignas" method="post"
+<html:form action="/JGR_ActualizarInformeJustificacion" method="post"
 	target="mainWorkArea" style="display:none">
 	<html:hidden property="modo" value="abrir" />
 	<html:hidden property="actionModal" value="" />

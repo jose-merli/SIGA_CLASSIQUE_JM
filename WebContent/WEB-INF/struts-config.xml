@@ -2096,8 +2096,6 @@
 			<forward name="inicio" path="/html/jsp/gratuita/editarDesigna.jsp"/>
 			<forward name="edicion" path="/html/jsp/gratuita/pestanasDesignas.jsp"/>
 			<forward name="PreguntaDesignaDuplicada" path="/html/jsp/gratuita/preguntaDesignaDuplicada.jsp"/>
-			<forward name="actualizarDesigna" path="/html/jsp/gratuita/actualizarDesigna.jsp"/>
-
 		</action>
 
    		<action path="/JGR_DefendidosDesignas" type="com.siga.gratuita.action.DefendidosDesignasAction" name="DefendidosDesignasForm">
@@ -2191,6 +2189,7 @@
 			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
 			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
 		</action>
+				
 		
 		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
 			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
@@ -2202,7 +2201,9 @@
 			<forward name="inicioInforme" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
 		</action>
 		
-		<action path="/JGR_ActualizarInformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionMasivaAction"  name="InformeJustificacionMasivaForm"/>
+		<action path="/JGR_ActualizarInformeJustificacion" type="com.siga.gratuita.action.MaestroDesignasAction" name="MaestroDesignasForm" scope="request">
+			<forward name="actualizarDesigna" path="/html/jsp/gratuita/actualizarDesigna.jsp"/>
+		</action>
 
 		<action path="/JGR_PestanaProximasDesignas" type="com.siga.gratuita.action.ProximasDesignasAction">
 			<forward name="listado" path="/html/jsp/gratuita/listarProximasDesignasTurno.jsp"/>

@@ -203,7 +203,7 @@
 
 
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
-<html:form action="/JGR_MantenimientoDesignas" method="POST" target="submitArea">
+<html:form action="/JGR_ActualizarInformeJustificacion" method="POST" target="submitArea">
 	<html:hidden name="MaestroDesignasForm" property="modo" value="" />
 	<html:hidden name="MaestroDesignasForm" property="anio"  />
 	<html:hidden name="MaestroDesignasForm" property="numero" />
@@ -501,7 +501,7 @@
 </html:form>
 
 	<ajax:select
-		baseUrl="/SIGA/JGR_MantenimientoDesignas.do?modo=getAjaxModulos"
+		baseUrl="/SIGA/GEN_Juzgados.do?modo=getAjaxModulos"
 		source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha}"
 		postFunction="postAccionJuzgados"
 		/>
