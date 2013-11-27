@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosPago.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -19,13 +20,13 @@
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.facturacionSJCS.form.DatosGeneralesPagoForm"%>
 <%@ page import = "com.atos.utils.ClsConstants"%>
-<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
+<%@ page import = "org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 <%@ page import = "com.atos.utils.UsrBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.siga.beans.FcsPagosJGBean"%>
 <%@ page import = "com.atos.utils.GstDate"%>
 <%@ page import = "java.util.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
 
 
 <!-- JSP -->
@@ -136,8 +137,7 @@
 			scriptOnLoad += " ocultarRestante();";
 		}
 
-	} 
-	else { //Venimos de Nuevo
+	} else { //Venimos de Nuevo
 		idInstitucion = request.getAttribute("idInstitucionRegistro")==null?"":(String)request.getAttribute("idInstitucionRegistro");//Propia del registro
 	}
 	
@@ -177,35 +177,25 @@
 	String facturacionParams[] = new String[2];
 	facturacionParams[0] = usrbean.getLocation();
 	facturacionParams[1] = String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_LISTA_CONSEJO.getCodigo());
-	
 %>	
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="factSJCS.pagos.datosGenerales" 
-		localizacion="factSJCS.Pagos.localizacion"/>
+	<siga:Titulo titulo="factSJCS.pagos.datosGenerales" localizacion="factSJCS.Pagos.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="datosGeneralesPagoForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<html:javascript formName="datosGeneralesPagoForm" staticJavascript="false" />  
+  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	
 	<script>
@@ -250,9 +240,6 @@
 		conceptos[2] = 'EJG';
 		conceptos[3] = 'SOJ';
 	
-	</script>
-	
-	<script>
 		function convertirAFormato(n){
 			if (n.toString().indexOf(".", 0) != -1  && n.toString().indexOf(",", 0) != -1){
 				var d = n.replace(".","");
@@ -429,7 +416,7 @@
 				//inicializa el valor de los elementos
 				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
 				actualizaConcepto(conceptos[i], eval("total"+conceptos[i]), eval("importePend"+conceptos[i]), 0);
-				document.getElementsByName("radioAPagar"+conceptos[i])[1].checked=true;
+				document.getElementsByName("radioAPagar"+conceptos[i])[0].checked=true;
 				cambiar(conceptos[i]);
 			}
 		}
@@ -851,9 +838,6 @@
 		 * Convierte a formato java los campos de tipo precio
 		 */
 		function actualizarCamposPrecio(){
-			document.forms[0].importeRepartir.value=document.forms[0].importeRepartir.value.replace(/,/,".");
-			document.forms[0].importePagado.value=document.forms[0].importePagado.value.replace(/,/,".");
-			document.forms[0].importeFacturado.value=document.forms[0].importeFacturado.value.replace(/,/,".");
 			
 			//Convierte los importes y porcentajes de cada concepto
 			for (i=0;i<4;i++){
@@ -871,9 +855,6 @@
 		}
 		
 		function formatearCamposprecio(){
-			document.forms[0].importeRepartir.value = convertirAFormato(document.forms[0].importeRepartir.value);
-			document.forms[0].importePagado.value = convertirAFormato(document.forms[0].importePagado.value);
-			document.forms[0].importeFacturado.value = convertirAFormato(document.forms[0].importeFacturado.value);
 			for (i=0;i<4;i++){			
 				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
 				document.getElementById("porcentaje"+conceptos[i]).value = convertirAFormato(document.getElementById("porcentaje"+conceptos[i]).value);

@@ -2,10 +2,10 @@
 <html>
 <head>
 <!-- configurarAbono.jsp -->
+
 <!-- VERSIONES:
 	  jose.barrientos - 26-02-2008 - Creacion
 -->
-	 
  
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -35,11 +35,11 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Properties"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	
 	String idInstitucion="", idPagosJG="";
@@ -52,7 +52,6 @@
 	String nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
 	String idEstadoPagosJG = request.getAttribute("idEstadoPagosJG")==null?"":(String)request.getAttribute("idEstadoPagosJG");
 	
-	
 	String bdCuenta = (String)request.getAttribute("cuenta");
 	String bdConcepto = (String)request.getAttribute("concepto");
 	boolean guardable = false;
@@ -60,27 +59,21 @@
 	if ((bdCuenta==null) ||(bdCuenta.equalsIgnoreCase(""))){
 		bdCuenta = (String)request.getAttribute("paramIdCuenta");
 	}
+	
 	if ((bdConcepto==null)||(bdConcepto.equalsIgnoreCase(""))){
 		bdConcepto = (String)request.getAttribute("paramConcepto");
 	}
 	
-	if (
-			((modo!=null)&&( modo.equalsIgnoreCase("edicion")))
-		&&
-			((!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_EJECUTADO)))&&
-			 (!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_CERRADO))))
-			) 
-	{
+	if (modo!=null && 
+		modo.equalsIgnoreCase("edicion") &&
+		!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_EJECUTADO)) &&
+		!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_CERRADO))) {
 		guardable = true;
 	}
 %>	
 
-
-<!-- HEAD -->
-
-
-<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -93,92 +86,85 @@
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="factSJCS.pagos.confabonos" 
-		localizacion="factSJCS.Pagos.localizacion"/>
+	<siga:Titulo titulo="factSJCS.pagos.confabonos" localizacion="factSJCS.Pagos.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->	
-
 </head>
 
 <body>
-
-		<!-- TITULO -->
-		<table class="tablaTitulo" cellspacing="0">
-			<tr>
+	<!-- TITULO -->
+	<table class="tablaTitulo" cellspacing="0">
+		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="factSJCS.datosPagos.titulo1"/> <%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
 			</td>
-			</tr>
-		</table>
-
-	
-	
+		</tr>
+	</table>
 	
 	<html:form action="/FCS_ConfiguracionAbonos.do" method="POST" target="mainPestanas">
-	<html:hidden name="configuracionAbonosForm" property="modo" value="<%=modo%>" />
-	<html:hidden name="configuracionAbonosForm" property="idInstitucion" value="<%=idInstitucion%>" />
-	<html:hidden name="configuracionAbonosForm" property="idPagosJG" value="<%=idPagosJG%>" />
-	
+		<html:hidden name="configuracionAbonosForm" property="modo" value="<%=modo%>" />
+		<html:hidden name="configuracionAbonosForm" property="idInstitucion" value="<%=idInstitucion%>" />
+		<html:hidden name="configuracionAbonosForm" property="idPagosJG" value="<%=idPagosJG%>" />
 
-	<siga:ConjCampos leyenda="factSJCS.abonos.configuracion.literal.conceptoTitulo">
-		<table class="tablaCampos" >
+		<siga:ConjCampos leyenda="factSJCS.abonos.configuracion.literal.conceptoTitulo">
+			<table class="tablaCampos" >
+				<tr>
+					<td class="labelText"  align="right" width="200px">
+						<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto"/>
+						<% if (guardable) { %>
+							<html:text name="configuracionAbonosForm" property="concepto"  size="2"  maxlength= "1" styleClass="box" value="<%= bdConcepto %>" readonly="false"/>
+						<% } else { %>
+							<html:text name="configuracionAbonosForm" property="concepto" size="2"  styleClass="boxConsulta" value="<%= bdConcepto %>" readonly="true"/>
+						<% } %>
+					</td>
+					<td>
+						<table>
+							<tr align="right">
+								<td class="labelText">
+									<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto1"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto9"/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+
+		<!-- TITULO -->
+		<!-- Barra de titulo actualizable desde los mantenimientos -->
+		<table class="tablaTitulo" cellspacing="0" heigth="32">
 			<tr>
-				<td class="labelText"  align="right" width="200px">
-					<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto"/>
-					<% if (guardable) { %>
-						<html:text name="configuracionAbonosForm" property="concepto"  size="2"  maxlength= "1" styleClass="box" value="<%= bdConcepto %>" readonly="false"/>
-					<%} else {%>
-						<html:text name="configuracionAbonosForm" property="concepto" size="2"  styleClass="boxConsulta" value="<%= bdConcepto %>" readonly="true"/>
-					<%}%>
-				</td>
-				<td colspan="1">
-					<table>
-					<tr align="right">
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto1"/>
-					</td>
-					</tr>
-					<tr>
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.abonos.configuracion.literal.concepto9"/>
-					</td>
-					</tr>
-					</table>
+				<td id="titulo" class="titulosPeq">
+					<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentas"/>
 				</td>
 			</tr>
-		</table>
-	</siga:ConjCampos>
-
-	<!-- TITULO -->
-	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulosPeq">
-			<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentas"/>
-		</td>
-	</tr>
-	<siga:Table 
-				   name="tablaResultados"
-				   border="1"
-				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria"
-				   columnSizes="10,50,40"
-				   modal="g">
+	
+			<siga:Table 
+				name="tablaResultados"
+				border="1"
+				columnNames="facturacion.devolucionManual.seleccion,
+					facturacion.ficheroBancarioAbonos.literal.banco,
+					censo.consultaDatosBancarios.literal.cuentaBancaria"
+				columnSizes="10,50,40"
+				modal="g">
 				   				   
-				<%
-	    		if (request.getAttribute("bancosInstitucion") == null || ((Vector)request.getAttribute("bancosInstitucion")).size() < 1 )
-		    	{
-				%>
+<%
+	    		if (request.getAttribute("bancosInstitucion") == null || ((Vector)request.getAttribute("bancosInstitucion")).size() < 1 ) {
+%>
 					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			   			<td class="titulitos">
+			   				<siga:Idioma key="messages.noRecordFound"/>
+			   			</td>
 					</tr>
-				<%
-		    	}	    
-			    else
-		    	{ 
+<%
+		    	} else { 
 		    		Enumeration en = ((Vector)request.getAttribute("bancosInstitucion")).elements();					
 					int recordNumber=1;
-					while (en.hasMoreElements())
-					{
+					while (en.hasMoreElements()) {
 	            		Row row = (Row) en.nextElement(); 
 	            		// Comprobamos que se trate de una cuenta para SJCS
 	            		String sjcs = row.getString("SJCS");
@@ -194,66 +180,78 @@
 	            			bsjcs=true;
 	            			bsel=true;
 	            		}           		
-					%>
-	            		<% if (bsjcs){ %>
-							<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones=''
-								  modo='<%=accion%>' 	visibleConsulta='no' 	visibleEdicion='no'
-								  visibleBorrado='no' 	clase="listaNonEdit" 	pintarespacio='no'>
+					
+						if (bsjcs) { 
+%>
+							<siga:FilaConIconos 
+								fila='<%=String.valueOf(recordNumber)%>' 
+								botones=''
+								modo='<%=accion%>' 	
+								visibleConsulta='no' 	
+								visibleEdicion='no'
+								visibleBorrado='no' 	
+								clase='listaNonEdit' 	
+								pintarespacio='no'>
 								<td>
-									<% if (guardable) { %>
-										<% if (bsel){ %>
+<% 
+									if (guardable) {
+										if (bsel) { 
+%>
 											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" checked>
-										<% }else{ %>
+<% 
+										} else { 
+%>
 											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>">
-										<% } %>
-									<% }else{ %>
-										<% if (bsel){ %>
+<% 
+										}
+									} else {
+										if (bsel) { 
+%>
 											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" checked disabled>
-										<% }else{ %>
+<% 
+										} else { 
+%>
 											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" disabled>
-										<% } %>
-									<% } %>
+<% 
+										}
+									} 
+%>
 								</td>  	
-								<td>
-									<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
-								</td>  	
-								<td align="right">
-									<%=row.getString("CUENTACONTABLE")%>							
-								</td>
-						</siga:FilaConIconos>
-						<% } %>
-					<% 
-					recordNumber++;
+								<td><%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%></td>  	
+								<td align="right"><%=row.getString("CUENTACONTABLE")%></td>
+							</siga:FilaConIconos>
+<% 
+						}
+						recordNumber++;
 					} 
-				} %>
+				} 
+%>
 			</siga:Table>	
-	</table>
-
+		</table>
 	</html:form>
-	<div id="camposRegistro" class="posicionModalPeque" align="center">
 	
-	<!-- FORMULARIO INICIAL -->
-	<html:form action="/CEN_MantenimientoPago.do?noReset=true" method="POST" target="mainWorkArea">
+	<div id="camposRegistro" class="posicionModalPeque" align="center">	
+		<!-- FORMULARIO INICIAL -->
+		<html:form action="/CEN_MantenimientoPago.do?noReset=true" method="POST" target="mainWorkArea">
 			<html:hidden name="mantenimientoPagoForm" property="modo" value="abrir" />
 			<html:hidden name="mantenimientoPagoForm" property="idInstitucion" value="<%=idInstitucion%>" />
 			<html:hidden name="mantenimientoPagoForm" property="idPagosJG" value="<%=idPagosJG%>" />
-	</html:form>
+		</html:form>
+	</div>		
 
 	<!-- FIN: LISTA DE VALORES -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 
 		//Asociada al boton Volver
-		function accionVolver() 
-		{		
+		function accionVolver() {		
 			var f = document.getElementById("mantenimientoPagoForm");
 			f.target = "mainPestanas";
 			f.submit();
 		}
 		
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardar() 
-		{	
+		// Asociada al boton GuardarCerrar
+		function accionGuardar() {	
 			sub();
 			if(document.configuracionAbonosForm.cuenta!=null){
 				var conceptoAb=document.configuracionAbonosForm.concepto.value;
@@ -262,46 +260,39 @@
 						document.configuracionAbonosForm.target = "submitArea";
 						document.configuracionAbonosForm.modo.value = "modificar";
 						document.configuracionAbonosForm.submit();
-					}else{
+					} else {
 						fin();
 						return false;
 					}
-				}else{
+				} else {
 					fin();
 					alert("<siga:Idioma key="administracion.parametrosGenerales.error.conceptoAbonoPago"/>");
 				}
-			}else{
+			} else {
 				fin();
 				alert("<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentaObligatoria"/>");
 			}
-			
 		}
 
-		function refrescarLocal()
-		{
+		function refrescarLocal() {
 			buscar();
 		}
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	
-</div>
 
-
-	<%
+<%
 	String bot = "V";
 	if (guardable) { 
 		bot = "V,G"; 
 	}
-	%>
+%>
 	
-<siga:ConjBotonesAccion botones="<%=bot%>" clase="botonesDetalle"/>
+	<siga:ConjBotonesAccion botones="<%=bot%>" clase="botonesDetalle"/>
 	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-	</body>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

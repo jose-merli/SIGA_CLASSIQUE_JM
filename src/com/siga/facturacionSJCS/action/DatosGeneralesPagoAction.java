@@ -201,8 +201,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @exception SIGAException
 	 *                En cualquier caso de error
 	 */
-	protected String modificarPago(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
+	protected String modificarPago(
+			ActionMapping mapping,
+			MasterForm formulario, 
+			HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(this.getUserBean(request));
 		UsrBean usr;
@@ -215,42 +217,45 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			tx = usr.getTransaction();
 
 			// obtiene el bean a actualizar de BD
-			String where = " where " + FcsPagosJGBean.C_IDINSTITUCION + "="
-					+ miform.getIdInstitucion() + " and "
-					+ FcsPagosJGBean.C_IDPAGOSJG + "=" + miform.getIdPagosJG()
-					+ " ";
-			FcsPagosJGBean pagosBean = (FcsPagosJGBean) pagosAdm.select(where)
-					.elementAt(0);
+			String where = " WHERE " + FcsPagosJGBean.C_IDINSTITUCION + "=" + miform.getIdInstitucion() + 
+					" AND " + FcsPagosJGBean.C_IDPAGOSJG + "=" + miform.getIdPagosJG() + " ";
+			FcsPagosJGBean pagosBean = (FcsPagosJGBean) pagosAdm.select(where).elementAt(0);
 			pagosBean.setNombre(miform.getNombre());
 			pagosBean.setAbreviatura(miform.getAbreviatura());
 			pagosBean.setImporteEJG(Double.valueOf(miform.getImporteEJG()));
 			pagosBean.setImporteSOJ(Double.valueOf(miform.getImporteSOJ()));
-			pagosBean
-					.setImporteOficio(Double.valueOf(miform.getImporteOficio()));
-			pagosBean.setImporteGuardia(Double.valueOf(miform
-					.getImporteGuardias()));
-			pagosBean.setImporteGuardia(Double.valueOf(miform
-					.getImporteGuardias()));
-			pagosBean.setImporteRepartir(Double.valueOf(miform
-					.getImporteRepartir()));
-			pagosBean
-					.setImportePagado(Double.valueOf(miform.getImportePagado()));
-
-			GenParametrosAdm paramAdm = new GenParametrosAdm(
-					this.getUserBean(request));
-			String paramConcepto = paramAdm.getValor(miform.getIdInstitucion(),
-					"FCS", "CONCEPTO_ABONO", "");
-			if (!paramConcepto.equalsIgnoreCase("1")
-					&& !paramConcepto.equalsIgnoreCase("8")
-					&& !paramConcepto.equalsIgnoreCase("9")) {
-				throw new SIGAException(
-						"administracion.parametrosGenerales.error.conceptoAbono");
+			pagosBean.setImporteOficio(Double.valueOf(miform.getImporteOficio()));
+			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+			pagosBean.setImporteRepartir(Double.valueOf(miform.getImporteRepartir()));
+			pagosBean.setImportePagado(Double.valueOf(miform.getImportePagado()));
+			
+			/*
+			 * JPT: Calculo del concepto y el codigo del banco
+			 */
+			
+			String sConcepto="", sCuenta="";
+			Hashtable hash = new Hashtable();
+			hash.put(FcsPagosJGBean.C_IDINSTITUCION, pagosBean.getIdInstitucion());
+			hash.put(FcsPagosJGBean.C_IDPAGOSJG, pagosBean.getIdPagosJG());
+									
+			Vector v = pagosAdm.selectByPK(hash);
+			if (v!=null && v.size()>0){
+				FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
+				sConcepto = bean.getConcepto();
+	 		 	sCuenta = bean.getBancosCodigo();
+	 		 	
+			} else {
+				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+				sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
+				if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
+					throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
+				}
+				sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");				
 			}
-			pagosBean.setConcepto(paramConcepto);
-			pagosBean
-					.setBancosCodigo(paramAdm.getValor(
-							miform.getIdInstitucion(), "FCS",
-							"BANCOS_CODIGO_ABONO", ""));
+			
+			pagosBean.setConcepto(sConcepto);
+			pagosBean.setBancosCodigo(sCuenta);
 
 			// actualiza la BD
 			tx.begin();
@@ -260,16 +265,16 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// Consulta el registro modificado tal cual esta en base de datos y
 			// lo almacena en sesion:
 			Hashtable registroModificado = new Hashtable();
-			registroModificado = ((FcsPagosJGBean) pagosAdm.select(where)
-					.elementAt(0)).getOriginalHash();
+			registroModificado = ((FcsPagosJGBean) pagosAdm.select(where).elementAt(0)).getOriginalHash();
 			request.getSession().setAttribute("DATABACKUP", registroModificado);
 
 			request.setAttribute("modo", "modificarPago");
 			forward = exito("messages.updated.success", request);
+			
 		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.facturacionSJCS" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
 		}
+		
 		return forward;
 	}
 
