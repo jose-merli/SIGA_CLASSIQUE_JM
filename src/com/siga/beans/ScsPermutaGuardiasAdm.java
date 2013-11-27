@@ -624,60 +624,71 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 		Hashtable miTurno = null;	
 		try{		
 		//Confirmador
-		consulta1 = "SELECT permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR+" IDPERSONA, permuta." +ScsPermutaGuardiasBean.C_FECHACONFIRMACION+", permuta." +ScsPermutaGuardiasBean.C_FECHASOLICITUD + ", coleg."+CenColegiadoBean.C_COMUNITARIO+", "+ "permuta."+ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR+",";		
-		consulta1 += "permuta."+ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR+", ";	
-		consulta1 += "DECODE(coleg."+CenColegiadoBean.C_COMUNITARIO+","+"'1'" +", coleg."+ CenColegiadoBean.C_NCOMUNITARIO +", coleg."+CenColegiadoBean.C_NCOLEGIADO + ") NUMEROCONFIRMADOR, " ; 		
-		consulta1 += " perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRECONFIRMADOR ";	
-		consulta1 += " FROM "+ScsPermutaGuardiasBean.T_NOMBRETABLA+" permuta,";
-		consulta1 += ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";	
-		consulta1 += CenPersonaBean.T_NOMBRETABLA+" perso,";			
-		consulta1 += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-		consulta1 += " WHERE ";	
-		consulta1 += " perso."+CenPersonaBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR;
-		consulta1 += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR;
-		consulta1 += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idpersona;		
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"= TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendario;			
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"=permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"=permuta."+ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"=permuta."+ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"=permuta."+ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE;
-		consulta1 += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"=permuta."+ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE;
-		//Solicitante
-		consulta2 = "SELECT permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE+" IDPERSONA,  permuta." +ScsPermutaGuardiasBean.C_FECHACONFIRMACION+", permuta." +ScsPermutaGuardiasBean.C_FECHASOLICITUD + ", coleg."+CenColegiadoBean.C_COMUNITARIO+", "+ "permuta."+ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE+",";		
-		consulta2 += "permuta."+ ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE+",";	
-		consulta2 += "DECODE(coleg."+CenColegiadoBean.C_COMUNITARIO+","+"'1'" +", coleg."+ CenColegiadoBean.C_NCOMUNITARIO +", coleg."+CenColegiadoBean.C_NCOLEGIADO + ") NUMEROCONFIRMADOR, " ;		
-		consulta2 += " perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRECONFIRMADOR ";	
-		consulta2 += " FROM "+ScsPermutaGuardiasBean.T_NOMBRETABLA+" permuta,";
-		consulta2 += ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
-		consulta2 += CenPersonaBean.T_NOMBRETABLA+" perso,";			
-		consulta2 += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-		consulta2 += " WHERE ";		
-		consulta2+= " perso."+CenPersonaBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE;
-		consulta2 += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE;
-		consulta2 += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idpersona;		
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"= TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendario;				
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"=permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"=permuta."+ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"=permuta."+ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"=permuta."+ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR;
-		consulta2 += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"=permuta."+ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR;
+		consulta1 = "SELECT permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR + " IDPERSONA, " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHACONFIRMACION + ", " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHASOLICITUD + ", " +
+						" coleg." + CenColegiadoBean.C_COMUNITARIO + ", "+ 
+						" permuta." + ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR + ", " +	
+						" permuta." + ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR + ", " +
+						" DECODE(coleg." + CenColegiadoBean.C_COMUNITARIO + ", '1', coleg." + CenColegiadoBean.C_NCOMUNITARIO +", coleg."+CenColegiadoBean.C_NCOLEGIADO + ") NUMEROCONFIRMADOR, " + 		
+						" perso." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || perso." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || perso." + CenPersonaBean.C_NOMBRE + " NOMBRECONFIRMADOR, " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHAMODIFICACION +
+					" FROM " + ScsPermutaGuardiasBean.T_NOMBRETABLA + " permuta, " +
+						ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guard, " +	
+						CenPersonaBean.T_NOMBRETABLA + " perso, " +			
+						CenColegiadoBean.T_NOMBRETABLA + " coleg " +
+					" WHERE perso." + CenPersonaBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR +
+						" AND coleg." + CenColegiadoBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR +
+						" AND coleg." + CenColegiadoBean.C_IDINSTITUCION + " = permuta." + ScsPermutaGuardiasBean.C_IDINSTITUCION +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDPERSONA + " = " + idpersona +		
+						" AND guard." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " = TO_DATE('" + fechaInicio + "','DD/MM/YYYY') " +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " = " + idguardia +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDTURNO + " = " + idturno +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " = " + idinstitucion +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + " = " + idcalendario +				
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " = permuta." + ScsPermutaGuardiasBean.C_IDINSTITUCION +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + " = permuta." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDTURNO + " = permuta." + ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " = permuta." + ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE +
+						" AND guard." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " = permuta." + ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE;
 		
-		consulta3= consulta1 +" UNION "+ consulta2;			
-			
-		miTurno = (Hashtable)((Vector)this.ejecutaSelect(consulta3)).get(0);		
-		 
+		//Solicitante
+		consulta2 = "SELECT permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE +" IDPERSONA, " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHACONFIRMACION + ", " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHASOLICITUD + ", " +
+						" coleg." + CenColegiadoBean.C_COMUNITARIO + ", " + 
+						" permuta." + ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE + ", " +		
+						" permuta." + ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE + ", " +	
+						" DECODE(coleg." + CenColegiadoBean.C_COMUNITARIO + ", '1', coleg." + CenColegiadoBean.C_NCOMUNITARIO + ", coleg." + CenColegiadoBean.C_NCOLEGIADO + ") NUMEROCONFIRMADOR, " +		
+						" perso." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || perso." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || perso." + CenPersonaBean.C_NOMBRE + " NOMBRECONFIRMADOR, " +
+						" permuta." + ScsPermutaGuardiasBean.C_FECHAMODIFICACION +
+					" FROM " + ScsPermutaGuardiasBean.T_NOMBRETABLA + " permuta, " +
+						ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guard, " +
+						CenPersonaBean.T_NOMBRETABLA + " perso, " +			
+						CenColegiadoBean.T_NOMBRETABLA + " coleg " +
+					" WHERE perso." + CenPersonaBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE +
+						" AND coleg." + CenColegiadoBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE +
+						" AND coleg." + CenColegiadoBean.C_IDINSTITUCION + " = permuta." + ScsPermutaGuardiasBean.C_IDINSTITUCION +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDPERSONA + " = " + idpersona +		
+						" AND guard." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " = TO_DATE('" + fechaInicio + "','DD/MM/YYYY')" +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " = " + idguardia +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDTURNO + " = " + idturno +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " = " + idinstitucion +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + " = " + idcalendario +				
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + " = permuta." + ScsPermutaGuardiasBean.C_IDINSTITUCION +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + " = permuta." + ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDTURNO + " = permuta." + ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA + " = permuta." + ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR +
+						" AND guard." + ScsCabeceraGuardiasBean.C_IDPERSONA + " = permuta." + ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR +
+						" AND guard." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " = permuta." + ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR;
+		
+		consulta3= consulta1 +" UNION "+ consulta2 + " ORDER BY " + ScsPermutaGuardiasBean.C_FECHAMODIFICACION + " DESC";
+		
+		// Como puede obtener
+		Vector vResultado = this.ejecutaSelect(consulta3);
+		if (vResultado.size() > 0)
+			miTurno = (Hashtable) vResultado.get(0);
 		
 		}catch (Exception e){
 			miTurno = new Hashtable();

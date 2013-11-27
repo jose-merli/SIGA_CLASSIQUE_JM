@@ -163,7 +163,9 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 		try {			
 			String sql = " UPDATE " + ScsPermutaCabeceraBean.T_NOMBRETABLA +
 				" SET " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_FECHA + " = TO_DATE('" + fechaSolicitante + "', '" + ClsConstants.DATE_FORMAT_SQL + "'), " +
-					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDCALENDARIOGUARDIAS + " = " + idCalendarioSolicitante +
+					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDCALENDARIOGUARDIAS + " = " + idCalendarioSolicitante + ", " + 
+					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_FECHAMODIFICACION + " = SYSDATE, " +
+					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() +
 				" WHERE " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDINSTITUCION + " = " + idInstitucion +				
 					" AND " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDPERMUTACABECERA + " = " + idPermutaCabeceraSolicitante;	
 			salida = updateSQL(sql);
@@ -230,7 +232,9 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 		
 		try {			
 			String sql = " UPDATE " + ScsPermutaCabeceraBean.T_NOMBRETABLA +
-				" SET " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDPERSONA + " = " + idPersona +
+				" SET " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDPERSONA + " = " + idPersona + ", " +
+					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_FECHAMODIFICACION + " = SYSDATE, " +
+					ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() +
 				" WHERE " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDINSTITUCION + " = " + idInstitucion +
 					" AND " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDTURNO + " = " + idTurno +
 					" AND " + ScsPermutaCabeceraBean.T_NOMBRETABLA + "." + ScsPermutaCabeceraBean.C_IDGUARDIA + " = " + idGuardia +
