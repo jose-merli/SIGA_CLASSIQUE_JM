@@ -118,7 +118,6 @@
 				function accionGuardarCerrar() 
 				{
 				    sub();
-				    alertStop("pepep");
 					if(document.ImagenPlantillaForm.modo.value=='insertar'){
 						
 						if (!TestFileType(document.ImagenPlantillaForm.theFile.value, ['JPG', 'GIF','PNG','BMP'])){
