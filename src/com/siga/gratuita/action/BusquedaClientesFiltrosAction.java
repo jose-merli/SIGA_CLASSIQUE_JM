@@ -171,9 +171,9 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			idGuardia = (idGuardiaCombo == null) ? "" : idGuardiaCombo.substring(idGuardiaCombo.indexOf(",") + 1);
 			
 			String fecha = miFormulario.getFecha();
-			if (fecha != null && fecha.length() > 0)
-				fecha = GstDate.getApplicationFormatDate(idioma, fecha);
-			String fechaFomateada = (fecha == null || fecha.equals("")) ? GstDate.getHoyJsp() : GstDate.getFormatedDateShort("", fecha);
+			if (fecha != null && fecha.length() > 10)
+				fecha = GstDate.getFormatedDateShort("", fecha);
+			String fechaFomateada = (fecha == null || fecha.equals("")) ? GstDate.getHoyJsp() : fecha;
 			int idFiltro;
 			try {
 				idFiltro = Integer.parseInt(filtro);

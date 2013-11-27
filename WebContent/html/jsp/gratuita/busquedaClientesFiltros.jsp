@@ -125,7 +125,7 @@
 					</td>
 					<td>
 						<div id="identificadorDiv">
-							<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="850" />
+							<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="830" />
 						</div>
 					</td>
 				</tr>
@@ -136,9 +136,9 @@
 					</td>
 					<td>
 						<div id="selecGuardia">
-							<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="850" /> 
+							<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="830" /> 
 							&nbsp;
-							<img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>">
+							<img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>" title="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>">
 						</div>
 					</td>
 				</tr>

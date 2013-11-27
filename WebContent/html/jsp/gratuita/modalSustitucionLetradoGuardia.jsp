@@ -34,8 +34,6 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	String profile[]=usr.getProfile();
 	
-
-	
 	String turno = (String)request.getAttribute("nombreTurno");
 	String guardia = (String)request.getAttribute("nombreGuardia");
 	String fechaInicio = request.getAttribute("fechaInicio") != null?(String)request.getAttribute("fechaInicio"):"";
@@ -51,10 +49,6 @@
 		nombreForm="PermutasForm";
 	else
 		nombreForm = "DefinirGuardiasTurnosForm";	
-	
-	Date hoy = new Date();
-	SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
-	String fechaHoy = sd.format(hoy);
 %>
 
 <%@page import="java.util.Properties"%>
@@ -167,7 +161,7 @@
 							<td colspan="4"> 
 								<html:hidden  property="flagSalto" styleId="flagSalto" value=""></html:hidden>
 								<html:hidden  property="flagCompensacion" styleId="flagCompensacion" value=""></html:hidden>
-								<html:hidden  property="fecha" styleId="fecha" value="<%=fechaHoy%>"></html:hidden>
+								<html:hidden  property="fecha" styleId="fecha" value="<%=fechaInicio%>"></html:hidden>
 								<siga:BusquedaSJCS nombre="<%=nombreForm%>" propiedad="seleccionLetrado" concepto="Guardia" operacion="Sustitucion"
 									botones="M,A" campoTurno="idTurno" campoGuardia="idGuardia" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado"
 									campoFecha="fecha" campoPersona="idPersona" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion"
@@ -261,10 +255,6 @@
 				return false;
 			} else if(document.getElementById("idPersona").value == document.getElementById("idPersonaSolicitante").value) {
 				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.coincide"/>');
-				fin();
-				return false;
-			} else if(document.getElementById("comenSustitucion").value == "") {
-				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
 				fin();
 				return false;
 			} else if(document.getElementById("comenSustitucion").value == "") {
