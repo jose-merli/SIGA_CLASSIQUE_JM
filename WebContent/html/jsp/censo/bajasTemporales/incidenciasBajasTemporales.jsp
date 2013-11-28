@@ -29,7 +29,7 @@
 	<script src="<html:rewrite page='/html/js/censo/bajasTemporales.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 </head>
 
-<body onload="onLoad()">
+<body>
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
