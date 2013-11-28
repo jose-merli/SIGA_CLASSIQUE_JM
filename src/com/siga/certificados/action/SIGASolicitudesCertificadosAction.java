@@ -807,6 +807,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    
 		    int contador=0;
 		    int contadorErrores=0;
+		    int contadorColegiadosNoOrigen=0;
 		    
 		    // AVISO: El orden de las solicitudes esta definido por como salen 
 		    //en la pantalla (ver metodo que devuelve las solicitudes).
@@ -951,6 +952,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        	ClsLogging.writeFileLog("----- ERROR APROBAR Y GENERAR PDF -----",4);
 			        ClsLogging.writeFileLog("ERROR EN APROBAR Y GENERAR PDF MASIVO.:"+nombreSolicitud+" Error: El cliente no es colegiadoEnOrigen, idpersona=" + idPersona,3);
 		        	contadorErrores++;
+		        	contadorColegiadosNoOrigen++;
 		        	if (contadorReg==1) {
 	
 		        		String mensaje = "messages.error.solicitud.clienteEsColegiado";
@@ -969,14 +971,24 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    } // WHILE 
 			
 			String mensaje="";
+			String tipoAlert="";
 		    if (contadorErrores==0) {
+		    	// No hay errores
 		    	String[] datos = {""+contador};
+		    	tipoAlert="success";
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.OK", datos, userBean.getLanguage());
-		    } 
-		    else {
+		    } else if(contadorErrores>0&&contadorColegiadosNoOrigen>0){
+		    	// Hay errores debidos a colegiados que no estan en el colegio de origen
+		    	tipoAlert=contador==0?"error":"warning";
 		    	String[] datos = {""+contador,""+contadorErrores};
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF", datos, userBean.getLanguage());
+		    } else {
+		    	tipoAlert=contador==0?"error":"warning";
+		    	// Hay errores en la generacion de los certificados
+		    	String[] datos = {""+contador,""+contadorErrores};
+		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.KO", datos, userBean.getLanguage());
 		    }
+		    request.setAttribute("estiloMensaje",tipoAlert);	
 			request.setAttribute("mensaje",mensaje);
 		} 
 		catch (Exception e) { 
@@ -1013,7 +1025,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 
 		    int contadorErrores=0;
-			
+		    int contadorColegiadosNoOrigen=0;
+		    
 		    while (st.hasMoreElements())
 		    {
 		        StringTokenizer st2 = new StringTokenizer(st.nextToken(), "%%");
@@ -1030,28 +1043,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        String idPersona = st2.nextToken();
 		        String idInstitucionOrigen = st2.nextToken();
 		        String idPlantilla = st2.nextToken();	
-/*	
-		        // RGG 23/06/2005 Comprobar que es colegiadoEnOrigen solamente
-		        // en los casos de comunicaciones o dligencias. Resto de casos
-		        // exception con mensaje
-		        PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(this.getUserBean(request));
-		        Hashtable aux = pysAdm.getProducto(new Integer(idInstitucion),new Long(idProducto), new Long(idProductoInstitucion),new Integer(idTipoProducto));
-		        String tipoCertificado = null;
-		        tipoCertificado = (String) aux.get(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
-		        boolean colegiadoEnOrigen = true;
-		        if (tipoCertificado.equals(PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION) || tipoCertificado.equals(PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA)) {
-		        	// es comunicacion o diligencia
-		        	CenColegiadoAdm colAdm = new CenColegiadoAdm(this.getUserBean(request));
-		        	CenColegiadoBean colBean = colAdm.getDatosColegiales(new Long(idPersona),new Integer(idInstitucionOrigen));
-		        	colegiadoEnOrigen = true;
-		        	if (colBean==null) {
-		        		//no es colegiadoEnOrigen
-		        		//throw new SIGAException("messages.error.solicitud.clienteEsColegiado");
-		        		// SI NO ES colegiadoEnOrigen ENTONCES COLEGIADO = TRUE
-		        		colegiadoEnOrigen=false;
-		        	}
-		        }
-*/
 		        
 		        // RGG 28/03/2007 CAMBIO FINAL PARA OBTENER LA PERSONA DEL CERTIFICADO
 		        boolean usarIdInstitucion = false;
@@ -1098,29 +1089,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						}
 					}
 				}
-/*				
-				if (request.getParameter("paraConsejo")==null) {
-					// Proceso normal
-					// Cuando es un consejo o cgae comprobamos si existe la direccion en el colegio origen. 
-					// Si no existe enviamos un mensaje de confirmacion
-					boolean esDeConsejo=admCer.esConsejo(idInstitucion);
-					if (esDeConsejo) {
-						colegiadoEnOrigen = admCer.existePersonaCertificado(idInstitucion, idSolicitud);
-					}
-					if (!colegiadoEnOrigen) {
-						
-						// Si no existe lo tenemos que buscar en CGAE en lugar de en Origen.
-						tx.rollback();
-						
-				        request.setAttribute("PREG_PDF_idsParaGenerarFicherosPDF",form.getIdsParaGenerarFicherosPDF());
-				        request.setAttribute("PREG_PDF_existe",new Boolean(colegiadoEnOrigen).toString());
-				        
-						return "preguntaDireccionGeneraPDF";
-					}
-				} else {
-					colegiadoEnOrigen = new Boolean(request.getParameter("PREG_PDF_existe")).booleanValue();
-				}
-*/		
+	
 		        
 		        String sEstadoCertificado = null;
 	
@@ -1199,6 +1168,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        } else {
 		        	
 			        contadorErrores++;
+			        contadorColegiadosNoOrigen++;
 		        	// NO ES colegiadoEnOrigen
 			        ClsLogging.writeFileLog("Error al genera el certificado PDF: El cliente no es colegiadoEnOrigen, idpersona=" + idPersona,3);
 		        	if (contadorReg==1) {
@@ -1221,14 +1191,24 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 		    
 			String mensaje="";
+			String tipoAlert="";
 		    if (contadorErrores==0) {
+		    	// No hay errores
 		    	String[] datos = {""+contador};
+		    	tipoAlert="success";
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.OK", datos, userBean.getLanguage());
-		    } else {
+		    } else if(contadorErrores>0&&contadorColegiadosNoOrigen>0){
+		    	// Hay errores debidos a colegiados que no estan en el colegio de origen
+		    	tipoAlert=contador==0?"error":"warning";
 		    	String[] datos = {""+contador,""+contadorErrores};
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF", datos, userBean.getLanguage());
+		    } else {
+		    	tipoAlert=contador==0?"error":"warning";
+		    	// Hay errores en la generacion de los certificados
+		    	String[] datos = {""+contador,""+contadorErrores};
+		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.KO", datos, userBean.getLanguage());
 		    }
-			
+		    request.setAttribute("estiloMensaje",tipoAlert);	
 			request.setAttribute("mensaje",mensaje);
 		}/*catch (SIGAException e) {
 			throw e;	
@@ -1270,6 +1250,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 
 		    int contadorErrores=0;
+		    int contadorColegiadosNoOrigen=0;
 			
 		    while (st.hasMoreElements())
 		    {
@@ -1334,29 +1315,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						}
 					}
 				}
-/*				
-				if (request.getParameter("paraConsejo")==null) {
-					// Proceso normal
-					// Cuando es un consejo o cgae comprobamos si existe la direccion en el colegio origen. 
-					// Si no existe enviamos un mensaje de confirmacion
-					boolean esDeConsejo=admCer.esConsejo(idInstitucion);
-					if (esDeConsejo) {
-						colegiadoEnOrigen = admCer.existePersonaCertificado(idInstitucion, idSolicitud);
-					}
-					if (!colegiadoEnOrigen) {
-						
-						// Si no existe lo tenemos que buscar en CGAE en lugar de en Origen.
-						tx.rollback();
-						
-				        request.setAttribute("PREG_PDF_idsParaGenerarFicherosPDF",form.getIdsParaGenerarFicherosPDF());
-				        request.setAttribute("PREG_PDF_existe",new Boolean(colegiadoEnOrigen).toString());
-				        
-						return "preguntaDireccionGeneraPDF";
-					}
-				} else {
-					colegiadoEnOrigen = new Boolean(request.getParameter("PREG_PDF_existe")).booleanValue();
-				}
-*/		
 		        
 		        String sEstadoCertificado = null;
 	
@@ -1366,15 +1324,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		
 		            String sRutaDB = admParametros.getValor(idInstitucion, "CER" ,"PATH_CERTIFICADOS", "");
 		
-			        if (sRutaDB==null || sRutaDB.equals(""))
-			        {
+			        if (sRutaDB==null || sRutaDB.equals("")){
 			            throw new ClsExceptions("No se ha encontrado el parámetro PATH_CERTIFICADOS en la BD");
 			        }
 			        
 			        String sRutaPlantillas = admParametros.getValor(idInstitucion, "CER" ,"PATH_PLANTILLAS", "");
 			        
-			        if (sRutaPlantillas==null || sRutaPlantillas.equals(""))
-			        {
+			        if (sRutaPlantillas==null || sRutaPlantillas.equals("")){
 			            throw new ClsExceptions("No se ha encontrado el parámetro PATH_PLANTILLAS en la BD");
 			        }
 			        
@@ -1395,47 +1351,24 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        
 			        try {
 			        	
-					   // tx.begin();
-					    
-			        	//////  UNIFICACION PARA LOS 3 METODOS DE GENERAR PDF //////////
 			        	almacenarCertificado(idInstitucion, idSolicitud, request, beanProd, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, idPersona, fIn, fOut, 
                 						  sRutaPlantillas, idInstitucionOrigen,usarIdInstitucion, usr);					    
-				        
 				        contador++;
-			        
-						//tx.commit();
-
 
 			        } catch (SIGAException e) {
 				        ClsLogging.writeFileLogError("Error GENERAL al aprobar y generar el certificado PDF: " + e.getLiteral(userBean.getLanguage()),e, 3);
 				        contadorErrores++;
-		        		//tx.rollback();
-		        		/*
-			        	if (contadorReg==1) {
-	
-			        		String mensaje = e.getLiteral(userBean.getLanguage());
-			        		if (mensaje==null) mensaje = "";
-			        		String[] datos = {""+contador};
-			        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
-			        		
-			        		request.setAttribute("mensaje",mensaje);	
-			        		
-			        	    //return "exitoConString";
-			        		throw e;
-	
-			        	} else {*/
-			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	//}
+		        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
 		            }
 		
 			        fIn.delete();
-			        
 			        
 	
 		        } else {
 		        	
 			        contadorErrores++;
 		        	// NO ES colegiadoEnOrigen
+			        contadorColegiadosNoOrigen++;
 			        ClsLogging.writeFileLog("Error al genera el certificado PDF: El cliente no es colegiadoEnOrigen, idpersona=" + idPersona,3);
 		        	if (contadorReg==1) {
 	
@@ -1457,14 +1390,25 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }
 		    
 			String mensaje="";
+			String tipoAlert="";
 		    if (contadorErrores==0) {
+		    	// No hay errores
 		    	String[] datos = {""+contador};
+		    	tipoAlert="success";
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.OK", datos, userBean.getLanguage());
-		    } else {
+		    } else if(contadorErrores>0&&contadorColegiadosNoOrigen>0){
+		    	// Hay errores debidos a colegiados que no estan en el colegio de origen
+		    	tipoAlert=contador==0?"error":"warning";
 		    	String[] datos = {""+contador,""+contadorErrores};
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF", datos, userBean.getLanguage());
+		    } else {
+		    	tipoAlert=contador==0?"error":"warning";
+		    	// Hay errores en la generacion de los certificados
+		    	String[] datos = {""+contador,""+contadorErrores};
+		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF.KO", datos, userBean.getLanguage());
 		    }
 			
+		    request.setAttribute("estiloMensaje",tipoAlert);	
 			request.setAttribute("mensaje",mensaje);	
 		} 
 		catch (Exception e) { 
