@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoHitosFacturables.jsp -->
+
 <!--
   Contiene la zona de detalle multiregistro, sin botones de acciones, 
   y sin campos de filtro o busqueda
@@ -61,7 +62,6 @@
   String acceso=usr.getAccessType();
   String accion="/JGR_DefinirHitosFacturables.do";
   String existenHitos=(String)request.getAttribute("EXISTENHITOS");
-  int tamano=0;
 %>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -180,8 +180,21 @@
 	    function init () {
 	      	initAB ();
 	      	initC ();
-	      	ajusteAltoMain('scrollValores', 22);
+	      	calcularAltura();
 	    } //init ()
+	    
+	    // Funcion que calcula la altura de la pagina de un div con los botones del final
+	    function calcularAltura() {		
+			if (document.getElementById("idBotonesAccion")) {
+				var tablaBotones = jQuery('#idBotonesAccion')[0];						
+				var divDatos = jQuery('#scrollValores')[0];
+			
+				var posTablaBotones = tablaBotones.offsetTop;
+				var posDivDatos = divDatos.offsetTop;
+			
+				jQuery('#scrollValores').height(posTablaBotones - posDivDatos);			
+			}		
+		}	
     
 	    /** 
 	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
@@ -978,7 +991,6 @@
     	<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white;">
 <%
         	if (existenHitos.equals ("0")) {
-            	tamano=25;
 %>
       			<table class="tablaTitulo" width="100%" border="1" top="0" cellspacing="0" cellpadding="0">
         			<tr>
@@ -988,8 +1000,6 @@
         			</tr>
       			</table>
 <%
-        	} else {
-          		tamano=0;
         	}
 %>
       
@@ -998,20 +1008,20 @@
         		<tr>
           			<td colspan="2" rowspan="4">&nbsp;</td>
           			
-          			<td colspan="2" class="labelText" style="text-align:center">
+          			<td colspan="2" class="labelText" style="text-align:center" nowrap>
           				<siga:Idioma key="gratuita.confGuardia.literal.guardia"/>
 					</td>          			
           			
           			<td rowspan="4">	
             			<table width="100%" border="0" cellspacing="0" cellpadding="0">
               				<tr>
-              					<td class="labelText" style="text-align:left; vertical-align:top">
+              					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
                 					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkC" property="checkC" onclick="initC();"/>
                 					<siga:Idioma key="gratuita.confGuardia.literal.fueraguardia"/>
               					</td>
               				</tr>
               				<tr>
-              					<td class="labelText" style="text-align:left; vertical-align:top">                      				
+              					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      				
                 					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoGuardias" property="chNoGuardias" onclick="aplicaFueraGuardias()"/>
                 					<siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
               					</td>
@@ -1021,7 +1031,7 @@
         		</tr>
         		
 				<tr>		
-					<td class="labelText" style="text-align:left; vertical-align:top"> 
+					<td class="labelText" style="text-align:left; vertical-align:top" nowrap> 
      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB1" property="checkB1" value="0" onclick="cambiarCheckB1 ();" />
      					<siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/>
    					</td>
@@ -1029,13 +1039,13 @@
    					<td>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
     						<tr>
-			         			<td class="labelText" style="text-align:left; vertical-align:top">
+			         			<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
 									<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB2" property="checkB2" value="1" onclick="cambiarCheckB2 ();" />
 		                 			<siga:Idioma key="gratuita.confGuardia.literal.nopagaguardia"/>
 		                 		</td>
 		                 	</tr>
 		                 	<tr>
-		                 		<td class="labelText" style="text-align:left; vertical-align:top">                      						
+		                 		<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      						
 		               				<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chGuardias" property="chGuardias" onclick="aplicaGuardias()"/>
 		                			<siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
 		                		</td>
@@ -1123,12 +1133,12 @@
                 </tr>                    
                 
                 <tr>
-                	<td class="labelText" style="text-align:left; vertical-align:top">
+                	<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
                   		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaPorDia" property="chPagaGuardiaPorDia"/>
                   		<siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/>
                 	</td>          
 
-					<td class="labelText" style="text-align:left; vertical-align:top">
+					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
       					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chNoPagaGuardiaPorDia"/>
       					<siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/>
     				</td>                    		
@@ -1136,25 +1146,25 @@
        
         		<!-- Primera linea -->
         		<tr>
-          			<td>
+          			<td width="80px">
             			&nbsp;
           			</td>
-          			<td class="labelText" style="text-align:left; vertical-align:middle">
+          			<td class="labelText" style="text-align:left; vertical-align:middle" width="100%">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/>
           			</td>		
-          			<td width="200px" class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[1]"
-	                       property="hitoPrecio[1]" maxlength="10"
+	                       property="hitoPrecio[1]" maxlength="10" size="10"
 	                       onkeypress="filterChars(this,false,true);"
 	                       onkeyup="filterCharsUp(this);"
 	                       onblur="filterCharsNaN(this);" styleClass="box" />
             			&euro;
           			</td>
           			
-          			<td width="200px" class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
-          			<td width="200px" class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
         		</tr>
@@ -1173,7 +1183,7 @@
 	                
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
-							property="hitoPrecio[2]" styleId="hitoPrecio[2]" maxlength="10"
+							property="hitoPrecio[2]" styleId="hitoPrecio[2]" maxlength="10" size="10"
 							onkeypress="filterChars(this,false,true);"
 							onkeyup="filterCharsUp(this);"
 							onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1199,7 +1209,7 @@
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
-		                    property="hitoPrecio[5]" styleId="hitoPrecio[5]" maxlength="10"
+		                    property="hitoPrecio[5]" styleId="hitoPrecio[5]" maxlength="10" size="10"
 		                    onkeypress="filterChars(this,false,true);"
 		                    onkeyup="filterCharsUp(this);"
 		                    onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1224,11 +1234,11 @@
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  >
 	                  <html:text name="DefinirHitosFacturablesGuardiasForm"
-		                  property="hitoPrecio[45]" maxlength="3"
+		                  property="hitoPrecio[45]" maxlength="3" size="3"
 		                  onkeypress="filterChars(this,false,true);"
 		                  onkeyup="filterCharsUp(this);"
 		                  onblur="filterCharsNaN(this);"
-		                  styleClass="box" style="width:25px;"/>
+		                  styleClass="box"/>
 	                </td>
 	                
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
@@ -1251,7 +1261,7 @@
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
-		                   	property="hitoPrecio[3]" maxlength="10"
+		                   	property="hitoPrecio[3]" maxlength="10" size="10"
 		                   	onkeypress="filterChars(this,false,true);"
 		                   	onkeyup="filterCharsUp(this);"
 							onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1279,7 +1289,7 @@
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 						<html:text name="DefinirHitosFacturablesGuardiasForm"
-							property="hitoPrecio[10]" maxlength="10"
+							property="hitoPrecio[10]" maxlength="10" size="10"
 							onkeypress="filterChars(this,false,true);"
 							onkeyup="filterCharsUp(this);"
 							onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1302,7 +1312,7 @@
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[4]" maxlength="10"
+                             property="hitoPrecio[4]" maxlength="10" size="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1326,7 +1336,7 @@
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[7]" maxlength="10"
+                             property="hitoPrecio[7]" maxlength="10" size="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1339,7 +1349,7 @@
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[9]" maxlength="10"
+                             property="hitoPrecio[9]" maxlength="10" size="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1360,11 +1370,11 @@
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		>
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[46]" maxlength="3"
+                             property="hitoPrecio[46]" maxlength="3" size="3"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);"
-                             styleClass="box" style="width:25px;"/>
+                             styleClass="box"/>
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
@@ -1386,7 +1396,7 @@
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[8]" maxlength="10"
+                             property="hitoPrecio[8]" maxlength="10" size="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1414,7 +1424,7 @@
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
-                             property="hitoPrecio[19]" maxlength="10"
+                             property="hitoPrecio[19]" maxlength="10" size="10"
                              onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"
                              onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1443,7 +1453,7 @@
           			</td>
           			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
-                       		property="hitoPrecio[6]" maxlength="10"
+                       		property="hitoPrecio[6]" maxlength="10" size="10"
                        		onkeypress="filterChars(this,false,true);"
                        		onkeyup="filterCharsUp(this);"
                        		onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1463,7 +1473,7 @@
           			</td>
           			<td colspan=3 class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
-                       		property="hitoPrecio[13]" maxlength="10"
+                       		property="hitoPrecio[13]" maxlength="10" size="10"
                        		onkeypress="filterChars(this,false,true);"
                        		onkeyup="filterCharsUp(this);"
                        		onblur="filterCharsNaN(this);" styleClass="box" />
@@ -1478,7 +1488,7 @@
           			</td>
           			<td colspan=3 class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
-                       		property="hitoPrecio[12]" maxlength="10"
+                       		property="hitoPrecio[12]" maxlength="10" size="10"
                        		onkeypress="filterChars(this,false,true);"
                        		onkeyup="filterCharsUp(this);"
                        		onblur="filterCharsNaN(this);" styleClass="box" />
