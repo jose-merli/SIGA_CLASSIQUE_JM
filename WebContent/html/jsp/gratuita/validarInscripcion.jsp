@@ -524,9 +524,8 @@
 				if(document.InscripcionTGForm.porGrupos.value=='1'){
 					numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
 					
-					 
 					
-					if(numGuardiasSel.length-1 ==1){
+					if(document.InscripcionTGForm.modo.value!='vmitValidar' && numGuardiasSel.length-1 ==1){
 							if(document.InscripcionTGForm.numeroGrupo.value == "") {
 								fin();
 								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
