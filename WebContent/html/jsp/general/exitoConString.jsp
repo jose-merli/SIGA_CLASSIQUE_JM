@@ -31,6 +31,12 @@
 	String modal= (String)request.getAttribute("modal");
 	// SINREFRESCO = para el caso que no queramos refrescar nada
 	String sinrefresco = (String)request.getAttribute("sinrefresco");
+	String tipoAlert;
+	try{
+		tipoAlert = (String)request.getAttribute("estiloMensaje");
+	}catch (Exception e){
+		tipoAlert = "";
+	}
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -56,7 +62,8 @@
 	<%  } %>
 	<%  if (mensaje!=null){%>
 		var type = unescape("<%=mensaje%>");
-		alert(type,"success");
+		var estilo = unescape("<%=tipoAlert%>");
+		alert(type,estilo);
 	<%  } %>
 	return false;
 
