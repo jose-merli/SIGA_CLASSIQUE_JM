@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosNuevoFichero.jsp -->
+
 <!-- 
 	 Muestra el formulario de incorporacion de nuevo fichero de devoluciones
 	 VERSIONES:
@@ -29,6 +30,7 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Properties"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -47,51 +49,48 @@
 	String mensaje = (String)request.getAttribute("mensaje");
 	// SUFIJO = Permite anhadir una cadena de texto al mensaje a mostrar
 	String sufijo = (String)request.getAttribute("sufijo");
-
 %>
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-			<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="DevolucionesForm" staticJavascript="false" />  
-			<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="DevolucionesForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
 		var tieneProductoComision = <%=tieneProductoComision%>;
 		var msgNoTieneProductoComision = "<siga:Idioma key="messages.facturacion.devoluciones.noProductoComision"/>";
 		
-		<%  if (mensaje!=null){
+<%  
+		if (mensaje!=null){
 			String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
 			String estilo="notice";
-			if(mensaje.contains("error")){
+			if(mensaje.contains("error")) {
 				estilo="error";
-			}else if(mensaje.contains("success")||mensaje.contains("updated")){
+			} else if(mensaje.contains("success")||mensaje.contains("updated")) {
 				estilo="success";
 			} 
 %>
-	alert(unescape("<%=msg %>"),"<%=estilo%>");
+			alert(unescape("<%=msg %>"),"<%=estilo%>");
 			
-<%  } %>
-		<!-- Asociada al boton Volver -->
-		function accionCerrar(){ 
+<%  
+		} 
+%>
+
+		// Asociada al boton Volver
+		function accionCerrar() {  
 			window.top.close();
 		}	
 		
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionGuardarCerrar(){ 
 			
 			if(document.getElementById('comision').checked)
@@ -103,11 +102,9 @@
 			if (document.getElementById('comision').checked && !tieneProductoComision) {
 				alert(msgNoTieneProductoComision);	
 			} else {
-				if (validateDevolucionesForm(document.DevolucionesForm)){
+				if (validateDevolucionesForm(document.DevolucionesForm)) {
 					document.forms[0].modo.value="insertar";
-					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
-														document.forms[0].name+
-														"&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
+					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=" + document.forms[0].name + "&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
 					//document.forms[0].submit();
 				}	
 			}
@@ -125,15 +122,14 @@
 		</tr>
 	</table>
 
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<html:form action="/FAC_Devoluciones.do" method="POST" target="submitArea"  enctype="multipart/form-data">
 		<html:hidden property ="modo" value = ""/>
 		<html:hidden property ="comisiones" />
 		<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-		<table  class="tablaCentralCamposPeque"  align="center">			
+		<table class="tablaCentralCamposPeque"  align="center">			
 			<tr>				
 				<td>
 					<siga:ConjCampos leyenda="facturacion.nuevoFichero.literal.datosFichero">
@@ -145,13 +141,12 @@
 							</tr>
 							<tr>
 								<td class="labelText">
-									<html:file property="ruta" size="85" styleClass="box" readOnly="false" onChange="rutaVisible.value=ruta.value"></html:file>
-									<div style="display:none;position:absolute; width:18; height:35; z-index:2; top: 60px; left: 25px">
-										<html:text styleClass="box" property="rutaVisible" size="60" value="" readOnly="true"></html:text>
+									<html:file property="ruta" styleClass="box" readOnly="false" onChange="rutaVisible.value=ruta.value" style="width:650px"></html:file>
+									<div style="display:none; position:absolute; width:18px; height:35px; z-index:2; top: 60px; left: 25px">
+										<html:text styleClass="box" property="rutaVisible" size="60" value="" readOnly="true" />
 									</div>
 								</td>
 							</tr>
-							
 						</table>
 					</siga:ConjCampos>
 				</td>
@@ -160,27 +155,27 @@
 			<tr>
 				<td>
 					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.Titulo">
-					<table class="tablaCampos" border="0">
-						<tr>
-							<td class="labelText" colspan="2">
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
+						<table class="tablaCampos" border="0">
+							<tr>
+								<td class="labelText" colspan="2">
+									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.noRenegociar"/>
-								<br>
-								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
+									<br>
+									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<table border="0">
-									<tr>
-										<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-										<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="width:525px" cols="80" rows="7" styleClass="box" value=""/></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
+								<td class="labelText">
+									<html:textarea property="datosPagosRenegociarObservaciones" 
+										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+										style="overflow-y:auto; overflow-x:hidden; width:540px; height:80px; resize:none;"
+										styleClass="box" value=""/>
+								</td>
+							</tr>
+						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
@@ -190,28 +185,26 @@
 					<siga:ConjCampos leyenda="Comisiones">
 						<table class="tablaCampos" border="0">
 							<tr>
-									<td class="labelText" width="90%">
-										<siga:Idioma key="facturacion.nuevoFichero.literal.cargaComisiones"/>&nbsp;&nbsp;
-										<input type = "checkbox"  name="comision"  />
-									</td>
-								</tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.nuevoFichero.literal.cargaComisiones"/>
+									&nbsp;
+									<input type = "checkbox"  name="comision" />
+								</td>
+							</tr>
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
-			
-			
 		</table>
 	</html:form>
+	
 	<siga:ConjBotonesAccion botones='Y,C' modo=''  modal="P"/>
 	<!-- FIN: CAMPOS -->
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
