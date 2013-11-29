@@ -365,13 +365,17 @@
 
 		jQuery.noConflict();
 		
-		jQuery(function(){
-			var defaultValue = jQuery("#nig2").val();			
-			if(jQuery("#nig2").val() == "" || defaultValue.length > 19){
-				jQuery("#nig2").val(defaultValue);
+		jQuery(function($){
+			var defaultValue = jQuery("#nig2").val();
+			if(defaultValue.length > 19){
+				$('#info').show();
+				$('#imagenInfo').attr('title',defaultValue) ;
+			}else{
+				$('#info').hide();
+				
 			}
 			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
-			jQuery("#nig2").keyup();
+			jQuery("#nig2").keyup();	
 		});	
 		
 
@@ -826,9 +830,15 @@
 										<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 									</td>		
 									
-									<td class="labelText" colspan="3">					
-										<input id="nig2" type="text" style="width:500px" class="boxConsulta" value="<%=NIG%>" readOnly="true">										
+									<td class="labelText" >					
+										<input id="nig2" type="text" class="boxConsulta" value="<%=NIG%>" style="size:19;width:200px" readOnly="true">										
 									</td>	
+
+									</td>			
+										<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+									</td>
+									
+									<td></td>
 								</tr>
 					
 								<tr>
@@ -1136,6 +1146,16 @@
 			  	return false;		  
 		 	}	  
 		 	
+		  	var nigAux = document.getElementById("nig2").value;
+		  	nigAux = formateaNig(nigAux);
+		  	if(!validarNig(nigAux)){	
+		  		alert("<siga:Idioma key='gratuita.nig.formato'/>");
+		  		fin();
+		  		return false;
+		  			
+		  	}
+		  	document.forms[0].nig2.value = nigAux; 
+		  	
 		 	if(document.forms[0].fechaAperturaEJG.value!=""){
 				if (observaciones.length <= 1024) {
 			     	var datosTurno =  document.forms[0].identificador.value.split(",");

@@ -382,6 +382,19 @@
 				document.getElementById("juzgado").onchange();
 			}
 		}		
+		
+		jQuery(function($){
+			var defaultValue = jQuery("#nig").val();
+			if(defaultValue.length > 19){
+				$('#info').show();
+				$('#imagenInfo').attr('title',defaultValue) ;
+			}else{
+				$('#info').hide();
+				
+			}
+			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig").keyup();	
+		});	
 	</script>		
 </head>
 
@@ -563,13 +576,17 @@
 						<td class="labelText" nowrap>
 							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 						</td>				
-						<td colspan="4"> 
+						<td > 
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-								<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="<%=estiloCombo%>" maxlength="50"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="<%=estiloCombo%>" style="size:19;width:200px"/>
 							<%}else{%>
-								<html:text name="ActuacionesDesignasForm" property="nig"  value="<%=nig%>" styleClass="boxConsulta"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" style="size:19;width:200px"/>
 							<%}%>						
 						</td>
+									
+							<td id="info" style="display:none" ><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+						</td>
+						<td colspan="2"></td>
 					</tr>	
 							
 					<tr>
@@ -837,6 +854,7 @@
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
 				*/
+				
 
 				if (<%=obligatorioNumeroProcedimiento%> && document.forms[0].numeroProcedimiento.value=='') {
 					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"/> <siga:Idioma key="messages.campoObligatorio.error" />');
@@ -886,7 +904,15 @@
 						}
 					}
 				<%}%>
-				
+				var nigAux = document.getElementById("nig").value;
+				nigAux = formateaNig(nigAux);
+				if(!validarNig(nigAux)){	
+					alert("<siga:Idioma key='gratuita.nig.formato'/>");
+					fin();
+					return false;
+						
+				}
+				document.forms[0].nig.value = nigAux; 
 									
 				<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
 				document.forms[0].modo.value="modificar";

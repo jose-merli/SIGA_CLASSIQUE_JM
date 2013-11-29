@@ -96,24 +96,17 @@
 	{		
 		top.cierraConParametros("NORMAL");
 	}		
-	function validarNig( strValue ) 
-	{
-		var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
-		return objRegExp.test(strValue);
-	}	
+		
 	function accionGuardar() 
 	{
 		var nigAux = document.getElementById("nig").value;
-		nigAux = replaceAll(nigAux,' ','');
+		nigAux = formateaNig(nigAux);
 		if(!validarNig(nigAux)){	
-			
-
 			alert("<siga:Idioma key='gratuita.nig.formato'/>");
-			fin();
 			return false;
 				
 	 	}
-		
+		document.MaestroDesignasForm.nig.value = nigAux; 
 		sub();
 		document.MaestroDesignasForm.modo.value = 'actualizaDesigna';
 		document.MaestroDesignasForm.submit();
@@ -182,8 +175,12 @@
 	}
 	jQuery(function($){
 		var defaultValue = jQuery("#nig").val();
-		if(jQuery("#nig").val() == "" || defaultValue.length > 19){
-			jQuery("#nig").val(defaultValue);
+		if(defaultValue.length > 19){
+			$('#info').show();
+			$('#imagenInfo').attr('title',defaultValue) ;
+		}else{
+			$('#info').hide();
+			
 		}
 		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
 		jQuery("#nig").keyup();	
@@ -290,10 +287,14 @@
 					<tr>
 						
 						<td width="20%"  class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/></td>
-						<td colspan="5">
-							<html:text name="MaestroDesignasForm" property="nig" styleId="nig" styleClass="box" style="size:28;maxlength:19"/>
-							 	
-						</td>									
+
+						<td>
+							<html:text name="MaestroDesignasForm" property="nig" styleId="nig"  styleClass="box" style="size:19;width:200px"/>
+	
+						</td>			
+						<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+						</td>
+						<td colspan="3"></td>						
 					</tr>
 					
 					<tr><td  colspan="6">&nbsp;</td></tr>

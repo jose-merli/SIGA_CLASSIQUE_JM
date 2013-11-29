@@ -168,6 +168,12 @@ String[] getdatos = { usr.getLocation() };
 				buscarPaginador();
 			<%}%>
 		}		
+		jQuery(function($){
+
+			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig2").keyup();	
+		});	
+
 	</script>
 	
 </head>
@@ -344,7 +350,7 @@ String[] getdatos = { usr.getLocation() };
 					<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
 				</td>	
 				<td class="labelText" >
-					<html:text name="BuscarDesignasForm" property="nig2" size="15" maxlength="50" styleClass="box" value="<%=nig%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="nig2" styleId = "nig2" styleClass="box" style="size:19;width:200px" value="<%=nig%>"></html:text>
 				</td>
 		</tr>
 		</table>
@@ -439,6 +445,17 @@ String[] getdatos = { usr.getLocation() };
 		//<!-- Funcion asociada a boton buscar -->
 		function buscar(modo) 
 		{
+			var nigAux = document.getElementById("nig2").value;
+			nigAux = formateaNig(nigAux);
+			
+			if(!validarNig(nigAux)){	
+				alert("<siga:Idioma key='gratuita.nig.formato'/>");
+				return false;
+					
+			}
+			document.forms[0].nig2.value = nigAux;
+			
+			
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
 				alert("<siga:Idioma key="fecha.error.anio"/>");
 				return false;
@@ -470,6 +487,7 @@ String[] getdatos = { usr.getLocation() };
 			}else{
 				setFocusFormularios();
 			}
+			jQuery("#nig2").keyup();
 		}
 			function seleccionarTodos(pagina) 
 		{

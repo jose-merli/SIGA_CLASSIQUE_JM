@@ -325,7 +325,19 @@
 				
 				jQuery('#divResultados').height(posTablaBotones - posTablaDatos);
 			}		
-		}			
+		}		
+		jQuery(function($){
+			var defaultValue = jQuery("#nig2").val();
+			if(defaultValue.length > 19){
+				$('#info').show();
+				$('#imagenInfo').attr('title',defaultValue) ;
+			}else{
+				$('#info').hide();
+				
+			}
+			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig2").keyup();	
+		});	
 	</script>	
 </head>
 
@@ -750,19 +762,25 @@
 						<td class="labelText">
 							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 						</td>
-						<td colspan="5"> 
+						<td > 
 <%
 							if(modopestanha.equals("editar")) {
 %>
-							 	<input id="nig2" name="nig2" size="28" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="19"/>
+							 	<input id="nig2" name="nig2"  type="text" value="<%=nig%>" class="<%=estilo%>" style="size:19;width:200px"/>
 <%
 							} else {
 %>
-								<input id="nig2" name="nig2" size="28" type="text" value="<%=nig%>" class="boxConsulta"/>
+								<input id="nig2" name="nig2"  type="text" value="<%=nig%>" class="boxConsulta" style="size:19;width:200px"/>
 <%
 							}
 %>						
 						</td>
+						
+									
+						<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+						</td>
+						
+						</td colspan="3"></td>
 					</tr>
 					
 					<tr>
@@ -899,7 +917,8 @@
 	jQuery.noConflict();
 
 	// Funcion asociada a boton buscar
-	function refrescarLocal() { 
+	function refrescarLocal() {
+		
 		document.forms[0].target = 'resultado';		
 		document.forms[0].modo.value = "buscar";
 		document.forms[0].submit();
@@ -908,6 +927,8 @@
 		document.forms[3].target = 'resultado1';		
 		document.forms[3].modo.value = "";
 		document.forms[3].submit();
+		
+		
 	}
 	
 		// Funcion asociada a boton Nuevo 
@@ -977,7 +998,6 @@
 <%
 		}
 %> 		 	
-	 	var nigAux = document.getElementById("nig2").value;
 		 	
 <%
 		if (ejisActivo>0) {
@@ -996,16 +1016,8 @@
 				}	
 			}		
 			
-			nigAux = replaceAll(nigAux,' ','');
-			if(!validarNig(nigAux)){	
-				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
-				
-				if(error!=""){
-					alert(error);
-					fin();
-					return false;
-				}				
-		 	}
+			
+			
 <%
 		}
 %>
@@ -1035,7 +1047,17 @@
 			document.DefinirMantenimientoEJGForm.fechaProc.value = document.getElementById("fechaProc1").value;				
 			document.DefinirMantenimientoEJGForm.idRenuncia.value = document.getElementById("renuncia").value;
 			document.DefinirMantenimientoEJGForm.numeroDesignaProc.value = document.getElementById("numDesignaProc").value;
+			
+			var nigAux = document.getElementById("nig2").value;
+			nigAux = formateaNig(nigAux);
+			if(!validarNig(nigAux)){	
+				alert("<siga:Idioma key='gratuita.nig.formato'/>");
+				fin();
+				return false;
+					
+			}
 			document.DefinirMantenimientoEJGForm.NIG.value = nigAux;
+			
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											
@@ -1048,6 +1070,8 @@
 				 fin();
 				 return false;
 			}
+			if(document.getElementById('info'))
+				jQuery('#info').hide();
 			document.DefinirMantenimientoEJGForm.submit();
 			
 		} else  {
@@ -1069,14 +1093,7 @@
 <%
 	if (ejisActivo>0) {
 %>
-		jQuery(function(){
-			var defaultValue = jQuery("#nig2").val();			
-			if(jQuery("#nig2").val() == "" || defaultValue.length > 19){
-				jQuery("#nig2").val(defaultValue);
-			}
-			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
-			jQuery("#nig2").keyup();
-		});			
+			
 	
 		// Valida el numero de procedimiento (n/aaaa)
 		function validaProcedimiento (strValue) {
@@ -1089,10 +1106,7 @@
 			return objRegExp.test(strValue);
 		}	
 		
-		function validarNig (strValue) {
-			var objRegExp  = /^([0-9]{19})?$/;
-			return objRegExp.test(strValue);
-		}					
+						
 		
 <%
 	} else {

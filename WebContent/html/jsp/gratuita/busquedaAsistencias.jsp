@@ -248,7 +248,12 @@
 			}
 			else
 				document.getElementById("codigoExtJuzgadoActu").value = "";
-		}			
+		}		
+		jQuery(function($){
+			
+			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig2").keyup();	
+		});	
 	</script>
 </head>
 
@@ -424,9 +429,15 @@
 					<td class="labelText" >	
 						<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
 					</td>	
-					<td class="labelText" >
-						<html:text name="AsistenciasForm" property="nig2" size="15" maxlength="50" styleClass="box" value="<%=nig%>"></html:text>
-					</td>	
+					
+					 <td>
+						<html:text name="AsistenciasForm" property="nig2" styleId="nig2"  styleClass="box" style="size:19;width:200px"/>
+					
+					</td>			
+					
+					
+					
+					
 				</table>			
 			</tr>
 		</table>
@@ -489,12 +500,23 @@
 				}
 
 				return error;
-		}		
+		}	
+		
 
 		<!-- Funcion asociada a boton buscar -->
 		function buscar() 
 		{ 
-
+			
+			var nigAux = document.getElementById("nig2").value;
+			nigAux = formateaNig(nigAux);
+			
+			if(!validarNig(nigAux)){	
+				alert('<siga:Idioma key="gratuita.nig.formato"/>');
+				return false;
+					
+			}
+			document.forms[0].nig2.value = nigAux; 
+			
 			document.forms[0].asunto.value = trim(document.forms[0].asunto.value);
 			document.forms[0].numero.value = trim(document.forms[0].numero.value);
 
@@ -519,6 +541,7 @@
 			}else{
 				setFocusFormularios();
 			}
+			jQuery("#nig2").keyup();
 		}
 		function buscarPaginador() 
 		{

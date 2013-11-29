@@ -385,28 +385,10 @@ dd { padding-bottom: 15px }
 			}
 		}
 	}	
-		/*
-		function cambiarJuzgado(comboJuzgado) {
-			if(comboJuzgado.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		   			type: "POST",
-					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-					data: "idCombo="+comboJuzgado.value,
-					dataType: "json",
-					success: function(json){		
-			       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById("codigoExtJuzgado").value = "";
-		}		
-		*/
+	jQuery(function($){
+		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+		jQuery("#nig").keyup();	
+	});	
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -776,7 +758,7 @@ if(usr.isComision()){
 				</td>
 					
 				<td>
-					<html:text name="<%=formulario%>" property="nig" size="15" maxlength="50" styleClass="box" value="<%=sNig%>"/>
+					<html:text name="<%=formulario%>" property="nig" styleId="nig" styleClass="box" value="<%=sNig%>" style="size:19;width:200px"/>
 				</td>	
 			</tr>
 		</table>
@@ -930,6 +912,16 @@ if(usr.isComision()){
 				document.forms[0].idTipoResolucion.value = "";
 				
 			}
+			var nigAux = document.getElementById("nig").value;
+			nigAux = formateaNig(nigAux);
+			if(!validarNig(nigAux)){	
+				alert("<siga:Idioma key='gratuita.nig.formato'/>");
+				return false;
+					
+			}
+			document.forms[0].nig.value = nigAux; 
+			
+			
 			if(document.getElementById("idFundamentoJuridico"))
 				document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
 			
@@ -981,6 +973,7 @@ if(usr.isComision()){
 				}else{
 					setFocusFormularios();
 				}
+				jQuery("#nig").keyup();
 		}		
 		
 		//<!-- Funcion asociada a boton limpiar -->

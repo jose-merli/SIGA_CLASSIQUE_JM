@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.115 2013-11-27 16:47:57 jorgepaez Exp $
+	*	@version    $Id: SIGA.js,v 1.116 2013-11-29 12:02:57 jorge Exp $
 	**/
 	(function(jQuery)
 	{
@@ -5146,5 +5146,19 @@ function getElementAbsolutePos(element) {
 	
     return res;
 }
+function validarNig( nig ) 
+{
+	var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
+	return objRegExp.test(nig);
+}	
+function formateaNig(strValue) 
+{
+	strValue = replaceAll(strValue,' ','');
+	strValue = replaceAll(strValue,'.','');
+	return strValue;
+	
+
+}
+
 
 fin();

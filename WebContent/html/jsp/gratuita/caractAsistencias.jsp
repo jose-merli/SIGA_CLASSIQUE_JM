@@ -485,12 +485,33 @@ function accionGuardar()
 	indice = document.CaracteristicasForm.idPretension.selectedIndex;
 	if(document.CaracteristicasForm.idPretension.selectedIndex!="" && document.CaracteristicasForm.idJuzgado.selectedIndex!="-1")
 		document.CaracteristicasForm.descripcionPretensionHidden.value=document.CaracteristicasForm.idPretension.options[indice].text;
-		
+	
+	var nigAux = document.getElementById("nig").value;
+	nigAux = formateaNig(nigAux);
+	if(!validarNig(nigAux)){	
+		alert("<siga:Idioma key='gratuita.nig.formato'/>");
+		fin();
+		return false;
+			
+	}
+	document.forms[0].nig.value = nigAux; 
+	
 	document.forms[0].modo.value = "guardar";
 	document.forms[0].target = "submitArea";
 	document.forms[0].submit();
 }
-
+jQuery(function($){
+	var defaultValue = jQuery("#nig").val();
+	if(defaultValue.length > 19){
+		$('#info').show();
+		$('#imagenInfo').attr('title',defaultValue) ;
+	}else{
+		$('#info').hide();
+		
+	}
+	jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+	jQuery("#nig").keyup();	
+});	
 
 //se ejecuta cuando se carga la pagina
 function inicializar() 
@@ -899,12 +920,14 @@ function bloquearDesbloquear(o)
 					
 					<td> 
 						<% if (!modo.equalsIgnoreCase("ver")) { %>
-						 	<input name="nig" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="<%=maxLenghtProc%>"/>
+						 	<input name="nig" id="nig"  type="text" value="<%=nig%>" class="<%=estilo%>" style="size:19;width:200px"/>
 						<%}else{%>
-							<input name="nig" type="text" value="<%=nig%>" class="boxConsulta"/>
+							<input name="nig" id="nig" type="text" value="<%=nig%>" class="boxConsulta" style="size:19;width:200px"/>
 						<%}%>						
 					</td>
-					
+					<td id="info" style="display:none">
+						<img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+					</td>
 					<td class="labelText" >	
 						<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
 					</td>

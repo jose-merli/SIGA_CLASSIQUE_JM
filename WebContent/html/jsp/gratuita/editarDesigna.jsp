@@ -380,14 +380,18 @@
 				return objRegExp.test(strValue);
 			}		
 			
-			jQuery(function() {
+			jQuery(function($){
 				var defaultValue = jQuery("#nig").val();
-				if(jQuery("#nig").val() == "" || defaultValue.length > 19){
-					jQuery("#nig").val(defaultValue);
+				if(defaultValue.length > 19){
+					$('#info').show();
+					$('#imagenInfo').attr('title',defaultValue) ;
+				}else{
+					$('#info').hide();
+					
 				}
 				jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
-				jQuery("#nig").keyup();
-			});			
+				jQuery("#nig").keyup();	
+			});		
 			
 		<% } else { %>
 			// Valida el numero de procedimiento (n/aaaa)
@@ -453,7 +457,7 @@
 				}
 		 	<% } %>
 		 	
-		 	var nigAux = document.getElementById("nig").value;	
+		 		
 		 	
 		 	<% if (ejisActivo>0) { %>		 	
 				if(document.getElementById("numeroProcedimiento").value != "" || document.getElementById("anioProcedimiento").value != "") {
@@ -470,19 +474,18 @@
 					}	
 				}
 				
-				nigAux = replaceAll(nigAux,' ','');
-				if(!validarNig(nigAux)) {	
-					error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
-					
-					if(error!="" && document.forms[0].estadoOriginal.value != 'F'){
-						alert(error);
-						fin();
-						return false;
-					}				
-			 	
-				} else {
-					document.getElementById("nig").value = nigAux;
-				}	
+				var nigAux = document.getElementById("nig").value;
+				nigAux = formateaNig(nigAux);
+				if(!validarNig(nigAux)&& document.forms[0].estadoOriginal.value != 'F'){	
+					alert("<siga:Idioma key='gratuita.nig.formato'/>");
+					fin();
+					return false;
+						
+				}
+				document.getElementById("nig").value = nigAux;
+				document.forms[0].nig.value = nigAux; 
+				
+				
 			
 		 	<% } %>
 		 	
@@ -933,13 +936,18 @@
 							<td class="labelText">
 								<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
 							</td>
-							<td colspan="7"> 
+							<td > 
 								<% if (!modo.equalsIgnoreCase("ver")) { %>
-								 	<input id="nig" name="nig" size="20" type="text" value="<%=nig%>" class="<%=estilo%>" maxlength="19"/>
+								 	<input id="nig" name="nig"  type="text" value="<%=nig%>" class="<%=estilo%>" style="size:19;width:200px"/>
 								<%}else{%>
-									<input id="nig" name="nig" size="20" type="text" value="<%=nig%>" class="boxConsulta"/>
+									<input id="nig" name="nig"  type="text" value="<%=nig%>" class="boxConsulta" style="size:19;width:200px"/>
 								<%}%>						
 							</td>
+										
+							<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+							</td>
+							<td colspan = "5"></td>
+							
 						</tr>					
 						
 						<tr>

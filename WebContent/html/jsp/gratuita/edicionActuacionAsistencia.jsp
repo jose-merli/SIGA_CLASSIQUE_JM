@@ -182,7 +182,19 @@
 			}
 			else
 				document.getElementById("codComisaria").value = "";
-		}			
+		}	
+		jQuery(function($){
+			var defaultValue = jQuery("#nig").val();
+			if(defaultValue.length > 19){
+				$('#info').show();
+				$('#imagenInfo').attr('title',defaultValue) ;
+			}else{
+				$('#info').hide();
+				
+			}
+			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig").keyup();	
+		});	
 	</script>
 </head>
 
@@ -460,9 +472,14 @@
 					<td class="labelText">
 						<siga:Idioma key='gratuita.mantAsistencias.literal.NIG' />
 					</td>
-					<td colspan="4">
-						<html:text name="ActuacionAsistenciaFormEdicion" property="nig" size="30" styleId="nig" maxlength="50" styleClass="box" />
+					<td>
+						<html:text name="ActuacionAsistenciaFormEdicion" property="nig"  styleId="nig" styleClass="box" style="size:19;width:200px" />
 					</td>
+					 			
+					<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+					</td>
+					<td colspan="2"></td>
+					
 				</tr>
 				
 				<tr>
@@ -824,6 +841,18 @@
 				fin();
 				return false;
 			}
+			
+			var nigAux = document.getElementById("nig").value;
+			nigAux = formateaNig(nigAux);
+			if(!validarNig(nigAux)){	
+				alert("<siga:Idioma key='gratuita.nig.formato'/>");
+				fin();
+				return false;
+					
+			}
+			document.ActuacionAsistenciaFormEdicion.nig.value = nigAux;
+			
+			
 			if(document.getElementById("checkDiaDespues").checked){
 				document.ActuacionAsistenciaFormEdicion.diaDespues.value = 'S';
 			}else{
