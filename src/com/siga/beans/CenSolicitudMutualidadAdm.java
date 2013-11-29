@@ -256,6 +256,10 @@ public class CenSolicitudMutualidadAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),solicitudIncorporacionBean.getIdSolicitud());
+		sql.append(" AND IDINSTITUCION=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),solicitudIncorporacionBean.getIdInstitucion());
 		sql.append(") ORDER by SOL.FECHASOLICITUD ASC");
 
 		List<CenSolicitudMutualidadBean> solicitudMutualidadBeans = null;

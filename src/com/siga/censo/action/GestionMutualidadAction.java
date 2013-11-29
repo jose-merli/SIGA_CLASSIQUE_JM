@@ -139,6 +139,7 @@ public class GestionMutualidadAction extends MasterAction {
 
 			CenSolicitudIncorporacionBean solIncBean = new CenSolicitudIncorporacionBean();
 			solIncBean.setIdSolicitud(Long.parseLong(mutualidadForm.getIdSolicitudIncorporacion()));
+			solIncBean.setIdInstitucion(Integer.parseInt(mutualidadForm.getIdInstitucion()));
 			// Aquí he hecho un truco, si la solicitud procede de la ficha y no de una sol de incorporacion
 			// el idSolicitudIncorporacion será el idPersona. De esta forma tambien nos garantizamos que
 			// una persona solo pueda hacer una solicitud de alta en la mutualidad
