@@ -12,32 +12,49 @@
 
 package com.siga.facturacion.action;
 
-import javax.servlet.http.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.FacDisqueteDevolucionesAdm;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
+import com.siga.beans.FacLineaDevoluDisqBancoAdm;
+import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesForm;
-
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class DevolucionesAction extends MasterAction {
@@ -535,17 +552,21 @@ public class DevolucionesAction extends MasterAction {
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
+				
 			}else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
 				tx.rollback();		
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
 				return "nuevo";
+				
 			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
 				tx.rollback();	
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
 				return "nuevo";
+				
 			}else{
 				correcto=false;
 			}
+			
 			if (codretorno.equalsIgnoreCase("-32")){
 				tx.rollback();
 				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
@@ -736,8 +757,10 @@ public class DevolucionesAction extends MasterAction {
 			}
 			else{
 				tx.rollback();
-				borrarFichero(identificador, idInstitucion);
-				result=exitoModal("facturacion.nuevoFichero.literal.errorLectura",request);
+				//borrarFichero(identificador, idInstitucion);
+				//result=exitoModal("facturacion.nuevoFichero.literal.errorLectura",request);
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
+				return "mostrarVentana";				
 			}
 		}catch (Exception e) { 			
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 

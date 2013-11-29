@@ -209,13 +209,10 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de crear el fichero de devoluciones manuales e insertarlo en BBDD tras obtener las cabeceras  
 	 */
-	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx 	= null;
 
-		try
-		{
+		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
 			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
@@ -225,8 +222,6 @@ public class DevolucionesManualesAction extends MasterAction{
 			String banco = form.getBanco();
 			String fechaDevolucion = form.getFechaDevolucion();
 			String recibos = form.getRecibos();
-
-			
 			
 			// Comienzo control de transacciones
 			tx = user.getTransactionPesada(); 			
@@ -251,7 +246,12 @@ public class DevolucionesManualesAction extends MasterAction{
 	 		String nombreFichero = rutaServidor+ barra +"Manual-"+UtilidadesString.formatoFecha(form.getFechaDevolucion(),"dd/MM/yyyy","ddMMyy")+"-"+form.getBanco()+"-"+identificador+".d19";
 
 			FacFacturaIncluidaEnDisqueteAdm facdisq = new FacFacturaIncluidaEnDisqueteAdm(user);
-			File fichero = facdisq.crearFicheroDevoluciones(banco, fechaDevolucion, aplicaComisiones, recibos, idInstitucion, identificador, nombreFichero);
+			File fichero = facdisq.crearFicheroDevoluciones(
+				banco, 
+				fechaDevolucion, 
+				recibos, 
+				idInstitucion, 
+				nombreFichero);
 	
 			if (fichero!=null) {
 				// actualizo mediante el fichero. COntrol de codigos de errores segun la funcion.

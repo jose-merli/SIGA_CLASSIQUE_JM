@@ -161,5 +161,40 @@ public class FacLineaDevoluDisqBancoAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 
-	
+	/**
+	 * Obtiene las devoluciones del fichero
+	 * @param institucion
+	 * @param idDisqueteDevoluciones
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector obtenerDevolucionesFichero (String institucion, String idDisqueteDevoluciones) throws ClsExceptions {
+		String campos[] = this.getCamposBean();
+		
+	   Vector datos=new Vector();
+       try {
+            RowsContainer rc = new RowsContainer();
+            String sql = "SELECT " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + "." + campos[0];
+            for (int i=1; i<campos.length; i++) {
+            	sql += ", " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + "." + campos [i];
+            }
+            sql += " FROM " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA +
+            		" WHERE " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + "." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = " + institucion +
+	            		" AND " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + "." + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " >= " + idDisqueteDevoluciones;
+													
+            if (rc.find(sql)) {
+            	for (int i = 0; i < rc.size(); i++){
+                  Row fila = (Row) rc.get(i);
+                  Hashtable<String, Object> htFila=fila.getRow();
+                  FacLineaDevoluDisqBancoBean beanDevoluciones = beanDevoluciones =  (FacLineaDevoluDisqBancoBean) this.hashTableToBean(htFila);
+                  datos.add(beanDevoluciones);
+               }
+            } 
+       }
+
+       catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al obtener las devoluciones del fichero.");
+       }
+       return datos;                        
+    }	
 }

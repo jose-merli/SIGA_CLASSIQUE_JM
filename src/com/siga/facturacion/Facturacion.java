@@ -2268,36 +2268,32 @@ public class Facturacion {
     	}	    	
     }
     
-    /** 
-	 * Aplica comisiones correspondientes a un determinado 
-	 * @param  institucion - identificador de la institucion
-	 * @param  idDisqDevoluciones -  identificador del disquete de devoluciones
-	 * @param  usuario - usuario de sesion 
-	 * @return  boolean - resultado de la operacion  
-	 * @exception  SIGAException  En cualquier caso de error
-     * @throws ClsExceptions 
-	 */
+    /**
+     * Aplica comisiones correspondientes a un determinado disco de devoluciones
+     * @param institucion
+     * @param idDisqDevoluciones
+     * @param aplicaComisionesCliente
+     * @param userBean
+     * @return
+     * @throws SIGAException
+     * @throws ClsExceptions
+     */
+    
     public boolean aplicarComisiones(String institucion, String idDisqDevoluciones, String aplicaComisionesCliente, UsrBean userBean) throws SIGAException, ClsExceptions {
-		//if (aplicaComisionesCliente!=null && aplicaComisionesCliente.equalsIgnoreCase(ClsConstants.DB_TRUE)){
-		boolean resultado = true;
-		FacLineaDevoluDisqBancoBean lineaDevolucion = new FacLineaDevoluDisqBancoBean();
-		
-			
+    	boolean resultado = false;
+    	
 		// Identificamos los disquetes devueltos asociados al fichero de devoluciones
-		Vector devoluciones = new Vector();
-		Hashtable criteriosDevolucion = new Hashtable();
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
-		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,institucion);
-		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,idDisqDevoluciones);
-		devoluciones=admLDDB.selectForUpdate(criteriosDevolucion);				
-		Enumeration listaDevoluciones = devoluciones.elements();
-		// Para cada devolucion...
-		while (listaDevoluciones.hasMoreElements()){
-			lineaDevolucion=(FacLineaDevoluDisqBancoBean)listaDevoluciones.nextElement();
+		Vector vDevoluciones = admLDDB.obtenerDevolucionesFichero(institucion, idDisqDevoluciones);
+		
+		// Aplicamos la comision a cada devolusion
+		for (int d=0; d<vDevoluciones.size(); d++) {
+			FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
 			resultado = aplicarComisionAFactura (institucion, lineaDevolucion, aplicaComisionesCliente, null, userBean, resultado);
 			if(!resultado)
-				break;
-		} 
+				break;			
+		}
+		
 		return resultado;
 	}
 	
