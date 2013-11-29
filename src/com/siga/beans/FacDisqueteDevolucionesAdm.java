@@ -12,6 +12,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
@@ -92,13 +93,12 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 	/** 
 	 * Recoge informacion sobre las devoluciones asociadas a una determinada institucion<br/> 
 	 * @param  institucion - identificador de la institucion	 	  
-	 * @return  Vector - Fila seleccionada  
+	 * @return  PaginadorCaseSensitiveBind
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getDevoluciones (String institucion)
-		throws ClsExceptions,SIGAException
-	{
+	public PaginadorCaseSensitive getDevoluciones (String institucion) throws ClsExceptions,SIGAException {
 		Vector datos=new Vector();
+		Hashtable codigosBind = new Hashtable();
 		
 		try {
 			RowsContainer rc = new RowsContainer();
@@ -122,28 +122,28 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES+" = " +
 				"               DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
 				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE+" = 'S') AS COMISION, " +
-				"       BAN."+CenBancosBean.C_NOMBRE+" " +
+				"       BAN."+CenBancosBean.C_NOMBRE + " " +
 				"  FROM "+FacDisqueteDevolucionesBean.T_NOMBRETABLA+" DIS, " +
 				"       "+FacBancoInstitucionBean.T_NOMBRETABLA+" BANINS, " +
 				"       "+CenBancosBean.T_NOMBRETABLA+" BAN " +
 				" WHERE DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = BANINS."+FacBancoInstitucionBean.C_IDINSTITUCION+" " +
 				"   AND DIS."+FacDisqueteDevolucionesBean.C_BANCOS_CODIGO+" = BANINS."+FacBancoInstitucionBean.C_BANCOS_CODIGO+" " +
 				"   AND BANINS."+FacBancoInstitucionBean.C_COD_BANCO+" = BAN."+CenBancosBean.C_CODIGO+" " +
-				"   AND DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = "+institucion+" " +
+				"   AND DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = " + institucion +
 				" ORDER BY DIS."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+" DESC, " +
 				"          DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" DESC";
-			if (rc.find(sql)) {
-				for (int i = 0; i < rc.size(); i++){
-					Row fila = (Row) rc.get(i);
-					datos.add(fila);
-				}
+			
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			
+			if (totalRegistros==0){					
+				paginador = null;
 			}
+			return paginador;
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
-		}
-		
-		return datos;                        
+		}                    
 	} //getDevoluciones()
 	
 	/** 

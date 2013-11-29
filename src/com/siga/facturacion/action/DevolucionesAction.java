@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -42,6 +43,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FacDisqueteDevolucionesAdm;
@@ -87,7 +89,10 @@ public class DevolucionesAction extends MasterAction {
 				
 //				 La primera vez que se carga el formulario 
 				// Abrir
-				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+				if (accion == null || accion.equalsIgnoreCase("")){
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = abrir(mapping, miForm, request, response);						
+				} else if (accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("editarFactura")){
 					mapDestino = editarFactura(mapping, miForm, request, response);
@@ -137,10 +142,8 @@ public class DevolucionesAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
 		String result="abrir";
-		Vector devoluciones = new Vector();
 
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
@@ -149,40 +152,49 @@ public class DevolucionesAction extends MasterAction {
 			
 			// para saber en que tipo de busqueda estoy
 			request.getSession().setAttribute("CenBusquedaClientesTipo","DEV"); // busqueda normal
-
-			// miro a ver si tengo que ejecutar 
-			//la busqueda una vez presentada la pagina
-			String buscar = request.getParameter("buscar");
-//			if (buscar==null){
-				DevolucionesForm miformSession = (DevolucionesForm)request.getSession().getAttribute("DevolucionesForm");
-//				if (miformSession!=null) {
-					miformSession.reset(mapping,request);
-					miformSession.setComisiones("");
-					miformSession.setIdDisqueteDevoluciones("");
-					miformSession.setIdInstitucion("");
-					miformSession.setRuta(null);
-//				}
-				DevolucionesForm miform = (DevolucionesForm)formulario;
-				miform.reset(mapping,request);
-				miform.setComisiones("");
-				miform.setIdDisqueteDevoluciones("");
-				miform.setIdInstitucion("");
-				miform.setRuta(null);
-//			}
-			request.setAttribute("buscar",buscar);
-			
-			// Obtengo los diferentes disquetes de devoluciones
-			FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
-			devoluciones=devolucionesAdm.getDevoluciones(idInstitucion);
-			
+				
 			// Paso de parametros empleando request
 			request.setAttribute("IDINSTITUCION", idInstitucion);
-			request.setAttribute("container", devoluciones);
 			
-		} 
-		catch (Exception e) { 
+			HashMap databackup=new HashMap();
+				
+			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
+				databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			     PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
+			     Vector datos=new Vector();
+					
+			     //Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				if (paginador!=null) {					
+					String pagina = (String)request.getParameter("pagina");				
+					if (pagina!=null) {
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+					
+			} else {	
+		  	    databackup=new HashMap();
+					
+				// Obtengo los diferentes disquetes de devoluciones 			
+				FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
+				PaginadorCaseSensitive devoluciones = devolucionesAdm.getDevoluciones(idInstitucion);
+				
+				databackup.put("paginador", devoluciones);
+				if (devoluciones!=null){ 
+					Vector datos = devoluciones.obtenerPagina(1);
+					databackup.put("datos", datos);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				} 
+			}		
+			
+		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
-		}				
+		}	
+		
 		return result;
 	}
 	
