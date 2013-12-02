@@ -1206,7 +1206,10 @@ function str_replace(search, replace, subject) {
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
 					</td>
-					<td colspan="3">					
+					<td colspan="3">	
+						<% 	
+							String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
+						%>				
 						<siga:Select id="caracter"
 							queryId="getCaracteres"
 							params="<%=caracterParams%>"
