@@ -141,7 +141,7 @@
 					</td>
 					<td><%=hash.get("NOMBRE")%></td>
 					<td><%=hash.get("ANIO")%></td>
-					<td<%=hash.get("CODIGO")%>&nbsp;</td>
+					<td><%=hash.get("CODIGO")%>&nbsp;</td>
 					<td><%=GstDate.getFormatedDateShort("",(String)hash.get("FECHAENTRADA"))%></td>
 					<td>
 						<% if (hash.get("ESTADO").equals("V")) { %>
