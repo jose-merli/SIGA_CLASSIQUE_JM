@@ -1196,24 +1196,27 @@ function str_replace(search, replace, subject) {
 					<% }  %>
 					</td>
 				</tr>
-				<tr>
-					<!-- CARACTER -->
+				
+				<!--
+					JPT: Deja de aparecer el campo CARACTER por la incidencia INC_11655_SIGA.
+					- El problema se da porque el campo CEN_CLIENTE.CARACTER, cuando viene con la letra 'P', lo actualiza a nulo. 
+					- La tabla CEN_TIPOCLIENTE_ACCESODATOS para algún tipo de cliente no tiene un registro con CARACTER 'P'.
+					 
+				<tr>					
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.caracter"/>&nbsp;
 					</td>
-					<td colspan="3">
-					<% 	
-						String caracterParams = "{\"idtipocliente\":\""+tipoCliente+"\"}";
-					%>
+					<td colspan="3">					
 						<siga:Select id="caracter"
-									queryId="getCaracteres"
-									params="<%=caracterParams%>"
-									selectedIds="<%=caracterSel%>"
-									required="true"
-									readonly="true"/>
+							queryId="getCaracteres"
+							params="<%=caracterParams%>"
+							selectedIds="<%=caracterSel%>"
+							required="true"
+							readonly="true"/>
 					</td>
-	
 				</tr>
+				-->
+				
 				<tr>
 				<td colspan="4">
 				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" > <!-- para alinear -->
