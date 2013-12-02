@@ -2770,7 +2770,7 @@
 			var tipoId = document.PersonaJGForm.tipoId.value;	
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
-
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 
 			var envio=1;
 				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
@@ -2815,6 +2815,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;					
+					
 				} else if (validatePersonaJGForm(document.forms[0])){
 								
 					// jbd: comprobaciones adicionales para el pcajg
@@ -2923,6 +2929,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 		  	  				
 
 			
@@ -2966,6 +2973,12 @@
 				alert(msg2);
 				fin();
 				return false;
+				
+			}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+				alert(msg3);
+				fin();
+				return false;
+				
 			} else if (validatePersonaJGForm(document.forms[0])){
 			
 				// jbd: comprobaciones adicionales para el pcajg
@@ -3079,6 +3092,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3088,6 +3102,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else{
 					if (validatePersonaJGForm(document.forms[0]) ){
 						document.forms[0].submit();
@@ -3161,6 +3181,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3170,6 +3191,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
 						document.forms[0].submit();
@@ -3244,6 +3271,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3253,6 +3281,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
 						document.forms[0].submit();
@@ -3329,6 +3363,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3338,6 +3373,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
 						if(<%=pcajgActivo == 4%>){
@@ -3409,6 +3450,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3418,6 +3460,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else{
 					if (validatePersonaJGForm(document.forms[0])){
 						// jbd: comprobaciones adicionales para el pcajg
@@ -3534,7 +3582,7 @@
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
-			
+			var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -3544,6 +3592,12 @@
 					alert(msg2);
 					fin();
 					return false;
+					
+				}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+					alert(msg3);
+					fin();
+					return false;
+					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){						
 						document.forms[0].submit();
@@ -3634,6 +3688,7 @@ function accionGuardarCerrar()	{
 	var tipoId = document.forms[0].tipoId.value;
 	var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 	var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+	var msg3="<siga:Idioma key="gratuita.personaJG.messages.alertTipo3"/>";
 	
 	if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 		alert(msg1);
@@ -3644,6 +3699,12 @@ function accionGuardarCerrar()	{
 			alert(msg2);
 			fin();
 			return false;
+			
+		}else if (tipo=="O" && (tipoId!="" && tipoId!="20" && tipoId!="50")) {
+			alert(msg3);
+			fin();
+			return false;
+			
 		} else {
 			if (validatePersonaJGForm(document.forms[0]) ){						
 				document.forms[0].submit();
