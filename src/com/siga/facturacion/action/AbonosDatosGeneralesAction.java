@@ -45,9 +45,12 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String accion = (String)request.getParameter("accion");
 			String idAbono = (String)request.getParameter("idAbono");
+			idAbono = idAbono==null||idAbono.equalsIgnoreCase("null")?"":idAbono;
 			String idPagoJG = (String)request.getParameter("idPagoJG");
+			idPagoJG = idPagoJG==null||idPagoJG.equalsIgnoreCase("null")?"":idPagoJG;
 			String idInstitucionAbono = (String)request.getParameter("idInstitucion");
 			String idFactura = (String)request.getParameter("idfactura");
+			idFactura = idFactura==null||idFactura.equalsIgnoreCase("null")?"":idFactura;
 			String volver = null;
 			if (request.getParameter("botonVolver")!=null )
 				volver = (String)request.getParameter("botonVolver");
