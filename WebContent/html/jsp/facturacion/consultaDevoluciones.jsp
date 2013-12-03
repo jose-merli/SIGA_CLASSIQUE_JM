@@ -24,16 +24,12 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.beans.FacDisqueteDevolucionesBean"%>
 <%@ page import="com.siga.beans.CenBancosBean"%>
 <%@ page import="com.siga.tlds.*"%>
-<%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
-<%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
 
 <!-- JSP -->

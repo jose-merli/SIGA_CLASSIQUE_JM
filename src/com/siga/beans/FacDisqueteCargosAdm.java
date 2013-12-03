@@ -5,9 +5,12 @@
 
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 
 
@@ -97,94 +100,69 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	
 	/** 
 	 * Obtiene un vector con los datos del fichero
-	 * @param  Integer - identificador de la institución
-	 * @return  Vector - Vector con los registros 
+	 * @param  String - identificador de la institución
+	 * @return  PaginadorCaseSensitive 
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Vector getDatosFichero(Integer idInstitucion) throws ClsExceptions {
-		Vector v = null;
-		String selectPrincipal;
-		String selectRecibo;
-		String selectOrigen;
-		String sFrom;
-		String sQuery;
-		String sWhere;
-		String sOrden;
-		RowsContainer rc = null;
-				
-		try{
-			selectRecibo = " (SELECT COUNT (1) FROM " +
-			FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " WHERE " + 
-			FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION 
-			+ " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " AND " +
-			FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS 
-			+ " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + ") AS NUMRECIBOS ";
-			
-			selectPrincipal = " SELECT " + FacDisqueteCargosBean.C_FECHACREACION + ", " +
-								" (select cen_bancos.codigo||'-'||substr(cen_bancos.NOMBRE, 1, 30)"+
-		                        " from cen_bancos, fac_bancoinstitucion"+
-		                        " where cen_bancos.codigo=fac_bancoinstitucion.cod_banco"+
-		                        " and fac_bancoinstitucion.bancos_codigo=fac_disquetecargos.bancos_codigo"+
-		                        " and fac_bancoinstitucion.idinstitucion="+idInstitucion+")AS BANCO,"+
-								FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + ", " + 
-								//FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO + ", " +
-								"(select FAC_SERIEFACTURACION.NOMBREABREVIADO "+
-								" from FAC_SERIEFACTURACION "+
-								" where fac_seriefacturacion.idinstitucion = FAC_DISQUETECARGOS.IDINSTITUCION "+
-								"  and fac_seriefacturacion.idseriefacturacion =  fac_disquetecargos.idseriefacturacion) NOMBREABREVIADO,"+
-								FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + ", " +
-								FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_NOMBREFICHERO + ", " +
-								
-							    " (SELECT " + FacFacturacionProgramadaBean.C_DESCRIPCION + 
-					               " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + 
-					              " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION +
-								    " AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION +
-								    " AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDPROGRAMACION +" ) DESCRIPCION_PROGRAMACION, " + 
-
-								" (SELECT SUM (" + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA +"."+ FacFacturaIncluidaEnDisqueteBean.C_IMPORTE +") " +
-								   " FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + 
-								  " WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + 
-								    " AND " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + 
-								" ) AS TOTAL_REMESA ";
-			
-			sFrom = " FROM " + FacDisqueteCargosBean.T_NOMBRETABLA + ", " 
+	public PaginadorCaseSensitive getDatosFichero(String idInstitucion) throws ClsExceptions {
+		try {
+			String sql = " SELECT " + FacDisqueteCargosBean.C_FECHACREACION + ", " +
+						" ( " +
+							" SELECT cen_bancos.codigo || '-' || substr(cen_bancos.NOMBRE, 1, 30) " +
+							" FROM cen_bancos, " +
+								" fac_bancoinstitucion"+
+							" WHERE cen_bancos.codigo = fac_bancoinstitucion.cod_banco " +
+							" AND fac_bancoinstitucion.bancos_codigo = fac_disquetecargos.bancos_codigo " +
+							" AND fac_bancoinstitucion.idinstitucion = " + idInstitucion + 
+						") AS BANCO, "+
+						FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + ", " + 
+						" ( " +
+							" SELECT FAC_SERIEFACTURACION.NOMBREABREVIADO " +
+							" FROM FAC_SERIEFACTURACION " +
+							" WHERE fac_seriefacturacion.idinstitucion = FAC_DISQUETECARGOS.IDINSTITUCION " +
+								" AND fac_seriefacturacion.idseriefacturacion = fac_disquetecargos.idseriefacturacion" +
+						") NOMBREABREVIADO,"+
+						FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + ", " +
+						FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_NOMBREFICHERO + ", " +								
+						" ( " +
+							" SELECT " + FacFacturacionProgramadaBean.C_DESCRIPCION + 
+					        " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + 
+					        " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION +
+					        	" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION +
+								" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDPROGRAMACION +
+						" ) DESCRIPCION_PROGRAMACION, " + 
+						" ( " +
+							" SELECT SUM (" + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA +"."+ FacFacturaIncluidaEnDisqueteBean.C_IMPORTE +" ) " +
+							" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + 
+							" WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + 
+								" AND " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + 
+						" ) AS TOTAL_REMESA, " + 
+						" ( " +
+							" SELECT COUNT (1) " +
+							" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + 
+							" WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + 
+								" AND " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + 
+						") AS NUMRECIBOS " +
+					" FROM " + FacDisqueteCargosBean.T_NOMBRETABLA + ", " 
 							 + CenBancosBean.T_NOMBRETABLA + ", "  
-							 +FacBancoInstitucionBean.T_NOMBRETABLA;
-							 
+							 + FacBancoInstitucionBean.T_NOMBRETABLA + 
+					" WHERE " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + idInstitucion + 
+			         	" AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
+			         	" AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_BANCOS_CODIGO + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
+			         	" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO+"="+CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO +			
+			         " ORDER BY " + FacDisqueteCargosBean.C_FECHACREACION + " DESC"; 	
 			
-//							
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
-			sWhere = " WHERE " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + idInstitucion+ 
-			         " and "+FacDisqueteCargosBean.T_NOMBRETABLA + "." +FacDisqueteCargosBean.C_IDINSTITUCION+"="+FacBancoInstitucionBean.T_NOMBRETABLA+"."+FacBancoInstitucionBean.C_IDINSTITUCION+
-					 " and "+FacDisqueteCargosBean.T_NOMBRETABLA + "." +FacDisqueteCargosBean.C_BANCOS_CODIGO+"="+FacBancoInstitucionBean.T_NOMBRETABLA+"."+FacBancoInstitucionBean.C_BANCOS_CODIGO+
-					 " and "+FacBancoInstitucionBean.T_NOMBRETABLA+"."+FacBancoInstitucionBean.C_COD_BANCO+"="+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO
-					;
-
-			
-			sOrden = " ORDER BY " + FacDisqueteCargosBean.C_FECHACREACION + " DESC"; 
-			sQuery = selectPrincipal + ", " + selectRecibo + sFrom + sWhere + sOrden;	
-
-			
-			
-			
-			rc = new RowsContainer(); 
-			rc = this.find(sQuery);
-	        if (rc!=null) {
-	        	v = new Vector();
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
-				}
+			if (totalRegistros==0){					
+				paginador = null;
 			}
-		
-		}catch (Exception e) {				
-			
-			throw new ClsExceptions (e, "Error al obtener los datos de los ficheros.");
+			return paginador;
 		}
-		
-		return v;
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener los datos de los ficheros.");
+		}    			
 	}
 	
 	public Hashtable getInformeRemesa (String idInstitucion, String idDisqueteCargo) 

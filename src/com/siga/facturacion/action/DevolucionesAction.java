@@ -192,7 +192,7 @@ public class DevolucionesAction extends MasterAction {
 			}		
 			
 		}  catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}	
 		
 		return result;

@@ -96,10 +96,7 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 	 * @return  PaginadorCaseSensitiveBind
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public PaginadorCaseSensitive getDevoluciones (String institucion) throws ClsExceptions,SIGAException {
-		Vector datos=new Vector();
-		Hashtable codigosBind = new Hashtable();
-		
+	public PaginadorCaseSensitive getDevoluciones (String institucion) throws ClsExceptions {
 		try {
 			RowsContainer rc = new RowsContainer();
 			String sql =

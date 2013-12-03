@@ -6,6 +6,7 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -22,6 +23,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacDisqueteCargosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
@@ -61,7 +63,11 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			
 			// La primera vez que se carga el formulario 
 			// Abrir
-			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+			if (accion == null || accion.equalsIgnoreCase("")){
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = abrir(mapping, miForm, request, response);	
+					
+			} else if (accion.equalsIgnoreCase("abrir")){
 				mapDestino = abrir(mapping, miForm, request, response);	
 				
 			}else if (accion.equalsIgnoreCase("download")){
@@ -102,12 +108,50 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try {					
-			Integer idInstitucion	= this.getIDInstitucion(request);			
-			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));
+		try{
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			String idInstitucion=user.getLocation();			
 			
+			HashMap databackup=new HashMap();				
+			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
+				databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			    PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
+			    Vector datos=new Vector();
+					
+			     //Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				if (paginador!=null) {					
+					String pagina = (String)request.getParameter("pagina");				
+					if (pagina!=null) {
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+					
+			} else {	
+		  	    databackup=new HashMap();
+					
+		  	    FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));			
+		  	    PaginadorCaseSensitive ficheros = adm.getDatosFichero(idInstitucion);
+				
+				databackup.put("paginador", ficheros);
+				if (ficheros!=null){ 
+					Vector datos = ficheros.obtenerPagina(1);
+					databackup.put("datos", datos);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				} 
+			}		
+			
+	
+			/*
+			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));			
 			Vector vDatos = adm.getDatosFichero(idInstitucion);
-			request.getSession().setAttribute("DATABACKUP", vDatos);	
+			request.getSession().setAttribute("DATABACKUP", vDatos);
+			*/	
 			
 			//Calculo si necesitara la fecha de cargo antes de generar los ficheros:	
 			// ACG: no hacemos esta consulta que ralentiza enormemente la ejecucion de esta funcion. De esta forma en la jsp se
@@ -129,9 +173,11 @@ public class FicheroBancarioPagosAction extends MasterAction{
 				tieneFechaCargo = "SI";
 	    */		
 			request.setAttribute("TIENEFECHACARGO",tieneFechaCargo);
+			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		} 	
+		}
+		
 		return "abrir";
 	}
 	
