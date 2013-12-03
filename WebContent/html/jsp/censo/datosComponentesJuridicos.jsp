@@ -49,6 +49,7 @@
 	String claseDatosIdentif = "box";
 	String claseCombo = "boxCombo";
 	String lectura="false";
+	String lecturaTipoCol1="false";
 	boolean desactivado = false;
 	String botones="C,Y,R";
 
@@ -109,8 +110,13 @@
 			clase = "boxConsulta";
 			claseCombo="boxConsulta";
 			lectura="true";
+			lecturaTipoCol1="true";
 			botones = "C";
 		}
+		
+		if (modo.equals("editar")){
+			lecturaTipoCol1="true";
+		}		
 		
 		if (!modo.equals("nuevo")){			
 			claseDatosIdentif = "boxConsulta";			
@@ -197,13 +203,21 @@
 				document.getElementById("capitalSocial").value = document.getElementById("capitalSocial").value.replace(/,/,".");
 				document.getElementsByName("componentesJuridicosForm")[0].target = "submitArea";
 				
-				if(document.getElementById("colegiadoabogacia").style.display=="block"){
+				if(jQuery("#colegiadoabogacia").is(":visible")){
 					document.getElementById("idTipoColegio").value = document.getElementById("idTipoColegio1").value;
 				}				
-				if(document.getElementById("colegiadonoabogacia").style.display=="block"){
+				if(jQuery("#colegiadonoabogacia").is(":visible")){
+					if(document.getElementById("idTipoColegio2").value == ""){
+						alert("Debe seleccionar una profesión")
+						fin();
+						return false;
+					}
+					
 					document.getElementById("idTipoColegio").value =document.getElementById("idTipoColegio2").value;
 				}				
+
 				document.getElementsByName("componentesJuridicosForm")[0].submit();
+
 			} else {
 				fin();
 				return false;
@@ -260,6 +274,12 @@
 					break;
 				}				
 			}			
+			
+			document.componentesJuridicosForm.idTipoColegio1.readOnly=true;
+			document.componentesJuridicosForm.idTipoColegio1.disabled=true;
+			document.componentesJuridicosForm.numColegiado.readOnly=true;
+			document.componentesJuridicosForm.numColegiado.disabled=true;
+			
 			jQuery("#sjcs").show();
 			jQuery("#colegio1").show();
 			jQuery("#colegio2").show();			
@@ -499,10 +519,10 @@
 								elementoSelTipoColegio.add(idtipocolegioaux);
 	%>
 								<td id="colegiadoabogacia" style="display:none">
-									<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 								
+									<siga:ComboBD nombre="idTipoColegio1" tipo="cmbActividadProfesional" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lecturaTipoCol1%>" elementoSel="<%=elementoSelTipoColegio%>" accion="cambiar()"  /> 								
 								</td>
 								<td id="colegiadonoabogacia" style="display:none">
-									<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorioSinTextoSeleccionar="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" />								
+									<siga:ComboBD nombre="idTipoColegio2" tipo="cmbActividadProfesionalNoColegiado" clase="<%=claseCombo%>" obligatorio="true" seleccionMultiple="false" readonly="<%=lectura%>" elementoSel="<%=elementoSelTipoColegio%>" />								
 								</td>							
 								
 								<td id="provincia1" style="display:none" class="labelText">
