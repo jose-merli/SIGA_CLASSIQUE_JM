@@ -2566,7 +2566,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				    
 			    File filePDF = new File(rutaAlmacen+ nombreFicheroAlmacen);
 			    if (!filePDF.exists())  {
-			        throw new SIGAException("messages.general.error.ficheroNoExiste");
+			        return exito("messages.facturacionRapida.aviso.esperaDescarga",request);
 			    }
 			    request.setAttribute("nombreFichero", filePDF.getName());
 				request.setAttribute("rutaFichero", filePDF.getPath());			
