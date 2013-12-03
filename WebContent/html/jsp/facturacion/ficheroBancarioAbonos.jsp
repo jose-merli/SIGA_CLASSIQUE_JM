@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- ficheroBancarioAbonos.jsp -->
+
 <!-- 
 	 VERSIONES : 
 	 	nuria.rgonzalez 29-03-2005 - Inicio
@@ -21,86 +22,99 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.FacDisqueteAbonosBean"%>
-<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
-
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-
-	Vector vDatos = (Vector)request.getSession().getAttribute("DATABACKUP");	
-		
-	String 	fecha; 
-	String 	banco;	
-	String 	recibos;
-	String 	importe;
+	UsrBean usrbean=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	boolean abonosSJCS = false;
 	String sjcs = request.getParameter("sjcs");
 	if ((sjcs!=null) && (sjcs.equals("1"))){
 		abonosSJCS = true;
 	}
+	
+	/** INICIO PAGINADOR ***/
+	String idioma = usrbean.getLanguage().toUpperCase();
+	String paginaSeleccionada = "", totalRegistros = "", registrosPorPagina = "";
+	Vector resultado = null;
+	
+    if (ses.getAttribute("DATAPAGINADOR")!=null) {
+	 	HashMap hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
+	
+	 	if (hm.get("datos")!=null && !hm.get("datos").equals("")){
+	  		resultado = (Vector) hm.get("datos");
+	  		PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)hm.get("paginador");
+	
+	 		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+	 	} else {
+	  		resultado = new Vector();
+	  		paginaSeleccionada = "0";	
+	 		totalRegistros = "0";	
+	 		registrosPorPagina = "0";
+	 	}
+   	} else {
+      	resultado = new Vector();
+	  	paginaSeleccionada = "0";
+	 	totalRegistros = "0";
+	 	registrosPorPagina = "0";
+   	}
+    
+    String action=app+"/FAC_EnvioAbonosABanco.do?noReset=true";
+    /** FIN PAGINADOR ***/	
 %>	
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<% if(abonosSJCS){ %>
-		<siga:Titulo
-			titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" 
-			localizacion="factSJCS.Pagos.localizacion"/>
-	<%}else{ %>
-		<siga:Titulo
-			titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" 
-			localizacion="facturacion.localizacion"/>
-	<% }%>
+		<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="factSJCS.Pagos.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="facturacion.localizacion"/>
+	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
+	
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
 		
 		function download(fila) {
-				if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarDescargaFichero"/>')) {
-					return false;
-				}				
-				var datos;
-				datos = document.getElementById('tablaDatosDinamicosD');
-				datos.value = ""; 
-				var j;
-				var tabla;
-				tabla = document.getElementById('tablaDatos');
-				var flag = true;
-				j = 1;
-				while (flag) {
-				  var aux = 'oculto' + fila + '_' + j;
-				  var oculto = document.getElementById(aux);
-				  if (oculto == null)  { flag = false; }
-				  else { datos.value = datos.value + oculto.value + ','; }
-				  j++;
+			if (!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarDescargaFichero"/>')) {
+				return false;
+			}				
+			var datos = document.getElementById('tablaDatosDinamicosD');
+			datos.value = ""; 
+			var j;
+			var tabla;
+			tabla = document.getElementById('tablaDatos');
+			var flag = true;
+			j = 1;
+			while (flag) {
+				var aux = 'oculto' + fila + '_' + j;
+			  	var oculto = document.getElementById(aux);
+				if (oculto == null)  { 
+					flag = false; 
+				} else { 
+					datos.value = datos.value + oculto.value + ','; 
 				}
-				datos.value = datos.value + "%";
-				document.all.ficheroBancarioAbonosForm.modo.value = "download";
+				j++;
+			}
+			datos.value = datos.value + "%";
+			document.all.ficheroBancarioAbonosForm.modo.value = "download";
 		   	document.ficheroBancarioAbonosForm.submit();
-			 }
+		}
 				
 		function generarFichero() {
 			if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarFicheroAbonos"/>')) {
@@ -111,10 +125,8 @@
 			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
 		}
 
-
 		// Informe remesa
-		function versolicitud(fila) 
-		{
+		function versolicitud(fila) {
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
@@ -124,10 +136,13 @@
 			var flag = true;
 			j = 1;
 			while (flag) {
-			  var aux = 'oculto' + fila + '_' + j;
-			  var oculto = document.getElementById(aux);
-			  if (oculto == null)  { flag = false; }
-			  else { datos.value = datos.value + oculto.value + ','; }
+			  	var aux = 'oculto' + fila + '_' + j;
+			  	var oculto = document.getElementById(aux);
+			  	if (oculto == null)  { 
+			  		flag = false; 
+			  	} else { 
+			  		datos.value = datos.value + oculto.value + ','; 
+			  	}
 			  j++;
 			}
 			datos.value = datos.value + "%";
@@ -138,15 +153,10 @@
 		function refrescarLocal() {
 			document.location.reload();
 		}
-		
-		
-		
 	</script>
-
 </head>
 
 <body>	
-	
 	<table class="tablaTitulo">		
 		<tr>		
 			<td class="titulitosDatos">
@@ -155,82 +165,103 @@
 		</tr>
 	</table>		
 
-		<html:form action="/FAC_EnvioAbonosABanco.do" method="POST" target="submitArea" style="display:none">		
-			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>				
-			<% if (abonosSJCS){ %>
-				<input type="hidden" name="sjcs" value="<%=sjcs %>">
-			<%} else { %>
-				<input type="hidden" name="sjcs" value="">
-			<%} %>
-		</html:form>
+	<html:form action="/FAC_EnvioAbonosABanco.do?noReset=true" method="POST" target="submitArea" style="display:none">		
+		<!-- Campo obligatorio -->
+		<html:hidden property = "modo" value = ""/>				
+		<% if (abonosSJCS){ %>
+			<input type="hidden" name="sjcs" value="<%=sjcs%>">
+		<%} else { %>
+			<input type="hidden" name="sjcs" value="">
+		<%} %>
+	</html:form>
+			
+	<siga:Table 
+	   	name="tablaDatos"
+	   	border="1"
+	 	columnNames="facturacion.ficheroBancarioAbonos.literal.fecha,
+	 				facturacion.ficheroBancarioAbonos.literal.banco,
+	 				facturacion.ficheroBancarioAbonos.literal.nAbonos,
+	 				facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"
+		columnSizes="10,50,15,15,10"
+		modal="M">
 		
-	
-				<siga:Table 
-				   	name="tablaDatos"
-				   	border="1"
-				  	columnNames="facturacion.ficheroBancarioAbonos.literal.fecha,facturacion.ficheroBancarioAbonos.literal.banco,facturacion.ficheroBancarioAbonos.literal.nAbonos,facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"
-				  	columnSizes="10,50,15,15,10"
-				    modal="M"> 		  
-	 	
-<%	
-						if(vDatos == null || vDatos.size()<1 ) { 
-%>
-		 					<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-					</tr>
-<%		
-		 				}
-		 				else {	 
-				 			Enumeration en = vDatos.elements();	
-				 			int i=0;  	 				 			
-							 											
-							while(en.hasMoreElements()){
-								Hashtable htData = (Hashtable)en.nextElement();
-								if (htData == null) continue;	
-								FilaExtElement[] elems=new FilaExtElement[2];
-								elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 	
-								// JBD INC_CAT_017
-								elems[1]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
+<%
+		if (resultado == null || resultado.size() < 1) { 
+%>	   
+			<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		} else { 
+			for (int i = 0; i < resultado.size(); i++) { 				
+				Row row = (Row)resultado.elementAt(i);
+				
+				FilaExtElement[] elems = new FilaExtElement[2];
+				elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
+				elems[1]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
+				
+				int recordNumber = i + 1;
 								
-								i++;
-								
-								fecha 	= UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)htData.get(FacDisqueteAbonosBean.C_FECHA)));								
-								banco 	= UtilidadesString.mostrarDatoJSP((String)htData.get("BANCO"));
-								recibos = UtilidadesString.mostrarDatoJSP((String)htData.get("NUMRECIBOS"));	
-								importe = UtilidadesString.mostrarDatoJSP((String)htData.get("IMPORTE"));
+				String fecha = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", row.getString(FacDisqueteAbonosBean.C_FECHA)));								
+				String banco = UtilidadesString.mostrarDatoJSP(row.getString("BANCO"));
+				String recibos = UtilidadesString.mostrarDatoJSP(row.getString("NUMRECIBOS"));	
+				String importe = UtilidadesString.mostrarDatoJSP(row.getString("IMPORTE"));
 %> 							
-								<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
-									<td>
-										<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=(String)htData.get(FacDisqueteAbonosBean.C_IDDISQUETEABONO)%>'>
-										<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=(String)htData.get(FacDisqueteAbonosBean.C_NOMBREFICHERO)%>'>	
-										<%=fecha%>
-									</td>
-									<td><%=banco%></td> 
-									<td><%=recibos%></td>
-									<td align="right"><%=UtilidadesNumero.formato(importe)%>&nbsp;&euro;</td> 
-								
-								</siga:FilaConIconos>
-<%						}
-	 					} // While %>  			
-	  		</siga:Table>  			
-
-				<table class="botonesDetalle">
-					<tr>
-						<td class="tdBotones">
-							<html:button property="abono" onclick="return generarFichero();" styleClass="button"><siga:Idioma key="facturacion.ficheroBancarioAbonos.boton.ficheroAbonos"/>    </html:button>
-						</td>	
-					</tr>
-				</table>
-		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->		
-
-
+				<siga:FilaConIconos 
+					fila='<%=String.valueOf(recordNumber)%>' 
+					botones='' 
+					visibleConsulta='false' 
+					visibleEdicion='false' 
+					visibleBorrado='false' 
+					elementos='<%=elems%>' 
+					pintarEspacio="no" 
+					clase="listaNonEdit">
+					<td>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=row.getString(FacDisqueteAbonosBean.C_IDDISQUETEABONO)%>'>
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=row.getString(FacDisqueteAbonosBean.C_NOMBREFICHERO)%>'>	
+						<%=fecha%>
+					</td>
+					<td><%=banco%></td> 
+					<td align="right"><%=recibos%></td>
+					<td align="right"><%=UtilidadesString.formatoImporte(importe)%>&nbsp;&euro;</td> 								
+				</siga:FilaConIconos>
+<%			
+			}
+	 	}
+%>  			
+	</siga:Table>  			
 	
+<!-- Metemos la paginación-->		
+<%
+	if (resultado != null && resultado.size() > 0) { 
+%>	
+	<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+		registrosPorPagina="<%=registrosPorPagina%>" 
+		paginaSeleccionada="<%=paginaSeleccionada%>" 
+		idioma="<%=idioma%>"
+		modo="abrir"								
+		clase="paginator" 
+		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
+		distanciaPaginas=""
+		action="<%=action%>" />
+<%
+	}
+%>			
+
+	<table class="botonesDetalle">
+		<tr>
+			<td class="tdBotones">
+				<html:button property="abono" onclick="return generarFichero();" styleClass="button">
+					<siga:Idioma key="facturacion.ficheroBancarioAbonos.boton.ficheroAbonos"/>    
+				</html:button>
+			</td>	
+		</tr>
+	</table>
+	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->		
 	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
-	</body>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

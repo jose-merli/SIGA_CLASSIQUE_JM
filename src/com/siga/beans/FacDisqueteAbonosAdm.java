@@ -13,6 +13,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
@@ -122,83 +123,54 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 		}
 		return htData;	
 	}
-
-	/** 
+	
+	/**
 	 * Obtiene un vector con los datos del fichero
-	 * @param  Integer - identificador de la institución
-	 * @return  Vector - Vector con los registros 
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */	
-	public Vector getDatosFichero(Integer idInstitucion, boolean abonosSJCS) throws ClsExceptions {
-		Vector v = null;
-		String selectPrincipal;
-		String selectRecibo;
-		String selectOrigen;
-		String sFrom;
-		String sQuery;
-		String sWhere;
-		String sOrden;
-		RowsContainer rc = null;
-				
+	 * @param idInstitucion String - identificador de la institución
+	 * @param abonosSJCS boolean abono
+	 * @return PaginadorCaseSensitive 
+	 * @throws ClsExceptions
+	 */
+	public PaginadorCaseSensitive getDatosFichero(String idInstitucion, boolean abonosSJCS) throws ClsExceptions {				
 		try{
-			selectRecibo = " (SELECT COUNT (1) FROM " +
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + " WHERE " + 
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION 
-			+ " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " AND " +
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO 
-			+ " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ") AS NUMRECIBOS, ";
+			String sql = " SELECT " + FacDisqueteAbonosBean.C_FECHA + ", " +
+							FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + " AS BANCO, " + 
+							FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ", " +
+							FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", " +
+							" ( " +
+								" SELECT COUNT (1) " +
+								" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + 
+								" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + 
+									" AND " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + 
+							" ) AS NUMRECIBOS, " +
+							" ( " +
+								" SELECT SUM(IMPORTEABONADO) " +
+								" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + 
+								" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + 
+									" AND " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + 
+							" ) AS IMPORTE " +
+						" FROM " + FacDisqueteAbonosBean.T_NOMBRETABLA + ", " + 
+							CenBancosBean.T_NOMBRETABLA + ", " + 
+							FacBancoInstitucionBean.T_NOMBRETABLA +
+						" WHERE " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " = " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO +
+							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_BANCOS_CODIGO + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
+							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
+							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
+							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_FCS + " = " + (abonosSJCS ? "'1'" : "'0'") +
+						" ORDER BY " + FacDisqueteAbonosBean.C_FECHA + " DESC"; 
 			
-			selectRecibo += " (SELECT SUM(IMPORTEABONADO) FROM " +
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + " WHERE " + 
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION 
-			+ " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " AND " +
-			FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO 
-			+ " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ") AS IMPORTE ";
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
-			selectPrincipal = " SELECT " + FacDisqueteAbonosBean.C_FECHA + ", " +
-			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + " AS BANCO, " + 
-			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ", " +
-			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", " +
-			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", "; 
-			
-			sFrom = " FROM " + FacDisqueteAbonosBean.T_NOMBRETABLA + ", " + CenBancosBean.T_NOMBRETABLA + ", " + FacBancoInstitucionBean.T_NOMBRETABLA;
-			
-			sWhere = " WHERE " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + idInstitucion 
-					+ " AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO 
-					+ " = " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO;
-			sWhere += " AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_BANCOS_CODIGO
-			        + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO;
-			sWhere += " AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION
-	        		+ " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION;
-			sWhere += " AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION
-    				+ " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION;
-			if (abonosSJCS){
-				sWhere += " AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_FCS +  " = '1'";
-			}else{
-				sWhere += " AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_FCS +  " = '0'";
+			if (totalRegistros==0){					
+				paginador = null;
 			}
-			
-			sOrden = " ORDER BY " + FacDisqueteAbonosBean.C_FECHA + " DESC"; 
-			sQuery = selectPrincipal + selectRecibo + sFrom + sWhere + sOrden;	
-			
-			rc = new RowsContainer(); 
-			rc = this.find(sQuery);
-	        if (rc!=null) {
-	        	v = new Vector();
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
-				}
-			}
-		
-		}catch (Exception e) {				
-			
-			throw new ClsExceptions (e, "Error al obtener los datos de los ficheros.");
+			return paginador;
 		}
-		
-		return v;
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener los datos de los ficheros.");
+		}   			
 	}
 
 	/** 

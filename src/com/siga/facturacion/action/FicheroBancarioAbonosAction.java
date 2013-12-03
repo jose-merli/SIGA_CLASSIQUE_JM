@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -22,6 +23,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
@@ -31,7 +33,6 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSucursalesAdm;
-import com.siga.beans.CenSucursalesBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacAbonoIncluidoEnDisqueteAdm;
@@ -79,9 +80,11 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			
 			// La primera vez que se carga el formulario 
 			// Abrir
-			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-				mapDestino = abrir(mapping, miForm, request, response);	
-				
+			if (accion == null || accion.equalsIgnoreCase("")){
+				request.getSession().removeAttribute("DATAPAGINADOR");
+				mapDestino = abrir(mapping, miForm, request, response);						
+			} else if (accion.equalsIgnoreCase("abrir")){
+				mapDestino = abrir(mapping, miForm, request, response);				
 			}else if (accion.equalsIgnoreCase("download")){
 				mapDestino = download(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("generarFichero")){
@@ -120,25 +123,56 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try{					
-			Integer idInstitucion	= this.getIDInstitucion(request);			
-			Integer usuario			= this.getUserName(request);		
-			boolean abonosSJCS      = false;
+		try{
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			String idInstitucion=user.getLocation();			
 			
-			FacDisqueteAbonosAdm adm = new FacDisqueteAbonosAdm(this.getUserBean(request));
+			HashMap databackup=new HashMap();
+			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
+				databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			     PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
+			     Vector datos=new Vector();
+					
+			     //Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				if (paginador!=null) {					
+					String pagina = (String)request.getParameter("pagina");				
+					if (pagina!=null) {
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+					
+			} else {	
+		  	    databackup=new HashMap();
+		  	    
+		  	    FacDisqueteAbonosAdm adm = new FacDisqueteAbonosAdm(this.getUserBean(request));
+		  	    boolean abonosSJCS      = false;
+		  	    
+		  	    // Recuperamos la procedencia de la llamada (1-Facturacion SJCS, 0-Facturacion)
+		  	    String sjcs = request.getParameter("sjcs");
+		  	    if ((sjcs!=null) && (sjcs.equals("1"))){
+		  	    	abonosSJCS = true;
+		  	    }
 			
-			// Recuperamos la procedencia de la llamada (1-Facturacion SJCS, 0-Facturacion)
-			String sjcs = request.getParameter("sjcs");
-			if ((sjcs!=null) && (sjcs.equals("1"))){
-				abonosSJCS = true;
-			}
+		  	    PaginadorCaseSensitive ficheros = adm.getDatosFichero(idInstitucion, abonosSJCS);
+				
+				databackup.put("paginador", ficheros);
+				if (ficheros!=null){ 
+					Vector datos = ficheros.obtenerPagina(1);
+					databackup.put("datos", datos);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				} 
+			}		
 			
-			Vector vDatos = adm.getDatosFichero(idInstitucion, abonosSJCS);
-			request.getSession().setAttribute("DATABACKUP", vDatos);	
-			
-		} catch (Exception e) { 
+		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		} 	
+		}	
+		
 		return "abrir";
 	}
 	
