@@ -73,6 +73,11 @@ public class MantenimientoFacturacionAction extends MasterAction {
 			// miro a ver si tengo que ejecutar 
 			//la busqueda una vez presentada la pagina
 			String buscar = request.getParameter("buscar");
+			
+			if(buscar!=null && buscar.equalsIgnoreCase("true")){
+				request.getSession().removeAttribute("DATAPAGINADOR");
+			}
+			
 			request.setAttribute("buscar",buscar);
 			
 			// para saber en que tipo de busqueda estoy
