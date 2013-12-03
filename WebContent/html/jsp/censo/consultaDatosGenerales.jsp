@@ -260,7 +260,14 @@
 	   document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);
 	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
 			var sNIF = document.forms[0].numIdentificacion.value;
-			document.forms[0].numIdentificacion.value = formateaNIF(sNIF);
+			var sNIFFormateado = formateaNIF(sNIF);
+			
+			if(esNIFCorrecto(sNIFFormateado,true)){
+				document.forms[0].numIdentificacion.value = sNIFFormateado;				
+			}else{
+				document.forms[0].numIdentificacion.value = sNIF;
+			}
+			
 	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){		   
 	   		var sNIE = document.forms[0].numIdentificacion.value;
 			document.forms[0].numIdentificacion.value = formateaNIE(sNIE);

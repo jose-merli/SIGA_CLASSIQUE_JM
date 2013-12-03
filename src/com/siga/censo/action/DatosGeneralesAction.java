@@ -1326,7 +1326,10 @@ public class DatosGeneralesAction extends MasterAction {
 			long idPersonaValor=0;
 			Vector personas = new Vector();
 			if (numIdentificacion != null) {
-				personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
+				Hashtable codigos = new Hashtable();
+				codigos.put(new Integer(1),UtilidadesString.LTrim(numIdentificacion.toUpperCase(),"0"));
+				personas = perAdm.selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1 AND ROWNUM = 1",codigos);					
+				
 				// insert de la parte de cliente paso un solo hash con los datos de cliente y de persona
 				// CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
 				String stipoIdenti= (String)miForm.getTipoIdentificacion();
