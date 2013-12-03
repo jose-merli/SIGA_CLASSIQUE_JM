@@ -23,8 +23,11 @@ public class EdicionRemesaForm extends MasterForm {
 	private String idTipoIdentificacion = null;
 	private String identificacion = null;
 	private String idIncidencias = null;
+	private String idestadocolegiado = null;
+	private Short idEstadoenvio = null;
 	
 	private List<ValueKeyVO> tiposIdentificacion;
+	private List<ValueKeyVO> estadosColegiado;
 	private Integer incidencias;
 	
 	public void reset() {
@@ -43,6 +46,7 @@ public class EdicionRemesaForm extends MasterForm {
 		idTipoIdentificacion = null;
 		identificacion = null;
 		idIncidencias = null;
+		idestadocolegiado = null;
 	}
 		
 	
@@ -181,4 +185,42 @@ public class EdicionRemesaForm extends MasterForm {
 	public void setConerrores(Short conerrores) {
 		this.conerrores = conerrores;
 	}
+
+
+
+	public String getIdestadocolegiado() {
+		return idestadocolegiado;
+	}
+
+
+
+	public void setIdestadocolegiado(String idestadocolegiado) {
+		this.idestadocolegiado = idestadocolegiado;
+	}
+
+
+
+	public List<ValueKeyVO> getEstadosColegiado() {
+		return estadosColegiado;
+	}
+
+
+
+	public void setEstadosColegiado(List<ValueKeyVO> estadosColegiado) {
+		this.estadosColegiado = estadosColegiado;
+	}
+
+
+
+	public Short getIdEstadoenvio() {
+		return idEstadoenvio;
+	}
+
+
+
+	public void setIdEstadoenvio(Short idEstadoenvio) {
+		this.idEstadoenvio = idEstadoenvio;
+	}
+
+
 }

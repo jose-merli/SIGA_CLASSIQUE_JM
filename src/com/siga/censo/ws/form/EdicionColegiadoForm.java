@@ -65,6 +65,12 @@ public class EdicionColegiadoForm extends MasterForm {
 	private List<ValueKeyVO> situacionesEjerciente;
 	private List<ValueKeyVO> sexos;
 	
+	private boolean incidenciaNumeroColegiadoDuplicado = false;
+	private boolean incidenciaNumeroColegiadoDuplicadoRevisada = false;
+	
+	private boolean incidenciaPoblacionNoEncontrada = false;
+	private boolean incidenciaPoblacionNoEncontradaRevisada = false;
+	
 	public String getNcolegiado() {
 		return ncolegiado;
 	}
@@ -378,6 +384,34 @@ public class EdicionColegiadoForm extends MasterForm {
 	}
 	public void setAccionPadre(String accionPadre) {
 		this.accionPadre = accionPadre;
+	}
+	public boolean isIncidenciaNumeroColegiadoDuplicado() {
+		return incidenciaNumeroColegiadoDuplicado;
+	}
+	public void setIncidenciaNumeroColegiadoDuplicado(
+			boolean incidenciaNumeroColegiadoDuplicado) {
+		this.incidenciaNumeroColegiadoDuplicado = incidenciaNumeroColegiadoDuplicado;
+	}
+	public boolean isIncidenciaNumeroColegiadoDuplicadoRevisada() {
+		return incidenciaNumeroColegiadoDuplicadoRevisada;
+	}
+	public void setIncidenciaNumeroColegiadoDuplicadoRevisada(
+			boolean incidenciaNumeroColegiadoDuplicadoRevisada) {
+		this.incidenciaNumeroColegiadoDuplicadoRevisada = incidenciaNumeroColegiadoDuplicadoRevisada;
+	}
+	public boolean isIncidenciaPoblacionNoEncontrada() {
+		return incidenciaPoblacionNoEncontrada;
+	}
+	public void setIncidenciaPoblacionNoEncontrada(
+			boolean incidenciaPoblacionNoEncontrada) {
+		this.incidenciaPoblacionNoEncontrada = incidenciaPoblacionNoEncontrada;
+	}
+	public boolean isIncidenciaPoblacionNoEncontradaRevisada() {
+		return incidenciaPoblacionNoEncontradaRevisada;
+	}
+	public void setIncidenciaPoblacionNoEncontradaRevisada(
+			boolean incidenciaPoblacionNoEncontradaRevisada) {
+		this.incidenciaPoblacionNoEncontradaRevisada = incidenciaPoblacionNoEncontradaRevisada;
 	}
 	
 		

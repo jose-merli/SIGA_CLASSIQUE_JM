@@ -159,6 +159,8 @@
 			<c:set var="comboProvincia" value="none" />
 			<c:set var="textProvincia" value="block" />
 		</c:if>
+		
+		<html:hidden name="EdicionColegiadoForm" property="incidenciaNumeroColegiadoDuplicadoRevisada" value="false"/>
 					
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.datosColegiado">			
 				<table class="tablaCampos" align="center">							
@@ -468,8 +470,7 @@
 						<table class="tablaCampos" align="center">
 							<c:forEach items="${EdicionColegiadoForm.incidencias}" var="incidencia" varStatus="i">							
 								<tr class="labelTextValue">									
-									<td id="${i.index}">&nbsp;*&nbsp;<siga:Idioma key="${incidencia}"/></td>
-									
+									<td id="${i.index}">&nbsp;*&nbsp;<siga:Idioma key="${incidencia}"/></td>									
 								</tr>
 							</c:forEach>
 						</table>
@@ -538,10 +539,28 @@
 				}
 			 	
 			 	function accionGuardar() {
-			 		sub();
-					document.forms[0].modo.value="modificar";
-					document.forms[0].target="mainWorkArea";	
-					document.forms[0].submit();
+			 		var guardar = true;
+			 		document.forms[0].incidenciaNumeroColegiadoDuplicadoRevisada.value = "false";
+			 		if (${EdicionColegiadoForm.incidenciaNumeroColegiadoDuplicado} && '${EdicionColegiadoForm.ncolegiado}' == document.forms[0].ncolegiado.value) {
+			 			guardar = confirm('<siga:Idioma key="censo.ws.ncolegiadoduplicado.confirmacion"/>');
+			 			if (guardar) {
+			 				document.forms[0].incidenciaNumeroColegiadoDuplicadoRevisada.value = "true";
+			 			}
+			 		}
+			 		
+			 		if (${EdicionColegiadoForm.incidenciaPoblacionNoEncontrada} && document.forms[0].descripcionpoblacion.value && document.forms[0].codigopoblacion.value) {
+			 			guardar = confirm('<siga:Idioma key="censo.ws.poblacion.confirmacion"/>');
+			 			if (guardar) {
+			 				document.forms[0].incidenciaPoblacionNoEncontradaRevisada.value = "true";
+			 			}
+			 		}
+			 		
+			 		if (guardar) {
+				 		sub();
+						document.forms[0].modo.value="modificar";
+						document.forms[0].target="mainWorkArea";	
+						document.forms[0].submit();
+			 		}
 			 	}
 			 	
 			 	function accionArchivar() {

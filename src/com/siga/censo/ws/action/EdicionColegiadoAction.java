@@ -15,9 +15,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenMaestroIncidenc;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
@@ -183,7 +185,16 @@ public class EdicionColegiadoAction extends MasterAction {
 			EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(edicionColegiadoForm.getIdcensodatos());
 			
 			BusinessManager.getInstance().startTransaction();
+			
 			ecomCenColegiado = ecomCenColegiadoService.insertHistorico(ecomCenColegiado, ecomCenDatos, ecomCenDireccion, null);
+			if (edicionColegiadoForm.isIncidenciaNumeroColegiadoDuplicadoRevisada()) {
+				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.NUMERO_COLEGIADO_DUPLICADO);
+			}
+			
+			if (edicionColegiadoForm.isIncidenciaPoblacionNoEncontradaRevisada()) {
+				//TODO
+			}
+			
 			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado), ecomCenColegiado);
 			BusinessManager.getInstance().commitTransaction();
 			idcensodatos = ecomCenColegiado.getIdcensodatos();
@@ -291,7 +302,19 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
 			
-			edicionColegiadoForm.setIncidencias(cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos()));
+			List<EcomCenMaestroIncidenc> incidencias = cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos());
+			
+			if (incidencias != null && incidencias.size() > 0) {
+				for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
+					if (AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.NUMERO_COLEGIADO_DUPLICADO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()) {
+						edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(true);
+					} else if (AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.POBLACION_NO_ENCONTRADA.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()) {
+						edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(true);
+					}
+				}
+			}
+			
+			edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiado(incidencias));
 			
 			edicionColegiadoForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 			edicionColegiadoForm.setSituacionesEjerciente(CombosCenWS.getSituacionesEjeciente(getUserBean(request)));
@@ -348,8 +371,8 @@ public class EdicionColegiadoAction extends MasterAction {
 					for (EcomCenDatos ecomCenDato : ecomCenDatos) {
 						EdicionColegiadoForm ecf = new EdicionColegiadoForm();
 						ecf.setIdcensodatos(ecomCenDato.getIdcensodatos());
-						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));
-						ecf.setIncidencias(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos()));
+						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));						
+						ecf.setIncidencias(getDescripcionIncidenciasColegiado(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos())));
 						ecf.setIdestadocolegiado(ecomCenDato.getIdestadocolegiado());
 						edicionColegiadoForms.add(ecf);
 					}
@@ -377,6 +400,17 @@ public class EdicionColegiadoAction extends MasterAction {
 		return "resultado";
 	}
 
+
+	private List<String> getDescripcionIncidenciasColegiado(List<EcomCenMaestroIncidenc> incidencias) {
+		List<String> descripciones = null;
+		if (incidencias != null && incidencias.size() > 0) {
+			descripciones = new ArrayList<String>();
+			for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
+				descripciones.add(ecomCenMaestroIncidenc.getDescripcion());
+			}
+		}
+		return descripciones;
+	}
 
 	private List<EcomCenDatos> getDatos(EdicionColegiadoForm edicionColegiadoForm) {
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);

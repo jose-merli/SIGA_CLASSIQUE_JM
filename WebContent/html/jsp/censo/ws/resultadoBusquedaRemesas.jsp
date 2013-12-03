@@ -33,6 +33,7 @@
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 
 
 
@@ -143,8 +144,8 @@
 		<siga:Table 		   
 		   name="listadoRemesas"
 		   border="1"
-		   columnNames="censo.ws.literal.colegio,censo.ws.literal.numeroPeticion,censo.ws.literal.fechaPeticion,"
-		   columnSizes="55,15,15">
+		   columnNames="censo.ws.literal.colegio,censo.ws.literal.numeroPeticion,censo.ws.literal.fechaPeticion,censo.ws.literal.estado,"
+		   columnSizes="55,15,10,10">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -179,6 +180,7 @@
 					<%=institucionAdm.getNombreInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>										
 					<td style="text-align: center"><%=edicionRemesaForm.getNumeroPeticion()%></td>					
 					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>					
+					<td style="text-align: center"><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOENVIO.getDescripcion(edicionRemesaForm.getIdEstadoenvio())%>"/></td>
 				</siga:FilaConIconos>	
 							<% }
 		   				   } else { %>

@@ -24,6 +24,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ConModuloBean"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 
 
 
@@ -102,45 +103,55 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 					<siga:ConjCampos leyenda="censo.ws.gestionremesas.datosRemesa">
 						<table class="tablaCampos" align="center">
 															
-								<!-- FILA -->
-								<tr>				
-									<td class="labelText">
-										<siga:Idioma key="censo.ws.literal.colegio"/>
-									</td>
-									<td>
-										<html:text readonly="true" name="EdicionRemesaForm" property="nombreColegio" styleClass="boxConsulta" size="60"/>										
-									</td>
-	
-									<td class="labelText" nowrap="nowrap">
-										<siga:Idioma key="censo.ws.literal.numeroPeticion"/>										
-									</td>				
-									<td>
-										<html:text readonly="true" name="EdicionRemesaForm" property="numeroPeticion" styleClass="boxConsulta" size="20"/>										
-									</td>
-								</tr>
-								<!-- FILA -->
-								<tr>
-									<td class="labelText" nowrap="nowrap">
-										<siga:Idioma key="censo.ws.literal.incidenciaGeneral"/>										
-									</td>				
-									<td width="300">
-										<logic:equal property="conerrores" value="1" name="EdicionRemesaForm">		
-											<c:forEach items="${EdicionRemesaForm.listaErrores}" var="incidencia" varStatus="i">												
-												<c:out value="${incidencia}"/><br/>
-											</c:forEach>
-										</logic:equal>
-										<logic:equal property="conerrores" value="0" name="EdicionRemesaForm">
-											<siga:Idioma key="censo.ws.literal.sinIncidencia"/>
-										</logic:equal>		
-									</td>
-													
-									<td class="labelText" nowrap="nowrap">
-										<siga:Idioma key="censo.ws.literal.fechaPeticion"/>
-									</td>
-									<td>
-										<html:text readonly="true" name="EdicionRemesaForm" property="fechapeticion" styleClass="boxConsulta" size="30"/>
-									</td>
-								</tr>
+							<!-- FILA -->
+							<tr>				
+								<td class="labelText">
+									<siga:Idioma key="censo.ws.literal.colegio"/>
+								</td>
+								<td>
+									<html:text readonly="true" name="EdicionRemesaForm" property="nombreColegio" styleClass="boxConsulta" size="60"/>										
+								</td>
+
+								<td class="labelText" nowrap="nowrap">
+									<siga:Idioma key="censo.ws.literal.numeroPeticion"/>										
+								</td>				
+								<td>
+									<html:text readonly="true" name="EdicionRemesaForm" property="numeroPeticion" styleClass="boxConsulta" size="20"/>										
+								</td>
+							</tr>
+							<!-- FILA -->
+							<tr>
+								<td class="labelText" nowrap="nowrap">
+									<siga:Idioma key="censo.ws.literal.incidenciaGeneral"/>										
+								</td>				
+								<td width="300">
+									<logic:equal property="conerrores" value="1" name="EdicionRemesaForm">		
+										<c:forEach items="${EdicionRemesaForm.listaErrores}" var="incidencia" varStatus="i">												
+											<c:out value="${incidencia}"/><br/>
+										</c:forEach>
+									</logic:equal>
+									<logic:equal property="conerrores" value="0" name="EdicionRemesaForm">
+										<siga:Idioma key="censo.ws.literal.sinIncidencia"/>
+									</logic:equal>		
+								</td>
+												
+								<td class="labelText" nowrap="nowrap">
+									<siga:Idioma key="censo.ws.literal.fechaPeticion"/>
+								</td>
+								<td>
+									<html:text readonly="true" name="EdicionRemesaForm" property="fechapeticion" styleClass="boxConsulta" size="30"/>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText" nowrap="nowrap">
+									<siga:Idioma key="censo.ws.literal.estado"/>										
+								</td>				
+								<bean:define id="idEstadoenvio" name="EdicionRemesaForm" property="idEstadoenvio" type="Short"></bean:define>
+								<td colspan="3">
+									<siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOENVIO.getDescripcion(idEstadoenvio)%>"/>
+								</td>
+							</tr>
 							
 						</table>
 					</siga:ConjCampos>
@@ -209,6 +220,23 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 										<html:text name="EdicionRemesaForm" property="identificacion" size="30" styleClass="box"/>
 									</td>
 								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.ws.literal.estado"/>
+									</td>
+									<td colspan="3">										
+										<html:select property="idestadocolegiado" name="EdicionRemesaForm" styleClass="boxCombo">
+											<html:option value="">&nbsp;</html:option>
+											<html:optionsCollection name="EdicionRemesaForm" property="estadosColegiado" value="key" label="value"></html:optionsCollection>
+										</html:select>
+									</td>
+	
+									
+								</tr>
+								
+								
 							</table>
 						</html:form>
 					</siga:ConjCampos>

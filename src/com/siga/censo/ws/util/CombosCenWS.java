@@ -3,6 +3,8 @@ package com.siga.censo.ws.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_SEXO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejerciente;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejercienteExample;
@@ -47,6 +49,24 @@ public class CombosCenWS {
 				lista.add(getValueKeyVO(usrBean, ecomCenTipoidentificacion.getIdcensotipoidentificacion().toString(), ecomCenTipoidentificacion.getDescripcion()));
 			}
 		}
+		return lista;
+	}
+	
+	public static List<ValueKeyVO> getEstadosColegiado(UsrBean usrBean) {
+		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
+		for (ECOM_CEN_MAESESTADOCOLEGIAL maestroEstadosColegiado : ECOM_CEN_MAESESTADOCOLEGIAL.values()) {
+			lista.add(getValueKeyVO(usrBean, String.valueOf(maestroEstadosColegiado.getCodigo()), maestroEstadosColegiado.getRecurso()));
+		}
+		
+		return lista;
+	}
+	
+	public static List<ValueKeyVO> getEstadosEnvio(UsrBean usrBean) {
+		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
+		for (ECOM_CEN_MAESESTADOENVIO maestroEstadosEnvio : ECOM_CEN_MAESESTADOENVIO.values()) {
+			lista.add(getValueKeyVO(usrBean, String.valueOf(maestroEstadosEnvio.getCodigo()), maestroEstadosEnvio.getRecurso()));
+		}
+		
 		return lista;
 	}
 

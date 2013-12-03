@@ -273,6 +273,7 @@ public class BusquedaRemesasAction extends MasterAction {
 				edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(ecomCenWsEnvio.getIdcenwsenvio()));
 				edicionRemesaForm.setIncidencias(ecomCenWsEnvio.getIncidencias());
 				edicionRemesaForm.setConerrores(ecomCenWsEnvio.getConerrores());
+				edicionRemesaForm.setIdEstadoenvio(ecomCenWsEnvio.getIdestadoenvio());
 				lista.add(edicionRemesaForm);
 			}
 		}

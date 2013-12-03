@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
@@ -176,6 +177,9 @@ public class EdicionRemesasAction extends MasterAction {
 		if (isNotnull(form.getIdentificacion())) {
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
 		}
+		if (isNotnull(form.getIdestadocolegiado())) {
+			datosCriteria.andIdestadocolegiadoEqualTo(Short.valueOf(form.getIdestadocolegiado()));
+		}
 		
 		ecomCenDatosExample.orderByApellido1();
 		ecomCenDatosExample.orderByApellido2();
@@ -245,7 +249,7 @@ public class EdicionRemesasAction extends MasterAction {
 		try {
 			
 			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
-			edicionRemesaForm.setAccion(accion);
+			
 						
 			HttpSession session = request.getSession();
 			if (request.getParameter("volver") == null) {
@@ -281,6 +285,15 @@ public class EdicionRemesasAction extends MasterAction {
 			edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(idcensowsenvio));
 			 			
 			edicionRemesaForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
+			edicionRemesaForm.setEstadosColegiado(CombosCenWS.getEstadosColegiado(getUserBean(request)));
+			
+			edicionRemesaForm.setIdEstadoenvio(ecomCenWsEnvio.getIdestadoenvio());
+			
+			if (ECOM_CEN_MAESESTADOENVIO.PROCESANDO.getCodigo() == ecomCenWsEnvio.getIdestadoenvio()) {
+				accion = "ver";
+			}
+			
+			edicionRemesaForm.setAccion(accion);
 						
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -295,6 +308,10 @@ public class EdicionRemesasAction extends MasterAction {
 
 	private boolean isNotnull(String value) {		
 		return value != null && !value.trim().equals("");
+	}
+	
+	private boolean isNotnull(Short value) {		
+		return value != null;
 	}
 
 
