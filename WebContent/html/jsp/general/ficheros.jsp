@@ -59,16 +59,16 @@
 						<tr>
 							<td width='30%'></td>
 							<td width='30%'></td>
-							<td width='30%'></td>
-							<td width='10%'></td>
+							<td width='25%'></td>
+							<td width='15%'></td>
 						</tr>
 						<tr class='tableTitle'>
 							<td align='center' width='30%'><b><siga:Idioma
 										key="administracion.informes.literal.archivo.nombre" /></b></td>
 							<td align='center' width='30%'><b>Extension</b></td>
-							<td align='center' width='30%'><b><siga:Idioma
+							<td align='center' width='25%'><b><siga:Idioma
 										key="administracion.informes.literal.archivo.fecha" /></b></td>
-							<td align='center' width='10%'>&nbsp;</td>
+							<td align='center' width='15%'>&nbsp;</td>
 						</tr>
 					</table>
 				</div>
@@ -82,15 +82,15 @@
 						<tr>
 							<td width='30%'></td>
 							<td width='30%'></td>
-							<td width='30%'></td>
-							<td width='10%'></td>
+							<td width='25%'></td>
+							<td width='15%'></td>
 						</tr>
 
 						<tr>
 							<td width='30%'></td>
 							<td width='30%'></td>
-							<td width='30%'></td>
-							<td width='10%'></td>
+							<td width='25%'></td>
+							<td width='15%'></td>
 						</tr>
 						<tr class="filaTablaPar">
 							<td align='left'>

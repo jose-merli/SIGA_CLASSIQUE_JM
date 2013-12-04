@@ -242,6 +242,7 @@
 		<form-bean name="AsistenciasForm" type="com.siga.gratuita.form.AsistenciasForm"/>
 		<form-bean name="ActuacionAsistenciaForm" type="com.siga.gratuita.form.ActuacionAsistenciaForm"/>
 		<form-bean name="ActuacionAsistenciaFormEdicion" type="com.siga.gratuita.form.ActuacionAsistenciaForm"/>
+		<form-bean name="DefinirDocumentacionAsistenciaForm" type="com.siga.gratuita.form.DefinirDocumentacionAsistenciaForm"/>
 		<form-bean name="DefinirEJGForm" type="com.siga.gratuita.form.DefinirEJGForm"/>
 		<form-bean name="BusquedaCAJG_EJGForm" type="com.siga.gratuita.form.BusquedaCAJG_EJGForm"/>
 		<form-bean name="DefinicionRemesas_CAJG_Form" type="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"/>
@@ -2758,6 +2759,11 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionEJG.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionEJG.jsp"/>
 		</action>
+		
+		<action path="/JGR_DocumentacionAsistencia" type="com.siga.gratuita.action.DefinirDocumentacionAsistenciaAction" name="DefinirDocumentacionAsistenciaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionAsistencia.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionAsistencia.jsp"/>
+		</action>		
 
 		<action path="/JGR_EstadosEJG" type="com.siga.gratuita.action.DefinirEstadosEJGAction" name="DefinirEstadosEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoEstadosEJG.jsp"/>

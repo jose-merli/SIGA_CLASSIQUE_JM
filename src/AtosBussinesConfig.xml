@@ -95,6 +95,7 @@
 	<service interface="org.redabogacia.sigaservices.app.services.scs.ComunicacionesService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.ComunicacionesServiceImpl"/>
 	<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionEjgServiceImpl"/>
 	<service interface="org.redabogacia.sigaservices.app.services.gen.FicherosService" 							implementation="org.redabogacia.sigaservices.app.services.gen.impl.FicherosServiceImpl"/>
+	<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionAsistenciaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionAsistenciaServiceImpl"/>
 	
 		
 	</context>
