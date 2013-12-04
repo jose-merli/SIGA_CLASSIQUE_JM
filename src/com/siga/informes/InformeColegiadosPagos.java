@@ -387,7 +387,13 @@ public class InformeColegiadosPagos extends MasterReport {
 							" AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, " +
 							" AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA," +
 							" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) NUMEJGASISTENCIA, " +
-							" PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
+							" PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, " +							
+							" PJG.NOMBRE NOM_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.NOMBRE),1,1) ININOM_ASISTIDO, " +
+							" PJG.APELLIDO1 APE1_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.APELLIDO1),1,1) INIAPE1_ASISTIDO, " +
+							" PJG.APELLIDO2 APE2_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.APELLIDO2),1,1) INIAPE2_ASISTIDO, " +
 							" to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 							" DECODE(FAAS.PRECIOAPLICADO,0,NULL,f_siga_formatonumero(FAAS.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
 							" f_siga_getrecurso(COS.DESCRIPCION, " + idioma + " ) AS TIPO_DESPLAZAMIENTO, " +
@@ -459,6 +465,12 @@ public class InformeColegiadosPagos extends MasterReport {
 							" ASI.ANIO || '/' || ASI.NUMERO ASISTENCIA, " +
 							" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) NUMEJGASISTENCIA, " +
 							" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
+							" PJG.NOMBRE NOM_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.NOMBRE),1,1) ININOM_ASISTIDO, " +
+							" PJG.APELLIDO1 APE1_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.APELLIDO1),1,1) INIAPE1_ASISTIDO, " +
+							" PJG.APELLIDO2 APE2_ASISTIDO, " +
+							" SUBSTR(TRIM(PJG.APELLIDO2),1,1) INIAPE2_ASISTIDO, " +
 							" to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
 							" DECODE(FASI.PRECIOAPLICADO, 0, NULL, f_siga_formatonumero(FASI.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
 							" '' AS TIPO_DESPLAZAMIENTO, " +
@@ -583,10 +595,11 @@ public class InformeColegiadosPagos extends MasterReport {
 
 		try {
 			String sql = " SELECT " +
-				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG, " +
-				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG, " +
-				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG, " +
+				/*" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG, " +
 				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG, " +
+				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG, " +
+				" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG, " +*/								
+				" f_siga_getdatoejgreldesigna(Des.Idinstitucion, Des.idturno, Des.anio, Des.numero, 5) as VALORES_EJG, " +
 				" decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, " +
 				" AD.FECHA, " +
 				" to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO, " +
@@ -594,7 +607,14 @@ public class InformeColegiadosPagos extends MasterReport {
 				" PRO.NOMBRE PROCEDIMIENTO, " +
 				" f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, " +
 				" DES.ANIO || '/' || DES.CODIGO  ASIOFI, " +
-				" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, " +
+				/*" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 0) NOMBRE_SOLICITANTE, " + // Lista de solicitantes
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 4) NOM_SOLICITANTE, " + // Lista de nombres de solicitantes
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 5) ININOM_SOLICITANTE, " + // Lista de iniciales de nombres del solicitante
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 6) APE1_SOLICITANTE, " + // Lista de primeros apellidos de solicitantes
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 7) INIAPE1_SOLICITANTE, " + // Lista de iniciales de primeros apellidos de solicitantes
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 8) APE2_SOLICITANTE, " + // Lista de segundos apellidos de solicitantes
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 9) INIAPE2_SOLICITANTE, " + // Lista de iniciales de segundos apellidos de solicitantes	*/
+				" f_siga_getdefendidosdesigna(DES.idinstitucion, DES.anio, DES.idturno, DES.numero, 10) VALORES_SOLICITANTE, " + // Lista de valores con los solicitantes
 				" f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, " +
 				" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, " +
 				" acreprod.porcentaje as PORCENTAJE_PAGADO, " +
@@ -616,7 +636,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				" SCS_TURNO turno, " +
 				" CEN_COLEGIADO cole, " +	
 				" SCS_JUZGADO JUZGADOS, " +
-				" SCS_JUZGADO JUZGADOSAD " +
+				" SCS_JUZGADO JUZGADOSAD " +		
 			" WHERE DES.IDINSTITUCION = AD.IDINSTITUCION " +
 				" AND DES.IDTURNO = AD.IDTURNO " +
 				" AND DES.ANIO = AD.ANIO " +
@@ -648,7 +668,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				" and acreprod.idinstitucion = ad.idinstitucion_proc " +
 				" and acreprod.idacreditacion = ad.idacreditacion " +
 				" and acre.idacreditacion = acreprod.idacreditacion " +
-				// Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole
+				// Relacionamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole
 				" and AD.idinstitucion = cole.idinstitucion " +
 				" and AD.idpersonacolegiado = cole.idpersona " +
 				" AND DES.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
@@ -656,6 +676,25 @@ public class InformeColegiadosPagos extends MasterReport {
 				" AND AD.IDINSTITUCION = JUZGADOSAD.IDINSTITUCION(+) " +   
 				" AND AD.IDJUZGADO = JUZGADOSAD.IDJUZGADO(+) " +
 			" ORDER BY AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO";
+						
+			/**
+			 * DATOSOFICIO.VALORES_SOLICITANTE contiene una lista de solicitante con todos los valores
+			 * %%NOMBRE_SOLICITANTE%% #1 %%NOM_SOLICITANTE%% #2 %%ININOM_SOLICITANTE%% #3 %%APE1_SOLICITANTE%% #4 %%INIAPE1_SOLICITANTE%% #5 %%APE2_SOLICITANTE%% #6 %%INIAPE2_SOLICITANTE%%  
+			 * Adrián Ayala Gómez, Jorge Páez Triviño #1 Adrián, Jorge #2 A, J #3 Ayala, Páez #4 A, P #5 Gómez, Triviño #6 G, T
+			 */
+			sql = "SELECT SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, 1, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') - 1) AS NOMBRE_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') - 2) AS NOM_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') - 2) AS ININOM_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') - 2) AS APE1_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') - 2) AS INIAPE1_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#6') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') - 2) AS APE2_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#6') + 2) AS INIAPE2_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, 1, INSTR(DATOSOFICIO.VALORES_EJG,'#1') - 1) AS NUMEROEJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#1') + 2, INSTR(DATOSOFICIO.VALORES_EJG,'#2') - INSTR(DATOSOFICIO.VALORES_EJG,'#1') - 2) AS ANIO_CAJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#2') + 2, INSTR(DATOSOFICIO.VALORES_EJG,'#3') - INSTR(DATOSOFICIO.VALORES_EJG,'#2') - 2) AS NUMERO_CAJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#3') + 2) AS ANIOEJG, " +
+					" DATOSOFICIO.* " +
+					" FROM (" + sql + ") DATOSOFICIO";		
 
 			RowsContainer rc = new RowsContainer();
 			rc.find(sql);
