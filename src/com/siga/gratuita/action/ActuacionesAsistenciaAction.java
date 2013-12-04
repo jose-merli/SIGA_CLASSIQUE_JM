@@ -548,7 +548,9 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
 			forward = exitoRefresco("messages.deleted.success",request);
 		} catch (Exception e) {
+			actuacionAsistenciaFormEdicion.setModo("abrir");
 			throwExcp("messages.general.errorExcepcion", e, null); 
+			
 		}
 		
 		return forward;
