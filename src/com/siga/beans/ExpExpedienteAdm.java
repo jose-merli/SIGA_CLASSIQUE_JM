@@ -1659,10 +1659,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						// Nueva alerta de expediente caducado.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-				        //if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
-				        //    throw new ClsExceptions("2.Error al insertar alarma. "+alertaAdm.getError());
-				        //}
-				        //ClsLogging.writeFileLog("2.Alerta insertada.",7);
+				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
+				            throw new ClsExceptions("2.Error al insertar alarma. "+alertaAdm.getError());
+				        }
+				        ClsLogging.writeFileLog("2.Alerta insertada.",7);
 						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
 						    throw new ClsExceptions("2.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
