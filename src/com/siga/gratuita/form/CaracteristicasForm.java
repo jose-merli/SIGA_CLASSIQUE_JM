@@ -19,6 +19,7 @@ public class CaracteristicasForm extends MasterForm
 	private	String		descripcionContacto;
 	private String		otroDescripcionOrigenContacto;
 	private String		contraLibertadSexual;
+	private String		victimaMenorAbusoMaltrato;
 	private String		judicial;
 	private String		civil;
 	private String		penal;
@@ -144,9 +145,15 @@ public class CaracteristicasForm extends MasterForm
 	public String getContraLibertadSexual() {
 		return contraLibertadSexual;
 	}
+	public String getVictimaMenorAbusoMaltrato() {
+		return victimaMenorAbusoMaltrato;
+	}	
 	public void setContraLibertadSexual(String contraLibertadSexual) {
 		this.contraLibertadSexual = contraLibertadSexual;
 	}
+	public void setVictimaMenorAbusoMaltrato(String victimaMenorAbusoMaltrato) {
+		this.victimaMenorAbusoMaltrato = victimaMenorAbusoMaltrato;
+	}	
 	public String getCivil() {
 		return civil;
 	}

@@ -15,6 +15,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private	String		descripcionContacto;
 	private String		otroDescripcionOrigenContacto;
 	private String		contraLibertadSexual;
+	private String		victimaMenorAbusoMaltrato;
 	private String		judicial;
 	private String		civil;
 	private String		penal;
@@ -59,6 +60,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_IDINSTITUCION_JUZGADO = 				"IDINSTITUCION_JUZGADO";
 	static public final String 	C_OTRODESCRIPCIONORIGENCONTACTO =		"OTRODESCRIPCIONORIGENCONTACTO";
 	static public final String 	C_CONTRALIBERTADSEXUAL =				"CONTRALIBERTADSEXUAL";
+	static public final String 	C_VICTIMAMENORABUSOMALTRATO =			"VICTIMAMENORABUSOMALTRATO";
 	static public final String 	C_JUDICIAL =							"JUDICIAL";
 	static public final String 	C_CIVIL =								"CIVIL";
 	static public final String 	C_INTERPOSICIONDENUNCIA =				"INTERPOSICIONDENUNCIA";
@@ -133,6 +135,12 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setContraLibertadSexual(String contraLibertadSexual) {
 		this.contraLibertadSexual = contraLibertadSexual;
 	}
+	public String getVictimaMenorAbusoMaltrato() {
+		return victimaMenorAbusoMaltrato;
+	}
+	public void setVictimaMenorAbusoMaltrato(String victimaMenorAbusoMaltrato) {
+		this.victimaMenorAbusoMaltrato = victimaMenorAbusoMaltrato;
+	}	
 	public String getCivil() {
 		return civil;
 	}

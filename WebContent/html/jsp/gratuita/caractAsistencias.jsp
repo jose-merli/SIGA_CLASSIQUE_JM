@@ -59,6 +59,7 @@ String		otroDescripcionOrigenContacto="";
 String		violenciaGenero="";
 String		violenciaDomestica="";
 String		contraLibertadSexual="";
+String		victimaMenorAbusoMaltrato=""; 
 String		judicial="";
 String		civil="";
 String		penal="";
@@ -111,6 +112,7 @@ if(miform!=null)
 	 violenciaDomestica = miform.getViolenciaDomestica();
 	 violenciaGenero = miform.getViolenciaGenero();
 	 contraLibertadSexual = miform.getContraLibertadSexual();
+	 victimaMenorAbusoMaltrato = miform.getVictimaMenorAbusoMaltrato();
 	 judicial = miform.getJudicial();
 	 civil = miform.getCivil();
 	 penal = miform.getPenal();
@@ -319,6 +321,15 @@ function fContraLibertadSexual(o)
 	else
 	{		 	
 		document.forms[0].contraLibertadSexual.value = "0";
+	}		
+}
+
+function fVictimaMenorAbusoMaltrato(o) 
+{
+	if (o.checked) { 			
+		document.forms[0].victimaMenorAbusoMaltrato.value = "1";
+	} else {		 	
+		document.forms[0].victimaMenorAbusoMaltrato.value = "0";
 	}		
 }
 
@@ -591,6 +602,7 @@ function bloquearDesbloquear(o)
 <input type="hidden" name="violenciaDomestica" value="<%=violenciaDomestica%>">
 <input type="hidden" name="violenciaGenero" value="<%=violenciaGenero%>">
 <input type="hidden" name="contraLibertadSexual" value="<%=contraLibertadSexual%>">
+<input type="hidden" name="victimaMenorAbusoMaltrato" value="<%=victimaMenorAbusoMaltrato%>">
 <input type="hidden" name="judicial" value="<%=judicial%>">
 <input type="hidden" name="asesoramiento" value="<%=asesoramiento%>">
 <input type="hidden" name="civil" value="<%=civil%>">
@@ -645,6 +657,8 @@ function bloquearDesbloquear(o)
 			<input type="checkbox" name="cContraLibertadSexual" onclick="fContraLibertadSexual(this);" <%=(contraLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;
 			
+			<input type="checkbox" name="cVictimaMenorAbusoMaltrato" onclick="fVictimaMenorAbusoMaltrato(this);" <%=(victimaMenorAbusoMaltrato.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.caracteristicas.literal.victimaMenorAbusoMaltrato"/>&nbsp;
 						 	
 		</td>
 	</tr>

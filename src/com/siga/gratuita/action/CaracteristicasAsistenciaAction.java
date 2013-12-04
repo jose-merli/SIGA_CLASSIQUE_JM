@@ -123,6 +123,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setCivil(b.getCivil());
 				miform.setCivilesPenales(b.getCivilesPenales());
 				miform.setContraLibertadSexual(b.getContraLibertadSexual());
+				miform.setVictimaMenorAbusoMaltrato(b.getVictimaMenorAbusoMaltrato());
 				miform.setDerechosJusticiaGratuita(b.getDerechosJusticiaGratuita());
 				miform.setDerivaActuacionesJudiciales(b.getDerivaActuacionesJudiciales());
 				miform.setEntrevistaLetradoDemandante(b.getEntrevistaLetradoDemandante());
@@ -202,6 +203,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setCivil("");
 				miform.setCivilesPenales("");
 				miform.setContraLibertadSexual("");
+				miform.setVictimaMenorAbusoMaltrato("");
 				miform.setDerechosJusticiaGratuita("");
 				miform.setDerivaActuacionesJudiciales("");
 				miform.setEntrevistaLetradoDemandante("");
@@ -321,6 +323,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setCivil(miform.getCivil());
 			b.setCivilesPenales(miform.getCivilesPenales());
 			b.setContraLibertadSexual(miform.getContraLibertadSexual());
+			b.setVictimaMenorAbusoMaltrato(miform.getVictimaMenorAbusoMaltrato());
 			b.setDerechosJusticiaGratuita(miform.getDerechosJusticiaGratuita());
 			b.setDerivaActuacionesJudiciales(miform.getDerivaActuacionesJudiciales());
 			b.setEntrevistaLetradoDemandante(miform.getEntrevistaLetradoDemandante());
