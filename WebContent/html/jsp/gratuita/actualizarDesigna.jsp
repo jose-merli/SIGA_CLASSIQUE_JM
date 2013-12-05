@@ -176,10 +176,10 @@
 	jQuery(function($){
 		var defaultValue = jQuery("#nig").val();
 		if(defaultValue.length > 19){
-			$('#info').show();
-			$('#imagenInfo').attr('title',defaultValue) ;
+			jQuery('#info').show();
+			jQuery('#imagenInfo').attr('title',defaultValue) ;
 		}else{
-			$('#info').hide();
+			jQuery('#info').hide();
 			
 		}
 		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
