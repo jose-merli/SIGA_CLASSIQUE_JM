@@ -639,9 +639,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		return consulta;
 	}
 	
+	// Incluyo en los datos del sustituto, los de la anulacion para aprovechar la sentencia que el igual pero con un campo mas devuelto
 	public String getDatosSustituto(Hashtable miHash) throws ClsExceptions{
-		
-		
 		String consulta = "";
 		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
 		String fechainicio="";
@@ -653,29 +652,29 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			idcalendarioguardias = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
 			idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
 			fechainicio=(String)miHash.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
-			consulta ="SELECT C.COMENSUSTITUCION as COMENSUSTITUCION,trunc(C.FECHASUSTITUCION) as FECHASUSTITUCION,C.LETRADOSUSTITUIDO as LETRADOSUSTITUIDO FROM SCS_CABECERAGUARDIAS C" +
-					  " WHERE IDPERSONA = "+idpersona+
-					  "   AND FECHAINICIO =" +
-					  "       TO_DATE('"+fechainicio+"', 'DD/MM/YYYY')" +
-					  "   AND IDGUARDIA = "+idguardia+
-					  "   AND IDTURNO = "+idturno+
-					  "   AND IDINSTITUCION ="+idinstitucion+
-					  "   and IDCALENDARIOGUARDIAS="+idcalendarioguardias+
-					  " ORDER BY IDINSTITUCION," +
-					  "          IDTURNO," +
-					  "          IDGUARDIA," +
-					  "          IDCALENDARIOGUARDIAS," +
-					  "          IDPERSONA," +
-					  "          FECHAINICIO";
-			}
-			catch (Exception e){
+			consulta ="SELECT C.COMENSUSTITUCION as COMENSUSTITUCION, " +
+							" trunc(C.FECHASUSTITUCION) as FECHASUSTITUCION, " +
+							" C.LETRADOSUSTITUIDO as LETRADOSUSTITUIDO, " +
+							" C.OBSERVACIONESANULACION AS OBSERVACIONESANULACION " +
+						" FROM SCS_CABECERAGUARDIAS C" +
+						" WHERE IDPERSONA = "+idpersona+
+							" AND FECHAINICIO = TO_DATE('" + fechainicio + "', 'DD/MM/YYYY')" +
+							" AND IDGUARDIA = " + idguardia +
+							" AND IDTURNO = " + idturno +
+							" AND IDINSTITUCION = " + idinstitucion +
+							" AND IDCALENDARIOGUARDIAS = " + idcalendarioguardias +
+						" ORDER BY IDINSTITUCION, " +
+							" IDTURNO, " +
+							" IDGUARDIA, " +
+							" IDCALENDARIOGUARDIAS, " +
+							" IDPERSONA, " +
+							" FECHAINICIO";
+			
+			} catch (Exception e){
 				throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
 			}
 	
 			return consulta;
-			
-			
-	
 		}
 	
 	  public String getnombresustituto(String sustituto,String idIstititucion) throws ClsExceptions{

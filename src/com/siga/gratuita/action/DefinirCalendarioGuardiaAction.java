@@ -487,12 +487,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				 }else 
 					miForm.setDatosPersSolicitante(" ");				
 				
-				//Informacion de la Anulacion 
-				if (miForm.getAccion()!=null && (miForm.getAccion().equals("modalConsultaCenso") || miForm.getAccion().equals("modalGuardia"))) {
-					String sMotivosAnulacion = UtilidadesHash.getString((Hashtable)registros.get(0), "OBSERVACIONESANULACION");
-					miForm.setComenAnulacion(sMotivosAnulacion);
-				}
-				
 				//letrado sustituido
 				registros = cabecerasAdm.selectGenerico(cabecerasAdm.getDatosSustituto(solicitanteHash));
 				if(registros!=null && registros.size()>0){
@@ -513,9 +507,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					request.setAttribute("FECHASUSTITUCION",GstDate.getFormatedDateShort(this.getLenguaje(request),(String)((Hashtable)registros.get(0)).get("FECHASUSTITUCION")));				
 					comesustitutucion=UtilidadesHash.getString((Hashtable)registros.get(0),"COMENSUSTITUCION");
 					fechaSustitucion=UtilidadesHash.getString((Hashtable)registros.get(0),"FECHASUSTITUCION");
-					fechaSustitucion=GstDate.getFormatedDateShort(this.getLenguaje(request),fechaSustitucion);
+					fechaSustitucion=GstDate.getFormatedDateShort(this.getLenguaje(request),fechaSustitucion);		
 					
+					//Informacion de la Anulacion 
+					if (miForm.getAccion()!=null && (miForm.getAccion().equals("modalConsultaCenso") || miForm.getAccion().equals("modalGuardia"))) {
+						String sMotivosAnulacion = UtilidadesHash.getString((Hashtable)registros.get(0), "OBSERVACIONESANULACION");
+						miForm.setComenAnulacion(sMotivosAnulacion);
+					}					
 				}				
+				
 				//Aqui guardamos en nuestro formulario los datos que necesitamos que salga en nuestra jsp.	
 				//Ademas verificamos si es una PERMUTA o si es una sustitución
 				if (comesustitutucion.equals("Permuta")){
