@@ -409,6 +409,15 @@
 			if (salida == "MODIFICADO") 
 				refrescarLocal();	
 		}
+		
+		 function consultar(fila, id) {
+				if (typeof id == 'undefined')
+					id='listado';
+				preparaDatos(fila,id);
+			   document.forms[0].modo.value = "Ver";
+			   ventaModalGeneral(document.forms[0].name, "G");
+			 }
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->		

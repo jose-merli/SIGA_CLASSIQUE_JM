@@ -96,7 +96,7 @@
 								<td>
 									<html:textarea name="DefinirCalendarioGuardiaForm" property="comentarioSustituto" 
 										styleClass="boxConsulta" readOnly="true"
-										style="overflow-y:auto; overflow-x:hidden; width:480px; height:40px; resize:none;"></html:textarea>
+										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
 								</td>
 							</tr>
 						</table>
@@ -133,13 +133,30 @@
 								<td>
 									<html:textarea name="DefinirCalendarioGuardiaForm" property="motivosSolicitante"
 										styleClass="boxConsulta" readOnly="true"
-										style="overflow-y:auto; overflow-x:hidden; width:480px; height:40px; resize:none;"></html:textarea>
+										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
 								</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
+			
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.informacionAnulacion">
+						<table class="tablaCampos" border="0">												
+							<tr>
+								<td class="labelText" width="170px"><siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos" /></td>
+								<td>
+									<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion"
+										styleClass="boxConsulta" readOnly="true"
+										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>			
 		</html:form>
 	</table>
 

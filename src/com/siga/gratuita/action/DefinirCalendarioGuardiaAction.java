@@ -487,6 +487,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				 }else 
 					miForm.setDatosPersSolicitante(" ");				
 				
+				//Informacion de la Anulacion 
+				if (miForm.getAccion()!=null && (miForm.getAccion().equals("modalConsultaCenso") || miForm.getAccion().equals("modalGuardia"))) {
+					String sMotivosAnulacion = UtilidadesHash.getString((Hashtable)registros.get(0), "OBSERVACIONESANULACION");
+					miForm.setComenAnulacion(sMotivosAnulacion);
+				}
+				
 				//letrado sustituido
 				registros = cabecerasAdm.selectGenerico(cabecerasAdm.getDatosSustituto(solicitanteHash));
 				if(registros!=null && registros.size()>0){
@@ -559,9 +565,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						miForm.setPeriodoPermuta(" ");					
 				}else
 					miForm.setPeriodoPermuta(" ");
-				
-				
-
 				
 				if ((fechaInicio!=null)&&(fechaFin!=null)){
 					String fechaguardia=fechaInicio+" - " +fechaFin;				

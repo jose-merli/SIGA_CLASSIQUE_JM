@@ -294,17 +294,21 @@
 					<td align="center"><%=turno%></td>
 					<td align="center"><%=guardia%></td>
 					<td align="center"><%=tipodias%></td>
-					<td align="center">					
+					<td align="center">									
 <%
 						String descripcion = "";
-						switch (Integer.parseInt(estado)) {
-							case 1: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado1"; break;
-							case 2: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado2"; break;
-							case 3: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado3"; break;
-							case 4: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado4"; break;
-							case 5: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado5"; break;
-							case 6: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado6"; break;
-							default: descripcion=""; break;
+						if (validado.equals("1")) {							
+							switch (Integer.parseInt(estado)) {
+								case 1: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado1"; break;
+								case 2: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado2"; break;
+								case 3: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado3"; break;
+								case 4: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado4"; break;
+								case 5: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado5"; break;
+								case 6: descripcion="gratuita.inicio_PestanaCalendarioGuardias.literal.estado6"; break;
+								default: descripcion=""; break;
+							}
+						} else {
+							descripcion = "gratuita.inicio_PestanaCalendarioGuardias.literal.anulada";
 						}
 						
 						if (!descripcion.equals("")) {
@@ -474,7 +478,7 @@
 			document.forms[1].modo.value = "ver";
 			document.forms[1].accion.value = "modalConsultaCenso";
 			document.forms[1].submit();
-			var salida = ventaModalGeneral(document.forms[1].name,"M"); 			
+			var salida = ventaModalGeneral(document.forms[1].name,"G"); 			
 			if (salida == "MODIFICADO") {
 				window.top.close();	
 			}
