@@ -134,6 +134,13 @@
 			<html:form action="/FAC_Devoluciones.do" method="POST" target="_self"  style="display:none">
 					<html:hidden property = "modo" value = ""/>
 					<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
+					<html:hidden styleId="codigoBanco" 		property="codigoBanco" />
+					<html:hidden styleId="tipoDevolucion" 	property="tipoDevolucion" />
+					<html:hidden styleId="fechaDesde" 		property="fechaDesde" />
+					<html:hidden styleId="fechaHasta" 		property="fechaHasta" />
+					<html:hidden styleId="comision" 		property="comision" />
+					<html:hidden styleId="facturasDesde" 	property="facturasDesde" />
+					<html:hidden styleId="facturasHasta" 	property="facturasHasta" />	
 
 			<!-- RGG: cambio a formularios ligeros -->
 			

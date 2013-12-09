@@ -42,7 +42,7 @@
 	
 </head>
 
-<body onload="ajusteAlto('resultado');">
+<body onload="init();ajusteAlto('resultado');">
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
@@ -151,6 +151,12 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 		
+		function init(){
+			<% 	if (request.getAttribute("buscar") != null && request.getAttribute("buscar").equals("true")) { %>
+				buscar();
+			<% 	}  %>
+		}
+	
 		function buscar(){
 			sub();
 			
@@ -166,7 +172,7 @@
 				return false;
 			}
 			
-			if(document.DevolucionesForm.facturasDesde.value != 0 && document.DevolucionesForm.facturasDesde.value != "" && document.DevolucionesForm.facturasDesde.value > document.DevolucionesForm.facturasHasta.value){
+			if(document.DevolucionesForm.facturasHasta.value != "" && document.DevolucionesForm.facturasDesde.value != "" && document.DevolucionesForm.facturasDesde.value > document.DevolucionesForm.facturasHasta.value){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaDevolucion.error.facturas"/>');
 				return false;

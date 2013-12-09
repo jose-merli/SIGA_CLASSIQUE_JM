@@ -119,8 +119,15 @@
 
 	<html:form action="/FAC_Devoluciones.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
 		<html:hidden styleId = "modo"  property = "modo"  value = ""/>
-		<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=idInstitucion%>"/>
 		<input type="hidden" id="actionModal"  name="actionModal" value="">
+		<html:hidden styleId="idInstitucion" 	property="idInstitucion" value="<%=idInstitucion%>"/>
+		<html:hidden styleId="codigoBanco" 		property="codigoBanco" />
+		<html:hidden styleId="tipoDevolucion" 	property="tipoDevolucion" />
+		<html:hidden styleId="fechaDesde" 		property="fechaDesde" />
+		<html:hidden styleId="fechaHasta" 		property="fechaHasta" />
+		<html:hidden styleId="comision" 		property="comision" />
+		<html:hidden styleId="facturasDesde" 	property="facturasDesde" />
+		<html:hidden styleId="facturasHasta" 	property="facturasHasta" />		
 	</html:form>
 
 	<siga:Table 

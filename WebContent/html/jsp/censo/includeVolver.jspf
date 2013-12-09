@@ -129,8 +129,8 @@
 					document.DevolucionesForm.modo.value="buscar";
 					document.DevolucionesForm.submit();
 <% 				} else if (busquedaVolver.equals("DV")) {  %>
-					document.DevolucionesForm.action = "/SIGA/FAC_Devoluciones.do";
-					document.DevolucionesForm.modo.value="abrir";
+					document.DevolucionesForm.action = "/SIGA/FAC_Devoluciones.do"+ "?noReset=true&buscar=true";
+					document.DevolucionesForm.modo.value="abrirVolver";
 					document.DevolucionesForm.submit();
 <% 				} else if (busquedaVolver.equals("BF")) {  %>
 					document.BusquedaFacturaForm.action = "/SIGA/FAC_BusquedaFactura.do" + "?noReset=true&botonVolver_Buscar=true";

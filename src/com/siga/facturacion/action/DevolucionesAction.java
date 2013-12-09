@@ -103,7 +103,9 @@ public class DevolucionesAction extends MasterAction {
 				} else if (accion.equalsIgnoreCase("abrir")){
 					miForm.reset(mapping,request);
 					request.getSession().removeAttribute("DATAPAGINADOR");
-					mapDestino = abrir(mapping, miForm, request, response);						
+					mapDestino = abrir(mapping, miForm, request, response);		
+				} else if (accion.equalsIgnoreCase("abrirVolver")){
+					mapDestino = abrir(mapping, miForm, request, response);							
 				}else if (accion.equalsIgnoreCase("editarFactura")){
 					mapDestino = editarFactura(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("reintentar")){
@@ -231,6 +233,9 @@ public class DevolucionesAction extends MasterAction {
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancosConCuentasBancarias(new Integer(idInstitucion));
 			request.setAttribute("listaBancos", bancosList);
+			
+			if(request.getParameter("buscar") != null)
+				request.setAttribute("buscar", request.getParameter("buscar"));
 	
 			
 		}  catch (Exception e) { 
