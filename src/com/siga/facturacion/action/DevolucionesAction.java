@@ -21,9 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
+import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -57,6 +61,8 @@ import com.siga.facturacion.form.DevolucionesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 
 public class DevolucionesAction extends MasterAction {
@@ -91,8 +97,12 @@ public class DevolucionesAction extends MasterAction {
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("")){
 					request.getSession().removeAttribute("DATAPAGINADOR");
-					mapDestino = abrir(mapping, miForm, request, response);						
+					DevolucionesForm form = (DevolucionesForm) formulario;
+					form.reset(mapping,request);
+					mapDestino = abrir(mapping, form, request, response);						
 				} else if (accion.equalsIgnoreCase("abrir")){
+					miForm.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("editarFactura")){
 					mapDestino = editarFactura(mapping, miForm, request, response);
@@ -102,6 +112,9 @@ public class DevolucionesAction extends MasterAction {
 					mapDestino = anular(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("renegociarCobrosRecobros")){
 					mapDestino = renegociar(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = buscar(mapping, miForm, request, response);
 				}
 				else {
 					return super.executeInternal(mapping,
@@ -142,12 +155,13 @@ public class DevolucionesAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
-		String result="abrir";
+	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+		String result="listado";
 
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+			DevolucionesForm form = (DevolucionesForm) formulario;
 			String idInstitucion=user.getLocation();			
 			
 			// para saber en que tipo de busqueda estoy
@@ -181,7 +195,7 @@ public class DevolucionesAction extends MasterAction {
 					
 				// Obtengo los diferentes disquetes de devoluciones 			
 				FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
-				PaginadorCaseSensitive devoluciones = devolucionesAdm.getDevoluciones(idInstitucion);
+				PaginadorCaseSensitive devoluciones = devolucionesAdm.getDevoluciones(form);
 				
 				databackup.put("paginador", devoluciones);
 				if (devoluciones!=null){ 
@@ -204,8 +218,26 @@ public class DevolucionesAction extends MasterAction {
 		
 	}
 
-	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		return "buscar";
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String result="abrir";
+
+		try{
+			DevolucionesForm form = (DevolucionesForm) formulario;
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			String idInstitucion=user.getLocation();			
+			form.setIdInstitucion(idInstitucion);
+			BusinessManager bm = getBusinessManager();
+			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancosConCuentasBancarias(new Integer(idInstitucion));
+			request.setAttribute("listaBancos", bancosList);
+	
+			
+		}  catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}	
+		
+		return result;
 	}
 
 	/** 

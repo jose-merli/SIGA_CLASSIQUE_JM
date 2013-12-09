@@ -12,21 +12,33 @@
 
 package com.siga.facturacion.form;
 
-import com.siga.general.MasterForm;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+
+import com.siga.general.MasterForm;
 
 
 public class DevolucionesForm extends MasterForm{
 	
-
 	private String idInstitucion="";
 	protected FormFile ruta;
 	private String comisiones="";
 	private String idDisqueteDevoluciones="";
 	private String datosPagosRenegociarObservaciones;
 	private String datosPagosRenegociarNuevaFormaPago;
-	private String datosFacturas;	
+	private String datosFacturas;
+	
+	//Campos Busqueda
+	private String tipoDevolucion;
+	private String fechaDesde;
+	private String fechaHasta;
+	private String codigoBanco;
+	private String comision;
+	private String facturasDesde;
+	private String facturasHasta;
+	
 	public String getDatosFacturas() {
 		return datosFacturas;
 	}
@@ -96,4 +108,70 @@ public class DevolucionesForm extends MasterForm{
 			String datosPagosRenegociarNuevaFormaPago) {
 		this.datosPagosRenegociarNuevaFormaPago = datosPagosRenegociarNuevaFormaPago;
 	}
+	public String getTipoDevolucion() {
+		return tipoDevolucion;
+	}
+	public void setTipoDevolucion(String tipoDevolucion) {
+		this.tipoDevolucion = tipoDevolucion;
+	}
+	public String getFechaDesde() {
+		return fechaDesde;
+	}
+	public void setFechaDesde(String fechaDesde) {
+		this.fechaDesde = fechaDesde;
+	}
+	public String getFechaHasta() {
+		return fechaHasta;
+	}
+	public void setFechaHasta(String fechaHasta) {
+		this.fechaHasta = fechaHasta;
+	}
+	public String getCodigoBanco() {
+		return codigoBanco;
+	}
+	public void setCodigoBanco(String codigoBanco) {
+		this.codigoBanco = codigoBanco;
+	}
+	public String getComision() {
+		return comision;
+	}
+	public void setComision(String comision) {
+		this.comision = comision;
+	}
+	public String getFacturasDesde() {
+		return facturasDesde;
+	}
+	public void setFacturasDesde(String facturasDesde) {
+		this.facturasDesde = facturasDesde;
+	}
+	public String getFacturasHasta() {
+		return facturasHasta;
+	}
+	public void setFacturasHasta(String facturasHasta) {
+		this.facturasHasta = facturasHasta;
+	}
+	
+		/**
+	 * Metodo que resetea el formulario
+	 * @param  mapping - Mapeo de los struts
+	 * @param  request - objeto llamada HTTP 
+	 */
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		try {
+			tipoDevolucion= "";
+			fechaDesde= "";
+			fechaHasta= "";
+			codigoBanco= "";
+			comision= "";
+			facturasDesde= "";
+			facturasHasta= "";
+			
+			// resetea el formulario
+			super.reset(mapping, request);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

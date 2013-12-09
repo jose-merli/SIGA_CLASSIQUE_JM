@@ -9,11 +9,13 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.facturacion.form.DevolucionesForm;
 import com.siga.general.SIGAException;
 
 
@@ -96,11 +98,11 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 	 * @return  PaginadorCaseSensitiveBind
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public PaginadorCaseSensitive getDevoluciones (String institucion) throws ClsExceptions {
+	public PaginadorCaseSensitive getDevoluciones (DevolucionesForm form) throws ClsExceptions {
 		try {
 			RowsContainer rc = new RowsContainer();
 			String sql =
-				"SELECT DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+", " +
+				" SELECT DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+", " +
 				"       DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+", " +
 				"       BAN."+CenBancosBean.C_CODIGO+", " +
 				"       DIS."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+"," +
@@ -126,11 +128,62 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 				" WHERE DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = BANINS."+FacBancoInstitucionBean.C_IDINSTITUCION+" " +
 				"   AND DIS."+FacDisqueteDevolucionesBean.C_BANCOS_CODIGO+" = BANINS."+FacBancoInstitucionBean.C_BANCOS_CODIGO+" " +
 				"   AND BANINS."+FacBancoInstitucionBean.C_COD_BANCO+" = BAN."+CenBancosBean.C_CODIGO+" " +
-				"   AND DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = " + institucion +
-				" ORDER BY DIS."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+" DESC, " +
-				"          DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" DESC";
+				"   AND DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = " + form.getIdInstitucion();
 			
-			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+				//FILTRO TIPO DEVOLUCION
+				if(form.getTipoDevolucion() != null && !form.getTipoDevolucion().equals("")){					
+					if(form.getTipoDevolucion().equals("0")){
+						sql += " AND substr(DIS."+FacDisqueteDevolucionesBean.C_NOMBREFICHERO +",1,6) <> 'Manual' "; 
+					}else if(form.getTipoDevolucion().equals("1")){
+						sql += " AND substr(DIS."+FacDisqueteDevolucionesBean.C_NOMBREFICHERO +",1,6) = 'Manual' ";
+					}
+				} 
+				
+				//FILTRO BANCO
+				if(form.getCodigoBanco() != null && !form.getCodigoBanco().equals("")){
+					sql += " AND BANINS.COD_BANCO = " +form.getCodigoBanco();
+				}
+				
+				//FILTRO FECHAS
+				String dFechaDesde = null, dFechaHasta = null;
+				if (form.getFechaDesde()!=null && !form.getFechaDesde().trim().equals(""))
+				    dFechaDesde = GstDate.getApplicationFormatDate("",form.getFechaDesde());
+				if (form.getFechaHasta()!=null && !form.getFechaHasta().trim().equals(""))
+					dFechaHasta = GstDate.getApplicationFormatDate("",form.getFechaHasta());
+				if (dFechaDesde!=null || dFechaHasta!=null){
+				    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(FacDisqueteDevolucionesBean.C_FECHAGENERACION,dFechaDesde,dFechaHasta);
+				    
+				}
+				
+				//SQL POR ENCIMA PARA PODER FILTRAR POR COMISION Y NUMERO DE FACTURAS				
+				String sqlGrande = " SELECT DEVOLUCIONES.COMISION, " +
+								   "   DEVOLUCIONES.FACTURAS, " +
+								   "   DEVOLUCIONES.IDINSTITUCION, " +
+					               "   DEVOLUCIONES.IDDISQUETEDEVOLUCIONES, " +
+					               "   DEVOLUCIONES.CODIGO, " +
+					               "   DEVOLUCIONES.FECHAGENERACION, " +
+					               "   DEVOLUCIONES.NOMBREFICHERO, " +
+					               "   DEVOLUCIONES.NOMBRE " +
+					               " FROM  ( "+ sql + ") DEVOLUCIONES WHERE 1=1";
+				
+				//FILTRO COMISONES
+				if(form.getComision() != null && !form.getComision().equals("")){
+					sqlGrande += " AND DEVOLUCIONES.COMISION = " +form.getComision();
+				}
+				
+				//FILTRO Nº FACTURAS
+				if (form.getFacturasDesde()!=null && !form.getFacturasDesde().trim().equals("")){
+					sqlGrande += " AND DEVOLUCIONES.FACTURAS >= " +form.getFacturasDesde();
+				}
+				
+				if (form.getFacturasHasta()!=null && !form.getFacturasHasta().trim().equals("")){
+					sqlGrande += " AND DEVOLUCIONES.FACTURAS <= " +form.getFacturasHasta();
+				}
+								
+				sqlGrande +=" ORDER BY DEVOLUCIONES."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+" DESC, " +
+				"          DEVOLUCIONES."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" DESC";
+					
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sqlGrande);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					

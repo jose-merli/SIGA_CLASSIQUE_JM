@@ -117,15 +117,6 @@
 
 <body>
 
-	<!-- TITULO INFORMATIVO -->
-	<table class="tablaTitulo">		
-		<tr>		
-			<td class="titulitosDatos">
-				<siga:Idioma key="facturacion.consultaDevolucion.cabecera"/>				    
-			</td>				
-		</tr>
-	</table>				
-	
 	<html:form action="/FAC_Devoluciones.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
 		<html:hidden styleId = "modo"  property = "modo"  value = ""/>
 		<html:hidden styleId="idInstitucion" property="idInstitucion" value="<%=idInstitucion%>"/>
@@ -196,7 +187,7 @@
 		registrosPorPagina="<%=registrosPorPagina%>" 
 		paginaSeleccionada="<%=paginaSeleccionada%>" 
 		idioma="<%=idioma%>"
-		modo="abrir"								
+		modo="buscar"								
 		clase="paginator" 
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
 		distanciaPaginas=""
