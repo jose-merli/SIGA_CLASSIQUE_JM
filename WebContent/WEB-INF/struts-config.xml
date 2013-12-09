@@ -1288,7 +1288,8 @@
 
 		<!-- ***** Facturación / Devoluciones ***** -->
 		<action path="/FAC_Devoluciones" type="com.siga.facturacion.action.DevolucionesAction" name="DevolucionesForm" scope="session">
-			<forward name="abrir" path="/html/jsp/facturacion/consultaDevoluciones.jsp"/>
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaDevoluciones.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/consultaDevoluciones.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacion/datosNuevoFichero.jsp"/>
 			<forward name="editar" path="/html/jsp/facturacion/datosDevoluciones.jsp"/>
 			<forward name="editarFactura" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
