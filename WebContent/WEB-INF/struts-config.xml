@@ -1213,7 +1213,8 @@
 		<action path="/FAC_GenerarFicheroBancarioAbonos" forward="/notImplemented.do"/>
 
 		<action path="/FAC_EnvioAbonosABanco" type="com.siga.facturacion.action.FicheroBancarioAbonosAction" name="ficheroBancarioAbonosForm" scope="request">
-			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaEnvioBancosAbonos.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>			
 			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>

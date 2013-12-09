@@ -239,7 +239,7 @@
 		registrosPorPagina="<%=registrosPorPagina%>" 
 		paginaSeleccionada="<%=paginaSeleccionada%>" 
 		idioma="<%=idioma%>"
-		modo="abrir"								
+		modo="buscar"								
 		clase="paginator" 
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
 		distanciaPaginas=""

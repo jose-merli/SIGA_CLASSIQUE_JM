@@ -10,11 +10,13 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.facturacion.form.FicheroBancarioAbonosForm;
 import com.siga.general.SIGAException;
 
 /**
@@ -131,7 +133,7 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 	 * @return PaginadorCaseSensitive 
 	 * @throws ClsExceptions
 	 */
-	public PaginadorCaseSensitive getDatosFichero(String idInstitucion, boolean abonosSJCS) throws ClsExceptions {				
+	public PaginadorCaseSensitive getDatosFichero(FicheroBancarioAbonosForm form, boolean abonosSJCS) throws ClsExceptions {				
 		try{
 			String sql = " SELECT " + FacDisqueteAbonosBean.C_FECHA + ", " +
 							FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + " AS BANCO, " + 
@@ -152,15 +154,57 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 						" FROM " + FacDisqueteAbonosBean.T_NOMBRETABLA + ", " + 
 							CenBancosBean.T_NOMBRETABLA + ", " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA +
-						" WHERE " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + idInstitucion + 
+						" WHERE " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + form.getIdInstitucion() + 
 							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " = " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO +
 							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_BANCOS_CODIGO + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
 							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
 							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
-							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_FCS + " = " + (abonosSJCS ? "'1'" : "'0'") +
-						" ORDER BY " + FacDisqueteAbonosBean.C_FECHA + " DESC"; 
+							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_FCS + " = " + (abonosSJCS ? "'1'" : "'0'") ;
 			
-			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+							//FILTRO BANCO
+							if(form.getCodigoBanco() != null && !form.getCodigoBanco().equals("")){
+								sql += " AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " = " +form.getCodigoBanco();
+							}
+							
+							//FILTRO FECHAS
+							String dFechaDesde = null, dFechaHasta = null;
+							if (form.getFechaDesde()!=null && !form.getFechaDesde().trim().equals(""))
+							    dFechaDesde = GstDate.getApplicationFormatDate("",form.getFechaDesde());
+							if (form.getFechaHasta()!=null && !form.getFechaHasta().trim().equals(""))
+								dFechaHasta = GstDate.getApplicationFormatDate("",form.getFechaHasta());
+							if (dFechaDesde!=null || dFechaHasta!=null){
+							    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(FacDisqueteAbonosBean.C_FECHA,dFechaDesde,dFechaHasta);
+							}
+							
+							
+					//SQL POR ENCIMA PARA PODER FILTRAR POR COMISION Y NUMERO DE FACTURAS				
+					String sqlGrande = " SELECT FICHEROSBANCARIOS.FECHA, " +
+									   "   FICHEROSBANCARIOS.BANCO, " +
+									   "   FICHEROSBANCARIOS.IDDISQUETEABONO, " +
+						               "   FICHEROSBANCARIOS.NOMBREFICHERO, " +
+						               "   FICHEROSBANCARIOS.NUMRECIBOS, " +
+						               "   FICHEROSBANCARIOS.IMPORTE " +
+						               " FROM  ( "+ sql + ") FICHEROSBANCARIOS WHERE 1=1";
+					
+					//FILTRO ABONOS
+					if (form.getAbonosDesde()!=null && !form.getAbonosDesde().trim().equals("")){
+						sqlGrande += " AND FICHEROSBANCARIOS.NUMRECIBOS >= " +form.getAbonosDesde();
+					}
+					if (form.getAbonosHasta()!=null && !form.getAbonosHasta().trim().equals("")){
+						sqlGrande += " AND FICHEROSBANCARIOS.NUMRECIBOS <= " +form.getAbonosHasta();
+					}					
+					
+					//FILTRO IMPORTES
+					if (form.getImportesDesde()!=null && !form.getImportesDesde().trim().equals("")){
+						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE >= " +form.getImportesDesde();
+					}
+					if (form.getImportesHasta()!=null && !form.getImportesHasta().trim().equals("")){
+						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE <= " +form.getImportesHasta();
+					}			
+			
+					sqlGrande +=" ORDER BY " + FacDisqueteAbonosBean.C_FECHA + " DESC"; 
+			
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sqlGrande);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
