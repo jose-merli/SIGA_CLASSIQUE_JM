@@ -153,9 +153,29 @@
 		
 		function buscar(){
 			sub();
+			
+			if(!isNumero(document.DevolucionesForm.facturasDesde.value)){
+				fin();
+				alert('<siga:Idioma key="facturacion.busquedaDevolucion.errorformato.facturasdesde"/>');
+				return false;
+			}
+			
+			if(!isNumero(document.DevolucionesForm.facturasHasta.value)){
+				fin();
+				alert('<siga:Idioma key="facturacion.busquedaDevolucion.errorformato.facturashasta"/>');
+				return false;
+			}
+			
+			if(document.DevolucionesForm.facturasDesde.value != 0 && document.DevolucionesForm.facturasDesde.value != "" && document.DevolucionesForm.facturasDesde.value > document.DevolucionesForm.facturasHasta.value){
+				fin();
+				alert('<siga:Idioma key="facturacion.busquedaDevolucion.error.facturas"/>');
+				return false;
+			}
+			
 			document.DevolucionesForm.modo.value="buscarInit";
 			document.DevolucionesForm.target="resultado";	
 			document.DevolucionesForm.submit();	
+				
 		}
 			
 	</script>
