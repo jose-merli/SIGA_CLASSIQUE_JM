@@ -163,6 +163,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
 			String idInstitucion=user.getLocation();	
 			FicheroBancarioAbonosForm form 		= (FicheroBancarioAbonosForm)formulario;
+			form.setIdInstitucion(idInstitucion);
 			
 			HashMap databackup=new HashMap();
 			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 

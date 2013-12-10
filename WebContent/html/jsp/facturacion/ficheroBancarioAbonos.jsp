@@ -151,7 +151,8 @@
 		}
 		
 		function refrescarLocal() {
-			document.location.reload();
+			document.ficheroBancarioAbonosForm.modo.value = "buscar";
+		   	document.ficheroBancarioAbonosForm.submit();
 		}
 	</script>
 </head>
@@ -167,7 +168,15 @@
 
 	<html:form action="/FAC_EnvioAbonosABanco.do?noReset=true" method="POST" target="submitArea" style="display:none">		
 		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = ""/>				
+		<html:hidden property = "modo" value = ""/>		
+		<html:hidden styleId="idInstitucion" 	property="idInstitucion" />
+		<html:hidden styleId="codigoBanco" 		property="codigoBanco" />
+		<html:hidden styleId="fechaDesde" 		property="fechaDesde" />
+		<html:hidden styleId="fechaHasta" 		property="fechaHasta" />
+		<html:hidden styleId="abonosDesde" 		property="abonosDesde" />
+		<html:hidden styleId="abonosHasta" 		property="abonosHasta" />
+		<html:hidden styleId="importesDesde" 	property="importesDesde" />
+		<html:hidden styleId="importesHasta" 	property="importesHasta" />				
 		<% if (abonosSJCS){ %>
 			<input type="hidden" name="sjcs" value="<%=sjcs%>">
 		<%} else { %>
