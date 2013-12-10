@@ -196,10 +196,10 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 					
 					//FILTRO IMPORTES
 					if (form.getImportesDesde()!=null && !form.getImportesDesde().trim().equals("")){
-						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE >= " +form.getImportesDesde();
+						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE >= " + form.getImportesDesde().replace(",", ".");
 					}
 					if (form.getImportesHasta()!=null && !form.getImportesHasta().trim().equals("")){
-						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE <= " +form.getImportesHasta();
+						sqlGrande += " AND FICHEROSBANCARIOS.IMPORTE <= " + form.getImportesHasta().replace(",", ".");
 					}			
 			
 					sqlGrande +=" ORDER BY " + FacDisqueteAbonosBean.C_FECHA + " DESC"; 

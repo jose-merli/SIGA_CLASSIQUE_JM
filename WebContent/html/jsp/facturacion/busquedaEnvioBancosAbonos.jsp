@@ -158,13 +158,13 @@
 				return false;
 			}
 			
-			if(!isNumero(document.ficheroBancarioAbonosForm.importesDesde.value)){
+			if(!validaFloat(document.ficheroBancarioAbonosForm.importesDesde.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.importesDesde"/>');
 				return false;
 			}
 			
-			if(!isNumero(document.ficheroBancarioAbonosForm.importesHasta.value)){
+			if(!validaFloat(document.ficheroBancarioAbonosForm.importesHasta.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.importesHasta"/>');
 				return false;
