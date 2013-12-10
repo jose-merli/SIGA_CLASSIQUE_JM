@@ -225,10 +225,8 @@
 			}
 		}
 	
-		// Funcion asociada a boton buscar
 		function refrescarLocal() {
-			document.forms[0].modo.value='abrir';
-			document.forms[0].submit();
+			parent.buscar();
 		}
 
 		// Funcion asociada a boton buscar
