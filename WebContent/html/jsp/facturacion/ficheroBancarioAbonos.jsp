@@ -151,8 +151,7 @@
 		}
 		
 		function refrescarLocal() {
-			document.ficheroBancarioAbonosForm.modo.value = "buscar";
-		   	document.ficheroBancarioAbonosForm.submit();
+			parent.buscar();
 		}
 	</script>
 </head>
