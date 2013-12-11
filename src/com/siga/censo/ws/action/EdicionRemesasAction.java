@@ -23,6 +23,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criter
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
+import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
@@ -185,10 +186,13 @@ public class EdicionRemesasAction extends MasterAction {
 		ecomCenDatosExample.orderByApellido2();
 		ecomCenDatosExample.orderByNombre();
 		
-		List<EcomCenDatos> ecomCenDatos = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample);
+		List<EcomCenColegiadoVO> ecomColegiadoVOs = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample);
 		
-		if (ecomCenDatos != null) {
-			for (EcomCenDatos ecomCenDato : ecomCenDatos) {
+		if (ecomColegiadoVOs != null) {
+			for (EcomCenColegiadoVO ecomCenColegiadoVO : ecomColegiadoVOs) {
+				EcomCenDatos ecomCenDato = ecomCenColegiadoVO.getEcomCenDatos();
+				EcomCenColegiado ecomCenColegiado = ecomCenColegiadoVO.getEcomCenColegiado();
+				
 				EdicionColegiadoForm edicionColegiadoForm = new EdicionColegiadoForm();
 				edicionColegiadoForm.setIdcensodatos(ecomCenDato.getIdcensodatos());
 				edicionColegiadoForm.setNcolegiado(ecomCenDato.getNcolegiado());
@@ -204,7 +208,7 @@ public class EdicionRemesasAction extends MasterAction {
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_MENOS_NUMERO_DOCUMENTO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ARCHIVADO.getCodigo()) {
-					EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(ecomCenDato.getIdcensodatos());
+					
 					edicionColegiadoForm.setIdpersona(ecomCenColegiado.getIdpersona());
 					edicionColegiadoForm.setIdinstitucion(ecomCenColegiado.getIdinstitucion());
 				}				
