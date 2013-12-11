@@ -161,6 +161,8 @@
 		</c:if>
 		
 		<html:hidden name="EdicionColegiadoForm" property="incidenciaNumeroColegiadoDuplicadoRevisada" value="false"/>
+		<html:hidden name="EdicionColegiadoForm" property="incidenciaPoblacionNoEncontradaRevisada" value="false"/>
+		
 					
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.datosColegiado">			
 				<table class="tablaCampos" align="center">							
@@ -541,6 +543,8 @@
 			 	function accionGuardar() {
 			 		var guardar = true;
 			 		document.forms[0].incidenciaNumeroColegiadoDuplicadoRevisada.value = "false";
+			 		document.forms[0].incidenciaPoblacionNoEncontradaRevisada.value = "false";
+			 		
 			 		if (${EdicionColegiadoForm.incidenciaNumeroColegiadoDuplicado} && '${EdicionColegiadoForm.ncolegiado}' == document.forms[0].ncolegiado.value) {
 			 			guardar = confirm('<siga:Idioma key="censo.ws.ncolegiadoduplicado.confirmacion"/>');
 			 			if (guardar) {
@@ -549,8 +553,8 @@
 			 		}
 			 		
 			 		if (${EdicionColegiadoForm.incidenciaPoblacionNoEncontrada} && document.forms[0].descripcionpoblacion.value && document.forms[0].codigopoblacion.value) {
-			 			guardar = confirm('<siga:Idioma key="censo.ws.poblacion.confirmacion"/>');
-			 			if (guardar) {
+			 			
+			 			if (confirm('<siga:Idioma key="censo.ws.poblacion.confirmacion"/>')) {
 			 				document.forms[0].incidenciaPoblacionNoEncontradaRevisada.value = "true";
 			 			}
 			 		}
