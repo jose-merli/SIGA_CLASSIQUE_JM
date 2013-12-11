@@ -1,6 +1,8 @@
 package com.siga.ws.i2064;
 
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
@@ -22,18 +24,24 @@ public class ResolucionesListener extends SIGAListenerAbstract {
 	}
 
 	@Override
-	protected String getActivoParam() {		
-		return AppConstants.PARAMETRO.PCAJG_XUNTA_RESOLUCIONES_ACTIVO.name();
+	protected PARAMETRO getActivoParam() {		
+		return PARAMETRO.PCAJG_XUNTA_RESOLUCIONES_ACTIVO;
 	}
 
 	@Override
-	protected String getFechaHoraInicioParam() {		
-		return "PCAJG_XUNTA_DIA_HORA_CONSULTA_RESOLUCIONES";
+	protected PARAMETRO getFechaHoraInicioParam() {		
+		return PARAMETRO.PCAJG_XUNTA_DIA_HORA_CONSULTA_RESOLUCIONES;
 	}
 
 	@Override
-	protected String getDiasIntervaloParam() {		
-		return "PCAJG_XUNTA_INTERVALO_DIAS_RESOLUCIONES";
+	protected PARAMETRO getDiasIntervaloParam() {		
+		return PARAMETRO.PCAJG_XUNTA_INTERVALO_DIAS_RESOLUCIONES;
 	}
+	
+	@Override
+	protected MODULO getModulo() {
+		return MODULO.SCS;
+	}
+
 
 }

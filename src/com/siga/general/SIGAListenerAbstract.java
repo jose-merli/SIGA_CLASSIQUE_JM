@@ -10,7 +10,8 @@ import javax.management.NotificationListener;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.log4j.Logger;
-import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametrosExample;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
@@ -31,22 +32,28 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 	private static final Logger log = Logger.getLogger(SIGAListenerAbstract.class);
 	
 	/**
-	 * Parámetro de la tabla GEN_PARAMETROS que indica la hora de inicio del listener para la institución CGAE (2000) y módulo SCS
+	 * Parámetro de la tabla GEN_PARAMETROS que indica la hora de inicio del listener para la institución 2000
 	 * @return
 	 */
-	protected abstract String getFechaHoraInicioParam();
+	protected abstract PARAMETRO getFechaHoraInicioParam();
 	
 	/**
-	 * Parámetro de la tabla GEN_PARAMETROS que indica el intervalo en horas que se debe ejecutar el listener para la institución CGAE (2000) y módulo SCS
+	 * Parámetro de la tabla GEN_PARAMETROS que indica el intervalo en horas que se debe ejecutar el listener
 	 * @return
 	 */
-	protected abstract String getDiasIntervaloParam();
+	protected abstract PARAMETRO getDiasIntervaloParam();
 	
 	/**
-	 * Parámetro de la tabla GEN_PARAMETROS que indica si el listener está activo para una institución en concreto. Módulo SCS
+	 * Parámetro de la tabla GEN_PARAMETROS que indica si el listener está activo para una institución en concreto
 	 * @return
 	 */
-	protected abstract String getActivoParam();
+	protected abstract PARAMETRO getActivoParam();
+	
+	/**
+	 * Módulo al que pertence el parámetro
+	 * @return
+	 */
+	protected abstract MODULO getModulo();
 	
 	/**
 	 * Método que se llamará cada x tiempo siendo x el valor del intervalo del listener.
@@ -87,7 +94,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 		
 		GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		GenParametrosExample genParametrosExample = new GenParametrosExample();
-		genParametrosExample.createCriteria().andIdinstitucionEqualTo((short)ClsConstants.INSTITUCION_CGAE).andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(getFechaHoraInicioParam());
+		genParametrosExample.createCriteria().andIdinstitucionEqualTo((short)ClsConstants.INSTITUCION_CGAE).andModuloEqualTo(getModulo().name()).andParametroEqualTo(getFechaHoraInicioParam().name());
 		List<GenParametros> genParametros = parametersService.getList(genParametrosExample);
 				
 			
@@ -96,7 +103,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 		
 		try {
 			if (genParametros == null || genParametros.size() != 1) {
-				String error = "No se ha encontrado  correctamente el parámetro " + getFechaHoraInicioParam() + "."; 
+				String error = "No se ha encontrado  correctamente el parámetro " + getFechaHoraInicioParam().name() + "."; 
 				log.error(error);
 				throw new IllegalArgumentException(error);
 			}
@@ -110,7 +117,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 			configuracionCorrecta = true;
 			
 		} catch (Exception e) {
-			log.error("No se ha podido recuperar correctamente el parámetro " + getFechaHoraInicioParam() + ". Valor = \"" + valorFechaHoraInicio + "\" . " +
+			log.error("No se ha podido recuperar correctamente el parámetro " + getFechaHoraInicioParam().name() + ". Valor = \"" + valorFechaHoraInicio + "\" . " +
 					"Compruebe que el formato de fecha y hora (" + ClsConstants.DATE_FORMAT_MEDIUM_SPANISH + ") sea correcto.");
 			Calendar cal = Calendar.getInstance();
 			cal.add(PERIODICIDAD, valorDiasPorDefecto);
@@ -135,11 +142,11 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 			
 			GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 			GenParametrosExample genParametrosExample = new GenParametrosExample();
-			genParametrosExample.createCriteria().andIdinstitucionEqualTo((short)ClsConstants.INSTITUCION_CGAE).andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(getFechaHoraInicioParam());
+			genParametrosExample.createCriteria().andIdinstitucionEqualTo((short)ClsConstants.INSTITUCION_CGAE).andModuloEqualTo(getModulo().name()).andParametroEqualTo(getFechaHoraInicioParam().name());
 			List<GenParametros> genParametros = parametersService.getList(genParametrosExample);
 			
 			if (genParametros == null || genParametros.size() != 1) {
-				String error = "No se ha encontrado  correctamente el parámetro " + getFechaHoraInicioParam() + "."; 
+				String error = "No se ha encontrado  correctamente el parámetro " + getFechaHoraInicioParam().name() + "."; 
 				log.error(error);
 				throw new IllegalArgumentException(error);
 			}
@@ -148,7 +155,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 			
 			if (valorFechaHoraInicio != null && valorFechaHoraInicio.trim().equals(valor) && configuracionCorrecta) {	
 				genParametrosExample = new GenParametrosExample();
-				genParametrosExample.createCriteria().andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(getActivoParam());
+				genParametrosExample.createCriteria().andModuloEqualTo(getModulo().name()).andParametroEqualTo(getActivoParam().name());
 				genParametros = parametersService.getList(genParametrosExample);
 				
 				if (genParametros != null) {
@@ -176,7 +183,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 		
 		GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		GenParametrosExample genParametrosExample = new GenParametrosExample();
-		genParametrosExample.createCriteria().andIdinstitucionEqualTo(idInstitucion).andModuloEqualTo(AppConstants.MODULO.SCS.name()).andParametroEqualTo(String.valueOf(getDiasIntervaloParam()));
+		genParametrosExample.createCriteria().andIdinstitucionEqualTo(idInstitucion).andModuloEqualTo(getModulo().name()).andParametroEqualTo(String.valueOf(getDiasIntervaloParam().name()));
 		
 		List<GenParametros> listaGenParametros = parametersService.getList(genParametrosExample);
 		
@@ -197,19 +204,19 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 			}
 		} catch (Exception e) {
 			// si ocurre un error al transformar a int
-			log.error("Se ha producido un error al recuperar el parámetro " + getDiasIntervaloParam() + " y tratar de pasarlo a número entero", e);
+			log.error("Se ha producido un error al recuperar el parámetro " + getDiasIntervaloParam().name() + " y tratar de pasarlo a número entero", e);
 			numeroDias = valorDiasPorDefecto;				
 		}		
 		
 		GenParametros genParametro = new GenParametros();
 		genParametro.setIdinstitucion(idInstitucion);
-		genParametro.setModulo(AppConstants.MODULO.SCS.name());
-		genParametro.setParametro(getFechaHoraInicioParam());
+		genParametro.setModulo(getModulo().name());
+		genParametro.setParametro(getFechaHoraInicioParam().name());
 		
 		genParametro = parametersService.get(genParametro);		
 		
 		if (genParametro == null) {			
-			throw new ClsExceptions("El parámetro " + getFechaHoraInicioParam() + " no existe en bdd");			
+			throw new ClsExceptions("El parámetro " + getFechaHoraInicioParam().name() + " no existe en bdd");			
 		}
 		
 		
@@ -224,7 +231,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 		genParametro.setValor(value);
 		
 		if (parametersService.update(genParametro) != 1) {
-			throw new ClsExceptions(String.format("No se ha podido actualizar el parámetro %s para el colegio % y el módulo %s", getFechaHoraInicioParam(), idInstitucion, AppConstants.MODULO.SCS.name()));
+			throw new ClsExceptions(String.format("No se ha podido actualizar el parámetro %s para el colegio % y el módulo %s", getFechaHoraInicioParam().name(), idInstitucion, getModulo().name()));
 		}
 		
 	}
