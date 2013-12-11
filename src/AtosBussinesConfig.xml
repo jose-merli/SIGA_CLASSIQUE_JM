@@ -45,6 +45,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.ColegiadoService" 	 									implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.ColegiadoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenTipoIdentificacionService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenTipoIdentificacionServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenSituacionEjercienteService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenSituacionEjercienteServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.CensoSinonimosPoblacionService" 	 					implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.CensoSinonimosPoblacionServiceImpl"/>
 		
 		
 		<service interface="com.siga.envios.service.EntradaEnviosService" 							implementation="com.siga.envios.service.impl.EntradaEnviosServiceImpl"/>
