@@ -154,7 +154,10 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setApellido1(edicionColegiadoForm.getApellido1());
 			ecomCenDatos.setApellido2(edicionColegiadoForm.getApellido2());
 			ecomCenDatos.setSexo(edicionColegiadoForm.getSexo());
-			ecomCenDatos.setFechanacimiento(GstDate.convertirFecha(edicionColegiadoForm.getFechanacimiento()));
+			if (edicionColegiadoForm.getFechanacimiento() != null && !edicionColegiadoForm.getFechanacimiento().trim().equals("")) {
+				ecomCenDatos.setFechanacimiento(GstDate.convertirFecha(edicionColegiadoForm.getFechanacimiento()));
+			}
+			
 			ecomCenDatos.setIdcensotipoidentificacion(edicionColegiadoForm.getIdcensotipoidentificacion());
 			ecomCenDatos.setNumdocumento(edicionColegiadoForm.getNumdocumento());
 			ecomCenDatos.setPublicartelefono(getCheckShort(edicionColegiadoForm.isPublicartelefono()));
@@ -166,7 +169,11 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
 			ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
 			ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
-			ecomCenDatos.setFechasituacion(GstDate.convertirFecha(edicionColegiadoForm.getFechasituacion()));
+			
+			if (edicionColegiadoForm.getFechasituacion() != null && !edicionColegiadoForm.getFechasituacion().trim().equals("")) {
+				ecomCenDatos.setFechasituacion(GstDate.convertirFecha(edicionColegiadoForm.getFechasituacion()));
+			}
+			
 			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
 			
 			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
@@ -191,11 +198,14 @@ public class EdicionColegiadoAction extends MasterAction {
 				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.NUMERO_COLEGIADO_DUPLICADO);
 			}
 			
+			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
+			
 			if (edicionColegiadoForm.isIncidenciaPoblacionNoEncontradaRevisada()) {
-				//TODO
+				ecomCenColegiadoService.lanzaAltaModificacionPorNuevaPoblacion(idinstitucion, ecomCenColegiado, ecomCenDireccion);
+			} else {
+				ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
 			}
 			
-			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado), ecomCenColegiado);
 			BusinessManager.getInstance().commitTransaction();
 			idcensodatos = ecomCenColegiado.getIdcensodatos();
 						
