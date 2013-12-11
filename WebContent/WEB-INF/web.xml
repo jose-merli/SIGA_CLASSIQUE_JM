@@ -130,7 +130,7 @@
 	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
-	
+	<listener><listener-class>com.siga.ws.cen.CargaCensoWSListener</listener-class></listener>
 
 
 	<servlet>
