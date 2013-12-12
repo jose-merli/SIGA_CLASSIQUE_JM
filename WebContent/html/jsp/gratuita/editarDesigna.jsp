@@ -375,23 +375,7 @@
 				return objRegExp.test(strValue);
 			}	
 			
-			function validarNig (strValue) {
-				var objRegExp  = /^([0-9]{19})?$/;
-				return objRegExp.test(strValue);
-			}		
-			
-			jQuery(function($){
-				var defaultValue = jQuery("#nig").val();
-				if(defaultValue.length > 19){
-					jQuery('#info').show();
-					jQuery('#imagenInfo').attr('title',defaultValue) ;
-				}else{
-					jQuery('#info').hide();
-					
-				}
-				jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
-				jQuery("#nig").keyup();	
-			});		
+				
 			
 		<% } else { %>
 			// Valida el numero de procedimiento (n/aaaa)
@@ -474,16 +458,7 @@
 					}	
 				}
 				
-				var nigAux = document.getElementById("nig").value;
-				nigAux = formateaNig(nigAux);
-				if(!validarNig(nigAux)&& document.forms[0].estadoOriginal.value != 'F'){	
-					alert("<siga:Idioma key='gratuita.nig.formato'/>");
-					fin();
-					return false;
-						
-				}
-				document.getElementById("nig").value = nigAux;
-				document.forms[0].nig.value = nigAux; 
+				
 				
 				
 			
@@ -555,6 +530,17 @@
 		 		fin();
 		 		return false;
 		 	}
+			var nigAux = document.getElementById("nig").value;
+			nigAux = formateaNig(nigAux);
+			if(!validarNig(nigAux)&& document.forms[0].estadoOriginal.value != 'F'){	
+				alert("<siga:Idioma key='gratuita.nig.formato'/>");
+				fin();
+				return false;
+					
+			}
+			document.getElementById("nig").value = nigAux;
+			document.forms[0].nig.value = nigAux; 
+			
 			
 			document.forms[0].action="JGR_MantenimientoDesignas.do";
 			document.forms[0].modo.value="modificar";
@@ -637,7 +623,22 @@
  		   		}
  		   	}	
 		}
-		 	
+		 
+		
+		
+		jQuery(function($){
+			var defaultValue = jQuery("#nig").val();
+			if(defaultValue.length > 19){
+				jQuery('#info').show();
+				jQuery('#imagenInfo').attr('title',defaultValue) ;
+			}else{
+				jQuery('#info').hide();
+				
+			}
+			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
+			jQuery("#nig").keyup();	
+		});	
+		
 		function accionCerrar() {
 			
 		}
