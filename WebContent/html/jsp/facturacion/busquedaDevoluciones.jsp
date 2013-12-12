@@ -116,14 +116,14 @@
 								<bean:message key="facturacion.consultaDevolucion.literal.nFacturas" />&nbsp;<bean:message key="general.etiqueta.desde" /> 
 							</td>				
 							<td>
-								<html:text styleId="facturasDesde" property="facturasDesde" size="10" maxlength="10" styleClass="box" />
+								<html:text styleId="facturasDesde" property="facturasDesde" size="10" maxlength="10" styleClass="boxNumber" />
 							</td>
 				
 							<td class="labelText">
 								<bean:message key="general.etiqueta.hasta" /> 
 							</td>
 							<td>
-								<html:text styleId="facturasHasta" property="facturasHasta" size="10" maxlength="10" styleClass="box" />
+								<html:text styleId="facturasHasta" property="facturasHasta" size="10" maxlength="10" styleClass="boxNumber" />
 							</td>				
 						</tr>				
 					</table>
@@ -172,7 +172,7 @@
 				return false;
 			}
 			
-			if(document.DevolucionesForm.facturasHasta.value != "" && document.DevolucionesForm.facturasDesde.value != "" && document.DevolucionesForm.facturasDesde.value > document.DevolucionesForm.facturasHasta.value){
+			if(document.DevolucionesForm.facturasHasta.value != "" && document.DevolucionesForm.facturasDesde.value != "" && parseInt(document.DevolucionesForm.facturasDesde.value) > parseInt(document.DevolucionesForm.facturasHasta.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaDevolucion.error.facturas"/>');
 				return false;

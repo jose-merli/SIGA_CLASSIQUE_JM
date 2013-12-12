@@ -6,8 +6,10 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,8 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
+import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -30,6 +34,8 @@ import com.siga.facturacion.form.FicheroBancarioPagosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -68,7 +74,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					mapDestino = abrir(mapping, miForm, request, response);	
 					
 			} else if (accion.equalsIgnoreCase("abrir")){
-				mapDestino = abrir(mapping, miForm, request, response);	
+				miForm.reset(mapping,request);
+				request.getSession().removeAttribute("DATAPAGINADOR");
+				mapDestino = abrir(mapping, miForm, request, response);					
 				
 			}else if (accion.equalsIgnoreCase("download")){
 				mapDestino = download(mapping, miForm, request, response);
@@ -76,8 +84,10 @@ public class FicheroBancarioPagosAction extends MasterAction{
 				mapDestino = generarFichero(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("informeRemesa")){
 				mapDestino = informeRemesa(miForm, request);
-			}
-			else {
+			}else if (accion.equalsIgnoreCase("buscarInit")){
+				request.getSession().removeAttribute("DATAPAGINADOR");
+				mapDestino = buscar(mapping, miForm, request, response);
+			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
 			
@@ -98,6 +108,27 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		
 	}
 	
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String result="abrir";
+
+		try{
+			FicheroBancarioPagosForm form 	= (FicheroBancarioPagosForm)formulario;
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			String idInstitucion=user.getLocation();			
+			form.setIdInstitucion(idInstitucion);
+			BusinessManager bm = getBusinessManager();
+			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancosConCuentasBancarias(new Integer(idInstitucion));
+			request.setAttribute("listaBancos", bancosList);
+			
+		}  catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}	
+		
+		return result;
+	}		
+	
 	/** 
 	 *  Funcion que atiende la accion abrir. Muestra todas las facturas programadas cuyas Fecha Real de Generación es null 
 	 * @param  mapping - Mapeo de los struts
@@ -107,11 +138,13 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
 			String idInstitucion=user.getLocation();			
+			FicheroBancarioPagosForm form 	= (FicheroBancarioPagosForm)formulario;
+			form.setIdInstitucion(idInstitucion);
 			
 			HashMap databackup=new HashMap();				
 			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
@@ -136,7 +169,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		  	    databackup=new HashMap();
 					
 		  	    FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));			
-		  	    PaginadorCaseSensitive ficheros = adm.getDatosFichero(idInstitucion);
+		  	    PaginadorCaseSensitive ficheros = adm.getDatosFichero(form);
 				
 				databackup.put("paginador", ficheros);
 				if (ficheros!=null){ 
@@ -178,7 +211,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}
 		
-		return "abrir";
+		return "listado";
 	}
 	
 	/** 

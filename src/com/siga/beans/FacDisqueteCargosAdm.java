@@ -9,9 +9,12 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.facturacion.form.FicheroBancarioPagosForm;
 
 
 public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
@@ -104,7 +107,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	 * @return  PaginadorCaseSensitive 
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public PaginadorCaseSensitive getDatosFichero(String idInstitucion) throws ClsExceptions {
+	public PaginadorCaseSensitive getDatosFichero(FicheroBancarioPagosForm form) throws ClsExceptions {
 		try {
 			String sql = " SELECT " + FacDisqueteCargosBean.C_FECHACREACION + ", " +
 						" ( " +
@@ -113,7 +116,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 								" fac_bancoinstitucion"+
 							" WHERE cen_bancos.codigo = fac_bancoinstitucion.cod_banco " +
 							" AND fac_bancoinstitucion.bancos_codigo = fac_disquetecargos.bancos_codigo " +
-							" AND fac_bancoinstitucion.idinstitucion = " + idInstitucion + 
+							" AND fac_bancoinstitucion.idinstitucion = " + form.getIdInstitucion() + 
 						") AS BANCO, "+
 						FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + ", " + 
 						" ( " +
@@ -146,13 +149,76 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 					" FROM " + FacDisqueteCargosBean.T_NOMBRETABLA + ", " 
 							 + CenBancosBean.T_NOMBRETABLA + ", "  
 							 + FacBancoInstitucionBean.T_NOMBRETABLA + 
-					" WHERE " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + idInstitucion + 
+					" WHERE " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + form.getIdInstitucion()  + 
 			         	" AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +
 			         	" AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_BANCOS_CODIGO + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
-			         	" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO+"="+CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO +			
-			         " ORDER BY " + FacDisqueteCargosBean.C_FECHACREACION + " DESC"; 	
+			         	" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO+"="+CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO;
 			
-			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
+							//FILTRO BANCO
+							if(form.getCodigoBanco() != null && !form.getCodigoBanco().equals("")){
+								sql += " AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " = " +form.getCodigoBanco();
+							}
+							
+							//FILTRO ORIGEN
+							if(form.getOrigen() != null && form.getOrigen().equals("1")){
+								//FILTRO SERIE
+								if(form.getIdSerieFacturacion() != null && !form.getIdSerieFacturacion().equals("")){
+									sql += " AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + " = " +form.getIdSerieFacturacion();
+								}else{
+									sql += " AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + " IS NOT NULL ";
+								}
+								
+							} else if(form.getOrigen() != null && form.getOrigen().equals("2")){
+								sql += " AND " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDSERIEFACTURACION + " IS NULL ";
+							}
+							
+							//FILTRO FECHAS
+							String dFechaDesde = null, dFechaHasta = null;
+							if (form.getFechaDesde()!=null && !form.getFechaDesde().trim().equals(""))
+							    dFechaDesde = GstDate.getApplicationFormatDate("",form.getFechaDesde());
+							if (form.getFechaHasta()!=null && !form.getFechaHasta().trim().equals(""))
+								dFechaHasta = GstDate.getApplicationFormatDate("",form.getFechaHasta());
+							if (dFechaDesde!=null || dFechaHasta!=null){
+							    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(FacDisqueteCargosBean.C_FECHACREACION,dFechaDesde,dFechaHasta);
+							}
+			
+			
+			         					//SQL POR ENCIMA PARA PODER FILTRAR POR COMISION Y NUMERO DE FACTURAS				
+					String sqlGrande = " SELECT CARGOS.FECHACREACION, " +
+									   "   CARGOS.BANCO, " +
+									   "   CARGOS.IDSERIEFACTURACION, " +
+						               "   CARGOS.NOMBREABREVIADO, " +
+						               "   CARGOS.DESCRIPCION_PROGRAMACION, " +
+						               "   CARGOS.IDDISQUETECARGOS, " +									   
+						               "   CARGOS.NOMBREFICHERO, " +
+						               "   CARGOS.TOTAL_REMESA, " +
+						               "   CARGOS.NUMRECIBOS " +
+						               " FROM  ( "+ sql + ") CARGOS WHERE 1=1";
+					
+					//FILTRO DESCRIPCION
+					if (form.getDescripcion()!=null && !form.getDescripcion().trim().equals("")){
+						sqlGrande += " AND CARGOS.DESCRIPCION_PROGRAMACION LIKE '%"+UtilidadesBDAdm.validateChars(form.getDescripcion().trim())+"%'";
+					}					
+					
+					//FILTRO NUMRECIBOS
+					if (form.getRecibosDesde()!=null && !form.getRecibosDesde().trim().equals("")){
+						sqlGrande += " AND CARGOS.NUMRECIBOS >= " +form.getRecibosDesde();
+					}
+					if (form.getRecibosHasta()!=null && !form.getRecibosHasta().trim().equals("")){
+						sqlGrande += " AND CARGOS.NUMRECIBOS <= " +form.getRecibosHasta();
+					}					
+					
+					//FILTRO TOTAL_REMESA
+					if (form.getImportesDesde()!=null && !form.getImportesDesde().trim().equals("")){
+						sqlGrande += " AND CARGOS.TOTAL_REMESA >= " + form.getImportesDesde().replace(",", ".");
+					}
+					if (form.getImportesHasta()!=null && !form.getImportesHasta().trim().equals("")){
+						sqlGrande += " AND CARGOS.TOTAL_REMESA <= " + form.getImportesHasta().replace(",", ".");
+					}			
+			
+					sqlGrande +=" ORDER BY " + FacDisqueteCargosBean.C_FECHACREACION + " DESC"; 	
+			
+			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sqlGrande);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					

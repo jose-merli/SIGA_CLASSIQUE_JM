@@ -172,26 +172,25 @@
 		}
 		
 		function refrescarLocal() {
-			document.location.reload();
+			parent.buscar();
 		}
 	</script>
 </head>
 
 <body>	
-	<table class="tablaTitulo">		
-		<!-- Campo obligatorio -->
-		<tr>		
-			<td class="titulitosDatos">
-				<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.cabecera"/>				    
-			</td>				
-		</tr>
-	</table>		
-
 
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/FAC_DisqueteCargos.do?noReset=true" method="POST" target="submitArea" style="display:none">		
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaCargo" value = ""/>
+		<html:hidden styleId="codigoBanco" 		property="codigoBanco" />
+		<html:hidden styleId="fechaDesde" 		property="fechaDesde" />
+		<html:hidden styleId="fechaHasta" 		property="fechaHasta" />
+		<html:hidden styleId="descripcion" 		property="descripcion" />	
+		<html:hidden styleId="recibosDesde" 	property="recibosDesde" />
+		<html:hidden styleId="recibosHasta" 	property="recibosHasta" />
+		<html:hidden styleId="importesDesde" 	property="importesDesde" />
+		<html:hidden styleId="importesHasta" 	property="importesHasta" />			
 	</html:form>
 
 	<!-- INICIO: LISTA DE VALORES -->
@@ -202,10 +201,10 @@
 	  	columnNames= "facturacion.ficheroBancarioPagos.literal.fecha,
   					  facturacion.ficheroBancarioPagos.literal.descripcion,
 					  facturacion.ficheroBancarioPagos.literal.banco,
-					  facturacion.ficheroBancarioPagos.literal.nRecibos,
 					  facturacion.ficheroBancarioPagos.literal.Origen,
+					  facturacion.ficheroBancarioPagos.literal.recibos,
 					  facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"			  			
-		columnSizes="9,19,23,8,23,10,10"
+		columnSizes="9,19,24,24,6,10,10"
 		modal="M"> 		  
 		
 <%
@@ -241,7 +240,6 @@
 					</td>
 					<td><%=descripcion%></td> 
 					<td><%=banco%></td> 
-					<td align="right"><%=recibos%></td> 
 					<td>
 <%	
 						if(origen == null || origen.equals("")){  
@@ -256,6 +254,7 @@
 %>
 						<%=origen%>
 					</td>
+					<td align="right"><%=recibos%></td> 
 					<td align="right"><%=UtilidadesString.formatoImporte(totalRemesa)%>&nbsp;&euro;</td> 									
 				</siga:FilaConIconos>
 <%						
@@ -272,7 +271,7 @@
 		registrosPorPagina="<%=registrosPorPagina%>" 
 		paginaSeleccionada="<%=paginaSeleccionada%>" 
 		idioma="<%=idioma%>"
-		modo="abrir"								
+		modo="buscar"								
 		clase="paginator" 
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
 		distanciaPaginas=""
@@ -281,11 +280,11 @@
 	}
 %>		
 		
-	<table class="botonesDetalle" align="center" border="0">
+	<table class="botonesDetalle" align="right" border="0">
 		<tr>
-			<td class="tdBotones">					
+			<td align="right">					
 				<html:button property="renegociaciones" property="idButton" onclick="return generarFichero();" styleClass="button" >
-					<siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion"/>
+					<siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion.nuevo"/>
 				</html:button>
 			</td>	
 		</tr>

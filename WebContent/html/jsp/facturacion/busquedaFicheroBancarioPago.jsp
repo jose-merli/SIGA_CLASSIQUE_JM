@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- busquedaEnvioBancosAbonos.jsp -->
+<!-- busquedaFicheroBancarioPago.jsp -->
 <!-- 
 	 VERSIONES:
 	 Carlos Ruano Versión inicial
@@ -48,7 +48,7 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table  class="tablaCentralCampos"  align="center">
-	<html:form action="/FAC_EnvioAbonosABanco.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
+	<html:form action="/FAC_DisqueteCargos.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
 		<html:hidden styleId="modo"          				property="modo" 			value = ""/>
 		<html:hidden styleId="actionModal"   				property="actionModal" 		value = ""/>
 		<html:hidden styleId="idInstitucion" 				property="idInstitucion" />
@@ -57,7 +57,14 @@
 			<td>
 				<siga:ConjCampos>			
 					<table class="tablaCampos" align="center">
-						<tr>
+						<tr>						
+							<td class="labelText" >
+								<bean:message key="facturacion.ficheroBancarioPagos.literal.descripcion" />
+							</td>				
+							<td>
+								<html:text styleId="descripcion" property="descripcion" size="40" styleClass="box" />
+							</td>						
+						
 							<td class="labelText" >
 								<bean:message key="general.etiqueta.fecha" />&nbsp;<bean:message key="general.etiqueta.desde" /> 
 							</td>				
@@ -69,16 +76,36 @@
 								<bean:message key="general.etiqueta.hasta" /> 
 							</td>
 							<td>
-								<siga:Fecha nombreCampo="fechaHasta"/>
+								<siga:Fecha nombreCampo="fechaHasta" campoCargarFechaDesde="fechaDesde"/>
 							</td>
 						</tr>	
 						
 						<tr>
 							<td class="labelText">
-								<bean:message key="facturacion.cuentasBancarias.banco" />
+								<bean:message key="facturacion.ficheroBancarioPagos.literal.Origen"/>
+							</td>
+							<td>
+								<html:select styleId="origen" property="origen" styleClass="boxCombo" style="width:265px;" onchange="habilitarSerie();">
+									<html:option value=""/>
+									<html:option value="1">	Facturacion de serie</html:option>
+									<html:option value="2">	Facturas sueltas y renegociaciones </html:option>
+								</html:select>	
+							</td>
+							
+							<td class="labelText">
+								<bean:message key="censo.facturacion.facturas.literal.Serie"/>
+							</td>
+							<td id="comboserie" colspan="3" style="display:none;">
+								<siga:Select id="idSerieFacturacion" queryId="getSeriesFacturacion" width="200" />
+							</td>							
+						</tr>						
+						
+						<tr>
+							<td class="labelText">
+								<bean:message key="facturacion.ficheroBancarioPagos.literal.banco" />
 							</td>
 							<td colspan="4">
-								<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:510px;">
+								<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:515px;">
 									<html:option value=""/>
 									<c:forEach items="${listaBancos}" var="banco">
 										<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
@@ -89,17 +116,17 @@
 						
 						<tr>	
 							<td class="labelText" >
-								<bean:message key="facturacion.ficheroBancarioAbonos.literal.nAbonos" />&nbsp;<bean:message key="general.etiqueta.desde" /> 
+								<bean:message key="facturacion.ficheroBancarioPagos.literal.nRecibos" />&nbsp;<bean:message key="general.etiqueta.desde" /> 
 							</td>				
 							<td>
-								<html:text styleId="abonosDesde" property="abonosDesde" size="10" maxlength="10" styleClass="boxNumber" />
+								<html:text styleId="recibosDesde" property="recibosDesde" size="10" maxlength="6" styleClass="boxNumber" />
 							</td>
 				
 							<td class="labelText">
 								<bean:message key="general.etiqueta.hasta" /> 
 							</td>
 							<td>
-								<html:text styleId="abonosHasta" property="abonosHasta" size="10" maxlength="10" styleClass="boxNumber" />
+								<html:text styleId="recibosHasta" property="recibosHasta" size="10" maxlength="6" styleClass="boxNumber" />
 							</td>				
 						</tr>	
 						
@@ -108,14 +135,14 @@
 								<bean:message key="facturacion.ficheroBancarioPagos.literal.importeTotalRemesa" />&nbsp;<bean:message key="general.etiqueta.desde" /> 
 							</td>				
 							<td>
-								<html:text styleId="importesDesde" property="importesDesde" size="10" maxlength="10" styleClass="boxNumber" />
+								<html:text styleId="importesDesde" property="importesDesde" size="10" styleClass="boxNumber" />
 							</td>
 				
 							<td class="labelText">
 								<bean:message key="general.etiqueta.hasta" /> 
 							</td>
 							<td>
-								<html:text styleId="importesHasta" property="importesHasta" size="10" maxlength="10" styleClass="boxNumber" />
+								<html:text styleId="importesHasta" property="importesHasta" size="10" styleClass="boxNumber" />
 							</td>				
 						</tr>	
 					</table>
@@ -143,48 +170,56 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 	
+		function habilitarSerie(){
+			if(document.ficheroBancarioPagosForm.origen.value == 1){
+				jQuery("#comboserie").show();
+			}else{
+				jQuery("#comboserie").hide();
+			}
+		}
+	
 		function buscar(){
 			sub();
 			
-			if(!isNumero(document.ficheroBancarioAbonosForm.abonosDesde.value)){
+			if(!isNumero(document.ficheroBancarioPagosForm.recibosDesde.value)){
 				fin();
-				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.abonosDesde"/>');
+				alert('<siga:Idioma key="facturacion.busquedaFicheroRecibos.errorformato.recibosDesde"/>');
 				return false;
 			}
 			
-			if(!isNumero(document.ficheroBancarioAbonosForm.abonosHasta.value)){
+			if(!isNumero(document.ficheroBancarioPagosForm.recibosHasta.value)){
 				fin();
-				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.abonosHasta"/>');
+				alert('<siga:Idioma key="facturacion.busquedaFicheroRecibos.errorformato.recibosHasta"/>');
 				return false;
 			}
 			
-			if(!validaFloat(document.ficheroBancarioAbonosForm.importesDesde.value)){
+			if(!validaFloat(document.ficheroBancarioPagosForm.importesDesde.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.importesDesde"/>');
 				return false;
 			}
 			
-			if(!validaFloat(document.ficheroBancarioAbonosForm.importesHasta.value)){
+			if(!validaFloat(document.ficheroBancarioPagosForm.importesHasta.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.importesHasta"/>');
 				return false;
 			}			
 			
-			if(document.ficheroBancarioAbonosForm.abonosHasta.value != "" && document.ficheroBancarioAbonosForm.abonosDesde.value != "" && parseInt(document.ficheroBancarioAbonosForm.abonosDesde.value) > parseInt(document.ficheroBancarioAbonosForm.abonosHasta.value)){
+			if(document.ficheroBancarioPagosForm.recibosHasta.value != "" && document.ficheroBancarioPagosForm.recibosDesde.value != "" && parseInt(document.ficheroBancarioPagosForm.recibosDesde.value) > parseInt(document.ficheroBancarioPagosForm.recibosHasta.value)){
 				fin();
-				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.error.abonos"/>');
+				alert('<siga:Idioma key="facturacion.busquedaFicheroRecibos.error.recibos"/>');
 				return false;
 			}
 			
-			if(document.ficheroBancarioAbonosForm.importesHasta.value != "" && document.ficheroBancarioAbonosForm.importesDesde.value != "" && parseFloat(document.ficheroBancarioAbonosForm.importesDesde.value) > parseFloat(document.ficheroBancarioAbonosForm.importesHasta.value)){
+			if(document.ficheroBancarioPagosForm.importesHasta.value != "" && document.ficheroBancarioPagosForm.importesDesde.value != "" && parseFloat(document.ficheroBancarioPagosForm.importesDesde.value) > parseFloat(document.ficheroBancarioPagosForm.importesHasta.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.error.importes"/>');
 				return false;
 			}			
 			
-			document.ficheroBancarioAbonosForm.modo.value="buscarInit";
-			document.ficheroBancarioAbonosForm.target="resultado";	
-			document.ficheroBancarioAbonosForm.submit();	
+			document.ficheroBancarioPagosForm.modo.value="buscarInit";
+			document.ficheroBancarioPagosForm.target="resultado";	
+			document.ficheroBancarioPagosForm.submit();	
 				
 		}
 			

@@ -1227,7 +1227,8 @@
 		<action path="/FAC_GenerarFicheroBancarioPagos" forward="/notImplemented.do"/>
 
 		<action path="/FAC_DisqueteCargos" type="com.siga.facturacion.action.FicheroBancarioPagosAction" name="ficheroBancarioPagosForm" scope="request">
-			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioPagos.jsp"/>
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaFicheroBancarioPago.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/ficheroBancarioPagos.jsp"/>
 			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioPagos.jsp"/>
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
