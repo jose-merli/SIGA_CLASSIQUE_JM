@@ -270,7 +270,13 @@
 			
 	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){		   
 	   		var sNIE = document.forms[0].numIdentificacion.value;
-			document.forms[0].numIdentificacion.value = formateaNIE(sNIE);
+	   		var sNIEFormetado = formateaNIE(sNIE);
+	   		
+			if(esNIECorrecto(sNIEFormetado,true)){
+				document.forms[0].numIdentificacion.value = sNIEFormetado;				
+			}else{
+				document.forms[0].numIdentificacion.value = sNIE;
+			}	   		
 	   }
 	}
 	
@@ -530,7 +536,22 @@
 		}
 	}
 	
-
+	function esNIECorrecto(nie){
+	  var nieNew=nie.toUpperCase();
+	  var nieAux=nieNew.substring(0,1);
+		  
+	  if ((nieAux=="X")||(nieAux=="Y")||(nieAux=="Z")){
+	     nieAux=str_replace(['X','Y','Z'],['0','1','2'], nieAux);
+	     nieNew = nieAux+nieNew.substring(1);
+	     if(esNIFCorrecto(nieNew,false)){
+		 	return true;
+		 }
+		  
+	  }else{
+	   	return false; 
+	  }
+		  
+	}
 	
 	
 	function validarNIE(a) 
@@ -539,8 +560,6 @@
 		var temp=a.toUpperCase();
 		var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
  		
- 		alert("comp1");
-			
 		//comprobacion de NIEs
 		//T
 		if (/^[T]{1}/.test(temp))
