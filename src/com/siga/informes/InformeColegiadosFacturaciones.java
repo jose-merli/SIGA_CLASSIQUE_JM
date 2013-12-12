@@ -18,15 +18,12 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsFacturacionJGAdm;
-import com.siga.beans.FcsPagoColegiadoAdm;
-import com.siga.beans.FcsPagosJGAdm;
 import com.siga.general.SIGAException;
 
 /**
@@ -287,233 +284,266 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 	 * @throws SIGAException
 	 */	
 	protected Vector obtenerDatosAsistencia(String idInstitucion, String idPersona, String idFacturacion, String idioma) throws ClsExceptions {
-		Vector result= new Vector();
-		String sinActuaciones=//"Guardia sense actuacions";
-			UtilidadesString.getMensajeIdioma(idioma,"informes.colegiadosPagos.guardiaSinActuaciones");
-		int contador=0;
-		Hashtable codigo =new Hashtable();
-		double importeAsistenciaAux=0;
+		Vector result = new Vector();
+		String sinActuaciones = UtilidadesString.getMensajeIdioma(idioma,"informes.colegiadosPagos.guardiaSinActuaciones"); //"Guardia sense actuacions";
 		boolean porActuacion = false;
 		
 		try {
-			StringBuffer sql1 = new StringBuffer();
-			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAINICIO, ");
-			sql1.append(" to_char(cab.fecha_fin, 'DD/MM/YYYY') FECHAFIN, ");
-			sql1.append(" TU.NOMBRE TURNO, ");
-			sql1.append(" tu.abreviatura ABREVIATURA_TURNO, ");
-			sql1.append("fa.IDFACTURACION, ");
-			sql1.append("fa.IDTURNO, ");
-			sql1.append("fa.IDGUARDIA, ");
-			sql1.append("fa.IDCALENDARIOGUARDIAS, ");
-			sql1.append("f_siga_formatonumero(fa.precioaplicado, 2) IMPORTE_ACTUACION, ");
-			sql1.append("fa.IDAPUNTE, ");
-			sql1.append("gu.nombre as NOMBRE_GUARDIA ");
-			sql1.append("from fcs_fact_apunte fa, SCS_TURNO TU, scs_guardiasturno gu, SCS_CABECERAGUARDIAS cab  ");
-
-			sql1.append(" where FA.IDTURNO = TU.IDTURNO ");
-			sql1.append(" and cab.idturno = fa.idturno ");
-			sql1.append(" and cab.idinstitucion = fa.idinstitucion ");
-			sql1.append(" and cab.idguardia = fa.idguardia ");
-			sql1.append(" and cab.idcalendarioguardias = fa.idcalendarioguardias ");
-			sql1.append(" and cab.idpersona = fa.idpersona ");
-			sql1.append(" and cab.fechainicio = fa.fechainicio ");
-			sql1.append("   and FA.IDINSTITUCION = TU.IDINSTITUCION ");
-			sql1.append("   and gu.idinstitucion = tu.idinstitucion");
-			sql1.append("   and gu.idturno = tu.idturno");
-			sql1.append("   and gu.idguardia = fa.idguardia");
-			contador++;
-			codigo.put(new Integer(contador),idInstitucion);
-			sql1.append(" AND FA.IDINSTITUCION = :"+contador);
-			contador++;
-			codigo.put(new Integer(contador),idPersona);
-			sql1.append("   and FA.IDPERSONA = :" +contador);
-			contador++;
-			codigo.put(new Integer(contador),idFacturacion);	
-			sql1.append("   and FA.IDFACTURACION = :"+contador);
-			sql1.append("   and fa.precioaplicado >0.0 "); // Eliminamos las asistencias de importe 0
-			sql1.append(" order by fa.fechainicio, GU.NOMBRE, TU.NOMBRE, FA.IDAPUNTE");
+			String sql1 = "SELECT TO_CHAR(FA.FECHAINICIO, 'DD/MM/YYYY') AS FECHADESDE, "
+							+ " TO_CHAR(FA.FECHAINICIO, 'DD/MM/YYYY') AS FECHAHASTA, "
+							+ " TO_CHAR(FA.FECHAINICIO, 'DD/MM/YYYY') AS FECHAINICIO, "
+							+ " TO_CHAR(CAB.FECHA_FIN, 'DD/MM/YYYY') AS FECHAFIN, "
+							+ " TU.NOMBRE AS TURNO, "
+							+ " TU.ABREVIATURA AS ABREVIATURA_TURNO, "
+							+ " F_SIGA_FORMATONUMERO(FA.PRECIOAPLICADO, 2) AS IMPORTE_ACTUACION, "
+							+ " GU.NOMBRE AS NOMBRE_GUARDIA, "
+							+ " FA.IDFACTURACION, "
+							+ " FA.IDTURNO, "
+							+ " FA.IDGUARDIA, "
+							+ " FA.IDCALENDARIOGUARDIAS, "
+							+ " FA.IDAPUNTE "
+						+ " FROM FCS_FACT_APUNTE FA, "
+							+ " SCS_TURNO TU, "
+							+ " SCS_GUARDIASTURNO GU, "
+							+ " SCS_CABECERAGUARDIAS CAB "
+						// Obtengo datos de FCS_FACT_APUNTE (FA)
+						+ " WHERE FA.IDINSTITUCION = " + idInstitucion
+							+ " AND FA.IDPERSONA = " + idPersona
+							+ " AND FA.IDFACTURACION = " + idFacturacion
+							// Relacion FCS_FACT_APUNTE (FA) con SCS_TURNO (TU)
+							+ " AND TU.IDTURNO = FA.IDTURNO "
+							+ " AND TU.IDINSTITUCION = FA.IDINSTITUCION "
+							// Relacion FCS_FACT_APUNTE (FA) con SCS_CABECERAGUARDIAS (CAB)
+							+ " AND CAB.IDTURNO = FA.IDTURNO "
+							+ " AND CAB.IDINSTITUCION = FA.IDINSTITUCION "
+							+ " AND CAB.IDGUARDIA = FA.IDGUARDIA "
+							+ " AND CAB.IDCALENDARIOGUARDIAS = FA.IDCALENDARIOGUARDIAS "
+							+ " AND CAB.IDPERSONA = FA.IDPERSONA "
+							+ " AND CAB.FECHAINICIO = FA.FECHAINICIO "		
+							// Relacion FCS_FACT_APUNTE (FA) con SCS_GUARDIASTURNO (GU)
+							+ " AND GU.IDINSTITUCION = FA.IDINSTITUCION "
+							+ " AND GU.IDTURNO = FA.IDTURNO "
+							+ " AND GU.IDGUARDIA = FA.IDGUARDIA "
+							// Eliminamos las asistencias de importe 0
+							+ " AND FA.PRECIOAPLICADO > 0.0 " 
+						+ " ORDER BY FA.FECHAINICIO, GU.NOMBRE, TU.NOMBRE, FA.IDAPUNTE";
 	 
-			RowsContainer rc=new RowsContainer();
-			rc.findBind(sql1.toString(),codigo);
-			if(rc!=null && rc.size()>0){
+			RowsContainer rc = new RowsContainer();
+			rc.find(sql1);
+			if (rc!=null && rc.size()>0) {
 				int size=rc.size();
 				for(int i=0;i<size;i++){
-					Row r1=(Row)rc.get(i);
-					Hashtable htAux=r1.getRow();
-					String sImporteFacturado=r1.getString("IMPORTE_ACTUACION");
-					htAux.put("IMPORTE_ACTUACION",sImporteFacturado+ClsConstants.CODIGO_EURO);
+					Row r1 = (Row)rc.get(i);
+					Hashtable htAux = r1.getRow();
 					
-					String idTurno=r1.getString("IDTURNO");
-					String idGuardia=r1.getString("IDGUARDIA");
-					String idCalendarioGuardias=r1.getString("IDCALENDARIOGUARDIAS");
-					String fechaDesde=r1.getString("FECHAINICIO");
-					String idApunte=r1.getString("IDAPUNTE");
+					String sImporteFacturado = r1.getString("IMPORTE_ACTUACION");
+					htAux.put("IMPORTE_ACTUACION", sImporteFacturado + ClsConstants.CODIGO_EURO);
 					
-					// inc7405 // Comprobamos si se paga por actuacion para saber si hay que mostrar las actuaciones o no
-					StringBuffer sqlAct = new StringBuffer();
-					sqlAct.append(" select 1 from scs_hitofacturableguardia where ");
-					sqlAct.append(" idinstitucion= "+idInstitucion);
-					sqlAct.append(" and idturno= "+idTurno);
-					sqlAct.append(" and idguardia= "+idGuardia);
-					sqlAct.append(" and idhito in (4,7,22,46)");
+					String idTurno = r1.getString("IDTURNO");
+					String idGuardia = r1.getString("IDGUARDIA");
+					String idCalendarioGuardias = r1.getString("IDCALENDARIOGUARDIAS");
+					String fechaDesde = r1.getString("FECHAINICIO");
+					String idApunte = r1.getString("IDAPUNTE");
+					
+					// inc7405: Comprobamos si se paga por actuacion para saber si hay que mostrar las actuaciones o no
+					String sqlAct = " SELECT 1 "
+										+ " FROM SCS_HITOFACTURABLEGUARDIA "
+										+ " WHERE IDINSTITUCION = " + idInstitucion
+											+ " AND IDTURNO = " + idTurno
+											+ " AND IDGUARDIA = " + idGuardia
+											+ " AND IDHITO IN (4, 7, 22, 46)";
+					
 					RowsContainer rows=new RowsContainer();
-					rows.find(sqlAct.toString());
+					rows.find(sqlAct);
 					if (rows!=null && rows.size()>0)
 						porActuacion=true;
 					else
 						porActuacion=false;
+					
 					String sql2="";
-					if(porActuacion){
-						sql2= "SELECT f_siga_getrecurso(TA.descripcion, " + idioma + " ) TIPOACTUACION, " +
-							" AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, " + 
-							" AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA, " +
-							" PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, " + 
-							" to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
-							" DECODE(FAAS.PRECIOAPLICADO,0,NULL,f_siga_formatonumero(FAAS.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
-							" f_siga_getrecurso(COS.DESCRIPCION, " + idioma + " ) AS TIPO_DESPLAZAMIENTO, " +
-							" f_siga_formatonumero(TACTCOS.IMPORTE, 2) AS IMPORTE_DESPLAZAMIENTO, " +
-							" (case when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 5 km') > 0 then '5 km' " +
-							"   when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 25 km') > 0 then '25 km' " +
-							"   when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
-							"   else f_siga_getrecurso(COS.DESCRIPCION, " + idioma + " ) " +
-							"   end ) ABREVIATURA_DESPLAZAMIENTO, " +
-							" NVL(JUZGADOS.NOMBRE, JUZGADOS_ASI.NOMBRE) AS JUZGADO " +
-						" FROM FCS_FACT_APUNTE FAP, FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
-							" SCS_ACTUACIONASISTENCIA AAS, " +
-							" SCS_ASISTENCIA ASI, " +
-							" SCS_PERSONAJG PJG, " +
-							" SCS_ACTUACIONASISTCOSTEFIJO ACTCOS, " +
-							" SCS_TIPOACTUACIONCOSTEFIJO TACTCOS, " +
-							" SCS_COSTEFIJO COS, " +
-							" SCS_TIPOACTUACION TA, " +
-							" SCS_JUZGADO JUZGADOS, " +
-							" SCS_JUZGADO JUZGADOS_ASI " +
-						" WHERE FAP.IDINSTITUCION = FAAS.IDINSTITUCION " +
-							" and FAP.IDFACTURACION = FAAS.IDFACTURACION " +
-							" and FAP.IDAPUNTE = FAAS.IDAPUNTE " +
-							" and FAP.IDPERSONA = FAAS.IDPERSONA " +
-							" and FAP.IDINSTITUCION = " + idInstitucion +
-							" and FAP.IDFACTURACION = " + idFacturacion +
-							" and FAP.IDTURNO = "  +idTurno +
-							" and FAP.IDGUARDIA = "  +idGuardia +
-							" and FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
-							" and trunc(FAP.FECHAINICIO) = '" + fechaDesde  +"' "+
-							" and FAP.Idpersona = " + idPersona +
-							" and FAP.IdApunte = " + idApunte +
-							" and FAAS.IDINSTITUCION = AAS.IDINSTITUCION (+) " +
-							" and FAAS.NUMERO = AAS.NUMERO (+) " +
-							" and FAAS.ANIO = AAS.ANIO (+) " +
-							" and FAAS.IDACTUACION = AAS.IDACTUACION (+) " +
-							" and FAAS.IDINSTITUCION = ASI.IDINSTITUCION (+) " +
-							" and FAAS.NUMERO = ASI.NUMERO (+) " +
-							" and FAAS.ANIO = ASI.ANIO (+) " +
-							" and ASI.IDPERSONAJG = PJG.IDPERSONA(+) " +
-							" and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+) " +
-							// Cruzamos con tablas nuevas para sacar los desplazamientos 
-							" and ACTCOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
-							" and ACTCOS.ANIO(+) = AAS.ANIO " +
-							" and ACTCOS.NUMERO(+) = AAS.NUMERO " +
-							" and ACTCOS.IDACTUACION(+) = AAS.IDACTUACION " +
-							" and TACTCOS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +       
-							" and TACTCOS.IDTIPOASISTENCIA(+) = ACTCOS.IDTIPOASISTENCIA " + 
-							" and TACTCOS.IDTIPOACTUACION(+) = ACTCOS.IDTIPOACTUACION " +   
-							" and TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO  " +          
-							" and COS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +            
-							" and COS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO " +      
-							//Relacionamos la tabla  SCS_TIPORACTUACION  TA, SCS_ACTUACIONASISTENCIA AAS
-							" and TA.idinstitucion = AAS.idinstitucion " +
-							" and TA.idtipoasistencia = AAS.idtipoasistencia " +
-							" and TA.idtipoactuacion = AAS.idtipoactuacion " +		
-							" AND AAS.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
-							" AND AAS.IDJUZGADO = JUZGADOS.IDJUZGADO(+) " +
-							" AND ASI.IDINSTITUCION = JUZGADOS_ASI.IDINSTITUCION(+) " +   
-							" AND ASI.JUZGADO = JUZGADOS_ASI.IDJUZGADO(+) " +
-						" ORDER BY AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
+					if (porActuacion) {
+						sql2="SELECT F_SIGA_GETRECURSO(TA.DESCRIPCION, " + idioma + " ) AS TIPOACTUACION, " +
+								" AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION AS ACTUACION, " +
+								" AAS.ANIO || '/' || AAS.NUMERO AS ASISTENCIA," +
+								" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) AS NUMEJGASISTENCIA, " +
+								" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 AS NOMBRE_ASISTIDO, " +							
+								" PJG.NOMBRE AS NOM_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.NOMBRE),1,1) AS ININOM_ASISTIDO, " +
+								" PJG.APELLIDO1 AS APE1_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.APELLIDO1),1,1) AS INIAPE1_ASISTIDO, " +
+								" PJG.APELLIDO2 AS APE2_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.APELLIDO2),1,1) AS INIAPE2_ASISTIDO, " +
+								" TO_CHAR(AAS.FECHA,'DD/MM/YYYY') AS FECHA_ACTUACION, " +
+								" DECODE(FAAS.PRECIOAPLICADO, 0, NULL, F_SIGA_FORMATONUMERO(FAAS.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
+								" F_SIGA_GETRECURSO(COS.DESCRIPCION, " + idioma + " ) AS TIPO_DESPLAZAMIENTO, " +
+								" F_SIGA_FORMATONUMERO(TACTCOS.IMPORTE, 2) AS IMPORTE_DESPLAZAMIENTO, " +
+								" (CASE WHEN INSTR(F_SIGA_GETRECURSO(COS.DESCRIPCION, 1),' 5 km') > 0 THEN '5 km' " +
+									" WHEN INSTR(F_SIGA_GETRECURSO(COS.DESCRIPCION, 1),' 25 km') > 0 THEN '25 km' " +
+									" WHEN INSTR(F_SIGA_GETRECURSO(COS.DESCRIPCION, 1),' 50 km') > 0 THEN '50 km' " +
+									" ELSE F_SIGA_GETRECURSO(COS.DESCRIPCION, " + idioma + " ) " +
+									" END) AS ABREVIATURA_DESPLAZAMIENTO, " +
+								" NVL(JUZGADOS.NOMBRE, JUZGADOS_ASI.NOMBRE) AS JUZGADO " +
+							" FROM FCS_FACT_APUNTE FAP, " +
+								" FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
+								" SCS_ACTUACIONASISTENCIA AAS, " +
+								" SCS_ASISTENCIA ASI, " +
+								" SCS_PERSONAJG PJG, " +
+								" SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS, " +
+								" SCS_TIPOACTUACIONCOSTEFIJO TACTCOS, " +
+								" SCS_COSTEFIJO COS, " +
+								" SCS_TIPOACTUACION TA, " +
+								" SCS_JUZGADO JUZGADOS, " +
+								" SCS_JUZGADO JUZGADOS_ASI " +						
+							// Obtengo datos de FCS_FACT_APUNTE (FAP)
+							" WHERE FAP.IDINSTITUCION = " + idInstitucion +
+								" AND FAP.IDFACTURACION = " + idFacturacion +
+								" AND FAP.IDTURNO = " + idTurno +
+								" AND FAP.IDGUARDIA = " + idGuardia +
+								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
+								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' " +
+								" AND FAP.Idpersona = " + idPersona +
+								" AND FAP.IdApunte = " + idApunte +
+								// Relacion FCS_FACT_APUNTE (FAP) con FCS_FACT_ACTUACIONASISTENCIA (FAAS)
+								" AND FAAS.IDINSTITUCION = FAP.IDINSTITUCION " +
+								" AND FAAS.IDFACTURACION = FAP.IDFACTURACION " +
+								" AND FAAS.IDAPUNTE = FAP.IDAPUNTE " +
+								" AND FAAS.IDPERSONA = FAP.IDPERSONA " +
+								// Relacion FCS_FACT_ACTUACIONASISTENCIA (FAAS) con SCS_ACTUACIONASISTENCIA (AAS)
+								" AND AAS.IDINSTITUCION(+) = FAAS.IDINSTITUCION " +
+								" AND AAS.NUMERO(+) = FAAS.NUMERO " +
+								" AND AAS.ANIO(+) = FAAS.ANIO " +
+								" AND AAS.IDACTUACION(+) = FAAS.IDACTUACION " +
+								// Relacion FCS_FACT_ACTUACIONASISTENCIA (FAAS) con SCS_ASISTENCIA (ASI)
+								" AND ASI.IDINSTITUCION(+) = FAAS.IDINSTITUCION " +
+								" AND ASI.NUMERO(+) = FAAS.NUMERO " +
+								" AND ASI.ANIO(+) = FAAS.ANIO " +
+								// Relacion SCS_ASISTENCIA (ASI) con SCS_PERSONAJG (PJG)
+								" AND PJG.IDPERSONA(+) = ASI.IDPERSONAJG " +
+								" AND PJG.IDINSTITUCION(+) = ASI.IDINSTITUCION " +
+								// Relacion SCS_ACTUACIONASISTENCIA (AAS) con SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS): para sacar los desplazamientos 
+								" AND ACTCOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
+								" AND ACTCOS.ANIO(+) = AAS.ANIO " +
+								" AND ACTCOS.NUMERO(+) = AAS.NUMERO " +
+								" AND ACTCOS.IDACTUACION(+) = AAS.IDACTUACION " +
+								// Relacion SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS) con SCS_TIPOACTUACIONCOSTEFIJO (TACTCOS)
+								" AND TACTCOS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +       
+								" AND TACTCOS.IDTIPOASISTENCIA(+) = ACTCOS.IDTIPOASISTENCIA " + 
+								" AND TACTCOS.IDTIPOACTUACION(+) = ACTCOS.IDTIPOACTUACION " +   
+								" AND TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO " +
+								// Relacion SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS) con SCS_COSTEFIJO (COS)
+								" AND COS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +            
+								" AND COS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO " +      
+								// Relacion SCS_ACTUACIONASISTENCIA (AAS) con SCS_TIPOACTUACION (TA)
+								" AND TA.idinstitucion = AAS.idinstitucion " +
+								" AND TA.idtipoasistencia = AAS.idtipoasistencia " +
+								" AND TA.idtipoactuacion = AAS.idtipoactuacion " +	
+								// Relacion SCS_ACTUACIONASISTENCIA (AAS) con SCS_JUZGADO (JUZGADOS) 
+								" AND JUZGADOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " + 
+								" AND JUZGADOS.IDJUZGADO(+) = AAS.IDJUZGADO " + 
+								// Relacion SCS_ASISTENCIA (ASI) con SCS_JUZGADO (JUZGADOS_ASI) 
+								" AND JUZGADOS_ASI.IDINSTITUCION(+) = ASI.IDINSTITUCION " +   
+								" AND JUZGADOS_ASI.IDJUZGADO(+) = ASI.JUZGADO " +
+							" ORDER BY AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, ASI.EJGANIO, ASI.EJGNUMERO, NOMBRE_ASISTIDO";
 						
-					}else{
+					} else {
 							// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion de la asistencia
 							// asi que filtramos para que salga solo la primera actuacion
-						sql2 = "SELECT '' TIPOACTUACION, " +
-							" '' ACTUACION, " +
-							" ASI.ANIO || '/' || ASI.NUMERO ASISTENCIA, " +
-							" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
-							" to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
-							" DECODE(FASI.PRECIOAPLICADO, 0, NULL, f_siga_formatonumero(FASI.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
-							" '' AS TIPO_DESPLAZAMIENTO, " +
-							" f_siga_formatonumero(SUM(TACTCOS.IMPORTE), 2) AS IMPORTE_DESPLAZAMIENTO, " +
-							" '' AS ABREVIATURA_DESPLAZAMIENTO, " +
-							" JUZGADOS.NOMBRE AS JUZGADO " +
-						" FROM FCS_FACT_ASISTENCIA FASI, " +
-							" SCS_ASISTENCIA ASI, " +
-							" FCS_FACT_APUNTE FAP, " +
-							" SCS_PERSONAJG PJG, " +
-							" FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
-							" SCS_ACTUACIONASISTENCIA AAS, " +
-							" SCS_ACTUACIONASISTCOSTEFIJO ACTCOS, " +
-							" SCS_TIPOACTUACIONCOSTEFIJO TACTCOS, " +
-							" SCS_COSTEFIJO COS, " +
-							" SCS_TIPOACTUACION TA, " +
-							" SCS_JUZGADO JUZGADOS " +
-						" WHERE FASI.IDINSTITUCION = ASI.IDINSTITUCION " +
-							" and FASI.ANIO = ASI.ANIO " +
-							" and FASI.NUMERO = ASI.NUMERO " +
-							" and FASI.IDINSTITUCION = FAP.IDINSTITUCION " +
-							" and FASI.IDFACTURACION = FAP.IDFACTURACION " +
-							" and FASI.IDAPUNTE = FAP.IDAPUNTE " +
-							" and FASI.IDINSTITUCION = " + idInstitucion +
-							" and FAP.IDFACTURACION = " + idFacturacion +
-							" and FAP.IDTURNO = " + idTurno +
-							" and FAP.IDGUARDIA = " + idGuardia +
-							" and FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
-							" and trunc(FAP.FECHAINICIO) = '" + fechaDesde + "' " +
-							" and FAP.Idpersona = " + idPersona +
-							" and FAP.IdApunte = " + idApunte +
-							" and ASI.IDPERSONAJG = PJG.IDPERSONA(+) " +
-							" and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+) " + 
-							" and FASI.IDINSTITUCION = FAAS.IDINSTITUCION(+) " +
-							" and FASI.IDFACTURACION = FAAS.IDFACTURACION(+) " +
-							" and FASI.ANIO = FAAS.ANIO(+) " +
-							" and FASI.NUMERO = FAAS.NUMERO(+) " +
-							" and FAAS.IDINSTITUCION = AAS.IDINSTITUCION(+) " +
-							" and FAAS.NUMERO = AAS.NUMERO(+) " +
-							" and FAAS.ANIO = AAS.ANIO(+) " +
-							" and FAAS.IDACTUACION = AAS.IDACTUACION(+) " +
-							" and AAS.IDINSTITUCION = ACTCOS.IDINSTITUCION(+) " +
-							" and AAS.ANIO = ACTCOS.ANIO(+) " +
-							" and AAS.NUMERO = ACTCOS.NUMERO(+) " +
-							" and AAS.IDACTUACION = ACTCOS.IDACTUACION(+) " +
-							" and ACTCOS.IDINSTITUCION = TACTCOS.IDINSTITUCION(+) " +
-							" and ACTCOS.IDTIPOASISTENCIA = TACTCOS.IDTIPOASISTENCIA(+) " +
-							" and ACTCOS.IDTIPOACTUACION = TACTCOS.IDTIPOACTUACION(+) " +
-							" and ACTCOS.IDCOSTEFIJO = TACTCOS.IDCOSTEFIJO(+) " +
-							" and ACTCOS.IDINSTITUCION = COS.IDINSTITUCION(+) " +
-							" and ACTCOS.IDCOSTEFIJO = COS.IDCOSTEFIJO(+) " +
-							" and AAS.idinstitucion = TA.idinstitucion(+) " +
-							" and AAS.idtipoasistencia = TA.idtipoasistencia(+) " +
-							" and AAS.idtipoactuacion = TA.idtipoactuacion(+) " +
-							" AND ASI.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
-							" AND ASI.JUZGADO = JUZGADOS.IDJUZGADO(+) " +
-						" GROUP BY ASI.ANIO, ASI.NUMERO, " +
-							" PJG.NOMBRE, " +
-							" PJG.APELLIDO1, " + 
-							" PJG.APELLIDO2, " +
-							" ASI.FECHAHORA, " +
-							" FASI.PRECIOAPLICADO, " +
-							" JUZGADOS.NOMBRE " +
-						" ORDER BY ASI.ANIO, ASI.NUMERO, PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2" ;
+						sql2= " SELECT '' AS TIPOACTUACION, " +
+								" '' AS ACTUACION, " +
+								" ASI.ANIO || '/' || ASI.NUMERO AS ASISTENCIA, " +
+								" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) AS NUMEJGASISTENCIA, " +
+								" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 AS NOMBRE_ASISTIDO, " +
+								" PJG.NOMBRE AS NOM_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.NOMBRE),1,1) AS ININOM_ASISTIDO, " +
+								" PJG.APELLIDO1 AS APE1_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.APELLIDO1),1,1) AS INIAPE1_ASISTIDO, " +
+								" PJG.APELLIDO2 AS APE2_ASISTIDO, " +
+								" SUBSTR(TRIM(PJG.APELLIDO2),1,1) AS INIAPE2_ASISTIDO, " +
+								" TO_CHAR(ASI.FECHAHORA, 'DD/MM/YYYY') AS FECHA_ACTUACION, " +
+								" DECODE(FASI.PRECIOAPLICADO, 0, NULL, F_SIGA_FORMATONUMERO(FASI.PRECIOAPLICADO,2)) AS PRECIO_ACTUACION, " +
+								" '' AS TIPO_DESPLAZAMIENTO, " +
+								" F_SIGA_FORMATONUMERO(SUM(TACTCOS.IMPORTE), 2) AS IMPORTE_DESPLAZAMIENTO, " +
+								" '' AS ABREVIATURA_DESPLAZAMIENTO, " +
+								" JUZGADOS.NOMBRE AS JUZGADO " +
+							" FROM FCS_FACT_ASISTENCIA FASI, " +
+								" SCS_ASISTENCIA ASI, " +
+								" FCS_FACT_APUNTE FAP, " +
+								" SCS_PERSONAJG PJG, " +
+								" FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
+								" SCS_ACTUACIONASISTENCIA AAS, " +
+								" SCS_ACTUACIONASISTCOSTEFIJO ACTCOS, " +
+								" SCS_TIPOACTUACIONCOSTEFIJO TACTCOS, " +
+								" SCS_COSTEFIJO COS, " +
+								" SCS_TIPOACTUACION TA, " +
+								" SCS_JUZGADO JUZGADOS " +
+							// Obtengo datos de FCS_FACT_APUNTE (FAP)
+							" WHERE FAP.IDINSTITUCION = " + idInstitucion +
+								" AND FAP.IDFACTURACION = " + idFacturacion +
+								" AND FAP.IDTURNO = " + idTurno +
+								" AND FAP.IDGUARDIA = " + idGuardia +
+								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
+								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' "+
+								" AND FAP.IDPERSONA = " + idPersona +
+								" AND FAP.IDAPUNTE = " + idApunte +
+								// Relacion FCS_FACT_APUNTE (FAP) con FCS_FACT_ASISTENCIA (FASI)
+								" AND FASI.IDINSTITUCION = FAP.IDINSTITUCION " +
+								" AND FASI.IDFACTURACION = FAP.IDFACTURACION " +
+								" AND FASI.IDAPUNTE = FAP.IDAPUNTE " +
+								// Relacion FCS_FACT_ASISTENCIA (FASI) con SCS_ASISTENCIA (ASI)
+								" AND ASI.IDINSTITUCION = FASI.IDINSTITUCION " +
+								" AND ASI.ANIO = FASI.ANIO " +
+								" AND ASI.NUMERO = FASI.NUMERO " +
+								// Relacion SCS_ASISTENCIA (ASI) con SCS_PERSONAJG (PJG)
+								" AND PJG.IDPERSONA(+) = ASI.IDPERSONAJG " +
+								" AND PJG.IDINSTITUCION(+) = ASI.IDINSTITUCION " +
+								// Relacion SCS_ASISTENCIA (FASI) con SCS_PERSONAJG (FAAS)
+								" AND FAAS.IDINSTITUCION(+) = FASI.IDINSTITUCION " +
+								" AND FAAS.IDFACTURACION(+) = FASI.IDFACTURACION " +
+								" AND FAAS.ANIO(+) = FASI.ANIO " +
+								" AND FAAS.NUMERO(+) = FASI.NUMERO " +
+								// Relacion SCS_PERSONAJG (FAAS) con SCS_ACTUACIONASISTENCIA (AAS)
+								" AND AAS.IDINSTITUCION(+) = FAAS.IDINSTITUCION " +
+								" AND AAS.NUMERO(+) = FAAS.NUMERO " +
+								" AND AAS.ANIO(+) = FAAS.ANIO " +
+								" AND AAS.IDACTUACION(+) = FAAS.IDACTUACION " +
+								// Relacion SCS_ACTUACIONASISTENCIA (AAS) con SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS): para sacar los desplazamientos 
+								" AND ACTCOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
+								" AND ACTCOS.ANIO(+) = AAS.ANIO " +
+								" AND ACTCOS.NUMERO(+) = AAS.NUMERO  " +
+								" AND ACTCOS.IDACTUACION(+) = AAS.IDACTUACION " +
+								// Relacion SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS) con SCS_TIPOACTUACIONCOSTEFIJO (TACTCOS)
+								" AND TACTCOS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +
+								" AND TACTCOS.IDTIPOASISTENCIA(+) = ACTCOS.IDTIPOASISTENCIA " +
+								" AND TACTCOS.IDTIPOACTUACION(+) = ACTCOS.IDTIPOACTUACION " +
+								" AND TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO " +
+								// Relacion SCS_ACTUACIONASISTCOSTEFIJO (ACTCOS) con SCS_COSTEFIJO (COS)
+								" AND COS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +
+								" AND COS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO " +
+								// Relacion SCS_ACTUACIONASISTENCIA (AAS) con SCS_TIPOACTUACION (TA)
+								" AND TA.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
+								" AND TA.IDTIPOASISTENCIA(+) = AAS.IDTIPOASISTENCIA " +
+								" AND TA.IDTIPOACTUACION(+) = AAS.IDTIPOACTUACION " +
+								// Relacion SCS_ASISTENCIA (ASI) con SCS_JUZGADO (JUZGADOS) 
+								" AND JUZGADOS.IDINSTITUCION(+) = ASI.IDINSTITUCION " +   
+								" AND JUZGADOS.IDJUZGADO(+) = ASI.JUZGADO " +
+							" GROUP BY ASI.ANIO, ASI.NUMERO, ASI.EJGANIO, ASI.EJGNUMERO, PJG.NOMBRE, PJG.APELLIDO1, PJG.APELLIDO2, ASI.FECHAHORA, FASI.PRECIOAPLICADO, JUZGADOS.NOMBRE " +
+							" ORDER BY ASI.ANIO, ASI.NUMERO, PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 " ;
 					}
 
 					RowsContainer rc2 = new RowsContainer();
 					rc2.find(sql2);
 					if(rc2!=null && rc2.size()>0){
 						//tratar el primero
-						Row r2=(Row)rc2.get(0);
+						Row r2 = (Row)rc2.get(0);
 						htAux.putAll(r2.getRow());
-						String sImporteDesplazamineto=r2.getString("IMPORTE_DESPLAZAMIENTO");
-						htAux.put("IMPORTE_DESPLAZAMIENTO",sImporteDesplazamineto+ClsConstants.CODIGO_EURO);
-						String sPrecioAplicado=r1.getString("PRECIO_ACTUACION");
+						
+						String sImporteDesplazamineto = r2.getString("IMPORTE_DESPLAZAMIENTO");
+						htAux.put("IMPORTE_DESPLAZAMIENTO", sImporteDesplazamineto + ClsConstants.CODIGO_EURO);
+						
+						String sPrecioAplicado = r1.getString("PRECIO_ACTUACION");
 						if (sPrecioAplicado!=null && !sPrecioAplicado.equalsIgnoreCase("")) 
-							htAux.put("PRECIO_ACTUACION",sPrecioAplicado+ClsConstants.CODIGO_EURO);
+							htAux.put("PRECIO_ACTUACION", sPrecioAplicado + ClsConstants.CODIGO_EURO);
+						
 						result.addElement(htAux);
 						
 						//tratar el resto
@@ -521,26 +551,29 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 						for(int j=1;j<size2;j++){
 							r2=(Row)rc2.get(j);
 							htAux=r2.getRow();
-							sImporteDesplazamineto=r2.getString("IMPORTE_DESPLAZAMIENTO");
-							htAux.put("IMPORTE_DESPLAZAMIENTO",sImporteDesplazamineto+ClsConstants.CODIGO_EURO);
-							sPrecioAplicado=r1.getString("PRECIO_ACTUACION");
+							
+							sImporteDesplazamineto = r2.getString("IMPORTE_DESPLAZAMIENTO");
+							htAux.put("IMPORTE_DESPLAZAMIENTO", sImporteDesplazamineto + ClsConstants.CODIGO_EURO);
+							
+							sPrecioAplicado = r1.getString("PRECIO_ACTUACION");
 							if (sPrecioAplicado!=null && !sPrecioAplicado.equalsIgnoreCase("")) 
-								htAux.put("PRECIO_ACTUACION",sPrecioAplicado+ClsConstants.CODIGO_EURO);
+								htAux.put("PRECIO_ACTUACION", sPrecioAplicado + ClsConstants.CODIGO_EURO);
+							
 							result.addElement(htAux);
 						}
-					}else{
+					} else {
 						htAux.put("NOMBRE_ASISTIDO",sinActuaciones);
 						result.addElement(htAux);
 					}
 				}
 			}
+			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
 		}
+		
 		return result;
 	}
-	
-
 	
 	/**
 	 * Obtiene el listado de datos del pago de los oficios 
@@ -550,92 +583,123 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected Vector obtenerDatosOficio(String idInstitucion, String idPersona, String idFacturacion) throws ClsExceptions
-	{
+	protected Vector obtenerDatosOficio(String idInstitucion, String idPersona, String idFacturacion) throws ClsExceptions {
 		Vector result = null;
-		int contador = 0;
-		Hashtable codigo = new Hashtable();
 
 		try {
-			
 			String sql = " SELECT " +
-					" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG, " +
-					" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG, " +
-					" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG, " +
-					" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG, " +
-					" decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, " +
-					" AD.FECHA, " +
-					" to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO, " +
-					" to_char(DES.fechaentrada,'DD/MM/YYYY') FECHA_DESIGNA, " +
-					" PRO.NOMBRE PROCEDIMIENTO, " +
-					" DES.ANIO || '/' || DES.CODIGO  ASIOFI, " +
-					" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, " +
-					" f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, " +
-					" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, " +
-					" acreprod.porcentaje as PORCENTAJE_PAGADO, " +
-					" acre.descripcion as ACREDITACION, " +
-					" turno.nombre AS NOMBRE_TURNO, " +
-					" turno.abreviatura AS ABREVIATURA_TURNO, " +
-					" ad.numeroasunto as NUMEROASUNTO, " +	
-					" DES.NIG, " +			
-					" NVL(JUZGADOSAD.NOMBRE, JUZGADOS.NOMBRE) AS JUZGADO " +
+				/*" F_SIGA_GETDATOEJGRELDESIGNA(DES.IDINSTITUCION, DES.IDTURNO, DES.ANIO, DES.NUMERO, 1) AS NUMEROEJG, " +
+				" F_SIGA_GETDATOEJGRELDESIGNA(DES.IDINSTITUCION, DES.IDTURNO, DES.ANIO, DES.NUMERO, 2) AS ANIO_CAJG, " +
+				" F_SIGA_GETDATOEJGRELDESIGNA(DES.IDINSTITUCION, DES.IDTURNO, DES.ANIO, DES.NUMERO, 3) AS NUMERO_CAJG, " +
+				" F_SIGA_GETDATOEJGRELDESIGNA(DES.IDINSTITUCION, DES.IDTURNO, DES.ANIO, DES.NUMERO, 4) AS ANIOEJG, " +*/								
+				" F_SIGA_GETDATOEJGRELDESIGNA(DES.IDINSTITUCION, DES.IDTURNO, DES.ANIO, DES.NUMERO, 5) AS VALORES_EJG, " +
+				" DECODE(COLE.COMUNITARIO, '1', COLE.NCOMUNITARIO, COLE.NCOLEGIADO) AS NUMERO_COLEGIADO, " +
+				" AD.FECHA, " +
+				" TO_CHAR(AD.FECHA, 'DD/MM/YYYY') AS FECHA_OFICIO, " +
+				" TO_CHAR(DES.FECHAENTRADA, 'DD/MM/YYYY') AS FECHA_DESIGNA, " +
+				" PRO.NOMBRE AS PROCEDIMIENTO, " +
+				" DES.ANIO || '/' || DES.CODIGO AS ASIOFI, " +
+				/*" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 0) AS NOMBRE_SOLICITANTE, " + // Lista de solicitantes
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 4) AS NOM_SOLICITANTE, " + // Lista de nombres de solicitantes
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 5) AS ININOM_SOLICITANTE, " + // Lista de iniciales de nombres del solicitante
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 6) AS APE1_SOLICITANTE, " + // Lista de primeros apellidos de solicitantes
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 7) AS INIAPE1_SOLICITANTE, " + // Lista de iniciales de primeros apellidos de solicitantes
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 8) AS APE2_SOLICITANTE, " + // Lista de segundos apellidos de solicitantes
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 9) AS INIAPE2_SOLICITANTE, " + // Lista de iniciales de segundos apellidos de solicitantes	*/
+				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 10) AS VALORES_SOLICITANTE, " + // Lista de valores con los solicitantes
+				" F_SIGA_FORMATONUMERO(FACT.PRECIOAPLICADO, 2) AS IMPORTE_PROCEDIMIENTO, " +
+				" F_SIGA_FORMATONUMERO(FACT.PRECIOAPLICADO * FACT.PORCENTAJEFACTURADO / 100, 2) AS IMPORTE_OFICIO, " +
+				" ACREPROD.PORCENTAJE AS PORCENTAJE_PAGADO, " +
+				" ACRE.DESCRIPCION AS ACREDITACION, " +
+				" TURNO.NOMBRE AS NOMBRE_TURNO, " +
+				" TURNO.ABREVIATURA AS ABREVIATURA_TURNO, " +
+				" AD.NUMEROASUNTO AS NUMEROASUNTO, " +
+				" DES.NIG, " +			
+				" NVL(JUZGADOSAD.NOMBRE, JUZGADOS.NOMBRE) AS JUZGADO " +							
 				" FROM SCS_ACTUACIONDESIGNA AD, " +
 					" SCS_PROCEDIMIENTOS PRO, " +
 					" SCS_DESIGNA DES, " +
-					" FCS_FACT_ACTUACIONDESIGNA fact, " +
-					" FCS_FACTURACIONJG fac, " +
-					" SCS_ACREDITACIONPROCEDIMIENTO acreprod, " +
-					" SCS_ACREDITACION acre, " +
-					" SCS_TURNO turno, " +
-					" CEN_COLEGIADO cole, " +
+					" FCS_FACT_ACTUACIONDESIGNA FACT, " +
+					" FCS_FACTURACIONJG FAC, " +
+					" SCS_ACREDITACIONPROCEDIMIENTO ACREPROD, " +
+					" SCS_ACREDITACION ACRE, " +
+					" SCS_TURNO TURNO, " +
+					" CEN_COLEGIADO COLE, " +
 					" SCS_JUZGADO JUZGADOS, " +
 					" SCS_JUZGADO JUZGADOSAD " +
-				" WHERE DES.IDINSTITUCION = AD.IDINSTITUCION " +
+				// Obtengo datos de FCS_FACT_ACTUACIONDESIGNA (FACT)
+				" WHERE FACT.IDFACTURACION = " + idFacturacion +
+					" AND FACT.IDINSTITUCION = " + idInstitucion +
+					" AND FACT.IDPERSONA = " + idPersona +
+					// Relacion FCS_FACT_ACTUACIONDESIGNA (FACT) con FCS_FACTURACIONJG (FAC)
+					" AND FAC.IDINSTITUCION = FACT.IDINSTITUCION " +
+					" AND FAC.IDFACTURACION = FACT.IDFACTURACION " +
+					// Relacion FCS_FACT_ACTUACIONDESIGNA (FACT) con SCS_ACTUACIONDESIGNA (AD) 
+					" AND AD.IDINSTITUCION = FACT.IDINSTITUCION " +
+					" AND AD.IDPERSONACOLEGIADO = FACT.IDPERSONA " +
+					" AND AD.NUMEROASUNTO = FACT.NUMEROASUNTO " +
+					" AND AD.NUMERO = FACT.NUMERO " +
+					" AND AD.ANIO = FACT.ANIO " +
+					" AND AD.IDTURNO = FACT.IDTURNO " +
+					// Relacion SCS_ACTUACIONDESIGNA (AD) con SCS_DESIGNA (DES)
+					" AND DES.IDINSTITUCION = AD.IDINSTITUCION " +
 					" AND DES.IDTURNO = AD.IDTURNO " +
 					" AND DES.ANIO = AD.ANIO " +
 					" AND DES.NUMERO = AD.NUMERO " +
-					" AND DES.IDTURNO = turno.idturno " +
-					" AND DES.Idinstitucion = turno.Idinstitucion " +
-					" and AD.IDINSTITUCION = PRO.IDINSTITUCION " +
-					" and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO " +
-					" and ad.idinstitucion = fact.idinstitucion " +
-					" and ad.idpersonacolegiado = fact.idpersona " +
-					" and ad.NUMEROASUNTO = fact.NUMEROASUNTO " +
-					" and ad.NUMERO = fact.NUMERO " +
-					" and ad.ANIO = fact.ANIO " +
-					" and ad.IDTURNO = fact.IDTURNO " +
-					" and fac.idinstitucion = fact.idinstitucion " +
-					" and fac.idfacturacion = fact.idfacturacion " +
-					" and fact.idfacturacion = " + idFacturacion +
-					" and acreprod.idprocedimiento = ad.idprocedimiento " +
-					" and acreprod.idinstitucion = ad.idinstitucion_proc " +
-					" and acreprod.idacreditacion = ad.idacreditacion " +
-					" and acre.idacreditacion = acreprod.idacreditacion " +
-					// Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole
-					" and AD.idinstitucion = cole.idinstitucion " +
-					" and AD.idpersonacolegiado = cole.idpersona " +
-					" and AD.idinstitucion = " + idInstitucion +
-					" and AD.idpersonacolegiado = " + idPersona +
-					" AND DES.IDINSTITUCION = JUZGADOS.IDINSTITUCION(+) " +   
-					" AND DES.IDJUZGADO = JUZGADOS.IDJUZGADO(+) " +
-					" AND AD.IDINSTITUCION = JUZGADOSAD.IDINSTITUCION(+) " +   
-					" AND AD.IDJUZGADO = JUZGADOSAD.IDJUZGADO(+) " +
+					// Relacion SCS_DESIGNA (DES) con SCS_TURNO (TURNO)			
+					" AND TURNO.IDTURNO = DES.IDTURNO " +
+					" AND TURNO.IDINSTITUCION = DES.IDINSTITUCION " +
+					// Relacion SCS_ACTUACIONDESIGNA (AD) con SCS_PROCEDIMIENTOS (PRO)	
+					" AND PRO.IDINSTITUCION = AD.IDINSTITUCION " +
+					" AND PRO.IDPROCEDIMIENTO = AD.IDPROCEDIMIENTO " +	
+					// Relacion SCS_ACTUACIONDESIGNA (AD) con SCS_ACREDITACIONPROCEDIMIENTO (ACREPROD)
+					" AND ACREPROD.IDPROCEDIMIENTO = AD.IDPROCEDIMIENTO " +
+					" AND ACREPROD.IDINSTITUCION = AD.IDINSTITUCION_PROC " +
+					" AND ACREPROD.IDACREDITACION = AD.IDACREDITACION " +
+					// Relacion SCS_ACREDITACIONPROCEDIMIENTO (ACREPROD) con SCS_ACREDITACION (ACRE)
+					" AND ACRE.IDACREDITACION = ACREPROD.IDACREDITACION " +
+					// Relacion SCS_DESIGNA (DES) con SCS_JUZGADO (JUZGADOS)	
+					" AND JUZGADOS.IDINSTITUCION(+) = DES.IDINSTITUCION " +   
+					" AND JUZGADOS.IDJUZGADO(+) = DES.IDJUZGADO " +	
+					// Relacion SCS_ACTUACIONDESIGNA (AD) con SCS_JUZGADO (JUZGADOSAD)
+					" AND JUZGADOSAD.IDINSTITUCION(+) = AD.IDINSTITUCION " +   
+					" AND JUZGADOSAD.IDJUZGADO(+) = AD.IDJUZGADO " +
+					// Relacion SCS_ACTUACIONDESIGNA (AD) con CEN_COLEGIADO (COLE)		
+					" AND COLE.IDINSTITUCION = AD.IDINSTITUCION " +
+					" AND COLE.IDPERSONA = AD.IDPERSONACOLEGIADO " +
 				" ORDER BY AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO";
+			
+			/**
+			 * DATOSOFICIO.VALORES_SOLICITANTE contiene una lista de solicitante con todos los valores
+			 * %%NOMBRE_SOLICITANTE%% #1 %%NOM_SOLICITANTE%% #2 %%ININOM_SOLICITANTE%% #3 %%APE1_SOLICITANTE%% #4 %%INIAPE1_SOLICITANTE%% #5 %%APE2_SOLICITANTE%% #6 %%INIAPE2_SOLICITANTE%%  
+			 * Adrián Ayala Gómez, Jorge Páez Triviño #1 Adrián, Jorge #2 A, J #3 Ayala, Páez #4 A, P #5 Gómez, Triviño #6 G, T
+			 */
+			sql = "SELECT SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, 1, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') - 1) AS NOMBRE_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#1') - 2) AS NOM_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#2') - 2) AS ININOM_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#3') - 2) AS APE1_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#4') - 2) AS INIAPE1_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') + 2, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#6') - INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#5') - 2) AS APE2_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_SOLICITANTE, INSTR(DATOSOFICIO.VALORES_SOLICITANTE,'#6') + 2) AS INIAPE2_SOLICITANTE, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, 1, INSTR(DATOSOFICIO.VALORES_EJG,'#1') - 1) AS NUMEROEJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#1') + 2, INSTR(DATOSOFICIO.VALORES_EJG,'#2') - INSTR(DATOSOFICIO.VALORES_EJG,'#1') - 2) AS ANIO_CAJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#2') + 2, INSTR(DATOSOFICIO.VALORES_EJG,'#3') - INSTR(DATOSOFICIO.VALORES_EJG,'#2') - 2) AS NUMERO_CAJG, " +
+					" SUBSTR(DATOSOFICIO.VALORES_EJG, INSTR(DATOSOFICIO.VALORES_EJG,'#3') + 2) AS ANIOEJG, " +
+					" DATOSOFICIO.* " +
+					" FROM (" + sql + ") DATOSOFICIO";				
 
 			RowsContainer rc = new RowsContainer();
 			rc.find(sql);
 			result = new Vector();
-			if (rc != null && rc.size() > 0) {
-				Vector result3 = rc.getAll();
-				Vector aux = new Vector();
-				for (int g = 0; result3 != null && g < result3.size(); g++) {
-					aux.add(g, (Row) result3.get(g));
-				}
-				for (int g = 0; aux != null && g < aux.size(); g++) {
-					Hashtable ht = ((Row) aux.get(g)).getRow();
-					ht.put("IMPORTE_PROCEDIMIENTO", ((String) ht.get("IMPORTE_PROCEDIMIENTO")) + ClsConstants.CODIGO_EURO);
-					ht.put("IMPORTE_OFICIO", ((String) ht.get("IMPORTE_OFICIO")) + ClsConstants.CODIGO_EURO);
-					result.add(g, ht);
+			
+			if (rc!=null && rc.size()>0) {
+				for(int i=0; i<rc.size(); i++){
+					Row rDatos= (Row)rc.get(i);
+					Hashtable hDatos = rDatos.getRow();
+			
+					hDatos.put("IMPORTE_PROCEDIMIENTO", ((String) hDatos.get("IMPORTE_PROCEDIMIENTO")) + ClsConstants.CODIGO_EURO);
+					hDatos.put("IMPORTE_OFICIO", ((String) hDatos.get("IMPORTE_OFICIO")) + ClsConstants.CODIGO_EURO);
+					result.addElement(hDatos);
 				}
 			}
 
@@ -645,5 +709,4 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 
 		return result;
 	}
-
 }

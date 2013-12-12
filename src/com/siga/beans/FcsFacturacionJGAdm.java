@@ -4676,78 +4676,83 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	public Hashtable obtenerDetalleFacturacion(String idInstitucion, String idFacturacion, String idPersona) throws ClsExceptions {
 		RowsContainer rc = null;
 		Hashtable result = new Hashtable();
-		try{
-			String sql = "  SELECT  fac.nombre NOMBRE_FACTURACION , "+
-						 "          to_char(fac.fechadesde,'dd/mm/yyyy') fechadesde, to_char(fac.fechahasta,'dd/mm/yyyy')fechahasta," +
-					     "  		SUM(impguardia) + SUM(impoficio) + SUM(impejg) + SUM(impsoj)IMPORTETOTAL," +
-					     " 			SUM(impguardia)IMPORTEGUARDIA," +
-					     " 			SUM(impoficio)IMPORTEOFICIO," +
-					     " 			SUM(impejg)IMPORTEEJG," +
-					     " 			SUM(impsoj)IMPORTESOJ" +
-						 "  FROM (SELECT idpersona, " +
-						 "                        idInstitucion, " +
-						 "                        idFacturacion, " +
-						 "                        precioaplicado + preciocostesfijos impguardia, " +
-						 "                        0 impoficio, " +
-						 "                        0 impejg, " +
-						 "                        0 impsoj " +
-						 "                   FROM fcs_fact_apunte " +
-						 "                 UNION ALL " +
-						 "                 SELECT idpersona, " +
-						 "                       idInstitucion, " +
-						 "                       idFacturacion, " +
-						 "                        0, " +
-						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
-						 "                        0, " +
-						 "                        0 " +
-						 "                   FROM fcs_fact_actuaciondesigna " +
-						 "                 UNION ALL " +
-						 "                 SELECT idpersona, " +
-						 "                        idInstitucion, " +
-						 "                        idFacturacion, " +
-						 "                        0, " +
-						 "                        0, " +
-						 "                        precioaplicado impejg, " +
-						 "                        0 " +
-						 "                   FROM fcs_fact_ejg " +
-						 "                 UNION ALL " +
-						 "                 SELECT idpersona, " +
-						 "                        idInstitucion, " +
-						 "                        idFacturacion, " +
-						 "                        0, " +
-						 "                        0, " +
-						 "                        0, " +
-						 "                        precioaplicado impsoj " +
-						 "                   FROM fcs_fact_soj) importes, " +
-						 "        cen_colegiado col, " +
-						 "        fcs_facturacionjg fac " +
-						 "  WHERE col.idpersona = importes.idpersona " +
-						 "    AND col.idinstitucion = importes.idinstitucion " +
-						 "    AND fac.idfacturacion = importes.idFacturacion " +
-						 "    AND fac.idinstitucion = importes.idInstitucion " +
-						 "    AND fac.idfacturacion = "+idFacturacion +
-						 "    AND fac.idInstitucion = "+idInstitucion +
-						 "    AND col.idpersona 	= "+idPersona +
-						 "	GROUP BY fac.nombre, fac.fechadesde, fac.fechahasta,fac.idfacturacion  "+
-						 "	ORDER BY fac.fechadesde desc ";
-
+		try {
+			String sql = "SELECT FAC.NOMBRE AS NOMBRE_FACTURACION, " +
+						 	" TO_CHAR(FAC.FECHADESDE, 'dd/mm/yyyy') AS FECHADESDE, " +
+						 	" TO_CHAR(FAC.FECHAHASTA, 'dd/mm/yyyy') AS FECHAHASTA, " +
+						 	" SUM(IMPGUARDIA) + SUM(IMPOFICIO) + SUM(IMPEJG) + SUM(IMPSOJ) AS IMPORTETOTAL, " +
+						 	" SUM(IMPGUARDIA) AS IMPORTEGUARDIA, " +
+						 	" SUM(IMPOFICIO) AS IMPORTEOFICIO, " +
+						 	" SUM(IMPEJG) AS IMPORTEEJG, " +
+						 	" SUM(IMPSOJ) AS IMPORTESOJ " +
+						 " FROM (" +
+							 	" SELECT IDPERSONA, " +
+							 		" IDINSTITUCION, " +
+							 		" IDFACTURACION, " +
+							 		" PRECIOAPLICADO + PRECIOCOSTESFIJOS AS IMPGUARDIA, " +
+							 		" 0 AS IMPOFICIO, " +
+							 		" 0 AS IMPEJG, " +
+							 		" 0 AS IMPSOJ " +
+							 	" FROM FCS_FACT_APUNTE " +
+						 	" UNION ALL " +
+							 	" SELECT IDPERSONA, " +
+							 		" IDINSTITUCION, " +
+							 		" IDFACTURACION, " +
+							 		" 0 AS IMPGUARDIA, " +
+							 		" PRECIOAPLICADO * PORCENTAJEFACTURADO / 100 AS IMPOFICIO, " +
+							 		" 0 AS IMPEJG, " +
+							 		" 0 AS IMPSOJ " +
+						 		" FROM FCS_FACT_ACTUACIONDESIGNA " +
+					 		" UNION ALL " +
+						 		" SELECT IDPERSONA, " +
+						 			" IDINSTITUCION, " +
+						 			" IDFACTURACION, " +
+						 			" 0 AS IMPGUARDIA, " +
+						 			" 0 AS IMPOFICIO, " +
+						 			" PRECIOAPLICADO AS IMPEJG, " +
+						 			" 0 AS IMPSOJ " +
+						 		" FROM FCS_FACT_EJG " +
+					 		" UNION ALL " +
+						 		" SELECT IDPERSONA, " +
+						 			" IDINSTITUCION, " +
+						 			" IDFACTURACION, " +
+						 			" 0 AS IMPGUARDIA, " +
+						 			" 0 AS IMPOFICIO, " +
+						 			" 0 AS IMPEJG, " +
+						 			" PRECIOAPLICADO  AS IMPSOJ " +
+						 		" FROM FCS_FACT_SOJ " +
+						 	") IMPORTES, " +
+						 	" CEN_COLEGIADO COL, " +
+						 	" FCS_FACTURACIONJG FAC " +
+						 " WHERE COL.IDPERSONA = IMPORTES.IDPERSONA " +
+						 	" AND COL.IDINSTITUCION = IMPORTES.IDINSTITUCION " +
+						 	" AND FAC.IDFACTURACION = IMPORTES.IDFACTURACION " +
+						 	" AND FAC.IDINSTITUCION = IMPORTES.IDINSTITUCION " +
+						 	" AND IMPORTES.IDFACTURACION = " + idFacturacion +
+						 	" AND IMPORTES.IDINSTITUCION = " + idInstitucion +
+						 	" AND IMPORTES.IDPERSONA = " + idPersona +
+						 " GROUP BY FAC.NOMBRE, FAC.FECHADESDE, FAC.FECHAHASTA, FAC.IDFACTURACION " +
+						 " ORDER BY FAC.FECHADESDE DESC ";
 		
 			rc = new RowsContainer();
 			rc.find(sql);
 			if (rc != null && rc.size() > 0) {
 				Row r = (Row) rc.get(0);
 				result.putAll(r.getRow());
+				
 				result.put("IMPORTETOTAL", UtilidadesNumero.formato(r.getString("IMPORTETOTAL")));
-				result.put("fechadesde", r.getString("fechadesde"));
-				result.put("fechahasta", r.getString("fechahasta"));
+				result.put("FECHADESDE", r.getString("FECHADESDE"));
+				result.put("FECHAHASTA", r.getString("FECHAHASTA"));
 				result.put("IMPORTEGUARDIA", UtilidadesNumero.formato(r.getString("IMPORTEGUARDIA")));
 				result.put("IMPORTEOFICIO", UtilidadesNumero.formato(r.getString("IMPORTEOFICIO")));
 				result.put("IMPORTEEJG", UtilidadesNumero.formato(r.getString("IMPORTEEJG")));
 				result.put("IMPORTESOJ", UtilidadesNumero.formato(r.getString("IMPORTESOJ")));
 			}
+			
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al generar el informe");
 		}
+		
 		return result;
 	}
 
