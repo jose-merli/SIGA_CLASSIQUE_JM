@@ -169,6 +169,17 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
+		jQuery.noConflict();
+		
+		jQuery("#recibosDesde").keypress(function (e) {
+			if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+				return false;
+		});
+		
+		jQuery("#recibosHasta").keypress(function (e) {
+			if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+				return false;
+		});		
 	
 		function habilitarSerie(){
 			if(document.ficheroBancarioPagosForm.origen.value == 1){
