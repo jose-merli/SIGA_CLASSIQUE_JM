@@ -918,6 +918,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			sql += " F_SIGA_GETDIRECCIONCLIENTE(:" + contador + ", " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + ", 6, 15) AS FAX2, ";
 			
 			sql += ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + " AS FECHA_INICIO, " +
+					" TO_CHAR(" + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + ", 'Day') AS DIA_FECHA_INICIO, " +
 					ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " AS FECHA_FIN, " +
 					ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + "." + ScsInclusionGuardiasEnListasBean.C_ORDEN + " AS ORDEN, " +
 					ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " AS FECHA_FIN, " +
