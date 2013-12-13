@@ -17,11 +17,17 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
+
+
+
+
+import java.util.Date;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -36,6 +42,7 @@ import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -921,10 +928,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			contador++;
 			codigosBind.put(new Integer(contador),idPersona.toString());
 					 where+=" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + " = :"+contador;
-			if (dias!=null){		 
-			 contador++;
-			 codigosBind.put(new Integer(contador),dias.toString());
-			 where+=" AND SYSDATE - " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " < :"+contador;
+			if (dias!=null){
+				// jbd // Cambio la forma de calcular los ultimos 2 año, restando X dias a la fecha actual en vez de hacerlo en la consulta 
+				Calendar fechaReferencia = Calendar.getInstance();
+				fechaReferencia.add(Calendar.DAY_OF_MONTH, (-1*dias));
+				contador++;
+				codigosBind.put(new Integer(contador),UtilidadesString.formatoFecha( fechaReferencia.getTime(), ClsConstants.DATE_FORMAT_SHORT_ENGLISH));
+			 where+=" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " > :"+contador;
 			}				 
 			     	 where+=" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
 							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
