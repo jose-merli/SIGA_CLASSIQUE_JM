@@ -235,6 +235,7 @@
 					});
 					jQuery("#idInstitucionCargo").change();
 				}
+				cargarCombos();
 			});
 			 
 			//Asociada al boton Volver 
@@ -242,14 +243,18 @@
 				window.top.close();
 			}	
 			
+			function cargarCombos(){
+					jQuery("#idTipoCVSubtipo1").data("set-id-value", jQuery("#idTipoCVSubtipo1").data("inival"));
+					jQuery("#idTipoCVSubtipo2").data("set-id-value", jQuery("#idTipoCVSubtipo2").data("inival"));
+					jQuery("#tipoApunte").change();
+			}
+			
 			// Asociada al boton Restablecer 
 			function accionRestablecer() {		
 				if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 					document.getElementById("datosCVForm").reset();
 					rellenarCampos();
-					jQuery("#idTipoCVSubtipo1").data("set-id-value", jQuery("#idTipoCVSubtipo1").data("inival"));
-					jQuery("#idTipoCVSubtipo2").data("set-id-value", jQuery("#idTipoCVSubtipo2").data("inival"));
-					jQuery("#tipoApunte").change();
+					cargarCombos();
 				}
 			}			
 	
@@ -324,7 +329,7 @@
 			function init(){
 				 <%if (!modo.equals("ver")) {%>
 				  tipoCurriculum=<%=idTipoCV%>;			
-				 <%}%>			  
+				 <%}%>		
 			}
 	
 		function rellenaNumCol(){	
