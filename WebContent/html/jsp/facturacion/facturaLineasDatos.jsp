@@ -64,13 +64,64 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-		function validarPrecios(){
-			document.GestionarFacturaForm.datosLineaPrecio.value=document.GestionarFacturaForm.datosLineaPrecio.value.replace(/,/,".");
-			document.GestionarFacturaForm.datosLineaIVA.value=document.GestionarFacturaForm.datosLineaIVA.value.replace(/,/,".");			
-			document.GestionarFacturaForm.datosLineaTotalNeto.value=document.GestionarFacturaForm.datosLineaTotalNeto.value.replace(/,/,".");			
-			document.GestionarFacturaForm.datosLineaTotalIVA.value=document.GestionarFacturaForm.datosLineaTotalIVA.value.replace(/,/,".");
-			document.GestionarFacturaForm.datosLineaTotal.value=document.GestionarFacturaForm.datosLineaTotal.value.replace(/,/,".");						
+	
+		// JPT: Funcion que quita todos los puntos de millar y pone los decimales correspondientes
+		function formatNumber(valorNumero) {
+			if (!valorNumero) {
+				valorNumero = 0;
+				
+			} else {
+				valorNumero = valorNumero.replace(",", ".");
+				
+				while (valorNumero.toString().indexOf(".", 0) > 0 && valorNumero.toString().length - valorNumero.toString().indexOf(".", 0) > 3) {
+					valorNumero = valorNumero.replace(".", "");
+				}
+			
+				if (valorNumero.toString().indexOf(".", 0) == -1) {
+					valorNumero += ".00";
+					
+				} else if (valorNumero.toString().charAt(valorNumero.toString().length -1) == ".") {
+					valorNumero += "00";
+					
+				} else if (valorNumero.toString().charAt(valorNumero.toString().length -2) == ".") {
+					valorNumero += "0";
+				}				
+			}
+			
+			return valorNumero;
 		}
+	
+		// JPT: Funcion que pone muestra un numero con punto en los millares, coma en el simbolo decimal y dos decimales
+		function  convertirAFormato(numero){
+			var numeroFormateado = numero.replace(",", ".");
+			var numeroNumber = new Number(numeroFormateado);
+			
+			if (isNaN(numeroNumber)) {
+				return "";
+			}
+			
+			numeroNumber = Number(numeroNumber.toFixed(2));
+			numeroNumber = numeroNumber.toLocaleString();
+			
+			//Tratamiento decimales
+			if (numeroNumber.indexOf(',') < 0) {
+				numeroNumber += ',00'; // Si no tiene decimales le pongo dos ceros
+			} else {
+				if (numeroNumber.indexOf(',') + 3 > numeroNumber.length){
+					numeroNumber += '0'; // Si tiene un decimal le pongo otro decimal
+				}
+			}
+			
+			return numeroNumber;	
+		}	
+	
+		function validarPrecios(){
+			document.GestionarFacturaForm.datosLineaPrecio.value=formatNumber(document.GestionarFacturaForm.datosLineaPrecio.value);
+			document.GestionarFacturaForm.datosLineaIVA.value=formatNumber(document.GestionarFacturaForm.datosLineaIVA.value);		
+			document.GestionarFacturaForm.datosLineaTotalNeto.value=formatNumber(document.GestionarFacturaForm.datosLineaTotalNeto.value);			
+			document.GestionarFacturaForm.datosLineaTotalIVA.value=formatNumber(document.GestionarFacturaForm.datosLineaTotalIVA.value);
+			document.GestionarFacturaForm.datosLineaTotal.value=formatNumber(document.GestionarFacturaForm.datosLineaTotal.value);					
+		}	
 
 		// Asociada al boton Volver
 		function accionCerrar(){ 
@@ -88,44 +139,41 @@
 			}
 		}		
 		
-		function  convertirAFormato(n){
-			var d = n.replace(/,/,".");
-			d = new Number(n);
-			d = Number(d.toFixed(2));
-			d = d.toLocaleString();
-			
-			//Tratamiento decimales
-			if (d.indexOf(',') < 0) {
-				d += ',00'; // Si no tiene decimales le pongo dos ceros
-			} else {
-				if (d.indexOf(',') + 3 > d.length){
-					d += '0'; // Si tiene un decimal le pongo otro decimal
+		function calculaPrecios () {
+			if (validateGestionarFacturaForm(document.GestionarFacturaForm)) {
+				var precio = formatNumber(document.GestionarFacturaForm.datosLineaPrecio.value);
+				var cantidad = document.GestionarFacturaForm.datosLineaCantidad.value;
+				
+				if (isNaN(precio) || isNaN(cantidad)) {
+					document.GestionarFacturaForm.datosLineaTotalNeto.value = "";
+					document.GestionarFacturaForm.datosLineaTotalIVA.value = "";
+					document.GestionarFacturaForm.datosLineaTotal.value = "";
+				
+				} else {						
+					var calculoTotalNeto = eval(precio) * eval(cantidad);
+					calculoTotalNeto =  Math.abs(calculoTotalNeto * 100) / 100;
+					document.GestionarFacturaForm.datosLineaTotalNeto.value = calculoTotalNeto;
+					document.GestionarFacturaForm.datosLineaTotalNeto.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalNeto.value);
+					
+					var iva = formatNumber(document.GestionarFacturaForm.datosLineaIVA.value);
+					
+					if (isNaN(iva)) {
+						document.GestionarFacturaForm.datosLineaTotalIVA.value = "";
+						document.GestionarFacturaForm.datosLineaTotal.value = "";
+					
+					} else {
+						var calculoTotalIva = calculoTotalNeto * eval(iva) / 100;
+						calculoTotalIva =  Math.abs(calculoTotalIva * 100) / 100;
+						document.GestionarFacturaForm.datosLineaTotalIVA.value = calculoTotalIva;
+						document.GestionarFacturaForm.datosLineaTotalIVA.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalIVA.value);
+						
+						var calculoTotal = calculoTotalNeto + calculoTotalIva;
+						document.GestionarFacturaForm.datosLineaTotal.value = calculoTotal;
+						document.GestionarFacturaForm.datosLineaTotal.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotal.value);
+					}
 				}
 			}
-			
-			return d;	
-		}
-		
-		function calculaPrecios () {
-			var totalNeto = document.GestionarFacturaForm.datosLineaPrecio.value.replace(".","").replace(".","");
-			totalNeto = totalNeto.replace(/,/,".");
-			var nTotalNeto = new Number(totalNeto);
-			nTotalNeto = new Number(document.GestionarFacturaForm.datosLineaCantidad.value * nTotalNeto);
-			
-			var totalIVA = document.GestionarFacturaForm.datosLineaIVA.value.replace(".","").replace(".","");
-			totalIVA = totalIVA.replace(/,/,".");
-			var nTotalIVA = new Number(totalIVA);
-			nTotalIVA = new Number(nTotalNeto * nTotalIVA / 100);
-			
-			document.GestionarFacturaForm.datosLineaTotalNeto.value = parseInt(nTotalNeto*100) / 100;			
-			document.GestionarFacturaForm.datosLineaTotalIVA.value = parseInt(nTotalIVA*100) / 100;
-			document.GestionarFacturaForm.datosLineaTotal.value = parseInt((nTotalNeto + nTotalIVA)*100) / 100;
-			
-			//convierto al formato correcto:
-			document.GestionarFacturaForm.datosLineaTotalNeto.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalNeto.value);
-			document.GestionarFacturaForm.datosLineaTotalIVA.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalIVA.value); 
-			document.GestionarFacturaForm.datosLineaTotal.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotal.value);
-		}
+		}		
 	</script>	
 </head>
 
@@ -179,19 +227,8 @@
 								<tr>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Precio"/></td>
 									<td class="labelText">
-<%
-										if (readOnlyPre) {
-%>										
-											<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
-												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
-<%
-										} else {
-%>
-											<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right"
-												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
-<%
-										}
-%>											
+										<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right" maxlength="13"
+											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.TotalNeto"/></td>
@@ -201,20 +238,8 @@
 								<tr>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.IVA"/></td>
 									<td class="labelText">
-<%
-										if (readOnlyIva) {
-%>										
-											<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
-												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>
-<%
-										} else {
-%>
-											<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" 										
-												value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>
-<%
-										}
-%>										
-										%														
+										<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" style="text-align:right" maxlength="5" 										
+											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;%
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.importeIVA"/></td>
