@@ -167,6 +167,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    Vector v = adm.selectByPK(ht);
 				    if (v!=null && v.size()>0) {
 				        ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) v.get(0);
+				        b.setObservacionesAnulacion("");
 				        b.setValidado(ClsConstants.DB_TRUE);
 				        if(miForm.getFechaValidacion()!=null&&!miForm.getFechaValidacion().equals("")){
 				        	b.setFechaValidacion(GstDate.getApplicationFormatDate("", miForm.getFechaValidacion()));
@@ -222,7 +223,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    	ht.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,fechainicio);
 				    Vector v = adm.selectByPK(ht);
 				    if (v!=null && v.size()>0) {
-				        ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) v.get(0);
+				        ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) v.get(0);				        
 				        b.setFechaValidacion("");
 				        b.setValidado(ClsConstants.DB_FALSE);
 				        if (!adm.update(b)) {
