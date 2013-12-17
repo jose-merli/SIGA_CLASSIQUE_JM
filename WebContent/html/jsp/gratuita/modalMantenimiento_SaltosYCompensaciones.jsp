@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -391,6 +391,21 @@
 		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}		
+		
+<%
+		if (modo.equalsIgnoreCase("NUEVO")) {
+%>			
+			jQuery(document).keydown(function (e) {
+				if (e.keyCode === 8) {
+			    	var nombreElemento = jQuery(e.target).attr("name");
+			    	if (nombreElemento!="fecha" && nombreElemento!="motivos") {			        
+			            return false;
+			        }
+			    }
+			});
+<%
+		}
+%>
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
