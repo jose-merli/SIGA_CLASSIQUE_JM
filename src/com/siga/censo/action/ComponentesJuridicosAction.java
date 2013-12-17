@@ -22,12 +22,20 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenComponentesAdm;
+import com.siga.beans.CenComponentesBean;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenNoColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.censo.form.ComponentesJuridicosForm;
-import com.siga.censo.form.DatosGeneralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -65,6 +73,9 @@ public class ComponentesJuridicosAction extends MasterAction{
 				}else if ( accion.equalsIgnoreCase("existeOtraSociedad")){
 					ClsLogging.writeFileLog("DATOS NO COLEGIALES:getIdenHistorico", 10);
 					mapDestino = existeOtraSociedad(mapping, miForm, request, response,0,"");
+				}else if (accion.equalsIgnoreCase("getNumeroColegiado")){
+					ClsLogging.writeFileLog("DATOS NO COLEGIALES:getNumeroColegiado", 10);
+					mapDestino = getNumeroColegiado(mapping, miForm, request, response);					
 				}else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -240,11 +251,15 @@ public class ComponentesJuridicosAction extends MasterAction{
 			}else{
 				UtilidadesHash.set(hash, "_NUMERO_COLEGIADO_", hash.get("NUMCOLEGIADO").toString());
 			}
+			
+			Vector colegios = colegiadoAdm.getColegiacionesString(UtilidadesHash.getString(hash, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA));
+
 			request.getSession().setAttribute("DATABACKUP", hash);
 			request.setAttribute("accion", accion);	
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("modoConsulta", modo);		
+			request.setAttribute("modoConsulta", modo);	
+			request.setAttribute("colegios", colegios);	
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -335,6 +350,10 @@ public class ComponentesJuridicosAction extends MasterAction{
 			// Verificamos si hay algun regstro pra ese usuario
 			tx.begin();
 			if ((miForm.getClienteIdPersona()!=null) &&  (!miForm.getClienteIdPersona().equals(""))){
+				UtilidadesHash.set(claves1, CenComponentesBean.C_IDPERSONA, miForm.getIdPersona());
+				UtilidadesHash.set(claves1, CenComponentesBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+				UtilidadesHash.set(claves1, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, miForm.getClienteIdPersona());
+				UtilidadesHash.set(claves1, CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION, miForm.getClienteIdInstitucion());
 				
 				String whereExiste = " where " + CenComponentesBean.C_FECHABAJA + " is null and ";
 				whereExiste += CenComponentesBean.C_IDPERSONA + " = " + miForm.getIdPersona() + " and ";
@@ -644,8 +663,17 @@ public class ComponentesJuridicosAction extends MasterAction{
 			if (resultadoNIF!=null && resultadoNIF.size()>0) {
 				Hashtable resultado = (Hashtable) resultadoNIF.get(0);
 				request.setAttribute("RESULTADO",resultado);
+				
+				//Cogemos los datos de los colegios
+				Vector colegios = new Vector<String>();
+				 for (int i = 0; i < resultadoNIF.size(); i++){
+            		Hashtable fila = (Hashtable) resultadoNIF.get(i);
+	                if(fila.get("NCOLEGIADO") != null && !fila.get("NCOLEGIADO").equals(""))
+	                	colegios.add(fila.get("IDINSTITUCION"));
+	            }
+				 
+				request.setAttribute("colegios",colegios); 
 			}
-	     	
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
@@ -685,6 +713,39 @@ public class ComponentesJuridicosAction extends MasterAction{
 		else{
 			return ClsConstants.COMBO_TIPO_PERSONAL;			
 		}
+	}
+	
+	protected String getNumeroColegiado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+			ComponentesJuridicosForm miForm = (ComponentesJuridicosForm) formulario;
+			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+			String numColegiado = "";
+			String insti=(String) request.getParameter("idInstitucion");
+			Long idPersona = null;
+			if(request.getParameter("idPersona")!=null)
+				idPersona =new Long((String)request.getParameter("idPersona"));
+			
+			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (user);
+			CenColegiadoBean beanColegiado = colegiadoAdm.getDatosColegiales(idPersona,Integer.parseInt(insti));
+			if(beanColegiado != null){
+				numColegiado = beanColegiado.getNColegiado();
+			}
+			
+			JSONObject json = new JSONObject();
+			json.put("numColegiado", numColegiado);
+	
+			//response.setContentType("text/x-json;charset=UTF-8");
+			 response.setHeader("Cache-Control", "no-cache");
+			 response.setHeader("Content-Type", "application/json");
+		     response.setHeader("X-JSON", json.toString());
+			 response.getWriter().write(json.toString()); 
+		 
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+		
+		return null;//"completado";
 	}
 		
 }

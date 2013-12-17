@@ -29,6 +29,7 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	
 	Hashtable resul = (Hashtable) request.getAttribute("RESULTADO");
+	Vector colegios = (Vector) request.getAttribute("colegios");
 	
 	String nombre = null; 
 	String apellidos1 = null;
@@ -63,6 +64,13 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script language="JavaScript">
+	Array.prototype.indexOf = function(s) {
+		for (var x=0;x<this.length;x++) 
+			if(this[x] == s) 
+				return true;
+			return false;
+		}
+	
 	<%if (resul!=null){%>
 		var idpersona="<%=(resul.get("IDPERSONA")!=null?resul.get("IDPERSONA"):"")%>";
 		var tipo="<%=resul.get("TIPO")%>";
@@ -131,17 +139,46 @@
 					window.parent.document.getElementById("profesional").checked=true;
 					window.parent.document.getElementById("profesional").disabled=true;
 
-					lista_tipo = window.parent.document.getElementById("idTipoColegio1").options;
-					lista_tipo.options[0].selected = true;
-					window.parent.componentesJuridicosForm.idTipoColegio.value=lista_tipo.options[0].value;
+					lista_tipo = window.parent.document.getElementById("idTipoColegio1").options;					
+					for (i = 0; i < lista_tipo.length; i++) {
+						if (lista_tipo.options[i].value == "1" ) {
+							lista_tipo.options[i].selected = true;
+							window.parent.componentesJuridicosForm.idTipoColegio.value=lista_tipo.options[0].value;
+							break;
+						}				
+					}		
 
-					lista_cole = window.parent.document.getElementById("clienteIdInstitucion").options;
-					for (i = 0; i < lista_cole.length; i++) {
-						if (lista_cole.options[i].value == idinstitucion ) {
-							lista_cole.options[i].selected = true;
+					var lista_cole_1 = document.createElement('select'); 
+					var miArray  =new Array(); 
+					miArray =<%=colegios%>; 	
+					
+					var obj = window.parent.document.getElementById("clienteIdInstitucion");
+					elemens = obj.options.length;
+
+					for (var i=0; i<elemens; i++) { 						
+						if(obj.options[i] != null && miArray.indexOf(obj.options[i].value)){
+							lista_cole_1.appendChild(obj.options[i]);
+						}
+					} 
+					
+					// Borro los valores
+					var obj2 = window.parent.document.getElementById("clienteIdInstitucion");
+					elemens2 = obj.options.length;					
+					for (var i=0; i<elemens2; i++) { 
+						obj2.removeChild(obj2.firstChild); 
+					} 
+										
+					elemens3 = lista_cole_1.options.length;					
+					for (var j=0; j<elemens3; j++) {
+						obj.appendChild(lista_cole_1.options[0]); 
+					} 					
+					
+					lista_cole_2 = lista_cole_1;					
+					for (i = 0; i < lista_cole_2.length; i++) {
+						if (lista_cole_2.options[i].value == idinstitucion ) {
+							lista_cole_2.options[i].selected = true;
 							break;
 						}
-				
 					}
 					
 					window.parent.document.getElementById("numColegiado").value=ncolegiado;
@@ -149,6 +186,10 @@
 					window.parent.document.getElementById("colegiadonoabogacia").style.display="none";
 					window.parent.document.getElementById("asteriscoCuenta").style.display="none";
 					window.parent.document.getElementById("sinasteriscoCuenta").style.display="block";
+					window.parent.document.componentesJuridicosForm.idTipoColegio1.readOnly=true;
+					window.parent.document.componentesJuridicosForm.idTipoColegio1.disabled=true;
+					window.parent.document.componentesJuridicosForm.numColegiado.readOnly=true;
+					window.parent.document.componentesJuridicosForm.numColegiado.disabled=true;					
 				}else{
 					window.parent.document.getElementById("clienteIdInstitucion").value=idinstitucion;
 				}

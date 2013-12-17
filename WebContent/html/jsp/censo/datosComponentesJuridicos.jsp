@@ -55,7 +55,8 @@
 
 	String nombreUsu =(String)request.getAttribute("nombrePersona");
 	String numero = 	(String)request.getAttribute("numero");
-	String modo = 		(String)request.getAttribute("modoConsulta");	
+	String modo = 		(String)request.getAttribute("modoConsulta");
+	Vector colegios = 		(Vector)request.getAttribute("colegios");
 
 	Hashtable htData = null;
 	String sociedad = "";
@@ -155,6 +156,12 @@
 		
 		//Asociada al boton Restablecer
 		function accionRestablecer(){		
+			<%if (modo.equals("nuevo")) {%>
+				document.componentesJuridicosForm.idTipoColegio1.readOnly=false;
+				document.componentesJuridicosForm.idTipoColegio1.disabled=false;
+				document.componentesJuridicosForm.numColegiado.readOnly=false;
+				document.componentesJuridicosForm.numColegiado.disabled=false;
+			<%}%>
 			document.getElementsByName("componentesJuridicosForm")[0].reset();
 			rellenarCampos();
 		}			
@@ -275,6 +282,8 @@
 				}				
 			}			
 			
+			document.componentesJuridicosForm.clienteIdInstitucion.readOnly=true;
+			document.componentesJuridicosForm.clienteIdInstitucion.disabled=true;			
 			document.componentesJuridicosForm.idTipoColegio1.readOnly=true;
 			document.componentesJuridicosForm.idTipoColegio1.disabled=true;
 			document.componentesJuridicosForm.numColegiado.readOnly=true;
@@ -327,35 +336,39 @@
 		
 		function cargar() {
 			<% if (tipo.equals("")) {%>
-			jQuery("#colegiado").hide();
-			jQuery("#provincia1").hide();
-			jQuery("#provincia2").hide();
+				jQuery("#colegiado").hide();
+				jQuery("#provincia1").hide();
+				jQuery("#provincia2").hide();
 			<%}	else { %>
-			document.getElementById("profesional").checked=true;
-			<%if (tipo.equals("1")) {%>
-			jQuery("#colegiado").show();
-			jQuery("#colegio1").show();
-			jQuery("#colegio2").show();
-			jQuery("#colegiadoabogacia").show();
-			jQuery("#colegiadonoabogacia").hide();
-			jQuery("#sjcs").show();
-			if (document.getElementById("sociedad").checked==false){
-				jQuery("#asteriscoCuenta").hide();
-				jQuery("#sinasteriscoCuenta").show();
-			} else {
-				jQuery("#sinasteriscoCuenta").hide();
-				jQuery("#asteriscoCuenta").show();
-			}
-			<%}	else { %>
-			jQuery("#colegiado").show();
-			jQuery("#provincia1").show();
-			jQuery("#provincia2").show();
-			jQuery("#colegiadoabogacia").hide();
-			jQuery("#colegiadonoabogacia").show();
+				document.getElementById("profesional").checked=true;
+				<%if (tipo.equals("1")) {%>
+					jQuery("#colegiado").show();
+					jQuery("#colegio1").show();
+					jQuery("#colegio2").show();
+					jQuery("#colegiadoabogacia").show();
+					jQuery("#colegiadonoabogacia").hide();
+					jQuery("#sjcs").show();
+					if (document.getElementById("sociedad").checked==false){
+						jQuery("#asteriscoCuenta").hide();
+						jQuery("#sinasteriscoCuenta").show();
+					} else {
+						jQuery("#sinasteriscoCuenta").hide();
+						jQuery("#asteriscoCuenta").show();
+					}
+					
+					document.componentesJuridicosForm.numColegiado.readOnly=true;
+					document.componentesJuridicosForm.numColegiado.disabled=true;
+				<%}	else { %>
+					jQuery("#colegiado").show();
+					jQuery("#provincia1").show();
+					jQuery("#provincia2").show();
+					jQuery("#colegiadoabogacia").hide();
+					jQuery("#colegiadonoabogacia").show();
+				<%}%>
 			<%}%>
-			<%}%>
+		
 			<%if(!fechaBaja.equalsIgnoreCase("")){%>
-			jQuery("#divBaja").show();
+				jQuery("#divBaja").show();
 			<%}%>
 		}
 		
@@ -415,6 +428,28 @@
 			    });						
 			}			
 		}	
+		
+		function getNumeroColegiado() {
+				var idper = document.getElementById("clienteIdPersona").value;
+				var idinsti = document.getElementById("clienteIdInstitucion").value;
+
+				$.ajax({ //Comunicación jQuery hacia JSP  
+			           type: "POST",
+			           url: "/SIGA/CEN_ComponentesJuridicos.do?modo=getNumeroColegiado",
+			           data: "idInstitucion="+idinsti+"&idPersona="+idper,
+			           //contentType: "application/json; charset=utf-8",
+			           dataType: "json",
+			           success:  function(json) {
+			   						document.getElementById("numColegiado").value = json.numColegiado;	
+		   							document.componentesJuridicosForm.numColegiado.readOnly=true;
+		   							document.componentesJuridicosForm.numColegiado.disabled=true;
+			           },
+			           error: function(xml,msg){
+			        	   //alert("Error1: "+xml);//$("span#ap").text(" Error");
+			        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+			           }
+			    });						
+		}
 	</script>	
 
 <!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -535,9 +570,18 @@
 								<td id="colegio1" style="display:none" class="labelText">
 									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.colegio"/>
 								</td>	
-								<td id="colegio2" style="display:none">
-									<siga:ComboBD nombre = "clienteIdInstitucion" tipo="cmbColegiosAbreviados" obligatorioSinTextoSeleccionar="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idInstitucionCli%>"/>
-								</td>
+								<%if (modo.equals("editar")) {
+									Object[] paramColegios = colegios.toArray();
+								%>
+									<td id="colegio2" style="display:none">
+										<siga:ComboBD nombre = "clienteIdInstitucion" tipo="cmbColegiosAbreviadosIn" obligatorioSinTextoSeleccionar="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idInstitucionCli%>" parametrosIn="<%=paramColegios%>" accion="getNumeroColegiado();" />
+									</td>
+								<%}	else { %>
+									<td id="colegio2" style="display:none">
+										<siga:ComboBD nombre = "clienteIdInstitucion" tipo="cmbColegiosAbreviados" obligatorioSinTextoSeleccionar="true"  clase="<%=claseCombo%>" readonly="<%=lectura%>"  elementoSel="<%=idInstitucionCli%>" accion="getNumeroColegiado();"/>
+									</td>
+								<% } %>
+								
 							</tr>
 				
 							<tr>
