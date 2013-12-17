@@ -200,10 +200,9 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
 			
+			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
 			if (edicionColegiadoForm.isIncidenciaPoblacionNoEncontradaRevisada()) {
 				ecomCenColegiadoService.lanzaAltaModificacionPorNuevaPoblacion(idinstitucion, ecomCenColegiado, ecomCenDireccion);
-			} else {
-				ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
 			}
 			
 			BusinessManager.getInstance().commitTransaction();
