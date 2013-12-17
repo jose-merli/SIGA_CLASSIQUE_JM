@@ -173,17 +173,17 @@
 			function validar(){
 				var totalAnticipado =  parseFloat('<%=totalAnticipado%>');
 				document.forms[0].nuevoImporteAnticipado.value=document.forms[0].nuevoImporteAnticipado.value.replace(/,/,".");
-				var nuevoImporteAnticipado =  parseFloat(document.forms[0].nuevoImporteAnticipado.value);
+				var nuevoImporteAnticipado = document.forms[0].nuevoImporteAnticipado.value;
 				var precioSolicitud =  parseFloat('<%=precioSolicitud%>');
 			
 				//valida que el nuevo importe sea un número positivo
-				if (isNaN(nuevoImporteAnticipado) || nuevoImporteAnticipado <= 0){
+				if (isNaN(nuevoImporteAnticipado) || nuevoImporteAnticipado <= 0 ){
 					alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteNoValido"/>');
 					return false;
 				}
 				var total = totalAnticipado + nuevoImporteAnticipado;
 				if (precioSolicitud < total){
-					alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteSuperior"/>');
+					alert(document.forms[0].nuevoImporteAnticipado.value);
 					return false;
 				}
 

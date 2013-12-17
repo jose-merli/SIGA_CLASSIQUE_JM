@@ -24,6 +24,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -636,7 +637,7 @@ public class GestionSolicitudesAction extends MasterAction {
 			throw new SIGAException("messages.pys.solicitudCompra.errorAnticiparImporteNoValido");
 		}
 		//valida que el nuevo total anticipado no supere al precio de la solicitud		
-		if (Double.valueOf(precioSolicitud).doubleValue() < nuevoTotalAnticipado){
+		if (Double.valueOf(precioSolicitud).doubleValue() < UtilidadesNumero.redondea(nuevoTotalAnticipado,2)){
 			throw new SIGAException("messages.pys.solicitudCompra.errorAnticiparImporteSuperior");
 		}
 		return new Double(nuevoTotalAnticipado);
