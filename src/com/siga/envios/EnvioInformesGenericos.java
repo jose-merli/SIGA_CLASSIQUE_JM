@@ -1788,6 +1788,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							helperInformesAdm.setIdiomaInforme(idInstitucion, null, AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR,datosInforme, usrBean);
 							idioma = (String) datosInforme.get("idioma");
 							idiomaExt = (String) datosInforme.get("idiomaExt");
+						}else if(tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme(idInstitucion, null, AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO,datosInforme, usrBean);
+							idioma = (String) datosInforme.get("idioma");
+							idiomaExt = (String) datosInforme.get("idiomaExt");
 						}
 						datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
 						datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
@@ -4777,6 +4782,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			envio.generarEnvio(idPersona,
 					EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,
 					vDocumentos);
+			
 
 		} else {
 			Iterator iteEnvios = enviosHashtable.keySet().iterator();
