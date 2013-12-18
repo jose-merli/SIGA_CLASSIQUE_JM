@@ -244,6 +244,9 @@ public class ComponentesJuridicosAction extends MasterAction{
 			CenComponentesAdm componentesAdm = new CenComponentesAdm(this.getUserBean(request));
 			Hashtable hash = componentesAdm.selectComponentes(form.getIdPersona(), form.getIdInstitucion(), idComponente);
 			
+			//Asignamos el cen cliente institucion
+			form.setClienteIdInstitucion(UtilidadesHash.getInteger(hash, CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION));
+			
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (user);
 			CenColegiadoBean beanColegiado = colegiadoAdm.getDatosColegiales(UtilidadesHash.getLong(hash, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA), UtilidadesHash.getInteger(hash, CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION));
 			if (hash.get("IDTIPOCOLEGIO").equals("1")){
@@ -523,7 +526,11 @@ public class ComponentesJuridicosAction extends MasterAction{
 			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 			CenComponentesBean beanComponentes = new CenComponentesBean();
 			beanComponentes.setCargo(miForm.getCargo());
-			beanComponentes.setCen_Cliente_IdInstitucion(miForm.getClienteIdInstitucion());
+			if(miForm.getClienteIdInstitucion()==null || miForm.getClienteIdInstitucion() == 0){
+				beanComponentes.setCen_Cliente_IdInstitucion(Integer.parseInt(this.getUserBean(request).getLocation()));
+			}else{
+				beanComponentes.setCen_Cliente_IdInstitucion(miForm.getClienteIdInstitucion());
+			}
 			beanComponentes.setCen_Cliente_IdPersona(UtilidadesHash.getLong(hashOriginal, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA).toString());
 			beanComponentes.setFechaCargo(miForm.getFechaCargo());
 			beanComponentes.setIdComponente(UtilidadesHash.getInteger(hashOriginal, CenComponentesBean.C_IDCOMPONENTE));
