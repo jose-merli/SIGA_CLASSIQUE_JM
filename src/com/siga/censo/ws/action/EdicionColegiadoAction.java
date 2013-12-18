@@ -16,10 +16,12 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS;
+import org.redabogacia.sigaservices.app.autogen.model.CenPais;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenMaestroIncidenc;
+import org.redabogacia.sigaservices.app.services.cen.CenPaisService;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
@@ -182,7 +184,20 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDireccion.setDesctipovia(edicionColegiadoForm.getDesctipovia());
 			ecomCenDireccion.setDomicilio(edicionColegiadoForm.getDomicilio());
 			ecomCenDireccion.setCodigopostal(edicionColegiadoForm.getCodigopostal());
-			ecomCenDireccion.setCodigopaisextranj(edicionColegiadoForm.getCodigopaisextranj());
+			
+			String codigoPaisExt = null;
+			if (!ClsConstants.ID_PAIS_ESPANA.equals(edicionColegiadoForm.getCodigopaisextranj())) {	
+				CenPais cenPais = new CenPais();
+				cenPais.setIdpais(edicionColegiadoForm.getCodigopaisextranj());
+				CenPaisService cenPaisService = (CenPaisService) getBusinessManager().getService(CenPaisService.class);
+				cenPais = cenPaisService.get(cenPais);
+				if (cenPais != null) {
+					codigoPaisExt = cenPais.getCodigoext();	
+				}			
+			}
+			
+			ecomCenDireccion.setCodigopaisextranj(codigoPaisExt);
+			
 			ecomCenDireccion.setCodigoprovincia(edicionColegiadoForm.getCodigoprovincia());
 			ecomCenDireccion.setCodigopoblacion(edicionColegiadoForm.getCodigopoblacion());
 			ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
