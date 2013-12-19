@@ -73,9 +73,7 @@
 			
 			function inicio() {
 				<%if (request.getAttribute("buscar") != null) {%>
-				document.forms[0].modo.value="buscar";
-				document.forms[0].target="resultado";	
-				document.forms[0].submit();
+				buscar();				
 				<%}%>
 				
 			}

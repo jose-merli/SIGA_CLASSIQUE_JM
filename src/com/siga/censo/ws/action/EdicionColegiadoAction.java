@@ -326,7 +326,10 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
 			
-			List<EcomCenMaestroIncidenc> incidencias = cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos());
+			List<EcomCenMaestroIncidenc> incidencias = cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos(), false);
+			
+			edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(false);
+			edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(false);
 			
 			if (incidencias != null && incidencias.size() > 0) {
 				for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
@@ -396,7 +399,7 @@ public class EdicionColegiadoAction extends MasterAction {
 						EdicionColegiadoForm ecf = new EdicionColegiadoForm();
 						ecf.setIdcensodatos(ecomCenDato.getIdcensodatos());
 						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));						
-						ecf.setIncidencias(getDescripcionIncidenciasColegiado(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos())));
+						ecf.setIncidencias(getDescripcionIncidenciasColegiado(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos(), true)));
 						ecf.setIdestadocolegiado(ecomCenDato.getIdestadocolegiado());
 						edicionColegiadoForms.add(ecf);
 					}
