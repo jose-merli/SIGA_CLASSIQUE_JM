@@ -168,7 +168,7 @@
 		if (hash.containsKey("NOMBRETURNO"))
 			NOMBRETURNO = hash.get("NOMBRETURNO").toString();
 		if (hash.containsKey("FECHAENTRADADESIGNA"))
-			FECHAENTRADADESIGNA = GstDate.getFormatedDateShort("", hash
+			FECHAENTRADADESIGNA = GstDate.getFechaLenguaje("", hash
 					.get("FECHAENTRADADESIGNA").toString());
 		if (hash.containsKey("ANIOASISTENCIA"))
 			ASISTENCIA_ANIO = hash.get("ANIOASISTENCIA").toString();

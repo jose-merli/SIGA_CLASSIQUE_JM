@@ -663,7 +663,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			consulta += "   ejgd.idturno AS DESIGNA_IDTURNO, ";
 			consulta += "   ejgd.numerodesigna AS DESIGNA_NUMERO, ";
 			consulta += "   (SELECT ABREVIATURA  FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejgd.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, ";
-			consulta += "   to_char(designa.FECHAENTRADA,'dd\\MM\\yyyy') AS FECHAENTRADADESIGNA, ";
+			consulta += "   to_char(designa.FECHAENTRADA,'dd/MM/yyyy') AS FECHAENTRADADESIGNA, ";
 			consulta += "	designa.IDJUZGADO AS DES_IDJUZGADO, ";
 			consulta += "	designa.IDINSTITUCION_JUZG AS DES_IDJUZGADOINSTITUCION, ";
 			consulta += "	designa.NUMPROCEDIMIENTO AS DES_NUMPROCEDIMIENTO, ";
