@@ -25,6 +25,13 @@
 <%@ page import="com.atos.utils.*, java.util.*"%>
 
 <!-- JSP -->
+<% 
+	boolean abonosSJCS = false;
+	String sjcs = request.getParameter("sjcs");
+	if ((sjcs!=null) && (sjcs.equals("1"))){
+		abonosSJCS = true;
+	}
+%>	
 
 <!-- HEAD -->
 
@@ -36,7 +43,11 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="facturacion.localizacion"/>
+	<% if(abonosSJCS){ %>
+		<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="factSJCS.Pagos.localizacion"/>
+	<% } else { %>
+		<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="facturacion.localizacion"/>
+	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 </head>
@@ -52,6 +63,11 @@
 		<html:hidden styleId="modo"          				property="modo" 			value = ""/>
 		<html:hidden styleId="actionModal"   				property="actionModal" 		value = ""/>
 		<html:hidden styleId="idInstitucion" 				property="idInstitucion" />
+		<% if (abonosSJCS){ %>
+			<input type="hidden" name="sjcs" value="<%=sjcs%>">
+		<%} else { %>
+			<input type="hidden" name="sjcs" value="">
+		<%} %>
 
 		<tr>				
 			<td>
