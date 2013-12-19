@@ -4524,20 +4524,22 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 								////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-							}else{
-								continue;
 							}
-
-						}else{
-							continue;
 						}
 					}else{
-						continue;
+						idioma = this.usrbean.getLanguageInstitucion();
+						String idiomaInstitucionExt = "ES";
+						registro.put("idioma", idioma);
+						
+						switch (Integer.parseInt(idioma)) {
+							case 1:  idiomaInstitucionExt="ES"; break;
+							case 2:  idiomaInstitucionExt="CA"; break;
+							case 3:  idiomaInstitucionExt="EU"; break;
+							case 4:  idiomaInstitucionExt="GL"; break;	
+						}
+						registro.put("idiomaExt",idiomaInstitucionExt);
 					}
+						
 					actualizarDatosFundamentoJuridico(idioma, registro);
 					//Aniadimos los datos del colegiado tramitador del ejg				
 					String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
@@ -4921,7 +4923,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 
 					//					Sacamos los CONTRARIOS y los recorremos
-				}else if(tipoDestinatarioInforme.equals("J")){
+				}else if(tipoDestinatarioInforme.equals("J") || tipoDestinatarioInforme.equals("P")){
 					//					Sacamos el Juzgado
 
 					HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
