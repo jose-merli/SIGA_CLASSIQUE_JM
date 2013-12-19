@@ -36,7 +36,7 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="facturacion.localizacion"/>
+	<siga:Titulo titulo="menu.facturacion.disquetecargos" localizacion="facturacion.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 </head>
