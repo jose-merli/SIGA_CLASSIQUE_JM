@@ -1578,7 +1578,8 @@
 			<forward name="editar" path="/html/jsp/expedientes/pestanasAuditExpedientes.jsp"/>
 			<forward name="plazo" path="/html/jsp/expedientes/setPlazo.jsp"/>
 			<forward name="ejecucionSancion" path="/html/jsp/expedientes/abrirEjecucionSancion.jsp"/>
-			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExpEjg.jsp"/>			
+			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExpEjg.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/estados_Edit.jsp"/>			
 		</action>
 
 		<action path="/EXP_Auditoria_Denunciante" type="com.siga.expedientes.action.ExpDenuncianteAction" name="ExpDenuncianteForm" scope="request">

@@ -245,28 +245,28 @@ public class ExpPlazoEstadoClasificacionAdm extends MasterBeanAdministrador {
 					fechaFinal=GstDate.getApplicationFormatDate("",fAux);
 					break;					
 			}
-			if (!bHabiles){
+			
+			if (!bHabiles) {
 				d=cal.getTime();
 				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
 				fechaFinal=sdf.format(d);
 			}
 			
-			if(valorPlazo>0){
+			if (valorPlazo>0) {
 				bean.setFechaFinalEstado(fechaFinal);
 				bean.setFechaProrrogaEstado("");
-			}else{
+			} else {
 				bean.setFechaFinalEstado("");
 				bean.setFechaProrrogaEstado("");
 			}
+			
 			return true;
 			
-			
-    	}catch(ClsExceptions e){
-    		throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");			
-		}catch(Exception e){
+    	} catch(ClsExceptions e) {
+    		throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+    		
+		} catch(Exception e) {
 			throw new ClsExceptions (e,"Elemento nulo");
 		}
-			
-    	
     }
 }

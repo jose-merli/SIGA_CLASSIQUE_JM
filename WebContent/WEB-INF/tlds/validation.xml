@@ -1267,19 +1267,20 @@
 				<var-value>25</var-value>
 			</var>
 	</field>
-	<field 	property = "tiempoCaducidad" depends = "integer, intRange"> 			
-		<arg0 key="expedientes.tiposexpedientes.literal.tiempoCaducidad"/>
-		<arg1 name="intRange" key="${var:min}" resource="false"/>
-        <arg2 name="intRange" key="${var:max}" resource="false"/>
-	        <var>
-	            <var-name>min</var-name>
-	            <var-value>0</var-value>
-	        </var>
-	        <var>
-	            <var-name>max</var-name>
-	            <var-value>999</var-value>
-	        </var>
-	</field>
+	
+	<field property="tiempoCaducidad" depends="maxlength,mask"> 
+		<arg0 key="expedientes.tiposexpedientes.literal.tiempoCaducidad"/> 
+		<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+		<var>
+			<var-name>maxlength</var-name>
+            <var-value>6</var-value>
+        </var> 
+        <var>
+            <var-name>mask</var-name>
+            <var-value>^[0-9]{1,4}(dh|m|a){0,1}?$</var-value>
+        </var> 
+	</field>	
+	
 	<field 	property = "diasAntelacionCad" depends = "integer, intRange"> 			
 		<arg0 key="expedientes.tiposexpedientes.literal.diasAntelacion"/>
 		<arg1 name="intRange" key="${var:min}" resource="false"/>

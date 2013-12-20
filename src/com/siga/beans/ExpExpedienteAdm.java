@@ -2215,204 +2215,240 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 		return htData;
 	}
-	public Vector getDatosInformeExpediente (String idInstitucion ,String idInstitucionTipoExp,String idTipoExp ,
-			String anio,String numero, String idPersona,String destinatario,boolean isInforme, boolean isDesdoblar
-	) throws ClsExceptions  
-	{
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idInstitucionTipoExp
+	 * @param idTipoExp
+	 * @param anio
+	 * @param numero
+	 * @param idPersona
+	 * @param destinatario
+	 * @param isInforme
+	 * @param isDesdoblar
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getDatosInformeExpediente (
+			String idInstitucion,
+			String idInstitucionTipoExp,
+			String idTipoExp,
+			String anio,
+			String numero,
+			String idPersona,
+			String destinatario,
+			boolean isInforme,
+			boolean isDesdoblar
+	) throws ClsExceptions {
 		
 		Vector datos = null;
 		try {
 			Hashtable htCodigos = new Hashtable();
-			int keyContador = 0;
 
 			htCodigos.put(new Integer(1), this.usrbean.getLanguage());
 			htCodigos.put(new Integer(2), this.usrbean.getLanguage());
 			htCodigos.put(new Integer(3), this.usrbean.getLanguage());
 			htCodigos.put(new Integer(4), this.usrbean.getLanguage());
-			keyContador=4;
+			int keyContador=4;
 			
-			StringBuffer sql = new StringBuffer();
-			sql.append(" SELECT SUBSTR (mate.nombre, 0, 25) || ' ('|| SUBSTR (area.nombre, 0, 25) || ')' AS MATERIA, "
-					+ " TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, "
-					+ " EXP.IDINSTITUCION, "
-					+ " EXP.IDINSTITUCION_TIPOEXPEDIENTE, "
-					+ " EXP.IDTIPOEXPEDIENTE, "
-					+ " EXP.ANIOEXPEDIENTE, "
-					+ " EXP.NUMEROEXPEDIENTE, "
-					
-					
-					+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHA, "
-					+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHAINICIO, "
-					+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHA, 'M', "+this.usrbean.getLanguage()+") FECHAINICIO_LETRA, "
-					+ " EXP.ASUNTO, "
-					+ " (SELECT F_SIGA_GETRECURSO(P.DESCRIPCION,:1) FROM SCS_PRETENSION P WHERE P.IDINSTITUCION=EXP.IDINSTITUCION AND P.IDPRETENSION=EXP.IDPRETENSION) AS PRETENSION, "
-					+ " EXP.OTRASPRETENSIONES, "
-					+ " EXP.ALERTAGENERADA, "
-					+ " EXP.ESVISIBLE, "
-					+ " EXP.ESVISIBLEENFICHA, "
-					+ " EXP.SANCIONADO, "
-					+ " to_char(EXP.SANCIONPRESCRITA, 'dd-mm-yyyy') as SANCIONPRESCRITA, "
-					+ " to_char(EXP.ACTUACIONESPRESCRITAS, 'dd-mm-yyyy') as ACTUACIONESPRESCRITAS, "
-					+ " to_char(EXP.SANCIONFINALIZADA, 'dd-mm-yyyy') as SANCIONFINALIZADA, "
-					+ " to_char(EXP.ANOTACIONESCANCELADAS, 'dd-mm-yyyy') as ANOTACIONESCANCELADAS, "
-					+ " EXP.ANIOEXPDISCIPLINARIO, "
-					+ " EXP.NUMEXPDISCIPLINARIO, "
-					+ " EXP.ANIOEJG,EXP.NUMEROEJG, EXP.IDTIPOEJG, "		       
-					+ " EXP.NUMASUNTO, "
-					+ " TO_CHAR(EXP.FECHAINICIALESTADO, 'dd-mm-yyyy') AS FECHAINICIALESTADO, "
-					+ " nvl2(EXP.FECHAINICIALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAINICIALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAINICIALESTADOLETRA, "
-					+ " TO_CHAR(EXP.FECHAFINALESTADO, 'dd-mm-yyyy') AS FECHAFINALESTADO, "
-					+ " nvl2(EXP.FECHAFINALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAFINALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAFINALESTADOLETRA, "
-					+ " TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO, "
-					+ " EXP.DESCRIPCIONRESOLUCION, "
-					+ " TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION, "
-					+ " TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, "
-					+ " EXP.OBSERVACIONES, "
-					+ " f_siga_formatonumero(EXP.MINUTA,2) MINUTA, "
-					+ " f_siga_formatonumero(EXP.PORCENTAJEIVA,2) PORCENTAJEIVA, "
-					+ " f_siga_formatonumero(EXP.IMPORTETOTAL,2) IMPORTETOTAL, "
-					+ " f_siga_formatonumero(EXP.MINUTAFINAL,2) MINUTAFINAL, "
-					+ " EXP.DERECHOSCOLEGIALES, "
-					+ " f_siga_formatonumero(EXP.IMPORTETOTALFINAL,2) IMPORTETOTALFINAL, "
-					+ " EXP.IDDIRECCION as IDDIRECCION_PRIN, "
-					+ " PER.IDPERSONA, "
-					+ " INITCAP(PER.NOMBRE) PER_NOMBRE, "
-					+ " UPPER(PER.NOMBRE) PER_NOMBRE_MAYUS, "
-					+ " INITCAP(PER.APELLIDOS1) PER_APELLIDOS1, "
-					+ " UPPER(PER.APELLIDOS1) PER_APELLIDOS1_MAYUS, "
-					+ " INITCAP(PER.APELLIDOS2) PER_APELLIDOS2, "
-					+ " UPPER(PER.APELLIDOS2) PER_APELLIDOS2_MAYUS, "
-					+ " PER.NIFCIF PER_NIFCIF, "
-					+ " PER.sexo PER_SEXO, "
-					+ " DECODE(PER.SEXO, 'H','o','a') PER_O_A, "
-					+ " DECODE(PER.SEXO, 'H','el','la') PER_EL_LA, "
-					+ " DIR.DOMICILIO DIR_DOMICILIO, "
-					+ " POB1.NOMBRE NOMBRE_POBLACION, "
-					+ " PRO1.NOMBRE NOMBRE_PROVINCIA, "
-					+ " DIR.CODIGOPOSTAL DIR_CODIGOPOSTAL, "			
-					+ " TE.NOMBRE TE_NOMBRE, "
-					+ " TE.ESGENERAL TE_ESGENERAL, "
-					+ " CLA.NOMBRE CLA_NOMBRE, "
-					+ " FASE.NOMBRE FASE_NOMBRE, "
-					+ " EST.NOMBRE EST_NOMBRE, "
-					+ " EST.IDFASE AS EST_IDFASE, "
-					+ " EST.IDESTADO AS EST_IDESTADO, "
-					+ " EST.ESEJECUCIONSANCION EST_ESEJECUCIONSANCION, "
-					+ " EST.ESFINAL EST_ESFINAL, "
-					+ " EST.ESAUTOMATICO EST_ESAUTOMATICO, "
-					+ " EST.DESCRIPCION EST_DESCRIPCION, "
-					+ " EST.IDFASE_SIGUIENTE EST_IDFASE_SIGUIENTE, "
-					+ " EST.IDESTADO_SIGUIENTE EST_IDESTADO_SIGUIENTE, "
-					+ " EST.MENSAJE EST_MENSAJE, "
-					+ " EST.PRE_SANCIONADO EST_PRE_SANCIONADO, "
-					+ " EST.PRE_VISIBLE EST_PRE_VISIBLE, "
-					+ " EST.PRE_VISIBLEENFICHA EST_PRE_VISIBLEENFICHA, "
-					+ " EST.POST_ACTPRESCRITAS EST_POST_ACTPRESCRITAS, "
-					+ " EST.POST_SANCIONPRESCRITA EST_POST_SANCIONPRESCRITA, "
-					+ " EST.POST_SANCIONFINALIZADA EST_POST_SANCIONFINALIZADA, "
-					+ " EST.POST_ANOTCANCELADAS EST_POST_ANOTCANCELADAS, "
-					+ " EST.POST_VISIBLE EST_POST_VISIBLE, "
-					+ " EST.POST_VISIBLEENFICHA EST_POST_VISIBLEENFICHA, "
-					+ " IVA.DESCRIPCION IVA_DESCRIPCION, "
-					+ " F_SIGA_GETRECURSO(RES.DESCRIPCION,:2) RES_DESCRIPCION, "
-					+ " RES.CODIGOEXT RES_CODIGOEXT, "
-					+ " RES.BLOQUEADO RES_BLOQUEADO, "
-					+ " JUZ.NOMBRE JUZ_NOMBRE, "
-					+ " JUZ.DOMICILIO JUZ_DOMICILIO, "
-					+ " JUZ.CODIGOPOSTAL JUZ_CODIGOPOSTAL, "
-					+ " JUZ.IDPOBLACION JUZ_IDPOBLACION, "
-					+ " JUZ.IDPROVINCIA JUZ_IDPROVINCIA, "
-					+ " F_SIGA_GETRECURSO(POB.NOMBRE, :3) JUZ_POBLACION, "
-					+ " F_SIGA_GETRECURSO(PRO.NOMBRE, :4) JUZ_PROVINCIA, "
-					+ " JUZ.TELEFONO1 JUZ_TELEFONO1, "
-					+ " JUZ.TELEFONO2 JUZ_TELEFONO2, "
-					+ " JUZ.FAX1 JUZ_FAX1, "
-					+ " TO_CHAR(JUZ.FECHABAJA, 'dd-mm-yyyy') AS JUZ_FECHABAJA, "
-					+ " JUZ.CODIGOEXT JUZ_CODIGOEXT, "
-					+ " JUZ.CODIGOPROCURADOR JUZ_CODIGOPROCURADOR, "
-					+ " JUZ.VISIBLE JUZ_VISIBLE, "
-					+ " PROC.NOMBRE PROC_NOMBRE, "
-					+ " PROC.PRECIO PROC_PRECIO, "
-					+ " PROC.IDJURISDICCION PROC_IDJURISDICCION, "
-					+ " PROC.CODIGO PROC_CODIGO, "
-					+ " PROC.COMPLEMENTO PROC_COMPLEMENTO, "
-					+ " PROC.VIGENTE PROC_VIGENTE, "
-					+ " PROC.ORDEN PROC_ORDEN ");
-			sql.append(" FROM EXP_EXPEDIENTE EXP, "
-					+ " EXP_DENUNCIADO DEN, "
-					+ " CEN_CLIENTE CLI, "
-					+ " CEN_PERSONA PER, "
-					+ " EXP_TIPOEXPEDIENTE TE, "
-					+ " EXP_CLASIFICACION CLA, "
-					+ " EXP_FASES FASE, "
-					+ " PYS_TIPOIVA IVA, "
-					+ " EXP_ESTADO EST, "
-					+ " EXP_TIPORESULTADORESOLUCION RES, "
-					+ " SCS_JUZGADO  JUZ, "
-					+ " CEN_POBLACIONES POB, "
-					+ " CEN_PROVINCIAS PRO, "
-					+ " CEN_DIRECCIONES DIR, "
-					+ " CEN_PROVINCIAS PRO1, "
-					+ " CEN_POBLACIONES POB1, "
-					+ " SCS_PROCEDIMIENTOS PROC, "
-					+ " SCS_MATERIA  MATE, "
-					+ " SCS_AREA AREA ");
-			sql.append(" WHERE EXP.IDINSTITUCION = DEN.IDINSTITUCION AND EXP.IDTIPOEXPEDIENTE = DEN.IDTIPOEXPEDIENTE AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = DEN.IDINSTITUCION_TIPOEXPEDIENTE AND EXP.NUMEROEXPEDIENTE = DEN.NUMEROEXPEDIENTE AND EXP.ANIOEXPEDIENTE = DEN.ANIOEXPEDIENTE AND DEN.IDDENUNCIADO = "+ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL+" AND DEN.IDINSTITUCION = CLI.IDINSTITUCION AND DEN.IDPERSONA = CLI.IDPERSONA   AND CLI.IDPERSONA = PER.IDPERSONA   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = TE.IDINSTITUCION   AND EXP.IDTIPOEXPEDIENTE = TE.IDTIPOEXPEDIENTE   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = CLA.IDINSTITUCION(+)    AND EXP.IDCLASIFICACION = CLA.IDCLASIFICACION(+)  ");
-			sql.append(" AND EXP.IDTIPOEXPEDIENTE = CLA.IDTIPOEXPEDIENTE(+)    AND EXP.IDINSTITUCION = FASE.IDINSTITUCION (+)   AND EXP.IDTIPOEXPEDIENTE = FASE.IDTIPOEXPEDIENTE (+)   AND EXP.IDFASE = FASE.IDFASE (+)   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = EST.IDINSTITUCION(+)   AND EXP.IDFASE = EST.IDFASE(+)   AND EXP.IDESTADO = EST.IDESTADO(+) ");
-			sql.append(" AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+)   AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+)   AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+)   AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+)   AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+)   AND EXP.JUZGADO = JUZ.IDJUZGADO(+)   AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) ");
-			sql.append(" AND JUZ.IDPOBLACION = POB.IDPOBLACION(+)   AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+)   AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) ");
-			sql.append(" AND DEN.IDINSTITUCION = dir.idinstitucion(+)  AND DEN.IDPERSONA = dir.idpersona(+)  AND den.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
-			sql.append(" and EXP.idMateria = mate.idmateria(+) and EXP.idinstitucion =mate.idinstitucion(+) and EXP.idarea =mate.idarea(+) and mate.idarea = area.idarea(+) ");
+			String sql = " SELECT SUBSTR (mate.nombre, 0, 25) || ' ('|| SUBSTR (area.nombre, 0, 25) || ')' AS MATERIA, "
+							+ " TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, "
+							+ " EXP.IDINSTITUCION, "
+							+ " EXP.IDINSTITUCION_TIPOEXPEDIENTE, "
+							+ " EXP.IDTIPOEXPEDIENTE, "
+							+ " EXP.ANIOEXPEDIENTE, "
+							+ " EXP.NUMEROEXPEDIENTE, "										
+							+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHA, "
+							+ " TO_CHAR(EXP.FECHA, 'dd-mm-yyyy') AS FECHAINICIO, "
+							+ " PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHA, 'M', "+this.usrbean.getLanguage()+") FECHAINICIO_LETRA, "
+							+ " EXP.ASUNTO, "
+							+ " (SELECT F_SIGA_GETRECURSO(P.DESCRIPCION,:1) FROM SCS_PRETENSION P WHERE P.IDINSTITUCION=EXP.IDINSTITUCION AND P.IDPRETENSION=EXP.IDPRETENSION) AS PRETENSION, "
+							+ " EXP.OTRASPRETENSIONES, "
+							+ " EXP.ALERTAGENERADA, "
+							+ " EXP.ESVISIBLE, "
+							+ " EXP.ESVISIBLEENFICHA, "
+							+ " EXP.SANCIONADO, "
+							+ " to_char(EXP.SANCIONPRESCRITA, 'dd-mm-yyyy') as SANCIONPRESCRITA, "
+							+ " to_char(EXP.ACTUACIONESPRESCRITAS, 'dd-mm-yyyy') as ACTUACIONESPRESCRITAS, "
+							+ " to_char(EXP.SANCIONFINALIZADA, 'dd-mm-yyyy') as SANCIONFINALIZADA, "
+							+ " to_char(EXP.ANOTACIONESCANCELADAS, 'dd-mm-yyyy') as ANOTACIONESCANCELADAS, "
+							+ " EXP.ANIOEXPDISCIPLINARIO, "
+							+ " EXP.NUMEXPDISCIPLINARIO, "
+							+ " EXP.ANIOEJG,EXP.NUMEROEJG, "
+							+ " EXP.IDTIPOEJG, "		       
+							+ " EXP.NUMASUNTO, "
+							+ " TO_CHAR(EXP.FECHAINICIALESTADO, 'dd-mm-yyyy') AS FECHAINICIALESTADO, "
+							+ " nvl2(EXP.FECHAINICIALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAINICIALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAINICIALESTADOLETRA, "
+							+ " TO_CHAR(EXP.FECHAFINALESTADO, 'dd-mm-yyyy') AS FECHAFINALESTADO, "
+							+ " nvl2(EXP.FECHAFINALESTADO, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(EXP.FECHAFINALESTADO, 'M', "+this.usrbean.getLanguage()+"), '') AS FECHAFINALESTADOLETRA, "
+							+ " TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO, "
+							+ " EXP.DESCRIPCIONRESOLUCION, "
+							+ " TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION, "
+							+ " TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, "
+							+ " EXP.OBSERVACIONES, "
+							+ " f_siga_formatonumero(EXP.MINUTA,2) MINUTA, "
+							+ " f_siga_formatonumero(EXP.PORCENTAJEIVA,2) PORCENTAJEIVA, "
+							+ " f_siga_formatonumero(EXP.IMPORTETOTAL,2) IMPORTETOTAL, "
+							+ " f_siga_formatonumero(EXP.MINUTAFINAL,2) MINUTAFINAL, "
+							+ " EXP.DERECHOSCOLEGIALES, "
+							+ " f_siga_formatonumero(EXP.IMPORTETOTALFINAL,2) IMPORTETOTALFINAL, "
+							+ " EXP.IDDIRECCION as IDDIRECCION_PRIN, "
+							+ " PER.IDPERSONA, "
+							+ " INITCAP(PER.NOMBRE) PER_NOMBRE, "
+							+ " UPPER(PER.NOMBRE) PER_NOMBRE_MAYUS, "
+							+ " INITCAP(PER.APELLIDOS1) PER_APELLIDOS1, "
+							+ " UPPER(PER.APELLIDOS1) PER_APELLIDOS1_MAYUS, "
+							+ " INITCAP(PER.APELLIDOS2) PER_APELLIDOS2, "
+							+ " UPPER(PER.APELLIDOS2) PER_APELLIDOS2_MAYUS, "
+							+ " PER.NIFCIF PER_NIFCIF, "
+							+ " PER.sexo PER_SEXO, "
+							+ " DECODE(PER.SEXO, 'H','o','a') PER_O_A, "
+							+ " DECODE(PER.SEXO, 'H','el','la') PER_EL_LA, "
+							+ " DIR.DOMICILIO DIR_DOMICILIO, "
+							+ " POB1.NOMBRE NOMBRE_POBLACION, "
+							+ " PRO1.NOMBRE NOMBRE_PROVINCIA, "
+							+ " DIR.CODIGOPOSTAL DIR_CODIGOPOSTAL, "			
+							+ " TE.NOMBRE TE_NOMBRE, "
+							+ " TE.ESGENERAL TE_ESGENERAL, "
+							+ " CLA.NOMBRE CLA_NOMBRE, "
+							+ " FASE.NOMBRE FASE_NOMBRE, "
+							+ " EST.NOMBRE EST_NOMBRE, "
+							+ " EST.IDFASE AS EST_IDFASE, "
+							+ " EST.IDESTADO AS EST_IDESTADO, "
+							+ " EST.ESEJECUCIONSANCION EST_ESEJECUCIONSANCION, "
+							+ " EST.ESFINAL EST_ESFINAL, "
+							+ " EST.ESAUTOMATICO EST_ESAUTOMATICO, "
+							+ " EST.DESCRIPCION EST_DESCRIPCION, "
+							+ " EST.IDFASE_SIGUIENTE EST_IDFASE_SIGUIENTE, "
+							+ " EST.IDESTADO_SIGUIENTE EST_IDESTADO_SIGUIENTE, "
+							+ " EST.MENSAJE EST_MENSAJE, "
+							+ " EST.PRE_SANCIONADO EST_PRE_SANCIONADO, "
+							+ " EST.PRE_VISIBLE EST_PRE_VISIBLE, "
+							+ " EST.PRE_VISIBLEENFICHA EST_PRE_VISIBLEENFICHA, "
+							+ " EST.POST_ACTPRESCRITAS EST_POST_ACTPRESCRITAS, "
+							+ " EST.POST_SANCIONPRESCRITA EST_POST_SANCIONPRESCRITA, "
+							+ " EST.POST_SANCIONFINALIZADA EST_POST_SANCIONFINALIZADA, "
+							+ " EST.POST_ANOTCANCELADAS EST_POST_ANOTCANCELADAS, "
+							+ " EST.POST_VISIBLE EST_POST_VISIBLE, "
+							+ " EST.POST_VISIBLEENFICHA EST_POST_VISIBLEENFICHA, "
+							+ " IVA.DESCRIPCION IVA_DESCRIPCION, "
+							+ " F_SIGA_GETRECURSO(RES.DESCRIPCION,:2) RES_DESCRIPCION, "
+							+ " RES.CODIGOEXT RES_CODIGOEXT, "
+							+ " RES.BLOQUEADO RES_BLOQUEADO, "
+							+ " JUZ.NOMBRE JUZ_NOMBRE, "
+							+ " JUZ.DOMICILIO JUZ_DOMICILIO, "
+							+ " JUZ.CODIGOPOSTAL JUZ_CODIGOPOSTAL, "
+							+ " JUZ.IDPOBLACION JUZ_IDPOBLACION, "
+							+ " JUZ.IDPROVINCIA JUZ_IDPROVINCIA, "
+							+ " F_SIGA_GETRECURSO(POB.NOMBRE, :3) JUZ_POBLACION, "
+							+ " F_SIGA_GETRECURSO(PRO.NOMBRE, :4) JUZ_PROVINCIA, "
+							+ " JUZ.TELEFONO1 JUZ_TELEFONO1, "
+							+ " JUZ.TELEFONO2 JUZ_TELEFONO2, "
+							+ " JUZ.FAX1 JUZ_FAX1, "
+							+ " TO_CHAR(JUZ.FECHABAJA, 'dd-mm-yyyy') AS JUZ_FECHABAJA, "
+							+ " JUZ.CODIGOEXT JUZ_CODIGOEXT, "
+							+ " JUZ.CODIGOPROCURADOR JUZ_CODIGOPROCURADOR, "
+							+ " JUZ.VISIBLE JUZ_VISIBLE, "
+							+ " PROC.NOMBRE PROC_NOMBRE, "
+							+ " PROC.PRECIO PROC_PRECIO, "
+							+ " PROC.IDJURISDICCION PROC_IDJURISDICCION, "
+							+ " PROC.CODIGO PROC_CODIGO, "
+							+ " PROC.COMPLEMENTO PROC_COMPLEMENTO, "
+							+ " PROC.VIGENTE PROC_VIGENTE, "
+							+ " PROC.ORDEN PROC_ORDEN "
+						+ " FROM EXP_EXPEDIENTE EXP, "
+							+ " EXP_DENUNCIADO DEN, "
+							+ " CEN_CLIENTE CLI, "
+							+ " CEN_PERSONA PER, "
+							+ " EXP_TIPOEXPEDIENTE TE, "
+							+ " EXP_CLASIFICACION CLA, "
+							+ " EXP_FASES FASE, "
+							+ " PYS_TIPOIVA IVA, "
+							+ " EXP_ESTADO EST, "
+							+ " EXP_TIPORESULTADORESOLUCION RES, "
+							+ " SCS_JUZGADO  JUZ, "
+							+ " CEN_POBLACIONES POB, "
+							+ " CEN_PROVINCIAS PRO, "
+							+ " SCS_PROCEDIMIENTOS PROC, "
+							+ " CEN_DIRECCIONES DIR, "
+							+ " CEN_POBLACIONES POB1, "
+							+ " CEN_PROVINCIAS PRO1, "														
+							+ " SCS_MATERIA  MATE, "
+							+ " SCS_AREA AREA "
+						+ " WHERE EXP.IDINSTITUCION = DEN.IDINSTITUCION "
+							+ " AND EXP.IDTIPOEXPEDIENTE = DEN.IDTIPOEXPEDIENTE "
+							+ " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = DEN.IDINSTITUCION_TIPOEXPEDIENTE "
+							+ " AND EXP.NUMEROEXPEDIENTE = DEN.NUMEROEXPEDIENTE "
+							+ " AND EXP.ANIOEXPEDIENTE = DEN.ANIOEXPEDIENTE "
+							+ " AND DEN.IDDENUNCIADO = " + ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL 
+							+ " AND DEN.IDINSTITUCION = CLI.IDINSTITUCION "
+							+ " AND DEN.IDPERSONA = CLI.IDPERSONA " 
+							+ " AND CLI.IDPERSONA = PER.IDPERSONA "
+							+ " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = TE.IDINSTITUCION " 
+							+ " AND EXP.IDTIPOEXPEDIENTE = TE.IDTIPOEXPEDIENTE " 
+							+ " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = CLA.IDINSTITUCION(+) "
+							+ " AND EXP.IDCLASIFICACION = CLA.IDCLASIFICACION(+) "
+							+ " AND EXP.IDTIPOEXPEDIENTE = CLA.IDTIPOEXPEDIENTE(+) "
+							+ " AND EXP.IDINSTITUCION = FASE.IDINSTITUCION(+) " 
+							+ " AND EXP.IDTIPOEXPEDIENTE = FASE.IDTIPOEXPEDIENTE(+) "
+							+ " AND EXP.IDFASE = FASE.IDFASE(+) "
+							+ " AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+) "
+							+ " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = EST.IDINSTITUCION(+) "
+							+ " AND EXP.IDFASE = EST.IDFASE(+) "
+							+ " AND EXP.IDESTADO = EST.IDESTADO(+) "
+							+ " AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+) "							
+							+ " AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+) "
+							+ " AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+) "
+							+ " AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+) "
+							+ " AND EXP.JUZGADO = JUZ.IDJUZGADO(+) " 
+							+ " AND JUZ.IDPOBLACION = POB.IDPOBLACION(+) "
+							+ " AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) "							
+							+ " AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+) "
+							+ " AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) "
+							+ " AND DEN.IDINSTITUCION = DIR.IDINSTITUCION(+) "
+							+ " AND DEN.IDPERSONA = DIR.IDPERSONA(+) "
+							+ " AND DEN.IDDIRECCION = DIR.IDDIRECCION(+) " 
+							+ " AND DIR.IDPOBLACION = POB1.IDPOBLACION(+) " 
+							+ " AND DIR.IDPROVINCIA = PRO1.IDPROVINCIA(+) "
+							+ " AND EXP.IDMATERIA = MATE.IDMATERIA(+) " 
+							+ " AND EXP.IDINSTITUCION = MATE.IDINSTITUCION(+) "
+							+ " AND EXP.IDAREA = MATE.IDAREA(+) "
+							+ " AND MATE.IDINSTITUCION = AREA.IDINSTITUCION(+) "
+							+ " AND MATE.IDAREA = AREA.IDAREA(+) ";
    
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" AND EXP.IDINSTITUCION = :");
-			sql.append(keyContador);
+			sql += " AND EXP.IDINSTITUCION = :" + keyContador;
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucionTipoExp);
-			sql.append(" AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = :");
-			sql.append(keyContador);
+			sql += " AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = :" + keyContador;
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTipoExp);
-			sql.append(" AND EXP.IDTIPOEXPEDIENTE = :");
-			sql.append(keyContador);
+			sql += " AND EXP.IDTIPOEXPEDIENTE = :" + keyContador;
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			sql.append(" AND EXP.ANIOEXPEDIENTE = :");
-			sql.append(keyContador);
+			sql += " AND EXP.ANIOEXPEDIENTE = :" + keyContador;
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			sql.append(" AND EXP.NUMEROEXPEDIENTE = :");
-			sql.append(keyContador);
-			
-/*
-			if(idPersona!=null){
-				keyContador++;
-				htCodigos.put(new Integer(keyContador), idPersona); 
-			
-				sql.append(" AND CLI.IDPERSONA = :");
-				sql.append(keyContador);
-			}
-*/			
+			sql += " AND EXP.NUMEROEXPEDIENTE = :" + keyContador;
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 
 			if(isInforme){
-				datos = helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos); 
+				datos = helperInformes.ejecutaConsultaBind(sql, htCodigos); 
 				
-			}else{
+			} else {
 				RowsContainer rc = new RowsContainer();
-				
-				if (rc.queryBind(sql.toString(), htCodigos)) {
+				if (rc.queryBind(sql, htCodigos)) {
 					datos = new Vector();
 					for (int h=0;h<rc.size();h++) {
 						datos.add(((Row)rc.get(h)).getRow());
 					}
-					
 				}
 			}
 			
@@ -2447,7 +2483,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO1", UtilidadesHash.getString(haste, "APELLIDO1"));
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO2", UtilidadesHash.getString(haste, "APELLIDO2"));
 					 
-					 
 				 }else{
 					 expedienteHashtable.put("EJG_ANIO", "");
 					 expedienteHashtable.put("EJG_NUMEJG", "");
@@ -2456,10 +2491,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					 expedienteHashtable.put("EJG_SOLICITANTE_NOMBRE", "");
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO1", "");
 					 expedienteHashtable.put("EJG_SOLICITANTE_APELLIDO2", "");
-					
-					 
 				 }
-				
 			}
 			
 			// RGG 19/10/2009 PROCESO DE CARGA DE DATOS EN UN SEGUNDO RECORRIDO
@@ -2474,12 +2506,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			// Implicados y direcciones
 			if(destinatario!=null)
 				datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(),destinatario,isDesdoblar);		
-			
 		
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ExpExpedienteAdm.getDatosInformeExpediente.");
 		}
+		
 		return datos;
 	}
 	
@@ -2563,8 +2594,4 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions(e, "Error al obtener la informacion sobre los denunciantes de un expediente.");
 		}
 	}
-
-	
-	
-	
 }

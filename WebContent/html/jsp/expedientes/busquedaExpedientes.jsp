@@ -237,7 +237,7 @@
 						<siga:Idioma key="expedientes.gestionarExpedientes.fechaAperturaHasta" />
 					</td>
 					<td colspan="3">
-						<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" campoCargarFechaDesde="fecha" />
+						<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=form.getFechaHasta()%>" />
 					</td>																
 				</tr>
 				

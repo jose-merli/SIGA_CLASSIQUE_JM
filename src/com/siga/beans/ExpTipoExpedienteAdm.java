@@ -5,10 +5,15 @@
  */
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -80,7 +85,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			bean.setNombre(UtilidadesHash.getString(hash, ExpTipoExpedienteBean.C_NOMBRE));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDINSTITUCION));
 			bean.setEsGeneral(UtilidadesHash.getString(hash, ExpTipoExpedienteBean.C_ESGENERAL));
-			bean.setTiempoCaducidad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD));
+			bean.setTiempoCaducidad(UtilidadesHash.getString(hash, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD));
 			bean.setDiasAntelacionCad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_DIASANTELACIONCAD));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE));
 			bean.setRelacionExpediente(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_RELACIONEXPEDIENTE));
@@ -245,27 +250,26 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 		return salida;
 	}
 	
-	/** Funcion getNewIdTipoExpediente (UsrBean _usr)
-	 * Genera el id de un nuevo tipo de expediente
-	 * @param usrBean
-	 * @return nuevo idTipoExpediente
-	 * */
-    public Integer getImporteCaducidad(String idInstitucion,String idTipoExpediente) throws ClsExceptions{
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTipoExpediente
+	 * @return
+	 * @throws ClsExceptions
+	 */
+    public String getImporteCaducidad(String idInstitucion,String idTipoExpediente) throws ClsExceptions {
         RowsContainer rows = new RowsContainer();
-        String sql="SELECT " + ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD + 
-        		" AS CADUCIDAD FROM " + ExpTipoExpedienteBean.T_NOMBRETABLA + 
-        		" WHERE " + ExpTipoExpedienteBean.C_IDINSTITUCION + "="+ idInstitucion +
-        		" AND " + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE + "="+ idTipoExpediente;
-        int valor=0; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
+        String sql="SELECT NVL(" + ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD + ", '0') AS " + ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD + 
+        			" FROM " + ExpTipoExpedienteBean.T_NOMBRETABLA + 
+        			" WHERE " + ExpTipoExpedienteBean.C_IDINSTITUCION + "="+ idInstitucion +
+        				" AND " + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE + "="+ idTipoExpediente;
+        String sTiempoCaducidad="0"; // Si no hay registros, es el valor que tomará
+        if (rows.find(sql)) { 
             Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("CADUCIDAD")).equals("")) {
-                valor=Integer.valueOf((String)htRow.get("CADUCIDAD")).intValue();
-            }
-            
+            sTiempoCaducidad = (String)htRow.get(ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD);            
         }
-        return new Integer(valor);        
+        
+        return sTiempoCaducidad;        
     }	
 	
     //mhg Incidencia EJGs
@@ -300,5 +304,84 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 		
 		return valor;  
    }
-
+	
+   /** Funcion establecerFechaCaducidad (ExpExpedienteBean bean)
+	 * Calcula la fecha de caducidad a partir de la fecha de apertura, y hace set de la fecha de caducidad en el bean.
+	 * @param bean del expediente
+	 * @return true si ha ido bien
+	 * @exception ClsExceptions
+	 * */
+    public boolean establecerFechaCaducidad(ExpExpedienteBean bean) throws ClsExceptions{
+    	try{
+    		Hashtable hash = new Hashtable();
+			hash.put(ExpTipoExpedienteBean.C_IDINSTITUCION, bean.getIdInstitucion_tipoExpediente());
+			hash.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, bean.getIdTipoExpediente());
+			
+			Vector datosExpediente = select(hash);
+			int valorPlazoCaducidad =  -1;
+			int tipoPlazoCaducidad =  -1;
+			
+			if (datosExpediente !=null && datosExpediente.size()>0) {
+				ExpTipoExpedienteBean plazoCaducidadBean = (ExpTipoExpedienteBean)datosExpediente.elementAt(0);
+				valorPlazoCaducidad =  plazoCaducidadBean.getValorPlazoCaducidad();
+				tipoPlazoCaducidad =  plazoCaducidadBean.getTipoPlazoCaducidad();
+			} else {
+				valorPlazoCaducidad = 0;
+				tipoPlazoCaducidad = ExpTipoExpedienteBean.DIAS_NATURALES; 
+			}
+			
+			String fechaApertura = bean.getFecha();
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			Date d=sdf.parse(fechaApertura);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			boolean bHabiles=false;
+			String fechaCaducidad="";
+			
+			switch (tipoPlazoCaducidad){
+				case ExpTipoExpedienteBean.DIAS_NATURALES:				
+					cal.add(Calendar.DATE, valorPlazoCaducidad);					
+					break;
+					
+				case ExpTipoExpedienteBean.MESES:
+					cal.add(Calendar.MONTH, valorPlazoCaducidad);
+					break;
+					
+				case ExpTipoExpedienteBean.ANIOS:
+					cal.add(Calendar.YEAR, valorPlazoCaducidad);
+					break;
+					
+				case ExpTipoExpedienteBean.DIAS_HABILES:
+					bHabiles=true;
+					ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);
+					Date datFormat = sdf.parse(fechaApertura);
+					sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);//"dd/MM/yyyy"
+					String fAux = sdf.format(datFormat);					
+					fAux = calAdm.obtenerFechaFinLaborable(fAux, String.valueOf(valorPlazoCaducidad), String.valueOf(bean.getIdInstitucion_tipoExpediente()));
+					fechaCaducidad=GstDate.getApplicationFormatDate("",fAux);
+					break;					
+			}
+			
+			if (!bHabiles) {
+				d=cal.getTime();
+				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+				fechaCaducidad=sdf.format(d);
+			}
+			
+			if (valorPlazoCaducidad>0) {
+				bean.setFechaCaducidad(fechaCaducidad);
+				
+			} else {
+				bean.setFechaCaducidad("");
+			}
+			
+			return true;
+			
+    	} catch(ClsExceptions e) {
+    		throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+    		
+		} catch(Exception e) {
+			throw new ClsExceptions (e, "Elemento nulo");
+		}
+    }		
 }

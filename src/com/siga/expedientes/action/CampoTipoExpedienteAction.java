@@ -183,9 +183,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        
 	        tipoExp.setNombre(form.getNombre());
 	        if (Validaciones.validaNoInformado(form.getTiempoCaducidad())) {
-		        tipoExp.setTiempoCaducidad(0);
+		        tipoExp.setTiempoCaducidad("0");
 	        } else {
-	        	tipoExp.setTiempoCaducidad(new Integer(form.getTiempoCaducidad()));
+	        	tipoExp.setTiempoCaducidad(form.getTiempoCaducidad());
 	        }
 	        if (Validaciones.validaNoInformado(form.getDiasAntelacionCad())) {
 	        	tipoExp.setDiasAntelacionCad(0);

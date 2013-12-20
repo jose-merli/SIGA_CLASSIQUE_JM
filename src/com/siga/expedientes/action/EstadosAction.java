@@ -19,12 +19,10 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.atos.utils.Validaciones;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.ExpAnotacionAdm;
-import com.siga.beans.ExpAnotacionBean;
 import com.siga.beans.ExpClasificacionesBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
@@ -34,8 +32,6 @@ import com.siga.beans.ExpPlazoEstadoClasificacionAdm;
 import com.siga.beans.ExpPlazoEstadoClasificacionBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
-import com.siga.beans.ExpTiposAnotacionesAdm;
-import com.siga.beans.ExpTiposAnotacionesBean;
 import com.siga.expedientes.form.EstadosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -112,7 +108,7 @@ public class EstadosAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions {
 	    
-	     return mostrarRegistro(mapping, formulario, request, response, true);
+	     return this.mostrarRegistro(mapping, formulario, request, response, true);
 	}
 
 	/* (non-Javadoc)
@@ -122,13 +118,13 @@ public class EstadosAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions {
 	    
-	    return mostrarRegistro(mapping, formulario, request, response, false);
+	    return this.mostrarRegistro(mapping, formulario, request, response, false);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#nuevo(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String nuevo(ActionMapping mapping, MasterForm formulario,
+	protected String nuevoOld(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions { 	    
 	    
@@ -158,6 +154,37 @@ public class EstadosAction extends MasterAction {
 
 		return "mostrar";
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.siga.general.MasterAction#nuevo(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions { 	
+		UsrBean userBean = this.getUserBean(request);	    
+	    String institucion = userBean.getLocation();
+	    
+	    EstadosForm form = (EstadosForm)formulario;
+	    
+        ExpEstadosBean nuevoEstado = new ExpEstadosBean();
+        nuevoEstado.setNombre("");
+        nuevoEstado.setMensaje("");
+        nuevoEstado.setIdInstitucion(Integer.valueOf(institucion));
+        nuevoEstado.setIdTipoExpediente(Integer.valueOf(form.getIdTipoExpediente()));
+                
+        Vector vEstados = new Vector();
+        vEstados.add(nuevoEstado);
+        request.setAttribute("vEstados", vEstados);
+        
+        ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (userBean);
+        String where2 = " C." + ExpEstadosBean.C_IDINSTITUCION + " = '" + institucion + "' " +
+        		" AND C." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + form.getIdTipoExpediente() + "' ";                
+             
+        Vector vPlazos = plazoAdm.selectClasifPlazo("", where2);        
+        request.setAttribute("vPlazos", vPlazos);        
+        
+        request.setAttribute("editable", "1");
+
+		return "mostrar";
+	}	
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#insertar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -176,19 +203,33 @@ public class EstadosAction extends MasterAction {
 	    Integer idEstado = estadosAdm.getNewIdEstado(form.getIdTipoExpediente(),form.getIdFase(),userBean);
 
 	    //Obtenemos y validamos los plazos nuevos
-	    Enumeration e=request.getParameterNames();
-	    String plazoNuevo=null, idClasificacion=null;
-	    Hashtable htPlazosNuevos = new Hashtable();
-	    
-	    while(e.hasMoreElements()){
-	        String nombre=(String)e.nextElement();
-	        // Sólo tratamos las clasificaciones
-	        if(nombre.startsWith("idclasificacion_")){
-	            idClasificacion=nombre.substring(16);
-	            plazoNuevo=request.getParameter(nombre);
-	            htPlazosNuevos.put(idClasificacion,this.validarPlazo(plazoNuevo));
-	        }
-	    }	    
+	    String datosPlazos = request.getParameter("datosPlazos");		
+		GstStringTokenizer st = new GstStringTokenizer(datosPlazos, "##");
+		Hashtable htPlazosNuevos = new Hashtable();
+		while (st.hasMoreTokens()) {
+			String dupla = st.nextToken();
+			if(dupla.equals(""))
+				break;
+			
+			String parametros[] = dupla.split(",");			
+			String idPlazo="", idClasificacion="";
+			
+			for (int i=0; i < parametros.length; i++) {
+				String parametro = parametros[i];
+				String d[] = parametro.split("==");
+				
+				String key = d[0];
+				String value = d[1];
+				
+				if(key.equals("idPlazo"))
+					 idPlazo = value;
+					 
+				else if(key.equals("idClasificacion"))
+					 idClasificacion = value;
+			}
+				
+			htPlazosNuevos.put(idClasificacion, this.validarPlazo(idPlazo));
+		}    
 	    
 	    //Iniciamos la transacción
         UserTransaction tx = userBean.getTransaction();
@@ -277,7 +318,7 @@ public class EstadosAction extends MasterAction {
 	    
 	    request.setAttribute("modal","1");
 	    return "exito";
-	}
+	}	
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#modificar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -293,21 +334,34 @@ public class EstadosAction extends MasterAction {
 //        Vector vOcultos = form.getDatosTablaOcultos(0);
         Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
         
-        //Obtenemos y validamos los plazos nuevos
-        Enumeration e=request.getParameterNames();
-	    String plazoNuevo=null, idClasificacion=null;
-	    Hashtable htPlazosNuevos = new Hashtable();
-	    
-	    while(e.hasMoreElements()){
-	        String nombre=(String)e.nextElement();
-	        // Sólo tratamos las clasificaciones
-	        if(nombre.startsWith("idclasificacion_")){
-	            idClasificacion=nombre.substring(16);
-	            plazoNuevo=request.getParameter(nombre);
-	            plazoNuevo=plazoNuevo.equals("")?"0":this.validarPlazo(plazoNuevo);
-	            htPlazosNuevos.put(idClasificacion,plazoNuevo);
-	        }
-	    }
+	    //Obtenemos y validamos los plazos nuevos
+	    String datosPlazos = request.getParameter("datosPlazos");		
+		GstStringTokenizer st = new GstStringTokenizer(datosPlazos, "##");
+		Hashtable htPlazosNuevos = new Hashtable();
+		while (st.hasMoreTokens()) {
+			String dupla = st.nextToken();
+			if(dupla.equals(""))
+				break;
+			
+			String parametros[] = dupla.split(",");			
+			String idPlazo="", idClasificacion="";
+			
+			for (int i=0; i < parametros.length; i++) {
+				String parametro = parametros[i];
+				String d[] = parametro.split("==");
+				
+				String key = d[0];
+				String value = d[1];
+				
+				if(key.equals("idPlazo"))
+					 idPlazo = value;
+					 
+				else if(key.equals("idClasificacion"))
+					 idClasificacion = value;
+			}
+				
+			htPlazosNuevos.put(idClasificacion, this.validarPlazo(idPlazo));
+		}  
                
         //Iniciamos la transacción
         UserTransaction tx = userBean.getTransaction();
@@ -455,90 +509,94 @@ public class EstadosAction extends MasterAction {
 		return exitoRefresco("messages.deleted.success",request);
 	}
 
-	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions
-	{
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @param bEditable
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions {		  	
 	    EstadosForm form = (EstadosForm)formulario;
-        ExpEstadosAdm estadosAdm = new ExpEstadosAdm (this.getUserBean(request));
-        ExpFasesAdm fasesAdm = new ExpFasesAdm (this.getUserBean(request));
-        ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
+	    UsrBean userBean = this.getUserBean(request);
         
-        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
-	    String institucion = userBean.getLocation();
+	    String idInstitucion = userBean.getLocation();
+	    String idTipoExpediente = form.getIdTipoExpediente();
 
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
 		
         String idEstado = (String)vOcultos.elementAt(0);
         String idFase = (String)vOcultos.elementAt(1);
        
-        // Recupero los nombres de fase y estado para modo consulta
-        
-        Hashtable hFase=new Hashtable();
-        hFase.put(ExpFasesBean.C_IDFASE,idFase);
-        hFase.put(ExpFasesBean.C_IDINSTITUCION,institucion);
-        hFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,form.getIdTipoExpediente());
-        Vector vFase=fasesAdm.selectByPK(hFase);
-        ExpFasesBean faseBean=(ExpFasesBean)vFase.get(0);
-        String fase=faseBean.getNombre();
-        
+        return this.mostrarPlazo (idInstitucion, idTipoExpediente, idEstado, idFase, bEditable, request);
+	}
+	
+	public String mostrarPlazo (String idInstitucion, String idTipoExpediente, String idEstado, String idFase, boolean bEditable, HttpServletRequest request) throws ClsExceptions {
+		UsrBean userBean = this.getUserBean(request);   
 		
+		// Recupero los nombres de fase y estado para modo consulta
+        Hashtable hFase=new Hashtable();
+        hFase.put(ExpFasesBean.C_IDFASE, idFase);
+        hFase.put(ExpFasesBean.C_IDINSTITUCION, idInstitucion);
+        hFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
         
-        String where = " WHERE ";        
-        where += ExpEstadosBean.C_IDFASE + " = '" + idFase + "' AND ";
-        where += ExpEstadosBean.C_IDINSTITUCION + " = '" + institucion + "' AND ";
-        where += ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + form.getIdTipoExpediente() + "' AND ";                
-        where += ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "'";
         
-        Vector datos = estadosAdm.select(where);
-        ExpEstadosBean estadosBean = (ExpEstadosBean) datos.elementAt(0);
-        String estado=estadosBean.getNombre();
-        String estadoSiguiente="";
+        // CONSULTA DATOS FASE
+        ExpFasesAdm fasesAdm = new ExpFasesAdm (userBean);
+        Vector vFases = fasesAdm.selectByPK(hFase);
+        
+        
+		// CONSULTA DATOS ESTADO        
+        String where = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
+			    		" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " + 
+			    		" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
+			    		" AND " + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "'";
+        
+        ExpEstadosAdm estadosAdm = new ExpEstadosAdm (userBean);
+        Vector vEstados = estadosAdm.select(where);        
+        ExpEstadosBean estadosBean = (ExpEstadosBean) vEstados.elementAt(0);
+        
+        
+        // CONSULTA DATOS ESTADO SIGUIENTE
+        Vector vEstadosSiguientes = new Vector();
         if (estadosBean.getIdEstadoSiguiente()!=null){ 
-	        String idestadoSiguiente=estadosBean.getIdEstadoSiguiente().toString();
-	        String whereEstadoSiguiente = " WHERE ";        
-	        whereEstadoSiguiente += ExpEstadosBean.C_IDFASE + " = '" + idFase + "' AND ";
-	        whereEstadoSiguiente += ExpEstadosBean.C_IDINSTITUCION + " = '" + institucion + "' AND ";
-	        whereEstadoSiguiente += ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + form.getIdTipoExpediente() + "' AND ";                
-	        whereEstadoSiguiente += ExpEstadosBean.C_IDESTADO + " = '" + idestadoSiguiente + "'";
-	        Vector datosEstadoSiguiente = estadosAdm.select(where);
-	        ExpEstadosBean estadosSiguienteBean = (ExpEstadosBean) datosEstadoSiguiente.elementAt(0);
-	        estadoSiguiente=estadosSiguienteBean.getNombre();
+	        String whereEstadoSiguiente = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
+	        								" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
+	        								" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
+	        								" AND " + ExpEstadosBean.C_IDESTADO + " = '" + estadosBean.getIdEstadoSiguiente().toString() + "'";
+	        vEstadosSiguientes = estadosAdm.select(where);
         }
         
         
+        // CONSULTA DATOS PLAZO
+        String where1 = " P." + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' "+
+        		" AND P." + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "' ";        
         
-       
-        
-        //seteo los booleanos del formulario
-        form.setAutomatico(estadosBean.getAutomatico().equals("S"));
-        form.setEjecucionSancion(estadosBean.getEjecucionSancion().equals("S"));
-        form.setEstadoFinal(estadosBean.getEstadoFinal().equals("S"));
-        form.setActivarAlertas(estadosBean.getActivarAlertas().equals("S"));
-        form.setDiasAntelacion((estadosBean.getDiasAntelacion()!=null)?estadosBean.getDiasAntelacion().toString():"");
-        
-        String where1 = "P." + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' AND ";
-	    where1 += "P." + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "'";        
-        
-        String where2 = "C." + ExpEstadosBean.C_IDINSTITUCION + " = '" + institucion + "' AND ";
-        where2 += "C." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + form.getIdTipoExpediente() + "'";                
+        String where2 = " C." + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
+        		" AND C." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' ";                
              
+        ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (userBean);
         Vector vPlazos = plazoAdm.selectClasifPlazo(where1, where2);
-        
-        request.setAttribute("datos", datos);
+       
+       
+        // DEVUELVO RESULTADOS
+        request.setAttribute("vFases", vFases);
+        request.setAttribute("vEstados", vEstados);
+        request.setAttribute("vEstadosSiguientes", vEstadosSiguientes);
         request.setAttribute("vPlazos", vPlazos);
-        request.setAttribute("fase",fase);
-        request.setAttribute("estado",estado);
-        request.setAttribute("estadoSiguiente",estadoSiguiente);        
         request.setAttribute("editable", bEditable ? "1" : "0");
         
-        if (bEditable)
-        {
+        if (bEditable) {
             Hashtable hashBackUp = new Hashtable();
             
-            hashBackUp.put("estado",estadosBean);
-            hashBackUp.put("vPlazos",vPlazos);
+            hashBackUp.put("estado", estadosBean);
+            hashBackUp.put("vPlazos", vPlazos);
             
             request.getSession().setAttribute("DATABACKUP", hashBackUp);
-        }
+        }    
 
 		return "mostrar";
 	}

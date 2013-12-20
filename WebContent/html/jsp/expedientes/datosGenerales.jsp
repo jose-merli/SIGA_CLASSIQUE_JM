@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosGenerales.jsp -->
+
 <!-- 
 	 VERSIONES:
 	 emilio.grau 28-12-2004 Versión inicial 
@@ -35,33 +36,22 @@
 <%
 	HashMap<String, String> paramsJSON = new HashMap<String, String>();
 	//Se pasa por defectola fecha de sistema al campo Fecha de Apertura
-	String idinstitucion_tipoexpediente = (String) request
-			.getParameter("idInstitucion_TipoExpediente");
-	String fechaApertura = (String) request
-			.getAttribute("fechaApertura");
+	String idinstitucion_tipoexpediente = (String) request.getParameter("idInstitucion_TipoExpediente");
+	String fechaApertura = (String) request.getAttribute("fechaApertura");
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
 	String idInstitucion = userBean.getLocation();
-	String mostrarMinuta = (String) request
-			.getAttribute("mostarMinuta");
-	String mostrarMinutaFinal = (String) request
-			.getAttribute("mostarMinutaFinal");
-	String derechosColegiales = (String) request
-			.getAttribute("derechosColegiales");
-	String mostrarSolicitanteEJG = (String) request
-	.getAttribute("mostrarSolicitanteEJG");
-	String mostrarDenunciante = (String) request
-			.getAttribute("mostrarDenunciante");
+	String mostrarMinuta = (String) request.getAttribute("mostarMinuta");
+	String mostrarMinutaFinal = (String) request.getAttribute("mostarMinutaFinal");
+	String derechosColegiales = (String) request.getAttribute("derechosColegiales");
+	String mostrarSolicitanteEJG = (String) request.getAttribute("mostrarSolicitanteEJG");
+	String mostrarDenunciante = (String) request.getAttribute("mostrarDenunciante");
 	Boolean tieneEjgRelacionado = false;
 	if (request.getAttribute("tipoExpedienteEjg") != null)
-		tieneEjgRelacionado = ((Boolean) request
-				.getAttribute("tipoExpedienteEjg")).booleanValue();
+		tieneEjgRelacionado = ((Boolean) request.getAttribute("tipoExpedienteEjg")).booleanValue();
 	
-	String tiempoCaducidad = (String) request
-			.getAttribute("tiempoCaducidad");
-
-
+	String tiempoCaducidad = (String) request.getAttribute("tiempoCaducidad");
 	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null)
@@ -179,18 +169,15 @@
 	}
 
 	//recupero los campos visibles para mostrar o no ciertas leyendas
-	Hashtable camposVisibles = (Hashtable) request
-			.getAttribute("camposVisibles");
+	Hashtable camposVisibles = (Hashtable) request.getAttribute("camposVisibles");
 	String sNumExpDisc = (String) camposVisibles.get("2");
 	String sEstado = (String) camposVisibles.get("3");
 	String sInstitucion = (String) camposVisibles.get("4");
 	String sAsuntoJud = (String) camposVisibles.get("5");
-	boolean bNumExpDisc = (sNumExpDisc != null && sNumExpDisc
-			.equals("S"));
+	boolean bNumExpDisc = (sNumExpDisc != null && sNumExpDisc.equals("S"));
 	boolean bEstado = (sEstado != null && sEstado.equals("S"));
 	String recargarCombos = bEstado ? "recargarCombos()" : "";
-	boolean bInstitucion = (sInstitucion != null && sInstitucion
-			.equals("S"));
+	boolean bInstitucion = (sInstitucion != null && sInstitucion.equals("S"));
 	boolean bAsuntoJud = (sAsuntoJud != null && sAsuntoJud.equals("S"));
 
 	String idinst_idtipo_idfase = "";
@@ -211,12 +198,9 @@
 	if (!accion.equals("nuevo")) { //pestanhas:edicion o consulta
 
 		if (!copia.equals("s")) { //pestanhas:edicion o consulta
-			idinst_idtipo_idfase = (String) request
-					.getAttribute("idinst_idtipo_idfase");
-			idinst_idtipo_idfase_idestado = (String) request
-					.getAttribute("idinst_idtipo_idfase_idestado");
-			idclasificacion = (String) request
-					.getAttribute("idclasificacion");
+			idinst_idtipo_idfase = (String) request.getAttribute("idinst_idtipo_idfase");
+			idinst_idtipo_idfase_idestado = (String) request.getAttribute("idinst_idtipo_idfase_idestado");
+			idclasificacion = (String) request.getAttribute("idclasificacion");
 			if (idinst_idtipo_idfase != null){
 				String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
 				if (array_idinst_idtipo_idfase.length >= 3){
@@ -258,12 +242,9 @@
 		}
 	}else{
 		if (!copia.equals("s")) { //pestanhas:edicion o consulta
-			idinst_idtipo_idfase = (String) request
-					.getAttribute("idinst_idtipo_idfase");
-			idinst_idtipo_idfase_idestado = (String) request
-					.getAttribute("idinst_idtipo_idfase_idestado");
-			idclasificacion = (String) request
-					.getAttribute("idclasificacion");
+			idinst_idtipo_idfase = (String) request.getAttribute("idinst_idtipo_idfase");
+			idinst_idtipo_idfase_idestado = (String) request.getAttribute("idinst_idtipo_idfase_idestado");
+			idclasificacion = (String) request.getAttribute("idclasificacion");
 			if (idinst_idtipo_idfase != null){
 				String[] array_idinst_idtipo_idfase = idinst_idtipo_idfase.split(",");
 				if (array_idinst_idtipo_idfase.length >= 3){
@@ -309,8 +290,7 @@
 	if(form.getIdTipoExpediente()!=null && !form.getIdTipoExpediente().trim().equalsIgnoreCase(""))
 		tipoExp=form.getIdTipoExpediente();
 	String editable = (String) request.getParameter("editable");
-	String soloSeguimiento = (String) request
-			.getParameter("soloSeguimiento");
+	String soloSeguimiento = (String) request.getParameter("soloSeguimiento");
 	boolean bEditable = false;
 	if (soloSeguimiento.equals("true")) {
 		bEditable = false;
@@ -333,33 +313,26 @@
 	}	
 
 	// para saber hacia donde volver
-	String busquedaVolver = (String) request.getSession().getAttribute(
-			"volverAuditoriaExpedientes");
+	String busquedaVolver = (String) request.getSession().getAttribute("volverAuditoriaExpedientes");
 
-	String seleccionarPersona = UtilidadesString.getMensajeIdioma(
-			userBean, "general.boton.seleccionar");
-	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean,
-			"general.new");
-	String plazo = UtilidadesString.getMensajeIdioma(userBean,
-			"general.boton.consultarplazo");
+	String seleccionarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.seleccionar");
+	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean, "general.new");
+	String plazo = UtilidadesString.getMensajeIdioma(userBean, "general.boton.consultarplazo");
 
 	ArrayList tipoIVASel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
 	String[] paramJuz = { userBean.getLocation() };
 
 	String idTipoIVA = (String) request.getAttribute("idTipoIVA");
-	String idProcedimiento = (String) request
-			.getAttribute("idProcedimiento");
-	String idInstitucionProcedimiento = (String) request
-			.getAttribute("idInstitucionProcedimiento");
+	String idProcedimiento = (String) request.getAttribute("idProcedimiento");
+	String idInstitucionProcedimiento = (String) request.getAttribute("idInstitucionProcedimiento");
 
 	String[] paramPro = new String[2];
 	paramPro[0] = idJuzgado;
 	paramPro[1] = idInstitucionJuzgado;
 
 	String paramPretension = "{\"idpretension\":\"\"}";
-	if (form.getIdPretension() != null
-			&& (!form.getIdPretension().equals(""))){
+	if (form.getIdPretension() != null && (!form.getIdPretension().equals(""))){
 		paramPretension = "{\"idpretension\":\""+form.getIdPretension()+"\"}";
 		paramsJSON.put("idpretension", form.getIdPretension());
 	}
@@ -374,19 +347,16 @@
 	if (idTipoIVA != null) {
 		tipoIVASel.add(idTipoIVA);
 	}
-	String tituloDenunciado = (String) request
-			.getAttribute("tituloDenunciado");
+	String tituloDenunciado = (String) request.getAttribute("tituloDenunciado");
 	String tituloDenunciadoMensajeError = "";
 	if(tituloDenunciado == null || tituloDenunciado.equals(""))
 		tituloDenunciadoMensajeError = "gratuita.busquedaEJG.interesado";
 	else
 		tituloDenunciadoMensajeError = tituloDenunciado;
 
-	String tituloDenunciante = (String) request
-			.getAttribute("tituloDenunciante");
+	String tituloDenunciante = (String) request.getAttribute("tituloDenunciante");
 
-	String nombreExpDisciplinario = (String) request
-			.getAttribute("tituloExpDisciplinario");
+	String nombreExpDisciplinario = (String) request.getAttribute("tituloExpDisciplinario");
 
 	Vector vNombres= (Vector) request.getAttribute("nombres");	
 	Vector vDatosCamposPestanas= (Vector) request.getAttribute("datosCamposPestanas");
@@ -424,19 +394,13 @@
 	} else if (tipoExp != null && !"".equals(tipoExp)){
 		paramsJSON.put("idtipoexpediente", tipoExp);
 	}
-	String paramJSONstring = UtilidadesString.createJsonString(paramsJSON);
+	String paramJSONstring = UtilidadesString.createJsonString(paramsJSON);	
 %>	
 
-
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp" ></script>
 
@@ -448,13 +412,12 @@
 	<html:javascript formName="ExpDatosGeneralesForm" staticJavascript="false" />  
 <%
   	if (bEstado) {
-  %>
-	<script src="<%=app%>/html/js/validacionStrutsWithHidden.js" type="text/javascript"></script>
-	
+ %>
+		<script src="<%=app%>/html/js/validacionStrutsWithHidden.js" type="text/javascript"></script>	
 <%
-		} else {
-	%>
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	} else {
+%>
+		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 <%
 	}
 %>
@@ -463,54 +426,67 @@
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 	
-	
-			<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
 		var jsEstadoViejo="";
 		var jsEstadoNuevo="";
 		
 		//Asociada al boton Volver
-		function accionVolver() 
-		{
-			<%if (busquedaVolver == null) {%>
+		function accionVolver() {
+<%
+			if (busquedaVolver == null) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
-			<%} else if (busquedaVolver == null || busquedaVolver.equals("AB")) {%>
+<%
+			} else if (busquedaVolver == null || busquedaVolver.equals("AB")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
-			<%} else if (busquedaVolver.equals("NB")) {%>
+<%
+			} else if (busquedaVolver.equals("NB")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
-			<%} else if (busquedaVolver.equals("AV")) {%>
+<%
+			} else if (busquedaVolver.equals("AV")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
-			<%} else if (busquedaVolver.equals("N")) {%>
+<%
+			} else if (busquedaVolver.equals("N")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="abrir";	
-			<%} else if (busquedaVolver.equals("A")) {%>
+<%
+			} else if (busquedaVolver.equals("A")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="abrirAvanzada";	 
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE%>";
-			<%} else if (busquedaVolver.equals("Al")) {%>
+<%
+			} else if (busquedaVolver.equals("Al")) {
+%>
 				document.forms[1].action = "<%=app%>/EXP_Consultas.do?noReset=true&buscar=true";
 				document.forms[1].modo.value="abrir";
-			<%}%>
+<%
+			}
+%>
 			document.forms[1].submit();	
 		}
 
 		//Asociada al boton Restablecer
-		function accionRestablecer() 
-		{		
+		function accionRestablecer() {		
 			var elemento=parent.document.getElementById('pestana.auditoriaexp.datosgenerales');
 			parent.pulsar(elemento,'mainPestanas');
 		}
 		
 		//Asociada al boton Guardar
 		//aalg: añadida para quitar la validación con structs y poder sacar todos los mensajes juntos con un mensaje variable según el tipo de interesado
-		function validarGuardar(){
+		function validarGuardar() {
 			var mensajeError = "";
 			
 			//Comprobamos que exista el campo, que tenga valor y que tenga 4 digitos
@@ -549,10 +525,9 @@
 				mensajeError = mensajeError + '<siga:Idioma key="<%=tituloDenunciadoMensajeError%>"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 			
 			return mensajeError;
-			
 		}
-		function accionGuardar() 
-		{	
+		
+		function accionGuardar() {	
 			sub();
 			var mensajeError = validarGuardar();
 			if (mensajeError == ""){
@@ -564,6 +539,7 @@
 						return false;
 					}
 				}
+				
 				if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 					if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
 						mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>';
@@ -581,66 +557,78 @@
 						return false;
 					}
 				}
+				
 				if (document.forms[0].minuta){
-					  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");		
+		 			document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");		
 				}
+				
 				if (document.forms[0].importeTotal){
-					  document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
+					document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].importeIVA){
-					  document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
+					document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].minutaFinal){
-					  document.forms[0].minutaFinal.value = document.forms[0].minutaFinal.value.replace(/,/,".");
+					document.forms[0].minutaFinal.value = document.forms[0].minutaFinal.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].importeTotalFinal){
-					  document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
+					document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].solicitanteEJG){
-					  document.forms[0].solicitanteEJG.value = document.forms[0].solicitanteEJG.value.replace(/,/,".");
+					document.forms[0].solicitanteEJG.value = document.forms[0].solicitanteEJG.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].importeIVAFinal){
-					  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
+					document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
 				}
+				
 				if (document.forms[0].porcentajeIVA){							
-					 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");	
+					document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");	
 					if (document.forms[0].porcentajeIVAFinal){	
-					 	document.forms[0].porcentajeIVAFinal.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
+						document.forms[0].porcentajeIVAFinal.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
 					}							  
 				}						
 
 				if (document.forms[0].derechosColegiales){
-					  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
+					document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
 				}
+				
+				jQuery("#fechaFinal").removeAttr("disabled");				
 								
-				<% 
-				if (accion.equals("nuevo") || copia.equals("s")) { %>
+<% 
+				if (accion.equals("nuevo") || copia.equals("s")) { 
+%>
 					document.ExpDatosGeneralesForm.accion.value="nuevo";
 					document.forms[0].modo.value="insertar";
 					
-				<%} else {%>
-				document.ExpDatosGeneralesForm.accion.value="edicion";
+<%
+				} else {
+%>
+					document.ExpDatosGeneralesForm.accion.value="edicion";
 					document.forms[0].modo.value="modificar";
-				<%}%>
-				
+<%
+				}
+%>
 				document.forms[0].target="submitArea";	
-				document.forms[0].submit();	
-			}
-			else{
+				document.forms[0].submit();
+				
+			} else {
 				alert(mensajeError);
 				fin();
 				return false;
 			}
 		}		
 		
-		function relacionarConEJG() 
-		{
+		function relacionarConEJG() {
 			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
 						
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
 
-			if (resultado != null && resultado.length >= 4)
-			{
+			if (resultado != null && resultado.length >= 4) {
 				//document.forms[0].ejgIdInstitucion.value=resultado[0];
 
 				document.forms[0].anioExpDisciplinario.value=resultado[1];
@@ -651,44 +639,47 @@
 			}
 		}
 		
-		function recargarComboJuzgado()
-		{
-			<%if (bEditable) {%> 
-				<%if (bAsuntoJud) {
+		function recargarComboJuzgado() {
+<%
+			if (bEditable) {
+				if (bAsuntoJud) {
 					String idJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\"}";
-				%>
-			jQuery("#juzgado").val('<%=idJuzgadoJSON%>');
-				<%}%>
-			<%}%>
+%>
+					jQuery("#juzgado").val('<%=idJuzgadoJSON%>');
+<%
+				}
+			}
+%>
 		}		
 		
-		function recargarCombos()
-		{
-			<%if (bEditable) {%> 
-				<%if (bAsuntoJud) {
+		function recargarCombos() {
+<%
+			if (bEditable) {
+				if (bAsuntoJud) {
 					String idMateriaJSON = "{\"idmateria\":\""+idMateria+"\",\"idarea\":\""+idArea+"\",\"idinstitucion\":\""+userBean.getLocation()+"\"}";
-				%>
-				//jQuery("#idMateria").val('<%=idMateriaJSON%>');
-				//jQuery("#idMateria").change();
-				<%}%>
+%>
+					//jQuery("#idMateria").val('<%=idMateriaJSON%>');
+					//jQuery("#idMateria").change();
+<%
+				}
+%>
 				/*
 				if(document.forms[0].idTipoIVA){// solo aparece el tipo IVA cuando está el campo minuta
 					jQuery("#idTipoIVA").change();
 				}
 				*/
-			<%}%>
+<%
+			}
+%>
 		}
 		
-		function refrescarLocal()
-		{	
-				document.forms[0].modo.value="abrirAvanzada";
-				document.forms[0].target="mainWorkArea";	
-				document.forms[0].submit();
-			
-		
+		function refrescarLocal() {	
+			document.forms[0].modo.value="abrirAvanzada";
+			document.forms[0].target="mainWorkArea";	
+			document.forms[0].submit();
 		}
-		function seleccionarDenunciado()
-		{
+		
+		function seleccionarDenunciado() {
 			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
 			/*
 			document.datosGeneralesForm.numIdentificacion.value=document.forms[0].nifDenunciado.value;
@@ -697,9 +688,9 @@
 			*/
 			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			
-			if (resultado!=undefined && resultado[0]!=undefined ){
+			if (resultado!=undefined && resultado[0]!=undefined ) {
 				
-				if(resultado[8]!=undefined && resultado[8] == 'Nuevo'){
+				if (resultado[8]!=undefined && resultado[8] == 'Nuevo') {
 					//Se cera desde cero
 					document.forms[0].idPersonaDenunciado.value=resultado[0];
 					document.forms[0].nColDenunciado.value=resultado[2];
@@ -710,7 +701,7 @@
 					document.forms[0].nifDenunciado.value=resultado[3];
 					document.forms[0].idDireccionDenunciado.value=resultado[7];
 				
-				}else{
+				} else {
 					//Selecciona uno existente
 					document.forms[0].idPersonaDenunciado.value=resultado[0];
 					document.forms[0].nColDenunciado.value=resultado[1];
@@ -729,8 +720,8 @@
 			document.datosGeneralesForm.idDireccion.value="";
 			*/
 		}
-		function seleccionarDenunciante()
-		{		
+		
+		function seleccionarDenunciante() {		
 			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
 			/*
 			document.datosGeneralesForm.numIdentificacion.value=document.forms[0].nifDenunciante.value;
@@ -739,9 +730,9 @@
 			*/
 			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			
-			if (resultado!=undefined && resultado[0]!=undefined ){
+			if (resultado!=undefined && resultado[0]!=undefined ) {
 				
-				if(resultado[8]!=undefined && resultado[8] == 'Nuevo'){
+				if (resultado[8]!=undefined && resultado[8] == 'Nuevo') {
 					//Se cera desde cero
 					document.forms[0].idPersonaDenunciante.value=resultado[0];
 					document.forms[0].nColDenunciante.value=resultado[2];
@@ -752,7 +743,7 @@
 					document.forms[0].nifDenunciante.value=resultado[3];
 					document.forms[0].idDireccionDenunciante.value=resultado[7];
 				
-				}else{
+				} else {
 					//Selecciona uno existente
 					document.forms[0].idPersonaDenunciante.value=resultado[0];
 					document.forms[0].nColDenunciante.value=resultado[1];
@@ -763,7 +754,6 @@
 					document.forms[0].nifDenunciante.value=resultado[6];
 					document.forms[0].idDireccionDenunciante.value=resultado[7];	
 				}				
-				
 			}
 			//BNS DESCOMENTAR PARA PASAR LOS DATOS A LA MODAL Y PRECARGAR EL SELECCIONADO
 			/*
@@ -771,7 +761,8 @@
 			document.datosGeneralesForm.colegiadoen.value="";
 			document.datosGeneralesForm.idDireccion.value="";
 			*/
-		}				
+		}		
+		
 		/*	 		
 		function traspasoDatos(resultado){
 		 	if (resultado[0]==undefined)
@@ -781,33 +772,24 @@
 		 	jQuery("#juzgado").change();
 		}
 		*/
-		
-		function getPlazo(){
-			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
-				document.forms[0].modo.value="abrirConParametros";
-				document.forms[0].target="submitArea";	
-				document.forms[0].submit();
-			}
-		}
 
-		function formatNumber(value){
+		function formatNumber(value) {
 			if (!value) {
 				value = 0;
-			} else if (value.toString().indexOf(".", 0) == -1){
+			} else if (value.toString().indexOf(".", 0) == -1) {
 				value = value + ".00";
-			} else if (value.toString().charAt(value.toString().length -1) == "."){
+			} else if (value.toString().charAt(value.toString().length -1) == ".") {
 				value = value + "00";
-			} else if (value.toString().charAt(value.toString().length -2) == "."){
+			} else if (value.toString().charAt(value.toString().length -2) == ".") {
 				value = value + "0";
 			}
 
 			return value;
 		}
 		
-		function calcularTotalMinuta () 
-		{
-			if(document.getElementById("minuta") != null){
-				if(document.getElementById("minuta").value != ""){	
+		function calcularTotalMinuta () {
+			if (document.getElementById("minuta") != null) {
+				if (document.getElementById("minuta").value != "") {	
 					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
 					if (!iva) {
 						iva = 0;
@@ -818,20 +800,20 @@
 					var b = eval(minuta) * eval(iva) / 100;
 					var a = b + eval(minuta);
 					a = Math.round(a*100)/100;
-					if(document.getElementById("porcentajeIVA").value != ""){
+					if (document.getElementById("porcentajeIVA").value != "") {
 						document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
-					}else{						
+					} else {						
 						document.getElementById("importeIVA").value = "0,00";	
 					}
 					
 					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
 					document.getElementById("minuta").value = minuta.replace(".",",");
-				}else{
+				} else {
 					document.getElementById("minuta").value = "";
-					if(document.getElementById("porcentajeIVA").value != ""){
+					if (document.getElementById("porcentajeIVA").value != "") {
 						document.getElementById("importeIVA").value = "0,00";
 						document.getElementById("importeTotal").value = "0,00";
-					}else{						
+					} else {						
 						document.getElementById("importeIVA").value = "";
 						document.getElementById("importeTotal").value ="";
 					}
@@ -839,10 +821,9 @@
 			}
 		}
 		
-		function calcularTotalMinuta2 () 
-		{
-			if(document.getElementById("porcentajeIVA") != null){
-				if(document.getElementById("porcentajeIVA").value != ""){	
+		function calcularTotalMinuta2 () {
+			if (document.getElementById("porcentajeIVA") != null) {
+				if (document.getElementById("porcentajeIVA").value != "") {	
 					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
 					iva = formatNumber(iva);
 					minuta = document.getElementById("minuta").value.replace(/,/,".");
@@ -857,26 +838,26 @@
 						document.getElementById("porcentajeIVAFinal").value = iva.replace(".",",");
 						calcularTotalMinutaFinal ();
 					}
-				}else{
+				} else {
 					
 					document.getElementById("porcentajeIVA").value = "";
-					if(document.getElementById("porcentajeIVAFinal") != null){
+					if (document.getElementById("porcentajeIVAFinal") != null) {
 						document.getElementById("porcentajeIVAFinal").value = "";
 					}
 					
-					if(document.getElementById("minuta").value != ""){							
+					if (document.getElementById("minuta").value != "") {							
 						document.getElementById("importeIVA").value = "0,00";				
 						document.getElementById("importeTotal").value = document.getElementById("minuta").value;
-					}else{			
+					} else {			
 						document.getElementById("importeIVA").value = "";
 						document.getElementById("importeTotal").value = "";
 					}
 
-					if(document.getElementById("minutaFinal") != null){
-						if(document.getElementById("minutaFinal").value != ""){							
+					if (document.getElementById("minutaFinal") != null) {
+						if (document.getElementById("minutaFinal").value != "") {							
 							document.getElementById("importeIVAFinal").value = "0,00";						
 							document.getElementById("importeTotalFinal").value = document.getElementById("minutaFinal").value;
-						}else{			
+						} else {			
 							document.getElementById("importeIVAFinal").value = "";
 							document.getElementById("importeTotalFinal").value = "";
 						}
@@ -885,10 +866,9 @@
 			}
 		}
 
-		function calcularTotalMinutaFinal () 
-		{			
-			if(document.getElementById("minutaFinal") != null){
-				if(document.getElementById("minutaFinal").value != ""){
+		function calcularTotalMinutaFinal () {			
+			if (document.getElementById("minutaFinal") != null) {
+				if (document.getElementById("minutaFinal").value != "") {
 					iva = document.getElementById("porcentajeIVAFinal").value.replace(/,/,".");
 					if (!iva) {
 						iva = 0;
@@ -900,27 +880,27 @@
 					var a = b + eval(minuta);
 					a = Math.round(a*100)/100;	
 						
-					if(document.getElementById("porcentajeIVA") != null){
-						if(document.getElementById("porcentajeIVA").value != ""){
+					if (document.getElementById("porcentajeIVA") != null) {
+						if (document.getElementById("porcentajeIVA").value != "") {
 							document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
-						}else{						
+						} else {						
 							document.getElementById("importeIVAFinal").value = "0,00";
 						}
 					}
 					document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
 					document.getElementById("importeTotalFinal").value = a.toFixed(2).toString().replace(".",",");
 					document.getElementById("minutaFinal").value = minuta.replace(".",",");
-				}else{
+				} else {
 					document.getElementById("minutaFinal").value = "";
-					if(document.getElementById("porcentajeIVA") != null){						
-						if(document.getElementById("porcentajeIVA").value != ""){	
+					if (document.getElementById("porcentajeIVA") != null) {						
+						if (document.getElementById("porcentajeIVA").value != "") {	
 							document.getElementById("importeIVAFinal").value = "0,00";
 							document.getElementById("importeTotalFinal").value = "0,00";
-						}else{						
+						} else {						
 							document.getElementById("importeIVAFinal").value = "";
 							document.getElementById("importeTotalFinal").value = "";
 						}
-					}else{
+					} else {
 						document.getElementById("importeTotalFinal").value = "";
 						document.getElementById("importeIVAFinal").value = "";						
 					}
@@ -928,10 +908,9 @@
 			}
 		}
 
-		function formateoDerechos () 
-		{			
-			if(document.getElementById("derechosColegiales") != null){
-				if( document.getElementById("derechosColegiales").value != ""){				
+		function formateoDerechos () {			
+			if (document.getElementById("derechosColegiales") != null) {
+				if (document.getElementById("derechosColegiales").value != "") {				
 					derechos = document.getElementById("derechosColegiales").value.replace(/,/,".");
 					derechos = formatNumber(derechos);					
 					document.getElementById("derechosColegiales").value = derechos.replace(".",",");
@@ -939,8 +918,7 @@
 			}
 		}
 
-		function accionComunicar()
-		{
+		function accionComunicar() {
 			
 			idPersonaDenunciado = '<%=form.getIdPersonaDenunciado()%>';
 			idInstitucion= '<%=userBean.getLocation()%>';
@@ -959,10 +937,9 @@
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 			if (arrayResultado==undefined||arrayResultado[0]==undefined){
 			   		
-		   	} 
-		   	else {
+		   	} else {
 		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
-		   		if(confirmar){
+		   		if (confirmar) {
 		   			var idEnvio = arrayResultado[0];
 				    var idTipoEnvio = arrayResultado[1];
 				    var nombreEnvio = arrayResultado[2];				    
@@ -974,121 +951,239 @@
 		   	}				
 		}
 		
-		function limpiarFechas(){
-			if(jsEstadoViejo==("")){
+		function limpiarFechas() {
+			if (jsEstadoViejo==("")) {
 				jsEstadoViejo = document.ExpDatosGeneralesForm.comboEstados.value;
-			}else{
+			} else {
 				jsEstadoNuevo = document.ExpDatosGeneralesForm.comboEstados.value;
-				if(jsEstadoNuevo!=jsEstadoViejo){
+				if (jsEstadoNuevo!=jsEstadoViejo) {
 					document.getElementById("fechaInicial").value="";
 					document.getElementById("fechaFinal").value="";
 					jsEstadoViejo = document.ExpDatosGeneralesForm.comboEstados.value;
 				}
 			}
 		}
-		 function consultarEjg(){
+		
+		function consultarEjg() {
 			 //document.DefinirEJGForm.anio.value=document.getElementById("anioExpDisciplinario").value;
 			 //document.DefinirEJGForm.numero.value=document.getElementById("numExpDisciplinario").value;
 			// document.DefinirEJGForm.idTipoEJG.value=document.getElementById("tipoExpDisciplinario").value;
 			 document.DefinirEJGForm.modo.value='ver';
 			 document.DefinirEJGForm.submit();
-			 	
-		  }
+		}
 
-		 function editarEjg(){
+		function editarEjg() {
 			 //document.DefinirEJGForm.anio.value=document.getElementById("anioExpDisciplinario").value;
 			 //document.DefinirEJGForm.numero.value=document.getElementById("numExpDisciplinario").value;
 			// document.DefinirEJGForm.idTipoEJG.value=document.getElementById("tipoExpDisciplinario").value;
 			 document.DefinirEJGForm.modo.value='editar';
 			 document.DefinirEJGForm.submit();
-			 	
-		  }
-		 
-			function accionAbrir() 
-			{	
-				sub();	
-				var rel =document.ExpDatosGeneralesForm.relacionExpediente.value;
-				var nombrerel =document.ExpDatosGeneralesForm.nombreRelacionExpediente.value;
-				var numExpediente =document.ExpDatosGeneralesForm.numExpediente.value;
-				var anioExpediente =document.ExpDatosGeneralesForm.anioExpediente.value;
-				var tioExpedienteAnt ='<%=tipoExp%>';
-						
-				document.ExpDatosGeneralesForm.copia.value="s";	
-				document.ExpDatosGeneralesForm.accion.value="nuevo";
-				
-				if (document.ExpDatosGeneralesForm.relacionExpediente.value != ""){
-					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt+"&nombreTipo="+'<%=form.getTipoExpediente()%>';
-					document.forms[1].modo.value="nuevoCopia";
-					document.forms[1].copia.value="s";					
-					document.forms[1].avanzada.value="<%=ClsConstants.DB_FALSE%>";
-					document.forms[1].target="mainWorkArea";	
-					document.forms[1].submit();			
-					
-				}
-				
-			}
-
-		//Funcion asociada al cambio de foco de la fecha incial necesaria
-		//para calcular la fecha de caducidad	
-	
-			
-		function generarFechaCaducidad() {
-			<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
-			
-				if (document.forms[0].fecha.value.length==0){
-					document.forms[0].fechaCaducidad.value = "";
-				}  else {
-	
-						var fFecha = document.forms[0].fecha.value;
-						
-				var dt1  = fFecha.substring(0,2);
-	
-				var dt2  = fFecha.substring(3,5);
-				var dt3  = fFecha.substring(6,10);
-	
-				var mes = parseInt (dt2,10) - 1;
-	
-				var Fecha= new Date(fFecha);
-				var iYear = Fecha.getFullYear();	
-				
-				var hoy= new Date();
-				hoy.setDate(dt1);
-				hoy.setMonth(mes.toString());
-				hoy.setFullYear(dt3);
-	
-	
-				var sumarDias=parseInt('<%=tiempoCaducidad%>');
-				var luego = hoy.addDays(sumarDias);
-	
-				
-				if ((luego.getMonth()+1) < 10)
-					iMonth = '0' + ((luego.getMonth()+1).toString());
-					else iMonth = ((luego.getMonth()+1).toString()); 
-				if (luego.getDate() < 10)
-					iDay = '0' + luego.getDate().toString();
-					else iDay = luego.getDate().toString();
-	
-				document.forms[0].fechaCaducidad.value = iDay + "/" + iMonth + "/" + luego.getFullYear();
-	
-				}
-
-			<%}%>
 		}
-
-		Date.prototype.addDays = function (dias){
-			var fecha1 = new Date(2011, 1,20);
-			var fecha2 = new Date(2011, 1,21);
-			var diferencia = fecha2.getTime() - fecha1.getTime();
-			var luego = new Date();
+		 
+		function accionAbrir() {	
+			sub();	
+			var rel =document.ExpDatosGeneralesForm.relacionExpediente.value;
+			var nombrerel =document.ExpDatosGeneralesForm.nombreRelacionExpediente.value;
+			var numExpediente =document.ExpDatosGeneralesForm.numExpediente.value;
+			var anioExpediente =document.ExpDatosGeneralesForm.anioExpediente.value;
+			var tioExpedienteAnt ='<%=tipoExp%>';
+					
+			document.ExpDatosGeneralesForm.copia.value="s";	
+			document.ExpDatosGeneralesForm.accion.value="nuevo";
 			
-			luego.setTime( this.getTime() + (dias * diferencia ) );
-			return luego; 
-		};
+			if (document.ExpDatosGeneralesForm.relacionExpediente.value != ""){
+				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt+"&nombreTipo="+'<%=form.getTipoExpediente()%>';
+				document.forms[1].modo.value="nuevoCopia";
+				document.forms[1].copia.value="s";					
+				document.forms[1].avanzada.value="<%=ClsConstants.DB_FALSE%>";
+				document.forms[1].target="mainWorkArea";	
+				document.forms[1].submit();			
+			}
+		}
+		
+		function getConsultaPlazo() {
+			document.ExpDatosGeneralesForm.modo.value="abrirConParametros";
+			ventaModalGeneral("ExpDatosGeneralesForm", "G");
+		}		
+		
+		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "messages.general.error"))%>';
+		var bIniciadoPlazo = false;
+		function getPlazo() {
+			var hashEstado = jQuery("#comboEstados").val();
+			var idClasificacion = jQuery("#clasificacion").val();
+			var fechaInicial = jQuery("#fechaInicial").val();
+			//alert("hashEstado:" + hashEstado + "; idClasificacion:" + idClasificacion + "; fechaInicial:" + fechaInicial);
+			
+			jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/EXP_Auditoria_DatosGenerales.do?modo=getAjaxPlazo",				
+				data: "hashEstado=" + hashEstado
+						+ "&idClasificacion=" + idClasificacion
+						+ "&fechaInicial=" + fechaInicial,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){							
+					var fechaFinal = json.expediente.fechaFinalEstado;
+					//alert("fechaFinal:" + fechaFinal + ";");					
+					
+					// Cuando la fecha final es mayor que la fecha incial, se debe poner en modo consulta
+					if (fechaFinal != "" && fechaFinal != fechaInicial) {
+						if (bIniciadoPlazo)
+							jQuery("#fechaFinal").val(fechaFinal);
+						jQuery("#fechaFinal").removeClass("box").removeClass("editable");
+						jQuery("#fechaFinal").addClass("boxConsulta").addClass("noEditable");
+						jQuery("#fechaFinal").attr("readOnly", "readOnly").attr("disabled", "disabled");
+						jQuery("#fechaFinal-datepicker-trigger").hide();
+						
+					} else {
+						jQuery("#fechaFinal").removeClass("boxConsulta").removeClass("noEditable");
+						jQuery("#fechaFinal").addClass("box").addClass("editable");
+						jQuery("#fechaFinal").removeAttr("readOnly").removeAttr("disabled");
+						jQuery("#fechaFinal-datepicker-trigger").show();
+					}
+					
+					if (!bIniciadoPlazo) {
+						bIniciadoPlazoCaducidad = true;
+						bIniciadoPlazo = true;
+					}
+					
+					fin();
+				},
+				error: function(e){
+					alert(mensajeGeneralError);
+					fin();
+				}
+			});					
+		}
+		
+		// Funcion que realiza un tratamiento sobre el campo de la fecha final
+		// Para poder hacer la llamada necesitamos: idInstitucionExpediente + idTipoExpediente + idFase + idEstado + idClasificacion + FechaInicial 		
+		function tratarFechaFinal () {
+			var idInstitucionExpediente = <%=idinstitucion_tipoexpediente%>;
+			var idTipoExpediente = <%=tipoExp%>;
+			var idFase = jQuery("#comboFases").val();
+			var idEstado = jQuery("#comboEstados").val();
+			var idClasificacion = jQuery("#clasificacion").val();
+			var fechaInicial = jQuery("#fechaInicial").val();
+			//alert("idInstitucionExpediente:" + idInstitucionExpediente + "; idTipoExpediente:" + idTipoExpediente + "; idFase:" + idFase + "; idEstado:" + idEstado + "; idClasificacion:" + idClasificacion + "; fechaInicial:" + fechaInicial);
+			
+			if (idInstitucionExpediente == "" ||
+					idTipoExpediente == ""	||
+					idFase == ""	||
+					idEstado == "" ||
+					idClasificacion == "" ||
+					fechaInicial == "" ||
+					idEstado.indexOf("{")<0) {				
+				jQuery("#fechaFinal").removeClass("boxConsulta").removeClass("noEditable");
+				jQuery("#fechaFinal").addClass("box").addClass("editable");
+				jQuery("#fechaFinal").removeAttr("readOnly").removeAttr("disabled");
+				jQuery("#fechaFinal-datepicker-trigger").show();
+				
+			} else  {
+				getPlazo();
+			}
+			
+			if (idInstitucionExpediente == "" ||
+					idTipoExpediente == ""	||
+					idFase == ""	||
+					idEstado == "" ||
+					idEstado.indexOf("{")<0) {				
+				jQuery("#searchDeadline").hide();
+				
+			} else  {
+				jQuery("#searchDeadline").show();
+			}
+		}
+					
+		var bIniciadoPlazoCaducidad = false;
+		function getFechaCaducidad() {
+			var idInstitucionExpediente = <%=idinstitucion_tipoexpediente%>;
+			var idTipoExpediente = <%=tipoExp%>;
+			var fechaApertura = jQuery("#fecha").val();
+			//alert("idInstitucionExpediente:" + idInstitucionExpediente + "; idTipoExpediente:" + idTipoExpediente + "; fechaApertura:" + fechaApertura);
+			
+			jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/EXP_Auditoria_DatosGenerales.do?modo=getAjaxFechaCaducidad",				
+				data: "idInstitucionExpediente=" + idInstitucionExpediente
+						+ "&idTipoExpediente=" + idTipoExpediente
+						+ "&fechaApertura=" + fechaApertura,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){							
+					var fechaCaducidad = json.expediente.fechaCaducidad;
+					//alert("fechaCaducidad:" + fechaCaducidad + "; bIniciadoPlazoCaducidad:" + bIniciadoPlazoCaducidad + ";");							
+					
+					// Cuando la fecha de caducidad es mayor que la fecha de apertura, se debe poner en modo consulta
+					if (fechaCaducidad != "" && fechaCaducidad != fechaApertura) {
+						jQuery("#fechaCaducidad").val(fechaCaducidad); // Aqui hay que cargar la fecha porque no tiene manera de recalcularla
+						jQuery("#fechaCaducidad").removeClass("box").removeClass("editable");
+						jQuery("#fechaCaducidad").addClass("boxConsulta").addClass("noEditable");
+						jQuery("#fechaCaducidad").attr("readOnly", "readOnly").attr("disabled", "disabled");
+						jQuery("#fechaCaducidad-datepicker-trigger").hide();
+						
+					} else {
+						jQuery("#fechaCaducidad").removeClass("boxConsulta").removeClass("noEditable");
+						jQuery("#fechaCaducidad").addClass("box").addClass("editable");
+						jQuery("#fechaCaducidad").removeAttr("readOnly").removeAttr("disabled");
+						jQuery("#fechaCaducidad-datepicker-trigger").show();
+					}
+					
+					if (!bIniciadoPlazoCaducidad) {
+						bIniciadoPlazoCaducidad = true;
+						bIniciadoPlazo = true;	
+					}
+					
+					fin();
+				},
+				error: function(e){
+					alert(mensajeGeneralError);
+					fin();
+				}
+			});					
+		}					
+					
+		// Funcion que realiza un tratamiento sobre el campo de la fecha final
+		// Para poder hacer la llamada necesitamos: idInstitucionExpediente + idTipoExpediente + fecha	
+		function tratarFechaCaducidad () {
+			var idInstitucionExpediente = <%=idinstitucion_tipoexpediente%>;
+			var idTipoExpediente = <%=tipoExp%>;
+			var fechaApertura = jQuery("#fecha").val();
+			//alert("idInstitucionExpediente:" + idInstitucionExpediente + "; idTipoExpediente:" + idTipoExpediente + "; fechaApertura:" + fechaApertura);
+			
+			if (idInstitucionExpediente == "" ||
+					idTipoExpediente == ""	||
+					fechaApertura == "") {				
+				jQuery("#fechaCaducidad").removeClass("boxConsulta").removeClass("noEditable");
+				jQuery("#fechaCaducidad").addClass("box").addClass("editable");
+				jQuery("#fechaCaducidad").removeAttr("readOnly").removeAttr("disabled");
+				jQuery("#fechaCaducidad-datepicker-trigger").show();				
+				
+			} else  {
+				getFechaCaducidad();
+			}
+		}					
+		
 		jQuery(document).ready(function(){
-			<%if (!(tiempoCaducidad.equals("")) && !(tiempoCaducidad.equals("0"))){%>
-				generarFechaCaducidad();
-				jQuery("#fechaCaducidad").attr("disabled", "disabled");
-			<%}%>
+			jQuery("#comboFases").change(function() {
+				tratarFechaFinal();	
+			});
+		
+			jQuery("#comboEstados").change(function() {
+				tratarFechaFinal();	
+			});
+			
+			jQuery("#clasificacion").change(function() {
+				tratarFechaFinal();	
+			});
+			
+			jQuery("#fechaInicial").change(function() {
+				tratarFechaFinal();	
+			});
+			
+			tratarFechaCaducidad();
+			tratarFechaFinal();							
+					
 			calcularTotalMinuta ();
 			calcularTotalMinutaFinal ();
 			<%=recargarCombos%>
@@ -1117,6 +1212,7 @@
 				<html:hidden property = "copia"/>
 				<html:hidden property = "tipoExpediente"/>
 				<input type="hidden" name="accion"	value="<%=accion%>">		
+				<input type="hidden" id="actionModal"  name="actionModal" value="">
 
 				<tr>				
 					<td>	
@@ -1171,7 +1267,7 @@
 <%
 										if (accion.equals("nuevo") || copia.equals("s")) {
 %>
-		 									<siga:Fecha nombreCampo="fecha" valorInicial="<%=fechaApertura%>"  postFunction="generarFechaCaducidad();" preFunction="generarFechaCaducidad();" />
+		 									<siga:Fecha nombreCampo="fecha" valorInicial="<%=fechaApertura%>" styleId="fecha" postFunction="tratarFechaCaducidad();" />
 			
 <%
 										} else {
@@ -1322,18 +1418,12 @@
 									<td class="labelText">
 <%
 										if (bEditable) {
-											if 	(tiempoCaducidad == null || tiempoCaducidad.equals("") || tiempoCaducidad.equalsIgnoreCase("0")) { 
 %>
-												<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" styleId="fechaCaducidad"/>
+											<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>" styleId="fechaCaducidad"/>
 <%
-											} else {
-%>
-												<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" styleId="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true" tabindex="-1" />					 				 
-<%
-											}												
 										} else {
 %>
-											<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" styleId="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" tabindex="-1" />				
+											<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" styleId="fechaCaducidad" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true" tabindex="-1" />				
 <% 			
 										}
 %>	
@@ -1384,7 +1474,7 @@
 										<td class="labelText">
 											<siga:Idioma key="expedientes.auditoria.literal.estadoyfechainicial"/>&nbsp(*)
 										</td>			
-										<td colspan="2">											
+										<td colspan="2" nowrap>											
 											<siga:Select queryId="getEstadosExpediente" 
 												id="comboEstados" 
 												queryParamId="idestado" 
@@ -1400,7 +1490,7 @@
 <%
 											if (bEditable) {
 %>
-												<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
+												<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>" postFunction="tratarFechaFinal(false)"/>
 												
 <%
 											} else {
@@ -1417,7 +1507,7 @@
 										if (bEditable) {
 %>
 											<td class="labelText" colspan="2">
-												<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getPlazo();" value="<%=plazo%>"/>&nbsp;
+												<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getConsultaPlazo();" value="<%=plazo%>"/>&nbsp;
 											</td>	
 <%
 										} else {
@@ -1433,7 +1523,7 @@
 <%
 											if (bEditable) {
 %>
-												<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>"/>					
+												<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>" />					
 <%
 											} else {
 %>	

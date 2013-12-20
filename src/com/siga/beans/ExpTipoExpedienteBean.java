@@ -18,7 +18,7 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private Integer idInstitucion;
 	private String esGeneral;
 	private Integer idTipoExpediente;
-	private Integer tiempoCaducidad;
+	private String tiempoCaducidad;
 	private Integer diasAntelacionCad;
 	private Integer relacionEjg;
 	private Integer enviarAvisos;
@@ -26,6 +26,12 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private Integer idPlantillaEnvios;
 	private Integer idPlantilla;
 	private Integer relacionExpediente;	
+	
+	//Constantes tipos de plazo de caducidad
+	static public final int DIAS_NATURALES = 0;
+	static public final int DIAS_HABILES = 1;
+	static public final int MESES = 2;
+	static public final int ANIOS = 3;		
 	
 	
 	// Nombre campos de la tabla 
@@ -105,10 +111,10 @@ public class ExpTipoExpedienteBean extends MasterBean {
 		this.nombre = nombre;
 	}	
 
-	public Integer getTiempoCaducidad() {
+	public String getTiempoCaducidad() {
 		return tiempoCaducidad;
 	}
-	public void setTiempoCaducidad(Integer valor) {
+	public void setTiempoCaducidad(String valor) {
 		this.tiempoCaducidad = valor;
 	}	
 
@@ -149,5 +155,33 @@ public class ExpTipoExpedienteBean extends MasterBean {
 		this.idPlantilla = idPlantilla;
 	}	
 	
-
+    public int getTipoPlazoCaducidad() {
+    	if (this.tiempoCaducidad.endsWith("dh")) {
+    		return DIAS_HABILES;
+    		
+    	} else if (this.tiempoCaducidad.endsWith("m")) {
+    		return MESES;
+    		
+    	} else if (this.tiempoCaducidad.endsWith("a")) {
+    		return ANIOS;
+    		
+    	} else {
+    		return DIAS_NATURALES;
+    	}
+    }	
+	
+    public int getValorPlazoCaducidad() {
+    	if (this.tiempoCaducidad.endsWith("dh")) {    		
+    		return Integer.valueOf(this.tiempoCaducidad.substring(0, this.tiempoCaducidad.length()-2)).intValue();
+    		
+    	} else if (this.tiempoCaducidad.endsWith("m")) {
+    		return Integer.valueOf(this.tiempoCaducidad.substring(0, this.tiempoCaducidad.length()-1)).intValue();
+    		
+    	} else if (this.tiempoCaducidad.endsWith("a")) {
+    		return Integer.valueOf(this.tiempoCaducidad.substring(0, this.tiempoCaducidad.length()-1)).intValue();
+    		
+    	} else {
+    		return Integer.valueOf(this.tiempoCaducidad).intValue();
+    	}
+    }	
 }

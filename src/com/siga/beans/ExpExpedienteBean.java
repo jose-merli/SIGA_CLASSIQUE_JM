@@ -7,6 +7,10 @@
  */
 package com.siga.beans;
 
+import org.json.JSONObject;
+
+import com.atos.utils.GstDate;
+
 /**
  * Bean de la tabla de expedientes
  */
@@ -78,7 +82,6 @@ public class ExpExpedienteBean extends MasterBean {
 	private String identificadorDS;
 	private String idDireccion;
 	private String idDireccionDenunciante;
-	
 
 	// Nombre campos de la tabla 
 	static public final String C_NUMEROEXPEDIENTE ="NUMEROEXPEDIENTE";
@@ -145,8 +148,6 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String T_NOMBRETABLA = "EXP_EXPEDIENTE";
 	
 	static public final String C_IDDIRECCION ="IDDIRECCION";
-	
-
 
 	public String getFechaCaducidad() {
 		return fechaCaducidad;
@@ -536,5 +537,15 @@ public class ExpExpedienteBean extends MasterBean {
 	public void setIdDireccionDenunciante(String idDireccionDenunciante) {
 		this.idDireccionDenunciante = idDireccionDenunciante;
 	}
-	
+    
+	public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("fechaFinalEstado", GstDate.getFormatedDateShort("", this.fechaFinalEstado));
+            obj.put("fechaCaducidad", GstDate.getFormatedDateShort("", this.fechaCaducidad));
+        } 
+        catch (Exception e) {
+        }
+        return obj;
+    }	    
 }

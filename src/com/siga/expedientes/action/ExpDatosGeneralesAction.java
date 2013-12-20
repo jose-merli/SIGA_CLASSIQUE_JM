@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
@@ -64,6 +67,7 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.expedientes.form.EstadosForm;
 import com.siga.expedientes.form.ExpDatosGeneralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -85,6 +89,258 @@ public class ExpDatosGeneralesAction extends MasterAction
 	static public final String C_NCOLDENUNCIANTE = "NCOLDENUNCIANTE";
 					
 	public static Hashtable<String,Integer> ultimoAniosNumExpediente = new Hashtable<String, Integer>();
+	
+	protected ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {				    
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+				
+			String accion = miForm.getModo();			
+			if (accion!=null &&  accion.equalsIgnoreCase("getAjaxPlazo")) {
+				this.getAjaxPlazo (mapping, miForm, request, response);
+				return null;
+			
+			} else if (accion!=null &&  accion.equalsIgnoreCase("getAjaxFechaCaducidad")) {
+				this.getAjaxFechaCaducidad (mapping, miForm, request, response);
+				return null; 				
+				
+			} else {
+				return super.executeInternal(mapping, formulario, request, response);
+			}
+			
+		} catch (SIGAException es) {
+			throw es;
+			
+		} catch (Exception e) {
+			throw new SIGAException("Error en la Aplicación",e);
+		}
+	}		
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String consultarPlazo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		EstadosForm formularioEstado = new EstadosForm();
+		
+
+		try{
+			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
+			HttpSession ses = request.getSession(); 
+			//UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
+			Hashtable hashExp = new Hashtable();
+			ExpExpedienteAdm expAdm = new ExpExpedienteAdm (this.getUserBean(request));
+			ExpExpedienteBean expBean = new ExpExpedienteBean(); //(ExpExpedienteBean)vExp.elementAt(0);
+						
+			if (ses.getAttribute("DATABACKUP").getClass().getName().equals("java.util.HashMap")){
+				HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
+			    hashExp = (Hashtable)datosExpediente.get("datosGenerales");
+			    Vector vExp = expAdm.select(hashExp);
+				expBean = (ExpExpedienteBean)vExp.elementAt(0);
+			}else{
+				hashExp = (Hashtable)ses.getAttribute("DATABACKUP");
+				expBean.setIdInstitucion(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDINSTITUCION)));
+				expBean.setIdInstitucion_tipoExpediente(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)));
+				expBean.setIdTipoExpediente(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)));
+			}
+			
+			
+			//Recojo el valor de la fecha inicial del formulario, de la fase y del estado
+			expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
+			expBean.setIdFase(Integer.valueOf(form.getFase()));
+			expBean.setIdEstado(Integer.valueOf(form.getEstado()));
+			expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));
+			
+			ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
+						
+			//calculo la fecha final con este método, y me la devuelve en el bean
+			try{
+				if(plazoAdm.establecerFechaFinal(expBean)){
+					request.setAttribute("fechaFinal",GstDate.getFormatedDateShort("",expBean.getFechaFinalEstado()));
+				}else{
+					request.setAttribute("fechaFinal","");
+				}
+			}catch(Exception e){
+				throw new ClsExceptions(e,"Error en el cálculo del plazo"); 
+			}
+		}catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+		
+		return "plazo";
+		
+	}	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxPlazo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, Exception {	
+		String sEstado = (String)request.getParameter("hashEstado");
+		if (sEstado==null || sEstado.trim().equalsIgnoreCase("") || sEstado.indexOf("{")<0)
+			throw new SIGAException("Faltan los datos del estado");
+		
+		HashMap hEstado = UtilidadesString.createHashMap(sEstado);
+		
+		String idInstitucionExpediente = (String)hEstado.get("idinstitucion");
+		if (idInstitucionExpediente==null || idInstitucionExpediente.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la institución");
+		
+		String idTipoExpediente = (String)hEstado.get("idtipoexpediente");
+		if (idTipoExpediente==null || idTipoExpediente.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del tipo de expediente");
+		
+		String idFase = (String)hEstado.get("idfase");
+		if (idFase==null || idFase.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la fase");
+		
+		String idEstado = (String)hEstado.get("idestado");
+		if (idEstado==null || idEstado.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del estado");		
+		
+		String idClasificacion = (String)request.getParameter("idClasificacion");
+		if (idClasificacion==null || idClasificacion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la clasificación");
+		
+		String fechaInicial = (String)request.getParameter("fechaInicial");
+		if (fechaInicial==null || fechaInicial.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta la fecha inicial");
+		
+		//Transformo los datos al bean
+		ExpExpedienteBean expBean = new ExpExpedienteBean();
+		expBean.setIdInstitucion_tipoExpediente(Integer.valueOf(idInstitucionExpediente));
+		expBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
+		expBean.setIdClasificacion(Integer.valueOf(idClasificacion));
+		expBean.setIdFase(Integer.valueOf(idFase));
+		expBean.setIdEstado(Integer.valueOf(idEstado));
+		expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("", fechaInicial));	
+		
+		//calculo la fecha final con este método, y me la devuelve en el bean
+		ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));		
+		plazoAdm.establecerFechaFinal(expBean);
+
+		// Cargo los datos del json
+		JSONObject json = new JSONObject();				
+		json.put("expediente", expBean.getJSONObject());
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+	}		
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxFechaCaducidad (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, Exception {	
+		String idInstitucionExpediente = (String)request.getParameter("idInstitucionExpediente");
+		if (idInstitucionExpediente==null || idInstitucionExpediente.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la institución");
+		
+		String idTipoExpediente = (String)request.getParameter("idTipoExpediente");
+		if (idTipoExpediente==null || idTipoExpediente.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del tipo de expediente");
+		
+		String fechaApertura = (String)request.getParameter("fechaApertura");
+		if (fechaApertura==null || fechaApertura.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta la fecha de apertura");
+		
+		//Transformo los datos al bean
+		ExpExpedienteBean expBean = new ExpExpedienteBean();
+		expBean.setIdInstitucion_tipoExpediente(Integer.valueOf(idInstitucionExpediente));
+		expBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
+		expBean.setFecha(GstDate.getApplicationFormatDate("", fechaApertura));	
+		
+		//calculo la fecha de caducidad con este método, y me la devuelve en el bean
+		ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));		
+		tipoExpedienteAdm.establecerFechaCaducidad(expBean);
+
+		// Cargo los datos del json
+		JSONObject json = new JSONObject();				
+		json.put("expediente", expBean.getJSONObject());
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+	}		
+
+	/**
+	 * JPT: Consulta el estado del tipo de expediente
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected String abrirConParametros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		 String resultado = "mostrar";
+		 
+		try {
+		    ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
+		    UsrBean userBean = this.getUserBean(request);
+		    
+			String sEstado = (String)form.getComboEstados();
+			if (sEstado==null || sEstado.trim().equalsIgnoreCase("") || sEstado.indexOf("{")<0)
+				throw new SIGAException("Faltan los datos del estado");
+			
+			HashMap hEstado = UtilidadesString.createHashMap(sEstado);
+			
+			String idInstitucionExpediente = (String)hEstado.get("idinstitucion");
+			if (idInstitucionExpediente==null || idInstitucionExpediente.trim().equalsIgnoreCase(""))
+				throw new SIGAException("Falta el identificador de la institución");
+			
+			String idTipoExpediente = (String)hEstado.get("idtipoexpediente");
+			if (idTipoExpediente==null || idTipoExpediente.trim().equalsIgnoreCase(""))
+				throw new SIGAException("Falta el identificador del tipo de expediente");
+			
+			String idFase = (String)hEstado.get("idfase");
+			if (idFase==null || idFase.trim().equalsIgnoreCase(""))
+				throw new SIGAException("Falta el identificador de la fase");
+			
+			String idEstado = (String)hEstado.get("idestado");
+			if (idEstado==null || idEstado.trim().equalsIgnoreCase(""))
+				throw new SIGAException("Falta el identificador del estado");		
+	        
+	        EstadosAction actionEstados = new EstadosAction();       
+	        resultado =  actionEstados.mostrarPlazo (idInstitucionExpediente, idTipoExpediente, idEstado, idFase, false, request);
+	        
+		} catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+		
+		return resultado;		        
+	}	
 	
 	protected String abrir(ActionMapping mapping,
 			MasterForm formulario,
@@ -595,10 +851,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 
 		
 	}
-	protected String abrirExistente(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-		try{
+	protected String abrirExistente(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
 			HttpSession ses = request.getSession();		
@@ -618,22 +872,22 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			//Se pregunta si numExpediente y anioExpediente vienes como parámetros en la request, si no vienen
 			//se recuperan de la sesión
-			if((numExpediente==null ||numExpediente.equals("")) && (anioExpediente==null ||anioExpediente.equals("")))
-			{
+			if((numExpediente==null || numExpediente.equals("")) && (anioExpediente==null || anioExpediente.equals(""))) {
 				numExpediente = (String)request.getSession().getAttribute("numeroExpedienteSession");
 				anioExpediente = (String)request.getSession().getAttribute("anioExpedienteSession");
 			}
-			 busquedaRelacionExpediente( mapping, formulario,  request,	 response);
+			
+			this.busquedaRelacionExpediente( mapping, formulario,  request,	 response);
 			String soloSeguimiento = request.getParameter("soloSeguimiento");
 			String editable = request.getParameter("editable");
 			boolean edit = (editable.equals("1")&&soloSeguimiento.equals("false"))?true:false;
 			
 			//obtenemos la hash con los campos a mostrar
 			Hashtable camposVisibles =  tipoAdm.getCamposVisibles(idInstitucion_TipoExpediente,idTipoExpediente);
-			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
-				 camposVisibles =  tipoAdm.getCamposVisibles(idInstitucion_TipoExpediente,idTipoExpedienteNew);
-			}else{
-				 camposVisibles =  tipoAdm.getCamposVisibles(idInstitucion_TipoExpediente,idTipoExpediente);
+			if (copia!=null && copia.trim().equalsIgnoreCase("s")) {
+				camposVisibles =  tipoAdm.getCamposVisibles(idInstitucion_TipoExpediente,idTipoExpedienteNew);
+			} else {
+				camposVisibles =  tipoAdm.getCamposVisibles(idInstitucion_TipoExpediente,idTipoExpediente);
 			}
 			
 			request.setAttribute("camposVisibles",camposVisibles);
@@ -662,12 +916,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 				ExpExpedienteBean expBean = (ExpExpedienteBean)datosExp.elementAt(0);
 				HashMap datosExpediente=new HashMap();
 				try{
-					if (ses.getAttribute("DATABACKUP")!=null){
+					if (ses.getAttribute("DATABACKUP")!=null) {
 					   datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
-					
 					}
-				}catch(Exception e){
-					
+				} catch(Exception e) {					
 				}
 				datosExpediente.put("datosParticulares",expBean);
 				ses.setAttribute("DATABACKUP",datosExpediente);
@@ -675,13 +927,13 @@ public class ExpDatosGeneralesAction extends MasterAction
 				//Metemos los datos no editables del expediente en Backup.
 			    //Los datos particulares se anhadirán a la HashMap en cada caso.
 			    Hashtable datosGenerales = new Hashtable();	
-			    if(copia!=null && copia.trim().equalsIgnoreCase("s")){
+			    if (copia!=null && copia.trim().equalsIgnoreCase("s")) {
 				    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 				    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
 				    datosGenerales.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpedienteNew);
 				    datosGenerales.put(ExpExpedienteBean.C_NUMEROEXPEDIENTE,"");
 				    datosGenerales.put(ExpExpedienteBean.C_ANIOEXPEDIENTE,"");
-			    }else{
+			    } else {
 					datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION,idInstitucion);
 				    datosGenerales.put(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
 				    datosGenerales.put(ExpExpedienteBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
@@ -690,12 +942,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 				}
 				datosExpediente.put("datosGenerales",datosGenerales);
 				request.getSession().setAttribute("DATABACKUP",datosExpediente);
-				
 			}
 	
-	        
 	        //PRIMERA SELECT: EXP_EXPEDIENTE--------------------------	        	        	        
-			
 			String where = " WHERE ";
 			
 			//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
@@ -716,49 +965,48 @@ public class ExpDatosGeneralesAction extends MasterAction
 			Row fila = (Row)datosExp.elementAt(0);				
 		
 			//Hacemos los sets del formulario
-
 			form.setTipoExpediente(fila.getString(C_NOMBRETIPOEXPEDIENTE));
 			form.setNumExpediente(fila.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE));
 			form.setAnioExpediente(fila.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE));
-			if(fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG)!=null&&!fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("")&&
-					!fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("0")){
+			if(fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG)!=null 
+					&& !fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("")
+					&& !fila.getString(ExpTipoExpedienteBean.C_RELACIONEJG).equals("0")){
 				form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEROEJG));
 				form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEJG));
 				form.setTipoExpDisciplinario(fila.getString(ExpExpedienteBean.C_IDTIPOEJG));
 
 				ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
 				Hashtable haste = admEjg.getDatosEjg(userBean.getLocation(), form.getAnioExpDisciplinario(), form.getNumExpDisciplinario(), form.getTipoExpDisciplinario());
-					String SUFIJO = (String) haste.get("SUFIJO");
-					String CODIGO = (String) haste.get("CODIGO");
-					String codigoEjg = null;
-					if (SUFIJO != null && !SUFIJO.equals("")) {
-						codigoEjg = CODIGO + "-" + SUFIJO;
-						
-					} else {
-						codigoEjg = CODIGO;
-					}
-					form.setNumExpDisciplinarioCalc(codigoEjg);
-					form.setSolicitanteEjgNif(UtilidadesHash.getString(haste, "NIF"));
-					form.setSolicitanteEjgNombre(UtilidadesHash.getString(haste, "NOMBRE"));
-					form.setSolicitanteEjgApellido1(UtilidadesHash.getString(haste, "APELLIDO1"));
-					form.setSolicitanteEjgApellido2(UtilidadesHash.getString(haste, "APELLIDO2"));
-					
+				String SUFIJO = (String) haste.get("SUFIJO");
+				String CODIGO = (String) haste.get("CODIGO");
+				String codigoEjg = null;
+				if (SUFIJO != null && !SUFIJO.equals("")) {
+					codigoEjg = CODIGO + "-" + SUFIJO;
+				} else {
+					codigoEjg = CODIGO;
+				}
+				form.setNumExpDisciplinarioCalc(codigoEjg);
+				form.setSolicitanteEjgNif(UtilidadesHash.getString(haste, "NIF"));
+				form.setSolicitanteEjgNombre(UtilidadesHash.getString(haste, "NOMBRE"));
+				form.setSolicitanteEjgApellido1(UtilidadesHash.getString(haste, "APELLIDO1"));
+				form.setSolicitanteEjgApellido2(UtilidadesHash.getString(haste, "APELLIDO2"));					
 //					request.setAttribute("codigoEjg", codigoEjg);
 				
-				
-				
-				
-			}else{
+			} else {
 				form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
 				form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
 			}
 			form.setFecha(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHA)));
 			form.setInstitucion(fila.getString(C_NOMBREINSTITUCION));
 			form.setAsunto(fila.getString(ExpExpedienteBean.C_ASUNTO));
+			
 			//BEGIN BNS
 			// Cargamos el denunciado de la tabla de denunciante con ID 1
-			if (this.getIDInstitucion(request) != null && idTipoExpediente != null && request.getParameter("idInstitucion_TipoExpediente") != null &&
-					numExpediente != null && anioExpediente != null){
+			if (this.getIDInstitucion(request) != null 
+					&& idTipoExpediente != null 
+					&& request.getParameter("idInstitucion_TipoExpediente") != null 
+					&& numExpediente != null 
+					&& anioExpediente != null) {
 				//if (request.getAttribute("mostrarDenunciado") != null && "S".equalsIgnoreCase((String)request.getAttribute("mostrarDenunciado"))){
 					// Obtenemos los datos del denunciado
 					ExpDenunciadoAdm DenunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));				
@@ -771,7 +1019,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 					hash.put(ExpDenunciadoBean.C_IDDENUNCIADO, ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
 					
 			        Vector datos = DenunciadoAdm.select(hash);
-			        if (datos != null && datos.size() > 0){
+			        if (datos != null && datos.size() > 0) {
 			        	ExpDenunciadoBean denunciado = (ExpDenunciadoBean)datos.get(0);
 			        	form.setIdPersonaDenunciado(denunciado.getIdPersona().toString());
 			        	if (denunciado.getIdDireccion() != null)
@@ -805,8 +1053,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				        if(datosCol!=null && datosCol.size()>0){
 				        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
 				        	form.setnColDenunciado(cBean.getNColegiado());
-				        }
-				        else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
+				        } else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
 				        	// Si no existe, buscamos en la institución origen
 				        	hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucionOrigen);
 					        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciado.getIdPersona());
@@ -816,7 +1063,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 					        	form.setnColDenunciado(cBean.getNColegiado());
 					        }
 				        }			        	
-						
 			        }
 				//}
 				//if (request.getAttribute("mostrarDenunciante") != null &&  ((String)request.getAttribute("mostrarDenunciante")).equalsIgnoreCase("S")){
@@ -864,8 +1110,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				        if(datosCol!=null && datosCol.size()>0){
 				        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
 				        	form.setnColDenunciante(cBean.getNColegiado());
-				        }
-				        else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
+				        } else if (!idInstitucionOrigen.equals(this.getIDInstitucion(request).toString())){
 				        	// Si no existe, buscamos en la institución origen
 				        	hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucionOrigen);
 					        hashCol.put(CenColegiadoBean.C_IDPERSONA,denunciante.getIdPersona());
@@ -875,7 +1120,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 					        	form.setnColDenunciante(cBean.getNColegiado());
 					        }
 				        }			        	
-						
 			        }
 				}
 			//}
@@ -914,9 +1158,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
 			*/
 			//END BNS
-			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
-				idTipoExpediente=idTipoExpedienteNew;
-			}
+			
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
 			form.setIdMateriaSolo(fila.getString(ExpExpedienteBean.C_IDMATERIA));
 			form.setJuzgado(fila.getString(ExpExpedienteBean.C_JUZGADO));
@@ -926,12 +1168,13 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setIdInstitucionJuzgado(fila.getString(ExpExpedienteBean.C_IDINSTITUCION_JUZGADO));
 			form.setIdInstitucionProcedimiento(fila.getString(ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO));
 			form.setNumAsunto(fila.getString(ExpExpedienteBean.C_NUMASUNTO));
-
-			form.setFechaInicial(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAINICIALESTADO)));
-			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
+			
+			if (copia!=null && copia.trim().equalsIgnoreCase("s")) {
+				idTipoExpediente=idTipoExpedienteNew;
 				request.setAttribute("idinst_idtipo_idfase",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+idTipoExpediente+","+fila.getString(ExpExpedienteBean.C_IDFASE));
 				request.setAttribute("idinst_idtipo_idfase_idestado",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+idTipoExpediente+","+fila.getString(ExpExpedienteBean.C_IDFASE)+","+fila.getString(ExpExpedienteBean.C_IDESTADO));			request.setAttribute("idinst_idtipo_idfase_idestado",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDFASE)+","+fila.getString(ExpExpedienteBean.C_IDESTADO));
-			}else{
+				
+			} else {
 				request.setAttribute("idinst_idtipo_idfase",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDFASE));
 				request.setAttribute("idinst_idtipo_idfase_idestado",fila.getString(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)+","+fila.getString(ExpExpedienteBean.C_IDFASE)+","+fila.getString(ExpExpedienteBean.C_IDESTADO));
 				
@@ -940,24 +1183,27 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setFase(fila.getString(ExpExpedienteBean.C_IDFASE));
 				form.setEstado(fila.getString(ExpExpedienteBean.C_IDESTADO));
 				form.setClasificacion(fila.getString(ExpExpedienteBean.C_IDCLASIFICACION));
+				
+				// JPT: Debido a la incidencia INC_11703_SIGA, la fecha inicial, la fecha final y la fecha de prorroga no se copian
+				form.setFechaInicial(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAINICIALESTADO)));
+				
+				if (fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO)!=null && !fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO).equals("")) {
+					form.setFechaFinal(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO)));
+				} else {
+					form.setFechaFinal("");				
+				}
+				
+				if (fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO)!=null && !fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO).equals("")) {
+					form.setFechaProrroga(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO)));
+				} else {
+					form.setFechaProrroga("");				
+				}		
 			}
 			
 			request.setAttribute("idJuzgado", fila.getString(ExpExpedienteBean.C_JUZGADO));
 			request.setAttribute("idInstitucionJuzgado", fila.getString(ExpExpedienteBean.C_IDINSTITUCION_JUZGADO));
 			request.setAttribute("idProcedimiento", fila.getString(ExpExpedienteBean.C_PROCEDIMIENTO));
-			request.setAttribute("idInstitucionProcedimiento", fila.getString(ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO));
-			
-			if (fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO)!=null && !fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO).equals("")){
-				form.setFechaFinal(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAFINALESTADO)));
-			}else{
-				form.setFechaFinal("");				
-			}
-			
-			if (fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO)!=null && !fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO).equals("")){
-				form.setFechaProrroga(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHAPRORROGAESTADO)));
-			}else{
-				form.setFechaProrroga("");				
-			}		
+			request.setAttribute("idInstitucionProcedimiento", fila.getString(ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO));			
 
 			String sMinuta = fila.getString(ExpExpedienteBean.C_MINUTA); 
 			if (sMinuta != null && !sMinuta.equals("")) {
@@ -966,6 +1212,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				//if (fila.getString("VALOR_IVA") != null)
 				//	request.setAttribute("idTipoIVA", fila.getString("VALOR_IVA"));
 			}
+			
 			String sImporteTotal = fila.getString(ExpExpedienteBean.C_IMPORTETOTAL); 
 			if (sImporteTotal != null && !sImporteTotal.equals("")) {
 				double ImporteTotal = Double.parseDouble(sImporteTotal);
@@ -984,6 +1231,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				double minuta = Double.parseDouble(sMinutaFinal);
 				form.setMinutaFinal("" + UtilidadesNumero.formatoCampo(minuta));
 			}
+			
 			String sImporteTotalFinal = fila.getString(ExpExpedienteBean.C_IMPORTETOTALFINAL); 
 			if (sImporteTotalFinal != null && !sImporteTotalFinal.equals("")) {
 				double ImporteTotal = Double.parseDouble(sImporteTotalFinal);
@@ -996,8 +1244,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setDerechosColegiales("" + UtilidadesNumero.formatoCampo(derechos));
 			}
 			
-			
-			
 			form.setObservaciones(fila.getString(ExpExpedienteBean.C_OBSERVACIONES));
 			if (fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)!=null && !fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD).equals("")){
 				form.setFechaCaducidad(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)));
@@ -1008,30 +1254,29 @@ public class ExpDatosGeneralesAction extends MasterAction
 			//necesitamos el nombre de la fase y del estado
 			//Modificado para que en consulta obtenga la fase siempre.
 			if (!edit){
-					//SEGUNDA SELECT: EXP_FASES---------------------------------------------
-					if(form.getFase()!=null && !form.getFase().equals("")){
-						ExpFasesAdm faseAdm = new ExpFasesAdm (this.getUserBean(request));		
-						Hashtable hashFase = new Hashtable();
-						
-						hashFase.put(ExpFasesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
-						hashFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
-						hashFase.put(ExpFasesBean.C_IDFASE,form.getFase());
-						datosFase = faseAdm.select(hashFase);
-						if(datosFase!=null && datosFase.size()>0){
-							ExpFasesBean faseBean = (ExpFasesBean)datosFase.elementAt(0);
-						
-							form.setFaseSel(faseBean.getNombre());
-						}else{
-							form.setFaseSel("");
-						}
-					}else{
+				//SEGUNDA SELECT: EXP_FASES---------------------------------------------
+				if(form.getFase()!=null && !form.getFase().equals("")){
+					ExpFasesAdm faseAdm = new ExpFasesAdm (this.getUserBean(request));		
+					Hashtable hashFase = new Hashtable();
+					
+					hashFase.put(ExpFasesBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
+					hashFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+					hashFase.put(ExpFasesBean.C_IDFASE,form.getFase());
+					datosFase = faseAdm.select(hashFase);
+					if(datosFase!=null && datosFase.size()>0){
+						ExpFasesBean faseBean = (ExpFasesBean)datosFase.elementAt(0);
+					
+						form.setFaseSel(faseBean.getNombre());
+					} else {
 						form.setFaseSel("");
-						
 					}
+				} else {
+					form.setFaseSel("");
+				}
 					
 					//TERCERA SELECT: EXP_ESTADOS
-				if (bEstado){
-					if(form.getEstado()!=null && !form.getEstado().equals("")){
+				if (bEstado) {
+					if (form.getEstado()!=null && !form.getEstado().equals("")) {
 						ExpEstadosAdm estadoAdm = new ExpEstadosAdm (this.getUserBean(request));		
 						Hashtable hashEstado = new Hashtable();
 						hashEstado.put(ExpEstadosBean.C_IDINSTITUCION,idInstitucion_TipoExpediente);
@@ -1042,18 +1287,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 						if(datosEstado!=null && datosEstado.size()>0){
 							ExpEstadosBean estadoBean = (ExpEstadosBean)datosEstado.elementAt(0);
 							
-							
 							form.setEstadoSel(estadoBean.getNombre());
-						}else{
+						} else {
 							form.setEstadoSel("");
-							
 						}
-					}else{
+					} else {
 						form.setEstadoSel("");
-						
 					}
 				}
-				
 				
 				//CUARTA SELECT: EXP_CLASIFICACION
 				if(form.getClasificacion()!=null && !form.getClasificacion().equals("")){
@@ -1065,21 +1306,20 @@ public class ExpDatosGeneralesAction extends MasterAction
 					hashClasif.put(ExpClasificacionesBean.C_IDCLASIFICACION,form.getClasificacion());
 					
 					datosClasif = clasifAdm.select(hashClasif);
-					if(datosClasif!=null && datosClasif.size()>0){
+					if (datosClasif!=null && datosClasif.size()>0){
 						ExpClasificacionesBean clasifBean = (ExpClasificacionesBean)datosClasif.elementAt(0);
 						
 						form.setClasificacionSel(clasifBean.getNombre());
-					}else{
+					} else {
 						form.setClasificacionSel("");
-						
 					}
-				}else{
+				} else {
 					form.setClasificacionSel("");
 				}
 				
 				request.setAttribute("accion","consulta");
 				
-			}else{
+			} else {
 				request.setAttribute("accion","edicion");
 			}
 			ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
@@ -1090,7 +1330,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 					request.setAttribute("tipoExpedienteEjg", Boolean.TRUE);
 			//	else
 				//	request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
-			}else{
+			} else {
 				request.setAttribute("tipoExpedienteEjg", Boolean.FALSE);
 			}
 			if(copia!=null && copia.trim().equalsIgnoreCase("s")){
@@ -1099,10 +1339,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setTipoExpediente(nombreTipoExpedienteNew);
 			}
 
-		}catch(Exception e){
+		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
 		}
-			return("inicio");
+		
+		return("inicio");
 	}
 	
 	/* (non-Javadoc)
@@ -1618,9 +1859,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 		UserTransaction tx = null;
 		try{
 			ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
-			ExpTipoExpedienteAdm expTipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
-
 
 			HttpSession session = request.getSession();
 			UsrBean user = (UsrBean)session.getAttribute("USRBEAN");
@@ -1658,19 +1897,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			else
 				throw new ClsExceptions("Se ha perdido la información de sesión ("+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" no encontrado)");
 			
-
-			// obtenemos el tipo de expediente para ver el tiempo de caducidad y calcularlo
-			Hashtable hashTipo = new Hashtable();
-			hashTipo.put(ExpTipoExpedienteBean.C_IDINSTITUCION, idInstitucion_TipoExpediente);
-			hashTipo.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
-			Vector vTipo = expTipoAdm.selectByPK(hashTipo);
-			Integer diasCaducidad = null;
-			if (vTipo.size()>0) {
-				ExpTipoExpedienteBean beanTipo = (ExpTipoExpedienteBean) vTipo.get(0);
-				diasCaducidad = beanTipo.getTiempoCaducidad();
-				if (diasCaducidad==null) diasCaducidad = new Integer(0);
-			}
-			
 			
 			//Rellenamos el nuevo Bean	    
 			ExpExpedienteBean expBean = new ExpExpedienteBean();	    
@@ -1691,19 +1917,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			
 			if (form.getFechaCaducidad().equals("")) {
-				/*
-				if (expBean.getFecha().equals("sysdate")) {
-					// tengo que obtener la fecha de hoy para trabajar con ella
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		            Date date = new Date();
-		            expBean.setFechaCaducidad(GstDate.dateSumaDiasJava(dateFormat.format(date), diasCaducidad));
-				} else {
-					// tengo una fecha normal
-					expBean.setFechaCaducidad(GstDate.dateSumaDiasJava(expBean.getFecha(), diasCaducidad));
-				}
-				*/
-				expBean.setFechaCaducidad("");
-				
+				expBean.setFechaCaducidad("");				
 			} else {
 				expBean.setFechaCaducidad(GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
 			}
@@ -2133,61 +2347,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 	    }
 		
 		return "editar";
-		
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see com.siga.general.MasterAction#abrirConParametros(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	protected String abrirConParametros(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-
-		try{
-			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
-			HttpSession ses = request.getSession(); 
-			//UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
-			Hashtable hashExp = new Hashtable();
-			ExpExpedienteAdm expAdm = new ExpExpedienteAdm (this.getUserBean(request));
-			ExpExpedienteBean expBean = new ExpExpedienteBean(); //(ExpExpedienteBean)vExp.elementAt(0);
-						
-			if (ses.getAttribute("DATABACKUP").getClass().getName().equals("java.util.HashMap")){
-				HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
-			    hashExp = (Hashtable)datosExpediente.get("datosGenerales");
-			    Vector vExp = expAdm.select(hashExp);
-				expBean = (ExpExpedienteBean)vExp.elementAt(0);
-			}else{
-				hashExp = (Hashtable)ses.getAttribute("DATABACKUP");
-				expBean.setIdInstitucion(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDINSTITUCION)));
-				expBean.setIdInstitucion_tipoExpediente(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE)));
-				expBean.setIdTipoExpediente(Integer.valueOf((String)hashExp.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)));
-			}
-			
-			
-			//Recojo el valor de la fecha inicial del formulario, de la fase y del estado
-			expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
-			expBean.setIdFase(Integer.valueOf(form.getFase()));
-			expBean.setIdEstado(Integer.valueOf(form.getEstado()));
-			expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));
-			
-			ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
-						
-			//calculo la fecha final con este método, y me la devuelve en el bean
-			try{
-				if(plazoAdm.establecerFechaFinal(expBean)){
-					request.setAttribute("fechaFinal",GstDate.getFormatedDateShort("",expBean.getFechaFinalEstado()));
-				}else{
-					request.setAttribute("fechaFinal","");
-				}
-			}catch(Exception e){
-				throw new ClsExceptions(e,"Error en el cálculo del plazo"); 
-			}
-		}catch(Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
-		}
-		
-		return "plazo";
 		
 	}
 		
