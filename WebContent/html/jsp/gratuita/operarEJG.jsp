@@ -225,7 +225,21 @@
 	String designaAnio = hash.get("DESIGNA_ANIO").toString();
 	String designaNumero = hash.get("DESIGNA_NUMERO").toString();
 	String designaIdTurno = hash.get("DESIGNA_IDTURNO").toString();
-
+	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "", t_idpersonaD = "", t_ncolegiadoD = "";
+	if(designaAnio!= null && !designaAnio.equals("")){
+		designaExiste = true;
+		ScsDesignaAdm admD = new ScsDesignaAdm(usr);		
+		Hashtable hTituloD = admD.obtenerLetradoDesigna(usr.getLocation(), designaIdTurno, designaAnio,	designaNumero);
+		if (hTituloD != null) {
+			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
+			t_apellido1D = (String) hTituloD.get(CenPersonaBean.C_APELLIDOS1);
+			t_apellido2D = (String) hTituloD.get(CenPersonaBean.C_APELLIDOS2);
+			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
+			t_idpersonaD = (String) hTituloD.get(CenPersonaBean.C_IDPERSONA);
+			t_ncolegiadoD = (String) hTituloD.get("ncolegiado");
+		}
+	}	
+	
 	if (IDTIPOEJGCOLEGIO != null && !IDTIPOEJGCOLEGIO.equals(""))
 		TIPOEJGCOLEGIOSEL.add(IDTIPOEJGCOLEGIO);
 	else
@@ -291,7 +305,6 @@
 		estiloCombo = "boxComboConsulta";
 		readOnly = "true";
 	}
-	String t_nombreD = "", t_apellido1D = "", t_apellido2D = "", t_idpersonaD = "", t_ncolegiadoD = "";
 
 	ArrayList vIntFDict = new ArrayList();
 	if (hash.containsKey("IDTIPODICTAMENEJG")) {
