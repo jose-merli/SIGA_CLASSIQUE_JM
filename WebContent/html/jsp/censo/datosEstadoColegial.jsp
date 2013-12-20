@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosEstadoColegial.jsp -->
+
 <!-- 
 	 Permite editar los estados colegiales
 	 VERSIONES:
@@ -76,229 +77,236 @@
 				
 	}
 	
-	
-	
 	String	botones="C,Y,R";
-	
-	
 %>	
 
-
-<!-- HEAD -->
-	
-
-			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 		
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="DatosColegialesForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
- 	
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<!--siga:Titulo 
-			titulo="censo.busquedaHistorico.literal.titulo1" 
-			localizacion="censo.busquedaHistorico.literal.titulo1"/-->
-		<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="DatosColegialesForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	
-	</head>
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<!--siga:Titulo 
+		titulo="censo.busquedaHistorico.literal.titulo1" 
+		localizacion="censo.busquedaHistorico.literal.titulo1"/-->
+	<!-- FIN: TITULO Y LOCALIZACION -->
+</head>
 
-	<body>
+<body>
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="titulitosDatos" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulitos" class="titulosPeq">
+				<siga:Idioma key="censo.consultaDatosColegiales.literal.cabecera2"/> 
+				&nbsp;
+				<%=UtilidadesString.mostrarDatoJSP(nombre)%>
+				&nbsp;
+			    <% if(!numero.equalsIgnoreCase("")) { %>
+					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+				<% } else { %>
+				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+				<% } %>
+			</td>
+		</tr>
+	</table>
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<!-- dentro de esta capa se tienen que situar los diferentes componentes 
+		 que se van a mostrar, para que quepen dentro de la ventana.
+		 Los elementos que copieis dentro, que tengan el estilo 
+		 "tablaTitulo" se deben modificar por "tablaCentralMedia" 
+	-->
 
-		<!-- TITULO -->
-		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="titulitosDatos" cellspacing="0" heigth="32">
-			<tr>
-				<td id="titulitos" class="titulosPeq">
-					<siga:Idioma key="censo.consultaDatosColegiales.literal.cabecera2"/> &nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;
-				    <%if(!numero.equalsIgnoreCase("")){%>
-						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%} 
-					else {%>
-					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<%}%>
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table  class="tablaCentralCamposPeque"  align="center">
+		<html:form action="/CEN_DatosColegiales.do" method="POST" target="submitArea">
+			<html:hidden property="modo" value = "<%=nextModo%>"/>
+			<html:hidden property="motivo" value=""/>
+			<!-- por algún motivo aparece en el validation, pero no recuerdo haberlo puesto y a 22/01/05 no aparece en el -->
+			<!-- lo incluyo para que "pase" -->
+			<html:hidden property="numColegiado" value=""/>
+			<!-- fin "pase" -->
+			<html:hidden property="idPersona" value="<%=idPersona%>"/>
+			<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden property = "actionModal" value = ""/>
+				
+			<tr>				
+				<td>
+					<siga:ConjCampos leyenda="censo.consultaDatosColegiales.leyenda">
+						<table class="tablaCampos" border="0" align="center">
+							<!-- FILA -->
+							<tr>														
+								<td class="labelText">
+									<siga:Idioma key="censo.consultaDatosColegiales.literal.estado"/>&nbsp;(*)
+								</td>				
+								<td>
+<% 
+									if (nextModo.equalsIgnoreCase("insertar")) {
+%>	
+										<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial" clase="boxCombo" obligatorio="true"/>
+<% 
+									} else { 
+										if (vSel.isEmpty()) {
+											int i=0;
+%>
+											<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial" clase="boxConsulta" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
+<% 
+										} else { 
+%>
+											<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial"   clase="boxConsulta" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
+<% 
+										}
+									} 
+%>								
+								</td>	
+							</tr>	
+
+							<!-- FILA -->
+							<tr>														
+								<td class="labelText" nowrap>
+									<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaEstado"/>&nbsp;(*)
+								</td>				
+								<td>
+<% 
+									if (nextModo.equalsIgnoreCase("insertar") || nextModo.equalsIgnoreCase("modificar")) {
+%>										
+		  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="120" posicionY="20"/>																																
+<% 
+									} else { 
+										if (fechaEstado.equalsIgnoreCase("")) { 
+%>	
+											<siga:Fecha  nombreCampo= "fechaEstado"  disabled="true"/>								 	
+<% 
+										} else { 
+%>										 										 	
+											<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  disabled="true"/>
+<% 
+										}
+									} 
+%>																																																															
+								</td>	
+							</tr>														
+
+							<!-- FILA -->
+							<tr>				
+								<td class="labelText">
+									<siga:Idioma key="censo.consultaDatosColegiales.literal.observaciones"/>&nbsp;
+								</td>				
+								<td>											
+<% 
+									if (nextModo.equalsIgnoreCase("insertar")) { 
+%>
+ 										<html:textarea property="observaciones" styleClass="box"  											
+ 											onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 
+ 											style="overflow-y:auto; overflow-x:hidden; width:300px; height:80px; resize:none;"></html:textarea> 
+<% 
+									} else {
+										if (nextModo.equalsIgnoreCase("modificar")) {
+%>
+			  						       	<html:textarea property="observaciones" styleClass="box" value="<%=observacion%>" 
+			  						       		onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 			  						       		
+			  						       		style="overflow-y:auto; overflow-x:hidden; width:300px; height:80px; resize:none;"></html:textarea> 
+<% 
+										} else { 
+%>
+											<html:textarea property="observaciones" styleClass="boxConsulta" value="<%=observacion%>" readOnly="true"
+												style="overflow-y:auto; overflow-x:hidden; width:300px; height:80px; resize:none;"></html:textarea> 
+<% 
+										}
+									} 
+%>									
+						  		</td>
+							</tr>										
+						</table>
+					</siga:ConjCampos>
 				</td>
 			</tr>
-		</table>
-		<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-		<!-- dentro de esta capa se tienen que situar los diferentes componentes 
-			 que se van a mostrar, para que quepen dentro de la ventana.
-			 Los elementos que copieis dentro, que tengan el estilo 
-			 "tablaTitulo" se deben modificar por "tablaCentralMedia" 
-		-->
+		</html:form>	
+	</table>
+	<!-- FIN: CAMPOS -->
 
-			<!-- INICIO: CAMPOS -->
-			<!-- Zona de campos de busqueda o filtro -->
+	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- Aqui comienza la zona de botones de acciones -->
 
-			<table  class="tablaCentralCamposPeque"  align="center">
-
-				<html:form action="/CEN_DatosColegiales.do" method="POST" target="submitArea">
-					<html:hidden property="modo" value = "<%=nextModo%>"/>
-					<html:hidden property="motivo" value=""/>
-					<!-- por algún motivo aparece en el validation, pero no recuerdo haberlo puesto y a 22/01/05 no aparece en el -->
-					<!-- lo incluyo para que "pase" -->
-					<html:hidden property="numColegiado" value=""/>
-					<!-- fin "pase" -->
-					<html:hidden property="idPersona" value="<%=idPersona%>"/>
-					<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-					<html:hidden property = "actionModal" value = ""/>
-				
-					<tr>				
-						<td>
-						<siga:ConjCampos leyenda="censo.consultaDatosColegiales.leyenda">
-							<table class="tablaCampos" border="0" align="center">
-								<!-- FILA -->
-									<tr>														
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaDatosColegiales.literal.estado"/>&nbsp;(*)
-										</td>				
-										<td>
-											<% 
-											if (nextModo.equalsIgnoreCase("insertar") ){%>	
-												<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial" clase="boxCombo" obligatorio="true"/>
-											<% } else { %>
-												<% if (vSel.isEmpty()){int i=0;%>
-													<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial" clase="boxConsulta" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
-												<% } else { %>
-													<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbEstadoColegial"   clase="boxConsulta" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
-													<% } %>											
-											<% } %>								
-										</td>	
-									</tr>	
-								<!-- FILA -->
-									<tr>														
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaEstado"/>&nbsp;(*)
-										</td>				
-										<td>
-										<% if (nextModo.equalsIgnoreCase("insertar") || nextModo.equalsIgnoreCase("modificar")){%>										
-			  								<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  posicionX="120" posicionY="20"/>																																
-										<% } else { %>		
-											<% if (fechaEstado.equalsIgnoreCase("")){ %>	
-											<siga:Fecha  nombreCampo= "fechaEstado"  disabled="true"/>								 	
-											<% }else{ %>										 										 	
-											<siga:Fecha  nombreCampo= "fechaEstado" valorInicial="<%=fechaEstado%>"  disabled="true"/>
-											<% } %>																	
-										<% } %>																																																															
-										</td>	
-									</tr>														
-								<!-- FILA -->
-									<tr>				
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaDatosColegiales.literal.observaciones"/>&nbsp;
-										</td>				
-										<td>	
-										
-										<% if (nextModo.equalsIgnoreCase("insertar")){ %>
- 												<html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="box"></html:textarea> 
-										<% } else { %>
-					  						<% if (nextModo.equalsIgnoreCase("modificar")){%>
-  					  						       <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="box" value="<%=observacion%>"></html:textarea> 
-				  							 	<% } else{ %>
-   				  							 	   <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="boxConsulta" value="<%=observacion%>" readOnly="true" ></html:textarea> 
-												<% } %>				  					 				  					 				  					 
-							  	    	<% } %>				
-																						
-						  				</td>
-									</tr>										
-								</table>
-							</siga:ConjCampos>
-						</td>
-					</tr>
-				</html:form>	
-			</table>
-			<!-- FIN: CAMPOS -->
-
-			<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-			<!-- Aqui comienza la zona de botones de acciones -->
-
-			<!-- INICIO: BOTONES REGISTRO -->
-			<!-- Esto pinta los botones que le digamos. Ademas, tienen asociado cada
-				 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-				 son: G Guardar,Y GuardaryCerrar,R Restablecer,C Cerrar,X Cancelar,N Nuevo
-				 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
-				 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
-				 La propiedad modal dice el tamanho de la ventana (M,P,G)
-			-->
-		
-			<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=nextModo%>"  modal="P"/>
-			
-			<!-- FIN: BOTONES REGISTRO -->
+	<!-- INICIO: BOTONES REGISTRO -->
+	<!-- Esto pinta los botones que le digamos. Ademas, tienen asociado cada
+		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
+		 son: G Guardar,Y GuardaryCerrar,R Restablecer,C Cerrar,X Cancelar,N Nuevo
+		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
+		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
+		 La propiedad modal dice el tamanho de la ventana (M,P,G)
+	-->
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=nextModo%>"  modal="P"/>
+	<!-- FIN: BOTONES REGISTRO -->
 
 	
-			<!-- INICIO: SCRIPTS BOTONES -->
-			<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-			<script language="JavaScript">
-
-			<!-- Asociada al boton GuardarCerrar -->
-			function accionGuardarCerrar() 
-			{			
-				sub();		
-				if (validateDatosColegialesForm(document.DatosColegialesForm)){
-				
-					if (document.forms[0].cmbEstadoColegial.value == '<%=idEstadoUltimo%>') {
-						alert ("<siga:Idioma key='censo.consultaDatosColegiales.literal.estado.error'/>");
-						fin();
-						return;
-					}
-				
-					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
-							window.top.focus();
-					<% } else { %>
-							var datos = new Array();
-							datos[0] = 1;
-							datos[1] = "";
-					<% } %>
-				
-					if (datos[0] == 1) { // Boton Guardar
-						document.forms[0].motivo.value = datos[1];
-						document.forms[0].target = "submitArea";
-						document.forms[0].submit();
-					}else{
-						fin();
-						return false;
-					}	
-				}	else{
+	<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	<script language="JavaScript">
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {			
+			sub();		
+			if (validateDatosColegialesForm(document.DatosColegialesForm)){
+			
+				/* JPT: Se pide que se puedan repetir los estados, y por tanto, comento este codigo
+				if (document.forms[0].cmbEstadoColegial.value == '<%=idEstadoUltimo%>') {
+					alert ("<siga:Idioma key='censo.consultaDatosColegiales.literal.estado.error'/>");
 					fin();
-  					return false;
+					return;
 				}
-			}
-
-			<!-- Asociada al boton Cerrar -->
-			function accionCerrar() 
-			{		
-				window.top.close();
-			}
-
-			<!-- Asociada al boton Restablecer -->
-			function accionRestablecer() 
-			{		
-				document.forms[0].reset();
-			}
+				*/
 			
+				<% if (!bOcultarHistorico) { %>
+						var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+						window.top.focus();
+				<% } else { %>
+						var datos = new Array();
+						datos[0] = 1;
+						datos[1] = "";
+				<% } %>
 			
+				if (datos[0] == 1) { // Boton Guardar
+					document.forms[0].motivo.value = datos[1];
+					document.forms[0].target = "submitArea";
+					document.forms[0].submit();
+				}else{
+					fin();
+					return false;
+				}	
+			}	else{
+				fin();
+ 					return false;
+			}
+		}
 
-			</script>
-			<!-- FIN: SCRIPTS BOTONES -->
-	
-			<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		// Asociada al boton Cerrar
+		function accionCerrar() {		
+			window.top.close();
+		}
 
-		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
+			document.forms[0].reset();
+		}
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->
+	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
-		<!-- INICIO: SUBMIT AREA -->
-		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<!-- FIN: SUBMIT AREA -->
-
-	</body>
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>
-
