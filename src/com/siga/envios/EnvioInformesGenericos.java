@@ -1665,8 +1665,8 @@ public class EnvioInformesGenericos extends MasterReport {
 							datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
 							datosInformeSeleccionado.put("aSolicitantes", "S");
 							
-							String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJG+idioma; 
-							
+							//String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJG+idioma; --> idPersonaJG es null y no es el item del for
+							String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJGInteresarado+idioma;
 							
 							
 							
