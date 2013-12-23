@@ -326,7 +326,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
 			
-			List<EcomCenMaestroIncidenc> incidencias = cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos(), false);
+			List<EcomCenMaestroIncidenc> incidencias = cenWSService.getIncidencias(ecomCenDatos.getIdcensodatos(), true);
 			
 			edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(false);
 			edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(false);
