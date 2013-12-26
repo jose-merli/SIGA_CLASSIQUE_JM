@@ -2039,27 +2039,27 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			ScsInscripcionGuardiaAdm inscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
 			boolean isPorGrupos = false;
 			
+			// Por cada turno seleccionado de la lista
 			while (st1.hasMoreTokens() && !isPorGrupos) {
 				String registro = st1.nextToken();
 				String d[]= registro.split("##");
 				String idTurnoSel=d[0];
 				
-				
-				
-				
-				
+				// comprobando si alguna de las guardias del turno es por grupos
 				List <ScsInscripcionGuardiaBean> alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasParaInscripcion(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(idTurnoSel), 
 					new Long(miForm.getIdPersona()),
 					null);
-				Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 				
-				while (itet.hasNext()&&!isPorGrupos) {
-					ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
-					if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
-						isPorGrupos = true;
+				if (alInscripcionGuardia != null) {
+					Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 					
+					while (itet.hasNext()&&!isPorGrupos) {
+						ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
+						if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
+							isPorGrupos = true;
+					}
 				}
 				
 			}
