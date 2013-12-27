@@ -4435,6 +4435,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSCONTRARIOSJG)){
 				idContrario = idDestinatario;
 			} 
+			
+			// la siguiente linea es un parche: desde SMSs no viene el tipoDestinatarioInforme
+			tipoDestinatarioInforme = (tipoDestinatarioInforme == null) ? tipoDestinatario : tipoDestinatarioInforme;
 		}
 
 		try {
