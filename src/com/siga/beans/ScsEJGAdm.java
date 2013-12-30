@@ -4676,7 +4676,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						else
 							isAlgunInformeNoGenerado = true;
 					}
-				}else if(tipoDestinatarioInforme.equals("S")){
+				}else if(tipoDestinatarioInforme.equals("S") || tipoDestinatarioInforme.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
 					//					Sacamos los interesados el EJG  y los recorremos
 
 					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
