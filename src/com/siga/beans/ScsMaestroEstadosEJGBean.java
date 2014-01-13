@@ -13,6 +13,11 @@ public class ScsMaestroEstadosEJGBean extends MasterBean{
 	private Integer idEstadoEJG;		
 	private String 	descripcion;	
 	
+	private String bloqueado;
+	private Short orden;
+	private String visiblecomision; 
+	private String codigoejis;
+	
 	/* Nombre de Tabla*/
 	
 	static public String T_NOMBRETABLA = "SCS_MAESTROESTADOSEJG";
@@ -23,6 +28,13 @@ public class ScsMaestroEstadosEJGBean extends MasterBean{
 	
 	static public final String	C_IDESTADOEJG 	= 					"IDESTADOEJG"; 
 	static public final String  C_DESCRIPCION 	= 					"DESCRIPCION";
+	static public final String  C_BLOQUEADO 	= 					"BLOQUEADO";
+	static public final String  C_ORDEN 	= 					"ORDEN";
+	static public final String  C_VISIBLECOMISION 	= 					"VISIBLECOMISION";
+	static public final String  C_CODIGOEJIS 	= 					"CODIGOEJIS";
+	
+	
+	
 	/* cambio para codigo ext */
 	private String codigoExt;
 	static public final String C_CODIGOEXT = "CODIGOEXT";
@@ -66,5 +78,30 @@ public class ScsMaestroEstadosEJGBean extends MasterBean{
 	 * @return String
 	 */
 	public String getDescripcion			()	{ return this.descripcion;}
+	
+	public String getBloqueado() {
+		return bloqueado;
+	}
+	public void setBloqueado(String bloqueado) {
+		this.bloqueado = bloqueado;
+	}
+	public Short getOrden() {
+		return orden;
+	}
+	public void setOrden(Short orden) {
+		this.orden = orden;
+	}
+	public String getVisiblecomision() {
+		return visiblecomision;
+	}
+	public void setVisiblecomision(String visiblecomision) {
+		this.visiblecomision = visiblecomision;
+	}
+	public String getCodigoejis() {
+		return codigoejis;
+	}
+	public void setCodigoejis(String codigoejis) {
+		this.codigoejis = codigoejis;
+	}
 	
 }

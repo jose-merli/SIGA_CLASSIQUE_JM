@@ -704,58 +704,77 @@ import com.siga.tlds.FilaExtElement;
 		if (getModo().equalsIgnoreCase("ver")){
 			elementosFila = new FilaExtElement[3];
 		}else{
-			//System.out.println("ejg"+ejg);
-			//System.out.println("ejg.getestado"+ejg.getIdEstadoEjg());
-			if(permisoEejg!=null && permisoEejg.booleanValue() && 
-					(personaJG!=null && personaJG.getNif()!=null && !personaJG.getNif().trim().equals("") &&personaJG.getTipoIdentificacion()!=null&&!personaJG.getTipoIdentificacion().equalsIgnoreCase("")&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) )
-					&& ejg!=null && ((ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null&&ejg.getIdEstadoEjg().shortValue()<9))||esComision)){
-				
-				
-				if(getPeticionEejg()!=null){
-					int	estado = getPeticionEejg().getEstado();
+
+//			Si es comision solo podra comunicar
+//			Si es el colegio podra comunicar y solictar los expedientes siempre que cumpla todas las condiciones siguientes:
+//				La persona tenga TIPO_IDENTIFICACION_NIF o TIPO_IDENTIFICACION_TRESIDENTE
+//				La persona tenga numero de identificacion(que sera correcto ya que por interfaz se valida)	
+//					No Exista estado del Expediente 
+//						o 
+//					El estado en el que se encuentra el expediente no sea un estado de la comision
+			
+			if(permisoEejg!=null && permisoEejg.booleanValue() && !esComision){
+				if(
+						personaJG!=null && personaJG.getNif()!=null 
+						&& !personaJG.getNif().trim().equals("") 
+						&&	personaJG.getTipoIdentificacion()!=null 
+						&& !personaJG.getTipoIdentificacion().equalsIgnoreCase("")
+						&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) 
+						&& ejg!=null 
+						&& (ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null && ejg.getMaestroEstadoEJG().getVisiblecomision().equals(ClsConstants.DB_FALSE)))
+							
 						
-					if (estado == EEJG_ESTADO.INICIAL.getId()) {
-							elementosFila = new FilaExtElement[4];
-							//elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					} else if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId()) {
-							elementosFila = new FilaExtElement[4];
-							//elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
-							//elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					} else if (estado == EEJG_ESTADO.ESPERA.getId() || estado == EEJG_ESTADO.ESPERA_ESPERANDO.getId() || estado == EEJG_ESTADO.INICIAL_ESPERANDO.getId()) {
-							elementosFila = new FilaExtElement[4];
-							//elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
-							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					} else if (estado == EEJG_ESTADO.ERROR_SOLICITUD.getId() || estado == EEJG_ESTADO.ERROR_CONSULTA_INFO.getId()) {
+				)
+				{
+					if(getPeticionEejg()!=null){
+						int	estado = getPeticionEejg().getEstado();
+							
+						if (estado == EEJG_ESTADO.INICIAL.getId()) {
+								elementosFila = new FilaExtElement[4];
+								//elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
+								elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						} else if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId()) {
+								elementosFila = new FilaExtElement[4];
+								//elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
+								//elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+								elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						} else if (estado == EEJG_ESTADO.ESPERA.getId() || estado == EEJG_ESTADO.ESPERA_ESPERANDO.getId() || estado == EEJG_ESTADO.INICIAL_ESPERANDO.getId()) {
+								elementosFila = new FilaExtElement[4];
+								//elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
+								elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						} else if (estado == EEJG_ESTADO.ERROR_SOLICITUD.getId() || estado == EEJG_ESTADO.ERROR_CONSULTA_INFO.getId()) {
+								elementosFila = new FilaExtElement[5];
+								elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
+								//elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
+								elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						} else if (estado ==  EEJG_ESTADO.FINALIZADO.getId()) {
+								elementosFila = new FilaExtElement[4];
+								//elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+								elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+						} else {
 							elementosFila = new FilaExtElement[5];
 							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
-							//elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
+							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);						
+						}
+					}else{
+						
+							elementosFila = new FilaExtElement[5];
+							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","100");
 							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					} else if (estado ==  EEJG_ESTADO.FINALIZADO.getId()) {
-							elementosFila = new FilaExtElement[4];
-							//elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-							elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					} else {
-						elementosFila = new FilaExtElement[5];
-						elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
-						elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);						
+						
 					}
 				}else{
-					if(esComision){
-						// A la comision no les dejaremos solicitar
-						elementosFila = new FilaExtElement[4];
-						elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					}else{
-						elementosFila = new FilaExtElement[5];
-						elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","100");
-						elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					}
+					elementosFila = new FilaExtElement[4];
+					elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+					
 				}
+				
 			}else{
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+				
 			}
+					
 		}
 		this.setElementosFila(elementosFila);
 		return elementosFila;

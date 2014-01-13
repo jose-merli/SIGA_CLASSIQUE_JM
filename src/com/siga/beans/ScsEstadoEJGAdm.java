@@ -300,4 +300,46 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		return datos;
 	} //selectGenerico ()
 	
+	public ScsMaestroEstadosEJGBean getEstadoEjg (Short idEstadoJG,String codIdioma)
+			throws ClsExceptions 
+	{		
+		ScsMaestroEstadosEJGBean maestroEstadosEJGBean = null;
+		
+		//Acceso a BBDD
+		RowsContainer rc = null;
+		try {
+			rc = new RowsContainer ();			
+			StringBuffer s = new StringBuffer();
+			s.append(" SELECT IDESTADOEJG, F_SIGA_GETRECURSO(DESCRIPCION, ");
+			s.append(codIdioma);
+			s.append(" ) DESCRIPCION, FECHAMODIFICACION, USUMODIFICACION, CODIGOEXT, BLOQUEADO, ");
+			s.append(" ORDEN, VISIBLECOMISION, CODIGOEJIS FROM SCS_MAESTROESTADOSEJG WHERE IDESTADOEJG = ");
+			s.append(idEstadoJG);
+			if (rc.query (s.toString())) {
+				for (int i=0; i<rc.size (); i++) {
+					Row fila = (Row) rc.get (i);
+					Hashtable registro = (Hashtable) fila.getRow ();
+					
+					if (registro != null){
+						maestroEstadosEJGBean = new ScsMaestroEstadosEJGBean();
+						maestroEstadosEJGBean.setBloqueado(UtilidadesHash.getString(registro, ScsMaestroEstadosEJGBean.C_BLOQUEADO));
+						maestroEstadosEJGBean.setCodigoejis(UtilidadesHash.getString(registro, ScsMaestroEstadosEJGBean.C_CODIGOEJIS));
+						maestroEstadosEJGBean.setCodigoExt(UtilidadesHash.getString(registro, ScsMaestroEstadosEJGBean.C_CODIGOEXT));
+						maestroEstadosEJGBean.setDescripcion(UtilidadesHash.getString(registro, ScsMaestroEstadosEJGBean.C_DESCRIPCION));
+						maestroEstadosEJGBean.setIdEstadoEJG(UtilidadesHash.getInteger(registro, ScsMaestroEstadosEJGBean.C_IDESTADOEJG));
+						maestroEstadosEJGBean.setOrden(UtilidadesHash.getShort(registro, ScsMaestroEstadosEJGBean.C_ORDEN));
+						maestroEstadosEJGBean.setVisiblecomision(UtilidadesHash.getString(registro, ScsMaestroEstadosEJGBean.C_VISIBLECOMISION));
+					}
+				}
+			}
+		}
+		catch (Exception e) { 	
+			throw new ClsExceptions (e,
+					"Error al ejecutar el 'select' en B.D."); 
+		}
+		
+		return maestroEstadosEJGBean;
+	} //selectGenerico ()
+	
+	
 }

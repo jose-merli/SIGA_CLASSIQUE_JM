@@ -117,6 +117,8 @@ public class ScsEJGBean extends MasterBean{
 	private Long idEcomCola;
 	private Integer anioProcedimiento;	
     
+	private ScsMaestroEstadosEJGBean maestroEstadoEJG;
+	
     public String getDescripcionOrigen() {
 		return descripcionOrigen;
 	}
@@ -1037,6 +1039,13 @@ public class ScsEJGBean extends MasterBean{
 	public void setAnioProcedimiento(Integer anioProcedimiento) {
 		this.anioProcedimiento = anioProcedimiento;
 	}
+	public ScsMaestroEstadosEJGBean getMaestroEstadoEJG() {
+		return maestroEstadoEJG;
+	}
+	public void setMaestroEstadoEJG(ScsMaestroEstadosEJGBean maestroEstadoEJG) {
+		this.maestroEstadoEJG = maestroEstadoEJG;
+	}
+	
 	
 	
 	

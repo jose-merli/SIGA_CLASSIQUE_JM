@@ -30,6 +30,8 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEstadoEJGAdm;
+import com.siga.beans.ScsMaestroEstadosEJGBean;
 import com.siga.beans.ScsParentescoAdm;
 import com.siga.beans.ScsParentescoBean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -592,9 +594,13 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			ScsEJGBean ejg = null;
 			try{
 				ejg = vEjg.get(0);
+				
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}
+			
+			
+			
 //			P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
 //            P_IDTIPOEJG   IN SCS_EJG.IDTIPOEJG%type,
 //            P_ANIO        IN SCS_EJG.ANIO%type,
@@ -606,16 +612,21 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			htCodigos.put(new Integer(4),miForm.getNumero());
 			try {
 				String idEstadoEjg = EjecucionPLs.ejecutarFuncion(htCodigos, "F_SIGA_GET_IDULTIMOESTADOEJG");
-				if(idEstadoEjg!=null)
-					ejg.setIdEstadoEjg(Short.valueOf(idEstadoEjg));	
+				if(idEstadoEjg!=null && !idEstadoEjg.equalsIgnoreCase("")){
+					ejg.setIdEstadoEjg(Short.valueOf(idEstadoEjg));
+					ScsEstadoEJGAdm  estadoEJGAdm = new ScsEstadoEJGAdm(usr);
+					ScsMaestroEstadosEJGBean estadoEJG =  estadoEJGAdm.getEstadoEjg(ejg.getIdEstadoEjg(), usr.getLanguage());
+					ejg.setMaestroEstadoEJG(estadoEJG);
+				}
 			} catch (Exception e) {
 				ejg.setIdEstadoEjg(null);
+				ejg.setMaestroEstadoEJG(null);
 			}
 			
 			miForm.setEjg(ejg);
 			if (ejg.getIdPersonaJG()!=null ){
 				ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
-				
+
 				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
 				
 				
