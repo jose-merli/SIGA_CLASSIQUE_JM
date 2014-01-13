@@ -61,7 +61,8 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 		<script language="JavaScript">
 	
 			// Funcion asociada a boton buscar
-			function buscarPaginador() {		
+			function buscarPaginador() {	
+				sub();
 				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
@@ -89,7 +90,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
-<body onLoad="ajusteAlto('resultado');buscar()">
+<body onLoad="ajusteAlto('resultado');buscarPaginador()">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -226,13 +227,21 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 									<td class="labelText">
 										<siga:Idioma key="censo.ws.literal.estado"/>
 									</td>
-									<td colspan="3">										
+									<td>										
 										<html:select property="idestadocolegiado" name="EdicionRemesaForm" styleClass="boxCombo">
 											<html:option value="">&nbsp;</html:option>
 											<html:optionsCollection name="EdicionRemesaForm" property="estadosColegiado" value="key" label="value"></html:optionsCollection>
 										</html:select>
+									</td>	
+									<td class="labelText">
+										<siga:Idioma key="censo.ws.literal.incidencia"/>
 									</td>
-	
+									<td>										
+										<html:select property="idincidencia" name="EdicionRemesaForm" styleClass="boxCombo">
+											<html:option value="">&nbsp;</html:option>
+											<html:optionsCollection name="EdicionRemesaForm" property="incidenciasColegiado" value="key" label="value"></html:optionsCollection>
+										</html:select>
+									</td>	
 									
 								</tr>
 								
