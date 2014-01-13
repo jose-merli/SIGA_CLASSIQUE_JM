@@ -568,10 +568,12 @@
 			 	}
 			 	
 			 	function accionArchivar() {
-			 		sub();
-					document.forms[0].modo.value="archivar";
-					document.forms[0].target="mainWorkArea";	
-					document.forms[0].submit();					
+			 		if (confirm('<siga:Idioma key="censo.ws.archivar.confirmacion"/>')) {
+			 			sub();
+						document.forms[0].modo.value="archivar";
+						document.forms[0].target="mainWorkArea";	
+						document.forms[0].submit();
+			 		}
 			 	}
 			 	
 							
