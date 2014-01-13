@@ -83,6 +83,11 @@
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="buscarPor"/>
 			</html:form>
+<% 		} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {  %>			
+			<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="mainWorkArea">
+					<html:hidden property="volver" value="true"/>
+					<html:hidden property="modo" value="${EdicionRemesaForm.accion}"/>
+			</html:form>
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
 			<html:hidden  name="busquedaClientesForm" property="modo"/>
@@ -171,6 +176,8 @@
 					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 					document.MantenimientoDuplicadosForm.submit();
+<%				} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {	%>
+					document.EdicionRemesaForm.submit();
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "/SIGA/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
