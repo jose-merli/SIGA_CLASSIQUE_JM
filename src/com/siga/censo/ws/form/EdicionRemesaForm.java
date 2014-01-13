@@ -22,12 +22,14 @@ public class EdicionRemesaForm extends MasterForm {
 	private String segundoApellido = null;
 	private String idTipoIdentificacion = null;
 	private String identificacion = null;
-	private String idIncidencias = null;
+	private String idincidencia = null;
 	private String idestadocolegiado = null;
 	private Short idEstadoenvio = null;
 	
 	private List<ValueKeyVO> tiposIdentificacion;
 	private List<ValueKeyVO> estadosColegiado;
+	private List<ValueKeyVO> incidenciasColegiado;
+	
 	private Integer incidencias;
 	
 	public void reset() {
@@ -45,7 +47,7 @@ public class EdicionRemesaForm extends MasterForm {
 		segundoApellido = null;
 		idTipoIdentificacion = null;
 		identificacion = null;
-		idIncidencias = null;
+		idincidencia = null;
 		idestadocolegiado = null;
 	}
 		
@@ -109,13 +111,7 @@ public class EdicionRemesaForm extends MasterForm {
 	public void setIdentificacion(String identificacion) {
 		this.identificacion = identificacion;
 	}
-	public String getIdIncidencias() {
-		return idIncidencias;
-	}
-	public void setIdIncidencias(String idIncidencias) {
-		this.idIncidencias = idIncidencias;
-	}
-
+	
 
 	public List<ValueKeyVO> getTiposIdentificacion() {
 		return tiposIdentificacion;
@@ -220,6 +216,30 @@ public class EdicionRemesaForm extends MasterForm {
 
 	public void setIdEstadoenvio(Short idEstadoenvio) {
 		this.idEstadoenvio = idEstadoenvio;
+	}
+
+
+
+	public String getIdincidencia() {
+		return idincidencia;
+	}
+
+
+
+	public void setIdincidencia(String idincidencia) {
+		this.idincidencia = idincidencia;
+	}
+
+
+
+	public List<ValueKeyVO> getIncidenciasColegiado() {
+		return incidenciasColegiado;
+	}
+
+
+
+	public void setIncidenciasColegiado(List<ValueKeyVO> incidenciasColegiado) {
+		this.incidenciasColegiado = incidenciasColegiado;
 	}
 
 
