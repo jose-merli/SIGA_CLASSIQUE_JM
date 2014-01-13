@@ -182,11 +182,16 @@ public class EdicionRemesasAction extends MasterAction {
 			datosCriteria.andIdestadocolegiadoEqualTo(Short.valueOf(form.getIdestadocolegiado()));
 		}
 		
+		String idincidencia = null;
+		if (isNotnull(form.getIdincidencia())) {
+			idincidencia = form.getIdincidencia();
+		}
+		
 		ecomCenDatosExample.orderByApellido1();
 		ecomCenDatosExample.orderByApellido2();
 		ecomCenDatosExample.orderByNombre();
 		
-		List<EcomCenColegiadoVO> ecomColegiadoVOs = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample);
+		List<EcomCenColegiadoVO> ecomColegiadoVOs = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample, idincidencia);
 		
 		if (ecomColegiadoVOs != null) {
 			for (EcomCenColegiadoVO ecomCenColegiadoVO : ecomColegiadoVOs) {
@@ -290,12 +295,15 @@ public class EdicionRemesasAction extends MasterAction {
 			 			
 			edicionRemesaForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 			edicionRemesaForm.setEstadosColegiado(CombosCenWS.getEstadosColegiado(getUserBean(request)));
+			edicionRemesaForm.setIncidenciasColegiado(CombosCenWS.getIncidencaisColegiado(getUserBean(request)));
 			
 			edicionRemesaForm.setIdEstadoenvio(ecomCenWsEnvio.getIdestadoenvio());
 			
 			if (ECOM_CEN_MAESESTADOENVIO.PROCESANDO.getCodigo() == ecomCenWsEnvio.getIdestadoenvio()) {
 				accion = "ver";
 			}
+			
+			request.getSession().setAttribute("CenBusquedaClientesTipo", "CARGA_CENSO_WS");
 			
 			edicionRemesaForm.setAccion(accion);
 						
