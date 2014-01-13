@@ -175,7 +175,7 @@
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
 					<%if (edicionColegiadoForm.getIdpersona() != null) {%>
-						<a href="#" onclick="verColegiado('<%=edicionColegiadoForm.getIdinstitucion()%>', '<%=edicionColegiadoForm.getIdpersona()%>')"><%=edicionColegiadoForm.getNcolegiado()%></a>
+						<a href="#" onclick="verColegiado('<%=(i+1)%>')"><%=edicionColegiadoForm.getNcolegiado()%></a>
 					<%} else {%>
 						<%=edicionColegiadoForm.getNcolegiado()%>
 					<%}%>
@@ -220,11 +220,11 @@
 					document.forms[0].submit();
 				}
 			 	
-			 	function verColegiado(idinstitucion, idpersona) {
+			 	function verColegiado(row) {
 			 		document.forms[0].action="./CEN_BusquedaClientes.do?noReset=true&buscar=true";
 			 		
-					selectRow(1);					
-					consultar(1); 
+					selectRow(row);					
+					consultar(row); 
 			 	}
 				
 			 </script>
