@@ -4164,31 +4164,32 @@ public class EnvioInformesGenericos extends MasterReport {
 			UsrBean usr, int tipoPlantillaInforme) throws SIGAException,
 			ClsExceptions {
 		File f = null;
+		Hashtable htDatosInformeClone = (Hashtable) htDatosInforme.clone();
 		switch (tipoPlantillaInforme) {
 		case tipoPlantillaWord:
-			f = getInformeGenericoWord(beanInforme, htDatosInforme, idiomaExt,
+			f = getInformeGenericoWord(beanInforme, htDatosInformeClone, idiomaExt,
 					identificador, usr);
 			break;
 		case tipoPlantillaFo:
 			if (beanInforme.getIdTipoInforme().equals(
 					comunicacionesPagoColegiados)) {
 				InformeColegiadosPagos infColegiadoFo = new InformeColegiadosPagos();
-				htDatosInforme = (Hashtable) htDatosInforme.get("row");
+				htDatosInformeClone = (Hashtable) htDatosInformeClone.get("row");
 				f = infColegiadoFo.getInformeGenericoFo(beanInforme,
-						htDatosInforme, idiomaExt, identificador, usr);
+						htDatosInformeClone, idiomaExt, identificador, usr);
 
 			} else if (beanInforme.getIdTipoInforme().equals(
 					comunicacionesFacturacionesColegiados)) {
 				InformeColegiadosFacturaciones infColegiadoFo = new InformeColegiadosFacturaciones();
-				htDatosInforme = (Hashtable) htDatosInforme.get("row");
+				htDatosInformeClone = (Hashtable) htDatosInformeClone.get("row");
 				f = infColegiadoFo.getInformeGenericoFo(beanInforme,
-						htDatosInforme, idiomaExt, identificador, usr);
+						htDatosInformeClone, idiomaExt, identificador, usr);
 			}else if (beanInforme.getIdTipoInforme().equals(
 					comunicacionesFacturaRectificativa)) {
 				InformeAbono informeAbono = new InformeAbono();
-				htDatosInforme = (Hashtable) htDatosInforme.get("row");
+				htDatosInformeClone = (Hashtable) htDatosInformeClone.get("row");
 				f = informeAbono.getInformeGenericoFo(beanInforme,
-						htDatosInforme, idiomaExt, identificador, usr);
+						htDatosInformeClone, idiomaExt, identificador, usr);
 			}
 			break;
 
