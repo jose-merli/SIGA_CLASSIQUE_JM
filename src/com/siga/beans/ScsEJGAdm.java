@@ -2505,7 +2505,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 		} else if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())) {
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
-				consulta += " AND MEE.VISIBLECOMISION='1' ";
+				consulta += " AND MEE.VISIBLECOMISION(+) = '1' ";
 		}
 
 		consulta += " ORDER BY TO_NUMBER(" + ScsEJGBean.C_ANIO + ") DESC, " +
