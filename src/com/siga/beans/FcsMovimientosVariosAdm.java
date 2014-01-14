@@ -161,8 +161,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	 * @param idPersona
 	 * @return
 	 */
-	public Vector getMovimientos (String idInstitucion, String idPago, String idPersona) throws ClsExceptions 
-	{
+	public Vector getMovimientos (String idInstitucion, String idPago, String idPersona) throws ClsExceptions {
 		//donde devolveremos el resultado
 		Vector resultado = new Vector();
 		//query con la select a ejecutar
@@ -181,10 +180,20 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" AND A." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago +
 							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " +
 							" ORDER BY  M." + FcsMovimientosVariosBean.C_FECHAALTA ;		
-							
-		try{
-			resultado = (Vector)this.selectGenerico(consulta);
-		}catch(Exception e){
+		try {
+			RowsContainer rc = new RowsContainer();
+			rc.find(consulta);
+			
+			if (rc!=null && rc.size()>0) {
+				for(int i=0; i<rc.size(); i++){
+					Row rDatos= (Row)rc.get(i);
+					Hashtable hDatos = rDatos.getRow();		
+					if (hDatos != null) 
+						resultado.add(hDatos);
+				}
+			}	
+
+		} catch(Exception e) {
 			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientos()"+consulta);
 		}
 		
