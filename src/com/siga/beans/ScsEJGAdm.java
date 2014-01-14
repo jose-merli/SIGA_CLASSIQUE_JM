@@ -4846,8 +4846,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								Hashtable representanteLegalContrario = scsPersonaJGAdm.getDatosPersonaJG((String)registroContrario.get("IDREPRESENTANTEJG"),(String)registroContrario.get("IDINSTITUCION"));
 								HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
 								helperInformesAdm.setIdiomaInforme(idInstitucion, (String)registroContrario.get("IDREPRESENTANTEJG"), AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,clone, usrbean);
-								idioma = (String)registro.get("idioma");
-								idiomainforme= (String)registro.get("idiomaExt");
+								idioma = (String)clone.get("idioma");
+								idiomainforme= (String)clone.get("idiomaExt");
 
 								clone.put("NOMBRE_DEST", (String) representanteLegalContrario.get("NOMBRE_PJG"));
 								clone.put("NOMBRE_DEST_MAYUS", ((String) representanteLegalContrario.get("NOMBRE_PJG")).toUpperCase());

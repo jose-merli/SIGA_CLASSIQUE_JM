@@ -565,7 +565,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			htDatosInforme.put("row", datosconsulta);
 
 		} else if (idTipoInforme
-				.equals(EnvioInformesGenericos.comunicacionesEjg)) {
+				.equals(EnvioInformesGenericos.comunicacionesEjg)||idTipoInforme
+				.equals(EnvioInformesGenericos.comunicacionesCAJG)) {
 			ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
 			String idTipoEJG = "s";
 			if (datosInforme.get("idtipo") != null) {
@@ -1357,6 +1358,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesEjg)
 				&& !tipoComunicacion
+						.equals(EnvioInformesGenericos.comunicacionesCAJG)
+				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesCenso)){
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
 		}else if(tipoComunicacion	.equals(EnvioInformesGenericos.comunicacionesCenso)){
@@ -1902,7 +1905,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					}
 				}
 			} else if (tipoComunicacion
-					.equals(EnvioInformesGenericos.comunicacionesEjg)) {
+					.equals(EnvioInformesGenericos.comunicacionesEjg)||tipoComunicacion
+					.equals(EnvioInformesGenericos.comunicacionesCAJG)) {
 				String tipoDestinatarioEnvio = (String) datosInforme
 						.get("tipoDestinatario");
 				String tipoDestinatario = beanInforme.getDestinatarios();
@@ -2625,7 +2629,8 @@ public class EnvioInformesGenericos extends MasterReport {
 								designa.setNumero(Long.parseLong(numero));
 								designas.add(designa);
 							}else if (programInfBean.getIdTipoInforme().equals(
-									EnvioInformesGenericos.comunicacionesEjg)) {
+									EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(
+											EnvioInformesGenericos.comunicacionesCAJG)) {
 								
 								
 								// BEGIN BNS INC_08446_SIGA SUSTITUIMOS EL ID DE LA TABLA DE EJG POR EL CÓDIGO DE EJG
@@ -2938,7 +2943,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        
 	                    }
 	                   
-	                }else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)){
+	                }else if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesCAJG)){
 	                	
 	                    ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
 	                    String idInstitucion = (String) htClavesProgramacion.get("idInstitucion");
@@ -3285,7 +3290,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				ejgs = new ArrayList<ScsEjg>();
 				datosInforme.putAll(htClaves);
 				if (programInfBean.getIdTipoInforme().equals(
-						EnvioInformesGenericos.comunicacionesEjg)) {
+						EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(
+								EnvioInformesGenericos.comunicacionesCAJG)) {
 					datosInforme.put("sms", "S");
 					String idInstitucion = (String) datosInforme.get("idInstitucion");
 					String anio = (String) datosInforme.get("anio");
@@ -3646,7 +3652,8 @@ public class EnvioInformesGenericos extends MasterReport {
 							designa.setNumero(Long.parseLong(numero));
 							designas.add(designa);
 						}else if (programInfBean.getIdTipoInforme().equals(
-								EnvioInformesGenericos.comunicacionesEjg)) {
+								EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(
+										EnvioInformesGenericos.comunicacionesCAJG)) {
 							
 							
 							// BEGIN BNS INC_08446_SIGA SUSTITUIMOS EL ID DE LA TABLA DE EJG POR EL CÓDIGO DE EJG
@@ -3695,7 +3702,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			envio.setDesignas(designas);
 			envio.setEjgs(ejgs);
 			
-			if (programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)) {
+			if (programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesCAJG)) {
 				datosInforme.put("aSolicitantes", "N");
 				datosInforme.put("tipoDestinatarioInforme",AdmInformeBean.TIPODESTINATARIO_CENPERSONA);
 				datosInforme.put("generarInformeSinDireccion", "S");
