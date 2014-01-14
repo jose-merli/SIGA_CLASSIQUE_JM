@@ -317,6 +317,69 @@ public class ExpEstadosAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'update' en B.D."); 
 		}
 	}
-    
-   
+ 
+    /**
+     * 
+     * @param idInstitucion
+     * @param idTipoExpediente
+     * @param idEstado
+     * @param idFase
+     * @param bEditable
+     * @return
+     * @throws ClsExceptions
+     */
+    public Hashtable mostrarPlazo (String idInstitucion, String idTipoExpediente, String idEstado, String idFase) throws ClsExceptions {
+		
+		// 1. CONSULTA DATOS FASE: recupero los nombres de fase y estado para modo consulta
+        Hashtable hFase=new Hashtable();
+        hFase.put(ExpFasesBean.C_IDFASE, idFase);
+        hFase.put(ExpFasesBean.C_IDINSTITUCION, idInstitucion);
+        hFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);        
+        
+        ExpFasesAdm fasesAdm = new ExpFasesAdm (this.usrbean);
+        Vector vFases = fasesAdm.selectByPK(hFase);
+        
+        
+		// 2. CONSULTA DATOS ESTADO        
+        String where = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
+			    		" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " + 
+			    		" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
+			    		" AND " + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "'";
+        
+        Vector vEstados = this.select(where);        
+        ExpEstadosBean estadosBean = (ExpEstadosBean) vEstados.elementAt(0);
+        
+        
+        // 3. CONSULTA DATOS ESTADO SIGUIENTE
+        Vector vEstadosSiguientes = new Vector();
+        if (estadosBean.getIdEstadoSiguiente()!=null){ 
+	        String whereEstadoSiguiente = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
+	        								" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
+	        								" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
+	        								" AND " + ExpEstadosBean.C_IDESTADO + " = '" + estadosBean.getIdEstadoSiguiente().toString() + "'";
+	        vEstadosSiguientes = this.select(where);
+        }
+        
+        
+        // 4. CONSULTA DATOS PLAZO
+        String where1 = " P." + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' "+
+        		" AND P." + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "' ";        
+        
+        String where2 = " C." + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
+        		" AND C." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' ";                
+             
+        ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.usrbean);
+        Vector vPlazos = plazoAdm.selectClasifPlazo(where1, where2);
+        
+        
+         // 5. DEVUELVO RESULTADOS
+        Hashtable hashPlazo = new Hashtable();
+        hashPlazo.put("vFases", vFases);
+        hashPlazo.put("vEstados", vEstados);
+        hashPlazo.put("vEstadosSiguientes", vEstadosSiguientes);
+        hashPlazo.put("vPlazos", vPlazos);
+        hashPlazo.put("estado", estadosBean);
+
+		return hashPlazo;
+	}       
 }

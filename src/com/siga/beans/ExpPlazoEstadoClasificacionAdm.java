@@ -4,15 +4,10 @@
 */
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -214,43 +209,12 @@ public class ExpPlazoEstadoClasificacionAdm extends MasterBeanAdministrador {
 				tipoPlazo = ExpPlazoEstadoClasificacionBean.DIAS_NATURALES; 
 			}
 			
-			String fechaInicial = bean.getFechaInicialEstado();
-			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			Date d=sdf.parse(fechaInicial);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(d);
-			boolean bHabiles=false;
-			String fechaFinal="";
-			
-			switch (tipoPlazo){
-				case ExpPlazoEstadoClasificacionBean.DIAS_NATURALES:				
-					cal.add(Calendar.DATE,valorPlazo);					
-					break;
-				case ExpPlazoEstadoClasificacionBean.MESES:
-					cal.add(Calendar.MONTH,valorPlazo);
-					break;
-				case ExpPlazoEstadoClasificacionBean.ANIOS:
-					cal.add(Calendar.YEAR,valorPlazo);
-					break;
-				case ExpPlazoEstadoClasificacionBean.DIAS_HABILES:
-					bHabiles=true;
-					ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);
-					//String fAux=GstDate.getFormatedDateShort("",fechaInicial);
-					//Convertimos la fecha de BBDD a formato DD/MM/YYYY:
-					SimpleDateFormat sdf2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-					Date datFormat = sdf2.parse(fechaInicial);
-					sdf2.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);//"dd/MM/yyyy"
-					String fAux = sdf2.format(datFormat);					
-					fAux = calAdm.obtenerFechaFinLaborable(fAux,String.valueOf(valorPlazo),String.valueOf(bean.getIdInstitucion_tipoExpediente()));
-					fechaFinal=GstDate.getApplicationFormatDate("",fAux);
-					break;					
-			}
-			
-			if (!bHabiles) {
-				d=cal.getTime();
-				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
-				fechaFinal=sdf.format(d);
-			}
+			ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);			
+			String fechaFinal = calAdm.obtenerFechaFinal(
+					String.valueOf(bean.getIdInstitucion_tipoExpediente()),
+					bean.getFechaInicialEstado(),
+					tipoPlazo,
+					valorPlazo);			
 			
 			if (valorPlazo>0) {
 				bean.setFechaFinalEstado(fechaFinal);

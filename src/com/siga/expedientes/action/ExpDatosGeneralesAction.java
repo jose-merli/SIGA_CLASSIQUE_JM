@@ -303,9 +303,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 * @throws SIGAException
 	 * @throws Exception
 	 */
-	protected String abrirConParametros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		 String resultado = "mostrar";
-		 
+	protected String abrirConParametros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		 
 		try {
 		    ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 		    UsrBean userBean = this.getUserBean(request);
@@ -332,14 +330,21 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (idEstado==null || idEstado.trim().equalsIgnoreCase(""))
 				throw new SIGAException("Falta el identificador del estado");		
 	        
-	        EstadosAction actionEstados = new EstadosAction();       
-	        resultado =  actionEstados.mostrarPlazo (idInstitucionExpediente, idTipoExpediente, idEstado, idFase, false, request);
+			ExpEstadosAdm estadosAdm = new ExpEstadosAdm (userBean);			
+			Hashtable hPlazo = estadosAdm.mostrarPlazo(idInstitucionExpediente, idTipoExpediente, idEstado, idFase);       
+	       
+	        // DEVUELVO RESULTADOS
+	        request.setAttribute("vFases", hPlazo.get("vFases"));
+	        request.setAttribute("vEstados", hPlazo.get("vEstados"));
+	        request.setAttribute("vEstadosSiguientes", hPlazo.get("vEstadosSiguientes"));
+	        request.setAttribute("vPlazos", hPlazo.get("vPlazos"));
+	        request.setAttribute("editable", "0");				       
 	        
 		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
-		}
+		}	        
 		
-		return resultado;		        
+		return "mostrar";
 	}	
 	
 	protected String abrir(ActionMapping mapping,

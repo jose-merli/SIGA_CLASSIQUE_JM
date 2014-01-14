@@ -5,15 +5,10 @@
  */
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -330,43 +325,12 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 				tipoPlazoCaducidad = ExpTipoExpedienteBean.DIAS_NATURALES; 
 			}
 			
-			String fechaApertura = bean.getFecha();
-			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			Date d=sdf.parse(fechaApertura);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(d);
-			boolean bHabiles=false;
-			String fechaCaducidad="";
-			
-			switch (tipoPlazoCaducidad){
-				case ExpTipoExpedienteBean.DIAS_NATURALES:				
-					cal.add(Calendar.DATE, valorPlazoCaducidad);					
-					break;
-					
-				case ExpTipoExpedienteBean.MESES:
-					cal.add(Calendar.MONTH, valorPlazoCaducidad);
-					break;
-					
-				case ExpTipoExpedienteBean.ANIOS:
-					cal.add(Calendar.YEAR, valorPlazoCaducidad);
-					break;
-					
-				case ExpTipoExpedienteBean.DIAS_HABILES:
-					bHabiles=true;
-					ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);
-					Date datFormat = sdf.parse(fechaApertura);
-					sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);//"dd/MM/yyyy"
-					String fAux = sdf.format(datFormat);					
-					fAux = calAdm.obtenerFechaFinLaborable(fAux, String.valueOf(valorPlazoCaducidad), String.valueOf(bean.getIdInstitucion_tipoExpediente()));
-					fechaCaducidad=GstDate.getApplicationFormatDate("",fAux);
-					break;					
-			}
-			
-			if (!bHabiles) {
-				d=cal.getTime();
-				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
-				fechaCaducidad=sdf.format(d);
-			}
+			ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);			
+			String fechaCaducidad = calAdm.obtenerFechaFinal(
+					String.valueOf(bean.getIdInstitucion_tipoExpediente()),
+					bean.getFecha(),
+					tipoPlazoCaducidad,
+					valorPlazoCaducidad);
 			
 			if (valorPlazoCaducidad>0) {
 				bean.setFechaCaducidad(fechaCaducidad);

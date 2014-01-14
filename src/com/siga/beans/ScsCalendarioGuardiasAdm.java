@@ -335,7 +335,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	 * @param String idinstitucion: idinstitucion.
 	 * @return String con la Fecha Fin en el formato DD/MM/YYYY. 
 	 */
-	public  String obtenerFechaFinLaborable(String fechaInicio, String dias, String idinstitucion) {
+	public String obtenerFechaFinLaborable(String fechaInicio, String dias, String idinstitucion) {
 		String fechaFin="";  
 		int diasRestantes = 0; 
 		
@@ -351,6 +351,57 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		}
 		
 		return fechaFin;
+	}
+	
+	/**
+	 * Obtiene la fecha final calculada según la fecha inicial, el tipo de duracion y el valor de la duracion
+	 * @param fechaInicial
+	 * @return
+	 */
+	public String obtenerFechaFinal(String idInstitucion, String fechaInicial, int tipoDuracion, int valorDuracion) throws ClsExceptions {
+		String fechaFinal = "";
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			Date d=sdf.parse(fechaInicial);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			boolean bHabiles=false;			
+			
+			switch (tipoDuracion){
+				case ExpTipoExpedienteBean.DIAS_NATURALES:				
+					cal.add(Calendar.DATE, valorDuracion);					
+					break;
+					
+				case ExpTipoExpedienteBean.MESES:
+					cal.add(Calendar.MONTH, valorDuracion);
+					break;
+					
+				case ExpTipoExpedienteBean.ANIOS:
+					cal.add(Calendar.YEAR, valorDuracion);
+					break;
+					
+				case ExpTipoExpedienteBean.DIAS_HABILES:
+					bHabiles=true;
+					Date datFormat = sdf.parse(fechaInicial);
+					sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);//"dd/MM/yyyy"
+					String fAux = sdf.format(datFormat);					
+					fAux = this.obtenerFechaFinLaborable(fAux, String.valueOf(valorDuracion), idInstitucion);
+					fechaFinal = GstDate.getApplicationFormatDate("",fAux);
+					break;					
+			}
+			
+			if (!bHabiles) {
+				d=cal.getTime();
+				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+				fechaFinal = sdf.format(d);
+			}	
+			
+			return fechaFinal;
+			
+		} catch(Exception e) {
+			throw new ClsExceptions (e, "Error al calcular la fecha final");
+		}			
 	}
 
 	public boolean validarBorradoCalendario(Integer idInstitucion,

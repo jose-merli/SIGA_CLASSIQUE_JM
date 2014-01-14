@@ -26,8 +26,6 @@ import com.atos.utils.Validaciones;
 import com.siga.beans.ExpClasificacionesBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
-import com.siga.beans.ExpFasesAdm;
-import com.siga.beans.ExpFasesBean;
 import com.siga.beans.ExpPlazoEstadoClasificacionAdm;
 import com.siga.beans.ExpPlazoEstadoClasificacionBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
@@ -534,66 +532,24 @@ public class EstadosAction extends MasterAction {
         return this.mostrarPlazo (idInstitucion, idTipoExpediente, idEstado, idFase, bEditable, request);
 	}
 	
-	public String mostrarPlazo (String idInstitucion, String idTipoExpediente, String idEstado, String idFase, boolean bEditable, HttpServletRequest request) throws ClsExceptions {
-		UsrBean userBean = this.getUserBean(request);   
+	protected String mostrarPlazo (String idInstitucion, String idTipoExpediente, String idEstado, String idFase, boolean bEditable, HttpServletRequest request) throws ClsExceptions {
+		UsrBean userBean = this.getUserBean(request);  
+		ExpEstadosAdm estadosAdm = new ExpEstadosAdm (userBean);
 		
-		// Recupero los nombres de fase y estado para modo consulta
-        Hashtable hFase=new Hashtable();
-        hFase.put(ExpFasesBean.C_IDFASE, idFase);
-        hFase.put(ExpFasesBean.C_IDINSTITUCION, idInstitucion);
-        hFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
-        
-        
-        // CONSULTA DATOS FASE
-        ExpFasesAdm fasesAdm = new ExpFasesAdm (userBean);
-        Vector vFases = fasesAdm.selectByPK(hFase);
-        
-        
-		// CONSULTA DATOS ESTADO        
-        String where = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
-			    		" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " + 
-			    		" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
-			    		" AND " + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "'";
-        
-        ExpEstadosAdm estadosAdm = new ExpEstadosAdm (userBean);
-        Vector vEstados = estadosAdm.select(where);        
-        ExpEstadosBean estadosBean = (ExpEstadosBean) vEstados.elementAt(0);
-        
-        
-        // CONSULTA DATOS ESTADO SIGUIENTE
-        Vector vEstadosSiguientes = new Vector();
-        if (estadosBean.getIdEstadoSiguiente()!=null){ 
-	        String whereEstadoSiguiente = " WHERE " + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' " +
-	        								" AND " + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
-	        								" AND " + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' " +
-	        								" AND " + ExpEstadosBean.C_IDESTADO + " = '" + estadosBean.getIdEstadoSiguiente().toString() + "'";
-	        vEstadosSiguientes = estadosAdm.select(where);
-        }
-        
-        
-        // CONSULTA DATOS PLAZO
-        String where1 = " P." + ExpEstadosBean.C_IDFASE + " = '" + idFase + "' "+
-        		" AND P." + ExpEstadosBean.C_IDESTADO + " = '" + idEstado + "' ";        
-        
-        String where2 = " C." + ExpEstadosBean.C_IDINSTITUCION + " = '" + idInstitucion + "' " +
-        		" AND C." + ExpEstadosBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' ";                
-             
-        ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (userBean);
-        Vector vPlazos = plazoAdm.selectClasifPlazo(where1, where2);
-       
+		Hashtable hPlazo = estadosAdm.mostrarPlazo(idInstitucion, idTipoExpediente, idEstado, idFase);       
        
         // DEVUELVO RESULTADOS
-        request.setAttribute("vFases", vFases);
-        request.setAttribute("vEstados", vEstados);
-        request.setAttribute("vEstadosSiguientes", vEstadosSiguientes);
-        request.setAttribute("vPlazos", vPlazos);
+        request.setAttribute("vFases", hPlazo.get("vFases"));
+        request.setAttribute("vEstados", hPlazo.get("vEstados"));
+        request.setAttribute("vEstadosSiguientes", hPlazo.get("vEstadosSiguientes"));
+        request.setAttribute("vPlazos", hPlazo.get("vPlazos"));
         request.setAttribute("editable", bEditable ? "1" : "0");
         
         if (bEditable) {
             Hashtable hashBackUp = new Hashtable();
             
-            hashBackUp.put("estado", estadosBean);
-            hashBackUp.put("vPlazos", vPlazos);
+            hashBackUp.put("estado", hPlazo.get("estado"));
+            hashBackUp.put("vPlazos", hPlazo.get("vPlazos"));
             
             request.getSession().setAttribute("DATABACKUP", hashBackUp);
         }    
