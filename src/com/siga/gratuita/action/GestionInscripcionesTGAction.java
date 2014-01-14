@@ -2112,22 +2112,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				String d[]= registro.split("##");
 				String idTurnoSel=d[0];
 				
-				
-				
-				
-				
 				List <ScsInscripcionGuardiaBean> alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasParaInscripcion(
 					new Integer(miForm.getIdInstitucion()),
 					new Integer(idTurnoSel), 
 					new Long(miForm.getIdPersona()),
 					null);
-				Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 				
-				while (itet.hasNext()&&!isPorGrupos) {
-					ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
-					if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
-						isPorGrupos = true;
+				if (alInscripcionGuardia != null) {
+					Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 					
+					while (itet.hasNext()&&!isPorGrupos) {
+						ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
+						if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
+							isPorGrupos = true;
+						
+					}
 				}
 				
 			}
@@ -3179,25 +3178,23 @@ public class GestionInscripcionesTGAction extends MasterAction {
 							String d[]= registro.split("##");
 							String idTurnoSel=d[2];
 							
-							
-							
-							
-							
 							List <ScsInscripcionGuardiaBean> alInscripcionGuardia = inscripcionGuardiaAdm.getGuardiasParaInscripcion(
 								new Integer(miForm.getIdInstitucion()),
 								new Integer(idTurnoSel), 
 								null,
 								null);
-							Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 							
-							while (itet.hasNext()&&!isPorGrupos) {
-								ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
-								if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
-									isPorGrupos = true;
+							if (alInscripcionGuardia != null) {
+								Iterator<ScsInscripcionGuardiaBean> itet = alInscripcionGuardia.iterator();
 								
-							}
-							
+								while (itet.hasNext()&&!isPorGrupos) {
+									ScsInscripcionGuardiaBean scsInscripcionGuardiaBean = itet.next();
+									if(scsInscripcionGuardiaBean.getGuardia().getPorGrupos()!=null && scsInscripcionGuardiaBean.getGuardia().getPorGrupos().equals("1"))
+										isPorGrupos = true;									
+								}
+							}							
 						}
+						
 						miForm.setPorGrupos(isPorGrupos?"1":"0");
 						
 //						FIXME AAAÑADIR SELECCIÓN DE GRUPO solicitudesMasivas ok
