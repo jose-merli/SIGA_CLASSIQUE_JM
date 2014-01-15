@@ -54,35 +54,6 @@
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="EstadosForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>	
-	
-	<script type="text/javascript">
-		function validarActivarAlarmas() {
-			var mensaje = jQuery("#mensaje");
-			var diasAntelacion = jQuery("#diasAntelacion");
-			var activarAlertas = jQuery("#activarAlertas");
-						
-			if (<%=bEditable%>) {
-				if (activarAlertas[0].checked) {
-					diasAntelacion.removeAttr("readOnly").removeAttr("disabled");
-					diasAntelacion.removeClass("boxConsulta").addClass("box");
-					mensaje.removeAttr("readOnly").removeAttr("disabled");
-					mensaje.removeClass("boxConsulta").addClass("box");
-				} else {
-					diasAntelacion.attr("readOnly", "readOnly").attr("disabled", "disabled");
-					diasAntelacion.removeClass("box").addClass("boxConsulta");
-					diasAntelacion.val("");
-					mensaje.attr("readOnly", "readOnly").attr("disabled", "disabled");
-					mensaje.removeClass("box").addClass("boxConsulta");
-					mensaje.val("");
-				}
-			} else {
-				diasAntelacion.attr("readOnly", "readOnly").attr("disabled", "disabled");
-				diasAntelacion.removeClass("box").addClass("boxConsulta");
-				mensaje.attr("readOnly", "readOnly").attr("disabled", "disabled");
-				mensaje.removeClass("box").addClass("boxConsulta");
-			}
-		}	 	
-	</script>
 </head>
 
 <body>
@@ -735,12 +706,43 @@
 			function accionCerrar() {		
 				window.top.close();
 			}
-	
-			// Asociada al boton Restablecer
-			function accionRestablecer() {				
-				document.forms[0].reset();
-				
- 				if (<%=estadosBean.getAutomatico().equals("S")%>) {
+			
+			function validarActivarAlarmas() {
+				var mensaje = jQuery("#mensaje");
+				var diasAntelacion = jQuery("#diasAntelacion");
+				var activarAlertas = jQuery("#activarAlertas");
+							
+				if (<%=bEditable%>) {
+					if (activarAlertas[0].checked) {
+						diasAntelacion.removeAttr("readOnly").removeAttr("disabled");
+						diasAntelacion.removeClass("boxConsulta").addClass("box");
+						mensaje.removeAttr("readOnly").removeAttr("disabled");
+						mensaje.removeClass("boxConsulta").addClass("box");
+					} else {
+						diasAntelacion.attr("readOnly", "readOnly").attr("disabled", "disabled");
+						diasAntelacion.removeClass("box").addClass("boxConsulta");
+						diasAntelacion.val("");
+						mensaje.attr("readOnly", "readOnly").attr("disabled", "disabled");
+						mensaje.removeClass("box").addClass("boxConsulta");
+						mensaje.val("");
+					}
+					
+				} else {
+					diasAntelacion.attr("readOnly", "readOnly").attr("disabled", "disabled");
+					diasAntelacion.removeClass("box").addClass("boxConsulta");
+					mensaje.attr("readOnly", "readOnly").attr("disabled", "disabled");
+					mensaje.removeClass("box").addClass("boxConsulta");
+					
+					if (!activarAlertas[0].checked) {
+						diasAntelacion.val("");
+						mensaje.val("");
+					}
+				}
+			}			
+			
+			// JPT: Funcion que controla el estado de los checks de la pantalla
+			function controlChecks() {
+				if (<%=estadosBean.getAutomatico().equals("S")%>) {
  					jQuery("#automatico").prop('checked', true);
  				}
  				
@@ -754,37 +756,31 @@
  				
  				if (<%=estadosBean.getActivarAlertas().equals("S")%>) {
  					jQuery("#activarAlertas").prop('checked', true);
- 				} else {
- 					jQuery("#diasAntelacion").val('');	 					
- 				}				
+ 				}
+ 				
+ 				validarActivarAlarmas();
+			}
+	
+			// Asociada al boton Restablecer
+			function accionRestablecer() {				
+				document.forms[0].reset();
+				
+				controlChecks();			
 			}		
  			
  			jQuery(document).ready(function(){
 <%
 				if (!modo.equalsIgnoreCase("Nuevo")) {
 %>					
-	 				if (<%=estadosBean.getAutomatico().equals("S")%>) {
-	 					jQuery("#automatico").prop('checked', true);
-	 				}
-	 				
-	 				if (<%=estadosBean.getEjecucionSancion().equals("S")%>) {
-	 					jQuery("#ejecucionSancion").prop('checked', true);
-	 				}
-	 				
-	 				if (<%=estadosBean.getEstadoFinal().equals("S")%>) {
-	 					jQuery("#estadoFinal").prop('checked', true);
-	 				}
-	 				
-	 				if (<%=estadosBean.getActivarAlertas().equals("S")%>) {
-	 					jQuery("#activarAlertas").prop('checked', true);
-	 				} else {
-	 					jQuery("#diasAntelacion").val('');	 					
-	 				}
+					controlChecks();
 <%
-				}
+				} else {
 %>
  				
- 				validarActivarAlarmas();
+ 					validarActivarAlarmas();
+<%
+				}
+%> 					
  			});
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
