@@ -739,6 +739,24 @@
 			// Asociada al boton Restablecer
 			function accionRestablecer() {				
 				document.forms[0].reset();
+				
+ 				if (<%=estadosBean.getAutomatico().equals("S")%>) {
+ 					jQuery("#automatico").prop('checked', true);
+ 				}
+ 				
+ 				if (<%=estadosBean.getEjecucionSancion().equals("S")%>) {
+ 					jQuery("#ejecucionSancion").prop('checked', true);
+ 				}
+ 				
+ 				if (<%=estadosBean.getEstadoFinal().equals("S")%>) {
+ 					jQuery("#estadoFinal").prop('checked', true);
+ 				}
+ 				
+ 				if (<%=estadosBean.getActivarAlertas().equals("S")%>) {
+ 					jQuery("#activarAlertas").prop('checked', true);
+ 				} else {
+ 					jQuery("#diasAntelacion").val('');	 					
+ 				}				
 			}		
  			
  			jQuery(document).ready(function(){
@@ -759,6 +777,8 @@
 	 				
 	 				if (<%=estadosBean.getActivarAlertas().equals("S")%>) {
 	 					jQuery("#activarAlertas").prop('checked', true);
+	 				} else {
+	 					jQuery("#diasAntelacion").val('');	 					
 	 				}
 <%
 				}
