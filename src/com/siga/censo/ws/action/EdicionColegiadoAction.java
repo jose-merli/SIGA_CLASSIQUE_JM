@@ -157,7 +157,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setApellido2(edicionColegiadoForm.getApellido2());
 			ecomCenDatos.setSexo(edicionColegiadoForm.getSexo());
 			if (edicionColegiadoForm.getFechanacimiento() != null && !edicionColegiadoForm.getFechanacimiento().trim().equals("")) {
-				ecomCenDatos.setFechanacimiento(GstDate.convertirFecha(edicionColegiadoForm.getFechanacimiento()));
+				ecomCenDatos.setFechanacimiento(GstDate.convertirFechaDiaMesAnio(edicionColegiadoForm.getFechanacimiento()));
 			}
 			
 			ecomCenDatos.setIdcensotipoidentificacion(edicionColegiadoForm.getIdcensotipoidentificacion());
@@ -173,7 +173,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
 			
 			if (edicionColegiadoForm.getFechasituacion() != null && !edicionColegiadoForm.getFechasituacion().trim().equals("")) {
-				ecomCenDatos.setFechasituacion(GstDate.convertirFecha(edicionColegiadoForm.getFechasituacion()));
+				ecomCenDatos.setFechasituacion(GstDate.convertirFechaDiaMesAnio(edicionColegiadoForm.getFechasituacion()));
 			}
 			
 			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
