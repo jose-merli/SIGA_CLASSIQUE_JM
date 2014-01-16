@@ -1165,24 +1165,31 @@
 		}					
 		
 		jQuery(document).ready(function(){
-			jQuery("#comboFases").change(function() {
-				tratarFechaFinal();	
-			});
-		
-			jQuery("#comboEstados").change(function() {
-				tratarFechaFinal();	
-			});
+			<%
+				if (bEditable) {
+			%>			
+				jQuery("#comboFases").change(function() {
+					tratarFechaFinal();	
+				});
 			
-			jQuery("#clasificacion").change(function() {
-				tratarFechaFinal();	
-			});
-			
-			jQuery("#fechaInicial").change(function() {
-				tratarFechaFinal();	
-			});
+				jQuery("#comboEstados").change(function() {
+					tratarFechaFinal();	
+				});
+				
+				jQuery("#clasificacion").change(function() {
+					tratarFechaFinal();	
+				});
+				
+				jQuery("#fechaInicial").change(function() {
+					tratarFechaFinal();	
+				});
+								
+				tratarFechaFinal();
+			<%
+				}
+			%>	
 			
 			tratarFechaCaducidad();
-			tratarFechaFinal();							
 					
 			calcularTotalMinuta ();
 			calcularTotalMinutaFinal ();
@@ -1445,7 +1452,7 @@
 									<td colspan="5" class="labelText">
 										<html:textarea property="observaciones" 
 											styleclass="<%=boxStyle%>" style="overflow-y:auto; overflow-x:hidden; width:800px; height:50px; resize:none;"
-											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" />											
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" readOnly="<%=!bEditable%>" />											
 									</td>
 								</tr>								
 							</table>
