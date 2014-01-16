@@ -2118,9 +2118,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							if (turnodefendido!=null && !turnodefendido.trim().equals("")){
 								registro.putAll(registroDefendido);
 							}
-//							
-							
-							
+//							String numEjgDefendido = "";
+//							if(idPersonaJG!=null &&  registroDefendido.get("IDPERSONAINTERESADO").equals(idPersonaJG) && registroDefendido.get("NUMERO_EJG")!=null)
+//								numEjgDefendido = (String) registroDefendido.get("NUMERO_EJG");
+							if(registroDefendido!=null && registroDefendido.get("NUMERO_EJG")!=null)
+								clone.put("NUMERO_EJG_DEFENDIDO", (String) registroDefendido.get("NUMERO_EJG"));
 							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);							
@@ -2177,8 +2179,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
 							}
 							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
+							
 														
-							clone.putAll(registroDefendido);						
+							clone.putAll(registroDefendido);
+							
+							
+//							clone.put("NUMERO_EJG_DEFENDIDO", numEjgDefendido);
+							
 							vSalida.add(clone);
 						}  // END FOR
 						
@@ -2226,6 +2233,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						registro.put("ESTADOCIVIL_DEFENDIDO", "");
 						registro.put("NOMBRE_PAIS", "");
 						registro.put("IDPERSONAINTERESADO", "");
+						registro.put("NUMERO_EJG_DEFENDIDO", "");
 						
 						vSalida.add(registro);
 					}	
@@ -2239,7 +2247,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);								
-							
+							if(registroDefendido!=null && registroDefendido.get("NUMERO_EJG")!=null)
+								registroDefendido.put("NUMERO_EJG_DEFENDIDO", (String) registroDefendido.get("NUMERO_EJG"));
 														
 							/****
 							  	Se modifica para que salgan los informes de los interesados en el idioma que tenga dicho interesado, 
@@ -2472,22 +2481,26 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		try {
 
 			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG, idPersona);
-			Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
+//			Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 			if (defendidos != null && defendidos.size() > 0) {
-				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
-				int ejgs = Integer.parseInt((String)htPrimerDefendido.get("COUNT_EJG"));
-				if (ejgs>=1) {
-					// Recorrer los defendidos
-					for (int i = 0; i < defendidos.size(); i++) {
-						Hashtable htDefendido = (Hashtable) defendidos.get(0);
-						if(htDefendido.get("ANIO_EJG") == null ||htDefendido.get("ANIO_EJG").equals("")){
-							htDefendido.put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
-						} 
-						if(htDefendido.get("NUMERO_EJG")== null ||htDefendido.get("NUMERO_EJG").equals("")){
-							htDefendido.put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
-						} 
-					}
-				}
+//				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
+//				int ejgs = Integer.parseInt((String)htPrimerDefendido.get("COUNT_EJG"));
+//				if (ejgs>=1) {
+//					// Recorrer los defendidos
+//					for (int i = 0; i < defendidos.size(); i++) {
+//						Hashtable htDefendido = (Hashtable) defendidos.get(0);
+//						if(htDefendido.get("ANIO_EJG") != null && !htDefendido.get("ANIO_EJG").equals("")){
+//							htDefendido.put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
+//						}else {
+//							htDefendido.put("ANIO_EJG", "");
+//						}
+//						if(htDefendido.get("NUMERO_EJG")!= null &&  !htDefendido.get("NUMERO_EJG").equals("")){
+//							htDefendido.put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
+//						}else{
+//							htDefendido.put("NUMERO_EJG", "");
+//						} 
+//					}
+//				}
 				return defendidos;
 
 			} else {
@@ -3290,7 +3303,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	   * Devuelve: nos devuelve un hastable de todos los datos.
 	   * **/
 	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma) throws ClsExceptions {
-		  Hashtable vsalida=new Hashtable();	
+//		  Hashtable vsalida=new Hashtable();	
 		  HelperInformesAdm helperInformes = new HelperInformesAdm();
 		  String numeroDesigna = (String)registro.get("NUMERO");
 		  String anioDesigna = (String)registro.get("ANIO");
