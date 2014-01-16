@@ -1232,7 +1232,7 @@ public class HelperInformesAdm  {
 				CenClienteAdm cenClienteAdm = new CenClienteAdm(usrBean);
 				if(idPersona!=null)
 					idioma = cenClienteAdm.getIdiomaPersonaInforme(idInstitucion,idPersona);
-				if(idioma ==null){
+				if(idioma ==null||idioma.equals("")){
 					CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
 					CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
 					idioma = institucionBean.getIdLenguaje();
@@ -1244,7 +1244,7 @@ public class HelperInformesAdm  {
 				ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(usrBean);
 				if(idPersona!=null)
 					idioma = personaJGAdm.getIdiomaPersonaInforme(idInstitucion,idPersona);
-				if(idioma ==null){
+				if(idioma ==null||idioma.equals("")){
 					CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrBean);
 					CenInstitucionBean institucionBean =  cenInstitucionAdm.getInstitucion(idInstitucion);
 					idioma = institucionBean.getIdLenguaje();
