@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
@@ -16,10 +17,17 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.MasterBean;
+import com.siga.beans.ScsActuacionAsistenciaAdm;
+import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsCabeceraGuardiasAdm;
+import com.siga.beans.ScsDelitosAsistenciaAdm;
+import com.siga.beans.ScsDelitosAsistenciaBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
+import com.siga.beans.ScsPersonaJGAdm;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.service.VolantesExpressService;
 import com.siga.gratuita.vos.VolantesExpressVo;
@@ -318,5 +326,9 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	
+	
 
 }
