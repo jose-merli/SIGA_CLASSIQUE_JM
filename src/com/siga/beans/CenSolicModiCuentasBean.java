@@ -18,7 +18,7 @@ public class CenSolicModiCuentasBean extends MasterBean {
 	private Integer	idInstitucion, idCuenta, idEstadoSolic; 
 	private Long	idSolicitud, idPersona;
 	
-	private String 	motivo, abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,	titular, fechaAlta;	
+	private String 	motivo, abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,	titular, fechaAlta, iban;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICMODICUENTAS";
@@ -38,6 +38,7 @@ public class CenSolicModiCuentasBean extends MasterBean {
 	static public final String C_IDCUENTA			= "IDCUENTA";
 	static public final String C_IDESTADOSOLIC		= "IDESTADOSOLIC";
 	static public final String C_FECHAALTA			= "FECHAALTA";
+	static public final String C_IBAN			= "IBAN";
 	
 	//	 Metodos GET
 	
@@ -72,4 +73,11 @@ public class CenSolicModiCuentasBean extends MasterBean {
 	public void setTitular(String titular) 					{	this.titular = titular;}
 	public void setIdEstadoSolic(Integer idEstadoSolic) 	{	this.idEstadoSolic = idEstadoSolic;}
 	public void setFechaAlta(String fechaAlta) 				{	this.fechaAlta = fechaAlta;}
+	
+	public String getIban() {
+		return iban;
+	}
+	public void setIban(String iban) {
+		this.iban = iban;
+	}
 }

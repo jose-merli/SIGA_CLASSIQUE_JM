@@ -178,6 +178,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL,		
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL,	
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA,
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN,
 							"TO_CHAR(CEN_COMPONENTES.FECHACARGO, 'dd/mm/yyyy') AS FECHACARGOINFORME",
 							"DECODE(f_siga_gettipocliente(CEN_COMPONENTES.CEN_CLIENTE_IDPERSONA,CEN_COMPONENTES.CEN_CLIENTE_IDINSTITUCION,SYSDATE),20,1,0) AS EJERCIENTE"};
 		return campos;

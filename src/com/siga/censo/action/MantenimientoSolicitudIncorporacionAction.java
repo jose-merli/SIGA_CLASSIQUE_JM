@@ -23,6 +23,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBancosAdm;
+import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -492,10 +494,29 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 			}else{								
 				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_RESIDENTE, ClsConstants.DB_FALSE);
 			}
-			// La cuenta bancaria
+			
+			////////////     DATOS BANCARIOS  //////////
+			
+			if(miFormulario.getIBAN() != null){
+				//Si el banco es extranjero se crea un nuevo registro en CEN_BANCOS
+				if(!miFormulario.getIBAN().substring(0,2).equals("ES")){
+					CenBancosAdm bancosAdm = new CenBancosAdm(user);
+					CenBancosBean bancosBean = bancosAdm.existeBancoExtranjero(miFormulario.getBIC());
+					if(bancosBean == null){
+						CenPaisAdm paisAdm = new CenPaisAdm(user);
+						CenPaisBean paisBean = paisAdm.getPaisByCodIso(miFormulario.getIBAN().substring(0,2));
+						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), miFormulario.getBIC());
+					}					
+					miFormulario.setCbo_Codigo(bancosBean.getCodigo());
+				}else{
+					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, miFormulario.getIBAN().substring(4,8));
+					miFormulario.setCbo_Codigo(miFormulario.getIBAN().substring(4,8));
+				}
+			}
+
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IBAN, miFormulario.getIBAN());
 			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOCARGO, this.validarTipoCuenta(miFormulario.getCuentaAbono(), miFormulario.getCuentaCargo()));   
 			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOSJCS, miFormulario.getAbonoSJCS());   
-			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, miFormulario.getCbo_Codigo());   
 			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL, miFormulario.getCodigoSucursal());   
 			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_DIGITOCONTROL, miFormulario.getDigitoControl());   
 			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NUMEROCUENTA, miFormulario.getNumeroCuenta());   
@@ -611,20 +632,19 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				cuentaBean.setIdCuenta(cuentaAdm.getNuevoID(cuentaBean));
 				cuentaBean.setTitular(miFormulario.getTitular());
 				cuentaBean.setCbo_Codigo(miFormulario.getCbo_Codigo());
-				cuentaBean.setCodigoSucursal(miFormulario.getCodigoSucursal());
-				cuentaBean.setDigitoControl(miFormulario.getDigitoControl());
-				cuentaBean.setNumeroCuenta(miFormulario.getNumeroCuenta());
-				if(miFormulario.getAbonoSJCS().booleanValue())cuentaBean.setAbonoSJCS(ClsConstants.DB_TRUE);			
-				else cuentaBean.setAbonoSJCS(ClsConstants.DB_FALSE);
+				cuentaBean.setCodigoSucursal(null);
+				cuentaBean.setDigitoControl(null);
+				cuentaBean.setNumeroCuenta(null);
+				cuentaBean.setIban(miFormulario.getIBAN());
+				if(miFormulario.getAbonoSJCS().booleanValue())
+					cuentaBean.setAbonoSJCS(ClsConstants.DB_TRUE);			
+				else 
+					cuentaBean.setAbonoSJCS(ClsConstants.DB_FALSE);
 				cuentaBean.setAbonoCargo(this.validarTipoCuenta(miFormulario.getCuentaAbono(), miFormulario.getCuentaCargo()));
-				// Solo hacemos el insert si tenemos los datos obligatorios
-				if(	!cuentaBean.getCbo_Codigo().equalsIgnoreCase("") &&
-					!cuentaBean.getCodigoSucursal().equalsIgnoreCase("") &&
-					!cuentaBean.getDigitoControl().equalsIgnoreCase("") &&
-					!cuentaBean.getNumeroCuenta().equalsIgnoreCase("") &&
-					!cuentaBean.getTitular().equalsIgnoreCase(""))
-						cuentaAdm.insert(cuentaBean);
 				
+				// Solo hacemos el insert si tenemos los datos obligatorios
+				if(cuentaBean.getIban()!= null && !cuentaBean.getIban().equals(""))
+					cuentaAdm.insert(cuentaBean);
 				
 				//lanzando el proceso de revision de suscripciones del letrado 
 				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado
@@ -637,9 +657,6 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 					throw new ClsExceptions ("Error al ejecutar el PL " +
 							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
 
-				
-
-				
 				//cargando la peticion para el reenvio
 				request.setAttribute ("mensaje", mensInformacion);
 				request.setAttribute ("idPersona", beanCli.getIdPersona ().toString ());
@@ -647,19 +664,20 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				//quitando el boton volver porque va a ir a la ficha colegial
 				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "SI");
 				fichaColegial = true;
-					try{
+
+				try{
 					RetencionesIRPFAction irpf = new  RetencionesIRPFAction();
-					irpf.insertarNuevo(beanCli.getIdPersona().toString(),"SYSDATE",request);
-					}
-					catch (Exception e) {
-						t.rollback();
-						throw e;
-					}
-					String [] claves = {CenSolicitudIncorporacionBean.C_IDSOLICITUD};
-					String [] campos = {CenSolicitudIncorporacionBean.C_IDPERSONA,CenSolicitudIncorporacionBean.C_FECHAALTA};
-					hashModificado.put(CenSolicitudIncorporacionBean.C_IDPERSONA, beanCli.getIdPersona());
-					hashModificado.put(CenSolicitudIncorporacionBean.C_FECHAALTA,"SYSDATE");
-					admSol.updateDirect(hashModificado, claves, campos) ;
+					irpf.insertarNuevo(beanCli.getIdPersona().toString(),"SYSDATE",request);				
+				} catch (Exception e) {
+					t.rollback();
+					throw e;
+				}
+				
+				String [] claves = {CenSolicitudIncorporacionBean.C_IDSOLICITUD};
+				String [] campos = {CenSolicitudIncorporacionBean.C_IDPERSONA,CenSolicitudIncorporacionBean.C_FECHAALTA};
+				hashModificado.put(CenSolicitudIncorporacionBean.C_IDPERSONA, beanCli.getIdPersona());
+				hashModificado.put(CenSolicitudIncorporacionBean.C_FECHAALTA,"SYSDATE");
+				admSol.updateDirect(hashModificado, claves, campos) ;
 			} //si se aprueba la solicitud
 			
 			//confirmando los cambios en BD
@@ -1382,4 +1400,5 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
 	}	
+	
 }

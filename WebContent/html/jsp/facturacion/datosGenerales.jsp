@@ -664,7 +664,7 @@
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
 							</td>  	
 							<td align="right">
-								<%=row.getString("CUENTACONTABLE")%>							
+								<%=row.getString("IBAN")%>							
 							</td>  	
 							<td align="right">
 								<%=row.getString("COMISIONPROPIA")%>							

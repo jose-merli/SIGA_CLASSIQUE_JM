@@ -28,6 +28,10 @@ import com.atos.utils.*;
 	private String idEstadoSolicitudPlanProfesional;
 	private String idEstadoSolicitudSeguroUniversal;
 	
+	//IBAN
+	private String IBAN;
+	private String BIC;
+	
 	
 	// Metodos Set (Formulario (*.jsp))
  	public void setSexo (String dato) { 
@@ -483,7 +487,17 @@ import com.atos.utils.*;
 			String estadoMutualistaPlanProfesional) {
 		this.estadoMutualistaPlanProfesional = estadoMutualistaPlanProfesional;
 	}
-
-	
+	public String getIBAN() {
+		return IBAN;
+	}
+	public void setIBAN(String iBAN) {
+		IBAN = iBAN;
+	}
+	public String getBIC() {
+		return BIC;
+	}
+	public void setBIC(String bIC) {
+		BIC = bIC;
+	}
 	
 }

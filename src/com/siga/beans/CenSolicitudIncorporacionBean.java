@@ -32,7 +32,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 					fechaNacimiento, 	fechaEstado,	sexo, poblacionExtranjera;
 	
 	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
-					titular, cuentaContable, residente;	
+					titular, cuentaContable, residente, iban;	
 
 	Integer idPersona;
 	String fechaAlta;
@@ -88,6 +88,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	static public final String C_TITULAR			= "TITULAR";	
 	static public final String C_IDPERSONA			= "IDPERSONA";
 	static public final String C_FECHAALTA			= "FECHAALTA";
+	static public final String C_IBAN				= "IBAN";
 	
 	// Metodos SET
 	public void setIdSolicitud (Long id) 				{ this.idSolicitud = id; }
@@ -198,6 +199,12 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	}
 	public void setIdDireccionTemp(Long idDireccionTemp) {
 		this.idDireccionTemp = idDireccionTemp;
+	}
+	public String getIban() {
+		return iban;
+	}
+	public void setIban(String iban) {
+		this.iban = iban;
 	}
 	
 }

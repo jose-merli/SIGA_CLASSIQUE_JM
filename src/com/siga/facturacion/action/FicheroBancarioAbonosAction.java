@@ -356,7 +356,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						emisor.setCodigoBanco((String)banco.get(FacBancoInstitucionBean.C_COD_BANCO)); // JBD cambiado bancos_codigo por cod_banco
 						emisor.setCodigoSucursal((String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL));
 						emisor.setNumeroCuenta((String)banco.get(FacBancoInstitucionBean.C_NUMEROCUENTA));
-						emisor.setNif((String)banco.get(FacBancoInstitucionBean.C_NIF));
+						//emisor.setNif((String)banco.get(FacBancoInstitucionBean.C_NIF));
 						String nombre=admInstitucion.getNombreInstitucion((String)banco.get(FacBancoInstitucionBean.C_IDINSTITUCION));
 						emisor.setNombre(nombre);
 						emisor.setIdentificadorDisquete(idDisqueteAbono);
@@ -500,7 +500,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						emisor.setCodigoBanco((String)bancoMenorComision.get(FacBancoInstitucionBean.C_COD_BANCO)); // JBD cambiado bancos_codigo por cod_banco
 						emisor.setCodigoSucursal((String)bancoMenorComision.get(FacBancoInstitucionBean.C_COD_SUCURSAL));
 						emisor.setNumeroCuenta((String)bancoMenorComision.get(FacBancoInstitucionBean.C_NUMEROCUENTA));
-						emisor.setNif((String)bancoMenorComision.get(FacBancoInstitucionBean.C_NIF));
+						//emisor.setNif((String)bancoMenorComision.get(FacBancoInstitucionBean.C_NIF));
 						String nombre=admInstitucion.getNombreInstitucion((String)bancoMenorComision.get(FacBancoInstitucionBean.C_IDINSTITUCION));
 						emisor.setNombre(nombre);
 						emisor.setIdentificadorDisquete(idDisqueteAbono);
@@ -629,7 +629,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							emisor.setCodigoBanco((String)banco.get(FacBancoInstitucionBean.C_COD_BANCO)); // JBD cambiado bancos_codigo por cod_banco
 							emisor.setCodigoSucursal((String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL));
 							emisor.setNumeroCuenta((String)banco.get(FacBancoInstitucionBean.C_NUMEROCUENTA));
-							emisor.setNif((String)banco.get(FacBancoInstitucionBean.C_NIF));
+							//emisor.setNif((String)banco.get(FacBancoInstitucionBean.C_NIF));
 							String nombre=admInstitucion.getNombreInstitucion((String)banco.get(FacBancoInstitucionBean.C_IDINSTITUCION));
 							emisor.setNombre(nombre);
 							emisor.setIdentificadorDisquete(idDisqueteAbono);

@@ -218,7 +218,7 @@
 %>
 								</td>  	
 								<td><%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%></td>  	
-								<td align="right"><%=row.getString("CUENTACONTABLE")%></td>
+								<td align="right"><%=row.getString("IBAN")%></td>
 							</siga:FilaConIconos>
 <% 
 						}

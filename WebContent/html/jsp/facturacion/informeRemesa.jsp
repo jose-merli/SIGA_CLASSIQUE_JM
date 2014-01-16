@@ -166,7 +166,7 @@
 								<% } %>
 							</td>
 							<td class="boxConsultaNumber">
-								<%=UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaAbono)%>
+								<%=cuentaAbono%>
 							</td>
 						</tr>
 					</table>

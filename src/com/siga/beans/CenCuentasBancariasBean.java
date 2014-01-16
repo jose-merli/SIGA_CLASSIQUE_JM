@@ -19,7 +19,7 @@ public class CenCuentasBancariasBean extends MasterBean {
 	private Long	idPersona;
 	
 	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
-					titular, fechaBaja, cuentaContable;	
+					titular, fechaBaja, cuentaContable,iban;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_CUENTASBANCARIAS";
@@ -36,7 +36,8 @@ public class CenCuentasBancariasBean extends MasterBean {
 	static public final String C_NUMEROCUENTA		= "NUMEROCUENTA";
 	static public final String C_TITULAR			= "TITULAR";	
 	static public final String C_FECHABAJA			= "FECHABAJA";
-	static public final String C_CUENTACONTABLE		= "CUENTACONTABLE";	
+	static public final String C_CUENTACONTABLE		= "CUENTACONTABLE";
+	static public final String C_IBAN				= "IBAN";
 	/**
 	 * @return Devuelve abonoCargo.
 	 */
@@ -180,5 +181,11 @@ public class CenCuentasBancariasBean extends MasterBean {
 	 */
 	public void setTitular(String titular) {
 		this.titular = titular;
+	}
+	public String getIban() {
+		return iban;
+	}
+	public void setIban(String iban) {
+		this.iban = iban;
 	}
 }

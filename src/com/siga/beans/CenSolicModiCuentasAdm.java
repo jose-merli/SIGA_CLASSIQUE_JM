@@ -17,7 +17,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 /**
@@ -47,7 +46,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 				CenSolicModiCuentasBean.C_IDPERSONA,			CenSolicModiCuentasBean.C_IDINSTITUCION,			
 				CenSolicModiCuentasBean.C_IDCUENTA,				CenSolicModiCuentasBean.C_FECHAMODIFICACION,
 				CenSolicModiCuentasBean.C_USUMODIFICACION,		CenSolicModiCuentasBean.C_IDESTADOSOLIC,
-				CenSolicModiCuentasBean.C_FECHAALTA};
+				CenSolicModiCuentasBean.C_FECHAALTA,			CenSolicModiCuentasBean.C_IBAN};
 		return campos;
 	}
 	/**
@@ -92,6 +91,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSolicModiCuentasBean.C_USUMODIFICACION));
 			bean.setIdEstadoSolic(UtilidadesHash.getInteger(hash,CenSolicModiCuentasBean.C_IDESTADOSOLIC));
 			bean.setFechaAlta(UtilidadesHash.getString(hash,CenSolicModiCuentasBean.C_FECHAALTA));
+			bean.setIban(UtilidadesHash.getString(hash,CenSolicModiCuentasBean.C_IBAN));
 		}
 		catch(Exception e){
 			bean = null;
@@ -126,6 +126,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CenSolicModiCuentasBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, CenSolicModiCuentasBean.C_IDESTADOSOLIC, b.getIdEstadoSolic());
 			UtilidadesHash.set(hash, CenSolicModiCuentasBean.C_FECHAALTA, b.getFechaAlta());
+			UtilidadesHash.set(hash, CenSolicModiCuentasBean.C_IBAN, b.getIban());
 		}
 		catch (Exception e){
 			hash = null;
@@ -261,6 +262,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_MOTIVO + "," +
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_ABONOCARGO + "," +
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_ABONOSJCS + "," +
+							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IBAN + "," +
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_CBO_CODIGO + "," +
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_CODIGOSUCURSAL + "," +
 							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_DIGITOCONTROL + "," +
@@ -379,10 +381,11 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					cuentaModificada.setIdCuenta(new Integer((String)cuentaOriginal.get(CenCuentasBancariasBean.C_IDCUENTA)));					
 					cuentaModificada.setAbonoCargo((String)hash.get(CenSolicModiCuentasBean.C_ABONOCARGO));
 					cuentaModificada.setAbonoSJCS((String)hash.get(CenSolicModiCuentasBean.C_ABONOSJCS));
-					cuentaModificada.setCbo_Codigo((String)hash.get(CenSolicModiCuentasBean.C_CBO_CODIGO));					
-					cuentaModificada.setCodigoSucursal((String)hash.get(CenSolicModiCuentasBean.C_CODIGOSUCURSAL));
-					cuentaModificada.setDigitoControl((String)hash.get(CenSolicModiCuentasBean.C_DIGITOCONTROL));
-					cuentaModificada.setNumeroCuenta((String)hash.get(CenSolicModiCuentasBean.C_NUMEROCUENTA));
+					cuentaModificada.setCbo_Codigo((String)hash.get(CenSolicModiCuentasBean.C_CBO_CODIGO));
+					cuentaModificada.setIban((String)hash.get(CenSolicModiCuentasBean.C_IBAN));
+					cuentaModificada.setCodigoSucursal(null);
+					cuentaModificada.setDigitoControl(null);
+					cuentaModificada.setNumeroCuenta(null);
 					cuentaModificada.setTitular((String)hash.get(CenSolicModiCuentasBean.C_TITULAR));
 					cuentaModificada.setFechaBaja((String)cuentaOriginal.get(CenCuentasBancariasBean.C_FECHABAJA));
 					cuentaModificada.setCuentaContable((String)cuentaOriginal.get(CenCuentasBancariasBean.C_CUENTACONTABLE));

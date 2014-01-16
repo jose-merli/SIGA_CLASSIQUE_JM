@@ -415,10 +415,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 									") AS SOLICITARBAJA, " +
 
 									// Cuenta
-									"NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " || '-' || " +
-													CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + " || '-' || " +
-													CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + " || '-' || " +
-													" LPAD( SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + " , 7), 10, '*') " +
+									"NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN  +
 										" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
 										" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
@@ -1374,21 +1371,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		select.append("NVL((SELECT ");
 		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
 		select.append(".");
-		select.append(CenCuentasBancariasBean.C_CBO_CODIGO);
-		select.append(" || '-' || ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_CODIGOSUCURSAL);
-		select.append(" || '-' || ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_DIGITOCONTROL);
-		select.append(" || '-' || ");
-		select.append(" LPAD( SUBSTR(");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_NUMEROCUENTA);
-		select.append(" , 7), 10, '*') ");
+		select.append(CenCuentasBancariasBean.C_IBAN);
 		select.append(" FROM ");
 		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
 		select.append(" WHERE ");

@@ -221,7 +221,7 @@
 			<siga:Table
 	 			name="productos"
 	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"
-				columnSizes="10,7,15,13,17,6,11,10,6,5"
+				columnSizes="8,7,15,13,19,6,11,10,6,5"
 				fixedHeight="48%">
 <% 				
 				if(vProductos == null || vProductos.size()<1) 							{  
@@ -320,7 +320,7 @@
 			<siga:Table 
 	 			name="servicios"
 	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
-				columnSizes="10,7,15,13,17,6,11,10,6,5">
+				columnSizes="8,7,15,13,19,6,11,10,6,5">
 			
 <%
 				if(vServicios == null || vServicios.size()<1 ) {

@@ -52,66 +52,57 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 
 	@Override
 	public CuentaBancariaVo getForm2Vo(CuentasBancariasForm objectForm) {
-		CuentaBancariaVo objectVo = new CuentaBancariaVo();
+		CuentaBancariaVo objectVo = new CuentaBancariaVo();		
+		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals(""))
+			objectVo.setIdinstitucion(Short.valueOf(objectForm.getIdInstitucion()));
+		if(objectForm.getIdCuentaBancaria()!=null && !objectForm.getIdCuentaBancaria().equals(""))
+			objectVo.setBancosCodigo(objectForm.getIdCuentaBancaria());
+		if(objectForm.getCodigoBanco()!=null &&!objectForm.getCodigoBanco().equals(""))
+			objectVo.setCodBanco(objectForm.getCodigoBanco());
+		if(objectForm.getSucursalBanco()!=null &&!objectForm.getSucursalBanco().equals(""))
+			objectVo.setCodSucursal(objectForm.getSucursalBanco());
+		if(objectForm.getDigControlBanco()!=null &&!objectForm.getDigControlBanco().equals(""))
+			objectVo.setDigitocontrol(objectForm.getDigControlBanco());
+		if(objectForm.getCuentaBanco()!=null &&!objectForm.getCuentaBanco().equals(""))
+			objectVo.setNumerocuenta(objectForm.getCuentaBanco());
+		if(objectForm.getImpComisionAjenaAbono()!=null &&!objectForm.getImpComisionAjenaAbono().equals(""))
+			objectVo.setImpcomisionajenaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaAbono()));
+		if(objectForm.getImpComisionAjenaCargo()!=null &&!objectForm.getImpComisionAjenaCargo().equals(""))
+			objectVo.setImpcomisionajenacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaCargo()));
+		if(objectForm.getImpComisionPropiaAbono()!=null &&!objectForm.getImpComisionPropiaAbono().equals(""))
+			objectVo.setImpcomisionpropiaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaAbono()));
+		if(objectForm.getImpComisionPropiaCargo()!=null &&!objectForm.getImpComisionPropiaCargo().equals(""))
+			objectVo.setImpcomisionpropiacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaCargo()));
 		
-			if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals(""))
-				objectVo.setIdinstitucion(Short.valueOf(objectForm.getIdInstitucion()));
-			if(objectForm.getIdCuentaBancaria()!=null && !objectForm.getIdCuentaBancaria().equals(""))
-				objectVo.setBancosCodigo(objectForm.getIdCuentaBancaria());
-			if(objectForm.getCodigoBanco()!=null &&!objectForm.getCodigoBanco().equals(""))
-				objectVo.setCodBanco(objectForm.getCodigoBanco());
-			if(objectForm.getSucursalBanco()!=null &&!objectForm.getSucursalBanco().equals(""))
-				objectVo.setCodSucursal(objectForm.getSucursalBanco());
-			if(objectForm.getDigControlBanco()!=null &&!objectForm.getDigControlBanco().equals(""))
-				objectVo.setDigitocontrol(objectForm.getDigControlBanco());
-			if(objectForm.getCuentaBanco()!=null &&!objectForm.getCuentaBanco().equals(""))
-				objectVo.setNumerocuenta(objectForm.getCuentaBanco());
-			if(objectForm.getImpComisionAjenaAbono()!=null &&!objectForm.getImpComisionAjenaAbono().equals(""))
-				objectVo.setImpcomisionajenaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaAbono()));
-			if(objectForm.getImpComisionAjenaCargo()!=null &&!objectForm.getImpComisionAjenaCargo().equals(""))
-				objectVo.setImpcomisionajenacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaCargo()));
-			if(objectForm.getImpComisionPropiaAbono()!=null &&!objectForm.getImpComisionPropiaAbono().equals(""))
-				objectVo.setImpcomisionpropiaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaAbono()));
-			if(objectForm.getImpComisionPropiaCargo()!=null &&!objectForm.getImpComisionPropiaCargo().equals(""))
-				objectVo.setImpcomisionpropiacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaCargo()));
-			
-			if(objectForm.getSjcs()!=null &&!objectForm.getSjcs().equals(""))
-				objectVo.setSjcs(objectForm.getSjcs());
-			
-			if(objectForm.getSufijo()!=null &&!objectForm.getSufijo().equals(""))
-				objectVo.setSufijo(objectForm.getSufijo());
-			if(objectForm.getBaja()!=null && !objectForm.getBaja().equals("")){
-				objectVo.setBaja(objectForm.getBaja());
-			}
-			if(objectForm.getBaja()!=null && objectForm.getBaja().equals(AppConstants.DB_FALSE)){
-				objectVo.setFechabaja(null);
-			}else if(objectForm.getBaja()!=null && objectForm.getBaja().equals(AppConstants.DB_TRUE)){
-				if(objectForm.getFechaBaja()!=null &&!objectForm.getFechaBaja().equals("")){
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					try {
-						objectVo.setFechabaja(sdf.parse(objectForm.getFechaBaja()));
-					} catch (ParseException e) {e.printStackTrace();
-						
-					}
-				}
-				objectVo.setBaja(AppConstants.DB_TRUE);
+		if(objectForm.getSjcs()!=null &&!objectForm.getSjcs().equals("")){
+			objectVo.setSjcs(objectForm.getSjcs());
+		}
+		
+		if(objectForm.getBaja()!=null && !objectForm.getBaja().equals("")){
+			objectVo.setBaja(objectForm.getBaja());
+		}
+		
+		if(objectForm.getFechaBaja() != null &&!objectForm.getFechaBaja().equals("")) {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			try {
+				objectVo.setFechabaja(sdf.parse(objectForm.getFechaBaja()));
+			} catch (ParseException e) {e.printStackTrace();
 				
-			}else{
-				objectVo.setFechabaja(null);
-				objectVo.setBaja(null);
 			}
-			if(objectForm.getNif()!=null &&!objectForm.getNif().equals(""))
-				objectVo.setNif(objectForm.getNif());
+		} else {
+			objectVo.setFechabaja(null);
+		}
+	
+		if(objectForm.getAsientoContable()!=null && !objectForm.getAsientoContable().equals(""))
+			objectVo.setAsientocontable(objectForm.getAsientoContable());
+		
+		if(objectForm.getCuentaContableTarjeta()!=null &&!objectForm.getCuentaContableTarjeta().equals(""))
+			objectVo.setCuentacontabletarjeta(objectForm.getCuentaContableTarjeta());
+		
+		if(objectForm.getIBAN()!=null &&!objectForm.getIBAN().equals(""))
+			objectVo.setIban(objectForm.getIBAN());
 			
-			if(objectForm.getAsientoContable()!=null && !objectForm.getAsientoContable().equals(""))
-				objectVo.setAsientocontable(objectForm.getAsientoContable());
-			
-			if(objectForm.getCuentaContableTarjeta()!=null &&!objectForm.getCuentaContableTarjeta().equals(""))
-				objectVo.setCuentacontabletarjeta(objectForm.getCuentaContableTarjeta());
-			
-			
-				
-			return objectVo;
+		return objectVo;
 			
 		
 	}
@@ -150,28 +141,21 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			
 			if(objectVo.getSjcs()!=null){
 				cuentasBancariasForm.setSjcs(objectVo.getSjcs());
-			}
-			
-			if(objectVo.getSufijo()!=null)
-				cuentasBancariasForm.setSufijo(objectVo.getSufijo());
+			} 
 			
 			if(objectVo.getFechabaja()!=null){
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				cuentasBancariasForm.setFechaBaja(sdf.format(objectVo.getFechabaja()));
-				cuentasBancariasForm.setBaja(AppConstants.DB_TRUE);
-			}else{
-				
-				cuentasBancariasForm.setBaja(AppConstants.DB_FALSE);
 			}
-			
-			if(objectVo.getNif()!=null)
-				cuentasBancariasForm.setNif(objectVo.getNif());
 			
 			if(objectVo.getAsientocontable()!=null)
 				cuentasBancariasForm.setAsientoContable(objectVo.getAsientocontable());
 			
 			if(objectVo.getCuentacontabletarjeta()!=null)
 				cuentasBancariasForm.setCuentaContableTarjeta(objectVo.getCuentacontabletarjeta());
+			
+			if(objectVo.getIban()!=null)
+				cuentasBancariasForm.setIBAN(objectVo.getIban());
 			
 			cuentasBancariasForm.setBancoNombre(objectVo.getBancoNombre());
 			cuentasBancariasForm.setBancoCuentaDescripcion(objectVo.getBancoCuentaDescripcion());

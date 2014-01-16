@@ -257,7 +257,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 						         " WHERE cen_institucion.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION " +
 						          "  AND cen_persona.idpersona = cen_institucion.idpersona) AS CODIGOORDENANTE , " +
 	
-						       " (SELECT cod_banco||'-'|| cod_sucursal ||'-'|| digitocontrol || '-'|| numerocuenta " + 
+						       " (SELECT IBAN " + 
 						         "  FROM fac_bancoinstitucion " +
 						         " WHERE fac_bancoinstitucion.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION " +
 						          "  AND fac_bancoinstitucion.bancos_codigo = FAC_DISQUETECARGOS.Bancos_Codigo) AS CUENTAABONO " + 

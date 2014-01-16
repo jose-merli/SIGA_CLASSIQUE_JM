@@ -34,12 +34,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_IMPCOMISIONAJENACARGO,
 							FacBancoInstitucionBean.C_IMPCOMISIONPROPIAABONO,
 							FacBancoInstitucionBean.C_IMPCOMISIONPROPIACARGO,
-							FacBancoInstitucionBean.C_NIF,
-							FacBancoInstitucionBean.C_SUFIJO,
 							FacBancoInstitucionBean.C_DIGITOCONTROL,							
 							FacBancoInstitucionBean.C_USUMODIFICACION,
 							FacBancoInstitucionBean.C_ASIENTOCONTABLE,
-							FacBancoInstitucionBean.C_FECHAMODIFICACION};
+							FacBancoInstitucionBean.C_FECHAMODIFICACION,
+							FacBancoInstitucionBean.C_IBAN};
 		return campos;
 	}
 
@@ -65,11 +64,10 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setImpComisionPropiaAbono		(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_IMPCOMISIONPROPIAABONO));
 			bean.setImpComisionPropiaCargo		(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_IMPCOMISIONPROPIACARGO));
 			bean.setImpComisionAjenaCargo		(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_IMPCOMISIONAJENACARGO));
-			bean.setNif							(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_NIF));
-			bean.setSufijo						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_SUFIJO));			
 			bean.setDigitoControl				(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_DIGITOCONTROL));			
 			bean.setFechaMod					(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod						(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_USUMODIFICACION));
+			bean.setIban						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_IBAN));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -96,8 +94,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IMPCOMISIONPROPIAABONO, b.getImpComisionPropiaAbono());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IMPCOMISIONAJENACARGO, b.getImpComisionAjenaCargo());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IMPCOMISIONPROPIACARGO, b.getImpComisionPropiaCargo());
-			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_NIF, b.getNif());
-			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_SUFIJO, b.getSufijo());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IBAN, b.getIban());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_DIGITOCONTROL, b.getDigitoControl());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
@@ -126,7 +123,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            String sql ="SELECT " +
     						FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_NIF + "," +
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
@@ -209,7 +206,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            String sql ="SELECT " +
     						FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_NIF + "," +
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
@@ -246,11 +243,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            String sql ="SELECT " +
 							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			"BI." + FacBancoInstitucionBean.C_NIF + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
 							"BI.IMPCOMISIONPROPIACARGO COMISIONPROPIA, "+ 
 							"BI.IMPCOMISIONAJENACARGO COMISIONAJENA, "+		
@@ -315,7 +312,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            String sql ="SELECT " +
 							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			"BI." + FacBancoInstitucionBean.C_NIF + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
@@ -354,7 +351,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 							"DECODE(BI." + FacBancoInstitucionBean.C_FECHABAJA + ",NULL,1,0) ACTIVA,"+ //Si esta de baja ->0, si esta activa ->1
 	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			"BI." + FacBancoInstitucionBean.C_NIF + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +

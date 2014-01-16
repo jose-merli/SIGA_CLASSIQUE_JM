@@ -356,7 +356,7 @@ function jQueryLoaded(){
 	*	
 	*	@author 	Tim Benniks <tim@timbenniks.com>
 	* 	@copyright  2009 timbenniks.com
-	*	@version    $Id: SIGA.js,v 1.117 2013-12-19 11:12:52 carlos Exp $
+	*	@version    $Id: SIGA.js,v 1.118 2014-01-16 09:37:50 carlos Exp $
 	**/
 	(function(jQuery)
 	{
@@ -5156,6 +5156,15 @@ function validarNig( nig )
 	}
 }	
 function formateaNig(strValue) 
+{
+	strValue = replaceAll(strValue,' ','');
+	strValue = replaceAll(strValue,'.','');
+	return strValue;
+	
+
+}
+
+function formateaMask(strValue) 
 {
 	strValue = replaceAll(strValue,' ','');
 	strValue = replaceAll(strValue,'.','');

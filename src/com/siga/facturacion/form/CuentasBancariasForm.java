@@ -77,6 +77,8 @@ public class CuentasBancariasForm extends MasterForm {
 	String uso;
 	String bancoAjaxIn;
 	String bancoAjaxOut;
+	String IBAN;
+	String BIC;
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
 //	List<FacSeriefacturacion> seriesFacturacion;
 	
@@ -209,17 +211,24 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setBaja(String baja) {
 		this.baja = baja;
 	}
-
-
 	public String getIdInstitucion() {
 		return idInstitucion;
 	}
-
-
 	public void setIdInstitucion(String idInstitucion) {
 		this.idInstitucion = idInstitucion;
 	}
-
+	public String getIBAN() {
+		return IBAN;
+	}
+	public void setIBAN(String iBAN) {
+		IBAN = iBAN;
+	}
+	public String getBIC() {
+		return BIC;
+	}
+	public void setBIC(String bIC) {
+		BIC = bIC;
+	}
 	public String getBancoCuentaDescripcion() {
 		if(bancoCuentaDescripcion!=null && !bancoCuentaDescripcion.equals(""))
 			return bancoCuentaDescripcion;

@@ -289,7 +289,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							   "'' AS NUMEROABONO, " +
 							   "0 AS IDPAGO, "+
-							   "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+ 
+							   "(select banco.nombre || ' nº ' || cuenta."+CenCuentasBancariasBean.C_IBAN+ 
                                " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
                                " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                                " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
@@ -338,7 +338,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 "incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							 "'' AS NUMEROABONO, " +
 							 "0 AS IDPAGO, "+
-							 "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+
+							 "(select banco.nombre || ' nº ' || cuenta."+CenCuentasBancariasBean.C_IBAN+ 
                              " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
                              " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                              " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
@@ -379,7 +379,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 				  			 "renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
 							 "'' AS DEVUELTA, '' AS tarjeta, " +
 							 " 0 AS idabono_idcuenta, '' AS numeroabono, 0 AS idpago, " +
-							 "(select banco.nombre || 'nº ' || cuenta.cbo_codigo || ' ' || cuenta.codigosucursal ||' ' ||cuenta.digitocontrol ||' ' || LPAD(SUBSTR(cuenta.numerocuenta, 7), 10, '*') "+
+							 "(select banco.nombre || ' nº ' || cuenta."+CenCuentasBancariasBean.C_IBAN+ 
                              " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco, "+ FacRenegociacionBean.T_NOMBRETABLA + " renegocia2 " +
                              " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                              " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
@@ -413,7 +413,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							 "factura." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							 "abono." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
 							 "0 AS IDPAGO, "+
-							 "(select banco.nombre"+
+							 "(select banco.nombre || ' nº ' || cuenta."+CenCuentasBancariasBean.C_IBAN+ 
                              " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
                              " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
                              " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+

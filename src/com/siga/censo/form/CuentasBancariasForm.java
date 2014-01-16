@@ -19,7 +19,9 @@ import com.siga.general.MasterForm;
  */
 public class CuentasBancariasForm extends MasterForm
 {
-	String incluirRegistrosConBajaLogica;
+	private String incluirRegistrosConBajaLogica;
+	private String IBAN;
+	private String BIC;	
 
 	public void setCuentaAbono(Boolean dato) {
 		UtilidadesHash.set(this.datos, "CUENTA_ABONO", dato);
@@ -148,4 +150,21 @@ public class CuentasBancariasForm extends MasterForm
 	public void setIncluirRegistrosConBajaLogica(String s) {
 		this.incluirRegistrosConBajaLogica = s;
 	}
+
+	public String getIBAN() {
+		return IBAN;
+	}
+
+	public void setIBAN(String iBAN) {
+		IBAN = iBAN;
+	}
+
+	public String getBIC() {
+		return BIC;
+	}
+
+	public void setBIC(String bIC) {
+		BIC = bIC;
+	}
+	
 }

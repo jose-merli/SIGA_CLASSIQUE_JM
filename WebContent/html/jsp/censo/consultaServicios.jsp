@@ -314,7 +314,7 @@ String app = request.getContextPath();
 			String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));
 			String idFormaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("IDFORMAPAGO"));
 			String identificadorCuenta = (((String) registro.get("IDCUENTA"))==null || ((String) registro.get("IDCUENTA")).equals(""))?"0":(String) registro.get("IDCUENTA");
-			String idCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos((String) registro.get("NCUENTA"));
+			String idCuenta = (String) registro.get("NCUENTA");
 			if (idCuenta==null || idCuenta.equals("")){
 			   idCuenta="&nbsp";
 			}

@@ -206,5 +206,48 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
 		}
 		return codigoExt;
-	}	
+	}
+	
+	public boolean isLongitudCorrectaIBAN(String codPais, int longitud) throws ClsExceptions{
+		boolean correcto = false;
+		RowsContainer rc = null;
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT LONGITUDCUENTABANCARIA FROM " + CenPaisBean.T_NOMBRETABLA;
+			sql += "  WHERE COD_ISO = '" + codPais+"'";
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				if(fila.getValue("LONGITUDCUENTABANCARIA")!= null && Integer.valueOf((String) fila.getValue("LONGITUDCUENTABANCARIA"))== longitud){
+					correcto = true;
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el metodo lonigitudCorrectaIBAN()"); 
+		}		
+		
+		return correcto;
+	}
+	
+	public CenPaisBean getPaisByCodIso(String codPais) throws ClsExceptions{
+		RowsContainer rc = null;
+		CenPaisBean bean = null;
+		
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT * FROM " + CenPaisBean.T_NOMBRETABLA;
+			sql += "  WHERE COD_ISO = '" + codPais+"'";
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				bean = (CenPaisBean)this.hashTableToBeanInicial(fila.getRow()); 	
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el metodo lonigitudCorrectaIBAN()"); 
+		}		
+		
+		return bean;
+	}
+	
 }

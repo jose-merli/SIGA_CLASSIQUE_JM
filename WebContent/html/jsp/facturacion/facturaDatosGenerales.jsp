@@ -81,6 +81,7 @@
 	String fechaGeneracion = "";
 	String fechaConfirmacion = "";
 	String formaPago = "facturacion.buscarFactura.literal.Banco";
+	String iban = "";
 	String cuenta = "";
 	String codEntidad = "";
 	String observaciones = "";
@@ -148,10 +149,12 @@
 			
 		cuenta = UtilidadesHash.getString(factura, CenCuentasBancariasBean.C_NUMEROCUENTA);
 		codEntidad= UtilidadesHash.getString(factura, CenCuentasBancariasBean.C_CBO_CODIGO);
+		iban = UtilidadesHash.getString(factura, CenCuentasBancariasBean.C_IBAN);
 		
 		if(idCuentaDeudor!=null){
-		 cuenta = UtilidadesHash.getString(factura, "NUMEROCUENTADEUDOR");
-		 codEntidad= UtilidadesHash.getString(factura, "CODIGOENTIDADDEUDOR");		
+			cuenta = UtilidadesHash.getString(factura, "NUMEROCUENTADEUDOR");
+			codEntidad= UtilidadesHash.getString(factura, "CODIGOENTIDADDEUDOR");		
+			iban = UtilidadesHash.getString(factura, "IBANDEUDOR");		
 		}
 		
 		observaciones = UtilidadesHash.getString(factura, FacFacturaBean.C_OBSERVACIONES);
@@ -305,7 +308,7 @@
 								<td class="labelTextValor"><siga:Idioma key="<%=formaPago%>"/></td>
 
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.NumeroCuenta"/></td>
-								<td class="labelTextValor" colspan="3"><%=codEntidad%><%=UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuenta)%></td>
+								<td class="labelTextValor" colspan="3"><%=iban%></td>
 							</tr>
 						</table>
 					</siga:ConjCampos>	

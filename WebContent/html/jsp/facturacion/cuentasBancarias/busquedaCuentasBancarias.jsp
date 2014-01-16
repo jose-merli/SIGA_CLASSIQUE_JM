@@ -29,67 +29,30 @@
 
 	<script type="text/javascript">
 		jQuery.noConflict();
-
-		function buscar() {
-			sub();
-			jQuery.ajax({
-	            type: "POST",
-	            url: "/SIGA/FAC_CuentasBancarias.do?modo=buscar",
-	            data:jQuery('form').serialize(),
-	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-	            success: function(json){
-	            	jQuery('#divListadoCuentasBancarias').html(json);
-	            	//jQuery('#CuentasBancariaForm.modo')="abrir";
-					fin();
-	            },
-	            error: function(e){
-					fin();
-	                alert('Error de comunicación',"error");
-	            }
-	        });
-			ajusteAlto('divListadoCuentasBancarias');	
-		}
 		
+		function buscar(){
+			sub();				
+			document.CuentasBancariasForm.modo.value="buscar";
+			document.CuentasBancariasForm.target="resultado";	
+			document.CuentasBancariasForm.submit();	
+			fin();
+		}		
+	
 		function accionNuevo() {
 			document.CuentasBancariasForm.modo.value = "nuevo";
-			var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"M");
+			var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
 			if(resultado=='MODIFICADO'){
 				buscar();
 			}	
 		}
 		
-		function editar(fila) {
-			var idCuentaBancariaFila = document.getElementById("idCuentaBancaria_"+fila).value;
-			document.CuentasBancariasForm.idCuentaBancaria.value = idCuentaBancariaFila;
-			document.CuentasBancariasForm.modo.value="editar";
-		  	var resultado = ventaModalGeneral(document.CuentasBancariasForm.name,"M");
-		  	if(resultado && resultado=='MODIFICADO'){
-		  		buscar();
-		  	}			
-		}
-		
-		function borrarFila(fila) {		
-			var idCuentaBancariaFila = document.getElementById("idCuentaBancaria_"+fila).value;
-			document.CuentasBancariasForm.idCuentaBancaria.value = idCuentaBancariaFila;
-			document.CuentasBancariasForm.modo.value="borrar";
-			document.CuentasBancariasForm.target="submitArea";
-			document.CuentasBancariasForm.submit();
-		 }
-		
-		
-		function consultar(fila){
-			var idCuentaBancariaFila = document.getElementById("idCuentaBancaria_"+fila).value;
-			document.CuentasBancariasForm.idCuentaBancaria.value = idCuentaBancariaFila;
-			document.CuentasBancariasForm.modo.value="consultar";
-		  	ventaModalGeneral(document.CuentasBancariasForm.name,"M");	  		
-		}	
   	</script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo titulo="menu.facturacion.gestionCuentasBancarias" localizacion="menu.facturacion.localizacion" />
 </head>
 
-<body>
+<body onload="ajusteAltoBotones('resultado');">
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 	<html:form action="${path}" method="POST" target="mainWorkArea">
@@ -114,19 +77,9 @@
 				
 				<td class="labelText">-</td>
 				<td>
-					<html:text styleId="sucursalBanco" property="sucursalBanco" size="4" maxlength="4" styleClass="box" />
+					<html:text styleId="IBAN" property="IBAN" size="36" maxlength="34" styleClass="box" />
 				</td>
 				
-				<td class="labelText">-</td>
-				<td>
-					<html:text styleId="digControlBanco" property="digControlBanco" size="2" maxlength="2" styleClass="box" />
-				</td>
-				
-				<td class="labelText">-</td>
-				<td>
-					<html:text styleId="cuentaBanco" property="cuentaBanco"	size="10" maxlength="10" styleClass="box" />
-				</td>
-
 				<td class="labelText">
 					¿SJCS?<!--<bean:message key="facturacion.cuentasBancarias.sjcs" />-->
 				</td>
@@ -164,13 +117,20 @@
 		<siga:ConjBotonesBusqueda botones="B"/>
 	</html:form>
 	
-	<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
-		<table id='listadoCuentasBancarias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout: fixed'>
-		</table>
-	</div>
-		
 	<siga:ConjBotonesAccion botones="N" clase="botonesDetalle"/>
-
+	
+	<!-- INICIO: IFRAME LISTA RESULTADOS -->
+	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+					id="resultado"
+					name="resultado" 
+					scrolling="no"
+					frameborder="0"
+					marginheight="0"
+					marginwidth="0"					 
+					class="frameGeneral">
+	</iframe>
+	<!-- FIN: IFRAME LISTA RESULTADOS -->
+		
 	<!-- FIN: BOTONES BUSQUEDA -->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>

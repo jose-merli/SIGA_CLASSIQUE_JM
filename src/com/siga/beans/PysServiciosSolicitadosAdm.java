@@ -277,10 +277,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 									" AND ROWNUM<2) AS ESTAFACTURADO, " +
 
 									// Cuenta
-									"NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " || '-' || " +
-													CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + " || '-' || " +
-													CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + " || '-' || " +
-													" LPAD( SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + " , 7), 10, '*') " +
+									"NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN +
 										" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
 										" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDCUENTA +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
@@ -1147,15 +1144,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	   sql.append(" AND ROWNUM<2) AS ESTAFACTURADO, ");
 
 								// Cuenta
-	   sql.append("NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA);  sql.append("."); sql.append(CenCuentasBancariasBean.C_CBO_CODIGO); 
-	   sql.append(" || '-' || "); 
-	   sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);sql.append(".");sql.append(CenCuentasBancariasBean.C_CODIGOSUCURSAL); 
-		sql.append(" || '-' || ");
-		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA); sql.append(".");	sql.append(CenCuentasBancariasBean.C_DIGITOCONTROL);
-		sql.append(" || '-' || ");
-		sql.append(" LPAD( SUBSTR(");
-		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);	sql.append("."); sql.append(CenCuentasBancariasBean.C_NUMEROCUENTA); 
-		sql.append(" , 7), 10, '*') ");
+	   	sql.append("NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA);  sql.append("."); sql.append(CenCuentasBancariasBean.C_IBAN); 
 		sql.append(" FROM ");
 		sql.append(CenCuentasBancariasBean.T_NOMBRETABLA); 
 		sql.append(" WHERE "); 

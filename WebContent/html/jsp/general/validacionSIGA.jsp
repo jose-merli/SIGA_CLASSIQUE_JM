@@ -576,5 +576,66 @@ function getDigitoControl(valor){
 			return 0;
 
 	}
+	
+	function numerico(valor){
+		cad = valor.toString();
+		for (var i=0; i<cad.length; i++) {
+			var caracter = cad.charAt(i);
+			if (caracter<"0"||caracter>"9"){					
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	// Funciones para obtener el d¡gito de control de la Cuenta
+	function obtenerDigito(valor){	
+	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+	  control = 0;
+	  for (var i=0; i<=9; i++)
+	    control += parseInt(valor.charAt(i)) * valores[i];		  
+	  control = 11 - (control % 11);
+	  if (control == 11) control = 0;
+	  else if (control == 10) control = 1;
+	  return control;
+	}		
+	
+	function validarIBAN(iban) {
+		var newIban = iban.toUpperCase(),		
+		modulo = function(divident, divisor){
+			var m = 0;
+		  	for (var i = 0; i < divident.length; ++i)
+		    	  m = (m * 10 + parseInt(divident.charAt(i))) % divisor;
+		  	return m;
+		};
+		 
+		if (newIban.search(/^[A-Z]{2}/gi) < 0) {
+			return false;
+		}
+		 
+		newIban = newIban.substring(4) + newIban.substring(0, 4);
+		 
+		newIban = newIban.replace(/[A-Z]/g, function (match) {
+			return match.charCodeAt(0) - 55;
+		});
+		 
+		return parseInt(modulo(newIban, 97), 10) === 1;
+	}
+	
+	function calcularDigitoCuentaBancariaEspañola(cuenta){
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
+		if(!numerico(cuenta)){
+			alert(mensaje);
+			return false;
+		
+		} else {
+			if(cuenta.substring(8,10) != obtenerDigito("00" + cuenta.substring(0,4) + cuenta.substring(4,8)) + "" + obtenerDigito(cuenta.substring(10))){
+				alert(mensaje);
+				return false;
+			}
+		}
+		
+		return true;  
+	}	
 
   

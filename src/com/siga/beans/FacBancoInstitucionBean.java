@@ -11,7 +11,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 
 	/* Variables */
 	private Integer idInstitucion;
-	private String 	bancosCodigo, codBanco, nif, codSucursal, numeroCuenta, sufijo, fechaBaja, asientoContable, digitoControl, sjcs;	
+	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	
 	private Double 	impComisionPropiaCargo, impComisionAjenaCargo, impComisionPropiaAbono, impComisionAjenaAbono;	
 	
 	/* Nombre tabla */
@@ -20,10 +20,8 @@ public class FacBancoInstitucionBean extends MasterBean {
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION 				= "IDINSTITUCION";
 	static public final String C_BANCOS_CODIGO				= "BANCOS_CODIGO";	
-	static public final String C_NIF				 		= "NIF";
 	static public final String C_COD_BANCO		 			= "COD_BANCO";
 	static public final String C_COD_SUCURSAL		 		= "COD_SUCURSAL";
-	static public final String C_SUFIJO						= "SUFIJO";
 	static public final String C_FECHABAJA					= "FECHABAJA";
 	static public final String C_NUMEROCUENTA				= "NUMEROCUENTA";
 	static public final String C_IMPCOMISIONPROPIACARGO		= "IMPCOMISIONPROPIACARGO";
@@ -33,6 +31,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_ASIENTOCONTABLE			= "ASIENTOCONTABLE";
 	static public final String C_DIGITOCONTROL				= "DIGITOCONTROL";
 	static public final String C_SJCS						= "SJCS";
+	static public final String C_IBAN						= "IBAN";
 	
 
 	/* Métodos get */
@@ -63,9 +62,6 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public Double getImpComisionPropiaCargo() {
 		return impComisionPropiaCargo;
 	}
-	public String getNif() {
-		return nif;
-	}
 	public String getNumeroCuenta() {
 		return numeroCuenta;
 	}
@@ -73,10 +69,6 @@ public class FacBancoInstitucionBean extends MasterBean {
 		return asientoContable;
 	}
 
-	public String getSufijo() {
-		return sufijo;
-	}
-	
 	public String getSJCS() {
 		return sjcs;
 	}
@@ -110,17 +102,11 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public void setImpComisionPropiaCargo(Double impComisionPropiaCargo) {
 		this.impComisionPropiaCargo = impComisionPropiaCargo;
 	}
-	public void setNif(String nif) {
-		this.nif = nif;
-	}
 	public void setNumeroCuenta(String numeroCuenta) {
 		this.numeroCuenta = numeroCuenta;
 	}
 	public void setAsientoContable(String asientoContable) {
 		this.asientoContable = asientoContable;
-	}
-	public void setSufijo(String sufijo) {
-		this.sufijo = sufijo;
 	}
 	public String getDigitoControl() {
 		return digitoControl;
@@ -131,4 +117,11 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public void setSJCS(String sjcs) {
 		this.sjcs = sjcs;
 	}
+	public String getIban() {
+		return iban;
+	}
+	public void setIban(String iban) {
+		this.iban = iban;
+	}
+	
 }

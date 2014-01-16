@@ -1000,6 +1000,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "," +
@@ -1042,14 +1043,24 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
                     select+=" where "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"=:"+contador;
                     select+="   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDPERSONADEUDOR+
                             "   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDCUENTA+"="+ FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDCUENTADEUDOR+") NUMEROCUENTADEUDOR, "+
+                           
+                            
                             " (select "+CenCuentasBancariasBean.C_CBO_CODIGO+
 							" from "+CenCuentasBancariasBean.T_NOMBRETABLA;
             contador++;
 			codigosBind.put(new Integer(contador), idInstitucion.toString());
                     select+=" where "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"=:"+contador;
                     select+="   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDPERSONADEUDOR+
-                            "   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDCUENTA+"="+ FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDCUENTADEUDOR+") CODIGOENTIDADDEUDOR";
-
+                            "   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDCUENTA+"="+ FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDCUENTADEUDOR+") CODIGOENTIDADDEUDOR, "+
+                            
+                     " (select "+CenCuentasBancariasBean.C_IBAN+
+					 " from "+CenCuentasBancariasBean.T_NOMBRETABLA;                    
+            contador++;
+			codigosBind.put(new Integer(contador), idInstitucion.toString());
+                    select+=" where "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"=:"+contador;
+                    select+="   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDPERSONADEUDOR+
+                            "   and "+ CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDCUENTA+"="+ FacFacturaBean.T_NOMBRETABLA+"."+FacFacturaBean.C_IDCUENTADEUDOR+") IBANDEUDOR";                    
+                    
 			String from = 	" FROM " + 
 							FacSerieFacturacionBean.T_NOMBRETABLA + ", " + 
 							CenPersonaBean.T_NOMBRETABLA + ", " + 
@@ -1778,7 +1789,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							 * inc6770 (jbd) se añade el numero de cuenta asociado a la factura.
 							 * Sacamos los datos y luego se recompone 
 							 */
-                            "C." + CenCuentasBancariasBean.C_CBO_CODIGO	+ " AS CODBANCO , " +
+                            "C." + CenCuentasBancariasBean.C_IBAN			+ " AS IBAN , " +
+							"C." + CenCuentasBancariasBean.C_CBO_CODIGO	+ " AS CODBANCO , " +
                             "C." + CenCuentasBancariasBean.C_CODIGOSUCURSAL	+ " AS CODSUCURSAL, " +
                             "C." + CenCuentasBancariasBean.C_DIGITOCONTROL	+ " AS DIGCONTROL, " +
                             "C." + CenCuentasBancariasBean.C_NUMEROCUENTA	+ " AS NUMCUENTA, " +
@@ -2218,6 +2230,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + ", " +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
@@ -2332,6 +2345,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTADEUDOR + ", " +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
@@ -2550,7 +2564,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					resultado=UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoCaja");
 				  }else{
 					
-					resultado=factura.get(CenCuentasBancariasBean.C_CBO_CODIGO)+(String)factura.get("NUMEROCUENTA");
+					resultado=(String)factura.get("IBAN");
 					
 					nuevo.put("TITULARCUENTA",(String)factura.get(CenCuentasBancariasBean.C_TITULAR));
 				  }

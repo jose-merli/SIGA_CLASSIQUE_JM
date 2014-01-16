@@ -31,6 +31,8 @@ import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPaisAdm;
+import com.siga.beans.CenPaisBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSolicModiCuentasAdm;
 import com.siga.beans.CenSolicModiCuentasBean;
@@ -89,7 +91,13 @@ public class CuentasBancariasAction extends MasterAction{
 			//END BNS
 				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
 					getAjaxBanco (mapping, miForm, request, response);
-					return null;
+					return null;				
+				} else if ( accion.equalsIgnoreCase("getAjaxBancoBIC")){
+					getAjaxBancoBIC (mapping, miForm, request, response);
+					return null;	
+				} else if ( accion.equalsIgnoreCase("getAjaxCargaInicialBancoBIC")){
+					getAjaxCargaInicialBancoBIC (mapping, miForm, request, response);
+					return null;						
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -288,10 +296,26 @@ public class CuentasBancariasAction extends MasterAction{
 			if(miForm.getAbonoSJCS().booleanValue())beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
 			else									beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
 			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
-			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
-			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
-			beanCuentas.setCuentaContable(miForm.getCuentaContable());
-			beanCuentas.setDigitoControl(miForm.getDigitoControl());
+			
+			//Rellenamos el codigo del banco e insertamos un banco extranjero
+			if(miForm.getIBAN()!=null && !miForm.getIBAN().equals("")){
+				if(!miForm.getIBAN().substring(0,2).equals("ES")){
+					CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+					CenBancosBean bancosBean = bancosAdm.existeBancoExtranjero(miForm.getBIC());
+					if(bancosBean == null){
+						CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
+						CenPaisBean paisBean = paisAdm.getPaisByCodIso(miForm.getIBAN().substring(0,2));
+						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), miForm.getBIC());
+					}					
+					beanCuentas.setCbo_Codigo(bancosBean.getCodigo());
+				}else{
+					beanCuentas.setCbo_Codigo(miForm.getIBAN().substring(4,8));
+				}
+			}			
+			beanCuentas.setIban(miForm.getIBAN());
+			beanCuentas.setCodigoSucursal(null);
+			beanCuentas.setCuentaContable(null);
+			beanCuentas.setDigitoControl(null);
 			beanCuentas.setFechaBaja(null);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
@@ -440,6 +464,7 @@ public class CuentasBancariasAction extends MasterAction{
 			if(miForm.getAbonoSJCS().booleanValue())beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
 			else									beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
 			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
+			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
 			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
 			beanCuentas.setCuentaContable(miForm.getCuentaContable());
@@ -695,8 +720,26 @@ public class CuentasBancariasAction extends MasterAction{
 				bean.setAbonoSJCS(ClsConstants.DB_TRUE);			
 			}else{
 				bean.setAbonoSJCS(ClsConstants.DB_FALSE);
-			}
-			bean.setCbo_Codigo(form.getCbo_Codigo());
+			}			
+			
+			// Rellenamos el codigo del banco e insertamos un banco extranjero
+			String iban = form.getIBAN();
+			if(iban!=null && !iban.equals("")){
+				if(!iban.substring(0,2).equals("ES")){
+					CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+					CenBancosBean bancosBean = bancosAdm.existeBancoExtranjero(form.getBIC());
+					if(bancosBean == null){
+						CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
+						CenPaisBean paisBean = paisAdm.getPaisByCodIso(iban.substring(0,2));
+						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), form.getBIC());
+					}
+					bean.setCbo_Codigo(bancosBean.getCodigo());
+				}else{
+					bean.setCbo_Codigo(iban.substring(4,8));
+				}
+			}			
+			
+			bean.setIban(iban);
 			bean.setCodigoSucursal(form.getCodigoSucursal());
 			bean.setDigitoControl(form.getDigitoControl());		
 			bean.setNumeroCuenta(form.getNumeroCuenta());
@@ -765,4 +808,88 @@ public class CuentasBancariasAction extends MasterAction{
 	     response.setHeader("X-JSON", json.toString());
 		 response.getWriter().write(json.toString()); 
 	}	
+	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxBancoBIC(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException ,Exception {
+		
+		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+		CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
+		JSONObject json = new JSONObject();	
+		String iban = (String)request.getParameter("iban");
+		if (iban==null || iban.trim().equalsIgnoreCase(""))
+			throw new SIGAException("El codigo IBAN es incorrecto");
+		
+		if(iban.length() >= 2 && paisAdm.isLongitudCorrectaIBAN(iban.substring(0,2),iban.length())){
+			json.put("pais", iban.substring(0,2));
+			
+			//Comprobamos si es Español
+			if(iban.substring(0,2).equals("ES")){
+				CenBancosBean bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
+				if(bancoBean!=null){
+					json.put("banco", bancoBean.getJSONObject());
+				}
+			} 
+		}
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+	}	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @throws SIGAException
+	 * @throws Exception
+	 */
+	protected void getAjaxCargaInicialBancoBIC(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException ,Exception {
+		
+		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
+		CenBancosBean bancoBean = null;
+		CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
+		JSONObject json = new JSONObject();	
+		String iban = (String)request.getParameter("iban");
+		String cbo = (String)request.getParameter("codigo");
+		if (iban==null || iban.trim().equalsIgnoreCase(""))
+			throw new SIGAException("El codigo IBAN es incorrecto");
+
+		if(iban.substring(0,2).equals("ES")){
+			bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
+		} else{			
+			bancoBean = bancosAdm.getBancoIBAN(cbo);
+		}
+				
+		if(bancoBean!=null){
+			json.put("banco", bancoBean.getJSONObject());
+		}
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+	}	
+	
 }

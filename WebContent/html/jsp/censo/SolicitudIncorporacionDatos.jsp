@@ -125,6 +125,8 @@
 	String cuentaNumeroCuenta = datosPersonales.getNumeroCuenta();
 	String abonoCargo = datosPersonales.getAbonoCargo();
 	String abonoJG = datosPersonales.getAbonoSJCS();
+	String iban = datosPersonales.getIban();
+	
 	boolean cargo = false;
 	boolean abono = false;
 	boolean abonoSJCS = false;
@@ -309,6 +311,9 @@
 			if(document.SolicitudIncorporacionForm.mail.value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.email'/>" + '\n';
 			}
+			
+			//Se quita la mascara al guardar 
+			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);		
 			
 			if(!calcularDigito()){
 				fin();
@@ -497,54 +502,34 @@
 		document.SolicitudIncorporacionForm.residente.checked = <%= residente%>;
 	}
 
-	// Funciones para obtener el d¡gito de control de la Cuenta
-	function obtenerDigito(valor){	
-	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
-	  control = 0;
-	  for (var i=0; i<=9; i++)
-	    control += parseInt(valor.charAt(i)) * valores[i];		  
-	  control = 11 - (control % 11);
-	  if (control == 11) control = 0;
-	  else if (control == 10) control = 1;
-	  return control;
-	}
-	
-	function numerico(valor){
-		cad = valor.toString();
-		for (var i=0; i<cad.length; i++) {
-			var caracter = cad.charAt(i);
-			if (caracter<"0"||caracter>"9"){					
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	function calcularDigito(){
-		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
-	
-		f = document.SolicitudIncorporacionForm;		
-		if (f.cbo_Codigo.value    == ""  && f.codigoSucursal.value == "" && f.digitoControl.value == ""  && f.numeroCuenta.value   == "" ){ 
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
+		iban = document.SolicitudIncorporacionForm.IBAN.value;
+		bic = document.SolicitudIncorporacionForm.BIC.value;
+		banco = document.SolicitudIncorporacionForm.banco.value;
+		
+		if (iban == ""  && bic == ""){ 
 			 return true;
-		}
-		else{
-			if(f.banco.value==""){
+		
+		} else {
+			if(iban.substring(0,2) == 'ES' && banco==""){
 				alert(mensaje);
 				return false;
 			}
-			if(f.cbo_Codigo.value.length != 4 || f.codigoSucursal.value.length != 4 || f.digitoControl.value.length != 2 || f.numeroCuenta.value.length != 10){
+			if(iban.length < 4 || (iban.substring(0,2) != 'ES' && bic.length != 11)){
 				alert(mensaje);
 				return false;
 			}else{
-				if(!numerico(f.cbo_Codigo.value) || !numerico(f.codigoSucursal.value) || !numerico(f.digitoControl.value) || !numerico(f.numeroCuenta.value)){
-					alert(mensaje);
-					return false;
-				}
-				else {
-				  if(f.digitoControl.value != obtenerDigito("00" + f.cbo_Codigo.value + f.codigoSucursal.value) + "" + obtenerDigito(f.numeroCuenta.value)){
-						alert(mensaje);
+				//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
+				if(iban.substring(0,2) == 'ES' && iban.length == 24){
+					if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
 						return false;
 					}
+				}
+				//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
+				if(!validarIBAN(iban)){
+					alert(mensaje);
+					return false;
 				}
 			}
 		}
@@ -850,18 +835,21 @@
 	
 	var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "messages.general.error"))%>';
 	
-	function cargarBancos(){
-		var idBanco = SolicitudIncorporacionForm.cbo_Codigo.value;	
-		if (idBanco!=undefined&&idBanco!="") {
+	function inicioCargarBancoBIC(){
+		var iban = formateaMask(document.getElementById("IBAN").value);	
+		var codigoBanco = '<%=cbo_Codigo%>';
+		if (iban!=undefined && iban!="") {			
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
    				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
-				data: "idBanco="+idBanco,
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxCargaInicialBancoBIC",
+				data: "iban="+iban+"&codigo="+codigoBanco,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){		
-					var txtBanco = json.banco.nombre;
-					document.getElementById("banco").value=txtBanco;
+				success: function(json){	
+					if(json.banco!=null && json.banco!=""){
+						document.getElementById("BIC").value=json.banco.bic;
+						document.getElementById("banco").value=json.banco.nombre;
+					}
 					fin();
 				},
 				error: function(e){
@@ -869,10 +857,67 @@
 					fin();
 				}
 			});
-		} else {
-			document.getElementById("banco").value="";
+			
 		}
 	}
+	
+	function cargarBancoPorIBAN(){
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
+		var iban = formateaMask(document.getElementById("IBAN").value);	
+		if (iban!=undefined && iban!="") {			
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
+				data: "iban="+iban,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					if(json!=null && json.pais != null){
+						if(json.pais == "ES"){
+							var bic = json.banco.bic;
+							document.getElementById("BIC").value=bic;
+							document.getElementById("BIC").readOnly = true;
+							document.getElementById("BIC").className = "boxConsulta";
+							
+							//Se rellena el banco
+							var txtBanco = json.banco.nombre;
+							document.getElementById("banco").value=txtBanco;
+						}else{
+							document.getElementById("BIC").readOnly = false;
+							document.getElementById("BIC").className = "box";
+							document.getElementById("banco").value="";
+							document.getElementById("BIC").value="";
+							alert("Rellene el BIC para el banco extranjero");
+						}
+						
+					}else{
+						alert(mensaje);
+						document.getElementById("BIC").value="";
+						document.getElementById("banco").value="";
+						document.getElementById("BIC").readOnly = true;
+						document.getElementById("BIC").className = "boxConsulta";
+					}
+					fin();
+				},
+				error: function(e){
+					alert(mensajeGeneralError);
+					document.getElementById("BIC").value="";
+					document.getElementById("banco").value="";
+					document.getElementById("BIC").readOnly = true;
+					document.getElementById("BIC").className = "boxConsulta";
+					fin();
+				}
+			});
+			
+		} else {
+			document.getElementById("IBAN").value="";
+			document.getElementById("BIC").value="";
+			document.getElementById("banco").value="";
+			document.getElementById("BIC").readOnly = true;
+			document.getElementById("BIC").className = "boxConsulta";
+		}
+	}	
+	
 	
 	// --------------------------------------------------------------------------------------------------------------
 	//		FILTRO DE POBLACIONES
@@ -1524,7 +1569,7 @@
   	});	
 </script>
 
-<body class="tablaCentralCampos" onLoad="cargarChecksCuenta(); comprobarTipoIdent(); cargarBancos();">
+<body class="tablaCentralCampos" onLoad="cargarChecksCuenta(); comprobarTipoIdent(); inicioCargarBancoBIC();">
 	<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
@@ -1983,7 +2028,7 @@
 						<siga:Idioma key='censo.datosCuentaBancaria.literal.titular'/>
 					</td>																
 					<td>
-						<html:text property="titular" value="<%=titular%>" size="50" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"/>
+						<html:text property="titular" value="<%=titular%>" size="59" styleClass="<%=estiloBox%>" maxlength="100" readOnly="<%=readonly%>"/>
 					</td>
 												
 					<td style="width:20px">&nbsp;</td>
@@ -2022,18 +2067,14 @@
 				</tr>
 
 				<tr>					
-					<td class="labelText">
-						Cuenta
-					</td>						
-					<td style="padding:0px">
+					<td colspan="2">
 						<table border="0" cellpadding="5" cellspacing="0">
 							<tr>								
-								<td>
-									<html:text size="4"  maxlength="4" property="cbo_Codigo"     value="<%=cbo_Codigo%>" 				styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onChange="cargarBancos();"/>
-									- <html:text size="4"  maxlength="4" property="codigoSucursal" value="<%=cuentaCodigoSucursal%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-									- <html:text size="2"  maxlength="2" property="digitoControl"  value="<%=cuentaDigitoControl%>" 	styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-									- <html:text size="10" maxlength="10" property="numeroCuenta"  value="<%=cuentaNumeroCuenta%>" 		styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"/>
-								</td>
+								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
+								<td class="labelText"><html:text size="34"  maxlength="34" styleId="IBAN" property="IBAN"  value="<%=iban%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onblur="cargarBancoPorIBAN();"></html:text></td>
+
+								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;(*)</td>
+								<td class="labelText"><html:text size="14"  maxlength="11" styleId="BIC" property="BIC"  styleClass="boxConsulta" readOnly="true"></html:text></td>							
 							</tr>
 						</table>
 					</td>

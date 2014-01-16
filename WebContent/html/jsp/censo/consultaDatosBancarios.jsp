@@ -282,19 +282,9 @@
 									"general.yes");
 						}
 
-						String numeroCuentaCompleto = htData
-								.get(CenCuentasBancariasBean.C_CBO_CODIGO)
-								+ " - "
-								+ htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL)
-								+ " - "
-								+ htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL)
-								+ " - "
-								+ UtilidadesString
-										.mostrarNumeroCuentaConAsteriscos((String) htData
-												.get(CenCuentasBancariasBean.C_NUMEROCUENTA));
+						String numeroCuentaCompleto = (String) htData.get(CenCuentasBancariasBean.C_IBAN);
 
-						String fechaBaja = (String) htData
-								.get(CenCuentasBancariasBean.C_FECHABAJA);
+						String fechaBaja = (String) htData.get(CenCuentasBancariasBean.C_FECHABAJA);
 
 						if (fechaBaja == null || "".equals(fechaBaja)) {
 							fechaBaja = "";

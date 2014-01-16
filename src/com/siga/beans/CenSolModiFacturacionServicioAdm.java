@@ -176,7 +176,8 @@ public class CenSolModiFacturacionServicioAdm extends MasterBeanAdministrador {
 			    			CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "," +							
 							CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_FECHAMODIFICACION + "," +
 	            			CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_USUMODIFICACION + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
+	            			CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + 

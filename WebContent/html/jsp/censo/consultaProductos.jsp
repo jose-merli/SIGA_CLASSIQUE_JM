@@ -298,9 +298,7 @@
 								.get("FORMAPAGO"));
 				String idFormaPago = (String) registro
 						.get("IDFORMAPAGO");
-				String idCuenta = UtilidadesString
-						.mostrarNumeroCuentaConAsteriscos((String) registro
-								.get("NCUENTA"));
+				String idCuenta = (String) registro.get("NCUENTA");
 				if (idCuenta == null || idCuenta.equals("")) {
 					idCuenta = "&nbsp";
 				}

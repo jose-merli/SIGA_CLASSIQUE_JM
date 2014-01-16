@@ -716,10 +716,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO + " AS IMPORTE, " +
 								"(SELECT " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + 
-									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO +
-									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL +
-									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL +
-									" || ' ' || LPAD(SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ", 7), 10, '*') " + 
+									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + 
 									" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + ", " +
 										CenBancosBean.T_NOMBRETABLA +
 									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
@@ -743,10 +740,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.cambioBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE, " +
 								"(SELECT " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + 
-									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO +
-									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL +
-									" || ' ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL +
-									" || ' ' || LPAD(SUBSTR(" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ", 7), 10, '*') " + 
+									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + 
 									" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + ", " +
 										CenBancosBean.T_NOMBRETABLA +
 									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
@@ -884,7 +878,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.C_MOTIVOS + "," +
 							FacAbonoBean.C_IDCUENTA + "," +
-			    			CenCuentasBancariasBean.C_CBO_CODIGO + "," +
+							CenCuentasBancariasBean.C_IBAN + "," +
+							CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 			    			CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 			    			CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
 			    			CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
@@ -896,6 +891,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
+								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
@@ -924,6 +920,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
+								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 								CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
@@ -956,7 +953,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					    			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL)" +
 								")" +
 							" ORDER BY "+ 								
-							CenCuentasBancariasBean.C_CBO_CODIGO + "," + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," + CenCuentasBancariasBean.C_NUMEROCUENTA;
+							CenCuentasBancariasBean.C_CBO_CODIGO + "," + CenCuentasBancariasBean.C_IBAN;
 
 	            if (rc.findForUpdate(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -992,6 +989,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
@@ -1016,8 +1014,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "=" + codigoBanco +
 							" ORDER BY "+ 								
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA;
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN;
 
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -1110,6 +1107,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + ", " +
 							//"(SELECT NUMEROFACTURA FROM FAC_FACTURA WHERE IDINSTITUCION="+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " AND IDFACTURA="+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA+ ") AS NUMEROFACTURA, " +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ", " +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
@@ -1296,7 +1294,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				  if ((abono.get(FacAbonoBean.C_IDCUENTA)==null)||(((String)abono.get(FacAbonoBean.C_IDCUENTA))).equalsIgnoreCase("")){
 					resultado=UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoCaja");
 				  }else{
-					resultado=abono.get(CenCuentasBancariasBean.C_CBO_CODIGO)+(String)abono.get("NUMEROCUENTA");
+					resultado=(String)abono.get("IBAN");
 				  }
 				}  
 				nuevo.put("FORMA_PAGO_ABONO",resultado);
@@ -1350,6 +1348,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
@@ -1381,8 +1380,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +"<>" +0.00+
 							" ORDER BY " + 				
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA;
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN;
 
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){

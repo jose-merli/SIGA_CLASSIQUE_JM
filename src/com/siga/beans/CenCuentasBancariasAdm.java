@@ -60,7 +60,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				CenCuentasBancariasBean.C_DIGITOCONTROL,		CenCuentasBancariasBean.C_NUMEROCUENTA,		
 				CenCuentasBancariasBean.C_TITULAR,				CenCuentasBancariasBean.C_FECHABAJA,	
 				CenCuentasBancariasBean.C_CUENTACONTABLE,		CenCuentasBancariasBean.C_FECHAMODIFICACION,
-				CenCuentasBancariasBean.C_USUMODIFICACION};
+				CenCuentasBancariasBean.C_USUMODIFICACION,		CenCuentasBancariasBean.C_IBAN};
 		return campos;
 	}
 
@@ -104,6 +104,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			bean.setCuentaContable(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_CUENTACONTABLE));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenCuentasBancariasBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenCuentasBancariasBean.C_USUMODIFICACION));
+			bean.setIban(UtilidadesHash.getString(hash, CenCuentasBancariasBean.C_IBAN));
 		}
 		catch(Exception e){
 			bean = null;
@@ -136,6 +137,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			UtilidadesHash.set(hash, CenCuentasBancariasBean .C_CUENTACONTABLE, b.getCuentaContable());	
 			UtilidadesHash.set(hash, CenCuentasBancariasBean .C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CenCuentasBancariasBean .C_USUMODIFICACION, b.getUsuMod());	
+			UtilidadesHash.set(hash, CenCuentasBancariasBean.C_IBAN, String.valueOf(b.getIban()));
 		}
 		catch (Exception e){
 			hash = null;
@@ -157,7 +159,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA,			
 				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + " as TITULAR ",
 				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA,
-				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CUENTACONTABLE};
+				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CUENTACONTABLE,
+				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN};
 		return campos;
 	}
 	
@@ -789,6 +792,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
+							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + "," +							
 			    			CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + "," +							
 			    			CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CUENTACONTABLE + "," +
@@ -935,7 +939,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		StringBuffer sql = new StringBuffer();
 		
 		
-		sql.append(" SELECT CB.IDCUENTA,substr(B.NOMBRE,0,25) || ' ' ||'nº ' || CB.cbo_codigo || '-' || CB.codigosucursal ||'-' ||CB.digitocontrol ||'-' || LPAD(SUBSTR(CB.numerocuenta, 7), 10, '*') as DESCRIPCION ");
+		sql.append(" SELECT CB.IDCUENTA,substr(B.NOMBRE,0,25) || ' ' ||'nº ' || CB.IBAN as DESCRIPCION ");
 		
 		sql.append(" FROM  ");
 		sql.append(" CEN_CUENTASBANCARIAS CB, CEN_BANCOS B ");
@@ -991,7 +995,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			RowsContainer rc = new RowsContainer();
 			String sql = new String();
 			
-			sql = "  SELECT C.cbo_codigo || ' ' || C.codigosucursal || ' ' || C.digitocontrol || ' ' ||  LPAD(SUBSTR(C.numerocuenta, 7), 10, '*') || ' [' || substr(B.NOMBRE, 0, 0) || '...]' AS CUENTABANCARIA";
+			sql = "  SELECT C.IBAN AS CUENTABANCARIA";
 			sql += " FROM CEN_CUENTASBANCARIAS C, CEN_BANCOS B ";
 			sql += " WHERE C.CBO_CODIGO = B.CODIGO ";
 			sql += " 	AND C.IDCUENTA = "+idCuenta;
@@ -1025,8 +1029,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_ABONO, "
-            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_ABONO_ABIERTA "
+            sql = "SELECT ' nº ' || cuen.iban as CUENTABANCARIA_ABONO, "
+            	+ " ' nº ' || cuen.iban as CUENTABANCARIA_ABONO_ABIERTA "
             	+ " FROM cen_cuentasbancarias cuen"
             	+ " WHERE cuen.abonocargo IN ('A', 'T')"
             	+ " AND cuen.idinstitucion = " + idInstitucion
@@ -1059,8 +1063,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_CARGO, "
-            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_CARGO_ABIERTA "
+            sql = "SELECT ' nº ' || cuen.iban as CUENTABANCARIA_CARGO, "
+            	+ " ' nº ' || cuen.iban as CUENTABANCARIA_CARGO_ABIERTA "
             	+ " FROM cen_cuentasbancarias cuen"
             	+ " WHERE cuen.abonocargo IN ('C', 'T')"
             	+ " AND cuen.idinstitucion = " + idInstitucion
@@ -1093,8 +1097,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			rc = new RowsContainer(); 
 			String sql = "";
 			                      
-            sql = "SELECT ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || LPAD(SUBSTR(cuen.numerocuenta, 7), 10, '*') as CUENTABANCARIA_SJCS, "
-            	+ " ' nº ' || cuen.cbo_codigo || '-' || cuen.codigosucursal ||'-' ||cuen.digitocontrol ||'-' || cuen.numerocuenta as CUENTABANCARIA_SJCS_ABIERTA "	
+            sql = "SELECT ' nº ' || cuen.iban as CUENTABANCARIA_SJCS, "
+            	+ " ' nº ' || cuen.iban as CUENTABANCARIA_SJCS_ABIERTA "	
             	+ " FROM cen_cuentasbancarias cuen"
             	+ " WHERE ( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))"
             	+ " AND cuen.idinstitucion = " + idInstitucion
@@ -1130,7 +1134,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			RowsContainer rc = new RowsContainer();
 			String sql = new String();
 			
-			sql = "  SELECT C.cbo_codigo || ' ' || C.codigosucursal || ' ' || C.digitocontrol || ' ' ||  LPAD(SUBSTR(C.numerocuenta, 7), 10, '*') || substr(B.NOMBRE, 0, 0) AS CUENTABANCARIA";
+			sql = "  SELECT C.iban AS CUENTABANCARIA";
 			sql += " FROM CEN_CUENTASBANCARIAS C, CEN_BANCOS B ";
 			sql += " WHERE C.CBO_CODIGO = B.CODIGO ";
 			sql += " 	AND C.IDCUENTA = "+idCuenta;

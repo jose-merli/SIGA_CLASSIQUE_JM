@@ -18,6 +18,10 @@ import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.beans.CenBancosAdm;
+import com.siga.beans.CenBancosBean;
+import com.siga.beans.CenPaisAdm;
+import com.siga.beans.CenPaisBean;
 import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
 import com.siga.facturacion.form.service.CuentaBancariaVoService;
@@ -268,9 +272,25 @@ protected String consultar (ActionMapping mapping,
 		try {
 			
 			BusinessManager bm = getBusinessManager();
-			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
+
+			//Rellenamos el codigo del banco e insertamos un banco extranjero
+			if(cuentasBancariasForm.getIBAN()!=null && !cuentasBancariasForm.getIBAN().equals("")){
+				if(!cuentasBancariasForm.getIBAN().substring(0,2).equals("ES")){
+					CenBancosAdm bancosAdm = new CenBancosAdm(usrBean);					
+					CenBancosBean bancosBean = bancosAdm.existeBancoExtranjero(cuentasBancariasForm.getBIC());
+					if(bancosBean == null){
+						CenPaisAdm paisAdm = new CenPaisAdm(usrBean);
+						CenPaisBean paisBean = paisAdm.getPaisByCodIso(cuentasBancariasForm.getIBAN().substring(0,2));
+						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), cuentasBancariasForm.getBIC());
+					}					
+					cuentasBancariasForm.setCodigoBanco(bancosBean.getCodigo());
+				}else{
+					cuentasBancariasForm.setCodigoBanco(cuentasBancariasForm.getIBAN().substring(4,8));
+				}
+			}
+			
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.insert(cuentaBancariaVo);
@@ -290,10 +310,9 @@ protected String consultar (ActionMapping mapping,
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		String forward="exception";
+		
 		try {
-			
-			BusinessManager bm = getBusinessManager();
-			
+			BusinessManager bm = getBusinessManager();			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);

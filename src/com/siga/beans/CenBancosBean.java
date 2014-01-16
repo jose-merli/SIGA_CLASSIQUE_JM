@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class CenBancosBean extends MasterBean {
 
 	/* Variables */	
-	private String 	codigo, nombre;	
+	private String 	codigo, nombre, bic, idPais;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_BANCOS";
@@ -23,10 +23,14 @@ public class CenBancosBean extends MasterBean {
 	/* Nombre campos de la tabla */
 	static public final String C_CODIGO		= "CODIGO";
 	static public final String C_NOMBRE		= "NOMBRE";
+	static public final String C_BIC		= "BIC";
+	static public final String C_IDPAIS		= "IDPAIS";
 	
 	CenBancosBean() {
 		this.codigo = "";
 		this.nombre = "";
+		this.bic = "";
+		this.idPais = "";
 	}
 
 	// Metodos SET
@@ -37,11 +41,28 @@ public class CenBancosBean extends MasterBean {
 	public String getCodigo() {return codigo;}	
 	public String getNombre() {return nombre;}
 	
+	public String getBic() {
+		return bic;
+	}
+
+	public void setBic(String bic) {
+		this.bic = bic;
+	}
+	
+	public String getIdPais() {
+		return idPais;
+	}
+
+	public void setIdPais(String idPais) {
+		this.idPais = idPais;
+	}
+
 	public JSONObject getJSONObject() {
         JSONObject obj = new JSONObject();
         try {
             obj.put("idCodigo", this.codigo);
             obj.put("nombre", this.nombre);
+            obj.put("bic", this.bic);
         } 
         catch (JSONException e) {
         }
