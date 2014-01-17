@@ -237,7 +237,7 @@
 		</tr>
 		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != null}">	
 			<!-- FILA -->
-			<tr><td colspan="8" style="display:block;">
+			<tr><td COLSPAN="8">
 				<siga:ConjCampos leyenda="Cuenta Antigua">
 					<table>
 						<tr>						
@@ -254,7 +254,7 @@
 			</td></tr>				
 		</c:if>	
 		<!-- FILA -->
-		<tr><td width="100%" align="center" colspan="8" style="display:block;">
+		<tr><td COLSPAN="8">
 			<siga:ConjCampos leyenda="Importes Comision">
 				<table align="center" width="100%">
 					<tr>
