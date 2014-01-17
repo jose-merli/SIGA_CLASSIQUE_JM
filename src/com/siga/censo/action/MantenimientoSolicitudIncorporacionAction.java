@@ -497,7 +497,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 			
 			////////////     DATOS BANCARIOS  //////////
 			
-			if(miFormulario.getIBAN() != null){
+			if(miFormulario.getIBAN() != null && !miFormulario.getIBAN().equals("")){
 				//Si el banco es extranjero se crea un nuevo registro en CEN_BANCOS
 				if(!miFormulario.getIBAN().substring(0,2).equals("ES")){
 					CenBancosAdm bancosAdm = new CenBancosAdm(user);
