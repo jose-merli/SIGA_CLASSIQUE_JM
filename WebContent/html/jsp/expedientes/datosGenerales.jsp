@@ -1036,10 +1036,23 @@
 						jQuery("#fechaFinal-datepicker-trigger").hide();
 						
 					} else {
-						jQuery("#fechaFinal").removeClass("boxConsulta").removeClass("noEditable");
-						jQuery("#fechaFinal").addClass("box").addClass("editable");
-						jQuery("#fechaFinal").removeAttr("readOnly").removeAttr("disabled");
-						jQuery("#fechaFinal-datepicker-trigger").show();
+						<%
+							if (bEditable) {
+						%>							
+							jQuery("#fechaFinal").removeClass("boxConsulta").removeClass("noEditable");
+							jQuery("#fechaFinal").addClass("box").addClass("editable");
+							jQuery("#fechaFinal").removeAttr("readOnly").removeAttr("disabled");
+							jQuery("#fechaFinal-datepicker-trigger").show();
+						<%
+							} else {
+						%>	
+							jQuery("#fechaFinal").removeClass("box").removeClass("editable");
+							jQuery("#fechaFinal").addClass("boxConsulta").addClass("noEditable");
+							jQuery("#fechaFinal").attr("readOnly", "readOnly").attr("disabled", "disabled");
+							jQuery("#fechaFinal-datepicker-trigger").hide();						
+						<%
+							}
+						%>							
 					}
 					
 					if (!bIniciadoPlazo) {
@@ -1123,10 +1136,23 @@
 						jQuery("#fechaCaducidad-datepicker-trigger").hide();
 						
 					} else {
-						jQuery("#fechaCaducidad").removeClass("boxConsulta").removeClass("noEditable");
-						jQuery("#fechaCaducidad").addClass("box").addClass("editable");
-						jQuery("#fechaCaducidad").removeAttr("readOnly").removeAttr("disabled");
-						jQuery("#fechaCaducidad-datepicker-trigger").show();
+						<%
+							if (bEditable) {
+						%>							
+							jQuery("#fechaCaducidad").removeClass("boxConsulta").removeClass("noEditable");
+							jQuery("#fechaCaducidad").addClass("box").addClass("editable");
+							jQuery("#fechaCaducidad").removeAttr("readOnly").removeAttr("disabled");
+							jQuery("#fechaCaducidad-datepicker-trigger").show();
+						<%
+							} else {
+						%>								
+							jQuery("#fechaCaducidad").removeClass("box").removeClass("editable");
+							jQuery("#fechaCaducidad").addClass("boxConsulta").addClass("noEditable");
+							jQuery("#fechaCaducidad").attr("readOnly", "readOnly").attr("disabled", "disabled");
+							jQuery("#fechaCaducidad-datepicker-trigger").hide();
+						<%
+							}
+						%>											
 					}
 					
 					if (!bIniciadoPlazoCaducidad) {
@@ -1183,13 +1209,13 @@
 				jQuery("#fechaInicial").change(function() {
 					tratarFechaFinal();	
 				});
-								
-				tratarFechaFinal();
+
 			<%
 				}
-			%>	
+			%>			
 			
 			tratarFechaCaducidad();
+			tratarFechaFinal();				
 					
 			calcularTotalMinuta ();
 			calcularTotalMinutaFinal ();
