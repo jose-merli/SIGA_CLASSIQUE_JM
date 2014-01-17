@@ -685,7 +685,7 @@
 							 		parametro[0] = idPersona;
 									parametro[1] = idInstitucion; 
 	%>
-							    	<siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>" clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>"/>									
+							    	<siga:ComboBD nombre="idCuenta" tipo="cuentaSJCS" parametro="<%=parametro%>" clase="<%=clase%>" obligatorio="false" elementoSel="<%=idBanco%>" readonly="<%=String.valueOf(desactivado)%>" ancho="250"/>									
 								</td>
 							</tr>						
 			   			</table>
