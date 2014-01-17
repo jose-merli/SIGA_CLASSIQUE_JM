@@ -349,7 +349,7 @@ public class CuentasBancariasAction extends MasterAction{
 			} catch (Exception el) {
 				e.printStackTrace();
 			}			
-				throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");			
+				throw new SIGAException("messages.censo.cuentasBancarias.errorCuentaBancaria");			
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}		

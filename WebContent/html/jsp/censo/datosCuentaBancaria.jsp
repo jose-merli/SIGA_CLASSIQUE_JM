@@ -174,7 +174,8 @@ VERSIONES: -->
 			banco = document.cuentasBancariasForm.banco.value;
 			
 			if (iban == ""  && bic == ""){ 
-				 return true;
+				alert(mensaje);
+				return false;
 			
 			} else {
 				if(iban.substring(0,2) == 'ES' && banco==""){
