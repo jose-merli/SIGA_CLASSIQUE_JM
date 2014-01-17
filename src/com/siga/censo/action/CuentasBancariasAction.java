@@ -314,12 +314,13 @@ public class CuentasBancariasAction extends MasterAction{
 			}			
 			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCodigoSucursal(null);
+			beanCuentas.setNumeroCuenta(null);
 			beanCuentas.setCuentaContable(null);
 			beanCuentas.setDigitoControl(null);
 			beanCuentas.setFechaBaja(null);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
-			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+			beanCuentas.setCuentaContable(miForm.getCuentaContable());
 			beanCuentas.setTitular(miForm.getTitular());
 			
 			// Fijamos los datos del Historico
