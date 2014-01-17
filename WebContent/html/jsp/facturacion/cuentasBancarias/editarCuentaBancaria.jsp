@@ -216,8 +216,10 @@
 				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sjcs" /> </td>
 				<td align="left"><html:checkbox name="CuentasBancariasForm" property="sjcs" value="1" ></html:checkbox></td>
 				
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /> </td>
-				<td><siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/></td>		
+				<c:if test="${CuentasBancariasForm.modo != 'insertar'}">	
+					<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /> </td>
+					<td><siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/></td>		
+				</c:if>	
 			</tr>
 			
 			<!-- FILA -->

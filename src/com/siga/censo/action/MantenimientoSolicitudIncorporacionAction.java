@@ -507,6 +507,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 						CenPaisBean paisBean = paisAdm.getPaisByCodIso(miFormulario.getIBAN().substring(0,2));
 						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), miFormulario.getBIC());
 					}					
+					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, bancosBean.getCodigo());
 					miFormulario.setCbo_Codigo(bancosBean.getCodigo());
 				}else{
 					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, miFormulario.getIBAN().substring(4,8));
