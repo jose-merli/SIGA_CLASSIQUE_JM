@@ -398,11 +398,9 @@
 	function accionRestablecer() 
 	{		
 		document.CuentasBancariasForm.reset();
-		document.getElementById("IBAN").value="";
-		document.getElementById("BIC").value="";
-		document.getElementById("bancoNombre").value="";
 		document.getElementById("BIC").readOnly = true;
 		document.getElementById("BIC").className = "boxConsulta";
+		inicioCargarBancoBIC();
 	}
 	
 	function ajustarCabeceraTabla(){

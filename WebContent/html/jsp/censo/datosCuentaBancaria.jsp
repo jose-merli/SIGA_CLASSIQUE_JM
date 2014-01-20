@@ -67,7 +67,7 @@ VERSIONES: -->
 	String cuentaDigitoControl = "";
 	String cuentaNumeroCuenta = "";
 	String fechaBaja = "";
-	String visibilidad ="display:block;";
+	boolean visibilidad  = false;
 
 	String modo=(String)request.getAttribute("modoConsulta");
 	String claseEdicion = "box";
@@ -90,9 +90,9 @@ VERSIONES: -->
 				fechaBaja = "";
 			
 			if(cuentaNumeroCuenta != null && !cuentaNumeroCuenta.equals("")){
-				visibilidad ="display:block;";
+				visibilidad  = true;
 			}else{
-				visibilidad ="display:none;";
+				visibilidad = false;
 			}
 		}
 	}
@@ -118,7 +118,7 @@ VERSIONES: -->
 		desactivado = false;
 		desactivadoEdicion = false;
 		titular = nombreUsu;
-		visibilidad ="display:none;";
+		visibilidad = false;
 	}
 %>	
 
@@ -147,7 +147,7 @@ VERSIONES: -->
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.cuentasBancariasForm.reset();
 				rellenarCampos();
-				cargarBancos();
+				inicioCargarBancoBIC();
 			}						
 		}			
 
@@ -503,7 +503,8 @@ VERSIONES: -->
 								</tr>
 						<% } %>  					
 							
-							<tr><td colspan="4" style="<%=visibilidad%>">
+						<%	if(visibilidad){ %>
+							<tr><td COLSPAN="4">
 								<siga:ConjCampos leyenda="Cuenta Antigua">
 									<table>
 		
@@ -519,6 +520,7 @@ VERSIONES: -->
 									</table>
 								</siga:ConjCampos>
 							</td></tr>
+						<% } %> 	
 						</table>
 					<!-- TABLA -->
 					</siga:ConjCampos>
