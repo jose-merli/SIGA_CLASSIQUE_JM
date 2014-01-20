@@ -211,6 +211,16 @@
 					   						<siga:ComboBD nombre="bancoM" tipo="cmbBancos" clase="boxComboRojo" elementoSel="<%=bancoDest%>" readOnly="true"/>					   						
 										</td>
 									</tr>
+									
+					  				<tr>
+					   					<td class="labelText">
+											<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;
+										</td>				
+					   					<td>
+											<html:text property="IBANO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_IBAN))%>' styleClass="boxConsulta" readOnly="true" size="36"/><br>
+											<html:text property="IBANM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_IBAN)%>' styleClass="boxConsultaRojo" readOnly="true" size="36"/>
+										</td>
+									</tr>										
 
 					  				<tr>
 					   					<td class="labelText">
