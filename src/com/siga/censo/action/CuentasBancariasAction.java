@@ -313,10 +313,10 @@ public class CuentasBancariasAction extends MasterAction{
 				}
 			}			
 			beanCuentas.setIban(miForm.getIBAN());
-			beanCuentas.setCodigoSucursal(null);
-			beanCuentas.setNumeroCuenta(null);
-			beanCuentas.setCuentaContable(null);
-			beanCuentas.setDigitoControl(null);
+			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
+			beanCuentas.setCuentaContable(miForm.getCuentaContable());
+			beanCuentas.setDigitoControl(miForm.getDigitoControl());		
+			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 			beanCuentas.setFechaBaja(null);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
@@ -392,15 +392,16 @@ public class CuentasBancariasAction extends MasterAction{
 				else
 					beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
 				beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
+				beanCuentas.setIban(miForm.getIBAN());
 				beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
 				beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
-				beanCuentas.setCuentaContable(miForm.getCuentaContable());
+				beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 				beanCuentas.setDigitoControl(miForm.getDigitoControl());
 				beanCuentas.setFechaBaja(null);
 				beanCuentas.setIdCuenta(miForm.getIdCuenta());
 				beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 				beanCuentas.setIdPersona(miForm.getIdPersona());
-				beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+				beanCuentas.setCuentaContable(miForm.getCuentaContable());
 				beanCuentas.setTitular(miForm.getTitular());
 				beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
 				String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
@@ -468,13 +469,13 @@ public class CuentasBancariasAction extends MasterAction{
 			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
 			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
-			beanCuentas.setCuentaContable(miForm.getCuentaContable());
 			beanCuentas.setDigitoControl(miForm.getDigitoControl());
+			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 			beanCuentas.setFechaBaja(null);
 			beanCuentas.setIdCuenta(miForm.getIdCuenta());
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
-			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+			beanCuentas.setCuentaContable(miForm.getCuentaContable());
 			beanCuentas.setTitular(miForm.getTitular());
 			beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
 			String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");

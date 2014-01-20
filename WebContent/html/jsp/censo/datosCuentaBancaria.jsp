@@ -428,6 +428,7 @@ VERSIONES: -->
 			<html:hidden property="idCuenta" 		value="<%=idCuenta%>"/> 
 			<html:hidden property="idPersona" 		value="<%=idPersona%>"/> 
 			<html:hidden property="idInstitucion" 	value="<%=idInstitucion%>"/> 
+			<html:hidden property="cbo_Codigo" 		value="<%=cbo_Codigo%>"/> 
 			<html:hidden property="motivo" 			value=""/> 
 		<%}%>
 		<input type="hidden" name="abonoCargoOrig" value="<%=UtilidadesHash.getString(htData,CenCuentasBancariasBean.C_ABONOCARGO)%>">
