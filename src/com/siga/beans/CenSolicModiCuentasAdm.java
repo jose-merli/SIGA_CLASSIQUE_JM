@@ -383,9 +383,9 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					cuentaModificada.setAbonoSJCS((String)hash.get(CenSolicModiCuentasBean.C_ABONOSJCS));
 					cuentaModificada.setCbo_Codigo((String)hash.get(CenSolicModiCuentasBean.C_CBO_CODIGO));
 					cuentaModificada.setIban((String)hash.get(CenSolicModiCuentasBean.C_IBAN));
-					cuentaModificada.setCodigoSucursal(null);
-					cuentaModificada.setDigitoControl(null);
-					cuentaModificada.setNumeroCuenta(null);
+					cuentaModificada.setCodigoSucursal((String)hash.get(CenSolicModiCuentasBean.C_CODIGOSUCURSAL));
+					cuentaModificada.setDigitoControl((String)hash.get(CenSolicModiCuentasBean.C_DIGITOCONTROL));
+					cuentaModificada.setNumeroCuenta((String)hash.get(CenSolicModiCuentasBean.C_NUMEROCUENTA));
 					cuentaModificada.setTitular((String)hash.get(CenSolicModiCuentasBean.C_TITULAR));
 					cuentaModificada.setFechaBaja((String)cuentaOriginal.get(CenCuentasBancariasBean.C_FECHABAJA));
 					cuentaModificada.setCuentaContable((String)cuentaOriginal.get(CenCuentasBancariasBean.C_CUENTACONTABLE));

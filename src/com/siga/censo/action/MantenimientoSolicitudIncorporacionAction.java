@@ -509,9 +509,13 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 					}					
 					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, bancosBean.getCodigo());
 					miFormulario.setCbo_Codigo(bancosBean.getCodigo());
+				
 				}else{
 					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, miFormulario.getIBAN().substring(4,8));
 					miFormulario.setCbo_Codigo(miFormulario.getIBAN().substring(4,8));
+					miFormulario.setCodigoSucursal(miFormulario.getIBAN().substring(8,12));
+					miFormulario.setDigitoControl(miFormulario.getIBAN().substring(12,14));		
+					miFormulario.setNumeroCuenta(miFormulario.getIBAN().substring(14));						
 				}
 			}
 
@@ -633,9 +637,9 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				cuentaBean.setIdCuenta(cuentaAdm.getNuevoID(cuentaBean));
 				cuentaBean.setTitular(miFormulario.getTitular());
 				cuentaBean.setCbo_Codigo(miFormulario.getCbo_Codigo());
-				cuentaBean.setCodigoSucursal(null);
-				cuentaBean.setDigitoControl(null);
-				cuentaBean.setNumeroCuenta(null);
+				cuentaBean.setCodigoSucursal(miFormulario.getCodigoSucursal());
+				cuentaBean.setDigitoControl(miFormulario.getDigitoControl());
+				cuentaBean.setNumeroCuenta(miFormulario.getNumeroCuenta());
 				cuentaBean.setIban(miFormulario.getIBAN());
 				if(miFormulario.getAbonoSJCS().booleanValue())
 					cuentaBean.setAbonoSJCS(ClsConstants.DB_TRUE);			

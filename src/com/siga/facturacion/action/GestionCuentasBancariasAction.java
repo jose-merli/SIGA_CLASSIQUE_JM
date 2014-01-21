@@ -288,6 +288,9 @@ protected String consultar (ActionMapping mapping,
 					cuentasBancariasForm.setCodigoBanco(bancosBean.getCodigo());
 				}else{
 					cuentasBancariasForm.setCodigoBanco(cuentasBancariasForm.getIBAN().substring(4,8));
+					cuentasBancariasForm.setSucursalBanco(cuentasBancariasForm.getIBAN().substring(8,12));
+					cuentasBancariasForm.setDigControlBanco(cuentasBancariasForm.getIBAN().substring(12,14));		
+					cuentasBancariasForm.setCuentaBanco(cuentasBancariasForm.getIBAN().substring(14));							
 				}
 			}
 			

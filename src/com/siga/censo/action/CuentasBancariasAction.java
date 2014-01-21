@@ -306,17 +306,27 @@ public class CuentasBancariasAction extends MasterAction{
 						CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
 						CenPaisBean paisBean = paisAdm.getPaisByCodIso(miForm.getIBAN().substring(0,2));
 						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), miForm.getBIC());
-					}					
+					}
+					
 					beanCuentas.setCbo_Codigo(bancosBean.getCodigo());
+					beanCuentas.setCodigoSucursal(null);
+					beanCuentas.setDigitoControl(null);		
+					beanCuentas.setNumeroCuenta(null);					
+				
 				}else{
 					beanCuentas.setCbo_Codigo(miForm.getIBAN().substring(4,8));
+					beanCuentas.setCodigoSucursal(miForm.getIBAN().substring(8,12));
+					beanCuentas.setDigitoControl(miForm.getIBAN().substring(12,14));		
+					beanCuentas.setNumeroCuenta(miForm.getIBAN().substring(14));
 				}
-			}			
+
+			} else { // SE DEJA LO QUE HAY
+				beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
+				beanCuentas.setDigitoControl(miForm.getDigitoControl());		
+				beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+			}
+			
 			beanCuentas.setIban(miForm.getIBAN());
-			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
-			beanCuentas.setCuentaContable(miForm.getCuentaContable());
-			beanCuentas.setDigitoControl(miForm.getDigitoControl());		
-			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 			beanCuentas.setFechaBaja(null);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
@@ -736,15 +746,24 @@ public class CuentasBancariasAction extends MasterAction{
 						bancosBean = bancosAdm.insertarBancoExtranjero(paisBean.getIdPais(), form.getBIC());
 					}
 					bean.setCbo_Codigo(bancosBean.getCodigo());
+					bean.setCodigoSucursal(null);
+					bean.setDigitoControl(null);		
+					bean.setNumeroCuenta(null);				
+				
 				}else{
 					bean.setCbo_Codigo(iban.substring(4,8));
+					bean.setCodigoSucursal(iban.substring(8,12));
+					bean.setDigitoControl(iban.substring(12,14));		
+					bean.setNumeroCuenta(iban.substring(14));					
 				}
-			}			
+				
+			} else{
+				bean.setCodigoSucursal(form.getCodigoSucursal());
+				bean.setDigitoControl(form.getDigitoControl());		
+				bean.setNumeroCuenta(form.getNumeroCuenta());
+			}
 			
 			bean.setIban(iban);
-			bean.setCodigoSucursal(form.getCodigoSucursal());
-			bean.setDigitoControl(form.getDigitoControl());		
-			bean.setNumeroCuenta(form.getNumeroCuenta());
 			bean.setTitular(form.getTitular());		
 			bean.setIdInstitucion(form.getIdInstitucion());
 			bean.setIdPersona(form.getIdPersona());

@@ -335,9 +335,9 @@
 										<tr>						
 											<td class="labelText" nowrap colspan="2">C.C.C.&nbsp;(*)</td>
 											<td class="labelText">
-												<html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="boxConsulta" readonly="true"></html:text>
-												<html:text name="cuentasBancariasSolicForm" property="codigoSucursal" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" size="4"  maxlength="4"  styleClass="boxConsulta" readonly="true"></html:text>
-												<html:text name="cuentasBancariasSolicForm" property="digitoControl" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>"   size="2"  maxlength="2"  styleClass="boxConsulta" readonly="true"></html:text>						
+												<html:text name="cuentasBancariasSolicForm" property="cbo_Codigo" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>"         size="4"  maxlength="4"  styleClass="boxConsulta" readonly="true"></html:text>-
+												<html:text name="cuentasBancariasSolicForm" property="codigoSucursal" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL))%>" size="4"  maxlength="4"  styleClass="boxConsulta" readonly="true"></html:text>-
+												<html:text name="cuentasBancariasSolicForm" property="digitoControl" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_DIGITOCONTROL))%>"   size="2"  maxlength="2"  styleClass="boxConsulta" readonly="true"></html:text>-				
 												<html:text name="cuentasBancariasSolicForm" property="numeroCuenta" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_NUMEROCUENTA))%>"     size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 											</td>
 										</tr>
