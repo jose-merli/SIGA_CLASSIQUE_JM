@@ -916,9 +916,23 @@
 			document.getElementById("BIC").readOnly = true;
 			document.getElementById("BIC").className = "boxConsulta";
 		}
-	}	
+	}
 	
+	<%if(readonly){%>
 	
+		jQuery(function($){		
+			var defaultValue = jQuery("#IBAN").val();
+			if(defaultValue.length <= 34){
+				jQuery('#IBAN').show();
+			}else{
+				jQuery('#IBAN').hide();
+			
+			}
+			jQuery("#IBAN").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
+			jQuery("#IBAN").keyup();	
+		});		
+	
+	<% } %>
 	// --------------------------------------------------------------------------------------------------------------
 	//		FILTRO DE POBLACIONES
 	// --------------------------------------------------------------------------------------------------------------
