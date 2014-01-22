@@ -6,6 +6,8 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -20,6 +22,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -222,8 +225,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @param  response - objeto respuesta HTTP
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
+	 * @throws ClsExceptions 
 	 */
-	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		
 		//	String keyFichero 		= "facturacion.directorioBancosJava";				
 		String directorioFisico = "facturacion.directorioFisicoPagosBancosJava";
@@ -252,8 +256,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			nombreFichero 			= (String)ocultos.elementAt(1);	
 			idInstitucion			= this.getIDInstitucion(request).toString();			
 			
-			pathFichero += File.separator + idInstitucion + File.separator + nombreFichero;
-			
 		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}
@@ -261,7 +263,26 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		//response.setHeader("Content-disposition","attachment; filename=" + nombreFichero);
 		//return sPrefijoDownload + pathFichero;
 		
-		request.setAttribute("nombreFichero", nombreFichero);
+		//creamos la lista de ficheros adjuntos
+    	List<File> lista = new ArrayList<File>();    	
+    	File directorioFicheros= new File(pathFichero + File.separator + idInstitucion);
+    	String nombreFicheroSinExtension = nombreFichero.substring(0,nombreFichero.lastIndexOf("."));
+    	
+    	//Se buscan todos los ficheros que coincidan con el nombre del fichero
+    	if(directorioFicheros.exists()){
+	    	File[] ficheros = directorioFicheros.listFiles();
+	    	for (int x=0; x<ficheros.length; x++){
+	    		String nombreFicheroSinExtensionLista = ficheros[x].getName().substring(0,ficheros[x].getName().lastIndexOf("."));	    		
+	    		if(nombreFicheroSinExtension.equalsIgnoreCase(nombreFicheroSinExtensionLista)){
+	    			lista.add(ficheros[x]);
+	    		}	    		
+	    	}
+    	}
+    	 
+    	pathFichero += File.separator + idInstitucion + File.separator + nombreFicheroSinExtension+".zip";
+    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
+		
+		request.setAttribute("nombreFichero", nombreFicheroSinExtension+".zip");
 		request.setAttribute("rutaFichero", pathFichero);
 		
 		return "descargaFichero";
