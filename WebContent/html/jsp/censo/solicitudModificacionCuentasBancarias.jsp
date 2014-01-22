@@ -180,14 +180,25 @@
 					success: function(json){	
 						if(json!=null && json.pais != null){
 							if(json.pais == "ES"){
-								var bic = json.banco.bic;
-								document.getElementById("BIC").value=bic;
-								document.getElementById("BIC").readOnly = true;
-								document.getElementById("BIC").className = "boxConsulta";
+								//Se comprueba si el banco existe
+								if(json.banco != null){
+									var bic = json.banco.bic;
+									document.getElementById("BIC").value=bic;
+									document.getElementById("BIC").readOnly = true;
+									document.getElementById("BIC").className = "boxConsulta";
 								
-								//Se rellena el banco
-								var txtBanco = json.banco.nombre;
-								document.getElementById("banco").value=txtBanco;
+									//Se rellena el banco
+									var txtBanco = json.banco.nombre;
+									document.getElementById("banco").value=txtBanco;
+								} else {
+									alert(mensaje);
+									document.getElementById("BIC").value="";
+									document.getElementById("banco").value="";
+									document.getElementById("BIC").readOnly = true;
+									document.getElementById("BIC").className = "boxConsulta";
+									fin();
+								}
+								
 							}else{
 								document.getElementById("BIC").readOnly = false;
 								document.getElementById("BIC").className = "box";
@@ -299,7 +310,7 @@
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
 								<td class="labelText"><html:text size="34"  maxlength="34" name="cuentasBancariasSolicForm" styleId="IBAN" property="IBAN" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_IBAN))%>"  styleClass="box" readonly="false" onblur="cargarBancoPorIBAN();"></html:text></td>
 
-								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;(*)</td>
+								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
 								<td class="labelText"><html:text size="14"  maxlength="11" name="cuentasBancariasSolicForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" ></html:text></td>
 							</tr>								
 							
