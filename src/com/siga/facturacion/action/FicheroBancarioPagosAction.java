@@ -284,6 +284,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		
 		request.setAttribute("nombreFichero", nombreFicheroSinExtension+".zip");
 		request.setAttribute("rutaFichero", pathFichero);
+		request.setAttribute("borrarFichero", "true");		
 		
 		return "descargaFichero";
 	}	

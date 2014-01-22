@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -231,6 +232,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		String nombreFichero 	= "";
 		String pathFichero		= "";
 		String idInstitucion	= "";
+		String barra = "";
 		
 		try{		
 			//Integer usuario = this.getUserName(request);
@@ -255,7 +257,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			// pathFichero += File.separator + idInstitucion + File.separator + nombreFichero;
 			// POR
 			// Generamos el nombre del fichero.
-			String barra = "";
+			
 			if (pathFichero.indexOf("/") > -1){ 
 				barra = "/";
 			}
@@ -263,14 +265,34 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				barra = "\\";
 			}
 			
-			pathFichero += barra + idInstitucion + barra + nombreFichero;
 			// FIN CAMBIO
 			
 		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}
-		request.setAttribute("nombreFichero", nombreFichero);
+		
+		//creamos la lista de ficheros adjuntos
+    	List<File> lista = new ArrayList<File>();    	
+    	File directorioFicheros= new File(pathFichero + barra + idInstitucion);
+    	String nombreFicheroSinExtension = nombreFichero.substring(0,nombreFichero.lastIndexOf("."));
+    	
+    	//Se buscan todos los ficheros que coincidan con el nombre del fichero
+    	if(directorioFicheros.exists()){
+	    	File[] ficheros = directorioFicheros.listFiles();
+	    	for (int x=0; x<ficheros.length; x++){
+	    		String nombreFicheroSinExtensionLista = ficheros[x].getName().substring(0,ficheros[x].getName().lastIndexOf("."));	    		
+	    		if(nombreFicheroSinExtension.equalsIgnoreCase(nombreFicheroSinExtensionLista)){
+	    			lista.add(ficheros[x]);
+	    		}	    		
+	    	}
+    	}
+    	 
+    	pathFichero += barra + idInstitucion + barra + nombreFicheroSinExtension+".zip";
+    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
+		
+		request.setAttribute("nombreFichero", nombreFicheroSinExtension+".zip");
 		request.setAttribute("rutaFichero", pathFichero);
+		request.setAttribute("borrarFichero", "true");				
 		
 		return "descargaFichero";		
 	}	
