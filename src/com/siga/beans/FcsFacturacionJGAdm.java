@@ -1053,6 +1053,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA);
 				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
 				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
+				select.append(" AND "   + FcsPagoColegiadoBean.C_IMPIRPF + " > 0 ");
+				select.append(" AND ("   + FcsPagoColegiadoBean.C_IMPOFICIO + " > 0 or ");
+				select.append( FcsPagoColegiadoBean.C_IMPASISTENCIA + " > 0 or ");
+				select.append( FcsPagoColegiadoBean.C_IMPEJG + " > 0 or ");
+				select.append( FcsPagoColegiadoBean.C_IMPSOJ + " > 0 ) ");
 				select.append(" GROUP BY " + FcsPagoColegiadoBean.C_IDPERDESTINO);
 
 				Vector vIRPF = (Vector) this.selectGenerico(select.toString());
