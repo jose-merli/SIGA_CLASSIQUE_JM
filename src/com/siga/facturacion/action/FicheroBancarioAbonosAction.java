@@ -274,23 +274,26 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		//creamos la lista de ficheros adjuntos
     	List<File> lista = new ArrayList<File>();    	
     	File directorioFicheros= new File(pathFichero + barra + idInstitucion);
-    	String nombreFicheroSinExtension = nombreFichero.substring(0,nombreFichero.lastIndexOf("."));
     	
     	//Se buscan todos los ficheros que coincidan con el nombre del fichero
     	if(directorioFicheros.exists()){
 	    	File[] ficheros = directorioFicheros.listFiles();
 	    	for (int x=0; x<ficheros.length; x++){
 	    		String nombreFicheroSinExtensionLista = ficheros[x].getName().substring(0,ficheros[x].getName().lastIndexOf("."));	    		
-	    		if(nombreFicheroSinExtension.equalsIgnoreCase(nombreFicheroSinExtensionLista)){
+	    		if(nombreFichero.equalsIgnoreCase(nombreFicheroSinExtensionLista)){
 	    			lista.add(ficheros[x]);
 	    		}	    		
 	    	}
     	}
+    	
+    	if(lista.size() <= 0){
+    		throw new SIGAException("No se ha encontrado el fichero generado");
+    	}
     	 
-    	pathFichero += barra + idInstitucion + barra + nombreFicheroSinExtension+".zip";
+    	pathFichero += barra + idInstitucion + barra + nombreFichero+".zip";
     	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
 		
-		request.setAttribute("nombreFichero", nombreFicheroSinExtension+".zip");
+		request.setAttribute("nombreFichero", nombreFichero+".zip");
 		request.setAttribute("rutaFichero", pathFichero);
 		request.setAttribute("borrarFichero", "true");				
 		
