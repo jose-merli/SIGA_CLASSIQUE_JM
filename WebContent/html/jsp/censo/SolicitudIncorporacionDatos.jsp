@@ -126,6 +126,8 @@
 	String abonoCargo = datosPersonales.getAbonoCargo();
 	String abonoJG = datosPersonales.getAbonoSJCS();
 	String iban = datosPersonales.getIban();
+	if(readonly)
+		iban = UtilidadesString.mostrarIBANConAsteriscos(iban);
 	
 	boolean cargo = false;
 	boolean abono = false;
@@ -315,10 +317,14 @@
 			//Se quita la mascara al guardar 
 			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);		
 			
-			if(!calcularDigito()){
+			iban = document.SolicitudIncorporacionForm.IBAN.value;
+			bic = document.SolicitudIncorporacionForm.BIC.value;
+			banco = document.SolicitudIncorporacionForm.banco.value;
+			
+			if(!validarCuentaBancaria(iban,bic,banco)){
 				fin();
 				return false;
-			}		
+			} 			
 			
 			if (errores != ""){
 				alert(errores);
@@ -501,41 +507,6 @@
 		document.SolicitudIncorporacionForm.abonoSJCS.checked = <%=abonoSJCS%>;
 		document.SolicitudIncorporacionForm.residente.checked = <%= residente%>;
 	}
-
-	function calcularDigito(){
-		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-		iban = document.SolicitudIncorporacionForm.IBAN.value;
-		bic = document.SolicitudIncorporacionForm.BIC.value;
-		banco = document.SolicitudIncorporacionForm.banco.value;
-		
-		if (iban == ""  && bic == ""){ 
-			 return true;
-		
-		} else {
-			if(iban.substring(0,2) == 'ES' && banco==""){
-				alert(mensaje);
-				return false;
-			}
-			if(iban.length < 4 || (iban.substring(0,2) != 'ES' && bic.length != 11)){
-				alert(mensaje);
-				return false;
-			}else{
-				//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
-				if(iban.substring(0,2) == 'ES' && iban.length == 24){
-					if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
-						return false;
-					}
-				}
-				//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
-				if(!validarIBAN(iban)){
-					alert(mensaje);
-					return false;
-				}
-			}
-		}
-		
-		return true;  
-	}	
 	
 	function quitarBotonesAlta(){
 		<%if(!modoAnterior.equalsIgnoreCase("Editar")){%>
@@ -862,88 +833,82 @@
 	}
 	
 	function cargarBancoPorIBAN(){
-		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-		var iban = formateaMask(document.getElementById("IBAN").value);	
-		if (iban!=undefined && iban!="") {			
-			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
-   				type: "POST",
-				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
-				data: "iban="+iban,
-				dataType: "json",
-				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){	
-					if(json!=null && json.pais != null){
-						if(json.pais == "ES"){
-							//Se comprueba si el banco existe
-							if(json.banco != null){
-								var bic = json.banco.bic;
-								document.getElementById("BIC").value=bic;
-								document.getElementById("BIC").readOnly = true;
-								document.getElementById("BIC").className = "boxConsulta";
-							
-								//Se rellena el banco
-								var txtBanco = json.banco.nombre;
-								document.getElementById("banco").value=txtBanco;
-							} else {
-								alert(mensaje);
-								document.getElementById("BIC").value="";
+		<%if(!readonly){%>
+			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
+			var iban = formateaMask(document.getElementById("IBAN").value);	
+			if (iban!=undefined && iban!="") {			
+				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
+					data: "iban="+iban,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){	
+						if(json!=null && json.pais != null){
+							if(json.pais == "ES"){
+								//Se comprueba si el banco existe
+								if(json.banco != null){
+									var bic = json.banco.bic;
+									document.getElementById("BIC").value=bic;
+									document.getElementById("BIC").readOnly = true;
+									document.getElementById("BIC").className = "boxConsulta";
+								
+									//Se rellena el banco
+									var txtBanco = json.banco.nombre;
+									document.getElementById("banco").value=txtBanco;
+								} else {
+									alert(mensaje);
+									document.getElementById("BIC").value="";
+									document.getElementById("banco").value="";
+									document.getElementById("BIC").readOnly = true;
+									document.getElementById("BIC").className = "boxConsulta";
+									fin();
+								}
+								
+							}else{
+								document.getElementById("BIC").readOnly = false;
+								document.getElementById("BIC").className = "box";
 								document.getElementById("banco").value="";
-								document.getElementById("BIC").readOnly = true;
-								document.getElementById("BIC").className = "boxConsulta";
-								fin();
+								document.getElementById("BIC").value="";
+								alert("Rellene el BIC para el banco extranjero");
 							}
 							
 						}else{
-							document.getElementById("BIC").readOnly = false;
-							document.getElementById("BIC").className = "box";
-							document.getElementById("banco").value="";
+							alert(mensaje);
 							document.getElementById("BIC").value="";
-							alert("Rellene el BIC para el banco extranjero");
+							document.getElementById("banco").value="";
+							document.getElementById("BIC").readOnly = true;
+							document.getElementById("BIC").className = "boxConsulta";
 						}
-						
-					}else{
-						alert(mensaje);
+						fin();
+					},
+					error: function(e){
+						alert(mensajeGeneralError);
 						document.getElementById("BIC").value="";
 						document.getElementById("banco").value="";
 						document.getElementById("BIC").readOnly = true;
 						document.getElementById("BIC").className = "boxConsulta";
+						fin();
 					}
-					fin();
-				},
-				error: function(e){
-					alert(mensajeGeneralError);
-					document.getElementById("BIC").value="";
-					document.getElementById("banco").value="";
-					document.getElementById("BIC").readOnly = true;
-					document.getElementById("BIC").className = "boxConsulta";
-					fin();
-				}
-			});
-			
-		} else {
-			document.getElementById("IBAN").value="";
-			document.getElementById("BIC").value="";
-			document.getElementById("banco").value="";
-			document.getElementById("BIC").readOnly = true;
-			document.getElementById("BIC").className = "boxConsulta";
+				});
+				
+			} else {
+				document.getElementById("IBAN").value="";
+				document.getElementById("BIC").value="";
+				document.getElementById("banco").value="";
+				document.getElementById("BIC").readOnly = true;
+				document.getElementById("BIC").className = "boxConsulta";
+			}
+		<% } %>			
+	}
+	
+	function rpad() {
+		if (document.getElementById("BIC").value.length == 8){
+	    	while (document.getElementById("BIC").value.length < 11)
+	    		document.getElementById("BIC").value = document.getElementById("BIC").value + 'X';
 		}
 	}
 	
-	<%if(readonly){%>
-	
-		jQuery(function($){		
-			var defaultValue = jQuery("#IBAN").val();
-			if(defaultValue.length <= 34){
-				jQuery('#IBAN').show();
-			}else{
-				jQuery('#IBAN').hide();
-			
-			}
-			jQuery("#IBAN").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
-			jQuery("#IBAN").keyup();	
-		});		
-	
-	<% } %>
 	// --------------------------------------------------------------------------------------------------------------
 	//		FILTRO DE POBLACIONES
 	// --------------------------------------------------------------------------------------------------------------
@@ -2099,7 +2064,7 @@
 								<td class="labelText"><html:text size="34"  maxlength="34" styleId="IBAN" property="IBAN"  value="<%=iban%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onblur="cargarBancoPorIBAN();"></html:text></td>
 
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
-								<td class="labelText"><html:text size="14"  maxlength="11" styleId="BIC" property="BIC"  styleClass="boxConsulta" readOnly="true"></html:text></td>							
+								<td class="labelText"><html:text size="14"  maxlength="11" styleId="BIC" property="BIC"  styleClass="boxConsulta" readOnly="true" onblur="rpad();"></html:text></td>							
 							</tr>
 						</table>
 					</td>

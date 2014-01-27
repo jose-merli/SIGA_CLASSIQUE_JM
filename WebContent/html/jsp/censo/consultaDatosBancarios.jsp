@@ -203,7 +203,7 @@
 		name="tablaDatos" 
 		border="1"
 		columnNames="censo.consultaDatosBancarios.literal.titular,censo.consultaDatosBancarios.literal.tipoCuenta,censo.datosCuentaBancaria.literal.abonoSJCS,censo.consultaDatosBancarios.literal.sociedad,censo.consultaDatosBancarios.literal.cuenta,censo.consultaDatosBancarios.literal.fechaBaja,"
-		columnSizes="28,9,9,9,19,8,12" 
+		columnSizes="28,9,7,7,25,8,12" 
 		modal="M">
 
 		<%
@@ -300,6 +300,7 @@
 						if ((f == null) || (f.equals(""))) {
 							iconos += ",E,B";
 						}
+						
 		%>
 		<siga:FilaConIconos fila='<%=String.valueOf(i)%>'
 			botones='<%=iconos%>' elementos='<%=elems%>' modo="<%=accionBanco%>"
@@ -311,16 +312,11 @@
 				<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=sociedad%>'> 
 				<%=UtilidadesString.mostrarDatoJSP(htData.get(CenCuentasBancariasBean.C_TITULAR))%>
 			</td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(tipoCuenta)%></td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(abonosjcs)%></td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(sociedadLiteral)%></td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(numeroCuentaCompleto)%></td>
-			<td><%=UtilidadesString
-									.mostrarDatoJSP(fechaBaja)%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(tipoCuenta)%></td>
+			<td align="center"><%=UtilidadesString.mostrarDatoJSP(abonosjcs)%></td>
+			<td align="center"><%=UtilidadesString.mostrarDatoJSP(sociedadLiteral)%></td>
+			<td><%=UtilidadesString.mostrarDatoMascara(numeroCuentaCompleto,ClsConstants.MASK_IBAN)%></td>
+			<td><%=UtilidadesString.mostrarDatoJSP(fechaBaja)%></td>
 
 
 		</siga:FilaConIconos>

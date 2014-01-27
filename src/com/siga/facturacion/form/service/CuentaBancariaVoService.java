@@ -9,6 +9,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.FacBancoinstitucion;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
+import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.comun.VoUiService;
@@ -155,7 +156,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 				cuentasBancariasForm.setCuentaContableTarjeta(objectVo.getCuentacontabletarjeta());
 			
 			if(objectVo.getIban()!=null)
-				cuentasBancariasForm.setIBAN(objectVo.getIban());
+				cuentasBancariasForm.setIBAN(UtilidadesString.mostrarDatoMascara(objectVo.getIban(),ClsConstants.MASK_IBAN));
 			
 			cuentasBancariasForm.setBancoNombre(objectVo.getBancoNombre());
 			cuentasBancariasForm.setBancoCuentaDescripcion(objectVo.getBancoCuentaDescripcion());

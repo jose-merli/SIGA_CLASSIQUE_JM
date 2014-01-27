@@ -18,6 +18,7 @@ import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenPaisAdm;
@@ -153,6 +154,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		}
 		return forward;
 	}
+	
 	protected String nuevo (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -171,7 +173,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		return "editar";
 	}
 	
-protected String consultar (ActionMapping mapping, 		
+	protected String consultar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
@@ -185,14 +187,11 @@ protected String consultar (ActionMapping mapping,
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
-			
+			cuentasBancariasForm.setIBAN(UtilidadesString.mostrarIBANConAsteriscos(cuentaBancariaVo.getIban()));
+			cuentasBancariasForm.setCuentaBanco(UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaBancariaVo.getNumerocuenta()));
+			cuentasBancariasForm.setDigControlBanco("**");
 			cuentasBancariasForm.setModo("abrir");
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
-			
-//			BancoVo banco = new BancoVo();
-//			banco.setCodigo(cuentaBancariaVo.getCodBanco());
-//			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos(banco);
-//			request.setAttribute("listaBancos", bancosList);
 			
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -217,12 +216,10 @@ protected String consultar (ActionMapping mapping,
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
+			cuentasBancariasForm.setIBAN(cuentaBancariaVo.getIban());
 			cuentasBancariasForm.setModo("modificar");
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
-//			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
-//			request.setAttribute("listaBancos", bancosList);
-			
 			
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			

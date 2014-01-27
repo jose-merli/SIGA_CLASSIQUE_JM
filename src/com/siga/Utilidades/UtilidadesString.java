@@ -19,6 +19,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.MaskFormatter;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
@@ -1336,6 +1338,30 @@ public class UtilidadesString {
     }
     
     /**
+     * Funcion que oculta los primeros numeros de la cuenta corriente.
+     * Solo deja visible las 4 ultimos cifras de la cuenta.
+     * In: 0123456789 ->  Out: ******6789
+     */
+    public static String mostrarIBANConAsteriscos (String iban) {
+    	try	{
+    		// Verficamos si el iban tiene espacios
+    		iban = iban.trim().replaceAll(" ", "");    		
+    		String ibanInicio = iban.substring(0,8);
+    		String ibanFin = iban.substring(iban.length()-4);
+    		String asteriscos = "";
+    		int longitudIbanMedio = iban.substring(8,iban.length()-4).length();
+    		
+    		for(int i = 0; i < longitudIbanMedio; i++) {
+    			asteriscos = "*" + asteriscos;
+    		}
+    		return mostrarDatoMascara(ibanInicio + asteriscos + ibanFin,"AA AA AAAA **** **** **** **** **** **** **");
+    	}
+    	catch (Exception e) {
+    		return "";
+		}
+    }    
+    
+    /**
      * 
      * @param nombreFichero Debe ser unicamente el nombre del fichero 'fichero.txt' sin ruta
      * @return
@@ -1656,6 +1682,28 @@ public class UtilidadesString {
 			 ClsLogging.writeFileLog("Error al crear HASHMAP desde JSON STRING",10);
 		 }
 		 return result;
+	 }
+	 
+	/**
+	 * Aplica una mascara del IBAN
+	 * @param o
+	 * @param longitud
+	 * @return
+	 */
+	 public static String mostrarDatoMascara (Object o,String mask) {
+		 String a = "";
+		 try {
+			 if (o!=null) {
+				 MaskFormatter mf = new MaskFormatter(mask);
+				 mf.setValueContainsLiteralCharacters(false);
+				 a = mf.valueToString(o.toString());
+			 }	
+		 } catch (ParseException e) {
+			 ClsLogging.writeFileLog("Error al utilizar la mascara",10);
+			 return "";
+		 }
+		
+		 return mostrarDatoJSP(a);
 	 }
 	 
 }

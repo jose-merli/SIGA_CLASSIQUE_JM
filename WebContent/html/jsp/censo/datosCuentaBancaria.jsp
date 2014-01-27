@@ -103,6 +103,7 @@ VERSIONES: -->
 		editarCampos = true;	
 		botones += ",GAH";
 		claseEdicion = "boxConsulta";
+		iban =  UtilidadesString.mostrarDatoMascara(iban,ClsConstants.MASK_IBAN);
 		
 	}else if (modo.equals("ver")) {
 		desactivado = true;
@@ -111,7 +112,10 @@ VERSIONES: -->
 		claseEdicion = "boxConsulta";
 		clase = "boxConsulta";
 		claseCombo = clase;
+		if(cuentaDigitoControl != null && !cuentaDigitoControl.equals(""))
+			cuentaDigitoControl  = "**";
 		cuentaNumeroCuenta = UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaNumeroCuenta);
+		iban = UtilidadesString.mostrarIBANConAsteriscos(iban);
 	
 	}else if (modo.equals("nuevo")) {
 		editarCampos = true;	
@@ -169,42 +173,6 @@ VERSIONES: -->
 			guardar(modo);
 		}
 		
-		function validarDigControl(){
-			mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
-			iban = document.cuentasBancariasForm.IBAN.value;
-			bic = document.cuentasBancariasForm.BIC.value;
-			banco = document.cuentasBancariasForm.banco.value;
-			
-			if (iban == ""  && bic == ""){ 
-				alert(mensaje);
-				return false;
-			
-			} else {
-				if(iban.substring(0,2) == 'ES' && banco==""){
-					alert(mensaje);
-					return false;
-				}
-				if(iban.length < 4 || (iban.substring(0,2) != 'ES' && bic.length != 11)){
-					alert(mensaje);
-					return false;
-				}else{
-					//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
-					if(iban.substring(0,2) == 'ES' && iban.length == 24){
-						if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
-							return false;
-						}
-					}
-					//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
-					if(!validarIBAN(iban)){
-						alert(mensaje);
-						return false;
-					}
-				}
-			}
-			
-			return true;  
-		}	
-				
 		function guardar(modo){
 			// Validamos los errores ///////////
 			sub();
@@ -219,10 +187,13 @@ VERSIONES: -->
 			//Se quita la mascara al guardar 
 			document.cuentasBancariasForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);			
 			
-			if(!validarDigControl()){
+			iban = document.cuentasBancariasForm.IBAN.value;
+			bic = document.cuentasBancariasForm.BIC.value;
+			banco = document.cuentasBancariasForm.banco.value;
+			
+			if(!validarCuentaBancaria(iban,bic,banco)){
 				fin();
 				return false;
-				 
 			}		
            
 			if (!validateCuentasBancariasForm(document.cuentasBancariasForm)){
@@ -394,20 +365,12 @@ VERSIONES: -->
 			}
 		}
 		
-		<%if (!modo.equals("nuevo")) {%>		
-			jQuery(function($){
-				var defaultValue = jQuery("#IBAN").val();
-				if(defaultValue.length <= 34){
-					jQuery('#IBAN').show();
-				}else{
-					jQuery('#IBAN').hide();
-					
-				}
-				jQuery("#IBAN").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
-				jQuery("#IBAN").keyup();	
-			});				
-		<% } %>
-	</script>	
+	function rpad() {
+		if (document.getElementById("BIC").value.length == 8){
+	    	while (document.getElementById("BIC").value.length < 11)
+	    		document.getElementById("BIC").value = document.getElementById("BIC").value + 'X';
+		}
+	}	</script>	
 </head>
 
 <body onLoad="inicioCargarBancoBIC();"">
@@ -465,25 +428,22 @@ VERSIONES: -->
 
 							<tr>		
 								<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;(*)</td>
-								<td colspan="2" class="labelText">
-							
-									<html:text size="40" maxlength="100" name="cuentasBancariasForm" property="titular" value="<%=titular%>" styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" />
+								<td class="labelText">							
+									<html:text size="50" maxlength="100" name="cuentasBancariasForm" property="titular" value="<%=titular%>" styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" />
 								</td>
-								<%if (!modo.equals("nuevo")) {%>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosCuentaBancaria.literal.sociedad"/>
-										<html:checkbox name="cuentasBancariasForm" property="sociedad" disabled="true"></html:checkbox>
-									</td>
-								<%}%>
+								<td class="labelText" COLSPAN="2">
+									<siga:Idioma key="censo.datosCuentaBancaria.literal.sociedad"/>
+									<html:checkbox name="cuentasBancariasForm" property="sociedad" disabled="true"></html:checkbox>
+								</td>
 							<tr>
 							
 							<!-- FILA -->
 							<tr>						
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
-								<td class="labelText"><html:text size="34"  maxlength="34" name="cuentasBancariasForm" styleId="IBAN" property="IBAN" value="<%=iban%>"  styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" onblur="cargarBancoPorIBAN();"></html:text></td>
+								<td class="labelText"><html:text size="50"  maxlength="45" name="cuentasBancariasForm" styleId="IBAN" property="IBAN" value="<%=iban%>"  styleClass="<%=claseEdicion%>" readonly="<%=desactivadoEdicion%>" onblur="cargarBancoPorIBAN();"></html:text></td>
 
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
-								<td class="labelText"><html:text size="14"  maxlength="11" name="cuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" ></html:text></td>
+								<td class="labelText"><html:text size="14"  maxlength="11" name="cuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();"></html:text></td>
 							</tr>						
 						
 							<!-- FILA -->

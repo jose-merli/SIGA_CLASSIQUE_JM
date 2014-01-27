@@ -134,7 +134,7 @@
 			while(en.hasMoreElements()){
 				i++;
 				Hashtable hash = (Hashtable)en.nextElement();  
-				String cuenta=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
+				String cuenta = UtilidadesString.mostrarDatoMascara(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"),ClsConstants.MASK_IBAN);
 											
 				double precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
 				
@@ -201,7 +201,7 @@
 				i++;
 				Hashtable hash = (Hashtable)en.nextElement();  
 				
-				String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
+				String cuenta = UtilidadesString.mostrarDatoMascara(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"),ClsConstants.MASK_IBAN);
 				double precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
 				// Modificacion MAV 24/08/2005 muestra correctamente el IVA
 				// float iva = 1;//UtilidadesHash.getFloat(hash, "IVA").floatValue();

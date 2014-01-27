@@ -562,8 +562,71 @@ function getDigitoControl(valor){
 	  	return digitocontrol;
 	  
 	}
-	function validarDigitoControl(codigoBanco,sucursal,digitoControl,numeroCuenta){
-		 
+	
+	function validarCuentaBancaria(iban,bic,banco){	
+		mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+		
+		//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+		if (iban == ""  && bic == ""){ 
+			alert(mensaje);
+			return false;
+		
+		} else {
+			
+			//SE VALIDA LA LONGITUD MINIMA DEL IBAN
+			if(iban.length < 15){
+				alert(mensaje);
+				return false;
+			}
+			
+			//SE VALIDA EL IBAN Y BIC EXTRANJERO
+			if(iban.substring(0,2) != 'ES'){
+				//SE VALIDA SI EL BIC INTRODUCIDO TIENE UN FORMATO CORRECTO				
+				if(bic.length != 11){
+					alert("El código BIC es incorrecto. Deben de ser 11 caracteres.");
+					return false;
+				}
+				
+				//SE COMPRUEBA QUE LOS CARACTERES 0,1 DEL IBAN SE CORRESPONDEN CON LOS CARACTERES 4,5 DEL BIC (CODIGO ISO DEL PAIS)
+				if(iban.substring(0,2) != bic.substring(4,6)){
+					alert("El código BIC no se corresponde con el país del codigo IBAN");
+					return false;
+				}
+			
+			}else{ 
+				
+				//SE VALIDA EL IBAN ESPAÑOL
+				if(iban.substring(0,2) == 'ES'){				
+					//SE VALIDA QUE EXISTA UN BANCO ESPAÑOL PARA ESE IBAN
+					if(banco == ""){
+						alert(mensaje);
+						return false;
+					}
+					
+					//SI EL IBAN ES ESPAÑOL EL TAMAÑO TIENE QUE SER 24 CARACTERES
+					if(iban.length != 24){
+						alert(mensaje);
+						return false;					
+					}			
+			
+					//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
+					if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
+						return false;
+					}
+				}			
+			}
+				
+			//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
+			if(!validarIBAN(iban)){
+				alert(mensaje);
+				return false;
+			}			
+		}
+		
+		return true;
+	}
+	
+	function validarDigitoControl(codigoBanco,sucursal,digitoControl,numeroCuenta){		 
 		if (codigoBanco    == ''  || sucursal == '' || numeroCuenta == ''  || digitoControl   == '' ) 
 			 return -1;
 		else if(codigoBanco.length != 4 || sucursal.length != 4 ||digitoControl.length != 2 || numeroCuenta.length != 10)
@@ -574,7 +637,6 @@ function getDigitoControl(valor){
 			return -4;
 		else	
 			return 0;
-
 	}
 	
 	function numerico(valor){

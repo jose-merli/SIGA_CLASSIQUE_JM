@@ -81,7 +81,8 @@
 				document.all.cuentasBancariasSolicForm.reset()
 				rellenarCampos();				
 				}						
-		}			
+		}	
+		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {	
 			sub();	
@@ -93,7 +94,11 @@
 			}
 			
 			if (validateCuentasBancariasSolicForm(document.cuentasBancariasSolicForm)){
-				if(!validarDigControl()){
+				iban = document.cuentasBancariasSolicForm.IBAN.value;
+				bic = document.cuentasBancariasSolicForm.BIC.value;
+				banco = document.cuentasBancariasSolicForm.banco.value;
+				
+				if(!validarCuentaBancaria(iban,bic,banco)){
 					fin();
 					return false;
 					 
@@ -107,6 +112,7 @@
 				
 			}	
 		}			
+		
 		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
 		function rellenarCampos(){
 			// Obtenemos el valor para los check Tipo de Cuenta.
@@ -128,42 +134,6 @@
 		  	document.all.cuentasBancariasSolicForm.abonoSJCS.checked=true;
 		  }			
 		}
-		
-		function validarDigControl(){
-			mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
-			iban = document.cuentasBancariasSolicForm.IBAN.value;
-			bic = document.cuentasBancariasSolicForm.BIC.value;
-			banco = document.cuentasBancariasSolicForm.banco.value;
-			
-			if (iban == ""  && bic == ""){ 
-				alert(mensaje);
-				return false;
-			
-			} else {
-				if(iban.substring(0,2) == 'ES' && banco==""){
-					alert(mensaje);
-					return false;
-				}
-				if(iban.length < 4 || (iban.substring(0,2) != 'ES' && bic.length != 11)){
-					alert(mensaje);
-					return false;
-				}else{
-					//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
-					if(iban.substring(0,2) == 'ES' && iban.length == 24){
-						if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
-							return false;
-						}
-					}
-					//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
-					if(!validarIBAN(iban)){
-						alert(mensaje);
-						return false;
-					}
-				}
-			}
-			
-			return true;  
-		}			
 		
 		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"))%>';
 
@@ -258,7 +228,14 @@
 					}
 				});
 			}
-		}		
+		}	
+		
+	function rpad() {
+		if (document.getElementById("BIC").value.length == 8){
+	    	while (document.getElementById("BIC").value.length < 11)
+	    		document.getElementById("BIC").value = document.getElementById("BIC").value + 'X';
+		}
+	}
 		
 	</script>	
 	
@@ -311,7 +288,7 @@
 								<td class="labelText"><html:text size="34"  maxlength="34" name="cuentasBancariasSolicForm" styleId="IBAN" property="IBAN" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_IBAN))%>"  styleClass="box" readonly="false" onblur="cargarBancoPorIBAN();"></html:text></td>
 
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
-								<td class="labelText"><html:text size="14"  maxlength="11" name="cuentasBancariasSolicForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" ></html:text></td>
+								<td class="labelText"><html:text size="14"  maxlength="11" name="cuentasBancariasSolicForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();"></html:text></td>
 							</tr>								
 							
 							<!-- FILA -->

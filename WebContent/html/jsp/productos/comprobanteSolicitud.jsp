@@ -75,6 +75,7 @@
 	if(noFact == null){
 		noFact = Boolean.FALSE;
 	}
+	
 %>
 
 
@@ -284,7 +285,7 @@
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>						  								
 			  				</td>
 			  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
-			  				<td><%=cuenta%></td>
+			  				<td><%=UtilidadesString.mostrarDatoMascara(cuenta,ClsConstants.MASK_IBAN)%></td>
 			  				<td align="right"><%=cantidad%></td>
 			  				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;</td>
 			  				<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;%</td>
@@ -375,7 +376,7 @@
 			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"))%>				  								
 			  				</td>
 			  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
-			  				<td><%=cuenta%></td>
+			  				<td><%=UtilidadesString.mostrarDatoMascara(cuenta,ClsConstants.MASK_IBAN)%></td>
 			  				<td align="right"><%=cantidad%></td>
 			  				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%></td>
 			  				<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;%</td>

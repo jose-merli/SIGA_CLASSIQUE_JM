@@ -328,9 +328,11 @@
 		}
 
 		function accionGenerarInforme() {
+			sub();
 			document.forms[0].modo.value="descargaFicheroFact";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
+			fin();
 			/*sub();
 			var f = document.getElementById("InformesGenericosForm");
 			idFactIni = document.getElementById("idFacturacion").value;

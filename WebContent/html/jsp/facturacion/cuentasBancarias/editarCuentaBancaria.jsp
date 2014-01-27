@@ -125,7 +125,7 @@
 						fin();
 					},
 					error: function(e){
-						alert(mensajeGeneralError);
+						alert(mensaje);
 						document.getElementById("BIC").value="";
 						document.getElementById("bancoNombre").value="";
 						document.getElementById("BIC").readOnly = true;
@@ -162,7 +162,7 @@
 					fin();
 				},
 				error: function(e){
-					alert(mensajeGeneralError);
+					alert(mensaje);
 					fin();
 				}
 			});
@@ -170,7 +170,7 @@
 	}
 	
 	jQuery(function($){		
-		if(document.CuentasBancariasForm.modo.value !='insertar'){
+		if(document.CuentasBancariasForm.modo.value == 'modificar'){
 			var defaultValue = jQuery("#IBAN").val();
 			if(defaultValue.length <= 34){
 				jQuery('#IBAN').show();
@@ -181,7 +181,14 @@
 			jQuery("#IBAN").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
 			jQuery("#IBAN").keyup();	
 		}
-	});				
+	});		
+	
+	function rpad() {
+		if (document.getElementById("BIC").value.length == 8){
+	    	while (document.getElementById("BIC").value.length < 11)
+	    		document.getElementById("BIC").value = document.getElementById("BIC").value + 'X';
+		}
+	}
 	
 	</script>
 </head>
@@ -224,7 +231,7 @@
 				<td class="labelText"><html:text size="34"  maxlength="34" name="CuentasBancariasForm" styleId="IBAN" property="IBAN" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" onblur="cargarBancoPorIBAN();"></html:text></td>
 
 				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
-				<td class="labelText"><html:text size="14"  maxlength="11" name="CuentasBancariasForm" styleId="BIC" property="BIC"   styleClass="boxConsulta" readonly="true" ></html:text></td>
+				<td class="labelText"><html:text size="14"  maxlength="11" name="CuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();" ></html:text></td>
 				
 				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sjcs" /> </td>
 				<td align="left"><html:checkbox name="CuentasBancariasForm" property="sjcs" value="1" ></html:checkbox></td>
@@ -250,7 +257,7 @@
 			<td><html:text styleId="cuentaContableTarjeta" property="cuentaContableTarjeta"	name ="CuentasBancariasForm"	size="20" maxlength="20" styleClass="box" /></td>
 	
 		</tr>
-		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != null}">	
+		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
 			<!-- FILA -->
 			<tr><td COLSPAN="8">
 				<siga:ConjCampos leyenda="Cuenta Antigua">
@@ -344,43 +351,6 @@
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 
 <script type="text/javascript">
-
-	function validarDigControl(){
-		mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
-		iban = document.CuentasBancariasForm.IBAN.value;
-		bic = document.CuentasBancariasForm.BIC.value;
-		banco = document.CuentasBancariasForm.bancoNombre.value;
-		
-		if (iban == ""  && bic == ""){ 
-			alert(mensaje);
-			return false;
-		
-		} else {
-			if(iban.substring(0,2) == 'ES' && banco==""){
-				alert(mensaje);
-				return false;
-			}
-			if(iban.length < 4 || (iban.substring(0,2) != 'ES' && bic.length != 11)){
-				alert(mensaje);
-				return false;
-			}else{
-				//Si el IBAN es español se valida el digito de contro de la cuenta bancaria como se hacía antiguamente
-				if(iban.substring(0,2) == 'ES' && iban.length == 24){
-					if(!calcularDigitoCuentaBancariaEspañola(iban.substring(4))){
-						return false;
-					}
-				}
-				//VALIDACION DEL DIGITO DE CONTROL DEL IBAN
-				if(!validarIBAN(iban)){
-					alert(mensaje);
-					return false;
-				}
-			}
-		}
-		
-		return true;  
-	}	
-	
 	
 	function accionGuardarCerrar() {
 		sub();
@@ -389,7 +359,11 @@
 		document.CuentasBancariasForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);
 		
 		if(document.CuentasBancariasForm.modo.value=='insertar'){
-			if(!validarDigControl()){
+			iban = document.CuentasBancariasForm.IBAN.value;
+			bic = document.CuentasBancariasForm.BIC.value;
+			banco = document.CuentasBancariasForm.bancoNombre.value;
+			
+			if(!validarCuentaBancaria(iban,bic,banco)){
 				fin();
 				return false;
 			}

@@ -48,7 +48,7 @@
    		  facturacion.cuentasBancarias.sjcs,
    		  facturacion.cuentasBancarias.uso,
    		  facturacion.cuentasBancarias.baja,'
-   		  columnSizes="22,21,7,7,7,7,7,4,7,10">
+   		  columnSizes="22,22,7,7,7,6,7,4,7,10">
    		  
 	    <!-- INICIO: ZONA DE REGISTROS -->
 	    <c:choose>
@@ -78,7 +78,7 @@
 						<td align="right"><c:out value="${cuentaBancaria.impComisionAjenaCargo}"/></td>
 						<td align="right"><c:out value="${cuentaBancaria.impComisionPropiaAbono}"/></td>
 						<td align="right"><c:out value="${cuentaBancaria.impComisionAjenaAbono}"/></td>
-						<td align='left'>
+						<td align='center'>
 						<c:choose>
 							<c:when test="${cuentaBancaria.sjcs=='0'}">
 								<siga:Idioma key="general.boton.no" /> 

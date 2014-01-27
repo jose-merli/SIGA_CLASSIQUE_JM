@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -196,7 +197,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 		UtilidadesHash.set(hDatosFijos, "APELLIDOS1_NOTARIO", UtilidadesHash.getString(registro,"APELLIDOS1_NOTARIO"));
 		UtilidadesHash.set(hDatosFijos, "APELLIDOS2_NOTARIO", UtilidadesHash.getString(registro,"APELLIDOS2_NOTARIO"));
 		UtilidadesHash.set(hDatosFijos, "NIFCIF_NOTARIO", UtilidadesHash.getString(registro,"NIFCIF_NOTARIO"));
-		UtilidadesHash.set(hDatosFijos, "TIDENTIFICACION_NOTARIO", UtilidadesHash.getString(registro,"TIDENTIFICACION_NOTARIO"));		
+		UtilidadesHash.set(hDatosFijos, "TIDENTIFICACION_NOTARIO", UtilidadesHash.getString(registro,"TIDENTIFICACION_NOTARIO"));
+		UtilidadesHash.set(hDatosFijos, "CUENTA_BANCO", UtilidadesString.mostrarDatoMascara(UtilidadesHash.getString(registro,"CUENTA_BANCO"),ClsConstants.MASK_IBAN));
 		
 		
 		
@@ -389,10 +391,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 	public String getSqlBanco(String tipoCert){
 		String sSQL =getSqlCamposGeneral(tipoCert,"")+
 		" ,decode(cb.ABONOCARGO,'T',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.abonoCargo',1),'A',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.abono',1),'C',F_SIGA_GETRECURSO_ETIQUETA('censo.tipoCuenta.cargo',1)) as ABONOCARGO_BANCO, " +
-		" cb.CBO_CODIGO || '-' || " +
-		" cb.CODIGOSUCURSAL || '-' || " +
-		" cb.DIGITOCONTROL || '-' || " +
-		" cb.NUMEROCUENTA as CUENTA_BANCO, " +
+		" cb.IBAN as CUENTA_BANCO, " +
 		" cb.TITULAR as TITULAR_BANCO, " +
 		" cb.FECHABAJA as FECHABAJA_BANCO, " +
 		" cb.CUENTACONTABLE as CUENTACONTABLE_BANCO, " +

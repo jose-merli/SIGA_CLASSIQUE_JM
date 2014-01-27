@@ -240,7 +240,13 @@
 						Hashtable hash = (Hashtable)en.nextElement();
 						aceptado=(String)hash.get(PysProductosSolicitadosBean.C_ACEPTADO);
 						solicitarBaja=(String)hash.get(PysProductosInstitucionBean.C_SOLICITARBAJA);
-
+						String cuenta ="";
+						if(hash.get("NCUENTA")!= null && !hash.get("NCUENTA").equals("") && !hash.get("NCUENTA").equals("-")){
+							cuenta = UtilidadesString.mostrarDatoMascara(hash.get("NCUENTA"),ClsConstants.MASK_IBAN);
+						} else{
+							cuenta = UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"));
+						}
+						
 						/*if(aceptado.equalsIgnoreCase(pPendiente) &&
 							((solicitarBaja.equalsIgnoreCase(DB_TRUE) && esLetrado) || (!esLetrado))){*/
 	
@@ -283,7 +289,7 @@
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_IDPETICION))%></td>  								
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>
-		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"))%></td>
+		  						<td><%=cuenta%></td>
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_CANTIDAD))%></td>
 		  						<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;</td>		  								
 		  						<td><siga:Idioma key="<%=estadoPago%>"/></td>
@@ -341,6 +347,13 @@
 						aceptado=(String)hash.get(PysServiciosSolicitadosBean.C_ACEPTADO);
 						solicitarBaja=(String)hash.get(PysServiciosInstitucionBean.C_SOLICITARBAJA);
 						
+						String cuenta ="";
+						if(hash.get("NCUENTA")!= null && !hash.get("NCUENTA").equals("") && !hash.get("NCUENTA").equals("-")){
+							cuenta = UtilidadesString.mostrarDatoMascara(hash.get("NCUENTA"),ClsConstants.MASK_IBAN);
+						} else{
+							cuenta = UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"));
+						}						
+						
 						if ((aceptado.equalsIgnoreCase(pPendiente) || aceptado.equalsIgnoreCase(pAceptado)) 
 							&& ((solicitarBaja.equalsIgnoreCase(DB_TRUE) && esLetrado) || (!esLetrado))) {
 							k++; 				 	  							
@@ -381,7 +394,7 @@
 								<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_IDPETICION))%></td> 								
 								<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>			  					
 			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>			  					
-			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"))%></td>			  					
+			  					<td><%=cuenta%></td>			  					
 			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%></td>			  					
 			  					<td><%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(hash.get("SERVICIO_DESCRIPCION_PERIODICIDAD"))%></td>			  					
 			  					<td><siga:Idioma key="<%=estadoPago%>"/></td>			  					

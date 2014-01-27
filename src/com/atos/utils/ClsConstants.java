@@ -275,6 +275,9 @@ public class ClsConstants {
 	public static final String FACTURA_ABONO_NO_CONTABILIZADA = "N";
 	// Monedas
 	public static final String EURO		= "978";
+	
+	//Mascara IBAN
+	public static final String MASK_IBAN = "AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA";
 
 			
 	// Parametros de GenParametros

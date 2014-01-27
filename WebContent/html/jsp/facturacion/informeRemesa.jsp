@@ -47,7 +47,6 @@
 		abono=false;
 	}
 
-
 %>
 
 
@@ -166,7 +165,7 @@
 								<% } %>
 							</td>
 							<td class="boxConsultaNumber">
-								<%=cuentaAbono%>
+								<%=UtilidadesString.mostrarDatoMascara(cuentaAbono,ClsConstants.MASK_IBAN)%>
 							</td>
 						</tr>
 					</table>

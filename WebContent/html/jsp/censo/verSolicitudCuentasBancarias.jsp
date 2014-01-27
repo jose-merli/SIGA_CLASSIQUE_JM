@@ -114,7 +114,32 @@
 					alert(mensaje);
 				}
 			}
-		
+			
+			jQuery(function($){		
+				var defaultValue = jQuery("#IBANO").val();
+				if(defaultValue.length <= 34){
+					jQuery('#IBANO').show();
+				}else{
+					jQuery('#IBANO').hide();
+				
+				}
+				jQuery("#IBANO").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
+				jQuery("#IBANO").keyup();	
+			});				
+			
+			
+			jQuery(function($){		
+				var defaultValue = jQuery("#IBANM").val();
+				if(defaultValue.length <= 34){
+					jQuery('#IBANM').show();
+				}else{
+					jQuery('#IBANM').hide();
+				
+				}
+				jQuery("#IBANM").mask("AA AA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA");
+				jQuery("#IBANM").keyup();	
+			});				
+			
 		</script>	
 
 	</head>
@@ -217,8 +242,8 @@
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;
 										</td>				
 					   					<td>
-											<html:text property="IBANO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_IBAN))%>' styleClass="boxConsulta" readOnly="true" size="36"/><br>
-											<html:text property="IBANM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_IBAN)%>' styleClass="boxConsultaRojo" readOnly="true" size="36"/>
+											<html:text styleId="IBANO" property="IBANO" value='<%=String.valueOf(original.get(CenCuentasBancariasBean.C_IBAN))%>' styleClass="boxConsulta" readOnly="true" size="36"/><br>
+											<html:text styleId="IBANM" property="IBANM" value='<%=modificada.getString(CenSolicModiCuentasBean.C_IBAN)%>' styleClass="boxConsultaRojo" readOnly="true" size="36"/>
 										</td>
 									</tr>										
 
