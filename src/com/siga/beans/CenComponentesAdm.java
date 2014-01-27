@@ -277,8 +277,7 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 		List<ValueKeyVO> valueKeyVOs = null;
 		try{
 			rc = new RowsContainer(); 
-			String cuentasSJCSSociedad = "select C.IDCUENTA || '*' || C.IDPERSONA AS ID, substr(B.NOMBRE, 0, 25) || ' ' || 'nº ' || C.cbo_codigo || '-' " +
-			"||  C.codigosucursal || '-' || C.digitocontrol || '-' ||  LPAD(SUBSTR(C.numerocuenta, 7), 10, '*') as DESCRIPCION   " +
+			String cuentasSJCSSociedad = "select C.IDCUENTA || '*' || C.IDPERSONA AS ID, substr(B.NOMBRE, 0, 25) || ' ' || 'nº ' || C.IBAN as DESCRIPCION   " +
 			"from cen_cuentasbancarias C, cen_bancos B, CEN_COMPONENTES A  where C.cbo_codigo = B.codigo AND C.IDPERSONA = A.Idpersona " +
 			"AND A.IDPERSONA = "+idPersona+"  AND C.IDINSTITUCION = "+idInstitucion+"  AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')  " +
 			"AND C.ABONOSJCS = 1   and c.fechabaja IS NULL    ORDER BY SOCIEDAD desc, A.IDCUENTA desc, DESCRIPCION";
