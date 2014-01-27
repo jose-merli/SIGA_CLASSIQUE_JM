@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.crystaldecisions.sdk.prompting.report.Util"%>
 <html>
 <head>
 <!-- consultaProductos.jsp -->
@@ -239,7 +240,7 @@
 	String tamanosCol = "";
 	String nombresCol = "";
 	
-	tamanosCol = "7,6,15,9,15";
+	tamanosCol = "7,6,15,9,20,6";
 	nombresCol = "cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
 %>
 
@@ -299,9 +300,16 @@
 				String idFormaPago = (String) registro
 						.get("IDFORMAPAGO");
 				String idCuenta = (String) registro.get("NCUENTA");
-				if (idCuenta == null || idCuenta.equals("")) {
+				if (idCuenta == null || idCuenta.equals("") ) {
 					idCuenta = "&nbsp";
+				} else if (!idCuenta.equals("-")) {					
+					if(modo.equalsIgnoreCase("editar")){
+						idCuenta = UtilidadesString.mostrarDatoMascara(idCuenta, ClsConstants.MASK_IBAN);
+					}else{
+						idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
+					}
 				}
+					
 				String identifCuenta = (String) registro
 						.get("IDCUENTA");
 				if (identifCuenta == null || identifCuenta.equals("")) {
