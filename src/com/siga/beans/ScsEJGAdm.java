@@ -2056,6 +2056,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 		Hashtable codigos = new Hashtable();
 		int contador=0;
+		
+		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
+		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 		// Estos son los campos que devuelve la select
 		String consulta = "SELECT EJG." + ScsEJGBean.C_ANIO + ", " + 
@@ -2106,11 +2109,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_IDPERSONA + " = COLEGIADO." + CenColegiadoBean.C_IDPERSONA + "(+) ";   
 		}
 		
-		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
-		consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + "(+) " +
-			" AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG + "(+) " +
-		   	" AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO + "(+) " +
-		   	" AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) " +
+		if(esComision){
+			// jbd // La consulta es la misma para comision y no comision, pero en la comision forzamos a que exista un estado
+			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION +
+			" AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
+		   	" AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO +
+		   	" AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO +
 		   	" AND " +
 		   		" ( " + 
 		   			" ESTADO.IDESTADOPOREJG IS NULL " + 
@@ -2122,7 +2126,28 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			   				", ESTADO." + ScsEstadoEJGBean.C_NUMERO + 
 			   			" ) " +
 		   		" ) ";
-		
+			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
+			consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"= ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+		}else{
+			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
+			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + "(+) " +
+					" AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG + "(+) " +
+					" AND EJG." + ScsEJGBean.C_NUMERO + " = ESTADO." + ScsEstadoEJGBean.C_NUMERO + "(+) " +
+					" AND EJG." + ScsEJGBean.C_ANIO + " = ESTADO." + ScsEstadoEJGBean.C_ANIO + "(+) " +
+					" AND " +
+					" ( " + 
+					" ESTADO.IDESTADOPOREJG IS NULL " + 
+					" OR ESTADO.IDESTADOPOREJG = " +
+					" F_SIGA_GET_ULTIMOESTADOPOREJG ( " +
+					"  ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + 
+					", ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
+					", ESTADO." + ScsEstadoEJGBean.C_ANIO +
+					", ESTADO." + ScsEstadoEJGBean.C_NUMERO + 
+					" ) " +
+					" ) ";
+			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
+			consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+		}
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
 			consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (7, 8, 9, 10, 11) OR ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IS NULL) ";
@@ -2131,8 +2156,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
 		}
 		
-		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
-		consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+		
 		
 		// Se filtra por numero cajg
 		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
@@ -2503,9 +2527,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "DESCRIPCIONESTADO"));
 			consulta += " = :" + contador;
 			
-		} else if(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString())) {
+		} else if(esComision) {
 				// Si la comision deja vacio el estado le mostramos todos los que pueden ver ellos
-				consulta += " AND MEE.VISIBLECOMISION(+) = '1' ";
+				consulta += " AND MEE.VISIBLECOMISION = '1' ";
 		}
 
 		consulta += " ORDER BY TO_NUMBER(" + ScsEJGBean.C_ANIO + ") DESC, " +
