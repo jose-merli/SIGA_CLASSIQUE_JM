@@ -875,6 +875,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.C_IDINSTITUCION + "," +
 							FacAbonoBean.C_IDABONO + "," +
 							FacAbonoBean.C_IDPERSONA + "," +
+							FacAbonoBean.C_NUMEROABONO + "," +
 							FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.C_MOTIVOS + "," +
 							FacAbonoBean.C_IDCUENTA + "," +
@@ -987,6 +988,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
@@ -1346,6 +1348,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +

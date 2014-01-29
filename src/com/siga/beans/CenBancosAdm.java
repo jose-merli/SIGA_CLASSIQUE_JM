@@ -115,7 +115,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
 		return bancoBean;
 	}     	
  	
- 	public CenBancosBean getBancoIBAN(String idBanco) throws ClsExceptions{ 		
+ 	public CenBancosBean getBancoIBAN(String codBanco) throws ClsExceptions{ 		
 		RowsContainer rc = null;
 		CenBancosBean bancoBean = null;
 		
@@ -123,7 +123,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
     		
 		    String sql = " SELECT * "+
 			 " FROM " + CenBancosBean.T_NOMBRETABLA +			 
-			 " WHERE "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+"='"+idBanco + "'";
+			 " WHERE "+CenBancosBean.T_NOMBRETABLA+"."+CenBancosBean.C_CODIGO+"='"+codBanco + "'";
 
             rc = this.find(sql);
             

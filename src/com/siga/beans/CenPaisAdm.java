@@ -41,7 +41,7 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 	 */
 	protected String[] getCamposBean() {
 		String [] campos = {CenPaisBean.C_FECHAMODIFICACION, CenPaisBean.C_IDPAIS, CenPaisBean.C_CODIGOEXT,				
-					CenPaisBean.C_NOMBRE,	CenPaisBean.C_USUMODIFICACION};
+					CenPaisBean.C_NOMBRE,	CenPaisBean.C_USUMODIFICACION, CenPaisBean.C_SEPA};
 		return campos;
 	}
 
@@ -74,6 +74,7 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 			bean.setCodigoExt((String)hash.get(CenPaisBean.C_CODIGOEXT));		
 			bean.setNombre((String)hash.get(CenPaisBean.C_NOMBRE));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenPaisBean.C_USUMODIFICACION));
+			bean.setSepa((String)hash.get(CenPaisBean.C_SEPA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -97,6 +98,7 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 			htData.put(CenPaisBean.C_CODIGOEXT, b.getCodigoExt());
 			htData.put(CenPaisBean.C_NOMBRE, b.getNombre());
 			htData.put(CenPaisBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
+			htData.put(CenPaisBean.C_SEPA, b.getSepa());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -207,7 +209,29 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 		}
 		return codigoExt;
 	}
-	
+
+	public String getSepa(String idPais) throws ClsExceptions {
+		String sepa="";
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT " + CenPaisBean.C_SEPA + " FROM " + CenPaisBean.T_NOMBRETABLA;
+			sql += "  where idpais = " + idPais;
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				CenPaisBean registro = (CenPaisBean) this.hashTableToBeanInicial(fila.getRow()); 
+				if (registro != null) 
+					sepa = registro.getSepa();
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return sepa;
+	}
+
 	public boolean isLongitudCorrectaIBAN(String codPais, int longitud) throws ClsExceptions{
 		boolean correcto = false;
 		RowsContainer rc = null;

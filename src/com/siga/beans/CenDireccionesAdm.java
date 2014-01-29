@@ -1441,10 +1441,13 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		codigos.put(new Integer(4), idInstitucion);
 		codigos.put(new Integer(5), idPersona);
 		codigos.put(new Integer(6), idioma);
-		String sql = "SELECT" +
-					" F_SIGA_GETDIRECCIONDESPACHO(:1,:2,:3,1) AS DOMICILIO_DESPACHO" + 
-					", F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,3) AS POBLACION_DESPACHO" +
-					" FROM DUAL ";
+		String sql = "SELECT F_SIGA_GETDIRECCIONDESPACHO(:1,:2,:3,1) AS DOMICILIO_DESPACHO, " + 
+					"        F_SIGA_GETDIRECCIONDESPACHO(:1,:2,:3,2) AS CODIGOPOSTAL_DESPACHO, " + 
+					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,3) AS POBLACION_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,4) AS PROVINCIA_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,5) AS PAIS_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,12) AS CODISO_PAIS_DESPACHO " +
+					"   FROM DUAL ";
 		try{
             RowsContainer rc = this.findBind(sql,codigos);
  			if (rc!=null) {

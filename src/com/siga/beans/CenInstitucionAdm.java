@@ -21,6 +21,10 @@ import com.siga.general.SIGAException;
 
 public class CenInstitucionAdm extends MasterBeanAdministrador {
     public static final String K_SIN_SIGA="2";
+    public static final int C_SDOMICILIO = 0;
+    public static final int C_SCODIGOPOSTAL = 1;
+    public static final int C_SPOBLACION = 2;
+    public static final int C_SPROVINCIA = 3;
 
 	/**
 	 * @param tabla
@@ -189,44 +193,30 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 	 * @return String nombreInstitucion
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public String getDomicilioInstitucion(String idInstitucion)
+	public String[] getDomicilioInstitucion(String idInstitucion)
 			throws ClsExceptions,SIGAException {
 		
-		String nombreInstitucion="";
+		String[] direcciones = new String[4];
 		RowsContainer rows=new RowsContainer();
-        String sql="select DOMICILIO || ' (' || CODIGOPOSTAL || ')' AS DOMICILIO ";
+        String sql = "";
+        sql += "select "+CenDireccionesBean.C_DOMICILIO+" AS DOMICILIO, ";
+        sql += "       "+CenDireccionesBean.C_CODIGOPOSTAL+" AS CODIGOPOSTAL, ";
+        sql += "       (SELECT P."+CenPoblacionesBean.C_NOMBRE+" FROM "+CenPoblacionesBean.T_NOMBRETABLA+" P WHERE P."+CenPoblacionesBean.C_IDPOBLACION+"=cen_direcciones."+CenDireccionesBean.C_IDPOBLACION+") AS POBLACION ";
+        sql += "       (SELECT P."+CenProvinciaBean.C_NOMBRE+" FROM "+CenProvinciaBean.T_NOMBRETABLA+" P WHERE P."+CenProvinciaBean.C_IDPROVINCIA+"=cen_direcciones."+CenDireccionesBean.C_IDPROVINCIA+") AS PROVINCIA ";
+        
         sql += this.getSqlDireccioInstitucion(idInstitucion);
         if(rows.find(sql)){
             Hashtable htRow=((Row)rows.get(0)).getRow();
             // El valor devuelto será null si no existe padre
-            nombreInstitucion = (String)htRow.get("DOMICILIO");
+            direcciones[C_SDOMICILIO] = (String)htRow.get("DOMICILIO");
+            direcciones[C_SCODIGOPOSTAL] = (String)htRow.get("CODIGOPOSTAL");
+            direcciones[C_SPOBLACION] = (String)htRow.get("POBLACION");
+            direcciones[C_SPROVINCIA] = (String)htRow.get("PROVINCIA");
         }
  
-		return nombreInstitucion;
+		return direcciones;
 	}
 
-	/** 
-	 * Funcion que devuelve el Poblacion de la Institucion'
-	 * @param  String idInstitucion 
-	 * @return String nombreInstitucion
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public String getPoblacionInstitucion(String idInstitucion)
-			throws ClsExceptions,SIGAException {
-		
-		String nombreInstitucion="";
-		RowsContainer rows=new RowsContainer();
-        String sql="select (SELECT P.NOMBRE FROM CEN_POBLACIONES P WHERE P.IDPOBLACION=cen_direcciones.IDPOBLACION) AS POBLACION ";
-        sql += this.getSqlDireccioInstitucion(idInstitucion);
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será null si no existe padre
-            nombreInstitucion = (String)htRow.get("POBLACION");
-        }
- 
-		return nombreInstitucion;
-	}
-	
 	public String getSqlDireccioInstitucion (String idInstitucion) throws ClsExceptions,SIGAException {
 		
 		RowsContainer rows=new RowsContainer();

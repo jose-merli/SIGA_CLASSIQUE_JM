@@ -15,13 +15,16 @@ public class FicheroEmisorAbonoBean extends MasterBean{
 
 	/* Variables */
 	private Integer identificador;
+	private String iban;
 	private String codigoBanco;
 	private String codigoSucursal;
 	private String numeroCuenta;
 	private String nif;
 	private String nombre;
 	private String domicilio;
-	private String plaza;
+	private String codigopostal;
+	private String poblacion;
+	private String provincia;
 	private Long identificadorDisquete;
 	
 
@@ -74,10 +77,34 @@ public class FicheroEmisorAbonoBean extends MasterBean{
 	public void setDomicilio(String domicilio) {
 		this.domicilio = domicilio;
 	}
-	public String getPlaza() {
-		return plaza;
+	public String getPoblacion() {
+		return poblacion;
 	}
-	public void setPlaza(String plaza) {
-		this.plaza = plaza;
+	public void setPoblacion(String poblacion) {
+		this.poblacion = poblacion;
+	}
+	public String getIban()
+	{
+		return iban;
+	}
+	public void setIban(String iban)
+	{
+		this.iban = iban;
+	}
+	public String getCodigopostal()
+	{
+		return codigopostal;
+	}
+	public void setCodigopostal(String codigopostal)
+	{
+		this.codigopostal = codigopostal;
+	}
+	public String getProvincia()
+	{
+		return provincia;
+	}
+	public void setProvincia(String provincia)
+	{
+		this.provincia = provincia;
 	}
 }

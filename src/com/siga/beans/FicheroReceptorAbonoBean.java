@@ -18,6 +18,9 @@ public class FicheroReceptorAbonoBean extends MasterBean{
 	/* Variables */
 	private Double importe;
 	private Long identificador;
+	private String referenciaInterna;
+	private String iban;
+	private String bic;
 	private String codigoBanco;
 	private String codigoSucursal;
 	private String numeroCuenta;
@@ -25,9 +28,15 @@ public class FicheroReceptorAbonoBean extends MasterBean{
 	private String nombre;
 	private String digitosControl;
 	private String domicilio;
+	private String codigopostal;
 	private String poblacion;
+	private String provincia;
+	private String pais;
+	private String codIsoPais;
+	private String sepa;
 	private String nombrePago;
 	private String concepto;
+	private String numeroAbono;
 	
 		/* Metodos */
 	
@@ -102,5 +111,77 @@ public class FicheroReceptorAbonoBean extends MasterBean{
 	}
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
+	}
+	public String getCodigopostal()
+	{
+		return codigopostal;
+	}
+	public void setCodigopostal(String codigopostal)
+	{
+		this.codigopostal = codigopostal;
+	}
+	public String getProvincia()
+	{
+		return provincia;
+	}
+	public void setProvincia(String provincia)
+	{
+		this.provincia = provincia;
+	}
+	public String getPais()
+	{
+		return pais;
+	}
+	public void setPais(String pais)
+	{
+		this.pais = pais;
+	}
+	public String getIban()
+	{
+		return iban;
+	}
+	public void setIban(String iban)
+	{
+		this.iban = iban;
+	}
+	public String getBic()
+	{
+		return bic;
+	}
+	public void setBic(String bic)
+	{
+		this.bic = bic;
+	}
+	public String getReferenciaInterna()
+	{
+		return referenciaInterna;
+	}
+	public void setReferenciaInterna(String referenciaInterna)
+	{
+		this.referenciaInterna = referenciaInterna;
+	}
+	public String getCodIsoPais()
+	{
+		return codIsoPais;
+	}
+	public void setCodIsoPais(String codIsoPais)
+	{
+		this.codIsoPais = codIsoPais;
+	}
+	public String getNumeroAbono()
+	{
+		return numeroAbono;
+	}
+	public void setNumeroAbono(String numeroAbono)
+	{
+		this.numeroAbono = numeroAbono;
+	}
+	public String getSepa()
+	{
+		return sepa;
+	}
+	public void setSepa(String sepa)
+	{
+		this.sepa = sepa;
 	}
 }
