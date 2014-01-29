@@ -165,7 +165,7 @@
 								<% } %>
 							</td>
 							<td class="boxConsultaNumber">
-								<%=UtilidadesString.mostrarDatoMascara(cuentaAbono,ClsConstants.MASK_IBAN)%>
+								<%=UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaAbono)%>
 							</td>
 						</tr>
 					</table>
