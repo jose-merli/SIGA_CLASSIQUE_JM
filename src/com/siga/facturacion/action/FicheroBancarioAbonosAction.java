@@ -417,7 +417,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		FacAbonoIncluidoEnDisqueteAdm admAbonoDisquete=new FacAbonoIncluidoEnDisqueteAdm(user);
 		CenBancosAdm cenBancosAdm = new CenBancosAdm(user);
 		CenPaisAdm cenPaisAdm = new CenPaisAdm(user);
-		CenSucursalesAdm admSucursal=new CenSucursalesAdm(user);
 		CenDireccionesAdm admDirecciones = new CenDireccionesAdm(user);
 		FacAbonoAdm adminAbono=new FacAbonoAdm(user);
 		GenParametrosAdm paramAdm = new GenParametrosAdm(user);
@@ -425,28 +424,33 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		String idInstitucion=user.getLocation();
 		String lenguaje = user.getLanguage();
 		
+		boolean escribirAvisoCuentasIncompletas = false;
 		int cont = 0;
 		boolean correcto;
 		Long idDisqueteAbono;
 
 	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String extensionFichero = p.returnProperty("facturacion.extension.ficherosAbonos");
 		String prefijoFichero = p.returnProperty("facturacion.prefijo.ficherosAbonos");
 		
 		if (abonosBanco.isEmpty())
 			return cont;
 			
+		FicheroEmisorAbonoBean emisor=new FicheroEmisorAbonoBean();
 		// Obtenemos el identificador
 		idDisqueteAbono=admDisqueteAbonos.getNuevoID(idInstitucion);
-		// Los datos de la sucursal
-		Hashtable sucursal = admSucursal.getSucursal((String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO),(String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL));
-		// Datos emisor
-		FicheroEmisorAbonoBean emisor=new FicheroEmisorAbonoBean();
-		emisor.setIdentificador(new Integer((String)banco.get(FacBancoInstitucionBean.C_IDINSTITUCION)));
-		emisor.setIban((String)banco.get(FacBancoInstitucionBean.C_IBAN));
+		// Los datos de la CCC
+		if (banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO) == null || ((String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO)).equals("") ||
+			banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL) == null || ((String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL)).equals("") ||
+			banco.get(FacBancoInstitucionBean.C_NUMEROCUENTA) == null || ((String)banco.get(FacBancoInstitucionBean.C_NUMEROCUENTA)).equals("")) {
+			escribirAvisoCuentasIncompletas = true;
+		}
 		emisor.setCodigoBanco((String)banco.get(FacBancoInstitucionBean.C_COD_BANCO));
 		emisor.setCodigoSucursal((String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL));
 		emisor.setNumeroCuenta((String)banco.get(FacBancoInstitucionBean.C_NUMEROCUENTA));
+		
+		// Datos emisor
+		emisor.setIdentificador(new Integer((String)banco.get(FacBancoInstitucionBean.C_IDINSTITUCION)));
+		emisor.setIban((String)banco.get(FacBancoInstitucionBean.C_IBAN));
 		String nombre=admInstitucion.getNombreInstitucion((String)banco.get(FacBancoInstitucionBean.C_IDINSTITUCION));
 		emisor.setNif(admPersona.obtenerNIF(admInstitucion.getIdPersona(idInstitucion)));
 		emisor.setNombre(nombre);
@@ -473,6 +477,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			receptor.setIban((String)datosReceptor.get(CenCuentasBancariasBean.C_IBAN));
 			receptor.setBic((String)(cenBancosAdm.getBancoIBAN((String)datosReceptor.get(CenCuentasBancariasBean.C_CBO_CODIGO))).getBic());
 			receptor.setSepa((String)cenPaisAdm.getSepa((String)(cenBancosAdm.getBancoIBAN((String)datosReceptor.get(CenCuentasBancariasBean.C_CBO_CODIGO))).getIdPais()));
+			if (datosReceptor.get(CenCuentasBancariasBean.C_CBO_CODIGO) == null || ((String)datosReceptor.get(CenCuentasBancariasBean.C_CBO_CODIGO)).equals("") ||
+				datosReceptor.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL) == null || ((String)datosReceptor.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL)).equals("") ||
+				datosReceptor.get(CenCuentasBancariasBean.C_NUMEROCUENTA) == null || ((String)datosReceptor.get(CenCuentasBancariasBean.C_NUMEROCUENTA)).equals("") ||
+				datosReceptor.get(CenCuentasBancariasBean.C_DIGITOCONTROL) == null || ((String)datosReceptor.get(CenCuentasBancariasBean.C_DIGITOCONTROL)).equals("")) {
+				escribirAvisoCuentasIncompletas = true;
+			}
 			receptor.setCodigoBanco((String)datosReceptor.get(CenCuentasBancariasBean.C_CBO_CODIGO));
 			receptor.setCodigoSucursal((String)datosReceptor.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL));
 			receptor.setNumeroCuenta((String)datosReceptor.get(CenCuentasBancariasBean.C_NUMEROCUENTA));
@@ -517,7 +527,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		}
 		
 		// Creacion de un fichero de abonos por cada banco restante
-		int nlineas = this.crearFichero(emisor, receptores);
+		int nlineas = this.crearFichero(emisor, receptores, escribirAvisoCuentasIncompletas);
 		this.crearFicheroSEPA(emisor, receptores);
 		cont ++;
 		
@@ -590,6 +600,366 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		
 		return cont;
 	} //prepararFichero()
+	
+	/** 
+	 *  Funcion que genera las lineas del fichero e inserta en el fichero.
+	 * @param  bEmisor 		- bean que contiene los datos del emisor.
+	 * @param  vReceptores	- Vector que contiene los bean de cada uno de los receptores.	 
+	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	private int crearFichero(FicheroEmisorAbonoBean bEmisor, Vector vReceptores, boolean escribirAvisoCuentasIncompletas) throws SIGAException {
+		//int n = (vReceptores.size() * 2) + 4 + 1;
+		// (numeroReceptores * numeroCampos) + datosCabecera + datosTotales
+		int n = (vReceptores.size() * 5) + 4 + 1;
+		
+		String[] cabecera = new String[n];
+		boolean resul = false;		
+		int nlinea = 0;
+		try{	
+			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp 		= new ReadProperties("SIGA.properties");			
+			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
+			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
+			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosAbonos");
+			String nombreFichero	= "";
+			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
+			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
+			
+//			Generamos el nombre del fichero.
+			String barra = "";
+			if (rutaServidor.indexOf("/") > -1){ 
+				barra = "/";
+			}
+			if (rutaServidor.indexOf("\\") > -1){ 
+				barra = "\\";
+			}
+			rutaServidor += barra + sIdInstitucion;
+			nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
+			
+			// *********************	Generamos las lineas del fichero	*********************
+			
+			// ********************************* Datos Emisor **********************************
+			String sCodRegistro			= "03";
+			String sCodOperacion		= "56"; // 56:Si es una orden de transferencia.
+			// 57:Si es ha de confecionarse un Cheque Bancario.
+			String sCodOrdenante 		= completarEspacios("Nif", bEmisor.getNif(), "D", " ", 10, false);
+			
+			String fActual 				= UtilidadesBDAdm.getFechaBD("");
+			String[] aux 				= fActual.split("/");
+			String sFechaEnvio			= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
+			String sFechaEmision		= sFechaEnvio;
+			
+			String sEntidadOrdenante	= completarEspacios("Entidad", bEmisor.getCodigoBanco(), "D", "0", 4, false);
+			String sOficinaOrdenante	= completarEspacios("Oficina", bEmisor.getCodigoSucursal(), "D", "0", 4, false);
+			String sCuentaOrdenante		= completarEspacios("Cuenta Bancaria", bEmisor.getNumeroCuenta(), "D", "0", 10, false);			
+			String sDControlOrdenante	= obtenerDigitoControl("00" + sEntidadOrdenante + sOficinaOrdenante);
+			sDControlOrdenante 			+=obtenerDigitoControl(sCuentaOrdenante);
+			
+			String sDetalleCargo		= "0"; // 0:Sin relacion
+			// 1:Con relación 
+			String sNombreOrdenante		= completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 36, true);
+			String sDomicilioOrdenante	= completarEspacios("Domicilio", bEmisor.getDomicilio() + "  " + bEmisor.getCodigopostal(), "I", " ", 36, true);	
+			String sPlazaOrdenante		= completarEspacios("Plaza", bEmisor.getPoblacion(), "I", " ", 36, true);
+			
+			String sNumDato	= "001";
+			cabecera[0] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sFechaEnvio + sFechaEmision + sEntidadOrdenante + 
+			sOficinaOrdenante +	sCuentaOrdenante + sDetalleCargo + rellenarEspacios(3) + sDControlOrdenante + rellenarEspacios(7);
+			sNumDato		= "002";
+			cabecera[1] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sNombreOrdenante + rellenarEspacios(7);
+			sNumDato		= "003";
+			cabecera[2] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sDomicilioOrdenante + rellenarEspacios(7);
+			sNumDato		= "004";
+			cabecera[3] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sPlazaOrdenante + rellenarEspacios(7);
+			
+			
+//			****************************  Datos de los receptores   *****************************
+			
+			String sGastos 		= "1";
+			String sConcepto 	= "9";			
+			int cantidad 		= 0; 
+			int importe;
+			String sRefBeneficiario;			
+			String sImporte;
+			String sEntidadBeneficiario;
+			String sOficinaBeneficiario;
+			String sCuentaBeneficiario;
+			String sDControlBeneficiario;
+			String sNombreBeneficiario;
+			String sNumRegistros;
+			String sTotalRegistros;
+			
+			String sDomicilioBeneficiario;
+			String sPoblacionBeneficiario;
+			String sMotivos;
+			
+			nlinea = 3;
+			Enumeration en = vReceptores.elements();
+			while(en.hasMoreElements()){			
+				FicheroReceptorAbonoBean bReceptor 	= (FicheroReceptorAbonoBean)en.nextElement();
+				
+				sCodRegistro			= "06";
+				sRefBeneficiario 		= completarEspacios("Identificador", bReceptor.getIdentificador().toString(), "D", " ", 12, false);
+				importe					= (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
+				cantidad 				+= importe;
+				sImporte				= completarEspacios("Importe", Integer.toString(importe), "D", "0", 12, false);
+				sEntidadBeneficiario	= completarEspacios("Entidad", bReceptor.getCodigoBanco(), "D", "0", 4, false);
+				sOficinaBeneficiario	= completarEspacios("Oficina", bReceptor.getCodigoSucursal(), "D", "0", 4, false);	
+				sCuentaBeneficiario		= completarEspacios("Cuenta Bancaria", bReceptor.getNumeroCuenta(), "D", "0", 10, false);
+				sDControlBeneficiario	= obtenerDigitoControl("00" + sEntidadBeneficiario + sOficinaBeneficiario);
+				sDControlBeneficiario	+=obtenerDigitoControl(sCuentaBeneficiario);
+				sNombreBeneficiario		= completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 36, true);
+				String direccion 		= UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " ");
+				direccion 		= UtilidadesString.replaceAllIgnoreCase(direccion, "\r", " ");
+				sDomicilioBeneficiario = completarEspacios ("Direccion", direccion, "I", " ", 36, true);
+				sPoblacionBeneficiario = completarEspacios ("Poblacion", bReceptor.getPoblacion(), "I", " ", 36, true);
+				sMotivos = completarEspacios ("NombrePago", bReceptor.getNombrePago(), "I", " ", 36, true);
+				
+				if ((bReceptor.getConcepto()!=null)&& (bReceptor.getConcepto()!="0")){
+					sConcepto = completarEspacios ("Concepto", bReceptor.getConcepto(), "I", " ", 1, true);
+				}
+				
+				nlinea ++;
+				sNumDato		 = "010";				
+				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sImporte + sEntidadBeneficiario + 
+				sOficinaBeneficiario +	sCuentaBeneficiario + sGastos + sConcepto + rellenarEspacios(2) + sDControlBeneficiario + rellenarEspacios(7);
+				
+				nlinea ++;
+				sNumDato		 = "011";
+				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sNombreBeneficiario + rellenarEspacios(7);
+				
+				// jbd 9/12/2008 - INC_05507_SIGA >>>
+				nlinea ++;
+				sNumDato		 = "012"; // Direccion
+				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sDomicilioBeneficiario + rellenarEspacios(7); 
+				
+				nlinea ++;
+				sNumDato		 = "014"; // Poblacion
+				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato +  sPoblacionBeneficiario + rellenarEspacios(7);
+				
+				nlinea ++;
+				sNumDato		 = "016"; // Concepto
+				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sMotivos + rellenarEspacios(7);
+				// <<< INC_05507_SIGA
+			}
+			
+//			****************************   Datos de los Totales   *****************************
+			
+			sCodRegistro		 = "08";
+			sImporte		 	 = completarEspacios("Importe", Integer.toString(cantidad), "D", "0", 12, false);	
+			sNumRegistros		 = completarEspacios("Numero Registros", Integer.toString(vReceptores.size()), "D", "0", 8, false);
+			sTotalRegistros		 = completarEspacios("Numero Registros",Integer.toString(nlinea+2), "D", "0", 10, false);			
+			cabecera[nlinea+1] 	 = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(15) + sImporte + sNumRegistros + sTotalRegistros + rellenarEspacios(13);
+			
+			// escribiendo linea de aviso por cuentas incompletas
+			if (escribirAvisoCuentasIncompletas)
+				cabecera[nlinea+2] = rp.returnProperty("facturacion.ficheroBancario.mensaje.avisoCuentasBancariasIncompletas");
+			
+			resul 				 = escribirFichero(cabecera,rutaServidor,nombreFichero);	
+			
+		} catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}
+		if (resul){
+			return nlinea+2; // Se suma 2 porque empieza en cero y no se incrementa en la ultima linea
+		}else{
+			return 0;
+		}
+	} //crearFichero()
+	
+	/** 
+	 *  Funcion que genera las lineas del fichero e inserta en el fichero SEPA.
+	 * @param  bEmisor 		- bean que contiene los datos del emisor.
+	 * @param  vReceptores	- Vector que contiene los bean de cada uno de los receptores.	 
+	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	private int crearFicheroSEPA(FicheroEmisorAbonoBean bEmisor, Vector vReceptores) throws SIGAException
+	{
+		final int c_ORDENANTE = 0; 
+		final int c_BENEFICIARIOSEPA = 1; 
+		final int c_BENEFICIARIOOTROS = 2; 
+		final int c_NBLOQUES = 3;
+		StringBuffer[] cabeceras = new StringBuffer[c_NBLOQUES];
+		StringBuffer[] totales = new StringBuffer[c_NBLOQUES];
+		StringBuffer[] registrosBenefSEPA = new StringBuffer[vReceptores.size()]; //no se llenaran todos, pero a priori no sabemos cuantos seran
+		StringBuffer[] registrosBenefOtros = new StringBuffer[vReceptores.size()]; //no se llenaran todos, pero a priori no sabemos cuantos seran
+		int nRegistrosBenefSEPA = 0, nRegistrosBenefOtros = 0;
+		int importe = 0, subtotalSEPA = 0, subtotalOtros = 0;
+		
+		boolean resul = false;
+		
+		try{	
+			// calculando nombre y ruta del fichero
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
+			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
+			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
+			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
+			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosTransferenciasSEPA");
+			String barra = (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
+			rutaServidor += barra + sIdInstitucion;
+			String nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
+			
+			// calculando fechas y version del cuaderno
+			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");
+			String[] aux 			= fActual.split("/");
+			String sFechaEnvio		= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
+			String sFechaEmision	= sFechaEnvio;
+			String versionCuaderno 	= rp.returnProperty("facturacion.cuaderno.transferencias.identificador");  
+			versionCuaderno 		+= Integer.parseInt(versionCuaderno) % 7;
+			
+			// 1de7. generando cabecera de ordenante
+			cabeceras[c_ORDENANTE] = new StringBuffer();
+			cabeceras[c_ORDENANTE].append("01ORD"); //codigo de registro y operacion
+			cabeceras[c_ORDENANTE].append(versionCuaderno); //version del cuaderno
+			cabeceras[c_ORDENANTE].append("001"); //numero de dato
+			cabeceras[c_ORDENANTE].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
+			cabeceras[c_ORDENANTE].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_ORDENANTE].append(sFechaEnvio); //fecha de creacion del fichero
+			cabeceras[c_ORDENANTE].append(sFechaEmision); //fecha de ejecucion de ordenes (configurable en el futuro??)
+			cabeceras[c_ORDENANTE].append("A"); //identificador de la cuenta del ordenante
+			cabeceras[c_ORDENANTE].append(completarEspacios("IBAN", bEmisor.getIban(), "I", " ", 34, false)); //cuenta del ordenante
+			cabeceras[c_ORDENANTE].append("0"); //detalle del cargo (un solo cargo por el total de operaciones)
+			cabeceras[c_ORDENANTE].append(completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 70, true)); //nombre
+			cabeceras[c_ORDENANTE].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(bEmisor.getDomicilio(), "\n", " "), "\r", " "), "I", " ", 50, true)); //direccion
+			cabeceras[c_ORDENANTE].append(completarEspacios("Poblacion", bEmisor.getCodigopostal() + "  " + bEmisor.getPoblacion(), "I", " ", 50, true)); //codigo postal y poblacion
+			cabeceras[c_ORDENANTE].append(completarEspacios("Provincia", bEmisor.getProvincia(), "I", " ", 40, true)); //provincia
+			cabeceras[c_ORDENANTE].append("ES"); //pais
+			cabeceras[c_ORDENANTE].append(rellenarEspacios(311)); //libre
+			
+			// 2de7. generando cabecera de beneficiarios iban
+			cabeceras[c_BENEFICIARIOSEPA] = new StringBuffer();
+			cabeceras[c_BENEFICIARIOSEPA].append("02SCT"); //codigo de registro y operacion
+			cabeceras[c_BENEFICIARIOSEPA].append(versionCuaderno); //version del cuaderno
+			cabeceras[c_BENEFICIARIOSEPA].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
+			cabeceras[c_BENEFICIARIOSEPA].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_BENEFICIARIOSEPA].append(rellenarEspacios(578)); //libre
+			
+			// 3de7. generando cabecera de otros beneficiarios
+			cabeceras[c_BENEFICIARIOOTROS] = new StringBuffer();
+			cabeceras[c_BENEFICIARIOOTROS].append("02OTR"); //codigo de registro y operacion
+			cabeceras[c_BENEFICIARIOOTROS].append(versionCuaderno); //version del cuaderno
+			cabeceras[c_BENEFICIARIOOTROS].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
+			cabeceras[c_BENEFICIARIOOTROS].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_BENEFICIARIOOTROS].append(rellenarEspacios(578)); //libre
+			
+			// 4de7. generando lineas de beneficiarios
+			Enumeration en = vReceptores.elements();
+			while(en.hasMoreElements()){
+				FicheroReceptorAbonoBean bReceptor 	= (FicheroReceptorAbonoBean)en.nextElement();
+				importe = (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
+				
+				// en funcion de si el pais del banco del destinatario esta dentro de SEPA, elegimos el bloque donde se registrara el registro
+				boolean esSEPA = bReceptor.getSepa().equalsIgnoreCase(ClsConstants.DB_TRUE);
+				if (esSEPA) {
+					subtotalSEPA += importe;
+					nRegistrosBenefSEPA ++;
+					registrosBenefSEPA[nRegistrosBenefSEPA] = new StringBuffer();
+					
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("03SCT"); //codigo de registro y operacion
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(versionCuaderno); //version del cuaderno
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("002"); //numero de dato
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //referencia del ordenante (identificador de la transferencia interno)
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("A"); //identificador de la cuenta del beneficiario: A - iban
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Iban", bReceptor.getIban(), "I", " ", 34, false)); //cuenta del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Importe", Integer.toString(importe), "D", "0", 11, false));
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("3"); //clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Bic", bReceptor.getBic(), "I", " ", 11, false)); //bic entidad del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 70, true)); //nombre del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " "), "\r", " "), "I", " ", 50, true)); //direccion del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Poblacion", bReceptor.getCodigopostal() + "  " + bReceptor.getPoblacion(), "I", " ", 50, true)); //codigo postal y poblacion del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Provincia", bReceptor.getProvincia(), "I", " ", 40, true)); //provincia del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(bReceptor.getCodIsoPais()); //pais del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 140, true)); //concepto
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //identificacion de la instruccion (usamos lo mismo que la referencia del ordenante)
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //tipo de transferencia
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //proposito de transferencia
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
+				} else {
+					subtotalOtros += importe;
+					nRegistrosBenefOtros ++;
+					registrosBenefOtros[nRegistrosBenefOtros] = new StringBuffer();
+					
+					registrosBenefOtros[nRegistrosBenefOtros].append("03OTR"); //codigo de registro y operacion
+					registrosBenefOtros[nRegistrosBenefOtros].append(versionCuaderno); //version del cuaderno
+					registrosBenefOtros[nRegistrosBenefOtros].append("006"); //numero de dato
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 35, true)); //nombre del ultimo ordenante
+					registrosBenefOtros[nRegistrosBenefOtros].append("A"); //identificador de la cuenta del beneficiario: A - iban
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Iban", bReceptor.getIban(), "I", " ", 34, false)); //cuenta del beneficiario
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Importe", Integer.toString(importe), "D", "0", 11, false));
+					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Bic", bReceptor.getBic(), "I", " ", 11, false)); //bic entidad del beneficiario
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 35, true)); //nombre del beneficiario
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(
+							bReceptor.getDomicilio(), "\n", " "), "\r", " ") + "  " + 
+							bReceptor.getCodigopostal() + "  " + 
+							bReceptor.getPoblacion() + "  " + 
+							bReceptor.getProvincia() + "  " + 
+							bReceptor.getPais(), "I", " ", 105, true)); //direccion completa y pais del beneficiario
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 72, true)); //concepto
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
+					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //proposito de transferencia
+					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
+				}
+				
+			} //while receptores
+		
+			// 5de7. generando subtotal de beneficiarios iban
+			totales[c_BENEFICIARIOSEPA] = new StringBuffer();
+			totales[c_BENEFICIARIOSEPA].append("04SCT"); //codigo de registro y operacion
+			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Importe", Integer.toString(subtotalSEPA), "D", "0", 17, false));
+			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA), "D", "0", 8, false));
+			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2), "D", "0", 10, false));
+			totales[c_BENEFICIARIOSEPA].append(rellenarEspacios(560)); //libre
+			
+			// 6de7. generando subtotal de otros beneficiarios
+			totales[c_BENEFICIARIOOTROS] = new StringBuffer();
+			totales[c_BENEFICIARIOOTROS].append("04OTR"); //codigo de registro y operacion
+			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Importe", Integer.toString(subtotalOtros), "D", "0", 17, false));
+			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros), "D", "0", 8, false));
+			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros+2), "D", "0", 10, false));
+			totales[c_BENEFICIARIOOTROS].append(rellenarEspacios(560)); //libre
+			
+			// 7de7. generando total
+			totales[c_ORDENANTE] = new StringBuffer();
+			totales[c_ORDENANTE].append("99ORD"); //codigo de registro y operacion
+			totales[c_ORDENANTE].append(completarEspacios("Importe", Integer.toString(subtotalSEPA + subtotalOtros), "D", "0", 17, false));
+			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA + nRegistrosBenefOtros), "D", "0", 8, false));
+			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2), "D", "0", 10, false));
+			totales[c_ORDENANTE].append(rellenarEspacios(560)); //libre
+		
+			
+			// escribiendo todas las lineas en el fichero
+			String[] lineas = new String[c_NBLOQUES*2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
+			int j=0; lineas[j] = cabeceras[c_ORDENANTE].toString();
+			
+			j++; lineas[j] = cabeceras[c_BENEFICIARIOSEPA].toString();
+			for (int i=0; i<nRegistrosBenefSEPA; i++) {
+				j++; lineas[j] = registrosBenefSEPA[i].toString();
+			}
+			j++; lineas[j] = totales[c_BENEFICIARIOSEPA].toString();
+			
+			j++; lineas[j] = cabeceras[c_BENEFICIARIOOTROS].toString();
+			for (int i=0; i<nRegistrosBenefOtros; i++) {
+				j++; lineas[j] = registrosBenefOtros[i].toString();
+			}
+			j++; lineas[j] = totales[c_BENEFICIARIOOTROS].toString();
+			
+			j++; lineas[j] = totales[c_ORDENANTE].toString();
+			
+			resul = escribirFichero(lineas,rutaServidor,nombreFichero);	
+			
+		} catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}
+		if (resul){
+			return nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2;
+		}else{
+			return 0;
+		}
+	} //crearFicheroSEPA()
 	
 	/* ANTIGUO PRE-SEPA
 	protected String generarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
@@ -1072,362 +1442,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		return (resultado);		
 	}	
 	*/
-	
-	/** 
-	 *  Funcion que genera las lineas del fichero e inserta en el fichero.
-	 * @param  bEmisor 		- bean que contiene los datos del emisor.
-	 * @param  vReceptores	- Vector que contiene los bean de cada uno de los receptores.	 
-	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
-	 * @exception  SIGAException  En cualquier caso de error
-	 */
-	private int crearFichero(FicheroEmisorAbonoBean bEmisor, Vector vReceptores) throws SIGAException {
-		//int n = (vReceptores.size() * 2) + 4 + 1;
-		// (numeroReceptores * numeroCampos) + datosCabecera + datosTotales
-		int n = (vReceptores.size() * 5) + 4 + 1;
-		
-		String[] cabecera = new String[n];
-		boolean resul = false;		
-		int nlinea = 0;
-		try{	
-			
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp 		= new ReadProperties("SIGA.properties");			
-			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
-			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
-			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosAbonos");
-			String nombreFichero	= "";
-			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
-			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
-			
-//			Generamos el nombre del fichero.
-			String barra = "";
-			if (rutaServidor.indexOf("/") > -1){ 
-				barra = "/";
-			}
-			if (rutaServidor.indexOf("\\") > -1){ 
-				barra = "\\";
-			}
-			rutaServidor += barra + sIdInstitucion;
-			nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
-			
-			// *********************	Generamos las lineas del fichero	*********************
-			
-			// ********************************* Datos Emisor **********************************
-			String sCodRegistro			= "03";
-			String sCodOperacion		= "56"; // 56:Si es una orden de transferencia.
-			// 57:Si es ha de confecionarse un Cheque Bancario.
-			String sCodOrdenante 		= completarEspacios("Nif", bEmisor.getNif(), "D", " ", 10, false);
-			
-			String fActual 				= UtilidadesBDAdm.getFechaBD("");
-			String[] aux 				= fActual.split("/");
-			String sFechaEnvio			= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
-			String sFechaEmision		= sFechaEnvio;
-			
-			String sEntidadOrdenante	= completarEspacios("Entidad", bEmisor.getCodigoBanco(), "D", "0", 4, false);
-			String sOficinaOrdenante	= completarEspacios("Oficina", bEmisor.getCodigoSucursal(), "D", "0", 4, false);
-			String sCuentaOrdenante		= completarEspacios("Cuenta Bancaria", bEmisor.getNumeroCuenta(), "D", "0", 10, false);			
-			String sDControlOrdenante	= obtenerDigitoControl("00" + sEntidadOrdenante + sOficinaOrdenante);
-			sDControlOrdenante 			+=obtenerDigitoControl(sCuentaOrdenante);
-			
-			String sDetalleCargo		= "0"; // 0:Sin relacion
-			// 1:Con relación 
-			String sNombreOrdenante		= completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 36, true);
-			String sDomicilioOrdenante	= completarEspacios("Domicilio", bEmisor.getDomicilio() + "  " + bEmisor.getCodigopostal(), "I", " ", 36, true);	
-			String sPlazaOrdenante		= completarEspacios("Plaza", bEmisor.getPoblacion(), "I", " ", 36, true);
-			
-			String sNumDato	= "001";
-			cabecera[0] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sFechaEnvio + sFechaEmision + sEntidadOrdenante + 
-			sOficinaOrdenante +	sCuentaOrdenante + sDetalleCargo + rellenarEspacios(3) + sDControlOrdenante + rellenarEspacios(7);
-			sNumDato		= "002";
-			cabecera[1] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sNombreOrdenante + rellenarEspacios(7);
-			sNumDato		= "003";
-			cabecera[2] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sDomicilioOrdenante + rellenarEspacios(7);
-			sNumDato		= "004";
-			cabecera[3] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sPlazaOrdenante + rellenarEspacios(7);
-			
-			
-//			****************************  Datos de los receptores   *****************************
-			
-			String sGastos 		= "1";
-			String sConcepto 	= "9";			
-			int cantidad 		= 0; 
-			int importe;
-			String sRefBeneficiario;			
-			String sImporte;
-			String sEntidadBeneficiario;
-			String sOficinaBeneficiario;
-			String sCuentaBeneficiario;
-			String sDControlBeneficiario;
-			String sNombreBeneficiario;
-			String sNumRegistros;
-			String sTotalRegistros;
-			
-			String sDomicilioBeneficiario;
-			String sPoblacionBeneficiario;
-			String sMotivos;
-			
-			nlinea = 3;
-			Enumeration en = vReceptores.elements();
-			while(en.hasMoreElements()){			
-				FicheroReceptorAbonoBean bReceptor 	= (FicheroReceptorAbonoBean)en.nextElement();
-				
-				sCodRegistro			= "06";
-				sRefBeneficiario 		= completarEspacios("Identificador", bReceptor.getIdentificador().toString(), "D", " ", 12, false);
-				importe					= (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
-				cantidad 				+= importe;
-				sImporte				= completarEspacios("Importe", Integer.toString(importe), "D", "0", 12, false);
-				sEntidadBeneficiario	= completarEspacios("Entidad", bReceptor.getCodigoBanco(), "D", "0", 4, false);
-				sOficinaBeneficiario	= completarEspacios("Oficina", bReceptor.getCodigoSucursal(), "D", "0", 4, false);	
-				sCuentaBeneficiario		= completarEspacios("Cuenta Bancaria", bReceptor.getNumeroCuenta(), "D", "0", 10, false);
-				sDControlBeneficiario	= obtenerDigitoControl("00" + sEntidadBeneficiario + sOficinaBeneficiario);
-				sDControlBeneficiario	+=obtenerDigitoControl(sCuentaBeneficiario);
-				sNombreBeneficiario		= completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 36, true);
-				String direccion 		= UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " ");
-				direccion 		= UtilidadesString.replaceAllIgnoreCase(direccion, "\r", " ");
-				sDomicilioBeneficiario = completarEspacios ("Direccion", direccion, "I", " ", 36, true);
-				sPoblacionBeneficiario = completarEspacios ("Poblacion", bReceptor.getPoblacion(), "I", " ", 36, true);
-				sMotivos = completarEspacios ("NombrePago", bReceptor.getNombrePago(), "I", " ", 36, true);
-				
-				if ((bReceptor.getConcepto()!=null)&& (bReceptor.getConcepto()!="0")){
-					sConcepto = completarEspacios ("Concepto", bReceptor.getConcepto(), "I", " ", 1, true);
-				}
-				
-				nlinea ++;
-				sNumDato		 = "010";				
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sImporte + sEntidadBeneficiario + 
-				sOficinaBeneficiario +	sCuentaBeneficiario + sGastos + sConcepto + rellenarEspacios(2) + sDControlBeneficiario + rellenarEspacios(7);
-				
-				nlinea ++;
-				sNumDato		 = "011";
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sNombreBeneficiario + rellenarEspacios(7);
-				
-				// jbd 9/12/2008 - INC_05507_SIGA >>>
-				nlinea ++;
-				sNumDato		 = "012"; // Direccion
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sDomicilioBeneficiario + rellenarEspacios(7); 
-				
-				nlinea ++;
-				sNumDato		 = "014"; // Poblacion
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato +  sPoblacionBeneficiario + rellenarEspacios(7);
-				
-				nlinea ++;
-				sNumDato		 = "016"; // Concepto
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sMotivos + rellenarEspacios(7);
-				// <<< INC_05507_SIGA
-			}
-			
-//			****************************   Datos de los Totales   *****************************
-			
-			sCodRegistro		 = "08";
-			sImporte		 	 = completarEspacios("Importe", Integer.toString(cantidad), "D", "0", 12, false);	
-			sNumRegistros		 = completarEspacios("Numero Registros", Integer.toString(vReceptores.size()), "D", "0", 8, false);
-			sTotalRegistros		 = completarEspacios("Numero Registros",Integer.toString(nlinea+2), "D", "0", 10, false);			
-			cabecera[nlinea+1] 	 = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(15) + sImporte + sNumRegistros + sTotalRegistros + rellenarEspacios(13);
-			
-			resul 				 = escribirFichero(cabecera,rutaServidor,nombreFichero);	
-			
-		} catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}
-		if (resul){
-			return nlinea+2; // Se suma 2 porque empieza en cero y no se incrementa en la ultima linea
-		}else{
-			return 0;
-		}
-	} //crearFichero()
-	
-	/** 
-	 *  Funcion que genera las lineas del fichero e inserta en el fichero SEPA.
-	 * @param  bEmisor 		- bean que contiene los datos del emisor.
-	 * @param  vReceptores	- Vector que contiene los bean de cada uno de los receptores.	 
-	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
-	 * @exception  SIGAException  En cualquier caso de error
-	 */
-	private int crearFicheroSEPA(FicheroEmisorAbonoBean bEmisor, Vector vReceptores) throws SIGAException
-	{
-		final int c_ORDENANTE = 0; 
-		final int c_BENEFICIARIOSEPA = 1; 
-		final int c_BENEFICIARIOOTROS = 2; 
-		final int c_NBLOQUES = 3;
-		StringBuffer[] cabeceras = new StringBuffer[c_NBLOQUES];
-		StringBuffer[] totales = new StringBuffer[c_NBLOQUES];
-		StringBuffer[] registrosBenefSEPA = new StringBuffer[vReceptores.size()]; //no se llenaran todos, pero a priori no sabemos cuantos seran
-		StringBuffer[] registrosBenefOtros = new StringBuffer[vReceptores.size()]; //no se llenaran todos, pero a priori no sabemos cuantos seran
-		int nRegistrosBenefSEPA = 0, nRegistrosBenefOtros = 0;
-		int importe = 0, subtotalSEPA = 0, subtotalOtros = 0;
-		
-		boolean resul = false;
-		
-		try{	
-			// calculando nombre y ruta del fichero
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
-			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
-			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
-			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
-			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosTransferenciasSEPA");
-			String barra = (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
-			rutaServidor += barra + sIdInstitucion;
-			String nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
-			
-			// calculando fechas y version del cuaderno
-			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");
-			String[] aux 			= fActual.split("/");
-			String sFechaEnvio		= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
-			String sFechaEmision	= sFechaEnvio;
-			String versionCuaderno 	= rp.returnProperty("facturacion.cuaderno.transferencias.identificador");  
-			versionCuaderno 		+= Integer.parseInt(versionCuaderno) % 7;
-			
-			// 1de7. generando cabecera de ordenante
-			cabeceras[c_ORDENANTE] = new StringBuffer();
-			cabeceras[c_ORDENANTE].append("01ORD"); //codigo de registro y operacion
-			cabeceras[c_ORDENANTE].append(versionCuaderno); //version del cuaderno
-			cabeceras[c_ORDENANTE].append("001"); //numero de dato
-			cabeceras[c_ORDENANTE].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_ORDENANTE].append("000"); //sufijo (configurable en el futuro??)
-			cabeceras[c_ORDENANTE].append(sFechaEnvio); //fecha de creacion del fichero
-			cabeceras[c_ORDENANTE].append(sFechaEmision); //fecha de ejecucion de ordenes (configurable en el futuro??)
-			cabeceras[c_ORDENANTE].append("A"); //identificador de la cuenta del ordenante
-			cabeceras[c_ORDENANTE].append(completarEspacios("IBAN", bEmisor.getIban(), "I", " ", 34, false)); //cuenta del ordenante
-			cabeceras[c_ORDENANTE].append("0"); //detalle del cargo (un solo cargo por el total de operaciones)
-			cabeceras[c_ORDENANTE].append(completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 70, true)); //nombre
-			cabeceras[c_ORDENANTE].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(bEmisor.getDomicilio(), "\n", " "), "\r", " "), "I", " ", 50, true)); //direccion
-			cabeceras[c_ORDENANTE].append(completarEspacios("Poblacion", bEmisor.getCodigopostal() + "  " + bEmisor.getPoblacion(), "I", " ", 50, true)); //codigo postal y poblacion
-			cabeceras[c_ORDENANTE].append(completarEspacios("Provincia", bEmisor.getProvincia(), "I", " ", 40, true)); //provincia
-			cabeceras[c_ORDENANTE].append("ES"); //pais
-			cabeceras[c_ORDENANTE].append(rellenarEspacios(311)); //libre
-			
-			// 2de7. generando cabecera de beneficiarios iban
-			cabeceras[c_BENEFICIARIOSEPA] = new StringBuffer();
-			cabeceras[c_BENEFICIARIOSEPA].append("02SCT"); //codigo de registro y operacion
-			cabeceras[c_BENEFICIARIOSEPA].append(versionCuaderno); //version del cuaderno
-			cabeceras[c_BENEFICIARIOSEPA].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_BENEFICIARIOSEPA].append("000"); //sufijo (configurable en el futuro??)
-			cabeceras[c_BENEFICIARIOSEPA].append(rellenarEspacios(578)); //libre
-			
-			// 3de7. generando cabecera de otros beneficiarios
-			cabeceras[c_BENEFICIARIOOTROS] = new StringBuffer();
-			cabeceras[c_BENEFICIARIOOTROS].append("02OTR"); //codigo de registro y operacion
-			cabeceras[c_BENEFICIARIOOTROS].append(versionCuaderno); //version del cuaderno
-			cabeceras[c_BENEFICIARIOOTROS].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_BENEFICIARIOOTROS].append("000"); //sufijo (configurable en el futuro??)
-			cabeceras[c_BENEFICIARIOOTROS].append(rellenarEspacios(578)); //libre
-			
-			// 4de7. generando lineas de beneficiarios
-			Enumeration en = vReceptores.elements();
-			while(en.hasMoreElements()){
-				FicheroReceptorAbonoBean bReceptor 	= (FicheroReceptorAbonoBean)en.nextElement();
-				importe = (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
-				
-				// en funcion de si el pais del banco del destinatario esta dentro de SEPA, elegimos el bloque donde se registrara el registro
-				boolean esSEPA = bReceptor.getSepa().equalsIgnoreCase(ClsConstants.DB_TRUE);
-				if (esSEPA) {
-					subtotalSEPA += importe;
-					nRegistrosBenefSEPA ++;
-					registrosBenefSEPA[nRegistrosBenefSEPA] = new StringBuffer();
-					
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("03SCT"); //codigo de registro y operacion
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(versionCuaderno); //version del cuaderno
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("002"); //numero de dato
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //referencia del ordenante (identificador de la transferencia interno)
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("A"); //identificador de la cuenta del beneficiario: A - iban
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Iban", bReceptor.getIban(), "I", " ", 34, false)); //cuenta del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Importe", Integer.toString(importe), "D", "0", 11, false));
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("3"); //clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Bic", bReceptor.getBic(), "I", " ", 11, false)); //bic entidad del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 70, true)); //nombre del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " "), "\r", " "), "I", " ", 50, true)); //direccion del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Poblacion", bReceptor.getCodigopostal() + "  " + bReceptor.getPoblacion(), "I", " ", 50, true)); //codigo postal y poblacion del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Provincia", bReceptor.getProvincia(), "I", " ", 40, true)); //provincia del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(bReceptor.getCodIsoPais()); //pais del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 140, true)); //concepto
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //identificacion de la instruccion (usamos lo mismo que la referencia del ordenante)
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //tipo de transferencia
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //proposito de transferencia
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
-				} else {
-					subtotalOtros += importe;
-					nRegistrosBenefOtros ++;
-					registrosBenefOtros[nRegistrosBenefOtros] = new StringBuffer();
-					
-					registrosBenefOtros[nRegistrosBenefOtros].append("03OTR"); //codigo de registro y operacion
-					registrosBenefOtros[nRegistrosBenefOtros].append(versionCuaderno); //version del cuaderno
-					registrosBenefOtros[nRegistrosBenefOtros].append("006"); //numero de dato
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 35, true)); //nombre del ultimo ordenante
-					registrosBenefOtros[nRegistrosBenefOtros].append("A"); //identificador de la cuenta del beneficiario: A - iban
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Iban", bReceptor.getIban(), "I", " ", 34, false)); //cuenta del beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Importe", Integer.toString(importe), "D", "0", 11, false));
-					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Bic", bReceptor.getBic(), "I", " ", 11, false)); //bic entidad del beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 35, true)); //nombre del beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(
-							bReceptor.getDomicilio(), "\n", " "), "\r", " ") + "  " + 
-							bReceptor.getCodigopostal() + "  " + 
-							bReceptor.getPoblacion() + "  " + 
-							bReceptor.getProvincia() + "  " + 
-							bReceptor.getPais(), "I", " ", 105, true)); //direccion completa y pais del beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 72, true)); //concepto
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //proposito de transferencia
-					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
-				}
-				
-			} //while receptores
-		
-			// 5de7. generando subtotal de beneficiarios iban
-			totales[c_BENEFICIARIOSEPA] = new StringBuffer();
-			totales[c_BENEFICIARIOSEPA].append("04SCT"); //codigo de registro y operacion
-			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Importe", Integer.toString(subtotalSEPA), "D", "0", 17, false));
-			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA), "D", "0", 8, false));
-			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2), "D", "0", 10, false));
-			totales[c_BENEFICIARIOSEPA].append(rellenarEspacios(560)); //libre
-			
-			// 6de7. generando subtotal de otros beneficiarios
-			totales[c_BENEFICIARIOOTROS] = new StringBuffer();
-			totales[c_BENEFICIARIOOTROS].append("04OTR"); //codigo de registro y operacion
-			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Importe", Integer.toString(subtotalOtros), "D", "0", 17, false));
-			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros), "D", "0", 8, false));
-			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros+2), "D", "0", 10, false));
-			totales[c_BENEFICIARIOOTROS].append(rellenarEspacios(560)); //libre
-			
-			// 7de7. generando total
-			totales[c_ORDENANTE] = new StringBuffer();
-			totales[c_ORDENANTE].append("99ORD"); //codigo de registro y operacion
-			totales[c_ORDENANTE].append(completarEspacios("Importe", Integer.toString(subtotalSEPA + subtotalOtros), "D", "0", 17, false));
-			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA + nRegistrosBenefOtros), "D", "0", 8, false));
-			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2), "D", "0", 10, false));
-			totales[c_ORDENANTE].append(rellenarEspacios(560)); //libre
-		
-			
-			// escribiendo todas las lineas en el fichero
-			String[] lineas = new String[c_NBLOQUES*2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
-			int j=0; lineas[j] = cabeceras[c_ORDENANTE].toString();
-			
-			j++; lineas[j] = cabeceras[c_BENEFICIARIOSEPA].toString();
-			for (int i=0; i<nRegistrosBenefSEPA; i++) {
-				j++; lineas[j] = registrosBenefSEPA[i].toString();
-			}
-			j++; lineas[j] = totales[c_BENEFICIARIOSEPA].toString();
-			
-			j++; lineas[j] = cabeceras[c_BENEFICIARIOOTROS].toString();
-			for (int i=0; i<nRegistrosBenefOtros; i++) {
-				j++; lineas[j] = registrosBenefOtros[i].toString();
-			}
-			j++; lineas[j] = totales[c_BENEFICIARIOOTROS].toString();
-			
-			j++; lineas[j] = totales[c_ORDENANTE].toString();
-			
-			resul = escribirFichero(lineas,rutaServidor,nombreFichero);	
-			
-		} catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}
-		if (resul){
-			return nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2;
-		}else{
-			return 0;
-		}
-	} //crearFicheroSEPA()
 	
 	/** 
 	 *  Funcion para alinear y ajustar el texto segun los paramentros del fichero.

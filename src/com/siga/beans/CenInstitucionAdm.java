@@ -201,7 +201,7 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
         String sql = "";
         sql += "select "+CenDireccionesBean.C_DOMICILIO+" AS DOMICILIO, ";
         sql += "       "+CenDireccionesBean.C_CODIGOPOSTAL+" AS CODIGOPOSTAL, ";
-        sql += "       (SELECT P."+CenPoblacionesBean.C_NOMBRE+" FROM "+CenPoblacionesBean.T_NOMBRETABLA+" P WHERE P."+CenPoblacionesBean.C_IDPOBLACION+"=cen_direcciones."+CenDireccionesBean.C_IDPOBLACION+") AS POBLACION ";
+        sql += "       (SELECT P."+CenPoblacionesBean.C_NOMBRE+" FROM "+CenPoblacionesBean.T_NOMBRETABLA+" P WHERE P."+CenPoblacionesBean.C_IDPOBLACION+"=cen_direcciones."+CenDireccionesBean.C_IDPOBLACION+") AS POBLACION, ";
         sql += "       (SELECT P."+CenProvinciaBean.C_NOMBRE+" FROM "+CenProvinciaBean.T_NOMBRETABLA+" P WHERE P."+CenProvinciaBean.C_IDPROVINCIA+"=cen_direcciones."+CenDireccionesBean.C_IDPROVINCIA+") AS PROVINCIA ";
         
         sql += this.getSqlDireccioInstitucion(idInstitucion);
