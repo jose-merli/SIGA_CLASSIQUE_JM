@@ -78,61 +78,73 @@
 		if(document.CuentasBancariasForm.modo.value =='insertar'){
 			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
 			var iban = formateaMask(document.getElementById("IBAN").value);	
-			if (iban!=undefined && iban!="") {			
-				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
-	   				type: "POST",
-					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
-					data: "iban="+iban,
-					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){	
-						if(json!=null && json.pais != null){
-							if(json.pais == "ES"){								
-								//Se comprueba si el banco existe
-								if(json.banco != null){
-									var bic = json.banco.bic;
-									document.getElementById("BIC").value=bic;
-									document.getElementById("BIC").readOnly = true;
-									document.getElementById("BIC").className = "boxConsulta";
-								
-									//Se rellena el banco
-									var txtBanco = json.banco.nombre;
-									document.getElementById("bancoNombre").value=txtBanco;
-								} else {
-									alert(mensaje);
-									document.getElementById("BIC").value="";
+			if (iban!=undefined && iban!="") {
+				
+				//EN ESTE MODULO NO ACEPTAN IBAN EXTRANJEROS POR PROBELMAS CON LA SUCURSALES PARA EL FICHERO BANCARIO
+				if(iban.length > 2 && iban.substring(0,2) != 'ES'){
+					alert(mensaje+". Sólo se admiten códigos IBAN españoles");
+					document.getElementById("IBAN").value="";
+					document.getElementById("BIC").value="";
+					document.getElementById("bancoNombre").value="";
+					document.getElementById("BIC").readOnly = true;
+					document.getElementById("BIC").className = "boxConsulta";						
+				
+				} else {			
+					jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+		   				type: "POST",
+						url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
+						data: "iban="+iban,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){	
+							if(json!=null && json.pais != null){
+								if(json.pais == "ES"){								
+									//Se comprueba si el banco existe
+									if(json.banco != null){
+										var bic = json.banco.bic;
+										document.getElementById("BIC").value=bic;
+										document.getElementById("BIC").readOnly = true;
+										document.getElementById("BIC").className = "boxConsulta";
+									
+										//Se rellena el banco
+										var txtBanco = json.banco.nombre;
+										document.getElementById("bancoNombre").value=txtBanco;
+									} else {
+										alert(mensaje);
+										document.getElementById("BIC").value="";
+										document.getElementById("bancoNombre").value="";
+										document.getElementById("BIC").readOnly = true;
+										document.getElementById("BIC").className = "boxConsulta";
+										fin();
+									}
+									
+								}else{
+									document.getElementById("BIC").readOnly = false;
+									document.getElementById("BIC").className = "box";
 									document.getElementById("bancoNombre").value="";
-									document.getElementById("BIC").readOnly = true;
-									document.getElementById("BIC").className = "boxConsulta";
-									fin();
+									document.getElementById("BIC").value="";
+									alert("Rellene el BIC para el banco extranjero");
 								}
 								
 							}else{
-								document.getElementById("BIC").readOnly = false;
-								document.getElementById("BIC").className = "box";
-								document.getElementById("bancoNombre").value="";
+								alert(mensaje);
 								document.getElementById("BIC").value="";
-								alert("Rellene el BIC para el banco extranjero");
+								document.getElementById("bancoNombre").value="";
+								document.getElementById("BIC").readOnly = true;
+								document.getElementById("BIC").className = "boxConsulta";
 							}
-							
-						}else{
+							fin();
+						},
+						error: function(e){
 							alert(mensaje);
 							document.getElementById("BIC").value="";
 							document.getElementById("bancoNombre").value="";
 							document.getElementById("BIC").readOnly = true;
 							document.getElementById("BIC").className = "boxConsulta";
+							fin();
 						}
-						fin();
-					},
-					error: function(e){
-						alert(mensaje);
-						document.getElementById("BIC").value="";
-						document.getElementById("bancoNombre").value="";
-						document.getElementById("BIC").readOnly = true;
-						document.getElementById("BIC").className = "boxConsulta";
-						fin();
-					}
-				});
+					});
+				}
 				
 			} else {
 				document.getElementById("IBAN").value="";
