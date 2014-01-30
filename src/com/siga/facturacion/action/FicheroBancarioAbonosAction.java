@@ -429,8 +429,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		boolean correcto;
 		Long idDisqueteAbono;
 
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String prefijoFichero = p.returnProperty("facturacion.prefijo.ficherosAbonos");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String prefijoFichero = rp.returnProperty("facturacion.prefijo.ficherosAbonos");
 		
 		if (abonosBanco.isEmpty())
 			return cont;
@@ -493,8 +493,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			nombre=admPersona.obtenerNombreApellidos((String)datosReceptor.get(FacAbonoBean.C_IDPERSONA));
 			receptor.setNombre(nombre);
 			String idPersona = (String)datosReceptor.get(FacAbonoBean.C_IDPERSONA);
-			Vector direccionDespacho = null;
-			direccionDespacho = admDirecciones.getDireccionDespacho(idPersona, idInstitucion, lenguaje);
+			Vector direccionDespacho = admDirecciones.getDireccionDespacho(idPersona, idInstitucion, lenguaje);
 			if (direccionDespacho!=null && direccionDespacho.size()>0) {
 				receptor.setDomicilio((String)((Hashtable)direccionDespacho.get(0)).get("DOMICILIO_DESPACHO"));
 				receptor.setCodigopostal((String)((Hashtable)direccionDespacho.get(0)).get("CODIGOPOSTAL_DESPACHO"));
@@ -798,9 +797,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
 			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
 			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosTransferenciasSEPA");
-			String barra = (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
-			rutaServidor += barra + sIdInstitucion;
-			String nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
+			String barra 			= (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
+			rutaServidor 			+= barra + sIdInstitucion;
+			String nombreFichero 	= barra + sPrefijo + numDisco + "." + sExtension;
 			
 			// calculando fechas y version del cuaderno
 			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");

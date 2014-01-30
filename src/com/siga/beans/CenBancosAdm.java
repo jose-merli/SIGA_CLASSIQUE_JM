@@ -134,6 +134,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
 				if (registro != null) { 					
 					bancoBean.setNombre(UtilidadesHash.getString(registro,bancoBean.C_NOMBRE));
 					bancoBean.setBic(UtilidadesHash.getString(registro,bancoBean.C_BIC));
+					bancoBean.setIdPais(UtilidadesHash.getString(registro,bancoBean.C_IDPAIS));
 				}
 			}
 		}
