@@ -1435,18 +1435,17 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	{
 		Vector direccion = new Vector();
 		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1), idInstitucion);
-		codigos.put(new Integer(2), idPersona);
-		codigos.put(new Integer(3), idioma);
-		codigos.put(new Integer(4), idInstitucion);
-		codigos.put(new Integer(5), idPersona);
-		codigos.put(new Integer(6), idioma);
+		for (int i=0; i<6; i++) {
+			codigos.put(new Integer(1+3*i), idInstitucion);
+			codigos.put(new Integer(2+3*i), idPersona);
+			codigos.put(new Integer(3+3*i), idioma);
+		}
 		String sql = "SELECT F_SIGA_GETDIRECCIONDESPACHO(:1,:2,:3,1) AS DOMICILIO_DESPACHO, " + 
-					"        F_SIGA_GETDIRECCIONDESPACHO(:1,:2,:3,2) AS CODIGOPOSTAL_DESPACHO, " + 
-					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,3) AS POBLACION_DESPACHO, " +
-					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,4) AS PROVINCIA_DESPACHO, " +
-					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,5) AS PAIS_DESPACHO, " +
-					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,12) AS CODISO_PAIS_DESPACHO " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:4,:5,:6,2) AS CODIGOPOSTAL_DESPACHO, " + 
+					"        F_SIGA_GETDIRECCIONDESPACHO(:7,:8,:9,3) AS POBLACION_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:10,:11,:12,4) AS PROVINCIA_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:13,:14,:15,5) AS PAIS_DESPACHO, " +
+					"        F_SIGA_GETDIRECCIONDESPACHO(:16,:17,:18,12) AS CODISO_PAIS_DESPACHO " +
 					"   FROM DUAL ";
 		try{
             RowsContainer rc = this.findBind(sql,codigos);
