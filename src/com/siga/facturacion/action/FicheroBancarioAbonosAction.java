@@ -333,6 +333,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			// Recuperamos la procedencia de la llamada (1-Facturacion SJCS, 0-Facturacion)
 			FicheroBancarioAbonosForm miForm = (FicheroBancarioAbonosForm)formulario;
 			String fcs = miForm.getSjcs();
+			if (fcs == null || fcs.equals(""))
+				fcs = "0";
 			
 			// Manejadores para los accesos a BBDD
 			FacAbonoAdm adminAbono=new FacAbonoAdm(user);
@@ -804,7 +806,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			// calculando fechas y version del cuaderno
 			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");
 			String[] aux 			= fActual.split("/");
-			String sFechaEnvio		= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
+			String sFechaEnvio		= aux[0] + aux[1] + aux[2];
 			String sFechaEmision	= sFechaEnvio;
 			String versionCuaderno 	= rp.returnProperty("facturacion.cuaderno.transferencias.identificador");  
 			versionCuaderno 		+= Integer.parseInt(versionCuaderno) % 7;
@@ -854,7 +856,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				boolean esSEPA = bReceptor.getSepa().equalsIgnoreCase(ClsConstants.DB_TRUE);
 				if (esSEPA) {
 					subtotalSEPA += importe;
-					nRegistrosBenefSEPA ++;
 					registrosBenefSEPA[nRegistrosBenefSEPA] = new StringBuffer();
 					
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("03SCT"); //codigo de registro y operacion
@@ -870,15 +871,16 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Domicilio", UtilidadesString.replaceAllIgnoreCase(UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " "), "\r", " "), "I", " ", 50, true)); //direccion del beneficiario
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Poblacion", bReceptor.getCodigopostal() + "  " + bReceptor.getPoblacion(), "I", " ", 50, true)); //codigo postal y poblacion del beneficiario
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Provincia", bReceptor.getProvincia(), "I", " ", 40, true)); //provincia del beneficiario
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(bReceptor.getCodIsoPais()); //pais del beneficiario
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Pais", bReceptor.getCodIsoPais(), "I", " ", 2, true)); //pais del beneficiario
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 140, true)); //concepto
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //identificacion de la instruccion (usamos lo mismo que la referencia del ordenante)
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //tipo de transferencia
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //proposito de transferencia
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
+					
+					nRegistrosBenefSEPA ++;
 				} else {
 					subtotalOtros += importe;
-					nRegistrosBenefOtros ++;
 					registrosBenefOtros[nRegistrosBenefOtros] = new StringBuffer();
 					
 					registrosBenefOtros[nRegistrosBenefOtros].append("03OTR"); //codigo de registro y operacion
@@ -901,6 +903,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
 					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //proposito de transferencia
 					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
+					
+					nRegistrosBenefOtros ++;
 				}
 				
 			} //while receptores
