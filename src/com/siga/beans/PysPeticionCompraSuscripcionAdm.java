@@ -9,7 +9,14 @@ package com.siga.beans;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import com.atos.utils.*;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -420,23 +427,30 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			bean.setIdPersona(idPersona);
 			bean.setFecha("sysdate");
 			bean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE));
-			bean.setIdPeticionAlta(idPeticionAlta);			
-								
+			bean.setIdPeticionAlta(idPeticionAlta);
+
+			// Obtiene el numero de operacion del alta
+			String sqlWhere = " WHERE " + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + PysPeticionCompraSuscripcionBean.C_IDPETICION + " = " + idPeticionAlta;		
+			Vector vPeticiones = this.select(sqlWhere);
+			if (vPeticiones != null && vPeticiones.size()>0) {
+				PysPeticionCompraSuscripcionBean bPeticionAlta = (PysPeticionCompraSuscripcionBean) vPeticiones.get(0);
+				bean.setNumOperacion(bPeticionAlta.getNumOperacion());
 			}
-		    catch (Exception e) {
-		   		if (e instanceof SIGAException){
-		   			throw (SIGAException)e;
+			
+		} catch (Exception e) {
+			if (e instanceof SIGAException) {
+				throw (SIGAException) e;
+		   	} else {
+	   			if (e instanceof ClsExceptions){
+   					throw (ClsExceptions) e;
+   				} else {
+					throw new ClsExceptions(e,"Error al obtener los datos de las peticiones.");
 		   		}
-		   		else{
-		   			if (e instanceof ClsExceptions){
-		   				throw (ClsExceptions)e;
-		   			}
-		   			else {
-		   				throw new ClsExceptions(e,"Error al obtener los datos de las peticiones.");
-		   			}
-		   		}	
-		    }		
-			return insert(bean);
+		   	}	
+		}		
+		
+		return insert(bean);
 	}
 	
 	/**
@@ -448,7 +462,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public Long insertarCarro(CarroCompra carro) throws SIGAException, ClsExceptions{
-		PysPeticionCompraSuscripcionAdm  peticionAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm (this.usrbean);
 		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm (this.usrbean);
 		UsrBean userBean;
@@ -478,8 +492,8 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			idPersona = carro.getIdPersona();			
 			
 			// Petición de alta
-			idPeticion = peticionAdm.getNuevoID(idInstitucion);
-			if(!peticionAdm.insertPeticionAlta(idPersona, idInstitucion, idPeticion, carro.getNumOperacion())){
+			idPeticion = ppcsa.getNuevoID(idInstitucion);
+			if(!ppcsa.insertPeticionAlta(idPersona, idInstitucion, idPeticion, carro.getNumOperacion())){
 				throw new ClsExceptions("Error al insertar la peticion del carro de la compra.");
 			}	
 					
@@ -574,8 +588,8 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 		        }
 		    }
 		    
-		    PysPeticionCompraSuscripcionAdm a = new PysPeticionCompraSuscripcionAdm(this.usrbean);
-		    Vector v = a.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " AND idpeticion="+beanPeticion.getIdPeticion().toString());
+		    PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+		    Vector v = ppcsa.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " AND idpeticion="+beanPeticion.getIdPeticion().toString());
 		    if (v!=null && v.size()>0) {
 		        b = (PysPeticionCompraSuscripcionBean) v.get(0);
 		    }
