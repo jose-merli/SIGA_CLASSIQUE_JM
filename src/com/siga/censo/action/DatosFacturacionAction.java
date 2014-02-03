@@ -34,7 +34,6 @@ import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSolModiFacturacionServicioAdm;
 import com.siga.beans.CenSolModiFacturacionServicioBean;
-import com.siga.beans.ConCamposSalidaAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysPeticionCompraSuscripcionAdm;
@@ -565,13 +564,13 @@ public class DatosFacturacionAction extends MasterAction {
 			}else{ /// Es un producto
 //				 busco la suscripcion
 				PysCompraAdm admCom = new PysCompraAdm(user);
-				PysPeticionCompraSuscripcionAdm admPeticionCompra=new PysPeticionCompraSuscripcionAdm(user);
+				PysPeticionCompraSuscripcionAdm ppcsa=new PysPeticionCompraSuscripcionAdm(user);
 				//PysProductosSolicitadosAdm admPS = new PysProductosSolicitadosAdm(user);
 				Hashtable ht = new Hashtable();
 				ht.put(PysCompraBean.C_IDINSTITUCION,user.getLocation());
 				ht.put(PysCompraBean.C_IDPETICION,request.getParameter("idPeticion"));
 				
-				Vector v2 = admPeticionCompra.select(ht);
+				Vector v2 = ppcsa.select(ht);
 				ht.put(PysCompraBean.C_IDTIPOPRODUCTO,request.getParameter("idTipoServicioSel"));
 				ht.put(PysCompraBean.C_IDPRODUCTO,request.getParameter("idServicioSel"));
 				ht.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,request.getParameter("idServicioInstitucionSel"));
@@ -602,8 +601,8 @@ public class DatosFacturacionAction extends MasterAction {
 				    	//beanPCS.setFecha(fecha);
 //					    }
 //					    
-					   if (!admPeticionCompra.updateDirect(beanPCS)) {
-					       throw new ClsExceptions("Error al actualizar la fecha efectiva. "+admPeticionCompra.getError());
+					   if (!ppcsa.updateDirect(beanPCS)) {
+					       throw new ClsExceptions("Error al actualizar la fecha efectiva. "+ppcsa.getError());
 					   }
 					   if (!admCom.updateDirect(beanPS)) {
 					       throw new ClsExceptions("Error al actualizar la fecha efectiva. "+admCom.getError());

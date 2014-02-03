@@ -9,15 +9,23 @@
 package com.siga.beans;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.GestorContadores;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.certificados.Certificado;
 import com.siga.general.Articulo;
 import com.siga.general.SIGAException;
@@ -730,18 +738,18 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	public Articulo realizarCompraPredefinida(Integer idInstitucion, String idInstitucionPresentador, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, Long idPersona, String idFormaPago, String idTipoEnvio,boolean isColegio, String fechaSolicitud, String metodoSolicitud, String idInstitucionColegiacion) throws SIGAException, ClsExceptions {
 	    
 	    try {
-			PysPeticionCompraSuscripcionAdm  peticionAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 			PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(this.usrbean);
 
 			//Obtengo el numero de operacion y lo inserto en el carro. El codigo 1 es usado para Facturacion de Productos y Servicios:
-			String idInstitucionAux = rellenarConCeros(idInstitucion.toString(),4); 
-			String idPersonaAux = rellenarConCeros(idPersona.toString(),10);
+			String idInstitucionAux = rellenarConCeros(idInstitucion.toString(), 4); 
+			String idPersonaAux = rellenarConCeros(idPersona.toString(), 10);
 			String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());;
-			String numOperacion = "1"+idInstitucionAux+idPersonaAux+fechaActualAux;			
+			String numOperacion = "1" + idInstitucionAux + idPersonaAux + fechaActualAux;			
 			
 			// Petición de alta
-			Long idPeticion = peticionAdm.getNuevoID(idInstitucion);
-			if(!peticionAdm.insertPeticionAlta(idPersona, idInstitucion, idPeticion, numOperacion)){
+			Long idPeticion = ppcsa.getNuevoID(idInstitucion);
+			if(!ppcsa.insertPeticionAlta(idPersona, idInstitucion, idPeticion, numOperacion)){
 				throw new ClsExceptions("Error al insertar la peticion del carro de la compra.");
 			}	
 					
@@ -977,7 +985,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		
 		boolean cargaOk = false;
 		
-		PysPeticionCompraSuscripcionAdm petCompraSuscripAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 		PysProductosSolicitadosAdm prodSolAdm = new PysProductosSolicitadosAdm(this.usrbean);
 		PysCompraAdm compraAdm = new PysCompraAdm (this.usrbean);
 		CenCuentasBancariasAdm cuentasBanAdm = new CenCuentasBancariasAdm(this.usrbean);
@@ -990,23 +998,30 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		
 		cuentasBanBean = cuentasBanAdm.selectPrimeraCuentaCargo(cliente.getIdPersona(), new Integer(this.usrbean.getLocation()));
 		
-		Long nuevoID = petCompraSuscripAdm.getNuevoID(new Integer(this.usrbean.getLocation()));
+		Long nuevoID = ppcsa.getNuevoID(new Integer(this.usrbean.getLocation()));
+		
+		//Obtengo el numero de operacion. El codigo 1 es usado para Facturacion de Productos y Servicios
+		String idInstitucionAux = rellenarConCeros(this.usrbean.getLocation(), 4); 
+		String idPersonaAux = rellenarConCeros(cliente.getIdPersona().toString(), 10);
+		String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());;
+		String numOperacion = "1" + idInstitucionAux + idPersonaAux + fechaActualAux;			
 		
 		
-		// seteamos los beans necesarios para hacer los insert en dichas tablas.
-		
+		// seteamos los beans necesarios para hacer los insert en dichas tablas.		
 		petCompraSuscripBean.setIdInstitucion(new Integer(this.usrbean.getLocation()));
 		petCompraSuscripBean.setIdPeticion(nuevoID);
-		petCompraSuscripBean.setTipoPeticion("A");
+		petCompraSuscripBean.setTipoPeticion(ClsConstants.TIPO_PETICION_COMPRA_ALTA);
 		petCompraSuscripBean.setIdPersona(cliente.getIdPersona());
 		petCompraSuscripBean.setFecha("sysdate");
-		petCompraSuscripBean.setIdEstadoPeticion(new Integer(20));
+		petCompraSuscripBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 		petCompraSuscripBean.setFechaMod("sysdate");
 		petCompraSuscripBean.setIdPeticionAlta(null);
 		petCompraSuscripBean.setNumAut(null);
-		petCompraSuscripBean.setNumOperacion(null);
+		petCompraSuscripBean.setNumOperacion(numOperacion);
 		petCompraSuscripBean.setUsuMod(new Integer(this.usrbean.getUserName()));
 		petCompraSuscripBean.setReferencia(null);
+		
+
 
 		prodSolBean.setIdInstitucion(new Integer(this.usrbean.getLocation()));
 		prodSolBean.setIdPeticion(nuevoID);
@@ -1066,7 +1081,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		//hacemos los insert relacionados con el proceso de compra
 		
 		try{
-			cargaOk = petCompraSuscripAdm.insert(petCompraSuscripBean) && prodSolAdm.insert(prodSolBean)&&compraAdm.insert(compraBean);
+			cargaOk = ppcsa.insert(petCompraSuscripBean) && prodSolAdm.insert(prodSolBean)&&compraAdm.insert(compraBean);
 		}catch (Exception e){
 			throw new ClsExceptions("No se ha realizado correctamente la compra :" +e); 
 		}

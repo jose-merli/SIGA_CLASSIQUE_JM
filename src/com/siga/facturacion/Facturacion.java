@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -2427,21 +2428,25 @@ public class Facturacion {
 				
 				
 				// Insercion PYS_COMPRASUSCRIPCION						
-				PysPeticionCompraSuscripcionAdm admPCS= new PysPeticionCompraSuscripcionAdm(userBean);
-				String idPeticion="";
-				idPeticion=admPCS.getNuevoID(new Integer((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION))).toString();
+				PysPeticionCompraSuscripcionAdm ppcsa= new PysPeticionCompraSuscripcionAdm(userBean);
+				String idPeticion=ppcsa.getNuevoID(new Integer((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION))).toString();
+
+				//Obtengo el numero de operacion. El codigo 1 es usado para Facturacion de Productos y Servicios
+				String idInstitucionAux = rellenarConCeros((String) productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION), 4); 
+				String idPersonaAux = rellenarConCeros(facturaDisquete.getIdPersona().toString(), 10);
+				String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());;
+				String numOperacion = "1" + idInstitucionAux + idPersonaAux + fechaActualAux;							
+				
 				Hashtable compraSuscripcion=new Hashtable();
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION,productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPETICION,idPeticion);
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION,"A");
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_FECHA,"sysdate");
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION,"20");
-		//		compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA,null);
-		//		compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_NUM_AUT,null);
-		//		compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_NUM_OPERACION,null);
-		//		compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_REFERENCIA,null);
-				resultado=admPCS.insert(compraSuscripcion);
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION, ClsConstants.TIPO_PETICION_COMPRA_ALTA);
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPERSONA, facturaDisquete.getIdPersona().toString());
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_FECHA, "sysdate");
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION, new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_NUM_OPERACION, numOperacion);
+				
+				resultado=ppcsa.insert(compraSuscripcion);
 				
 				// Insercion PYS_PRODUCTOSSOLICITADOS
 				if (resultado){
@@ -2565,4 +2570,13 @@ public class Facturacion {
 		return resultado;
 	}
 	
+	private String rellenarConCeros(String arg, int longitud){
+		String salida = null;
+		
+		salida = arg;
+		while (salida.length() < longitud) {
+			salida = "0"+salida;
+		}
+		return salida; 
+	}		
 }

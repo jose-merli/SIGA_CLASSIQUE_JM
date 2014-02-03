@@ -214,7 +214,7 @@ public class SIGATPVControl extends HttpServlet {
 	private boolean actualizarFacturacion1(HttpServletRequest request){
 		String merchantId=null, acquirerBin=null, terminalId=null, operacion=null, importe=null, moneda=null;
 		String exponente=null, referencia=null, firma=null, autorizacion=null, fecha=null;
-		PysPeticionCompraSuscripcionAdm peticionAdm;
+		PysPeticionCompraSuscripcionAdm ppcsa;
 		Hashtable hashTemporal = new Hashtable();
 		CarroCompra carro;
 		UserTransaction tx = null;
@@ -242,11 +242,11 @@ public class SIGATPVControl extends HttpServlet {
 		
 			//Recuperamos el carro del contexto:
 			carro = (CarroCompra)this.getServletContext().getAttribute(request.getParameter("Num_operacion"));
-			peticionAdm = new PysPeticionCompraSuscripcionAdm(carro.getUsrBean()); 
+			ppcsa = new PysPeticionCompraSuscripcionAdm(carro.getUsrBean()); 
 			tx = carro.getUsrBean().getTransaction(); 
 			tx.begin();
 			//Insertamos el carro en Base de Datos:
-			Long idPeticion = peticionAdm.insertarCarro(carro);
+			Long idPeticion = ppcsa.insertarCarro(carro);
 			
 			//UPDATE de la tabla Pys_PeticionCompraSuscripcion:
 			hashTemporal.clear();
@@ -258,7 +258,7 @@ public class SIGATPVControl extends HttpServlet {
 			String claves[] = {PysPeticionCompraSuscripcionBean.C_IDINSTITUCION,PysPeticionCompraSuscripcionBean.C_IDPETICION};
 			String campos[] = {PysPeticionCompraSuscripcionBean.C_NUM_AUT,PysPeticionCompraSuscripcionBean.C_NUM_OPERACION,
 							   PysPeticionCompraSuscripcionBean.C_REFERENCIA};
-			peticionAdm.updateDirect(hashTemporal,claves,campos);
+			ppcsa.updateDirect(hashTemporal,claves,campos);
 			tx.commit();
 			finCorrecto = true; 
 		}

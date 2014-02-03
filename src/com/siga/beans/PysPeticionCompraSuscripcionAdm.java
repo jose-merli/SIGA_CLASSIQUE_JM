@@ -462,7 +462,6 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public Long insertarCarro(CarroCompra carro) throws SIGAException, ClsExceptions{
-		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm (this.usrbean);
 		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm (this.usrbean);
 		UsrBean userBean;
@@ -492,8 +491,8 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			idPersona = carro.getIdPersona();			
 			
 			// Petición de alta
-			idPeticion = ppcsa.getNuevoID(idInstitucion);
-			if(!ppcsa.insertPeticionAlta(idPersona, idInstitucion, idPeticion, carro.getNumOperacion())){
+			idPeticion = this.getNuevoID(idInstitucion);
+			if(!this.insertPeticionAlta(idPersona, idInstitucion, idPeticion, carro.getNumOperacion())){
 				throw new ClsExceptions("Error al insertar la peticion del carro de la compra.");
 			}	
 					
@@ -588,8 +587,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 		        }
 		    }
 		    
-		    PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
-		    Vector v = ppcsa.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " AND idpeticion="+beanPeticion.getIdPeticion().toString());
+		    Vector v = this.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " AND idpeticion="+beanPeticion.getIdPeticion().toString());
 		    if (v!=null && v.size()>0) {
 		        b = (PysPeticionCompraSuscripcionBean) v.get(0);
 		    }

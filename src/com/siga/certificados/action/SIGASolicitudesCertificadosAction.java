@@ -18,9 +18,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostexto;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample;
-import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalExample;
-import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
-import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoExample.Criteria;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -43,7 +40,6 @@ import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
@@ -478,8 +474,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    	hash.clear();
 			    	UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, idInstitucion);
 			    	UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
-			    	PysPeticionCompraSuscripcionAdm admPeticion = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
-			    	if (!admPeticion.delete(hash)) {
+			    	PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+			    	if (!ppcsa.delete(hash)) {
 			    		;//throw new SIGAException ("error.messages.deleted");
 			    	}
 		    	}

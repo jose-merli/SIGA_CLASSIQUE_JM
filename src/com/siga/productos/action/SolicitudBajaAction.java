@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -181,7 +180,7 @@ public class SolicitudBajaAction extends MasterAction{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
 			Integer idInstitucion= this.getIDInstitucion(request);
 			
-			PysPeticionCompraSuscripcionAdm  PCSAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 						
 			Vector ocultos = new Vector();
 			ocultos = (Vector)form.getDatosTablaOcultos(0);	
@@ -195,11 +194,10 @@ public class SolicitudBajaAction extends MasterAction{
 			tx=user.getTransaction();	
 			
 			tx.begin();					
-			idPeticionBaja = PCSAdm.getNuevoID(idInstitucion);
+			idPeticionBaja = ppcsa.getNuevoID(idInstitucion);
 			
-		//	 Petición de baja		
-			//if(!PCSAdm.insertPeticionBaja(form.getIdPersona(), idInstitucion, idPeticionBaja, idPeticionAlta, fechaEfectiva)){
-			if(!PCSAdm.insertPeticionBaja(form.getIdPersona(), idInstitucion, idPeticionBaja, idPeticionAlta)){
+			// Petición de baja		
+			if(!ppcsa.insertPeticionBaja(form.getIdPersona(), idInstitucion, idPeticionBaja, idPeticionAlta)){
 				exitoInsertarArticulo = false;
 			}	
 			

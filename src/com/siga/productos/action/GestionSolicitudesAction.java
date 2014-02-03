@@ -135,7 +135,7 @@ public class GestionSolicitudesAction extends MasterAction {
 	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		GestionSolicitudesForm miForm = (GestionSolicitudesForm) formulario;
-		PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
 		String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 		request.setAttribute(ClsConstants.PARAM_PAGINACION,idPaginador);
 		try {
@@ -161,7 +161,7 @@ public class GestionSolicitudesAction extends MasterAction {
 			}else{	
 				databackup=new HashMap();
 				
-				PaginadorBind paginador = peticionAdm.getPeticionesPaginador(miForm, this.getIDInstitucion(request));
+				PaginadorBind paginador = ppcsa.getPeticionesPaginador(miForm, this.getIDInstitucion(request));
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				if (totalRegistros==0){					
 					paginador =null;
@@ -241,8 +241,8 @@ public class GestionSolicitudesAction extends MasterAction {
 			
 			Hashtable hash = new Hashtable ();
 			UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
-			PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
-			Vector peticion = peticionAdm.getPeticionDetalle (hash, idInstitucion);
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
+			Vector peticion = ppcsa.getPeticionDetalle (hash, idInstitucion);
 			request.setAttribute("peticion", peticion);
 			
 			// Obtengo los datos de la persona, su Numero de colegiado y su nombre

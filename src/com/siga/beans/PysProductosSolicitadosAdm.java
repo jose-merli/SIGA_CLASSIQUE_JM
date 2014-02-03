@@ -6,8 +6,6 @@
  
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -579,11 +577,11 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 
 		try {
 			
-			PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 			Hashtable claves = new Hashtable();
 			UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
-			PysPeticionCompraSuscripcionBean peticionBean = (PysPeticionCompraSuscripcionBean) peticionAdm.selectByPK(claves).get(0);
+			PysPeticionCompraSuscripcionBean peticionBean = (PysPeticionCompraSuscripcionBean) ppcsa.selectByPK(claves).get(0);
 			//GstDate gstDate=new GstDate();
 			//Date fecha=null;
 			if(fechaEfectiva==null)
@@ -672,13 +670,13 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				}
 				
 				// 3. Verificamos si los articulos de la peticion estan en un estado distinto de PENDIENTE
-				long productos_serviciosPendientes = peticionAdm.getNumProductosServiciosPendientes (idInstitucion, idPeticion);
+				long productos_serviciosPendientes = ppcsa.getNumProductosServiciosPendientes (idInstitucion, idPeticion);
 				if (productos_serviciosPendientes > 0) {
 					return true;
 				}
 				// 3.1 no hay articulos pendientes, cambiamos el estado a PROCESADA
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
-				return peticionAdm.update(peticionBean);
+				return ppcsa.update(peticionBean);
 			}
 			
 			// Peticion de BAJA
@@ -711,7 +709,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				// 2. Cambiamos el estado de peticion de baja a PROCESADA
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("ES",fechaEfectiva));
-				if (!peticionAdm.update(peticionBean)) {
+				if (!ppcsa.update(peticionBean)) {
 					return false;
 				}
 				
@@ -742,7 +740,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				}
 
 				// 5. Verificamos si los articulos de la peticion estan en un estado distinto de PENDIENTE
-				long productos_serviciosPendientes = peticionAdm.getNumProductosServiciosPendientes (idInstitucion, peticionBean.getIdPeticionAlta());
+				long productos_serviciosPendientes = ppcsa.getNumProductosServiciosPendientes (idInstitucion, peticionBean.getIdPeticionAlta());
 				if (productos_serviciosPendientes > 0) {
 					return true;
 				}
@@ -775,10 +773,10 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				claves.clear();
 				UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, idInstitucion);
 				UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDPETICION, peticionBean.getIdPeticionAlta());
-				peticionBean = (PysPeticionCompraSuscripcionBean) peticionAdm.selectByPK(claves).get(0);
+				peticionBean = (PysPeticionCompraSuscripcionBean) ppcsa.selectByPK(claves).get(0);
 				//peticionBean.setFecha(GstDate.getApplicationFormatDate("ES",fechaEfectiva));
 				
-				return peticionAdm.update(peticionBean);
+				return ppcsa.update(peticionBean);
 				
 			}
 		}
@@ -813,11 +811,11 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	public boolean denegarProducto (Integer idInstitucion, Long idPeticion, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, String []mensaje) throws SIGAException, ClsExceptions {
 
 		try {
-			PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.usrbean);
 			Hashtable claves = new Hashtable();
 			UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
-			PysPeticionCompraSuscripcionBean peticionBean = (PysPeticionCompraSuscripcionBean) peticionAdm.selectByPK(claves).get(0);
+			PysPeticionCompraSuscripcionBean peticionBean = (PysPeticionCompraSuscripcionBean) ppcsa.selectByPK(claves).get(0);
 
 			// Peticion de ALTA
 			if (peticionBean.getTipoPeticion().equals(ClsConstants.TIPO_PETICION_COMPRA_ALTA)) {
@@ -844,13 +842,13 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				}
 
 				// 3. Verificamos si los articulos de la peticion estan en un estado distinto de PENDIENTE
-				long productos_serviciosPendientes = peticionAdm.getNumProductosServiciosPendientes (idInstitucion, idPeticion);
+				long productos_serviciosPendientes = ppcsa.getNumProductosServiciosPendientes (idInstitucion, idPeticion);
 				if (productos_serviciosPendientes > 0) {
 					return true;
 				}
 				// 3.1 no hay articulos pendientes, cambiamos el estado a PROCESADA
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
-				if(!peticionAdm.update(peticionBean)) {
+				if(!ppcsa.update(peticionBean)) {
 					return false;
 				}
 				return true;
@@ -860,7 +858,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			else {
 				// 1. Cambiamos el estado de peticion de baja a PROCESADA
 				peticionBean.setIdEstadoPeticion(new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
-				if (!peticionAdm.update(peticionBean)) {
+				if (!ppcsa.update(peticionBean)) {
 					return false;
 				}
 

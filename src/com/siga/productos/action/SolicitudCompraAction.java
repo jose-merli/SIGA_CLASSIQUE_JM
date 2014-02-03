@@ -8,12 +8,9 @@ package com.siga.productos.action;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,52 +26,45 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenDireccionesAdm;
-
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
-
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
-import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.PysPeticionCompraSuscripcionAdm;
-import com.siga.beans.PysPeticionCompraSuscripcionBean;
-
-import com.siga.beans.PysProductosBean;
-
-import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysFormaPagoAdm;
 import com.siga.beans.PysFormaPagoBean;
+import com.siga.beans.PysPeticionCompraSuscripcionAdm;
+import com.siga.beans.PysPeticionCompraSuscripcionBean;
+import com.siga.beans.PysProductosBean;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosBean;
-import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.beans.PysServiciosInstitucionBean;
+import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.beans.PysSuscripcionAdm;
 import com.siga.beans.PysSuscripcionBean;
 import com.siga.beans.PysTipoServiciosBean;
 import com.siga.beans.PysTiposProductosBean;
-import com.siga.certificados.Plantilla;
 import com.siga.facturacion.Facturacion;
 import com.siga.general.Articulo;
 import com.siga.general.CarroCompra;
@@ -547,11 +537,11 @@ public class SolicitudCompraAction extends MasterAction{
 			CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);	
 			SolicitudCompraForm form = (SolicitudCompraForm) formulario;		
 					
-			PysPeticionCompraSuscripcionAdm  PCSAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 				
 			Vector vArticulos = carro.getListaArticulos();			
 			if(vArticulos.size() == 0){
-				return error("messages.pys.solicitudCompra.errorCarritoBorrado",new ClsExceptions(PCSAdm.getError()),request);
+				return error("messages.pys.solicitudCompra.errorCarritoBorrado",new ClsExceptions(ppcsa.getError()),request);
 			}
 			
 			request.setAttribute("existeCarro", "S");
@@ -573,7 +563,7 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String finalizarCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		PysPeticionCompraSuscripcionAdm  peticionAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 		SolicitudCompraForm form = (SolicitudCompraForm) formulario;
 				
 		String modo = "comprobanteCompra";
@@ -601,7 +591,7 @@ public class SolicitudCompraAction extends MasterAction{
 			tx=user.getTransaction();	
 			tx.begin();
 			//Insertamos el carro en Base de Datos:
-			Long idPeticion = peticionAdm.insertarCarro(carro);
+			Long idPeticion = ppcsa.insertarCarro(carro);
 			carro.setIdPeticion(idPeticion);
 			//---FIN TRANSACCION---
 			tx.commit();
@@ -670,7 +660,6 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String imprimirCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		PysPeticionCompraSuscripcionAdm  peticionAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 		SolicitudCompraForm form = (SolicitudCompraForm) formulario;
 				
 		String modo = "comprobanteCompraImpresion";
@@ -1193,7 +1182,7 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String okCompraTPV(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));  		
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));  		
 		
 		String modo = "comprobanteCompra";
 		UsrBean user = null;		
@@ -1226,7 +1215,7 @@ public class SolicitudCompraAction extends MasterAction{
 				
 				//Busco la peticion en Base de Datos por el NUM_OPERACION del carro:
 				where  = "WHERE "+PysPeticionCompraSuscripcionBean.C_NUM_OPERACION+"='"+operacion+"'";
-				Vector peticion = peticionAdm.select(where); 
+				Vector peticion = ppcsa.select(where); 
 				if (peticion.size() == 0)
 					request.setAttribute("error","SI");
 				else {
@@ -1399,7 +1388,7 @@ public class SolicitudCompraAction extends MasterAction{
 	}
 	
 	private Hashtable prepararComprobante(CarroCompra carro, HttpServletRequest request) throws SIGAException, ClsExceptions {
-		PysPeticionCompraSuscripcionAdm peticionAdm = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 		PysPeticionCompraSuscripcionBean peticionBean = new PysPeticionCompraSuscripcionBean();
 		CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 		CenPersonaBean personaBean = new CenPersonaBean(); 		
@@ -1424,7 +1413,7 @@ public class SolicitudCompraAction extends MasterAction{
 		//Obtengo el idPeticion y la fecha:		
 		where = "WHERE "+PysPeticionCompraSuscripcionBean.C_NUM_OPERACION+"='"+carro.getNumOperacion()+"'";
 		where += " AND "+PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+"="+carro.getIdinstitucion();		
-		peticionBean = (PysPeticionCompraSuscripcionBean)(peticionAdm.select(where).get(0));		
+		peticionBean = (PysPeticionCompraSuscripcionBean)(ppcsa.select(where).get(0));		
 		registros.put("idPeticion",peticionBean.getIdPeticion());
 		registros.put("fecha",GstDate.getFormatedDateShort(user.getLanguage(),peticionBean.getFecha()));
 			
@@ -1563,7 +1552,7 @@ public class SolicitudCompraAction extends MasterAction{
 		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
 			FacSerieFacturacionAdm admSerie = new FacSerieFacturacionAdm(this.getUserBean(request));
-			PysPeticionCompraSuscripcionAdm admPeticion = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 		    Facturacion facturacion = new Facturacion(this.getUserBean(request));
 		    FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
 		    
@@ -1576,7 +1565,7 @@ public class SolicitudCompraAction extends MasterAction{
 		    Hashtable htP= new Hashtable(); 
 		    htP.put("IDINSTITUCION",idInstitucion);
 		    htP.put("IDPETICION",idPeticion.toString());
-		    Vector vP = admPeticion.selectByPK(htP);
+		    Vector vP = ppcsa.selectByPK(htP);
 		    PysPeticionCompraSuscripcionBean beanPeticion = null;
 		    if (vP!=null && vP.size()>0) {
 		        beanPeticion = (PysPeticionCompraSuscripcionBean) vP.get(0);
@@ -1594,7 +1583,7 @@ public class SolicitudCompraAction extends MasterAction{
 		        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");
 		    } else if (beanPeticion.getIdEstadoPeticion().equals(new Integer(10))) {
 		        // Esta en estado pendiente. Hay que aprobarla
-		        beanPeticion = admPeticion.aprobarPeticionCompra(beanPeticion);
+		        beanPeticion = ppcsa.aprobarPeticionCompra(beanPeticion);
 		    }
 	        compras = admCompra.obtenerComprasPorPeticion(beanPeticion);
 	        // RGG 206/05/2009 cambio por si los productos son no facturables.
