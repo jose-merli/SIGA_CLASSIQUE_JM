@@ -742,19 +742,20 @@
 			
 			// JPT: Funcion que controla el estado de los checks de la pantalla
 			function controlChecks() {
-				if (<%=estadosBean.getAutomatico().equals("S")%>) {
+				
+				if (<%=estadosBean.getAutomatico()!=null && estadosBean.getAutomatico().equals("S")%>) {
  					jQuery("#automatico").prop('checked', true);
  				}
  				
- 				if (<%=estadosBean.getEjecucionSancion().equals("S")%>) {
+ 				if (<%=estadosBean.getEjecucionSancion()!=null && estadosBean.getEjecucionSancion().equals("S")%>) {
  					jQuery("#ejecucionSancion").prop('checked', true);
  				}
  				
- 				if (<%=estadosBean.getEstadoFinal().equals("S")%>) {
+ 				if (<%=estadosBean.getEstadoFinal()!=null &&estadosBean.getEstadoFinal().equals("S")%>) {
  					jQuery("#estadoFinal").prop('checked', true);
  				}
  				
- 				if (<%=estadosBean.getActivarAlertas().equals("S")%>) {
+ 				if (<%=estadosBean.getActivarAlertas()!=null &&estadosBean.getActivarAlertas().equals("S")%>) {
  					jQuery("#activarAlertas").prop('checked', true);
  				}
  				
