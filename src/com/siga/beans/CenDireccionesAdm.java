@@ -1878,10 +1878,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 						 " LEFT JOIN CEN_PROVINCIAS ON CEN_DIRECCIONES.IDPROVINCIA = CEN_PROVINCIAS.IDPROVINCIA "+
 						 " LEFT JOIN CEN_PAIS ON CEN_DIRECCIONES.IDPAIS = CEN_PAIS.IDPAIS "+
 						 " WHERE CEN_DIRECCIONES.IDPERSONA = "+idPersona+" AND CEN_DIRECCIONES.IDINSTITUCION = "+idInstitucion+" AND CEN_DIRECCIONES.FECHABAJA IS NULL"+
-				" UNION "+
-				
-						" Select -1, '-- Nueva' "+
-						" from dual "+
 				" ORDER BY nombre ";
 			rc = this.find(sql);
 			if (rc!=null) {
