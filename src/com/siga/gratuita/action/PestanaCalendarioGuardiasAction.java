@@ -259,6 +259,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//Haria falta meter los parametros en con ClsConstants
 				String validaGuardiasColegiado = paramAdm.getValor (usr.getLocation (), "SCS", ClsConstants.GEN_PARAM_VALIDA_GUARDIAS_COLEGIADO, "");
 				miForm.setValidaGuardiasColegiado(validaGuardiasColegiado);
+				// Miramos tambien el parametro VALIDA_VOLANTE
+				String validarVolante = paramAdm.getValor (usr.getLocation (), "SCS", ClsConstants.GEN_PARAM_VALIDAR_VOLANTE, "");
+				request.setAttribute(ClsConstants.GEN_PARAM_VALIDAR_VOLANTE, validarVolante);
 				
 				registros = admPermuta.selectGenerico(admPermuta.buscarSolicitantesPermuta(idInstitucion,idPersona,orden,usr));
 				//Almaceno en el request el vector con los datos de la tabla:
