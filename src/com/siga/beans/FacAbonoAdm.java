@@ -1468,8 +1468,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append(" WHERE PC.IDINSTITUCION =  ");
 			sql.append(idInstitucion);
 			sql.append(" AND PC.IDPAGOSJG = NVL(null, PC.IDPAGOSJG) ");
-			sql.append(" AND PC.IDPERDESTINO = ");
-			sql.append(idPersona);
+			if(idPersona!=null){
+				sql.append(" AND PC.IDPERDESTINO = ");
+				sql.append(idPersona);
+			}
 			sql.append(" AND NVL(PC.IMPIRPF, 0) <> 0 ");
 			sql.append(" GROUP BY PC.IDPERDESTINO, ");
 			sql.append(" PC.IDPAGOSJG, ");
@@ -1495,8 +1497,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append(" WHERE PC.IDINSTITUCION =  ");
 			sql.append(idInstitucion);
 			sql.append(" AND PC.IDPAGOSJG = NVL(null, PC.IDPAGOSJG) ");
-			sql.append(" AND PC.IDPERDESTINO = ");
-			sql.append(idPersona);
+			if(idPersona!=null){
+				sql.append(" AND PC.IDPERDESTINO = ");
+				sql.append(idPersona);
+			}
 			sql.append(" AND NVL(PC.IMPIRPF, 0) = 0 ");
 			sql.append(" GROUP BY PC.IDPERDESTINO, ");
 			sql.append(" PC.IDPAGOSJG, ");
