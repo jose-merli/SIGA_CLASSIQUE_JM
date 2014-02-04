@@ -42,13 +42,19 @@
 </head>
 
 <body onload="ajusteAlto('resultado');">
+
+<%
+String app=request.getContextPath();
+String action=app+"/FAC_DisqueteCargos.do?noReset=true";
+%>
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table  class="tablaCentralCampos"  align="center">
-	<html:form action="/FAC_DisqueteCargos.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
+	<html:form action="/FAC_DisqueteCargos.do?noReset=true" method="POST" target="submitArea" style="display:none">		
+		<html:hidden 										property="fechaCargo" 		value = ""/>
 		<html:hidden styleId="modo"          				property="modo" 			value = ""/>
 		<html:hidden styleId="actionModal"   				property="actionModal" 		value = ""/>
 		<html:hidden styleId="idInstitucion" 				property="idInstitucion" />
@@ -161,7 +167,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-	<siga:ConjBotonesBusqueda botones="B"/>
+	<siga:ConjBotonesBusqueda botones="FG,B"/>
 
 
 	<!-- FIN: BOTONES BUSQUEDA -->
@@ -187,6 +193,10 @@
 			}else{
 				jQuery("#comboserie").hide();
 			}
+		}
+		
+		function refrescarLocal() {
+			//buscar();
 		}
 	
 		function buscar(){
@@ -233,6 +243,44 @@
 			document.ficheroBancarioPagosForm.submit();	
 				
 		}
+		
+		function generarFichero() {	
+		    sub();	
+			var ok = true;
+			var aviso = false;
+			var fechaCargo = "SI"
+
+			//Si debo ir a la modal para obtener la fecha de cargo:
+			if (fechaCargo == 'SI') {
+				//Abro la modal para calcular la fecha de cargo:
+				var resultado = ventaModalGeneral(document.all.confirmarFacturacionForm.name,"P");
+
+				// Compruebo que si necesito la fecha de cargo la he obtenido de la modal:
+				
+				if (resultado==undefined || (resultado!=undefined && resultado=='')) {				
+					fin(document);
+					ok = false;		
+								
+				} else {
+					// Almaceno la fecha de Cargo de la modal:
+					document.all.ficheroBancarioPagosForm.fechaCargo.value = resultado;
+				}
+			
+			} else {
+			 	fin();
+			} 
+
+			// Si todo ha ido bien y Acepto genero el fichero:
+			if (ok && confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {			
+					document.all.ficheroBancarioPagosForm.modo.value = "generarFichero";
+					document.all.ficheroBancarioPagosForm.target = 'submitArea';
+					var f = document.all.ficheroBancarioPagosForm.name;	
+					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
+					
+			} else {		
+			 	fin();
+			} 
+		}
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -248,6 +296,11 @@
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
+	
+	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">		
+		<html:hidden name="confirmarFacturacionForm" property="modo" value = "nuevo"/>
+		<html:hidden name="confirmarFacturacionForm" property="actionModal" value = ""/>
+	</html:form>
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->

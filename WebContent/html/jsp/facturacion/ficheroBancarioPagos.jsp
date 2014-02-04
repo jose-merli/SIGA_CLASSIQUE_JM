@@ -109,43 +109,6 @@
 	   		document.ficheroBancarioPagosForm.submit();
 	 	}
 				
-		function generarFichero() {	
-		    sub();	
-			var ok = true;
-			var aviso = false;
-			var fechaCargo = "<%=tieneFechaCargo%>"
-
-			//Si debo ir a la modal para obtener la fecha de cargo:
-			if (fechaCargo == 'SI') {
-				//Abro la modal para calcular la fecha de cargo:
-				var resultado = ventaModalGeneral(document.all.confirmarFacturacionForm.name,"P");
-
-				// Compruebo que si necesito la fecha de cargo la he obtenido de la modal:
-				
-				if (resultado==undefined || (resultado!=undefined && resultado=='')) {				
-					fin(document);
-					ok = false;		
-								
-				} else {
-					// Almaceno la fecha de Cargo de la modal:
-					document.all.ficheroBancarioPagosForm.fechaCargo.value = resultado;
-				}
-			
-			} else {
-			 	fin();
-			} 
-
-			// Si todo ha ido bien y Acepto genero el fichero:
-			if (ok && confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {			
-					document.all.ficheroBancarioPagosForm.modo.value = "generarFichero";
-					var f = document.all.ficheroBancarioPagosForm.name;	
-					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
-					
-			} else {		
-			 	fin();
-			} 
-		}
-
 		// Informe remesa
 		function versolicitud(fila) {
 			var datos;
@@ -273,23 +236,12 @@
 		idioma="<%=idioma%>"
 		modo="buscar"								
 		clase="paginator" 
-		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
+		divStyle="position:absolute; width:100%; height:20; z-index:3;left: 0px"
 		distanciaPaginas=""
 		action="<%=action%>" />
 <%
 	}
 %>		
-		
-	<table class="botonesDetalle" align="right" border="0">
-		<tr>
-			<td align="right">					
-				<html:button property="renegociaciones" property="idButton" onclick="return generarFichero();" styleClass="button" >
-					<siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion.nuevo"/>
-				</html:button>
-			</td>	
-		</tr>
-	</table>
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->		
 
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">		
 		<html:hidden name="confirmarFacturacionForm" property="modo" value = "nuevo"/>

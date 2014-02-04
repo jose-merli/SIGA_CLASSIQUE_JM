@@ -48,6 +48,7 @@
 	String nombrePestanha = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
 	String numeroPestanha = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
 	String estadoColegial= (String)request.getAttribute("ESTADOCOLEGIAL");
+	String validarVolante= (String)request.getAttribute(ClsConstants.GEN_PARAM_VALIDAR_VOLANTE);
 
 	//Almaceno en el request los parametros de la pestanha:
 	request.setAttribute("NOMBRECOLEGPESTAÑA",nombrePestanha);
@@ -308,7 +309,12 @@
 								default: descripcion=""; break;
 							}
 						} else {
-							descripcion = "gratuita.inicio_PestanaCalendarioGuardias.literal.anulada";
+							// jbd // Comprobar parametro VALIDAR_VOLANTE, si es S debería poner No validada, si es N deberia poner Anulada
+							if(validarVolante.equalsIgnoreCase("N")){
+								descripcion = "gratuita.inicio_PestanaCalendarioGuardias.literal.anulada";
+							}else if(validarVolante.equalsIgnoreCase("S")){
+								descripcion = "gratuita.inicio_PestanaCalendarioGuardias.literal.noValidada";
+							}
 						}
 						
 						if (!descripcion.equals("")) {
