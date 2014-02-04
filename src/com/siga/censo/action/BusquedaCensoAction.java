@@ -1306,17 +1306,17 @@ public class BusquedaCensoAction extends MasterAction {
 		String idInstitucion = request.getParameter("idInstitucion");
 		String idPersona = request.getParameter("idPersona");		
 		List alDirecciones = null;
+		alDirecciones = new ArrayList<DireccionesForm>();
 		
 		if((idPersona!= null && !idPersona.equals("")) && (idInstitucion != null && !idInstitucion.equals(""))){
 			CenDireccionesAdm dirAdm = new CenDireccionesAdm(user);
 			alDirecciones = dirAdm.geDireccionesLetrado(idPersona, idInstitucion);
-		}else{
-			alDirecciones = new ArrayList<DireccionesForm>();
-			DireccionesForm dirForm = new DireccionesForm();
-			dirForm.setNombre("-- Nueva");
-			dirForm.setIdDireccion(new Long(-1));
-			alDirecciones.add(dirForm);		
 		}
+	
+		DireccionesForm dirForm = new DireccionesForm();
+		dirForm.setNombre("-- Nueva --");
+		dirForm.setIdDireccion(new Long(-1));
+		alDirecciones.add(dirForm);		
 		
 		respuestaAjax(new AjaxCollectionXmlBuilder(), alDirecciones,response);
 
