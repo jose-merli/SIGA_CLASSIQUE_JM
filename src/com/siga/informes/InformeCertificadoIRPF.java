@@ -296,6 +296,9 @@ public class InformeCertificadoIRPF extends MasterReport
 		htDatosInforme.put("NOMAPE_PAG",(String)htDatosInforme.get("NOMBREINSTITUCION"));
 		htDatosInforme.put("IMPORTE_INTEGRO",UtilidadesString.formatoImporte(Double.parseDouble((String)htDatosInforme.get("TOTALIMPORTESJCS"))));
 		htDatosInforme.put("RETENCIONES",UtilidadesString.formatoImporte(Double.parseDouble((String)htDatosInforme.get("TOTALIMPORTEIRPF"))));
+		htDatosInforme.put("IMPORTE_EXENTO",UtilidadesString.formatoImporte(Double.parseDouble((String)htDatosInforme.get("TOTALIMPORTESJCSEXENTO"))));
+		htDatosInforme.put("IMPORTE_SUJETO",UtilidadesString.formatoImporte(Double.parseDouble((String)htDatosInforme.get("TOTALIMPORTESJCSSUJETO"))));
+		
 		htDatosInforme.put("LUGAR",(String)htDatosInforme.get("INSTITUCIONPOBLACION"));
 		htDatosInforme.put("DIA_HOY",(String)htDatosInforme.get("DIA_HOY"));
 		htDatosInforme.put("MES_HOY",(String)htDatosInforme.get("MES_HOY"));

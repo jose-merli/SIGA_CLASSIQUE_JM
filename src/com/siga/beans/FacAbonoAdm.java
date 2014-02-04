@@ -1424,17 +1424,88 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			Hashtable htCodigos = new Hashtable();
 			int codigo = 0;
 			
+
 			sql.append(" SELECT IDPERSONASJCS, ");
-			sql.append("	SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, ");
-			sql.append("	ABS(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
+//			TOTALIMPORTESJCS importe total (suejto mas exento)
+			sql.append(" SUM(TOTALIMPORTESJCSSUJETO) + SUM(IMPORTETOTALMVTOSSUJETO)+SUM(TOTALIMPORTESJCSEXENTO) + SUM(IMPORTETOTALMVTOSEXENTO) TOTALIMPORTESJCS, ");
+//			TOTALIMPORTESJCSEXENTO importe sjcs exentos de irpf mas movimientos varios exentos de irpf
+			sql.append(" SUM(TOTALIMPORTESJCSEXENTO) + SUM(IMPORTETOTALMVTOSEXENTO) TOTALIMPORTESJCSEXENTO, ");
+//			TOTALIMPORTESJCSSUJETO importe sjcs sujetos a irpf mas movimientos varios sujetos a irpf
+			sql.append(" SUM(TOTALIMPORTESJCSSUJETO) + SUM(IMPORTETOTALMVTOSSUJETO) TOTALIMPORTESJCSSUJETO, ");
+//			TOTALIMPORTEIRPF suma total de los importes retenidos
+			sql.append(" ABS(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
 			sql.append(" FROM ( ");
-			sql.append(" 	SELECT TOTAL.IDPERSONASJCS, ");
-			sql.append("		TOTAL.IDPAGOS, ");
-			sql.append("		SUM(TOTAL.TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
-			sql.append("		SUM(TOTAL.IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,");
-			sql.append("		SUM(TOTAL.IMPORTETOTALMOVIMIENTOS) AS IMPORTETOTALMOVIMIENTOS, ");
-			sql.append("		MAX(TOTAL.TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
-			sql.append("	FROM (" + new FcsPagosJGAdm(usrbean).getQueryDetallePagoColegiado(idInstitucion,null,idPersona, true, idioma) + ") TOTAL ");
+
+
+			sql.append(" SELECT  TOTAL.IDPERSONASJCS, ");
+			sql.append(" TOTAL.IDPAGOS, ");
+			sql.append(" SUM(TOTAL.TOTALIMPORTESJCSSUJETO) AS TOTALIMPORTESJCSSUJETO, ");
+			sql.append(" SUM(TOTAL.IMPORTETOTALRETENCIONESSUJETO) AS IMPORTETOTALRETENCIONESSUJETO, ");
+			sql.append(" SUM(TOTAL.IMPORTETOTALMVTOSSUJETO) AS IMPORTETOTALMVTOSSUJETO, ");
+			sql.append(" SUM(TOTAL.TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF, ");
+			sql.append(" SUM(TOTAL.TOTALIMPORTESJCSEXENTO) AS TOTALIMPORTESJCSEXENTO, ");
+			sql.append(" SUM(TOTAL.IMPORTETOTALMVTOSEXENTO) AS IMPORTETOTALMVTOSEXENTO ");
+			sql.append(" FROM  ");
+		               
+			//La query sera la union de los pagos que han tenido retenciones mas los qu no han tenido retenciones
+			//De este modo sacaremos el importe exento y el sujeto. Ademas sacarenmos el total en la query total de arriba
+			
+//			query para sacar los pagon cuya retencion sea mayor que cero
+			sql.append(" (SELECT PC.IDINSTITUCION, ");
+			sql.append(" PC.IDPAGOSJG as IDPAGOS, ");
+			sql.append(" PC.IDPERDESTINO as IDPERSONASJCS, ");
+			sql.append(" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCSSUJETO, ");
+			sql.append(" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONESSUJETO, ");
+			sql.append(" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMVTOSSUJETO,  -1 * ");
+			sql.append(" ROUND(ABS(SUM((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + ");
+			sql.append(" PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100)), ");
+			sql.append(" 2) AS TOTALIMPORTEIRPF, ");
+			sql.append(" 0 AS TOTALIMPORTESJCSEXENTO, ");
+			sql.append(" 0 AS IMPORTETOTALRETENCIONESEXENTO, ");
+			sql.append(" 0 AS IMPORTETOTALMVTOSEXENTO ");
+		         
+			sql.append(" FROM FCS_PAGO_COLEGIADO PC ");
+			sql.append(" WHERE PC.IDINSTITUCION =  ");
+			sql.append(idInstitucion);
+			sql.append(" AND PC.IDPAGOSJG = NVL(null, PC.IDPAGOSJG) ");
+			sql.append(" AND PC.IDPERDESTINO = ");
+			sql.append(idPersona);
+			sql.append(" AND NVL(PC.IMPIRPF, 0) <> 0 ");
+			sql.append(" GROUP BY PC.IDPERDESTINO, ");
+			sql.append(" PC.IDPAGOSJG, ");
+			sql.append(" PC.IDINSTITUCION, ");
+			sql.append(" PC.IMPIRPF, ");
+			sql.append(" PC.IDCUENTA ");
+			sql.append(" UNION ");
+//			query para sacar los pagos cuya retencion sea cero
+//		         ----------------------------------------------------
+			sql.append(" SELECT PC.IDINSTITUCION, ");
+			sql.append(" PC.IDPAGOSJG as IDPAGOS, ");
+			sql.append(" PC.IDPERDESTINO as IDPERSONASJCS, ");
+			
+			sql.append(" 0 AS TOTALIMPORTESJCSSUJETO, ");
+			sql.append(" 0 AS IMPORTETOTALRETENCIONESSUJETO, ");
+			sql.append(" 0 AS IMPORTETOTALMVTOSSUJETO, ");
+			sql.append(" 0 AS TOTALIMPORTEIRPF, ");
+			sql.append(" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCSEXENTO, ");
+			sql.append(" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONESEXENTO, ");
+			sql.append(" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMVTOSEXENTO ");
+		         
+			sql.append(" FROM FCS_PAGO_COLEGIADO PC ");
+			sql.append(" WHERE PC.IDINSTITUCION =  ");
+			sql.append(idInstitucion);
+			sql.append(" AND PC.IDPAGOSJG = NVL(null, PC.IDPAGOSJG) ");
+			sql.append(" AND PC.IDPERDESTINO = ");
+			sql.append(idPersona);
+			sql.append(" AND NVL(PC.IMPIRPF, 0) = 0 ");
+			sql.append(" GROUP BY PC.IDPERDESTINO, ");
+			sql.append(" PC.IDPAGOSJG, ");
+			sql.append(" PC.IDINSTITUCION, ");
+			sql.append(" PC.IMPIRPF, ");
+			sql.append(" PC.IDCUENTA ");
+			sql.append(" )TOTAL ");
+			
+			
 			sql.append("	WHERE IDPAGOS IN (");
 			sql.append("		SELECT FAC_ABONO.IDPAGOSJG ");
 			sql.append("		FROM FAC_ABONO ");
@@ -1484,6 +1555,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							htRegistro.put("TOTALIMPORTESJCS", "0");
 						if (htRegistro.get("TOTALIMPORTEIRPF") == null || ((String) htRegistro.get("TOTALIMPORTEIRPF")).equals(""))
 							htRegistro.put("TOTALIMPORTEIRPF", "0");
+						if (htRegistro.get("TOTALIMPORTESJCSEXENTO") == null || ((String) htRegistro.get("TOTALIMPORTESJCSEXENTO")).equals(""))
+							htRegistro.put("TOTALIMPORTESJCSEXENTO", "0");
+						if (htRegistro.get("TOTALIMPORTESJCSSUJETO") == null || ((String) htRegistro.get("TOTALIMPORTESJCSSUJETO")).equals(""))
+							htRegistro.put("TOTALIMPORTESJCSSUJETO", "0");
 					}
 					datosObtenidos.add(htRegistro);
 				}
@@ -1497,6 +1572,9 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					htRegistro.put("TOTALIMPORTESJCS", "0");
 					htRegistro.put("TOTALIMPORTEIRPF", "0");
 					htRegistro.put("IDPERSONASJCS", idPersona);
+					htRegistro.put("TOTALIMPORTESJCSEXENTO", "0");
+					htRegistro.put("TOTALIMPORTESJCSSUJETO", "0");
+					
 					datosObtenidos.add(htRegistro);
 				}
 			} else {
