@@ -158,6 +158,7 @@ public class AlterMutuaHelper implements java.io.Serializable {
 			switch (sexo.charAt(0)) {
 				case 'H': return TipoSexo.Hombre;
 				case 'M': return TipoSexo.Mujer;
+				case 'D': return TipoSexo.Mujer;
 				default: return TipoSexo.Hombre;
 			}
 		}catch (Exception e) {
