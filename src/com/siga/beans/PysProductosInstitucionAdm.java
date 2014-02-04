@@ -744,7 +744,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			//Obtengo el numero de operacion y lo inserto en el carro. El codigo 1 es usado para Facturacion de Productos y Servicios:
 			String idInstitucionAux = rellenarConCeros(idInstitucion.toString(), 4); 
 			String idPersonaAux = rellenarConCeros(idPersona.toString(), 10);
-			String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());;
+			String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());
 			String numOperacion = "1" + idInstitucionAux + idPersonaAux + fechaActualAux;			
 			
 			// Petición de alta
