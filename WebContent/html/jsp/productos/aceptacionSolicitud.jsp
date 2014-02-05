@@ -277,6 +277,21 @@
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
 		
+		function validarCantidades() {
+			f = document.solicitudCompraForm; 	
+ 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 				cantidad=eval("f.cantidad" + j);
+ 				
+ 				if (cantidad.value==null || isNaN(cantidad.value) || eval(cantidad.value)<=0 || cantidad.value.indexOf(".")>-1) { 
+ 					nombre = document.getElementById("nombreArticulo" + j);
+	 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorCantidad"/>";
+					alert (mensaje);
+ 					return false;
+				}
+	 		}	 		
+	 		return true;
+	 	}		
+		
 		function validarPrecio() {
 			f = document.solicitudCompraForm; 	
  			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
@@ -286,7 +301,7 @@
  				tipo = document.getElementById("oculto" + j + "_4");
 			    // Si es producto
  				if (tipo.value == <%=Articulo.CLASE_PRODUCTO%>) {
-	 				if(precio.value==null || isNaN(precio.value) || (eval(precio.value) < 0)|| ((precio.value.indexOf(".")!=-1) && (precio.value.substring(precio.value.indexOf(".")+1).length > 2))){ 
+	 				if(precio.value==null || isNaN(precio.value) || eval(precio.value)<0 || ((precio.value.indexOf(".")!=-1) && (precio.value.substring(precio.value.indexOf(".")+1).length > 2))) { 
 	 					nombre = document.getElementById("nombreArticulo" + j);
 		 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorPrecio"/>";
 						alert (mensaje);
@@ -488,7 +503,7 @@
  		function accionConfirmarCompra(){
  			sub();
  			f = document.solicitudCompraForm;
- 			if (validarPrecio() && validarFormaPago()&& validarCertificado()) {							
+ 			if (validarCantidades() && validarPrecio() && validarFormaPago() && validarCertificado()) {							
  				f.target = "mainWorkArea";
 				f.modo.value = "confirmarCompra";
 				f.submit();
