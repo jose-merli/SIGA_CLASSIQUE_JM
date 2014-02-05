@@ -705,7 +705,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				importe					= (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
 				cantidad 				+= importe;
 				sImporte				= completarEspacios("Importe", Integer.toString(importe), "D", "0", 12, false);
-				sEntidadBeneficiario	= completarEspacios("Entidad", bReceptor.getCodigoBanco(), "D", "0", 4, false);
+				sEntidadBeneficiario	= completarEspacios("Entidad", bReceptor.getCodigoBanco(), "D", "0", 4, true);
 				sOficinaBeneficiario	= completarEspacios("Oficina", bReceptor.getCodigoSucursal(), "D", "0", 4, false);	
 				sCuentaBeneficiario		= completarEspacios("Cuenta Bancaria", bReceptor.getNumeroCuenta(), "D", "0", 10, false);
 				sDControlBeneficiario	= obtenerDigitoControl("00" + sEntidadBeneficiario + sOficinaBeneficiario);
