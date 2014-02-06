@@ -615,8 +615,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 	 */
 	private int crearFichero(FicheroEmisorAbonoBean bEmisor, Vector vReceptores, boolean escribirAvisoCuentasIncompletas) throws SIGAException {
 		//int n = (vReceptores.size() * 2) + 4 + 1;
-		// (numeroReceptores * numeroCampos) + datosCabecera + datosTotales
-		int n = (vReceptores.size() * 5) + 4 + 1;
+		// (numeroReceptores * numeroCampos) + datosCabecera + datosTotales + lineaError (si es necesario)
+		int n = (vReceptores.size() * 5) + 4 + 1 + 1;
 		
 		String[] cabecera = new String[n];
 		boolean resul = false;		
@@ -760,6 +760,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			// escribiendo linea de aviso por cuentas incompletas
 			if (escribirAvisoCuentasIncompletas)
 				cabecera[nlinea+2] = rp.returnProperty("facturacion.ficheroBancario.mensaje.avisoCuentasBancariasIncompletas");
+			else
+				cabecera[nlinea+2] = "";
 			
 			resul 				 = escribirFichero(cabecera,rutaServidor,nombreFichero);	
 			
