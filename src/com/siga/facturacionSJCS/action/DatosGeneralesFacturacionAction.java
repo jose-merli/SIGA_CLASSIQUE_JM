@@ -39,6 +39,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FcsEstadosFacturacionBean;
 import com.siga.beans.FcsFactEstadosFacturacionAdm;
@@ -64,6 +65,8 @@ import es.satec.businessManager.BusinessManager;
 
 
 public class DatosGeneralesFacturacionAction extends MasterAction {
+	
+	private static Boolean alguienEjecutando=Boolean.FALSE;
 	
 	protected ActionForward executeInternal(ActionMapping mapping,
 			ActionForm formulario,
@@ -1362,9 +1365,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 	
 	
 	
-		protected String descargarFicheroFact(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-		
+	protected String descargarFicheroFact(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {		
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -1376,28 +1377,39 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			FcsFacturacionJGBean beanOriginal = (FcsFacturacionJGBean) vf.get(0);	
 			String nombreFichero = beanOriginal.getNombreFisico();
 			InformePersonalizable informePersonalizable = new InformePersonalizable();
+			File fichero = null;
 			
-			File fichero=new File(nombreFichero);
-			
-			//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
-			if(fichero==null || !fichero.exists()){				
-				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);
+			if (isAlguienEjecutando()){			
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"mensaje.error.facturacionsjcs.wait"));			
+			}
 				
-				informePersonalizable.setIdFacturacion(idFacturacion);
-				fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
-				if (!informePersonalizable.isEliminarFichero()) {
-					nombreFichero = fichero.getPath();
-					FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
-					bean.setIdInstitucion(Integer.parseInt(idInstitucion));
-					bean.setIdFacturacion(Integer.parseInt(idFacturacion));
-					bean.setNombreFisico(nombreFichero);
-					fact.update(bean,beanOriginal);
-
-					if (fichero == null || !fichero.exists()) {
-						throw new SIGAException("messages.general.error.ficheroNoExiste");
+			try {
+				ArrayList filtrosInforme = fact.getFiltrosInforme(idInstitucion,idFacturacion);				
+				fichero=new File(nombreFichero);
+				
+				//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
+				if(fichero==null || !fichero.exists()){				
+					informePersonalizable.setIdFacturacion(idFacturacion);
+					fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
+					if (!informePersonalizable.isEliminarFichero()) {
+						nombreFichero = fichero.getPath();
+						FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
+						bean.setIdInstitucion(Integer.parseInt(idInstitucion));
+						bean.setIdFacturacion(Integer.parseInt(idFacturacion));
+						bean.setNombreFisico(nombreFichero);
+						fact.update(bean,beanOriginal);
+	
+						if (fichero == null || !fichero.exists()) {							
+							throw new SIGAException("messages.general.error.ficheroNoExiste");
+						}
 					}
 				}
-			}
+		
+			} finally {
+				//ABRIMOS EL SEMAFORO. SE DEBE EJECUTAR SIEMPRE
+				setNadieEjecutando();
+			}			
+			
 			if (informePersonalizable.isEliminarFichero()) {
 				request.setAttribute("borrarFichero", "true");
 			}
@@ -1412,11 +1424,28 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		} catch (SIGAException e) {
 			throwExcp(e.getLiteral(),e, null);
 		
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
 		}
 		
 		return "descargaFichero";
 	}
+	
+	public boolean isAlguienEjecutando(){
+		synchronized(alguienEjecutando){
+			if (!alguienEjecutando){
+				alguienEjecutando=Boolean.TRUE;
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	
+	private void setNadieEjecutando(){
+		synchronized(alguienEjecutando){
+			alguienEjecutando=Boolean.FALSE;
+		}
+	}	
 
 }
