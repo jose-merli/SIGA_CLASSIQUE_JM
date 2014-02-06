@@ -26,6 +26,7 @@
 
 <!-- JSP -->
 <% 
+	String app=request.getContextPath();
 	boolean abonosSJCS = false;
 	String sjcs = request.getParameter("sjcs");
 	if ((sjcs!=null) && (sjcs.equals("1"))){
@@ -160,6 +161,10 @@
 	<script language="JavaScript">
 		jQuery.noConflict();
 		
+		function refrescarLocal() {
+			//buscar();
+		}		
+		
 		jQuery("#abonosDesde").keypress(function (e) {
 			if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
 				return false;
@@ -214,6 +219,17 @@
 			document.ficheroBancarioAbonosForm.submit();	
 				
 		}
+		
+		function generarFichero() {
+			if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarFicheroAbonos"/>')) {
+					return false;
+			}			
+			
+			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
+			document.all.ficheroBancarioAbonosForm.target = 'submitArea';
+			var f = document.all.ficheroBancarioAbonosForm.name;	
+			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
+		}
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -229,6 +245,17 @@
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
+	
+	
+	<table class="botonesDetalle">
+		<tr>
+			<td class="tdBotones">
+				<html:button property="abono" onclick="return generarFichero();" styleClass="button">
+					<siga:Idioma key="facturacion.ficheroBancarioAbonos.boton.ficheroAbonos"/>    
+				</html:button>
+			</td>	
+		</tr>
+	</table>	
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->

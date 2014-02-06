@@ -116,15 +116,6 @@
 		   	document.ficheroBancarioAbonosForm.submit();
 		}
 				
-		function generarFichero() {
-			if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarFicheroAbonos"/>')) {
-					return false;
-				}			
-			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
-			var f = document.all.ficheroBancarioAbonosForm.name;	
-			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
-		}
-
 		// Informe remesa
 		function versolicitud(fila) {
 			var datos;
@@ -256,15 +247,6 @@
 	}
 %>			
 
-	<table class="botonesDetalle">
-		<tr>
-			<td class="tdBotones">
-				<html:button property="abono" onclick="return generarFichero();" styleClass="button">
-					<siga:Idioma key="facturacion.ficheroBancarioAbonos.boton.ficheroAbonos"/>    
-				</html:button>
-			</td>	
-		</tr>
-	</table>
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->		
 	
 	<!-- INICIO: SUBMIT AREA -->
