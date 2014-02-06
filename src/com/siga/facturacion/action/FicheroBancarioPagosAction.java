@@ -272,9 +272,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	    	File[] ficheros = directorioFicheros.listFiles();
 	    	String nombreFicheroListadoSinExtension, nombreFicheroGeneradoSinExtension;
 	    	for (int x=0; x<ficheros.length; x++){
-				nombreFicheroListadoSinExtension = (ficheros[x].getName().indexOf(".") > 0) ? ficheros[x].getName().substring(0, ficheros[x].getName().indexOf(".") - 1) 
+				nombreFicheroListadoSinExtension = (ficheros[x].getName().indexOf(".") > 0) ? ficheros[x].getName().substring(0, ficheros[x].getName().indexOf(".")) 
 																							: ficheros[x].getName();
-				nombreFicheroGeneradoSinExtension = (nombreFichero.indexOf(".") > 0) ? nombreFichero.substring(0, nombreFichero.indexOf(".") - 1) 
+				nombreFicheroGeneradoSinExtension = (nombreFichero.indexOf(".") > 0) ? nombreFichero.substring(0, nombreFichero.indexOf(".")) 
 																					 : nombreFichero;
 	    		if(nombreFicheroGeneradoSinExtension.equalsIgnoreCase(nombreFicheroListadoSinExtension)){
 	    			lista.add(ficheros[x]);
