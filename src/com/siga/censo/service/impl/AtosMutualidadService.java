@@ -74,9 +74,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 				solicitudMutualidadAdm.actualizaEstadoMutualista(solicitudMutualidadBean);
 			
 			// Aqui tenemos que darlo de alta tambien en el seguro gratuito si la solicitud inicial es de plan profesional
-			// y no proviene de la ficha colegial
-			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)&&
-				mutualidadForm.getOrigenSolicitud().equalsIgnoreCase(CenSolicitudMutualidadBean.SOLICITUD_INCORPORACION)){
+			if(mutualidadForm.getIdTipoSolicitud().equals(CenSolicitudMutualidadBean.TIPOSOLICITUD_PLANPROFESIONAL)){
 				mutualidadForm.setIdTipoSolicitud(CenSolicitudMutualidadBean.TIPOSOLICITUD_SEGUROUNIVERSAL);
 				insertarSolicitudMutualidad(mutualidadForm, usrBean);
 			}
