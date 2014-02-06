@@ -76,17 +76,20 @@ public class InformeColegiadosPagos extends MasterReport {
 			//plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}else{
 			// JBD 03/02/2009 Si hemos obtenido una cuenta debemos ocultar el numero con asteriscos (INC-5635)
-			// Nos aseguramos de que el numero de cuenta este completo
-			if(cuenta.length()>=23){
-				// Como viene concatenada la cuenta recuperamos solo el numero de cuenta.
-				String numero = cuenta.substring(13, 23);
-				// Le ocultamos parte con asteriscos
-				numero = UtilidadesString.mostrarNumeroCuentaConAsteriscos(numero);
-				// Volvemos a unir la cuenta
-				cuenta = cuenta.substring(0, 13) + numero + cuenta.substring(23);
-				htAux.put("CUENTA_CORRIENTE", cuenta);
-				// 
-				htAux.put("NUMERO_CUENTA_CORRIENTE", cuenta.substring(0, 23));
+			// Nos aseguramos de que el IBAN este completo
+			if(cuenta.length()>=15){
+				//YA NO VIENE CONCATENADA, YA QUE NO SABEMOS EL TAMAÑO EXACTO DEL IBAN. CONCATENAMOS EN EL PUT			
+
+				// Ocultamos con asteriscos el numero de cuenta
+				String numero = UtilidadesString.mostrarIBANConAsteriscos(cuenta);
+				
+				//NUMERO UNICO DE CUENTA CORRIENTE SIN BANCO
+				htAux.put("NUMERO_CUENTA_CORRIENTE", numero);
+				
+				// Volvemos a unir el IBAN CON BANCO
+				String banco = (String)htAux.get("BANCO_CUENTA");
+				htAux.put("CUENTA_CORRIENTE", numero+ " " +banco);
+				
 			}
 		}
 		htDatos.putAll(htAux);
@@ -282,7 +285,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 			if (!(idCuenta==null || idCuenta.equals(""))){
 				// Datos Bancarios de la sociedad o persona
-			    sql = "SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE " +
+			    sql = "SELECT DECODE(CUEN.IBAN, NULL, '', CUEN.IBAN) CUENTA_CORRIENTE,    "+   
+			    	"		  DECODE(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre) BANCO_CUENTA "+
 			    	" FROM CEN_CUENTASBANCARIAS CUEN, " +
 			    		" CEN_BANCOS BAN " +
 			    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +

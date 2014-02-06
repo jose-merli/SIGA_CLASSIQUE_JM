@@ -303,11 +303,7 @@
 				if (idCuenta == null || idCuenta.equals("") ) {
 					idCuenta = "&nbsp";
 				} else if (!idCuenta.equals("-")) {					
-					if(modo.equalsIgnoreCase("editar")){
-						idCuenta = UtilidadesString.mostrarDatoMascara(idCuenta, ClsConstants.MASK_IBAN);
-					}else{
-						idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
-					}
+					idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
 				}
 					
 				String identifCuenta = (String) registro

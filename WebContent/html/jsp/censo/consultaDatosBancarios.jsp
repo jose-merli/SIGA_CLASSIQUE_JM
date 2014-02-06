@@ -315,7 +315,7 @@
 			<td><%=UtilidadesString.mostrarDatoJSP(tipoCuenta)%></td>
 			<td align="center"><%=UtilidadesString.mostrarDatoJSP(abonosjcs)%></td>
 			<td align="center"><%=UtilidadesString.mostrarDatoJSP(sociedadLiteral)%></td>
-			<td><%=UtilidadesString.mostrarDatoMascara(numeroCuentaCompleto,ClsConstants.MASK_IBAN)%></td>
+			<td><%=UtilidadesString.mostrarIBANConAsteriscos(numeroCuentaCompleto)%></td>
 			<td><%=UtilidadesString.mostrarDatoJSP(fechaBaja)%></td>
 
 

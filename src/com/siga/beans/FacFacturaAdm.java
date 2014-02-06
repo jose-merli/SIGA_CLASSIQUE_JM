@@ -2564,7 +2564,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					resultado=UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoCaja");
 				  }else{
 					
-					resultado= UtilidadesString.mostrarDatoMascara(factura.get("IBAN"),ClsConstants.MASK_IBAN);					
+					resultado= UtilidadesString.mostrarIBANConAsteriscos((String)factura.get("IBAN"));					
 					nuevo.put("TITULARCUENTA",(String)factura.get(CenCuentasBancariasBean.C_TITULAR));
 				  }
 				}  

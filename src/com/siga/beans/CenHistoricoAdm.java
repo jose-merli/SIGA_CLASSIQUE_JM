@@ -664,6 +664,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					try {
 						UtilidadesHash.set(hBeanAsociado, CenCuentasBancariasBean.C_NUMEROCUENTA, UtilidadesString.mostrarNumeroCuentaConAsteriscos(UtilidadesHash.getString(hBeanAsociado, CenCuentasBancariasBean.C_NUMEROCUENTA)));
 						UtilidadesHash.set(hBeanAsociadoAnterior, CenCuentasBancariasBean.C_NUMEROCUENTA, UtilidadesString.mostrarNumeroCuentaConAsteriscos(UtilidadesHash.getString(hBeanAsociadoAnterior, CenCuentasBancariasBean.C_NUMEROCUENTA)));
+						
+						UtilidadesHash.set(hBeanAsociado, CenCuentasBancariasBean.C_IBAN, UtilidadesString.mostrarIBANConAsteriscos(UtilidadesHash.getString(hBeanAsociado, CenCuentasBancariasBean.C_IBAN)));
+						UtilidadesHash.set(hBeanAsociadoAnterior, CenCuentasBancariasBean.C_IBAN, UtilidadesString.mostrarIBANConAsteriscos(UtilidadesHash.getString(hBeanAsociadoAnterior, CenCuentasBancariasBean.C_IBAN)));
+						
 					} 
 					catch (Exception e) {}
 

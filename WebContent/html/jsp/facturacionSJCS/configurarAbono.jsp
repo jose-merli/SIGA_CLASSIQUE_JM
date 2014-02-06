@@ -170,7 +170,7 @@
 	            		// Comprobamos que se trate de una cuenta para SJCS
 	            		String sjcs = row.getString("SJCS");
 	            		String activa = row.getString("ACTIVA");
-	            		String iban = UtilidadesString.mostrarDatoMascara(row.getString("IBAN"),ClsConstants.MASK_IBAN);
+	            		String iban = UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"));
 	            		if(modo!=null && modo.equalsIgnoreCase("consulta")){
 	            		 	iban = UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"));
 	            		}

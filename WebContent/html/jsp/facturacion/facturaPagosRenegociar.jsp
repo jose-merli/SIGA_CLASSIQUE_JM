@@ -274,7 +274,7 @@
 									</label>
 								</td>
 								<td class="labelText" style="text-align:left;" width="250px">
-									<%=UtilidadesString.mostrarDatoJSP(cuentaBancariaFactura)%>
+									<%=UtilidadesString.mostrarIBANConAsteriscos(cuentaBancariaFactura)%>
 								</td>							
 							</tr>
 							

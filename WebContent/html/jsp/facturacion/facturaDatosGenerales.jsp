@@ -308,11 +308,7 @@
 								<td class="labelTextValor"><siga:Idioma key="<%=formaPago%>"/></td>
 
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.NumeroCuenta"/></td>
-								<% if (modoRegistroBusqueda!=null && modoRegistroBusqueda.equalsIgnoreCase("ver")) { %>
-									<td class="labelTextValor" colspan="3"><%=UtilidadesString.mostrarIBANConAsteriscos(iban)%></td>
-								<% } else { %>
-									<td class="labelTextValor" colspan="3"><%=UtilidadesString.mostrarDatoMascara(iban,ClsConstants.MASK_IBAN)%></td>
-								<% } %>	
+								<td class="labelTextValor" colspan="3"><%=UtilidadesString.mostrarIBANConAsteriscos(iban)%></td>
 							</tr>
 						</table>
 					</siga:ConjCampos>	

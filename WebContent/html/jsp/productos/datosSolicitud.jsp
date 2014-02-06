@@ -454,7 +454,7 @@
 			</td> 
 
 			<td>
-				<input type='text' name='cuenta<%=i+1%>' value="<%=UtilidadesString.mostrarDatoMascara(nCuenta,ClsConstants.MASK_IBAN)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" style="width:200">
+				<input type='text' name='cuenta<%=i+1%>' value="<%=UtilidadesString.mostrarIBANConAsteriscos(nCuenta)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" style="width:200">
 			</td>
 			 
 			<td><%=cantidad%></td> 

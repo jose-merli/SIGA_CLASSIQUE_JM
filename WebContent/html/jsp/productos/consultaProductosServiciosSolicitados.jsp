@@ -242,7 +242,7 @@
 						solicitarBaja=(String)hash.get(PysProductosInstitucionBean.C_SOLICITARBAJA);
 						String cuenta ="";
 						if(hash.get("NCUENTA")!= null && !hash.get("NCUENTA").equals("") && !hash.get("NCUENTA").equals("-")){
-							cuenta = UtilidadesString.mostrarDatoMascara(hash.get("NCUENTA"),ClsConstants.MASK_IBAN);
+							cuenta = UtilidadesString.mostrarIBANConAsteriscos((String)hash.get("NCUENTA"));
 						} else{
 							cuenta = UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"));
 						}
@@ -349,7 +349,7 @@
 						
 						String cuenta ="";
 						if(hash.get("NCUENTA")!= null && !hash.get("NCUENTA").equals("") && !hash.get("NCUENTA").equals("-")){
-							cuenta = UtilidadesString.mostrarDatoMascara(hash.get("NCUENTA"),ClsConstants.MASK_IBAN);
+							cuenta = UtilidadesString.mostrarIBANConAsteriscos((String)hash.get("NCUENTA"));
 						} else{
 							cuenta = UtilidadesString.mostrarDatoJSP(hash.get("NCUENTA"));
 						}						

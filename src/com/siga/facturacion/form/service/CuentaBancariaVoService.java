@@ -156,7 +156,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 				cuentasBancariasForm.setCuentaContableTarjeta(objectVo.getCuentacontabletarjeta());
 			
 			if(objectVo.getIban()!=null)
-				cuentasBancariasForm.setIBAN(UtilidadesString.mostrarDatoMascara(objectVo.getIban(),ClsConstants.MASK_IBAN));
+				cuentasBancariasForm.setIBAN(UtilidadesString.mostrarIBANConAsteriscos(objectVo.getIban()));
 			
 			cuentasBancariasForm.setBancoNombre(objectVo.getBancoNombre());
 			cuentasBancariasForm.setBancoCuentaDescripcion(objectVo.getBancoCuentaDescripcion());
