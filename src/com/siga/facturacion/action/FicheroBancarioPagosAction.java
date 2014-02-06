@@ -270,9 +270,13 @@ public class FicheroBancarioPagosAction extends MasterAction{
     	//Se buscan todos los ficheros que coincidan con el nombre del fichero
     	if(directorioFicheros.exists()){
 	    	File[] ficheros = directorioFicheros.listFiles();
+	    	String nombreFicheroListadoSinExtension, nombreFicheroGeneradoSinExtension;
 	    	for (int x=0; x<ficheros.length; x++){
-	    		String nombreFicheroSinExtensionLista = ficheros[x].getName().substring(0,ficheros[x].getName().lastIndexOf("."));	    		
-	    		if(nombreFichero.equalsIgnoreCase(nombreFicheroSinExtensionLista)){
+				nombreFicheroListadoSinExtension = (ficheros[x].getName().indexOf(".") > 0) ? ficheros[x].getName().substring(0, ficheros[x].getName().indexOf(".") - 1) 
+																							: ficheros[x].getName();
+				nombreFicheroGeneradoSinExtension = (nombreFichero.indexOf(".") > 0) ? nombreFichero.substring(0, nombreFichero.indexOf(".") - 1) 
+																					 : nombreFichero;
+	    		if(nombreFicheroGeneradoSinExtension.equalsIgnoreCase(nombreFicheroListadoSinExtension)){
 	    			lista.add(ficheros[x]);
 	    		}	    		
 	    	}
