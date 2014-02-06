@@ -452,18 +452,10 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 
 	private Integracion_DatosBancarios rellenarDatosBancarios(Hashtable<String, String> ht) {
 		Integracion_DatosBancarios db = new Integracion_DatosBancarios();
-		
-		// Solo puede ser uno de los dos
 		if(ht.get("swift")!=null && ht.get("iban")!=null){
-			db.setTipoCuenta(TIPO_CUENTA_EXTRANJERA);
 			db.setIban(ht.get("iban"));
 			db.setSwift(ht.get("swift"));
-		}else{
-			db.setTipoCuenta(TIPO_CUENTA_ESPAÑOLA);
-			db.setEntidad(ht.get("cboCodigo"));
-			db.setOficina(ht.get("codigoSucursal"));
-			db.setDC(ht.get("digitoControl"));
-			db.setNCuenta(ht.get("numeroCuenta"));
+			db.setTipoCuenta(TIPO_CUENTA_EXTRANJERA);
 		}
 		
 		return db;

@@ -57,9 +57,6 @@ function habilitarCampos(isHabilitar) {
 		} else {
 
 
-
-
-			
 			var inputs = document.getElementsByTagName("input");
 			for(var i = 0 ; i < inputs.length ; i++) {
 				var input = inputs[i];
@@ -92,6 +89,98 @@ function habilitarCampos(isHabilitar) {
 			
 		}
 	
+	}
+	
+	function cargarBancoPorIBAN(){		
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
+		var iban = formateaMask(document.getElementById("IBAN").value);	
+		if (iban!=undefined && iban!="") {
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
+				data: "iban="+iban,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					if(json!=null && json.pais != null){
+						if(json.pais == "ES"){								
+							//Se comprueba si el banco existe
+							if(json.banco != null){
+								var bic = json.banco.bic;
+								document.getElementById("SWIFT").value=bic;
+								document.getElementById("SWIFT").readOnly = true;
+								document.getElementById("SWIFT").className = "boxConsulta";
+							
+							} else {
+								alert(mensaje);
+								document.getElementById("SWIFT").value="";
+								document.getElementById("SWIFT").readOnly = true;
+								document.getElementById("SWIFT").className = "boxConsulta";
+								fin();
+							}
+							
+						}else{
+							document.getElementById("SWIFT").readOnly = false;
+							document.getElementById("SWIFT").className = "box";
+							document.getElementById("SWIFT").value="";
+							alert("Rellene el SWIFT para el banco extranjero");
+						}
+						
+					}else{
+						alert(mensaje);
+						document.getElementById("SWIFT").value="";
+						document.getElementById("SWIFT").readOnly = true;
+						document.getElementById("SWIFT").className = "boxConsulta";
+					}
+					fin();
+				},
+				error: function(e){
+					alert(mensaje);
+					document.getElementById("SWIFT").value="";
+					document.getElementById("SWIFT").readOnly = true;
+					document.getElementById("SWIFT").className = "boxConsulta";
+					fin();
+				}
+			});
+			
+		} else {
+			document.getElementById("IBAN").value="";
+			document.getElementById("SWIFT").value="";
+			document.getElementById("SWIFT").readOnly = true;
+			document.getElementById("SWIFT").className = "boxConsulta";
+		}
+	}	
+	
+	function inicioCargarBancoBIC(){
+		var iban = formateaMask(document.getElementById("IBAN").value);
+		var codigoBanco = "${AlterMutuaForm.cboCodigo}";
+		if (iban!=undefined && iban!="") {			
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+					type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxCargaInicialBancoBIC",
+				data: "iban="+iban+"&codigo="+codigoBanco,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					if(json.banco!=null && json.banco!=""){
+						document.getElementById("SWIFT").value=json.banco.bic;
+					}
+					fin();
+				},
+				error: function(e){
+					alert(mensaje);
+					fin();
+				}
+			});
+		}
+	}
+	
+	
+	function rpad() {
+		if (document.getElementById("SWIFT").value.length == 8){
+	    	while (document.getElementById("SWIFT").value.length < 11)
+	    		document.getElementById("SWIFT").value = document.getElementById("SWIFT").value + 'X';
+		}
 	}
 
 </script>
@@ -142,7 +231,7 @@ function habilitarCampos(isHabilitar) {
 </head>
 
 
-<body class="tablaCentralCampos" >
+<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();">
 
 <div id="datosSolicitud" style="display:none; height:600px; overflow-y:auto">
 	<fmt:setLocale value="es_ES"/>
@@ -188,10 +277,12 @@ function habilitarCampos(isHabilitar) {
 		
 		<c:set var="estiloText" value="box" />
 		<c:set var="estiloCombo" value="boxCombo" />
+		<c:set var="modoConsulta" value="false" />
 
 		<c:if test="${AlterMutuaForm.idSolicitudalter!=null || AlterMutuaForm.numeroPropuestas <= 0}">
 			<c:set var="estiloText" value="boxConsulta" />
 			<c:set var="estiloCombo" value="boxComboConsulta" />
+			<c:set var="modoConsulta" value="true" />
 		</c:if>
 
 		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.seleccionPropuesta"/></legend>
@@ -416,28 +507,26 @@ function habilitarCampos(isHabilitar) {
 		<fieldset><legend><siga:Idioma key="censo.alterMutua.literal.cuentaBancaria"/></legend>
 		<table>
 			<tr>
-				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.paisCuentaBancaria"/></td>
-				<td class="labelTextValue">
+				<td class="labelTextValue" style="display:none">
 					<html:select styleId="selectPaisCuenta" styleClass="${estiloCombo} requiredText" property="idPaisCuenta" >
 						<html:optionsCollection name="AlterMutuaForm" property="paises" label="value" value="key" />
 					</html:select>
 				</td>
-				<td class="cuentaNacional labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.numeroCuenta"/></td>
-				<td class="cuentaNacional">
+				<td style="display:none">
 					<html:text size="4"  maxlength="4" property="cboCodigo" styleClass="${estiloText} requiredText"></html:text>
 					- <html:text size="4"  maxlength="4" property="codigoSucursal" styleClass="${estiloText} requiredText"></html:text>
 					- <html:text size="2"  maxlength="2" property="digitoControl" styleClass="${estiloText} requiredText"></html:text>
 					- <html:text size="10" maxlength="10" property="numeroCuenta" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 
-				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.iban"/></td>	
-				<td class="cuentaExtranjera labelText">
-				      <html:text styleId="IBAN" maxlength="30" property="iban" styleClass="${estiloText} requiredText"></html:text>
+				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.iban"/></td>	
+				<td class="labelText">
+				      <html:text styleId="IBAN" size="34"  maxlength="34" property="iban" styleClass="${estiloText} requiredText" onblur="cargarBancoPorIBAN();"></html:text>
 				</td>
 				
-				<td class="cuentaExtranjera labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.swift"/></td>	
-				<td class="cuentaExtranjera labelText">
-				      <html:text styleId="SWIFT" maxlength="11" property="swift" styleClass="${estiloText} requiredText"></html:text>
+				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.swift"/></td>	
+				<td class="labelText">
+				      <html:text styleId="SWIFT"size="14"  maxlength="11" property="swift" styleClass="boxConsulta" readonly="true" onblur="rpad();"></html:text>
 				</td>
 			</tr>
 		</table>
@@ -656,16 +745,15 @@ function habilitarCampos(isHabilitar) {
 			$('#selectProvincia').addClas('obligatorio');
 			val=false;
 		}
-		if($('#selectPaisCuenta').val()==='724' && document.forms["AlterMutuaForm"].digitoControl.value != obtenerDigitoControl("00" + document.forms["AlterMutuaForm"].cboCodigo.value + document.forms["AlterMutuaForm"].codigoSucursal.value) + "" + obtenerDigitoControl(document.forms["AlterMutuaForm"].numeroCuenta.value)){
-			$('#tdCuenta').find('.requiredText').each(function(){
-				$(this).addClass("obligatorio");
-			});
-			val=false;
-		}else if($('#selectPaisCuenta').val()!='724' && !isIBANValido($('#IBAN').val()) && !isSWIFTValido($('#SWIFT').val())){
-				val=false;
-				$('#IBAN').addClass("obligatorio");
-				$('#SWIFT').addClass("obligatorio");
-		}
+
+		//validamos el numero de cuenta (IBAN)
+		iban = document.forms["AlterMutuaForm"].IBAN.value;
+		bic = document.forms["AlterMutuaForm"].SWIFT.value;		
+		if(!validarCuentaBancaria(iban,bic,"banco")){//Como en el formulario no existe el banco, ponemos ese literal para pasar la validacion
+			fin();
+			return false;
+		}	
+		
 		$('.ident').each(function(){
 			var tipoIdent = $(":input:eq(" + ($(":input").index(this) - 1) + ")").val();
 			if( $(this).val()!=$(this).attr('title')
@@ -1016,16 +1104,6 @@ function habilitarCampos(isHabilitar) {
        	});
        	$("#selectPais").trigger('change');
        	
-       	$("#selectPaisCuenta").change(function(){
-       		if(($(this).val()==="00")||$(this).val()==="724"){
-       			$(".cuentaExtranjera").hide();
-       			$(".cuentaNacional").show();
-       		}else{
-       			$(".cuentaExtranjera").show();
-       			$(".cuentaNacional").hide();
-       		}
-       	});
-       	$("#selectPaisCuenta").trigger('change');
        	
        	$("#selectBeneficiarios").change(function(){
        		if($("#selectBeneficiarios").val()==3){
@@ -1209,10 +1287,6 @@ function habilitarCampos(isHabilitar) {
 			$(this).attr("id",idFam);
 		});
 	}
-	
-	
-	
-	
 	
 	</script>
 

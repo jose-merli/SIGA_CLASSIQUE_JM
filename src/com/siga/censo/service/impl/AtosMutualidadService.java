@@ -154,15 +154,8 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 	
 	private Hashtable getDatosBancarios(MutualidadForm mutualidadForm){
 		Hashtable datosBancarios = new Hashtable();
-		if(mutualidadForm.getSwift()!=null && !mutualidadForm.getSwift().equals("")){
-			datosBancarios.put("iban", mutualidadForm.getIban());
-			datosBancarios.put("swift", mutualidadForm.getSwift());
-		}else{
-			datosBancarios.put("cboCodigo", mutualidadForm.getCboCodigo());
-			datosBancarios.put("codigoSucursal", mutualidadForm.getCodigoSucursal());
-			datosBancarios.put("digitoControl", mutualidadForm.getDigitoControl());
-			datosBancarios.put("numeroCuenta", mutualidadForm.getNumeroCuenta());
-		}
+		datosBancarios.put("iban", mutualidadForm.getIban());
+		datosBancarios.put("swift", mutualidadForm.getSwift());
 		
 		return datosBancarios;
 	}
@@ -413,6 +406,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 				mutualidadForm.setCodigoSucursal(cuentaBean.getCodigoSucursal());
 				mutualidadForm.setDigitoControl(cuentaBean.getDigitoControl());
 				mutualidadForm.setNumeroCuenta(cuentaBean.getNumeroCuenta());
+				mutualidadForm.setIban(cuentaBean.getIban());
 			}
 			
 			// Nos tenemos que ir a bbdd a por algunos valores
@@ -495,6 +489,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 			form.setFax2(bean.getFax1());
 			form.setCorreoElectronico(bean.getCorreoElectronico());
 			form.setCodigoSucursal(bean.getCodigoSucursal()); 
+			form.setIban(bean.getIban());
 			form.setDigitoControl(bean.getDigitoControl());
 			form.setNumeroCuenta(bean.getNumeroCuenta());
 			form.setCboCodigo(bean.getCbo_Codigo());

@@ -139,6 +139,100 @@ function habilitarCampos(isHabilitar) {
 		jQuery("#cuotaCobertura").val(jQuery("#cuotaCobertura").val()+"¤");
 	}
 
+	function cargarBancoPorIBAN(){		
+		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
+		var iban = formateaMask(document.getElementById("IBAN").value);	
+		if (iban!=undefined && iban!="") {
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBancoBIC",
+				data: "iban="+iban,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					if(json!=null && json.pais != null){
+						if(json.pais == "ES"){								
+							//Se comprueba si el banco existe
+							if(json.banco != null){
+								var bic = json.banco.bic;
+								document.getElementById("SWIFT").value=bic;
+								document.getElementById("SWIFT").readOnly = true;
+								document.getElementById("SWIFT").className = "boxConsulta";
+							
+							} else {
+								alert(mensaje);
+								document.getElementById("SWIFT").value="";
+								document.getElementById("SWIFT").readOnly = true;
+								document.getElementById("SWIFT").className = "boxConsulta";
+								fin();
+							}
+							
+						}else{
+							document.getElementById("SWIFT").readOnly = false;
+							document.getElementById("SWIFT").className = "box";
+							document.getElementById("SWIFT").value="";
+							alert("Rellene el SWIFT para el banco extranjero");
+						}
+						
+					}else{
+						alert(mensaje);
+						document.getElementById("SWIFT").value="";
+						document.getElementById("SWIFT").readOnly = true;
+						document.getElementById("SWIFT").className = "boxConsulta";
+					}
+					fin();
+				},
+				error: function(e){
+					alert(mensaje);
+					document.getElementById("SWIFT").value="";
+					document.getElementById("SWIFT").readOnly = true;
+					document.getElementById("SWIFT").className = "boxConsulta";
+					fin();
+				}
+			});
+			
+		} else {
+			document.getElementById("IBAN").value="";
+			document.getElementById("SWIFT").value="";
+			document.getElementById("SWIFT").readOnly = true;
+			document.getElementById("SWIFT").className = "boxConsulta";
+		}
+	}	
+	
+	function inicioCargarBancoBIC(){		
+		if(document.getElementById("IBAN")){
+			var iban = document.getElementById("IBAN").value;
+			var codigoBanco = "${MutualidadForm.cboCodigo}";
+			if (iban!=undefined && iban!="") {			
+				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+						type: "POST",
+					url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxCargaInicialBancoBIC",
+					data: "iban="+iban+"&codigo="+codigoBanco,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){	
+						if(json.banco!=null && json.banco!=""){
+							document.getElementById("SWIFT").value=json.banco.bic;
+						}
+						fin();
+					},
+					error: function(e){
+						alert(mensaje);
+						fin();
+					}
+				});
+			}
+		}
+	}
+	
+	
+	function rpad() {
+		if (document.getElementById("SWIFT").value.length == 8){
+	    	while (document.getElementById("SWIFT").value.length < 11)
+	    		document.getElementById("SWIFT").value = document.getElementById("SWIFT").value + 'X';
+		}
+	}	
+	
 	</script>	
 	
 	
@@ -150,7 +244,7 @@ function habilitarCampos(isHabilitar) {
 </head>
 
 
-<body  class="tablaCentralCampos">
+<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();"> 
 
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
@@ -374,7 +468,7 @@ function habilitarCampos(isHabilitar) {
 			</td>
 			
 			<td class="labelText" ><siga:Idioma key="censo.mutualidad.literal.email" />&nbsp;(*)</td>
-			<td colspan="2"><html:text property="correoElectronico" maxlength="100" style="width:300" styleClass="${estiloText}" ></html:text></td>
+			<td colspan="3"><html:text property="correoElectronico" maxlength="100" style="width:400" styleClass="${estiloText}" ></html:text></td>
 		</tr>
 		<tr>
 			<td class="labelText" ><siga:Idioma
@@ -468,24 +562,23 @@ function habilitarCampos(isHabilitar) {
 		<div>
 
 		<siga:ConjCampos leyenda="censo.consultaDatosBancarios.cabecera" clase="planProfesional">
+			<!-- FILA -->
 			<table class="tablaCampos" align="left" border="0" style="width:100%">	
 				<tr align="left">		
-					<td class="labelText"><siga:Idioma
-							key="censo.mutualidad.literal.cuenta" /></td>	
-					<td class="labelText" width="300px">
+					<td style="display:none">
 					      <html:text size="4"  maxlength="4" property="cboCodigo"  styleClass="${estiloText}"  onChange="document.MutualidadForm.idBanco.value=document.MutualidadForm.cboCodigo.value"></html:text>
 						- <html:text size="4"  maxlength="4" property="codigoSucursal" 	styleClass="${estiloText}" ></html:text>
 						- <html:text size="2"  maxlength="2" property="digitoControl"  	styleClass="${estiloText}" ></html:text>
 						- <html:text size="10" maxlength="10" property="numeroCuenta"  styleClass="${estiloText}" ></html:text></td>
-					<td class="labelText"><siga:Idioma
+					<td class="labelText" nowrap><siga:Idioma
 							key="censo.mutualidad.literal.iban" /></td>
 					<td class="labelText">
-						<html:text property="iban"  size="20" styleClass="${estiloText}" maxlength="24"/>
+						<html:text property="iban" size="36" styleClass="${estiloText}" maxlength="34" onblur="cargarBancoPorIBAN();"/>
 					</td>
-					<td class="labelText"><siga:Idioma
+					<td class="labelText" nowrap><siga:Idioma
 							key="censo.mutualidad.literal.swift" /></td>
 					<td class="labelText">
-						<html:text property="swift"  size="15" styleClass="${estiloText}" maxlength="12"/>
+						<html:text property="swift" size="15" maxlength="11" styleClass="boxConsulta" readonly="true" onblur="rpad();"/>
 					</td>
 				<tr>
 	
@@ -497,6 +590,8 @@ function habilitarCampos(isHabilitar) {
 						<siga:ComboBD nombre="idBanco" ancho="450" tipo="cmbBancos" clase="${estiloCombo}" readonly="${MutualidadForm.modo=='consulta'}" elementoSel='<%=idBancoSeleccionado%>' accion="document.MutualidadForm.cboCodigo.value=document.MutualidadForm.idBanco.value"/>
 					</td>
 				</tr>
+				
+				<!-- FILA -->
 				<tr align="left">		
 					<td class="labelText"><siga:Idioma
 							key="censo.mutualidad.literal.periodicidadPago" /></td>
@@ -822,28 +917,16 @@ function habilitarCampos(isHabilitar) {
 				}
 				
 			}
-			//validamos el numero de cuenta
-			if(document.MutualidadForm.idTipoSolicitud.value=='P'){
+			
+			//validamos el numero de cuenta (IBAN)
+			if(document.MutualidadForm.idTipoSolicitud.value=='P'){				
+				iban = document.MutualidadForm.iban.value;
+				bic = document.MutualidadForm.swift.value;
 				
-				
-				if (document.MutualidadForm.cboCodigo.value    == ""  || document.MutualidadForm.codigoSucursal.value == "" || document.MutualidadForm.digitoControl.value == ""  || document.MutualidadForm.numeroCuenta.value   == "" ){ 
-					if(document.MutualidadForm.iban.value=="" ||document.MutualidadForm.swift.value==""){
-						mensaje = "<siga:Idioma key="censo.mutualidad.aviso.cuentaBancaria"/>"; 
-						alert(mensaje);
-						fin();
-						return false;
-					}
-				}
-				else{
-					
-					if(document.MutualidadForm.digitoControl.value != obtenerDigitoControl("00" + document.MutualidadForm.cboCodigo.value + document.MutualidadForm.codigoSucursal.value) + "" + obtenerDigitoControl(document.MutualidadForm.numeroCuenta.value)){
-						mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
-						alert(mensaje);
-						fin();
-						return false;
-					}
-					
-				}
+				if(!validarCuentaBancaria(iban,bic,"banco")){//Como en el formulario no existe el banco, ponemos ese literal para pasar la validacion
+					fin();
+					return false;
+				} 	
 			}
 			
 			deshabilitaCampos();

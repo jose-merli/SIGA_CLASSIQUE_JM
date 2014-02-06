@@ -226,20 +226,13 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 		
 		// Añadimos la direccion al asegurado
 		asegurado.setDireccion(direccion);
-		if(form.getIdPaisCuenta()!=null){
-			WSCuentaBancaria cuenta = new WSCuentaBancaria();
-			cuenta.setPais(form.getIdPaisCuenta());
-			if(cuenta.getPais().equalsIgnoreCase("724")){
-				cuenta.setEntidad(form.getCboCodigo());
-				cuenta.setSucursal(form.getCodigoSucursal());
-				cuenta.setDC(form.getDigitoControl());
-				cuenta.setCuenta(form.getNumeroCuenta());
-			}else{
-				cuenta.setIBAN(form.getIban());
-				cuenta.setSWIFT(form.getSwift());
-			}
-			asegurado.setCuentaBancaria(cuenta);
-		}
+
+		//Añadimos los datos bancarios del asegurado. IBAN y SWIFT
+		WSCuentaBancaria cuenta = new WSCuentaBancaria();
+		//cuenta.setPais(form.getIdPaisCuenta());
+		cuenta.setIBAN(form.getIban());
+		cuenta.setSWIFT(form.getSwift());
+		asegurado.setCuentaBancaria(cuenta);
 		
 		asegurado.setFamiliares(this.getPersonas(form.getFamiliares()));
 		if(form.getSelectBeneficiarios()!=null){
@@ -356,6 +349,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 				form.setMovil(bean.getMovil());
 				form.setFax(bean.getFax());
 				form.setCorreoElectronico(bean.getCorreoElectronico());
+				form.setIban(bean.getIban()); 
 				form.setCodigoSucursal(bean.getCodigoSucursal()); 
 				form.setDigitoControl(bean.getDigitoControl());
 				form.setNumeroCuenta(bean.getNumeroCuenta());
@@ -412,6 +406,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 					form.setMovil(bean.getMovil());
 					form.setFax(bean.getFax1());
 					form.setCorreoElectronico(bean.getCorreoElectronico());
+					form.setIban(bean.getIban()); 
 					form.setCodigoSucursal(bean.getCodigoSucursal()); 
 					form.setDigitoControl(bean.getDigitoControl());
 					form.setNumeroCuenta(bean.getNumeroCuenta());
@@ -457,6 +452,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 				form.setMovil(bean.getMovil());
 				form.setFax(bean.getFax());
 				form.setCorreoElectronico(bean.getCorreoElectronico());
+				form.setIban(bean.getIban()); 
 				form.setCodigoSucursal(bean.getCodigoSucursal()); 
 				form.setDigitoControl(bean.getDigitoControl());
 				form.setNumeroCuenta(bean.getNumeroCuenta());
@@ -526,6 +522,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 					
 					if(!cuentasArr.isEmpty()){
 						CenCuentasBancariasBean cuentaBean = cuentasArr.get(cuentasArr.size()-1);
+						form.setIban(cuentaBean.getIban()); 
 						form.setCboCodigo(cuentaBean.getCbo_Codigo());
 						form.setCodigoSucursal(cuentaBean.getCodigoSucursal());
 						form.setDigitoControl(cuentaBean.getDigitoControl());
