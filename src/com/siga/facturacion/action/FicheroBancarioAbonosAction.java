@@ -944,17 +944,21 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			String[] lineas = new String[c_NBLOQUES*2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
 			int j=0; lineas[j] = cabeceras[c_ORDENANTE].toString();
 			
-			j++; lineas[j] = cabeceras[c_BENEFICIARIOSEPA].toString();
-			for (int i=0; i<nRegistrosBenefSEPA; i++) {
-				j++; lineas[j] = registrosBenefSEPA[i].toString();
+			if (nRegistrosBenefSEPA > 0) {
+				j++; lineas[j] = cabeceras[c_BENEFICIARIOSEPA].toString();
+				for (int i=0; i<nRegistrosBenefSEPA; i++) {
+					j++; lineas[j] = registrosBenefSEPA[i].toString();
+				}
+				j++; lineas[j] = totales[c_BENEFICIARIOSEPA].toString();
 			}
-			j++; lineas[j] = totales[c_BENEFICIARIOSEPA].toString();
 			
-			j++; lineas[j] = cabeceras[c_BENEFICIARIOOTROS].toString();
-			for (int i=0; i<nRegistrosBenefOtros; i++) {
-				j++; lineas[j] = registrosBenefOtros[i].toString();
+			if (nRegistrosBenefOtros > 0) {
+				j++; lineas[j] = cabeceras[c_BENEFICIARIOOTROS].toString();
+				for (int i=0; i<nRegistrosBenefOtros; i++) {
+					j++; lineas[j] = registrosBenefOtros[i].toString();
+				}
+				j++; lineas[j] = totales[c_BENEFICIARIOOTROS].toString();
 			}
-			j++; lineas[j] = totales[c_BENEFICIARIOOTROS].toString();
 			
 			j++; lineas[j] = totales[c_ORDENANTE].toString();
 			
