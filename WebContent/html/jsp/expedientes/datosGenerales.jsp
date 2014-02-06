@@ -1213,10 +1213,13 @@
 			<%
 				}
 			%>			
-			
 			tratarFechaCaducidad();
-			tratarFechaFinal();				
-					
+			
+			var idEstado = jQuery("#comboEstados").val();
+			if(idEstado != null && idEstado != ""){
+				tratarFechaFinal();				
+			}
+			
 			calcularTotalMinuta ();
 			calcularTotalMinutaFinal ();
 			<%=recargarCombos%>
