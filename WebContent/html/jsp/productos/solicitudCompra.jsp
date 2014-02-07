@@ -32,8 +32,10 @@
 	boolean esLetrado = user.isLetrado();
 	boolean esConsejo=false;
 	int idConsejo = new Integer(user.getLocation()).intValue();
+	boolean presentador = false;
 	if(idConsejo==2000 || idConsejo>=3000)
 		esConsejo=true;
+	
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
 	String estiloComboInstitucionPresentador = "boxCombo";
@@ -184,6 +186,11 @@
 		lecturaComboInstitucion = "false";
 		estiloComboInstitucion = "boxCombo";
 	}
+	
+	if (esConsejo && valorCatalog =="C"){
+		presentador = true;
+	}	
+	
 %>
 
 <%@page import="java.util.Properties"%>
@@ -361,6 +368,7 @@
 				<%if (request.getSession().getAttribute("volver") != null && request.getSession().getAttribute("volver").equals("s")) {
 					stylePresentador = "";
 					styleCampoBlanco = "display:none;";
+					presentador = true;
 					request.getSession().setAttribute("volver","");
 				%>
 				//jQuery("#catalogo").attr("disabled","disabled");
@@ -692,36 +700,31 @@
 								</td>					
 							</tr>
 							
-							<tr id="presentador" style="<%=stylePresentador%>">
-								<td class="labelText" width="50px">
-									<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
-								</td>
-								
-								<td colspan="5">
-									<siga:Select id="idInstitucionPresentador"
-										queryId="getInstitucionesAbreviadas"
-										selectedIds="<%=idInstitucionPresentador%>"
-										readOnly="<%=soloLectura%>"
-										width="240"/>
-								</td>
-								
-								<td align="left" id="nombreProducto" colspan="2">
-									<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
-							  			styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
-								</td>
-								
-								<td align="left" id="solicitarServicio1">
-									<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
-										<siga:Idioma key="general.boton.search" />
-									</html:button>
-								</td>
-							</tr>						
+							<%	if(presentador){ %>
 							
-							<tr id="campoBlanco" style="<%=styleCampoBlanco%>">																														
-								<td colspan="6">&nbsp;</td>
-																																																							
-								<td align="left" id="nombreProducto" colspan="2">
-									<html:text name="solicitudCompraForm" property="nombreProducto" style="width:300px" maxlength="100"
+								<tr id="presentador" style="<%=stylePresentador%>">
+									<td class="labelText" width="50px">
+										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
+									</td>
+									
+									<td colspan="5">
+										<siga:Select id="idInstitucionPresentador"
+											queryId="getInstitucionesAbreviadas"
+											selectedIds="<%=idInstitucionPresentador%>"
+											readOnly="<%=soloLectura%>"
+											width="240"/>
+									</td>
+									
+							<% } else { %>					
+							
+								<tr id="campoBlanco" style="<%=styleCampoBlanco%>">	
+									<input type="hidden" id="idInstitucionPresentador" name="idInstitucionPresentador"	value="<%=idInstitucionP%>">																													
+									<td colspan="6">&nbsp;</td>	
+									
+							<% } %>
+									
+								<td align="left" id="nombreProductoId" colspan="2">
+									<html:text name="solicitudCompraForm" styleId="nombreProducto" property="nombreProducto" style="width:300px" maxlength="100"
 							  			styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
 								</td>
 								
@@ -729,9 +732,9 @@
 									<html:button property="idButton" onclick="return buscarProducto();" styleClass="button">
 										<siga:Idioma key="general.boton.search" />
 									</html:button>
-								</td>							
-							</tr>
-						</table>	
+								</td>
+							</tr>	
+						</table>
 	
 						<input type="hidden" id="solicitaralta" value="<%=hmServicioParams.get("solicitaralta")%>" style="display:none"></input>
 						<input type="hidden" id="automatico" value="<%=hmServicioParams.get("automatico")%>" style="display:none"/></input>	
