@@ -941,7 +941,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		
 			
 			// escribiendo todas las lineas en el fichero
-			String[] lineas = new String[c_NBLOQUES*2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
+			String[] lineas;
+			if (nRegistrosBenefSEPA > 0 && nRegistrosBenefOtros > 0)
+				lineas = new String[c_NBLOQUES*2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
+			else
+				lineas = new String[c_NBLOQUES*2 -2 + nRegistrosBenefSEPA + nRegistrosBenefOtros];
+			
 			int j=0; lineas[j] = cabeceras[c_ORDENANTE].toString();
 			
 			if (nRegistrosBenefSEPA > 0) {
