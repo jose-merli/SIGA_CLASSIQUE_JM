@@ -880,7 +880,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Pais", bReceptor.getCodIsoPais(), "I", " ", 2, true)); //pais del beneficiario
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 140, true)); //concepto
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("Referencia interna", bReceptor.getReferenciaInterna(), "I", " ", 35, false)); //identificacion de la instruccion (usamos lo mismo que la referencia del ordenante)
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //tipo de transferencia
+					registrosBenefSEPA[nRegistrosBenefSEPA].append("    "); //tipo de transferencia
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //proposito de transferencia
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
 					
