@@ -47,9 +47,6 @@ import javax.mail.internet.MimePart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.redabogacia.sigaservices.app.autogen.mapper.ScsComunicacionesMapper;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
@@ -1732,419 +1729,188 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 	    return htDatos;
 	}
+	private String getQueryDestinatariosListasNoDinamicasSinDireccion(String idInstitucion, String idEnvio, String idTipoEnvio){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT CL.IDPERSONA,NULL IDDIRECCION,'' CODIGOPOSTAL,'' CORREOELECTRONICO,'' DOMICILIO,'' FAX1,'' FAX2,'' IDPAIS,'' IDPROVINCIA,'' IDPOBLACION,'' POBLACIONEXTRANJERA,'' MOVIL ");
+		sql.append(" FROM ENV_ENVIOS                 EN, ");
+		sql.append(" ENV_LISTACORREOSENVIOS     LE, ");
+		sql.append(" ENV_LISTACORREOS           LI, ");
+		sql.append(" ENV_COMPONENTESLISTACORREO CL ");
+		sql.append(" WHERE EN.IDINSTITUCION =  ");
+		sql.append(idInstitucion);
+		sql.append(" AND EN.IDENVIO =  ");
+		sql.append(idEnvio);
+		sql.append(" AND EN.IDINSTITUCION = LE.IDINSTITUCION ");
+		sql.append(" AND EN.IDENVIO = LE.IDENVIO ");
+		sql.append(" AND LE.IDINSTITUCION = LI.IDINSTITUCION ");
+		sql.append(" AND LI.IDINSTITUCION = CL.IDINSTITUCION ");
+		sql.append(" AND LE.IDLISTACORREO = LI.IDLISTACORREO ");
+		sql.append(" AND LI.IDLISTACORREO = CL.IDLISTACORREO ");
+		sql.append(" AND IDPERSONA NOT IN  ( ");
+		sql.append(getQueryDestinatariosListasNoDinamicasConDireccion(idInstitucion, idEnvio, idTipoEnvio,false));
+		sql.append(" )");
+		
+		
+		
+		return sql.toString();
+	}
 	
-	public Vector getDestinatarios(String idInstitucion, String idEnvio, String idTipoEnvio) 
-		throws SIGAException, ClsExceptions{
-	    
-	    Vector vDestTotales;
-	    
-	    Vector vManNoDin;
-	    
-	    Vector vDestRows = new Vector();
-	    Vector vDestManuales = new Vector();
-	    Vector vDestListaNoDinamicaBeans = new Vector();
-	    Hashtable htDirec = new Hashtable();
-	    
-	    // Selección de destinatarios manuales
-	    
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
-	    htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);
-	  //FIXME  AQUI SE LLAMA 1
-	    EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrbean);
-	    try {
-            vDestManuales = destAdm.select(htPk);
-        } catch (ClsExceptions e1) {
-            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
-        }
-	    
-	    
-	    //NOMBRES TABLAS PARA LA JOIN
-		String T_ENV_ENVIOS = EnvEnviosBean.T_NOMBRETABLA + " EN";
-		String T_ENV_LISTACORREOSENVIOS = EnvListaCorreosEnviosBean.T_NOMBRETABLA + " LE";
-		String T_ENV_LISTACORREOS = EnvListaCorreosBean.T_NOMBRETABLA + " LI";
-		String T_ENV_COMPONENTESLISTACORREO = EnvComponentesListaCorreoBean.T_NOMBRETABLA + " CL";
-		String T_ENV_LISTACORREOCONSULTA = EnvListaCorreoConsultaBean.T_NOMBRETABLA + " LC";
-		String T_CEN_DIRECCIONES = CenDireccionesBean.T_NOMBRETABLA + " DI";
-		String T_CEN_TIPODIRECCIONES = CenDireccionTipoDireccionBean.T_NOMBRETABLA + " TD";
-		String T_CON_CONSULTA = ConConsultaBean.T_NOMBRETABLA + " C";
+	private String getQueryDestinatariosListasNoDinamicasConDireccion(String idInstitucion, String idEnvio, String idTipoEnvio,boolean isIncluirCamposSalida){
+		StringBuffer sql = new StringBuffer();
+		if(isIncluirCamposSalida)
+			sql.append(" SELECT CL.IDPERSONA,DI.IDDIRECCION, DI.CODIGOPOSTAL,DI.CORREOELECTRONICO,DI.DOMICILIO,DI.FAX1,DI.FAX2,DI.IDPAIS,DI.IDPROVINCIA,DI.IDPOBLACION,DI.POBLACIONEXTRANJERA,DI.MOVIL ");
+		else
+			sql.append(" SELECT CL.IDPERSONA ");
+		sql.append(" FROM ENV_ENVIOS                 EN, ");
+		sql.append(" ENV_LISTACORREOSENVIOS     LE, ");
+		sql.append(" ENV_LISTACORREOS           LI, ");
+		sql.append(" ENV_COMPONENTESLISTACORREO CL, ");
+		sql.append(" CEN_DIRECCIONES            DI ");
+		sql.append(" WHERE EN.IDINSTITUCION =  ");
+		sql.append(idInstitucion);
+		sql.append(" AND EN.IDENVIO =  ");
+		sql.append(idEnvio);
+		sql.append(" AND EN.IDINSTITUCION = LE.IDINSTITUCION ");
+		sql.append(" AND EN.IDENVIO = LE.IDENVIO ");
+		sql.append(" AND LE.IDINSTITUCION = LI.IDINSTITUCION ");
+		sql.append(" AND LI.IDINSTITUCION = CL.IDINSTITUCION ");
+		sql.append(" AND LE.IDLISTACORREO = LI.IDLISTACORREO ");
+		sql.append(" AND LI.IDLISTACORREO = CL.IDLISTACORREO ");
+		sql.append(" AND DI.IDINSTITUCION = CL.IDINSTITUCION ");
+		sql.append(" AND CL.IDPERSONA = DI.IDPERSONA ");
+		sql.append(" AND DI.FECHABAJA IS NULL ");
+		sql.append(" AND DI.IDDIRECCION =f_siga_getdireccion(EN.IDINSTITUCION, CL.IDPERSONA, ");
+		sql.append(idTipoEnvio);
+		sql.append(") ");
+		return sql.toString();
+	}
+	
+	private String getQueryDestinatariosListasNoDinamicas(String idInstitucion, String idEnvio, String idTipoEnvio){
+		StringBuffer sql = new StringBuffer();
 		
-		//Tabla env_Envios
-		String EN_IDINSTITUCION = "EN." + EnvEnviosBean.C_IDINSTITUCION;
-		String EN_IDENVIO = "EN." + EnvEnviosBean.C_IDENVIO;
+		sql.append(" SELECT * FROM ( ");
+		sql.append(getQueryDestinatariosListasNoDinamicasSinDireccion(idInstitucion, idEnvio, idTipoEnvio));
+		sql.append(" UNION ");
+		sql.append(getQueryDestinatariosListasNoDinamicasConDireccion(idInstitucion, idEnvio, idTipoEnvio,true));
+		sql.append(" ) ");
 		
-		//Tabla env_ListaCorreosEnvios
-		String LE_IDINSTITUCION = "LE." + EnvListaCorreosEnviosBean.C_IDINSTITUCION;
-		String LE_IDENVIO = "LE." + EnvListaCorreosEnviosBean.C_IDENVIO;
-		String LE_IDLISTACORREO = "LE." + EnvListaCorreosEnviosBean.C_IDLISTACORREO;
+		return getQueryDestinatarios(sql.toString());
 		
-		//Tabla env_ListaCorreos
-		String LI_IDINSTITUCION = "LI." + EnvListaCorreosBean.C_IDINSTITUCION;
-		String LI_IDLISTACORREO = "LI." + EnvListaCorreosBean.C_IDLISTACORREO;
-		String LI_DINAMICA = "LI." + EnvListaCorreosBean.C_DINAMICA;
+	}
+	
+	private String getQueryDestinatarios(String query){
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT PERSONASLISTA.*,P.NOMBRE,P.APELLIDOS1,P.APELLIDOS2,P.APELLIDOS2,P.NIFCIF FROM	( ");
+		sql.append(query);
+		sql.append(" ) PERSONASLISTA, CEN_PERSONA P ");
+		sql.append(" WHERE P.IDPERSONA = PERSONASLISTA.IDPERSONA ");
+		return sql.toString();
+	}
+	
+	private String getQueryConsultasDinamicas(String idInstitucion, String idEnvio){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT C.SENTENCIA, C.ESEXPERTA, C.IDCONSULTA ");
+		sql.append(" FROM CON_CONSULTA C ");
+		sql.append(" WHERE EXISTS (SELECT * ");
+		sql.append(" FROM ENV_LISTACORREOSENVIOS  LE, ");
+		sql.append(" ENV_LISTACORREOS        LI, ");
+		sql.append(" ENV_LISTACORREOCONSULTA LC ");
+		sql.append(" WHERE LE.IDINSTITUCION = ");
+		sql.append(idInstitucion);
+		sql.append(" AND LE.IDENVIO = ");
+		sql.append(idEnvio);
+		sql.append(" AND LE.IDINSTITUCION = LI.IDINSTITUCION ");
+		sql.append(" AND LE.IDLISTACORREO = LI.IDLISTACORREO ");
+		sql.append(" AND LE.IDINSTITUCION = LI.IDINSTITUCION ");
+		sql.append(" AND LE.IDLISTACORREO = LC.IDLISTACORREO ");
+		sql.append(" AND LE.IDINSTITUCION = LC.IDINSTITUCION ");
+		sql.append(" AND LC.IDINSTITUCION_CON = C.IDINSTITUCION ");
+		sql.append(" AND LC.IDCONSULTA = C.IDCONSULTA ");
+		sql.append(" AND LI.DINAMICA = 'S') ");
+		return sql.toString();
 		
-		//Tabla env_ComponentesListaCorreos
-		String CL_IDINSTITUCION = "CL." + EnvComponentesListaCorreoBean.C_IDINSTITUCION;
-		String CL_IDLISTACORREO = "CL." + EnvComponentesListaCorreoBean.C_IDLISTACORREO;
-		String CL_IDPERSONA = "CL." + EnvComponentesListaCorreoBean.C_IDPERSONA;
 		
-		//Tabla env_ListaCorreoConsulta
-		String LC_IDINSTITUCION = "LC." + EnvListaCorreoConsultaBean.C_IDINSTITUCION;
-		String LC_IDLISTACORREO = "LC." + EnvListaCorreoConsultaBean.C_IDLISTACORREO;
-		String LC_IDCONSULTA = "LC." + EnvListaCorreoConsultaBean.C_IDCONSULTA;
-		String LC_IDINSTITUCION_CON = "LC." + EnvListaCorreoConsultaBean.C_IDINSTITUCION_CON;
 		
-		//Tabla con_Consulta
-		String C_IDINSTITUCION = "C." + ConConsultaBean.C_IDINSTITUCION;
-		String C_IDCONSULTA = "C." + ConConsultaBean.C_IDCONSULTA;
-		String C_SENTENCIA = "C." + ConConsultaBean.C_SENTENCIA;
-		String C_ESEXPERTA = "C." + ConConsultaBean.C_ESEXPERTA;
+	}
+	private EnvDestinatariosBean getDestinatario(Row destinatarioRow,Integer idInstitucion,Integer idEnvio){
+		EnvDestinatariosBean envDestinatario = new EnvDestinatariosBean();
+		envDestinatario.setNombre(destinatarioRow.getString("NOMBRE")!=null?destinatarioRow.getString("NOMBRE"):"");
+		envDestinatario.setApellidos1(destinatarioRow.getString("APELLIDOS1")!=null?destinatarioRow.getString("APELLIDOS1"):"");
+		envDestinatario.setApellidos2(destinatarioRow.getString("APELLIDOS2")!=null?destinatarioRow.getString("APELLIDOS2"):"");
+		envDestinatario.setIdInstitucion(idInstitucion);
+		envDestinatario.setIdEnvio(idEnvio);
+		envDestinatario.setIdPersona(Long.valueOf(destinatarioRow.getString("IDPERSONA")));
+		envDestinatario.setCodigoPostal(destinatarioRow.getString("CODIGOPOSTAL")!=null?destinatarioRow.getString("CODIGOPOSTAL"):"");
+		envDestinatario.setCorreoElectronico(destinatarioRow.getString("CORREOELECTRONICO")!=null?destinatarioRow.getString("CORREOELECTRONICO"):"");
+		envDestinatario.setDomicilio(destinatarioRow.getString("DOMICILIO")!=null?destinatarioRow.getString("DOMICILIO"):"");
+		envDestinatario.setFax1(destinatarioRow.getString("FAX1")!=null?destinatarioRow.getString("FAX1"):"");
+		envDestinatario.setFax2(destinatarioRow.getString("FAX2")!=null?destinatarioRow.getString("FAX2"):"");
+		envDestinatario.setIdPais(destinatarioRow.getString("IDPAIS")!=null?destinatarioRow.getString("IDPAIS"):"");
+		envDestinatario.setIdProvincia(destinatarioRow.getString("IDPROVINCIA")!=null?destinatarioRow.getString("IDPROVINCIA"):"");
+		envDestinatario.setIdPoblacion(destinatarioRow.getString("IDPOBLACION")!=null?destinatarioRow.getString("IDPOBLACION"):"");
+		envDestinatario.setPoblacionExtranjera(destinatarioRow.getString("POBLACIONEXTRANJERA")!=null?destinatarioRow.getString("POBLACIONEXTRANJERA"):"");
+		envDestinatario.setMovil(destinatarioRow.getString("MOVIL")!=null?destinatarioRow.getString("MOVIL"):"");
+		envDestinatario.setNifcif(destinatarioRow.getString("NIFCIF")!=null?destinatarioRow.getString("NIFCIF"):"");
 		
-		//Tabla cen_Direcciones
-		String DI_IDINSTITUCION = "DI." + CenDireccionesBean.C_IDINSTITUCION;
-		String DI_IDPERSONA = "DI." + CenDireccionesBean.C_IDPERSONA;
-		String DI_IDDIRECCION = "DI." + CenDireccionesBean.C_IDDIRECCION;
-		String DI_FECHABAJA = "DI." + CenDireccionesBean.C_FECHABAJA;
 		
-		//Tabla cen_Direcciones_tipodireccion
-		String TD_IDINSTITUCION = "TD." + CenDireccionTipoDireccionBean.C_IDINSTITUCION;
-		String TD_IDPERSONA = "TD." + CenDireccionTipoDireccionBean.C_IDPERSONA;
-		String TD_IDDIRECCION = "TD." + CenDireccionTipoDireccionBean.C_IDDIRECCION;
-		String TD_IDTIPODIRECCION = "TD." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION;
-		String sql ="";
-		//*********** Seleccion de destinatarios de lista no dinamica***********
-	    
-		// Acceso a BBDD
-		RowsContainer rcDes = null;
+		
+		
+		return envDestinatario;
+		
+		
+	}
+	
+	
+	public Vector getDestinatarios(String idInstitucion, String idEnvio, String idTipoEnvio)throws SIGAException, ClsExceptions{
+
+		Vector<EnvDestinatariosBean> vDestManuales = null;
+		Hashtable<String,EnvDestinatariosBean> destinatariosHashtable = new Hashtable<String, EnvDestinatariosBean>();
+
+		Hashtable htPk = new Hashtable();
+		htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
+		htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);
+		//	    Obtenemos los destinatarios manuales
+		EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrbean);
 		try {
-		    rcDes = new RowsContainer();
-
-		     sql =
-		    	"SELECT DISTINCT * FROM "+
-		    	T_ENV_ENVIOS + ", " +
-		    	T_ENV_LISTACORREOSENVIOS + ", " +
-		    	T_ENV_LISTACORREOS + ", " +
-		    	T_ENV_COMPONENTESLISTACORREO+
-		    	" WHERE "+EN_IDINSTITUCION + " = " + idInstitucion+
-		    	" AND " + EN_IDENVIO + " = " + idEnvio+
-		    	" AND " + EN_IDINSTITUCION + " = " + LE_IDINSTITUCION+
-		    	" AND " + EN_IDENVIO + " = " + LE_IDENVIO+
-		    	" AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION+
-		    	" AND " + LI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-		    	" AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO+
-		    	" AND " + LI_IDLISTACORREO + " = " + CL_IDLISTACORREO;
-
-			ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios.ListaNoDin -> QUERY: "+sql,10);
-
+			vDestManuales = destAdm.select(htPk);
+			
+		} catch (ClsExceptions e1) {
+			ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error obteniendo los destinatarios manuales del envio",e1,10);
+			throw new SIGAException("process.database_error");
+		}
+		
+		for (EnvDestinatariosBean objectDestinatariosBean : vDestManuales) {
+			destinatariosHashtable.put(objectDestinatariosBean.getTipoDestinatario()+"_"+objectDestinatariosBean.getIdPersona(), objectDestinatariosBean);
+			
+		}
+		
+		String sql ="";
+		//      Seleccion de destinatarios de lista no dinamica. Se obtiene tanto los destinatarios con direccion de envio como los que no la tienen.
+		//		Estos ultimos quedaran anotados en el log como usuario sin direccion de correo configurada
+		try {
+			RowsContainer rcDes = new RowsContainer();
+			sql = getQueryDestinatariosListasNoDinamicas(idInstitucion, idEnvio, idTipoEnvio);
 			if (rcDes.query(sql)) {
 				for (int i = 0; i < rcDes.size(); i++)	{
 					Row fila = (Row) rcDes.get(i);
-					vDestRows.add(fila);
+					if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA")))
+						destinatariosHashtable.put("CEN_PERSONA_"+fila.getString("IDPERSONA"), getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
 				}
 			}
-			
-		}catch(Exception e){
-//	        throw new SIGAException("messages.envios.error.obtenciondestinatarios",e);
-            throw new ClsExceptions(e,"Error obteniendo los destinatarios del envio");
 
-	    }
-		
-				
-		//*********** Seleccion de direcciones ************
-		
-		//Acceso a BBDD
-		RowsContainer rcDir = null;
-		
-		try {
-			rcDir = new RowsContainer();
+		}catch(ClsExceptions e){
+			ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error obteniene los destinatarios de las listas no dinamicas",e,10);
+			throw new SIGAException("process.database_error");
 
-			 sql =
-				"SELECT DISTINCT * FROM "+
-				T_ENV_ENVIOS + ", " +
-				T_ENV_LISTACORREOSENVIOS + ", " +
-				T_ENV_LISTACORREOS + ", " +
-				T_ENV_COMPONENTESLISTACORREO + ", " +
-				T_CEN_DIRECCIONES+
-				
-				" WHERE "+EN_IDINSTITUCION + " = " + idInstitucion+
-				" AND " + EN_IDENVIO + " = " + idEnvio+
-				" AND " + EN_IDINSTITUCION + " = " + LE_IDINSTITUCION+
-				" AND " + EN_IDENVIO + " = " + LE_IDENVIO+
-				" AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION+
-				" AND " + LI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-				" AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO+
-				" AND " + LI_IDLISTACORREO + " = " + CL_IDLISTACORREO+
-				" AND " + DI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-				" AND " + CL_IDPERSONA + " = " + DI_IDPERSONA+
-				" AND " + DI_FECHABAJA + " IS NULL "+
-				" AND " + DI_IDDIRECCION + 
-				" = f_siga_getdireccion(" +EN_IDINSTITUCION + "," +CL_IDPERSONA + "," +idTipoEnvio + ")";
-				
-			
-			ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios.direcciones -> QUERY: "+sql,10);
-
-			if (rcDir.query(sql)) {// vemos si existe direccion preferente de tipo envio
-			 	
-				for (int i = 0; i < rcDir.size(); i++)	{
-					Row fila = (Row) rcDir.get(i);
-					String idPersona = fila.getString(CenDireccionesBean.C_IDPERSONA);
-					htDirec.put(idPersona,fila);
-				}
-			}else{
-				sql =
-					"SELECT DISTINCT * FROM "+
-					T_ENV_ENVIOS + ", " +
-					T_ENV_LISTACORREOSENVIOS + ", " +
-					T_ENV_LISTACORREOS + ", " +
-					T_ENV_COMPONENTESLISTACORREO + ", " +
-					T_CEN_DIRECCIONES+", "+
-					T_CEN_TIPODIRECCIONES+
-					" WHERE "+EN_IDINSTITUCION + " = " + idInstitucion+
-					" AND " + EN_IDENVIO + " = " + idEnvio+
-					" AND " + EN_IDINSTITUCION + " = " + LE_IDINSTITUCION+
-					" AND " + EN_IDENVIO + " = " + LE_IDENVIO+
-					" AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION+
-					" AND " + LI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-					" AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO+
-					" AND " + LI_IDLISTACORREO + " = " + CL_IDLISTACORREO+
-					" AND " + DI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-					" AND " + CL_IDPERSONA + " = " + DI_IDPERSONA+
-					" AND " + DI_FECHABAJA + " IS NULL "+
-					" AND " + DI_IDINSTITUCION + " = " + TD_IDINSTITUCION+
-					" AND " + DI_IDPERSONA + " = " + TD_IDPERSONA+
-					" AND " + DI_IDDIRECCION + " = " + TD_IDDIRECCION+
-					" AND " + TD_IDTIPODIRECCION +" = 3" +
-					" AND ROWNUM<2";// miramos si existe alguna direccion de tipo correo
-			 	 
-				if (rcDir.query(sql)) {// vemos si existe direccion de tipo despacho
-					 
-						for (int i = 0; i < rcDir.size(); i++)	{
-							Row fila = (Row) rcDir.get(i);
-							String idPersona = fila.getString(CenDireccionesBean.C_IDPERSONA);
-							htDirec.put(idPersona,fila);
-						}
-				}else{
-					 sql =
-						"SELECT DISTINCT * FROM "+
-						T_ENV_ENVIOS + ", " +
-						T_ENV_LISTACORREOSENVIOS + ", " +
-						T_ENV_LISTACORREOS + ", " +
-						T_ENV_COMPONENTESLISTACORREO + ", " +
-						T_CEN_DIRECCIONES+", "+
-						T_CEN_TIPODIRECCIONES+
-						
-						" WHERE "+EN_IDINSTITUCION + " = " + idInstitucion+
-						" AND " + EN_IDENVIO + " = " + idEnvio+
-						" AND " + EN_IDINSTITUCION + " = " + LE_IDINSTITUCION+
-						" AND " + EN_IDENVIO + " = " + LE_IDENVIO+
-						" AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION+
-						" AND " + LI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-						" AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO+
-						" AND " + LI_IDLISTACORREO + " = " + CL_IDLISTACORREO+
-						" AND " + DI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-						" AND " + CL_IDPERSONA + " = " + DI_IDPERSONA+
-						" AND " + DI_FECHABAJA + " IS NULL "+
-						" AND " + DI_IDINSTITUCION + " = " + TD_IDINSTITUCION+
-						" AND " + DI_IDPERSONA + " = " + TD_IDPERSONA+
-						" AND " + DI_IDDIRECCION + " = " + TD_IDDIRECCION+
-						" AND " + TD_IDTIPODIRECCION +" = 2"+// miramos si existe alguna direccion de tipo despacho
-						" AND ROWNUM<2";
-				 	if (rcDir.query(sql)) {//vemos si existe alguna direccion de tipo correo
-							
-							for (int i = 0; i < rcDir.size(); i++)	{
-								Row fila = (Row) rcDir.get(i);
-								String idPersona = fila.getString(CenDireccionesBean.C_IDPERSONA);
-								htDirec.put(idPersona,fila);
-							}
-							
-				 	}else{
-				 		 sql =
-							"SELECT DISTINCT * FROM "+
-							T_ENV_ENVIOS + ", " +
-							T_ENV_LISTACORREOSENVIOS + ", " +
-							T_ENV_LISTACORREOS + ", " +
-							T_ENV_COMPONENTESLISTACORREO + ", " +
-							T_CEN_DIRECCIONES+", "+
-							T_CEN_TIPODIRECCIONES+
-							
-							" WHERE "+EN_IDINSTITUCION + " = " + idInstitucion+
-							" AND " + EN_IDENVIO + " = " + idEnvio+
-							" AND " + EN_IDINSTITUCION + " = " + LE_IDINSTITUCION+
-							" AND " + EN_IDENVIO + " = " + LE_IDENVIO+
-							" AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION+
-							" AND " + LI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-							" AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO+
-							" AND " + LI_IDLISTACORREO + " = " + CL_IDLISTACORREO+
-							" AND " + DI_IDINSTITUCION + " = " + CL_IDINSTITUCION+
-							" AND " + CL_IDPERSONA + " = " + DI_IDPERSONA+
-							" AND " + DI_FECHABAJA + " IS NULL "+
-							" AND ROWNUM<2";
-					 	if (rcDir.query(sql)) {//vemos si existe cualquier direccion
-							
-								for (int i = 0; i < rcDir.size(); i++)	{
-									Row fila = (Row) rcDir.get(i);
-									String idPersona = fila.getString(CenDireccionesBean.C_IDPERSONA);
-									htDirec.put(idPersona,fila);
-								}
-					 	}
-				 		
-				}
-					
-			}	 
-			}	 	
-		}catch(Exception e){
-//	        throw new SIGAException("messages.envios.error.obtenciondestinatarios",e);
-            throw new ClsExceptions(e,"Error obteniendo los destinatarios del envio");
-
-	    }
-		
-		
-		//************* Creamos los beans de las direcciones obtenidas **********
-		
-		for (int i=0;i<vDestRows.size();i++){
-		    Row rDest = (Row)vDestRows.elementAt(i);
-		    String idPersona = rDest.getString(EnvDestinatariosBean.C_IDPERSONA);
-		    Row rDir = (Row)htDirec.get(idPersona);
-		    if (rDir!=null){
-		        //Si tenemos direccion, creamos el bean de destinatario		    	
-		        EnvDestinatariosBean destBean = new EnvDestinatariosBean();
-		        CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
-		        String nombre=null, apellido1=null, apellido2=null;
-		        try {
-		        	CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(idPersona));
-		        	nombre = personaBean.getNombre();
-		        	apellido1 = personaBean.getApellido1();
-		        	apellido2 = personaBean.getApellido2();
-		        } catch (Exception e){
-		        	nombre="";
-		        	apellido1="";
-		        	apellido2="";
-		        }
-		        destBean.setNombre(nombre);
-		        destBean.setApellidos1(apellido1);
-		        destBean.setApellidos2(apellido2);
-		        destBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-		        destBean.setIdEnvio(Integer.valueOf(idEnvio));
-		        destBean.setIdPersona(Long.valueOf(idPersona));
-		        destBean.setCodigoPostal(rDir.getString(CenDireccionesBean.C_CODIGOPOSTAL));
-		        destBean.setCorreoElectronico(rDir.getString(CenDireccionesBean.C_CORREOELECTRONICO));
-		        destBean.setDomicilio(rDir.getString(CenDireccionesBean.C_DOMICILIO));
-		        destBean.setFax1(rDir.getString(CenDireccionesBean.C_FAX1));
-		        destBean.setFax2(rDir.getString(CenDireccionesBean.C_FAX2));
-		        destBean.setIdPais(rDir.getString(CenDireccionesBean.C_IDPAIS));
-		        destBean.setIdProvincia(rDir.getString(CenDireccionesBean.C_IDPROVINCIA));
-		        destBean.setIdPoblacion(rDir.getString(CenDireccionesBean.C_IDPOBLACION));
-		        destBean.setPoblacionExtranjera(rDir.getString(CenDireccionesBean.C_POBLACIONEXTRANJERA));
-		        destBean.setMovil(rDir.getString(CenDireccionesBean.C_MOVIL));
-		        
-		        vDestListaNoDinamicaBeans.add(destBean);
-		        
-		    } else {
-		        //El destinatario no tiene dirección. Lo mostraremos en un log
-		    	ClsLogging.writeFileLog("El destinatario " + idPersona + "no tiene direccion",10);
-
-	            // RGG ??
-		        //Si NO tenemos direccion, creamos el bean de destinatario igualmente, pero sin direccion		    	
-		        EnvDestinatariosBean destBean = new EnvDestinatariosBean();
-		        CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
-		        String nombre=null, apellido1=null, apellido2=null;
-		        try {
-		        	CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(idPersona));
-		        	nombre = personaBean.getNombre();
-		        	apellido1 = personaBean.getApellido1();
-		        	apellido2 = personaBean.getApellido2();
-		        } catch (Exception e){
-		        	nombre="";
-		        	apellido1="";
-		        	apellido2="";
-		        }
-		        destBean.setNombre(nombre);
-		        destBean.setApellidos1(apellido1);
-		        destBean.setApellidos2(apellido2);
-		        destBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-		        destBean.setIdEnvio(Integer.valueOf(idEnvio));
-		        destBean.setIdPersona(Long.valueOf(idPersona));
-
-		        vDestListaNoDinamicaBeans.add(destBean);
-/*
-		        try {
-		        	insertarDestTemp(destBean);
-		        	insertarMensajeLog(destBean, "El destinatario " + idPersona + "no tiene direccion");
-		        } catch (Exception e) {}
-*/
-		    }
 		}
-		
-		
-		//Anhadimos los destinatarios manuales a los de la lista, comprobando que
-		//no están ya incluidos.
-		if (vDestListaNoDinamicaBeans.size()>0){
-		    if (vDestManuales.size()>0){		
-				for (int x=0;x<vDestManuales.size();x++){
-				    boolean existe = false;
-				    EnvDestinatariosBean destMan = null;
-				    for (int y=0;y<vDestListaNoDinamicaBeans.size();y++){
-				        destMan = (EnvDestinatariosBean)vDestManuales.elementAt(x);
-				        if((destMan.getTipoDestinatario()!=null && destMan.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)|| destMan.getTipoDestinatario()==null))
-				        {
-				        	EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestListaNoDinamicaBeans.elementAt(y);
-					        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
-					            existe = true;
-					            break;
-					        }
-				        }else{
-				        	break;
-				        }
-				    }
-				    if (!existe) vDestListaNoDinamicaBeans.add(destMan);
-				}				
-			}
-		    vManNoDin = vDestListaNoDinamicaBeans;
-		} else if (vDestManuales.size()>0){
-		    vManNoDin = vDestManuales;		    
-		} else {
-		    vManNoDin = null;
-		}
-		
-		
 		/************ Destinatarios de listas dinámicas ***************/
-		
-		// 1. Obtenemos todas las queries distintas para el envío y la institución en cuestión
-		
-		Vector vQueries = new Vector();
-		Vector vQueriesExp = new Vector();
-		
+//	  Obtenemos todas las queries distintas para el envío y la institución en cuestión
+		Vector vQueriesConsultasNoExpertas = new Vector();
+		Vector vQueriesConsultasExpertas = new Vector();
 		//Acceso a BBDD
-		RowsContainer rcQueries = null;
 		try {
-		    rcQueries = new RowsContainer();
-
-			sql = "SELECT " + C_SENTENCIA + "," + C_ESEXPERTA + "," + C_IDCONSULTA + " FROM ";
-		    sql +=  T_CON_CONSULTA;
-
-		    sql += " WHERE EXISTS ( SELECT * FROM ";
-		    sql +=  T_ENV_LISTACORREOSENVIOS + ", " +
-		    		T_ENV_LISTACORREOS + ", " +
-		    		T_ENV_LISTACORREOCONSULTA;
-		    sql += " WHERE ";
-		    sql += LE_IDINSTITUCION + " = " + idInstitucion;
-		    sql += " AND " + LE_IDENVIO + " = " + idEnvio;
-		    
-			sql += " AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION;
-			sql += " AND " + LE_IDLISTACORREO + " = " + LI_IDLISTACORREO;
-			sql += " AND " + LE_IDINSTITUCION + " = " + LI_IDINSTITUCION;
-			sql += " AND " + LE_IDLISTACORREO + " = " + LC_IDLISTACORREO;
-			sql += " AND " + LE_IDINSTITUCION + " = " + LC_IDINSTITUCION;
-			//2009-CGAE-119-INC-CAT-035
-			//se recupera la consulta de la institución que la creo, no de la institución donde se va a usar
-			//puesto que se podría recuperar una consulta erronea
-			sql += " AND " + LC_IDINSTITUCION_CON + " = " + C_IDINSTITUCION;
-			sql += " AND " + LC_IDCONSULTA + " = " + C_IDCONSULTA;
-			sql += " AND " + LI_DINAMICA + " = 'S')";
-					
-			ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios.queries -> QUERY: "+sql,10);
-
-			if (rcQueries.query(sql)) {
+			RowsContainer rcQueries = new RowsContainer();
+			if (rcQueries.query(getQueryConsultasDinamicas(idInstitucion, idEnvio))) {
 				for (int i = 0; i < rcQueries.size(); i++)	{
 					Row fila = (Row) rcQueries.get(i);
 					String sQuery = fila.getString(ConConsultaBean.C_SENTENCIA);
@@ -2152,52 +1918,55 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					sQuery = sQuery.replaceFirst(EnvTipoEnviosAdm.CONS_TIPOENVIO,idTipoEnvio);
 					//Anhadimos la query al vector resultante de queries
 					if("1".equals(fila.getString(ConConsultaBean.C_ESEXPERTA))){
-						vQueriesExp.add(fila);
+						vQueriesConsultasExpertas.add(fila);
 					}
 					else{
-						vQueries.add(sQuery);
+						vQueriesConsultasNoExpertas.add(sQuery);
 					}
 				}
 			}
 		} catch (ClsExceptions e1) {
-//            throw new SIGAException("messages.envios.error.obtenciondestinatarios",e1);
-            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
-			
-        }
-		//2. Montamos y ejecutamos la query que obtendrá 
-		//   el vector de destinatarios de las listas dinámicas
-		Vector vDestDin = new Vector();
-		
-		if (vQueries.size()>0){
-		     sql = "SELECT * FROM ";
-		    for (int i = 0; i < vQueries.size(); i++) {
-                sql += "(" + vQueries.elementAt(i) + ") UNION ";                    
-            }
-		    //borramos el último UNION
-		    sql = sql.substring(0,sql.length()-7);
-		    ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios ->"+ sql,10);
-		    
-		    //Acceso a BBDD
+			ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error ald obtener las consultas dinamicas",e1,10);
+			throw new SIGAException("process.database_error");
+
+		}
+		//		Montamos y ejecutamos la query que obtendrá el vector de destinatarios de las listas dinámicas no expertas
+		Vector vDestDinamicasNoExpertas = new Vector();
+
+		if (vQueriesConsultasNoExpertas.size()>0){
+			sql = "SELECT * FROM ";
+			for (int i = 0; i < vQueriesConsultasNoExpertas.size(); i++) {
+				sql += "(" + vQueriesConsultasNoExpertas.elementAt(i) + ") UNION ";                    
+			}
+			//borramos el último UNION
+			sql = sql.substring(0,sql.length()-7);
 			try {
 				RowsContainer rcDestDin = new RowsContainer();
-				if (rcDestDin.query(sql)) {
-					obtenerBeanResultados(idInstitucion, idEnvio, vDestDin, rcDestDin);
+				if (rcDestDin.query(getQueryDestinatarios(sql.toString()))) {
+					for (int i = 0; i < rcDestDin.size(); i++)	{
+						Row fila = (Row) rcDestDin.get(i);
+						if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA")))
+							destinatariosHashtable.put("CEN_PERSONA_"+fila.getString("IDPERSONA"), getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+					}
 				}
+
 			} catch (ClsExceptions e1) {
-//	            throw new SIGAException("messages.envios.error.obtenciondestinatarios",e1);
-	            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
-				
-	        }					
+				ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error al obtener los destinatarios de las listas dinamicas no expertas",e1,10);
+				throw new SIGAException("process.database_error");
+
+
+			}					
 		}
-		
+
 		//2009-CGAE-119-INC-CAT-035
-		//3. Ejecuta las consultas expertas 
-		if (vQueriesExp.size()>0){
-		    for (int i = 0; i < vQueriesExp.size(); i++) {
+		//		Montamos y ejecutamos la query que obtendrá el vector de destinatarios de las listas dinámicas  expertas 
+		if (vQueriesConsultasExpertas.size()>0){
+			for (int i = 0; i < vQueriesConsultasExpertas.size(); i++) {
 				//Hay que crear el objeto ConConsultaBean 
-		    	//Las consultas expertas para envios no pueden tener criterios dinamicos, por eso
-		    	//el último parametro de la llamada a procesarEjecutarConsulta es un vector vacío
-				Row fila = (Row) rcQueries.get(i);
+				//Las consultas expertas para envios no pueden tener criterios dinamicos, por eso
+				//el último parametro de la llamada a procesarEjecutarConsulta es un vector vacío
+				Row fila = (Row) vQueriesConsultasExpertas.get(i);
+				//				Row fila = (Row) rcQueries.get(i);
 				ConConsultaAdm conAdm = new ConConsultaAdm(usrbean);
 				ConConsultaBean conBean = new ConConsultaBean();
 				conBean.setEsExperta("1");
@@ -2205,52 +1974,40 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				conBean.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_ENV);
 				conBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 				conBean.setIdConsulta(Integer.valueOf(fila.getString(ConConsultaBean.C_IDCONSULTA)));
-				
-				Hashtable ht = conAdm.procesarEjecutarConsulta(idTipoEnvio, conBean, new CriterioDinamico[0], true);
-	
+				Hashtable ht = null;
+				try {
+					ht = conAdm.procesarEjecutarConsulta(idTipoEnvio, conBean, new CriterioDinamico[0], true);
+				}catch (ClsExceptions e) {
+					ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error al procesar la consulta experta",e,10);
+					throw new SIGAException("process.database_error");
+
+				}
+
 				sql = (String) ht.get("sentencia");
 				Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
-				RowsContainer rcDestDin = new RowsContainer();
-				ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatarios Consulta Experta ->"+ sql,10);
-				rcDestDin.findBind(sql,codigosOrdenados);
-				obtenerBeanResultados(idInstitucion, idEnvio, vDestDin, rcDestDin);
-            }
-		}
-		
-		//Anhadimos los destinatarios manuales y no dinámicos a los de las listas dinámicas,		
-		//comprobando que no están ya incluidos.
-		if (vDestDin!=null && vDestDin.size()>0){
-		    if (vManNoDin!=null && vManNoDin.size()>0){		
-				for (int x=0;x<vManNoDin.size();x++){
-				    boolean existe = false;
-				    EnvDestinatariosBean destMan = null;
-				    for (int y=0;y<vDestDin.size();y++){
-				        destMan = (EnvDestinatariosBean)vManNoDin.elementAt(x);
-				        if((destMan.getTipoDestinatario()!=null && destMan.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)|| destMan.getTipoDestinatario()==null))
-					       {
-				        	EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestDin.elementAt(y);
-					        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
-					            existe = true;
-					            break;
-					        }
-				        }else{
-				        	break;
-				        }
-				    }
-				    if (!existe) vDestDin.add(destMan);
-				}				
-			}
-		    vDestTotales = vDestDin;
-		} else if (vManNoDin!=null && vManNoDin.size()>0){
-		    vDestTotales = vManNoDin;		    
-		} else {
-            //insertarMensajeLog(null, "No hay destinatarios para el envío");
-			vDestTotales = null;
-		}
-		
-		return vDestTotales;
-	}
 
+				String sqlExperta = getQueryDestinatarios(sql);
+
+				RowsContainer rcDestDin = new RowsContainer();
+				try {
+					
+					if (rcDestDin.findBind(getQueryDestinatarios(sql.toString()),codigosOrdenados)) {
+						for (int j = 0; j < rcDestDin.size(); j++)	{
+							Row filaDestDin = (Row) rcDestDin.get(j);
+							if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA")))
+								destinatariosHashtable.put("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"), getDestinatario(filaDestDin,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+						}
+					}
+				}catch (ClsExceptions e) {
+					ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error al obtener los destinatarios de las listas dinamicas expertas",e,10);
+					throw new SIGAException("process.database_error");
+
+				}
+			}
+		}
+		Vector<EnvDestinatariosBean> envDestinatariosBeans = new Vector<EnvDestinatariosBean>(destinatariosHashtable.values());
+		return envDestinatariosBeans;
+	}
 
 
 	private void obtenerBeanResultados(String idInstitucion, String idEnvio,
@@ -2833,7 +2590,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            		sLinea += admPob.getDescripcion(destBean.getIdPoblacion()) + separador;
 	            	sLinea += " " + separador;
 	            } else {
-	            	sLinea += destBean.getPoblacionExtranjera() + separador;
+	            	if(destBean.getPoblacionExtranjera()!=null && !destBean.getPoblacionExtranjera().equalsIgnoreCase("null"))
+	            		sLinea += destBean.getPoblacionExtranjera() + separador;
+	            	else
+	            		sLinea += "" + separador;
 	            	if(destBean.getPais()!=null && !destBean.getPais().trim().equals("") )
 		            	sLinea += destBean.getPais() + separador;
 	            	else
@@ -2882,6 +2642,229 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }        
 	    
 	}
+	
+	public void generarLogEnvioHTTuneado(Vector vDestinatarios,EnvRemitentesBean remitente,String documentos, Hashtable htErrores, EnvEnviosBean envBean)
+			throws SIGAException, ClsExceptions {
+			    
+				BufferedWriter bwOut = null;
+			    String sIdInstitucion = String.valueOf(envBean.getIdInstitucion());
+			    String sIdEnvio = String.valueOf(envBean.getIdEnvio());
+			    String sFicheroLog = "";
+			    try {
+			        // RGG creo los directorios
+			    	File auxDirectorios = new File(this.getPathEnvio(sIdInstitucion,sIdEnvio));
+			    	auxDirectorios.mkdirs();
+			    	// RGG 08-09-2005 Cambio para que el fichero de log sea unico 
+			        sFicheroLog = this.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls"; 
+			        File borrar = new File(sFicheroLog);
+			        if (borrar.exists()) borrar.delete();
+			        bwOut = new BufferedWriter(new FileWriter(sFicheroLog));
+			    } catch (Exception e1) {
+			        throw new SIGAException("messages.general.error",e1);
+			    }
+			    
+			    final String separador = ClsConstants.SEPARADOR; 
+		        //String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
+		        String cadRemitente = "";
+		        String txtRemitente = "";
+		        if(remitente!=null){
+		        	cadRemitente = "REMITENTE"+separador;
+		        	if(remitente.getDescripcion()!=null && !remitente.getDescripcion().equals("")){
+			        	
+			     	    txtRemitente = remitente.getDescripcion(); 
+		        	}else{
+		        		CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
+			     	    Hashtable htPk = new Hashtable();
+			     	    htPk.put(CenPersonaBean.C_IDPERSONA,remitente.getIdPersona());
+			     	  	Vector vPersona = personaAdm.select(htPk);
+			     	    CenPersonaBean personaBean = (CenPersonaBean) vPersona.firstElement();
+			     	    txtRemitente = personaBean.getNombre()+" "+personaBean.getApellido1();
+		        		
+		        	}
+		        }
+		        
+			    String sLineaCabecera = "ENVIO"+separador+"DESCRIPCION"+separador+"FECHA CREACION"+separador+cadRemitente+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"TEL.DESPACHO"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador+"DOCUMENTOS"+separador;
+		        //envBean.getDescripcion()
+		        //envBean.getFecha Creacion envio
+		        //Remitente
+		        //envBean.getUsuMod()
+		        
+			    //Por cada bean insertamos una línea en el archivo de log, 
+			    //con todos los campos del bean separados por comas
+			    if (vDestinatarios!=null && vDestinatarios.size()>0) {
+			        for (int i=0;i<vDestinatarios.size();i++){
+			        	EnvDestinatariosBean destBean = (EnvDestinatariosBean)vDestinatarios.elementAt(i);
+			            String sLinea = "";
+			            
+			            /*
+			            while (eCampos.hasMoreElements()){
+			            	Object key = eCampos.nextElement();
+			            	Object val = htBean.get(key);
+		            		sLinea = sLinea + val.toString() + separador;
+			            }
+			            sLineaCabecera = sLineaCabecera + "MENSAJE" + separador;
+			            */
+			            sLinea += sIdEnvio + separador;
+			            sLinea += envBean.getDescripcion() + separador;
+			            if(envBean.getFechaCreacion().equalsIgnoreCase("SYSDATE"))
+			            	sLinea += GstDate.getHoyJava() + separador;
+			            else
+			            	sLinea += GstDate.getFormatedDateLong("", envBean.getFechaCreacion())  + separador;
+			            if(remitente!=null)
+			            	sLinea += txtRemitente + separador;
+			            
+			            
+			            if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+//			            	Hashtable htPer = new Hashtable();
+//							htPer.put(ScsPersonaJGBean.C_IDPERSONA,destBean.getIdPersona());
+//							htPer.put(ScsPersonaJGBean.C_IDINSTITUCION,destBean.getIdInstitucion());
+//							ScsPersonaJGAdm admPerJG = new ScsPersonaJGAdm(this.usrbean);
+//							Vector v = admPerJG.selectByPK(htPer);
+//							ScsPersonaJGBean beanPersonaJG = null;
+//							if (v!=null && v.size()>0) {
+//								beanPersonaJG = (ScsPersonaJGBean) v.get(0);
+							sLinea += destBean.getNifcif()!=null?destBean.getNifcif():"" ;
+							sLinea += separador;
+							sLinea += destBean.getNombre() + separador;
+							sLinea += destBean.getApellidos1() + separador;
+							sLinea += destBean.getApellidos2()!=null?destBean.getApellidos2():"" ;
+							sLinea += separador;
+			            
+							
+							
+			            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
+			            	sLinea += destBean.getNifcif()!=null?destBean.getNifcif():"" ;
+			            	sLinea += separador;
+							sLinea += destBean.getNombre() + separador;
+							sLinea += destBean.getApellidos1() + separador;
+							sLinea += destBean.getApellidos2()!=null?destBean.getApellidos2():"" ;
+							sLinea += separador;
+
+							
+			            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
+			            	sLinea += destBean.getNifcif()!=null?destBean.getNifcif():"" ;
+			            	sLinea += separador;
+							sLinea += destBean.getNombre() + separador;
+							sLinea += destBean.getApellidos1() + separador;
+							sLinea += destBean.getApellidos2()!=null?destBean.getApellidos2():"" ;
+							sLinea += separador;
+
+							
+			            }else if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)){
+			            	sLinea += destBean.getNifcif()!=null?destBean.getNifcif():"";
+			            	sLinea += separador;
+							sLinea += destBean.getNombre() + separador; 
+							sLinea += destBean.getApellidos1() + separador;
+							sLinea += destBean.getApellidos2()!=null?destBean.getApellidos2():"" ;
+							sLinea += separador;
+
+							
+			            }else{
+			            	throw new SIGAException("Este tipo de persona no está controlado por el sistema");
+			            }
+			            sLinea += destBean.getFax1() + separador;
+			            sLinea += destBean.getFax2() + separador;
+			            sLinea += destBean.getMovil() + separador;
+			            GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+			    		String preferencia = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");		    		
+			    		
+			    		Hashtable direcciones = new Hashtable();
+			    		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrbean);        		 
+			    		CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
+		    			direcciones=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"2");
+		    		 
+		    			//si tiene direccion de tipo despacho saca el telefono1 del despacho
+		    		    if (direcciones!=null && direcciones.size()>0) {		           
+		    		    	Hashtable htDir = (Hashtable)direcciones;
+					    	sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;				      			       
+		    		    }else {
+		    		    	//si no tiene direccion de tipo despacho se busca la dirección preferente y se saca el telefono1 despacho.
+		    		    		Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),preferencia);		    				
+			    				if (direccion!=null && direccion.size()!=0) {
+			    					Hashtable htDir = (Hashtable)direccion;
+			    					sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;		    					
+			    				}else {    					
+			    					//si no tiene ni direccion de tipo despacho, ni una dirección preferente se saca el telefono1 de la primera dirección que se encuentre.
+			    					direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"");
+			    					if (direccion!=null || direccion.size()!=0) {
+			    					Hashtable htDir = (Hashtable)direccion;
+			    					//String telefono=htDir.get(CenDireccionesBean.C_TELEFONO1).toString();
+			    					if ((htDir.get(CenDireccionesBean.C_TELEFONO1))!=null){
+			    						sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;	
+			    					}else{
+			    						sLinea += " " +separador;
+			    					}
+			    					
+			    					}
+			    				}        		    	
+		    		    }
+			            sLinea += destBean.getCorreoElectronico() + separador;
+			            sLinea += UtilidadesString.sustituirParaExcell(destBean.getDomicilio()) + separador;
+			            if(destBean.getProvincia()!=null && !destBean.getProvincia().trim().equals("") )
+			            	sLinea += destBean.getProvincia() + separador;
+			            else
+			            	sLinea += "" + separador;
+			            
+			            
+			            if (destBean.getIdPais().equals("") || destBean.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA)) {
+			            	if(destBean.getPoblacion()!=null && !destBean.getPoblacion().trim().equals("") )
+				            	sLinea += destBean.getPoblacion() + separador;
+			            	else
+			            		sLinea += "" + separador;
+			            	sLinea += " " + separador;
+			            } else {
+			            	if(destBean.getPoblacionExtranjera()!=null && !destBean.getPoblacionExtranjera().equalsIgnoreCase("null"))
+			            		sLinea += destBean.getPoblacionExtranjera() + separador;
+			            	else
+			            		sLinea += "" + separador;
+			            	if(destBean.getPais()!=null && !destBean.getPais().trim().equals("") )
+				            	sLinea += destBean.getPais() + separador;
+			            	else
+			            		sLinea += "" + separador;
+			            }
+			           
+			                String err = (htErrores.get(destBean)!=null)?"ERROR: "+(String)htErrores.get(destBean):"OK";
+		        		    sLinea = sLinea + UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma("ES", err)) + separador; 
+		        		    if(documentos!=null)
+		        		    	sLinea += documentos + separador;
+		        		
+		        			
+		        		  
+			            try {
+			            	if (i==0) {
+			            		// RGG cambio a formato DOS
+			            		sLineaCabecera += "\r\n";
+			            		bwOut.write(sLineaCabecera);
+			            		//bwOut.newLine();
+			            	}
+//			            	ClsLogging.writeFileLogWithoutSession(sLinea);
+			        		// RGG cambio a formato DOS
+			        		sLinea += "\r\n";
+			            	bwOut.write(sLinea);
+			                //bwOut.newLine();
+			                
+			            } catch (Exception e2) {
+			                throw new SIGAException("messages.general.error",e2);
+			            }
+			        
+			        }
+			    
+			    } else {
+			        try {
+			            bwOut.write("EL ENVIO NO TIENE DESTINATARIOS. NO SE HA ENVIADO NADA.");
+			            bwOut.newLine();
+			        } catch (Exception e2) {
+			            throw new SIGAException("messages.general.error",e2);
+			        }
+			    }
+			    
+			    try {
+			        bwOut.close();
+			    } catch (IOException e2) {
+			        throw new SIGAException("messages.general.error",e2);
+			    }        
+			    
+			}
 
 
 	
@@ -3887,8 +3870,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");
-	    tr = sesion.getTransport("smtp");
-	    tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
+	    
 	   
 
 
@@ -3980,10 +3962,31 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	Hashtable htPoblaciones = new Hashtable();
     	    Hashtable htProvincia = new Hashtable();
     	    Hashtable htPaises = new Hashtable();
+    	    String descripcionFrom = sFrom;
+    	    if(remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals(""))
+    	    	descripcionFrom = remBean.getDescripcion().trim();
+    	    else if(remBean.getIdPersona()!=null){
+    	    	CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
+    	    	descripcionFrom =  personaAdm.obtenerNombreApellidosJSP(remBean.getIdPersona().toString());
+    	    	remBean.setDescripcion(descripcionFrom);
+    	    }
+    	    EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
+            Vector vCampos = admCampos.obtenerCamposEnvios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), "");
+            
+    	    
 	        for (int l=0;l<vDestinatarios.size();l++) {
-
+	        	if(tr==null){
+	        		tr = sesion.getTransport("smtp");
+	        		tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
+	        	}else if (!tr.isConnected()){
+		    	    tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
+	        	}
+	        	
+	        	
 	        	txtDocumentos = new StringBuffer();
 	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
+//	        	if(destBean.getCorreoElectronico()==null || destBean.getCorreoElectronico().trim().equalsIgnoreCase(""))
+//	        		System.out.println("Bingo");
 	            actualizaPaisDestinatario(destBean, htPaises);
 	            actualizaPoblacionDestinatario(destBean, htPoblaciones);
 	            actualizaProvincia(destBean, htProvincia);
@@ -4002,8 +4005,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				        //Si no tiene plantilla no enviamos documento, 
 				        //pero continuamos para mandar el correo
 			        	
-			        	EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
-			            Vector vCampos = admCampos.obtenerCamposEnvios(destBean.getIdInstitucion().toString(), destBean.getIdEnvio().toString(), "");
+			        	
 			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
 			            htDatos = admEnvio.getDatosEnvio(destBean, null);
 			            
@@ -4025,13 +4027,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    //Se especifica la dirección de origen.
 //		    	    mensaje.setFrom(new InternetAddress(sFrom));
 		    	    //ATTENCION INCIDENCIA. DESCOMENTAR ESTO
-		    	    String descripcionFrom = sFrom;
-		    	    if(remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals(""))
-		    	    	descripcionFrom = remBean.getDescripcion().trim();
-		    	    else if(remBean.getIdPersona()!=null){
-		    	    	CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
-		    	    	descripcionFrom =  personaAdm.obtenerNombreApellidosJSP(remBean.getIdPersona().toString());
-		    	    }
 		    	    mensaje.setFrom(new InternetAddress(sFrom,descripcionFrom));
 			    	 // Acuse de recibo
 		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
@@ -4049,8 +4044,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
 		    	    //Si NO TIENE PLANTILLA NO SE HAN OBTENIDO LOS DATOS DE LA CONSULTA, LUEGO LOS OBTENEMOS
 		    	    if(htDatos==null){
-		    	    	EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
-			            Vector vCampos = admCampos.obtenerCamposEnvios(destBean.getIdInstitucion().toString(), destBean.getIdEnvio().toString(), "");
+		    	    	
 			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
 			            htDatos = admEnvio.getDatosEnvio(destBean, null);
 						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
@@ -4174,8 +4168,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            }catch (SendFailedException e){
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
+	            }catch (javax.mail.MessagingException e){
+	                errores = true;
+	                insertarMensajeLogHT(destBean,htErrores, e.getNextException());
 	            } catch (Exception e){
-	            	
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
 	            }
@@ -4187,7 +4183,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         // GENERAR EL LOG DEL ENVIO
         /////////////////////////////////////
         if (generarLog) {
-        	generarLogEnvioHT(vDestinatarios,remBean,txtDocumentos.toString(), htErrores, envBean);
+        	generarLogEnvioHTTuneado(vDestinatarios,remBean,txtDocumentos.toString(), htErrores, envBean);
         }
         
         // HAN OCURRIDO ERRORES DE DESTINATARIO
@@ -4272,7 +4268,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         } else {
         	descPoblacion = destinatarioBean.getPoblacionExtranjera();
         }
-		if(descPoblacion!=null)
+		if(descPoblacion!=null && !descPoblacion.equalsIgnoreCase("null"))
 			destinatarioBean.setPoblacion(descPoblacion);
 		else
 			destinatarioBean.setPoblacion("");
