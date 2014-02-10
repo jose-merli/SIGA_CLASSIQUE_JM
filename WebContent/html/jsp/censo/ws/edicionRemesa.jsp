@@ -122,7 +122,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 							</tr>
 							<!-- FILA -->
 							<tr>
-								<td class="labelText" nowrap="nowrap">
+								<!-- td class="labelText" nowrap="nowrap">
 									<siga:Idioma key="censo.ws.literal.incidenciaGeneral"/>										
 								</td>				
 								<td width="300">
@@ -134,7 +134,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 									<logic:equal property="conerrores" value="0" name="EdicionRemesaForm">
 										<siga:Idioma key="censo.ws.literal.sinIncidencia"/>
 									</logic:equal>		
-								</td>
+								</td-->
 												
 								<td class="labelText" nowrap="nowrap">
 									<siga:Idioma key="censo.ws.literal.fechaPeticion"/>
@@ -142,14 +142,12 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 								<td>
 									<html:text readonly="true" name="EdicionRemesaForm" property="fechapeticion" styleClass="boxConsulta" size="30"/>
 								</td>
-							</tr>
 							
-							<tr>
 								<td class="labelText" nowrap="nowrap">
 									<siga:Idioma key="censo.ws.literal.estado"/>										
 								</td>				
 								<bean:define id="idEstadoenvio" name="EdicionRemesaForm" property="idEstadoenvio" type="Short"></bean:define>
-								<td colspan="3">
+								<td>
 									<siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOENVIO.getDescripcion(idEstadoenvio)%>"/>
 								</td>
 							</tr>
@@ -244,6 +242,18 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 									</td>	
 									
 								</tr>
+								
+								<!-- FILA -->
+								<tr>				
+									<td class="labelText">
+										<siga:Idioma key="censo.ws.literal.modificado"/>
+									</td>
+									<td colspan="3">
+										<html:checkbox name="EdicionRemesaForm" property="modificado"/>
+										<html:hidden name="EdicionRemesaForm" property="modificado" value="false"/>
+									</td>
+									
+								</tr>		
 								
 								
 							</table>

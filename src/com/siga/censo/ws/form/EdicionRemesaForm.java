@@ -32,6 +32,8 @@ public class EdicionRemesaForm extends MasterForm {
 	
 	private Integer incidencias;
 	
+	private boolean modificado = false;
+	
 	public void reset() {
 		idcensowsenvio = null;
 		idinstitucion = null;	
@@ -49,6 +51,7 @@ public class EdicionRemesaForm extends MasterForm {
 		identificacion = null;
 		idincidencia = null;
 		idestadocolegiado = null;
+		modificado = false;
 	}
 		
 	
@@ -240,6 +243,18 @@ public class EdicionRemesaForm extends MasterForm {
 
 	public void setIncidenciasColegiado(List<ValueKeyVO> incidenciasColegiado) {
 		this.incidenciasColegiado = incidenciasColegiado;
+	}
+
+
+
+	public boolean isModificado() {
+		return modificado;
+	}
+
+
+
+	public void setModificado(boolean modificado) {
+		this.modificado = modificado;
 	}
 
 
