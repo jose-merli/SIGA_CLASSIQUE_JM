@@ -294,65 +294,12 @@ public class AltaAbonosAction extends MasterAction {
 					importeTotal = new Double(totalConIva).doubleValue();
 				}
 			}
-			/*
-			Hashtable ht = new Hashtable();
-			ht.put(FacLineaFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			ht.put(FacLineaFacturaBean.C_IDFACTURA,miForm.getIdFactura());
-			Vector vLineasFactura = adminLF.select(ht);
-			// IMPORTE NETO / IVA
-			for (int i=0; vLineasFactura!=null && i<vLineasFactura.size();i++) {
-				FacLineaFacturaBean blf=(FacLineaFacturaBean)vLineasFactura.get(i);
-				importeNeto += blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue(); 
-				importeIva += ((blf.getCantidad().intValue() * blf.getPrecioUnitario().doubleValue())* blf.getIva().floatValue())/100;
-			}
-			*/
-			//END BNS
 			
-			String formaPago = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDFORMAPAGO);
-			if(formaPago!=null && Integer.parseInt(formaPago)==ClsConstants.TIPO_FORMAPAGO_FACTURA){
-
-				//mhg - INC_09854_SIGA Sacamos la cuenta de la persona y del deudor.
-				String idCuentaDeudor = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTADEUDOR);
-				String idCuenta = (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDCUENTA);
-				String idCuentaFinal = null;
-				String idPersonaFinal = null;
-				
-				idCuentaFinal = isPersonaDeudora ? idCuentaDeudor : idCuenta;
-				idPersonaFinal = isPersonaDeudora ? idPersonaDeudor : idPersona;
-				
-				if((idCuentaFinal!=null && !idCuentaFinal.trim().equals(""))){
-					//Ahora hay que comprobar que la cuenta sea de abono o cargo.
-					//Si no es asi habra que buscar una cuentade abono o cargo del usuario
-					CenCuentasBancariasAdm cbAdm = new CenCuentasBancariasAdm(usr);
-					ArrayList alCuentas = cbAdm.getCuentasAbono(new Long(idPersonaFinal), new Integer(miForm.getIdInstitucion()));
-					//si no es cuenta de abono es porque el array de cuentas de abono no lo contiene
-					//Por lo tanto cogemos la primera cuenta de abono
-					if(alCuentas!=null && alCuentas.size()>0 && !alCuentas.contains(idCuentaFinal))
-						idCuentaFinal = String.valueOf((Integer)alCuentas.get(0));
-					else if ((importeTotal-importeCompensado)>0) {
-						// BNS LA FACTURA HABÍA SIDO PAGADA POR LO QUE NECESITAMOS UNA CUENTA A
-						// LA QUE DEVOLVER EL ABONO
-						throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
-				    } else {
-				    	// BNS LA FACTURA NO HABÍA SIDO PAGADA POR LO QUE NO NECESITAMOS UNA CUENTA A
-						// LA QUE DEVOLVER EL ABONO
-				    	idCuentaFinal = "";
-					}
-					
-					if(isPersonaDeudora){
-						hash.put(FacAbonoBean.C_IDCUENTADEUDOR,idCuentaFinal);
-						hash.put(FacAbonoBean.C_IDCUENTA,"");
-					}else{
-						hash.put(FacAbonoBean.C_IDCUENTA,idCuentaFinal);
-						hash.put(FacAbonoBean.C_IDCUENTADEUDOR,"");
-					}
-					
-				}else{
-					throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
-					
-				}
-			}			
-			    
+						
+			//CR7 - INC_11904_SIGA
+			hash.put(FacAbonoBean.C_IDCUENTA,"");
+			hash.put(FacAbonoBean.C_IDCUENTADEUDOR,"");
+			
 			// Inserto el abono
 			if (admin.insert(hash)){
 				
