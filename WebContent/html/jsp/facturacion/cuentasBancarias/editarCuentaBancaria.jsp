@@ -375,6 +375,14 @@
 			bic = document.CuentasBancariasForm.BIC.value;
 			banco = document.CuentasBancariasForm.bancoNombre.value;
 			
+			//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+			if (iban == ""  && bic == ""){ 
+				mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+				alert(mensaje);
+				fin();
+				return false;
+			} 
+			
 			if(!validarCuentaBancaria(iban,bic,banco)){
 				fin();
 				return false;

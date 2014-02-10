@@ -321,10 +321,13 @@
 			bic = document.SolicitudIncorporacionForm.BIC.value;
 			banco = document.SolicitudIncorporacionForm.banco.value;
 			
-			if(!validarCuentaBancaria(iban,bic,banco)){
-				fin();
-				return false;
-			} 			
+			//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+			if (iban != ""){	
+				if(!validarCuentaBancaria(iban,bic,banco)){
+					fin();
+					return false;
+				} 			
+			}
 			
 			if (errores != ""){
 				alert(errores);
@@ -2060,7 +2063,7 @@
 					<td colspan="2">
 						<table border="0" cellpadding="5" cellspacing="0">
 							<tr>								
-								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
+								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;</td>
 								<td class="labelText"><html:text size="34"  maxlength="34" styleId="IBAN" property="IBAN"  value="<%=iban%>" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" onblur="cargarBancoPorIBAN();"></html:text></td>
 
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>

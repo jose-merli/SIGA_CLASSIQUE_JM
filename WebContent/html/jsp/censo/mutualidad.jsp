@@ -571,7 +571,7 @@ function habilitarCampos(isHabilitar) {
 						- <html:text size="2"  maxlength="2" property="digitoControl"  	styleClass="${estiloText}" ></html:text>
 						- <html:text size="10" maxlength="10" property="numeroCuenta"  styleClass="${estiloText}" ></html:text></td>
 					<td class="labelText" nowrap><siga:Idioma
-							key="censo.mutualidad.literal.iban" /></td>
+							key="censo.mutualidad.literal.iban" />&nbsp;(*)</td>
 					<td class="labelText">
 						<html:text property="iban" size="36" styleClass="${estiloText}" maxlength="34" onblur="cargarBancoPorIBAN();"/>
 					</td>
@@ -839,6 +839,7 @@ function habilitarCampos(isHabilitar) {
 	function accionRestablecer(){
 		document.MutualidadForm.reset();
 		cargaCombos();
+		inicioCargarBancoBIC();
 	}
 	
 	function consultarNHijos(){
@@ -922,6 +923,14 @@ function habilitarCampos(isHabilitar) {
 			if(document.MutualidadForm.idTipoSolicitud.value=='P'){				
 				iban = document.MutualidadForm.iban.value;
 				bic = document.MutualidadForm.swift.value;
+				
+				//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+				if (iban == ""  && bic == ""){ 
+					mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+					alert(mensaje);
+					fin();
+					return false;
+				} 
 				
 				if(!validarCuentaBancaria(iban,bic,"banco")){//Como en el formulario no existe el banco, ponemos ese literal para pasar la validacion
 					fin();

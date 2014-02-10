@@ -98,6 +98,14 @@
 				bic = document.cuentasBancariasSolicForm.BIC.value;
 				banco = document.cuentasBancariasSolicForm.banco.value;
 				
+				//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+				if (iban == ""  && bic == ""){ 
+					mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+					alert(mensaje);
+					fin();
+					return false;
+				} 				
+				
 				if(!validarCuentaBancaria(iban,bic,banco)){
 					fin();
 					return false;

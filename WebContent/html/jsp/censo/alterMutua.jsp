@@ -519,7 +519,7 @@ function habilitarCampos(isHabilitar) {
 					- <html:text size="10" maxlength="10" property="numeroCuenta" styleClass="${estiloText} requiredText"></html:text>
 				</td>
 
-				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.iban"/></td>	
+				<td class="labelText" nowrap><siga:Idioma key="censo.alterMutua.literal.iban"/>&nbsp;(*)</td>	
 				<td class="labelText">
 				      <html:text styleId="IBAN" size="34"  maxlength="34" property="iban" styleClass="${estiloText} requiredText" onblur="cargarBancoPorIBAN();"></html:text>
 				</td>
@@ -749,6 +749,15 @@ function habilitarCampos(isHabilitar) {
 		//validamos el numero de cuenta (IBAN)
 		iban = document.forms["AlterMutuaForm"].IBAN.value;
 		bic = document.forms["AlterMutuaForm"].SWIFT.value;		
+		
+		//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
+		if (iban == ""  && bic == ""){ 
+			mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
+			alert(mensaje);
+			fin();
+			return false;
+		} 
+		
 		if(!validarCuentaBancaria(iban,bic,"banco")){//Como en el formulario no existe el banco, ponemos ese literal para pasar la validacion
 			fin();
 			return false;
