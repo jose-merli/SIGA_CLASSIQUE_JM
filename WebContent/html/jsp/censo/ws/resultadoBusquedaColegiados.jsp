@@ -126,11 +126,17 @@
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		<input type="hidden" name="historico"  id="historico"  value="false">
 		
-		
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
+		<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="1">
 	</html:form>
+	
+	<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+		<input type="hidden" name="modo"  id="modo"  value="generaExcel">	
+		<html:hidden property="nombreFichero" value="${EdicionRemesaForm.numeroPeticion}"/>					
+	</html:form>
+	
 		<bean:define name="EdicionRemesaForm" property="accion" id="accion"/>
 		
 		<siga:Table 		   
@@ -167,19 +173,19 @@
 	   		   				}
 	   		   			}
 	   		   			
+	   		   			if (edicionColegiadoForm.getIdpersona() != null) {
+		   					elems = new FilaExtElement[1];
+		   					elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+		   				}
+	   		   			
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					<td style="text-align: right;">
+					
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionColegiadoForm.getIdpersona()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=edicionColegiadoForm.getIdinstitucion()%>">					
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
-					<%if (edicionColegiadoForm.getIdpersona() != null) {%>
-						<a href="#" onclick="verColegiado('<%=(i+1)%>')"><%=edicionColegiadoForm.getNcolegiado()%></a>
-					<%} else {%>
-						<%=edicionColegiadoForm.getNcolegiado()%>
-					<%}%>
-					</td>
+					<td style="text-align: right;"><%=edicionColegiadoForm.getNcolegiado()!=null?edicionColegiadoForm.getNcolegiado():"&nbsp;"%></td>
 					<td><%=edicionColegiadoForm.getNombre()!=null?edicionColegiadoForm.getNombre():"&nbsp;"%></td>
 					<td><%=edicionColegiadoForm.getApellido1()!=null?edicionColegiadoForm.getApellido1():"&nbsp;"%></td>
 					<td><%=edicionColegiadoForm.getApellido2()!=null?edicionColegiadoForm.getApellido2():"&nbsp;"%></td>										
@@ -211,6 +217,10 @@
 			 <%}%>	
 			 
 			 <script type="text/javascript">
+			 
+			 	function accionGenerarExcels() {		
+					document.forms[1].submit();	
+			 	}
 			 	
 			 	
 			 	function accionVolver() {
@@ -219,16 +229,22 @@
 					document.forms[0].target="mainWorkArea"; 
 					document.forms[0].submit();
 				}
-			 	
-			 	function verColegiado(row) {
-			 		document.forms[0].action="./CEN_BusquedaClientes.do?noReset=true&buscar=true";
-			 		
-					selectRow(row);					
-					consultar(row); 
-			 	}
+			 				 				 	
+			 	function informacionLetrado(fila) {
+					document.forms[0].action="./CEN_BusquedaClientes.do?noReset=true";			 		
+					selectRow(fila);	
+					editar(fila);					
+				}
 				
 			 </script>
+			 
+			 <% String botonesAction = "V";
+			 if ( resultado!=null && resultado.size() > 0){
+				 botonesAction += ",GX";
+			 }
+			 %>
+			 
 		
-	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+	<siga:ConjBotonesAccion botones="<%=botonesAction%>" clase="botonesDetalle"  />
 	</body>
 </html>
