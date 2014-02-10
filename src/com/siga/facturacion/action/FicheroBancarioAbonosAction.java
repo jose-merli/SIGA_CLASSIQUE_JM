@@ -804,6 +804,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
 			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
 			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
+			numDisco 				+= ".SEPA";
 			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosTransferenciasSEPA");
 			String barra 			= (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
 			rutaServidor 			+= barra + sIdInstitucion;
