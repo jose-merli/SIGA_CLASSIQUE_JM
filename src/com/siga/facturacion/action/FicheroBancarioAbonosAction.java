@@ -920,24 +920,27 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			totales[c_BENEFICIARIOSEPA] = new StringBuffer();
 			totales[c_BENEFICIARIOSEPA].append("04SCT"); //codigo de registro y operacion
 			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Importe", Integer.toString(subtotalSEPA), "D", "0", 17, false));
-			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA), "D", "0", 8, false));
-			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2), "D", "0", 10, false));
+			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA), "D", "0", 8, false)); //registros individuales
+			totales[c_BENEFICIARIOSEPA].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2), "D", "0", 10, false)); //registros individuales + cabecera + total
 			totales[c_BENEFICIARIOSEPA].append(rellenarEspacios(560)); //libre
 			
 			// 6de7. generando subtotal de otros beneficiarios
 			totales[c_BENEFICIARIOOTROS] = new StringBuffer();
 			totales[c_BENEFICIARIOOTROS].append("04OTR"); //codigo de registro y operacion
 			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Importe", Integer.toString(subtotalOtros), "D", "0", 17, false));
-			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros), "D", "0", 8, false));
-			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros+2), "D", "0", 10, false));
+			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros), "D", "0", 8, false)); //registros individuales
+			totales[c_BENEFICIARIOOTROS].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefOtros+2), "D", "0", 10, false)); //registros individuales + cabecera + total
 			totales[c_BENEFICIARIOOTROS].append(rellenarEspacios(560)); //libre
 			
 			// 7de7. generando total
 			totales[c_ORDENANTE] = new StringBuffer();
 			totales[c_ORDENANTE].append("99ORD"); //codigo de registro y operacion
 			totales[c_ORDENANTE].append(completarEspacios("Importe", Integer.toString(subtotalSEPA + subtotalOtros), "D", "0", 17, false));
-			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA + nRegistrosBenefOtros), "D", "0", 8, false));
-			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2), "D", "0", 10, false));
+			totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA + nRegistrosBenefOtros), "D", "0", 8, false)); //registros individuales
+			if (nRegistrosBenefSEPA > 0 && nRegistrosBenefOtros > 0)
+				totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2), "D", "0", 10, false)); //registros individuales + 2*subcabecera + 2*subtotal (si existen ambos bloques) + cabecera + total
+			else
+				totales[c_ORDENANTE].append(completarEspacios("Numero", Integer.toString(nRegistrosBenefSEPA + nRegistrosBenefOtros +2 +2), "D", "0", 10, false)); //registros individuales + subcabecera + subtotal (si solo existe un bloque) + cabecera + total
 			totales[c_ORDENANTE].append(rellenarEspacios(560)); //libre
 		
 			
