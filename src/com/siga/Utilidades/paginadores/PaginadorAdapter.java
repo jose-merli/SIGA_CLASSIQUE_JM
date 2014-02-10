@@ -231,4 +231,8 @@ public abstract class PaginadorAdapter<E> implements IPaginador<E>, Serializable
 	public void setQueryInicio(String query) {
 		queryInicio=query;
 	}
+
+	public List<E> getCache() {
+		return cache;
+	}
 }
