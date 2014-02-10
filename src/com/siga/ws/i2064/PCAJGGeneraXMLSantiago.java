@@ -102,15 +102,16 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
 		WSSantiagoAdm wsSantiagoAdm = new WSSantiagoAdm();
 		Map<String, String> mapExp = null;
-		List<Hashtable<String, String>> listDtExpedientes = wsSantiagoAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());		
-		construyeHTxEJG(wsSantiagoAdm.getDtUnidadFamiliar(getIdInstitucion(), getIdRemesa()), htDtUnidadFamiliar);
-		construyeHTxEJG(wsSantiagoAdm.getDtParteContraria(getIdInstitucion(), getIdRemesa()), htParteContraria);
-		construyeHTxEJG(wsSantiagoAdm.getDocumentosAdjuntos(getIdInstitucion(), getIdRemesa()), htDocumentosAdjuntos);
-		
-		UserTransaction tx = getUsrBean().getTransaction();
+		UserTransaction tx = getUsrBean().getTransactionPesada();
 		
 		try {			
 			tx.begin();
+			
+			List<Hashtable<String, String>> listDtExpedientes = wsSantiagoAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());		
+			construyeHTxEJG(wsSantiagoAdm.getDtUnidadFamiliar(getIdInstitucion(), getIdRemesa()), htDtUnidadFamiliar);
+			construyeHTxEJG(wsSantiagoAdm.getDtParteContraria(getIdInstitucion(), getIdRemesa()), htParteContraria);
+			construyeHTxEJG(wsSantiagoAdm.getDocumentosAdjuntos(getIdInstitucion(), getIdRemesa()), htDocumentosAdjuntos);			
+			
 			//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), VISTA_EJGs);
