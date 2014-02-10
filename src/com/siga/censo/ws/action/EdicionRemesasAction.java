@@ -28,6 +28,7 @@ import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
@@ -42,6 +43,14 @@ import es.satec.businessManager.BusinessManager;
 public class EdicionRemesasAction extends MasterAction {
 	
 	public static final String DATAPAGINADOR = "DATAPAGINADOR_LISTADO_COLEGIADOS";
+	
+	private enum camposExcelEnum {
+    	NUM_COLEGIADO
+    	, NOMBRE
+    	, APELLIDO1
+    	, APELLIDO2    
+    	, ESTADO
+    }
 	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -76,6 +85,8 @@ public class EdicionRemesasAction extends MasterAction {
 					mapDestino = buscarPor(mapping, miForm, request, response);					
 				} else if (accion.equalsIgnoreCase("erroresCarga")){							
 					mapDestino = erroresCarga(mapping, miForm, request, response);
+				} else if (accion.equalsIgnoreCase("generaExcel")){							
+					mapDestino = generaExcel(mapping, miForm, request, response);					
 				} else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -191,7 +202,7 @@ public class EdicionRemesasAction extends MasterAction {
 		ecomCenDatosExample.orderByApellido2();
 		ecomCenDatosExample.orderByNombre();
 		
-		List<EcomCenColegiadoVO> ecomColegiadoVOs = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample, idincidencia);
+		List<EcomCenColegiadoVO> ecomColegiadoVOs = cenWSService.getEcomCenDatosList(form.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, form.isModificado());
 		
 		if (ecomColegiadoVOs != null) {
 			for (EcomCenColegiadoVO ecomCenColegiadoVO : ecomColegiadoVOs) {
@@ -234,6 +245,53 @@ public class EdicionRemesasAction extends MasterAction {
 		return verEditar("editar", formulario, request);		
 	}
 	
+	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		Vector datos = new Vector();
+		String[] cabeceras = new String[camposExcelEnum.values().length];
+        String[] campos = new String[camposExcelEnum.values().length];
+        
+        
+        if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
+        	HashMap databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
+        	
+        	
+        	for (int i = 0; i < camposExcelEnum.values().length; i++) {
+        		cabeceras[i] = camposExcelEnum.values()[i].name();
+        		campos[i] = camposExcelEnum.values()[i].name();
+        	}
+        	
+        	PaginadorVector<EdicionColegiadoForm> paginador = (PaginadorVector<EdicionColegiadoForm>) databackup.get("paginador");
+        	
+        	List<EdicionColegiadoForm> colegiados = paginador.getCache();
+        	
+        	for (EdicionColegiadoForm edciColegiadoForm : colegiados) {
+        		Hashtable<String, String> hash = new Hashtable<String, String>();
+        		hash.put(camposExcelEnum.NUM_COLEGIADO.name(), getDato(edciColegiadoForm.getNcolegiado()));
+        		hash.put(camposExcelEnum.NOMBRE.name(), getDato(edciColegiadoForm.getNombre()));
+        		hash.put(camposExcelEnum.APELLIDO1.name(), getDato(edciColegiadoForm.getApellido1()));
+        		hash.put(camposExcelEnum.APELLIDO2.name(), getDato(edciColegiadoForm.getApellido2()));
+        		hash.put(camposExcelEnum.ESTADO.name(), UtilidadesString.getMensajeIdioma(getUserBean(request), AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(edciColegiadoForm.getIdestadocolegiado())));        		
+        		
+        		datos.add(hash);
+        	}
+        	
+        	String nombreFichero = request.getParameter("nombreFichero");
+        
+			request.setAttribute("campos",campos);
+			request.setAttribute("datos",datos);
+			request.setAttribute("cabeceras",cabeceras);
+			request.setAttribute("descripcion", nombreFichero);
+        }
+		
+		return "generaExcel";		
+	}
+	
+	
+	private String getDato(Object dato) {		
+		return dato!=null?dato.toString().trim():"";
+	}
+
+
 	protected String erroresCarga(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
@@ -258,11 +316,11 @@ public class EdicionRemesasAction extends MasterAction {
 		try {
 			
 			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
-			
-						
 			HttpSession session = request.getSession();
-			if (request.getParameter("volver") == null) {
-				session.removeAttribute(DATAPAGINADOR);
+			
+			session.removeAttribute(DATAPAGINADOR);
+			
+			if (request.getParameter("volver") == null) {				
 				edicionRemesaForm.reset();
 			}
 			

@@ -81,7 +81,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
 		busquedaRemesasForm.reset();
-		request.getSession().removeAttribute(DATAPAGINADOR);
+		
 		return abrirAvanzada(mapping, formulario, request, response);
 		
 	}
@@ -103,6 +103,8 @@ public class BusquedaRemesasAction extends MasterAction {
 	{
 		try {
 			BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
+			
+			request.getSession().removeAttribute(DATAPAGINADOR);
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
 			String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
