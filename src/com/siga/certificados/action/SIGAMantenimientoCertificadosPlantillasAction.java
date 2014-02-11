@@ -91,8 +91,10 @@ public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
 			String nombreFichero = fPlantilla.getName();
 			if (fPlantilla.getName().indexOf(".zip")==-1){
 			    nombreFichero = nombreFichero + ".fo";
+			}else{
+				nombreFichero = fPlantilla.getName();
 			}
-			request.setAttribute("nombreFichero", fPlantilla.getName());
+			request.setAttribute("nombreFichero", nombreFichero);
 			request.setAttribute("rutaFichero", fPlantilla.getPath());
 
 		}
