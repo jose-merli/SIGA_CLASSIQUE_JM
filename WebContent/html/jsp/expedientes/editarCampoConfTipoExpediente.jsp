@@ -72,6 +72,7 @@
 			}
 			
 			function comboTipoChange(){
+				//si es de tipo fecha le ponemos al maxlong 10 dd-mm-yyyy
 				if ($("#comboTipo").val()==3){
 					$("#maxLong").val("10");
 					$("#maxLong").attr("readonly", "readonly");
