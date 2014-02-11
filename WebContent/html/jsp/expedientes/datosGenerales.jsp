@@ -508,15 +508,11 @@
 			if (jQuery("#asunto").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.asunto"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
 				
-			if (jQuery("#comboFases").length != 0){
-				if (jQuery("#comboFases").val()=="")
+			if (jQuery("#comboFases").val()=="")
 					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fase"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
-			}
 			
-			if (jQuery("#comboEstados").length != 0){
-				if (jQuery("#comboEstados").val()=="")
+			if (jQuery("#comboEstados").val()=="")
 					mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.estado"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
-			}
 			
 			if (jQuery("#fechaInicial").val()=="")
 				mensajeError = mensajeError + '<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/> <siga:Idioma key="messages.campoObligatorio.error"/> \n';
