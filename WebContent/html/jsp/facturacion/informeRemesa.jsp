@@ -96,16 +96,12 @@
 								<siga:Idioma key="facturacion.ficheroBancarioPagos.informeRemesa.literal.importeToral"/>:
 							</td>
 							<td class="boxConsultaNumber">
-								<%=importeTotal%> &nbsp;&euro;
+								<%=UtilidadesString.formatoImporte(importeTotal)%>&nbsp;&euro; 	
 							</td>
 						</tr>
 						<tr>
 							<td class="boxConsulta">
-							<% if(abono){%>
-								<siga:Idioma key="facturacion.ficheroBancarioPagos.informeRemesa.literal.numOrdenesPago"/>:
-							<% } else { %>
-								<siga:Idioma key="facturacion.ficheroBancarioPagos.informeRemesa.literal.numOrdenes"/>:
-							<% }%>
+								<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.nFacturas"/>:
 							</td>
 							<td class="boxConsultaNumber">
 								<%=numOrdenes%>
@@ -113,7 +109,7 @@
 						</tr>
 						<tr>
 							<td class="boxConsulta">
-								<siga:Idioma key="facturacion.ficheroBancarioPagos.informeRemesa.literal.numRegistros"/>:
+								<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.nLineasSEPA"/>:
 							</td>
 							<td class="boxConsultaNumber">
 								<%=numRegistros%>

@@ -145,7 +145,16 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 							" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + 
 							" WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION + 
 								" AND " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS + 
-						") AS NUMRECIBOS " +
+						") AS NUMRECIBOS, " + 
+						" ( " +
+							" SELECT COUNT(1)" +
+							" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + ", " +
+								FacLineaFacturaBean.T_NOMBRETABLA +
+							" WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION +
+								" AND " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " + FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS +
+								" AND " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDINSTITUCION + " = " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION +	
+								" AND " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + " = " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + 							       
+					    " ) AS NUM_LINEASFACTURA " +								
 					" FROM " + FacDisqueteCargosBean.T_NOMBRETABLA + ", " 
 							 + CenBancosBean.T_NOMBRETABLA + ", "  
 							 + FacBancoInstitucionBean.T_NOMBRETABLA + 
@@ -192,7 +201,8 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 						               "   CARGOS.IDDISQUETECARGOS, " +									   
 						               "   CARGOS.NOMBREFICHERO, " +
 						               "   CARGOS.TOTAL_REMESA, " +
-						               "   CARGOS.NUMRECIBOS " +
+						               "   CARGOS.NUMRECIBOS, " +
+						               "   CARGOS.NUM_LINEASFACTURA " +
 						               " FROM  ( "+ sql + ") CARGOS WHERE 1=1";
 					
 					//FILTRO DESCRIPCION
@@ -234,7 +244,15 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	public Hashtable getInformeRemesa (String idInstitucion, String idDisqueteCargo) 
 	{
 		try {
-			String sql = "SELECT  NUMEROLINEAS NUMREGISTROS, " +
+			String sql = "SELECT " + // NUMEROLINEAS NUMREGISTROS, " +
+								" (SELECT COUNT(1)" +
+							      " FROM FAC_FACTURAINCLUIDAENDISQUETE, " +
+							      	" FAC_LINEAFACTURA " +
+							     " WHERE FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION " +
+							       " AND FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS = FAC_DISQUETECARGOS.IDDISQUETECARGOS " +
+							       " AND FAC_LINEAFACTURA.IDINSTITUCION = FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION " +	
+							       " AND FAC_LINEAFACTURA.IDFACTURA = FAC_FACTURAINCLUIDAENDISQUETE.IDFACTURA " + 							       
+							     " ) AS NUMREGISTROS , " +
 							    " FECHACREACION FECHACREACIONFICHERO, " +
 							    " FECHACARGO FECHAEMISIONORDENES, " +
 			

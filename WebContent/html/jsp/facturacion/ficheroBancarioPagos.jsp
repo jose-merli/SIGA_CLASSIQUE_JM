@@ -165,9 +165,10 @@
   					  facturacion.ficheroBancarioPagos.literal.descripcion,
 					  facturacion.ficheroBancarioPagos.literal.banco,
 					  facturacion.ficheroBancarioPagos.literal.Origen,
-					  facturacion.ficheroBancarioPagos.literal.recibos,
+					  facturacion.ficheroBancarioPagos.literal.nFacturas,
+					  facturacion.ficheroBancarioPagos.literal.nLineasSEPA,
 					  facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"			  			
-		columnSizes="9,19,24,24,6,10,10"
+		columnSizes="8,20,24,20,6,6,8,8"
 		modal="M"> 		  
 		
 <%
@@ -191,6 +192,7 @@
 				String fecha = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", row.getString(FacDisqueteCargosBean.C_FECHACREACION))); 
 				String banco = UtilidadesString.mostrarDatoJSP(row.getString("BANCO"));	
 				String recibos = UtilidadesString.mostrarDatoJSP(row.getString("NUMRECIBOS"));
+				String numeroLineas = UtilidadesString.mostrarDatoJSP(row.getString("NUM_LINEASFACTURA"));
 				String origen = UtilidadesString.mostrarDatoJSP(row.getString("NOMBREABREVIADO"));	
 				String descripcion = UtilidadesString.mostrarDatoJSP(row.getString("DESCRIPCION_PROGRAMACION"));
 				String totalRemesa = UtilidadesString.mostrarDatoJSP(row.getString("TOTAL_REMESA"));						
@@ -217,7 +219,8 @@
 %>
 						<%=origen%>
 					</td>
-					<td align="right"><%=recibos%></td> 
+					<td align="right"><%=recibos%></td>
+					<td align="right"><%=numeroLineas%></td> 
 					<td align="right"><%=UtilidadesString.formatoImporte(totalRemesa)%>&nbsp;&euro;</td> 									
 				</siga:FilaConIconos>
 <%						
