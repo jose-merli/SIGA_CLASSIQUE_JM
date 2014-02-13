@@ -148,10 +148,12 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		
 	}
 	
-	
-	
 	private Hashtable getDatosBancarios(MutualidadForm mutualidadForm){
 		Hashtable datosBancarios = new Hashtable();
+		datosBancarios.put("cboCodigo", mutualidadForm.getCboCodigo());
+		datosBancarios.put("codigoSucursal", mutualidadForm.getCodigoSucursal());
+		datosBancarios.put("digitoControl", mutualidadForm.getDigitoControl());
+		datosBancarios.put("numeroCuenta", mutualidadForm.getNumeroCuenta());
 		datosBancarios.put("iban", mutualidadForm.getIban());
 		datosBancarios.put("swift", mutualidadForm.getSwift());
 		

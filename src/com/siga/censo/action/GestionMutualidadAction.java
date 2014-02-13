@@ -428,8 +428,23 @@ public class GestionMutualidadAction extends MasterAction {
 			}else {
 				mutualidadForm.setOrigenSolicitud(CenSolicitudMutualidadBean.FICHA_COLEGIAL);
 			}
+
+			try{
+				//Vamos a parsear el IBAN para formar la CCC antigua. Esto va a fallar como venga un IBAN extranjero, que quede claro
+				if(mutualidadForm.getIban()!=null && !mutualidadForm.getIban().equals("") && mutualidadForm.getIban().substring(0,2).equals("ES")){
+					mutualidadForm.setCboCodigo(mutualidadForm.getIban().substring(4,8));
+					mutualidadForm.setCodigoSucursal(mutualidadForm.getIban().substring(8,12));
+					mutualidadForm.setDigitoControl(mutualidadForm.getIban().substring(12,14));		
+					mutualidadForm.setNumeroCuenta(mutualidadForm.getIban().substring(14));				
+				}else{
+					throw new SIGAException ("Solo se admiten códigos IBAN españoles");
+				}
+			} catch (Exception e){
+				throw new SIGAException ("Solo se admiten códigos IBAN españoles");
+			}			
+			
 			RespuestaMutualidad respuesta = mutualidadService.insertarSolicitudMutualidad(mutualidadForm, usrBean);
-//			String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getEstado()};
+			
 			if(mutualidadForm.getIdSolicitudAceptada()!=null && !mutualidadForm.getIdSolicitudAceptada().equals("") && !mutualidadForm.getIdSolicitudAceptada().equals("0")){
 				String[] parametros = {mutualidadForm.getIdSolicitud(),mutualidadForm.getIdSolicitudAceptada(),mutualidadForm.getEstado(),""+CenSolicitudMutualidadBean.ESTADO_SOLICITADO};
 				request.setAttribute("parametrosArray", parametros);
