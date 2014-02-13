@@ -1254,7 +1254,7 @@
 			<arg0 key="expedientes.auditoria.literal.tipo"/>	
 	</field>
 	<field 	property = "maxLong" 		
-			depends = "intRange">
+			depends = "required, integer,intRange">
 			<arg0 key="expedientes.auditoria.literal.maxlong"/>
 			<arg1 name="intRange" key="${var:min}" resource="false"/>
                 	<arg2 name="intRange" key="${var:max}" resource="false"/>
