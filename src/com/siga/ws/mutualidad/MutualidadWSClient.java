@@ -73,7 +73,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 
         RespuestaMutualidad respuesta = new RespuestaMutualidad();
         try{
-            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
            
             Calendar fechaNacimientoCal = Calendar.getInstance();
             fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
@@ -104,7 +104,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	public RespuestaMutualidad getEstadoMutualista(String nif, String fechaNacimiento) throws Exception {
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
         try{
-            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
            
             Calendar fechaNacimientoCal = Calendar.getInstance();
             if(fechaNacimiento!=null){
@@ -145,7 +145,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+			WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
 			
 			Calendar fechaNacimientoCal = Calendar.getInstance();
 			fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
@@ -178,7 +178,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 
         RespuestaMutualidad respuesta = new RespuestaMutualidad();
         try{
-            WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
            
             Integracion_Solicitud_Respuesta response = stub.estadoSolicitud(idSolicitud,Boolean.TRUE );
             respuesta.setValorRespuesta(response.getValorRespuesta());
@@ -203,7 +203,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+			WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
 			
 			IntegracionEnumsCombos enumCombos=stub.getEnums();
 			
@@ -233,7 +233,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+			WSHttpBinding_IIntegracion_MetodosStub stub = getStubLog();
 			
 			Integracion_DatosBancarios		datosBancarios = null;
 			Integracion_DatosPoliza			datosPoliza = null;
@@ -284,7 +284,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
 		try{
-			WSHttpBinding_IIntegracion_MetodosStub stub = getStub();
+			WSHttpBinding_IIntegracion_MetodosStub stub = getStubLog();
 			
 			Integracion_DatosBancarios		datosBancarios = null;
 			Integracion_DatosPoliza			datosPoliza = null;
@@ -474,7 +474,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	 * 
 	 * @return
 	 */
-	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
+	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion, boolean log) {
 		
 		SimpleProvider clientConfig = new SimpleProvider();		
 		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);		
@@ -486,10 +486,10 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		SimpleChain respHandler = new SimpleChain();
 		
 		reqHandler.addHandler(ah);
-		reqHandler.addHandler(logSIGAasignaHandler);
+		if(log) reqHandler.addHandler(logSIGAasignaHandler);
 		
 		respHandler.addHandler(ah);
-		respHandler.addHandler(logSIGAasignaHandler);
+		if(log) respHandler.addHandler(logSIGAasignaHandler);
 		Handler pivot = (Handler) new HTTPSender();
 		
 		Handler transport = new SimpleTargetedChain(reqHandler, pivot, respHandler);
@@ -498,6 +498,8 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	}
 
 
+	private WSHttpBinding_IIntegracion_MetodosStub getStubLog() throws ClsExceptions {return getStub(true);}
+	private WSHttpBinding_IIntegracion_MetodosStub getStubNoLog() throws ClsExceptions {return getStub(false);}
 
 	/**
 	 * 
@@ -505,15 +507,13 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	 * @return
 	 * @throws ClsExceptions 
 	 */
-
-
-	private WSHttpBinding_IIntegracion_MetodosStub getStub() throws ClsExceptions {
+	private WSHttpBinding_IIntegracion_MetodosStub getStub(boolean log) throws ClsExceptions {
 
 		String urlWS = getUrlWSParametro(URLMUTUALIDADABOGACIA);
 
 		WSHttpBinding_IIntegracion_MetodosStub stub;
 		try {
-			Integracion_MetodosLocator locator = new Integracion_MetodosLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Solicitud WSMutualidad desde " + getIdInstitucion()));
+			Integracion_MetodosLocator locator = new Integracion_MetodosLocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Solicitud WSMutualidad desde " + getIdInstitucion(),log));
 			stub = new WSHttpBinding_IIntegracion_MetodosStub(new java.net.URL(urlWS), locator);
 		} catch (Exception e) {
 			throw new ClsExceptions("error.inesperado.estadoMutualista");
