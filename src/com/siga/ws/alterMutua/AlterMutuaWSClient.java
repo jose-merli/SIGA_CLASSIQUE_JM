@@ -29,6 +29,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.mutualidad.WSHttpBinding_IIntegracion_MetodosStub;
 
 /**
  * 
@@ -49,7 +50,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getEstadoSolicitud (int idSolicitud, boolean certificado) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStub();
+            WSSIGASoap_BindingStub stub = getStubNoLog();
             respuesta = stub.getEstadoSolicitud(idSolicitud, certificado);
         } catch (Exception e) {
             escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
@@ -61,7 +62,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getEstadoColegiado (int tipoIdent, String ident) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStub();
+            WSSIGASoap_BindingStub stub = getStubNoLog();
             respuesta = stub.getEstadoColegiado(tipoIdent, ident);
         } catch (Exception e) {
             escribeLog("Error en llamada a getEstadoColegiado: " + e.getMessage());
@@ -85,7 +86,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getPropuestas (int tipoIdent, String ident, Calendar fechaNacimiento, int sexo, int propuesta) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStub();
+            WSSIGASoap_BindingStub stub = getStubNoLog();
             respuesta = stub.getPropuestas(tipoIdent, ident, fechaNacimiento, sexo, propuesta);
         } catch (Exception e) {
             escribeLog("Error en llamada a getPropuestas: " + e.getMessage());
@@ -104,7 +105,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta realizarSolicitudAlter (WSSolicitud solicitud) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStub();
+            WSSIGASoap_BindingStub stub = getStubLog();
             respuesta = stub.setSolicitudAlter(solicitud);
         } catch (Exception e) {
             escribeLog("Error al realizar la solicitud de alta: " + e.getMessage());
@@ -123,7 +124,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getTarifaSolicitud (WSSolicitud solicitud) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
 		try{
-			WSSIGASoap_BindingStub stub = getStub();
+			WSSIGASoap_BindingStub stub = getStubNoLog();
 			respuesta = stub.getTarifaSolicitud(solicitud);
 		} catch (Exception e) {
 			escribeLog("Error al recuperar las tarifas: " + e.getMessage());
@@ -136,7 +137,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	 * 
 	 * @return
 	 */
-	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion) {
+	private EngineConfiguration createClientConfig(UsrBean usrBean, String idInstitucion, String logDescripcion, boolean log) {
 		
 		SimpleProvider clientConfig = new SimpleProvider();		
 		Handler logSIGAasignaHandler = (Handler) new LogBDDHandler(usrBean, idInstitucion, logDescripcion);
@@ -144,9 +145,9 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 		SimpleChain reqHandler = new SimpleChain();
 		SimpleChain respHandler = new SimpleChain();
 		
-		reqHandler.addHandler(logSIGAasignaHandler);
+		if(log)reqHandler.addHandler(logSIGAasignaHandler);
 		
-		respHandler.addHandler(logSIGAasignaHandler);
+		if(log)respHandler.addHandler(logSIGAasignaHandler);
 		Handler pivot = (Handler) new HTTPSender();
 		
 		Handler transport = new SimpleTargetedChain(reqHandler, pivot, respHandler);
@@ -157,20 +158,24 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 
 
 
+	private WSSIGASoap_BindingStub getStubLog() throws ClsExceptions {return getStub(true);}
+	private WSSIGASoap_BindingStub getStubNoLog() throws ClsExceptions {return getStub(false);}
+	
+	
 	/**
 	 * 
 	 * @param st
 	 * @return
 	 * @throws ClsExceptions 
 	 */
-	public WSSIGASoap_BindingStub getStub() throws ClsExceptions {
+	public WSSIGASoap_BindingStub getStub(boolean log) throws ClsExceptions {
 
 		String urlWS = getUrlWSParametro(URLALTERMUTUA);
 		//String urlWS = "https://www.altermutua.com/WSSIGATEST/ServiciosAlter.asmx";
 
 		WSSIGASoap_BindingStub stub;
 		try {
-			WSSIGALocator locator = new WSSIGALocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Solicitud AlterMutua desde " + getIdInstitucion()));
+			WSSIGALocator locator = new WSSIGALocator(createClientConfig(getUsrBean(), String.valueOf(getIdInstitucion()), "Solicitud AlterMutua desde " + getIdInstitucion(),log));
 			
 			stub = new WSSIGASoap_BindingStub(new java.net.URL(urlWS), locator);
 
