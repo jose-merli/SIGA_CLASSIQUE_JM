@@ -151,7 +151,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-	<siga:ConjBotonesBusqueda botones="B"/>
+	<siga:ConjBotonesBusqueda botones="FA,B"/>
 
 
 	<!-- FIN: BOTONES BUSQUEDA -->
@@ -247,16 +247,6 @@
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 	
 	
-	<table class="botonesDetalle">
-		<tr>
-			<td class="tdBotones">
-				<html:button property="abono" onclick="return generarFichero();" styleClass="button">
-					<siga:Idioma key="facturacion.ficheroBancarioAbonos.boton.ficheroAbonos"/>    
-				</html:button>
-			</td>	
-		</tr>
-	</table>	
-
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
