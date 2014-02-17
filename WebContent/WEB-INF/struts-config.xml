@@ -741,7 +741,8 @@
 			<forward name="ver" path="/html/jsp/censo/ws/edicionRemesa.jsp"/>
 			<forward name="editar" path="/html/jsp/censo/ws/edicionRemesa.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaColegiados.jsp"/>
-			<forward name="erroresCarga" path="/html/jsp/censo/ws/erroresCarga.jsp"/>									
+			<forward name="erroresCarga" path="/html/jsp/censo/ws/erroresCarga.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>									
 		</action>
 		
 		<action path="/CEN_EdicionColegiado" type="com.siga.censo.ws.action.EdicionColegiadoAction" name="EdicionColegiadoForm" scope="session">			
