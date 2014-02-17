@@ -334,11 +334,12 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 		request.getSession().removeAttribute("DATABACKUP");
 		BusinessManager bm = getBusinessManager();
 		DocumentacionAsistenciaService documentacioAsistenciaService = (DocumentacionAsistenciaService) bm.getService(DocumentacionAsistenciaService.class);
-
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("idinstitucion", miForm.getIdInstitucion());
 		map.put("numero", miForm.getNumero());
 		map.put("anio", miForm.getAnio());
+		map.put("idLenguaje", usr.getLanguage());
 		
 		try {
 
@@ -368,10 +369,11 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 		DocumentacionAsistenciaService documentacioAsistenciaService = (DocumentacionAsistenciaService) bm.getService(DocumentacionAsistenciaService.class);
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		map.put("idinstitucion", miForm.getIdInstitucion());
 		map.put("numero", miForm.getNumero());
 		map.put("anio", miForm.getAnio());
-		
+		map.put("idLenguaje", usr.getLanguage());
 		try {
 
 			List<DocumentacionAsistenciaVo> lista = documentacioAsistenciaService.getList(map);
