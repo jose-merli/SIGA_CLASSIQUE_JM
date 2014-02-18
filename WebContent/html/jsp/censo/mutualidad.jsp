@@ -141,7 +141,7 @@ function habilitarCampos(isHabilitar) {
 
 	function cargarBancoPorIBAN(){		
 		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-		var iban = formateaMask(document.getElementById("IBAN").value);	
+		var iban = formateaMask(document.getElementById("iban").value);	
 		if (iban!=undefined && iban!="") {
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
    				type: "POST",
@@ -155,53 +155,53 @@ function habilitarCampos(isHabilitar) {
 							//Se comprueba si el banco existe
 							if(json.banco != null){
 								var bic = json.banco.bic;
-								document.getElementById("SWIFT").value=bic;
-								document.getElementById("SWIFT").readOnly = true;
-								document.getElementById("SWIFT").className = "boxConsulta";
+								document.getElementById("swift").value=bic;
+								document.getElementById("swift").readOnly = true;
+								document.getElementById("swift").className = "boxConsulta";
 							
 							} else {
 								alert(mensaje);
-								document.getElementById("SWIFT").value="";
-								document.getElementById("SWIFT").readOnly = true;
-								document.getElementById("SWIFT").className = "boxConsulta";
+								document.getElementById("swift").value="";
+								document.getElementById("swift").readOnly = true;
+								document.getElementById("swift").className = "boxConsulta";
 								fin();
 							}
 							
 						}else{
-							document.getElementById("SWIFT").readOnly = false;
-							document.getElementById("SWIFT").className = "box";
-							document.getElementById("SWIFT").value="";
+							document.getElementById("swift").readOnly = false;
+							document.getElementById("swift").className = "box";
+							document.getElementById("swift").value="";
 							alert("Rellene el SWIFT para el banco extranjero");
 						}
 						
 					}else{
 						alert(mensaje);
-						document.getElementById("SWIFT").value="";
-						document.getElementById("SWIFT").readOnly = true;
-						document.getElementById("SWIFT").className = "boxConsulta";
+						document.getElementById("swift").value="";
+						document.getElementById("swift").readOnly = true;
+						document.getElementById("swift").className = "boxConsulta";
 					}
 					fin();
 				},
 				error: function(e){
 					alert(mensaje);
-					document.getElementById("SWIFT").value="";
-					document.getElementById("SWIFT").readOnly = true;
-					document.getElementById("SWIFT").className = "boxConsulta";
+					document.getElementById("swift").value="";
+					document.getElementById("swift").readOnly = true;
+					document.getElementById("swift").className = "boxConsulta";
 					fin();
 				}
 			});
 			
 		} else {
-			document.getElementById("IBAN").value="";
-			document.getElementById("SWIFT").value="";
-			document.getElementById("SWIFT").readOnly = true;
-			document.getElementById("SWIFT").className = "boxConsulta";
+			document.getElementById("iban").value="";
+			document.getElementById("swift").value="";
+			document.getElementById("swift").readOnly = true;
+			document.getElementById("swift").className = "boxConsulta";
 		}
 	}	
 	
 	function inicioCargarBancoBIC(){		
-		if(document.getElementById("IBAN")){
-			var iban = document.getElementById("IBAN").value;
+		if(document.getElementById("iban")){
+			var iban = document.getElementById("iban").value;
 			var codigoBanco = "${MutualidadForm.cboCodigo}";
 			if (iban!=undefined && iban!="") {			
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
@@ -212,7 +212,7 @@ function habilitarCampos(isHabilitar) {
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){	
 						if(json.banco!=null && json.banco!=""){
-							document.getElementById("SWIFT").value=json.banco.bic;
+							document.getElementById("swift").value=json.banco.bic;
 						}
 						fin();
 					},
@@ -227,9 +227,9 @@ function habilitarCampos(isHabilitar) {
 	
 	
 	function rpad() {
-		if (document.getElementById("SWIFT").value.length == 8){
-	    	while (document.getElementById("SWIFT").value.length < 11)
-	    		document.getElementById("SWIFT").value = document.getElementById("SWIFT").value + 'X';
+		if (document.getElementById("swift").value.length == 8){
+	    	while (document.getElementById("swift").value.length < 11)
+	    		document.getElementById("swift").value = document.getElementById("swift").value + 'X';
 		}
 	}	
 	
@@ -573,12 +573,12 @@ function habilitarCampos(isHabilitar) {
 					<td class="labelText" nowrap><siga:Idioma
 							key="censo.mutualidad.literal.iban" />&nbsp;(*)</td>
 					<td class="labelText">
-						<html:text property="iban" size="36" styleClass="${estiloText}" maxlength="34" onblur="cargarBancoPorIBAN();"/>
+						<html:text styleId="iban" property="iban" size="36" styleClass="${estiloText}" maxlength="34" onblur="cargarBancoPorIBAN();"/>
 					</td>
 					<td class="labelText" nowrap><siga:Idioma
 							key="censo.mutualidad.literal.swift" /></td>
 					<td class="labelText">
-						<html:text property="swift" size="15" maxlength="11" styleClass="boxConsulta" readonly="true" onblur="rpad();"/>
+						<html:text styleId="swift" property="swift" size="15" maxlength="11" styleClass="boxConsulta" readonly="true" onblur="rpad();"/>
 					</td>
 				<tr>
 	

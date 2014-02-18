@@ -33,8 +33,8 @@ public enum SearchButtonsConstants {
 	OBTENER_RESOLUCIONES ("or","general.boton.obtenerResoluciones","obtenerResoluciones()",25),
 	OBTENER_DESIGNAPROCURADOR ("odp","general.boton.obtenerDesignaProcurador","obtenerDesignaProcurador()",26),
 	FICHERO_RENEGOCIACIONES ("fg","facturacion.ficheroBancarioPagos.boton.renegociacion.nuevo","generarFichero()",27),
-	FICHERO_ABONOS ("fa","facturacion.ficheroBancarioAbonos.boton.ficheroAbonos","generarFichero()",28);
-	
+	FICHERO_ABONOS ("fa","facturacion.ficheroBancarioAbonos.boton.ficheroAbonos","generarFichero()",28),
+	FICHERO_DEVOLUCIONES ("pnf","facturacion.consultaDevolucion.boton.nuevoFichero","procesarNuevoFichero()",28);
 	
     private final String valor;   
 	private final String label;   

@@ -203,27 +203,11 @@
 	}
 %>		
 
-	<table class="botonesDetalle">
-		<tr>
-			<td class="tdBotones">
-				<input type="button" alt="procesarNuevoFichero"  id="deleteButton" onclick="return procesarNuevoFichero();" class="button" value='<siga:Idioma key="facturacion.consultaDevolucion.boton.nuevoFichero"/>'>
-			</td>
-		</tr>
-	</table>
-	
-	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		// Funcion asociada a boton procesarNuevoFichero
-		function procesarNuevoFichero() {
-			document.forms[0].modo.value='nuevo';							
-			var resultado = ventaModalGeneral("DevolucionesForm","M");
-			if (resultado=="MODIFICADO") {
-				refrescarLocal();
-			}
-		}
+
 	
 		function refrescarLocal() {
 			parent.buscar();

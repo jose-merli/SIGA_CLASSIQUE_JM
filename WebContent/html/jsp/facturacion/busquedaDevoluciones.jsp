@@ -142,7 +142,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-	<siga:ConjBotonesBusqueda botones="B"/>
+	<siga:ConjBotonesBusqueda botones="PNF,B"/>
 
 
 	<!-- FIN: BOTONES BUSQUEDA -->
@@ -193,6 +193,15 @@
 			document.DevolucionesForm.target="resultado";	
 			document.DevolucionesForm.submit();	
 				
+		}
+		
+		// Funcion asociada a boton procesarNuevoFichero
+		function procesarNuevoFichero() {
+			document.forms[0].modo.value='nuevo';							
+			var resultado = ventaModalGeneral("DevolucionesForm","M");
+			if (resultado=="MODIFICADO") {
+				refrescarLocal();
+			}
 		}
 			
 	</script>
