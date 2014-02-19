@@ -203,6 +203,10 @@
 				refrescarLocal();
 			}
 		}
+		
+		function refrescarLocal() {
+			buscar();
+		}
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
