@@ -747,6 +747,7 @@ function habilitarCampos(isHabilitar) {
 		}
 
 		//validamos el numero de cuenta (IBAN)
+		document.forms["AlterMutuaForm"].IBAN.value = formateaMask(document.getElementById("IBAN").value);
 		iban = document.forms["AlterMutuaForm"].IBAN.value;
 		bic = document.forms["AlterMutuaForm"].SWIFT.value;		
 		
