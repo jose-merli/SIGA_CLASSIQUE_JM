@@ -196,7 +196,7 @@
 		idioma="<%=idioma%>"
 		modo="buscar"								
 		clase="paginator" 
-		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
+		divStyle="position:absolute; width:100%; height:20; z-index:3; left: 0px"
 		distanciaPaginas=""
 		action="<%=action%>" />
 <%
