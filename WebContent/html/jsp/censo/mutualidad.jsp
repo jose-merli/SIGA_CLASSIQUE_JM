@@ -920,7 +920,8 @@ function habilitarCampos(isHabilitar) {
 			}
 			
 			//validamos el numero de cuenta (IBAN)
-			if(document.MutualidadForm.idTipoSolicitud.value=='P'){				
+			if(document.MutualidadForm.idTipoSolicitud.value=='P'){	
+				document.MutualidadForm.iban.value = formateaMask(document.getElementById("iban").value);
 				iban = document.MutualidadForm.iban.value;
 				bic = document.MutualidadForm.swift.value;
 				
