@@ -1314,7 +1314,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			linea += formatea(anio,4,true); // anho
 			linea += formatea(datosInstitucion.get("NIDENTIFICACION"),9,true); // NIF
 			String nombreInstitucion = datosInstitucion.get("NOMBREINSTITUCION").toString();
-			nombreInstitucion = nombreContacto.toUpperCase();
+			nombreInstitucion = nombreInstitucion.toUpperCase();
 			nombreInstitucion = UtilidadesString.quitarAcentos((nombreInstitucion));
 			nombreInstitucion = UtilidadesString.validarModelo190(nombreInstitucion);
 			linea += formatea(nombreInstitucion,40,false); // nombre de la institucion
