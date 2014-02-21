@@ -85,7 +85,6 @@
 	float varIvaTotal = 0;
 	double varPrecioTotal = 0;	
 	String parametroFuncion;
-	String validarCantidad;
 	String formaPagoNombre;
 	String sIdCuenta;
 	String sFormaPago;
@@ -129,16 +128,29 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->	
 	<script language="JavaScript">	
-		function  convertirAFormato(n){
-			var d = n.replace(/,/,".");
-			d = new Number(n);
-			d = Number(d.toFixed(2));
-			d = d.toLocaleString();
-			if (String(d).indexOf(',') < 0) {
-				d += '.00'; // aqui puede variar segun la cantidad de decimales que desees;
-			}	
-			return d.replace(".","");	
-		}
+		// JPT: Funcion que pone muestra un numero con punto en los millares, coma en el simbolo decimal y dos decimales
+		function  convertirAFormato(numero){
+			var numeroFormateado = numero.replace(",", ".");
+			var numeroNumber = new Number(numeroFormateado);
+			
+			if (isNaN(numeroNumber)) {
+				return "";
+			}
+			
+			numeroNumber = Number(numeroNumber.toFixed(2));
+			numeroNumber = numeroNumber.toLocaleString();
+			
+			//Tratamiento decimales
+			if (numeroNumber.indexOf(',') < 0) {
+				numeroNumber += ',00'; // Si no tiene decimales le pongo dos ceros
+			} else {
+				if (numeroNumber.indexOf(',') + 3 > numeroNumber.length){
+					numeroNumber += '0'; // Si tiene un decimal le pongo otro decimal
+				}
+			}
+			
+			return numeroNumber;	
+		}		
 	
 		function editarCertificado(fila) {
 			f = document.solicitudCompraForm;
@@ -277,12 +289,72 @@
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
 		
+		function errorValidarCantidad (valor) {
+			// No es valido si es nulo
+			// No es valido si no tiene longitud
+			// No es valido si tiene blancos
+			// No es valido si no es numero
+			// No es valido si es menor que cero
+			// No es valido si tiene algun punto o coma
+			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)
+				return true;
+			else {
+				var valorFormateado = valor.value;
+				valorFormateado = valorFormateado.replace(",", ".");
+				if (isNaN(valorFormateado) || eval(valorFormateado)<0 || valorFormateado.indexOf(".")>-1)
+					return true;					
+			}
+			
+			return false;
+		}		
+		
+		function errorValidarPrecio (valor) {
+			// No es valido si es nulo
+			// No es valido si no tiene longitud
+			// No es valido si tiene blancos
+			// No es valido si no es numero
+			// No es valido si es menor que cero
+			// No es valido si tiene varios puntos o comas
+			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)
+				return true;
+			else {
+				var valorFormateado = valor.value;
+				valorFormateado = valorFormateado.replace(",", ".");
+				if (isNaN(valorFormateado) || eval(valorFormateado)<0 || (valorFormateado.indexOf(".")!=-1 && valorFormateado.substring(valorFormateado.indexOf(".")+1).length > 2))
+					return true;					
+			}
+			
+			return false;
+		}		
+		
+ 		function validarCantidadOnBlur(valor) { 		
+ 			if (errorValidarCantidad(valor)) { 
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.cantidad"/> <siga:Idioma key="messages.campoNoCorrecto.error"/>";
+				alert (mensaje);
+				valor.focus();
+				
+			} else {
+				calcularImporte();
+			}	
+		}
+ 		
+ 		function validarPrecioOnBlur(valor) {
+ 			if (errorValidarPrecio(valor)) {
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.precio"/> <siga:Idioma key="messages.campoNoCorrecto.error"/>";
+				alert (mensaje);   
+				valor.focus();
+				
+			} else {
+				calcularImporte();
+			}	
+		} 		 	 		
+		
 		function validarCantidades() {
 			f = document.solicitudCompraForm; 	
  			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				cantidad=eval("f.cantidad" + j);
  				
- 				if (cantidad.value==null || isNaN(cantidad.value) || eval(cantidad.value)<=0 || cantidad.value.indexOf(".")>-1) { 
+ 				if (errorValidarCantidad(cantidad)) { 
  					nombre = document.getElementById("nombreArticulo" + j);
 	 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorCantidad"/>";
 					alert (mensaje);
@@ -292,7 +364,7 @@
 	 		return true;
 	 	}		
 		
-		function validarPrecio() {
+		function validarPrecios() {
 			f = document.solicitudCompraForm; 	
  			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
  				precio=eval("f.precio" + j); 				
@@ -301,7 +373,7 @@
  				tipo = document.getElementById("oculto" + j + "_4");
 			    // Si es producto
  				if (tipo.value == <%=Articulo.CLASE_PRODUCTO%>) {
-	 				if(precio.value==null || isNaN(precio.value) || eval(precio.value)<0 || ((precio.value.indexOf(".")!=-1) && (precio.value.substring(precio.value.indexOf(".")+1).length > 2))) { 
+	 				if(errorValidarPrecio(precio)) { 
 	 					nombre = document.getElementById("nombreArticulo" + j);
 		 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorPrecio"/>";
 						alert (mensaje);
@@ -478,32 +550,12 @@
  			f.ivaTotal.value = convertirAFormato(f.ivaTotal.value);
  			f.precioTotal.value = convertirAFormato(f.precioTotal.value); 			
  		}
- 		
- 		function validaNumeroPositivo(valorInicial,valor) { 		
-	 	 	if (isNaN(valor.value) || valor.value == 0 || (valor.value!=parseInt(valor.value,10))) {
-				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.cantidad"/> <siga:Idioma key="messages.campoNoCorrecto.error"/>";
-				alert (mensaje);
-	//			valor.value = valorInicial;	   
-				valor.focus();
-				
-			} else {
-				calcularImporte();
-			}	
-		}
-
- 		function accionfinalizarCompraANTIGUO(){
- 			f = document.solicitudCompraForm;	 			
- 			if(validarPrecio() && validarFormaPago()){							
-				f.modo.value = "finalizarCompra";			
-				f.submit();
-			}
- 		}
 
 		//Debe llamarse accionConfirmarCompra
  		function accionConfirmarCompra(){
  			sub();
  			f = document.solicitudCompraForm;
- 			if (validarCantidades() && validarPrecio() && validarFormaPago() && validarCertificado()) {							
+ 			if (validarCantidades() && validarPrecios() && validarFormaPago() && validarCertificado()) {							
  				f.target = "mainWorkArea";
 				f.modo.value = "confirmarCompra";
 				f.submit();
@@ -662,19 +714,18 @@
 
 					if (datos != null) {
 						if(nofacturable.equals(DB_FALSE)){
-							varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-							varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
+							varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float) precio * iva / 100));
+							varPrecioTotal = varPrecioTotal + (a.getCantidad() * precio) + varIvaTotal;
 						}
 					} else {
-						varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-						varPrecioTotal = varPrecioTotal + (a.getCantidad() * (precio * (1 + (iva / 100))));
+						varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float) precio * iva / 100));
+						varPrecioTotal = varPrecioTotal + (a.getCantidad() * precio) + varIvaTotal;
 					}
 
 									
 					fila=i+1;	
 					parametroFuncion = "obtenerCuenta(" + fila + ")";
 					formaPagoNombre = "formaPago" + fila; 	
-					validarCantidad = "validaNumeroPositivo(" + String.valueOf(a.getCantidad());		
 					
 					FilaExtElement[] elems=new FilaExtElement[2];
 					sTipoCertificado = "";
@@ -763,15 +814,15 @@
 						</td>
 						
 		  				<td align="center">
-							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
+							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="validarCantidadOnBlur(this)">
 		  				</td>
 		  				
 		  				<td align="center">
 							<% // Producto
 							   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
-									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
+									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class="boxNumber" size="6" onBlur="validarPrecioOnBlur(this)">
 								<%} else { %>
-									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
+									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
 								<%}  %>
 							<% }  // Servicio
 							   else { %>
@@ -837,7 +888,7 @@
 							<siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/>
 						</td>
 						<td class="labelTextValue">					
-							<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formatoCampo(varIvaTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
+							<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
 						</td>
 					</tr>
 					
@@ -846,7 +897,7 @@
 							<siga:Idioma key="pys.solicitudCompra.literal.total"/>
 						</td>
 						<td class="labelTextValue">
-							<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formatoCampo(varPrecioTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
+							<input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;
 						</td>
 					</tr>
 				</table>
@@ -882,3 +933,14 @@
 	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>
+
+<script>
+	function accionVolver() {
+		if (validarCantidades() && validarPrecios()) {
+			f = document.solicitudCompraForm;
+			f.action = f.action + "?noReset=true";
+			f.modo.value = "abrirAlVolver";	
+			f.submit();
+		}	 			
+	}
+</script>
