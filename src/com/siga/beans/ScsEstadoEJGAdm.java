@@ -1,7 +1,8 @@
 package com.siga.beans;
 
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
@@ -9,6 +10,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.SIGAException;
 
 
 /**
@@ -341,5 +343,29 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		return maestroEstadosEJGBean;
 	} //selectGenerico ()
 	
+	
+	public Vector getEstadosEjg(ScsEJGBean ejg) throws ClsExceptions, SIGAException{
+		
+		Vector v = new Vector();
+		Hashtable claves = new Hashtable();
+		
+		claves.put (new Integer (1), ejg.getIdInstitucion());
+		claves.put (new Integer (2), ejg.getIdTipoEJG());
+		claves.put (new Integer (3), ejg.getAnio());
+		claves.put (new Integer (4), ejg.getNumero());
+		
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT estado.*, estadoejg.visiblecomision ");
+		query.append("  FROM SCS_ESTADOEJG estado, SCS_MAESTROESTADOSEJG estadoejg ");
+		query.append(" WHERE estado.IDESTADOEJG = estadoejg.IDESTADOEJG ");
+		query.append("   AND estado.IDINSTITUCION =:1");
+		query.append("   AND estado.IDTIPOEJG =:2");
+		query.append("   AND estado.ANIO =:3");
+		query.append("   AND estado.NUMERO =:4");
+		query.append(" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc");
+		v = this.selectGenericoBind(query.toString(), claves);
+		
+		return v;
+	}
 	
 }

@@ -181,10 +181,21 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		try {			
 			v = admEJG.selectPorClave(miHash);
 			try{
-				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));
+				
+				ScsEJGBean ejgBean= (ScsEJGBean)v.get(0);
+				
+				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable(ejgBean));
 				int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 				request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 				String informeUnico = ClsConstants.DB_TRUE;
+				
+				// jbd // inc10949 
+				/* Pasamos un parametro para decir si se puede borrar el dictamen o no
+				 * Esto depende si tenemos un estado posterior a dictaminado que petenezca 
+				 * a la comision.
+				 */			
+				boolean borrable = ejgBean.getFechaDictamen()!=null && !ejgBean.getFechaDictamen().equalsIgnoreCase("") && isDictamenBorrable(ejgBean, usr);
+				request.setAttribute("isBorrable", borrable);
 				
 				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 				// mostramos la ventana con la pregunta
@@ -207,6 +218,41 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		
 		
 		return "inicio";		
+	}
+	
+	/**
+	 * Funcion que nos dirá si se puede borrar el dictamen o no
+	 * Un dictamen se puede borrar siempre y cuando no exista un estado visible por la comision
+	 * que se haya dado de alta con posterioridad al dictamen.
+	 * @param ejg El ejg cuyos estados vamos a comprobar
+	 * @param usr El usuario para poder crear el adm
+	 * @return true si se puede borrar, false si no se puede borrar el dictamen
+	 * @throws SIGAException 
+	 */
+	private boolean isDictamenBorrable(ScsEJGBean ejg, UsrBean usr) throws SIGAException{
+		ScsEstadoEJGAdm estadoAdm = new ScsEstadoEJGAdm(usr);
+		boolean borrable = true;
+		try {
+			// Recuperamos los estados del EJG con un método genérico
+			Vector<Hashtable> estados = estadoAdm.getEstadosEjg(ejg);
+			Hashtable<String, String> e = new Hashtable<String, String>();
+			// Inicializamos la posicion del estado dictaminado como el ultimo
+			int dictaminado = estados.size();
+			for (int i=0;i<estados.size();i++) {
+				e=estados.get(i);
+				// Cuando encontremos un estado dictaminado lo fijamos como referencia
+				if(e.get("IDESTADOEJG").toString().equalsIgnoreCase("6"))
+					dictaminado=i;
+				// Si no encontramos un estado visible por la comision y posterior al dictamen
+				// el dictamen no se podrá borrar
+				if(e.get("VISIBLECOMISION").toString().equalsIgnoreCase("1") && (i>=dictaminado))
+					borrable=false;
+			}
+			return borrable;
+		} catch (ClsExceptions e) {
+			// Si nos encontramos con un problema no dejamos borrar
+			return false;
+		}
 	}
 	
 	/** 

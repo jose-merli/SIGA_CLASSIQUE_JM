@@ -98,7 +98,8 @@ public enum ActionButtonsConstants {
 	PROCESAR ("p","general.boton.procesar","accionProcesar()",36),
 	XUNTA_ENVIO_REINTEGRO ("ER","general.boton.xunta.envio_reintegro","accionXuntaEnvioReintegro()",85),
 	XUNTA_ENVIO_JUSTIFICACION ("EJ","general.boton.xunta.envio_justificacion","accionXuntaEnvioJustificacion()",86),
-	ANADIR_POB ("AP","general.boton.anadirPoblaciones","anadirPob()",87);
+	ANADIR_POB ("AP","general.boton.anadirPoblaciones","anadirPob()",87),
+	BORRARDICTAMENT ("BD","general.boton.borrarDictamen","borrarDictamen()",88);
 
 
     private final String valor;   

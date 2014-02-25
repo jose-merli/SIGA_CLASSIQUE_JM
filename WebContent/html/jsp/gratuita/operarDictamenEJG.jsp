@@ -14,6 +14,7 @@
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -287,9 +288,18 @@
 		</tr>
 	</table>
 	<%}%>
-	<!-- FIN: CAMPOS DEL REGISTRO --> <!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="V,R,G" modo="<%=accion%>"
-		clase="botonesDetalle" /> <!-- INICIO: SCRIPTS BOTONES --> <script
+
+				
+	<!-- Pintamos el boton de borrar solo cuando lo vamos a permitir -->
+	<c:if test="${requestScope.isBorrable==false}">
+		<siga:ConjBotonesAccion botones="V,R,G" modo="<%=accion%>"clase="botonesDetalle" />
+	</c:if>
+	<c:if test="${requestScope.isBorrable==true}">
+		<siga:ConjBotonesAccion botones="V,R,G,BD" modo="<%=accion%>"clase="botonesDetalle" />
+	 </c:if>
+	 
+	<!-- INICIO: SCRIPTS BOTONES --> 
+	<script
 		language="JavaScript">	
 	
 		//Asociada al boton Restablecer
@@ -330,6 +340,23 @@
 			document.forms[0].submit();
 
 		}
+		
+		function limpiaFormulario(){
+
+			jQuery('input[type=text], textarea, select').val('');
+			jQuery('#idFundamentoCalifFrame').contents().find('input[type=text], textarea, select').val('');
+		}
+		
+		function borrarDictamen(){
+			sub();
+			if(confirm("<siga:Idioma key='gratuita.operarDictamen.confirmBorrarDictamen'/>")){
+				limpiaFormulario();
+				document.forms[0].submit();
+			}else{
+				fin();
+			}
+		}
+		
 		function generarCarta()
 		{
 		sub();
