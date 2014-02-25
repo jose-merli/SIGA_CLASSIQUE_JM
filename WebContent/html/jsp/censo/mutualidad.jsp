@@ -864,9 +864,6 @@ function habilitarCampos(isHabilitar) {
 			
 		}
 		
-		document.MutualidadForm.capitalCobertura.value=document.MutualidadForm.capitalCobertura.value.slice(0,-1)
-		document.MutualidadForm.cuotaCobertura.value= document.MutualidadForm.cuotaCobertura.value.slice(0,-1)
-		
 		document.MutualidadForm.periodicidadPago.value = document.MutualidadForm.idPeriodicidadPago.options[document.MutualidadForm.idPeriodicidadPago.selectedIndex].text;
 		document.MutualidadForm.cobertura.value = document.MutualidadForm.idCobertura.options[document.MutualidadForm.idCobertura.selectedIndex].text;
 		document.MutualidadForm.beneficiario.value = document.MutualidadForm.idBeneficiario.options[document.MutualidadForm.idBeneficiario.selectedIndex].text;
@@ -946,6 +943,11 @@ function habilitarCampos(isHabilitar) {
 				habilitaCampos();
 				return false;		
 			}
+			
+			// Quitamos el simbolo $
+			document.MutualidadForm.capitalCobertura.value=document.MutualidadForm.capitalCobertura.value.slice(0,-1)
+			document.MutualidadForm.cuotaCobertura.value= document.MutualidadForm.cuotaCobertura.value.slice(0,-1);
+			
 			// Quitamos los botones //
 			jQuery(".botonesDetalle").hide();
 			document.MutualidadForm.submit();
