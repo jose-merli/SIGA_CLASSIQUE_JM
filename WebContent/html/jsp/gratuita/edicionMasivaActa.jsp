@@ -49,7 +49,7 @@
 			<table class="tablaCampos" border="0" align="left">
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaActa" />
+						<html:checkbox property="guardaActa" styleid="guardaActa"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
 						<siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> -<br> <siga:Idioma key="sjcs.actas.fechaResolucion" />
@@ -61,7 +61,7 @@
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaPonente"/>
+						<html:checkbox property="guardaPonente" styleid="guardaPonente"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
@@ -73,7 +73,7 @@
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaRatificacion"/>
+						<html:checkbox property="guardaRatificacion" styleid="guardaRatificacion"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
 					  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
@@ -85,7 +85,7 @@
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaFundamento" />
+						<html:checkbox property="guardaFundamento"  styleid="guardaFundamento"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
@@ -161,6 +161,14 @@
 			
 		}
 		
+
+
+
+		jQuery('#idActaComp').on('change', function (e) {jQuery('#guardaActa').attr('checked',jQuery('#idActaComp option:selected').text()!="");});
+		jQuery('#idPonente').on('change', function (e) {jQuery('#guardaPonente').attr('checked',jQuery('#idPonente option:selected').text()!="");});
+		jQuery('#idTipoResolucion').on('change', function (e) {jQuery('#guardaRatificacion').attr('checked',jQuery('#idTipoResolucion option:selected').text()!="");});
+		jQuery('#idFundamentoJuridico').on('change', function (e) {jQuery('#guardaFundamento').attr('checked',jQuery('#idFundamentoJuridico option:selected').text()!="");});
+	
 		
 	</script>
 </body>
