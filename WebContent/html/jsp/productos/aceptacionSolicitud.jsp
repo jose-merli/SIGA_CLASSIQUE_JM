@@ -294,14 +294,14 @@
 			// No es valido si no tiene longitud
 			// No es valido si tiene blancos
 			// No es valido si no es numero
-			// No es valido si es menor que cero
+			// No es valido si es menor o igual que cero
 			// No es valido si tiene algun punto o coma
 			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)
 				return true;
 			else {
 				var valorFormateado = valor.value;
 				valorFormateado = valorFormateado.replace(",", ".");
-				if (isNaN(valorFormateado) || eval(valorFormateado)<0 || valorFormateado.indexOf(".")>-1)
+				if (isNaN(valorFormateado) || eval(valorFormateado)<=0 || valorFormateado.indexOf(".")>-1)
 					return true;					
 			}
 			
