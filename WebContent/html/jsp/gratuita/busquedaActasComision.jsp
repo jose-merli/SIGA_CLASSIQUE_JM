@@ -10,6 +10,7 @@
 
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.Calendar"%>
 
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" 		prefix="bean"%>
@@ -27,6 +28,7 @@
    	ArrayList secretarioA = new ArrayList();
 	HashMap datosFormulario = new HashMap();
 	String anioActa="", numeroActa="", fechaResolucion="", fechaReunion="", idPresidente="", idSecretario="";
+	anioActa=String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 	if (request.getSession().getAttribute("DATOSFORMULARIO")!=null) {
 		datosFormulario = (HashMap)request.getSession().getAttribute("DATOSFORMULARIO");
 		anioActa = datosFormulario.get("ANIOACTA")==null?"":(String)datosFormulario.get("ANIOACTA");
