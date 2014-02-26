@@ -151,6 +151,11 @@
 					<td colspan="5"><html:textarea styleClass="<%=claseTextArea%>" property="pendientes" style="width:700px; height:60px" value="<%=pendientes%>" readonly="<%=readOnly%>"></html:textarea></td>
 				</tr>
 				
+				<tr>
+					<td class="labelText"><siga:Idioma key="sjcs.actas.ejgsEnActa"/></td>
+					<td colspan="5"><c:out value="<%=ejgs.size()%>"/></td>
+				</tr>
+				
 				<%if(!readOnly){%>
 					<tr>
 						<td colspan="6" align="right"><input type="button" alt="Retirar"  id="idButtonRetirar" onclick="return accionRetirarPendientes();" class="button" name="idButton" value="<siga:Idioma key='sjcs.actas.retirarEJGs'/>"></input></td>
