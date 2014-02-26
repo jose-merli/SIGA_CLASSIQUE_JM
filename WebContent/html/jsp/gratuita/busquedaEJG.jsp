@@ -39,8 +39,9 @@
 	
 	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig=""; 
 	String creadoDesde="", fechaApertura="", fechaAperturaHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaEstadoDesde="", fechaEstadoHasta="",  fechaLimiteDesde="", fechaLimiteHasta="", fechaPonenteDesde="", fechaPonenteHasta="";
-	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList();
+	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), idPreceptivo = new ArrayList();
 	Hashtable miHash = new Hashtable();
+	
 	boolean permisoEejg = false;
 	boolean accesoActa = false;
 	
@@ -223,6 +224,10 @@
 					String idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
 					vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "": idFundamentoJuridico);
 				}	
+				
+				if (miHash.get(ScsEJGBean.C_PRECEPTIVO) != null) 
+					idPreceptivo.add(miHash.get(ScsEJGBean.C_PRECEPTIVO).toString());
+				
 			} else {
 				if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
 					idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString());
@@ -722,9 +727,16 @@ if(usr.isComision()){
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
+					<siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
+				</td>
+				<td >
+					<siga:ComboBD nombre="idPreceptivo" tipo="comboPreceptivo" ancho="200" elementoSel="<%=idPreceptivo%>"/>
+				</td>
+				
+				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.operarEJG.literal.renuncia" />
 				</td>
-				<td  colspan="4">
+				<td colspan="2">
 					<siga:Select id="idRenuncia" queryId="getRenuncias" selectedIds="<%=renunciaSel%>" width="180" />
 				</td>
 			</tr>

@@ -2449,6 +2449,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			contador++;
 			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(), "EJG.NUMEROPROCEDIMIENTO", contador, codigos);
 		}
+		// jbd // Filtramos por preceptivo
+		if ((miHash.containsKey(ScsEJGBean.C_PRECEPTIVO)) && (!miHash.get(ScsEJGBean.C_PRECEPTIVO).toString().equals(""))) {
+			contador++;
+			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get(ScsEJGBean.C_PRECEPTIVO)).trim(), "EJG."+ScsEJGBean.C_PRECEPTIVO, contador, codigos);
+		}
 		
 		if ((miHash.containsKey("NIG")) && (!miHash.get("NIG").toString().equals(""))) {
 			contador++;

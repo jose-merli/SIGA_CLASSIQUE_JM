@@ -1054,4 +1054,7 @@ import com.siga.censo.form.DatosRegTelForm;
 			this.modoActa = modoActa;
 		}
 		
+		public String getIdPreceptivo() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_PRECEPTIVO);}
+		public void setIdPreceptivo(String valor)	{this.datos.put(ScsEJGBean.C_PRECEPTIVO, valor);}
+		
 }
