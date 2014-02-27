@@ -264,8 +264,8 @@ public class EdicionColegiadoAction extends MasterAction {
 					// Recuperamos los datos del registro que hemos seleccionado
 					Vector ocultos = formulario.getDatosTablaOcultos(0);
 					if (ocultos != null) {
-						if (ocultos.size() > 3) {					
-							idcensodatos = Long.valueOf(ocultos.get(3).toString());
+						if (ocultos.size() > 2) {					
+							idcensodatos = Long.valueOf(ocultos.get(2).toString());
 						}
 					} else {
 						throw new IllegalArgumentException("No se ha recibido el identificador para editar el colegiado");

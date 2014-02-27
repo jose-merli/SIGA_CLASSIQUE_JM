@@ -156,9 +156,8 @@
 					<td>
 					
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionColegiadoForm.getIdpersona()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=edicionColegiadoForm.getIdinstitucion()%>">					
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=edicionColegiadoForm.getIdinstitucion()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
 					
 					<%=edicionColegiadoForm.getFechaCambio()!=null?edicionColegiadoForm.getFechaCambio():"&nbsp;"%></td>
 					

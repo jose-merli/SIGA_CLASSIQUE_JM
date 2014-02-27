@@ -183,8 +183,8 @@
 					
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionColegiadoForm.getIdpersona()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=edicionColegiadoForm.getIdinstitucion()%>">					
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
+					<!-- input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="LETRADO" -->
+					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" id="oculto<%=String.valueOf(i+1)%>_3" value="<%=edicionColegiadoForm.getIdcensodatos()%>">
 					<td style="text-align: right;"><%=edicionColegiadoForm.getNcolegiado()!=null?edicionColegiadoForm.getNcolegiado():"&nbsp;"%></td>
 					<td><%=edicionColegiadoForm.getNombre()!=null?edicionColegiadoForm.getNombre():"&nbsp;"%></td>
 					<td><%=edicionColegiadoForm.getApellido1()!=null?edicionColegiadoForm.getApellido1():"&nbsp;"%></td>
@@ -231,7 +231,12 @@
 				}
 			 				 				 	
 			 	function informacionLetrado(fila) {
-					document.forms[0].action="./CEN_BusquedaClientes.do?noReset=true";			 		
+					document.forms[0].action="./CEN_BusquedaClientes.do?noReset=true";
+					var oculto3 = document.getElementById("oculto" + fila + "_3");
+					
+					if (oculto3) {
+						oculto3.value = "LETRADO";
+					}
 					selectRow(fila);	
 					editar(fila);					
 				}
