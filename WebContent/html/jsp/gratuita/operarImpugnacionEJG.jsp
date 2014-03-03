@@ -109,6 +109,14 @@
 	<siga:Titulo 
 		titulo="pestana.justiciagratuitaejg.impugnacion" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
+		
+		<style type="text/css">
+		textarea {
+            -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+            -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+             box-sizing: border-box;         /* Opera/IE 8+ */
+           }
+		</style>
 </head>
 
 <body>
@@ -252,7 +260,7 @@
 				<%if (accion.equalsIgnoreCase("ver")) {%>	
 					<textarea name="observacionImpugnacion" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observacionImpugnacion%></textarea>
 				<%} else {%>
-					<textarea name="observacionImpugnacion" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="18"><%=observacionImpugnacion%></textarea>
+					<textarea name="observacionImpugnacion" class="box" style="width:770px" rows="18"><%=observacionImpugnacion%></textarea>
 				<%}%>
 			</td>		
 		</tr>

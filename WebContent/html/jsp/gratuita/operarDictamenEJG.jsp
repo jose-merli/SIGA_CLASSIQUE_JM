@@ -255,7 +255,6 @@
 							<%} else {%> 
 								<textarea
 									name="dictamen" class="box" style="width: 815px" 
-									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
 									rows="20"><%=dictamen%></textarea>
 							<%}%>
 							</td>

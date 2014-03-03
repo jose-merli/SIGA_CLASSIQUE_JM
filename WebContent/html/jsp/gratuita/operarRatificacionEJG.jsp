@@ -435,11 +435,10 @@
 					<td colspan="3">	
 						<%if (accion.equalsIgnoreCase("ver")) {%>	
 							<textarea name="ratificacionDictamen" class="boxConsulta"
-							style="overflow-y:auto; overflow-x:hidden; width:750px; height:50px; resize:none;" 
+							style="overflow-y:auto; overflow-x:hidden; width:750px; height:200px; resize:none;" 
 							readOnly="true"><%=observaciones%></textarea>
 						<%} else {%>
-							<textarea name="ratificacionDictamen" class="box" 
-							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" 							
+							<textarea name="ratificacionDictamen" class="box" 					
 							style="overflow-y:auto; overflow-x:hidden; width:730px; height:200px; resize:none;"><%=observaciones%></textarea>
 						<%}%>
 					</td>		
