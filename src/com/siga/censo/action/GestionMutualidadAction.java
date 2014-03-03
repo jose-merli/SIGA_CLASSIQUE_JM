@@ -163,9 +163,10 @@ public class GestionMutualidadAction extends MasterAction {
 				}
 				if(!mutualidadForm.getModo().equalsIgnoreCase("consulta")) {
 					// Desde la ficha no se puede solicitar el alta del seguro gratuito
-					if(ficha && mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase("S")) {
-						mutualidadForm.setModo("consulta");
-					}else {
+					// jbd // A peticion de la mutualidad dejamos abierto el seguro gratuito durante dos meses
+					//if(ficha && mutualidadForm.getIdTipoSolicitud().equalsIgnoreCase("S")) {
+					//	mutualidadForm.setModo("consulta");
+					//}else {
 						// No hay solicitudes previas. Debemos asegurarnos que pueda hacer la solicitud.
 						// Con estado mutualista sabremos si tiene una solicitud previa, o no cumple las condiciones
 						RespuestaMutualidad respuestaSolicitudAlta = mutualidadService.isPosibilidadSolicitudAlta(mutualidadForm.getNumeroIdentificacion(), mutualidadForm.getFechaNacimiento(),usr);
@@ -175,7 +176,7 @@ public class GestionMutualidadAction extends MasterAction {
 							mutualidadForm.setModo("consulta");
 							//mutualidadForm.setEstadoMutualista(respuestaSolicitudAlta.getValorRespuesta());
 						}
-					}
+					//}
 				}
 			//}
 			List<String> alIdsPais = new ArrayList<String>();

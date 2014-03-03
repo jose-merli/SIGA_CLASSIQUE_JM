@@ -290,7 +290,7 @@ function habilitarCampos(isHabilitar) {
 	<c:set var="estiloText" value="boxConsulta" />
 </c:if>
 
-<fieldset id="dialogoSolicitar">
+<fieldset id="dialogoSolicitar" style="display:none">
 		<table width="99%">
 		
 			<tr>
@@ -803,14 +803,14 @@ function habilitarCampos(isHabilitar) {
 </c:if>
 
 </div>
-<div id="botonera">
+<div id="botonera" style="display:none">
 <c:if test="${MutualidadForm.modo=='insertar'}">
 	<siga:ConjBotonesAccion botones="GS,R" clase="botonesDetalle" />
 </c:if>
 </div>
 </html:form>
 
-<c:if test="${MutualidadForm.modo=='ver'}">
+	<c:if test="${MutualidadForm.modo=='ver'}">
 		<script>habilitarCampos('false'); </script>
 	</c:if>
 	
