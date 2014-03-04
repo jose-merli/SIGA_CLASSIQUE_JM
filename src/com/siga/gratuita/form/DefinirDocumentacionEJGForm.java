@@ -25,12 +25,13 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	private String	idInstitucion;	
 	private String	regEntrada;
 	private String	regSalida;
-	private String	presentador;
+	private String	idPresentador;
 	private String	idDocumento;
 	private String	idTipoDocumento;
-	private String	presentadorAnterior;
+	private String	idPresentadorAnterior;
 	private String	idDocumentoAnterior;
 	private String	idTipoDocumentoAnterior;
+	private String solicitante;
 	
 	
 	
@@ -107,12 +108,7 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	public void setRegSalida(String regSalida) {
 		this.regSalida = regSalida;
 	}
-	public String getPresentador() {
-		return presentador;
-	}
-	public void setPresentador(String presentador) {
-		this.presentador = presentador;
-	}
+	
 	public String getIdDocumento() {
 		return idDocumento;
 	}
@@ -125,12 +121,7 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	public void setIdTipoDocumento(String idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
 	}
-	public String getPresentadorAnterior() {
-		return presentadorAnterior;
-	}
-	public void setPresentadorAnterior(String presentadorAnterior) {
-		this.presentadorAnterior = presentadorAnterior;
-	}
+	
 	public String getIdDocumentoAnterior() {
 		return idDocumentoAnterior;
 	}
@@ -142,6 +133,24 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	}
 	public void setIdTipoDocumentoAnterior(String idTipoDocumentoAnterior) {
 		this.idTipoDocumentoAnterior = idTipoDocumentoAnterior;
+	}
+	public String getSolicitante() {
+		return solicitante;
+	}
+	public void setSolicitante(String solicitante) {
+		this.solicitante = solicitante;
+	}
+	public String getIdPresentador() {
+		return idPresentador;
+	}
+	public void setIdPresentador(String idPresentador) {
+		this.idPresentador = idPresentador;
+	}
+	public String getIdPresentadorAnterior() {
+		return idPresentadorAnterior;
+	}
+	public void setIdPresentadorAnterior(String idPresentadorAnterior) {
+		this.idPresentadorAnterior = idPresentadorAnterior;
 	}
 		
 	

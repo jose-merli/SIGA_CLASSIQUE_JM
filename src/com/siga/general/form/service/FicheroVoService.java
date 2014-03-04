@@ -54,7 +54,7 @@ public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
 			if(objectForm.getNumero()!=null && !objectForm.getNumero().equals(""))
 				documentacionEjgVo.setNumero(Long.valueOf(objectForm.getNumero()));
 			if(objectForm.getIdDocumentacion()!=null && !objectForm.getIdDocumentacion().equals(""))
-				documentacionEjgVo.setIddocumentacion(Short.valueOf(objectForm.getIdDocumentacion()));
+				documentacionEjgVo.setIddocumentacion(Integer.valueOf(objectForm.getIdDocumentacion()));
 			if(objectForm.getIdDocumento()!=null && !objectForm.getIdDocumento().equals(""))
 				documentacionEjgVo.setIddocumento(Short.valueOf(objectForm.getIdDocumento()));
 			if(objectForm.getIdTipoDocumento()!=null && !objectForm.getIdTipoDocumento().equals(""))

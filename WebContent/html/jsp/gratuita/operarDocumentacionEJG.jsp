@@ -58,10 +58,11 @@
 	<html:hidden styleId="descripcionArchivo" property = "descripcionArchivo"/>
 	<html:hidden styleId="directorioArchivo" property = "directorioArchivo"/>
 	<html:hidden styleId="numEjg" property = "numEjg" />
+	<html:hidden styleId="solicitante" property = "solicitante" value="${DefinirDocumentacionEJGForm.solicitante}"/>
 	<html:hidden styleId="borrarFichero" property = "borrarFichero" />
 	<html:hidden styleId="idFichero" property = "idFichero" />
 	
-	<html:hidden styleId="presentadorAnterior" property = "presentadorAnterior" value ="${DefinirDocumentacionEJGForm.presentador}"/>
+	<html:hidden styleId="idPresentadorAnterior" property = "idPresentadorAnterior" value ="${DefinirDocumentacionEJGForm.idPresentador}"/>
 	<html:hidden styleId="idTipoDocumentoAnterior" property = "idTipoDocumentoAnterior" value ="${DefinirDocumentacionEJGForm.idTipoDocumento}"/>
 	<html:hidden styleId="idDocumentoAnterior" property = "idDocumentoAnterior" value ="${DefinirDocumentacionEJGForm.idDocumento}"/>
 	
@@ -145,13 +146,13 @@
 		<td colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
-					<siga:Select id="presentador" queryId="getPresentador"   required="true" width="300"   />
+					<siga:Select id="idPresentador" queryId="getPresentador"   required="true" width="300"   />
 				</c:when>
 				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"  required="true" disabled="true"  width="300"   />
+					<siga:Select id="idPresentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"  required="true" disabled="true"  width="300"   />
 				</c:when>
 				<c:otherwise>
-					<siga:Select id="presentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"   required="true" width="300"  />
+					<siga:Select id="idPresentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"   required="true" width="300"  />
 				</c:otherwise>
 			</c:choose>
 				
@@ -293,8 +294,9 @@
 			if(document.forms['DefinirDocumentacionEJGForm'].theFile && document.forms['DefinirDocumentacionEJGForm'].theFile.value!=''){
 				document.forms['DefinirDocumentacionEJGForm'].descripcionArchivo.value = jQuery("#idDocumento").find("option:selected").text();
 			}
+			
 			if(document.forms['DefinirDocumentacionEJGForm'].idFichero && document.forms['DefinirDocumentacionEJGForm'].idFichero.value!='' && (document.forms['DefinirDocumentacionEJGForm'].idDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idDocumentoAnterior.value ||
-					document.forms['DefinirDocumentacionEJGForm'].presentador.value!=document.forms['DefinirDocumentacionEJGForm'].presentadorAnterior.value ||
+					document.forms['DefinirDocumentacionEJGForm'].idPresentador.value!=document.forms['DefinirDocumentacionEJGForm'].idPresentadorAnterior.value ||
 					document.forms['DefinirDocumentacionEJGForm'].idTipoDocumento.value!=document.forms['DefinirDocumentacionEJGForm'].idTipoDocumentoAnterior.value) ){
 				
 				if(!confirm("<siga:Idioma key='administracion.informes.mensaje.aviso.archivo.eliminar'/>")){

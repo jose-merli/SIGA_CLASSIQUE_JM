@@ -45,22 +45,13 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 		try { 
 			rc = new RowsContainer();		
 			// Se prepara la sentencia SQL para hacer el select
-  			String sql ="SELECT (MAX("+ ScsDocumentacionEJGBean.C_IDDOCUMENTACION + ") + 1) AS IDDOCUMENTACION FROM " + nombreTabla + 
-						" where " + ScsDocumentacionEJGBean.C_IDINSTITUCION + " = " + entrada.get(ScsDocumentacionEJGBean.C_IDINSTITUCION) +
-						" and " + ScsDocumentacionEJGBean.C_IDTIPOEJG + " = " + entrada.get(ScsDocumentacionEJGBean.C_IDTIPOEJG) +
-						" and " + ScsDocumentacionEJGBean.C_ANIO + " = " + entrada.get(ScsDocumentacionEJGBean.C_ANIO) + 
-						" and " + ScsDocumentacionEJGBean.C_IDDOCUMENTO + " = " + entrada.get(ScsDocumentacionEJGBean.C_IDDOCUMENTO) +
-						" and " + ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO + " = " + entrada.get(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO) +
-						" and " + ScsDocumentacionEJGBean.C_PRESENTADOR + " = " + entrada.get(ScsDocumentacionEJGBean.C_PRESENTADOR) +
-						" and " + ScsDocumentacionEJGBean.C_NUMERO + " = " + entrada.get(ScsDocumentacionEJGBean.C_NUMERO);
-			
+  			String sql ="SELECT NVL(MAX(IDDOCUMENTACION), 0) + 1 FROM SCS_DOCUMENTACIONEJG WHERE  IDINSTITUCION =  "+ entrada.get(ScsDocumentacionEJGBean.C_IDINSTITUCION);
+						
+  			
 			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
 				Hashtable prueba = fila.getRow();			
-				if (prueba.get("IDDOCUMENTACION").equals("")) {
-					entrada.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION,"1");
-				}
-				else entrada.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION,(String)prueba.get("IDDOCUMENTACION"));				
+				entrada.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION,(String)prueba.get("IDDOCUMENTACION"));				
 			}
 			
 			//Lo quito de aqui pq si llamas varias veces a este metodo te da la vuelta a las fechas :S
@@ -136,12 +127,6 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 		try { 
 			String where = 
 				" WHERE " + ScsDocumentacionEJGBean.C_IDINSTITUCION + " = " + hash.get(ScsDocumentacionEJGBean.C_IDINSTITUCION) + 
-				" AND " + ScsDocumentacionEJGBean.C_IDTIPOEJG + " = " + hash.get(ScsDocumentacionEJGBean.C_IDTIPOEJG) + 
-				" AND " + ScsDocumentacionEJGBean.C_ANIO + " = " + hash.get(ScsDocumentacionEJGBean.C_ANIO) + 
-				" AND " + ScsSOJBean.C_NUMERO + " = " + hash.get(ScsDocumentacionEJGBean.C_NUMERO)+
-				" AND " + ScsDocumentacionEJGBean.C_IDDOCUMENTO + " = " + hash.get(ScsDocumentacionEJGBean.C_IDDOCUMENTO) +
-				" AND " + ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO + " = " + hash.get(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO) +
-				" AND " + ScsDocumentacionEJGBean.C_PRESENTADOR + " = " + hash.get(ScsDocumentacionEJGBean.C_PRESENTADOR) +
 				" AND " + ScsDocumentacionEJGBean.C_IDDOCUMENTACION+ "=" +(String)hash.get(ScsDocumentacionEJGBean.C_IDDOCUMENTACION);		
 			datos = this.selectAll(where);
 		} 
@@ -166,7 +151,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 							ScsDocumentacionEJGBean.C_DOCUMENTACION,		ScsDocumentacionEJGBean.C_FECHAENTREGA,
 							ScsDocumentacionEJGBean.C_FECHAMODIFICACION,	ScsDocumentacionEJGBean.C_USUMODIFICACION,
 							ScsDocumentacionEJGBean.C_REGENTRADA,			ScsDocumentacionEJGBean.C_REGSALIDA,
-							ScsDocumentacionEJGBean.C_PRESENTADOR,			ScsDocumentacionEJGBean.C_IDDOCUMENTO,
+							ScsDocumentacionEJGBean.C_PRESENTADOR,ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO,			ScsDocumentacionEJGBean.C_IDDOCUMENTO,
 						 	ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO,ScsDocumentacionEJGBean.C_IDFICHERO};
 
 		return campos;
@@ -179,12 +164,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 		
 		String[] campos= {ScsDocumentacionEJGBean.C_IDDOCUMENTACION
 				, ScsDocumentacionEJGBean.C_IDINSTITUCION
-				, ScsDocumentacionEJGBean.C_IDTIPOEJG
-				, ScsDocumentacionEJGBean.C_ANIO
-				, ScsDocumentacionEJGBean.C_NUMERO
-				, ScsDocumentacionEJGBean.C_IDDOCUMENTO
-				, ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO
-				, ScsDocumentacionEJGBean.C_PRESENTADOR};
+				};
 		return campos;
 	}
 
@@ -216,7 +196,8 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_FECHAMODIFICACION));
 			bean.setRegEntrada(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_REGENTRADA));		
 			bean.setRegSalida(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_REGSALIDA));
-			bean.setPresentador(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_PRESENTADOR));			
+			bean.setPresentador(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_PRESENTADOR));
+			bean.setIdPresentadorMaestro(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO));	
 			bean.setIdDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDDOCUMENTO));
 			bean.setIdTipoDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO));
 			bean.setIdFichero(UtilidadesHash.getLong(hash,ScsDocumentacionEJGBean.C_IDFICHERO));
@@ -250,6 +231,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			htData.put(ScsDocumentacionEJGBean.C_REGENTRADA, String.valueOf(b.getRegEntrada()));
 			htData.put(ScsDocumentacionEJGBean.C_REGSALIDA, String.valueOf(b.getRegSalida()));
 			htData.put(ScsDocumentacionEJGBean.C_PRESENTADOR, String.valueOf(b.getPresentador()));
+			htData.put(ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO, String.valueOf(b.getIdPresentadorMaestro()));
 			htData.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, String.valueOf(b.getIdDocumento()));
 			htData.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, String.valueOf(b.getIdTipoDocumento()));
 			htData.put(ScsDocumentacionEJGBean.C_IDFICHERO, String.valueOf(b.getIdFichero()));
@@ -277,37 +259,88 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 	 * @param hash Hashtable con los campos de búsqueda. De tipo "Hashtable". 
 	 * @return Vector con los resultados del SELECT
 	 */	
-	public Vector buscar(Hashtable hash) throws ClsExceptions {
+	public Vector buscar(Hashtable hash,String idioma) throws ClsExceptions {
 		
 		Vector datos = new Vector(); 
 		
 		try { 
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
 			
-//			String sql = 
-//				"select DE.*, D.ABREVIATURA " +
-//				" from SCS_DOCUMENTACIONEJG DE, SCS_DOCUMENTOEJG D " + 
-//				" WHERE DE.IDINSTITUCION = D.IDINSTITUCION " + 
-//				" AND DE.IDTIPODOCUMENTO = D.IDTIPODOCUMENTOEJG " + 
-//				" AND DE.IDDOCUMENTO = D.IDDOCUMENTOEJG " + 
-//				" AND DE." + ScsDocumentacionEJGBean.C_IDINSTITUCION + " = " + hash.get(ScsDocumentacionEJGBean.C_IDINSTITUCION) + 
-//				" AND DE." + ScsDocumentacionEJGBean.C_IDTIPOEJG + " = " + hash.get(ScsDocumentacionEJGBean.C_IDTIPOEJG) + 
-//				" AND DE." + ScsDocumentacionEJGBean.C_ANIO + " = " + hash.get(ScsDocumentacionEJGBean.C_ANIO) + 
-//				" AND DE." + ScsDocumentacionEJGBean.C_NUMERO + " = " + hash.get(ScsDocumentacionEJGBean.C_NUMERO) + 
-//				" ORDER BY DE." + ScsDocumentacionEJGBean.C_PRESENTADOR;
-//		    datos = this.selectGenerico(sql);
+		      
+			sql.append("SELECT to_char(DE.FECHALIMITE,'dd/mm/yyyy') FECHALIMITE,     to_char(DE.FECHAENTREGA,'dd/mm/yyyy')       FECHAENTREGA,    DE.REGENTRADA,     DE.REGSALIDA, ");
+			sql.append("DECODE(PERSONA.IDPERSONA, ");
+			sql.append("NULL, ");
+			sql.append("'IDMAESTROPRESENTADOR_' || MAESTROPRESENTADOR.IDPRESENTADOR, ");
+			sql.append("'IDPERSONAJG_' || PERSONA.IDPERSONA) IDPRESENTADOR, ");
+		       
+			sql.append("DECODE(PERSONA.IDPERSONA, ");
+			sql.append("NULL, ");
+			sql.append("F_SIGA_GETRECURSO(MAESTROPRESENTADOR.DESCRIPCION, ");
+			sql.append(idioma);
+			sql.append("), ");
+			
+			sql.append("PERSONA.NOMBRE || ' ' || PERSONA.APELLIDO1 || ' ' || ");
+			sql.append("PERSONA.APELLIDO2 || ' (' || ");
+			sql.append("DECODE((SELECT 1 ");
+			sql.append("FROM DUAL ");
+			sql.append("WHERE PERSONA.IDPERSONA = FAMILIA.IDPERSONA ");
+			sql.append("OR FAMILIA.SOLICITANTE = 1), ");
+			sql.append("1, ");
+			sql.append("F_SIGA_GETRECURSO_ETIQUETA('gratuita.busquedaEJG.literal.solicitante', ");
+			sql.append(idioma);
+			sql.append("), ");
+			sql.append("(SELECT F_SIGA_GETRECURSO(SCS_PARENTESCO.DESCRIPCION, ");
+			sql.append(idioma);
+			sql.append(") ");
+			sql.append("FROM SCS_PARENTESCO ");
+			sql.append("WHERE SCS_PARENTESCO.IDINSTITUCION =   FAMILIA.IDINSTITUCION ");
+			sql.append("AND SCS_PARENTESCO.IDPARENTESCO =    FAMILIA.IDPARENTESCO)) || ')') AS PRESENTADOR ");
+			sql.append(",     D.ABREVIATURA DOCUMENTO,     DE.IDDOCUMENTACION,     DE.IDINSTITUCION ");
 
-			String where = 
-			" WHERE " + ScsDocumentacionEJGBean.C_IDINSTITUCION + " = " + hash.get(ScsDocumentacionEJGBean.C_IDINSTITUCION) + 
-			" AND " + ScsDocumentacionEJGBean.C_IDTIPOEJG + " = " + hash.get(ScsDocumentacionEJGBean.C_IDTIPOEJG) + 
-			" AND " + ScsDocumentacionEJGBean.C_ANIO + " = " + hash.get(ScsDocumentacionEJGBean.C_ANIO) + 
-			" AND " + ScsDocumentacionEJGBean.C_NUMERO + " = " + hash.get(ScsDocumentacionEJGBean.C_NUMERO) + 
-			" ORDER BY " + ScsDocumentacionEJGBean.C_PRESENTADOR + " , ROWID ";					
+			sql.append("FROM SCS_DOCUMENTACIONEJG  DE,     SCS_DOCUMENTOEJG      D,      SCS_UNIDADFAMILIAREJG FAMILIA, ");
+			sql.append("SCS_PERSONAJG         PERSONA,	SCS_PRESENTADOR       MAESTROPRESENTADOR ");
+			sql.append("WHERE DE.IDTIPODOCUMENTO = D.IDTIPODOCUMENTOEJG ");
+			sql.append("AND DE.IDINSTITUCION = D.IDINSTITUCION ");
+			sql.append("AND DE.IDDOCUMENTO = D.IDDOCUMENTOEJG ");
+			sql.append("AND FAMILIA.IDPERSONA = PERSONA.IDPERSONA ");
+			sql.append("AND FAMILIA.IDINSTITUCION = PERSONA.IDINSTITUCION ");
+		      
+			sql.append("AND DE.IDINSTITUCION = FAMILIA.IDINSTITUCION(+) ");
+			sql.append("AND DE.IDTIPOEJG = FAMILIA.IDTIPOEJG(+) ");
+			sql.append("AND DE.ANIO = FAMILIA.ANIO(+) ");
+			sql.append("AND DE.NUMERO = FAMILIA.NUMERO(+) ");
+			sql.append("AND DE.PRESENTADOR = FAMILIA.IDPERSONA(+) ");
+		      
+			sql.append("AND DE.IDMAESTROPRESENTADOR = MAESTROPRESENTADOR.IDPRESENTADOR(+) ");
+			sql.append("AND DE.IDINSTITUCION = MAESTROPRESENTADOR.IDINSTITUCION(+) ");
+		      
+			sql.append("AND DE.IDINSTITUCION = ");
+			sql.append(hash.get(ScsDocumentacionEJGBean.C_IDINSTITUCION));
+			sql.append(" AND DE.IDTIPOEJG = ");
+			sql.append(hash.get(ScsDocumentacionEJGBean.C_IDTIPOEJG));
+			sql.append(" AND DE.ANIO = ");
+			sql.append(hash.get(ScsDocumentacionEJGBean.C_ANIO));
+			sql.append(" AND DE.NUMERO = ");
+			sql.append(hash.get(ScsDocumentacionEJGBean.C_NUMERO));
+
+			sql.append("ORDER BY PRESENTADOR ");
+			
 				
-			datos = this.selectAll(where);
+			try { 
+				RowsContainer rc = new RowsContainer(); 	
+				if (rc.query(sql.toString())) {
+					for (int i = 0; i < rc.size(); i++)	{		
+						Row fila = (Row) rc.get(i);
+						Hashtable registro = (Hashtable)fila.getRow();
+						if (registro != null) 
+							datos.add(registro);
+					}
+				}
+			}catch (Exception e) {
+				throw new ClsExceptions (e, "Excepcion en ScsDocumentacionEJG.buscar(). Consulta SQL:"+sql);
+			}
 		} 
-		catch (ClsExceptions e) {
-			throw e;			
-		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN BUSCAR POR CLAVE");
 		}

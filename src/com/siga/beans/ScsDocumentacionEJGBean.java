@@ -21,6 +21,7 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	private String	regEntrada;
 	private String	regSalida;
 	private String	presentador;
+	private String	idPresentadorMaestro;
 	private String	idDocumento;
 	private String	idTipoDocumento;
 	
@@ -42,6 +43,7 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	static public final String  C_REGENTRADA 	= 					"REGENTRADA";
 	static public final String 	C_REGSALIDA 	= 					"REGSALIDA";
 	static public final String 	C_PRESENTADOR 	= 					"PRESENTADOR";	
+	static public final String 	C_IDPRESENTADORMAESTRO 	= 					"IDPRESENTADORMAESTRO";
 	static public final String 	C_IDDOCUMENTO 	= 					"IDDOCUMENTO";
 	static public final String 	C_IDTIPODOCUMENTO 	= 				"IDTIPODOCUMENTO";	
 	static public final String 	C_IDFICHERO 	= 				"IDFICHERO";
@@ -214,5 +216,11 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	}
 	public void setIdFichero(Long idFichero) {
 		this.idFichero = idFichero;
+	}
+	public String getIdPresentadorMaestro() {
+		return idPresentadorMaestro;
+	}
+	public void setIdPresentadorMaestro(String idPresentadorMaestro) {
+		this.idPresentadorMaestro = idPresentadorMaestro;
 	}
 }

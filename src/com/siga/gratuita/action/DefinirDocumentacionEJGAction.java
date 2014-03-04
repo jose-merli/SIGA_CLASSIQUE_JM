@@ -24,6 +24,7 @@ import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -87,16 +88,11 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
 			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
 			String idDocumentacion = (String)ocultos.get(0);
-			String idDocumento = (String)ocultos.get(1);
-			String idTipoDocumento = (String)ocultos.get(2);
-			String presentador = (String)ocultos.get(3);
-			String numEjg = (String)ocultos.get(4);
+			String idInstitucion = (String)ocultos.get(1);
 			
 			definirDocumentacionEJGForm.setIdDocumentacion(idDocumentacion);
-			definirDocumentacionEJGForm.setIdDocumento(idDocumento);
-			definirDocumentacionEJGForm.setIdTipoDocumento(idTipoDocumento);
-			definirDocumentacionEJGForm.setPresentador(presentador);
-			definirDocumentacionEJGForm.setNumEjg(numEjg);
+			definirDocumentacionEJGForm.setIdInstitucion(idInstitucion);
+//			definirDocumentacionEJGForm.setNumEjg(numEjg);
 
 			
 	
@@ -106,12 +102,13 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
 			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
 			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
-			definirDocumentacionEJGForm.setNumEjg(numEjg);
+//			definirDocumentacionEJGForm.setNumEjg(numEjg);
 			definirDocumentacionEJGForm.setModo("modificar");
 			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
 			
 			List<String> presentadorSelected = new ArrayList<String>();
-			presentadorSelected.add(definirDocumentacionEJGForm.getPresentador());
+			
+				presentadorSelected.add(documentacionEjgVo.getIdPresentador());
 			request.setAttribute("presentadorSelected",presentadorSelected );
 			
 			List<String> idTipoDocumentoSelected = new ArrayList<String>();
@@ -153,27 +150,23 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
 			String idDocumentacion = (String)ocultos.get(0);
 			String idDocumento = (String)ocultos.get(1);
-			String idTipoDocumento = (String)ocultos.get(2);
-			String presentador = (String)ocultos.get(3);
-			String numEjg = (String)ocultos.get(4);
+			
+			
+			
 			
 			definirDocumentacionEJGForm.setIdDocumentacion(idDocumentacion);
 			definirDocumentacionEJGForm.setIdDocumento(idDocumento);
-			definirDocumentacionEJGForm.setIdTipoDocumento(idTipoDocumento);
-			definirDocumentacionEJGForm.setPresentador(presentador);
-			definirDocumentacionEJGForm.setNumEjg(numEjg);
 
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
 			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
 			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
-			definirDocumentacionEJGForm.setNumEjg(numEjg);
 			definirDocumentacionEJGForm.setModo("abrir");
 			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
 			
 			List<String> presentadorSelected = new ArrayList<String>();
-			presentadorSelected.add(definirDocumentacionEJGForm.getPresentador());
+			presentadorSelected.add(documentacionEjgVo.getIdPresentador());
 			request.setAttribute("presentadorSelected",presentadorSelected );
 			
 			List<String> idTipoDocumentoSelected = new ArrayList<String>();
@@ -279,6 +272,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+			
+			
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
 			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
@@ -310,8 +305,15 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			DocumentacionEjgVo documentacionEjgVoOld = (DocumentacionEjgVo) documentacionEjgVo.clone();
 			documentacionEjgVoOld.setIdtipodocumento(Short.parseShort(definirDocumentacionEJGForm.getIdTipoDocumentoAnterior()));
 			documentacionEjgVoOld.setIddocumento(Short.parseShort(definirDocumentacionEJGForm.getIdDocumentoAnterior()));
-			documentacionEjgVoOld.setPresentador(Long.parseLong(definirDocumentacionEJGForm.getPresentadorAnterior()));
-			
+			if(definirDocumentacionEJGForm.getIdPresentadorAnterior()!=null && !definirDocumentacionEJGForm.getIdPresentadorAnterior().equals("")){
+				String[] idsPresentador = definirDocumentacionEJGForm.getIdPresentadorAnterior().split("IDMAESTROPRESENTADOR_");
+				if(idsPresentador.length>1)
+					documentacionEjgVoOld.setIdmaestropresentador(Short.valueOf(idsPresentador[1]));
+				else{
+					idsPresentador = definirDocumentacionEJGForm.getIdPresentador().split("IDPERSONAJG_");
+					documentacionEjgVoOld.setPresentador(Long.valueOf(idsPresentador[1]));
+				}
+			}
 			documentacionEjgService.update(documentacionEjgVoOld,documentacionEjgVo);
 			
 			
@@ -353,9 +355,6 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			definirDocumentacionEJGForm.setIdInstitucion(usr.getLocation());
 			definirDocumentacionEJGForm.setIdDocumentacion((String)ocultos.get(0));
-			definirDocumentacionEJGForm.setIdTipoDocumento((String)ocultos.get(2));
-			definirDocumentacionEJGForm.setIdDocumento((String)ocultos.get(1));
-			definirDocumentacionEJGForm.setPresentador((String)ocultos.get(3));
 			
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
@@ -380,93 +379,99 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 	protected String abrirAvanzada(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
-
-		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-				.getUserBean(request));
-		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		Vector v = new Vector();
-		Hashtable miHash = new Hashtable();
-
-		miHash.put("ANIO", miForm.getAnio());
-		miHash.put("NUMERO", miForm.getNumero());
-		miHash.put("IDTIPOEJG", miForm.getIdTipoEJG());
-		miHash.put("IDINSTITUCION", usr.getLocation());
 		
-		request.setAttribute("DATOSEJG", miHash);
+		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+		ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
+		Hashtable hTitulo = admi.getTituloPantallaEJG(miForm.getIdInstitucion(),	miForm.getAnio(),miForm.getNumero(), miForm.getIdTipoEJG());
+		StringBuffer solicitante = new StringBuffer();
+		solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+		solicitante.append(" ");
+		solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+		solicitante.append(" ");
+		solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+		miForm.setSolicitante(solicitante.toString());
+		miForm.setNumEjg((String)hTitulo.get(ScsEJGBean.C_NUMEJG));
+		
+		
+		request.setAttribute("accion", formulario.getModo());
+		return abrir(this.getUserBean(request),miForm, request);
 
-		try {
-			
-			ScsEJGAdm admEjg = new ScsEJGAdm(this.getUserBean(request));
-			Vector v3 = admEjg.selectByPK(miHash);
-			if (v3 != null && v3.size() > 0) {
-				ScsEJGBean b = (ScsEJGBean) v3.get(0);
-				miHash.put("NUMEJG", b.getNumEJG());
-				request.setAttribute("NUMEJG",b.getNumEJG());
-			}
-			
-			
-			v = admBean.buscar(miHash);
-			request.setAttribute("resultado", v);
-			request.setAttribute("accion", formulario.getModo());
-			//aalg: Inc_10313.
-			String informeUnico = ClsConstants.DB_TRUE;
-			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
-			if(informeBeans!=null && informeBeans.size()>1){
-				informeUnico = ClsConstants.DB_FALSE;				
-			}
-
-			request.setAttribute("informeUnico", informeUnico);
-		} catch (Exception e) {
-			throwExcp("messages.general.error", e, null);
-		}
-		return "inicio";
 	}
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
-
-		/*
-		 * "DATABACKUP" se usa habitualmente así que en primero lugar borramos
-		 * esta variable
-		 */
+					throws SIGAException {
+		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
+		miForm.setIdInstitucion(request.getParameter("IDINSTITUCION").toString());
+		miForm.setAnio(request.getParameter("ANIO").toString());
+		miForm.setIdTipoEJG(request.getParameter("IDTIPOEJG").toString());
+		miForm.setNumero(request.getParameter("NUMERO"));
+		miForm.setNumEjg(request.getParameter("codigoDesignaNumEJG"));
+		miForm.setSolicitante(request.getParameter("solicitante").toString());
+		
+		
+		
+		
 		request.getSession().removeAttribute("DATABACKUP");
+		return abrir(this.getUserBean(request),miForm, request);
 
-		ScsDocumentacionEJGAdm admBean = new ScsDocumentacionEJGAdm(this
-				.getUserBean(request));
-		Vector v = new Vector();
-		Hashtable miHash = new Hashtable();
 
-		miHash.put("ANIO", request.getParameter("ANIO").toString());
-		miHash.put("NUMERO", request.getParameter("NUMERO").toString());
-		miHash.put("IDTIPOEJG", request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION", request.getParameter("IDINSTITUCION")
-				.toString());
-		String numEjg = request.getParameter("codigoDesignaNumEJG");
-		miHash.put("NUMEJG", numEjg);
-		
-		
+	}
+
+	
+	protected String abrir( UsrBean usrBean,DefinirDocumentacionEJGForm definirDocumentacionEJGForm,HttpServletRequest request) throws SIGAException {
+
 		try {
-			v = admBean.buscar(miHash);
-			request.setAttribute("resultado", v);
+
+			Vector v = new Vector();
+
+			if(definirDocumentacionEJGForm.getNumEjg()!=null && !definirDocumentacionEJGForm.getNumEjg().equals(""))
+				request.setAttribute("NUMEJG",definirDocumentacionEJGForm.getNumEjg());
+			else{
+				Hashtable miHash = new Hashtable();
+
+				miHash.put("ANIO", definirDocumentacionEJGForm.getAnio());
+				miHash.put("NUMERO", definirDocumentacionEJGForm.getNumero());
+				miHash.put("IDTIPOEJG", definirDocumentacionEJGForm.getIdTipoEJG());
+				miHash.put("IDINSTITUCION", definirDocumentacionEJGForm.getIdInstitucion());
+				ScsEJGAdm admEjg = new ScsEJGAdm(this.getUserBean(request));
+				Vector v3 = admEjg.selectByPK(miHash);
+				if (v3 != null && v3.size() > 0) {
+					ScsEJGBean b = (ScsEJGBean) v3.get(0);
+					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
+				}
+
+			}
+
+			BusinessManager bm = getBusinessManager();
+
+			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
+
+			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
+			List<DocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(voService.getForm2Vo(definirDocumentacionEJGForm),usrBean.getLanguage());
+
+			request.setAttribute("resultado", documentacionEjgVoList);
+
 			String informeUnico = ClsConstants.DB_TRUE;
-			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
+			AdmInformeAdm adm = new AdmInformeAdm(usrBean);
+			Vector informeBeans=adm.obtenerInformesTipo(usrBean.getLocation(),"DEJG",null, null);
 			if(informeBeans!=null && informeBeans.size()>1){
 				informeUnico = ClsConstants.DB_FALSE;
-				
+
 			}
 
 			request.setAttribute("informeUnico", informeUnico);
-			
+
+
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
+
 		return "inicio";
 
 	}
+	
+	
 	protected String downloadFichero(ActionMapping mapping,
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {

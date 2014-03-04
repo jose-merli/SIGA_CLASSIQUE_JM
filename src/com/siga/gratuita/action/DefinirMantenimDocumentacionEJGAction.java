@@ -1004,23 +1004,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
-		ScsDocumentacionEJGAdm admBean =  new ScsDocumentacionEJGAdm(this.getUserBean(request));
-		DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm) formulario;
-		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");	
-		Vector v = new Vector ();
-		Hashtable miHash = new Hashtable();
-
-
 		
-		request.setAttribute("DATOSBUSQUEDA",miHash);
-		
-		try {			
-			v = admBean.buscar(miHash);			
-			request.setAttribute("resultado",v);	
-			request.setAttribute("accion",formulario.getModo());		
-		} catch (Exception e) {
-			   throwExcp("messages.general.error",e,null);
-		}		
 		return "busqueda";
 	}
 	

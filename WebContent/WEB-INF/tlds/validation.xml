@@ -2512,7 +2512,7 @@
 	
         
         <form name="DefinirDocumentacionEJGForm">  
-            <field property = "presentador" depends = "required">
+            <field property = "idPresentador" depends = "required">
                 <arg0 key="sjcs.ejg.documentacion.presentador"/>
             </field>
             <field property = "idTipoDocumento" depends = "required">

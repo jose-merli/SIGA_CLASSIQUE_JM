@@ -61,7 +61,7 @@
 		class="tablaCentralCampos">
 		<tr>
 			<td valign="top">
-				<siga:ConjCampos		leyenda="Pretaciones solicitadas">
+				<siga:ConjCampos		leyenda="Prestaciones solicitadas">
 
 					<table align="center" width="100%" border="0">
 						<c:choose>

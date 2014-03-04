@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="java.util.ArrayList"%>
+<%@page import="org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo"%>
 <html>
 <head>
 <!-- listadoDocumentacionEJG.jsp -->
@@ -10,15 +12,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- IMPORTS -->
-<%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.atos.utils.GstDate"%>
-<%@ page import="com.siga.beans.ScsDocumentacionEJGBean"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.*"%>
+
 
 
 <!-- TAGLIBS -->
@@ -26,18 +20,13 @@
 <%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
 <%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
 <%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	String idInstitucion = usr.getLocation();
-		
-	Vector obj = (Vector) request.getAttribute("resultado");
+	ArrayList obj = (ArrayList) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");
-		
-	String botonesFila="", anio= "", numero="", idTipoEJG = "" ;
+	String botonesFila="";
 	String	botones="V,N,i";
 	if (accion.equalsIgnoreCase("ver")){
 		botonesFila = "C";
@@ -45,29 +34,8 @@
 	else {
 		botonesFila = "C,E,B";
 	}
-
-	ScsDocumentacionEJGBean fila = new ScsDocumentacionEJGBean();
 	
-	ArrayList documentoSel    = new ArrayList();
-	ArrayList presentadorSel    = new ArrayList();
-
-		
-	String numEjg = "";
-	try {
-		
-		anio = request.getParameter("ANIO").toString();
-		numero = request.getParameter("NUMERO").toString();
-		idTipoEJG = request.getParameter("IDTIPOEJG").toString();	
-		numEjg = request.getParameter("codigoDesignaNumEJG").toString();
-	}catch(Exception e){
-		Hashtable miHash = (Hashtable)request.getAttribute("DATOSEJG");
-		anio = miHash.get("ANIO").toString();
-		numero = miHash.get("NUMERO").toString();
-		idTipoEJG = miHash.get("IDTIPOEJG").toString();
-		numEjg = miHash.get("NUMEJG").toString(); 
-		
-	};
-	String[] datoPresentador={usr.getLocation(),idTipoEJG,anio,numero};
+	
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
@@ -96,41 +64,26 @@
 <body class="tablaCentralCampos">	
 	<input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 	<html:form action="/JGR_DocumentacionEJG" method="post" target="mainPestanas" style="display:none">
-		<input type="hidden" name="modo" value="<%=accion%>">
-		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
-		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
-		<input type="hidden" name="anio" value="<%=anio%>">
-		<input type="hidden" name="numero" value="<%=numero%>">
-		<html:hidden styleId="numEJG" property = "numEJG" 	value ="<%=numEjg%>"/>
+		<html:hidden styleId="modo" property = "modo" value="<%=accion%>"/>
+		<html:hidden styleId="idInstitucion" property = "idInstitucion" />
+		<html:hidden styleId="idTipoEJG" property = "idTipoEJG"/>
+		<html:hidden styleId="anio" property = "anio" />
+		<html:hidden styleId="numero" property = "numero"  />
+		
 	</html:form>	
 		
 		<tr>				
 	<td width="100%" align="center">
 
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
-		<tr>
-			<td id="titulo" class="titulitosDatos">
-	
-					<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
-						ScsEJGAdm adm = new ScsEJGAdm (usr);
-							
-						Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero,idTipoEJG);
-
-						if (hTitulo != null) {
-							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
-							t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
-							t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
-							t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);
-							t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
-							t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
-						}
-					
-					%>
-					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
-					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
-			</td>
-		</tr>
-		</table>
+	<tr>
+		<td id="titulo" class="titulitosDatos">
+			<c:out value="${DefinirDocumentacionEJGForm.anio}"/>/<c:out
+			 	value="${DefinirDocumentacionEJGForm.numEjg}"/>&nbsp;-&nbsp;<c:out 
+			 	value="${DefinirDocumentacionEJGForm.solicitante}"/>
+		</td>
+	</tr>
+</table>
 
 		<siga:Table 		   
 		   name="listadoDocumentacion"
@@ -141,66 +94,39 @@
 		   
   	<% if (obj.size()>0){
 	    	int recordNumber=1;
-	    	String regentrada=null;
-	    	String regsalida=null;
 	    	while (recordNumber-1 < obj.size())
 			{			
-				fila = (ScsDocumentacionEJGBean)obj.get(recordNumber-1);
+	    		DocumentacionEjgVo documentacionEjgVo = (DocumentacionEjgVo)obj.get(recordNumber-1);
+					
 				
-				if(fila.getRegEntrada().equals("")||fila.getRegEntrada()==null)
-					regentrada="&nbsp";
-				else
-					regentrada=fila.getRegEntrada();
-					
-				if(fila.getRegSalida().equals("")||fila.getRegSalida()==null)
-					regsalida="&nbsp";
-				else
-					regsalida=fila.getRegSalida();
-					
-				if(fila.getRegSalida().equals("")||fila.getRegSalida()==null)
-					regsalida="&nbsp";
-				else
-					regsalida=fila.getRegSalida();
-					
-				if(!fila.getPresentador().equals("")||fila.getPresentador()!=null){
-					presentadorSel.clear();
-					presentadorSel.add(fila.getPresentador());
-				}
-				
-					
-				documentoSel    = new ArrayList();			
-				if(!fila.getIdDocumento().equals("")||fila.getIdDocumento()!=null){
-					documentoSel.clear();
-					documentoSel.add(fila.getIdDocumento()+','+usr.getLocation());
-					
-					}
-				String[] datoDocumento={fila.getIdTipoDocumento(),usr.getLocation()};	
 										
 			%>				
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
 					
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdDocumentacion()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdDocumento()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getIdTipoDocumento()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getPresentador()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=numEjg%>">
-							<%=GstDate.getFormatedDateShort("",fila.getFechaLimite().toString())%>&nbsp;
+					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIddocumentacion()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdinstitucion()%>">
+					
+					
+							<%=documentacionEjgVo.getFechaLimite()==null||documentacionEjgVo.getFechaLimite().equals("")?"&nbsp;":documentacionEjgVo.getFechaLimite()%>
 					</td>
 					<td>
-						<siga:ComboBD nombre = "presentador" tipo="cmbPresentador" ancho="220" clase="boxComboEnTabla" pestana="t" obligatorio="false" parametro="<%=datoPresentador%>" elementoSel="<%=presentadorSel%>" readOnly="true"/>
+						<%=documentacionEjgVo.getDescPresentador()==null||documentacionEjgVo.getDescPresentador().equals("")?"&nbsp;":documentacionEjgVo.getDescPresentador()%>
 					</td>
-					<td> 
-						<%if (fila.getDocumentacion()!=null || !fila.getDocumentacion().equals("") ){%>
-						<siga:ComboBD nombre = "idDocumento" tipo="cmbDocumentoEdit" ancho="220" clase="boxComboEnTabla" obligatorio="false" parametro="<%=datoDocumento%>" elementoSel="<%=documentoSel%>" readOnly="true"/>
-						<idDocumento="&nbsp"/>
-						<%}else{%>
-						&nbsp;
-						<%}%>
-						&nbsp;	
+					<td> <%=documentacionEjgVo.getDocumentoAbreviatura()==null||documentacionEjgVo.getDocumentoAbreviatura().equals("")?"&nbsp;":documentacionEjgVo.getDocumentoAbreviatura()%>
+						
 					</td>
-					<td><%=regentrada%></td>					
-					<td><%=regsalida%></td>
-					<td><%=GstDate.getFormatedDateShort("",fila.getFechaEntrega().toString())%>&nbsp;</td>
+					<td>
+					<%=documentacionEjgVo.getRegentrada()==null||documentacionEjgVo.getRegentrada().equals("")?"&nbsp;":documentacionEjgVo.getRegentrada()%>
+					
+					</td>					
+					<td>
+					<%=documentacionEjgVo.getRegsalida()==null||documentacionEjgVo.getRegsalida().equals("")?"&nbsp;":documentacionEjgVo.getRegsalida()%>
+					
+					</td>
+					<td>
+					<%=documentacionEjgVo.getFechaEntrega()==null||documentacionEjgVo.getFechaEntrega().equals("")?"&nbsp;":documentacionEjgVo.getFechaEntrega()%>
+					
+					</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
 		} %>
@@ -220,7 +146,7 @@
 	<siga:ConjBotonesAccion botones="<%=botones %>" clase="botonesDetalle" modo="<%=accion%>"/>
 
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-	<html:hidden property="idInstitucion" value ="<%=idInstitucion%>"/>
+	<html:hidden property="idInstitucion" value ="${DefinirDocumentacionEJGForm.idInstitucion}"/>
 	<html:hidden property="idTipoInforme" value="DEJG"/>
 	<html:hidden property="enviar" value="0"/>
 	<html:hidden property="descargar" value="1"/>
@@ -243,11 +169,6 @@
 
 		}
 		
-		//Asociada al boton Cerrar
-		function accionGuardar()
-		{
-			document.forms[0].submit();
-		}
 		
 		function accionNuevo()
 		{
@@ -289,7 +210,7 @@
 	</script>
 
 	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->	
 
 </body>	

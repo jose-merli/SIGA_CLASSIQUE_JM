@@ -48,12 +48,25 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		if(objectForm.getNumero()!=null && !objectForm.getNumero().equals(""))
 			documentacionEjgVo.setNumero(Long.valueOf(objectForm.getNumero()));
 		if(objectForm.getIdDocumentacion()!=null && !objectForm.getIdDocumentacion().equals(""))
-			documentacionEjgVo.setIddocumentacion(Short.valueOf(objectForm.getIdDocumentacion()));
+			documentacionEjgVo.setIddocumentacion(Integer.valueOf(objectForm.getIdDocumentacion()));
 		if(objectForm.getIdDocumento()!=null && !objectForm.getIdDocumento().equals(""))
 			documentacionEjgVo.setIddocumento(Short.valueOf(objectForm.getIdDocumento()));
 		if(objectForm.getIdTipoDocumento()!=null && !objectForm.getIdTipoDocumento().equals(""))
 			documentacionEjgVo.setIdtipodocumento(Short.valueOf(objectForm.getIdTipoDocumento()));
-		if(objectForm.getPresentador()!=null && !objectForm.getPresentador().equals(""))
+		//Si trae el idpresentador es:
+//		DECODE(PERSONA.IDPERSONA, NULL,'IDMAESTROPRESENTADOR_' || MAESTROPRESENTADOR.IDPRESENTADOR,'IDPERSONAJG_' || PERSONA.IDPERSONA) IDPRESENTADOR,
+        
+		if(objectForm.getIdPresentador()!=null && !objectForm.getIdPresentador().equals("")){
+			String[] idsPresentador = objectForm.getIdPresentador().split("IDMAESTROPRESENTADOR_");
+			
+			if(idsPresentador.length>1)
+				documentacionEjgVo.setIdmaestropresentador(Short.valueOf(idsPresentador[1]));
+			else{
+				idsPresentador = objectForm.getIdPresentador().split("IDPERSONAJG_");
+				documentacionEjgVo.setPresentador(Long.valueOf(idsPresentador[1]));
+			}
+		
+		}else if(objectForm.getPresentador()!=null && !objectForm.getPresentador().equals(""))
 			documentacionEjgVo.setPresentador(Long.valueOf(objectForm.getPresentador()));
 		if(objectForm.getNumEjg()!=null && !objectForm.getNumEjg().equals(""))
 			documentacionEjgVo.setNumEjg(objectForm.getNumEjg());
@@ -65,6 +78,12 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 			documentacionEjgVo.setRegsalida(objectForm.getRegSalida());
 		if(objectForm.getDocumentacion()!=null && !objectForm.getDocumentacion().equals(""))
 			documentacionEjgVo.setDocumentacion(objectForm.getDocumentacion());
+		
+		
+		
+		
+		
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(objectForm.getFechaLimite()!=null && !objectForm.getFechaLimite().equals(""))
 			try {
@@ -127,7 +146,9 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		definirDocumentacionEJGForm.setIdDocumentacion(objectVo.getIddocumentacion().toString());
 		definirDocumentacionEJGForm.setIdDocumento(objectVo.getIddocumento().toString());
 		definirDocumentacionEJGForm.setIdTipoDocumento(objectVo.getIdtipodocumento().toString());
-		definirDocumentacionEJGForm.setPresentador(objectVo.getPresentador().toString());
+		
+		
+		definirDocumentacionEJGForm.setIdPresentador(objectVo.getIdPresentador());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(objectVo.getFechaentrega()!=null && !objectVo.getFechaentrega().equals(""))
 			definirDocumentacionEJGForm.setFechaEntrega(sdf.format(objectVo.getFechaentrega()));
