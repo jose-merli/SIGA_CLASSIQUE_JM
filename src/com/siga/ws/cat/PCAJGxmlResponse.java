@@ -397,7 +397,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
 						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
 						", " + ScsEJGBean.C_FECHAMODIFICACION + " = SYSDATE" +
-						", " + ScsEJGBean.C_USUMODIFICACION + " = " + getUsrBean().getUserName() +
+						// jbd // A peticion de los catalanes ya no se actualiza el usumodificacion
+						// ", " + ScsEJGBean.C_USUMODIFICACION + " = " + getUsrBean().getUserName() +
 						" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
 				        " AND " + ScsEJGBean.C_ANIO + " = " + scsEJGBean.getAnio() +
 				        " AND " + ScsEJGBean.C_NUMERO + " = " + scsEJGBean.getNumero() +
