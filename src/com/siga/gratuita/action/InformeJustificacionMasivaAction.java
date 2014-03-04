@@ -212,6 +212,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 	}
 
 	
+	
 	protected synchronized String justificar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions, SIGAException {
@@ -231,6 +232,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String fechaJustificacion = miForm.getFecha();
 			ScsDesignaAdm desginaAdm = new ScsDesignaAdm(this
 					.getUserBean(request));
+			
+			
 			ScsActuacionDesignaAdm actuacionDesginaAdm = new ScsActuacionDesignaAdm(
 					this.getUserBean(request));
 			
@@ -247,6 +250,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String datosJustificacion = miForm.getDatosJustificacion();
 			tx = user.getTransactionPesada();
 			tx.begin();
+			Hashtable<String,String> nigDesignaHashtable = new Hashtable<String , String>();
 			if(datosJustificacion.length()>0){
 				String[] arrayDatosJustificacion = datosJustificacion.split("#");
 				
@@ -358,6 +362,28 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						}
 						//actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
 						hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
+						//INC_11573_SIGA Se mete el nig de la designa a la actuacion
+						StringBuffer pkDesignacion = new StringBuffer();
+						pkDesignacion.append(idInstitucion);
+						pkDesignacion.append("_");
+						pkDesignacion.append(idTurno);
+						pkDesignacion.append("_");
+						pkDesignacion.append(anio);
+						pkDesignacion.append("_");
+						pkDesignacion.append(numero);
+						
+						
+						if(!nigDesignaHashtable.containsKey(pkDesignacion.toString())){
+							Hashtable pkDesignaHashtable = new Hashtable();
+							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_ANIO, 				anio);
+							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_NUMERO, 				numero);
+							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_IDINSTITUCION,		idInstitucion);
+							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_IDTURNO,				idTurno);
+							ScsDesignaBean designaBean =  (ScsDesignaBean)desginaAdm.selectByPK(pkDesignaHashtable).get(0);
+							nigDesignaHashtable.put(pkDesignacion.toString(), designaBean.getNIG()!=null?designaBean.getNIG():"");
+						}
+						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigDesignaHashtable.get(pkDesignacion.toString()));
+						
 						actuacionDesginaAdm.insert(hashActuacion);
 						
 						
