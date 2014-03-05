@@ -313,7 +313,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		    throw new ClsExceptions(e,"Error al lanzar las contabilidades programadas");
 		}
 	}
-
+ 
 	public void crearContabilidad(String fechaDesde, String fechaHasta) throws SIGAException, ClsExceptions
 	{
 		try
@@ -835,9 +835,11 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		    // RGG atencion a los importes negativos
 			select = " SELECT A.IDABONO, A.NUMEROABONO, A.IDPERSONA, A.FECHA, " + 
 			    " (LA.CANTIDAD * LA.PRECIOUNITARIO * -1) IMPNETO, ((LA.CANTIDAD * LA.PRECIOUNITARIO) * (LA.IVA/100) * -1) IMPIVA, LA.IVA, LA.DESCRIPCIONLINEA DESCRIPCION, L.CTAPRODUCTOSERVICIO, L.CTAIVA, " + 
-			    " F.NUMEROFACTURA NUMEROFACTURA, DECODE(F.IDPERSONADEUDOR,NULL,F.IDPERSONA,F.IDPERSONADEUDOR) IDPERSONA,  " +
-			    " P.CONFDEUDOR, P.CONFINGRESOS, P.CTAINGRESOS, P.CTACLIENTES " +
-			    " FROM   FAC_ABONO A, FAC_FACTURA F, FAC_LINEAABONO LA, FAC_LINEAFACTURA L, FAC_FACTURACIONPROGRAMADA P " +
+			    " F.NUMEROFACTURA NUMEROFACTURA, DECODE(F.IDPERSONADEUDOR,NULL,F.IDPERSONA,F.IDPERSONADEUDOR) IDPERSONA,  D.DEVUELTA, " +
+			    " P.CONFDEUDOR, P.CONFINGRESOS, P.CTAINGRESOS, P.CTACLIENTES, " +
+			    " F.IMPTOTALPAGADOPORBANCO, F.IMPTOTALPAGADOPORCAJA," +
+			    " (SELECT BANCOS_CODIGO FROM FAC_DISQUETECARGOS WHERE IDINSTITUCION = d.IDINSTITUCION AND IDDISQUETECARGOS = d.iddisquetecargos) BANCOS_CODIGO " +
+			    " FROM   FAC_ABONO A, FAC_FACTURA F, FAC_LINEAABONO LA, FAC_LINEAFACTURA L, FAC_FACTURACIONPROGRAMADA P, FAC_FACTURAINCLUIDAENDISQUETE D " +
 			    " WHERE  A.IDINSTITUCION = F.IDINSTITUCION " +
 			    " AND    A.IDFACTURA = F.IDFACTURA " +
 			    " AND    A.IDINSTITUCION = LA.IDINSTITUCION " +
@@ -847,8 +849,10 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    " AND    LA.LINEAFACTURA = L.NUMEROLINEA(+) " +
 			    " AND    F.IDINSTITUCION = P.IDINSTITUCION " +
 			    " AND    F.IDSERIEFACTURACION = P.IDSERIEFACTURACION " +
-			    " AND    F.IDPROGRAMACION = P.IDPROGRAMACION " +
-			    " AND    A.IDPAGOSJG IS NULL  " ; // pagos no sjcs
+			    " AND    F.IDPROGRAMACION = P.IDPROGRAMACION (+)" +
+			    " AND    F.IDFACTURA = D.IDFACTURA (+)" +
+			    " AND    F.IDINSTITUCION = D.IDINSTITUCION (+)" +
+			    " AND    A.IDPAGOSJG IS NULL "; // pagos no sjcs
 			contador++;
 			codigos.put(new Integer(contador),this.usrbean.getLocation());
 			select+=" AND    A.IDINSTITUCION = :"+contador;
@@ -874,7 +878,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			String idAbono = ""; 
 			String asientoClientes = ""; 
 			String asientoIngresos = ""; 
-			
 			
 			for(int x=0;x<vLineasAbonos.size();x++){
 			    hash = (Hashtable) vLineasAbonos.get(x);
@@ -918,19 +921,32 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				} else {
 				    asientoIngresos =  ctaIngresos + (String)hash.get("CTAPRODUCTOSERVICIO");
 				}
-
+				
+				String devuelta="";
+				
+				if((String)hash.get("DEVUELTA")!=null);
+					devuelta=(String)hash.get("DEVUELTA");
+				
+					
+					 
 				// aumentamos el contador de asientos
 				asiento++;
 				
 				Hashtable a = new Hashtable();
-					
+				
+				String impPagBanco=UtilidadesNumero.redondea((String)hash.get("IMPTOTALPAGADOPORBANCO"), 2);
+				String  impPagCaja=UtilidadesNumero.redondea((String)hash.get("IMPTOTALPAGADOPORCAJA"), 2);
+				
+				//Si la factura está devuelta o no está pagada inicialmente
+				if((devuelta.equalsIgnoreCase("S"))||(impPagBanco.equalsIgnoreCase("0.0")&&(impPagCaja.equalsIgnoreCase("0.0"))))
+				{
 					a.clear();
 					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
 					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+					UtilidadesHash.set(a, "DEBE", 			"0");
+					UtilidadesHash.set(a, "HABER", 			imp);
 					UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
-					UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
-					UtilidadesHash.set(a, "HABER", 			"0");
 					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 					UtilidadesHash.set(a, "IVA", 			"");
 					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
@@ -941,13 +957,65 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
 					UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
-					UtilidadesHash.set(a, "DEBE", 			"0");
-					UtilidadesHash.set(a, "HABER", 			imp);
+					UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
+					UtilidadesHash.set(a, "HABER", 			"0");
 					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 					UtilidadesHash.set(a, "IVA", 			"");
 					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
 					pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+					
+					// Escribimos 3º APUNTE
+					if (!ivacero) {
+						a.clear();
+						UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+						UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+						UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+						UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
+						UtilidadesHash.set(a, "DEBE", 			importeIva);
+						UtilidadesHash.set(a, "HABER", 			"0");
+						UtilidadesHash.set(a, "BASEIMPONIBLE", 	imp);
+						UtilidadesHash.set(a, "IVA", 			porcentajeIva);
+						UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIVA);
+						pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+					}	
+				
+				//Si la factura no está devuelta está pagada inicialmente
+				}else{
+					
+					String asientoContableBancoCja="";
+					
+					if(((String)(hash.get("BANCOS_CODIGO"))!=null)&&((String)(hash.get("BANCOS_CODIGO"))!=""))
+						asientoContableBancoCja	= obtenerAsientoContableBanco(this.usrbean.getLocation(),(String)hash.get("BANCOS_CODIGO"));  
+					else if(impPagCaja!="0.0")
+						asientoContableBancoCja=CONTABILIDAD_CAJA;
+					else
+						asientoContableBancoCja=asientoIngresos;
 
+					a.clear();
+					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+					UtilidadesHash.set(a, "CUENTA", 		asientoContableBancoCja);
+					UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
+					UtilidadesHash.set(a, "HABER", 			"0");
+					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+					UtilidadesHash.set(a, "IVA", 			"");
+					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
+					pwcontabilidad.write(this.generarLineaAbono(asiento, a));				
+					 
+					a.clear();
+					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+					UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
+					UtilidadesHash.set(a, "DEBE", 			"0");
+					UtilidadesHash.set(a, "HABER", 			imp);
+					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+					UtilidadesHash.set(a, "IVA", 			"");
+					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoContableBancoCja);
+					pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+					
+					
 					// Escribimos 3º APUNTE
 					if (!ivacero) {
 						a.clear();
@@ -963,8 +1031,8 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 						pwcontabilidad.write(this.generarLineaAbono(asiento, a));
 					}	
 				
+				}
 
-			
 				///////////////////////////////
 				
 				if (!idAbono.equals(idAbonoAnt)) {
@@ -1038,29 +1106,40 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		Hashtable hash 					= null; 
 		Hashtable laHash 				= null;
 		String select 					= null;
-		String imp 						= null;
-		// Beans
+		String imp 						= null; 
+		// Bean
+		String idFactAnt="";
+		String idAbonoAnt="";
+		String ctaproductservAnt="";
+		
 		FacPagoAbonoEfectivoAdm facPagoAbonoEfectivoAdm 	= new FacPagoAbonoEfectivoAdm(this.usrbean);
 		
-		try{
-			select = " SELECT abonoefectivo.idabono idabono, abono.numeroabono numeroabono, abonoefectivo.importe importe,abono.idpersona idpersona, abonoefectivo.fecha fecha, factura.numerofactura numerofactura, " +
-			" (SELECT '1' FROM fac_pagosporcaja pc WHERE pc.idinstitucion = abonoefectivo.idinstitucion AND pc.idabono = abonoefectivo.idabono AND pc.idpagoabono = abonoefectivo.idpagoabono) AS compensado " +
-			" FROM fac_pagoabonoefectivo abonoefectivo, fac_abono abono, fac_pagosporcaja pagocaja, fac_factura factura "+
-			" WHERE abonoefectivo.IDINSTITUCION = "+this.usrbean.getLocation()+" AND abono.idpagosjg IS NULL " +
+		try{ 
+			select = " SELECT abonoefectivo.idabono idabono, abono.numeroabono numeroabono, abonoefectivo.importe importe,abono.idpersona idpersona, abonoefectivo.fecha fecha, factura.numerofactura numerofactura,  abono.idpagosjg, " +
+			" (SELECT '1' FROM fac_pagosporcaja pc WHERE pc.idinstitucion = abonoefectivo.idinstitucion AND pc.idabono = abonoefectivo.idabono AND pc.idpagoabono = abonoefectivo.idpagoabono) AS compensado, " +
+			" P.CONFINGRESOS, P.CTAINGRESOS, P.CONFDEUDOR, P.CTACLIENTES,  L.CTAPRODUCTOSERVICIO, abono.idfactura idfactura "+		
+			" FROM fac_pagoabonoefectivo abonoefectivo, fac_abono abono, fac_factura factura, FAC_FACTURACIONPROGRAMADA P, fac_lineaabono la, fac_lineafactura l "+
+			" WHERE P.IDINSTITUCION = FACTURA.IDINSTITUCION AND P.IDSERIEFACTURACION = FACTURA.IDSERIEFACTURACION AND P.IDPROGRAMACION = FACTURA.IDPROGRAMACION (+)" +
+			" AND    la.idinstitucion = abono.idinstitucion "+
+			" AND    la.idabono = abono.idabono "+ 
+			" AND    la.idfactura = abono.idfactura "+ 
+			" AND    la.idinstitucion = l.idinstitucion "+ 
+			" AND    la.idfactura = l.idfactura "+
+			" AND    la.lineafactura = l.numerolinea (+)"+
+			" and abonoefectivo.IDINSTITUCION = "+this.usrbean.getLocation()+"" +
 			" and abono.idinstitucion = factura.idinstitucion and abono.idfactura = factura.idfactura" +
-			" AND abonoefectivo.idinstitucion = abono.idinstitucion AND abonoefectivo.idabono = abono.idabono AND abonoefectivo.idinstitucion = pagocaja.idinstitucion "+
-			" AND abono.idfactura = pagocaja.idfactura and abonoefectivo.idabono = pagocaja.idabono and abonoefectivo.IDPAGOABONO = pagocaja.IDPAGOABONO " +
+			" and abonoefectivo.idinstitucion = abono.idinstitucion AND abonoefectivo.idabono = abono.idabono "+
 			" and (exists (select pagocaja2.IDFACTURA from fac_pagosporcaja pagocaja2 "+
 			" where abono.idinstitucion = pagocaja2.idinstitucion and abono.idfactura = pagocaja2.idfactura and pagocaja2.idabono is null) "+
 			" or   exists (select disquete.IDFACTURA from FAC_FACTURAINCLUIDAENDISQUETE disquete " +
 			" where abono.idinstitucion = disquete.idinstitucion and abono.idfactura = disquete.idfactura and disquete.DEVUELTA like 'N') ) ";
 			
 			if(!fechaDesde.equals("") && !fechaHasta.equals(""))
-				select+=" AND abonoefectivo.FECHA >= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaDesde)+"','YYYY/MM/DD hh24:mi:ss') AND abonoefectivo.FECHA <= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaHasta)+"','YYYY/MM/DD hh24:mi:ss')";
+				select+=" AND TRUNC(abonoefectivo.FECHA) >= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaDesde)+"','YYYY/MM/DD hh24:mi:ss') AND abonoefectivo.FECHA <= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaHasta)+"','YYYY/MM/DD hh24:mi:ss')";
 			else if(!fechaDesde.equals(""))
-				select+=" AND abonoefectivo.FECHA >= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaDesde)+"','YYYY/MM/DD hh24:mi:ss')";
+				select+=" AND TRUNC(abonoefectivo.FECHA) >= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaDesde)+"','YYYY/MM/DD hh24:mi:ss')";
 			else if(!fechaHasta.equals(""))
-				select+=" AND abonoefectivo.FECHA <= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaHasta)+"','YYYY/MM/DD hh24:mi:ss')";
+				select+=" AND TRUNC(abonoefectivo.FECHA) <= TO_DATE('"+GstDate.getApplicationFormatDate("",fechaHasta)+"','YYYY/MM/DD hh24:mi:ss')";
 			
 			vAbono=(Vector)this.selectTabla(select);
 			int con=0;
@@ -1087,7 +1166,13 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				
 				Hashtable a = new Hashtable();
 				
-				if (compensado!=null && compensado.trim().equals("1")) {
+				String idpagoSJG="";
+				
+				if((String)hash.get("IDPAGOSJG")!=null)
+					idpagoSJG= (String)hash.get("IDPAGOSJG");
+				
+				//Abono SJCS compensado
+				if ((compensado!=null && compensado.trim().equals("1"))&&(idpagoSJG.trim().isEmpty()==false)) {
 					// PAGO COMPENSADO
 					// Escribimos 1º asiento
 					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
@@ -1116,7 +1201,70 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 
 					///////////////////////////////////////////////////////
 					
-				} else {
+				//Caso abono normal pagado sin devolución previa
+				} else if (idpagoSJG.trim().isEmpty()){
+					
+					//Para que no salgan asientos repetidos (salía uno por línea de factura del mismo CTAPRODUCTOSERVICIO y no procede porque hay que mostrar líneas de pagos de abonos no de facturas)
+					if((idFactAnt.equals((String)hash.get("IDFACTURA"))==false)||
+					   (idAbonoAnt.equals((String)hash.get("IDABONO"))==false)||
+					   (ctaproductservAnt.equals((String)hash.get("CTAPRODUCTOSERVICIO"))==false))
+					{	
+						String confIngresos=(String)hash.get("CONFINGRESOS");
+						String ctaIngresos=(String)hash.get("CTAINGRESOS");
+						String confClientes=(String)hash.get("CONFDEUDOR");
+						String ctaClientes=(String)hash.get("CTACLIENTES");
+						
+						String asientoIngresos="";
+						String asientoClientes="";
+						
+						if (confClientes.equals("F")) {
+						    asientoClientes =  ctaClientes;
+						} else {
+						    asientoClientes =  ctaClientes + obtenerAsientoContable(this.usrbean.getLocation(),(String)hash.get("IDPERSONA"));
+						}
+						
+						if (confIngresos.equals("F")) {
+						    asientoIngresos =  ctaIngresos;
+						} else if (confIngresos.equals("C")) {
+						    asientoIngresos =  ctaIngresos + obtenerAsientoContable(this.usrbean.getLocation(),(String)hash.get("IDPERSONA"));
+						} else {
+						    asientoIngresos =  ctaIngresos + (String)hash.get("CTAPRODUCTOSERVICIO");
+						}
+					
+					
+						a.clear();
+						UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+						UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+						UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+						UtilidadesHash.set(a, "DEBE", 			imp);
+						UtilidadesHash.set(a, "HABER", 			"0");
+						UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
+						UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+						UtilidadesHash.set(a, "IVA", 			"");
+						UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
+						pwcontabilidad.write(this.generarLineaAbono(asiento, a));				
+						
+						a.clear();
+						UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+						UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+						UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+						UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
+						UtilidadesHash.set(a, "DEBE", 			"0");
+						UtilidadesHash.set(a, "HABER", 			imp);
+						UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+						UtilidadesHash.set(a, "IVA", 			"");
+						UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
+						pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+						
+						
+						
+						idFactAnt=(String)hash.get("IDFACTURA");
+						idAbonoAnt=(String)hash.get("IDABONO");
+						ctaproductservAnt=(String)hash.get("CTAPRODUCTOSERVICIO");
+					
+					}
+					
+				}else {
 					// PAGO ANTICIPADO O CAJA NORMAL
 					// Escribimos 1º asiento
 					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
