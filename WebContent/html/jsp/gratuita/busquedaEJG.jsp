@@ -457,7 +457,7 @@ if(usr.isComision()){
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
 				</td>
 				
@@ -489,7 +489,7 @@ if(usr.isComision()){
 			</tr>
 
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.creadoDesde" />
 				</td>
 				<td style="vertical-align:middle">
@@ -502,23 +502,23 @@ if(usr.isComision()){
 					</select>
 				</td>				
 		
-				<td class="labelText" style="vertical-align:middle" width="140px">
+				<td class="labelText" style="vertical-align:middle" width="160px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaAperturaDesde" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" /> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" anchoTextField="8"/> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" campoCargarFechaDesde="fechaAperturaDesde"/> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" campoCargarFechaDesde="fechaAperturaDesde" anchoTextField="8"/> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.estadoEJG" />
 				</td>
 				<td style="vertical-align:middle">
@@ -529,23 +529,23 @@ if(usr.isComision()){
 					<% } %>
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle" width="140px">
+				<td class="labelText" style="vertical-align:middle" width="160px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaEstadoDesde" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" /> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" anchoTextField="8" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" campoCargarFechaDesde="fechaEstadoDesde"/> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" campoCargarFechaDesde="fechaEstadoDesde" anchoTextField="8"/> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.resolucion"/>
 				</td>				
 				<td style="vertical-align:middle">
@@ -569,18 +569,18 @@ if(usr.isComision()){
 				<%}%>	
 				</td>
 													
-				<td class="labelText" style="vertical-align:middle" width="140px">
+				<td class="labelText" style="vertical-align:middle" width="160px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaLimiteDesde" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" /> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" anchoTextField="8" /> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" campoCargarFechaDesde="fechaLimitePresentacionDesde" /> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" campoCargarFechaDesde="fechaLimitePresentacionDesde" anchoTextField="8" /> 
 				</td>			
 			</tr>
 			
@@ -599,7 +599,7 @@ if(usr.isComision()){
 			<%}%>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.dictaminado" />
 				</td>
 				<td style="padding:0px" style="vertical-align:middle">
@@ -623,46 +623,46 @@ if(usr.isComision()){
 					</table>
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle" width="140px">
-					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde" />
+				<td class="labelText" style="vertical-align:middle" width="160px">
+					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde"  />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" /> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" anchoTextField="8"/> 
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
 				</td>
-				<td width="120px" style="vertical-align:middle"> 
-					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" campoCargarFechaDesde="fechaDictamenDesde"/> 
+				<td width="100px" style="vertical-align:middle"> 
+					<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" campoCargarFechaDesde="fechaDictamenDesde" anchoTextField="8"/> 
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
 				</td>
 				<td style="vertical-align:middle"> 
 					<siga:Select id="idPonente" queryId="getPonentes" selectedIds="<%=vPonente%>" width="375" /> 
 				</td>
 				
-				<td class="labelText" style="vertical-align:middle" width="140px">
+				<td class="labelText" style="vertical-align:middle" width="160px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.desde" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" />
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaPresentacionPonenteDesde" valorInicial="<%=fechaPonenteDesde%>" anchoTextField="8"/>
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.presentacionPonente.hasta" />
 				</td>
-				<td width="120px" style="vertical-align:middle">
-					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" campoCargarFechaDesde="fechaPresentacionPonenteDesde"/> 
+				<td width="100px" style="vertical-align:middle">
+					<siga:Fecha nombreCampo="fechaPresentacionPonenteHasta" valorInicial="<%=fechaPonenteHasta%>" campoCargarFechaDesde="fechaPresentacionPonenteDesde" anchoTextField="8"/> 
 				</td>			
 			</tr>				
 
 			<tr>
-				<td class="labelText" style="vertical-align:middle" width="90px">
+				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td style="vertical-align:middle">
