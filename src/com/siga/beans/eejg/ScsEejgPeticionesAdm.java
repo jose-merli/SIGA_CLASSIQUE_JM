@@ -72,7 +72,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsPersonaJGBean.C_APELLIDO1,
 				ScsPersonaJGBean.C_APELLIDO2,
 				ScsEejgPeticionesBean.C_RUTA_PDF,
-				ScsEejgPeticionesBean.C_IDECOMCOLA
+				ScsEejgPeticionesBean.C_IDECOMCOLA,
+				ScsEejgPeticionesBean.C_CSV,
+				ScsEejgPeticionesBean.C_MSGERROR
 				};
 		return campos;
 	}	
@@ -138,6 +140,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
 			
+			bean.setMsgError(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_MSGERROR));
+			bean.setCsv(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_CSV));
+			
 		}
 		catch(Exception e){
 			bean = null;
@@ -184,6 +189,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
+			
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_MSGERROR, b.getMsgError());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_CSV, b.getCsv());
 			
 		}
 		catch (Exception e){
@@ -272,7 +280,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		StringBuffer sql = new StringBuffer();
 		
 		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
-		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML, ");
+		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML, EEJG.MSGERROR,");
 		sql.append(" EEJG.IDINSTITUCION , EEJG.IDTIPOEJG, ");
 		sql.append(" EEJG.ANIO,EEJG.NUMERO, EEJG.IDPERSONA, ");
 		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, ");
@@ -470,6 +478,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append("=");
 		updateSql.append(EEJG_ESTADO.INICIAL_ESPERANDO.getId());
 		updateSql.append(" , ");
+		updateSql.append(ScsEejgPeticionesBean.C_MSGERROR);
+		updateSql.append("= '' ");	
+		updateSql.append(" , ");			
 		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		updateSql.append(" = SYSDATE ");
 		updateSql.append(" ");
@@ -534,6 +545,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append("=");
 		updateSql.append(EEJG_ESTADO.ESPERA_ESPERANDO.getId());
 		updateSql.append(" , ");
+		updateSql.append(ScsEejgPeticionesBean.C_MSGERROR);
+		updateSql.append("= '' ");
+		updateSql.append(" , ");		
 		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		updateSql.append(" = SYSDATE ");
 		updateSql.append(" ");

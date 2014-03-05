@@ -47,6 +47,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	private String	apellido1;
 	private String	apellido2;
 	private String rutaPDF;
+	private String msgError;
+	private String csv;
 	private Long idEcomCola;
 	
 	FilaExtElement[] elementosFila;
@@ -83,7 +85,9 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_APELLIDO1			=				"APELLIDO1";
 	static public final String 	C_APELLIDO2			=				"APELLIDO2";
 	static public final String 	C_RUTA_PDF			=				"RUTA_PDF";
-	static public final String 	C_IDECOMCOLA			=				"IDECOMCOLA";
+	static public final String 	C_IDECOMCOLA		=				"IDECOMCOLA";
+	static public final String 	C_MSGERROR			=				"MSGERROR";
+	static public final String 	C_CSV				=				"CSV";
 	
 	public Long getIdPeticion() {
 		return idPeticion;
@@ -281,9 +285,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("espera", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
 		} else if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId()) {
-				elementosFila = new FilaExtElement[5];
+				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("espera", "avisoEsperaInfoEejg","general.boton.esperaInfoEejg",SIGAConstants.ACCESS_READ);
-				elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
 		} else if (estado == EEJG_ESTADO.ESPERA.getId()
 					|| estado == EEJG_ESTADO.ESPERA_ESPERANDO.getId()
 					|| estado == EEJG_ESTADO.INICIAL_ESPERANDO.getId()) {
@@ -326,5 +329,17 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public void setPersonaUnidadFamiliar(boolean personaUnidadFamiliar) {
 		this.personaUnidadFamiliar = personaUnidadFamiliar;
 	}
-		
+	public String getMsgError() {
+		return msgError;
+	}
+	public void setMsgError(String msgError) {
+		this.msgError = msgError;
+	}
+	public String getCsv() {
+		return csv;
+	}
+	public void setCsv(String csv) {
+		this.csv = csv;
+	}
+	
 }

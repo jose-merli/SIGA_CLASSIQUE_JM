@@ -6,7 +6,23 @@ import java.util.Vector;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.configuration.FileProvider;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.ConsultaInformacionAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.DatosConsultaInformacionAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.InformacionInf;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaConsultaInformacionAAPP.AdministracionInf;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaConsultaInformacionAAPP.DatosInformacionAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaConsultaInformacionAAPP.InformacionAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaConsultaInformacionAAPP.RespuestaConsultaInformacionAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaSolicitudPeticionInfoAAPP.Respuesta;
+import org.redabogacia.www.pjgpra.wspjgpra.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
+import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.Informacion;
+import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
+
+import service.ServiciosJGExpediente.ServiciosJGExpedienteServiceLocator;
+import service.ServiciosJGExpediente.ServiciosJGExpedienteServiceSoapBindingStub;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -21,21 +37,16 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
-import com.siga.eejg.ws.ServiciosJGExpedienteServiceLocator;
-import com.siga.eejg.ws.ServiciosJGExpedienteServiceSoapBindingStub;
-import com.siga.eejg.ws.ConsultaInfoAAPP.ConsultaInfoAAPP;
-import com.siga.eejg.ws.ConsultaInfoAAPP.DatosConsultaInfoAAPP;
-import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.Administracion;
-import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.DatosInfoAAPP;
-import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.RespuestaConsultaInfoAAPP;
-import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.Respuesta;
-import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.Informacion;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
+import com.siga.pfd.ws.DocumentoTO;
+import com.siga.pfd.ws.ResultSolicitudDocumentoTO;
+import com.siga.pfd.ws.ServiciosPFDServiceServiceSoapBindingStub;
+import com.siga.pfd.ws.ServiciosPFDService_ServiceLocator;
+import com.siga.pfd.ws.SolicitudDocumentoTO;
+import com.sis.firma.core.B64.Base64CODEC;
 
 public class SolicitudesEEJG {
-	private String urlWS;	
+	private String urlWS;
+	private String urlWSPFD;
 	private String idSistema;
 	
 	public SolicitudesEEJG() throws ClsExceptions {
@@ -49,6 +60,7 @@ public class SolicitudesEEJG {
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
 		urlWS = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_URLWS", "");
+		urlWSPFD = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "PFD_URLWS", "");
 		idSistema = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_IDSISTEMA", "");
 	}
 
@@ -90,6 +102,7 @@ public class SolicitudesEEJG {
 				if (respuesta != null) {
 					if ((respuesta.getTipoError() != null && !respuesta.getTipoError().trim().equals("")) || (respuesta.getDescripcionError() != null && !respuesta.getDescripcionError().trim().equals(""))) {
 						String error = respuesta.getTipoError() + ": " + respuesta.getDescripcionError();
+						scsEejgPeticionesBean.setMsgError(error);
 						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + scsEejgPeticionesBean.getNif() + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error);
 					} else {
 						idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();
@@ -150,31 +163,33 @@ public class SolicitudesEEJG {
 		String idPeticionInfoAAPP = scsEejgPeticionesBean.getIdSolicitud();
 		String idioma = scsEejgPeticionesBean.getIdioma();
 		
-		DatosConsultaInfoAAPP datosConsultaInfoAAPP = new DatosConsultaInfoAAPP(idSistema, idPeticionInfoAAPP, idioma);
-		com.siga.eejg.ws.ConsultaInfoAAPP.Informacion informacion = new com.siga.eejg.ws.ConsultaInfoAAPP.Informacion(datosConsultaInfoAAPP);
-		ConsultaInfoAAPP consultaInfoAAPP = new ConsultaInfoAAPP(informacion);
+		DatosConsultaInformacionAAPP datosConsultaInformacionAAPP = new DatosConsultaInformacionAAPP (idSistema, idPeticionInfoAAPP, idioma);
+		InformacionInf informacion = new InformacionInf(datosConsultaInformacionAAPP);
+		ConsultaInformacionAAPP consultaInformacionAAPP = new ConsultaInformacionAAPP(informacion);
 				
-		RespuestaConsultaInfoAAPP respuestaConsultaInfoAAPP = stub.consultaInfoAAPP(consultaInfoAAPP);		
+		RespuestaConsultaInformacionAAPP respuestaConsultaInfoAAPP = stub.consultaInformacionAAPP(consultaInformacionAAPP);		
 		
 		if (respuestaConsultaInfoAAPP != null) {
-			if (respuestaConsultaInfoAAPP.getInformacion() != null){
-				com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.ConsultaInfoAAPP respuestaConsultaInfo = respuestaConsultaInfoAAPP.getInformacion().getConsultaInfoAAPP();
-				if (respuestaConsultaInfo != null) {
-					if ((respuestaConsultaInfo.getTipoError() != null && !respuestaConsultaInfo.getTipoError().trim().equals("")) || (respuestaConsultaInfo.getDescripcionError() != null && !respuestaConsultaInfo.getDescripcionError().trim().equals(""))) {
-						String error = respuestaConsultaInfo.getTipoError() + ": " + respuestaConsultaInfo.getDescripcionError();
+			if (respuestaConsultaInfoAAPP.getInformacionInf() != null){
+				 InformacionAAPP infoRespuestaConsultaInfo= respuestaConsultaInfoAAPP.getInformacionInf().getInformacionAAPP();
+				
+				if (infoRespuestaConsultaInfo != null) {
+					if ((infoRespuestaConsultaInfo.getTipoError() != null && !infoRespuestaConsultaInfo.getTipoError().trim().equals("")) || (infoRespuestaConsultaInfo.getDescripcionError() != null && !infoRespuestaConsultaInfo.getDescripcionError().trim().equals(""))) {
+						String error = infoRespuestaConsultaInfo.getTipoError() + ": " + infoRespuestaConsultaInfo.getDescripcionError();
+						scsEejgPeticionesBean.setMsgError(error);
 						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el idSolicitud \"" + idPeticionInfoAAPP + "\": " + error);
 					}
+					
 					UsrBean usrBean = new UsrBean();
 					usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 					ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);			
-					idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
-							AxisObjectSerializerDeserializer.serializeAxisObject(respuestaConsultaInfoAAPP, false, false), 
-							ScsEejgXmlBean.RESPUESTA, EEJG_ESTADO.FINALIZADO);
+					idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean,null,ScsEejgXmlBean.RESPUESTA, EEJG_ESTADO.FINALIZADO);
 					
-					if (isPendiente(respuestaConsultaInfo.getDatosInfoAAPP())) {
+					if (isPendiente(infoRespuestaConsultaInfo.getDatosInformacionAAPP())) {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.PENDIENTE_INFO.getId());
 					} else {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
+						scsEejgPeticionesBean.setCsv(infoRespuestaConsultaInfo.getDatosInformacionAAPP().getCSV());
 					}
 					
 				}
@@ -190,12 +205,12 @@ public class SolicitudesEEJG {
 	 * @param datosInfoAAPP
 	 * @return
 	 */
-	private boolean isPendiente(DatosInfoAAPP datosInfoAAPP) {
+	private boolean isPendiente(DatosInformacionAAPP datosInfoAAPP) {
 		boolean pendiente = false;
 		if (datosInfoAAPP != null) {
-			Administracion[] administracions = datosInfoAAPP.getAdministracion();
+			AdministracionInf[] administracions = datosInfoAAPP.getAdministracionInf();
 			if (administracions != null) {
-				for (Administracion administracion : administracions) {
+				for (AdministracionInf administracion : administracions) {
 					if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
 						pendiente = true;
 						break;
@@ -225,7 +240,7 @@ public class SolicitudesEEJG {
 			scsEejgXmlBean.setIdPeticion(scsEejgPeticionesBean.getIdPeticion());
 			scsEejgXmlBean.setEstado((int)eejgEstado.getId());
 			scsEejgXmlBean.setEnvioRespuesta(envioRespuesta);
-			scsEejgXmlBean.setXml(xml);
+			//scsEejgXmlBean.setXml(xml);
 
 			scsEejgXmlAdm.insert(scsEejgXmlBean);
 		} catch (ClsExceptions e) {
@@ -233,4 +248,41 @@ public class SolicitudesEEJG {
 		}
 		return idXml;
 	}
+	
+	public String getDocumentoTO(String csv) throws ClsExceptions {
+		
+		//Fichero a recuperar
+		String contenidoPDF = "";
+		
+		try {
+			//Configuramos los datos de acceso al WS
+			URL url = new URL(urlWSPFD);		
+			ServiciosPFDService_ServiceLocator locator = new ServiciosPFDService_ServiceLocator();
+			ServiciosPFDServiceServiceSoapBindingStub stub = new ServiciosPFDServiceServiceSoapBindingStub(url, locator);
+			SolicitudDocumentoTO solDocTO = new SolicitudDocumentoTO();			
+			solDocTO.setIdAppCliente(idSistema);
+			solDocTO.setIdValidacion(csv);
+			//solDocTO.setIdValidacion("PJGPRA-IQQQ1-R06QK-SSRBI-KCC1Z");
+
+			//Llamada al Stub del web service
+			ClsLogging.writeFileLog("Llamada al servicio web obtenerDocumento", 10);
+			ResultSolicitudDocumentoTO obtDoc = stub.obtenerDocumento(solDocTO);
+			
+			if(obtDoc!=null){
+				if (obtDoc.getResultado()!=null && obtDoc.getResultado().toUpperCase().equals(AppConstants.PFD_SOLICITUD_DOCUMENTO_OK)){
+					DocumentoTO documentoTO = obtDoc.getDocumento();
+					contenidoPDF = documentoTO.getFirmab64().toString();
+				
+				} else if(obtDoc.getResultado().toUpperCase().equals(AppConstants.PFD_SOLICITUD_DOCUMENTO_KO)){
+					ClsLogging.writeFileLog("El resultado de la obtencion del documento de la PFD es incorrecto", 10);
+				}
+			}
+			
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Error al solicitar documento a la PFD", e, 3);
+		}			
+		
+		return contenidoPDF;
+	}
+	
 }

@@ -523,11 +523,11 @@ import com.siga.tlds.FilaExtElement;
 		unidadFamiliarVo.setIdTipoEJG(new Integer(getIdTipoEJG()));
 		unidadFamiliarVo.setNumero(new Integer(getNumero()));
 		unidadFamiliarVo.setIdPersona(new Integer(getIdPersona()));
+		peticionEejg = new ScsEejgPeticionesBean();
 		if(getIdXml()!=null){
-			peticionEejg = new ScsEejgPeticionesBean();
 			peticionEejg.setIdXml(new Integer(idXml));
-			
 		}
+		
 		ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
 		personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
 		unidadFamiliarVo.setPersonaJG(personaJG);

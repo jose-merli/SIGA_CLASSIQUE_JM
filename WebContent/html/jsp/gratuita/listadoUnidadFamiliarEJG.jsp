@@ -366,12 +366,14 @@
 							</c:choose>						
 						
 							<c:choose>
-								<c:when test="${peticion.idXml!=null&&peticion.personaUnidadFamiliar==true}">
+								<c:when test="${peticion.idXml!=null && peticion.personaUnidadFamiliar==true && peticion.estado == 30}">
 									<input type="checkbox" value="${peticion.idXml}" name="chkPersona">
+									<input type="hidden" name="peticion<%=indice%>_7" value=" ">
 								</c:when>
 				
 								<c:otherwise>
 				  					<input type="checkbox" title="gratuita.personaJG.tooltip.noPerteneceUnidadFam" value="<bean:write name="indice"/>" disabled name="chkPersona">
+				  					<input type="hidden" name="peticion<%=indice%>_7" value="${peticion.msgError}">
 								</c:otherwise>
 							</c:choose>											
 						</td>
@@ -662,7 +664,12 @@
    	
    	function errorEejg(fila){
    		selectRowPeticiones(fila);
-   		alert("<siga:Idioma key="general.boton.errorEejg"/>");
+   		var msgError = document.getElementById( 'peticion' + fila + '_7').value;
+   		if(msgError!=null && msgError!= ''){
+   			alert("<siga:Idioma key="general.boton.errorEejg"/>" + "\n Código de error " + msgError);
+   		}else{
+   			alert("<siga:Idioma key="general.boton.errorEejg"/>");
+   		}
    	}
    	
    	function esperaInfoEejg(fila){

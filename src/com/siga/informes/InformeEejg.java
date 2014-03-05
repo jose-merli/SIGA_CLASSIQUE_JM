@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.io.OutputStream;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -30,7 +31,9 @@ import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.certificados.Plantilla;
+import com.siga.eejg.SolicitudesEEJG;
 import com.siga.general.SIGAException;
+import com.sis.firma.core.B64.Base64CODEC;
 
 
 /**
@@ -43,22 +46,33 @@ public class InformeEejg extends MasterReport
 		super(usuario);
 	}
 
-	public File generarInformeEejg (Map<Integer, Map<String, String>> mapInformes) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
-	{
+	public File generarInformeEejg (Map<Integer, Map<String, String>> mapInformes) throws ClsExceptions,SIGAException, UnsupportedEncodingException {
 		File file = null;
 		List<File> file2zip = null;
 		ScsEejgXmlAdm admXmlEejg = new ScsEejgXmlAdm(super.getUsuario());
 		String nombreZip = null;
 		List<String> lNumEjg = null; 
-		String numEjg = null;
+		String numEjg = null, csv = "";
 		String idInstitucion = getUsuario().getLocation();
 		String fecha = null;
 		
 		for (Map.Entry<Integer, Map<String, String>> entrada:mapInformes.entrySet()){
-			String xml = admXmlEejg.getEejgXml(entrada.getKey());
+			//String xml = admXmlEejg.getEejgXml(entrada.getKey());
 			Map<String, String> mapParameters = entrada.getValue();
 			numEjg = mapParameters.get("numEjg") ;
-			file = generarInformeEejg(xml,mapParameters);
+			
+			//AQUI SE CAMBIA LA LLAMADA A LA PLATAFORMA DE FIRMA (PFD)
+			csv = mapParameters.get("csv");
+			if(csv != null && !csv.equals("")){
+				SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
+				String contenidoPDF = solicitudesEEJG.getDocumentoTO(csv);
+				file = generarInformeEejg(contenidoPDF,mapParameters);
+			
+			} else {
+				//Mantenemos durante un tiempo la antigua descarga de PDF para las peticiones antiguias
+				String xml = admXmlEejg.getEejgXml(entrada.getKey());
+				file = generarInformeEejgOLD(xml,mapParameters);			
+			}
 			
 			if(mapInformes.entrySet().size()>1){
 				
@@ -74,13 +88,13 @@ public class InformeEejg extends MasterReport
 					if(!lNumEjg.contains(numEjg)){
 						lNumEjg.add(numEjg);
 					}
-					
-					
 				}
+
 				file2zip.add(file);
 			}
 			
 		}
+		
 		if(file2zip!=null){
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
@@ -98,11 +112,88 @@ public class InformeEejg extends MasterReport
 	
 	}
 	
-	private File generarInformeEejg (String strXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
+	/**
+	 * 
+	 * Metodo publico que llamaremos desde el Action encargado de generar el informe Eejg en pdf
+	 *  
+	 * @param request
+	 * @param datosFormulario 
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	
+	private File generarInformeEejg (String contenidoPDF,Map<String, String> mapParameters) throws ClsExceptions,SIGAException {
+		File fileFirmado = null;
+		
+		File rutaTmp=null;
+		try {
+			UsrBean usr = this.getUsuario();
+			String idioma = mapParameters.get("idioma");
+			String idInstitucion = usr.getLocation();
+	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
+			String idiomaExt = idioma.substring(0,2).toUpperCase();
+			String fecha = UtilidadesBDAdm.getFechaCompletaBD("formato_ingles");
+			fecha = fecha.replaceAll("/","");
+			fecha = fecha.replaceAll(":","");
+			fecha = fecha.replaceAll(" ","_");
+			
+			String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
+			String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+			String directorioSalida = rp.returnProperty("sjcs.directorioFisicoSalidaInformeEejg");
+			// Directorios y nombres de trabajo
+			String plantillaNombre = "InformeEejg_"   + idiomaExt + ".xsl";
+			String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
+			String numEjg = mapParameters.get("numEjg");
+			String numEjgListado = UtilidadesString.replaceAllIgnoreCase(numEjg, "-", "/");
+			mapParameters.put("numEjg", numEjgListado);
+			
+			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+numEjg+ "_"+mapParameters.get("idPersonaJG") + "_" + fecha+".pdf";
+			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
+			
+			File rutaPDF = new File(pdfRuta);
+			rutaPDF.mkdirs();
+			if(!rutaPDF.exists()){
+				throw new SIGAException("messages.envios.error.noPlantilla");					
+			} 
+			else {
+				if(!rutaPDF.canWrite()){
+					throw new SIGAException("messages.envios.error.noPlantilla");					
+				}
+			}
+			
+			//Nos creamos el fichero PDF que se va a mostrar al usuario
+			pdfRuta += ClsConstants.FILE_SEP;			
+			fileFirmado = new File(pdfRuta+pdfNombre);			
+			
+			//Realizamos la decodificacion para su correcta visualización
+			Base64CODEC.decodeToFile(contenidoPDF,pdfRuta+pdfNombre);
+			
+		} catch (SIGAException se) {
+			throw se;
+
+		} catch (ClsExceptions ex) {
+			throw ex;
+		
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al generar el informe: "+e.getLocalizedMessage());
+		
+		} finally {
+			if(rutaTmp!=null){
+				Plantilla.borrarDirectorio(rutaTmp);
+			}
+		}
+		
+        return fileFirmado;
+	}	
+	
+	private File generarInformeEejgOLD (String strXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
 	{
 //		InputStream inputXml = new ByteArrayInputStream(strXml.getBytes("ISO-8859-15"));
 		InputStream inputXml = new ByteArrayInputStream(strXml.getBytes("ISO-8859-15"));
-		return generarInformeEejg(inputXml,mapParameters);
+		return generarInformeEejgOLD(inputXml,mapParameters);
 	}
 	/**
 	 * 
@@ -115,7 +206,7 @@ public class InformeEejg extends MasterReport
 	 * @throws SIGAException
 	 */
 	
-	private File generarInformeEejg (InputStream inputXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException 
+	private File generarInformeEejgOLD (InputStream inputXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException 
 	{
 		File fileFirmado = null;
 		
@@ -187,7 +278,8 @@ public class InformeEejg extends MasterReport
 			}
 		}
         return fileFirmado;
-	}
+	}	
+	
 	public File firmarPDF(File fileIn,String pathPdfFinal)throws Exception{
         FileInputStream fisID = null;
         FileOutputStream fos = null;

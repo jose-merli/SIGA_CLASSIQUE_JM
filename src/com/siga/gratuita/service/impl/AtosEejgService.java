@@ -106,6 +106,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		actualizaParametrosPersona(mapParameters,usr);
 		mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 		mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
+		mapParameters.put("csv", unidadFamiliar.getPeticionEejg().getCsv());
 		mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 		
 		return mapInformes;
@@ -179,6 +180,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			
 			actualizaParametrosPersona(mapParameters,usr);
 			mapParameters.put("rutaLogoColegio", rutaLogoColegio);
+			mapParameters.put("csv", unidadFamiliar.getPeticionEejg().getCsv());
 			mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 			
 		}
@@ -298,6 +300,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 					
 					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 					mapParameters.put("idioma", formUnidadFamiliar.getPeticionEejg().getIdioma());
+					mapParameters.put("csv", formUnidadFamiliar.getPeticionEejg().getCsv());
 					mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
 				}
 			}
@@ -455,10 +458,5 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		return admPeticionEejg.getPeticionesEejg(eejgBean);
 	}
 
-	
-
-	
-	
-	
 
 }

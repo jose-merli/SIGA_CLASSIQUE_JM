@@ -7,6 +7,7 @@ import org.apache.axis.AxisFault;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
@@ -83,6 +84,7 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					if (idPeticionInfoAAPP != null) {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.ESPERA.getId());
 						scsEejgPeticionesBean.setFechaSolicitud("SYSDATE");
+						scsEejgPeticionesBean.setMsgError("");
 					} 
 					
 				} catch (AxisFault e) {					
@@ -94,7 +96,6 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					}
 				}catch (Throwable e) {
 					ClsLogging.writeFileLogError("Error No esperado", new Exception(e), 3);
-					//e.printStackTrace();
 					
 				} finally {
 					scsEejgPeticionesBean.setNumeroIntentosSolicitud(scsEejgPeticionesBean.getNumeroIntentosSolicitud() + 1);
