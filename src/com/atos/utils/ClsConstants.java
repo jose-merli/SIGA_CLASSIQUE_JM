@@ -372,6 +372,7 @@ public class ClsConstants {
 	  public static final String TIPO_PERSONA_JURIDICA="J";
 	  public static final String TIPO_SEXO_HOMBRE="H";
 	  public static final String TIPO_SEXO_MUJER="M";
+	  public static final String TIPO_SEXO_NC="N";
 	  // RGG 13-01-2005
 	  public static final String TIPO_CARGO_BANCO="B";
 	  public static final String TIPO_CARGO_CAJA="C";

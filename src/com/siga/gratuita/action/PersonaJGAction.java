@@ -1889,7 +1889,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
 			//mhg - INC_10319_SIGA
-			if(ClsConstants.TIPO_SEXO_HOMBRE.equals(miform.getSexo()) || ClsConstants.TIPO_SEXO_MUJER.equals(miform.getSexo())){
+			if(ClsConstants.TIPO_SEXO_HOMBRE.equals(miform.getSexo()) || ClsConstants.TIPO_SEXO_MUJER.equals(miform.getSexo()) || ClsConstants.TIPO_SEXO_NC.equals(miform.getSexo())){
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			}else{
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,"");
