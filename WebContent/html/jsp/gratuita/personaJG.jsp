@@ -147,9 +147,11 @@
 	
 	if ((pcajgActivo == 1) && ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
 		// Nada de momento
+		
 	} else if ((pcajgActivo == 2) && ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {			
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
+		
 	} else if ((pcajgActivo == 3) && ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {				
 		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
@@ -163,51 +165,35 @@
 
 	} else if ((pcajgActivo == 4) && (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
 				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)  || conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || 
-				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS))) {
+				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS) )) {
 			
-		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
-				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
-				 opcionDireccion=true;
-				 obligatorioDireccion = true;
-				 obligatorioPoblacion = true;
-				 obligatorioCodigoPostal = true;
-			
+		if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
+			 opcionDireccion=true;
+			 obligatorioDireccion = true;
+			 obligatorioPoblacion = true;
+			 obligatorioCodigoPostal = true;
+			 
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 				obligatorioParentesco = true;
+			
+			//CR7 - INC_08197_SIGA. Yo a estos IF les daria una vueltecita, porque vaya tela.....
+			 if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS))
+			 	obligatorioNacionalidad = true;
+			
 		}else if (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
 			 obligatorioSexo = true;
 			 obligatorioEstadoCivil= true;
 			 obligatorioDireccion = true;
 			 obligatorioPoblacion = true;
 			 obligatorioCodigoPostal = true;
+			 obligatorioRegimenConyuge=true;
+		
+		} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)){
+			//CR7 - INC_08197_SIGA
+		 	obligatorioNacionalidad = true;
 		}
 				
-				/*if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
-					 obligatorioEstadoCivil= true;
-					 obligatorioSexo = true;
-				     obligatorioRegimenConyuge=true;
-				}else if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
-						|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.EJG)){
-					obligatorioNacionalidad=false;
-				}else{
-					obligatorioDireccion = true;
-					obligatorioPoblacion = true;
-					obligatorioCodigoPostal = true;
-					obligatorioIngreso= true;
-				    obligatorioRegimenConyuge=true;
-				    obligatorioNacionalidad=true;
-				    obligatorioEstadoCivil= true;
-				    obligatorioSexo = true;
-					if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
-						obligatorioParentesco = true;
-					    obligatorioEstadoCivil= true;
-					    obligatorioIngreso= true;
-					    obligatorioSexo = false;
-					}
-				 }*/
-	} else if ((pcajgActivo == 5)
-			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
+	} else if ((pcajgActivo == 5) && ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
 		obligatorioDireccion = true;
 		obligatorioPoblacion = true;
 		obligatorioParentesco = true;
@@ -226,7 +212,6 @@
 		
 	} else if (pcajgActivo == 7) {
 		obligatorioMinusvalia = true;
-	
 	}
 
 	ArrayList calidadSel = new ArrayList();
@@ -1936,6 +1921,9 @@
 							
 							if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER))
 								ssexo = UtilidadesString.getMensajeIdioma(usr,"censo.sexo.mujer");
+							
+							if (sexo.equals(ClsConstants.TIPO_SEXO_NC))
+								ssexo = UtilidadesString.getMensajeIdioma(usr,"censo.sexo.nc");							
 		
 							if (!accion.equalsIgnoreCase("ver")) {
 %>
@@ -1943,6 +1931,7 @@
 									<html:option value="" >&nbsp;</html:option>
 									<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
 									<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+									<html:option value="<%=ClsConstants.TIPO_SEXO_NC %>"><siga:Idioma key="censo.sexo.nc"/></html:option>
 								</html:select>		
 <%
 							} else {
@@ -2711,7 +2700,7 @@
 
 	
 <%// VOLVER PARA CADA CASO
-			if (conceptoE.equals(PersonaJGAction.EJG)) {%>
+	if (conceptoE.equals(PersonaJGAction.EJG)) {%>
 	
 		//Asociada al boton Volver -->
 		function accionVolver()   
@@ -2849,8 +2838,11 @@
 							if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 								error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';
 							if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
-								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';										
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
+							if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
+							    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
 						}
+						
 						if(error!=""){
 							alert(error);
 							fin();
@@ -2869,8 +2861,8 @@
 		}
 
 <%} else
-			// VOLVER PARA CADA CASO
-			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%>
+	// VOLVER PARA CADA CASO
+	if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%>
 	
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{
@@ -3041,6 +3033,7 @@
 		function refrescarLocal() {
 			window.location=window.location;
 		}
+		
 <%} else if (conceptoE.equals(PersonaJGAction.SOJ)) {%>
 
 		//Asociada al boton Volver -->
@@ -3125,9 +3118,8 @@
 		
 <%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {%>
 
-		function accionVolver()
-		{
-<%String sAction = esFichaColegial
+		function accionVolver()	{
+			<%String sAction = esFichaColegial
 						? "JGR_AsistenciasLetrado.do"
 						: "JGR_Asistencia.do";%>
 			<%// indicamos que es boton volver
@@ -3142,8 +3134,7 @@
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{	
 
-
- 			document.PersonaJGForm.existeDomicilio.value = "S";
+			document.PersonaJGForm.existeDomicilio.value = "S";
 			
  			if (!validaTelefonos()){
                 fin();
@@ -3221,7 +3212,7 @@
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 
-
+			var error = "";
 			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
@@ -3233,6 +3224,8 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
 			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';					
 			
 			if (!validaTelefonos()){
                 fin();
@@ -3289,6 +3282,12 @@
 					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
+						if(error!=""){
+							alert(error);
+							fin();
+							return false;
+						}
+					
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3313,12 +3312,13 @@
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 
-
+			var error = "";
 			if (document.forms[0].existeDom!=null && document.forms[0].existeDom.checked) {
 	 			document.PersonaJGForm.existeDomicilio.value = "N";
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}				
+			
 			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
@@ -3382,16 +3382,16 @@
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
 						if(<%=pcajgActivo == 4%>){
-							var error = "";
 							if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
-
-							if(error!=""){
-								alert(error);
-								fin();
-								return false;
-							}
 						}
+						
+						if(error!=""){
+							alert(error);
+							fin();
+							return false;
+						}
+						
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3567,10 +3567,10 @@
 			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			    
-			if(error!=""){
-			  alert(error);
-			  fin();
-			  return false;
+			if(error != ""){
+				alert(error);
+				fin();
+			    return false;
 			 }	
 			
 		 	document.forms[0].action="<%=app + actionE%>";	
