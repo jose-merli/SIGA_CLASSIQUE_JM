@@ -472,8 +472,13 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
 				
+			String motivo = "";
+			if(miForm.getMotivo ()!=null){
+				motivo = miForm.getMotivo ();	
+			}			
+			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo, request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -998,8 +1003,13 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setTelefono1 (miForm.getTelefono1 ());
 			beanDir.setTelefono2 (miForm.getTelefono2 ());
 			
+			String motivo = "";
+			if(miForm.getMotivo ()!=null){
+				motivo = miForm.getMotivo ();	
+			}
+			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo, request, usr); 
 			
 			//Se llama a la interfaz Direccion para realizar el borrado de la direccion antigua
 			beanDir.setIdDireccion(idDireccionAntigua);

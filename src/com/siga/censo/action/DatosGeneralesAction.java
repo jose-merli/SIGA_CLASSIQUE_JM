@@ -1628,8 +1628,13 @@ public class DatosGeneralesAction extends MasterAction {
 					tiposDir = miForm.getIdTipoDireccion();
 				}
 				
+				String motivo = "";
+				if(miForm.getMotivo ()!=null){
+					motivo = miForm.getMotivo ();	
+				}
+				
 				// Se llama a la interfaz Direccion para insertar una nueva direccion
-				direccion.insertar(beanDir, tiposDir, miForm.getMotivo (), null, usr);
+				direccion.insertar(beanDir, tiposDir, motivo, null, usr);
 				
 				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());   		    
    		    }

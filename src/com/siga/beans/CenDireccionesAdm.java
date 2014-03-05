@@ -443,9 +443,15 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				}
 				
 				if (!error) {
-					// Insertamos el historico
-					CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
-					if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_INSERT, idioma)) {
+					//Se comprueba si se quiere insertar con historico o no
+					if (beanHis != null){					
+						// Insertamos el historico
+						CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
+						if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_INSERT, idioma)) {
+							return true;
+						}
+					}else{
+						//Insertamos el reistro de direcciones sin histórico
 						return true;
 					}
 				}
