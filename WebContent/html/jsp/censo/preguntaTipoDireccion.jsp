@@ -37,27 +37,22 @@
 		function reloadPage() {
 		    var type = '<siga:Idioma key="messages.censo.direcciones.errorCensoWeb"/>';
 			if (confirm(type)) {
-			 
-			  parent.document.consultaDireccionesForm.idDireccionesCensoWeb.value="<%=idDirecciones%>";
-			  parent.document.consultaDireccionesForm.modificarPreferencias.value="<%=modificarPre%>";
-			  parent.document.consultaDireccionesForm.control.value="<%=control%>";
-			  parent.document.consultaDireccionesForm.modo.value="<%=modo%>";
-			  parent.actualizarcenso();
-			    
-			}
+				parent.document.getElementById("idDireccionesCensoWeb").value="<%=idDirecciones%>";
+				parent.document.getElementById("modificarPreferencias").value="<%=modificarPre%>";
+			  	parent.document.getElementById("control").value="<%=control%>";
+			  	parent.document.getElementById("modo").value="<%=modo%>";
+			  	parent.actualizarcenso();
+			} 
 		}
 	</script>
 </head>
 
 <body onload="reloadPage();">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 
-		<html:form action="/CEN_ConsultasDirecciones.do" method="POST" >
-		    <html:hidden property = "modo" value = ""/>
-		 
-			
-			
-		 </html:form> 	
-		
+	<html:form action = "${path}" method="POST" >
+	    <html:hidden property = "modo" value = ""/>
+	 </html:form> 	
 
 </body>
 </html>

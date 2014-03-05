@@ -293,7 +293,14 @@ public class BusquedaCensoAction extends MasterAction {
 					//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
 					if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
 						// Se llama a la interfaz Direccion para insertar una nueva direccion
-						direccion.insertar(beanDir, tiposDir, "", null, usr);
+						Direccion dirAux = direccion.insertar(beanDir, tiposDir, "", request, usr);
+						
+						//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
+						if(dirAux.isConfirmacionPregunta()){
+							request.setAttribute("modo", "insertar");
+							t.rollback();
+							return dirAux.getTipoPregunta();
+						}
 					}
 					
 					//confirmando las modificaciones de BD

@@ -16,19 +16,9 @@
 <%@page import="com.siga.censo.form.DireccionesForm;"%>
 
 <%
-	String app=request.getContextPath();
-	
+	String app=request.getContextPath();	
 	String idDirecciones=(String)request.getAttribute("idDireccionesPreferentes") ;
 	String modo=(String)request.getAttribute("modo");
-	System.out.println("MODO "+modo);
-	
-	
-	
-	
-	
-	
-
-
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -40,26 +30,21 @@
 	<script type="text/javascript">
 		function reloadPage() {
 		    var type = '<siga:Idioma key="messages.censo.direcciones.errorPreferentes"/>';
-			if (confirm(type)) {
-			 
-			  parent.document.consultaDireccionesForm.idDireccionesPreferentes.value="<%=idDirecciones%>";
-			  parent.document.consultaDireccionesForm.modo.value="<%=modo%>";
+			if (confirm(type)) {			 
+			  parent.document.getElementById("idDireccionesPreferentes").value="<%=idDirecciones%>";
+			  parent.document.getElementById("modo").value="<%=modo%>";
 			  parent.actualizar();
-			    
 			}
 		}
 	</script>
 </head>
 
 <body onload="reloadPage();">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 
-		<html:form action="/CEN_ConsultasDirecciones.do" method="POST" >
-		    <html:hidden property = "modo" value = ""/>
-		 
-			
-			
-		 </html:form> 	
-		
-
+	<html:form action = "${path}" method="POST" >
+	    <html:hidden property = "modo" value = ""/>
+	 </html:form> 	
 </body>
+
 </html>

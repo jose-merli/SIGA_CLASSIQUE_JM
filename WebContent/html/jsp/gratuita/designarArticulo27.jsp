@@ -277,8 +277,8 @@
 					document.getElementById("correoElectronico").value 	= resultado[13];
 					document.getElementById("fax1").value 	= resultado[16];
 					document.getElementById("telefono1").value 			= resultado[12];
-					document.getElementById("domicilio").value 			= resultado[7];
-					document.getElementById("domicilio").value 			= resultado[11].replace(/\r\n|\r|\n/g, " ");
+					document.getElementById("codigoPostal").value		= resultado[11];
+					document.getElementById("domicilio").value 			= resultado[7].replace(/\r\n|\r|\n/g, " ");
 					document.getElementById("pais").value 				= resultado[10];
 					selPais(resultado[10]);
 			
@@ -831,8 +831,25 @@
 	      	document.getElementById("textomod").className="ocultar";
 	      	document.getElementById("textomod").style.display="none";	  
 	      	
-			//Se DESbloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
+			//Se Desbloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
 			desBloquearDireccion();
+			
+			/* CR7 - INC_11969_SIGA: Para la opción Nueva Dirección se limpian lso campos de tipo dirección y de preferencia */
+			
+			//Limpiamos los campos de tipodireccion y preferencia
+			document.datosGeneralesForm.preferenteMail.checked 		= "";
+			document.datosGeneralesForm.preferenteCorreo.checked 	= "";
+			document.datosGeneralesForm.preferenteFax.checked  		= "";
+			document.datosGeneralesForm.preferenteSms.checked  		= "";
+			document.getElementById("checkTipoDireccion_1").checked = "";
+			document.getElementById("checkTipoDireccion_2").checked = "";
+			document.getElementById("checkTipoDireccion_3").checked = "";
+			document.getElementById("checkTipoDireccion_4").checked = "";
+			document.getElementById("checkTipoDireccion_5").checked = "";
+			document.getElementById("checkTipoDireccion_6").checked = "";
+			document.getElementById("checkTipoDireccion_7").checked = "";
+			document.getElementById("checkTipoDireccion_8").checked = "";
+		   	
 		}else{
 			document.getElementById("textomod").className="labelText";
 			document.getElementById("textomod").style.display="block";
@@ -847,7 +864,8 @@
 		limpiarDireccion();
 	}
 	
-	function postAccionBusquedaNIF(){		
+	function postAccionBusquedaNIF(){
+
 		if(document.busquedaCensoModalForm.existeNIF.value != null && document.busquedaCensoModalForm.existeNIF.value == "S"){
 			if (bLoadSelected){				
 				datosGeneralesForm.numIdentificacion.onchange();
@@ -884,19 +902,19 @@
 						document.getElementById("correoElectronico").value 	= document.busquedaCensoModalForm.mail.value;
 						document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
 						document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
-						//QUitamos los salto de linea a la dirección
+						//Quitamos los salto de linea a la dirección
 						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value.replace(/\r\n|\r|\n/g, " ");
 						
 						selPais(datosGeneralesForm.pais.value);	
 						if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana){
 							datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
 							
-						}else{
+						}else{							
 							poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 							document.getElementById("provincia").onchange();
-							//window.setTimeout("recargarComboHijo()",500,"Javascript");	
 							document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 						}
+						
 						document.getElementById("checkTipoDireccion_3").checked = "checked";
 			
 					}else{
@@ -1034,7 +1052,7 @@
 			<html:hidden name="datosGeneralesForm" property="preferente" styleId="preferente" />
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
- 
+			
 	<!-- FILA 2: Informacion Personal -->
 	<tr>
 		<td>
@@ -1284,7 +1302,7 @@
 							key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
 						</td>
 						<td id="poblacionEspanola">
-							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion" style="width:150">
+							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion" style="width:180">
 									<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 							</html:select>							
 						</td>
@@ -1422,6 +1440,12 @@
 	<html:hidden  name="busquedaCensoModalForm" property="tratamiento"/>
 	<html:hidden  name="busquedaCensoModalForm" property="idioma"/>
 	<html:hidden  name="busquedaCensoModalForm" property="existeNIF"/>
+	
+	<input type="hidden" id="modificarPreferencias"			name="modificarPreferencias" 		value="">
+	<input type="hidden" id="control" 						name="control" 						value="">
+	<input type="hidden" id="modificarDireccionesCensoWeb" 	name="modificarDireccionesCensoWeb" value="">
+	<input type="hidden" id="idDireccionesPreferentes" 		name="idDireccionesPreferentes" 	value="" />
+	<input type="hidden" id="idDireccionesCensoWeb" 		name="idDireccionesCensoWeb" 		value="" />	
 	<input type="hidden" id="poblacionValue" value=""/>
 </html:form>
 
@@ -1439,7 +1463,7 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxBusquedaNIF"
-	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idTipoIdentificacion,idInstitucion,fax1,mail,telefono,poblacion,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento,idioma"
+	source="numIdentificacion" target="existeNIF,multiple,textoAlerta,idPersona,colegiadoen,nColegiado,apellido1,apellido2,nombre,numIdentificacion,idTipoIdentificacion,idInstitucion,fax1,mail,telefono,poblacionValue,poblacionExt,provincia,pais,direccion,codPostal,sexo,fechaNacimiento,lugarNacimiento,estadoCivil,tratamiento,idioma"
 	parameters="tipoIdentificacion={tipoIdentificacion},numIdentificacion={numIdentificacion},colegiadoen={colegiadoen},nColegiado={nColegiado},apellido1={apellido1},apellido2={apellido2},nombre={nombre},existeNIF={existeNIF}"
 	postFunction="postAccionBusquedaNIF"
 	preFunction="preAccionBusquedaNIF" 
@@ -1556,8 +1580,8 @@
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.apellido1"/>');
 		   	return false;
 		}
-
-		if (datosGeneralesForm.sexo.value=='0'){
+		
+		if (datosGeneralesForm.sexo.value=='0' || datosGeneralesForm.sexo.value==''){
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>');
 		   	return false;
 		}
@@ -1682,6 +1706,7 @@
 					if(document.datosGeneralesForm.idPersona.value!= null && document.datosGeneralesForm.idPersona.value!=""){	
 						document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;					
 						document.busquedaCensoModalForm.modo.value = "insertarNoColegiadoArticulo27";
+						document.busquedaCensoModalForm.target = "submitArea";
 						document.busquedaCensoModalForm.submit();
 						window.top.returnValue="MODIFICADO";
 					}else{
@@ -1761,7 +1786,7 @@
 					// Validamos los errores ///////////
 					// Campos Tipo de Direccion obligatorio -> no se usa validacion Struts pq es multiple seleccion
 					
-					
+					//CR7: No entiendo porque se hace esto. INC_11969_SIGA
 		           	document.datosGeneralesForm.idTipoDireccion.value=<%=ClsConstants.TIPO_DIRECCION_PUBLICA%>;
 				  
 				   
@@ -1893,7 +1918,7 @@
 		}
 		
 		var html_idPoblacion = "poblacion";
-		var comboPoblacionHTML = '<select name="'+html_idPoblacion+'" class="boxCombo" id="'+html_idPoblacion+'" style="width:150"></select>';
+		var comboPoblacionHTML = '<select name="'+html_idPoblacion+'" class="boxCombo" id="'+html_idPoblacion+'" style="width:180"></select>';
 		
 		function cargarPoblaciones(comboProvincia){
 			var idProvincia = jQuery("#provincia").val();			
@@ -1940,6 +1965,7 @@
 					jQuery("#"+html_idPoblacion).val("-1");
 					if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
 						jQuery("#"+html_idPoblacion).val(document.busquedaCensoModalForm.poblacionValue.value);
+						jQuery("#"+html_idPoblacion).width("180");
 					}
 				}).fail(function( jqXHR, textStatus, errorThrown){
 					alert(mensajeGeneralError);
@@ -1954,6 +1980,23 @@
 				comboPoblaciones.val("-1");
 			}
 		}
+		
+	    function actualizar(){	     
+		    document.forms[1].modificarPreferencias.value="1";
+		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+		    document.forms[1].control.value="0";   
+		    document.forms[1].submit();
+			document.forms[1].modificarPreferencias.value="0";
+	    }
+
+	    function actualizarcenso(){
+	    	document.forms[1].modificarDireccionesCensoWeb.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+	    }	
 	</script>
 </body>
 </html>
