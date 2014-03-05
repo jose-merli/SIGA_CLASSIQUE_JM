@@ -3770,7 +3770,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
 			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
+			direccion.insertar(beanDir, tiposDir, null, null, this.usrbean);
 			
 		}
 		catch (SIGAException se) {

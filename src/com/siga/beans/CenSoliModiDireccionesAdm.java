@@ -477,7 +477,10 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setPoblacionExtranjera((String)hash.get(CenSoliModiDireccionesBean.C_POBLACIONEXTRANJERA));
 					dirModificada.setOriginalHash(dirOriginal);					
 					// Fijamos los datos del Historico
-					String motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));	
+					String motivo = "";
+					if(hash.get(CenSoliModiDireccionesBean.C_MOTIVO)!=null){
+						motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));	
+					}
 					
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
 					direccion.actualizar(dirModificada, "", motivo, null, this.usrbean);
