@@ -71,7 +71,6 @@ public class DataMailMergeDataSource implements IMailMergeDataSource{
 	/* (non-Javadoc)
 	 * @see com.aspose.words.IMailMergeDataSource#getChildDataSource(java.lang.String)
 	 */
-	@Override
 	public IMailMergeDataSource getChildDataSource(String arg0)
 			throws Exception {
 		// TODO Auto-generated method stub
