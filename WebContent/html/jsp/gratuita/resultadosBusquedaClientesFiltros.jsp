@@ -303,7 +303,7 @@
 						idioma="<%=idioma%>"
 						modo="buscarPaginador"								
 						clase="paginator" 
-						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:28px; left: 0px"
 						distanciaPaginas=""
 						action="<%=action%>" />
 	 <% } %>
