@@ -1510,10 +1510,14 @@ function jQueryLoaded(){
 							// CODIGOS DE TECLAS PERMITIDOS. BASICAMENTE SON LOS NUMEROS (NORMALES/NUMPAD) Y TECLAS DE 
 							// MOVIMIENTO/CONTROL: FLECHAS, BORRAR, COPIAR, PEGAR, F5...
 							//console.debug("caracter permitido... CARET: " + caretpos);
-							if (code == 86 || code == 8 || code == 37 || code == 39){
+							if (code == 86 || code == 8 || code == 37 || code == 39 || code == 16){
 								// PEGAR || BORRAR || FLECHA IZDA || FLECHA DCHA
 								// NO HAY QUE HACER NADA SIMPLEMENTE CONTINUAR EL EVENTO PARA QUE EL NAVEGADOR
 								// SE ENCARGUE DE LLEVAR A CABO LA ACCION CORRESPONDIENTE
+							
+							} else if(e.shiftKey && code == 55){
+								//CR7 - INC_12020_SIGA. Capturamos el SHIFT + 7 (/) para no meter la doble barra
+								
 							} else if ((fecha.length == 2 && typeof fechaArray[1] == "undefined") || 
 									(fecha.length == 5 && typeof fechaArray[2] == "undefined")){
 								// INSERTAMOS SEPARADOR AL LLEGAR AL MES O AL AÑO
