@@ -1676,7 +1676,14 @@ private List<DefinirEJGForm> getExpedientes(String expedientes)throws ClsExcepti
 				String[] ejgDoc = ejg.split("##");
 				ejgForm = new DefinirEJGForm();
 				ejgForm.setNombre(ejgDoc[0].trim());
-				ejgForm.setDocResolucion(ejgDoc[1]);
+				ejgForm.setDocResolucion(ejgDoc[1].trim());
+				ejgForm.setIdInstitucion(ejgDoc[2]);
+				ejgForm.setAnio(ejgDoc[3]);
+				ejgForm.setIdTipoEJG(ejgDoc[4]);
+				ejgForm.setNumero(ejgDoc[5]);
+				ejgForm.setIdTipoRatificacionEJG(ejgDoc[6].trim());
+				ejgForm.setFechaResolucionCAJG(ejgDoc[7].trim());
+				
 			}else{
 				ejgForm = new DefinirEJGForm();
 				ejgForm.setNombre(ejg.trim());
