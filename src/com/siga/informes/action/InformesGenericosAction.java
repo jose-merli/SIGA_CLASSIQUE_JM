@@ -1896,14 +1896,9 @@ public class InformesGenericosAction extends MasterAction {
 					return download(mapping, formulario, request, response);
 				}
 			}else if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCAJG)){
+				
+				
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.ejg.asunto");
-				//miForm.setEnviar("0");
-				/*if(informeBeans.size()==1){
-					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
-					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+ "";
-					miForm.setIdInforme(idInformes);
-					return download(mapping, formulario, request, response);
-				}*/
 				
 			}else if(idTipoInforme.equals("ABONO")){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
@@ -1935,6 +1930,13 @@ public class InformesGenericosAction extends MasterAction {
 					return download(mapping, formulario, request, response);
 				}
 			}else if(idTipoInforme.equals("EJGCA")){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesResolucionEjg)){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
 					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
@@ -2421,6 +2423,8 @@ public class InformesGenericosAction extends MasterAction {
 					mapDestino = dejg(mapping, miForm, request, response);
 				} else if (idTipoInforme.equals("ACTAC")) {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
+				}else if (idTipoInforme.equals("REJG")){
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesResolucionEjg);
 				} else {
 					throw new ClsExceptions("ERROR: El tipo de informe seleccionado no está configurado.");
 				}

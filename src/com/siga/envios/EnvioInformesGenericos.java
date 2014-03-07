@@ -158,6 +158,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesAvisoExpedientes = "EXPAV";
 	public static final String comunicacionesIRPF = "IRPF";
 	public static final String comunicacionesFacturaRectificativa = "ABONO";
+	public static final String comunicacionesResolucionEjg = "REJG";
 	
 	public static final int tipoPlantillaWord = 1;
 	public static final int tipoPlantillaFo = 2;
@@ -1358,6 +1359,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesEjg)
 				&& !tipoComunicacion
+						.equals(EnvioInformesGenericos.comunicacionesResolucionEjg)
+				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesCAJG)
 				&& !tipoComunicacion
 						.equals(EnvioInformesGenericos.comunicacionesCenso)){
@@ -1906,7 +1909,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			} else if (tipoComunicacion
 					.equals(EnvioInformesGenericos.comunicacionesEjg)||tipoComunicacion
-					.equals(EnvioInformesGenericos.comunicacionesCAJG)) {
+					.equals(EnvioInformesGenericos.comunicacionesCAJG)||tipoComunicacion
+					.equals(EnvioInformesGenericos.comunicacionesResolucionEjg)) {
 				String tipoDestinatarioEnvio = (String) datosInforme
 						.get("tipoDestinatario");
 				String tipoDestinatario = beanInforme.getDestinatarios();
@@ -4352,8 +4356,11 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 		
 
-		identificador = identificador + ".doc";
-
+//		identificador = identificador + ".doc";
+		if(beanInforme.getTipoformato()!=null && beanInforme.getTipoformato().equals("P"))
+			identificador= identificador + ".pdf";
+		else
+			identificador = identificador + ".doc";
 		String nombreArchivo = beanInforme.getNombreSalida() + "_"
 				+ identificador;
 		ficheroSalida = masterWord.grabaDocumento(documento, rutaAlm,
@@ -4365,6 +4372,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				+ " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL", 10);
 		return ficheroSalida;
 	}
+	
 
 	/**
 	 * Metodo que nos informa si de los datos de envios son para un unico

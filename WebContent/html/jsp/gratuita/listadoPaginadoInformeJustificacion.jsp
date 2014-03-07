@@ -630,7 +630,40 @@ function downloadDocumentoResolucion(docResolucion) {
 	document.InformeJustificacionMasivaForm.target="submitArea";		   	
 	document.InformeJustificacionMasivaForm.submit();
 }
+function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {			
+	
+	
+	var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==REJG%%%";
+	document.InformeResolucionCAJG.datosInforme.value=datos;
+	if(document.getElementById("informeUnicoResolucion").value=='1'){
+		document.InformeResolucionCAJG.submit();
+	}else{
+	
+		var arrayResultado = ventaModalGeneral("InformeResolucionCAJG","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
+	}
+	
+	
+	
+	
+   	
+}
 		
+
 
 </script>
 </head>
@@ -642,7 +675,10 @@ function downloadDocumentoResolucion(docResolucion) {
 <bean:define id="usrBean" name="USRBEAN" scope="session"
 	type="com.atos.utils.UsrBean"></bean:define>
 <bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
+<bean:define id="informeUnicoResolucion" name="informeUnicoResolucion" scope="request"></bean:define>
+
 <input type="hidden" id= "informeUnico" value="${informeUnico}">
+<input type="hidden" id= "informeUnicoResolucion" value="${informeUnicoResolucion}">
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
@@ -763,6 +799,8 @@ function downloadDocumentoResolucion(docResolucion) {
 	<bean:define id="permitirBotones" name="permitirBotones"
 		scope="request"></bean:define>
 	<bean:define id="editarDesignaLetrados" name="EDITAR_DESIGNA_LETRADOS"
+		scope="request"></bean:define>
+	<bean:define id="resolucionLetradoActivo" name="resolucionLetradoActivo"
 		scope="request"></bean:define>
 		
 
@@ -888,6 +926,10 @@ function downloadDocumentoResolucion(docResolucion) {
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
 											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
+										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+										</c:when>
+										
 										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
 									</c:choose>
 									<c:if test="${!statusSinEjg.last}">
@@ -1724,6 +1766,15 @@ function downloadDocumentoResolucion(docResolucion) {
 	<input type="hidden" name="tablaDatosDinamicosD" value="">
 
 </form>
+<html:form action="/INF_InformesGenericos" name="InformeResolucionCAJG" type="com.siga.informes.form.InformesGenericosForm"  method="post"	target="submitArea">
+		<html:hidden property="idInstitucion" value="${InformeJustificacionMasivaForm.idInstitucion}"/>
+		<html:hidden property="idTipoInforme" value='REJG'/>
+		<html:hidden property="enviar"  value="0"/>
+		<html:hidden property="descargar" value="1"/>
+		<html:hidden property="datosInforme"/>
+		<html:hidden property="modo" value = "preSeleccionInformes"/>
+		<input type='hidden' name='actionModal'>
+	</html:form>	
 
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"

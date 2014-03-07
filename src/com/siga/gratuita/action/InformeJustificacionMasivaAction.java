@@ -39,6 +39,7 @@ import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
+import com.siga.envios.EnvioInformesGenericos;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -596,8 +597,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String editarDesignaLetrados = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_DESIGNA_LETRADOS, "0");
 		
 		request.setAttribute("EDITAR_DESIGNA_LETRADOS",editarDesignaLetrados);
-		
-		
+		AdmInformeAdm admInformeAdm = new AdmInformeAdm(this.getUserBean(request));
+		Vector informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesResolucionEjg,null, null);
+		String informeUnicoResolucion = ClsConstants.DB_TRUE;
+		if(informeBeans!=null && informeBeans.size()>1){
+			informeUnicoResolucion = ClsConstants.DB_FALSE;
+		}
+		request.setAttribute("informeUnicoResolucion", informeUnicoResolucion);
+		String activarDescargaResolucionLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_DESCARGA_RESOLUCION_EJG, "0");
+		boolean isResolucionLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarDescargaResolucionLetrado!=null && activarDescargaResolucionLetrado.equals(ClsConstants.DB_TRUE);
 		
 		try {
 			HashMap databackup=getPaginador(request, paginadorPenstania);
@@ -724,9 +732,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			f.setFecha(fecha);
 		}
 		String informeUnico = ClsConstants.DB_TRUE;
-		AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-		Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"JUSDE",null, null);
-		if(informeBeans!=null && informeBeans.size()>1){
+		
+		Vector informeBeansJustificacion=admInformeAdm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"JUSDE",null, null);
+		if(informeBeansJustificacion!=null && informeBeansJustificacion.size()>1){
 			informeUnico = ClsConstants.DB_FALSE;
 			
 		}
@@ -748,6 +756,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			throw new SIGAException(e.getMsg());
 		}
 		request.setAttribute("permitirBotones", isPermisoActualizarDesignas);
+		request.setAttribute("resolucionLetradoActivo", isResolucionLetradoActivo);
+		
 		
 		
 		return "listadoPaginado";
