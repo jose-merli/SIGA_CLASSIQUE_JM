@@ -74,7 +74,7 @@
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="sufijosForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
@@ -135,7 +135,7 @@
 									<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
+									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" onkeypress="return soloDigitos(event);" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
 								</td>
 							</tr>
 							<tr>

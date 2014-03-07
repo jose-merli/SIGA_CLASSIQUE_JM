@@ -1126,6 +1126,7 @@
 		
 		function accionRestablecer() {		
 			document.forms[0].reset();
+			jQuery("#identificador").change();
 		}
 		
 		function accionGuardar() {	

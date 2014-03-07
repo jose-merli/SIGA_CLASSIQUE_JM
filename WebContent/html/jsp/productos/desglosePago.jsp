@@ -60,6 +60,12 @@
 		visibilidadTarjeta="inline";
 		//estilo = "boxConsulta";
 	}
+
+	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
+ 	if (busquedaVolver==null) {
+ 		busquedaVolver = "volverNo";
+	}
+	
 %>
 
 	<!-- HEAD -->
@@ -285,7 +291,9 @@
 	</div>		
 		
 	<siga:ConjBotonesAccion botones="V,FC" clase="botonesDetalle"/>
-
+	
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+	
 	<script>
 			function pagoTarjeta() {
 				return (document.forms[0].pagoConTarjeta.value == "S");
@@ -329,7 +337,10 @@
 			}
 			
 			function accionVolver() {
-				history.back();
+				f = document.solicitudCompraForm;
+				f.action = f.action + "?noReset=true";
+				f.modo.value = "abrirAlVolverConf";	
+				f.submit();
 			}			
  	</script>			
 </html:form>	

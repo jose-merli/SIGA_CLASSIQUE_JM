@@ -114,6 +114,9 @@ public class SolicitudCompraAction extends MasterAction{
 				}else if (accion.equalsIgnoreCase("abrirAlVolver")){
 					request.getSession().setAttribute("volver","s");
 					mapDestino = abrir(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("abrirAlVolverConf")){
+					request.getSession().setAttribute("volver","s");
+					mapDestino = continuar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("solicitar")){
 					mapDestino = solicitar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("borrarCarrito")){
@@ -1098,6 +1101,8 @@ public class SolicitudCompraAction extends MasterAction{
 				
 		    	//Almaceno el carro en sesion:				
 				request.getSession().setAttribute(CarroCompraAdm.nombreCarro,carro);
+				
+				request.getSession().setAttribute("CenBusquedaClientesTipo","VC");
 			}
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.producto"},e,null); 

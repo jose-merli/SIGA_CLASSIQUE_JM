@@ -238,7 +238,21 @@ public class SufijosAction extends MasterAction {
 				  checkBox = ClsConstants.DB_TRUE;
 				}
 				
-			}	
+			}
+			
+			//Se comprueba si el sufijo es numérico y de tres caracteres
+			try { 
+				
+				Integer.parseInt(miForm.getSufijo()); 
+				
+				if(miForm.getSufijo().length()!=3)
+					throw new SIGAException("facturacion.mensajes.sufijoNuevo");
+	
+			} catch (NumberFormatException exc) {
+
+				throw new SIGAException("facturacion.mensajes.sufijoNuevo");
+			} 
+
 			
 			sufijoBean.setVarios(checkBox);
 			tx.begin();

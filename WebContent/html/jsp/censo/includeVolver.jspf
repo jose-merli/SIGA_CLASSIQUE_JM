@@ -62,6 +62,9 @@
 <% 		
 		} else if (busquedaVolver.equals("P")) {
 %>
+<% 		
+		} else if (busquedaVolver.equals("VC")) { %>
+			
 <% 		} else if (busquedaVolver.equals("GS")) {  %>
 			<html:form  action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="abrir"/>
@@ -158,6 +161,10 @@
 <% 				} else if (busquedaVolver.equals("P")) {	%>
 					document.solicitudCompraForm.action = "/SIGA/PYS_GenerarSolicitudes.do" + "?noReset=true";					
 					document.solicitudCompraForm.modo.value="abrirAlVolver";	
+					document.solicitudCompraForm.submit();		
+<% 				} else if (busquedaVolver.equals("VC")) {	%>
+					document.solicitudCompraForm.action = "/SIGA/PYS_GenerarSolicitudes.do" + "?noReset=true";					
+					document.solicitudCompraForm.modo.value="abrirAlVolverConf";	
 					document.solicitudCompraForm.submit();						
 <% 				} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {	%>
 					document.BusquedaLetradosForm.action = document.BusquedaLetradosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaLetradosNew.do","buscar")%>";
