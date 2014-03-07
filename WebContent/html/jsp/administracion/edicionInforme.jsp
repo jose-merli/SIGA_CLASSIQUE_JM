@@ -379,9 +379,7 @@
 						<html:option value="-1"><siga:Idioma key="general.combo.seleccionar" />	</html:option>
 						<html:option value="W"><siga:Idioma key="administracion.informes.formato.word"/></html:option>
 						<html:option value="E"><siga:Idioma key="administracion.informes.formato.excel"/></html:option>
-					<!-- BNS INC_10391_SIGA				
-					<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
-					-->
+						<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
 					</html:select>
 				</td>
 			</tr>
@@ -560,7 +558,7 @@
 
 	<script type="text/javascript">
 		jQuery(document).ready(function(){
-			if(document.InformeFormEdicion.idTipoInforme.value!='CON'){
+			if(document.InformeFormEdicion.idTipoInforme.value!='CON' && document.InformeFormEdicion.idTipoInforme.value!='REJG'){
 				jQuery("#literalFormatoTD").html("");
 				jQuery("#formatoTD").html("");
 			}
@@ -605,10 +603,11 @@
 			document.InformeFormEdicion.directorio.value = directorioTipoInforme;
 			document.getElementById("directorio").disabled = "disabled";
 			if (document.getElementById("tipoFormato") != undefined){
-				if(claseTipoInforme=='P'||claseTipoInforme=='C'){
+				if(claseTipoInforme=='P'||claseTipoInforme=='C'||document.InformeFormEdicion.idTipoInforme.value=='REJG'){
 					document.getElementById("tipoFormato").disabled="";
 				}else{
-					document.getElementById("tipoFormato").disabled="disabled";	
+					
+						document.getElementById("tipoFormato").disabled="disabled";	
 				}
 			}
 			
@@ -624,12 +623,13 @@
 			
 		}
 		
-		function inicio() {				
+		function inicio() {			
+
 			if (document.getElementById("tipoFormato") != undefined){
-				if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'){
+				if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'||document.InformeFormEdicion.idTipoInforme.value=='REJG'){
 					document.getElementById("tipoFormato").disabled="";
 				}else{
-					document.getElementById("tipoFormato").disabled="disabled";	
+						document.getElementById("tipoFormato").disabled="disabled";	
 				
 				}
 			}

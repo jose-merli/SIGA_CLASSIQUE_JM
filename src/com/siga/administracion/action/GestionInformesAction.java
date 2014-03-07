@@ -623,6 +623,7 @@ public class GestionInformesAction extends MasterAction {
 			informeForm.setPreseleccionado(informeBean.getPreseleccionado());
 			informeForm.setIdTipoInforme(informeBean.getIdTipoInforme());
 			informeForm.setPlantilla(informeBean.getPlantilla());
+			informeForm.setTipoFormato(informeBean.getTipoformato());
 			if(informeBean.getIdTipoIntercambioTelematico()!=null)
 				informeForm.setIdTipoIntercambioTelem(informeBean.getIdTipoIntercambioTelematico().toString());
 			
