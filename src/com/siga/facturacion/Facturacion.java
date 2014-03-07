@@ -35,6 +35,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
@@ -2276,11 +2277,10 @@ public class Facturacion {
      * @param aplicaComisionesCliente
      * @param userBean
      * @return
-     * @throws SIGAException
-     * @throws ClsExceptions
+     * @throws Exception 
      */
     
-    public boolean aplicarComisiones(String institucion, String idDisqDevoluciones, String aplicaComisionesCliente, UsrBean userBean) throws SIGAException, ClsExceptions {
+    public boolean aplicarComisiones(String institucion, String idDisqDevoluciones, String aplicaComisionesCliente, UsrBean userBean) throws Exception {
     	boolean resultado = false;
     	
 		// Identificamos los disquetes devueltos asociados al fichero de devoluciones
@@ -2298,7 +2298,7 @@ public class Facturacion {
 		return resultado;
 	}
 	
-	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean resultado) throws SIGAException, ClsExceptions {
+	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean resultado) throws Exception {
 		Hashtable criteriosDevolucion = new Hashtable();
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,institucion);
@@ -2486,7 +2486,10 @@ public class Facturacion {
 						compra.put(PysCompraBean.C_IMPORTEUNITARIO,lineaDevolucion.getGastosDevolucion());
 						compra.put(PysCompraBean.C_PORCENTAJEIVA,productoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));
 						compra.put(PysCompraBean.C_IDFORMAPAGO,formaPago);
-						compra.put(PysCompraBean.C_DESCRIPCION,"Comisión bancaria por devolucion factura el día "+disqueteDevolucion.getFechaGeneracion());
+						// jbd // inc12032 // Cambiamos el texto a multiidioma
+						compra.put(PysCompraBean.C_DESCRIPCION,
+								UtilidadesString.getMensajeIdioma(userBean.getLanguageInstitucion(), "facturacion.comisionBancaria.literalMotivoCompra")+
+								UtilidadesString.formatoFecha(disqueteDevolucion.getFechaGeneracion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH) );
 						compra.put(PysCompraBean.C_IMPORTEANTICIPADO,"0");
 						compra.put(PysCompraBean.C_ACEPTADO,"A");
 						
