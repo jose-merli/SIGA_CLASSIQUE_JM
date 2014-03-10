@@ -46,8 +46,10 @@
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	           type: "POST",
 	           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
+	           async: false,
 	           data: "idTipoEnvio="+comboTiposEnvio.value,
 	           contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+	           
 	           dataType: "json",
 	           success:  function(json) {
            			var plantillasEnvio = json.plantillasEnvio;
@@ -122,7 +124,7 @@
 	}
 </script>
 	
-<body>
+<body >
 	<bean:define id="asunto" name="asunto"	scope="request" />
 	<bean:define id="fecha" name="fecha"	scope="request" />
 	<bean:define id="informeForms" name="informeForms"	type="java.util.Collection" scope="request" />
@@ -250,9 +252,7 @@
 							</select>
 						</td>
 					
-						<script>
-							inicioPlantillasEnvio(document.getElementsByName("indice")[document.getElementsByName("indice").length-1].id);
-						</script>
+						
 					</c:when>
 					<c:otherwise>
 						<td style="text-align: center"><c:out value="${informe.ASolicitantes}" /></td>
@@ -378,8 +378,19 @@
 			accionDownload();
 		}
 	}
-	
+	function iniciarPlantillasEnvio(){
+		var indices = document.getElementsByName("indice");
+		for (i = 0; i < indices.length; i++) {
+			
+			inicioPlantillasEnvio(indices[i].id);	
+			
+		}
+		
+	}
+	iniciarPlantillasEnvio();
 	function refrescarLocal() {}
+	
+	
 	// descargarUnica();
 </script>
 </html>
