@@ -295,7 +295,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        //Chequeo si existe una descripcion igual:
 	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,userBean.getLanguage())){
 	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
-	        } else if (!sCodigoExt.trim().equals("") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,sTipoCodigoExt)) {  
+	        } else if (!sCodigoExt.trim().equals("") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,sTipoCodigoExt) ) {  
 //	        	request.setAttribute("mensaje","messages.inserted.codDuplicated");
 	        	return error("messages.inserted.codDuplicated", new ClsExceptions("messages.inserted.codDuplicated"), request);
 	        } else {
@@ -483,7 +483,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion, sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo, sTipoCodigo, userBean.getLanguage())) {
 	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
 	        } 
-	        else if (!sCodigoExt.trim().equals("") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo,sTipoCodigo,sTipoCodigoExt)) {  
+	        else if (!sCodigoExt.trim().equals("") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo,sTipoCodigo,sTipoCodigoExt)) {  
 	        	return error("messages.inserted.codDuplicated", new ClsExceptions("messages.inserted.codDuplicated"), request);
 	        } 
 	        else {
