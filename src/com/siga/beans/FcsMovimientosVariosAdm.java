@@ -165,11 +165,13 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		//donde devolveremos el resultado
 		Vector resultado = new Vector();
 		//query con la select a ejecutar
-		String consulta = " SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
-							" M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
-							" M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
-							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
-							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " + FcsMovimientosVariosBean.C_CANTIDAD + " "+
+		String consulta = 
+				" SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
+				"        M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
+				"        M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
+				"        M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
+				"        A." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + " CANTIDAD, "+
+				"        M." + FcsMovimientosVariosBean.C_CANTIDAD + " IMPORTEMOVIMIENTOVARIO "+
 							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M, " + FcsPagosJGBean.T_NOMBRETABLA + " P, " +
 							FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " A " +
 							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = A." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " " +

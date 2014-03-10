@@ -110,12 +110,17 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		// JPT - Tratamiento para poner el euro en las cantidades
 		Vector vMovimientosVarios = new Vector();
+		Hashtable hMovimiento;
+		String sCantidad;
 		for(int iMV=0; iMV<datosMovimientosVarios.size(); iMV++){
-			Hashtable hMovimiento = (Hashtable) datosMovimientosVarios.get(iMV);
+			hMovimiento = (Hashtable) datosMovimientosVarios.get(iMV);
 			
-			String sCantidad = (String) hMovimiento.get(FcsMovimientosVariosBean.C_CANTIDAD);
+			sCantidad = (String) hMovimiento.get("CANTIDAD");
 			if (sCantidad!=null && !sCantidad.equalsIgnoreCase(""))
-				hMovimiento.put(FcsMovimientosVariosBean.C_CANTIDAD, sCantidad.replace(".", ",") + ClsConstants.CODIGO_EURO);
+				hMovimiento.put("CANTIDAD", sCantidad.replace(".", ",") + ClsConstants.CODIGO_EURO);
+			sCantidad = (String) hMovimiento.get("IMPORTEMOVIMIENTOVARIO");
+			if (sCantidad!=null && !sCantidad.equalsIgnoreCase(""))
+				hMovimiento.put("IMPORTEMOVIMIENTOVARIO", sCantidad.replace(".", ",") + ClsConstants.CODIGO_EURO);
 			
 			vMovimientosVarios.addElement(hMovimiento);
 		}
