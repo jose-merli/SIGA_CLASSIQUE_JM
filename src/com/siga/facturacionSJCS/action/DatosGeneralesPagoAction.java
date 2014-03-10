@@ -1544,31 +1544,32 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			}
 
 			// 6. Generar abono si corresponde
-			if (importeMovimientos > 0 || importeNeto > 0) {
-				try {
-					// consultamos la cuenta
-					// CenClienteAdm clienteAdm = new CenClienteAdm (usr);
+			if (importeNeto + Math.abs(importeRetenciones) < 0)
+				throw new SIGAException("DatosGeneralesPagoAction.generarAbonos() Importe final de abono negativo: hay que revisar el proceso.");
+			
+			try {
+				// consultamos la cuenta
+				// CenClienteAdm clienteAdm = new CenClienteAdm (usr);
 
-					// Guardamos los importes:
-					importes.put("importeTurnos", String.valueOf(importeTurnos));
-					importes.put("importeGuardias",
-							String.valueOf(importeGuardias));
-					importes.put("importeSoj", String.valueOf(importeSoj));
-					importes.put("importeEjg", String.valueOf(importeEjg));
-					importes.put("importeMovimientos",
-							String.valueOf(importeMovimientos));
-					importes.put("importeRetenciones",
-							String.valueOf(importeRetenciones));
+				// Guardamos los importes:
+				importes.put("importeTurnos", String.valueOf(importeTurnos));
+				importes.put("importeGuardias",
+						String.valueOf(importeGuardias));
+				importes.put("importeSoj", String.valueOf(importeSoj));
+				importes.put("importeEjg", String.valueOf(importeEjg));
+				importes.put("importeMovimientos",
+						String.valueOf(importeMovimientos));
+				importes.put("importeRetenciones",
+						String.valueOf(importeRetenciones));
 
-					// Creamos el Abono:
-					this.crearAbonos(idPersonaDestino, idCuenta, request,
-							colegiadosMarcados, idPersonaDestino, idPago,
-							idInstitucion, importes, importeIrpfTotal,
-							idPersona);
-				} catch (Exception e) {
-					throw new ClsExceptions(e,
-							"DatosGeneralesPagoAction.generarAbonos");
-				}
+				// Creamos el Abono:
+				this.crearAbonos(idPersonaDestino, idCuenta, request,
+						colegiadosMarcados, idPersonaDestino, idPago,
+						idInstitucion, importes, importeIrpfTotal,
+						idPersona);
+			} catch (Exception e) {
+				throw new ClsExceptions(e,
+						"DatosGeneralesPagoAction.generarAbonos");
 			}
 		} // fin del for de colegiados
 
