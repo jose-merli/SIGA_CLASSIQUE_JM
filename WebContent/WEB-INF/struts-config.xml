@@ -58,6 +58,13 @@
 		<form-bean name="BusquedaRemesasForm" type="com.siga.censo.ws.form.BusquedaRemesasForm"/>
 		<form-bean name="EdicionRemesaForm" type="com.siga.censo.ws.form.EdicionRemesaForm"/>
 		<form-bean name="EdicionColegiadoForm" type="com.siga.censo.ws.form.EdicionColegiadoForm"/>
+		
+		
+		<!-- ************************** FORMS MEDIADORES *************************
+-->		
+		<form-bean name="MediadoresImportForm" type="com.siga.censo.mediadores.form.MediadoresImportForm"/>
+		
+		
 				
 		
 
@@ -752,6 +759,14 @@
 			<forward name="editar" path="/html/jsp/censo/ws/edicionColegiado.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoHistorico.jsp"/>
 		</action>
+		
+		<action path="/CEN_GestionMediadores" type="com.siga.censo.mediadores.action.GestionMediadoresAction" name="MediadoresImportForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresPestanas.jsp"/>									
+		</action>
+		
+		<action path="/CEN_ImportarMediadores" type="com.siga.censo.mediadores.action.ImportarMediadoresAction" name="MediadoresImportForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/importMediadores.jsp"/>		    
+	    </action>
 		
 
 		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
