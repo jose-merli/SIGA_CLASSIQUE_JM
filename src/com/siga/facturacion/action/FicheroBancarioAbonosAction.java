@@ -327,9 +327,10 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		UserTransaction tx = null;
 
 		Vector bancos;
-		Enumeration listaBancos;
+		Enumeration listaBancos, listaConceptos;
 		Hashtable banco, bancoMenorComision;
-		Vector abonosBanco;
+		Vector abonosBanco, conceptos;
+		String concepto;
 		int cont = 0, nFicherosGenerados = 0;
 		
 		try {		 				
@@ -352,13 +353,23 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					listaBancos=bancos.elements();
 					while (listaBancos.hasMoreElements()){
 						banco=((Row)listaBancos.nextElement()).getRow();
-						abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs);
-						if (nFicherosGenerados < 0) {
-							correcto = false;
-						} else {
-							correcto = true;
-							cont += nFicherosGenerados;
+						
+						conceptos=adminAbono.getConceptosAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
+						if (conceptos.isEmpty()) continue;
+						listaConceptos=conceptos.elements();
+						while (listaConceptos.hasMoreElements()) {
+							concepto = (String) ((Row)listaConceptos.nextElement()).getRow().get("CONCEPTO");
+							if (concepto == null)
+								concepto = "";
+						
+							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO), concepto);
+							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, concepto, fcs);
+							if (nFicherosGenerados < 0) {
+								correcto = false;
+							} else {
+								correcto = true;
+								cont += nFicherosGenerados;
+							}
 						}
 					}
 				}
@@ -367,7 +378,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				if (!bancos.isEmpty()){
 					bancoMenorComision=((Row)bancos.firstElement()).getRow();
 					abonosBanco=adminAbono.getAbonosBancosMenorComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, fcs);
+					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, fcs, "009");
 					if (nFicherosGenerados < 0) {
 						correcto = false;
 					} else {
@@ -384,7 +395,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					while (listaBancos.hasMoreElements()){
 						banco=((Row)listaBancos.nextElement()).getRow();
 						abonosBanco=adminAbono.getAbonosBanco(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs);
+						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs, "009");
 						if (nFicherosGenerados < 0) {
 							correcto = false;
 						} else {
@@ -413,7 +424,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		return (resultado);		
 	} //generarFichero()
 	
-	private int prepararFichero (UsrBean user, Hashtable banco, Vector abonosBanco, String fcs) throws Exception
+	private int prepararFichero (UsrBean user, Hashtable banco, Vector abonosBanco, String sufijo, String fcs) throws Exception
 	{
 		// Controles
 		CenInstitucionAdm admInstitucion=new CenInstitucionAdm(user);
@@ -531,9 +542,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			receptores.addElement(receptor);						
 		}
 		
+		if (sufijo == null)
+			sufijo = "";
+		
 		// Creacion de un fichero de abonos por cada banco restante
 		int nlineas = this.crearFichero(emisor, receptores, escribirAvisoCuentasIncompletas);
-		this.crearFicheroSEPA(emisor, receptores);
+		this.crearFicheroSEPA(emisor, receptores, sufijo);
 		cont ++;
 		
 		if (nlineas == 0)
@@ -649,7 +663,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			String sCodRegistro			= "03";
 			String sCodOperacion		= "56"; // 56:Si es una orden de transferencia.
 			// 57:Si es ha de confecionarse un Cheque Bancario.
-			String sCodOrdenante 		= completarEspacios("Nif", bEmisor.getNif(), "D", " ", 10, false);
+			String sCodOrdenante 		= completarEspacios("Nif", bEmisor.getNif(), "I", " ", 10, false);
 			
 			String fActual 				= UtilidadesBDAdm.getFechaBD("");
 			String[] aux 				= fActual.split("/");
@@ -782,7 +796,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	private int crearFicheroSEPA(FicheroEmisorAbonoBean bEmisor, Vector vReceptores) throws SIGAException
+	private int crearFicheroSEPA(FicheroEmisorAbonoBean bEmisor, Vector vReceptores, String sufijo) throws SIGAException
 	{
 		final int c_ORDENANTE = 0; 
 		final int c_BENEFICIARIOSEPA = 1; 
@@ -824,7 +838,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			cabeceras[c_ORDENANTE].append(versionCuaderno); //version del cuaderno
 			cabeceras[c_ORDENANTE].append("001"); //numero de dato
 			cabeceras[c_ORDENANTE].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_ORDENANTE].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_ORDENANTE].append(completarEspacios("Sufijo", sufijo, "I", " ", 3, true)); //sufijo
 			cabeceras[c_ORDENANTE].append(sFechaEnvio); //fecha de creacion del fichero
 			cabeceras[c_ORDENANTE].append(sFechaEmision); //fecha de ejecucion de ordenes (configurable en el futuro??)
 			cabeceras[c_ORDENANTE].append("A"); //identificador de la cuenta del ordenante
@@ -842,7 +856,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			cabeceras[c_BENEFICIARIOSEPA].append("02SCT"); //codigo de registro y operacion
 			cabeceras[c_BENEFICIARIOSEPA].append(versionCuaderno); //version del cuaderno
 			cabeceras[c_BENEFICIARIOSEPA].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_BENEFICIARIOSEPA].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_BENEFICIARIOSEPA].append(completarEspacios("Sufijo", sufijo, "I", " ", 3, true)); //sufijo
 			cabeceras[c_BENEFICIARIOSEPA].append(rellenarEspacios(578)); //libre
 			
 			// 3de7. generando cabecera de otros beneficiarios
@@ -850,7 +864,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			cabeceras[c_BENEFICIARIOOTROS].append("02OTR"); //codigo de registro y operacion
 			cabeceras[c_BENEFICIARIOOTROS].append(versionCuaderno); //version del cuaderno
 			cabeceras[c_BENEFICIARIOOTROS].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_BENEFICIARIOOTROS].append("000"); //sufijo (configurable en el futuro??)
+			cabeceras[c_BENEFICIARIOOTROS].append(completarEspacios("Sufijo", sufijo, "I", " ", 3, true)); //sufijo
 			cabeceras[c_BENEFICIARIOOTROS].append(rellenarEspacios(578)); //libre
 			
 			// 4de7. generando lineas de beneficiarios

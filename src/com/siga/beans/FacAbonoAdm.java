@@ -22,6 +22,20 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	public static int DESTINATARIOABONO_SOCIEDAD = 0;
 	public static int DESTINATARIOABONO_SJCS = 1;
 	public static int DESTINATARIOABONO_NORMAL = 2;
+	
+	private static String baseSqlAbonosSJCSpendientes = new String ( 
+		" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA +
+		" WHERE " +		FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + ":1 " +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL " +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA +
+		" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA +
+		" AND " +		FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_BANCOS_CODIGO + "= :2 "+
+		" AND " +		"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") = :3 " +
+		" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +"<> :4 ");
+
 	/** 
 	 *  Constructor
 	 * @param  usu - Usuario
@@ -1333,75 +1347,97 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 		return nuevo;
 	}
 
-	
 	/** 
-	 * Recoge los abonos que van asociados a una cuenta 
+	 * Recoge los diferentes conceptos que hay para los abonos de SJCS pendientes de pagar por banco 
 	 * @param  institucion - identificador de la institucion
 	 * @param  codigoBanco - identificador del banco	 	  
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
+	public Vector getConceptosAbonosBancoSjcs (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
+		   Hashtable codigos = new Hashtable();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +				
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE," +
-//	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS IMPORTE" + "," +
-	            			FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " , " +
-	            			FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO, " +
-	            			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERORIGEN +
-							" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA +
-							" WHERE " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL " +
-							" AND " +
-	            			"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") = 5" +
-							" AND " +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION +
-							" AND " +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION +
-			    			" AND " +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG +
-							" AND " +
-			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA +
-							" AND " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA +
-							" AND " +							
-							FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_BANCOS_CODIGO + "='" + codigoBanco +"'"+
-							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +"<>" +0.00+
-							" ORDER BY " + 				
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN;
+	            String sql ="SELECT "+FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_CONCEPTO+" "+
+	            			baseSqlAbonosSJCSpendientes + 
+	            			" group by "+FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_CONCEPTO+" ";
+	            			
+	            codigos.put(new Integer(1),institucion);
+	            codigos.put(new Integer(2),codigoBanco);
+	            codigos.put(new Integer(3),"5");
+	            codigos.put(new Integer(4),"0.0");
 
-	            if (rc.find(sql)) {
+	            if (rc.findBind(sql, codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  datos.add(fila);
 	               }
 	            } 
 	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
 	       catch (Exception e) {
 	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
 	       }
 	       return datos;                        
-	}
+	} //getConceptosAbonosBancoSjcs()
+	
+	/** 
+	 * Recoge los abonos de SJCS pendientes de pagar por banco
+	 * @param  institucion - identificador de la institucion
+	 * @param  codigoBanco - identificador del banco	 	  
+	 * @return  Vector - Fila seleccionada  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, String concepto) throws ClsExceptions,SIGAException {
+		Vector datos=new Vector();
+		Hashtable codigos = new Hashtable();
+		try {
+			RowsContainer rc = new RowsContainer();
+			String sql =
+					"SELECT " +	FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_OBSERVACIONES + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_MOTIVOS + "," +
+					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
+					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
+					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
+					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + "," +
+					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE," +
+					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " , " +
+					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO, " +
+					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERORIGEN + " ";
+							
+			sql = sql +
+					baseSqlAbonosSJCSpendientes;
+			
+			codigos.put(new Integer(1),institucion);
+			codigos.put(new Integer(2),codigoBanco);
+            codigos.put(new Integer(3),"5");
+            codigos.put(new Integer(4),"0.0");
+			
+			if (concepto == null || concepto.equals("")) {
+				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " is null";
+			} else {
+				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " = :5";
+				codigos.put(new Integer(5),concepto);
+			}
+			
+			if (rc.findBind(sql, codigos)) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					datos.add(fila);
+					}
+				}
+			}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
+		}
+		return datos;                        
+	} //getAbonosBancoSjcs()
 	
 	/**
 	 * Obtiene el resumen de retenciones IRPF dados los parametros
