@@ -221,10 +221,11 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		
 		RowsContainer rows=new RowsContainer();
         String sql=" from cen_direcciones " +
-           " where idpersona=(SELECT I.IDPERSONA FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION=" + idInstitucion + ") " +
-           " and preferente like '%C%' " + 
-           " and fechabaja is null " +           
-           " and idinstitucion=" + idInstitucion;
+           " WHERE idpersona=(SELECT I.IDPERSONA FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION=" + idInstitucion + ") " +
+           " AND fechabaja is null " +           
+           " AND idinstitucion=" + idInstitucion +
+           //CR7 - INC_12027_SIGA. Ya no buscamos la dirección preferente de correo, buscamos la que tenga tipo dirección facturación. Si no existe esta, que devuelva la ultima modificada.
+           " AND " + CenDireccionesBean.C_IDDIRECCION + "= F_SIGA_GETIDDIRECCION_TIPOPRE2("+ idInstitucion +", idPersona ,"+ Integer.toString(ClsConstants.TIPO_DIRECCION_FACTURACION) +", null)";
  
 		return sql;
 	}
