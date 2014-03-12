@@ -219,11 +219,12 @@ public class TagPestanaExt extends TagSupport {
 						Iterator parametros=htParametros.keySet().iterator();
 						int size = htParametros.size();
 						int temp=0;
+						String param="";
 						while (parametros.hasNext()) {
 							Object parametro=parametros.next();
 							temp++;
-							String pepe = parametro+"="+htParametros.get(parametro)+(size>temp?"&":""); 
-							out.print(pepe);
+							param = parametro+"="+htParametros.get(parametro)+(size>temp?"&":""); 
+							out.println(UtilidadesString.replaceAllIgnoreCase(param, "\"", "'"));
 						}
 						
 					}					
