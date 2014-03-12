@@ -615,8 +615,8 @@
 			<siga:Table 
 				   name="tablaResultados"
 				   border="1"
-				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena"
-				   columnSizes="5,55,20,10,10"
+				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena,facturacion.cuentasBancarias.uso"
+				   columnSizes="5,46,25,8,8,8"
 				   modal="P">
 				   				   
 				<%
@@ -664,14 +664,17 @@
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
 							</td>  	
 							<td align="right">
-								<%=row.getString("IBAN")%>							
+								<%=UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"))%>							
 							</td>  	
 							<td align="right">
 								<%=row.getString("COMISIONPROPIA")%>							
 							</td>  								
 							<td align="right">
 								<%=row.getString("COMISIONAJENA")%>							
-							</td>  								
+							</td>  			
+							<td align="right">
+								<%=row.getString("USO")%>							
+							</td>  	
 						</siga:FilaConIconos>
 					<% 
 					recordNumber++;
