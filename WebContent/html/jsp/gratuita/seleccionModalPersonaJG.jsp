@@ -58,9 +58,9 @@
 		aux[0]="<%=myBean.getTipoIdentificacion()%>";
 		aux[1]="<%=myBean.getIdPersona()%>";
 		aux[2]="<%=myBean.getNif()%>";
-		aux[3]="<%=myBean.getNombre()%>";
-		aux[4]="<%=myBean.getApellido1()%>";
-		aux[5]="<%=myBean.getApellido2()%>";
+		aux[3]=unescape("<%=UtilidadesString.escape(myBean.getNombre())%>");  
+		aux[4]=unescape("<%=UtilidadesString.escape(myBean.getApellido1())%>");  
+		aux[5]=unescape("<%=UtilidadesString.escape(myBean.getApellido2())%>");  
 		aux[6]=unescape("<%=UtilidadesString.escape(myBean.getDireccion())%>");
 		aux[7]="<%=myBean.getCodigoPostal()%>";
 		aux[8]="<%=myBean.getIdPais()%>";
