@@ -284,12 +284,7 @@ public class CuentasBancariasAction extends MasterAction{
 			t = this.getUserBean(request).getTransactionPesada();
 			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
 
-			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
 			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
-			if ((miForm.getAbonoSJCS().booleanValue()) &&
-				(cuentasAdm.existeCuentaAbonoSJCS(miForm.getIdPersona(), miForm.getIdInstitucion()))) {
-				return exito("messages.censo.existeAbonoSJCS", request);
-			}
 
 			// Fijamos los datos de la cuenta
 			CenCuentasBancariasBean beanCuentas  = new CenCuentasBancariasBean ();
@@ -342,13 +337,7 @@ public class CuentasBancariasAction extends MasterAction{
 				throw new SIGAException (cuentasAdm.getError());
 			}
 			
-			// Lanzamos el proceso de revision de suscripciones del letrado 
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+miForm.getIdInstitucion(),
-																					  ""+miForm.getIdPersona(),
-																					  "",
-																					  ""+this.getUserName(request));
-			if ((resultado == null) || (!resultado[0].equals("0")))
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			Integer iResult = cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
 
 			t.commit();
 		}
@@ -391,50 +380,48 @@ public class CuentasBancariasAction extends MasterAction{
 			
 			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
 			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
-			if ((miForm.getAbonoSJCS().booleanValue()) &&
-				(cuentasAdm.existeCuentaAbonoSJCS(miForm.getIdPersona(), miForm.getIdInstitucion(), miForm.getIdCuenta()))) {
-				sResult = exito("messages.censo.existeAbonoSJCS", request);
-			} else {
-				// Fijamos los datos de la direccion
-				CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
-				if(miForm.getAbonoSJCS().booleanValue())
-					beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
-				else
-					beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
-				beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
-				beanCuentas.setIban(miForm.getIBAN());
-				beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
-				beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
-				beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
-				beanCuentas.setDigitoControl(miForm.getDigitoControl());
-				beanCuentas.setFechaBaja(null);
-				beanCuentas.setIdCuenta(miForm.getIdCuenta());
-				beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
-				beanCuentas.setIdPersona(miForm.getIdPersona());
-				beanCuentas.setCuentaContable(miForm.getCuentaContable());
-				beanCuentas.setTitular(miForm.getTitular());
-				beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
-				String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
-				
-				// Fijamos los datos del Historico
-				CenHistoricoBean beanHis = new CenHistoricoBean();
-				beanHis.setMotivo(miForm.getMotivo());	
-				
-				t.begin();
-				int iUpdateConHistoricoYfecBajResult = cuentasAdm.updateConHistoricoYfecBaj(beanCuentas, beanHis, this.getUserName(request), this.getUserBean(request), abonoCargoOrig, this.getLenguaje(request));
-				if (iUpdateConHistoricoYfecBajResult < 0) {
-					throw new SIGAException (cuentasAdm.getError());
-				}
-				
-				t.commit();
-				
-				if (iUpdateConHistoricoYfecBajResult == 1)
-					sResult = exitoModal("messages.updated.borrarCuenta", request);
-				else if (iUpdateConHistoricoYfecBajResult == 2)
-					sResult = exitoModal("messages.updated.actualizarCuenta", request);
-				else 
-					sResult = exitoModal("messages.updated.success", request);
+			
+			// Fijamos los datos de la direccion
+			CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
+			if(miForm.getAbonoSJCS().booleanValue())
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
+			else
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
+			
+			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
+			beanCuentas.setIban(miForm.getIBAN());
+			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
+			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());
+			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
+			beanCuentas.setDigitoControl(miForm.getDigitoControl());
+			beanCuentas.setFechaBaja(null);
+			beanCuentas.setIdCuenta(miForm.getIdCuenta());
+			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
+			beanCuentas.setIdPersona(miForm.getIdPersona());
+			beanCuentas.setCuentaContable(miForm.getCuentaContable());
+			beanCuentas.setTitular(miForm.getTitular());
+			beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
+			String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
+			
+			// Fijamos los datos del Historico
+			CenHistoricoBean beanHis = new CenHistoricoBean();
+			beanHis.setMotivo(miForm.getMotivo());	
+			
+			t.begin();
+			int iUpdateConHistoricoYfecBajResult = cuentasAdm.updateConHistoricoYfecBaj(beanCuentas, beanHis, this.getUserName(request), this.getUserBean(request), abonoCargoOrig, this.getLenguaje(request));
+			if (iUpdateConHistoricoYfecBajResult < 0) {
+				throw new SIGAException (cuentasAdm.getError());
 			}
+			
+			t.commit();
+			
+			if (iUpdateConHistoricoYfecBajResult == 1)
+				sResult = exitoModal("messages.updated.borrarCuenta", request);
+			else if (iUpdateConHistoricoYfecBajResult == 2)
+				sResult = exitoModal("messages.updated.actualizarCuenta", request);
+			else 
+				sResult = exitoModal("messages.updated.success", request);
+			
 		} catch (ClsExceptions e){
 			try {
 				if (t!=null) {
@@ -464,13 +451,7 @@ public class CuentasBancariasAction extends MasterAction{
 
 			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
 			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
-			if ((miForm.getAbonoSJCS().booleanValue()) &&
-//				(cuentasAdm.existeCuentaAbonoSJCS(miForm.getIdPersona(), miForm.getIdInstitucion(), miForm.getCbo_Codigo(), miForm.getCodigoSucursal(), miForm.getDigitoControl(), miForm.getNumeroCuenta()))) {
-				(cuentasAdm.existeCuentaAbonoSJCS(miForm.getIdPersona(), miForm.getIdInstitucion(), miForm.getIdCuenta()))) {
-
-				return exito("messages.censo.existeAbonoSJCS", request);
-			}
-
+			
 			// Fijamos los datos de la direccion
 			CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
 			if(miForm.getAbonoSJCS().booleanValue())beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
@@ -499,48 +480,15 @@ public class CuentasBancariasAction extends MasterAction{
 				throw new SIGAException (cuentasAdm.getError());
 			}
 			
-			// Lanzamos el proceso de revision de suscripciones del letrado 
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+miForm.getIdInstitucion(),
-																					  ""+miForm.getIdPersona(),
-																					  "",
-																					  ""+this.getUserName(request));
-			if ((resultado == null) || (!resultado[0].equals("0")))
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			int iResult = cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
 			
-			
-			CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
-			
-			String where=" WHERE "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+miForm.getIdInstitucion()+
-			             " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+miForm.getIdPersona()+
-						 " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_FECHABAJA+" is null "+
-						 " AND "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_ABONOCARGO +" IN ('T','C')";
-			Vector v = cuentaAdm.select(where);
-			
-			if(!(abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_ABONO) && beanCuentas.getAbonoCargo().equals(ClsConstants.TIPO_CUENTA_ABONO))){
-			  if (v.size() == 0) {//si ya no hay cuenta de cargo o de abonoCargo se pone la forma de pago en metalico
-	
-				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionCuentaBanco(""+miForm.getIdInstitucion(),
-						  ""+miForm.getIdPersona(),
-						  ""+this.getUserName(request));
-				if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTABANCO");
-				}
-				t.commit();
-				return exitoModal("messages.updated.borrarCuenta", request);
-			  }else{// Si hay cuenta de cargo o de abonoCargo se actualizara con la mas reciente
-			  	String resultado1[] = EjecucionPLs.ejecutarPL_ActualizarCuentaBanco(""+miForm.getIdInstitucion(),
-						  ""+miForm.getIdPersona(),
-						  ""+miForm.getIdCuenta(),
-						  ""+this.getUserName(request));
-				if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACTUALIZAR_CUENTABANCO");
-				}	
-				t.commit();
-				return exitoModal("messages.updated.actualizarCuenta", request);
-			  }
-			}
-
 			t.commit();
+
+			if(iResult==1)
+				return exitoModal("messages.updated.borrarCuenta", request);
+			else if(iResult==2)
+				return exitoModal("messages.updated.actualizarCuenta", request);
+	
 		}
 		catch (ClsExceptions e){
 			try {
@@ -579,18 +527,6 @@ public class CuentasBancariasAction extends MasterAction{
 			UtilidadesHash.set (clavesCuentas, CenCuentasBancariasBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set (clavesCuentas, CenCuentasBancariasBean.C_IDPERSONA, idPersona);
 			UtilidadesHash.set (clavesCuentas, CenCuentasBancariasBean.C_IDCUENTA, idCuenta);
-			String where=" WHERE "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
-			             " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
-						 " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_FECHABAJA+" is null "+
-						 " AND "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_ABONOCARGO +" IN ('T','C','A')";
-						 
-			Vector v = cuentaAdm.select(where);
-//			Vector v = cuentaAdm.select(claves);
-//			if (v.size() != 1) {
-//				return error("messages.deleted.error", new ClsExceptions (UtilidadesString.getMensajeIdioma(this.getUserBean(request), "messages.deleted.error")), request);
-//			}
-//			CenCuentasBancariasBean beanCuenta = (CenCuentasBancariasBean) v.get(0);
-//			beanCuenta.setFechaBaja("sysdate");
 
 			// Fijamos los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
@@ -601,44 +537,21 @@ public class CuentasBancariasAction extends MasterAction{
 				throw new SIGAException (cuentaAdm.getError());
 			}
 			
-			// Lanzamos el proceso de revision de suscripciones del letrado 
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+miForm.getIdInstitucion(),
-					  ""+miForm.getIdPersona(),
-					  "",
-					  ""+this.getUserName(request));
+			CenCuentasBancariasBean beanCuentas  = new CenCuentasBancariasBean ();
 			
-			if ((resultado == null) || (!resultado[0].equals("0")))
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			beanCuentas.setIdInstitucion(idInstitucion);
+			beanCuentas.setIdPersona(idPersona);
+			beanCuentas.setIdCuenta(idCuenta);
 			
+			int iResult = cuentaAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),false);
 			
-			// INC_6218 Para los abonos tambien se comprueba si hay que actualizar
-			// el idcuenta y el estado
-//		    if (!TipoCuenta.equalsIgnoreCase("Abono")){
-			 if (v.size() == 1) {//si solo tiene una cuenta y la borramos
-				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionCuentaBanco(""+miForm.getIdInstitucion(),
-																				  ""+miForm.getIdPersona(),
-																				  ""+this.getUserName(request)); 
-					if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTABANCO");
-					}
-					t.commit();
-					return exitoRefresco("messages.updated.borrarCuenta", request);
-			 }else{
-				if (v.size() > 1){// Si hay mas de una cuenta de cargo o de abonoCargo se actualizara con la mas reciente
-			  	String resultado1[] = EjecucionPLs.ejecutarPL_ActualizarCuentaBanco(""+miForm.getIdInstitucion(),
-						  ""+miForm.getIdPersona(),
-						  ""+idCuenta,
-						  ""+this.getUserName(request));
-				if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACTUALIZAR_CUENTABANCO");
-				}	
-				t.commit();
-				return exitoRefresco("messages.updated.actualizarCuenta", request);
-			  
-				}	
-			 }
-//			}
 			t.commit();
+
+			if(iResult==1)
+				return exitoRefresco("messages.updated.borrarCuenta", request);
+			else if(iResult==2)
+				return exitoRefresco("messages.updated.actualizarCuenta", request);
+		
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);

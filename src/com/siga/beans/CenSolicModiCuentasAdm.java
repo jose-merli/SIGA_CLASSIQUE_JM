@@ -395,28 +395,12 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
 					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, this.usrbean, abonoCargoOrig, idioma) <0)
 						correcto = false;
-					/*
-					// Actualizo el registro Cuentas con historico				
-					if (!adminCuentas.updateConHistorico(cuentaModificada,beanHist, idioma)){
-						correcto=false;
-					}
 					
-					else
-					{
-						// Lanzamos el proceso de revision de suscripciones del letrado
-						String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado((String)hash.get(CenClienteBean.C_IDINSTITUCION),
-																								  (String)hash.get(CenClienteBean.C_IDPERSONA),
-																								  "",
-																								  ""+usuario);
-						if ((resultado == null) || (!resultado[0].equals("0")))
-							throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-					}
-					*/
-					//END BNS
 				}				
 			}	
        }
 		catch (SIGAException e) {
+			correcto = false;
 			throw e;
 		}
        catch (Exception e) {

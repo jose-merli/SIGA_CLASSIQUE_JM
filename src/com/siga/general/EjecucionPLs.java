@@ -1218,4 +1218,40 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	    //Resultado del PL        
 	    return paramOut;
 	}	
+	
+	/**
+	 * PL que actualiza la cuenta de abono/cargo de las cosas pendientes asociadas a la cuenta 
+	 * pasada como parámetro. 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idCuenta
+	 * @param usuario
+	 * @return 1 si se ha modificado el tipo de pago a metálico (caso de borrado, 
+	 * 			 no existe la cuenta más reciente) 
+	 * 		   2 si se actualiza la cuenta con la cuenta más reciente (actualizar)	
+	 * @throws ClsExceptions
+	 */
+	public static String[] ejecutarPL_Act_Cuenta_Banco_Pend (String idInstitucion, String idPersona, String idCuenta, String usuario) throws ClsExceptions {
+
+		Object[] paramIn = new Object[4]; 	//Parametros de entrada del PL
+		String resultado[] = new String[2]; //Parametros de salida del PL
+	
+		try {
+	 		// Parametros de entrada del PL
+	        paramIn[0] = idInstitucion;
+	        paramIn[1] = idPersona;
+	        paramIn[2] = idCuenta;
+	        paramIn[3] = usuario;
+
+	        // Ejecucion del PL
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND (?,?,?,?,?,?)}", 
+													2, 
+													paramIn);
+		} catch (Exception e) {
+			resultado[0] = "1"; 	// P_CODRETORNO
+	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
+		}
+	    //Resultado del PL        
+	    return resultado;
+	}
 }

@@ -486,7 +486,10 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				throw new ClsExceptions("Error al borrar el registro anterior");
 			}
 			
-			iResult = revisionesCuentas(beanCuentas, userName, usrBean, abonoCargoOrig, clavesCuenta);
+			iResult = revisionesCuentas(beanCuentas, userName, usrBean,true);
+			
+			
+			
 		} catch (SIGAException e) {
 			iResult = -1;
 			throw e;
@@ -505,16 +508,33 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @param beanCuentas
 	 * @param userName
 	 * @param usrBean
-	 * @param abonoCargoOrig
 	 * @param clavesCuenta
 	 * @return
 	 * @throws ClsExceptions
+	 * @throws SIGAException 
 	 */
-	private int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, String abonoCargoOrig, Hashtable clavesCuenta) throws ClsExceptions{
-		Integer iResult = -1;
+	public int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, boolean comprobarSJCS) throws ClsExceptions, SIGAException{
+		
+	Integer iResult = -1;
+	
+	try{
+
+		//Si se ha marcado el check abono SJCS se comprueba si existe otra cuenta que ya es abono SJCS
+		if((comprobarSJCS)&&(beanCuentas.getAbonoSJCS().equals(ClsConstants.DB_TRUE))){
+			
+			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (usrBean);
+			
+			if (cuentasAdm.existeCuentaAbonoSJCS(beanCuentas.getIdPersona(), beanCuentas.getIdInstitucion(), beanCuentas.getIdCuenta())) {
+
+				throw new SIGAException ("messages.censo.existeAbonoSJCS");
+			}
+			
+			
+		}
+		
 		// Lanzamos el proceso de revision de suscripciones del letrado 
-		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
-																				  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
+		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(""+beanCuentas.getIdInstitucion().toString(),
+																				  ""+beanCuentas.getIdPersona().toString(),
 																				  "",
 																				  ""+userName);
 		if ((resultado == null) || (!resultado[0].equals("0"))){
@@ -522,40 +542,29 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		}
 		
 		
-		CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm (usrBean);
+		// Lanzamos el proceso de actualización de la cuenta de cosas pendientes 
+		String[] resultado1 = EjecucionPLs.ejecutarPL_Act_Cuenta_Banco_Pend(""+beanCuentas.getIdInstitucion().toString(),
+																			 ""+beanCuentas.getIdPersona().toString(),
+																			 ""+beanCuentas.getIdCuenta().toString(),
+																			 ""+userName);
 		
-		String where=" WHERE "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION)+
-		             " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_IDPERSONA+"="+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA)+
-					 " and "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_FECHABAJA+" is null "+
-					 " AND "+CenCuentasBancariasBean.T_NOMBRETABLA+"."+CenCuentasBancariasBean.C_ABONOCARGO +" IN ('T','C')";
-		Vector v = cuentaAdm.select(where);
-		
-		if(!(abonoCargoOrig.equals(ClsConstants.TIPO_CUENTA_ABONO) && beanCuentas.getAbonoCargo().equals(ClsConstants.TIPO_CUENTA_ABONO))){
-		  if (v.size() == 0) {//si ya no hay cuenta de cargo o de abonoCargo se pone la forma de pago en metalico
-
-			String resultado1[] = EjecucionPLs.ejecutarPL_RevisionCuentaBanco(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
-					  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
-					  ""+userName);
-			if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTABANCO");
-			}
-			
-			iResult = 1;
-		  }else{// Si hay cuenta de cargo o de abonoCargo se actualizara con la mas reciente
-		  	String resultado1[] = EjecucionPLs.ejecutarPL_ActualizarCuentaBanco(""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDINSTITUCION),
-					  ""+UtilidadesHash.getLong(clavesCuenta, CenCuentasBancariasBean.C_IDPERSONA),
-					  ""+UtilidadesHash.getInteger(clavesCuenta, CenCuentasBancariasBean.C_IDCUENTA),
-					  ""+userName);
-			if ((resultado1 == null) || (!resultado1[0].equals("0"))){
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACTUALIZAR_CUENTABANCO");
-			}				
-			iResult = 2;
-		  }
-		} else {
-			iResult = 0;
+		if ((resultado1 == null) || ((resultado1[0].equals("0")==false)&&(resultado1[0].equals("1")==false)&& (resultado1[0].equals("2")==false))){
+			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND");
 		}
 		
-		return iResult;
+		iResult=Integer.valueOf((String)resultado1[0]);
+		
+		
+	} catch (SIGAException e) {
+			throw e;
+	} catch (Exception e) {
+			
+		throw new ClsExceptions("Error en CenCuentasBancariasAdm.revisionesCuentas");
+		
+	}
+	
+	return iResult;	
+	
 	}
 	
 	/**
