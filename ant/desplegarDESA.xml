@@ -7,7 +7,7 @@
 	<property name="bea.weblogic.jar" 		value="D:\oracle\Middleware\wlserver_12.1\server\lib\weblogic.jar"/>
 	
 	<!-- Rutas de origen: Eclipse local -->
-	<property name="services.home" 			value="${eclipseLocal.workspace.home}/SIGAServices/build"/>
+	<property name="services.home" 			value="${eclipseLocal.workspace.home}/SIGAServices/bin"/>
 	<property name="proyecto.home" 			value="${eclipseLocal.workspace.home}/SIGA92/WebContent"/>
 	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF"/>
 	<property name="html.home"				value="${proyecto.home}/html"/>			
