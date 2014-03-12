@@ -57,7 +57,7 @@
 			</fileset>
 			</copy>
 			<copy todir="${web.inf.deploy.home}/classes/org" includeEmptyDirs="no"  overwrite="yes">
-			<fileset dir="${services.home}/classes/org">
+			<fileset dir="${services.home}/org">
 			  <include name="**/*"/>
 			</fileset>
 			</copy>
