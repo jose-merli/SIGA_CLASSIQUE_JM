@@ -15,6 +15,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
+import org.redabogacia.sigaservices.app.vo.scs.EjgsDesignaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -55,6 +57,8 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
 import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -225,6 +229,20 @@ public class MaestroDesignasAction extends MasterAction {
 				request.setAttribute("nombreTurnoAsistencia",nombreTurnoAsistencia);
 				request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);				
 			}
+			
+			//Se obtienen los EJG relacionados con la designa
+			EjgsDesignaVo designaEjg = new EjgsDesignaVo();
+			BusinessManager bm = getBusinessManager();
+			designaEjg.setAniodesigna(beanDesigna.getAnio().shortValue());
+			designaEjg.setNumerodesigna(beanDesigna.getNumero());
+			designaEjg.setIdinstitucion(beanDesigna.getIdInstitucion().shortValue());
+			designaEjg.setIdturno(beanDesigna.getIdTurno());
+		
+			ScsDesignaService ejsDesignaService = (ScsDesignaService) bm.getService(ScsDesignaService.class);	
+			
+			request.setAttribute("EJGS", ejsDesignaService.getEJGrelacionados(designaEjg));
+			
+			
 			ses.setAttribute("ModoAction","editar");
 		}		
 		catch (Exception e2){

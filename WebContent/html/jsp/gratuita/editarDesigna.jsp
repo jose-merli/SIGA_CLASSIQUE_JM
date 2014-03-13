@@ -360,7 +360,19 @@
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:TituloExt titulo="gratuita.editarDesigna.literal.titulo" localizacion="gratuita.editarDesigna.literal.location"/>
-	
+	<bean:define id="ejgs" name="EJGS" scope="request" />
+	<style>
+		.literalEjg{display:inline-block;width:45px;padding:0px;padding-left:10px;}
+		.literalTurno{display:inline-block;width:60px;padding:0px}
+		.turnoEjg{display:inline-block;width:160px;padding:0px}
+		.literalEstados{display:inline-block;width:70px;padding:0px}
+		.tipoEjg{display:inline-block;width:160px;padding:0px}
+		.numEjg{display:inline-block;width:90px;padding:0px}
+		.estadoEjg{display:inline-block;width:160px;padding:0px}
+		.botonera{display:inline-block;width:100px;padding:0px;text-align:right}
+		.toggleButton{display:inline-block;width:25px;padding:0px}
+		.botonDesplegar{cursor:pointer;width:16px;display:inline;padding:0;margin:0}
+	</style>	 
 	<script language="JavaScript">
 	
 		<% if (ejisActivo>0) { %>
@@ -642,6 +654,39 @@
 		function accionCerrar() {
 			
 		}
+		
+		function mostrarEjgs(){
+			jQuery('.contenedorEjgOtros').show();		
+			jQuery("#botonToggleEjgs").html("<img src=\"<html:rewrite page='/html/imagenes/iconoOcultar.gif'/>\" onclick=\"ocultarEjgs();\" class=\"botonDesplegar\"/>");
+		}
+		
+		function ocultarEjgs(){
+			jQuery('.contenedorEjgOtros').hide();
+			jQuery("#botonToggleEjgs").html("<img src=\"<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>\" onclick=\"mostrarEjgs();\" class=\"botonDesplegar\"/>");
+
+		}
+		
+		//Asociada al boton Consultar Ejg
+		function abrirEJG(modo,idtipoejg,idinstitucion,anioejg,numeroejg) {
+			document.DefinirEJGForm.modo.value= modo;
+			document.DefinirEJGForm.idTipoEJG.value= idtipoejg;
+			document.DefinirEJGForm.anio.value= anioejg;
+			document.DefinirEJGForm.numero.value= numeroejg;
+			document.DefinirEJGForm.idInstitucion.value= idinstitucion;
+			document.DefinirEJGForm.submit();
+	 	}
+		//Asociada al boton Boton Ejg
+		function borrarRelacionEJG(idtipoejg,idinstitucion,anioejg,numeroejg) {
+			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>")) {
+				document.DefinirEJGForm.modo.value="borrarRelacionConEjg";
+				document.DefinirEJGForm.idTipoEJG.value= idtipoejg;
+				document.DefinirEJGForm.anio.value= anioejg;
+				document.DefinirEJGForm.numero.value= numeroejg;
+				document.DefinirEJGForm.idInstitucion.value= idinstitucion;
+				document.DefinirEJGForm.target = "submitArea";
+				document.DefinirEJGForm.submit();
+			} 
+		}
 	</script>
 	 
 </head>
@@ -687,7 +732,7 @@
 <!-- Comienzo del formulario con los campos -->
 <table class="tablaCentralCampos" height="420" align="center" >
 	<html:form action="JGR_Designas.do" method="POST" target="mainWorkArea">
-		<html:hidden name="MaestroDesignasForm" property="modo"  styleId="modo" value="" />
+		<html:hidden name="MaestroDesignasForm" property="modo"  styleId="modo" />
 		<html:hidden name="MaestroDesignasForm" property="idTurno" styleId="idTurno"  value="<%=idTurno%>" />
 		<html:hidden name="BuscarDesignasForm" property="calidad" styleId="calidad" value="<%=calidad%>" />	
 		<input type="hidden" name="modificarDesigna" id="modificarDesigna"  value="0">
@@ -1023,7 +1068,49 @@
 						</tr>
 					</table>
 				</siga:ConjCampos> 
-				
+				<!-- relacion con ejg -->
+				<logic:notEmpty name="EJGS" scope="request">
+	        		<siga:ConjCampos leyenda="gratuita.operarEJG.literal.relacionado">
+						<logic:iterate name="EJGS" id="ejg" scope="request" indexId="index"> 
+						<logic:equal name="index" value="0">
+						<div class="contenedorPrimerEjg">
+							<span class="labelText literalEjg"><siga:Idioma key='gratuita.operarEJG.literal.EJG'/></span>
+							<span id="botonToggleEjgs" class="toggleButton"><img src="<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>" onclick="mostrarEjgs();" class="botonDesplegar"/></span>
+						</logic:equal>
+						<logic:notEqual name="index" value="0">
+						<div class="contenedorEjgOtros" style="display:none">
+							<span class="labelText literalEjg">&nbsp;</span>
+							<span class="toggleButton">&nbsp;</span>
+							<script></script>
+						</logic:notEqual>
+							<span class="labelTextValue numEjg">${ejg.anioejg}/${ejg.codigoejg}</span>
+							<span class="labelText literalTurno"><siga:Idioma key='gratuita.operarEJG.literal.turno'/></span>
+							<span class="labelTextValue turnoEjg">${ejg.descripcionTurno}</span>
+							<span class="labelText literalTurno"><siga:Idioma key='gratuita.operarEJG.literal.tipo'/></span>
+							<span class="labelTextValue tipoEjg">${ejg.descripcionTipo}</span>
+							<span class="labelText literalEstados"><siga:Idioma key='gratuita.EJG.estados'/></span>
+							<span class="labelTextValue estadoEjg">${ejg.descripcionEstado}</span>
+							<span class="labelTextValue botonera">
+								<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="consultarEJG" border="0" onclick="abrirEJG('ver','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+							<% if (modo.equalsIgnoreCase("ver")) { %>
+								<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarEJG'/>" class="botonEditarEJG" border="0" onclick="abrirEJG('<%=modo%>','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+							<% } else { %>
+								<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.EditarEJG'/>" class="botonEditarEJG" border="0" onclick="abrirEJG('<%=modo%>','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+							<% }%>
+							</span>
+						</div>
+						</logic:iterate>
+						<script type="text/javascript">
+							if (jQuery('.contenedorEjgOtros')[0]) {
+								jQuery("#botonToggleEjgs").show();
+							}else{
+								jQuery("#botonToggleEjgs").hide();
+							}
+						</script>
+					</siga:ConjCampos>
+				</logic:notEmpty>
 				<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.observaciones">
 					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%">
 						<tr>
@@ -1114,6 +1201,14 @@
 	<input type="hidden" name="tablaDatosDinamicosD" value="">
 </form>
 
+<html:form action="/JGR_EJG.do"  method="POST" target="mainWorkArea">
+	<html:hidden styleId = "modo" property="modo" value="modo"/>
+	<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
+	<html:hidden styleId = "anio" property="anio"/>
+	<html:hidden styleId = "numero" property="numero"/>
+	<html:hidden styleId = "idInstitucion" property="idInstitucion"/>
+</html:form>
+		
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 </body>
