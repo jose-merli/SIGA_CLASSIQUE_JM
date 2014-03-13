@@ -129,6 +129,7 @@
 	<listener><listener-class>com.siga.ws.cat.RespuestasResolucionesFTPListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
+	<listener><listener-class>com.siga.ws.i2064.ResolucionesListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.cen.CargaCensoWSListener</listener-class></listener>
 	
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
