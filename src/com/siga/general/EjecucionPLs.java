@@ -364,7 +364,7 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_EliminarSuscripcion (String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String usuario, String alta, String fechaAlta, String incluirBajaManual) throws ClsExceptions {
+	public static String[] ejecutarPL_EliminarSuscripcion (String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String alta, String fechaAlta, String incluirBajaManual) throws ClsExceptions {
 
 		Object[] paramIn = new Object[8]; //Parametros de entrada del PL
 		String resultado[] = new String[3]; //Parametros de salida del PL
@@ -375,13 +375,12 @@ public class EjecucionPLs {
 	        paramIn[1] = idTipoServicio;
 	        paramIn[2] = idServio;
 	        paramIn[3] = idServicioInstitucion;
-	        paramIn[4] = usuario;
 	        paramIn[5] = alta;
 	        paramIn[6] = fechaAlta;
 	        paramIn[7] = incluirBajaManual;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?,?)}", 
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?)}", 
 													3, 
 													paramIn);
 		} catch (Exception e) {

@@ -2452,7 +2452,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 					 												   (String)form.getIdTipoServicios(),
 																	   (String)form.getIdServicio(),
 																	   (String)form.getIdServiciosInstitucion(),
-																	   ""+this.getUserName(request),
 																	   (String)form.getRadioAlta(),
 																	   (String)form.getFechaAlta(),
 																	    (String)form.getChkSolicitudBaja()
