@@ -146,6 +146,10 @@
 			 		for (int i=0; i<vDatos.size(); i++)
 			   		{
 				  		Row fila = (Row)vDatos.elementAt(i);
+				  		
+				  		String urldoc = fila.getString("RUTA");
+				  		boolean urlvalida = UtilidadesString.isValidURL(urldoc);
+				  		
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" clase="listaNonEdit">
 					<td>
@@ -161,7 +165,11 @@
 					</td>
 					<td><%=fila.getString("ESTADO")%></td>
 					<td><%=fila.getString("DESCRIPCION")%></td>
-					<td><%=fila.getString("RUTA").equals("")?"&nbsp;":fila.getString("RUTA")%></td>
+					<%if(urlvalida){%>
+						<td><a href="<%=urldoc%>" target='_new'><%=urldoc%></a></td>
+					<%}else{%>
+						<td><%=fila.getString("RUTA").equals("")?"&nbsp;":fila.getString("RUTA")%></td>
+					<%}%>
 					<td><%=fila.getString("REGENTRADA").equals("")?"&nbsp;":fila.getString("REGENTRADA")%></td>					
 					<td><%=fila.getString("REGSALIDA").equals("")?"&nbsp;":fila.getString("REGSALIDA")%></td>
 				</siga:FilaConIconos>
@@ -227,7 +235,7 @@
 				refrescarLocal();
 			}
 		}
-
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

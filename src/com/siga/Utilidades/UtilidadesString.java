@@ -17,7 +17,9 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1705,5 +1707,28 @@ public class UtilidadesString {
 		
 		 return mostrarDatoJSP(a);
 	 }
-	 
+	/**
+	 * Valida el campo url/ruta de cualquier formulario.
+	 * @param url valor del campo del formulario,
+	 * @return boolean En función del resultado, retorna true si se cumple o false si la comprobación es incorrecta
+	 */
+	public static boolean isValidURL(String url) {  
+	
+	    URL u = null;
+	
+	    try {  
+	        u = new URL(url);  
+	    } catch (MalformedURLException e) {  
+	        return false;  
+	    }
+	
+	    try {  
+	        u.toURI();  
+	    } catch (URISyntaxException e) {  
+	        return false;  
+	    }  
+	
+	    return true;  
+	} 
+		 
 }
