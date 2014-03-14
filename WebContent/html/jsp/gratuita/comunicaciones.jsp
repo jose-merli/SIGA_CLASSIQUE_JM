@@ -411,7 +411,6 @@
 	}
 	
 	function procesar(){	
-		alert("Pocesar. No esta probado");
 		selectRow(fila,id);
 		
 		if (typeof id == 'undefined')
