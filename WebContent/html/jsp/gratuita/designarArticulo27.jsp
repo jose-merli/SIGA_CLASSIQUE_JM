@@ -776,6 +776,7 @@
 
 		if (document.datosGeneralesForm.pais.value != "" && document.datosGeneralesForm.pais.value != idEspana) {
 			datosGeneralesForm.poblacionExt.value=document.datosGeneralesForm.poblacionExt.value;
+			cargarProvincias(document.datosGeneralesForm.pais.value);
 		}else{
 			poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 			document.getElementById("provincia").onchange();
@@ -1039,7 +1040,7 @@
 	<!------------------------------->
 	<!-- Tabla central principal -->
 	<!------------------------------->
-	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
+	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" style='table-layout: fixed; border-spacing: 0px;'>
 		<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
 			<html:hidden  name="datosGeneralesForm" property="modo"  styleId="modo"/>
 			<html:hidden  name="datosGeneralesForm" property="idInstitucion" styleId="idInstitucion"/>
