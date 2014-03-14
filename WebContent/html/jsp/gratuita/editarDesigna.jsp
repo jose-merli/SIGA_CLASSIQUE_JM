@@ -1203,10 +1203,10 @@
 
 <html:form action="/JGR_EJG.do"  method="POST" target="mainWorkArea">
 	<html:hidden styleId = "modo" property="modo" value="modo"/>
-	<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
-	<html:hidden styleId = "anio" property="anio"/>
-	<html:hidden styleId = "numero" property="numero"/>
-	<html:hidden styleId = "idInstitucion" property="idInstitucion"/>
+	<html:hidden styleId = "idTipoEJG" property="idTipoEJG" value=""/>
+	<html:hidden styleId = "anio" property="anio" value=""/>
+	<html:hidden styleId = "numero" property="numero" value=""/>
+	<html:hidden styleId = "idInstitucion" property="idInstitucion" value=""/>
 </html:form>
 		
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
