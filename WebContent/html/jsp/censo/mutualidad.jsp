@@ -244,7 +244,7 @@ function habilitarCampos(isHabilitar) {
 </head>
 
 
-<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();"> 
+<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();ajusteAltoBotones('mainDiv');"> 
 
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
@@ -447,7 +447,7 @@ function habilitarCampos(isHabilitar) {
 		</tr>
 		</table>
 	</c:if>
-	<div id="datosSolicitud">		
+	<div id="datosSolicitud" style="overscroll-y:scroll;">		
 	<siga:ConjCampos>
 	<table>
 		<tr>
@@ -623,7 +623,7 @@ function habilitarCampos(isHabilitar) {
 				<div class="seguido">
 				<c:choose>
 					<c:when test="${MutualidadForm.modo=='insertar'}">
-						<html:select styleClass="${estiloCombo}" styleId="opcionesCobertura" name="MutualidadForm" property="idCobertura" style="width:250px;">
+						<html:select styleClass="${estiloCombo}" styleId="opcionesCobertura" name="MutualidadForm" property="idCobertura" style="width:150px;">
 						<bean:define id="opcionesCobertura" name="MutualidadForm" property="opcionesCobertura" type="java.util.List" />
 						<html:optionsCollection name="opcionesCobertura" value="key" label="value" />
 					</html:select>
@@ -809,7 +809,6 @@ function habilitarCampos(isHabilitar) {
 </c:if>
 </div>
 </html:form>
-
 	<c:if test="${MutualidadForm.modo=='ver'}">
 		<script>habilitarCampos('false'); </script>
 	</c:if>
@@ -1173,6 +1172,8 @@ function habilitarCampos(isHabilitar) {
 			jQuery(".planProfesional").show();
 		}
 		jQuery(".seguroGratuito").show();
+		ajusteAltoBotones('divSolicitud');
+		jQuery('#divSolicitud').height(jQuery('#divSolicitud').height()-50);
 	}
 	
 	jQuery(document).ready(function() {
@@ -1184,9 +1185,10 @@ function habilitarCampos(isHabilitar) {
 			jQuery('#botonera').hide();
 			jQuery(".planProfesional").hide();
 		}
+		
 		cargaCombos();
 		if("${MutualidadForm.idTipoSolicitud}"=="P" ){
-			jQuery('#divSolicitud').css("overflow-y","auto");
+			jQuery('#divSolicitud').css("overflow-y","scroll");
 		}
 		if("<%=accion%>"=="ver"){
 			jQuery('#botonSolicitarAltaSeguro').attr("disabled", "disabled");

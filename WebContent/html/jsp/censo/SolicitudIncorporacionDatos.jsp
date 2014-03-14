@@ -561,9 +561,9 @@
 							j++;
 						}
 						
-						var iFila = fila -1;
+						var iFila = fila;
 						datos.value = datos.value + "%";
-						datos.value = datos.value + jQuery("#documentosAPresentar_BodyDiv").find('tbody').find('tr:eq(' + iFila + ')').find('td').find('input')[1].checked + ',';
+						datos.value = datos.value + jQuery("#documentosAPresentar").find('tbody').find('tr:eq(' + iFila + ')').find('td').find('input')[1].checked + ',';
 						datos.value = datos.value + "#";
 					}
 				}								
@@ -1560,12 +1560,19 @@
 	jQuery(document).ready(function() {
 		cargaPais(<%=datosPersonales.getIdPais() %>);
   	});	
+	
+	function fitInside(contName,objName,margin){
+		altura = window.parent.jQuery(contName).height();
+		jQuery(objName).height(altura-margin);
+	}
 </script>
 
-<body class="tablaCentralCampos" onLoad="cargarChecksCuenta(); comprobarTipoIdent(); inicioCargarBancoBIC();">
+<body class="tablaCentralCampos" onLoad="cargarChecksCuenta(); comprobarTipoIdent(); inicioCargarBancoBIC(); fitInside('#mainPestanas','#mainDiv',10)">
 	<bean:define id="isPosibilidadSolicitudAlta" name="isPosibilidadSolicitudAlta"  scope="request" />
 	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
+
+<div id="mainDiv" style="overflow-y:scroll">
 
 	<html:form action="/CEN_MantenimientoSolicitudesIncorporacion.do" method="POST" target="mainWorkArea">
 		<html:hidden property="idSolicitudPlanProfesional"/>
@@ -2220,12 +2227,14 @@
 				</c:otherwise>
 			</c:choose>
 		</c:if>
+		<div id="divDocumentos">
+
+		<table style="width:100%;BORDER-COLLAPSE: collapse; TABLE-LAYOUT: fixed; BORDER-SPACING: 0px; VISIBILITY: visible" id="documentosAPresentar" border="0">
 		
-		<siga:Table 		   
-		   name="documentosAPresentar"
-		   border="1"
-		   columnNames="censo.SolicitudIncorporacionDatos.literal.estado,censo.SolicitudIncorporacionDatos.literal.documento"
-		   columnSizes="10,90">
+			<tr class="tableTitle" style="height:25px;">
+			   	<th style="width:8%"><siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.estado'/></th>
+			   	<th style="width:80%"><siga:Idioma key='censo.SolicitudIncorporacionDatos.literal.documento'/></th>
+		   	</tr>
 		
 <% 
 			if (documentos != null && documentos.size()>0) {
@@ -2250,15 +2259,15 @@
 			} else {
 %>
 		 		<tr class="notFound">
-					<td class="titulitos">
+					<td class="titulitos" colspan="2">
 						<siga:Idioma key="messages.noRecordFound"/>
 					</td>
 				</tr>
 <%
 			}
 %>
-		</siga:Table>
-	
+		</table>
+		</div>
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<%if (editar!=null && !editar.equalsIgnoreCase("false")) {%>
 			<siga:ConjBotonesAccion botones="G,V" clase="botonesDetalle" />
@@ -2268,7 +2277,7 @@
 	
 	<!-- FIN: BOTONES REGISTRO -->
 	</html:form>
-	
+</div>
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>	
 </body>
 </html>
