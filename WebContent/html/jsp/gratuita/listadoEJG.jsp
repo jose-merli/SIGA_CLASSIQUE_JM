@@ -235,7 +235,16 @@
 	<html:hidden property="datosInforme"/>
 	<html:hidden property="modo" value = "preSeleccionInformes"/>
 	<input type='hidden' name='actionModal'>
+</html:form>
+
+<html:form action="/JGR_ActasComision" method="POST" target="submitArea">
+	<input type='hidden' name='idInstitucion' value='<%=usr.getLocation()%>'>
+	<input type='hidden' name='modo' value=''>
+	<input type='hidden' name='accion' value=''>
+	<input type='hidden' name='seleccionados' value=''>
+	<input type='hidden' name='actionModal'>
 </html:form>	
+
 <!-- Formulario para la edicion del envio -->
 <form name="DefinirEnviosForm" method="POST" action="/SIGA/ENV_DefinirEnvios.do" target="mainWorkArea">
 	<input type="hidden" name="modo" value="">
@@ -473,25 +482,11 @@
 			fin();
 			return;
 		}
-		/*
-		numElementosSeleccionados =  ObjArray.length; 
-		
-		confirmar = '';
-		confirmar += "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
-	*/
-		var formu=document.createElement("<form name='ActaComisionForm' method='POST' action='/SIGA/JGR_ActasComision.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='modo' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='accion' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='actionModal' value=''>"));
-		formu.appendChild(document.createElement("<'/form>"));
-		document.appendChild(formu);
-		formu.seleccionados.value=seleccionados;
-		formu.modo.value='edicionMasiva';
+
+		document.ActaComisionForm.seleccionados.value=seleccionados;
+		document.ActaComisionForm.modo.value='edicionMasiva';
 		var resultado = ventaModalGeneral("ActaComisionForm","M");	
 		fin();
-		//formu.submit();
 	}
 	</script>
 </body>	
