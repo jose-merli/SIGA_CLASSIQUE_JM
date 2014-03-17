@@ -12,8 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.mapper.ScsDocumentoejgMapper;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentacionejg;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentoejg;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentoejgExample;
+import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentoejgExample.Criteria;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
 import com.atos.utils.ClsConstants;
@@ -102,7 +110,6 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
 			DocumentacionEjgVo documentacionEjgVo = documentacionEjgService.getDocumentacionEjg(voService.getForm2Vo(definirDocumentacionEJGForm));
 			definirDocumentacionEJGForm =voService.getVo2Form(documentacionEjgVo);
-//			definirDocumentacionEJGForm.setNumEjg(numEjg);
 			definirDocumentacionEJGForm.setModo("modificar");
 			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
 			
@@ -269,6 +276,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		try {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
+			if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
+				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+			}
 			
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
@@ -279,6 +292,15 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
 			documentacionEjgService.insert(documentacionEjgVo);
 			
+			
+			if(documentacionEjgVo.getIddocumento()!=null){
+				//Insertamos primero el fichero para quedarnos con su referencia
+				if(documentacionEjgVo.getFichero()!=null&&documentacionEjgVo.getFichero().length>0){
+					documentacionEjgService.uploadFile(documentacionEjgVo);
+					documentacionEjgService.updateSelective(documentacionEjgVo);
+				}
+
+			}
 			
 
 		} catch (Exception e) {
@@ -315,6 +337,26 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				}
 			}
 			documentacionEjgService.update(documentacionEjgVoOld,documentacionEjgVo);
+			
+			//Subimos primero el fichero
+			if(documentacionEjgVo.getFichero()!=null){
+				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
+				if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
+					
+					throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+				}
+				
+				documentacionEjgService.uploadFile(documentacionEjgVo);
+				documentacionEjgService.updateSelective(documentacionEjgVo);
+			}
+			else if (documentacionEjgVo.isBorrarFichero()){
+				documentacionEjgService.deleteFile(documentacionEjgVoOld);
+			}
+			
+			
+			
+			
 			
 			
 

@@ -69,6 +69,7 @@
 		<html:hidden styleId="idTipoEJG" property = "idTipoEJG"/>
 		<html:hidden styleId="anio" property = "anio" />
 		<html:hidden styleId="numero" property = "numero"  />
+		<html:hidden styleId="numEjg" property = "numEjg" />
 		
 	</html:form>	
 		
