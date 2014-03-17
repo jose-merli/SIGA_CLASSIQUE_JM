@@ -81,7 +81,7 @@
 	String idioma = "";
 	String estadoCivil = "";
 	String idDireccionSeleccionada = "";
-	if (formulario.getNumIdentificacion() != null && !"".equals(formulario.getNumIdentificacion())){
+	/*if (formulario.getNumIdentificacion() != null && !"".equals(formulario.getNumIdentificacion())){
 		nIdentificacion = formulario.getNumIdentificacion();
 		if (formulario.getDatos() != null && formulario.getDatos().containsKey("idInstitucionOrigen")){
 			idInstitucionSeleccionada = formulario.getDatos().get("idInstitucionOrigen").toString();		
@@ -90,7 +90,7 @@
 			idDireccionSeleccionada = formulario.getIdDireccion();
 		}
 		bLoadSelected = true;
-	}	
+	}*/	
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
 
@@ -1198,10 +1198,7 @@
 							Direcciones&nbsp;
 						</td>
 						<td colspan="5">
-						  <html:select styleId="direcciones" styleClass="boxCombo"  property="idDireccion">
-						  <bean:define id="direcciones" name="datosGeneralesForm" property = "direcciones" type="java.util.Collection" />
-							    <html:optionsCollection name="direcciones" value="idDireccion" label="nombre" />
-						  </html:select>
+						  <html:select styleId="direcciones" styleClass="boxCombo"  property="idDireccion" />
 						</td>
 					</tr>
 					
@@ -1276,7 +1273,7 @@
 						<td colspan = "3">							
 							<html:select name="datosGeneralesForm" styleId="pais" styleClass="boxCombo"  property="pais" onchange="cargarProvincias(this);">
 									<html:option value="">&nbsp;</html:option>
-								    <html:optionsCollection name="datosGeneralesForm" property="paises" value="idNombre" label="nombre" />
+								    <html:optionsCollection name="busquedaCensoModalForm" property="paises" value="idNombre" label="nombre" />
 							</html:select>
 						</td>
 					</tr>
@@ -1291,7 +1288,7 @@
 						<td id="provinciaEspanola">
 							<html:select name="datosGeneralesForm" styleId="provincia" styleClass="boxCombo"  property="provincia" onchange="cargarPoblaciones(this);" style="wdth:150">
 									<html:option value="">&nbsp;</html:option>
-								    <html:optionsCollection name="datosGeneralesForm" property="provincias" value="idNombre" label="nombre" />
+								    <html:optionsCollection name="busquedaCensoModalForm" property="provincias" value="idNombre" label="nombre" />
 							</html:select>							
 						</td>
 						<td class="labelText" id="poblacionSinAsterisco">
