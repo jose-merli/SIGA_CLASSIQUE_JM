@@ -1,11 +1,9 @@
 package com.siga.censo.form;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
-import org.apache.struts.action.ActionMapping;
-
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
+import com.siga.general.ParejaNombreID;
 
 /**
  * Clase action form del caso de uso 
@@ -62,6 +60,9 @@ import com.siga.general.MasterForm;
 		String textoAlerta;
 		String multiple;
 		String existeNIF;
+		
+		private List<ParejaNombreID> paises;
+		private List<ParejaNombreID> provincias;
 		
 		public String getAccion() {
 			return accion;
@@ -297,6 +298,23 @@ import com.siga.general.MasterForm;
 		public void setIdTipoIdentificacion(String idTipoIdentificacion) {
 			this.idTipoIdentificacion = idTipoIdentificacion;
 		}
+		
+		public List<ParejaNombreID> getPaises() {
+			return paises;
+		}
+	
+		public void setPaises(List<ParejaNombreID> paises) {
+			this.paises = paises;
+		}
+	
+		public List<ParejaNombreID> getProvincias() {
+			return provincias;
+		}
+	
+		public void setProvincias(List<ParejaNombreID> provincias) {
+			this.provincias = provincias;
+		}		
+		
 		public void reset(){
 			
 		 	  nombre="";
