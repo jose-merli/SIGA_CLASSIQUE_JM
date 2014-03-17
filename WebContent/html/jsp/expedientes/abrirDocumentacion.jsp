@@ -166,7 +166,7 @@
 					<td><%=fila.getString("ESTADO")%></td>
 					<td><%=fila.getString("DESCRIPCION")%></td>
 					<%if(urlvalida){%>
-						<td><a href="<%=urldoc%>" target='_new'><%=urldoc%></a></td>
+						<td><a href="<%=urldoc%>" target='_new' onclick="window.open(this.href,this.target,'width=800,height=600,top=120,left=100,toolbar=no,location=no,status=no,menubar=no,resizable=1');return false;"><%=urldoc%></a></td>
 					<%}else{%>
 						<td><%=fila.getString("RUTA").equals("")?"&nbsp;":fila.getString("RUTA")%></td>
 					<%}%>
