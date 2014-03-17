@@ -34,24 +34,25 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
-import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
-import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
-import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenTipoDireccionAdm;
+import com.siga.beans.CenTipoDireccionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.VleLetradosSigaAdm;
 import com.siga.censo.form.BusquedaCensoForm;
+import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.DireccionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
+import com.siga.general.ParejaNombreID;
 import com.siga.general.SIGAException;
 
 
@@ -155,7 +156,9 @@ public class BusquedaCensoAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("insertarNoColegiado")){
 						mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("insertarNoColegiadoArticulo27")){
-						mapDestino = registrarInfoLetradoEnColegioArt27(mapping, miForm, request, response);						
+						mapDestino = registrarInfoLetradoEnColegioArt27(mapping, miForm, request, response);
+					}else if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("designarArt27")){
+						mapDestino = designarPorArticulo27(mapping, miForm, request, response);							
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -914,7 +917,6 @@ public class BusquedaCensoAction extends MasterAction {
 	// COMUN
 	return "inicioCenso";
 	}
-
 	
 	protected String enviarClienteCenso (ActionMapping mapping, 		
 			MasterForm formulario, 
@@ -1645,5 +1647,103 @@ public class BusquedaCensoAction extends MasterAction {
 			listaParametros.add(miForm.getExisteNIF());
 			respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
 		}
+	}	
+	
+	
+	protected String designarPorArticulo27 (ActionMapping mapping,MasterForm formulario,HttpServletRequest request,HttpServletResponse response) throws ClsExceptions, SIGAException {				
+		String forward="designarArt27", accionPestanha=null;
+		UsrBean user = null;
+		
+		try {
+			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
+			String sColegiadoEn = miform.getColegiadoen();
+			String sNumIdentificacion = (String) miform.getDatos().get("NIFCIF");
+			String sIdDireccion = miform.getIdDireccion();
+			miform.reset(mapping,request);
+			miform.getDatos().remove("NIFCIF");
+			miform.setColegiadoen(null);
+			miform.setIdDireccion(null);
+						
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
+			Vector vTipos = new Vector();
+			vTipos=cenTipoDirAdm.select("");
+			Hashtable hTipoDir=new Hashtable();
+			Hashtable hTipoDirSel=new Hashtable();
+			if ( (vTipos != null) && (vTipos.size() > 0) )
+				for (int i = 1; i <= vTipos.size(); i++) {
+					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
+					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
+				}
+			request.setAttribute("vTipos",vTipos);
+
+			// cargo los valores recibidos por paramtros en el FORM
+			accionPestanha = "nuevo";
+			//miform.setIdInstitucion(new Integer(request.getParameter("idInstitucion")));			
+			//miform.setIdPersona(new Long(request.getParameter("idPersona")));			
+			miform.setAccion(accionPestanha);
+			miform.setModo(accionPestanha);
+			//Para saber si debemos cargar en la pestanha el jsp de colegiados/personal o el de no colegiados de Sociedad SJ:
+			String tipo = request.getParameter("tipo");
+			request.setAttribute("modoPestanha",accionPestanha);
+
+			
+			//Cargar combo Paises
+			miform.setPaises(getPaisesList(request));
+			
+			//Cargar combo Provincias
+			miform.setProvincias(getProvinciasList(request));
+			
+			forward = "designarArt27";
+
+	   } catch (Exception e) {
+		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+		
+	}				
+		/*String forward="designarArt27", accionPestanha=null;
+		
+		try {
+			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
+			
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
+			Vector vTipos = new Vector();
+			vTipos=cenTipoDirAdm.select("");
+			Hashtable hTipoDir=new Hashtable();
+			Hashtable hTipoDirSel=new Hashtable();
+			if ( (vTipos != null) && (vTipos.size() > 0) )
+				for (int i = 1; i <= vTipos.size(); i++) {
+					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
+					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
+				}
+			request.setAttribute("vTipos",vTipos);
+			
+			//Cargar combo Paises
+			miform.setPaises(getPaisesList(request));
+			
+			//Cargar combo Provincias
+			miform.setProvincias(getProvinciasList(request));			
+
+			// cargo los valores recibidos por paramtros en el FORM
+			accionPestanha = "nuevo";
+			miform.setAccion(accionPestanha);
+			miform.setModo(accionPestanha);
+			forward = "designarArt27";
+
+	   } catch (Exception e) {
+		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+		
+	}*/	
+	
+	private List<ParejaNombreID> getPaisesList(HttpServletRequest request) {
+		final String tipo = "pais";
+		return getComboList(request, tipo);
+	}
+
+	private List<ParejaNombreID> getProvinciasList(HttpServletRequest request) {
+		final String tipo = "provincia";
+		return getComboList(request, tipo);
 	}		
 }
