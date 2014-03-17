@@ -649,20 +649,20 @@ public class TagBusquedaSJCS extends TagSupport {
 		//Busca el formulario que se va a enviar y si no existe lo crea
 		out.println("");
 		out.println("function creaFormArticulo27() {");
-		out.println("	var vForm=document.forms['DatosGeneralesForm'];");
+		out.println("	var vForm=document.forms['BusquedaClientesForm'];");
 		out.println("	if(vForm==null){");
 		out.println("		var app="+nombre+".action;");
 		out.println("		app=app.substring(0,app.substr(1).indexOf('/')+1);");
 		out.println("		var formu=document.createElement('form');");
-		out.println("		formu.setAttribute('name','DatosGeneralesForm');");			
-		out.println("		formu.setAttribute('id','DatosGeneralesForm');");
-		out.println("		formu.setAttribute('action', '"+contextPath+"/CEN_DatosGenerales.do');");
+		out.println("		formu.setAttribute('name','busquedaCensoModalForm');");			
+		out.println("		formu.setAttribute('id','busquedaCensoModalForm');");
+		out.println("		formu.setAttribute('action', '"+contextPath+"/CEN_BusquedaCensoModal.do');");
 		out.println("");			
 		out.println("				var myinput =document.createElement('input');");			
 		out.println("				myinput.setAttribute('type','hidden');");
 		out.println("				myinput.setAttribute('id','actionModal');");			
 		out.println("				myinput.setAttribute('name','actionModal');");
-		out.println("				myinput.setAttribute('value','"+contextPath+"/CEN_DatosGenerales.do');");		
+		out.println("				myinput.setAttribute('value','"+contextPath+"/CEN_BusquedaCensoModal.do');");		
 		out.println("				formu.appendChild(myinput);");
 		out.println("");			
 		out.println("				var myinput2 =document.createElement('input');");			
