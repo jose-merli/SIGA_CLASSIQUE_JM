@@ -682,7 +682,7 @@
 			document.datosGeneralesForm.colegiadoen.value=document.forms[0].idInstitucionOrigenDenunciado.value;
 			document.datosGeneralesForm.idDireccion.value=document.forms[0].idDireccionDenunciado.value;
 			*/
-			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
 			
 			if (resultado!=undefined && resultado[0]!=undefined ) {
 				
@@ -724,7 +724,7 @@
 			document.datosGeneralesForm.colegiadoen.value=document.forms[0].idInstitucionOrigenDenunciante.value;
 			document.datosGeneralesForm.idDireccion.value=document.forms[0].idDireccionDenunciante.value;
 			*/
-			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
 			
 			if (resultado!=undefined && resultado[0]!=undefined ) {
 				
@@ -2093,6 +2093,14 @@
 	</html:form>
 	
 	<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+		<input type="hidden" name="actionModal" value="1">
+		<input type="hidden" name="modo" value="designarArt27">
+		<input type="hidden" name="numIdentificacion">
+		<input type="hidden" name="colegiadoen">
+		<input type="hidden" name="idDireccion">
+	</html:form>
+	
+	<html:form action="/CEN_BusquedaCensoModal" method="POST" target="mainWorkArea">
 		<input type="hidden" name="actionModal" value="1">
 		<input type="hidden" name="modo" value="designarArt27">
 		<input type="hidden" name="numIdentificacion">
