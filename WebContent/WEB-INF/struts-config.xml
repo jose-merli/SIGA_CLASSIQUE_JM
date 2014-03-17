@@ -580,7 +580,8 @@
 			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiadoCenso.jsp"/>
 			<forward name="exitoInsercionNoColegiadoArt27" path="/html/jsp/censo/exitoInsercionNoColegiadoArt27Censo.jsp"/>
 			<forward name="preguntaCambioPreferencia" path="/html/jsp/censo/preguntaCambioPreferencia.jsp"/>
-			<forward name="preguntaCambioTipoDireccion" path="/html/jsp/censo/preguntaTipoDireccion.jsp"/>				
+			<forward name="preguntaCambioTipoDireccion" path="/html/jsp/censo/preguntaTipoDireccion.jsp"/>
+			<forward name="designarArt27" path="/html/jsp/gratuita/designarArticulo27.jsp"/>				
 		</action>
 
 		
