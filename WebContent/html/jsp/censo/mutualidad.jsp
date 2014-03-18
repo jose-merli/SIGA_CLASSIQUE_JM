@@ -244,7 +244,7 @@ function habilitarCampos(isHabilitar) {
 </head>
 
 
-<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();ajusteAltoBotones('mainDiv');"> 
+<body class="tablaCentralCampos" onload="inicioCargarBancoBIC();"> 
 
 <%  
 		ArrayList idPaisSeleccionado = (ArrayList)request.getAttribute("idPaisSeleccionado");
@@ -1172,8 +1172,7 @@ function habilitarCampos(isHabilitar) {
 			jQuery(".planProfesional").show();
 		}
 		jQuery(".seguroGratuito").show();
-		ajusteAltoBotones('divSolicitud');
-		jQuery('#divSolicitud').height(jQuery('#divSolicitud').height()-50);
+		jQuery('#divSolicitud').height(window.parent.jQuery('#mainPestanas').height()-42);
 	}
 	
 	jQuery(document).ready(function() {
@@ -1188,7 +1187,7 @@ function habilitarCampos(isHabilitar) {
 		
 		cargaCombos();
 		if("${MutualidadForm.idTipoSolicitud}"=="P" ){
-			jQuery('#divSolicitud').css("overflow-y","scroll");
+			jQuery('#divSolicitud').css("overflow-y","auto");
 		}
 		if("<%=accion%>"=="ver"){
 			jQuery('#botonSolicitarAltaSeguro').attr("disabled", "disabled");
