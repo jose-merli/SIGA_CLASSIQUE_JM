@@ -676,15 +676,20 @@
 			document.DefinirEJGForm.submit();
 	 	}
 		//Asociada al boton Boton Ejg
-		function borrarRelacionEJG(idtipoejg,idinstitucion,anioejg,numeroejg) {
+		function borrarRelacionEJG(idtipoejg,idinstitucion,anioejg,numeroejg,turnoejg) {
 			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>")) {
-				document.DefinirEJGForm.modo.value="borrarRelacionConEjg";
-				document.DefinirEJGForm.idTipoEJG.value= idtipoejg;
-				document.DefinirEJGForm.anio.value= anioejg;
-				document.DefinirEJGForm.numero.value= numeroejg;
-				document.DefinirEJGForm.idInstitucion.value= idinstitucion;
-				document.DefinirEJGForm.target = "submitArea";
-				document.DefinirEJGForm.submit();
+				
+				document.EjgDesignasForm.anio.value=<%=anio%>;
+				document.EjgDesignasForm.numero.value=<%=numero%>;
+				document.EjgDesignasForm.ejgIdInstitucion.value = idinstitucion;
+				document.EjgDesignasForm.ejgAnio.value = anioejg;
+				document.EjgDesignasForm.ejgNumero.value = numeroejg;		
+				document.EjgDesignasForm.ejgIdTipoEjg.value = idtipoejg;
+				document.EjgDesignasForm.idTurno.value=turnoejg;
+			   	document.EjgDesignasForm.target="submitArea";
+			   	document.EjgDesignasForm.modo.value = "borrarRelacionConEJG";
+			   	document.EjgDesignasForm.submit();
+
 			} 
 		}
 	</script>
@@ -1094,10 +1099,10 @@
 								<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="consultarEJG" border="0" onclick="abrirEJG('ver','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
 							<% if (modo.equalsIgnoreCase("ver")) { %>
 								<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarEJG'/>" class="botonEditarEJG" border="0" onclick="abrirEJG('<%=modo%>','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
-								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}','${ejg.idturnoejg}')"/>
 							<% } else { %>
 								<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.EditarEJG'/>" class="botonEditarEJG" border="0" onclick="abrirEJG('<%=modo%>','${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
-								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}')"/>
+								<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.boton.BorrarEJG'/>" class="botonBorrarEJG" border="0" onclick="borrarRelacionEJG('${ejg.idtipoejg}','${ejg.idinstitucion}','${ejg.anioejg}','${ejg.numeroejg}','${ejg.idturnoejg}')"/>
 							<% }%>
 							</span>
 						</div>
@@ -1208,7 +1213,18 @@
 	<html:hidden styleId = "numero" property="numero" value=""/>
 	<html:hidden styleId = "idInstitucion" property="idInstitucion" value=""/>
 </html:form>
-		
+
+<html:form action="/JGR_EJG_Designa.do"  method="POST" target="mainWorkArea">
+	<html:hidden styleId = "modo" property="modo" value="modo"/>
+	<html:hidden styleId = "idTurno"  property = "idTurno" value=""/>
+	<html:hidden styleId = "anio"  property = "anio" value=""/>
+	<html:hidden styleId = "numero"  property = "numero" value=""/>
+	<html:hidden styleId = "ejgIdInstitucion"  property = "ejgIdInstitucion" value=""/>
+	<html:hidden styleId = "ejgAnio"  property = "ejgAnio" value=""/>
+	<html:hidden styleId = "ejgNumero"  property = "ejgNumero" value=""/>
+	<html:hidden styleId = "ejgIdTipoEjg"  property = "ejgIdTipoEjg" value=""/>
+</html:form>
+
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 </body>
