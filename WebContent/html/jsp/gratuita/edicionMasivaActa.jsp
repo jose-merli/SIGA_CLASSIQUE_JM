@@ -52,7 +52,9 @@
 						<html:checkbox property="guardaActa" styleid="guardaActa"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
+						<label for="guardaActa">
 						<siga:Idioma key="sjcs.actas.numeroActa" />/<siga:Idioma key="sjcs.actas.anio" /> -<br> <siga:Idioma key="sjcs.actas.fechaResolucion" />
+						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
 						<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" />
@@ -64,7 +66,9 @@
 						<html:checkbox property="guardaPonente" styleid="guardaPonente"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
+						<label for="guardaPonente">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.ponente"/>
+						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
 						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
@@ -76,7 +80,9 @@
 						<html:checkbox property="guardaRatificacion" styleid="guardaRatificacion"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
-					  <siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
+						<label for="guardaRatificacion">
+					  	<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
+					  	</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
 						<siga:ComboBD nombre="idTipoResolucion" tipo="tipoResolucionActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"  accion="Hijo:idFundamentoJuridico"/>
@@ -85,13 +91,15 @@
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaFundamento"  styleid="guardaFundamento"/>
+						<html:checkbox property="guardaFundamento" onclick="marcaCheckFundamento()" styleid="guardaFundamento"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
+						<label for="guardaFundamento">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
+						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t"/>
+						<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t" accion="window.parent.actualizaCheckFundamento();"/>
 					</td>
 				</tr>
 			</table>
@@ -160,15 +168,21 @@
 			return error;
 			
 		}
-		
-
 
 
 		jQuery('#idActaComp').on('change', function (e) {jQuery('#guardaActa').attr('checked',jQuery('#idActaComp option:selected').text()!="");});
 		jQuery('#idPonente').on('change', function (e) {jQuery('#guardaPonente').attr('checked',jQuery('#idPonente option:selected').text()!="");});
 		jQuery('#idTipoResolucion').on('change', function (e) {jQuery('#guardaRatificacion').attr('checked',jQuery('#idTipoResolucion option:selected').text()!="");});
-		jQuery('#idFundamentoJuridico').on('change', function (e) {jQuery('#guardaFundamento').attr('checked',jQuery('#idFundamentoJuridico option:selected').text()!="");});
-	
+		function actualizaCheckFundamento(){
+			jQuery('#guardaFundamento').attr('checked',jQuery('#idFundamentoJuridico').val()!="");
+		}
+
+		jQuery('#guardaActa').on('change', function (e) {jQuery('#idActaComp').val('');});
+		jQuery('#guardaPonente').on('change', function (e) {jQuery('#idPonente').val('');});
+		jQuery('#guardaRatificacion').on('change', function (e) {jQuery('#idTipoResolucion').val('');});
+		jQuery('#guardaFundamento').on('change', function (e) {
+			jQuery("#idFundamentoJuridicoFrame").contents().find("#idFundamentoJuridicoSel").val('');
+		});
 		
 	</script>
 </body>
