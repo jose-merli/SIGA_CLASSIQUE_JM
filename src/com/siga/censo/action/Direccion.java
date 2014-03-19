@@ -251,9 +251,18 @@ public class Direccion {
 				vBeanTipoDir = establecerTipoDireccion(tipos);
 			}
 			
-			//estableciendo los datos del Historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo (motivoHis);
+			
+			/* CR7 - INC_11983_SIGA
+			   Si el parámetro motivoHis es NULL no se inserta un registro en histórico ya que no se quiere guardar esta información 
+			   en CenHistorico la primera vez que se incorpora un colegiado. Si sale algún caso mas en el que no se quiera guardar
+			   esta información, habrá que poner a NULL el parámetro motivoHis 
+			*/	
+			CenHistoricoBean beanHis = null;
+			if(motivoHis != null){
+				//estableciendo los datos del Historico
+				beanHis = new CenHistoricoBean ();
+				beanHis.setMotivo (motivoHis);
+			}			
 			
 			//Actualizando la direccion
 			if (!direccionesAdm.updateConHistorico (beanDir, vBeanTipoDir, beanHis, usr.getLanguage()))

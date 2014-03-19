@@ -359,7 +359,7 @@ public class ColegiarAction extends MasterAction
 						
 							//Insertamos en el colegio
 							beanDir.setIdInstitucion (new Integer (colegio));
-							direccion.insertar(beanDir, tiposDir, null, null, user);
+							direccion.insertar(beanDir, tiposDir, "", null, user);
 							
 							//enlazando la direccion de Consejo con la del Colegio
 							beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
@@ -368,7 +368,7 @@ public class ColegiarAction extends MasterAction
 							beanDir.setIdDireccion (idDireccionOrigen);
 							beanDir.setIdInstitucionAlta (new Integer (colegio));
 							
-							direccion.actualizar(beanDir, "", "", null, user);
+							direccion.actualizar(beanDir, "", null, null, user);
 						}
 					}					
 				} //for

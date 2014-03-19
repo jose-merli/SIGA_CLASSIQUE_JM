@@ -512,8 +512,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param BeanTipoDir conjunto de tipos de la direccion
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico
 	 */
-	public boolean updateConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException 
-	{
+	public boolean updateConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException {
 		try {
 			if (update(beanToHashTable(beanDir), beanDir.getOriginalHash())) {
 				
@@ -554,14 +553,20 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 					validarRestricciones (beanDir);
 				}
 				
-				// Insertamos el historico
 				if (!error) {
-					// Insertamos el historico
-					CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-					if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_UPDATE, idioma)) {
+					//Se comprueba si se quiere insertar con historico o no
+					if (beanHis != null){					
+						// Insertamos el historico
+						CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
+						if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_UPDATE, idioma)) {
+							return true;
+						}
+					}else{
+						//Insertamos el registro de direcciones sin histórico
 						return true;
 					}
-				}
+				}				
+				
 			}
 			return false;
 		}
