@@ -142,6 +142,26 @@
 						</div>
 					</td>
 				</tr>
+				
+				
+				
+				<tr id="labelAux1">
+					<td  class="labelText" width="90px" colspan="2">
+						<div>
+							&nbsp;
+						</div>
+					</td>
+				</tr>
+				
+				<tr id="labelAux2">
+					<td  class="labelText" width="90px" colspan="2">
+						<div>
+							&nbsp;
+						</div>
+					</td>
+				</tr>			
+				
+				
 			</table>
 		</siga:ConjCampos>
 
@@ -283,6 +303,9 @@
 			divGuardias = jQuery("#selecGuardia");
 			divFiltrosBusqueda = jQuery("#filtrosBusqueda");
 			divInfoBusqueda = jQuery("#infoBusqueda");
+			
+			labelTurnoAux1 = jQuery("#labelAux1");
+			labelGuardiaAux2 = jQuery("#labelAux2");
 
 			labelTurnos.show();
 			comboTurnos.show();
@@ -290,6 +313,8 @@
 			divGuardias.show();
 			divFiltrosBusqueda.show();
 			divInfoBusqueda.hide();
+			labelTurnoAux1.hide();
+			labelGuardiaAux2.hide();
 
 			if (idFiltro == 1) {
 				divFiltrosBusqueda.hide();
@@ -300,18 +325,22 @@
 				divInfoBusqueda.show();
 				labelGuardias.hide();
 				divGuardias.hide();
+				labelGuardiaAux2.show();
 				
 			} else if (idFiltro == 3) {
 				
 			} else if (idFiltro == 4) {
 				labelGuardias.hide();
 				divGuardias.hide();
+				labelGuardiaAux2.show();
 				
 			} else if (idFiltro == 5) {
 				labelGuardias.hide();
 				divGuardias.hide();
+				labelGuardiaAux2.show();
 				labelTurnos.hide();
 				comboTurnos.hide();
+				labelTurnoAux1.show();
 			}
 			ajusteAlto('resultado');
 		}
