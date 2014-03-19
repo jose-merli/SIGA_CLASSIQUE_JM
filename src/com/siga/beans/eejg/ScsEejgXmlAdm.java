@@ -106,7 +106,7 @@ public class ScsEejgXmlAdm extends MasterBeanAdministrador {
 			
 			hash.put(ScsEejgXmlBean.C_IDPETICION, b.getIdPeticion());
 			hash.put(ScsEejgXmlBean.C_ENVIORESPUESTA, b.getEnvioRespuesta());
-			hash.put(ScsEejgXmlBean.C_XML, b.getXml());
+			//hash.put(ScsEejgXmlBean.C_XML, b.getXml());
 			hash.put(ScsEejgXmlBean.C_ESTADO, b.getEstado());
 			hash.put(ScsEejgXmlBean.C_IDXML, b.getIdXml());
 			hash.put(ScsEejgXmlBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
