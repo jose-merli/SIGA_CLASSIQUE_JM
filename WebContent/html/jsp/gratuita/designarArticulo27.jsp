@@ -799,6 +799,21 @@
 			document.datosGeneralesForm.preferenteFax.checked  = "";
 			document.datosGeneralesForm.preferenteSms.checked  = "";
 		}	
+		
+		/* CR7 - INC_11969_SIGA: Para la opción Nueva Dirección se limpian los campos de tipo dirección y de preferencia */		
+		//Limpiamos los campos de tipodireccion y preferencia
+		document.datosGeneralesForm.preferenteMail.checked 		= "";
+		document.datosGeneralesForm.preferenteCorreo.checked 	= "";
+		document.datosGeneralesForm.preferenteFax.checked  		= "";
+		document.datosGeneralesForm.preferenteSms.checked  		= "";
+		document.getElementById("checkTipoDireccion_1").checked = "";
+		document.getElementById("checkTipoDireccion_2").checked = "";
+		document.getElementById("checkTipoDireccion_3").checked = "";
+		document.getElementById("checkTipoDireccion_4").checked = "";
+		document.getElementById("checkTipoDireccion_5").checked = "";
+		document.getElementById("checkTipoDireccion_6").checked = "";
+		document.getElementById("checkTipoDireccion_7").checked = "";
+		document.getElementById("checkTipoDireccion_8").checked = "";
 
 		if(document.busquedaCensoModalForm.tipoDireccion.value != null && document.busquedaCensoModalForm.tipoDireccion.value != ""){
 			if (document.busquedaCensoModalForm.tipoDireccion.value.indexOf("1") >= 0)
@@ -817,15 +832,6 @@
 				document.getElementById("checkTipoDireccion_7").checked = "checked";
 			if (document.busquedaCensoModalForm.tipoDireccion.value.indexOf("8") >= 0)
 				document.getElementById("checkTipoDireccion_8").checked = "checked";			
-		}else{
-			document.getElementById("checkTipoDireccion_1").checked = "";
-			document.getElementById("checkTipoDireccion_2").checked = "";
-			document.getElementById("checkTipoDireccion_3").checked = "";
-			document.getElementById("checkTipoDireccion_4").checked = "";
-			document.getElementById("checkTipoDireccion_5").checked = "";
-			document.getElementById("checkTipoDireccion_6").checked = "";
-			document.getElementById("checkTipoDireccion_7").checked = "";
-			document.getElementById("checkTipoDireccion_8").checked = "";	
 		}
 		
 		if(document.datosGeneralesForm.direcciones.value == "-1"){
@@ -835,22 +841,6 @@
 			//Se Desbloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
 			desBloquearDireccion();
 			
-			/* CR7 - INC_11969_SIGA: Para la opción Nueva Dirección se limpian lso campos de tipo dirección y de preferencia */
-			
-			//Limpiamos los campos de tipodireccion y preferencia
-			document.datosGeneralesForm.preferenteMail.checked 		= "";
-			document.datosGeneralesForm.preferenteCorreo.checked 	= "";
-			document.datosGeneralesForm.preferenteFax.checked  		= "";
-			document.datosGeneralesForm.preferenteSms.checked  		= "";
-			document.getElementById("checkTipoDireccion_1").checked = "";
-			document.getElementById("checkTipoDireccion_2").checked = "";
-			document.getElementById("checkTipoDireccion_3").checked = "";
-			document.getElementById("checkTipoDireccion_4").checked = "";
-			document.getElementById("checkTipoDireccion_5").checked = "";
-			document.getElementById("checkTipoDireccion_6").checked = "";
-			document.getElementById("checkTipoDireccion_7").checked = "";
-			document.getElementById("checkTipoDireccion_8").checked = "";
-		   	
 		}else{
 			document.getElementById("textomod").className="labelText";
 			document.getElementById("textomod").style.display="block";
