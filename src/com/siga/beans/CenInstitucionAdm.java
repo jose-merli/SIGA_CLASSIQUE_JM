@@ -212,6 +212,8 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
             direcciones[C_SCODIGOPOSTAL] = (String)htRow.get("CODIGOPOSTAL");
             direcciones[C_SPOBLACION] = (String)htRow.get("POBLACION");
             direcciones[C_SPROVINCIA] = (String)htRow.get("PROVINCIA");
+        } else{
+        	throw new SIGAException("facturacionsjcs.ficheroBancario.msgerror.noexistedireccion");
         }
  
 		return direcciones;
