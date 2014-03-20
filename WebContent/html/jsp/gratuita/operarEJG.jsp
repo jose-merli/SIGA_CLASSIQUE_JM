@@ -450,7 +450,6 @@
 	
 	<bean:define id="designas" name="DESIGNAS" scope="request" />
 	<bean:define id="modoBean" name="MODO" scope="request" />
-	
 	<style>
 		.literalDesigna{display:inline-block;width:100px;padding:0px;padding-left:10px;}
 		.literalTurno{display:inline-block;width:60px;padding:0px}
@@ -479,8 +478,8 @@
 		<html:hidden property = "designa_turno" 		value= "<%=designaIdTurno%>"/>
 		<html:hidden property = "designa_idInstitucion" value= "<%=usr.getLocation()%>"/>
 		<html:hidden property = "idPersona" value= "<%=IDPERSONA%>"/>
-		<input type="hidden" name = "flagSalto" value=""/>
-		<input type="hidden" name = "flagCompensacion" value=""/>	
+		<html:hidden property = "flagSalto" value=""/>
+		<html:hidden property = "flagCompensacion" value=""/>	
 		<html:hidden property = "idTurnoEJG" value = "<%=idTurno%>"/>
 		<html:hidden property = "idGuardiaEJG" value = "<%=IDGUARDIA%>"/>	
 		<html:hidden property = "tipoLetrado" value = "M"/>	<!-- En insertar.jsp está tambien por defecto puesto tipoLetrado='M'-->
@@ -983,7 +982,7 @@
 									<siga:Idioma key='gratuita.operarEJG.literal.tramitador'/>
 								</td>
 								<td width="500" class="labelTextValue">
-									<input type="text" name="NColegiado" class="boxConsulta" readOnly value="<%=NUMEROCOLEGIADO%>" style="width:'100px';">-<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreCompleto%>" style="width:'240px';">
+									<input type="text" name="NColegiado" class="boxConsulta" readOnly value="<%=NUMEROCOLEGIADO%>" style="width:100px;">-<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="<%=nombreCompleto%>" style="width:240px;">
 								</td>
 							</tr>		
 						</table>	
@@ -1125,8 +1124,7 @@
 		}
 		
 		function accionRestablecer() {		
-			document.forms[0].reset();
-			jQuery("#identificador").change();
+			 refrescarLocal();
 		}
 		
 		function accionGuardar() {	
