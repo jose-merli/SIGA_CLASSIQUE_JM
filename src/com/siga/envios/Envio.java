@@ -729,25 +729,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     	
     }
     
-    public void generarEnvioSms(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
-	{
-        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
-      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
-        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
-        envAdm.insert(enviosBean);
-
-        // Copiamos los datos la plantilla, incluidos los remitentes
-        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
-				enviosBean.getIdEnvio(), 
-				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios(),bean);
-
-        if (idPersona!=null) 
-        	addDocumentosDestinatario(idPersona,tipoDestinatario,null);   
-        insertarComunicaciones(this.usrBean);
-        
-    }
-    
+   
     public void generarEnvio(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
