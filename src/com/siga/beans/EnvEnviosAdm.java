@@ -25,9 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1864,6 +1866,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	public Vector getDestinatarios(String idInstitucion, String idEnvio, String idTipoEnvio)throws SIGAException, ClsExceptions{
 
 		Vector<EnvDestinatariosBean> vDestManuales = null;
+		
+		int orden = 0; 
+		
+		TreeMap<Integer,String> destinatariosmMap = new TreeMap<Integer, String>();
 		Hashtable<String,EnvDestinatariosBean> destinatariosHashtable = new Hashtable<String, EnvDestinatariosBean>();
 
 		Hashtable htPk = new Hashtable();
@@ -1881,6 +1887,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
 		for (EnvDestinatariosBean objectDestinatariosBean : vDestManuales) {
 			destinatariosHashtable.put(objectDestinatariosBean.getTipoDestinatario()+"_"+objectDestinatariosBean.getIdPersona(), objectDestinatariosBean);
+			orden++;
+			destinatariosmMap.put(orden, objectDestinatariosBean.getTipoDestinatario()+"_"+objectDestinatariosBean.getIdPersona());
 			
 		}
 		
@@ -1893,8 +1901,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			if (rcDes.query(sql)) {
 				for (int i = 0; i < rcDes.size(); i++)	{
 					Row fila = (Row) rcDes.get(i);
-					if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA")))
+					if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA"))){
 						destinatariosHashtable.put("CEN_PERSONA_"+fila.getString("IDPERSONA"), getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+						orden++;
+						destinatariosmMap.put(orden, "CEN_PERSONA_"+fila.getString("IDPERSONA"));
+					}
 				}
 			}
 
@@ -1945,8 +1956,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if (rcDestDin.query(getQueryDestinatarios(sql.toString()))) {
 					for (int i = 0; i < rcDestDin.size(); i++)	{
 						Row fila = (Row) rcDestDin.get(i);
-						if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA")))
+						if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA"))){
 							destinatariosHashtable.put("CEN_PERSONA_"+fila.getString("IDPERSONA"), getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+							orden++;
+							destinatariosmMap.put(orden, "CEN_PERSONA_"+fila.getString("IDPERSONA"));
+						}
 					}
 				}
 
@@ -1994,8 +2008,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					if (rcDestDin.findBind(getQueryDestinatarios(sql.toString()),codigosOrdenados)) {
 						for (int j = 0; j < rcDestDin.size(); j++)	{
 							Row filaDestDin = (Row) rcDestDin.get(j);
-							if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA")))
+							if(!destinatariosHashtable.containsKey("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"))){
 								destinatariosHashtable.put("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"), getDestinatario(filaDestDin,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+								orden++;
+								destinatariosmMap.put(orden, "CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"));
+							}
 						}
 					}
 				}catch (ClsExceptions e) {
@@ -2005,7 +2022,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}
 			}
 		}
-		Vector<EnvDestinatariosBean> envDestinatariosBeans = new Vector<EnvDestinatariosBean>(destinatariosHashtable.values());
+		
+		Vector<EnvDestinatariosBean> envDestinatariosBeans = new Vector<EnvDestinatariosBean>();
+		Iterator destinatariosmMapIterator = destinatariosmMap.keySet().iterator();
+		while (destinatariosmMapIterator.hasNext()) {
+			Integer ordenKey = (Integer) destinatariosmMapIterator.next();
+			String personaKey = destinatariosmMap.get(ordenKey);
+			envDestinatariosBeans.add(destinatariosHashtable.get(personaKey));
+		}
+		
 		return envDestinatariosBeans;
 	}
 
