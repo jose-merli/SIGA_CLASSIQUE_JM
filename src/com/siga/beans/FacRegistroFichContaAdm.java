@@ -1341,13 +1341,25 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		String select 				= null;
 		String imp 					= null;
 		// Beans
+		String idFactAnt="";
+		String idAbonoAnt="";
+		String ctaproductservAnt="";
+		
 		FacAbonoIncluidoEnDisqueteAdm facAbonoIncluidoEnDisqueteAdm 	= new FacAbonoIncluidoEnDisqueteAdm(this.usrbean);
 		try{
 			select= " SELECT abonoincluida.idabono idabono, abono.numeroabono numeroabono, abonoincluida.iddisqueteabono iddisqueteabono, "+
 			" abonoincluida.importeabonado importe, disqueteabono.bancos_codigo bancos_codigo, abono.idpersona idpersona, "+
-			" disqueteabono.fecha fecha, abono.estado, factura.numerofactura numerofactura "+
-			" FROM fac_abonoincluidoendisquete abonoincluida, fac_disqueteabonos disqueteabono, fac_abono abono, fac_factura factura "+
-			" WHERE abono.idinstitucion = factura.idinstitucion" +
+			" disqueteabono.fecha fecha, abono.estado, factura.numerofactura numerofactura, "+
+			" P.CONFINGRESOS, P.CTAINGRESOS, P.CONFDEUDOR, P.CTACLIENTES,  L.CTAPRODUCTOSERVICIO, abono.idfactura idfactura "+		
+			" FROM fac_abonoincluidoendisquete abonoincluida, fac_disqueteabonos disqueteabono, fac_abono abono, fac_factura factura, FAC_FACTURACIONPROGRAMADA P, fac_lineaabono la, fac_lineafactura l "+
+			" WHERE P.IDINSTITUCION = FACTURA.IDINSTITUCION AND P.IDSERIEFACTURACION = FACTURA.IDSERIEFACTURACION AND P.IDPROGRAMACION = FACTURA.IDPROGRAMACION (+)" +
+			" AND    la.idinstitucion = abono.idinstitucion "+
+			" AND    la.idabono = abono.idabono "+ 
+			" AND    la.idfactura = abono.idfactura "+ 
+			" AND    la.idinstitucion = l.idinstitucion "+ 
+			" AND    la.idfactura = l.idfactura "+
+			" AND    la.lineafactura = l.numerolinea (+)"+
+			" and abono.idinstitucion = factura.idinstitucion" +
 			" and abono.idfactura = factura.idfactura "+
 			" and abono.idinstitucion = abonoincluida.idinstitucion "+
 			" AND abono.idabono = abonoincluida.idabono "+
@@ -1377,43 +1389,72 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    }
 				hash = (Hashtable) vAbono.get(x);
 				imp = (String) hash.get("IMPORTE");
-
-				// Con el IDPERSONA, obtenemos de CEN_CLIENTE, el asiento contable.
-				asientoContable = obtenerAsientoContable(this.usrbean.getLocation(),(String)hash.get("IDPERSONA"));
-				// Con el BANCOS_CODIGO, obtenemos de FAC_BANCOINSTITUCION, el numerocuenta.
-				asientoContableBanco	= obtenerAsientoContableBanco(this.usrbean.getLocation(),(String)hash.get("BANCOS_CODIGO"));  
-				// Descripcion del concepto
-				concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO7)+ ": "+(String)hash.get("NUMEROFACTURA"));
-				// RGG concepto  = obtenerDescripcion(CONCEPTO_ASIENTO7,usr.getLanguage(),usr);
-				asiento++;
-
-				Hashtable a = new Hashtable();
+			
+				//Para que no salgan asientos repetidos (salía uno por línea de factura del mismo CTAPRODUCTOSERVICIO y no procede porque hay que mostrar líneas de pagos de abonos no de facturas)
+				if((idFactAnt.equals((String)hash.get("IDFACTURA"))==false)||
+					   (idAbonoAnt.equals((String)hash.get("IDABONO"))==false)||
+					   (ctaproductservAnt.equals((String)hash.get("CTAPRODUCTOSERVICIO"))==false))
+					{
+					
+					String confIngresos=(String)hash.get("CONFINGRESOS");
+					String ctaIngresos=(String)hash.get("CTAINGRESOS");
+					String confClientes=(String)hash.get("CONFDEUDOR");
+					String ctaClientes=(String)hash.get("CTACLIENTES");
+					
+					String asientoIngresos="";
+					String asientoClientes="";
+					
+					if (confClientes.equals("F")) {
+					    asientoClientes =  ctaClientes;
+					} else {
+					    asientoClientes =  ctaClientes + obtenerAsientoContable(this.usrbean.getLocation(),(String)hash.get("IDPERSONA"));
+					}
+					
+					if (confIngresos.equals("F")) {
+					    asientoIngresos =  ctaIngresos;
+					} else if (confIngresos.equals("C")) {
+					    asientoIngresos =  ctaIngresos + obtenerAsientoContable(this.usrbean.getLocation(),(String)hash.get("IDPERSONA"));
+					} else {
+					    asientoIngresos =  ctaIngresos + (String)hash.get("CTAPRODUCTOSERVICIO");
+					}
+					// Descripcion del concepto
+					concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO7)+ ": "+(String)hash.get("NUMEROFACTURA"));
+					// RGG concepto  = obtenerDescripcion(CONCEPTO_ASIENTO7,usr.getLanguage(),usr);
+					
+					asiento++;
+	
+					Hashtable a = new Hashtable();
+					
+					// Escribimos 1º asiento
+					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+					UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
+					UtilidadesHash.set(a, "DEBE", 			imp);
+					UtilidadesHash.set(a, "HABER", 			"0");
+					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+					UtilidadesHash.set(a, "IVA", 			"");
+					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
+					pwcontabilidad.write(this.generarLineaAbono(asiento, a));				
 				
-				// Escribimos 1º asiento
-				UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
-				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
-				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
-				UtilidadesHash.set(a, "CUENTA", 		asientoContable);
-				UtilidadesHash.set(a, "DEBE", 			imp);
-				UtilidadesHash.set(a, "HABER", 			"0");
-				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
-				UtilidadesHash.set(a, "IVA", 			"");
-				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoContableBanco);
-				pwcontabilidad.write(this.generarLineaAbono(asiento, a));				
-				
-				// Escribimos 2º asiento
-				a.clear();
-				UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
-				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
-				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
-				UtilidadesHash.set(a, "CUENTA", 		asientoContableBanco);
-				UtilidadesHash.set(a, "DEBE", 			"0");
-				UtilidadesHash.set(a, "HABER", 			imp);
-				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
-				UtilidadesHash.set(a, "IVA", 			"");
-				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoContable);
-				pwcontabilidad.write(this.generarLineaAbono(asiento, a));				
-
+					// Escribimos 2º asiento
+					a.clear();
+					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
+					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
+					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
+					UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
+					UtilidadesHash.set(a, "DEBE", 			"0");
+					UtilidadesHash.set(a, "HABER", 			imp);
+					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
+					UtilidadesHash.set(a, "IVA", 			"");
+					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
+					pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+					
+					idFactAnt=(String)hash.get("IDFACTURA");
+					idAbonoAnt=(String)hash.get("IDABONO");
+					ctaproductservAnt=(String)hash.get("CTAPRODUCTOSERVICIO");
+					
+				}
 				///////////////////////////////////////////////////////
 				
 				String[] claves = {"IDINSTITUCION","IDABONO"};
