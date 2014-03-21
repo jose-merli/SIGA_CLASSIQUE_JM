@@ -3297,6 +3297,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						EnvioInformesGenericos.comunicacionesEjg)||programInfBean.getIdTipoInforme().equals(
 								EnvioInformesGenericos.comunicacionesCAJG)) {
 					datosInforme.put("sms", "S");
+					datosInforme.put("generarInformeSinDireccion", "S");
 					String idInstitucion = (String) datosInforme.get("idInstitucion");
 					String anio = (String) datosInforme.get("anio");
 					String idTipoEJG = (String) datosInforme.get("idTipoEJG");
