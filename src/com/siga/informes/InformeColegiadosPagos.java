@@ -905,6 +905,9 @@ public class InformeColegiadosPagos extends MasterReport {
 				String sTotalIRPF=r.getString("TOTALIMPORTEIRPF");
 				result.put("TOTAL_IRPF",UtilidadesNumero.formatoCartaPago(sTotalIRPF)+ClsConstants.CODIGO_EURO);
 				
+				String sTotalIVA=r.getString("TOTALIMPORTEIVA");
+				result.put("TOTAL_IVA",UtilidadesNumero.formatoCartaPago(sTotalIVA)+ClsConstants.CODIGO_EURO);				
+				
 				String sTotalMovimientos=r.getString("IMPORTETOTALMOVIMIENTOS");
 				result.put("TOTAL_MOVIMIENTOS",UtilidadesNumero.formatoCartaPago(sTotalMovimientos)+ClsConstants.CODIGO_EURO);
 				
