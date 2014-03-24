@@ -929,8 +929,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 						ScsCabeceraGuardiasBean.T_NOMBRETABLA + ", " + 
 						ScsTurnoBean.T_NOMBRETABLA + ", " + 
 						CenColegiadoBean.T_NOMBRETABLA + ", " + 
-						ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + ", " + 
-						ScsInscripcionGuardiaBean.T_NOMBRETABLA;
+						ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA + " " ; 
+						
 			
 			sql += " WHERE " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
 						" AND " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + 
@@ -939,11 +939,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 						" AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + " = " + ScsTurnoBean.T_NOMBRETABLA + "." + ScsTurnoBean.C_IDTURNO +
 						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + 
 						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
-						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + 
-						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
-						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDPERSONA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA + 
-						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDTURNO + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDTURNO + 
-						" AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_IDGUARDIA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDGUARDIA;
+						" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_IDPERSONA ; 
+						
 			
 			/*
 			 * JPT y Adri: Mejorados los intervalos de fechas
@@ -958,14 +955,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			codigos.put(new Integer(contador), fechaInicio);
 			sql += " AND " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN + " >= TO_DATE(:" + contador + ",'DD/MM/YYYY') ";
 			
-			/*
-			 * JPT y Adri: Mejorados los intervalos de fechas (la inscripcion de guardia debe estar incluida en el intervalo de fechas de la cabecera de guardia) 
-			 * 1. La fecha de validacion debe ser menor o igual que la fecha final de la cabecera de guardia
-			 * 2. La fecha de baja, en caso de tener, debe ser mayor o igual que la fecha inicial de la cabecera de guardia  
-			 */
-			sql += " AND " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHAVALIDACION + " <= " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_FIN +		
-					" AND (" + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " IS NULL " +
-						" OR " + ScsInscripcionGuardiaBean.T_NOMBRETABLA + "." + ScsInscripcionGuardiaBean.C_FECHABAJA + " >= " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + "." + ScsCabeceraGuardiasBean.C_FECHA_INICIO + ") ";
+			
 
 			contador++;
 			codigos.put(new Integer(contador), institucion);			
