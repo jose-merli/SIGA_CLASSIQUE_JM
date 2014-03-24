@@ -1951,9 +1951,9 @@
 					}							
 					jQuery("#"+html_idPoblacion).html(data);
 					jQuery("#"+html_idPoblacion).val("-1");
+					jQuery("#"+html_idPoblacion).width("180");
 					if (document.busquedaCensoModalForm.poblacionValue.value != "" && document.busquedaCensoModalForm.poblacionValue.value != "-1" && document.busquedaCensoModalForm.poblacionValue.value != undefined){
 						jQuery("#"+html_idPoblacion).val(document.busquedaCensoModalForm.poblacionValue.value);
-						jQuery("#"+html_idPoblacion).width("180");
 					}
 				}).fail(function( jqXHR, textStatus, errorThrown){
 					alert(mensajeGeneralError);
