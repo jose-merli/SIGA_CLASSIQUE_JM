@@ -1591,7 +1591,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	}
 
 	
-	// vector con el signo, la parte entera y la parte decimal para el impreso 190
+	// vector con el signo, la parte entera y la parte decimal (dos posiciones decimales) para el impreso 190
 	private Vector desdoblarDouble (Double valor) throws ClsExceptions {
 		Vector salida= new Vector();
 		
@@ -1604,12 +1604,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		} else {
 			String sValor = null;
 			if (valor.doubleValue()<0) {
-				sValor = valor.toString();
+				sValor = String.format("%.2f",valor).replace(",", ".");
 				// le quitamos el signo
 				sValor = sValor.substring(1,sValor.length());
 				signo = "N";
 			} else {
-				sValor = valor.toString();
+				sValor = String.format("%.2f",valor).replace(",", ".");
 			}
 				
 			salida.add(signo);

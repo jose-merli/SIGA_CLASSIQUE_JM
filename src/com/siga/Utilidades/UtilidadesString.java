@@ -1165,7 +1165,7 @@ public class UtilidadesString {
 		return val;
 	}
 		
-		// vector con el signo, la parte entera y la parte decimal para el impreso 190
+		// vector con el signo, la parte entera y la parte decimal (dos posiciones decimales) para el impreso 190
 		public static Vector<String> desdoblarDouble (Double valor) throws ClsExceptions {
 			Vector<String> salida= new Vector<String>();
 			
@@ -1177,13 +1177,14 @@ public class UtilidadesString {
 				salida.add("");
 			} else {
 				String sValor = null;
+				
 				if (valor.doubleValue()<0) {
-					sValor = valor.toString();
+					sValor = String.format("%.2f",valor).replace(",", ".");
 					// le quitamos el signo
 					sValor = sValor.substring(1,sValor.length());
 					signo = "N";
 				} else {
-					sValor = valor.toString();
+					sValor = String.format("%.2f",valor).replace(",", ".");
 				}
 					
 				salida.add(signo);
@@ -1193,6 +1194,7 @@ public class UtilidadesString {
 					// tiene punto
 					salida.add(sValor.substring(0,pos));
 					salida.add(sValor.substring(pos+1,sValor.length()));
+					
 				} else {
 					// NO tiene punto
 					salida.add(sValor);
