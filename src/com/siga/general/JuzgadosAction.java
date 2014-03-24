@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTipofundamentos;
 import org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
@@ -221,13 +222,23 @@ public class JuzgadosAction extends MasterAction{
 		if(filtrarModulos.equalsIgnoreCase("S")){
 			fecha = "'" + request.getParameter("fecha") + "'";
 		}
+		boolean isFichaColegial = false;
+		
+		if(request.getParameter("fichaColegial")!=null && !request.getParameter("fichaColegial").equals("")){
+			try {
+				isFichaColegial = Boolean.parseBoolean(request.getParameter("fichaColegial"));	
+			} catch (Exception e) {
+				e.toString();
+			}
+			
+		}
 		
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<ScsProcedimientosBean> modulosList = null;
 		if(idJuzgado!= null && !idJuzgado.equals("-1")&& !idJuzgado.equals("")){
 			ScsJuzgadoProcedimientoAdm admModulos = new ScsJuzgadoProcedimientoAdm(usr);
-			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha);
+			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha,isFichaColegial);
 		}
 		if(modulosList==null){
 			modulosList = new ArrayList<ScsProcedimientosBean>();

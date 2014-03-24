@@ -1748,6 +1748,7 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	<html:hidden property="idTurno" />
 	<html:hidden property="numero" />
 	<html:hidden property="fecha" />
+	<html:hidden property="fichaColegial" value="${InformeJustificacionMasivaForm.fichaColegial}"/>
 
 </html:form>
 

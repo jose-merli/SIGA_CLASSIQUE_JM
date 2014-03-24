@@ -47,6 +47,14 @@ public class MaestroDesignasForm extends MasterForm {
 	private List<ScsProcedimientosBean> modulos;
 	private List<ScsEJGBean> ejgs;  	
 	String origen; 
+	private boolean fichaColegial = false;
+	public boolean getFichaColegial() {
+		return fichaColegial;
+	}
+	public void setFichaColegial(boolean fichaColegial) {
+		this.fichaColegial = fichaColegial;
+	}
+	
 	public List<ScsEJGBean> getEjgs() {
 		return ejgs;
 	}

@@ -215,7 +215,7 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}	
-	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idProcedimiento,Integer idInstitucion,boolean isCombo, String fecha)throws ClsExceptions{
+	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idProcedimiento,Integer idInstitucion,boolean isCombo, String fecha, boolean isFichaColegial)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -236,7 +236,13 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idProcedimiento); 
-		sql.append(" ) OR (proc.fechadesdevigor <= "+fecha+" AND(proc.fechahastavigor >= " +fecha+ " OR proc.fechahastavigor IS NULL)))");		
+		sql.append(" ) OR ( ");
+		if(isFichaColegial)
+			sql.append(" proc.permitiraniadirletrado = 1 and");
+		sql.append(" proc.fechadesdevigor <= "+fecha+" AND(proc.fechahastavigor >= " +fecha+ " OR proc.fechahastavigor IS NULL)))");
+		
+				  
+		
 		sql.append(" ORDER BY PROC.NOMBRE ");
 
 			
