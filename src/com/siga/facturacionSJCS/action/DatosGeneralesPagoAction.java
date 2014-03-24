@@ -1544,7 +1544,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			}
 
 			// 6. Generar abono si corresponde
-			if (importeNeto + Math.abs(importeRetenciones) < 0)
+			if (importeNeto - Math.abs(importeRetenciones) < 0)
 				throw new SIGAException("DatosGeneralesPagoAction.generarAbonos() Importe final de abono negativo: hay que revisar el proceso.");
 			
 			try {
