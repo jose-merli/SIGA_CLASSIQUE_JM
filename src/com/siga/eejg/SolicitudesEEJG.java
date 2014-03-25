@@ -93,7 +93,8 @@ public class SolicitudesEEJG {
 		Informacion informacion = new Informacion(datosPeticionInfoAAPP);
 				
 		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion);
-				
+		
+		ClsLogging.writeFileLog("Llamada al servicio web solicitudPeticionInfoAAPP", 10);
 		RespuestaSolicitudPeticionInfoAAPP respuestaSolicitudPeticionInfoAAPP =  stub.solicitudPeticionInfoAAPP(solicitudPeticionInfoAAPP);
 		
 		if (respuestaSolicitudPeticionInfoAAPP != null) {
@@ -166,7 +167,8 @@ public class SolicitudesEEJG {
 		DatosConsultaInformacionAAPP datosConsultaInformacionAAPP = new DatosConsultaInformacionAAPP (idSistema, idPeticionInfoAAPP, idioma);
 		InformacionInf informacion = new InformacionInf(datosConsultaInformacionAAPP);
 		ConsultaInformacionAAPP consultaInformacionAAPP = new ConsultaInformacionAAPP(informacion);
-				
+		
+		ClsLogging.writeFileLog("Llamada al servicio web consultaInformacionAAPP", 10);
 		RespuestaConsultaInformacionAAPP respuestaConsultaInfoAAPP = stub.consultaInformacionAAPP(consultaInformacionAAPP);		
 		
 		if (respuestaConsultaInfoAAPP != null) {
@@ -188,6 +190,7 @@ public class SolicitudesEEJG {
 					if (isPendiente(infoRespuestaConsultaInfo.getDatosInformacionAAPP())) {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.PENDIENTE_INFO.getId());
 					} else {
+						ClsLogging.writeFileLog("Finalizado Expediente Economico", 10);
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
 						scsEejgPeticionesBean.setCsv(infoRespuestaConsultaInfo.getDatosInformacionAAPP().getCSV());
 					}
@@ -212,6 +215,7 @@ public class SolicitudesEEJG {
 			if (administracions != null) {
 				for (AdministracionInf administracion : administracions) {
 					if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
+						ClsLogging.writeFileLog("No encontrada Fecha Respuesta en uno de los nodos Administracion.", 10);
 						pendiente = true;
 						break;
 					}
@@ -262,7 +266,6 @@ public class SolicitudesEEJG {
 			SolicitudDocumentoTO solDocTO = new SolicitudDocumentoTO();			
 			solDocTO.setIdAppCliente(idSistema);
 			solDocTO.setIdValidacion(csv);
-			//solDocTO.setIdValidacion("PJGPRA-IQQQ1-R06QK-SSRBI-KCC1Z");
 
 			//Llamada al Stub del web service
 			ClsLogging.writeFileLog("Llamada al servicio web obtenerDocumento", 10);
