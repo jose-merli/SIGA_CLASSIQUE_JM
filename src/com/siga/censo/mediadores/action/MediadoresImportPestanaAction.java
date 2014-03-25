@@ -11,7 +11,7 @@ import com.atos.utils.ClsExceptions;
 import com.siga.general.MasterAction;
 import com.siga.general.SIGAException;
 
-public class GestionMediadoresAction extends MasterAction {
+public class MediadoresImportPestanaAction  extends MasterAction {
 
 	/**
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo
@@ -34,13 +34,13 @@ public class GestionMediadoresAction extends MasterAction {
 			ActionForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 
+
 		try {
 
 			return mapping.findForward("inicio");
 
 		} catch (Exception e) {
-			throw new SIGAException("messages.general.error", e,
-					new String[] { "modulo.censo" });
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.censo" });
 		}
 	}
 

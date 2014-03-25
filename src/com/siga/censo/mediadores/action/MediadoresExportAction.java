@@ -1,5 +1,6 @@
 package com.siga.censo.mediadores.action;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,28 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.redabogacia.sigaservices.app.autogen.model.CenMediadorCsv;
+import org.redabogacia.sigaservices.app.autogen.model.CenMediadorExportfichero;
+import org.redabogacia.sigaservices.app.autogen.model.CenMediadorExportficheroExample;
 import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
-import org.redabogacia.sigaservices.app.vo.cen.MediadorCSVVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
-import com.siga.beans.CenInstitucionAdm;
-import com.siga.censo.mediadores.form.MediadoresImportForm;
-import com.siga.censo.service.CensoService;
-import com.siga.comun.vos.InstitucionVO;
+import com.siga.censo.mediadores.form.MediadoresExportForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessManager;
 
-public class ImportarMediadoresAction extends MasterAction {	
-	
-	public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_IMPORT";
+public class MediadoresExportAction extends MasterAction {
+
+public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -76,100 +73,68 @@ public class ImportarMediadoresAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		try {
-			MediadoresImportForm mediadoresImportForm = (MediadoresImportForm) formulario;
-						
+			MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;						
 			request.getSession().removeAttribute(DATAPAGINADOR);
-			
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
-			String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
-			mediadoresImportForm.setNombreColegio(nombreInstitucionAcceso);
-			mediadoresImportForm.setIdColegio(getUserBean(request).getLocation());
-
-			mediadoresImportForm.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
-			
+						
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 		return "inicio";
 		
 	}
-
 	
-	/**
-	 * Recupera los colegios asociados a la institucion <code>idInstitucion</code>
-	 * @param idInstitucion Institucion para la cual se buscan sus colegios asociados
-	 * @return Una lista con los colegios dependientes de la institucion, o <code>null</code> si la institucion
-	 * no tiene colegios dependientes, es decir, si es un Colegio y no un Consejo.
-	 * @throws SIGAException 
-	 */
-	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
-		List<InstitucionVO> instituciones = null;
-		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
-		if (institucionEsGeneral(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
-			instituciones = service.getColegiosNoConsejo(idInstitucion);
-		}
-		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
-		else if (institucionEsConsejo(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
-			instituciones = service.getColegiosDeConsejo(idInstitucion);
-		}
-		return instituciones;
-	}
 	
-	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
+	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
-		String mensaje = "messages.cargaFichero.correcta";
+		String mensaje = "messages.generarFichero.correcta";
 
 		try {
 			
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			MediadoresImportForm mediadoresImportForm = (MediadoresImportForm) formulario;
+			MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;	
 			
-			FormFile formFile = mediadoresImportForm.getFile();
-			if (formFile.getFileSize() == 0){
-				throw new SIGAException("message.mediadores.ficheroValido"); 
+			request.getSession().removeAttribute(DATAPAGINADOR);			
+			MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
+			CenMediadorExportfichero cenMediadorExportfichero = mediadoresService.creaExport();
+						
+			if (cenMediadorExportfichero != null && cenMediadorExportfichero.getIdmediadorexportfichero() != null) {	
+				mensaje = "messages.generarFichero.correcta";
+				request.setAttribute(CenMediadorExportfichero.C_IDMEDIADOREXPORTFICHERO, cenMediadorExportfichero.getIdmediadorexportfichero());
+			} else {
+				mensaje = "messages.generarFichero.noCambios";
 			}
 			
-			String idColegio = mediadoresImportForm.getIdColegio();
-			
-			MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
-			List<MediadorCSVVo> listaMediadorCSVVo = new ArrayList<MediadorCSVVo>();
-			List<CenMediadorCsv> listacenMediadorCsvs = new ArrayList<CenMediadorCsv>();
-			
-			if (mediadoresService.validate(Short.parseShort(idColegio), formFile.getInputStream(), listaMediadorCSVVo, listacenMediadorCsvs)) {
-				mediadoresService.insertaFicheroCSV(Short.parseShort(idColegio), listacenMediadorCsvs);
-			} else {
-				mensaje = "messages.cargaFichero.validacion.incorrecta";
-				request.getSession().removeAttribute(DATAPAGINADOR);
-				
-				return buscarPor(mapping, formulario, request, response, listaMediadorCSVVo);
-			}			
-			
+			buscarPor(mapping, formulario, request, response);
 			request.setAttribute("mensaje", mensaje);
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 
-		return exito(mensaje, request);
+		return "resultado";
 	}
 	
+	/** 
+	 *  Funcion que atiende la accion buscarPor
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
 	protected String buscarPor (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		return buscarPor(mapping, formulario, request, response, null);		
-	}
-	
-	private String buscarPor (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, List<MediadorCSVVo> datos) throws ClsExceptions, SIGAException {
+		
 		
 		try {
-			MediadoresImportForm form = (MediadoresImportForm) formulario;			
+						
 			HashMap databackup = new HashMap();
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
 				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
-				PaginadorVector<MediadorCSVVo> paginador = (PaginadorVector<MediadorCSVVo>) databackup.get("paginador");
-				datos = new ArrayList<MediadorCSVVo>();
+				PaginadorVector<CenMediadorExportfichero> paginador = (PaginadorVector<CenMediadorExportfichero>) databackup.get("paginador");
+				List<CenMediadorExportfichero> datos = new ArrayList<CenMediadorExportfichero>();
 
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
@@ -187,9 +152,14 @@ public class ImportarMediadoresAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
 
-			} else {																									
+			} else {	
 				
-				PaginadorVector<MediadorCSVVo> paginador = new PaginadorVector(datos);
+				MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
+				CenMediadorExportficheroExample cenMediadorExportficheroExample = new CenMediadorExportficheroExample();
+				cenMediadorExportficheroExample.orderByFechacreacionDESC();
+				List<CenMediadorExportfichero> datos = mediadoresService.selectCenMediadorExportfichero(cenMediadorExportficheroExample);
+				
+				PaginadorVector<CenMediadorExportfichero> paginador = new PaginadorVector(datos);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -209,8 +179,35 @@ public class ImportarMediadoresAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
 		return "resultado";
+		
 	}
 	
-			
-	
+	/** 
+	 *  Funcion que atiende la accion download
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String download (ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;	
+							
+		MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
+		File file = mediadoresService.generaXML(mediadoresExportForm.getIdmediadorexportfichero());		
+		
+		if (file != null && file.exists()) {				
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getAbsolutePath());			
+			request.setAttribute("borrarFichero", "true");			
+		}
+		
+		return "descargaFichero";
+	}
 }

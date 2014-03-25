@@ -2,6 +2,8 @@ package com.siga.censo.mediadores.form;
 
 import java.util.List;
 
+import org.apache.struts.upload.FormFile;
+
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.general.MasterForm;
 
@@ -12,11 +14,14 @@ public class MediadoresImportForm extends MasterForm {
 	private String idColegio = null;
 	
 	private List<InstitucionVO> instituciones;
-	private String nombreColegio = null;	
-		
+	private String nombreColegio = null;
+	private FormFile file = null;
+	
+			
 	public void reset() {
 		idColegio = null;
 		nombreColegio = null;
+		file = null;
 	}
 
 	public String getIdColegio() {
@@ -39,4 +44,11 @@ public class MediadoresImportForm extends MasterForm {
 		this.nombreColegio = nombreColegio;
 	}
 
+	public FormFile getFile() {
+		return file;
+	}
+	
+	public void setFile(FormFile file) {
+		this.file = file;
+	}
 }
