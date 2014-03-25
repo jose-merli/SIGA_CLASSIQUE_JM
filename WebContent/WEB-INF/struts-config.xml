@@ -63,9 +63,7 @@
 		<!-- ************************** FORMS MEDIADORES *************************
 -->		
 		<form-bean name="MediadoresImportForm" type="com.siga.censo.mediadores.form.MediadoresImportForm"/>
-		
-		
-				
+		<form-bean name="MediadoresExportForm" type="com.siga.censo.mediadores.form.MediadoresExportForm"/>		
 		
 
 		<!-- ************************** FORMS FACTURACIÓN *************************
@@ -761,12 +759,22 @@
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoHistorico.jsp"/>
 		</action>
 		
-		<action path="/CEN_GestionMediadores" type="com.siga.censo.mediadores.action.GestionMediadoresAction" name="MediadoresImportForm" scope="request">
+		<action path="/CEN_GestionMediadores" type="com.siga.censo.mediadores.action.GestionMediadoresAction">
 			<forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresPestanas.jsp"/>									
 		</action>
 		
-		<action path="/CEN_ImportarMediadores" type="com.siga.censo.mediadores.action.ImportarMediadoresAction" name="MediadoresImportForm" scope="request">
-		    <forward name="inicio" path="/html/jsp/censo/mediadores/importMediadores.jsp"/>		    
+		<action path="/CEN_ImportarMediadores" type="com.siga.censo.mediadores.action.MediadoresImportPestanaAction">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportPestanas.jsp"/>		    
+	    </action>
+	    
+		<action path="/CEN_CargaMediadores" type="com.siga.censo.mediadores.action.ImportarMediadoresAction" name="MediadoresImportForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportCarga.jsp"/>
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresCarga.jsp"/>		    
+	    </action>
+	    
+		<action path="/CEN_ExportarMediadores" type="com.siga.censo.mediadores.action.MediadoresExportAction" name="MediadoresExportForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresExport.jsp"/>		    
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresExport.jsp"/>
 	    </action>
 		
 
