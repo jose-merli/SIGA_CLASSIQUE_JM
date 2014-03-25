@@ -261,19 +261,13 @@
 		function accionGuardar() {	
 			sub();
 			if(document.configuracionAbonosForm.cuenta!=null){
-				var conceptoAb=document.configuracionAbonosForm.concepto.value;
-				if ((conceptoAb=='1')||(conceptoAb=='8')||(conceptoAb=='9')){
-					if (validateConfiguracionAbonosForm(document.configuracionAbonosForm)){
-						document.configuracionAbonosForm.target = "submitArea";
-						document.configuracionAbonosForm.modo.value = "modificar";
-						document.configuracionAbonosForm.submit();
-					} else {
-						fin();
-						return false;
-					}
+				if (validateConfiguracionAbonosForm(document.configuracionAbonosForm)){
+					document.configuracionAbonosForm.target = "submitArea";
+					document.configuracionAbonosForm.modo.value = "modificar";
+					document.configuracionAbonosForm.submit();
 				} else {
 					fin();
-					alert("<siga:Idioma key="administracion.parametrosGenerales.error.conceptoAbonoPago"/>");
+					return false;
 				}
 			} else {
 				fin();
