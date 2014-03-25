@@ -76,8 +76,8 @@
 		<html:hidden property = "nInstitucionOrigen"/>
 	</html:form>	
 	
-	<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
-			<html:hidden  name="datosGeneralesForm" property="modo"/>
+	<html:form  action="/CEN_BusquedaCensoModal" method="POST" target="submitArea"  enctype="multipart/form-data">
+			<html:hidden  name="busquedaCensoModalForm" property="modo"/>
 			<html:hidden property = "actionModal" value = ""/>
 	</html:form>	
 
@@ -116,8 +116,8 @@
 				if(resultado=='MODIFICADO') 
 					buscar();
 			<% } else { %>
-			datosGeneralesForm.modo.value = "designarArt27";
-				var resultado=ventaModalGeneral(datosGeneralesForm.name,"G");
+			busquedaCensoModalForm.modo.value = "designarArt27";
+				var resultado=ventaModalGeneral(busquedaCensoModalForm.name,"G");
 				if(resultado!=null && resultado[0] != null && resultado[0] != ""){
 					document.forms[0].idPersona.value=resultado[0];
 					document.forms[0].nInstitucionOrigen.value=resultado[5];
