@@ -188,7 +188,7 @@
 			<html:hidden property = "avanzada" value = ""/>		
 		</html:form>
 
-		<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+		<html:form action="/CEN_BusquedaCensoModal" method="POST" target="mainWorkArea">
 			<input type="hidden" name="actionModal" value="1">
 			<input type="hidden" name="modo" value="designarArt27">
 			<input type="hidden" name="numIdentificacion">
@@ -232,7 +232,7 @@
 		<!-- Asociada al boton Nuevo -->
 		function accionNuevo() 
 		{		
-			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.ExpDenunciadoForm.idPersona.value=resultado[0];
 				document.ExpDenunciadoForm.numColegiado.value=resultado[1];
