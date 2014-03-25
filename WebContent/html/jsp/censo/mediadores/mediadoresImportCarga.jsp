@@ -1,4 +1,4 @@
-<!-- importMediadores.jsp -->
+<!-- mediadoresImportCarga.jsp -->
 <!DOCTYPE html>
 <!-- CABECERA JSP -->
 <%@page import="com.siga.beans.ConModuloAdm"%>
@@ -29,25 +29,14 @@
 <head>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	
-
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="menu.censo.gestionMediadores.importar" localizacion="censo.ws.gestionMediadores.importar.localizacion"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->
-
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	<!-- Validaciones en Cliente -->
-	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="MediadoresImportForm" staticJavascript="false" />  
-	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	<!-- Incluido jquery en siga.js -->
 	
-		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-		<script language="JavaScript">
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script> 
 	
-			
+		<script type="text/javascript">
+			jQuery.noConflict();
 			
 			// Funcion asociada a boton limpiar
 			function limpiar() {		
@@ -59,10 +48,54 @@
 				document.forms[0].submit();	
 			}
 			
-			
-			
+			function accionAceptar() {
+				sub();
+				var f=document.getElementById("MediadoresImportForm");				
+				
+				if (f && f.idColegio && !f.idColegio.value) {					
+  					var campo = "<siga:Idioma key="censo.mediadores.literal.colegio"/>";
+  					var msg = "<siga:Idioma key="errors.required"  arg0='" + campo + "'/>";					
+					alert(msg);
+  					fin();
+					return false;
+  				}
+				
+				if (f && f.file && !f.file.value) {					
+  					var campo = "<siga:Idioma key="censo.mediadores.literal.fichero"/>";
+  					var msg = "<siga:Idioma key="errors.required"  arg0='" + campo + "'/>";					
+					alert(msg);
+  					fin();
+					return false;
+  				}
+				
+				
+				f.modo.value = "insertar";
+				//para obligar a volver a cargar el fichero si esta ha ido mal
+				//me quedo con los valores que quiero conservar
+				var idcol = f.idColegio.value
+				f.submit();
+				//reseteo y cargo de nuevo los valores que quiero quedarme
+				f.reset();
+				f.idColegio.value=idcol;
+				return true;
+			}
 			
 		</script>
+
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo titulo="menu.censo.gestionMediadores.importar" localizacion="censo.ws.gestionMediadores.importar.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
+
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="MediadoresImportForm" staticJavascript="false" />  	  	
+		
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	
+		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+		
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
@@ -74,20 +107,22 @@
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
-		<table  class="tablaCentralCampos"  align="center">
-			<tr>				
-				<td>
-					<siga:ConjCampos leyenda="menu.censo.gestionMediadores.importar">
-						<table class="tablaCampos" align="center">
-							<html:form action="/CEN_ImportarMediadores.do?noReset=true" method="POST" target="resultado">
-								<html:hidden name="MediadoresImportForm" property = "modo" value = ""/>
+		<html:form action="/CEN_CargaMediadores.do" method="POST" target="resultado" enctype="multipart/form-data">
+		
+		
+			<table  class="tablaCentralCampos"  align="center">
+				<tr>				
+					<td>
+						<siga:ConjCampos leyenda="menu.censo.gestionMediadores.importar">
+							<table class="tablaCampos" align="center">								
+								<html:hidden name="MediadoresImportForm" property = "modo" value = "insertar"/>
 								
 								<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>								
 	
 								<!-- FILA -->
 								<tr>				
 									<td class="labelText">
-										<siga:Idioma key="censo.ws.literal.colegio"/>
+										<siga:Idioma key="censo.mediadores.literal.colegio"/>
 									</td>
 									<td>
 										<logic:empty property="instituciones" name="MediadoresImportForm">
@@ -101,29 +136,24 @@
 											</html:select>
 										</logic:notEmpty>
 									</td>
-								</tr>						
-							</html:form>
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-		</table>
+												
+									<td class="labelText">
+										<siga:Idioma key="censo.mediadores.literal.fichero"/>
+									</td>				
+									<td>	
+										<html:file property="file" name="MediadoresImportForm" size="50" styleClass="box" accept=".csv"></html:file>
+									</td>						
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+			</table>
+		</html:form>
 
+		<siga:ConjBotonesAccion botones="A" clase="botonesSeguido"/>
 		
-
-		<!-- FIN: CAMPOS DE BUSQUEDA-->
-	
-		<!-- INICIO: BOTONES BUSQUEDA -->
-		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
-			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
-		-->
-		<%  
-			String botones = "B,CON,L";
-						 
-		%>
-
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="menu.censo.gestionMedidadores.importar" />
+		
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
@@ -146,6 +176,7 @@
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
+
 
 </body>
 </html>

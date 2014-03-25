@@ -1,4 +1,4 @@
-<!-- mediadoresPestanas.jsp -->
+<!-- mediadoresImportPestanas.jsp -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +51,7 @@
 <div class="posicionPestanas">
 
 	<!-- Formulario de la lista de detalle multiregistro -->
-	<html:form action="/CEN_CargaMediadores.do" method="POST">
+	<html:form action="/JGR_EJG.do" method="POST">
 
 	<!-- Campo obligatorio -->
 	<html:hidden property = "modo" value = ""/>
@@ -60,7 +60,7 @@
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
 		<siga:PestanasExt 
-				pestanaId="MEDIADORES" 
+				pestanaId="MED_IMPORT" 
 				target="mainPestanas"
 				elementoactivo="<%=elementoActivo%>"
 	/>
