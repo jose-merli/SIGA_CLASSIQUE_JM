@@ -378,7 +378,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				if (!bancos.isEmpty()){
 					bancoMenorComision=((Row)bancos.firstElement()).getRow();
 					abonosBanco=adminAbono.getAbonosBancosMenorComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, fcs, "009");
+					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, "009", fcs);
 					if (nFicherosGenerados < 0) {
 						correcto = false;
 					} else {
