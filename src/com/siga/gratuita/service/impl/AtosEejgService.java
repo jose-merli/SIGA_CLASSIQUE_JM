@@ -300,7 +300,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 					
 					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 					mapParameters.put("idioma", formUnidadFamiliar.getPeticionEejg().getIdioma());
-					mapParameters.put("csv", formUnidadFamiliar.getPeticionEejg().getCsv());
+					String csv = "";
+					if(formUnidadFamiliar.getPeticionEejg().getCsv()!= null){
+						csv = formUnidadFamiliar.getPeticionEejg().getCsv();
+					}
+					mapParameters.put("csv",csv);
 					mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
 				}
 			}

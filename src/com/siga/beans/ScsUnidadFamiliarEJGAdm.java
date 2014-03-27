@@ -380,7 +380,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		htCodigos.put(new Integer(contador),ejg.getIdInstitucion());
 		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
 		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
-		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion ");
+		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion, eejg.csv ");
 		sql.append(" ,eejg.idioma ,eejg.fechaconsulta,TO_CHAR(eejg.fechapeticion,'DD/MM/YYYY') FECHAPETICION ");
 		sql.append(" ,USU.DESCRIPCION DESCRIPCIONUSUARIO,USU.NIF NIFUSUARIO ");
 		
@@ -420,10 +420,10 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		    	contador ++;
 				sql.append(contador);
 				htCodigos.put(new Integer(contador),unidadFamiliarForm.getPeticionEejg().getEstado());
-				sql.append(" or eejg.estado =:");
+				/*sql.append(" or eejg.estado =:");
 		    	contador ++;
 				sql.append(contador);
-				htCodigos.put(new Integer(contador), EEJG_ESTADO.PENDIENTE_INFO.getId());
+				htCodigos.put(new Integer(contador), EEJG_ESTADO.PENDIENTE_INFO.getId());*/
 				sql.append(")");
 	    	}else{
 	    		sql.append(" and eejg.estado =:");
