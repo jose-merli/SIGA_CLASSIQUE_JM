@@ -314,7 +314,14 @@
 					jQuery("#sexo").attr("disabled","disabled");
 					jQuery("#estadoCivil").attr("disabled","disabled");
 					jQuery("#lugarNacimiento").attr("disabled","disabled");
-					jQuery("#fechaNacimiento").attr("disabled","disabled");
+
+					//CR7 - Arreglo para la edicion/consulta del input fechaNacimiento
+					jQuery("#fechaNacimiento").removeClass("box").removeClass("editable");
+					jQuery("#fechaNacimiento").addClass("boxConsulta").addClass("noEditable");
+					jQuery("#fechaNacimiento").attr("readOnly", "readOnly").attr("disabled", "disabled");
+					jQuery("#fechaNacimiento-datepicker-trigger").hide();					
+					
+					
 				
 			}							
 		}		
@@ -340,8 +347,13 @@
 		jQuery("#sexo").removeAttr("disabled");
 		jQuery("#estadoCivil").removeAttr("disabled");
 		jQuery("#lugarNacimiento").removeAttr("disabled");
-		jQuery("#fechaNacimiento").removeAttr("disabled");
 		jQuery("#tratamiento").removeAttr("disabled");
+		
+		//CR7 - Arreglo para la edicion/consulta del input fechaNacimiento		
+		jQuery("#fechaNacimiento").removeClass("boxConsulta").removeClass("noEditable");
+		jQuery("#fechaNacimiento").addClass("box").addClass("editable");
+		jQuery("#fechaNacimiento").removeAttr("readOnly").removeAttr("disabled");
+		jQuery("#fechaNacimiento-datepicker-trigger").show();		
 
 		ponerIconoIdentPersona(false);
 	}	
@@ -874,8 +886,13 @@
 					jQuery("#sexo").removeAttr("disabled");
 					jQuery("#estadoCivil").removeAttr("disabled");
 					jQuery("#lugarNacimiento").removeAttr("disabled");
-					jQuery("#fechaNacimiento").removeAttr("disabled");
 					document.busquedaCensoModalForm.existeNIF.value = "";
+					
+					//CR7 - Arreglo para la edicion/consulta del input fechaNacimiento		
+					jQuery("#fechaNacimiento").removeClass("boxConsulta").removeClass("noEditable");
+					jQuery("#fechaNacimiento").addClass("box").addClass("editable");
+					jQuery("#fechaNacimiento").removeAttr("readOnly").removeAttr("disabled");
+					jQuery("#fechaNacimiento-datepicker-trigger").show();						
 				}
 			}
 			
@@ -937,7 +954,12 @@
 						jQuery("#sexo").attr("disabled","disabled");
 						jQuery("#estadoCivil").attr("disabled","disabled");
 						jQuery("#lugarNacimiento").attr("disabled","disabled");
-						jQuery("#fechaNacimiento").attr("disabled","disabled");
+						
+						//CR7 - Arreglo para la edicion/consulta del input fechaNacimiento
+						jQuery("#fechaNacimiento").removeClass("box").removeClass("editable");
+						jQuery("#fechaNacimiento").addClass("boxConsulta").addClass("noEditable");
+						jQuery("#fechaNacimiento").attr("readOnly", "readOnly").attr("disabled", "disabled");
+						jQuery("#fechaNacimiento-datepicker-trigger").hide();	
 					}
 					
 				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
@@ -980,9 +1002,13 @@
 		if (encontrado) {
 			document.getElementById("info_existe").src = "/SIGA/html/imagenes/encontrado.gif";
 			document.getElementById("info_existe").alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
+			document.getElementById("sexoSinAsterisco").className="labelText";
+			document.getElementById("sexoConAsterisco").className="ocultar";
 		}else {
 			document.getElementById("info_existe").src = "/SIGA/html/imagenes/nuevo.gif";
 			document.getElementById("info_existe").alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
+			document.getElementById("sexoConAsterisco").className="labelText";
+			document.getElementById("sexoSinAsterisco").className="ocultar";
 		}
 	} //ponerIconoIdentPersona ()
 
@@ -1119,7 +1145,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 						</td>				
 						<td>
-							<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Fecha>
+							<siga:Fecha styleId="fechaNacimiento" nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Fecha>
 						</td>
 					
 						<!-- LUGAR NACIMIENTO -->
@@ -1140,9 +1166,13 @@
 						</td>
 					
 						<!-- SEXO -->
-						<td class="labelText">
-							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)
-						</td>				
+						<td class="labelText" id="sexoSinAsterisco">
+							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" />&nbsp;
+						</td>
+						<td class="ocultar" id="sexoConAsterisco">
+							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" />&nbsp;(*)
+						</td>						
+
 						<td>
 						<% 
 							String ssexo = "";
@@ -1569,7 +1599,7 @@
 		   	return false;
 		}
 		
-		if (datosGeneralesForm.sexo.value=='0' || datosGeneralesForm.sexo.value==''){
+		if ((datosGeneralesForm.idPersona.value == "" || datosGeneralesForm.idPersona.value==null)  && (datosGeneralesForm.sexo.value=='0' || datosGeneralesForm.sexo.value=='')){
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>');
 		   	return false;
 		}
