@@ -1581,24 +1581,25 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					try {
 					    tx2.begin();
 						Row fila1 = (Row) rc1.get(i);
-
 						CenInstitucionBean cenInstitucionBean = institucionAdm.getInstitucion(fila1.getString("IDINSTITUCION"));
 						
 						// Nueva anotación de estado caducado + cambio de estado automático. Ya no se inserta alerta.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 
-						if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
-						    throw new ClsExceptions("1.Error al insertar anotacion. "+anotacionAdm.getError());
-						}
-				        ClsLogging.writeFileLog("1.Anotacion insertada.",7);
-				        if (!cambioEstadoAutomatico(expBean)) {
-				            throw new SIGAException("1.No se ha cambiado el estado. "+this.getError());
+				        if (expBean != null && expBean.getIdEstado() != null) {							
+							if (!anotacionAdm.insertarAnotacionAutomatica(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoVencido"))) {
+							    throw new ClsExceptions("1.Error al insertar anotacion. "+anotacionAdm.getError());
+							}
+					        ClsLogging.writeFileLog("1.Anotacion insertada.",7);
+					        if (!cambioEstadoAutomatico(expBean)) {
+					            throw new SIGAException("1.No se ha cambiado el estado. "+this.getError());
+					        }
+					        ClsLogging.writeFileLog("1.Cambio de estado.",7);
+					        if (!this.update(expBean)) {
+					            throw new ClsExceptions("1.Error al actualizar expediente. "+this.getError());
+					        }
+					        ClsLogging.writeFileLog("1.Actualizado expediente.",7);
 				        }
-				        ClsLogging.writeFileLog("1.Cambio de estado.",7);
-				        if (!this.update(expBean)) {
-				            throw new ClsExceptions("1.Error al actualizar expediente. "+this.getError());
-				        }
-				        ClsLogging.writeFileLog("1.Actualizado expediente.",7);
 				        
 						tx2.commit();
 					}catch (SIGAException e) {
