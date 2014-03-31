@@ -912,6 +912,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			
 			String[] pestanasOcultas=new String [1];
+			
+			// jbd // 12124 // Un no colegiado tiene que tener la institucion CGAE
+			idInstitucion = Integer.toString(ClsConstants.INSTITUCION_CGAE);
+			
 			String tipoCliente = clienteAdm.getTipoCliente(new Long(idPersona), new Integer(idInstitucion));
 			
 			if (tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO) || tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
@@ -919,7 +923,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}else{
 				
 			  
-				//tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
 				CenPersonaAdm admPer = new CenPersonaAdm(this.getUserBean(request));
 				CenPersonaBean beanPer = admPer.getIdentificador(new Long(idPersona));
 				
@@ -1028,6 +1031,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			/*if (verFichaLetrado == null){
 				verFichaLetrado = miform.getVerFichaLetrado();
 			}*/
+			
+			// jbd // 12124 // Un no colegiado tiene que tener la institucion CGAE
+			idInstitucion = Integer.toString(ClsConstants.INSTITUCION_CGAE);
+			
 			if (verFichaLetrado!=null && verFichaLetrado.equals("1")){
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
 				elementoActivo="3";
