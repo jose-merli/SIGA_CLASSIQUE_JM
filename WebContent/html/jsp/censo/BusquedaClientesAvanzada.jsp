@@ -365,7 +365,7 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaNacimientoHasta"/>
 									</td>													
 									<td>
-										<siga:Fecha  nombreCampo= "fechaNacimientoHasta" valorInicial="<%=fechaNacimientoHasta%>" campoCargarFechaDesde="fechaNacimientoDesde"/>										
+										<siga:Fecha  nombreCampo= "fechaNacimientoHasta" valorInicial="<%=fechaNacimientoHasta%>"/>										
 									</td>
 								</tr>
 								
@@ -564,7 +564,7 @@
 												<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacionHasta"/>
 											</td>
 											<td>
-												<siga:Fecha nombreCampo= "fechaIncorporacionHasta" valorInicial="<%=fechaIncorporacionHasta%>" campoCargarFechaDesde="fechaIncorporacionDesde"/>
+												<siga:Fecha nombreCampo= "fechaIncorporacionHasta" valorInicial="<%=fechaIncorporacionHasta%>"/>
 											</td>
 										</tr>
 														
@@ -622,7 +622,7 @@
 										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaAltaHasta"/>
 									</td>
 									<td>
-										<siga:Fecha nombreCampo= "fechaAltaHasta" valorInicial="<%=fechaAltaHasta%>" campoCargarFechaDesde="fechaAltaDesde"/>
+										<siga:Fecha nombreCampo= "fechaAltaHasta" valorInicial="<%=fechaAltaHasta%>"/>
 									</td>
 								</tr>
 							</table>
