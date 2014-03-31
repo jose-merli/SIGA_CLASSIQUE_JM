@@ -114,9 +114,14 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("DefinirDocumentacionEJGForm",definirDocumentacionEJGForm );
 			
 			List<String> presentadorSelected = new ArrayList<String>();
-			
-				presentadorSelected.add(documentacionEjgVo.getIdPresentador());
+			presentadorSelected.add(documentacionEjgVo.getIdPresentador());
 			request.setAttribute("presentadorSelected",presentadorSelected );
+			String idPres="";
+			if(documentacionEjgVo.getIdPresentador()!= null){
+				idPres = documentacionEjgVo.getIdPresentador().substring(documentacionEjgVo.getIdPresentador().indexOf("_") + 1);
+			}
+			String paramsPresentadorJSON = "{\"idpresentador\":\""+idPres+"\"}";
+			request.setAttribute("paramsPresentadorJSON",paramsPresentadorJSON);
 			
 			List<String> idTipoDocumentoSelected = new ArrayList<String>();
 			idTipoDocumentoSelected.add(definirDocumentacionEJGForm.getIdTipoDocumento());
@@ -175,6 +180,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			List<String> presentadorSelected = new ArrayList<String>();
 			presentadorSelected.add(documentacionEjgVo.getIdPresentador());
 			request.setAttribute("presentadorSelected",presentadorSelected );
+			String idPres="";
+			if(documentacionEjgVo.getIdPresentador()!= null){
+				idPres = documentacionEjgVo.getIdPresentador().substring(documentacionEjgVo.getIdPresentador().indexOf("_") + 1);
+			}
+			String paramsPresentadorJSON = "{\"idpresentador\":\""+idPres+"\"}";
+			request.setAttribute("paramsPresentadorJSON",paramsPresentadorJSON);
 			
 			List<String> idTipoDocumentoSelected = new ArrayList<String>();
 			idTipoDocumentoSelected.add(definirDocumentacionEJGForm.getIdTipoDocumento());
@@ -246,6 +257,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("presentadorSelected",new ArrayList<String>() );
 			request.setAttribute("idTipoDocumentoSelected",new ArrayList<String>() );
 			request.setAttribute("idTipoDocumentoJson", "") ;
+			String paramsPresentadorJSON = "{\"idpresentador\":\"-1\"}";
+			request.setAttribute("paramsPresentadorJSON",paramsPresentadorJSON);
 			request.setAttribute("idDocumentoSelected",new ArrayList<String>() );
 			request.setAttribute("accionModo", "editar");
 			miForm.setModo("insertar");

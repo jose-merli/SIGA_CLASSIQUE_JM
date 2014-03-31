@@ -71,6 +71,7 @@
 	<bean:define id="presentadorSelected" name="presentadorSelected" type="java.util.List"	 scope="request" />
 	<bean:define id="idTipoDocumentoSelected" name="idTipoDocumentoSelected" type="java.util.List"	 scope="request" />
 	<bean:define id="idDocumentoSelected" name="idDocumentoSelected" type="java.util.List"	 scope="request" />
+	<bean:define id="paramsPresentadorJSON" name="paramsPresentadorJSON" type="java.lang.String" scope="request" />
 	
 
 		
@@ -146,13 +147,13 @@
 		<td colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
-					<siga:Select id="idPresentador" queryId="getPresentador"   required="true" width="300"   />
+					<siga:Select id="idPresentador" queryId="getPresentador" queryParamId="idpresentador" params="${paramsPresentadorJSON}" required="true" width="300"   />
 				</c:when>
 				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="idPresentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"  required="true" disabled="true"  width="300"   />
+					<siga:Select id="idPresentador" queryId="getPresentador" queryParamId="idpresentador" params="${paramsPresentadorJSON}" selectedIds="${presentadorSelected}"  required="true" disabled="true"  width="300"   />
 				</c:when>
 				<c:otherwise>
-					<siga:Select id="idPresentador" queryId="getPresentador"  selectedIds="${presentadorSelected}"   required="true" width="300"  />
+					<siga:Select id="idPresentador" queryId="getPresentador" queryParamId="idpresentador" params="${paramsPresentadorJSON}" selectedIds="${presentadorSelected}"   required="true" width="300"  />
 				</c:otherwise>
 			</c:choose>
 				
