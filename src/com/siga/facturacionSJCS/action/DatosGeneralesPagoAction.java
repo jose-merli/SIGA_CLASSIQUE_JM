@@ -1464,112 +1464,69 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	protected void generarAbonos(String idInstitucion, String idPago,
-			HttpServletRequest request, Vector colegiadosMarcados)
-			throws ClsExceptions, SIGAException {
-
+	protected void generarAbonos(String idInstitucion, String idPago, HttpServletRequest request, Vector colegiadosMarcados)
+			throws ClsExceptions, SIGAException
+	{
 		// Controles
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(usr);
-		Hashtable importes = new Hashtable();
+		Hashtable importes;
 
 		// variables para hacer el calculo del importe final a pagar
-		String idPersonaDestino = "";
-		double importeSJCS = 0.0d;
-		double importeTurnos = 0.0d, importeGuardias = 0.0d, importeSoj = 0.0d, importeEjg = 0.0d;
-		double importeMovimientos = 0.0d, importeRetenciones = 0.0d;
-		double importeIrpfTotal = 0.0d;
-		double importeBruto = 0.0d;
-		double importeNeto = 0.0d;
+		String idPersonaDestino, idPersona;
+		double importeTurnos, importeGuardias, importeSoj, importeEjg, importeMovimientos, importeRetenciones, importeIrpfTotal, totalFinal;
 		RowsContainer rc;
-		Hashtable result = new Hashtable();
-
-		String idCuenta = null;
+		String sql;
+		String idCuenta;
 
 		// Recuperamos los colegiados a los que tenemos que pagar
 		// aquellos incluidos en el pago o con movimientos varios pendientes
-		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion,
-				idPago,FcsPagosJGAdm.listaPagoTodos);
+		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion, idPago, FcsPagosJGAdm.listaPagoTodos);
 
 		for (Iterator iter = colegiados.iterator(); iter.hasNext();) {
 			// recupera el colegiado
-			String idPersona = UtilidadesHash.getString(
-					(Hashtable) iter.next(), "IDPERSONA_SJCS");
-
-			String sql = pagoAdm.getQueryDetallePagoColegiado(idInstitucion,
-					idPago, idPersona, false, usr.getLanguage());
+			idPersona = UtilidadesHash.getString((Hashtable) iter.next(), "IDPERSONA_SJCS");
+			sql = pagoAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false, usr.getLanguage());
 
 			rc = new RowsContainer();
 			rc.find(sql);
+			if (rc == null)
+				throw new ClsExceptions("DatosGeneralesPagoAction.generarAbonos > error al recuperar el pago");
+			if (rc.size() <= 0)
+				throw new ClsExceptions("DatosGeneralesPagoAction.generarAbonos > error al recuperar el pago");
+			
+			Row r = (Row) rc.get(0);
+			
+			importeTurnos = Double.valueOf(r.getString("IMPORTETOTALOFICIO")).doubleValue();
+			importeGuardias = Double.valueOf(r.getString("IMPORTETOTALASISTENCIA")).doubleValue();
+			importeSoj = Double.valueOf(r.getString("IMPORTETOTALSOJ")).doubleValue();
+			importeEjg = Double.valueOf(r.getString("IMPORTETOTALEJG")).doubleValue();
+			importeMovimientos = Double.valueOf(r.getString("IMPORTETOTALMOVIMIENTOS")).doubleValue();
+			importeIrpfTotal = Double.valueOf(r.getString("TOTALIMPORTEIRPF")).doubleValue();
+			importeRetenciones = Double.valueOf(r.getString("IMPORTETOTALRETENCIONES")).doubleValue();
+			totalFinal = Double.valueOf(r.getString("TOTALFINAL")).doubleValue();
 
-			if (rc != null && rc.size() > 0) {
-
-				Row r = (Row) rc.get(0);
-				result.putAll(r.getRow());
-
-				importeTurnos = Double.valueOf(
-						r.getString("IMPORTETOTALOFICIO")).doubleValue();
-
-				importeGuardias = Double.valueOf(
-						r.getString("IMPORTETOTALASISTENCIA")).doubleValue();
-
-				importeSoj = Double.valueOf(r.getString("IMPORTETOTALSOJ"))
-						.doubleValue();
-
-				importeEjg = Double.valueOf(r.getString("IMPORTETOTALEJG"))
-						.doubleValue();
-
-				importeSJCS = Double.valueOf(r.getString("TOTALIMPORTESJCS"))
-						.doubleValue();
-
-				importeMovimientos = Double.valueOf(
-						r.getString("IMPORTETOTALMOVIMIENTOS")).doubleValue();
-
-				importeBruto = importeSJCS + importeMovimientos;
-
-				importeIrpfTotal = Double.valueOf(
-						r.getString("TOTALIMPORTEIRPF")).doubleValue();
-
-				importeNeto = importeBruto + importeIrpfTotal;
-
-				importeRetenciones = Double.valueOf(
-						r.getString("IMPORTETOTALRETENCIONES")).doubleValue();
-
-				idPersonaDestino = r.getString("IDPERDESTINO");
-
-				idCuenta = r.getString("IDCUENTA") == null ? "" : r
-						.getString("IDCUENTA");
-
-			}
+			idPersonaDestino = r.getString("IDPERDESTINO");
+			idCuenta = r.getString("IDCUENTA") == null ? "" : r.getString("IDCUENTA");
 
 			// 6. Generar abono si corresponde
-			if (importeNeto - Math.abs(importeRetenciones) < 0)
+			if (totalFinal < 0)
 				throw new SIGAException("DatosGeneralesPagoAction.generarAbonos() Importe final de abono negativo: hay que revisar el proceso.");
 			
 			try {
-				// consultamos la cuenta
-				// CenClienteAdm clienteAdm = new CenClienteAdm (usr);
-
 				// Guardamos los importes:
+				importes = new Hashtable();
 				importes.put("importeTurnos", String.valueOf(importeTurnos));
-				importes.put("importeGuardias",
-						String.valueOf(importeGuardias));
+				importes.put("importeGuardias",	String.valueOf(importeGuardias));
 				importes.put("importeSoj", String.valueOf(importeSoj));
 				importes.put("importeEjg", String.valueOf(importeEjg));
-				importes.put("importeMovimientos",
-						String.valueOf(importeMovimientos));
-				importes.put("importeRetenciones",
-						String.valueOf(importeRetenciones));
+				importes.put("importeMovimientos", String.valueOf(importeMovimientos));
+				importes.put("importeRetenciones", String.valueOf(importeRetenciones));
 
 				// Creamos el Abono:
-				this.crearAbonos(idPersonaDestino, idCuenta, request,
-						colegiadosMarcados, idPersonaDestino, idPago,
-						idInstitucion, importes, importeIrpfTotal,
-						idPersona);
+				this.crearAbonos(idPersonaDestino, idCuenta, request, colegiadosMarcados, idPersonaDestino, idPago,	idInstitucion, importes, importeIrpfTotal, idPersona);
 			} catch (Exception e) {
-				throw new ClsExceptions(e,
-						"DatosGeneralesPagoAction.generarAbonos");
+				throw new ClsExceptions(e, "DatosGeneralesPagoAction.generarAbonos");
 			}
 		} // fin del for de colegiados
 
