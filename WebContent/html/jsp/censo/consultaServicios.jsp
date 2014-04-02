@@ -263,8 +263,8 @@ String app = request.getContextPath();
 <%
 		String tamanosCol="";
 		String nombresCol="";
-		tamanosCol="7,6,15,9,20,6";
-		nombresCol="cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
+		tamanosCol="7,6,24,9,6,10,7,7,7,7,10";
+		nombresCol="cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,gratuita.listarTurnos.literal.fechaAlta,censo.consultaDatos.literal.fechaBaja,";
 %>
 
 		<siga:Table 	 
@@ -320,8 +320,8 @@ String app = request.getContextPath();
 				idCuenta = "&nbsp";
 			} else if (!idCuenta.equals("-")) {
 				idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
-			}			
-			
+			}	
+
 			String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get("CANTIDAD"));
 			String precio = (String) registro.get("VALOR");
 			//String iva = ((String) registro.get("PORCENTAJEIVA"))==null?"0":(String) registro.get("PORCENTAJEIVA");
@@ -366,6 +366,7 @@ String app = request.getContextPath();
 				if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado.equals(ClsConstants.PRODUCTO_PENDIENTE)) && idFormaPago.equals(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString())) {
 					boton = true;
 				}
+
 			}
 			
 			String idTipoProducto = (String) registro.get("IDTIPOPRODUCTO");
@@ -389,6 +390,19 @@ String app = request.getContextPath();
 				// formateo
 				fechaEfectiva = GstDate.getFormatedDateShort(usr.getLanguage(),fechaEfectiva);
 			}
+			
+			//Fecha Baja
+			String fechaBaja = (String) registro.get("FECHABAJA");
+			if (fechaBaja==null || fechaBaja.equals("")) {
+				fechaBaja = "&nbsp;";
+			} else {
+				// formateo
+				fechaBaja = GstDate.getFormatedDateShort(usr.getLanguage(),fechaBaja);
+			}
+			
+			//Si el modo de pago es domiciliación bancaria se muestra también el botón de consulta
+			if(Integer.parseInt(idFormaPago)==20)
+				botones = "C, " + botones;	
 %>
 			<!-- REGISTRO  -->
 			<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -417,6 +431,7 @@ String app = request.getContextPath();
 				<input type="hidden" id="oculto<%=cont %>_11" name="oculto<%=cont %>_11" value="<%=precio %>">
 				<input type="hidden" id="oculto<%=cont %>_12" name="oculto<%=cont %>_12" value="<%=iva %>"/>
 				<input type="hidden" id="oculto<%=cont %>_13" name="oculto<%=cont %>_13" value="<%=fechaEfectiva %>"/>
+				<input type="hidden" id="oculto<%=cont %>_14" name="oculto<%=cont %>_14" value="<%=fechaBaja %>"/>
 					<%=fecha %>
 				</td>
 				<td>
@@ -432,9 +447,6 @@ String app = request.getContextPath();
 					<% } %>
 					
 				</td>
-				<td>
-					<%=idCuenta %>
-				</td>
 				<td align="right">
 					<%=cantidad %>
 				</td>
@@ -449,6 +461,9 @@ String app = request.getContextPath();
 				</td>
 				<td>
 					<%=fechaEfectiva%>
+				</td>
+				<td>
+					<%=fechaBaja%>
 				</td>
 			</siga:FilaConIconos>		
 
@@ -471,6 +486,7 @@ String app = request.getContextPath();
 					<input type="hidden" id="oculto<%=cont %>_11" name="oculto<%=cont %>_11" value="<%=precio %>">
 					<input type="hidden" id="oculto<%=cont %>_12" name="oculto<%=cont %>_12" value="<%=iva %>"/>
 					<input type="hidden" id="oculto<%=cont %>_13" name="oculto<%=cont %>_13" value="<%=fechaEfectiva %>"/>
+					<input type="hidden" id="oculto<%=cont %>_14" name="oculto<%=cont %>_14" value="<%=fechaBaja %>"/>
 					<%=fecha %>
 				</td>
 				<td>
@@ -484,9 +500,6 @@ String app = request.getContextPath();
 					<% if (bAnticipado) { %>
 						<b><siga:Idioma key="censo.servicios.literal.marcaAnticipado"/></b>
 					<% } %>
-				</td>
-				<td>
-					<%=idCuenta %>
 				</td>
 				<td align="right">
 					<%=cantidad %>
@@ -502,6 +515,9 @@ String app = request.getContextPath();
 				</td>
 				<td>
 					<%=fechaEfectiva%>
+				</td>
+				<td>
+					<%=fechaBaja%>
 				</td>
 			</siga:FilaConIconos>		
 

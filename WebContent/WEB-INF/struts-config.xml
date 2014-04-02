@@ -963,6 +963,7 @@
 			<forward name="abrirAbonos" path="/html/jsp/censo/consultaAbonos.jsp"/>
 			<forward name="modificarProducto" path="/html/jsp/censo/datosProductosSolicitados.jsp"/>
 			<forward name="modificarServicio" path="/html/jsp/censo/datosServiciosSolicitados.jsp"/>
+			<forward name="verServicio" path="/html/jsp/censo/datosServiciosSolicitados.jsp"/>
 			<forward name="abrirSolicitud" path="/CEN_SolicitudFacturacion.do"/>
 			<forward name="editarCambiarFecha" path="/html/jsp/censo/cambioFechaEfectiva.jsp"/>
 		</action>

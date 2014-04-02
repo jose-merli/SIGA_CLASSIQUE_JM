@@ -354,6 +354,7 @@ public class DatosFacturacionAction extends MasterAction {
 				aux.add((String)fila.get(3));
 				aux.add((String)fila.get(4));
 				request.setAttribute("CenDatosFormaPagoServicios",aux);
+				request.setAttribute("modo","editar");
 				salida = "modificarServicio";
 			}
 			
@@ -1491,6 +1492,121 @@ public class DatosFacturacionAction extends MasterAction {
 			salida = this.exitoModal("messages.updated.success",request);
 	   } 	catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
+   	   }
+
+		return salida;
+
+	}
+	
+	/**
+	 * Metodo que implementa el modo ver
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String ver (ActionMapping mapping, 		
+							MasterForm formulario, 
+							HttpServletRequest request, 
+							HttpServletResponse response) throws SIGAException 
+	{
+		String salida = "";
+		try {
+
+			DatosFacturacionForm miform = (DatosFacturacionForm)formulario;
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+			// obtengo el identificador de cuenta
+			Vector fila = miform.getDatosTablaOcultos(0);
+			
+			String tipo = miform.getPos();
+
+			if (tipo!=null && tipo.equals("P")) {
+				miform.setIdInstitucion((String)fila.get(0));			
+				miform.setIdPersona((String)fila.get(4));
+			} else {
+				miform.setIdInstitucion((String)fila.get(1));			
+				miform.setIdPersona((String)fila.get(6));
+			}
+			// para saber si es colegiado
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+			CenColegiadoBean beanCol = admCol.getDatosColegiales(new Long(miform.getIdPersona()), new Integer(miform.getIdInstitucion()));
+			String tipoColegiado = clienteAdm.getTipoCliente(beanCol);
+			if (!tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
+				// es colegiado
+				// obtengo sus datos colegiales para coger el numero de colegiado
+				String nocol = admCol.getIdentificadorColegiado(beanCol);
+				if (!nocol.equals("")) {
+					request.setAttribute("CenDatosGeneralesNoColegiado",nocol);
+				}
+			}
+
+			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO)) {
+				tipoColegiado = "censo.tipoCliente.colegiado";
+			} else 
+			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
+				tipoColegiado = "censo.tipoCliente.noColegiado";
+			} else 
+			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+				tipoColegiado = "censo.tipoCliente.colegiadoBaja";
+			} 
+			request.setAttribute("CenDatosGeneralesColegiado",tipoColegiado);
+
+			// nombre y apellidos
+			String nombreApellidos = "";
+			Vector v = clienteAdm.getDatosPersonales(new Long(miform.getIdPersona()),new Integer(miform.getIdInstitucion()));
+			if (v!=null && v.size()>0) {
+				Hashtable registro =  (Hashtable)v.get(0);
+				if (registro.get("NOMBRE")!=null) nombreApellidos += (String) registro.get("NOMBRE") + "&nbsp;"; 
+				if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) nombreApellidos += (String) registro.get("APELLIDOS1") + "&nbsp;"; 
+				if (registro.get("APELLIDOS2")!=null) nombreApellidos += (String) registro.get("APELLIDOS2") + "&nbsp;"; 
+			}
+			request.setAttribute("CenDatosGeneralesNombreApellidos",nombreApellidos);
+
+			// servicios
+			Hashtable hash= new Hashtable();
+			hash.put(PysServiciosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
+			hash.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
+			hash.put(PysServiciosSolicitadosBean.C_IDPETICION,(String)fila.get(5));
+			hash.put(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS,(String)fila.get(2));
+			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIO,(String)fila.get(3));
+			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,(String)fila.get(4));
+			String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
+			String idFormaPago = (String)fila.get(7);
+			hash.put(PysServiciosSolicitadosBean.C_IDFORMAPAGO,idFormaPago);
+
+			//Tratamiento por si no hay cuenta seleccionada. En sesion meto "" y al JSP la primera opcion: 0.
+			if (idFormaPago.equals(idFormaPagoCuenta)) {
+				String idcuenta = "";
+				if (fila.get(8)!=null && !((String)fila.get(8)).equals("0"))
+					idcuenta = (String)fila.get(8);
+				hash.put(PysServiciosSolicitadosBean.C_IDCUENTA,idcuenta);
+			}
+
+			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
+			request.getSession().setAttribute("DATABACKUP",hash);
+			
+			request.setAttribute("CenDatosIdFormaPagoSel",(String)fila.get(7));
+			request.setAttribute("CenDatosIdCuentaSel",(String)fila.get(8));
+			request.setAttribute("CenDatosIdPeticion",(String)fila.get(9));
+			request.setAttribute("CenFechaEfectiva",(String)fila.get(12));
+
+			Vector aux = new Vector();
+			aux.add((String)fila.get(1));
+			aux.add((String)fila.get(2));
+			aux.add((String)fila.get(3));
+			aux.add((String)fila.get(4));
+			request.setAttribute("CenDatosFormaPagoServicios",aux);
+			request.setAttribute("modo","ver");
+			salida = "verServicio";
+	
+			
+	   } 	catch (Exception e) {
+
+		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 
 		return salida;

@@ -1026,7 +1026,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		sql.append(", ");	
 		sql.append(PysServiciosSolicitadosBean.C_IDFORMAPAGO);
 		sql.append(", ");	
-		sql.append(" FORMAPAGO, FECHAEFEC, CONCEPTO, SOLICITARBAJA, ESTAFACTURADO, NCUENTA ");
+		sql.append(" FORMAPAGO, FECHAEFEC, FECHABAJA, CONCEPTO, SOLICITARBAJA, ESTAFACTURADO, NCUENTA ");
 		sql.append(" FROM ( " ); 
 		
 		
@@ -1080,12 +1080,17 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 
 								
 		// Fecha Efectiva:
-	    sql.append("NVL(" );
-	    sql.append( PysSuscripcionBean.T_NOMBRETABLA); sql.append("."); sql.append(PysSuscripcionBean.C_FECHABAJA  );
-	    sql.append(",");
+	    //sql.append("NVL(" );
+	    //sql.append( PysSuscripcionBean.T_NOMBRETABLA); sql.append("."); sql.append(PysSuscripcionBean.C_FECHABAJA  );
+	    //sql.append(",");
 	    sql.append( PysSuscripcionBean.T_NOMBRETABLA);sql.append(".");sql.append(PysSuscripcionBean.C_FECHASUSCRIPCION );
-	    sql.append("  ) AS FECHAEFEC, " );
-
+	    //sql.append("  ) AS FECHAEFEC, " );
+	    sql.append(" AS FECHAEFEC, ");
+	    
+	    // Fecha Baja
+	    sql.append( PysSuscripcionBean.T_NOMBRETABLA); sql.append("."); sql.append(PysSuscripcionBean.C_FECHABAJA  );
+	    sql.append(" AS FECHABAJA, ");
+	    
 		// Concepto
 		sql.append(	"(SELECT ");sql.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 		sql.append("."); 
@@ -1322,6 +1327,15 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			sql.append(":"+contador);
 			sql.append( " AND ");
 			sql.append( " FECHAEFEC > SYSDATE )");
+			
+			//Para que saque los servicios que están de baja pero con fecha de baja en el futuro
+			sql.append( " OR ( ");  
+			sql.append(PysServiciosSolicitadosBean.C_ACEPTADO); sql.append(" = "); 
+			contador++;
+			codigos.put(new Integer(contador),distintoCampoAceptado);
+			sql.append(":"+contador);
+			sql.append( " AND ");
+			sql.append( " FECHABAJA > SYSDATE )");
 		}
 		
 		sql.append(" ORDER BY ");
