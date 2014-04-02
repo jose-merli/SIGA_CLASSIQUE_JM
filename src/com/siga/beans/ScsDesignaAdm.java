@@ -1775,7 +1775,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			// consulta+=" order by des.idturno, des.anio desc, des.numero desc";
 			consulta+=" order by des.anio desc, des.codigo desc";
 
-			return this.selectGenericoBind(consulta, codigosBind);	
+			return this.selectGenericoNLSBind(consulta, codigosBind);	
       
 		} catch (Exception e) { 	
 			throw new ClsExceptions(e,"Error obteniendo clientes colegiados"); 
