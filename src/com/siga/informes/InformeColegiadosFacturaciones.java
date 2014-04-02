@@ -69,6 +69,19 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 		Hashtable htFacturacion=null;
 		FcsFacturacionJGAdm factAdm = new FcsFacturacionJGAdm(usr);
 		htFacturacion = factAdm.obtenerDetalleFacturacion(institucion, idFacturacion, idPersona);
+		
+		String fechaInicio = (String) htFacturacion.get("FECHADESDE");	
+		String fechaFin = (String) htFacturacion.get("FECHAHASTA");
+
+		htFacturacion.put("DIAFECHAINICIO", fechaInicio.substring(0,2));
+		htFacturacion.put("MESFECHAINICIO", fechaInicio.substring(3,5));
+		htFacturacion.put("ANIOFECHAINICIO", fechaInicio.substring(6,10));
+	
+		htFacturacion.put("DIAFECHAFIN", fechaFin.substring(0,2));
+		htFacturacion.put("MESFECHAFIN", fechaFin.substring(3,5));
+		htFacturacion.put("ANIOFECHAFIN", fechaFin.substring(6,10));
+		
+		
 		htDatos.putAll(htFacturacion);
 		
 		//Datos de las Asistencias

@@ -7,6 +7,9 @@
  */
 package com.siga.informes;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -132,7 +135,18 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//Datos del Pago y Totales
 		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr,idPerDestino);
-		
+	
+		String fechaInicio = (String) htAux.get("FECHA_INICIO");	
+		String fechaFin = (String) htAux.get("FECHA_FIN");
+
+		htAux.put("DIAFECHAINICIO", fechaInicio.substring(0,2));
+		htAux.put("MESFECHAINICIO", fechaInicio.substring(3,5));
+		htAux.put("ANIOFECHAINICIO", fechaInicio.substring(6,10));
+	
+		htAux.put("DIAFECHAFIN", fechaFin.substring(0,2));
+		htAux.put("MESFECHAFIN", fechaFin.substring(3,5));
+		htAux.put("ANIOFECHAFIN", fechaFin.substring(6,10));
+	
 		//Fecha actual con letra para mostrar en las cartas
 		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(idioma));
 		
@@ -833,9 +847,11 @@ public class InformeColegiadosPagos extends MasterReport {
 		int IRPF = 0;
 		
 		try {
-			// Porcentajes DEL PAGO
+			// Porcentajes DEL PAGO y periodo del pago
 			StringBuffer buf0 = new StringBuffer();
 			buf0.append("select PA.IMPORTEPAGADO, PA.NOMBRE NOMBRE_PAGO, ");
+			buf0.append("       TO_CHAR(PA.FECHADESDE, 'DD/MM/YYYY') AS FECHA_INICIO, ");
+			buf0.append("       TO_CHAR(PA.FECHAHASTA, 'DD/MM/YYYY') AS FECHA_FIN, ");
 			buf0.append("       DECODE(FA.IMPORTEOFICIO,0,'0',F_SIGA_FORMATONUMERO(PA.IMPORTEOFICIO * 100 / FA.IMPORTEOFICIO, 2)) PORCENTAJE_TURNOS, ");
 			buf0.append("       DECODE(FA.IMPORTEGUARDIA,0,'0',F_SIGA_FORMATONUMERO(PA.IMPORTEGUARDIA * 100 / FA.IMPORTEGUARDIA, 2)) PORCENTAJE_ASISTENCIA");
 			buf0.append("  from FCS_PAGOSJG PA, FCS_FACTURACIONJG FA");
