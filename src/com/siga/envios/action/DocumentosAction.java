@@ -17,6 +17,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -321,7 +324,7 @@ public class DocumentosAction extends MasterAction
 	        EnvDocumentosBean docBean = (EnvDocumentosBean)docAdm.selectByPKForUpdate(htPk).firstElement();
 	        boolean grabarOK = false;
 	    	
-	        if (form.getTheFile().getFileSize()>0){
+	        if (form.getTheFile()!=null && form.getTheFile().getFileSize()>0){       	
 	            docBean.setPathDocumento(form.getTheFile().getFileName());
 	            grabarOK = grabar(mapping, formulario, request, response);
 	        }	        
@@ -429,6 +432,14 @@ public class DocumentosAction extends MasterAction
 				  theFile.getContentType().equalsIgnoreCase("application/msword"))) {
 			    
 				throw new SIGAException("messages.envios.error.formatoPDFIncorrecto");
+			}
+		    
+	    	//CR7-INC_10354_SIGA. Comprobamos que el tamaño del archivo no supere cierto tamaño (en principio 5MB)
+        	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
+			if(theFile!=null && form.getTheFile().getFileSize()>Integer.parseInt(maxsize)){				
+				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
 			}
 			
 	        EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));
