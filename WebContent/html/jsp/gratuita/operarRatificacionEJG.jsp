@@ -489,6 +489,12 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
+			document.forms[0].reset();
+			document.forms[0].numeroCAJG.value = "";
+			document.forms[0].idPonente.value = "";
+			document.forms[0].idTipoRatificacionEJG.value = "";
+			document.forms[0].idFundamentoJuridico.value = "";
+			document.forms[0].fechaResolucionCAJG.value = "";
 			document.forms[0].action="./JGR_EJG.do";	
 			document.forms[0].modo.value="buscar";
 			document.forms[0].target="mainWorkArea"; 
