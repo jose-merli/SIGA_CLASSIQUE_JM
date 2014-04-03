@@ -33,7 +33,8 @@
 								<tr>
 									<td class="labelText"><siga:Idioma
 											key="administracion.informes.literal.archivo" /></td>
-									<td><html:file property="theFile" styleClass="boxCombo" style="width:500px;" />
+									<td>
+										<html:file property="theFile" styleClass="boxCombo" style="width:500px;" />
 									</td>
 									<td class="labelText">&nbsp;</td>
 
