@@ -581,7 +581,7 @@
 										}
 									} else { 
 %>
-										<siga:Select queryId="getTiposSeguros" id="cmbTipoSeguro" selectedIds="<%=arraySel%>"/>
+										<siga:Select queryId="getTiposSeguros" id="cmbTipoSeguro" selectedIds="<%=arraySel%>" width="430"/>
 <% 
 									} 
 %>												
