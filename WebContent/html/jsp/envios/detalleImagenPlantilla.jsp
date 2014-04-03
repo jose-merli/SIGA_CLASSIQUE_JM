@@ -108,59 +108,75 @@
 
 
 			<siga:ConjBotonesAccion botones="<%=botonesEdicion%>" modal="P"/>
-</html:form>					
-		<iframe name="submitArea"
-				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-				style="display: none"></iframe>
-				<script type="text/javascript">
+		</html:form>					
+		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
+		
+		<script type="text/javascript">
+		
+		capturarEnter();
+		
+		function capturarEnter(){
+			document.ImagenPlantillaForm.nombre.onkeypress = submitConTeclaEnter;
+		}
+		
+		function submitConTeclaEnter(){			
+			var keycode;
+			if (window.event)  {
+				keycode = window.event.keyCode;
+			}
+			if (keycode == 13) {
+				accionGuardarCerrar();
+				return false;
+			}
+		}
+		
+		//Asociada al boton GuardarCerrar
+		function accionGuardarCerrar(){
+			sub();				    
+			if(document.ImagenPlantillaForm.modo.value=='insertar'){
 				
-				//Asociada al boton GuardarCerrar
-				function accionGuardarCerrar() 
+				if (!TestFileType(document.ImagenPlantillaForm.theFile.value, ['JPG', 'GIF','PNG','BMP'])){
+					fin();
+					return false;
+				}
+				if(document.ImagenPlantillaForm.nombre.value=="")
 				{
-				    sub();
-					if(document.ImagenPlantillaForm.modo.value=='insertar'){
-						
-						if (!TestFileType(document.ImagenPlantillaForm.theFile.value, ['JPG', 'GIF','PNG','BMP'])){
-							fin();
-							return false;
-						}
-						if(document.ImagenPlantillaForm.nombre.value=="")
-						{
-							var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-			
-							alert (mensaje);
-							fin();
-							return false;
-						}
-						if(document.ImagenPlantillaForm.theFile.value=="")
-							{
-							var mensaje = "<siga:Idioma key="envios.imagenes.literal.archivo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-							alert (mensaje);
-							fin();
-							return false;
-						}
-						
-						
-					}else{
-						if(document.ImagenPlantillaForm.nombre.value=="")
-						{
-							var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-							alert (mensaje);
-							fin();
-							return false;
-						}
-					}
-					document.ImagenPlantillaForm.submit();
-					window.top.returnValue="MODIFICADO";
+					var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	
+					alert (mensaje);
+					fin();
+					return false;
+				}
+				if(document.ImagenPlantillaForm.theFile.value=="")
+					{
+					var mensaje = "<siga:Idioma key="envios.imagenes.literal.archivo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					alert (mensaje);
+					fin();
+					return false;
 				}
 				
-				//Asociada al boton Cerrar
-				function accionCerrar() 
-				{		
-					window.top.close();
+				
+			}else{
+				if(document.ImagenPlantillaForm.nombre.value=="")
+				{
+					var mensaje = "<siga:Idioma key="envios.imagenes.literal.nombre"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					alert (mensaje);
+					fin();
+					return false;
 				}
-				a.a();
-				</script>
+			}
+			
+			document.ImagenPlantillaForm.submit();
+			window.top.returnValue="MODIFICADO";
+		}
+		
+		//Asociada al boton Cerrar
+		function accionCerrar() 
+		{		
+			window.top.close();
+		}
+		
+		</script>
 				
 	</body>
 	
