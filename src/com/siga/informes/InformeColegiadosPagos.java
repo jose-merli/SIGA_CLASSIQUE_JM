@@ -439,6 +439,8 @@ public class InformeColegiadosPagos extends MasterReport {
 								" AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION AS ACTUACION, " +
 								" AAS.ANIO || '/' || AAS.NUMERO AS ASISTENCIA," +
 								" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) AS NUMEJGASISTENCIA, " +
+								" ASI.EJGANIO AS ASI_ANIOEJG, "+
+								" ASI.Ejgnumero AS ASI_NUMEJG, "+
 								" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 AS NOMBRE_ASISTIDO, " +							
 								" PJG.NOMBRE AS NOM_ASISTIDO, " +
 								" SUBSTR(TRIM(PJG.NOMBRE),1,1) AS ININOM_ASISTIDO, " +
@@ -525,6 +527,8 @@ public class InformeColegiadosPagos extends MasterReport {
 								" '' AS ACTUACION, " +
 								" ASI.ANIO || '/' || ASI.NUMERO AS ASISTENCIA, " +
 								" DECODE((ASI.EJGANIO || '/' || ASI.EJGNUMERO), '/', '', ASI.EJGANIO || '/' || ASI.EJGNUMERO) AS NUMEJGASISTENCIA, " +
+								" ASI.EJGANIO AS ASI_ANIOEJG, "+
+								" ASI.Ejgnumero AS ASI_NUMEJG, "+								
 								" PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 AS NOMBRE_ASISTIDO, " +
 								" PJG.NOMBRE AS NOM_ASISTIDO, " +
 								" SUBSTR(TRIM(PJG.NOMBRE),1,1) AS ININOM_ASISTIDO, " +
