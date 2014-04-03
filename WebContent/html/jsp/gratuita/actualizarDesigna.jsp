@@ -263,39 +263,36 @@
 										<input type="text" name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
 									</td>
 									<td width="40%">
-										<html:select styleId="juzgados" styleClass="boxCombo" style="width:500px;" property="idJuzgado">
+										<html:select styleId="juzgados" styleClass="boxCombo" style="width:445px;" property="idJuzgado">
 											<bean:define id="juzgados" name="MaestroDesignasForm" property="juzgados" type="java.util.Collection" />
 											<html:optionsCollection name="juzgados" value="idJuzgado" label="nombre" />
 										</html:select>
 									</td>
-						
 					</tr>
+
 					<tr>
-						
-						<td width="20%"  class="labelText"><siga:Idioma
-										key="gratuita.actuacionesDesigna.literal.modulo" /></td>
-						<td colspan="5">
-						<html:select styleId="modulos" styleClass="boxCombo" style="width:400px;"
-								property="idProcedimiento" >
-								<bean:define id="modulos" name="MaestroDesignasForm"
-									property="modulos" type="java.util.Collection" />
-									<html:optionsCollection name="modulos" value="idProcedimiento"
-										label="nombre" />
-								</html:select>
-						
+						<td width="20%"  class="labelText">
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
+						</td>
+						<td colspan="4">
+							<html:select styleId="modulos" styleClass="boxCombo" style="width:900px;" property="idProcedimiento" >
+								<bean:define id="modulos" name="MaestroDesignasForm" property="modulos" type="java.util.Collection" />
+								<html:optionsCollection name="modulos" value="idProcedimiento"	label="nombre" />
+							</html:select>
 						</td>
 					</tr>
+					
 					<tr>
 						
 						<td width="20%"  class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/></td>
 
 						<td>
-							<html:text name="MaestroDesignasForm" property="nig" styleId="nig"  styleClass="box" style="size:19;width:200px"/>
+							<html:text name="MaestroDesignasForm" property="nig" styleId="nig"  styleClass="box" style="width:200px" size="19"/>
 	
 						</td>			
 						<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 						</td>
-						<td colspan="3"></td>						
+						<td colspan="3">&nbsp;</td>						
 					</tr>
 					
 					<tr><td  colspan="6">&nbsp;</td></tr>
