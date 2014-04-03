@@ -838,7 +838,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			cabeceras[c_ORDENANTE].append(versionCuaderno); //version del cuaderno
 			cabeceras[c_ORDENANTE].append("001"); //numero de dato
 			cabeceras[c_ORDENANTE].append(completarEspacios("Nif", bEmisor.getNif(), "I", " ", 9, false)); //identificacion del ordenante
-			cabeceras[c_ORDENANTE].append(completarEspacios("Sufijo", sufijo, "I", " ", 3, true)); //sufijo
+			cabeceras[c_ORDENANTE].append(completarEspacios("Sufijo", sufijo, "D", "0", 3, true)); //sufijo
 			cabeceras[c_ORDENANTE].append(sFechaEnvio); //fecha de creacion del fichero
 			cabeceras[c_ORDENANTE].append(sFechaEmision); //fecha de ejecucion de ordenes (configurable en el futuro??)
 			cabeceras[c_ORDENANTE].append("A"); //identificador de la cuenta del ordenante
