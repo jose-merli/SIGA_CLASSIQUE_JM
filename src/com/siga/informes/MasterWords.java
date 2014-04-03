@@ -354,7 +354,7 @@ public class MasterWords
 		return doc;
 	}
 	
-	public Document sustituyeRegionDocumento(Document doc,String region,Vector dato)throws ClsExceptions
+	public Document sustituyeRegionDocumento(Document doc,String region,Vector dato) throws SIGAException, ClsExceptions
 	{
 		DataMailMergeDataSource dataMerge = new DataMailMergeDataSource(region,dato);
 		
@@ -363,6 +363,8 @@ public class MasterWords
 		    doc.getMailMerge().executeWithRegions(dataMerge);
 			//doc.save(rutaFinal+".doc");
 			
+		} catch (IllegalStateException ise){
+		    throw new SIGAException("messages.error.mail.badlyformed");
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar informe");
 		}

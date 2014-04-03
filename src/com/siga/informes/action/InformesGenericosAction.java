@@ -1002,7 +1002,7 @@ public class InformesGenericosAction extends MasterAction {
 			Document doc,
 			MasterWords words,
 			Hashtable datoscomunes)
-	throws ClsExceptions
+	throws SIGAException, ClsExceptions
 	{
 		//Variables
 		Vector datosconsulta;
@@ -1141,7 +1141,7 @@ public class InformesGenericosAction extends MasterAction {
 			Document doc,
 			MasterWords words,
 			Hashtable datoscomunes)
-	throws ClsExceptions
+	throws SIGAException, ClsExceptions
 	{
 		//Variables
 		Vector datosconsulta;
