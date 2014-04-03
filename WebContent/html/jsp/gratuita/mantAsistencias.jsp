@@ -93,6 +93,21 @@
     String horaAsistencia = simpleDateFormat.format(fechaHoraDate);
     simpleDateFormat.applyPattern("mm");
     String minutoAsistencia = simpleDateFormat.format(fechaHoraDate);
+    
+    //CR7 - Nuevo campo fecha solicitud
+	String fechaSolicitud  = GstDate.getFormatedDateShort("",(String) hash.get("FECHASOLICITUD"));
+	String horaSolicitud   = "";
+	String minutoSolicitud = "";
+	if(fechaSolicitud != null && !fechaSolicitud.equals("")){
+		simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+		fechaHoraDate = simpleDateFormat.parse((String) hash.get("FECHASOLICITUD"));
+		simpleDateFormat.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+	    simpleDateFormat.applyPattern("HH");
+	    horaSolicitud = simpleDateFormat.format(fechaHoraDate);
+	    simpleDateFormat.applyPattern("mm");
+	    minutoSolicitud = simpleDateFormat.format(fechaHoraDate);
+	}
+
 	String FECHACIERRE 			= GstDate.getFormatedDateShort("",(String) hash.get("FECHACIERRE"));
 	String OBSERVACIONES		= (String) hash.get("OBSERVACIONES");
 	String INCIDENCIAS 			= (String) hash.get("INCIDENCIAS");
@@ -480,6 +495,16 @@
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 							<tr>
 								<td class="labelText" width="110px">	
+									<siga:Idioma key='gratuita.mantAsistencias.literal.fsolicitud'/>
+								</td>
+								<td class="labelTextValor" width="220px">
+									<siga:Fecha  nombreCampo= "fechaSolicitud" valorInicial="<%=fechaSolicitud%>"/>	&nbsp;
+									<html:text property="horaSolicitud" size="2" maxlength="2" styleClass="box" value="<%=horaSolicitud %>" style="text-align:center" />
+									:
+									<html:text property="minutoSolicitud" size="2" maxlength="2" styleClass="box" value="<%=minutoSolicitud %>" style="text-align:center" />
+								</td>
+					
+								<td class="labelText" width="120px">	
 									<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>
 								</td>
 								<td class="labelTextValor" width="120px">	
@@ -495,7 +520,10 @@
 									<%}else{%>
 										<%=FECHACIERRE%>
 									<%}%>
-								</td>
+								</td>								
+								
+							</tr>
+							<tr>
 								
 								<td class="labelText" width="50px">
 									<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
@@ -1045,7 +1073,54 @@
 					return false;
 				}
 				
-			}			
+			}
+			
+            ///***  VALIDACION FECHA SOLICITUD  ***///
+	          
+          	//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
+			var horasSol = trim(document.forms[0].horaSolicitud.value);
+			var minutosSol = trim(document.forms[0].minutoSolicitud.value);
+
+			if (horasSol.length==1) {
+				document.forms[0].horaSolicitud.value = "0" + horasSol;
+			}
+			
+			if (minutosSol.length==1) {
+				document.forms[0].minutoSolicitud.value = "0" + minutosSol;
+			}
+			
+			if (horasSol!="" && (horasSol>23 || horasSol<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			
+			if (minutosSol!="" && (minutosSol>59 || minutosSol<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			
+			valor = trim(document.forms[0].horaSolicitud.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+            
+			valor = trim(document.forms[0].minutoSolicitud.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+            
+            if (document.forms[0].fechaSolicitud.value == "" && (document.forms[0].minutoSolicitud.value !="" || document.forms[0].horaSolicitud.value != "")) {
+            	alert ("<siga:Idioma key='messages.general.error.horasinfecha'/>");
+            	fin();
+            	return false;
+			}
+
 			
 			var fecha = "<%=FECHAHORA%>";
 			var fechaCierre = document.forms[0].fechaCierre.value;

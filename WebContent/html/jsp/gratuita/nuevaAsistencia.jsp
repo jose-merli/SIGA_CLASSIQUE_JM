@@ -242,6 +242,24 @@
 					<html:text property="minutoAsistencia" size="2" maxlength="2" styleClass="box" value="" style="text-align:center" />
 				</td>
 			</tr>
+			
+			<tr>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantAsistencias.literal.fsolicitud'/>&nbsp;
+				</td>	
+				<td>
+				 	<siga:Fecha nombreCampo="fechaSolicitud" ></siga:Fecha>
+				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key='gratuita.nuevaAsistencia.literal.hora'/>&nbsp;
+				</td>
+				<td>
+					<html:text property="horaSolicitud" size="2" maxlength="2" styleClass="box" value="" style="text-align:center" />
+					:
+					<html:text property="minutoSolicitud" size="2" maxlength="2" styleClass="box" value="" style="text-align:center" />
+				</td>
+			</tr>			
 		
 			<tr style="display:none">
 				<td class="labelText">
@@ -388,6 +406,8 @@
 				return false;
 			}
 			
+			///***  VALIDACION FECHA HORA  ***///
+			
 			//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
 			var horas = trim(document.forms[1].horaAsistencia.value);
 			var minutos = trim(document.forms[1].minutoAsistencia.value);
@@ -422,6 +442,52 @@
 			valor = trim(document.forms[1].minutoAsistencia.value);
             if (valor!="" && !isNumero(valor)) {
             	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+            
+            ///***  VALIDACION FECHA SOLICITUD  ***///
+          
+          	//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
+			var horasSol = trim(document.forms[1].horaSolicitud.value);
+			var minutosSol = trim(document.forms[1].minutoSolicitud.value);
+
+			if (horasSol.length==1) {
+				document.forms[1].horaSolicitud.value = "0" + horasSol;
+			}
+			
+			if (minutosSol.length==1) {
+				document.forms[1].minutoSolicitud.value = "0" + minutosSol;
+			}
+			
+			if (horasSol!="" && (horasSol>23 || horasSol<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			
+			if (minutosSol!="" && (minutosSol>59 || minutosSol<0)) {
+				alert("<siga:Idioma key='messages.general.error.hora'/>");
+				fin();
+				return false;
+			}
+			
+			valor = trim(document.forms[1].horaSolicitud.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+            
+			valor = trim(document.forms[1].minutoSolicitud.value);
+            if (valor!="" && !isNumero(valor)) {
+            	alert ("<siga:Idioma key='messages.general.error.hora'/>");
+            	fin();
+            	return false;
+			}
+            
+            if (document.forms[1].fechaSolicitud.value == "" && (document.forms[1].minutoSolicitud.value !="" || document.forms[1].horaSolicitud.value != "")) {
+            	alert ("<siga:Idioma key='messages.general.error.horasinfecha'/>");
             	fin();
             	return false;
 			}
