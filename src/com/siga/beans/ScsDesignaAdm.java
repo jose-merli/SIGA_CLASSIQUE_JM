@@ -2411,7 +2411,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       Des.NIG, " +
 				"       Des.Anio || '/' || Des.Codigo As Noficio, " +
 				"       To_Char(Des.Fechaentrada, 'dd-mm-yyyy') As Fecha_Designa, " +
+				"		To_Char(Des.Fechafin, 'dd-mm-yyyy') AS FECHA_CIERRE, "+	
 				" 		PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(Des.Fechaentrada, 'M', "+idioma+") FECHADESIGNAENLETRA, " +
+				" 		PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(Des.Fechafin, 'M', "+idioma+") FECHA_CIERRE_LETRA, " +				
 				"       To_Char(Sysdate, 'dd') As Dia_Actual, " +
 				" 		To_Char(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, " +			
 				"       To_Char(Sysdate, 'yyyy') As Anio_Actual, " +

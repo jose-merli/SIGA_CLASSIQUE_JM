@@ -1249,6 +1249,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") AS ABOGADO, " +
 			    			ScsAsistenciasBean.T_NOMBRETABLA + "." + ScsAsistenciasBean.C_DELITOSIMPUTADOS + "," +
 			    			ScsAsistenciasBean.T_NOMBRETABLA + "." + ScsAsistenciasBean.C_FECHAHORA + " AS FECHA_ASISTENCIA," +
+			    			ScsAsistenciasBean.T_NOMBRETABLA + "." + ScsAsistenciasBean.C_FECHASOLICITUD + " AS FECHA_SOLICITUD," +
 			    			ScsActuacionAsistenciaBean.T_NOMBRETABLA + "." + ScsActuacionAsistenciaBean.C_LUGAR + "," +
 							"(" + ScsActuacionAsistenciaBean.T_NOMBRETABLA + "." + ScsActuacionAsistenciaBean.C_NUMERO + " || '/' || " +
 							ScsActuacionAsistenciaBean.T_NOMBRETABLA + "." + ScsActuacionAsistenciaBean.C_ANIO + ") AS NUMERO_DILIGENCIA" +
@@ -3576,6 +3577,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" (SELECT  ");
 			 
 			sql.append(" TO_CHAR(ASI.FECHAHORA,'DD/MM/YYYY') FECHA_ASISTENCIA, ");
+			sql.append(" TO_CHAR(ASI.FECHASOLICITUD, 'DD/MM/YYYY hh:mm') FECHA_SOLICITUD, ");
 			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ASI.FECHAHORA ,'m',1) FECHA_ASISTENCIA_LETRA, ");
 			sql.append(" DECODE(ASI.NUMERODILIGENCIA, NULL, ASI.NUMEROPROCEDIMIENTO, ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
 			sql.append(" DECODE(ASI.COMISARIA, NULL, "+
@@ -3922,7 +3924,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		   // --DES.NOMBRE_PROCEDIMIENTO AS PROCEDIMIENTO,
 			
 			
-			sql.append(" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA ");
+			sql.append(" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA, ");
+			sql.append(" TO_CHAR(DES.FECHAFIN, 'dd-mm-yyyy') AS FECHA_CIERRE, ");
+			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(DES.FECHAFIN, 'M', "+idioma+") FECHA_CIERRE_LETRA ");		
 		 
 			
 		   
