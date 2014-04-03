@@ -73,6 +73,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idDelito;
 	private String NIG;
 	private Integer idPretension;
+	private String	fechaSolicitud;
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -122,6 +123,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String	C_EJGNUMERO       		=	"EJGNUMERO";
 	static public final String  C_NIG   				= 	"NIG";	
 	static public final String  C_IDPRETENSION   		= 	"IDPRETENSION";
+	static public final String	C_FECHASOLICITUD       	=	"FECHASOLICITUD";
 
 	/* Metodos SET*/
 	public void    setIdInstitucion          (Integer valor)	{ this.idInstitucion           = 	valor;}
@@ -429,5 +431,13 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setIdPretension(Integer idPretension) {
 		this.idPretension = idPretension;
 	}
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
+	}
+	
+	
 	
 }

@@ -91,7 +91,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				ScsAsistenciasBean.C_EJGNUMERO,
 				ScsAsistenciasBean.C_NIG,
 				ScsAsistenciasBean.C_IDPRETENSION,
-				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA
+				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,
+				ScsAsistenciasBean.C_FECHASOLICITUD
 				};
 		
 		return campos;
@@ -159,6 +160,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			bean.setEjgNumero(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_EJGNUMERO));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NIG));
 			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPRETENSION));
+			bean.setFechaSolicitud      (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHASOLICITUD            ));
 		}
 		catch(Exception e){
 			bean = null;
@@ -215,6 +217,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGNUMERO, b.getEjgNumero());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, b.getNIG());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, b.getIdPretension());
+			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHASOLICITUD             , b.getFechaSolicitud());
 		
 		}
 		catch (Exception e){
@@ -460,6 +463,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 							"(" + ScsEJGBean.T_NOMBRETABLA + "." + ScsEJGBean.C_NUMERO + " || '/' || " +
 							ScsEJGBean.T_NOMBRETABLA + "." + ScsEJGBean.C_ANIO + ") AS NUMERO_EXPEDIENTE, " +
 			    			"asistencia_ejg." + ScsAsistenciasBean.C_FECHAHORA + " AS FECHAHORA," +
+							"asistencia_ejg." + ScsAsistenciasBean.C_FECHASOLICITUD + " AS FECHASOLICITUD," +
 			    			CenPartidoJudicialBean.T_NOMBRETABLA + "." + CenPartidoJudicialBean.C_NOMBRE + " AS PARTIDO_JUDICIAL," +
 			    			ScsActuacionAsistenciaBean.T_NOMBRETABLA + "." + ScsActuacionAsistenciaBean.C_LUGAR + " AS JUZGADO," +
 			    			ScsTurnoBean.T_NOMBRETABLA + "." + ScsTurnoBean.C_DESCRIPCION + " AS TURNO," +
@@ -851,7 +855,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 	
-	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia) throws ClsExceptions
+	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud) throws ClsExceptions
 	{
 		
 			Hashtable hash = new Hashtable();
@@ -866,6 +870,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			hash.put(ScsAsistenciasBean.C_IDPERSONACOLEGIADO,idPersona);
 			hash.put(ScsAsistenciasBean.C_IDESTADOASISTENCIA,estadoAsistencia);
 			hash.put(ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,fecha);
+			hash.put(ScsAsistenciasBean.C_FECHASOLICITUD,fechaSolicitud);
 			
 			if(!this.insert(hash))
 				throw new ClsExceptions(this.getError());
@@ -1100,6 +1105,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
     String sql =
 		"SELECT A.IDINSTITUCION, A.ANIO ANIO, A.NUMERO NUMERO, "+
 		" A.FECHAHORA FECHAHORA, " +
+		" A.FECHASOLICITUD FECHASOLICITUD, " +
 		" A.IDPERSONACOLEGIADO as IDPERSONA, " +
 		" D.NOMBRE||' '||D.APELLIDO1||' '||D.APELLIDO2 NOMBRE, " +
 		" A.IDTURNO IDTURNO, A.IDGUARDIA IDGUARDIA, A.FACTURADO FACTURADO, A.IDFACTURACION IDFACTURACION, "+
@@ -2109,7 +2115,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		sql.append(" SELECT AA.ANIO||'/'||AA.NUMERO||DECODE(AA.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA ");
-		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.FECHAHORA ");
+		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.FECHAHORA, AA.FECHASOLICITUD ");
 		sql.append(" ,AA.NUMERODILIGENCIA, AA.NUMEROPROCEDIMIENTO ");
 		sql.append(" ,AA.COMISARIA, AA.JUZGADO, AA.NIG ");
 		

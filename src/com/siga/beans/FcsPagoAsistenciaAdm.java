@@ -173,6 +173,7 @@ public class FcsPagoAsistenciaAdm extends MasterBeanAdministrador {
 							", A." + ScsAsistenciasBean.C_ANIO +
 							", A." + ScsAsistenciasBean.C_NUMERO +
 							", A." + ScsAsistenciasBean.C_FECHAHORA +
+							", A." + ScsAsistenciasBean.C_FECHASOLICITUD +
 							", F." + FcsPagoAsistenciaBean.C_IDPAGOSJG +
 							", F." + FcsPagoAsistenciaBean.C_IMPORTEPAGADO +
 							", F." + FcsPagoAsistenciaBean.C_IMPORTEIRPF +

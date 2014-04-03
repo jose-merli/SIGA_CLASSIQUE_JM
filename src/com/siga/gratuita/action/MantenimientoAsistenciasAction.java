@@ -138,7 +138,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 							" F.FECHAAPERTURA FECHAAPERTURA, A.DESIGNA_ANIO DESIGNA_ANIO, A.DESIGNA_TURNO DESIGNA_TURNO,"+
 							" A.DESIGNA_NUMERO DESIGNA_NUMERO, B.NOMBRE NOMBRETURNO, D.FECHAENTRADA FECHAENTRADA,"+
 							" A.IDTIPOASISTENCIA TIPOASISTENCIA,A.IDTIPOASISTENCIACOLEGIO TIPOASISTENCIACOLEGIO,"+ 
-							" A.FECHAHORA FECHAHORA, A.FECHACIERRE FECHACIERRE, A.OBSERVACIONES OBSERVACIONES,"+
+							" A.FECHAHORA FECHAHORA, A.FECHASOLICITUD FECHASOLICITUD, A.FECHACIERRE FECHACIERRE, A.OBSERVACIONES OBSERVACIONES,"+
 							" A.INCIDENCIAS INCIDENCIAS, I.NIFCIF NIFLETRADO, I.NOMBRE NOMBRELETRADO, I.APELLIDOS1 APELLIDO1LETRADO,"+
 							" I.APELLIDOS2 APELLIDO2LETRADO, I.IDPERSONA IDPERSONACOLEGIADO, H.NCOLEGIADO NUMEROCOLEGIADO, D.CODIGO CODIGO, " +
 							" A." + ScsAsistenciasBean.C_NUMERODILIGENCIA + " " + ScsAsistenciasBean.C_NUMERODILIGENCIA + ", " +
@@ -444,10 +444,11 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String idTipoAsistenciaColegio = miForm.getIdTipoAsistenciaColegio();
 			String anio = miForm.getFechaHora().substring(6);
 			
-			
-			Calendar myCalendar = Calendar.getInstance();
-			
+			//CR7 - Se parsean las fechas de asistencia y de solicitud
+			Calendar myCalendar = Calendar.getInstance();			
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			
+			/**  FECHA ASISTENCIA **/
 			Date fechaProgramacionDate = simpleDateFormat.parse(miForm.getFechaHora());
 			myCalendar.setTime(fechaProgramacionDate);
 			if(miForm.getHoraAsistencia().equals(""))
@@ -461,7 +462,25 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			String fecha = simpleDateFormat.format(myCalendar.getTime());
-			String fechaTotal = simpleDateFormat2.format(myCalendar.getTime());			
+			String fechaTotal = simpleDateFormat2.format(myCalendar.getTime());
+			
+			/**  FECHA SOLICITUD **/
+			String fechaSolicitud = "";
+			if(miForm.getFechaSolicitud()!= null && !miForm.getFechaSolicitud().equals("")){
+				simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date fechaSolicitudDate = simpleDateFormat.parse(miForm.getFechaSolicitud());
+				myCalendar = Calendar.getInstance();	
+				myCalendar.setTime(fechaSolicitudDate);
+				if(miForm.getHoraSolicitud().equals(""))
+					miForm.setHoraSolicitud("00");
+				if(miForm.getMinutoSolicitud().equals(""))
+					miForm.setMinutoSolicitud("00");
+				myCalendar.set(Calendar.HOUR,Integer.parseInt(miForm.getHoraSolicitud()));
+				myCalendar.set(Calendar.MINUTE,Integer.parseInt(miForm.getMinutoSolicitud()));
+				myCalendar.set(Calendar.SECOND,0);
+				myCalendar.set(Calendar.MILLISECOND,0);
+				fechaSolicitud = simpleDateFormat2.format(myCalendar.getTime());			
+			}
 			
 			
 //			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),);
@@ -520,7 +539,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
-			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia);
+			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud);
 
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
@@ -626,7 +645,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 								ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO,		ScsAsistenciasBean.C_FECHAANULACION,
 								ScsAsistenciasBean.C_IDESTADOASISTENCIA,		ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,
 								ScsAsistenciasBean.C_USUMODIFICACION,		    ScsAsistenciasBean.C_NIG,
-								ScsAsistenciasBean.C_FECHAMODIFICACION,			ScsAsistenciasBean.C_IDPRETENSION};
+								ScsAsistenciasBean.C_FECHAMODIFICACION,			ScsAsistenciasBean.C_IDPRETENSION,
+								ScsAsistenciasBean.C_FECHASOLICITUD};
 			
 			// Campos a modificar
 			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,miForm.getIdTipoAsistencia());
@@ -715,6 +735,28 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaEstadoAsistencia()));
 				}
 			}
+			
+			/** CR7 - FECHA SOLICITUD **/
+			Calendar myCalendar = Calendar.getInstance();			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			String fechaSolicitud = "";
+			if(miForm.getFechaSolicitud()!= null && !miForm.getFechaSolicitud().equals("")){
+				simpleDateFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date fechaSolicitudDate = simpleDateFormat.parse(miForm.getFechaSolicitud());
+				myCalendar = Calendar.getInstance();	
+				myCalendar.setTime(fechaSolicitudDate);
+				if(miForm.getHoraSolicitud().equals(""))
+					miForm.setHoraSolicitud("00");
+				if(miForm.getMinutoSolicitud().equals(""))
+					miForm.setMinutoSolicitud("00");
+				myCalendar.set(Calendar.HOUR,Integer.parseInt(miForm.getHoraSolicitud()));
+				myCalendar.set(Calendar.MINUTE,Integer.parseInt(miForm.getMinutoSolicitud()));
+				myCalendar.set(Calendar.SECOND,0);
+				myCalendar.set(Calendar.MILLISECOND,0);
+				SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+				fechaSolicitud = simpleDateFormat2.format(myCalendar.getTime());
+				UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHASOLICITUD, fechaSolicitud);
+			}			
 
 			scsAsistenciaAdm.updateDirect(hash,null,campos);
 			

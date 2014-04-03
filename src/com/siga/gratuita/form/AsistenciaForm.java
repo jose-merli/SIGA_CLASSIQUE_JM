@@ -59,8 +59,8 @@ public class AsistenciaForm extends MasterForm
 	  PersonaJGForm personaJG;
 	  CenPersonaBean personaColegiado;
 	  private String modoPestanha=null;
-	  	private String nig;
-	  
+	  private String nig;
+	  private String fechaSolicitud;
 	  
 	
 	
@@ -386,6 +386,12 @@ public class AsistenciaForm extends MasterForm
 	}
 	public void setNig(String nig) {
 		this.nig = nig;
+	}
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
 	}
 	
 }

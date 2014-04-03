@@ -175,6 +175,7 @@ public class FcsPagoActuacionAsistAdm extends MasterBeanAdministrador {
 							//", AC." + ScsActuacionAsistenciaBean.C_IDACTUACION +
 							", A." + ScsActuacionAsistenciaBean.C_NUMERO +
 							", A." + ScsAsistenciasBean.C_FECHAHORA +
+							", A." + ScsAsistenciasBean.C_FECHASOLICITUD +
 							", AC." + ScsActuacionAsistenciaBean.C_DESCRIPCIONBREVE +
 
 							//", P." + ScsPersonaJGBean.C_NOMBRE +

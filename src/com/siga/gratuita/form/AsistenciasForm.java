@@ -150,6 +150,9 @@ public class AsistenciasForm extends MasterForm
 	String letradoActuaciones;
 	private String horaAsistencia;
 	private String minutoAsistencia;
+	private String fechaSolicitud;
+	private String horaSolicitud;
+	private String minutoSolicitud;
 	
 	/*
 	 * Metodos SET y GET 
@@ -615,5 +618,24 @@ public class AsistenciasForm extends MasterForm
 	}
 	public void setMinutoAsistencia(String minutoAsistencia) {
 		this.minutoAsistencia = minutoAsistencia;
+	}
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
+	}
+	public String getHoraSolicitud() {
+		return horaSolicitud;
+	}
+	public void setHoraSolicitud(String horaSolicitud) {
+		this.horaSolicitud = horaSolicitud;
+	}
+	public String getMinutoSolicitud() {
+		return minutoSolicitud;
+	}
+	public void setMinutoSolicitud(String minutoSolicitud) {
+		this.minutoSolicitud = minutoSolicitud;
 	}	
+	
 }

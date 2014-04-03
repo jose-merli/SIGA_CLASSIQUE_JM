@@ -170,6 +170,7 @@ public class FcsFactActuacionAsistenciaAdm extends MasterBeanAdministrador {
 							", A." + ScsActuacionAsistenciaBean.C_ANIO +
 							", A." + ScsActuacionAsistenciaBean.C_NUMERO +
 							", A." + ScsAsistenciasBean.C_FECHAHORA +
+							", A." + ScsAsistenciasBean.C_FECHASOLICITUD +
 							", AC." + ScsActuacionAsistenciaBean.C_DESCRIPCIONBREVE +
 							", F." + FcsFactActuacionAsistenciaBean.C_PRECIOAPLICADO +
 							" FROM " + ScsTurnoBean.T_NOMBRETABLA + " T" +
