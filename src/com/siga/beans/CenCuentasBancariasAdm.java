@@ -538,7 +538,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 																				  "",
 																				  ""+userName);
 		if ((resultado == null) || (!resultado[0].equals("0"))){
-			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 		}
 		
 		
@@ -549,7 +549,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 																			 ""+userName);
 		
 		if ((resultado1 == null) || ((resultado1[0].equals("0")==false)&&(resultado1[0].equals("1")==false)&& (resultado1[0].equals("2")==false))){
-			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND");
+			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND"+resultado[1]);
 		}
 		
 		iResult=Integer.valueOf((String)resultado1[0]);

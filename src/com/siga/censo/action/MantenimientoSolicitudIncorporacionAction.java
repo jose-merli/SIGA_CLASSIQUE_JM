@@ -660,7 +660,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				
 				if ((resultado == null) || (!resultado[0].equals("0")))
 					throw new ClsExceptions ("Error al ejecutar el PL " +
-							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 
 				//cargando la peticion para el reenvio
 				request.setAttribute ("mensaje", mensInformacion);

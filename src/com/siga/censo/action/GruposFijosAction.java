@@ -128,7 +128,7 @@ public class GruposFijosAction extends MasterAction {
 																					  "",
 																					  ""+this.getUserName(request));
 			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))){
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 			}
 					
 			
@@ -240,7 +240,7 @@ public class GruposFijosAction extends MasterAction {
 																					  "",
 																					  ""+this.getUserName(request));
 			if ((resultado == null) || (!resultado[0].equals("0")))
-				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 			tx.commit();
 	    } 
 		catch (Exception e) {

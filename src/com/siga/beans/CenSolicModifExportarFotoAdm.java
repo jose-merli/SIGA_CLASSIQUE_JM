@@ -626,7 +626,7 @@ public class CenSolicModifExportarFotoAdm extends MasterBeanAdministrador {
 																									  "",
 																									  ""+usuario);
 							if ((resultado == null) || (!resultado[0].equals("0")))
-								throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+								throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 						}
 					}				
 				}						

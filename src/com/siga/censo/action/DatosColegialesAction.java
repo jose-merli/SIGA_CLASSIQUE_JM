@@ -611,7 +611,7 @@ public class DatosColegialesAction extends MasterAction {
 							 ""+this.getUserName(request));
 			if ((resultado == null) || (!resultado[0].equals("0")))
 				throw new ClsExceptions ("Error al ejecutar el PL " +
-						"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+						"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 			
 			//Bloque para insertar en la cola de modificacion de datos 
 			//de letrado solo si hay cambio en el valor del check residente
@@ -813,7 +813,7 @@ public class DatosColegialesAction extends MasterAction {
 																						  miForm.getFechaEstado(),
 																						  ""+this.getUserName(request));
 				if ((resultado == null) || (!resultado[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 
 				tx.commit();
 				result=exitoModal("messages.updated.success",request);
@@ -973,7 +973,7 @@ public class DatosColegialesAction extends MasterAction {
 		
 		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona, fechaEstado, usuario);
 		if ((resultado == null) || (!resultado[0].equals("0")))
-			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 
 		// 3. Dar de baja en las colas de guardia y turno si el nuevo estado es de baja
 		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {			
