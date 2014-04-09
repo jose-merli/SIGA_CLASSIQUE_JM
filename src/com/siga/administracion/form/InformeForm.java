@@ -62,6 +62,7 @@ public class InformeForm extends MasterForm {
 	private String plantilla;
 	private String  aContrarios;
 	private String  generarInformeSinDireccion;
+	private InformeForm filtrosBusqueda;
 	
 	public String getIdConsulta() {
 		return idConsulta;
@@ -476,4 +477,13 @@ public class InformeForm extends MasterForm {
 		this.generarInformeSinDireccion = generarInformeSinDireccion;
 	}
 
+	public InformeForm getFiltrosBusqueda() {
+		return filtrosBusqueda;
+	}
+
+	public void setFiltrosBusqueda(InformeForm filtrosBusqueda) {
+		this.filtrosBusqueda = filtrosBusqueda;
+	}
+
+	
 }

@@ -112,7 +112,8 @@
 		document.InformeFormEdicion.idPlantilla.value = document.getElementById(idPlantillaFila).value;
 		document.InformeFormEdicion.idInstitucion.value = document.getElementById(idInstitucionFila).value;
 		document.InformeFormEdicion.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
-		var resultado = ventaModalGeneral(document.InformeFormEdicion.name,"G");	
+		document.InformeFormEdicion.target = "mainWorkArea";
+		document.InformeFormEdicion.submit();
 	}
 
 	function editar(fila){
@@ -123,9 +124,8 @@
 		document.InformeFormEdicion.idInstitucion.value = document.getElementById(idInstitucionFila).value;
 		document.InformeFormEdicion.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
 		document.InformeFormEdicion.modo.value = "editar";
-		
-		var resultado = ventaModalGeneral(document.InformeFormEdicion.name,"G");
-		parent.refrescarLocal();
+		document.InformeFormEdicion.target = "mainWorkArea";
+		document.InformeFormEdicion.submit();
 	}
 	
 	function borrar(fila){

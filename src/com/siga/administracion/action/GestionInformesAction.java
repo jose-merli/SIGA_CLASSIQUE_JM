@@ -94,7 +94,8 @@ public class GestionInformesAction extends MasterAction {
 						mapDestino = refrescar(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("download"))  {
 		                mapDestino = download(mapping, miForm, request, response);
-		                
+					}else if (accion.equalsIgnoreCase("volver"))  {
+		                mapDestino = volver(mapping, miForm, request, response);
 		            }else if (accion.equalsIgnoreCase("comprobarBorrarInformeFile"))  {
 		                mapDestino = comprobarBorrarInformeFile(mapping, miForm, request, response);
 		            }else if (accion.equalsIgnoreCase("borrarInformeFile"))  {
@@ -124,6 +125,30 @@ public class GestionInformesAction extends MasterAction {
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
+	}
+
+	protected String volver(ActionMapping mapping, MasterForm miForm,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		InformeForm informeForm = (InformeForm) miForm;
+		informeForm.setMsgAviso("");
+		informeForm.setMsgError("");
+		
+		// Recuperamos los filtros de busqueda
+		InformeForm filtrosForm = informeForm.getFiltrosBusqueda(); 
+		informeForm.setModo("volver");
+		informeForm.setIdTipoInforme(filtrosForm.getIdTipoInforme());
+		informeForm.setTiposInforme(filtrosForm.getTiposInforme());
+		informeForm.setIdInstitucion(filtrosForm.getIdInstitucion());
+		informeForm.setInstituciones(filtrosForm.getInstituciones());
+		informeForm.setAlias(filtrosForm.getAlias());
+		informeForm.setVisible(filtrosForm.getVisible());
+		informeForm.setDestinatarios(filtrosForm.getDestinatarios());
+		informeForm.setASolicitantes(filtrosForm.getASolicitantes());
+		
+		UsrBean usrBean = this.getUserBean(request);
+		informeForm.setUsrBean(usrBean);
+		return inicioGestion(mapping, informeForm, request, response);
 	}
 
 	protected String inicio (ActionMapping mapping, 		
@@ -228,6 +253,20 @@ public class GestionInformesAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions,Exception 
 			{
 		InformeForm informeForm = (InformeForm) formulario;
+		
+		// Nos guardamos los filtros de búsqueda para recuperarlos cuando se pulse el botón volver
+		InformeForm filtros = new InformeForm();
+		filtros.setModo(informeForm.getModo());
+		filtros.setIdTipoInforme(informeForm.getIdTipoInforme());
+		filtros.setTiposInforme(informeForm.getTiposInforme());
+		filtros.setIdInstitucion(informeForm.getIdInstitucion());
+		filtros.setInstituciones(informeForm.getInstituciones());
+		filtros.setAlias(informeForm.getAlias());
+		filtros.setVisible(informeForm.getVisible());
+		filtros.setDestinatarios(informeForm.getDestinatarios());
+		filtros.setASolicitantes(informeForm.getASolicitantes());
+		
+		informeForm.setFiltrosBusqueda(filtros);
 		informeForm.setMsgAviso("");
 		informeForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
@@ -238,8 +277,6 @@ public class GestionInformesAction extends MasterAction {
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			List<InformeForm> listadoInformes = informeService.getInformes(informeForm,usrBean.getLocation(),usrBean);
 			request.setAttribute("listadoInformes", listadoInformes);
-			
-			
 			
 		} catch (Exception e){
 			// informeForm.setInformes(new ArrayList<InformeForm>());
@@ -339,6 +376,7 @@ public class GestionInformesAction extends MasterAction {
 		request.setAttribute("intercambioTelematico", "0");
 		
 		request.setAttribute("InformeFormEdicion", informeFormEdicion);
+		request.setAttribute("modo", "nuevo");
 		
 		return "edicion";
 	}
@@ -430,6 +468,7 @@ public class GestionInformesAction extends MasterAction {
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
+		request.setAttribute("modo", "editar");
 		
 		return "edicion";
 	}
@@ -480,7 +519,7 @@ public class GestionInformesAction extends MasterAction {
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
-		
+		request.setAttribute("modo", "editar");
 		return "edicion";
 	}
 	protected String consultar(ActionMapping mapping, 		
@@ -548,6 +587,7 @@ public class GestionInformesAction extends MasterAction {
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
+		request.setAttribute("modo", "ver");
 		return "edicion";
 	}
 	protected String consultarInformeConsulta(ActionMapping mapping, 		
@@ -593,6 +633,7 @@ public class GestionInformesAction extends MasterAction {
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
+		request.setAttribute("modo", "editar");
 		return "edicion";
 	}
 	protected String duplicar(ActionMapping mapping, 		
@@ -682,21 +723,15 @@ public class GestionInformesAction extends MasterAction {
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			boolean isNombreFisicoUnico = informeService.isNombreFisicoUnico(informeForm,true,this.getUserBean(request));
 			
-			informeService.insertaInforme(informeForm, usrBean);
-			
-			
-			if(isNombreFisicoUnico)
-				forward = exitoModal("messages.updated.success",request);
-			else{
-				forward = exitoModal("administracion.informes.mensaje.aviso.insertar.nombreFisicoRepetido",request);
-				
-			}
+			informeService.insertaInforme(informeForm, usrBean);		
+			informeForm.setAccion("modificar");
 			
 		}catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return forward;
+		return editar(mapping, informeForm, request, response);
 	}
+	
 //	protected String comprobarInsertar(ActionMapping mapping, 		
 //			MasterForm formulario, 
 //			HttpServletRequest request, 
@@ -992,7 +1027,6 @@ public class GestionInformesAction extends MasterAction {
 		InformeForm informeForm = (InformeForm) formulario;
 		try {
 			request.setAttribute("InformeFormEdicion", informeForm);
-			informeForm.clear();
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}

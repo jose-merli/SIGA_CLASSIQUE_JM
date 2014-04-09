@@ -47,7 +47,7 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<html:form action="/ADM_GestionInformes" method="POST" target="resultado">
-		<html:hidden property = "modo" value = "buscar"/>
+		<html:hidden property = "modo" />
 		<html:hidden property = "actionModal" value = ""/>
 		<table class="tablaCentralCampos" align="center">
 			<tr>
@@ -166,10 +166,16 @@
 		function nuevo() 
 		{		
 			document.InformeForm.modo.value = "nuevo";
-			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
-			buscar();
+			document.InformeForm.target = "mainWorkArea";
+			document.InformeForm.submit();
 			
 		}
+		
+		jQuery(document).ready(function () {
+			if(document.InformeForm.modo.value == "volver"){
+				buscar();
+			}
+		});
 		
 	</script>
 	
