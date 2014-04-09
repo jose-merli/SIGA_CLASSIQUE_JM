@@ -100,11 +100,11 @@
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "tablaDatosDinamicosD" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
-
+		<html:hidden name="DefinirEnviosForm" property="conArchivados" value=""/>
 	<tr>				
 		<td>
 	
-	<siga:ConjCampos>
+	<siga:ConjCampos leyenda="Datos Envios">
 	
 	<table class="tablaCampos" align="center">
 		<tr>
@@ -121,20 +121,25 @@
 			<td class="labelText" width="12%">
 				<siga:Idioma key="envios.definir.literal.fechadesde"/>
 			</td>				
-			<td width="20%">
+			<td>
 				<siga:Fecha nombreCampo="fechaDesde" readonly="true"></siga:Fecha>
 			</td>
-			<td class="labelText" width="12%">
-				<siga:Idioma key="envios.definir.literal.fechahasta"/>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
 			</td>
-			<td width="15%">
+			<td>
 				<siga:Fecha nombreCampo="fechaHasta" readonly="true"></siga:Fecha>
 			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="envios.definir.literal.verArchivados"/>
+			</td>
+			<td>
+				<input type="checkbox" id="idCheckArchivados"/>	
+			</td>			
 		</tr>	
 	</table>
-	</siga:ConjCampos>
-	
-	<siga:ConjCampos>
+
 	<table>
 		<tr>	
 			<td class="labelText" width="10%">
@@ -222,6 +227,13 @@
 		function buscar() 
 		{
 			sub();
+			
+			if(jQuery("#idCheckArchivados").is(':checked')){
+				document.forms[0].conArchivados.value = "1";
+			} else{
+				document.forms[0].conArchivados.value= "0";
+			}
+			
 			if(document.forms[0].idEnvioBuscar.value!=''){ 
 				if (!isAllDigits(document.forms[0].idEnvioBuscar.value)) {
 					var mensaje = "<siga:Idioma key="envios.definir.literal.identificador"/> <siga:Idioma key="messages.campoNumerico.error"/>";
@@ -231,11 +243,12 @@
 					
 		        }	
 	        }
+			
 			document.forms[0].modo.value="buscarInicio";
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
 		}
-
+		
 		<!-- Asociada al boton Nuevo -->
 			function nuevo() 
 			{		

@@ -158,7 +158,6 @@
 				{
 				
 					FilaExtElement[] elems=new FilaExtElement[3];
-					elems[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
 
 					GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
 					String pathFTPFaxAux = 
@@ -228,8 +227,17 @@
 						
 						String fechaCreacionRegistro = fila.getString(EnvEnviosBean.C_FECHACREACION);
 						String fechaProgramada = fila.getString(EnvEnviosBean.C_FECHAPROGRAMADA);
+						
+						String botones = "C";
+						
+						if(fila.getString("FECHABAJA") == null || fila.getString("FECHABAJA").equals("")){
+							botones += ",E,B";
+							elems[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+						} else {
+							elems[0]= null;
+						}
 %>
-	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B" elementos="<%=elems%>" clase="listaNonEdit">
+	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>"elementos="<%=elems%>" clase="listaNonEdit">
 											
 					<td><input type="hidden" name="oculto<%=""+(i+1)%>_1" id="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDENVIO")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" id="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDTIPOENVIOS")%>">

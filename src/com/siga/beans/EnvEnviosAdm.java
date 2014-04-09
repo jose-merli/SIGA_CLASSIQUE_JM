@@ -281,7 +281,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
     public Paginador buscarEnvio (String idEnvio, String tipoFecha, String fechaDesde, String fechaHasta,
             				   String idEstado, String nombre,
-            				   String idTipoEnvios, String idInstitucion,boolean isComision)
+            				   String idTipoEnvios, String idInstitucion,boolean isComision, boolean conArchivados)
     	throws ClsExceptions{
 
         Vector datos = new Vector();
@@ -338,7 +338,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    sql += ES_NOMBRE + " AS ESTADO, ";
 		    sql += TI_IDTIPOENVIOS + ", ";
 		    sql += EN_IDESTADO + ", ";
-		    sql += TI_NOMBRE + " AS TIPOENVIO";
+		    sql += TI_NOMBRE + " AS TIPOENVIO, ";
+		    sql += " EN.FECHABAJA ";
 
 			sql += " FROM ";
 		    sql += T_ENV_ENVIOS + ", " +
@@ -362,6 +363,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}else{
 				sql += " AND (COMISIONAJG IS NULL OR COMISIONAJG = "+ClsConstants.DB_FALSE+" ) ";	
 			}
+			
+			if(!conArchivados){
+				sql += " AND FECHABAJA IS NULL ";	
+			}		
+			
 			// RGG CAMBIO DE ORDEN sql += " ORDER BY " + EN_DESCRIPCION;
 			sql += " ORDER BY " + EN_FECHACREACION + " DESC,"+EN_IDENVIO+" DESC";
 

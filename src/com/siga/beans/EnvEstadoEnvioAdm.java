@@ -19,6 +19,7 @@ public class EnvEstadoEnvioAdm extends MasterBeanAdministrador {
 	public static String K_ESTADOENVIO_PROCESADOCONERRORES="3";
 	public static String K_ESTADOENVIO_PENDIENTE_AUTOMATICO="4";
 	public static Integer K_ESTADOENVIO_PROCESANDO = new Integer(5);
+	public static String K_ESTADOENVIO_ARCHIVADO="6";
 	
 	public EnvEstadoEnvioAdm(UsrBean usuario)
 	{

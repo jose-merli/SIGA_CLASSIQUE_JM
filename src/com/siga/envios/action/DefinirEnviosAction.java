@@ -397,7 +397,8 @@ public class DefinirEnviosAction extends MasterAction {
 		String idEnvio = form.getIdEnvioBuscar();        
 		String idInstitucion = userBean.getLocation();
 		String tipoFecha = form.getTipoFecha();
-
+		boolean conArchivados = UtilidadesString.stringToBoolean(form.getConArchivados());
+		
 		EnvEnviosAdm enviosAdm = new EnvEnviosAdm (this.getUserBean(request));
 		Vector datos = null;
 		try {
@@ -437,7 +438,7 @@ public class DefinirEnviosAction extends MasterAction {
 				datos = null;
 
 				resultado = enviosAdm.buscarEnvio(idEnvio,tipoFecha,fechaDesde,fechaHasta,idEstado,
-						nombre,idTipoEnvio,idInstitucion,userBean.isComision());
+						nombre,idTipoEnvio,idInstitucion,userBean.isComision(),conArchivados);
 				databackup.put("paginador",resultado);
 				if (resultado!=null){ 
 					datos = resultado.obtenerPagina(1);
@@ -535,8 +536,12 @@ public class DefinirEnviosAction extends MasterAction {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			SalidaEnviosService salidaEnviosService = (SalidaEnviosService) businessManager.getService(SalidaEnviosService.class);
-			EnvEnvios envEnvios = salidaEnviosService.getEnvio(new Long(idEnvio), new Short(idInstitucion));
-			salidaEnviosService.borrarEnvio(envEnvios);
+			EnvEnvios envEnvios = new EnvEnvios();
+			envEnvios.setIdenvio(new Long(idEnvio));
+			envEnvios.setIdinstitucion(new Short(idInstitucion));
+			
+			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
+			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
 
 		} catch (Exception e) {
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
@@ -556,8 +561,13 @@ public class DefinirEnviosAction extends MasterAction {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			SalidaEnviosService salidaEnviosService = (SalidaEnviosService) businessManager.getService(SalidaEnviosService.class);
-			EnvEnvios envEnvios = salidaEnviosService.getEnvio(new Long(idEnvio), new Short(idInstitucion));
-			salidaEnviosService.borrarEnvio(envEnvios);
+			EnvEnvios envEnvios = new EnvEnvios();
+			envEnvios.setIdenvio(new Long(idEnvio));
+			envEnvios.setIdinstitucion(new Short(idInstitucion));
+			
+			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
+			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
+			
 
 		} catch (Exception e) {
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);

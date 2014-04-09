@@ -17,6 +17,7 @@ import org.redabogacia.sigaservices.app.autogen.mapper.GenParametrosMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorosos;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorososExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnviosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnviosKey;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEstatEnvioExample;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
@@ -27,6 +28,7 @@ import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
 
+import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.envios.service.IntercambiosService;
 import com.siga.envios.service.IntercambiosServiceDispatcher;
 import com.siga.envios.service.SalidaEnviosService;
@@ -263,6 +265,31 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
 			getBusinessManager().endTransaction();		
 		}
 		
+		
+	}
+	
+	public void darBajaLogicaEnvio(EnvEnvios envio) throws BusinessException {
+		try {
+			//Se actualiza el campo FechaBaja asi damos de baja logica el envio
+			EnvEnviosMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEnviosMapper.class);
+			EnvEnviosExample envioExample = new EnvEnviosExample();
+			org.redabogacia.sigaservices.app.autogen.model.EnvEnviosExample.Criteria criteria =  envioExample.createCriteria();
+			criteria.andIdenvioEqualTo(envio.getIdenvio());
+			criteria.andIdinstitucionEqualTo(envio.getIdinstitucion());
+			
+			//Se asigna como fecha de baja el dia actual
+			Calendar cal = Calendar.getInstance();
+			envio.setIdestado(new Short(EnvEstadoEnvioAdm.K_ESTADOENVIO_ARCHIVADO));
+			envio.setFechabaja(cal.getTime());
+			envio.setFechamodificacion(cal.getTime());
+			
+			//Actualizamos el registro
+			envEnviosMapper.updateByExampleSelective(envio, envioExample);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al borrar la comunicacion. Existen registros asociados", e);
+			throw new BusinessException("messages.error.ora.02292", e);
+		}
 		
 	}
 	

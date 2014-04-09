@@ -38,6 +38,7 @@ public class DefinirEnviosForm extends MasterForm
 	private String idInstitucion;
 	private String idIntercambio;
 	private String origen;
+	private String conArchivados;
 	
 	
 
@@ -228,6 +229,11 @@ public class DefinirEnviosForm extends MasterForm
 	public void setEjgs(List<ScsEjg> ejgs) {
 		this.ejgs = ejgs;
 	}
-	
+	public String getConArchivados() {
+		return conArchivados;
+	}
+	public void setConArchivados(String conArchivados) {
+		this.conArchivados = conArchivados;
+	}
 	
 }
