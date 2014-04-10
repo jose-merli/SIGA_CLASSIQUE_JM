@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.SequenceInputStream;
+import java.nio.channels.FileChannel;
 
 import com.atos.utils.ListOfFiles;
 
@@ -60,6 +61,7 @@ public class UtilidadesFicheros {
 		}
 		return dir.delete();
 	}
+	
 	public static String getString(File file) throws IOException{
 		FileInputStream inputStream =  new FileInputStream(file);
 		byte [] bytes = new byte[inputStream.available()];
@@ -68,6 +70,19 @@ public class UtilidadesFicheros {
 		
 		return new String(bytes);
 	}
+	
+	public static void copyFile(File s, File t) {
+        try{
+          FileChannel in = (new FileInputStream(s)).getChannel();
+          FileChannel out = (new FileOutputStream(t)).getChannel();
+          in.transferTo(0, s.length(), out);
+          in.close();
+          out.close();
+              
+        } catch(Exception e) {
+            
+        }
+    }	
 
 	
 }

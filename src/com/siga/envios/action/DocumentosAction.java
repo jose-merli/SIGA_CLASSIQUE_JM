@@ -25,6 +25,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvDocumentosAdm;
 import com.siga.beans.EnvDocumentosBean;
@@ -595,7 +596,8 @@ public class DocumentosAction extends MasterAction
 					    	  }
 						}									   
 						//Renombramos el archivo con el nombre que tiene el f2
-						boolean correcto = archivo.renameTo(f2);
+						UtilidadesFicheros.copyFile(archivo, f2);
+						
 						/**Se guarda en el vector de informeRes los datos de los diferentes archivos**/
 						informesRes.add(f2);
 					}
@@ -607,9 +609,10 @@ public class DocumentosAction extends MasterAction
 					  try{							    	
 							ArrayList ficherosPDF= new ArrayList();
 							for (int i=0;i<informesRes.size();i++){								
-							 File f = (File) informesRes.get(i);							 
-							 ficherosPDF.add(f);							
+								 File f = (File) informesRes.get(i);							 
+								 ficherosPDF.add(f);	
 							}
+							
 							String nombreFicheroZIP= idInstitucion+"_"+ idEnvio +"_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 							String rutaServidorDescargasZip = pathDocumentosAdjuntos;
 							rutaServidorDescargasZip += ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+"temp"+ File.separator;
@@ -617,9 +620,17 @@ public class DocumentosAction extends MasterAction
 							ruta.mkdirs();
 							Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF, false);				
 							ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");				
+							
+							//Borramos los ficheros clonados
+							for (int i=0;i<informesRes.size();i++){								
+								File f = (File) informesRes.get(i);							 
+								f.delete();
+							}
+							
 							request.setAttribute("nombreFichero", ficheroSalida.getName());
 							request.setAttribute("rutaFichero", ficheroSalida.getPath());
 							request.setAttribute("borrarFichero", "true");
+							
 						  } catch (Exception e) { 
 								throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
 						     }  
@@ -632,6 +643,5 @@ public class DocumentosAction extends MasterAction
 				
 		return "descargaFichero";  
 	}
-	
 	
 }
