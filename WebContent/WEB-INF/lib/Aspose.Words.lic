@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <License>
   <Data>
-    <LicensedTo>RedAbogacia</LicensedTo>
-    <Developers>Limited to 1 developer.</Developers>
-    <OEM>This is a non-redistributable license.</OEM>
+    <LicensedTo>CONSEJO GENERAL DE LA ABOGACIA ESPAÑOLA</LicensedTo>
+    <LicenseType>Developer OEM</LicenseType>
+    <LicenseNote>Limited to 1 developer.</LicenseNote>
+    <OrderID>140314092147</OrderID>
+    <OEM>This is a redistributable license</OEM>
     <Products>
       <Product>Aspose.Words for Java</Product>
     </Products>
     <EditionType>Enterprise</EditionType>
-    <SerialNumber>2b05f30f-0f22-4c95-838c-34757adc0915</SerialNumber>
-    <SubscriptionExpiry>20090206</SubscriptionExpiry>
-    <LicenseVersion>2.1</LicenseVersion>
+    <SerialNumber>fef36695-f056-44ea-a5c8-e29e2fef7f12</SerialNumber>
+    <SubscriptionExpiry>20150314</SubscriptionExpiry>
+    <LicenseVersion>2.2</LicenseVersion>
   </Data>
-  <Signature>FT7wSpzqJZx6b9mCq5R6gCT6jyaurxuRHMymNftCEd5pkS4/YCfkM8ytEP88KiADwj96LUUd65xf91L0LC1jvpOFakYbAilJWF8pH218iag2edG8k/sQzavfssg+Gqian5o753/5mt8oTXnhqNTI1FHD4rPsy1GcdrE0HdReASQ=</Signature>
+  <Signature>yMBpzESJKuGFsggNAuA5tL1Q6gHj9Ye7rlqUTBVjzi+4/5zpESShWKuRp8JyUoTH2gVKx+HALRB2Cke+egvpDEp2gQQXm6GPLSTYleT8Xf+QrGtK9piGYjs6+fGBJzX65xRxDOi8gzQB5VCnKKaZ92NHttjOD2Z2U+/uLH3EiG4=</Signature>
 </License>
