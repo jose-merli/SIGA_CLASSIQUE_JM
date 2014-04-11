@@ -120,7 +120,7 @@ public class ImportarMediadoresAction extends MasterAction {
 	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
-		String mensaje = "messages.cargaFichero.correcta";
+		String mensaje = "messages.cargaFichero.success";
 
 		try {
 			

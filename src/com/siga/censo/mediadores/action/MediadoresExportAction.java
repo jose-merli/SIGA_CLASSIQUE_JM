@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorExportfichero;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorExportficheroExample;
 import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
@@ -18,11 +20,14 @@ import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.censo.mediadores.form.MediadoresExportForm;
+import com.siga.censo.mediadores.form.MediadoresFicheroForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirEJGForm;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -50,9 +55,17 @@ public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 
 		try { 
 			
-			miForm = (MasterForm) formulario;
-			if (miForm != null) {
-				return super.executeInternal(mapping,formulario,request,response);				
+			miForm = (MasterForm) formulario;			
+			String accion = miForm.getModo();
+			
+//			 La primera vez que se carga el formulario 
+			// Abrir
+			
+			if (accion != null && accion.equalsIgnoreCase("sincroniza")){
+				MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;					
+				mapDestino = sincroniza(mapping, mediadoresExportForm, request, response);						
+			} else {
+				return super.executeInternal(mapping,formulario,request,response);
 			}
 
 			// Redireccionamos el flujo a la JSP correspondiente
@@ -67,6 +80,30 @@ public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 		}
 	}
 	
+	private String sincroniza(ActionMapping mapping,
+			MediadoresExportForm mediadoresExportForm,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		String mensaje = "messages.sincronizar.success";
+		
+		try {
+			request.getSession().removeAttribute(DATAPAGINADOR);
+			
+			FormFile formFile = mediadoresExportForm.getFile();
+			if (formFile.getFileSize() == 0){
+				throw new SIGAException("message.mediadores.ficheroValido"); 
+			}			
+			
+			MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
+			mediadoresService.sincroniza(formFile.getInputStream(), formFile.getFileName());
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		}
+		
+		return exitoRefresco(mensaje, request);
+	}
+
 	protected String abrir (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -74,7 +111,7 @@ public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 		
 		try {
 			MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;						
-			request.getSession().removeAttribute(DATAPAGINADOR);
+			request.getSession().removeAttribute(DATAPAGINADOR);			
 						
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -84,34 +121,40 @@ public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 	}
 	
 	
-	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 
-		String mensaje = "messages.generarFichero.correcta";
+		String mensaje = "messages.generarFichero.success";
+		boolean ficheroGenerado = false;
 
 		try {
 			
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;	
-			
-			request.getSession().removeAttribute(DATAPAGINADOR);			
+			mediadoresExportForm.setIdmediadorexportfichero(null);
+									
 			MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
-			CenMediadorExportfichero cenMediadorExportfichero = mediadoresService.creaExport();
+			CenMediadorExportfichero cenMediadorExportfichero = mediadoresService.creaExport();			
 						
-			if (cenMediadorExportfichero != null && cenMediadorExportfichero.getIdmediadorexportfichero() != null) {	
-				mensaje = "messages.generarFichero.correcta";
-				request.setAttribute(CenMediadorExportfichero.C_IDMEDIADOREXPORTFICHERO, cenMediadorExportfichero.getIdmediadorexportfichero());
+			if (cenMediadorExportfichero != null && cenMediadorExportfichero.getIdmediadorexportfichero() != null) {
+				request.getSession().removeAttribute(DATAPAGINADOR);
+				mensaje = "messages.generarFichero.success";
+				mediadoresExportForm.setIdmediadorexportfichero(cenMediadorExportfichero.getIdmediadorexportfichero());
+				generaXML(request, mediadoresExportForm);	
+				ficheroGenerado = true;								
 			} else {
 				mensaje = "messages.generarFichero.noCambios";
-			}
-			
-			buscarPor(mapping, formulario, request, response);
-			request.setAttribute("mensaje", mensaje);
+			}			
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
-
-		return "resultado";
+		
+		if (ficheroGenerado) {
+			return buscarPor(mapping, formulario, request, response);
+		} else {
+			return exitoRefresco(mensaje, request);	
+		}
+		
 	}
 	
 	/** 
@@ -197,17 +240,23 @@ public static final String DATAPAGINADOR = "DATAPAGINADOR_MEDIADORES_EXPORT";
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
-		MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;	
-							
+			
+		MediadoresExportForm mediadoresExportForm = (MediadoresExportForm) formulario;
+		generaXML(request, mediadoresExportForm);		
+		
+		return "descargaFichero";
+	}
+	
+	private void generaXML(HttpServletRequest request, MediadoresExportForm mediadoresExportForm) {
+		
 		MediadoresService mediadoresService = (MediadoresService) BusinessManager.getInstance().getService(MediadoresService.class);
 		File file = mediadoresService.generaXML(mediadoresExportForm.getIdmediadorexportfichero());		
 		
 		if (file != null && file.exists()) {				
 			request.setAttribute("nombreFichero", file.getName());
-			request.setAttribute("rutaFichero", file.getAbsolutePath());			
+			request.setAttribute("rutaFichero", UtilidadesString.replaceAllIgnoreCase(file.getAbsolutePath(), "\\", "/"));			
 			request.setAttribute("borrarFichero", "true");			
 		}
-		
-		return "descargaFichero";
 	}
+
 }
