@@ -56,6 +56,7 @@
 	<!-- Campo obligatorio -->
 	<html:hidden property = "modo" value = ""/>
 	
+	
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	

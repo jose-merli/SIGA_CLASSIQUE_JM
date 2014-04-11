@@ -1,4 +1,4 @@
-<!-- mediadoresImportCarga.jsp -->
+<!-- mediadoresExport.jsp -->
 <!DOCTYPE html>
 <!-- CABECERA JSP -->
 <%@page import="com.siga.beans.ConModuloAdm"%>
@@ -58,19 +58,42 @@
 				f.submit();
 			}
 			
+			function accionAceptar() {
+				sub();
+				var f=document.getElementById("MediadoresExportForm");				
+								
+				if (f && f.file && !f.file.value) {					
+  					var campo = "<siga:Idioma key="censo.mediadores.literal.ficheroSinc"/>";
+  					var msg = "<siga:Idioma key="errors.required"  arg0='" + campo + "'/>";					
+					alert(msg);
+  					fin();
+					return false;
+  				}
+				
+				f.modo.value = "sincroniza";				
+				f.submit();
+				
+				return true;
+			}
+			
 			function buscar() {
 				sub();
 				var f=document.getElementById("MediadoresExportForm");
-				f.modo.value = "buscarPor";				
+				f.modo.value = "buscarPor";
 				f.target="resultado";
 				f.submit();
 			}
+			
+			function refrescarLocal(){
+				buscar();
+			}
+			
 			
 		</script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="menu.censo.gestionMediadores.importar" localizacion="censo.ws.gestionMediadores.importar.localizacion"/>
+	<siga:Titulo titulo="menu.censo.gestionMediadores.exportar" localizacion="censo.ws.gestionMediadores.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -85,7 +108,7 @@
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
-<body onLoad="buscar();ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');buscar();">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -93,12 +116,35 @@
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
-		<html:form action="/CEN_ExportarMediadores.do" method="POST" target="resultado">	
+		<html:form action="/CEN_ExportarMediadores.do" method="POST" target="resultado" enctype="multipart/form-data">	
 			<html:hidden name="MediadoresExportForm" property = "modo" value = "insertar"/>
+			<html:hidden name="MediadoresExportForm" property = "idmediadorexportfichero" value="${MediadoresExportForm.idmediadorexportfichero}"/>
 			
+			<table  class="tablaCentralCampos"  align="center">
+				<tr>				
+					<td>
+						<siga:ConjCampos leyenda="menu.censo.gestionMediadores.sincronizar">
+							<table class="tablaCampos" align="center">								
+								
+								<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>								
+	
+								<!-- FILA -->
+								<tr>			
+									<td class="labelText">
+										<siga:Idioma key="censo.mediadores.literal.ficheroSinc"/>
+									</td>				
+									<td>	
+										<html:file property="file" name="MediadoresExportForm" size="50" styleClass="box" accept=".csv"></html:file>
+									</td>						
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+			</table>
 		</html:form>
 
-		<siga:ConjBotonesAccion botones="GF" clase="botonesSeguido"/>
+		<siga:ConjBotonesAccion botones="A,GF" clase="botonesSeguido"/>
 		
 		
 		<!-- FIN: BOTONES BUSQUEDA -->

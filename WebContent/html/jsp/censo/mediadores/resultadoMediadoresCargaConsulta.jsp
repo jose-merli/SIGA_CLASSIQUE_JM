@@ -1,14 +1,13 @@
 
-<!-- resultadoMediadoresExport.jsp -->
+<!-- resultadoMediadoresCargaConsulta.jsp -->
 <!-- 
 	 VERSIONES:
 	 emilio.grau 31/01/2005 Versión inicial
 -->
 
 <!-- CABECERA JSP -->
-<%@page import="org.redabogacia.sigaservices.app.AppConstants.CEN_MEDIADOR_TIPOEXPORT"%>
-<%@page import="org.redabogacia.sigaservices.app.autogen.model.CenMediadorExportfichero"%>
-<%@page import="com.siga.censo.mediadores.action.MediadoresExportAction"%>
+
+<%@page import="org.redabogacia.sigaservices.app.autogen.model.CenMediadorFicherocsv"%>
 
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -30,13 +29,13 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 
 
-
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.paginadores.PaginadorVector"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
+<%@page import="com.siga.censo.mediadores.action.ImportarMediadoresConsultaAction"%>
 
 
 
@@ -54,7 +53,7 @@
 
 	String idioma=usr.getLanguage().toUpperCase();
 	/** PAGINADOR ***/
-	List<CenMediadorExportfichero> resultado= new ArrayList<CenMediadorExportfichero>();
+	List<CenMediadorFicherocsv> resultado= new ArrayList<CenMediadorFicherocsv>();
 	String paginaSeleccionada ="";
 	
 	String totalRegistros ="";
@@ -62,11 +61,11 @@
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
 	
-	if (ses.getAttribute(MediadoresExportAction.DATAPAGINADOR) != null) {
-		hm = (HashMap) ses.getAttribute(MediadoresExportAction.DATAPAGINADOR);
+	if (ses.getAttribute(ImportarMediadoresConsultaAction.DATAPAGINADOR) != null) {
+		hm = (HashMap) ses.getAttribute(ImportarMediadoresConsultaAction.DATAPAGINADOR);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
-			resultado = (List<CenMediadorExportfichero>) hm.get("datos");
+			resultado = (List<CenMediadorFicherocsv>) hm.get("datos");
 
 			PaginadorVector paginador = (PaginadorVector) hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
@@ -76,7 +75,7 @@
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 
 		} else {
-			resultado = new ArrayList<CenMediadorExportfichero>();
+			resultado = new ArrayList<CenMediadorFicherocsv>();
 			paginaSeleccionada = "0";
 
 			totalRegistros = "0";
@@ -84,7 +83,7 @@
 			registrosPorPagina = "0";
 		}
 	} else {
-		resultado = new ArrayList<CenMediadorExportfichero>();
+		resultado = new ArrayList<CenMediadorFicherocsv>();
 		paginaSeleccionada = "0";
 		totalRegistros = "0";
 		registrosPorPagina = "0";
@@ -119,60 +118,20 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<html:javascript formName="MediadoresExportForm" staticJavascript="false" />
 	
 	</head>
 	
 	<script type="text/javascript">
-		function erroresCarga(fila) {
-	    	var idcensowsenvio = document.getElementById('oculto' + fila + '_1');
-	    	
-	    	document.EdicionRemesaForm.modo.value="erroresCarga";	    	
-	    	document.EdicionRemesaForm.idcensowsenvio.value=idcensowsenvio.value;
-		   	
-			ventaModalGeneral(document.EdicionRemesaForm.name,'P');
-		}	
-		
-		function descargar(fila){						
-			var f=document.getElementById("MediadoresExportForm");
-			var id = document.getElementById('oculto' + fila + '_1');
 			
-			f.modo.value = "download";
-			f.idmediadorexportfichero.value = id.value;
-			f.target="submitArea";
-			f.submit();
-		}		
-		
-		function init() {
-			var f=document.getElementById("MediadoresExportForm");
-			
-			if (f && f.idmediadorexportfichero.value > 0) {
-				var f=document.getElementById("MediadoresExportForm");
-				f.modo.value = "download";							
-				f.target="submitArea";
-				f.submit();
-			}
-		}
-		
 		
 	</script>
-	
-	
-	
 
-	<body onload="init()">		
-	
-	<html:form action="/CEN_ExportMediadoresFichero.do?noReset=true" method="post" target="mainPestanas" style="display:none">
-		<html:hidden name="MediadoresFicheroForm" property = "idmediadorexportfichero"/>
-		<html:hidden name="MediadoresFicheroForm" property = "modo" value = "ver"/>
-	</html:form>
+	<body>		
 	
 	
-	<html:form action="/CEN_ExportarMediadores.do?noReset=true" method="post" target="mainPestanas" style="display:none">
-		
-		<html:hidden name="MediadoresExportForm" property = "modo" value = "insertar"/>
-		<html:hidden name="MediadoresExportForm" property = "idmediadorexportfichero"/>
-		
+	
+	<html:form action="/CEN_ConsultaCargaMediadores.do?noReset=true" method="post" target="mainPestanas" style="display:none">
+		<input type="hidden" name="modo"  id="modo"  value="">
 		<input type="hidden" name="idcensowsenvio"  id="idcensowsenvio"  value="">
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados" />
@@ -183,36 +142,28 @@
 		<siga:Table 		   
 		   name="listadoIncidencias"
 		   border="1"
-		   columnNames="censo.mediador.literal.tipoExport,censo.mediador.literal.nombreFichero,censo.mediador.literal.fechaCreacion,"
-		   columnSizes="15,50,20">
+		   columnNames="censo.mediadores.literal.colegio,censo.mediadores.literal.fechaCarga,"
+		   columnSizes="50,15,10">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
-   					CenMediadorExportfichero cenMediadorExportfichero = null;
+   					CenMediadorFicherocsv cenMediadorFicherocsv = null;
    					for (int i=0; i<resultado.size(); i++) {
-   						cenMediadorExportfichero = (CenMediadorExportfichero)resultado.get(i);
+   						cenMediadorFicherocsv = (CenMediadorFicherocsv)resultado.get(i);
   				   		   		
 		   		   		botones = null;
 		   		   		String visibleConsulta = null;
-		   		   		String size = "&nbsp;";		   		   		
+		   		   		String size = "&nbsp;";
+		   		   		
 	   		   			
-	   		   			visibleConsulta = "true";
-	   		   			String tipo = "";
-	   		   			FilaExtElement[] elems = new FilaExtElement[1];
-	   		   		
-	   		   			if (CEN_MEDIADOR_TIPOEXPORT.G.name().equals(cenMediadorExportfichero.getIdtipoexport())) {
-	   		   				tipo = "censo.mediador.literal.generado";
-	   		   				elems[0]=new FilaExtElement("download", "descargar", "censo.mediador.literal.ficheroXML", SIGAConstants.ACCESS_FULL);
-	   		   			} else if (CEN_MEDIADOR_TIPOEXPORT.S.name().equals(cenMediadorExportfichero.getIdtipoexport())) {
-	   		   				tipo = "censo.mediador.literal.sincronizado";
-	   		   			}	   		   		
-	   		   			
+	   		   			visibleConsulta = "true";		   		   		
 		   		   	%>
-		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" pintarEspacio="no" clase="listaNonEdit" visibleconsulta="true" visibleEdicion="false" botones="C">
-		   			<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=cenMediadorExportfichero.getIdmediadorexportfichero()%>">		   			
-		   			<td style="text-align: center"><%=UtilidadesString.getMensajeIdioma(usr, tipo)%></td>
-					<td style="text-align: center"><%=cenMediadorExportfichero.getNombrefichero()!=null?cenMediadorExportfichero.getNombrefichero():"&nbsp;"%></td>
-					<td style="text-align: center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateLong(usr.getLanguage(), cenMediadorExportfichero.getFechacreacion()))%></td>
+		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleBorrado="false" visibleEdicion="false" pintarEspacio="no" clase="listaNonEdit" visibleconsulta="true" visibleEdicion="false" botones="C">		   		
+		   			<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=cenMediadorFicherocsv.getIdmediadorficherocsv()%>">
+		   			<td style="text-align: left"><%=institucionAdm.getNombreInstitucion(cenMediadorFicherocsv.getIdinstitucion().toString())%></td>
+															
+					<td style="text-align: center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateLong(usr.getLanguage(), cenMediadorFicherocsv.getFechamodificacion()))%></td>					
+					
 				</siga:FilaConIconos>	
 							<% }
 		   				   } else { %>
@@ -238,7 +189,6 @@
 			
 			 <%}%>	
 			 
-			
 			
 		
 

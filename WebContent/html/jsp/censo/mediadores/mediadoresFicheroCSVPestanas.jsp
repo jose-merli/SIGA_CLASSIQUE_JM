@@ -1,4 +1,4 @@
-<!-- mediadoresImportPestanas.jsp -->
+<!-- mediadoresFicheroCSVPestanas.jsp -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,42 +43,37 @@
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->
+	
+	
 
 </head>
  
-<body onload="ajusteAlto('mainPestanas');return activarPestana();">
+<body onload="ajusteAlto('subPestanas');return activarPestana();">
 
 <div class="posicionPestanas">
 
-	<!-- Formulario de la lista de detalle multiregistro -->
-	<html:form action="/CEN_CargaMediadores.do" method="POST">
-
-	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = ""/>
-	
-	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
-	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
 		<siga:PestanasExt 
-				pestanaId="MED_IMPORT" 
-				target="mainPestanas"
+				pestanaId="MED_CSV" 
+				target="subPestanas"
+				parametros="ficheroCSVParam"
 				elementoactivo="<%=elementoActivo%>"
 	/>
 	
 
-<!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
-
-	</html:form> 
 
 </div>
+	
+	
 	<!-- INICIO: IFRAME GESTION PRINCIPAL -->
 	<iframe src="<%=app%>/html/jsp/general/blank.jsp"
-			id="mainPestanas"
-			name="mainPestanas"
+			id="subPestanas"
+			name="subPestanas"
 			scrolling="no"
 			frameborder="0"
+			marginheight="0"
+			marginwidth="0";
 			class="framePestanas"
-			
 			>
 	</iframe>
 	<!-- FIN: IFRAME GESTION PRINCIPAL -->
@@ -86,6 +81,8 @@
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
+
+
 
 </body>
 </html>
