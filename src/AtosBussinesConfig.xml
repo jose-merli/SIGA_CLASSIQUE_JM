@@ -98,6 +98,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.gen.FicherosService" 							implementation="org.redabogacia.sigaservices.app.services.gen.impl.FicherosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionAsistenciaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionAsistenciaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPaisService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPaisServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.MediadoresService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.MediadoresServiceImpl"/>
 	
 		
 	</context>
