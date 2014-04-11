@@ -63,7 +63,13 @@
 		<!-- ************************** FORMS MEDIADORES *************************
 -->		
 		<form-bean name="MediadoresImportForm" type="com.siga.censo.mediadores.form.MediadoresImportForm"/>
-		<form-bean name="MediadoresExportForm" type="com.siga.censo.mediadores.form.MediadoresExportForm"/>		
+		<form-bean name="MediadoresImportConsultaForm" type="com.siga.censo.mediadores.form.MediadoresImportConsultaForm"/>
+		<form-bean name="MediadoresImportConsultaFicheroForm" type="com.siga.censo.mediadores.form.MediadoresImportConsultaFicheroForm"/>
+		
+		
+		<form-bean name="MediadoresExportForm" type="com.siga.censo.mediadores.form.MediadoresExportForm"/>
+		<form-bean name="MediadoresFicheroForm" type="com.siga.censo.mediadores.form.MediadoresFicheroForm"/>
+				
 		
 
 		<!-- ************************** FORMS FACTURACIÓN *************************
@@ -772,9 +778,27 @@
 		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresCarga.jsp"/>		    
 	    </action>
 	    
+		<action path="/CEN_ConsultaCargaMediadores" type="com.siga.censo.mediadores.action.ImportarMediadoresConsultaAction" name="MediadoresImportConsultaForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportConsultaCarga.jsp"/> 
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresCargaConsulta.jsp"/>
+		    <forward name="ver" path="/html/jsp/censo/mediadores/mediadoresFicheroCSVPestanas.jsp"/>
+	    </action>
+	    
+		<action path="/CEN_ConsultaCargaFicheroMediadores" type="com.siga.censo.mediadores.action.ImportarMediadoresConsultaFicheroAction" name="MediadoresImportConsultaFicheroForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportConsultaCargaFichero.jsp"/>
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresCargaConsultaFichero.jsp"/>		    
+	    </action>
+	    	
+	    
 		<action path="/CEN_ExportarMediadores" type="com.siga.censo.mediadores.action.MediadoresExportAction" name="MediadoresExportForm" scope="request">
 		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresExport.jsp"/>		    
-		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresExport.jsp"/>
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresExport.jsp"/>		    
+	    </action>
+	    
+		<action path="/CEN_ExportMediadoresFichero" type="com.siga.censo.mediadores.action.MediadoresExportFicheroAction" name="MediadoresFicheroForm" scope="request">
+		    <forward name="ver" path="/html/jsp/censo/mediadores/mediadoresExportFicheroPestanas.jsp"/>
+		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresExportFichero.jsp"/>		    
+		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresExportFichero.jsp"/>    
 	    </action>
 		
 
