@@ -95,13 +95,13 @@
 		sAbreviaturaInstitucionDestino = beanInstitucionDestino.getAbreviatura();
 	}
 	String deshabilitaCobro = "";
+	boolean camposDeshabilitaCobro = false;
 	String deshabilitaDescarga = "";
 	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)) {
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "";
 
-	} else if (idEstadoSolicitud
-			.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) {
+	} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) {
 		deshabilitaDescarga = "";
 		deshabilitaCobro = "";
 	} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)
@@ -109,7 +109,8 @@
 			|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) {
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "disabled";
-	}
+	} 
+	
 	String botones = "";
 	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO) 
 		|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO) 
@@ -139,6 +140,11 @@
 			.getAttribute("nombreUltimoUsuMod");
 	if (nombreUltimoUsuMod == null)
 		nombreUltimoUsuMod = new String("");
+	
+	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO) || idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO) || modo.equalsIgnoreCase("ver")) {
+		camposDeshabilitaCobro = true;
+	}	
+	
 %>
 
 
@@ -211,7 +217,47 @@
 				  }
 			  <%}%>	    	
 			  }
-			  		  	
+			  
+			  if (SolicitudesCertificadosForm.checkCobro.checked){
+				  
+				  // LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
+				  if(jQuery("#fechaCobro").val() == null || jQuery("#fechaCobro").val() == ""){
+				      alert("<siga:Idioma key="messages.certificado.error.fechacobro.obligatorio"/>");
+					  fin();
+				 	  return false;
+				  }
+				  
+				  fechaActual = getFechaActualDDMMYYYY();
+				  
+				  // LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
+				  if(compararFecha(jQuery("#fechaCobro").val(),fechaActual) == 1){
+					  alert("<siga:Idioma key="messages.certificado.error.fechacobro.futuro"/>");
+					  fin();
+				 	  return false;
+				  }				  
+				  
+				  //SI NO EXISTE EL BANCO PARA EL CODIGO INTRODUCIDO 
+				  if(jQuery("#codigoBanco").val()!= "" && (jQuery("#bancoNombre").val() == null || jQuery("#bancoNombre").val() == "")){
+					  alert("<siga:Idioma key="messages.certificado.error.banco.obligatorio"/>");
+					  fin();
+				 	  return false;
+				  }					 
+
+				  //NO SE PUEDE RELLENAR EL CAMPO SUCURSAL SIN HABER RELLENADO LA ENTIDAD
+				  if(jQuery("#sucursalBanco").val()!= "" && (jQuery("#bancoNombre").val() == null || jQuery("#bancoNombre").val() == "")){
+					  alert("<siga:Idioma key="messages.certificado.error.sucursal.nobanco"/>");
+					  fin();
+				 	  return false;
+				  }				 
+				  
+				  //EL CAMPO SUCURSAL DEBE TENER UN TAMAÑO DE 4
+				  if(jQuery("#sucursalBanco").val()!= "" && jQuery("#sucursalBanco").val().length != 4){
+					  alert("<siga:Idioma key="messages.certificado.error.sucursal.longitud"/>");
+					  fin();
+				 	  return false;
+				  }					  
+			  }
+				
 				SolicitudesCertificadosForm.modo.value="modificar";
 				SolicitudesCertificadosForm.submit();
 			}
@@ -238,15 +284,21 @@
 			
 			function validarCheckCobro()
 			{
-				if (!SolicitudesCertificadosForm.checkCobro.checked)	
-				{
+				if (!SolicitudesCertificadosForm.checkCobro.checked) {
+					
 					SolicitudesCertificadosForm.fechaCobro.value="";
 				    <% if (tipoCertificado.equals("C")){%>
 				       jQuery("#idInstitucionDestino").removeAttr("disabled");
-  				    <%}%>	  
-				}
-				else
-				{
+  				    <%}%>
+					jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
+					jQuery("#fechaCobro-datepicker-trigger").hide();
+					jQuery("#td_1").hide();
+					jQuery("#td_2").hide();
+					jQuery("#td_3").hide();
+					jQuery("#td_4").hide();
+					jQuery("#td_5").hide();
+				
+				} else {
 				    <% if (tipoCertificado.equals("C")){%>
 				       SolicitudesCertificadosForm.idInstitucionDestino.value="";
 					   jQuery("#idInstitucionDestino").attr("disabled","disabled");
@@ -258,11 +310,43 @@
 					if (dia<10) dia="0"+dia;
 					if (mes<10) mes="0"+mes;
 					SolicitudesCertificadosForm.fechaCobro.value=dia+"/"+mes+"/"+yea;
-*/					
-
+*/										   
+	
+					jQuery("#td_1").show();
+					jQuery("#td_2").show();
+					jQuery("#td_3").show();
+					jQuery("#td_4").show();
+					jQuery("#td_5").show();
+					jQuery("#fechaCobro").addClass("box").removeClass("boxConsulta");	
+					jQuery("#fechaCobro-datepicker-trigger").show();
 					SolicitudesCertificadosForm.fechaCobro.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 				}
 			}
+			
+			function cargarBanco(){
+				var codigoBanco = jQuery("#codigoBanco").val();
+				if (codigoBanco!=undefined && codigoBanco!="") {			
+					jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+		   				type: "POST",
+						url: "/SIGA/CEN_CuentasBancarias.do?modo=getAjaxBanco",
+						data: "idBanco="+codigoBanco,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){	
+							if(json.banco!=null && json.banco!=""){
+								document.getElementById("bancoNombre").value=json.banco.nombre;
+							}
+							fin();
+						},
+						error: function(e){
+							alert(mensaje);
+							fin();
+						}
+					});
+				} else {
+					document.getElementById("bancoNombre").value="";
+				}
+			}			
 			
 			function fijarFechaEntregaInfo () 
 			{
@@ -292,6 +376,14 @@
 			}
 			
 		</script>
+		
+	<style>
+        .colizq{clear:left;float:left;}
+       
+        .colsiguientes{float:left;display:block;}
+	</style>	
+		
+		
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
@@ -430,55 +522,122 @@
 				</table>
 			</siga:ConjCampos> 
 			<siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.gestionSolicitud">
-				<table class="tablaCampos" align="center" border="0">
-					<tr>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.fechaEmision" /></td>
-						<td>
-						<%if (modificarSolicitud.equals("1")) {%> 
-							<%if(modoEditar){
-									String fechaEm ="";									
-									if(!beanSolicitud.getFechaEmisionCertificado().equals("")){
-										SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
-										Date date = new Date(beanSolicitud.getFechaEmisionCertificado());
-										fechaEm = sdf.format(date);
-									}%>
-								<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp
+						<div class="labelText colizq" width="100px">
+							<siga:Idioma key="certificados.solicitudes.literal.fechaEmision" />
+						</div>
+						
+						<div width="200px" class="colsiguientes"> 
+							<%if (modificarSolicitud.equals("1")) {%> 
+								<%if(modoEditar){
+										String fechaEm ="";									
+										if(!beanSolicitud.getFechaEmisionCertificado().equals("")){
+											SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
+											Date date = new Date(beanSolicitud.getFechaEmisionCertificado());
+											fechaEm = sdf.format(date);
+										}%>
+									<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp
+								<%} else {%>
+									<html:text
+										name="SolicitudesCertificadosForm" style="width:80px"
+										property="fechaEmision" styleClass="<%=tipoBox %>" readonly="true"
+										value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
+									</html:text>
+								<%}%>
 							<%} else {%>
-								<html:text
-									name="SolicitudesCertificadosForm" style="width:80px"
-									property="fechaEmision" styleClass="<%=tipoBox %>" readonly="true"
+								<html:text name="SolicitudesCertificadosForm" style="width:80px" property="fechaEmision" styleClass="boxConsulta" readonly="true"
 									value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
-								</html:text>
+								</html:text> 
 							<%}%>
-						<%} else {%>
-							<html:text name="SolicitudesCertificadosForm" style="width:80px" property="fechaEmision" styleClass="boxConsulta" readonly="true"
-								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
-							</html:text> 
-						<%}%>
-						</td>
-					</tr>
-					<tr>
-						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.descargado" /></td>
-						<td>
-							<input type=checkbox name="checkDescarga" onclick="validarCheckDescarga();" <%=deshabilitaDescarga%> <%=(beanSolicitud.getFechaDescarga()!=null && !beanSolicitud.getFechaDescarga().trim().equals(""))?"checked":"" %>>
-							&nbsp;&nbsp;
-							<html:text name="SolicitudesCertificadosForm" property="fechaDescarga" styleClass="boxConsulta" readonly="true"
-								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaDescarga()) %>"
-								size="10"></html:text>
-						</td>
-						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.cobrado" /></td>
-						<td>
+						</div>
+						
+						<div class="labelText colsiguientes" width="60px">
+							<siga:Idioma key="certificados.solicitudes.literal.cobrado" />
+						</div>
+						
+						<div width="180px" class="colsiguientes">
 							<input type=checkbox name="checkCobro" onclick="validarCheckCobro();" <%=deshabilitaCobro%>
 								<%=(beanSolicitud.getFechaCobro()!=null && !beanSolicitud.getFechaCobro().trim().equals(""))?"checked":"" %>>
 							&nbsp;&nbsp;
-							<html:text name="SolicitudesCertificadosForm"
-								property="fechaCobro" styleClass="boxConsulta" readonly="true"
-								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaCobro()) %>"
-								size="10"></html:text>
+							<%if(modoEditar){
+								String fechaCo ="";									
+								if(!beanSolicitud.getFechaCobro().equals("")){
+									SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
+									Date date = new Date(beanSolicitud.getFechaCobro());
+									fechaCo = sdf.format(date);
+								}%>		
+								<siga:Fecha nombreCampo="fechaCobro" valorInicial="<%=fechaCo%>"/>
+									<script type="text/javascript">	
+										jQuery(document).ready(function () {		
+											if (!SolicitudesCertificadosForm.checkCobro.checked){
+												jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
+												jQuery("#fechaCobro-datepicker-trigger").hide();
+												jQuery("#td_1").hide();
+												jQuery("#td_2").hide();
+												jQuery("#td_3").hide();
+												jQuery("#td_4").hide();
+												jQuery("#td_5").hide();
+											}
+										});
+									</script>
+								
+							<%} else {%>
+								<html:text name="SolicitudesCertificadosForm"
+									property="fechaCobro" styleClass="boxConsulta" readonly="true"
+									value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaCobro()) %>"
+									size="10"></html:text>
+							<%}%>		
+						</div>
+						
+						<div class="labelText colsiguientes" id="td_1" width="60px">
+							<siga:Idioma key="administracion.multidioma.catalogosMaestros.literal.entidad" />
+						</div>
+						
+						<div id="td_2" width="50px" class="colsiguientes">
+							<html:text size="2"  maxlength="4"  name="SolicitudesCertificadosForm" property="codigoBanco" styleId="codigoBanco" value="<%=beanSolicitud.getCbo_codigo()%>"  readonly="<%=camposDeshabilitaCobro%>" styleClass="<%=tipoBox %>" onblur="cargarBanco();"></html:text> 
+						</div>
+							<script type="text/javascript">
+								jQuery("#codigoBanco").keypress(function (e) {
+										if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+				           				return false;
+									});
+							</script>
+
+						<div class="labelText colsiguientes" colspan="2" id="td_3" width="250px">
+							<html:text style="width:250px;" name="SolicitudesCertificadosForm" property="bancoNombre"  styleId="bancoNombre" styleClass="boxConsulta" readonly="true"/>
+						</div>
+							<script type="text/javascript">	
+								cargarBanco();
+							</script>
+
+						<div class="labelText colsiguientes" id="td_4" width="60px">
+							<siga:Idioma key="facturacion.cuentasBancarias.sucursalBanco" />
+						</div>
+						
+						<div id="td_5" width="50px" class="colsiguientes"> 
+							<html:text size="2"  maxlength="4"  name="SolicitudesCertificadosForm" property="sucursalBanco" styleId="sucursalBanco" value="<%=beanSolicitud.getCodigo_sucursal()%>"  readonly="<%=camposDeshabilitaCobro%>" styleClass="<%=tipoBox %>"></html:text> 
+						</div>
+							<script type="text/javascript">
+								jQuery("#sucursalBanco").keypress(function (e) {
+										if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+				           				return false;
+									});
+							</script>
+
+				<table class="tablaCampos" align="center" border="0">	
+					<tr>
+						<td class="labelText" width="90px" ><siga:Idioma key="certificados.solicitudes.literal.descargado" /></td>
+						<td width="110px">
+							<input type=checkbox name="checkDescarga" onclick="validarCheckDescarga();" <%=deshabilitaDescarga%> <%=(beanSolicitud.getFechaDescarga()!=null && !beanSolicitud.getFechaDescarga().trim().equals(""))?"checked":"" %>>
+							&nbsp;
+							<html:text name="SolicitudesCertificadosForm" property="fechaDescarga" styleClass="boxConsulta" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaDescarga()) %>"
+								size="7"></html:text>
 						</td>
-						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.enviado" /></td>
-						<td>
+
+
+
+						<td class="labelText" width="55px"><siga:Idioma key="certificados.solicitudes.literal.enviado" /></td>
+						<td width="137px">
 							<input type=checkbox name="checkEnvio" disabled <%=(beanSolicitud.getFechaEnvio()!=null && !beanSolicitud.getFechaEnvio().trim().equals(""))?"checked":"" %>>
 						&nbsp;&nbsp;
 							<html:text name="SolicitudesCertificadosForm"
@@ -486,9 +645,9 @@
 								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEnvio()) %>"
 								size="10"></html:text>
 						</td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.entregadaInfoAdjunta" /></td>
-						<td>
+						<td class="labelText" colspan="4"><siga:Idioma
+							key="certificados.solicitudes.literal.entregadaInfoAdjunta" />
+							&nbsp;
 							<input type=checkbox name="checkInfoAdjunta" onclick="fijarFechaEntregaInfo();" <%=deshabilitaInfo%>
 								<%=(beanSolicitud.getFechaEntregaInfo()!=null && !beanSolicitud.getFechaEntregaInfo().trim().equals(""))?"checked":"" %>>
 						&nbsp;&nbsp;
@@ -496,6 +655,8 @@
 								property="fechaEntregaInfo" styleClass="boxConsulta" readonly="true" 
 								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEntregaInfo()) %>"
 							size="10"></html:text></td> 
+							
+						<td colspan="2">&nbsp; </td>	
 					</tr>
 					<tr>
 						<td class="labelText" colspan="4">

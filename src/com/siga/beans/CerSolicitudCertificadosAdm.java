@@ -83,7 +83,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
 		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
-		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION};
+		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
+		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
+		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL};
 
 		return campos;
 	}
@@ -121,7 +123,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
-		        		   CerSolicitudCertificadosBean.C_USUCREACION};
+		        		   CerSolicitudCertificadosBean.C_USUCREACION,
+		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
+		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL};
 
 		return campos;
 	}
@@ -176,6 +180,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUMODIFICACION));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHACREACION));
 			bean.setUsuCreacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUCREACION));
+			bean.setCbo_codigo(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_CBO_CODIGO));
+			bean.setCodigo_sucursal(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL));
 		}
 
 		catch (Exception e)
@@ -232,7 +238,10 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHACREACION, b.getFechaCreacion());
-			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUCREACION, b.getUsuCreacion());			
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUCREACION, b.getUsuCreacion());		
+			
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_CBO_CODIGO, b.getCbo_codigo());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL, b.getCodigo_sucursal());				
 		}
 		catch (Exception e)
 		{
@@ -422,6 +431,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAESTADO + " AS FECHAESTADO, "
 					+ "SOL." + CerSolicitudCertificadosBean.C_FECHADESCARGA + " AS FECHADESCARGA, "
 					+ "SOL." + CerSolicitudCertificadosBean.C_FECHACOBRO + " AS FECHACOBRO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_CBO_CODIGO + " AS CODIGO_BANCO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL + " AS CODIGO_SUCURSAL, "					
 					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " AS FECHAENVIO, "
 					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO + " AS FECHAEMISION, "
 					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", "

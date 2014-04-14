@@ -52,6 +52,9 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String idProductoInstitucion="";
     private String metodoSolicitud="";
     
+    private String codigoBanco;
+    private String sucursalBanco;
+    private String bancoNombre;
         
 	public String getIdTipoProducto() {
 		return idTipoProducto;
@@ -447,6 +450,23 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	public void setIdInstitucionColegiacion(String idInstitucionColegiacion) {
 		this.idInstitucionColegiacion = idInstitucionColegiacion;
 	}
-	
+	public String getCodigoBanco() {
+		return codigoBanco;
+	}
+	public void setCodigoBanco(String codigoBanco) {
+		this.codigoBanco = codigoBanco;
+	}
+	public String getSucursalBanco() {
+		return sucursalBanco;
+	}
+	public void setSucursalBanco(String sucursalBanco) {
+		this.sucursalBanco = sucursalBanco;
+	}
+	public String getBancoNombre() {
+		return bancoNombre;
+	}
+	public void setBancoNombre(String bancoNombre) {
+		this.bancoNombre = bancoNombre;
+	}
 	
 }

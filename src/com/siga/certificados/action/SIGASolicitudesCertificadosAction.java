@@ -1845,9 +1845,24 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    
 		    if (!form.getFechaCobro().trim().equals("")) {
 		    	bean.setFechaCobro(GstDate.getApplicationFormatDate(usr.getLanguage(),form.getFechaCobro()));
+		    	
+			    if (form.getCodigoBanco()!= null && !form.getCodigoBanco().trim().equals("")) {
+			    	bean.setCbo_codigo(form.getCodigoBanco());
+			    } else {
+			    	bean.setCbo_codigo(null);
+			    }
+			    
+			    if (form.getSucursalBanco() != null && !form.getSucursalBanco().trim().equals("")) {
+			    	bean.setCodigo_sucursal(form.getSucursalBanco());
+			    } else {
+			    	bean.setCodigo_sucursal(null);
+			    }			    	
+		    	
 		    }else{
 		    	bean.setFechaCobro(null);
-		    }
+		    	bean.setCbo_codigo(null);
+		    	bean.setCodigo_sucursal(null);
+		    }		    
 		    
 		    if (!form.getFechaEntregaInfo().trim().equals("")) {
 		    	bean.setFechaEntregaInfo(GstDate.getApplicationFormatDate(usr.getLanguage(),form.getFechaEntregaInfo()));

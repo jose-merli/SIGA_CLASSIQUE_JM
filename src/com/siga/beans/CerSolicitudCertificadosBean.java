@@ -35,6 +35,9 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private String fechaEntregaInfo;
 	private String fechaCreacion;
 	private Integer usuCreacion;
+	
+	private String cbo_codigo;
+	private String codigo_sucursal;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -71,6 +74,9 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	
 	static public final String C_FECHACREACION  = "FECHACREACION";
     static public final String C_USUCREACION   = "USUCREACION";
+    
+	static public final String C_CODIGO_SUCURSAL = "CODIGO_SUCURSAL";
+    static public final String C_CBO_CODIGO   = "CBO_CODIGO";    
 
 	static public final String T_NOMBRETABLA = "CER_SOLICITUDCERTIFICADOS";
 
@@ -342,6 +348,22 @@ public class CerSolicitudCertificadosBean extends MasterBean
 
 	public void setIdInstitucionColegiacion(Integer idInstitucionColegiacion) {
 		this.idInstitucionColegiacion = idInstitucionColegiacion;
+	}
+
+	public String getCbo_codigo() {
+		return cbo_codigo;
+	}
+
+	public void setCbo_codigo(String cbo_codigo) {
+		this.cbo_codigo = cbo_codigo;
+	}
+
+	public String getCodigo_sucursal() {
+		return codigo_sucursal;
+	}
+
+	public void setCodigo_sucursal(String codigo_sucursal) {
+		this.codigo_sucursal = codigo_sucursal;
 	}
 	
 }
