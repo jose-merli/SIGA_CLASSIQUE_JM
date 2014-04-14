@@ -539,6 +539,7 @@ public class DefinirEnviosAction extends MasterAction {
 			EnvEnvios envEnvios = new EnvEnvios();
 			envEnvios.setIdenvio(new Long(idEnvio));
 			envEnvios.setIdinstitucion(new Short(idInstitucion));
+			envEnvios.setUsumodificacion(new Integer(userBean.getUserName()));
 			
 			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
 			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
@@ -553,10 +554,14 @@ public class DefinirEnviosAction extends MasterAction {
 	protected String borrarComunicacion(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws SIGAException {
+		
+		HttpSession ses=request.getSession();
+		UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 		String idInstitucion = form.getIdInstitucion();
 		String idEnvio = form.getIdEnvio();
+		
 		
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
@@ -564,6 +569,7 @@ public class DefinirEnviosAction extends MasterAction {
 			EnvEnvios envEnvios = new EnvEnvios();
 			envEnvios.setIdenvio(new Long(idEnvio));
 			envEnvios.setIdinstitucion(new Short(idInstitucion));
+			envEnvios.setUsumodificacion(new Integer(userBean.getUserName()));
 			
 			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
 			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
