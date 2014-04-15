@@ -91,6 +91,15 @@
 					buscar();
 				}
 			}
+			
+			function comprobarCheckHistorico(valorCheck){
+				if (!valorCheck.checked){
+					PlantillasEnviosForm.checkFechaBaja.value="false";
+				} else {
+					PlantillasEnviosForm.checkFechaBaja.value="true";
+				}
+			}			
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
@@ -107,6 +116,7 @@
 					<input type="hidden" name="modo" value="inicio">
 					<input type="hidden" name="actionModal" value="">
 					<input type="hidden" name="limpiarFilaSeleccionada" value="">
+					<input type="hidden" name="checkFechaBaja">
 
 					<tr>				
 						<td class="labelText">
@@ -125,6 +135,14 @@
 						<td>
 							<siga:ComboBD nombre="idTipoEnvios" tipo="cmbTipoEnvios" clase="boxCombo" obligatorio="false" elementoSel="<%=al%>"/>
 						</td>
+						
+						<!-- Introducción del check de histórico -->
+						<td class="labelText">
+							<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkHistorico"/>		
+						</td> 		
+						<td class="labelText">
+							<input type="checkbox" id="idCheckHistorico" onclick="comprobarCheckHistorico(this);"/>			
+						</td> 					
 					</tr>
 				</html:form>
 			</table>

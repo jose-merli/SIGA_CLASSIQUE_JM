@@ -61,7 +61,7 @@
 	boolean nuevo = true;
 	String auxFcargo ="";
 	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
-	String parametrosCmbPlantillaEnvios[] = {usr.getLocation(),idTipoEnvioCorreoElectronico};
+	String parametrosCmbPlantillaEnvios[] = {usr.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
 	String parametrosPlantillasMail [] = {"-1",usr.getLocation(),"1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
@@ -109,6 +109,7 @@
 			idTipoPlantilla = (UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL)).toString();
 			if(idTipoPlantilla != null && !idTipoPlantilla.equals("")){	
 				plantillaEnviosSeleccionada.add(idTipoPlantilla+","+usr.getLocation() +",1");
+				parametrosCmbPlantillaEnvios[2] = idTipoPlantilla;
 			}
 		}
 		

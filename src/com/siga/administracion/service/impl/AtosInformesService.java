@@ -696,9 +696,12 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		List<EnvTipoEnviosBean> tipoEnviosBeans = tipoEnviosAdm.getEnviosPermitidos(informeBean,usrBean);
 		return tipoEnviosBeans;
 	}
-	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean) throws ClsExceptions {
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean, String idPlantillaEnvioDefecto) throws ClsExceptions {
 		EnvPlantillasEnviosAdm plantillasEnviosAdm = new EnvPlantillasEnviosAdm(usrBean);
-		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = plantillasEnviosAdm.getPlantillasEnvio(idTipoEnvio,idInstitucion);
+		if(idPlantillaEnvioDefecto == null || idPlantillaEnvioDefecto.equals("")){
+			idPlantillaEnvioDefecto = "-1";
+		}
+		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = plantillasEnviosAdm.getPlantillasEnvio(idTipoEnvio,idInstitucion, idPlantillaEnvioDefecto);
 		return plantillasEnviosBeans;
 	}
 	

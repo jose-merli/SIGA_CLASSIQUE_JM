@@ -37,11 +37,12 @@
 	request.removeAttribute("datos");	
 	CampoTipoExpedienteForm form1 = (CampoTipoExpedienteForm) request.getAttribute("camposForm");
 	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
-	String parametrosCmbPlantillaEnvios2[] = {user.getLocation(),idTipoEnvioCorreoElectronico};
+	String parametrosCmbPlantillaEnvios2[] = {user.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
 	if(form1.getEnviarAvisos().equals("1")){
 		plantillaEnviosSeleccionada.add(form1.getIdPlantillaEnvios()+","+user.getLocation() +","+ form1.getIdTipoEnvios());
+		parametrosCmbPlantillaEnvios2[2] = form1.getIdPlantillaEnvios();
 		
 		if(form1.getIdPlantilla()!=null && !form1.getIdPlantilla().equals("")){
 			plantillaSeleccionada.add(form1.getIdPlantilla());

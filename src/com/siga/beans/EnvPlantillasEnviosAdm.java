@@ -27,7 +27,8 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 		        		   EnvPlantillasEnviosBean.C_NOMBRE,
 		        		   EnvPlantillasEnviosBean.C_ACUSERECIBO,
 		        		   EnvPlantillasEnviosBean.C_FECHAMODIFICACION, 
-						   EnvPlantillasEnviosBean.C_USUMODIFICACION};
+						   EnvPlantillasEnviosBean.C_USUMODIFICACION,
+						   EnvPlantillasEnviosBean.C_FECHABAJA};
 
 		return campos;
 	}
@@ -52,6 +53,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 			bean.setIdPlantillaEnvios(UtilidadesHash.getInteger(hash, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS));
 			bean.setNombre(UtilidadesHash.getString(hash, EnvPlantillasEnviosBean.C_NOMBRE));
 			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvPlantillasEnviosBean.C_ACUSERECIBO));
+			bean.setFechaBaja(UtilidadesHash.getString(hash, EnvPlantillasEnviosBean.C_FECHABAJA));
 		}
 
 		catch (Exception e)
@@ -79,6 +81,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS, b.getIdPlantillaEnvios());
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_ACUSERECIBO, b.getAcuseRecibo());
+			UtilidadesHash.set(htData, EnvPlantillasEnviosBean.C_FECHABAJA, b.getFechaBaja());
 		}
 
 		catch (Exception e)
@@ -96,15 +99,12 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
         return null;
     }
 
-    public Vector buscarPlantillas(String idInstitucion, 
-            					   String idTipoEnvios, 
-            					   String nombre)
-    {
+    public Vector buscarPlantillas(String idInstitucion, String idTipoEnvios, String nombre, boolean conPlantillasBaja) {
         Vector vDatos = null;
         
-        try
-        {
-            RowsContainer rc = new RowsContainer();
+        try {
+           
+        	RowsContainer rc = new RowsContainer();
             int contador=0;
             Hashtable codigos = new Hashtable();
             
@@ -117,6 +117,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
             					  "P." + EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS + ", " +
             					  "P." + EnvPlantillasEnviosBean.C_NOMBRE + " AS NOMBREPLANTILLA, " +
             					  "P." + EnvPlantillasEnviosBean.C_ACUSERECIBO + " , " +
+            					  "P." + EnvPlantillasEnviosBean.C_FECHABAJA + " , " +
                                   "T." + EnvTipoEnviosBean.C_IDTIPOENVIOS + ", " +
                                   " (select DESCRIPCION from GEN_RECURSOS_CATALOGOS WHERE IDRECURSO = T.NOMBRE AND IDLENGUAJE =:1) AS NOMBRETIPO " +
                                   // RGG 05/06/2009: SE QUITA LA FUNCION Y SE PONE LA SUBSELECT QUE EN ESTE CASO DA MEJOR RENDIMIENTO 
@@ -136,6 +137,10 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
                 codigos.put(new Integer(contador),nombre.trim());
                 sSQL += " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(":"+contador,"P." + EnvPlantillasEnviosBean.C_NOMBRE );
             }
+            
+            if (!conPlantillasBaja) {
+            	sSQL += " AND P." + EnvPlantillasEnviosBean.C_FECHABAJA + " IS NULL";
+            }            
             
             sSQL += " ORDER BY NOMBREPLANTILLA ";
 
@@ -160,14 +165,15 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 	    hash.put(EnvPlantillasEnviosBean.C_IDINSTITUCION, idInstitucion);
 	    hash.put(EnvPlantillasEnviosBean.C_IDPLANTILLAENVIOS, idPlantillaEnvios);
 	    hash.put(EnvPlantillasEnviosBean.C_IDTIPOENVIOS, idTipoEnvios);
-
-	    if (delete(hash))
-	    {
-	        return true;
-	    }
+	    hash.put(EnvPlantillasEnviosBean.C_FECHABAJA, "sysdate");
 	    
-	    else
-	    {
+	    String[] campos = {EnvPlantillasEnviosBean.C_FECHABAJA};
+	    
+	    // CR7 - INC_12048_SIGA. Se sustituye el borrado fisico por el borrado lógico
+	    if (updateDirect(hash,getClavesBean(),campos)) {	
+	        return true;
+	    
+	    } else {
 	        return false;
 	    }
     }
@@ -374,13 +380,15 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 	}
 	return datos;
 }
-	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio,
-			String idInstitucion) throws ClsExceptions {
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio,	String idInstitucion, String idPlantillaEnvioDefecto) throws ClsExceptions {
 		StringBuffer where = new StringBuffer("");
 		where.append(" WHERE IDTIPOENVIOS = ");
 		where.append(idTipoEnvio);
 		where.append(" AND IDINSTITUCION = ");
 		where.append(idInstitucion);
+		where.append("  AND (idplantillaenvios = ");
+		where.append(idPlantillaEnvioDefecto);
+		where.append(" OR fechabaja IS NULL) ");
 		
 		return select(where.toString());
 	}

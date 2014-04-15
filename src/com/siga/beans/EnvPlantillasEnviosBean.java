@@ -17,6 +17,7 @@ public class EnvPlantillasEnviosBean extends MasterBean
 	private Integer idPlantillaEnvios;
 	private String nombre;
 	private String acuseRecibo;
+	private String fechaBaja;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -24,6 +25,7 @@ public class EnvPlantillasEnviosBean extends MasterBean
 	static public final String C_IDPLANTILLAENVIOS = "IDPLANTILLAENVIOS";
 	static public final String C_NOMBRE = "NOMBRE";
 	static public final String C_ACUSERECIBO = "ACUSERECIBO";
+	static public final String C_FECHABAJA = "FECHABAJA";
 	
 	static public final String T_NOMBRETABLA = "ENV_PLANTILLASENVIOS";
 	
@@ -75,6 +77,15 @@ public class EnvPlantillasEnviosBean extends MasterBean
 	public void setAcuseRecibo(String acuseRecibo) {
 		this.acuseRecibo = acuseRecibo;
 	}
+	
+	public String getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(String fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
 	public JSONObject getJSONObject() {
         JSONObject obj = new JSONObject();
         try {

@@ -41,14 +41,15 @@
 		
 		function inicioPlantillasEnvio() {
 			var comboTiposEnvio = document.getElementById('idTipoEnvioDefecto');
-			var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');
+			var comboPlantilla = document.getElementById('idPlantillaEnvioDefecto');			
+			var plantillaDefectoSel ="${idPlantillaEnvioDef}";
 			
 			if(comboPlantilla.options.length>0 && comboTiposEnvio.value!=''){
 			
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
 		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
-		           data: "idTipoEnvio="+comboTiposEnvio.value,
+		           data: "idTipoEnvio="+comboTiposEnvio.value+"&idPlantillaEnvioDefecto="+plantillaDefectoSel,
 		           dataType: "json",
 		           success:  function(json) {
 		       			var plantillasEnvio = json.plantillasEnvio;
@@ -925,7 +926,7 @@
 				document.InformeFormEdicion.target = "mainWorkArea";
 				document.InformeFormEdicion.submit();
 			}
-			actualizaEstilos();
+			//actualizaEstilos();
 		}
 		
 		function soloLectura(){

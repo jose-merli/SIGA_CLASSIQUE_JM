@@ -38,7 +38,7 @@ public interface InformesService extends BusinessService{
 	public List<InformeForm> getInformesConsulta(ConConsultaBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions;
 	public void borrarConsultaInforme(AdmConsultaInformeBean 	consulta,InformeForm informeForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
 	public List<EnvTipoEnviosBean> getTiposEnvio(List<String> excluidosList, UsrBean usrBean) throws ClsExceptions;
-	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean) throws ClsExceptions;
+	public List<EnvPlantillasEnviosBean> getPlantillasEnvio(String idTipoEnvio, String idInstitucion, UsrBean usrBean, String idPlantillaEnvioDefecto) throws ClsExceptions;
 	public List<EnvTipoEnviosBean> getTiposEnvioPermitidos(AdmInformeBean informeBean, UsrBean usrBean) throws ClsExceptions;
 	public void duplicarFicherosAsociados(InformeForm form) throws SIGAException;
 }

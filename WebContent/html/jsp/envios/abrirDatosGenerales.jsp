@@ -223,9 +223,10 @@
 							<siga:Idioma key="envios.definir.literal.plantilla"/>
 						</td>
 <%
-					String parametro[] = new String[2];
+					String parametro[] = new String[3];
 			 		parametro[0] = idInstitucion;
 			 		parametro[1] = idTipoEnvio;
+			 		parametro[2] = idPlantillaEnvio;
 
 					/*String parametro2[] = new String[2];
 			 		parametro2[0] = idInstitucion;

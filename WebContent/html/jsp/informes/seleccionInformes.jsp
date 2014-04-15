@@ -39,6 +39,7 @@
 	function inicioPlantillasEnvio(index) {
 		var comboTiposEnvio = document.getElementById('idTipoEnvio_'+index);
 		var comboPlantilla = document.getElementById('idPlantillaEnvio_'+index);
+		var idPlantillaEnvioDefecto = document.getElementById('idPlantillaEnvioDefecto_'+index).value;
 		// alert("comboPlantilla"+comboPlantilla.id);
 		
 		if(comboPlantilla.options.length>0&&comboTiposEnvio.value!=''){
@@ -47,7 +48,7 @@
 	           type: "POST",
 	           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 	           async: false,
-	           data: "idTipoEnvio="+comboTiposEnvio.value,
+	           data: "idTipoEnvio="+comboTiposEnvio.value+"&idPlantillaEnvioDefecto="+idPlantillaEnvioDefecto,
 	           contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 	           
 	           dataType: "json",

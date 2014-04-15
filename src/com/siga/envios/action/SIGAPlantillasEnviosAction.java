@@ -3,6 +3,7 @@ package com.siga.envios.action;
 import java.util.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 import javax.servlet.http.*;
@@ -37,8 +38,9 @@ public class SIGAPlantillasEnviosAction extends MasterAction
         String idInstitucion = userBean.getLocation();
         String descripcionPlantilla = form.getDescripcionPlantilla();
         String idTipoEnvios = form.getIdTipoEnvios();
+        boolean conPlantillasBaja = UtilidadesString.stringToBoolean(form.getCheckFechaBaja());
 
-        Vector vDatos = admPlantilla.buscarPlantillas(idInstitucion, idTipoEnvios, descripcionPlantilla);
+        Vector vDatos = admPlantilla.buscarPlantillas(idInstitucion, idTipoEnvios, descripcionPlantilla, conPlantillasBaja);
 
         request.setAttribute("datos", vDatos);
         

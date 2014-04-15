@@ -12,6 +12,7 @@ public class SIGAPlantillasEnviosForm extends MasterForm
     private String idTipoEnvio="";
     private String idPlantillaEnvios;
     private String acuseRecibo;
+    private String checkFechaBaja;
     
 
 //    public String getModo() 
@@ -79,4 +80,13 @@ public class SIGAPlantillasEnviosForm extends MasterForm
 	public void setAcuseRecibo(String acuseRecibo) {
 		this.acuseRecibo = acuseRecibo;
 	}
+
+	public String getCheckFechaBaja() {
+		return checkFechaBaja;
+	}
+
+	public void setCheckFechaBaja(String checkFechaBaja) {
+		this.checkFechaBaja = checkFechaBaja;
+	}
+
 }

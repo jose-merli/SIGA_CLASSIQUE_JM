@@ -77,7 +77,7 @@
 	// Valores para combos setElement
 	ArrayList vPlantilla = new ArrayList(); // valor original Plantilla
 	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
-	String parametrosCmbPlantillaEnvios[] = {user.getLocation(),idTipoEnvioCorreoElectronico};
+	String parametrosCmbPlantillaEnvios[] = {user.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
 	String parametrosPlantillasMail [] = {"-1",user.getLocation(),"1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
@@ -99,6 +99,7 @@
 			
 			if(beanSerie.getIdTipoPlantillaMail() != null && !beanSerie.getIdTipoPlantillaMail().equals("")){	
 				plantillaEnviosSeleccionada.add(beanSerie.getIdTipoPlantillaMail()+","+user.getLocation() +",1");
+				parametrosCmbPlantillaEnvios[2] = beanSerie.getIdTipoPlantillaMail().toString();
 			}
 		}	
 	

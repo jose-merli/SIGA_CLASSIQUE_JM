@@ -86,8 +86,15 @@
 			 		for (int i=0; i<vDatos.size(); i++)
 			   		{
 				  		Row htDatos = (Row)vDatos.elementAt(i);
+				  		
+						String botones = "C";
+						
+						if(htDatos.getString("FECHABAJA") == null || htDatos.getString("FECHABAJA").equals("")){
+							botones += ",E,B";
+						}				  		
+				  		
 %>
-	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B" clase="listaNonEdit">
+	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" clase="listaNonEdit">
 					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=htDatos.getString(EnvPlantillasEnviosBean.C_IDINSTITUCION)%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=htDatos.getString(EnvTipoEnviosBean.C_IDTIPOENVIOS)%>">

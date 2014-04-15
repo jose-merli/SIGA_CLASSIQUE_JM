@@ -2167,10 +2167,11 @@ public class DefinirEnviosAction extends MasterAction {
 			{
 		UsrBean usr = this.getUserBean(request);
 		String idTipoEnvio = request.getParameter("idTipoEnvio");
+		String idPlantillaEnvioDefecto = request.getParameter("idPlantillaEnvioDefecto");
 		JSONObject json = new JSONObject();
 		BusinessManager bm = getBusinessManager();
 		InformesService informeService = (InformesService)bm.getService(InformesService.class);
-		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = informeService.getPlantillasEnvio(idTipoEnvio,usr.getLocation(),usr);
+		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = informeService.getPlantillasEnvio(idTipoEnvio,usr.getLocation(),usr,idPlantillaEnvioDefecto);
 		JSONArray plantillasEnviosJsonArray = new JSONArray();
 		for (int i=0;i<plantillasEnviosBeans.size();i++) {
 			plantillasEnviosJsonArray.put(plantillasEnviosBeans.get(i).getJSONObject());
