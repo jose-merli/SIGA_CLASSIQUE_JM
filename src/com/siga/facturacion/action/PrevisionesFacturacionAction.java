@@ -25,10 +25,12 @@ import org.apache.struts.action.*;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
@@ -866,6 +868,14 @@ or	 * @param request -
 				bean.setVisible("S");
 				
 				bean.setIdPrevision(new Long(idPrevision));
+				
+				/** CR7 - Insercion de Fechas SEPA segun el algoritmo empleado en la ventana de Programacion **/
+				String fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+				GenParametrosAdm admParametros = new GenParametrosAdm(user);
+				String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
+				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(String.valueOf(ClsConstants.INSTITUCION_CGAE),fechaPresentacion,habilesUnicaCargos);
+				bean.setFechaPresentacion		(GstDate.getApplicationFormatDate("en",fechaPresentacion));
+				bean.setFechaCargoUnica			(GstDate.getApplicationFormatDate("en",fechaUnicaCargos));
 
 				// se obtienen de la serie de facturacion
 				FacSerieFacturacionAdm sfAdm = new FacSerieFacturacionAdm(this.getUserBean(request)); 
