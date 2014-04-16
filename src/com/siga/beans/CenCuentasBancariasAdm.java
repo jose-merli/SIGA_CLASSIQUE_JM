@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -528,8 +529,29 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 
 				throw new SIGAException ("messages.censo.existeAbonoSJCS");
 			}
+		}
+		
+		// Tratamiento de mandatos cuando tenga el abono del cargo
+		if (beanCuentas.getAbonoCargo().equals("C") || beanCuentas.getAbonoCargo().equals("T")) {
 			
-			
+			// Compruebo que no tiene mandatos asociados la cuenta
+			CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usrBean);
+			Vector<CenMandatosCuentasBancariasBean> vMandatos = mandatosAdm.obtenerMandatos(beanCuentas.getIdInstitucion(), beanCuentas.getIdPersona(), beanCuentas.getIdCuenta());			
+			if (vMandatos==null || vMandatos.size()==0) {
+				
+				// Se insertan dos mandatos nuevos a la cuenta, uno para productos y otro para servicios
+				Object[] paramMandatos = new Object[4];
+				paramMandatos[0] = beanCuentas.getIdInstitucion().toString();
+				paramMandatos[1] = beanCuentas.getIdPersona().toString();
+				paramMandatos[2] = beanCuentas.getIdCuenta().toString();
+				paramMandatos[3] = userName.toString();
+				
+				String resultado[] = new String[2];
+				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.InsertarMandatos(?,?,?,?,?,?)}", 2, paramMandatos);
+				if (resultado == null || !resultado[0].equals("0")) {
+					throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+				}
+			}
 		}
 		
 		// Lanzamos el proceso de revision de suscripciones del letrado 
@@ -557,10 +579,9 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		
 	} catch (SIGAException e) {
 			throw e;
-	} catch (Exception e) {
 			
-		throw new ClsExceptions("Error en CenCuentasBancariasAdm.revisionesCuentas");
-		
+	} catch (Exception e) {			
+		throw new ClsExceptions("Error en CenCuentasBancariasAdm.revisionesCuentas");		
 	}
 	
 	return iResult;	
