@@ -398,7 +398,7 @@ public class DefinirEnviosAction extends MasterAction {
 		String idInstitucion = userBean.getLocation();
 		String tipoFecha = form.getTipoFecha();
 		boolean conArchivados = UtilidadesString.stringToBoolean(form.getConArchivados());
-		
+
 		EnvEnviosAdm enviosAdm = new EnvEnviosAdm (this.getUserBean(request));
 		Vector datos = null;
 		try {
@@ -540,7 +540,7 @@ public class DefinirEnviosAction extends MasterAction {
 			envEnvios.setIdenvio(new Long(idEnvio));
 			envEnvios.setIdinstitucion(new Short(idInstitucion));
 			envEnvios.setUsumodificacion(new Integer(userBean.getUserName()));
-			
+
 			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
 			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
 
@@ -554,14 +554,13 @@ public class DefinirEnviosAction extends MasterAction {
 	protected String borrarComunicacion(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws SIGAException {
-		
+
 		HttpSession ses=request.getSession();
 		UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 		String idInstitucion = form.getIdInstitucion();
 		String idEnvio = form.getIdEnvio();
-		
 		
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
@@ -570,7 +569,7 @@ public class DefinirEnviosAction extends MasterAction {
 			envEnvios.setIdenvio(new Long(idEnvio));
 			envEnvios.setIdinstitucion(new Short(idInstitucion));
 			envEnvios.setUsumodificacion(new Integer(userBean.getUserName()));
-			
+
 			//CR7 - Ya no se borran comunicaciones, solo se dan bajas logicas
 			salidaEnviosService.darBajaLogicaEnvio(envEnvios);
 			
@@ -921,6 +920,12 @@ public class DefinirEnviosAction extends MasterAction {
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesJustificacion)){
 					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesOrdenDomicializacion)){
+					envioInformesGenericos.gestionarComunicacionOrdenDomiciliacion(form,EnvioInformesGenericos.comunicacionesOrdenDomicializacion,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)){
+					envioInformesGenericos.gestionarComunicacionOrdenDomiciliacion(form,  EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion, request.getLocale(),userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 					envioInformesGenericos.gestionarComunicacionExpedientes(form,  request.getLocale(), userBean);
