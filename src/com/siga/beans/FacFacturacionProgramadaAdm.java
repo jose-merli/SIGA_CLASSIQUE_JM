@@ -59,7 +59,13 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_IDTIPOENVIOS,
 							FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,
 							FacFacturacionProgramadaBean.C_FECHAMODIFICACION,
-							FacFacturacionProgramadaBean.C_USUMODIFICACION};
+							FacFacturacionProgramadaBean.C_USUMODIFICACION,
+							FacFacturacionProgramadaBean.C_FECHAPRESENTACION,
+							FacFacturacionProgramadaBean.C_FECHACARGOUNICA,
+							FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS,
+							FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES,
+							FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
+							FacFacturacionProgramadaBean.C_FECHARECIBOSB2B};
 		return campos;
 	}
 
@@ -108,6 +114,13 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaCargo				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO));
 			bean.setFechaMod				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod					(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_USUMODIFICACION));
+			
+			bean.setFechaPresentacion		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPRESENTACION));
+			bean.setFechaCargoUnica			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGOUNICA));
+			bean.setFechaRecibosPrimeros	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS));
+			bean.setFechaRecibosRecurrentes	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES));
+			bean.setFechaRecibosCOR1		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1));
+			bean.setFechaRecibosB2B			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B));
 
 		}
 		catch (Exception e) { 
@@ -163,6 +176,13 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_USUMODIFICACION, b.getUsuMod());
+
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPRESENTACION, b.getFechaPresentacion());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHACARGOUNICA, b.getFechaCargoUnica());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES, b.getFechaRecibosRecurrentes());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS, b.getFechaRecibosPrimeros());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B, b.getFechaRecibosB2B());
 		}
 		catch (Exception e) {
 			htData = null;
