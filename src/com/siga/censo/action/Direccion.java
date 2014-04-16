@@ -1,24 +1,27 @@
 
 package com.siga.censo.action;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
-import com.siga.beans.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenColaCambioLetradoAdm;
+import com.siga.beans.CenDireccionTipoDireccionAdm;
+import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenHistoricoBean;
 import com.siga.censo.form.DireccionesForm;
-import com.siga.envios.form.RemitentesForm;
-import com.siga.general.*;
+import com.siga.general.SIGAException;
 
 
 /**
@@ -139,6 +142,28 @@ public class Direccion {
 			
 			//insertando en la cola de modificacion de datos para Consejos
 			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+
+			// JPT: Modificaciones para los anexos de los mandatos en SEPA
+			// Recorro todos los tipos de direcciones actuales
+			for (int i=0; i<vBeanTipoDir.length; i++){
+				
+				// Compruebo que tenga activado el tipo de facturacion
+				if (vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
+					
+					// Se realiza el proceso de revision de anexos para SEPA
+					Object[] paramAnexos = new Object[4];
+					paramAnexos[0] = beanDir.getIdInstitucion().toString();
+					paramAnexos[1] = beanDir.getIdPersona().toString();
+					paramAnexos[2] = usr.getUserName();
+					paramAnexos[3] = usr.getLanguage();
+					
+					String resultado[] = new String[2];
+					resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.RevisarAnexos(?,?,?,?,?,?)}", 2, paramAnexos);
+					if (resultado == null || !resultado[0].equals("0")) {
+						throw new ClsExceptions ("Error al insertar los anexos de las cuentas");
+					}						
+				}
+			}
 		
 		}catch (SIGAException e) {
 			throw e;
@@ -270,6 +295,38 @@ public class Direccion {
 			
 			//insertando en la cola de modificacion de datos para Consejos
 			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+			
+			// JPT: Modificaciones para los anexos de los mandatos en SEPA
+			boolean cambio = (!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
+								(!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
+								(!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
+								(!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
+								(!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
+								(!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
+			if (cambio) {
+				
+				// Recorro todos los tipos de direcciones actuales
+				for (int i=0; i<vBeanTipoDir.length; i++){
+					
+					// Compruebo que tenga activado el tipo de facturacion
+					if (vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
+						
+						// Se realiza el proceso de revision de anexos para SEPA
+						Object[] paramAnexos = new Object[4];
+						paramAnexos[0] = beanDir.getIdInstitucion().toString();
+						paramAnexos[1] = beanDir.getIdPersona().toString();
+						paramAnexos[2] = usr.getUserName();
+						paramAnexos[3] = usr.getLanguage();
+						
+						String resultado[] = new String[2];
+						resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.RevisarAnexos(?,?,?,?,?,?)}", 2, paramAnexos);
+						if (resultado == null || !resultado[0].equals("0")) {
+							throw new ClsExceptions ("Error al insertar los anexos de las cuentas");
+						}						
+					}
+				}
+			}
+					
 			
 		}catch (SIGAException e) {
 			throw e;
