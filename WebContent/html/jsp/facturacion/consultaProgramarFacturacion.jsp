@@ -77,7 +77,7 @@
 		function accionNuevo() {
 			f=document.programarFacturacionForm;			
 		  f.modo.value = "nuevo";
-  	  var rc = ventaModalGeneral(document.programarFacturacionForm.name, "M");
+  	  var rc = ventaModalGeneral(document.programarFacturacionForm.name, "G");
    	  if (rc != null) {  	  
   	 	 	if (rc == "MODIFICADO") {
   	 	 		refrescarLocal();
