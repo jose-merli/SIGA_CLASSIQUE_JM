@@ -21,6 +21,13 @@ public class ProgramacionForm extends MasterForm {
 	private String imprimirEtiquetas="N";
 	private String idImpresora;
 	private String automatico;
+	
+	private String fechaCargoUnica;
+	private String fechaPresentacion;
+	private String fechaRecibosPrimeros;
+	private String fechaRecibosRecurrentes;
+	private String fechaRecibosCOR1;
+	private String fechaRecibosB2B;
 
     public String getFechaProgramada() {
         return fechaProgramada;
@@ -76,4 +83,41 @@ public class ProgramacionForm extends MasterForm {
     public void setAutomatico(String automatico) {
         this.automatico = automatico;
     }
+	public String getFechaCargoUnica() {
+		return fechaCargoUnica;
+	}
+	public void setFechaCargoUnica(String fechaCargoUnica) {
+		this.fechaCargoUnica = fechaCargoUnica;
+	}
+	public String getFechaPresentacion() {
+		return fechaPresentacion;
+	}
+	public void setFechaPresentacion(String fechaPresentacion) {
+		this.fechaPresentacion = fechaPresentacion;
+	}
+	public String getFechaRecibosPrimeros() {
+		return fechaRecibosPrimeros;
+	}
+	public void setFechaRecibosPrimeros(String fechaRecibosPrimeros) {
+		this.fechaRecibosPrimeros = fechaRecibosPrimeros;
+	}
+	public String getFechaRecibosRecurrentes() {
+		return fechaRecibosRecurrentes;
+	}
+	public void setFechaRecibosRecurrentes(String fechaRecibosRecurrentes) {
+		this.fechaRecibosRecurrentes = fechaRecibosRecurrentes;
+	}
+	public String getFechaRecibosCOR1() {
+		return fechaRecibosCOR1;
+	}
+	public void setFechaRecibosCOR1(String fechaRecibosCOR1) {
+		this.fechaRecibosCOR1 = fechaRecibosCOR1;
+	}
+	public String getFechaRecibosB2B() {
+		return fechaRecibosB2B;
+	}
+	public void setFechaRecibosB2B(String fechaRecibosB2B) {
+		this.fechaRecibosB2B = fechaRecibosB2B;
+	}
+    
 }
