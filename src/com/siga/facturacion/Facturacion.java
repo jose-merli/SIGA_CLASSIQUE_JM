@@ -1076,43 +1076,31 @@ public class Facturacion {
     				throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
     			}
     			// Se envían a banco para su cobro
-    			Object[] param_in_banco = new Object[7];
+    			Object[] param_in_banco = new Object[12];
     			param_in_banco[0] = beanP.getIdInstitucion().toString();
     			param_in_banco[1] = idSerieFacturacion;
     			param_in_banco[2] = idProgramacion;
-
-    			String fechaCargo = "";
-    			try {
-    				if (fechaCargo == null || fechaCargo.equals("")){
-    					// Sysdate
-    					fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
-    				}
-    				// Fecha de Cargo (DDMMAA):
-    				fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
-    			}
-    			catch (Exception e) {
-    				// Sysdate
-    				fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
-    				// Fecha de Cargo (DDMMAA):
-    				fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
-    			}
     			////////////////////////////////////////////////
 
     			// RGG 05/05/2009 Cambio (solo se generan los pagos por banco cuando se indica por parámetro)
     			if (generarPagosBanco) {
 	    			    
-	    			param_in_banco[3] = fechaCargo;
-	    			param_in_banco[4] = pathFichero;
-	    			param_in_banco[5] = usuMod;
-	    			param_in_banco[6] = this.usrbean.getLanguage();
+	    			param_in_banco[3] = "";
+	    			param_in_banco[4] = "";
+	    			param_in_banco[5] = "";
+	    			param_in_banco[6] = "";
+	    			param_in_banco[7] = "";
+	    			param_in_banco[8] = "";
+	    			param_in_banco[9] = pathFichero;
+	    			param_in_banco[10] = usuMod;
+	    			param_in_banco[11] = this.usrbean.getLanguage();
 	
 	    			String resultado[] = new String[3];
-	    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+	    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 	    			codretorno = resultado[1];
 	    			if (!codretorno.equals("0")){
 	    				throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
 	    			}
-
     			}
     			
     			//AÑADIMOS C_IDESTADOCONFIRMACION(CONFIRM_FINALIZADA),C_FECHACONFIRMACION(current),C_FECHAPREVISTACONFIRM(current),C_ARCHIVARFACT(0 ó 1)};
