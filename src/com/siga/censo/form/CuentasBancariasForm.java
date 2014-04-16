@@ -22,6 +22,7 @@ public class CuentasBancariasForm extends MasterForm
 	private String incluirRegistrosConBajaLogica;
 	private String IBAN;
 	private String BIC;	
+	private String[] modos = {"informacionCuentaBancaria", "listadoMandatosCuentaBancaria"};
 
 	public void setCuentaAbono(Boolean dato) {
 		UtilidadesHash.set(this.datos, "CUENTA_ABONO", dato);
@@ -167,4 +168,5 @@ public class CuentasBancariasForm extends MasterForm
 		BIC = bIC;
 	}
 	
+	public String[] getModos () {return this.modos;}
 }
