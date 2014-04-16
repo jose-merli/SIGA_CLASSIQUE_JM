@@ -128,6 +128,7 @@
 		
 	String iconos="E,B";
 	String botones="N"; 
+	
 %>
 
 	<!-- HEAD -->
@@ -195,7 +196,7 @@
 
 			var fechaConf = trim(document.programarFacturacionForm.fechaPrevistaConfirmacion.value);
 			var fechaGen = trim(document.programarFacturacionForm.fechaPrevistaGeneracion.value);
-			var fechaCargo = trim(document.programarFacturacionForm.fechaCargo.value);
+			var fechaCargo = trim(document.programarFacturacionForm.fechaCargoUnica.value);
 			f=document.programarFacturacionForm;			
 				
 			sub();
@@ -332,6 +333,18 @@
 				}
 			}
 			
+			//CR7 - Validacion de las fehas nuevas SEPA
+			if(!validarFechasSEPA()){
+				fin();
+				return false;
+			}
+			
+			if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
+				document.programarFacturacionForm.fechaTipoUnica.value = "1";	
+			} else {
+				document.programarFacturacionForm.fechaTipoUnica.value = "0";
+			}
+			
 			if(<%=nuevo%>){
 				f.modo.value = "insertar";
 			}
@@ -371,6 +384,7 @@
 		function Calcularvalor(){
 			document.forms[0].fechaCargo.value =document.forms[0].fechaPrevistaConfirmacion.value;
 		} 
+		
 	</script>
 </head>
 
@@ -388,6 +402,7 @@
 	<html:form action="/FAC_ProgramarFacturacion.do" method="POST" target="submitArea">
 		<!-- INICIO: CAMPOS -->
 		<html:hidden property="modo" value="cerrar"/>			
+		<html:hidden property="fechaTipoUnica" value=""/>
 		<siga:ConjCampos leyenda="facturacion.asignacionDeConceptosFacturables.titulo">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">						
 				<tr align="center"> 
@@ -433,8 +448,8 @@
 		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.periodosFacturacion">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td class="labelText" width="200px">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/>(*)
+					<td class="labelText" width="350px">
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/>&nbsp;(*)
 					</td>
 					<td class="labelText" width="100px">
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
@@ -460,8 +475,8 @@
 				</tr>
 
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>(*)
+					<td class="labelText" width="350px">
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>&nbsp;(*)
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
@@ -533,10 +548,9 @@
 						<% } %>
 					</td>
 					
-					<td class="labelText" width="40px">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
-					</td>
-					<td>
+					<td class="labelText" >
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>&nbsp;&nbsp;&nbsp;
+
 						<% if (modoAction.equals("editar")) { %>
 							<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false" />					
 							:
@@ -546,21 +560,16 @@
 							:
 							<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />	
 						<% } %>
-					</td>					
+					</td>
+										
 				</tr>
 					
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaCargoenficheroBancario"/>
+					<td colspan ="4">
+						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 					</td>
-					<td>
-						<% if (modoAction.equals("editar")) { %>
-							<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>"/>
-						<% } else { %>
-							<siga:Fecha  nombreCampo="fechaCargo" valorInicial="<%=sFCargoFicheroBanco%>" disabled="true" readOnly="true"/>
-						<% } %>
-					</td>					
-				</tr>
+				</tr>	
+				
 			</table>
 		</siga:ConjCampos>
 
