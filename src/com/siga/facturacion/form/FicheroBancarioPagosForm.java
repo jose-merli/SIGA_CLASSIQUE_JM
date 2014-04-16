@@ -18,6 +18,8 @@ import com.siga.general.MasterForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class FicheroBancarioPagosForm extends MasterForm{
+	
+	private String fechaEntrega="", fechaUnica="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", idDisqueteCargo="", nombreFichero="", fechaTipoUnica="";
 
 	private String fechaCargo = "";
 	private String idInstitucion;
@@ -34,6 +36,60 @@ public class FicheroBancarioPagosForm extends MasterForm{
 	private String origen;
 	private String idSerieFacturacion;
 	
+	public String getFechaTipoUnica() {
+		return fechaTipoUnica;
+	}
+	public void setFechaTipoUnica(String fechaTipoUnica) {
+		this.fechaTipoUnica = fechaTipoUnica;
+	}
+	public String getIdDisqueteCargo() {
+		return idDisqueteCargo;
+	}
+	public void setIdDisqueteCargo(String idDisqueteCargo) {
+		this.idDisqueteCargo = idDisqueteCargo;
+	}
+	public String getNombreFichero() {
+		return nombreFichero;
+	}
+	public void setNombreFichero(String nombreFichero) {
+		this.nombreFichero = nombreFichero;
+	}
+	public String getFechaFRST() {
+		return fechaFRST;
+	}
+	public String getFechaEntrega() {
+		return fechaEntrega;
+	}
+	public void setFechaEntrega(String fechaEntrega) {
+		this.fechaEntrega = fechaEntrega;
+	}
+	public String getFechaUnica() {
+		return fechaUnica;
+	}
+	public void setFechaUnica(String fechaUnica) {
+		this.fechaUnica = fechaUnica;
+	}
+	public void setFechaFRST(String fechaFRST) {
+		this.fechaFRST = fechaFRST;
+	}
+	public String getFechaRCUR() {
+		return fechaRCUR;
+	}
+	public void setFechaRCUR(String fechaRCUR) {
+		this.fechaRCUR = fechaRCUR;
+	}
+	public String getFechaCOR1() {
+		return fechaCOR1;
+	}
+	public void setFechaCOR1(String fechaCOR1) {
+		this.fechaCOR1 = fechaCOR1;
+	}
+	public String getFechaB2B() {
+		return fechaB2B;
+	}
+	public void setFechaB2B(String fechaB2B) {
+		this.fechaB2B = fechaB2B;
+	}
 	public String getFechaCargo() {
 		return fechaCargo;
 	}
