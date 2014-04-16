@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaDatosBancarios.jsp -->
+
 <!-- Historico modificaciones:
 		miguel.villegas: implementacion boton volver	1-2-2005
 -->
@@ -12,8 +13,7 @@
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -23,7 +23,6 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
@@ -38,49 +37,34 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 
-	UsrBean usr = (UsrBean) request.getSession()
-			.getAttribute("USRBEAN");
+	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	String idUsr = Long.toString(usr.getIdPersona());
-	//	String idUsr="2032123474";
-	String institucion = String.valueOf((Integer) request
-			.getAttribute("idInstitucion"));
+	String institucion = String.valueOf((Integer) request.getAttribute("idInstitucion"));
 	String nombre = (String) request.getAttribute("nombrePersona");
 	String numero = (String) request.getAttribute("numero");
-	String idPersona = String.valueOf((Long) request
-			.getAttribute("idPersona"));
+	String idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
 	Vector vDatos = (Vector) request.getAttribute("vDatos");
-	String estadoColegial = (String) request
-			.getAttribute("estadoColegial");
+	String estadoColegial = (String) request.getAttribute("estadoColegial");
 	String DB_TRUE = ClsConstants.DB_TRUE;
-	String DB_FALSE = ClsConstants.DB_FALSE;
-	String botones = "N";
+	String DB_FALSE = ClsConstants.DB_FALSE;	
 	String accion = (String) request.getAttribute("accion");
-	boolean bIncluirBajaLogica = UtilidadesString
-			.stringToBoolean((String) request
-					.getAttribute("bIncluirRegistrosConBajaLogica"));
+	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String) request.getAttribute("bIncluirRegistrosConBajaLogica"));
 	String sTipo = request.getParameter("tipo");
 
 	// Gestion de Volver
-	String busquedaVolver = (String) request.getSession().getAttribute(
-			"CenBusquedaClientesTipo");
-	if ((busquedaVolver == null) || (usr.isLetrado())) {
+	String botones = "N";
+	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
+	if (busquedaVolver == null || usr.isLetrado()) {
 		busquedaVolver = "volverNo";
-	}
-
-	if (!busquedaVolver.equals("volverNo")) {
+	} else {
 		botones = "V,N";
 	}
 %>
 
-
-<!-- HEAD -->
-
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
 	<!-- SCRIPTS LOCALES -->
@@ -90,8 +74,6 @@
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
 			var flag = true;
 			j = 1;
 			while (flag) {
@@ -104,19 +86,14 @@
 				}
 			  	j++;
 			}
-			datos.value = datos.value + "%"
+			datos.value = datos.value + "%";
 	    	document.cuentasBancariasForm.modo.value = "solicitarModificacion";
 	    	ventaModalGeneral(document.cuentasBancariasForm.name,"M");   
 		}
 	
 		function accionNuevo() {		
 			document.cuentasBancariasForm.modo.value = "nuevo";
-	  	  	var rc = ventaModalGeneral(document.cuentasBancariasForm.name, "M");
-	  	  	if (rc != null) { 
-	  	 	 	if (rc == "MODIFICADO") {
-	  	 	 		refrescarLocal();
-	  	  		}
-	  	 	}
+			document.cuentasBancariasForm.submit();
 		}
 	
 		function refrescarLocal() {
@@ -132,28 +109,23 @@
 			}
 			document.cuentasBancariasForm.modo.value = "abrir";
 			document.cuentasBancariasForm.submit();
-		}
-		
+		}		
 	</script>
-<!-- INICIO: TITULO Y LOCALIZACION -->
-<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
 
-<%
-	if (sTipo != null && sTipo.equals("LETRADO")) {
-%>
-<siga:Titulo titulo="censo.fichaCliente.bancos.cabecera"
-	localizacion="censo.fichaLetrado.localizacion" />
-<%
-	} else {
-%>
-<siga:TituloExt titulo="censo.fichaCliente.bancos.cabecera"
-	localizacion="censo.fichaCliente.bancos.localizacion" />
-<%
-	}
-%>
-
-<!-- FIN: TITULO Y LOCALIZACION -->
-
+	<%
+		if (sTipo != null && sTipo.equals("LETRADO")) {
+	%>
+		<siga:Titulo titulo="censo.fichaCliente.bancos.cabecera" localizacion="censo.fichaLetrado.localizacion" />
+	<%
+		} else {
+	%>
+		<siga:TituloExt titulo="censo.fichaCliente.bancos.cabecera" localizacion="censo.fichaCliente.bancos.localizacion" />
+	<%
+		}
+	%>
+	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
 <body class="tablaCentralCampos">
@@ -171,27 +143,31 @@
 			<input type='hidden' name="accion"  id="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>" />
 			<input type="hidden" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>" />
 		</form>
+		
 		<tr>
 			<td class="titulitosDatos">
-				<siga:Idioma key="censo.consultaDatosBancarios.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>
-				&nbsp;&nbsp; <%
- 	if (!numero.equalsIgnoreCase("")) {
- %> <%
- 	if (estadoColegial != null && !estadoColegial.equals("")) {
- %>
-				<siga:Idioma key="censo.fichaCliente.literal.colegiado" /> <%=UtilidadesString.mostrarDatoJSP(numero)%>
-				&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%
+				<siga:Idioma key="censo.consultaDatosBancarios.literal.titulo1" /> 
+				&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>
+				&nbsp;&nbsp; 
+<% 
+				if (!numero.equalsIgnoreCase("")) {
+ 					if (estadoColegial != null && !estadoColegial.equals("")) {
+%>
+						<siga:Idioma key="censo.fichaCliente.literal.colegiado" /> 
+						<%=UtilidadesString.mostrarDatoJSP(numero)%>
+						&nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) 
+<%
 					} else {
-				%>
-				(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
-				<%
+%>
+						(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial" />)
+<%
 					}
-				%> <%
- 	} else {
- %> <siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
-				<%
-					}
-				%>
+ 				} else {
+%> 
+					<siga:Idioma key="censo.fichaCliente.literal.NoColegiado" />
+<%
+				}
+%>
 			</td>
 		</tr>
 	</table>
@@ -202,169 +178,138 @@
 	<siga:Table 
 		name="tablaDatos" 
 		border="1"
-		columnNames="censo.consultaDatosBancarios.literal.titular,censo.consultaDatosBancarios.literal.tipoCuenta,censo.datosCuentaBancaria.literal.abonoSJCS,censo.consultaDatosBancarios.literal.sociedad,censo.consultaDatosBancarios.literal.cuenta,censo.consultaDatosBancarios.literal.fechaBaja,"
-		columnSizes="28,9,7,7,25,8,12" 
-		modal="M">
+		columnNames="censo.consultaDatosBancarios.literal.titular,
+			censo.consultaDatosBancarios.literal.tipoCuenta,
+			censo.datosCuentaBancaria.literal.abonoSJCS,
+			censo.consultaDatosBancarios.literal.sociedad,
+			censo.consultaDatosBancarios.literal.cuenta,
+			censo.consultaDatosBancarios.literal.fechaBaja,"
+		columnSizes="28,9,7,7,25,8,12">
 
-		<%
-			if (vDatos == null || vDatos.size() < 1) {
-		%>
-		<tr class="notFound">
-   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-		</tr>
-		<%
-			} else {
-					Enumeration en = vDatos.elements();
-					int i = 0;
+<%
+		if (vDatos == null || vDatos.size() < 1) {
+%>
+			<tr class="notFound">
+   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		} else {
+			Enumeration en = vDatos.elements();
+			int i = 0;
 
-					while (en.hasMoreElements()) {
-						Hashtable htData = (Hashtable) en.nextElement();
-						if (htData == null)
-							continue;
-						String accionBanco = "";
-						i++;
-						FilaExtElement[] elems = new FilaExtElement[1];
-						if (((String) htData
-								.get(CenCuentasBancariasBean.C_IDPERSONA))
-								.equals(idPersona)) {
-							accionBanco = accion;
-						} else {
-							accionBanco = "ver";
-						}
-						if ((idPersona.equals(idUsr))
-								&& (((String) htData
-										.get(CenCuentasBancariasBean.C_IDPERSONA))
-										.equals(idPersona)) && usr.isLetrado()) {
-							elems[0] = new FilaExtElement("solicitar",
-									"solicitar", SIGAConstants.ACCESS_READ);
-						}
+			while (en.hasMoreElements()) {
+				Hashtable htData = (Hashtable) en.nextElement();
+				if (htData == null)
+					continue;
+				String accionBanco = "";
+				i++;
+				FilaExtElement[] elems = new FilaExtElement[1];
+				if (((String) htData.get(CenCuentasBancariasBean.C_IDPERSONA)).equals(idPersona)) {
+					accionBanco = accion;
+				} else {
+					accionBanco = "ver";
+				}
 
-						String sociedad = "";
-						String sociedadLiteral = "";
-						if (((String) htData
-								.get(CenCuentasBancariasBean.C_IDPERSONA))
-								.equals(idPersona)) {
-							sociedad = DB_FALSE;
-							sociedadLiteral = UtilidadesString
-									.getMensajeIdioma(usr, "general.no");
-						} else {
-							sociedad = DB_TRUE;
-							sociedadLiteral = UtilidadesString
-									.getMensajeIdioma(usr, "general.yes");
-						}
+				if ((idPersona.equals(idUsr)) && (((String) htData.get(CenCuentasBancariasBean.C_IDPERSONA)).equals(idPersona)) && usr.isLetrado()) {
+					elems[0] = new FilaExtElement("solicitar", "solicitar", SIGAConstants.ACCESS_READ);
+				}
 
-						String tipoCuenta = "";
-						if (((String) htData
-								.get(CenCuentasBancariasBean.C_ABONOCARGO))
-								.equals(ClsConstants.TIPO_CUENTA_ABONO)) {
-							tipoCuenta = UtilidadesString.getMensajeIdioma(usr,
-									"censo.tipoCuenta.abono");
-						} else if (((String) htData
-								.get(CenCuentasBancariasBean.C_ABONOCARGO))
-								.equals(ClsConstants.TIPO_CUENTA_ABONO_CARGO)) {
-							tipoCuenta = UtilidadesString.getMensajeIdioma(usr,
-									"censo.tipoCuenta.abonoCargo");
-						} else if (((String) htData
-								.get(CenCuentasBancariasBean.C_ABONOCARGO))
-								.equals(ClsConstants.TIPO_CUENTA_CARGO)) {
-							tipoCuenta = UtilidadesString.getMensajeIdioma(usr,
-									"censo.tipoCuenta.cargo");
-						}
+				String sociedad = "";
+				String sociedadLiteral = "";
+				if (((String) htData.get(CenCuentasBancariasBean.C_IDPERSONA)).equals(idPersona)) {
+					sociedad = DB_FALSE;
+					sociedadLiteral = UtilidadesString.getMensajeIdioma(usr, "general.no");
+				} else {
+					sociedad = DB_TRUE;
+					sociedadLiteral = UtilidadesString.getMensajeIdioma(usr, "general.yes");
+				}
 
-						String abonosjcs = "";
-						if (((String) htData
-								.get(CenCuentasBancariasBean.C_ABONOSJCS))
-								.equals(DB_FALSE)) {
-							abonosjcs = UtilidadesString.getMensajeIdioma(usr,
-									"general.no");
-						} else {
-							abonosjcs = UtilidadesString.getMensajeIdioma(usr,
-									"general.yes");
-						}
+				String tipoCuenta = "";
+				if (((String) htData.get(CenCuentasBancariasBean.C_ABONOCARGO)).equals(ClsConstants.TIPO_CUENTA_ABONO)) {
+					tipoCuenta = UtilidadesString.getMensajeIdioma(usr, "censo.tipoCuenta.abono");
+				} else if (((String) htData.get(CenCuentasBancariasBean.C_ABONOCARGO)).equals(ClsConstants.TIPO_CUENTA_ABONO_CARGO)) {
+					tipoCuenta = UtilidadesString.getMensajeIdioma(usr, "censo.tipoCuenta.abonoCargo");
+				} else if (((String) htData.get(CenCuentasBancariasBean.C_ABONOCARGO)).equals(ClsConstants.TIPO_CUENTA_CARGO)) {
+					tipoCuenta = UtilidadesString.getMensajeIdioma(usr, "censo.tipoCuenta.cargo");
+				}
 
-						String numeroCuentaCompleto = (String) htData.get(CenCuentasBancariasBean.C_IBAN);
+				String abonosjcs = "";
+				if (((String) htData.get(CenCuentasBancariasBean.C_ABONOSJCS)).equals(DB_FALSE)) {
+					abonosjcs = UtilidadesString.getMensajeIdioma(usr, "general.no");
+				} else {
+					abonosjcs = UtilidadesString.getMensajeIdioma(usr, "general.yes");
+				}
 
-						String fechaBaja = (String) htData.get(CenCuentasBancariasBean.C_FECHABAJA);
+				String numeroCuentaCompleto = (String) htData.get(CenCuentasBancariasBean.C_IBAN);
+				String fechaBaja = (String) htData.get(CenCuentasBancariasBean.C_FECHABAJA);
 
-						if (fechaBaja == null || "".equals(fechaBaja)) {
-							fechaBaja = "";
-						} else {
-							fechaBaja = UtilidadesString.formatoFecha(
-									fechaBaja, "yyyy/MM/dd HH:mm:ss",
-									"dd/MM/yyyy");
-						}
+				if (fechaBaja == null || "".equals(fechaBaja)) {
+					fechaBaja = "";
+				} else {
+					fechaBaja = UtilidadesString.formatoFecha(fechaBaja, "yyyy/MM/dd HH:mm:ss", "dd/MM/yyyy");
+				}
 
-						String iconos = "C";
-						String f = (String) htData
-								.get(CenCuentasBancariasBean.C_FECHABAJA);
-						if ((f == null) || (f.equals(""))) {
-							iconos += ",E,B";
-						}
-						
-		%>
-		<siga:FilaConIconos fila='<%=String.valueOf(i)%>'
-			botones='<%=iconos%>' elementos='<%=elems%>' modo="<%=accionBanco%>"
-			clase="listaNonEdit">
-			<td>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenCuentasBancariasBean.C_IDCUENTA)%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenCuentasBancariasBean.C_IDPERSONA)%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=htData.get(CenCuentasBancariasBean.C_IDINSTITUCION)%>'>
-				<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=sociedad%>'> 
-				<%=UtilidadesString.mostrarDatoJSP(htData.get(CenCuentasBancariasBean.C_TITULAR))%>
-			</td>
-			<td><%=UtilidadesString.mostrarDatoJSP(tipoCuenta)%></td>
-			<td align="center"><%=UtilidadesString.mostrarDatoJSP(abonosjcs)%></td>
-			<td align="center"><%=UtilidadesString.mostrarDatoJSP(sociedadLiteral)%></td>
-			<td><%=UtilidadesString.mostrarIBANConAsteriscos(numeroCuentaCompleto)%></td>
-			<td><%=UtilidadesString.mostrarDatoJSP(fechaBaja)%></td>
-
-
-		</siga:FilaConIconos>
-		<%
+				String iconos = "C";
+				String f = (String) htData.get(CenCuentasBancariasBean.C_FECHABAJA);
+				if ((f == null) || (f.equals(""))) {
+					iconos += ",E,B";
+				}						
+%>
+				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' elementos='<%=elems%>' modo="<%=accionBanco%>" clase="listaNonEdit">
+					<td>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenCuentasBancariasBean.C_IDCUENTA)%>'>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(CenCuentasBancariasBean.C_IDPERSONA)%>'>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_3' name='oculto<%=String.valueOf(i)%>_3' value='<%=htData.get(CenCuentasBancariasBean.C_IDINSTITUCION)%>'>
+						<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=sociedad%>'> 
+						<%=UtilidadesString.mostrarDatoJSP(htData.get(CenCuentasBancariasBean.C_TITULAR))%>
+					</td>
+					<td><%=UtilidadesString.mostrarDatoJSP(tipoCuenta)%></td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(abonosjcs)%></td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(sociedadLiteral)%></td>
+					<td><%=UtilidadesString.mostrarIBANConAsteriscos(numeroCuentaCompleto)%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(fechaBaja)%></td>
+				</siga:FilaConIconos>
+<%
 			}
-				} // While
-		%>
+		} // While
+%>
 	</siga:Table>
 
-	<%
-		if (!usr.isLetrado()) {
-	%>
-	<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
-		<table align="center" border="0">
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
-					<%
- 					if (bIncluirBajaLogica) {
-					%>
-					<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
-					<%
- 					} else {
- 					%>
-					<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);"> 
-					<%
- 					}
- 					%>
- 				</td>
-			</tr>
-		</table>
-	</div>
-	<%
-		}
-	%>
+<%
+	if (!usr.isLetrado()) {
+%>
+		<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
+			<table align="center" border="0">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
+<%
+						if (bIncluirBajaLogica) {
+%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
+<%
+ 						} else {
+%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);"> 
+<%
+ 						}
+%>
+ 					</td>
+				</tr>
+			</table>
+		</div>
+<%
+	}
+%>
 
-	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>"
-		clase="botonesDetalle" />
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>" clase="botonesDetalle" />
 
 	<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
-
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-		style="display: none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>
