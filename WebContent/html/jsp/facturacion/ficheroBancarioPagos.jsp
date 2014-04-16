@@ -107,7 +107,7 @@
 			datos.value = datos.value + "%";
 			document.all.ficheroBancarioPagosForm.modo.value = "download";
 	   		document.ficheroBancarioPagosForm.submit();
-	 	}
+	 	}	
 				
 		// Informe remesa
 		function versolicitud(fila) {
@@ -168,7 +168,7 @@
 					  facturacion.ficheroBancarioPagos.literal.nFacturas,
 					  facturacion.ficheroBancarioPagos.literal.nLineasSEPA,
 					  facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"			  			
-		columnSizes="8,20,24,20,6,6,8,8"
+		columnSizes="8,20,23,18,6,6,8,11"
 		modal="M"> 		  
 		
 <%
@@ -183,9 +183,10 @@
 			for (int i = 0; i < resultado.size(); i++) { 				
 				Row row = (Row)resultado.elementAt(i);
 				
-				FilaExtElement[] elems = new FilaExtElement[2];
-				elems[0]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ); 	
-				elems[1]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
+				FilaExtElement[] elems = new FilaExtElement[3];
+				elems[0]=new FilaExtElement("editar", "editar", SIGAConstants.ACCESS_READ); 	
+				elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ); 	
+				elems[2]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
 				
 				int recordNumber = i + 1;
 				
