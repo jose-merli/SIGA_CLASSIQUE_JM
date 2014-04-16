@@ -4896,9 +4896,35 @@
 	        </var> 
          </field>
         </form>
+        
+		<form name="MandatosCuentasBancariasForm">
+			<field property="idMandatoSepa" depends="required,maxlength"> 			
+				<arg0 key="censo.fichaCliente.datosBancarios.referencia"/>	
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>	
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>35</var-value>
+				</var>							
+			</field>
+			
+			<field property="tipoPago" depends="required"> 			
+				<arg0 key="censo.fichaCliente.datosBancarios.tipoPago.recurrente"/>				
+			</field>
+			
+			<field property="esquema" depends="required"> 			
+				<arg0 key="censo.fichaCliente.datosBancarios.esquema"/>				
+			</field>
+			
+			<field property="deudorId" depends="required,maxlength"> 			
+				<arg0 key="censo.fichaCliente.datosBancarios.identificador"/>	
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>		
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>					
+			</field>
+		</form>        
 	</formset>
-
-
 
     <!-- An example formset for another locale
     <formset language="fr">
@@ -4911,6 +4937,4 @@
    </formset>
    -->
    
-   
-
 </form-validation>
