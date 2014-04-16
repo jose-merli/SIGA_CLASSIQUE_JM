@@ -31,13 +31,14 @@ import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenMandatosCuentasBancariasAdm;
+import com.siga.beans.CenMandatosCuentasBancariasBean;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPaisBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSolicModiCuentasAdm;
 import com.siga.beans.CenSolicModiCuentasBean;
 import com.siga.censo.form.CuentasBancariasForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -80,24 +81,37 @@ public class CuentasBancariasAction extends MasterAction{
 //				 La primera vez que se carga el formulario 
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-					mapDestino = abrir(mapping, miForm, request, response);						
+					mapDestino = abrir(mapping, miForm, request, response);			
+					
 				} else if (accion.equalsIgnoreCase("solicitarModificacion")){
 					mapDestino = solicitarModificacion(mapping, miForm, request, response);
+					
 				} else if(accion.equalsIgnoreCase("insertarModificacion")){
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
+			
 			//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
 				} else if(accion.equalsIgnoreCase("guardarInsertarHistorico")){
 					mapDestino = guardarInsertarHistorico(mapping, miForm, request, response);
 			//END BNS
+					
+				} else if (accion.equalsIgnoreCase("informacionCuentaBancaria")){
+					mapDestino = this.informacionCuentaBancaria(mapping, miForm, request, response);
+					
+				} else if (accion.equalsIgnoreCase("listadoMandatosCuentaBancaria")){
+					mapDestino = this.listadoMandatosCuentaBancaria(mapping, miForm, request, response);				
+					
 				} else if ( accion.equalsIgnoreCase("getAjaxBanco")){
 					getAjaxBanco (mapping, miForm, request, response);
-					return null;				
+					return null;	
+					
 				} else if ( accion.equalsIgnoreCase("getAjaxBancoBIC")){
 					getAjaxBancoBIC (mapping, miForm, request, response);
-					return null;	
+					return null;
+					
 				} else if ( accion.equalsIgnoreCase("getAjaxCargaInicialBancoBIC")){
 					getAjaxCargaInicialBancoBIC (mapping, miForm, request, response);
-					return null;						
+					return null;
+					
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -124,7 +138,6 @@ public class CuentasBancariasAction extends MasterAction{
 
 		try{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-			String idInstitucion=user.getLocation();
 
 			String accion = (String)request.getParameter("accion");
 
@@ -189,36 +202,38 @@ public class CuentasBancariasAction extends MasterAction{
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-	
-		String modo = "editar";			
-		try{
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
+		String modo = "gestionarCuentaBancaria";			
+		try {
 			CuentasBancariasForm form = (CuentasBancariasForm) formulario;
-			
-			Vector ocultos = new Vector();
-			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);							
 
 			Integer idCuenta = Integer.valueOf((String)ocultos.elementAt(0));			
 			Long idPersona = Long.valueOf((String)ocultos.elementAt(1));
-			Integer idInstitucionPersona = Integer.valueOf((String)ocultos.elementAt(2));
+			Integer idInstitucionPersona = Integer.valueOf((String)ocultos.elementAt(2));			
+			String sociedad = (String) ocultos.elementAt(3);											
 			
-			String sociedad = (String)ocultos.elementAt(3);
-			String accion = (String)request.getParameter("accion");	
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
-			Hashtable hash = clienteAdm.getCuentasBancarias(idPersona,idInstitucionPersona,idCuenta);			
+			// JPT: Remueve la variable de sesion que sirve para guardar y anadir a historico
+			request.getSession().removeAttribute("idCuentaHistorico");
+
+			Hashtable hashCuentasBancarias = new Hashtable();			
+			hashCuentasBancarias.put("nombrePersona", request.getParameter("nombreUsuario"));
+			hashCuentasBancarias.put("numero", request.getParameter("numeroUsuario"));			
+			hashCuentasBancarias.put("idPersona", idPersona);
+			hashCuentasBancarias.put("idInstitucion", idInstitucionPersona);
+			hashCuentasBancarias.put("sociedad", sociedad);
+			hashCuentasBancarias.put("modoConsulta", "editar");
+			hashCuentasBancarias.put("idCuenta", idCuenta);	
 			
-			request.getSession().setAttribute("DATABACKUP", hash);
-			request.setAttribute("accion", accion);	
-			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("idPersona", idPersona);		
-			request.setAttribute("modoConsulta", modo);
-			request.setAttribute("sociedad", sociedad);			
-		}
-		catch (Exception e) {
+			request.setAttribute("hashCuentasBancarias", hashCuentasBancarias);
+			request.setAttribute("modosCuentasBancarias", form.getModos());	
+			
+			request.getSession().setAttribute("idCuenta", idCuenta);
+		
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
 		}
+		
 		return modo;
 	}
 
@@ -226,47 +241,60 @@ public class CuentasBancariasAction extends MasterAction{
 	 * @see com.siga.general.MasterAction#ver(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		String modo = "ver";
-		try{
-			Vector ocultos = new Vector();
-			CuentasBancariasForm form = (CuentasBancariasForm) formulario;
-			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+		String modo = "gestionarCuentaBancaria";
+		try {
+			CuentasBancariasForm form = (CuentasBancariasForm) formulario;			
+			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);				
+			
 			Integer idCuenta = Integer.valueOf((String)ocultos.elementAt(0));			
 			Long idPersona = Long.valueOf((String)ocultos.elementAt(1));
 			Integer idInstitucionPersona = Integer.valueOf((String)ocultos.elementAt(2));
 			String sociedad = (String)ocultos.elementAt(3);
-			String accion = (String)request.getParameter("accion");	
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
-			Hashtable hash = clienteAdm.getCuentasBancarias(idPersona,idInstitucionPersona,idCuenta);
-	
-			request.getSession().setAttribute("DATABACKUP", hash);
-			request.setAttribute("accion", accion);	
-			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("modoConsulta", modo);	
-			request.setAttribute("sociedad", sociedad);
-		}
-		catch (Exception e) {
+			
+			// JPT: Remueve la variable de sesion que sirve para guardar y anadir a historico
+			request.getSession().removeAttribute("idCuentaHistorico");			
+			
+			Hashtable hashCuentasBancarias = new Hashtable();			
+			hashCuentasBancarias.put("nombrePersona", request.getParameter("nombreUsuario"));
+			hashCuentasBancarias.put("numero", request.getParameter("numeroUsuario"));			
+			hashCuentasBancarias.put("idPersona", idPersona);
+			hashCuentasBancarias.put("idInstitucion", idInstitucionPersona);
+			hashCuentasBancarias.put("sociedad", sociedad);
+			hashCuentasBancarias.put("modoConsulta", "ver");
+			hashCuentasBancarias.put("idCuenta", idCuenta);	
+			
+			request.setAttribute("hashCuentasBancarias", hashCuentasBancarias);
+			request.setAttribute("modosCuentasBancarias", form.getModos());	
+			
+			request.getSession().setAttribute("idCuenta", idCuenta);
+		
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
 		}
-		return modo;
+		
+		return modo;			
 	}
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#nuevo(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		String modo = "nuevo";
- 		try
-		{
+		String modo = "gestionarCuentaBancaria";
+ 		try	{
  			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
-			request.setAttribute("modoConsulta", modo);			
-			request.setAttribute("idPersona", miForm.getIdPersona());			
-			request.setAttribute("idInstitucion", miForm.getIdInstitucion());			
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
+ 			
+			// JPT: Remueve la variable de sesion que sirve para guardar y anadir a historico
+			request.getSession().removeAttribute("idCuentaHistorico");			
+			
+			Hashtable hashCuentasBancarias = new Hashtable();			
+			hashCuentasBancarias.put("nombrePersona", request.getParameter("nombreUsuario"));
+			hashCuentasBancarias.put("numero", request.getParameter("numeroUsuario"));					
+			hashCuentasBancarias.put("idPersona", miForm.getIdPersona());
+			hashCuentasBancarias.put("idInstitucion", miForm.getIdInstitucion());
+			hashCuentasBancarias.put("modoConsulta", "nuevo");
+			
+			request.setAttribute("hashCuentasBancarias", hashCuentasBancarias);
+			request.setAttribute("modosCuentasBancarias", miForm.getModos());	
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -277,19 +305,18 @@ public class CuentasBancariasAction extends MasterAction{
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#insertar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
 		UserTransaction t = null;
 		try {
 			t = this.getUserBean(request).getTransactionPesada();
-			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
-
-			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
+			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;			
 
 			// Fijamos los datos de la cuenta
 			CenCuentasBancariasBean beanCuentas  = new CenCuentasBancariasBean ();
-			if(miForm.getAbonoSJCS().booleanValue())beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
-			else									beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
+			if(miForm.getAbonoSJCS().booleanValue())
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
+			else
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
 			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
 			
 			//Rellenamos el codigo del banco e insertamos un banco extranjero
@@ -308,7 +335,7 @@ public class CuentasBancariasAction extends MasterAction{
 					beanCuentas.setDigitoControl(null);		
 					beanCuentas.setNumeroCuenta(null);					
 				
-				}else{
+				} else {
 					beanCuentas.setCbo_Codigo(miForm.getIBAN().substring(4,8));
 					beanCuentas.setCodigoSucursal(miForm.getIBAN().substring(8,12));
 					beanCuentas.setDigitoControl(miForm.getIBAN().substring(12,14));		
@@ -333,6 +360,7 @@ public class CuentasBancariasAction extends MasterAction{
 			beanHis.setMotivo(miForm.getMotivo());
 	
 			t.begin();
+			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
 			if (!cuentasAdm.insertarConHistorico(beanCuentas, beanHis, this.getLenguaje(request))) {
 				throw new SIGAException (cuentasAdm.getError());
 			}
@@ -340,21 +368,27 @@ public class CuentasBancariasAction extends MasterAction{
 			Integer iResult = cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
 
 			t.commit();
-		}
-		catch (ClsExceptions e){
+			
+			// JPT: Guardo el nuevo identificador de cuenta en la sesion
+			request.getSession().setAttribute("idCuentaHistorico", beanCuentas.getIdCuenta());
+			
+		} catch (ClsExceptions e){
 			try {
 				if (t!=null) {
 					t.rollback();
 				}
+			
 			} catch (Exception el) {
 				e.printStackTrace();
 			}			
-				throw new SIGAException("messages.censo.cuentasBancarias.errorCuentaBancaria");			
-		}catch (Exception e) {
+			
+			throw new SIGAException("messages.censo.cuentasBancarias.errorCuentaBancaria");			
+		
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}		
 
-		return exitoModal("messages.inserted.success", request);
+		return exitoRefresco("messages.inserted.success", request);
 	}
 
 	//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
@@ -374,12 +408,15 @@ public class CuentasBancariasAction extends MasterAction{
 	private String guardarInsertarHistorico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
 		String sResult = null;
 		UserTransaction t = null;
-		try{
-			t = this.getUserBean(request).getTransactionPesada();
-			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
+		
+		try{			
+			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;				
 			
-			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
-			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
+			// JPT: Compruebo si existe la variable de sesion que sirve para guardar y anadir a historico, o bien obtengo el dato del formulario
+			Integer iIdCuenta = (Integer) request.getSession().getAttribute("idCuentaHistorico");
+			if (iIdCuenta == null) {
+				iIdCuenta = miForm.getIdCuenta();
+			}			
 			
 			// Fijamos los datos de la direccion
 			CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
@@ -387,7 +424,6 @@ public class CuentasBancariasAction extends MasterAction{
 				beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
 			else
 				beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
-			
 			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
 			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
@@ -395,19 +431,25 @@ public class CuentasBancariasAction extends MasterAction{
 			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 			beanCuentas.setDigitoControl(miForm.getDigitoControl());
 			beanCuentas.setFechaBaja(null);
-			beanCuentas.setIdCuenta(miForm.getIdCuenta());
+			beanCuentas.setIdCuenta(iIdCuenta);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
 			beanCuentas.setCuentaContable(miForm.getCuentaContable());
 			beanCuentas.setTitular(miForm.getTitular());
-			beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
 			String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
+			
+			// JPT: Obtiene los datos de la cuenta original sin modificar
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), this.getUserBean(request), miForm.getIdInstitucion().intValue(), miForm.getIdPersona().longValue());
+			Hashtable hashCuentasBancarias = clienteAdm.getCuentasBancarias(miForm.getIdPersona(), miForm.getIdInstitucion(), iIdCuenta);		
+			beanCuentas.setOriginalHash(hashCuentasBancarias);			
 			
 			// Fijamos los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(miForm.getMotivo());	
 			
+			t = this.getUserBean(request).getTransactionPesada();
 			t.begin();
+			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
 			int iUpdateConHistoricoYfecBajResult = cuentasAdm.updateConHistoricoYfecBaj(beanCuentas, beanHis, this.getUserName(request), this.getUserBean(request), abonoCargoOrig, this.getLenguaje(request));
 			if (iUpdateConHistoricoYfecBajResult < 0) {
 				throw new SIGAException (cuentasAdm.getError());
@@ -415,13 +457,18 @@ public class CuentasBancariasAction extends MasterAction{
 			
 			t.commit();
 			
-			if (iUpdateConHistoricoYfecBajResult == 1)
-				sResult = exitoModal("messages.updated.borrarCuenta", request);
-			else if (iUpdateConHistoricoYfecBajResult == 2)
-				sResult = exitoModal("messages.updated.actualizarCuenta", request);
-			else 
-				sResult = exitoModal("messages.updated.success", request);
+			// JPT: Guardo el nuevo identificador de cuenta en la sesion
+			request.getSession().setAttribute("idCuentaHistorico", beanCuentas.getIdCuenta());
 			
+			if (iUpdateConHistoricoYfecBajResult == 1)
+				sResult = "messages.updated.borrarCuenta";
+			
+			else if (iUpdateConHistoricoYfecBajResult == 2)
+				sResult = "messages.updated.actualizarCuenta";
+			
+			else 
+				sResult = "messages.updated.success";
+
 		} catch (ClsExceptions e){
 			try {
 				if (t!=null) {
@@ -430,12 +477,14 @@ public class CuentasBancariasAction extends MasterAction{
 			} catch (Exception el) {
 				e.printStackTrace();
 			}			
-				throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");			
+			
+			throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");
+			
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 
-		return sResult;
+		return exitoRefresco(sResult, request);
 	}
 	// END BNS
 	
@@ -443,19 +492,23 @@ public class CuentasBancariasAction extends MasterAction{
 	 * @see com.siga.general.MasterAction#modificar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
 		UserTransaction t = null;
-		try {
-			t = this.getUserBean(request).getTransactionPesada();
+		String retorno = "messages.updated.success";
+		try {			
 			CuentasBancariasForm miForm = (CuentasBancariasForm) formulario;
 
-			// Comprobamos si el cliente ya tiene una cuenta de tipo SJCS
-			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
-			
+			// JPT: Compruebo si existe la variable de sesion que sirve para guardar y anadir a historico, o bien obtengo el dato del formulario
+			Integer iIdCuenta = (Integer) request.getSession().getAttribute("idCuentaHistorico");
+			if (iIdCuenta == null) {
+				iIdCuenta = miForm.getIdCuenta();
+			}				
+
 			// Fijamos los datos de la direccion
 			CenCuentasBancariasBean beanCuentas = new CenCuentasBancariasBean();
-			if(miForm.getAbonoSJCS().booleanValue())beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
-			else									beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
+			if(miForm.getAbonoSJCS().booleanValue())
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
+			else
+				beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
 			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
 			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
@@ -463,19 +516,24 @@ public class CuentasBancariasAction extends MasterAction{
 			beanCuentas.setDigitoControl(miForm.getDigitoControl());
 			beanCuentas.setNumeroCuenta(miForm.getNumeroCuenta());
 			beanCuentas.setFechaBaja(null);
-			beanCuentas.setIdCuenta(miForm.getIdCuenta());
+			beanCuentas.setIdCuenta(iIdCuenta);
 			beanCuentas.setIdInstitucion(miForm.getIdInstitucion());
 			beanCuentas.setIdPersona(miForm.getIdPersona());
 			beanCuentas.setCuentaContable(miForm.getCuentaContable());
-			beanCuentas.setTitular(miForm.getTitular());
-			beanCuentas.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP"));
-			String abonoCargoOrig=(String)request.getParameter("abonoCargoOrig");
+			beanCuentas.setTitular(miForm.getTitular());			
+							
+			// JPT: Obtiene los datos de la cuenta original sin modificar
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), this.getUserBean(request), miForm.getIdInstitucion().intValue(), miForm.getIdPersona().longValue());
+			Hashtable hashCuentasBancarias = clienteAdm.getCuentasBancarias(miForm.getIdPersona(), miForm.getIdInstitucion(), iIdCuenta);		
+			beanCuentas.setOriginalHash(hashCuentasBancarias);
 			
 			// Fijamos los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(miForm.getMotivo());
 	
+			t = this.getUserBean(request).getTransactionPesada();
 			t.begin();
+			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
 			if (!cuentasAdm.updateConHistorico(beanCuentas, beanHis, this.getLenguaje(request))) {
 				throw new SIGAException (cuentasAdm.getError());
 			}
@@ -485,12 +543,11 @@ public class CuentasBancariasAction extends MasterAction{
 			t.commit();
 
 			if(iResult==1)
-				return exitoModal("messages.updated.borrarCuenta", request);
+				retorno = "messages.updated.borrarCuenta";
 			else if(iResult==2)
-				return exitoModal("messages.updated.actualizarCuenta", request);
-	
-		}
-		catch (ClsExceptions e){
+				retorno = "messages.updated.actualizarCuenta";			
+			
+		} catch (ClsExceptions e){
 			try {
 				if (t!=null) {
 					t.rollback();
@@ -498,12 +555,14 @@ public class CuentasBancariasAction extends MasterAction{
 			} catch (Exception el) {
 				e.printStackTrace();
 			}			
-				throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");			
-		}catch (Exception e) {
+			
+			throw new SIGAException("messages.censo.cuentasBancarias.errorSucursal");	
+				
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 
-		return exitoModal("messages.updated.success", request);
+		return exitoRefresco(retorno, request);
 	}
 
 	/* (non-Javadoc)
@@ -519,7 +578,6 @@ public class CuentasBancariasAction extends MasterAction{
 			Long 	idPersona 		= miForm.getIdPersona();
 			Integer idInstitucion 	= miForm.getIdInstitucion();
 			Integer idCuenta 		= new Integer((String) miForm.getDatosTablaOcultos(0).get(0));
-			String TipoCuenta=(String)miForm.getDatosTablaVisibles(0).get(1);
 
 			CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
 			Hashtable clavesCuentas = new Hashtable();
@@ -550,10 +608,9 @@ public class CuentasBancariasAction extends MasterAction{
 			if(iResult==1)
 				return exitoRefresco("messages.updated.borrarCuenta", request);
 			else if(iResult==2)
-				return exitoRefresco("messages.updated.actualizarCuenta", request);
-		
-		}
-		catch (Exception e) {
+				return exitoRefresco("messages.updated.actualizarCuenta", request);			
+			
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 		return exitoRefresco("messages.deleted.success", request);
@@ -600,14 +657,11 @@ public class CuentasBancariasAction extends MasterAction{
 	protected String insertarModificacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		UserTransaction t = null;
-		try
-		{	
+		try {	
 			t = this.getUserBean(request).getTransaction();	
 			
 			CuentasBancariasForm form = (CuentasBancariasForm) formulario;				
 			CenSolicModiCuentasAdm adm = new CenSolicModiCuentasAdm(getUserBean(request));
-
-			String modo = "insertarModificacion";
 			
 			t.begin();	
 			CenSolicModiCuentasBean bean = getDatos(form, request);
@@ -801,7 +855,6 @@ public class CuentasBancariasAction extends MasterAction{
 		
 		CenBancosAdm bancosAdm = new CenBancosAdm(this.getUserBean(request));
 		CenBancosBean bancoBean = null;
-		CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
 		JSONObject json = new JSONObject();	
 		String iban = (String)request.getParameter("iban");
 		String cbo = (String)request.getParameter("codigo");
@@ -825,5 +878,119 @@ public class CuentasBancariasAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
 	}	
+
+	/**
+	 * Obtengo la informacion de la cuenta bancaria
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String informacionCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");			
+				
+		//String sNombrePersona = (String) request.getParameter("nombrePersona");
+		//String sNumero = (String) request.getParameter("numero");
+		String sModo = (String) request.getParameter("modoConsulta");
+		//String sSociedad = (String) request.getParameter("sociedad");
+		
+		// JPT: Compruebo si existe la variable de sesion que sirve para guardar y anadir a historico, o bien obtengo el dato de los parametros
+		Integer iIdCuenta = (Integer) request.getSession().getAttribute("idCuentaHistorico");
+		
+		/*
+		 * * JPT: Solo obtengo datos cuando hay cuenta:
+		 * 1. Modo consulta
+		 * 2. Modo edicion
+		 * 3. Cuando acaba de crear una nueva cuenta
+		 */
+		if (sModo.equalsIgnoreCase("ver") || sModo.equalsIgnoreCase("editar") || iIdCuenta!= null) {
+			
+			String sIdPersona = (String) request.getParameter("idPersona");
+			Long lIdPersona = Long.valueOf(sIdPersona);
+			
+			String sIdInstitucion = (String) request.getParameter("idInstitucion");
+			Integer iIdInstitucion = Integer.valueOf(sIdInstitucion);			
+							
+			if (iIdCuenta == null) {
+				String sIdCuenta = (String) request.getParameter("idCuenta");
+				if (sIdCuenta != null)
+					iIdCuenta = Integer.valueOf(sIdCuenta);
+			}
+			
+			if (iIdCuenta != null) {						
+				try{		
+					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, iIdInstitucion.intValue(), lIdPersona.longValue());
+					Hashtable hashCuentasBancarias = clienteAdm.getCuentasBancarias(lIdPersona, iIdInstitucion, iIdCuenta);			
+					request.setAttribute("hashCuentasBancarias", hashCuentasBancarias);
+				} catch (Exception e) {
+					throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+				}
+			}
+		}
+		
+		return "informacionCuentaBancaria";		
+	}
 	
+	/**
+	 * Obtengo un listado de los mandatos de la cuenta bancaria
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String listadoMandatosCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");			
+					
+			//String sNombrePersona = (String) request.getParameter("nombrePersona");
+			//String sNumero = (String) request.getParameter("numero");
+			String sModo = (String) request.getParameter("modoConsulta");
+			//String sSociedad = (String) request.getParameter("sociedad");
+			
+			// JPT: Compruebo si existe la variable de sesion que sirve para guardar y anadir a historico, o bien obtengo el dato de los parametros
+			Integer iIdCuenta = (Integer) request.getSession().getAttribute("idCuentaHistorico");
+			
+			// JPT: Si tiene el modo nuevo y acaba de anadir una cuenta se considera que esta en modo edicion
+			if (sModo.equals("nuevo") && iIdCuenta != null) {
+				sModo = "editar";
+			} 			
+			request.setAttribute("modoListadoMandatos", sModo);						
+			
+			/*
+			 * * JPT: Solo obtengo datos cuando hay cuenta:
+			 * 1. Modo consulta
+			 * 2. Modo edicion
+			 * 3. Cuando acaba de crear una nueva cuenta
+			 */
+			if (sModo.equalsIgnoreCase("ver") || sModo.equalsIgnoreCase("editar")) {
+				
+				String sIdPersona = (String) request.getParameter("idPersona");
+				Long lIdPersona = Long.valueOf(sIdPersona);
+				
+				String sIdInstitucion = (String) request.getParameter("idInstitucion");
+				Integer iIdInstitucion = Integer.valueOf(sIdInstitucion);			
+								
+				if (iIdCuenta == null) {
+					String sIdCuenta = (String) request.getParameter("idCuenta");
+					if (sIdCuenta != null)
+						iIdCuenta = Integer.valueOf(sIdCuenta);
+				}
+				
+				if (iIdCuenta != null)  {
+					CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usuario);
+					Vector<CenMandatosCuentasBancariasBean> vMandatos = mandatosAdm.obtenerMandatos(iIdInstitucion, lIdPersona, iIdCuenta);  
+					request.setAttribute("vListadoMandatos", vMandatos);
+				}			
+			}				
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		}			
+		
+		return "listadoMandatosCuentaBancaria";		
+	}
 }
