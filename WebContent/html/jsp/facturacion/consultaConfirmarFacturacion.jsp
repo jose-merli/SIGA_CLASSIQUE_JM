@@ -276,47 +276,31 @@
 			document.confirmarFacturacionForm.modo.value = "descargaLog";
 			document.confirmarFacturacionForm.submit();
 		 }
-		 
-		 
-		function confirmacionInmediata(fila) 
-		{
-			var mensaje = "<siga:Idioma key="facturacion.confirmarFacturacion.pregunta.confirmacion"/>";
-			if(!confirm(mensaje)) {						
-				return;
-			}
-			subicono('iconoboton_confirmacionInmediata'+fila);
-			
-			var datos;
-			
-			datos = document.getElementById('tablaDatosDinamicosD');
+		 		
+		function confirmacionInmediata(fila) {
+			var datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
-			var j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
-			var flag = true;
-
-			j = 1;
+			var flag = true;	
+			var j = 1;
 			while (flag) {
-			  var aux = 'oculto' + fila + '_' + j;
-			  var oculto = document.getElementById(aux);
-			  if (oculto == null)  { flag = false; }
-			  else { datos.value = datos.value + oculto.value + ','; }
-			  j++;
+			  	var aux = 'oculto' + fila + '_' + j;
+			  	var oculto = document.getElementById(aux);
+			  	if (oculto == null)  { 
+				  	flag = false; 
+				} else { 
+					datos.value = datos.value + oculto.value + ','; 
+				}
+			  	j++;
 			}
-			datos.value = datos.value + "%";
-		
-			// Abro la ventana de las tuercas:
-		//	document.confirmarFacturacionForm.modo.value = "confirmacionInmediata";
-		//	var f = document.confirmarFacturacionForm.name;	
-		//	window.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
-		
-			document.confirmarFacturacionForm.modo.value = "confirmarFactura";
-			document.all.confirmarFacturacionForm.facturacionRapida.value = "1";
-			var f = document.confirmarFacturacionForm.name;	
-			// Abro la ventana de las tuercas:
-			document.confirmarFacturacionForm.submit();		
-		
-		
+			datos.value = datos.value + "%";			
+			
+			document.confirmarFacturacionForm.modo.value = "editarFechas";
+			var resultado = ventaModalGeneral("confirmarFacturacionForm","M");					
+			fin();
+			if (resultado!=undefined && resultado[0]!='') {								
+				alert(resultado[0]);
+				parent.buscar();
+			}		
 		}
 
 		//Funcion asociada al boton Consultar
@@ -344,7 +328,7 @@
 				datos.value = datos.value + "%";
 				
 				   document.confirmarFacturacionForm.modo.value = "consultarfactura";
-				   ventaModalGeneral(document.confirmarFacturacionForm.name,"M");
+				   ventaModalGeneral(document.confirmarFacturacionForm.name,"G");
 				   
 			 }			
 
@@ -416,17 +400,16 @@
 								elems[0]=new FilaExtElement("consultar","consultarfactura",SIGAConstants.ACCESS_READ);
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {									
 									elems[1]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
-									elems[2]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.cambiarFechaCargoyConfirmar", SIGAConstants.ACCESS_READ);									
 								}
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
-									elems[3]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
+									elems[2]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
 								}	
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
-									elems[4]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 				
+									elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 				
 								} 
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
-									elems[5]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
-									elems[6]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
+									elems[4]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
+									elems[5]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
 								}
 
 								i++;
