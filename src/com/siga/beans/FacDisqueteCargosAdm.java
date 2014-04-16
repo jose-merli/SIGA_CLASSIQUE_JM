@@ -8,13 +8,16 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
+import com.siga.general.EjecucionPLs;
 
 
 public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
@@ -293,5 +296,80 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		catch (Exception e) {
 			return null;
 		}
+	}
+	
+	/**
+	 * Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+	 * @param idInstitucion
+	 * @param fechaEntrega
+	 * @param fechaUnica
+	 * @param fechaRecibosPrimeros
+	 * @param fechaRecibosRecurrentes
+	 * @param fechaRecibosCOR1
+	 * @param fechaRecibosB2B
+	 * @param fechaTipoUnica
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean controlarFechasFicheroBancario (
+				String idInstitucion,
+				String fechaEntrega,
+				String fechaUnica,
+				String fechaRecibosPrimeros,
+				String fechaRecibosRecurrentes,
+				String fechaRecibosCOR1,
+				String fechaRecibosB2B,
+				String fechaTipoUnica
+			) throws ClsExceptions {
+		
+		// Control de fechas
+		// 1º Obtiene los parametros de los dias habiles
+		// 2º Obtiene las fechas minimas para el fichero
+		// 3º. Control de fechas (si alguna fecha es menor que su minimo, entonces es un error)
+		
+		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
+		String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
+		
+		String fechaMinimaEntrega = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {
+			return false;
+		}
+		
+		if (fechaTipoUnica.equals("1")) {
+			String habilesUnicaCargos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
+			
+			String fechaMinimaUnica = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesUnicaCargos);
+
+			if (GstDate.compararFechas(fechaUnica, fechaMinimaUnica) < 0) {
+				return false;
+			}
+			
+		} else {
+			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
+			
+			String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesPrimerosRecibos);
+			String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosRecurrentes);
+			String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosCOR1);
+			String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosB2B);	
+			
+			
+			if (GstDate.compararFechas(fechaRecibosPrimeros, fechaMinimaPrimerosRecibos) < 0) {
+				return false;
+			}
+			if (GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0) {
+				return false;
+			}
+			if (GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0) {
+				return false;
+			}
+			if (GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }
