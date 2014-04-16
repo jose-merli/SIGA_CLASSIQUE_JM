@@ -22,7 +22,8 @@
 
 <!-- JSP -->
 <%
-	String app = request.getContextPath(); 
+	String app = request.getContextPath();
+	String modoAction = ""; //NO BORRAR
 %>
 
 
@@ -37,23 +38,54 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script language="JavaScript">
-			//Asociada al boton GuardarCerrar -->
-			function accionGuardarCerrar() {
+		// Asociada al boton Cerrar
+		function accionCerrar() { 			
+			window.top.close();
+		}			
+	
+		//Asociada al boton GuardarCerrar -->
+		function accionGuardarCerrar() {
 			sub();
-			if (document.all.confirmarFacturacionForm.fechaCargo.value == ''){
-				alert('<siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaCargo"/>');
-				fin();
-				return false;			
-			
-			}else{
-			
-				//Mando a la ventana padre la fecha de Cargo y cierro la modal:
-				window.top.returnValue = document.all.confirmarFacturacionForm.fechaCargo.value;
-				window.top.close();
+		
+			if(validarFechasSEPA()){		
+				if (confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {
+					document.ficheroBancarioPagosForm.fechaEntrega.value = jQuery("#fechaPresentacion").val();
+					
+					if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
+						document.ficheroBancarioPagosForm.fechaTipoUnica.value = "1";
+						document.ficheroBancarioPagosForm.fechaUnica.value = jQuery("#fechaCargoUnica").val();	
+					} else {
+						document.ficheroBancarioPagosForm.fechaTipoUnica.value = "0";
+						document.ficheroBancarioPagosForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
+						document.ficheroBancarioPagosForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
+						document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
+						document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
+					}
+					
+					document.ficheroBancarioPagosForm.modo.value = "generarFichero";
+					document.ficheroBancarioPagosForm.target = 'submitArea';					
+					
+					var nombreFormulario = document.ficheroBancarioPagosForm.name;	
+					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + nombreFormulario + '&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
+					//document.ficheroBancarioPagosForm.submit();
+					
+				} else {
+					fin();
 				}
-			}		
+			} else {
+				fin();
+			}
+		}		
+		
+		// Asociada al boton Restablecer
+		function accionRestablecer(){		
+			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
+				document.confirmarFacturacionForm.target = "_self";
+				document.confirmarFacturacionForm.modo.value = "nuevo";		
+				document.confirmarFacturacionForm.submit();
+			}						
+		}			
 	</script>	
-
 </head>
 
 <body>
@@ -65,31 +97,32 @@
 			</td>				
 		</tr>
 	</table>	
-
-		<table class="tablaCentralCamposPeque" align="center">
+	
+	<html:form action="/FAC_DisqueteCargos.do" method="POST" target="submitArea">
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaEntrega" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaUnica" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaFRST" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaRCUR" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaCOR1" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaB2B" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="fechaTipoUnica" value=""/>
+		<html:hidden name="ficheroBancarioPagosForm" property="modo" value=""/>	
+	</html:form>		
 		
-<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
-<html:hidden name="confirmarFacturacionForm" property="modo" value = ""/>
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="censo.consultaComponentesJuridicos.literal.fechaCargo">
-						<table class="tablaCampos" border="0">	
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaCargo"/>&nbsp;(*)
-								</td>
-								<td class="labelText">
-									<siga:Fecha  nombreCampo="fechaCargo" posicionX="10" posicionY="10"/>
-								</td>
-							</tr>
-					</table>
-				</siga:ConjCampos>	
-				</td>
-			</tr>
-</html:form>
-		</table>
+	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
+		<html:hidden name="confirmarFacturacionForm" property="modo" value = ""/>
+		<siga:ConjCampos leyenda="Fechas">
+			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">	
+				<tr>
+					<td>
+						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
+					</td>
+				</tr>	
+			</table>
+		</siga:ConjCampos>
+	</html:form>
 
-	<siga:ConjBotonesAccion botones='Y' modo='' modal="P" />
+	<siga:ConjBotonesAccion botones='C,Y,R' modo='' modal="P" />
 	
 
 <!-- INICIO: SUBMIT AREA -->
