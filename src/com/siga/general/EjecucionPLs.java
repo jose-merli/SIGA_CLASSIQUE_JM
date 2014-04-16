@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -1252,5 +1253,33 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		}
 	    //Resultado del PL        
 	    return resultado;
+	}
+	
+	/**
+	 * Funcion que suma los dias hábiles a una fecha pasada por parámetro
+	 * @param idInstitucion
+	 * @param fecha
+	 * @param dias
+	 * @return Fecha sumada en formato (dd/mm/yyyy)
+	 * @throws ClsExceptions
+	 */
+	public static String ejecutarSumarDiasHabiles (String idInstitucion, String fecha, String dias) throws ClsExceptions {
+		RowsContainer rc = null;
+		Hashtable miHash = new Hashtable();
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1),idInstitucion);
+		codigos.put(new Integer(2),fecha);
+		codigos.put(new Integer(3),dias);
+		String resultado = null;
+	
+		String consulta = "select F_SUMARDIASHABILES(:1,:2,:3) FECHA FROM DUAL ";
+		rc = new RowsContainer(); 
+		if (rc.queryBind(consulta,codigos)) {
+			Row fila = (Row) rc.get(0);
+			miHash = fila.getRow();            
+			resultado = GstDate.getFormatedDateShort("ES",(String)miHash.get("FECHA"));            
+		}
+	
+		return resultado;
 	}
 }
