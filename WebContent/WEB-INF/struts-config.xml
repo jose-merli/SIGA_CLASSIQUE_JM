@@ -18,6 +18,8 @@
 		<form-bean name="consultaDireccionesForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="consultaDireccionesSolicForm" type="com.siga.censo.form.DireccionesForm"/>
 		<form-bean name="cuentasBancariasForm" type="com.siga.censo.form.CuentasBancariasForm"/>
+		<form-bean name="MandatosCuentasBancariasForm" type="com.siga.censo.form.MandatosCuentasBancariasForm"/>
+		<form-bean name="AnexosCuentasBancariasForm" type="com.siga.censo.form.AnexosCuentasBancariasForm"/>		
 		<form-bean name="cuentasBancariasSolicForm" type="com.siga.censo.form.CuentasBancariasForm"/>
 		<form-bean name="datosCVForm" type="com.siga.censo.form.DatosCVForm"/>
 		<form-bean name="datosCVSolicForm" type="com.siga.censo.form.DatosCVForm"/>
@@ -59,7 +61,6 @@
 		<form-bean name="EdicionRemesaForm" type="com.siga.censo.ws.form.EdicionRemesaForm"/>
 		<form-bean name="EdicionColegiadoForm" type="com.siga.censo.ws.form.EdicionColegiadoForm"/>
 		
-		
 		<!-- ************************** FORMS MEDIADORES *************************
 -->		
 		<form-bean name="MediadoresImportForm" type="com.siga.censo.mediadores.form.MediadoresImportForm"/>
@@ -69,7 +70,7 @@
 		
 		<form-bean name="MediadoresExportForm" type="com.siga.censo.mediadores.form.MediadoresExportForm"/>
 		<form-bean name="MediadoresFicheroForm" type="com.siga.censo.mediadores.form.MediadoresFicheroForm"/>
-				
+		
 		
 
 		<!-- ************************** FORMS FACTURACIÓN *************************
@@ -768,7 +769,7 @@
 		<action path="/CEN_GestionMediadores" type="com.siga.censo.mediadores.action.GestionMediadoresAction">
 			<forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresPestanas.jsp"/>									
 		</action>
-		
+
 		<action path="/CEN_ImportarMediadores" type="com.siga.censo.mediadores.action.MediadoresImportPestanaAction">
 		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportPestanas.jsp"/>		    
 	    </action>
@@ -788,8 +789,8 @@
 		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresImportConsultaCargaFichero.jsp"/>
 		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresCargaConsultaFichero.jsp"/>		    
 	    </action>
-	    	
-	    
+		
+
 		<action path="/CEN_ExportarMediadores" type="com.siga.censo.mediadores.action.MediadoresExportAction" name="MediadoresExportForm" scope="request">
 		    <forward name="inicio" path="/html/jsp/censo/mediadores/mediadoresExport.jsp"/>		    
 		    <forward name="resultado" path="/html/jsp/censo/mediadores/resultadoMediadoresExport.jsp"/>		    
@@ -840,13 +841,24 @@
 
 		<action path="/CEN_CuentasBancarias" type="com.siga.censo.action.CuentasBancariasAction" name="cuentasBancariasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaDatosBancarios.jsp"/>
-			<forward name="resultado" path="/html/jsp/censo/consultaDatosBancarios.jsp"/>
-			<forward name="ver" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
-			<forward name="editar" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaDatosBancarios.jsp"/>			
 			<forward name="borrar" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
-			<forward name="nuevo" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
 			<forward name="solicitarModificacion" path="/CEN_SolicitudCuentasBancarias.do"/>
+			<forward name="gestionarCuentaBancaria" path="/html/jsp/censo/pestanasCuentaBancaria.jsp"/>
+			<forward name="informacionCuentaBancaria" path="/html/jsp/censo/informacionCuentaBancaria.jsp"/>
+			<forward name="listadoMandatosCuentaBancaria" path="/html/jsp/censo/listadoMandatosCuentaBancaria.jsp"/>
 		</action>
+		
+		<action path="/CEN_MandatosCuentasBancarias" type="com.siga.censo.action.MandatosCuentasBancariasAction" name="MandatosCuentasBancariasForm" scope="request">
+			<forward name="gestionarMandatoCuentaBancaria" path="/html/jsp/censo/pestanasMandatoCuentaBancaria.jsp"/>
+			<forward name="mandatoCuentaBancaria" path="/html/jsp/censo/mandatoCuentaBancaria.jsp"/>
+			<forward name="ficherosMandatoCuentaBancaria" path="/html/jsp/censo/ficherosMandatoCuentaBancaria.jsp"/>
+			<forward name="ficheroMandatoCuentaBancaria" path="/html/jsp/censo/ficheroMandatoCuentaBancaria.jsp"/>
+		</action>
+		
+		<action path="/CEN_AnexosCuentasBancarias" type="com.siga.censo.action.AnexosCuentasBancariasAction" name="AnexosCuentasBancariasForm" scope="request">
+			<forward name="ficheroAnexoCuentaBancaria" path="/html/jsp/censo/ficheroAnexoCuentaBancaria.jsp"/>
+		</action>		
 
 
 		<!-- ***** Censo / Ver Datos CV ***** -->
@@ -1189,6 +1201,7 @@
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
 			<forward name="ver" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>	
+			<forward name="editarFechas"	path="/html/jsp/facturacion/confirmacionfechasFicheroBancario.jsp"/>			
 		</action>
 
 		<!-- ***** Facturación / Buscar Factura ***** -->
@@ -1285,6 +1298,7 @@
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
 			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/cambiarFechasCargo.jsp"/>
 		</action>
 		
 		<action path="/FAC_InformesFacturasEmitidas" type="com.siga.facturacion.action.InformesFacturasEmitidasAction" name="informesFacturasEmitidasForm" scope="request">
