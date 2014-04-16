@@ -5177,5 +5177,40 @@ function formateaMask(strValue)
 
 }
 
+/* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por parámetros */
+function sumarDias(fechaInput,dias){ 
+	
+	//Si pasamos el primer parametro vacio, tomamos como referencia el dia actual
+	if(fechaInput != "") {
+		//Obtenermos la fecha formateada en formato americano						
+		fechaFormateada = fechaInput.substring(6) + "/" + fechaInput.substring(3,5) + "/" + fechaInput.substring(0,2);
+		fecha=new Date(fechaFormateada); 
+	} else {
+		fecha = new Date();			
+	}
+	
+	//Obtenemos los milisegundos desde media noche del 1/1/1970
+	tiempo=fecha.getTime(); 
+
+	//Calculamos los milisegundos sobre la fecha que hay que sumar o restar... 
+	milisegundos=parseInt(dias*24*60*60*1000); 
+	
+	//Modificamos la fecha actual 
+	total=fecha.setTime(tiempo+milisegundos); 
+	dia=fecha.getDate(); 
+	mes=fecha.getMonth()+1; 
+	anyo=fecha.getFullYear();
+	
+    if(mes.toString().length<2){
+	    mes="0".concat(mes);        
+	}    
+	 
+	if(dia.toString().length<2){
+	    dia="0".concat(dia);        
+	}
+	
+	return (dia+"/"+mes+"/"+anyo); 
+}	
+
 
 fin();
