@@ -1858,6 +1858,22 @@ public class InformesGenericosAction extends MasterAction {
 					return download(mapping, formulario, request, response);
 				}
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.justificacion.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesOrdenDomicializacion)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.ordendomiciliacion.asunto");
+			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.anexoordendomiciliacion.asunto");
 			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.expedientes.asunto");
 			} else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesListadoGuardias)){
@@ -2419,6 +2435,10 @@ public class InformesGenericosAction extends MasterAction {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesListadoGuardias);
 				} else if (idTipoInforme.equals("JUSDE")) {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesJustificacion);
+				}else if (idTipoInforme.equals("OSEPA")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesOrdenDomicializacion);
+				}else if (idTipoInforme.equals("ASEPA")) {
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion);
 				} else if (idTipoInforme.equals("DEJG")) {
 					mapDestino = dejg(mapping, miForm, request, response);
 				} else if (idTipoInforme.equals("ACTAC")) {
