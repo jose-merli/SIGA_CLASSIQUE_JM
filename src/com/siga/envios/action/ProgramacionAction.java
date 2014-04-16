@@ -23,6 +23,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -30,11 +31,16 @@ import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvEstadoEnvioAdm;
+import com.siga.beans.EnvHistoricoEstadoEnvioAdm;
+import com.siga.beans.EnvHistoricoEstadoEnvioBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.envios.Envio;
+import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.ProgramacionForm;
+import com.siga.envios.service.IntercambiosService;
+import com.siga.envios.service.IntercambiosServiceDispatcher;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -58,29 +64,20 @@ public class ProgramacionAction extends MasterAction {
     	{ 
 	        miForm = (MasterForm) formulario;
 	        
-	        if (miForm != null) 
-	        {
+	        if (miForm != null){
 	            String modo = miForm.getModo();
 
-	            if (modo == null || modo.equalsIgnoreCase("") || modo.equalsIgnoreCase("abrir"))
-	            {
+	            if (modo == null || modo.equalsIgnoreCase("") || modo.equalsIgnoreCase("abrir")){
 	                mapDestino = abrir(mapping, miForm, request, response);
-	            } 
-	            
-	            else if (modo.equalsIgnoreCase("descargar"))
-	            {
+	            }else if (modo.equalsIgnoreCase("descargar")){
 	                mapDestino = descargar(mapping, miForm, request, response);
-	            }else if (modo.equalsIgnoreCase("generarEtiquetas"))
-	            {
+	            }else if (modo.equalsIgnoreCase("generarEtiquetas")){
 	                mapDestino = generarEtiquetas(mapping, miForm, request, response);
-	            } 
-	            else if (modo.equalsIgnoreCase("procesarEnvio"))
-	            {
+	            }else if (modo.equalsIgnoreCase("procesarEnvio")){
 	                mapDestino = procesarEnvio(mapping, miForm, request, response);
-	            } 
-
-	            else 
-	            {
+	            }else if (modo.equalsIgnoreCase("descargarLogErrores")){
+	            	mapDestino = descargarLogErrores(mapping, miForm, request, response);
+	            }else{
 	                return super.executeInternal(mapping,formulario,request,response);
 	            }
 	        }
@@ -267,6 +264,14 @@ public class ProgramacionAction extends MasterAction {
             } catch (ClsExceptions e3) {
                 throwExcp("messages.general.error",new String[] {"modulo.envios"},e3,null);
             }	        
+	        
+	        // Por ultimo recuperamos los estados por los que ha pasado el envio
+	        EnvHistoricoEstadoEnvioAdm historicoAdm = new EnvHistoricoEstadoEnvioAdm(userBean);
+	        try {
+				request.setAttribute("estados", historicoAdm.getHistoricoEnvio(envioBean));
+			} catch (ClsExceptions e) {
+				throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+			}
         
 		return "inicio";
 	}
@@ -483,5 +488,45 @@ public class ProgramacionAction extends MasterAction {
 	    }
 	    return exitoRefresco("messages.inserted.success",request);
 	}	
+	
+	/**
+	 * Descarga el fichero de Log.
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String descargarLogErrores(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException{
+		String forward = "descargaFichero";
+		String sFicheroLog=null, sIdInstitucion=null, sIdEnvio=null;
+
+		try {
+			ProgramacionForm form = (ProgramacionForm)formulario;
+			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
+
+			String idInstitucion = user.getLocation();  
+			String idEnvio = form.getIdEnvio();
+			
+			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
+			File fichero = null;
+			
+			sFicheroLog = envioAdm.getPathEnvio(idInstitucion,idEnvio) + File.separator + "informeEnvio" + ".log.xls";
+			fichero = new File(sFicheroLog);
+			if(fichero==null || !fichero.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+			ClsLogging.writeFileLog("DefinirEnviosAction:fin descargarLogErrores. IdInstitucion:" + user.getLocation(), 10);
+
+		} catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
+		return forward;
+	}
 
 }

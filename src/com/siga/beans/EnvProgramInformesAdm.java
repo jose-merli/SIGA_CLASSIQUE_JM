@@ -169,6 +169,8 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 		sql.append(" EPI.IDTIPOINFORME,EPI.CLAVES, ");
 		sql.append(" EP.IDTIPOENVIOS,EP.IDPLANTILLAENVIOS,EP.IDPLANTILLA,EP.NOMBRE,EP.FECHAPROGRAMADA, EP.ACUSERECIBO, ");
 		sql.append(" L.CODIGOEXT,EP.COMISIONAJG ");
+		// jbd // Nos traemos el usumodificacion para luego pasarselo al hitorico y saber quien ha hecho el envio
+		sql.append(" , EP.USUMODIFICACION "); 
 		
 
 		sql.append(" FROM ENV_PROGRAMINFORMES EPI ,ENV_ENVIOPROGRAMADO EP, ADM_LENGUAJES L ");
@@ -225,6 +227,9 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 					envioProgramado.setFechaProgramada(UtilidadesHash.getString(htFila, EnvEnvioProgramadoBean.C_FECHAPROGRAMADA));
 					envioProgramado.setAcuseRecibo(UtilidadesHash.getString(htFila, EnvEnvioProgramadoBean.C_ACUSERECIBO));
 					envioProgramado.setComisionAJG(UtilidadesHash.getShort(htFila, EnvEnvioProgramadoBean.C_COMISIONAJG));
+					// jbd // Añadimos el usumodificacion del creador
+					envioProgramado.setUsuMod(UtilidadesHash.getInteger(htFila, EnvEnvioProgramadoBean.C_USUMODIFICACION));
+					programPagos.setUsuMod(UtilidadesHash.getInteger(htFila, EnvEnvioProgramadoBean.C_USUMODIFICACION));
 					datos.add(programPagos);
 				}
 			}

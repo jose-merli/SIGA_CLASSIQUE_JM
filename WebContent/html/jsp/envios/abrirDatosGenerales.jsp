@@ -219,9 +219,7 @@
 				
 				<table class="tablaCampos" align="center">
 					<tr>
-						<td class="labelText">
-							<siga:Idioma key="envios.definir.literal.plantilla"/>
-						</td>
+						
 <%
 					String parametro[] = new String[3];
 			 		parametro[0] = idInstitucion;
@@ -246,41 +244,48 @@
 					if (userBean.getAccessType().equals(SIGAPTConstants.ACCESS_READ))
 					{
 %>
-						<td>
-							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" clase="boxConsulta" ancho="250" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion" pestana="true" readOnly="true" obligatorioSinTextoSeleccionar="true"/>
+						<td class="labelText" style="width:120px">
+							<siga:Idioma key="envios.definir.literal.plantilla"/>
 						</td>
+						<td>
+							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" clase="boxConsulta" ancho="600" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion" pestana="true" readOnly="true" obligatorioSinTextoSeleccionar="true"/>
+						</td>
+						</tr>
+						<tr>
 						<td class="labelText">
 							<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 						</td>
 						<td>
-							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxConsulta" obligatorio="false" parametro="<%=parametro3%>" elementoSel="<%=al2%>" hijo="true" pestana="t" readOnly="true"/>
-						</td>
-						<td>
-							<input type="button" class="button" alt="<%=descargar%>" name="idButton"  onclick="return descargar();" value="<%=descargar%>"/>
+							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxConsulta" ancho="600" obligatorio="false" parametro="<%=parametro3%>" elementoSel="<%=al2%>" hijo="true" pestana="t" readOnly="true"/>
 						</td>
 <%
 					}
 					
 					else
 					{
-%>
-						<td>
-							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" clase="boxCombo" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion;cambioCombo();" pestana="true" obligatorioSinTextoSeleccionar="true"/>
+%>						
+						<td class="labelText" style="width:120px">
+							<siga:Idioma key="envios.definir.literal.plantilla"/>
 						</td>
+						<td>
+							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" ancho="600" clase="boxCombo" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion;cambioCombo();" pestana="true" obligatorioSinTextoSeleccionar="true"/>
+						</td>
+						</tr>
+						<tr>
 						<td class="labelText">
 							<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 						</td>
 						<td>
-							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" elementoSel="<%=al2%>" hijo="true" pestana="true"/>
+							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" ancho="600" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" elementoSel="<%=al2%>" hijo="true" pestana="true"/>
 						</td>
 						
-						<td >
-						<input type="button" class="button" alt="<%=descargar%>" name="idButton"  onclick="return descargar();" value="<%=descargar%>"/>
-						</td>
 				
 <%
 					}
 %>
+						<td >
+						<input type="button" class="button" alt="<%=descargar%>" name="idButton"  onclick="return descargar();" value="<%=descargar%>"/>
+						</td>
 					</tr>
 					
 

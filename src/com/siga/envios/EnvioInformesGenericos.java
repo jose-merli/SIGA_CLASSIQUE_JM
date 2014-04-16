@@ -9130,6 +9130,7 @@ public class EnvioInformesGenericos extends MasterReport {
 								.getPlantillasInformesGenericosProgramados(programInfGenericoBean);
 
 						try {
+							usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
 							envioInformeGenerico
 									.enviarInformeGenericoOrdinario(usr,
 											vDestinatarios,
@@ -9159,7 +9160,7 @@ public class EnvioInformesGenericos extends MasterReport {
 									.get(j);
 //							UserTransaction transaction = usr.getTransactionPesada();
 							try {
-								
+								usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
 //								transaction.begin();
 								envioInformeGenerico.enviarInformeGenerico(usr,
 										destProgramInfBean,
@@ -9192,6 +9193,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestinatarios
 									.get(j);
 							try {
+								usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
 								envioInformeGenerico.enviarInformeGenericoSms(
 										usr, destProgramInfBean,
 										programInfGenericoBean, vPlantillas,

@@ -12,6 +12,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri="c.tld" prefix="c"%>
+<%@ taglib uri="fmt.tld" prefix="fmt"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants,com.atos.utils.*,com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="java.util.*"%>
@@ -68,7 +69,22 @@
 	<html:javascript formName="ProgramacionForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
+		<style type="text/css">
+		.colIzq{clear:left;}
 		
+		.col50{width:49%;float:left;display:block;}
+		.col25{width:24%;float:left;display:block;}
+		.col33{width:32%;float:left;display:block;}
+		
+		.ahueca{padding:30px;}
+		
+		.col100px{width:100px;min-height:24px;float:left;display:block;}
+		.col120px{width:120px;min-height:24px;float:left;display:block;}
+		.col180px{width:180px;min-height:24px;float:left;display:block;}
+		.col300px{width:300px;min-height:24px;float:left;display:block;}
+		.col420px{width:420px;min-height:24px;float:left;display:block;}
+		
+		</style>
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
@@ -166,7 +182,7 @@
 			{
 
 
-				jQuery("#fechaProgramada").hide();
+				jQuery("#divfechaProgramada").hide();
 				ProgramacionForm.horas.readOnly=true;
 				ProgramacionForm.minutos.readOnly=true;
 				ProgramacionForm.fechaProgramada.readOnly=true;
@@ -178,7 +194,7 @@
 			else
 			{ 
 
-				jQuery("#fechaProgramada").show();
+				jQuery("#divfechaProgramada").show();
 				ProgramacionForm.horas.readOnly=false;
 				ProgramacionForm.minutos.readOnly=false;
 				ProgramacionForm.fechaProgramada.readOnly=false;
@@ -255,6 +271,14 @@
 		   ProgramacionForm.submit();
 		  
 		}
+		
+		function descargaLog() {		
+			ProgramacionForm.target="submitArea";	   	
+      	   	ProgramacionForm.modo.value='descargarLogErrores';
+		   	ProgramacionForm.submit();
+		}
+		
+		
 		</script>
 		
 		<siga:Titulo
@@ -284,83 +308,73 @@
 		</tr>
 	</table>
 		
-	<table class="tablaCampos" align="center" border="0" cellspacing="40">
-		
-		<!-- ********* Datos programación **********-->
-		<tr><td width="35%" align="center">
-		<table border="0">
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.automatico"/>
-				</td>
-				<td>
-					<html:checkbox name="ProgramacionForm" property="automatico" value="true" disabled="<%=!bEditable%>" onclick="validarCheck();" />				
-				</td>
-			</tr>
-			<tr>			
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.fechaenvio"/>(*)
-				</td>
-				<td>
+
+		<c:if test="${idTipoEnvio!=2}">
+		<div id="programacion" class="colIzq col33 ahueca">
+		<siga:ConjCampos leyenda="envios.definirEnvios.programacion.cabecera">
+		<div style="height:100px;">	
+			<div class="colIzq col100px labelText">
+				<siga:Idioma key="envios.definir.literal.automatico"/>
+			</div>
+			<div class="col120px labelTextValue">
+				<html:checkbox name="ProgramacionForm" property="automatico" value="true" disabled="<%=!bEditable%>" onclick="validarCheck();" />				
+			</div>
+			
+			<div id="divfechaProgramada">
+			<div class="colIzq col100px labelText">
+				<siga:Idioma key="envios.definir.literal.fechaenvio"/> (*)
+			</div>
+			<div class="col120px labelTextValue">
 					<% if (bEditable){%>
 						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="<%=fechaOrig%>" />
 					
 					<%}else{%>
 						<html:text name="ProgramacionForm" property="fechaProgramada" styleClass="boxConsulta" value="<%=fechaOrig%>" size="10" maxlength="10" readonly="<%=!bEditable%>"/>
 					<%}%>
-				</td>
-			</tr>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.horaenvio"/>(*)
-				</td>
-				<td class="boxConsulta">
+			</div>
+			
+			<div class="colIzq col100px labelText">
+					<siga:Idioma key="envios.definir.literal.horaenvio"/> (*)
+			</div>
+			<div class="col120px boxConsulta labelTextValue">
 				<%if (bEditable){%>
 					<html:text name="ProgramacionForm" property="horas" size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>" value="<%=horasOrig%>" style="text-align:center"></html:text>					
 					:
 					<html:text name="ProgramacionForm" property="minutos"  size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>" value="<%=minutosOrig%>" style="text-align:center"></html:text>	
 				<% } else {%>
-					<bean:write name="ProgramacionForm" property="horas"/>
-					:
-					<bean:write name="ProgramacionForm" property="minutos"/>
+					<bean:write name="ProgramacionForm" property="horas"/>:<bean:write name="ProgramacionForm" property="minutos"/>
 				<%}%>
-				</td>
-			</tr>
-
-			<%--
-			<tr>
-				<td id="titulo" class="labelText" colspan="2">
-					<siga:Idioma key="envios.definir.literal.generardocumento"/>
-				
-					<html:checkbox name="ProgramacionForm" property="generarDocumento" value="S" disabled="<%=!bEditable%>"/>
-				</td>									
-			</tr>
-			--%>
-					
-		</table>
+			</div>
+			</div>
+		</div>
+		</siga:ConjCampos>		
+		</div>
+		</c:if>
 		
-		</td>
-		
-		<!-- ********* Datos etiquetas **********-->
-		<td width="65%" valign="top">
 		
 		<% if (impObligatoria) { %>
-		<siga:ConjCampos leyenda="envios.definir.literal.etiquetas">							
+		<div class="col33 ahueca">
+		<siga:ConjCampos leyenda="envios.definir.literal.etiquetas">	
+			<div style="height:100px;">						
 			<table align="left" cellspacing="0" border="0" width="100%">
 				<tr>
 					<td align="center">
-						<html:radio  name="ProgramacionForm" property="imprimirEtiquetas" disabled = "<%=!bEditable%>" value="<%=EnvEnviosAdm.NO_GENERAR%>"/>
+						<html:radio styleId="radioNoImprimir" name="ProgramacionForm" property="imprimirEtiquetas" disabled = "<%=!bEditable%>" value="<%=EnvEnviosAdm.NO_GENERAR%>"/>
 					</td>
 					<td id="titulo" class="labelText" colspan="2">
+						<label for="radioNoImprimir">
 						<siga:Idioma key="envios.definir.literal.nogenerar"/>			    
+						</label>
 					</td>	
 				</tr>
 				<tr>
 					<td align="center">
-						<html:radio  name="ProgramacionForm" property="imprimirEtiquetas" disabled = "<%=!bEditable%>" value="<%=EnvEnviosAdm.GENERAR_ETIQUETAS%>"/>
+						<html:radio styleId="radioImprimir"  name="ProgramacionForm" property="imprimirEtiquetas" disabled = "<%=!bEditable%>" value="<%=EnvEnviosAdm.GENERAR_ETIQUETAS%>"/>
 					</td>
 					<td id="titulo" class="labelText" colspan="2">
-						<siga:Idioma key="envios.definir.literal.generaretiquetas"/>	    
+						<label for="radioImprimir">
+						<siga:Idioma key="envios.definir.literal.generaretiquetas"/>
+						</label>	    
 					</td>	
 				</tr>
 				<tr>
@@ -374,11 +388,43 @@
 					</td>
 				</tr>
 			</table>
+			</div>
 		</siga:ConjCampos>
+		</div>
 		<% } %>
+
 		
-		</td></tr>
-		</table>
+		
+		<c:if test="${!empty requestScope.estados}">
+		<div class="colIzq">
+			<siga:ConjCampos leyenda="envios.historico.leyenda">
+			<div style='margin-bottom:12px;display:block;padding-left:8px; padding-bottom:8px'>
+				<div class='tableTitle' style='float:left;width:98%;padding:2px;font-weight: bold;'>
+				
+					<div class='colIzq col300px '>ESTADO</div>
+					<div class='col180px '>FECHA</div>
+					<div class='col420px '>USUARIO</div>
+					
+				</div>
+				<br>
+				<c:forEach items="${requestScope.estados}" var="estado" varStatus="status">
+					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='float:left;width:98%;padding:2px;'>
+						<div class='colIzq col300px labelTextValue' style='vertical-align: middle;'>	
+							<c:out value="${estado.ESTADO}"></c:out>
+							<c:if test="${estado.IDESTADO==3 && status.last}">
+								<IMG onclick="descargaLog();" title="Descargar informe" 
+								style="CURSOR: pointer;vertical-align: middle" border=0 alt="Descargar informe" src="/SIGA/html/imagenes/bdescargaLog_off.gif">
+							</c:if>
+						</div>
+						<div class='col180px labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
+						<div class='col420px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
+					</div>
+				</c:forEach>
+				</br>
+			</div>
+			</siga:ConjCampos>
+		</div>
+		</c:if>
 		
 		</html:form>
 
