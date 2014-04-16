@@ -3,7 +3,6 @@
 <bean:define id="permisoFicheros" name="permisoFicheros"  scope="request"/>
 <bean:define id="action" name="accionModo" scope="request"/>
 <bean:define id="FicheroForm" name="${name}" scope="request"/>
-<bean:define id="action" name="accionModo" scope="request"/>
 <c:choose>
 	<c:when test="${permisoFicheros=='Acceso Total'||permisoFicheros=='Sólo Lectura'}">
 
@@ -30,19 +29,26 @@
 
 								</tr>
 								
-								<tr>
-									<td class="labelText"><siga:Idioma
-											key="administracion.informes.literal.archivo" /></td>
-									<td>
-										<html:file property="theFile" styleClass="boxCombo" style="width:500px;" />
-									</td>
-									<td class="labelText">&nbsp;</td>
-
-									<td class="tdBotones">
-										<!--  <input type="button" alt="<siga:Idioma key="administracion.informes.boton.archivo.anadir"/>" id="idButton" onclick="return upload();" class="button" value="<siga:Idioma key="administracion.informes.boton.archivo.anadir"/>">-->
-
-									</td>
-								</tr>
+								
+							
+								<c:if test="${permisoFicheros=='Acceso Total'&&action!='ver'}">
+									<tr>
+										<td class="labelText"><siga:Idioma
+												key="administracion.informes.literal.archivo" /></td>
+										<td><html:file property="theFile" styleClass="boxCombo" style="width:500px;" />
+										</td>
+										<td class="labelText">&nbsp;</td>
+	
+										<td class="tdBotones">
+	
+										</td>
+									</tr>
+								</c:if>
+								
+							
+							
+								
+								
 								<tr>
 									<td colspan="4">&nbsp;</td>
 
