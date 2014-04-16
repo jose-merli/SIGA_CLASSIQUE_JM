@@ -6,8 +6,6 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -27,13 +25,16 @@ import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
-import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.beans.FacDisqueteCargosAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -81,13 +82,19 @@ public class FicheroBancarioPagosAction extends MasterAction{
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = abrir(mapping, miForm, request, response);					
 				
-			}else if (accion.equalsIgnoreCase("download")){
+			} else if (accion.equalsIgnoreCase("download")){
 				mapDestino = download(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("generarFichero")){
+				
+			} else if (accion.equalsIgnoreCase("generarFichero")){
 				mapDestino = generarFichero(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("informeRemesa")){
+				
+			} else if (accion.equalsIgnoreCase("cambiarFechasFichero")){
+				mapDestino = cambiarFechasFichero(mapping, miForm, request, response);
+				
+			} else if (accion.equalsIgnoreCase("informeRemesa")){
 				mapDestino = informeRemesa(miForm, request);
-			}else if (accion.equalsIgnoreCase("buscarInit")){
+				
+			} else if (accion.equalsIgnoreCase("buscarInit")){
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = buscar(mapping, miForm, request, response);
 			} else {
@@ -307,25 +314,18 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 */
 	protected String generarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		String lenguaje = usr.getLanguage();
-		
-		String cont 				= "";
 		String keyPath 				= "facturacion.directorioBancosOracle";			
 		String pathFichero			= "";		
 		String idInstitucion		= "";
-		UserTransaction tx			= null;
+		UserTransaction tx			= null;		
+		String resultadoFinal[] = new String[1];
 		
 		try{	
 			tx = usr.getTransactionPesada(); 
 			tx.begin();
-			Integer usuario = this.getUserName(request);
-			
-			FicheroBancarioPagosForm form 		= (FicheroBancarioPagosForm)formulario;
-			//FacDisqueteCargosAdm adm 			= new FacDisqueteCargosAdm(usuario);
-			//FacDisqueteCargosBean beanDisquete	= new FacDisqueteCargosBean();	
+			Integer usuario = this.getUserName(request);						
 			
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties p 		= new ReadProperties ("SIGA.properties");
 			pathFichero 			= p.returnProperty(keyPath);
 			idInstitucion			= this.getIDInstitucion(request).toString();
 			
@@ -335,44 +335,140 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			
 			pathFichero += sBarra + idInstitucion;
 			
-			String fechaCargo = form.getFechaCargo();
+			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
+			String fechaEntrega = form.getFechaEntrega();
+			
+			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
+			if (form.getFechaTipoUnica().equals("1")) {
+				fechaUnica = form.getFechaUnica();
+			} else { 
+				fechaRecibosPrimeros = form.getFechaFRST();
+				fechaRecibosRecurrentes = form.getFechaRCUR();
+				fechaRecibosCOR1 = form.getFechaCOR1();
+				fechaRecibosB2B = form.getFechaB2B();
+			}			
+			
+			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+				throw new SIGAException("fecha.error.valida");
+			}				
 			
 			// Se envían a banco para su renegociación
-			Object[] param_in_banco = new Object[7];
+			Object[] param_in_banco = new Object[12];
 			param_in_banco[0] = idInstitucion;
 			param_in_banco[1] = "";
 			param_in_banco[2] = "";
-			//Fecha de Cargo (DDMMAA):
-			String fechaTMP = null;
-			try {
-				fechaTMP = fechaCargo.substring(0,2)+fechaCargo.substring(3,5)+fechaCargo.substring(8,10); 
-			} catch (Exception e){
-				fechaTMP = "";
-			}
-			param_in_banco[3] = fechaTMP;
-			param_in_banco[4] = pathFichero;
-			param_in_banco[5] = usuario.toString();
-			param_in_banco[6] =this.getUserBean(request).getLanguage();
 			
-			String resultado[] = new String[3];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
-			String codretorno = resultado[1];        	
-			if (!codretorno.equals("0")){
-				throw new ClsExceptions ("Error al generar los Ficheros de Renegociación");
+			if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
+				try {
+					fechaEntrega = fechaEntrega.substring(6,10) + fechaEntrega.substring(3,5) + fechaEntrega.substring(0,2); // AAAAMMDD
+				} catch (Exception e){
+					fechaEntrega = "";
+				}
 			}
+			param_in_banco[3] = fechaEntrega;		
+			
+			if (fechaUnica != null && !fechaUnica.equals("") && fechaUnica.length()==10) {
+				try { 
+					fechaUnica = fechaUnica.substring(6,10) + fechaUnica.substring(3,5) + fechaUnica.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaUnica = "";
+				}
+			}
+			param_in_banco[4] = fechaUnica;			
+			
+			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
+				try { 
+					fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosPrimeros = "";
+				}		
+			}
+			param_in_banco[5] = fechaRecibosPrimeros;
+			
+			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
+				try { 
+					fechaRecibosRecurrentes = fechaRecibosRecurrentes.substring(6,10) + fechaRecibosRecurrentes.substring(3,5) + fechaRecibosRecurrentes.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosRecurrentes = "";
+				}
+			}
+			param_in_banco[6] = fechaRecibosRecurrentes;
+			
+			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
+				try { 
+					fechaRecibosCOR1 = fechaRecibosCOR1.substring(6,10) + fechaRecibosCOR1.substring(3,5) + fechaRecibosCOR1.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosCOR1 = "";
+				}	
+			}
+			param_in_banco[7] = fechaRecibosCOR1;
+			
+			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
+				try { 
+					fechaRecibosB2B = fechaRecibosB2B.substring(6,10) + fechaRecibosB2B.substring(3,5) + fechaRecibosB2B.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosB2B = "";
+				}		
+			}
+			param_in_banco[8] = fechaRecibosB2B;
+			
+			param_in_banco[9] = pathFichero;
+			param_in_banco[10] = usuario.toString();
+			param_in_banco[11] =this.getUserBean(request).getLanguage();
+						
+			String resultado[] = new String[3];
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+			String codretorno = resultado[1];
+			
+			// Da error cuando no obtiene el mandato (5412) 
+			if (codretorno.equals("5412")) {
+				throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.sinMandato");
+				
+			} else {
+				// Da error cuando el mandato no viene firmado (5413) 
+				if (codretorno.equals("5413")) {
+					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.sinFirma");
+					
+				} else {
+					// Da error cuando la direccion de facturacion del acreedor no existe (5414) 
+					if (codretorno.equals("5414")) {
+						throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.direccionFacturacionAcreedor");
+						
+					} else {
+						// Da error cuando la direccion de facturacion del deudor no existe (5415) 
+						if (codretorno.equals("5415")) {
+							throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.direccionFacturacionDeudor");
+							
+						} else {
+							if (!codretorno.equals("0")){
+								throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
+							}							
+						}						
+					}					
+				}				
+			}			
+
 			tx.commit();
-			cont = resultado[0];
-		}catch (Exception e) { 
+			resultadoFinal[0] = resultado[0];
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx);  	  	
 		}
-		
-		String mensaje = "facturacion.ficheroBancarioPagos.mensaje.generacionDisquetesOK";
-		String[] datos = {cont};
-		
-		mensaje = UtilidadesString.getMensaje(mensaje, datos, lenguaje);
-		
-		request.setAttribute("mensaje",mensaje);	
-		return "exitoConString"; 
+				
+		request.setAttribute("parametrosArray", resultadoFinal);
+		request.setAttribute("modal","");
+				 
+		return "exitoParametros";
 	}
 	
 	protected String informeRemesa (MasterForm formulario, HttpServletRequest request) throws SIGAException 
@@ -400,8 +496,200 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		}
 		
 		return "informeRemesa"; 
+	}		
+	
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String result="editar";
+
+		try{
+			FicheroBancarioPagosForm form 	= (FicheroBancarioPagosForm)formulario;
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
+			String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);	
+			String idInstitucion=user.getLocation();							
+			
+			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
+			String habilesUnicaCargos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
+			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
+			
+			String fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
+			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
+			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
+			String fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosCOR1);
+			String fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosB2B);
+			
+			request.setAttribute("radio","1"); // El radio seleccionado será Unica
+			request.setAttribute("fechaPresentacion",fechaPresentacion);
+			request.setAttribute("fechaUnicaCargos",fechaUnicaCargos);
+			request.setAttribute("fechaPrimerosRecibos",fechaPrimerosRecibos);
+			request.setAttribute("fechaRecibosRecurrentes",fechaRecibosRecurrentes);
+			request.setAttribute("fechaRecibosCOR1",fechaRecibosCOR1);
+			request.setAttribute("fechaRecibosB2B",fechaRecibosB2B);
+			
+			request.setAttribute("habilesUnicaCargos",habilesUnicaCargos);
+			request.setAttribute("habilesPrimerosRecibos",habilesPrimerosRecibos);
+			request.setAttribute("habilesRecibosRecurrentes",habilesRecibosRecurrentes);
+			request.setAttribute("habilesRecibosCOR1",habilesRecibosCOR1);
+			request.setAttribute("habilesRecibosB2B",habilesRecibosB2B);			
+			
+			String idDisqueteCargo = form.getIdDisqueteCargo();
+			String nombreFichero = form.getNombreFichero();
+			if (idDisqueteCargo==null || idDisqueteCargo.equals("") || nombreFichero == null || nombreFichero.equals("")) {
+				Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
+				idDisqueteCargo = (String)ocultos.elementAt(0);
+				nombreFichero = (String)ocultos.elementAt(1);
+			}
+			
+			request.setAttribute("idDisqueteCargo", idDisqueteCargo);
+			request.setAttribute("nombreFichero", nombreFichero);
+			
+		}  catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}	
+		
+		return result;
+	}
+	
+	/**
+	 * Funcion que cambia las fechas de un fichero
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String cambiarFechasFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		
+		String keyPath 				= "facturacion.directorioBancosOracle";			
+		String pathFichero			= "";		
+		String idInstitucion		= "";
+		UserTransaction tx			= null;
+		
+		try{	
+			tx = usr.getTransaction(); 
+			tx.begin();
+			Integer usuario = this.getUserName(request);						
+			
+		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			pathFichero = p.returnProperty(keyPath);
+			idInstitucion = this.getIDInstitucion(request).toString();
+			
+			String sBarra = "";
+			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+			
+			pathFichero += sBarra + idInstitucion;
+									
+			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
+			String fechaEntrega = form.getFechaEntrega();
+			
+			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
+			if (form.getFechaTipoUnica().equals("1")) {
+				fechaUnica = form.getFechaUnica();
+			} else { 
+				fechaRecibosPrimeros = form.getFechaFRST();
+				fechaRecibosRecurrentes = form.getFechaRCUR();
+				fechaRecibosCOR1 = form.getFechaCOR1();
+				fechaRecibosB2B = form.getFechaB2B();
+			}
+			
+			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+				throw new SIGAException("fecha.error.valida");
+			}			
+			
+			// Se envían los parametros para modificar las fechas del fichero
+			Object[] param_in_banco = new Object[11];
+			param_in_banco[0] = idInstitucion;
+			param_in_banco[1] = form.getIdDisqueteCargo();
+			
+			if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
+				try {
+					fechaEntrega = fechaEntrega.substring(6,10) + fechaEntrega.substring(3,5) + fechaEntrega.substring(0,2); // AAAAMMDD
+				} catch (Exception e){
+					fechaEntrega = "";
+				}
+			}
+			param_in_banco[2] = fechaEntrega;
+			
+			if (fechaUnica != null && !fechaUnica.equals("") && fechaUnica.length()==10) {
+				try { 
+					fechaUnica = fechaUnica.substring(6,10) + fechaUnica.substring(3,5) + fechaUnica.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaUnica = "";
+				}
+			}
+			param_in_banco[3] = fechaUnica;
+			
+			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
+				try { 
+					fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosPrimeros = "";
+				}		
+			}
+			param_in_banco[4] = fechaRecibosPrimeros;
+			
+			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
+				try { 
+					fechaRecibosRecurrentes = fechaRecibosRecurrentes.substring(6,10) + fechaRecibosRecurrentes.substring(3,5) + fechaRecibosRecurrentes.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosRecurrentes = "";
+				}
+			}
+			param_in_banco[5] = fechaRecibosRecurrentes;
+			
+			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
+				try { 
+					fechaRecibosCOR1 = fechaRecibosCOR1.substring(6,10) + fechaRecibosCOR1.substring(3,5) + fechaRecibosCOR1.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosCOR1 = "";
+				}	
+			}
+			param_in_banco[6] = fechaRecibosCOR1;
+			
+			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
+				try { 
+					fechaRecibosB2B = fechaRecibosB2B.substring(6,10) + fechaRecibosB2B.substring(3,5) + fechaRecibosB2B.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaRecibosB2B = "";
+				}		
+			}
+			param_in_banco[7] = fechaRecibosB2B;
+			
+			param_in_banco[8] = usuario.toString();
+			param_in_banco[9] = pathFichero;			
+			param_in_banco[10] = form.getNombreFichero();
+			
+			String resultado[] = new String[2];
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);			
+			if (resultado == null || !resultado[0].equals("0")) {
+				throw new SIGAException("messages.updated.error");
+			}							
+
+			tx.commit();
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.updated.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);			
+						
+		} catch (Exception e) { 
+			throwExcp("messages.updated.error", new String[] {"modulo.facturacion"}, e, tx);  	  	
+		}
+		
+		return exitoModal("messages.updated.success", request);
 	}
 
 }
-
-
