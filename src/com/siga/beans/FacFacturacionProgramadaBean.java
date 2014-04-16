@@ -19,6 +19,8 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
 					fechaRealConfirmacion, generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
 					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
+	
+	private String fechaPresentacion, fechaCargoUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURACIONPROGRAMADA";
@@ -54,7 +56,13 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_VISIBLE					= "VISIBLE";
 	static public final String C_DESCRIPCION 		    	= "DESCRIPCION";
 	static public final String C_IDTIPOPLANTILLAMAIL 		= "IDTIPOPLANTILLAMAIL";
-	static public final String C_IDTIPOENVIOS		 		= "IDTIPOENVIOS";	
+	static public final String C_IDTIPOENVIOS		 		= "IDTIPOENVIOS";
+	static public final String C_FECHACARGOUNICA			= "FECHACARGOUNICA"; 
+	static public final String C_FECHAPRESENTACION			= "FECHAPRESENTACION";
+	static public final String C_FECHARECIBOSPRIMEROS		= "FECHARECIBOSPRIMEROS";
+	static public final String C_FECHARECIBOSRECURRENTES	= "FECHARECIBOSRECURRENTES";
+	static public final String C_FECHARECIBOSCOR1			= "FECHARECIBOSCOR1";
+	static public final String C_FECHARECIBOSB2B			= "FECHARECIBOSB2B";
 
 	// Metodos SET
 	public void setIdInstitucion (Integer id)			{ this.idInstitucion = id; }
@@ -144,6 +152,42 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	}
 	public void setIdTipoEnvios(Integer idTipoEnvios) {
 		this.idTipoEnvios = idTipoEnvios;
+	}
+	public String getFechaPresentacion() {
+		return fechaPresentacion;
+	}
+	public void setFechaPresentacion(String fechaPresentacion) {
+		this.fechaPresentacion = fechaPresentacion;
+	}
+	public String getFechaRecibosRecurrentes() {
+		return fechaRecibosRecurrentes;
+	}
+	public void setFechaRecibosRecurrentes(String fechaRecibosRecurrentes) {
+		this.fechaRecibosRecurrentes = fechaRecibosRecurrentes;
+	}
+	public String getFechaRecibosCOR1() {
+		return fechaRecibosCOR1;
+	}
+	public void setFechaRecibosCOR1(String fechaRecibosCOR1) {
+		this.fechaRecibosCOR1 = fechaRecibosCOR1;
+	}
+	public String getFechaRecibosB2B() {
+		return fechaRecibosB2B;
+	}
+	public void setFechaRecibosB2B(String fechaRecibosB2B) {
+		this.fechaRecibosB2B = fechaRecibosB2B;
+	}
+	public String getFechaCargoUnica() {
+		return fechaCargoUnica;
+	}
+	public void setFechaCargoUnica(String fechaCargoUnica) {
+		this.fechaCargoUnica = fechaCargoUnica;
+	}
+	public String getFechaRecibosPrimeros() {
+		return fechaRecibosPrimeros;
+	}
+	public void setFechaRecibosPrimeros(String fechaRecibosPrimeros) {
+		this.fechaRecibosPrimeros = fechaRecibosPrimeros;
 	}
 	
 }
