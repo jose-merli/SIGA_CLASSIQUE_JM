@@ -62,12 +62,13 @@ public class UtilidadesFecha {
 			//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
 			String jsdf = ClsConstants.DATE_FORMAT_SHORT_SPANISH;//"dd/MM/yyyy";//Java Short Date Format
 			SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
-			Date date = new Date();
-			date = formateo.parse(fecha);
-	
 			//Calendario
 			Calendar calendario = Calendar.getInstance();
-			calendario.setTime(date);
+			if(fecha!=null && !fecha.equals("")){
+				Date date = new Date();
+				date = formateo.parse(fecha);
+				calendario.setTime(date);
+			}
 
 			//Nueva fecha calculada
 			Date siguiente = new Date();
@@ -108,6 +109,61 @@ public class UtilidadesFecha {
 			cal = null;
 		}
 		return cal;
+	}
+	
+	/**
+	 * Devuelve la fecha Fin a partir de la fecha de inicio y los dias de margen.
+	 * Devuelve true si es Laborable y false si es Festivo.
+	 * 
+	 * @param String fechaInicio: Fecha de Inicio en el formato DD/MM/YYYY.
+	 * @param String dias: dias de margen entre la Fecha de Inicio y la Fecha Fin. Si es 0 devuelve la Fecha de Inicio.
+	 * @return String con la Fecha Fin en el formato DD/MM/YYYY. 
+	 */
+	public static String obtenerFechaFinLaborable(String fechaFin, int diasRestantes) {
+		//Busco la fecha fin a partir de la fecha inicio seleccionada. Sigo buscando mientras tenga diasRestantes > 0
+		while (diasRestantes > 0) {				
+			fechaFin = UtilidadesFecha.sumarDias(fechaFin,1);
+			if (esFechaLaborable(fechaFin)) 
+				diasRestantes--;				
+		}
+		
+		return fechaFin;
+	}	
+	
+	/**
+	 * Valida si una fecha es laborable .
+	 * Devuelve true si es Laborable y false si es Festivo.
+	 * 
+	 * @param String fecha: fecha a validar.
+	 * @return boolean True si es una fecha laborable. False si es festivo. 
+	 */
+	public static boolean esFechaLaborable(String fecha) {
+		boolean laborable = false;		
+		
+		try {
+			//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
+			String jsdf = ClsConstants.DATE_FORMAT_SHORT_SPANISH;//"dd/MM/yyyy";//Java Short Date Format
+			SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
+			Date date = new Date();
+			date = formateo.parse(fecha);
+	
+			//Calendario
+			Calendar calendario = Calendar.getInstance();
+			calendario.setTime(date);
+	
+			//Compruebo que no sea Sabado o Domingo
+			if (calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+				laborable = false;
+				
+			}else {
+				laborable = true;
+			}
+		
+		} catch (Exception e) {
+			laborable = false;
+		}
+		
+		return laborable;
 	}
 
 }
