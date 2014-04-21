@@ -365,32 +365,41 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_EliminarSuscripcion (String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String alta, String fechaAlta, String incluirBajaManual) throws ClsExceptions {
+	public static String[] ejecutarPL_EliminarSuscripcion(String idInstitucion,
+			String idTipoServicio,
+			String idServio,
+			String idServicioInstitucion,
+			String alta,
+			String fechaAlta,
+			String incluirBajaManual) throws ClsExceptions
+	{
+		int nParamIn = 7, nParamOut = 3;
+		Object[] paramIn = new Object[nParamIn]; // Parametros de entrada del PL
+		String resultado[] = new String[nParamOut]; // Parametros de salida del PL
 
-		Object[] paramIn = new Object[8]; //Parametros de entrada del PL
-		String resultado[] = new String[3]; //Parametros de salida del PL
-	
 		try {
-	 		// Parametros de entrada del PL
-	        paramIn[0] = idInstitucion;
-	        paramIn[1] = idTipoServicio;
-	        paramIn[2] = idServio;
-	        paramIn[3] = idServicioInstitucion;
-	        paramIn[5] = alta;
-	        paramIn[6] = fechaAlta;
-	        paramIn[7] = incluirBajaManual;
+			// Parametros de entrada del PL
+			int i = 0;
+			paramIn[i] = idInstitucion;
+			paramIn[i++] = idTipoServicio;
+			paramIn[i++] = idServio;
+			paramIn[i++] = idServicioInstitucion;
+			paramIn[i++] = alta;
+			paramIn[i++] = fechaAlta;
+			paramIn[i++] = incluirBajaManual;
 
-	        // Ejecucion del PL
+			// Ejecucion del PL
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?)}", 
-													3, 
-													paramIn);
+					nParamOut,
+					paramIn);
 		} catch (Exception e) {
-			resultado[0] = "1"; 	// P_NUMREGISTRO
-	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
+			resultado[0] = "1"; // P_NUMREGISTRO
+			resultado[1] = "ERROR"; // ERROR P_DATOSERROR
 		}
-	    //Resultado del PL        
-	    return resultado;
+		// Resultado del PL
+		return resultado;
 	}
+
 	/**
 	 * PL que realiza una revision de letrado
 	 * @param idInstitucion
