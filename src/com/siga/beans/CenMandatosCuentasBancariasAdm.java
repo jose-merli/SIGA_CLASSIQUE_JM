@@ -49,7 +49,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_DOCUMENTO + ", " + 										
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
 										" CUENTAS." + CenCuentasBancariasBean.C_IBAN + " AS " + CenMandatosCuentasBancariasBean.C_IBAN + ", " +
 										" BANCOS." + CenBancosBean.C_BIC + " AS " + CenMandatosCuentasBancariasBean.C_BIC + ", " + 
@@ -107,7 +106,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION,
 			CenMandatosCuentasBancariasBean.C_FIRMA_FECHA, 
 			CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR, 
-			CenMandatosCuentasBancariasBean.C_FIRMA_DOCUMENTO, 			
 			CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA,
 			CenMandatosCuentasBancariasBean.C_FECHAUSO, 			
 			CenMandatosCuentasBancariasBean.C_IBAN, 
@@ -170,7 +168,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setFirmaFechaHora(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_HORA));
 			bean.setFirmaFechaMinutos(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS));
 			bean.setFirmaLugar(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR)); 
-			bean.setFirmaDocumento(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_DOCUMENTO)); 			
 			bean.setFechaUso(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHAUSO)); 			
 			bean.setIban(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IBAN)); 
 			bean.setBic(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_BIC));
@@ -231,7 +228,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_HORA, beanMandato.getFirmaFechaHora());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS, beanMandato.getFirmaFechaMinutos());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR, beanMandato.getFirmaLugar());
-			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_DOCUMENTO, beanMandato.getFirmaDocumento());			
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FECHAUSO, beanMandato.getFechaUso());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IBAN, beanMandato.getIban());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_BIC, beanMandato.getBic());
@@ -413,16 +409,9 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 				sFirmaLugar = "'" + beanMandato.getFirmaLugar() + "'";
 			}
 			
-			// Calculo el documento de la firma
-			String sFirmaDocumento = "NULL";
-			if (beanMandato.getFirmaDocumento()!=null && !beanMandato.getFirmaDocumento().equals("")) {
-				sFirmaDocumento = "'" + beanMandato.getFirmaDocumento() + "'";
-			}
-			
 			String sql = "UPDATE " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA +
 						" SET " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " = " + sFirmaFecha + ", " +
 							CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " = " + sFirmaLugar +  ", " +
-							CenMandatosCuentasBancariasBean.C_FIRMA_DOCUMENTO + " = " + sFirmaDocumento +  ", " +
 							CenMandatosCuentasBancariasBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() + ", " +
 							CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + " = SYSDATE " +							
 						" WHERE " + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanMandato.getIdInstitucion() +

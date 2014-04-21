@@ -11,7 +11,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion;
-	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos,idFicheroFirma;
+	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos,idFicheroFirma;
 	public String getIdFicheroFirma() {
 		return idFicheroFirma;
 	}
@@ -61,7 +61,6 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 	static public final String C_FIRMA_FECHA_HORA = "FIRMA_FECHA_HORA";
 	static public final String C_FIRMA_FECHA_MINUTOS = "FIRMA_FECHA_MINUTOS";
 	static public final String C_FIRMA_LUGAR = "FIRMA_LUGAR";
-	static public final String C_FIRMA_DOCUMENTO = "FIRMA_DOCUMENTO";		
 	static public final String C_FECHAUSO = "FECHAUSO";
 	static public final String C_IDFICHEROFIRMA = "IDFICHEROFIRMA";
 	
@@ -108,7 +107,6 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.firmaFechaMinutos = formMandatos.getFirmaFechaMinutos();
 		this.firmaLugar = formMandatos.getFirmaLugar();
 		this.idFicheroFirma = formMandatos.getIdFichero();
-		this.firmaDocumento = formMandatos.getFirmaDocumento()!=null ? formMandatos.getFirmaDocumento() : "";
 		this.fechaUso = formMandatos.getFechaUso();
 		this.iban = formMandatos.getIban();
 		this.bic = formMandatos.getBic();
@@ -153,7 +151,6 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.firmaFechaHora = "";
 		this.firmaFechaMinutos = "";
 		this.firmaLugar = "";
-		this.firmaDocumento = "";
 		this.idFicheroFirma = "";
 		this.fechaUso = "";
 		this.iban = "";
@@ -455,14 +452,6 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 
 	public void setFirmaLugar(String firmaLugar) {
 		this.firmaLugar = firmaLugar;
-	}
-
-	public String getFirmaDocumento() {
-		return firmaDocumento;
-	}
-
-	public void setFirmaDocumento(String firmaDocumento) {
-		this.firmaDocumento = firmaDocumento;
 	}
 
 	public String getAutorizacionB2B() {

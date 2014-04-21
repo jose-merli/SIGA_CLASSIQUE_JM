@@ -9,7 +9,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, origen, descripcion;
-	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos, idFicheroFirma;
+	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos, idFicheroFirma;
 
 	public String getIdFicheroFirma() {
 		return idFicheroFirma;
@@ -35,8 +35,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 	static public final String C_FIRMA_FECHA = "FIRMA_FECHA";
 	static public final String C_FIRMA_FECHA_HORA = "FIRMA_FECHA_HORA";
 	static public final String C_FIRMA_FECHA_MINUTOS = "FIRMA_FECHA_MINUTOS";
-	static public final String C_FIRMA_LUGAR = "FIRMA_LUGAR";
-	static public final String C_FIRMA_DOCUMENTO = "FIRMA_DOCUMENTO";		
+	static public final String C_FIRMA_LUGAR = "FIRMA_LUGAR";	
 	static public final String C_IDFICHEROFIRMA = "IDFICHEROFIRMA";
 	
 	public CenAnexosCuentasBancariasBean(AnexosCuentasBancariasForm formAnexo) {
@@ -50,7 +49,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.descripcion = formAnexo.getDescripcion();
 		this.firmaFecha = formAnexo.getFirmaFecha();
 		this.firmaLugar = formAnexo.getFirmaLugar();
-		this.firmaDocumento = formAnexo.getFirmaDocumento();
 		this.firmaFechaHora = formAnexo.getFirmaFechaHora();
 		this.firmaFechaMinutos = formAnexo.getFirmaFechaMinutos();
 		this.idFicheroFirma = formAnexo.getIdFichero();
@@ -68,7 +66,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.descripcion = "";
 		this.firmaFecha = "";
 		this.firmaLugar = "";
-		this.firmaDocumento = "";
 		this.firmaFechaHora = "";
 		this.firmaFechaMinutos = "";
 		this.idFicheroFirma = "";
@@ -169,12 +166,4 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 	public void setFirmaLugar(String firmaLugar) {
 		this.firmaLugar = firmaLugar;
 	}
-
-	public String getFirmaDocumento() {
-		return firmaDocumento;
-	}
-
-	public void setFirmaDocumento(String firmaDocumento) {
-		this.firmaDocumento = firmaDocumento;
-	}	
 }
