@@ -87,7 +87,6 @@
 				jQuery("#firmaFechaMinutos").removeAttr("disabled");
 				jQuery("#firmaLugar").removeAttr("disabled");
 				
-				//jQuery("#firmaDocumento").removeAttr("disabled");
 			} else {
 				jQuery("#divFicheros").css("display", "none");
 				jQuery("#firmaFecha").val("");
@@ -98,9 +97,7 @@
 				jQuery("#firmaFechaMinutos").val("");
 				jQuery("#firmaFechaMinutos").attr("disabled","disabled");
 				jQuery("#firmaLugar").val("");
-				jQuery("#firmaLugar").attr("disabled","disabled");
-				//jQuery("#firmaDocumento").val("");
-				//jQuery("#firmaDocumento").attr("disabled","disabled");			
+				jQuery("#firmaLugar").attr("disabled","disabled");			
 			}
 		}
 		
