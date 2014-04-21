@@ -18,7 +18,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATO + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA + ", " +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOPAGO + ", " +										
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ESQUEMA + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B + ", " +
@@ -79,7 +79,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenMandatosCuentasBancariasBean.C_IDMANDATO,
 			CenMandatosCuentasBancariasBean.C_TIPOMANDATO,
 			CenMandatosCuentasBancariasBean.C_FECHACREACION,
-			CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA,
+			CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA,
 			CenMandatosCuentasBancariasBean.C_TIPOPAGO, 
 			CenMandatosCuentasBancariasBean.C_ESQUEMA,
 			CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B,
@@ -139,7 +139,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setIdMandato(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IDMANDATO));
 			bean.setTipoMandato(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_TIPOMANDATO));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHACREACION));
-			bean.setIdMandatoSepa(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA));
+			bean.setRefMandatoSepa(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA));
 			bean.setTipoPago(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_TIPOPAGO)); 
 			bean.setEsquema(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_ESQUEMA));
 			bean.setAutorizacionB2B(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B));
@@ -200,7 +200,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IDMANDATO, beanMandato.getIdMandato());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_TIPOMANDATO, beanMandato.getTipoMandato());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FECHACREACION, beanMandato.getFechaCreacion());
-			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA, beanMandato.getIdMandatoSepa());
+			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA, beanMandato.getRefMandatoSepa());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_TIPOPAGO, beanMandato.getTipoPago());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_ESQUEMA, beanMandato.getEsquema());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B, beanMandato.getAutorizacionB2B());
@@ -370,7 +370,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	public boolean modificarMandato(CenMandatosCuentasBancariasBean beanMandato) throws ClsExceptions {
 		try {
 			String sql = "UPDATE " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA +
-						" SET " + CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA + " = '" + beanMandato.getIdMandatoSepa() +  "', " +
+						" SET " + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + " = '" + beanMandato.getRefMandatoSepa() +  "', " +
 							CenMandatosCuentasBancariasBean.C_ESQUEMA + " = " + beanMandato.getEsquema() +  ", " +							
 							CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B + " = " + beanMandato.getAutorizacionB2B() +  ", " +
 							CenMandatosCuentasBancariasBean.C_DEUDOR_TIPOID + " = '" + beanMandato.getDeudorTipoId() +  "', " +
@@ -472,7 +472,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			String sql = "SELECT 1 " +  
 							" FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + " MANDATOS " +
 							" WHERE MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanMandato.getIdInstitucion() + 
-								" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATOSEPA + " = '" + beanMandato.getIdMandatoSepa() + "' " +
+								" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + " = '" + beanMandato.getRefMandatoSepa() + "' " +
 								" AND NOT (" +
 									" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + " = " + beanMandato.getIdPersona() + 
 									" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + " = " + beanMandato.getIdCuenta() +

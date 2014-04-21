@@ -8,7 +8,7 @@ import com.siga.censo.form.MandatosCuentasBancariasForm;
 public class CenMandatosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, idMandatoSepa, tipoPago, esquema, autorizacionB2B;
+	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion;
 	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos,idFicheroFirma;
@@ -32,7 +32,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 	static public final String C_IDMANDATO = "IDMANDATO";
 	static public final String C_TIPOMANDATO = "TIPOMANDATO";
 	static public final String C_FECHACREACION = "FECHACREACION";
-	static public final String C_IDMANDATOSEPA = "IDMANDATOSEPA";
+	static public final String C_REFMANDATOSEPA = "REFMANDATOSEPA";
 	static public final String C_TIPOPAGO = "TIPOPAGO";	
 	static public final String C_ESQUEMA = "ESQUEMA";
 	static public final String C_AUTORIZACIONB2B = "AUTORIZACIONB2B";
@@ -77,7 +77,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.idMandato = formMandatos.getIdMandato();
 		this.tipoMandato = formMandatos.getTipoMandato();
 		this.fechaCreacion = formMandatos.getFechaCreacion();
-		this.idMandatoSepa = formMandatos.getIdMandatoSepa();
+		this.refMandatoSepa = formMandatos.getRefMandatoSepa();
 		this.tipoPago = formMandatos.getTipoPago();
 		this.esquema = formMandatos.getEsquema();
 		this.autorizacionB2B = formMandatos.getAutorizacionB2B();
@@ -123,7 +123,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.idMandato = "";
 		this.tipoMandato = "";
 		this.fechaCreacion = "";
-		this.idMandatoSepa = "";		
+		this.refMandatoSepa = "";		
 		this.tipoPago = "";
 		this.esquema = "";
 		this.autorizacionB2B = "";
@@ -305,12 +305,12 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.idMandato = idMandato;
 	}
 	
-	public String getIdMandatoSepa() {
-		return idMandatoSepa;
+	public String getRefMandatoSepa() {
+		return refMandatoSepa;
 	}
 
-	public void setIdMandatoSepa(String idMandatoSepa) {
-		this.idMandatoSepa = idMandatoSepa;
+	public void setRefMandatoSepa(String refMandatoSepa) {
+		this.refMandatoSepa = refMandatoSepa;
 	}	
 
 	public String getTipoPago() {

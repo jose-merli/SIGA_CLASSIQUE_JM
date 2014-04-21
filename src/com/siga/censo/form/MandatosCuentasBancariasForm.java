@@ -1,14 +1,12 @@
 package com.siga.censo.form;
 
-import org.apache.struts.upload.FormFile;
-
 import com.siga.general.form.FicheroForm;
 
 public class MandatosCuentasBancariasForm  extends FicheroForm {	
 	
 
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, idMandatoSepa, tipoPago, esquema, autorizacionB2B;
+	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion, deudorPoblacionExtranjera;
 	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos,idFichero;
@@ -82,12 +80,12 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 		this.fechaCreacion = fechaCreacion;
 	}
 
-	public String getIdMandatoSepa() {
-		return idMandatoSepa;
+	public String getRefMandatoSepa() {
+		return refMandatoSepa;
 	}
 
-	public void setIdMandatoSepa(String idMandatoSepa) {
-		this.idMandatoSepa = idMandatoSepa;
+	public void setRefMandatoSepa(String refMandatoSepa) {
+		this.refMandatoSepa = refMandatoSepa;
 	}
 
 	public String getAcreedorIdPais() {
