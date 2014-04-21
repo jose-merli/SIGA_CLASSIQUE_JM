@@ -145,7 +145,7 @@
 						<input type='hidden' id='oculto<%=String.valueOf(i)%>_6' name='oculto<%=String.valueOf(i)%>_6' value='<%=numero%>'/>
 						<%=sNombreMandato%>						
 					</td>		
-					<td><%=UtilidadesString.mostrarDatoJSP(mandatoBean.getIdMandatoSepa())%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(mandatoBean.getRefMandatoSepa())%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(mandatoBean.getFechaCreacion())%></td>
 					<td><%=sFirmaFecha%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(mandatoBean.getFechaUso())%></td>		

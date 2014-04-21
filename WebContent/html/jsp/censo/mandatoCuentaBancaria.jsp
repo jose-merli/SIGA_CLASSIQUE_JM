@@ -109,7 +109,7 @@
 			// Realizo las validaciones de la pagina
 			var errores = "";
 			
-			if (trim(jQuery("#idMandatoSepa").val()) == "") {
+			if (trim(jQuery("#refMandatoSepa").val()) == "") {
 				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.referencia'/>"+ '\n';				
 			}
 			
@@ -144,7 +144,7 @@
 			}
 		   	
 		 // Elimino los blancos del identificador del mandato SEPA
-			document.MandatosCuentasBancariasForm.idMandatoSepa.value = trim(jQuery("#idMandatoSepa").val());
+			document.MandatosCuentasBancariasForm.refMandatoSepa.value = trim(jQuery("#refMandatoSepa").val());
 			
 			// Transformo el check al formulario
 			if (jQuery("#autorizacionB2BCheck")[0].checked) {
@@ -195,7 +195,7 @@
 			<table cellpadding="0" border="0">
 				<tr>
 					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.referencia"/>&nbsp;(*)</td>
-					<td><html:text name="MandatosCuentasBancariasForm" property="idMandatoSepa" styleId="idMandatoSepa" maxlength="35" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:350px;' value="<%=beanMandato.getIdMandatoSepa()%>" />
+					<td><html:text name="MandatosCuentasBancariasForm" property="refMandatoSepa" styleId="refMandatoSepa" maxlength="35" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:350px;' value="<%=beanMandato.getRefMandatoSepa()%>" />
 					
 					<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.fechaUso"/></td>
 					<td><html:text name="MandatosCuentasBancariasForm" property="fechaUso" styleId="fechaUso" styleClass="boxConsulta" readonly="true" value="<%=beanMandato.getFechaUso()%>" />						
