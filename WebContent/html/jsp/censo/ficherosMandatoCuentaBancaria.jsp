@@ -157,7 +157,7 @@
 				if (anexoBean.getIdAnexo()!=null && !anexoBean.getIdAnexo().equals("")) {
 					sTipoAnexo = UtilidadesString.getMensajeIdioma(usuario, "censo.fichaCliente.bancos.mandatos.anexos.tipo.anexo");
 					if (modoMandato.equals("editar")) {
-						if (anexoBean.getFirmaFecha()!=null && !anexoBean.getFirmaFecha().equals("") && (anexoBean.getFirmaDocumento()==null || anexoBean.getFirmaDocumento().equals(""))) {
+						if (anexoBean.getFirmaFecha()!=null && !anexoBean.getFirmaFecha().equals("") && (anexoBean.getIdFicheroFirma()==null || anexoBean.getIdFicheroFirma().equals(""))) {
 							botonesAnexo += ",E";
 							
 						} else if (anexoBean.getFirmaFecha()==null || anexoBean.getFirmaFecha().equals("")) {
@@ -166,7 +166,7 @@
 					}
 					
 				} else {
-					if (modoMandato.equals("editar") && (anexoBean.getFirmaFecha()==null || anexoBean.getFirmaFecha().equals("") || anexoBean.getFirmaDocumento()==null || anexoBean.getFirmaDocumento().equals(""))) {
+					if (modoMandato.equals("editar") && (anexoBean.getFirmaFecha()==null || anexoBean.getFirmaFecha().equals("") || anexoBean.getIdFicheroFirma()==null || anexoBean.getIdFicheroFirma().equals(""))) {
 						botonesAnexo += ",E";
 					}
 				}		
