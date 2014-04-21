@@ -4898,7 +4898,7 @@
         </form>
         
 		<form name="MandatosCuentasBancariasForm">
-			<field property="idMandatoSepa" depends="required,maxlength"> 			
+			<field property="refMandatoSepa" depends="required,maxlength"> 			
 				<arg0 key="censo.fichaCliente.datosBancarios.referencia"/>	
 				<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>	
 				<var>
