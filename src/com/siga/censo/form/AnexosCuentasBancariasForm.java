@@ -1,14 +1,11 @@
 package com.siga.censo.form;
 
-import org.apache.struts.upload.FormFile;
-
-import com.siga.general.MasterForm;
 import com.siga.general.form.FicheroForm;
 
 public class AnexosCuentasBancariasForm extends FicheroForm {
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, origen, descripcion;
-	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos;
+	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos;
 	
 	public String getIdInstitucion() {
 		return idInstitucion;
@@ -104,13 +101,5 @@ public class AnexosCuentasBancariasForm extends FicheroForm {
 
 	public void setFirmaLugar(String firmaLugar) {
 		this.firmaLugar = firmaLugar;
-	}
-
-	public String getFirmaDocumento() {
-		return firmaDocumento;
-	}
-
-	public void setFirmaDocumento(String firmaDocumento) {
-		this.firmaDocumento = firmaDocumento;
 	}
 }

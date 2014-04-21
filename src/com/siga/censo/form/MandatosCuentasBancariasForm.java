@@ -9,7 +9,7 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion, deudorPoblacionExtranjera;
-	private String firmaFecha, firmaLugar, firmaDocumento, firmaFechaHora, firmaFechaMinutos,idFichero;
+	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos,idFichero;
 	public String getIdFichero() {
 		return idFichero;
 	}
@@ -162,14 +162,6 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 
 	public void setFirmaLugar(String firmaLugar) {
 		this.firmaLugar = firmaLugar;
-	}
-
-	public String getFirmaDocumento() {
-		return firmaDocumento;
-	}
-
-	public void setFirmaDocumento(String firmaDocumento) {
-		this.firmaDocumento = firmaDocumento;
 	}
 
 	public String getAutorizacionB2B() {
