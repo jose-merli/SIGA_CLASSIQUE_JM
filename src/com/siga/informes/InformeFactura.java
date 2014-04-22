@@ -146,7 +146,7 @@ public class InformeFactura extends MasterReport {
 	 * @param idFactura Codigo factura
 	 * @throws ClsExceptions Error interno
 	 */	
-	protected Hashtable cargarDatosFijos(UsrBean usuario,String institucion, String idFactura) throws ClsExceptions
+	protected Hashtable cargarDatosFijos(UsrBean usuario,String institucion, String idFactura) throws ClsExceptions,SIGAException
 	{
 		Hashtable ht = new Hashtable();
 		FacFacturaAdm facAdm = new FacFacturaAdm(usuario);
@@ -156,7 +156,7 @@ public class InformeFactura extends MasterReport {
 	
 
 
-	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions{
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions,SIGAException{
 		Hashtable htDatos= null;
 				
 		String plantilla=plantillaFO;

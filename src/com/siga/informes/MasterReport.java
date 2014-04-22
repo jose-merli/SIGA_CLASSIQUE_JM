@@ -197,7 +197,7 @@ public class MasterReport
 	 */
 	public boolean generarInforme(HttpServletRequest request,
 								  String nombreFicheroFO)
-			throws ClsExceptions
+			throws ClsExceptions,SIGAException
 	{
 		// Variables generales
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -286,7 +286,9 @@ public class MasterReport
 					+ nombreFicheroGenerado + ".pdf");
 			request.setAttribute("borrarFichero", "true");
 
-		} catch (Exception e) {
+		} catch (SIGAException e){
+			throw e;
+		}catch (Exception e) {
 			throw new ClsExceptions(e, "Error al generar el informe");
 		}
 		
@@ -732,7 +734,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 	 * @author RGG 
 	 * @since 15/02/2007
 	 */
-	public File generarInforme(HttpServletRequest request, String rutaServidorTmp, String contenidoPlantilla, String rutaServidorDescargas, String nombreFicheroPDF) throws ClsExceptions 
+	public File generarInforme(HttpServletRequest request, String rutaServidorTmp, String contenidoPlantilla, String rutaServidorDescargas, String nombreFicheroPDF) throws ClsExceptions , SIGAException
 	{
 	
 		File ficheroFOP=null;		
@@ -764,9 +766,11 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 			this.convertFO2PDF(ficheroFOP, ficheroPDF, rutaTmp.getParent());
 			ClsLogging.writeFileLog("PDF GENERADO.",10);
 			
-		} catch (Exception e){
+		} catch (SIGAException e){
+			throw e;
+		}catch (Exception e){
 			throw new ClsExceptions(e, "Error al generar el informe: "+e.getLocalizedMessage());
-		} finally {
+		}  finally {
 			if (ficheroFOP!=null && ficheroFOP.exists()) {
 				ficheroFOP.delete();
 			}
@@ -817,7 +821,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 	 * @return Plantilla FO en donde se han reemplazado los parámetros
 	 * @throws ClsExceptions
 	 */
-	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions{
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions,SIGAException{
 		 return plantillaFO;
 	 }
 	protected String reemplazarDatos(UsrBean usr, String plantillaFO) throws ClsExceptions{

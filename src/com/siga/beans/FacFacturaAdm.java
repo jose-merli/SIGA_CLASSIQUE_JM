@@ -2328,7 +2328,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Hashtable getDatosImpresionInformeFactura (String idInstitucion, String idFactura)  throws ClsExceptions {
+	public Hashtable getDatosImpresionInformeFactura (String idInstitucion, String idFactura)  throws ClsExceptions,SIGAException {
 		
 		Hashtable nuevo= new Hashtable();
 		Hashtable codigosBind = new Hashtable();
@@ -2465,18 +2465,12 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				direccion = new Hashtable();
 				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_FACTURACION);
 				if (direccion.size()==0){
-				    // Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
-				 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_DESPACHO);
+					throw new SIGAException("messages.censo.direcciones.facturacion");
 			    }
 				
-				if (direccion.size()==0){							// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
-					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
-				}
 				
-				//Si no existe ninguna de estas dos direcciones se escoge una cualquiera //inc8356 
-				if (direccion.size()==0){
-					direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"");
-				}
+				
+				
 
 				if (direccion.get(CenDireccionesBean.C_DOMICILIO)!=null&&!((String)direccion.get(CenDireccionesBean.C_DOMICILIO)).equals("")){
 					nuevo.put("DIRECCION_CLIENTE",(String)direccion.get(CenDireccionesBean.C_DOMICILIO));
@@ -2675,7 +2669,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 //				nuevo.put("IMPORTE_IVA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALIVA")));				
 			}
 		}
-	    
+		catch (SIGAException e) {
+	    	throw e;
+	    }
 	    catch (Exception e) {
 	    	throw new ClsExceptions(e, "Error al obtener los datos para el informe MasterRepor de una factura.");
 	    }
