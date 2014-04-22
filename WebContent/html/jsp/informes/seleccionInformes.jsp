@@ -169,7 +169,7 @@
 						<siga:Idioma key="informes.genericos.comunicacion" />
 					</td>
 					<td class="labelTextValor">
-						<html:text name="DefinirEnviosForm" property="nombre" value="${asunto}" size="50" maxlength="100" styleClass="box" />
+						<html:text name="DefinirEnviosForm" property="nombre" value="${asunto}" size="50" maxlength="50" styleClass="box" />
 					</td>
 				</tr>
 				
@@ -322,6 +322,10 @@
 		
 		if (DefinirEnviosForm.nombre.value=='') {
 			error = "<siga:Idioma key='errors.required' arg0='informes.genericos.comunicacion'/>\n";
+		}
+		
+		if (DefinirEnviosForm.nombre.value.lenght > 50) {
+			error += "<siga:Idioma key='errors.required' arg0='informes.genericos.comunicacion'/>\n";
 		}
 		
 		if (DefinirEnviosForm.fechaProgramada.value == "") {   			

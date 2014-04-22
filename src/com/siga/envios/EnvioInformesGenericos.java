@@ -4124,9 +4124,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					ficherosPDF.add(f);
 				}
 
-				String nombreFicheroZIP = idsesion.replaceAll("!", "")
-						+ "_"
-						+ UtilidadesBDAdm.getFechaCompletaBD("")
+				String nombreFicheroZIP = UtilidadesBDAdm.getFechaCompletaBD("")
 								.replaceAll("/", "").replaceAll(":", "")
 								.replaceAll(" ", "").replaceAll("-", "");
 				ReadProperties rp = new ReadProperties(
@@ -4136,13 +4134,13 @@ public class EnvioInformesGenericos extends MasterReport {
 						+ rp.returnProperty("informes.directorioPlantillaInformesJava")
 						+ ClsConstants.FILE_SEP
 						+ usr.getLocation()
-						+ ClsConstants.FILE_SEP + "temp" + File.separatorChar;
+						+ ClsConstants.FILE_SEP + "temp" 
+						+ ClsConstants.FILE_SEP
+						+ idsesion.replaceAll("!", "")  + File.separatorChar;
 				File ruta = new File(rutaServidorDescargasZip);
 				ruta.mkdirs();
-				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
-						ficherosPDF);
-				ficheroSalida = new File(rutaServidorDescargasZip
-						+ nombreFicheroZIP + ".zip");
+				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
+				ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 			}
 		}
 
