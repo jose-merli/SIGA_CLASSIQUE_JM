@@ -297,19 +297,44 @@
 	    function actualizar(){	     
 		    document.forms[0].modificarPreferencias.value="1";
 		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+		    document.forms[0].modificarDireccionesFacturacion.value="0";
 		    document.forms[0].control.value="0";   
 		    document.forms[0].submit();
 			document.forms[0].modificarPreferencias.value="0";
 	    }
 
-	    function actualizarcenso(){
-	    	document.forms[0].modificarDireccionesCensoWeb.value="1";
+	    function actualizarCenso(){
+	    	document.forms[0].modificarDireccionesFacturacion.value="0";
+		    document.forms[0].modificarDireccionesCensoWeb.value="1";
 	    	document.forms[0].modificarPreferencias.value="1";	 
 	    	document.forms[0].control.value="1";   	
 		    document.forms[0].submit();
 			document.forms[0].modificarDireccionesCensoWeb.value="0";
 			document.forms[0].modificarPreferencias.value="0";
-	    }	   
+			
+	    }
+	    function actualizarFacturacion(){
+	    	document.forms[0].modificarDireccionesFacturacion.value="1";
+		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			
+	    }
+	    function actualizarCensoFacturacion(){
+	    	document.forms[0].modificarDireccionesFacturacion.value="1";
+		    document.forms[0].modificarDireccionesCensoWeb.value="1";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+			
+	    }
+	    
 	    
 	    function selPais(valor) {                                                                   
 		   if (valor!="" && valor!=idEspana) {
@@ -853,10 +878,14 @@
 			<input type="hidden" id="control" name="control" value="">
 			<input type="hidden" id="modificarDireccionesCensoWeb"
 				name="modificarDireccionesCensoWeb" value="">
+				<input type="hidden" id="modificarDireccionesFacturacion"
+				name="modificarDireccionesFacturacion" value="">
 			<input type="hidden" id="idDireccionesPreferentes"
 				name="idDireccionesPreferentes" value="" />
 			<input type="hidden" id="idDireccionesCensoWeb"
 				name="idDireccionesCensoWeb" value="" />
+			<input type="hidden" id="idDireccionesFacturacion"
+				name="idDireccionesFacturacion" value="" />	
 			<html:hidden property="vieneDe" styleId="vieneDe" />
 
 			<%

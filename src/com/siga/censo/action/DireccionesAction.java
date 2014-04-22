@@ -4,6 +4,7 @@ package com.siga.censo.action;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -12,12 +13,29 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
-import com.siga.beans.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDireccionTipoDireccionAdm;
+import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenSoliModiDireccionesAdm;
+import com.siga.beans.CenSoliModiDireccionesBean;
+import com.siga.beans.CenTipoDireccionAdm;
+import com.siga.beans.CenTipoDireccionBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DireccionesForm;
-import com.siga.envios.form.RemitentesForm;
-import com.siga.general.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 /**
@@ -866,28 +884,7 @@ protected String insertar (ActionMapping mapping,
 	} //campoPreferenteBooleanToString()
 	
 	
-	private String campoPreferenteBooleanToStringSeparados (Boolean mail, 
-			   Boolean correo, 
-			   Boolean fax,
-			   Boolean sms) throws SIGAException{
-		String valor = "";
-		
-		try
-		{
-		if (mail.booleanValue())
-		valor += ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO+"#";
-		if (fax.booleanValue())
-		valor += ClsConstants.TIPO_PREFERENTE_FAX+"#";
-		if (correo.booleanValue())
-		valor += ClsConstants.TIPO_PREFERENTE_CORREO+"#";
-		if (sms.booleanValue())
-		valor += ClsConstants.TIPO_PREFERENTE_SMS;
-		}
-		catch (Exception e) {
-		throwExcp ("messages.general.error", new String[] {"modulo.censo"}, e, null);
-		}
-		return valor;
-	} //campoPreferenteBooleanToString()
+	
 	/**
 	 * Funcion que modifica una direccion o la borra para crear otra y mantener el historico
 	 * @throws ClsExceptions 
@@ -1069,94 +1066,5 @@ protected String insertar (ActionMapping mapping,
 		return "seleccion";
 		}
 	
-	protected void cambiodireccioncensoweb (MasterForm formulario,int i,String sql,String tipo,String idDireccionesCensoWeb, HttpServletRequest request)	throws SIGAException
-	{
-		DireccionesForm miForm = (DireccionesForm) formulario;
-		RowsContainer rc2 = new RowsContainer(); 
-		RowsContainer rc3 = new RowsContainer(); 
-		Hashtable result= new Hashtable();	
-		
-		CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserBean (request));			
-		CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
-
-		CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
-		CenDireccionesBean direccionesBean = new CenDireccionesBean();
-			
-		try{
-		if (rc3.query(sql)) {
-						if (rc3.size()>=1) {
-							
-								int tamaño=rc3.size();
-								Row r=(Row)rc3.get(i);
-								result.putAll(r.getRow());												
-									
-								//Borramos todos los tipos de esa direccion
-									String[] idDir;
-									idDir=idDireccionesCensoWeb.split("@");
-									
-									boolean error = false;
-				
-									  if (!idDireccionesCensoWeb.equals("")){
-										CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm(this.getUserBean(request));
-										for (int m=0; m<idDir.length; m++){
-										//modificar dando de baja logica.
-										  String whereSancion =" where CEN_DIRECCION_TIPODIRECCION.idpersona = "+ miForm.getIDPersona().toString();
-								          whereSancion +=" AND CEN_DIRECCION_TIPODIRECCION.idinstitucion ="+miForm.getIDInstitucion().toString();
-								          whereSancion +=" AND CEN_DIRECCION_TIPODIRECCION.iddireccion ="+idDir[m];
-								          
-								          Vector direccionestipos= tipoDirAdm.select(whereSancion);               
-								          int numerodirecciones=direccionestipos.size();
-								          
-								        
-								          if (numerodirecciones==1){
-								        	  
-								        	  String whereSancion1 =" where CEN_DIRECCIONES.idpersona = "+ miForm.getIDPersona().toString();
-								        	  whereSancion1 +=" AND CEN_DIRECCIONES.idinstitucion ="+miForm.getIDInstitucion().toString();
-								        	  whereSancion1 +=" AND CEN_DIRECCIONES.iddireccion ="+idDir[m];
-									
-								
-								        	  Vector direcciones= direccionesAdm.select(whereSancion1);               
-								        	  int nSanciones=direcciones.size();
-								        	  for(int l=0;l<direcciones.size();l++)
-								        	  	{  
-								        	  
-								        		  direccionesBean = (CenDireccionesBean)direcciones.elementAt(l);			
-								        		  direccionesBean.setFechaBaja("SYSDATE");      	 
-								          			String datosCambiar[] = new String[1];
-								          			datosCambiar[0]=direccionesBean.C_FECHABAJA;								          		
-								          			if(!direccionesAdm.updateDirect(direccionesBean,direccionesAdm.getClavesBean(),datosCambiar))
-								          				throw new ClsExceptions(direccionesAdm.getError());
-								        	  		}
-								        	  
-								          	}else{							
-								          		  /***
-								          			Eliminar el idtipodireccion =3 de la iddirección ya que sera la dirección de tipo censoweb 
-								          			que queremos que no sea esta sino la actual en la que estamos
-								          		 ***/ 
-								          		Hashtable clave = new Hashtable();
-								          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDINSTITUCION, miForm.getIDInstitucion().toString());
-								          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDPERSONA, miForm.getIDPersona().toString());
-								          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDir[m]);
-								          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION, tipo);
-									
-								          		Vector v = admTipoDir.selectForUpdate(clave);
-								          		for (int n = 0; n < v.size() && (!error); n++) {
-								          			CenDireccionTipoDireccionBean b = (CenDireccionTipoDireccionBean) v.get(n);
-								          			if (!admTipoDir.delete(b)) {
-								          				error = true;
-											     }
-								          		}
-								        }
-									}
-								        	  
-							  }
-								
-						}
-					}
-		}
-		catch(Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
-		}
-	}
-		
+	
 }

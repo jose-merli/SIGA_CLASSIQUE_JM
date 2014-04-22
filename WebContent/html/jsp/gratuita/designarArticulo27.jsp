@@ -1462,8 +1462,10 @@
 	<input type="hidden" id="modificarPreferencias"			name="modificarPreferencias" 		value="">
 	<input type="hidden" id="control" 						name="control" 						value="">
 	<input type="hidden" id="modificarDireccionesCensoWeb" 	name="modificarDireccionesCensoWeb" value="">
+	<input type="hidden" id="modificarDireccionesFacturacion" 	name="modificarDireccionesFacturacion" value="">
 	<input type="hidden" id="idDireccionesPreferentes" 		name="idDireccionesPreferentes" 	value="" />
 	<input type="hidden" id="idDireccionesCensoWeb" 		name="idDireccionesCensoWeb" 		value="" />	
+	<input type="hidden" id="idDireccionesFacturacion" 		name="idDireccionesFacturacion" 		value="" />
 	<input type="hidden" id="poblacionValue" value=""/>
 </html:form>
 
@@ -2007,14 +2009,38 @@
 			document.forms[1].modificarPreferencias.value="0";
 	    }
 
-	    function actualizarcenso(){
-	    	document.forms[1].modificarDireccionesCensoWeb.value="1";
+	    function actualizarCenso(){
+	    	document.forms[1].modificarDireccionesFacturacion.value="0";
+		    document.forms[1].modificarDireccionesCensoWeb.value="1";
 	    	document.forms[1].modificarPreferencias.value="1";	 
 	    	document.forms[1].control.value="1";   	
 		    document.forms[1].submit();
 			document.forms[1].modificarDireccionesCensoWeb.value="0";
 			document.forms[1].modificarPreferencias.value="0";
-	    }	
+			
+	    }
+	    function actualizarFacturacion(){
+	    	document.forms[1].modificarDireccionesFacturacion.value="1";
+		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			
+	    }
+	    function actualizarCensoFacturacion(){
+	    	document.forms[1].modificarDireccionesFacturacion.value="1";
+		    document.forms[1].modificarDireccionesCensoWeb.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+			
+	    }
+	    
 	</script>
 </body>
 </html>

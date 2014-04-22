@@ -18,12 +18,20 @@
 <%
 	String app=request.getContextPath();
 	
-	String idDirecciones=(String)request.getAttribute("idDireccionesCensoWeb") ;
+	String idDireccionesCensoWeb=(String)request.getAttribute("idDireccionesCensoWeb") ;
+	String idDireccionesFacturacion=(String)request.getAttribute("idDireccionesFacturacion") ;
 	String modo=(String)request.getAttribute("modo");
 	String modificarPre=(String)request.getAttribute("idDireccionesPreferentes") ;
 	String control=(String)request.getAttribute("control") ;
 
-
+	String recurso = "";
+	if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
+		recurso = "messages.censo.direcciones.errorCensoWebyFacturacion";
+	}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")){
+		recurso = "messages.censo.direcciones.errorCensoWeb";
+	}else if(idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
+		recurso = "messages.censo.direcciones.errorFacturacion";
+	}
 
 %>
 
@@ -35,13 +43,24 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript">
 		function reloadPage() {
-		    var type = '<siga:Idioma key="messages.censo.direcciones.errorCensoWeb"/>';
+		    var type = '<siga:Idioma key="<%=recurso%>"/>';
 			if (confirm(type)) {
-				parent.document.getElementById("idDireccionesCensoWeb").value="<%=idDirecciones%>";
+				parent.document.getElementById("idDireccionesCensoWeb").value="<%=idDireccionesCensoWeb%>";
+				parent.document.getElementById("idDireccionesFacturacion").value="<%=idDireccionesFacturacion%>";
 				parent.document.getElementById("modificarPreferencias").value="<%=modificarPre%>";
 			  	parent.document.getElementById("control").value="<%=control%>";
 			  	parent.document.getElementById("modo").value="<%=modo%>";
-			  	parent.actualizarcenso();
+			  	<%
+				if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){ %>
+					parent.actualizarCensoFacturacion();
+				<%}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")){%>
+					parent.actualizarCenso();
+				<%}else if(idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){%>
+					parent.actualizarFacturacion();
+				<%}%>
+			  	
+			  	
+			  	
 			} 
 		}
 	</script>

@@ -20,7 +20,6 @@ import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoBean;
-import com.siga.censo.form.DireccionesForm;
 import com.siga.general.SIGAException;
 
 
@@ -43,15 +42,15 @@ public class Direccion {
 		// Variables generales
 		Direccion dir = new Direccion();		
 		String idDireccionesCensoWeb="";
+		String idDireccionesFacturacion="";
 		
-		// Variables Adm
-		CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(usr);			
-		CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
 		CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (usr);
+		CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(usr);
 		
 		// Datos para las preguntas al usuario
 		String modificarPreferencias = null;
 		String modificarDireccionesCensoWeb = null;
+		String modificarDireccionesFacturacion = null;
 		String control = null;
 		
 		try {			
@@ -82,6 +81,9 @@ public class Direccion {
 				if (request.getParameter("modificarDireccionesCensoWeb")!=null){
 					modificarDireccionesCensoWeb = request.getParameter("modificarDireccionesCensoWeb");
 				} // fin datos preguntas
+				if (request.getParameter("modificarDireccionesFacturacion")!=null){
+					modificarDireccionesFacturacion = request.getParameter("modificarDireccionesFacturacion");
+				}
 				if (request.getParameter("control")!=null){
 					control = request.getParameter("control");
 				}
@@ -93,6 +95,7 @@ public class Direccion {
 					idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString(), idInstitucionPersona.toString (), preferente, idDireccion);
 					if(!idDireccionesPreferentes.equals("")){
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("control", "0");
 						dir.setConfirmacionPregunta(true);
@@ -102,12 +105,16 @@ public class Direccion {
 				}
 				
 				//comprobando que el cliente no tenga ya una direccion de tipo guardia si es asi no se permite anyadir la direccion
-				if (modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")){
+				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1")) ){
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");
+					idDireccionesFacturacion=request.getParameter("idDireccionesFacturacion");
 				}else {		
-					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion);			  
-					if  (!idDireccionesCensoWeb.equals("")){			
+					idDireccionesCensoWeb=direccionesAdm.obtenerTipoDireccion(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_CENSOWEB);			  
+					idDireccionesFacturacion=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_FACTURACION);
+					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")){			
+						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);			
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+						
 						request.setAttribute("control", "1");
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						dir.setConfirmacionPregunta(true);
@@ -118,7 +125,7 @@ public class Direccion {
 			}
 			
 			// Comprobar tipo direccion
-			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb);
+			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion);
 			
 			//estableciendo los datos del tipo de direccion
 			CenDireccionTipoDireccionBean vBeanTipoDir [] = establecerTipoDireccion(tipos);
@@ -191,16 +198,15 @@ public class Direccion {
 		//Variables generales
 		Direccion dir = new Direccion();	
 		String idDireccionesCensoWeb="";
+		String idDireccionesFacturacion="";
 
 		try	{
 			
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (usr);
 			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(usr);			
-			CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
 			CenDireccionTipoDireccionBean vBeanTipoDir [] = null;
 			
 			Long idPersona = beanDir.getIdPersona ();
-			Long idDireccionAntes=beanDir.getIdDireccion ();
 			Integer idInstitucionPersona = beanDir.getIdInstitucion ();
 			Long idDireccion = beanDir.getIdDireccion ();
 			
@@ -212,6 +218,7 @@ public class Direccion {
 			// Datos para las pregunats al usuario
 			String modificarPreferencias = null;
 			String modificarDireccionesCensoWeb = null;
+			String modificarDireccionesFacturacion = null;
 			String control = null;
 			
 			//Solo se utiliza el parametro reques cuando se necesita confirmacion por parte del usuario
@@ -229,6 +236,9 @@ public class Direccion {
 				if (request.getParameter("modificarDireccionesCensoWeb")!=null){
 					modificarDireccionesCensoWeb = request.getParameter("modificarDireccionesCensoWeb");
 				} // fin datos preguntas
+				if (request.getParameter("modificarDireccionesFacturacion")!=null){
+					modificarDireccionesFacturacion = request.getParameter("modificarDireccionesFacturacion");
+				}
 				if (request.getParameter("control")!=null){
 					control = request.getParameter("control");
 				}
@@ -241,6 +251,8 @@ public class Direccion {
 				    if (!idDireccionesPreferentes.equals("")){
 					    request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
+						
 						request.setAttribute("control", "0");
 						dir.setConfirmacionPregunta(true);
 						dir.setTipoPregunta("preguntaCambioPreferencia");
@@ -252,13 +264,16 @@ public class Direccion {
 				
 				//esta es la parte que comprobra si tiene una dirección de tipo censoweb.
 		
-				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) || (modificarPreferencias==null && modificarPreferencias.equals("0"))){
+				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1")) ){
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
+					idDireccionesFacturacion=request.getParameter("idDireccionesFacturacion");
 				
 				}else {		
-					idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion);			  
-					if  (!idDireccionesCensoWeb.equals("")){			
+					idDireccionesCensoWeb=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_CENSOWEB);			  
+					idDireccionesFacturacion=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_FACTURACION);
+					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")){			
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
 						request.setAttribute("control", "1");
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						dir.setConfirmacionPregunta(true);
@@ -270,7 +285,7 @@ public class Direccion {
 						
 			if(!tiposDir.equals("")){
 				// Comprobar tipo direccion
-				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb);
+				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion);
 
 				//estableciendo los datos del tipo de direccion
 				vBeanTipoDir = establecerTipoDireccion(tipos);
@@ -351,7 +366,6 @@ public class Direccion {
 	 */
 	protected boolean borrar (CenDireccionesBean beanDir,HttpServletRequest request,UsrBean usr) throws SIGAException {
 		//Variables generales
-		String rc = "";
 		
 		try	{
 			
@@ -386,10 +400,8 @@ public class Direccion {
 	} //borrar()
 	
 
-	private static void comprobarTipoDireccion(String [] tipos,CenDireccionesBean beanDir, CenDireccionesAdm direccionesAdm, Direccion dir, String control, String idDireccionesCensoWeb, Long idPersona, Integer idInstitucionPersona, String idDireccionesPreferentes, CenDireccionTipoDireccionAdm tipoDirAdm, String modificarPreferencias, String modificarDireccionesCensoWeb) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
+	private static void comprobarTipoDireccion(String [] tipos,CenDireccionesBean beanDir, CenDireccionesAdm direccionesAdm, Direccion dir, String control, String idDireccionesCensoWeb, Long idPersona, Integer idInstitucionPersona, String idDireccionesPreferentes, CenDireccionTipoDireccionAdm tipoDirAdm, String modificarPreferencias, String modificarDireccionesCensoWeb, String modificarDireccionesFacturacion, String idDireccionesFacturacion) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
 	
-		RowsContainer rc3 = new RowsContainer(); 
-		Hashtable result= new Hashtable();
 		String preferenteModif = "";
 		int j=0;
 		if(beanDir.getPreferente()!=null){
@@ -399,7 +411,7 @@ public class Direccion {
 		for (int i=0; i < tipos.length; i++){
 			String tipo=tipos[i].toString();
 			
-			if(new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_GUARDIA)	{
+			if(Integer.parseInt(tipos[i]) == ClsConstants.TIPO_DIRECCION_GUARDIA)	{
 				String sql = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());						
 				RowsContainer rc1 = new RowsContainer ();
 				if (rc1.query (sql)){
@@ -420,9 +432,9 @@ public class Direccion {
 					}
 				}
 
-			}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CENSOWEB){//dirección de tipo censoweb					
+			}else if (Integer.parseInt(tipos[i]) == ClsConstants.TIPO_DIRECCION_CENSOWEB){//dirección de tipo censoweb					
 				String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
-				cambiodireccioncensoweb (beanDir,i,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
+				cambioDirecciones(beanDir,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
 				if ((modificarPreferencias!=null && modificarPreferencias.equals("1")) || (modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1"))){
 					
 					if (control != null && control.equals("0")){
@@ -430,26 +442,22 @@ public class Direccion {
 							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);	
 						}
 					}else{ 
-						cambiodireccioncensoweb (beanDir,i,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
+						cambioDirecciones (beanDir,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
 					}
 				}
-			} else if (new Integer(tipos[i]).intValue() == ClsConstants.TIPO_DIRECCION_FACTURACION) {
-				// jbd 	// La solucion de Carlos estaba bien para inserciones, pero no para actualizaciones de la direccion de facturacion, decia que ya existia
-						// Lo que hago es pasar la direccion actual si es una edicion o null si es nueva y tieneDireccionFacturacion hace el resto
-				boolean tieneDirFacturacion = tipoDirAdm.tieneDireccionFacturacion(beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString(), beanDir.getIdDireccion()==null?null:beanDir.getIdDireccion().toString());
-				if (tieneDirFacturacion) {
-					throw new SIGAException ("messages.directions.duplicatedFact");
+			} else if (Integer.parseInt(tipos[i]) == ClsConstants.TIPO_DIRECCION_FACTURACION) {
+				String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
+				cambioDirecciones (beanDir,sql1, tipo, idDireccionesFacturacion, tipoDirAdm, direccionesAdm);
+				if ((modificarPreferencias!=null && modificarPreferencias.equals("1")) || (modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1"))){
+					
+					if (control != null && control.equals("0")){
+						if (!preferenteModif.equals("")){
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);	
+						}
+					}else{ 
+						cambioDirecciones (beanDir,sql1, tipo, idDireccionesFacturacion, tipoDirAdm, direccionesAdm);
+					}
 				}
-				
-				if (!preferenteModif.equals("")){
-					 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
-						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
-					 }
-				
-					 if (control != null && control.equals("0")){ // Igual vale 0.....
-						  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
-					 }
-				}				
 				
 			}else { 
 				if (!preferenteModif.equals("")){
@@ -465,39 +473,7 @@ public class Direccion {
 		}
 	}
 	
-	private static void formarDireccion(CenDireccionesBean beanDir, DireccionesForm miForm) throws SIGAException{
-		
-		beanDir.setCodigoPostal (miForm.getCodigoPostal ());
-		beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
-		beanDir.setDomicilio (miForm.getDomicilio ());
-		beanDir.setFax1 (miForm.getFax1 ());
-		beanDir.setFax2 (miForm.getFax2 ());
-		beanDir.setFechaBaja (miForm.getFechaBaja ());
-		beanDir.setIdInstitucion (miForm.getIDInstitucion ());
-		beanDir.setIdPais (miForm.getPais ());
-		if (miForm.getPais ().equals ("")) {
-			miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-		}
-		if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-			beanDir.setIdPoblacion (miForm.getPoblacion ());
-			beanDir.setIdProvincia (miForm.getProvincia ());
-			beanDir.setPoblacionExtranjera ("");
-		} else {
-			beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-			beanDir.setIdPoblacion ("");
-			beanDir.setIdProvincia ("");
-		}
-		beanDir.setIdPersona (miForm.getIDPersona ());
-		beanDir.setMovil (miForm.getMovil ());
-		beanDir.setPaginaweb (miForm.getPaginaWeb ());
-		beanDir.setPreferente (campoPreferenteBooleanToString
-				(miForm.getPreferenteMail (), 
-				miForm.getPreferenteCorreo (), 
-				miForm.getPreferenteFax (),
-				miForm.getPreferenteSms ()));
-		beanDir.setTelefono1 (miForm.getTelefono1 ());
-		beanDir.setTelefono2 (miForm.getTelefono2 ());
-	}
+	
 	
 	private static CenDireccionTipoDireccionBean[] establecerTipoDireccion(String [] tipos){
 		int numTipos = tipos.length;
@@ -517,53 +493,8 @@ public class Direccion {
 			throw new SIGAException (colaAdm.getError ());
 	}
 	
-	/**
-	 * Fucnion que devuleve un string que correspode a los datos almacenados en B.D.
-	 * 
-	 * @param mail
-	 * @param correo
-	 * @param fax
-	 * @param sms
-	 * @return cadena
-	 */
-	private static String campoPreferenteBooleanToString (Boolean mail, Boolean correo, Boolean fax, Boolean sms) throws SIGAException {
-		String valor = "";
-		
-		try	{
-			if (mail.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO;
-			if (fax.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_FAX;
-			if (correo.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_CORREO;
-			if (sms.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_SMS;
-		
-		} catch (Exception e) {
-			throw new SIGAException ("messages.general.error");
-		}
-		return valor;
-	} //campoPreferenteBooleanToString()
 	
-	
-	private static String campoPreferenteBooleanToStringSeparados (Boolean mail, Boolean correo, Boolean fax, Boolean sms) throws SIGAException {
-		String valor = "";
-		
-		try {
-			if (mail.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO+"#";			
-			if (fax.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_FAX+"#";
-			if (correo.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_CORREO+"#";
-			if (sms.booleanValue())
-				valor += ClsConstants.TIPO_PREFERENTE_SMS;
-		} catch (Exception e) {
-			throw new SIGAException ("messages.general.error");
-		}
-		return valor;
-	} //campoPreferenteBooleanToString()
-	
+
 	public static String parsearPreferenteModificado (String preferente){
 		String valor = "";		
 		for(int j=0;j<preferente.length(); j++){
@@ -576,29 +507,23 @@ public class Direccion {
 	
 	
 	
-	protected static void cambiodireccioncensoweb (CenDireccionesBean beanDir,int i,String sql,String tipo,String idDireccionesCensoWeb, CenDireccionTipoDireccionAdm tipoDirAdm, CenDireccionesAdm direccionesAdm)	throws SIGAException
+	protected static void cambioDirecciones (CenDireccionesBean beanDir,String sql,String tipoDireccion,String idDirecciones, CenDireccionTipoDireccionAdm tipoDirAdm, CenDireccionesAdm direccionesAdm)	throws SIGAException
 	{
-		RowsContainer rc2 = new RowsContainer(); 
+		 
 		RowsContainer rc3 = new RowsContainer(); 
-		Hashtable result= new Hashtable();	
 		
-		CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
 		CenDireccionesBean direccionesBean = new CenDireccionesBean();
 			
 		try{
 			if (rc3.query(sql)) {
 				if (rc3.size()>=1) {				
-					int tamaño=rc3.size();
-					Row r=(Row)rc3.get(i);
-					result.putAll(r.getRow());												
-						
 					//Borramos todos los tipos de esa direccion
 					String[] idDir;
-					idDir=idDireccionesCensoWeb.split("@");
+					idDir=idDirecciones.split("@");
 					
 					boolean error = false;
 	
-					if (!idDireccionesCensoWeb.equals("")){
+					if (!idDirecciones.equals("")){
 						for (int m=0; m<idDir.length; m++){
 							  //modificar dando de baja logica.
 							  String whereSancion =" where CEN_DIRECCION_TIPODIRECCION.idpersona = "+ beanDir.getIdPersona().toString();
@@ -615,13 +540,12 @@ public class Direccion {
 					        	  whereSancion1 +=" AND CEN_DIRECCIONES.iddireccion ="+idDir[m];
 					
 					        	  Vector direcciones= direccionesAdm.select(whereSancion1);               
-					        	  int nSanciones=direcciones.size();
 		
 					        	  for(int l=0;l<direcciones.size();l++) {  
 					        		  	direccionesBean = (CenDireccionesBean)direcciones.elementAt(l);			
 					        		  	direccionesBean.setFechaBaja("SYSDATE");      	 
 					          			String datosCambiar[] = new String[1];
-					          			datosCambiar[0]=direccionesBean.C_FECHABAJA;								          		
+					          			datosCambiar[0]=CenDireccionesBean.C_FECHABAJA;								          		
 					          			if(!direccionesAdm.updateDirect(direccionesBean,direccionesAdm.getClavesBean(),datosCambiar))
 					          				throw new ClsExceptions(direccionesAdm.getError());
 					        	  }
@@ -635,7 +559,7 @@ public class Direccion {
 				          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDINSTITUCION, beanDir.getIdInstitucion().toString());
 				          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDPERSONA, beanDir.getIdPersona().toString());
 				          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDir[m]);
-				          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION, tipo);
+				          		UtilidadesHash.set(clave, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION, tipoDireccion);
 					
 				          		Vector v = tipoDirAdm.selectForUpdate(clave);
 				          		for (int n = 0; n < v.size() && (!error); n++) {

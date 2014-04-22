@@ -438,9 +438,9 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				}
 
 				// si es direccion postal
-				if (beanDir.getDomicilio()!=null && !beanDir.getDomicilio().equals("")) { 
+//				if (beanDir.getDomicilio()!=null && !beanDir.getDomicilio().equals("")) { 
 					validarRestricciones(beanDir);
-				}
+//				}
 				
 				if (!error) {
 					//Se comprueba si se quiere insertar con historico o no
@@ -883,6 +883,10 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			// QUE EXISTA UNA DIRECCION DE CORREO
 			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CENSOWEB) < 1) {
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoCorreo");
+				throw sigaExp;
+			}
+			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_FACTURACION) < 1) {
+				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.facturacion");
 				throw sigaExp;
 			}
 
@@ -1650,7 +1654,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	}	
 	
 	
-	public String obtenerTipodireccionCensoWeb(String idPersona, String idInstitucion, String tcensoweb, Long idDireccion) 
+	public String obtenerTipoDireccion(String idPersona, String idInstitucion, String tcensoweb, Long idDireccion,int idTipoDireccion) 
 	{
 		
 		String idDirecciones="";
@@ -1697,17 +1701,15 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 						if (resultadocensoweb!=null && resultadocensoweb.size()>0) {
 							for (c=0;c<resultadocensoweb.size();c++) {
 								
-								CenDireccionTipoDireccionBean beancenso = (CenDireccionTipoDireccionBean) resultadocensoweb.get(c);
+								CenDireccionTipoDireccionBean direccionTipoDireccionBean = (CenDireccionTipoDireccionBean) resultadocensoweb.get(c);
 								
-								String censoweb=beancenso.getIdTipoDireccion().toString();								
+								String censoweb=direccionTipoDireccionBean.getIdTipoDireccion().toString();								
 								if (censoweb!=null && !censoweb.equals("")) 
 						
 									for (b=0;b<vcenso.length;b++) {
 										if (censoweb.indexOf(vcenso[b])!=-1) {
-											String param[] = new String[1];
-											if (vcenso[b].equals("3")) {
-												param[0] = "censo.tipodireccion.censoweb";
-												iddirecc+= beancenso.getIdDireccion().toString()+"@";
+											if (Integer.parseInt(vcenso[b])==idTipoDireccion) {
+												iddirecc+= direccionTipoDireccionBean.getIdDireccion().toString()+"@";
 											}
 											idDirecciones = iddirecc;
 									}
@@ -1728,83 +1730,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		
 	}
 	
-	public String obtenerTipodireccionFacturacion(String idPersona, String idInstitucion, String tcensoweb, Long idDireccion, HttpServletRequest request) 
-	{
-		
-		String idDirecciones="";
-		int i;
-		int j;
-		int k;
-		
-		int c;
-		int b;
-		try {
-			if (tcensoweb==null || tcensoweb.trim().equals("")) {
-				;
-			} else {
-				String vcenso[] = new String[tcensoweb.trim().length()];
-				for (k=0;k<vcenso.length;k++) {
-					vcenso[k] = tcensoweb.substring(k,k+1);
-				}
-				String criterios = "";
-				criterios += " WHERE " + CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion;
-				criterios += " AND " + CenDireccionesBean.C_IDPERSONA + "=" + idPersona;
-//				 Se vuelve a poner las restriccion de que solo muestre direcciones que no se hayan dado de baja		  
-				criterios+=  " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " IS NULL";
-				if (idDireccion!=null) {
-					criterios += " AND " + CenDireccionesBean.C_IDDIRECCION + "<>" + idDireccion.toString();
-				}
-				Vector resultados = this.select(criterios);
-				String iddirecc="";
-				if (resultados!=null && resultados.size()>0) {
-					for (i=0;i<resultados.size();i++) {
-						
-						CenDireccionesBean bean = (CenDireccionesBean) resultados.get(i);
-						String pref = bean.getPreferente();
-						Long iddireccion= bean.getIdDireccion();								
-						
-						Hashtable htTipos = new Hashtable();
-						htTipos.put(CenDireccionTipoDireccionBean.C_IDINSTITUCION,idInstitucion);
-						htTipos.put(CenDireccionTipoDireccionBean.C_IDDIRECCION,iddireccion);
-						htTipos.put(CenDireccionTipoDireccionBean.C_IDPERSONA,idPersona);
-						boolean postal=false;
-						
-						CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm (this.usrbean);
-						Vector resultadocensoweb =admTipoDir.select(htTipos);
-					
-						if (resultadocensoweb!=null && resultadocensoweb.size()>0) {
-							for (c=0;c<resultadocensoweb.size();c++) {
-								
-								CenDireccionTipoDireccionBean beancenso = (CenDireccionTipoDireccionBean) resultadocensoweb.get(c);
-								
-								String censoweb=beancenso.getIdTipoDireccion().toString();								
-								if (censoweb!=null && !censoweb.equals("")) 
-						
-									for (b=0;b<vcenso.length;b++) {
-										if (censoweb.indexOf(vcenso[b])!=-1) {
-											String param[] = new String[1];
-											if (vcenso[b].equals("8")) {
-												param[0] = "censo.tipodireccion.censoweb";
-												iddirecc+= beancenso.getIdDireccion().toString()+"@";
-											}
-											idDirecciones = iddirecc;
-									}
-								}
-						}
-					 } 
-			   }
-		   }
-		
-		 }
-		
-		}catch (Exception e) { 
-			
-			this.setError(e.getLocalizedMessage());
-			
-		}
-		return idDirecciones;
-		
-	}
+	
 	
 	public String comprobarTipoDireccion(String tipo, String idInstitucion, String idpersona){
 		
