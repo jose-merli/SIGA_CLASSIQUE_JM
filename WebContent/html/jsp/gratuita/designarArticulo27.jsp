@@ -1247,7 +1247,7 @@
 												  	}
 										 %>   		
 											<%=UtilidadesString.mostrarDatoJSP(descripcion)%> 
-					          				<input type=checkbox id="checkTipoDireccion_<%=idTipoDireccion1%>" value="<%=idTipoDireccion1%>" <%=activarCheck%> onclick="comprobarTelefonoAsterico()"/>
+					          				<input type=checkbox name="checkTipoDireccion"  id="checkTipoDireccion_<%=idTipoDireccion1%>" value="<%=idTipoDireccion1%>" <%=activarCheck%> onclick="comprobarTelefonoAsterico()"/>
 			 			               		&nbsp;&nbsp;
 							                <%  }
 						                 	}%>
@@ -1793,6 +1793,59 @@
 
 			//Solo se aplica la validacion cuando la direccion del colegiado no es propia del colegio o es una nueva direccion
 		 	if(document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == "" || datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
+		 		
+				///////////////////////////////////////   VALIDACIONES TIPO DIRECCION  ///////////////////////////
+				var oCheck = document.getElementsByName("checkTipoDireccion");
+				
+				var checkActivo=false;
+				var datosTipoDir="";
+				for(i=0; i<oCheck.length; i++){
+				 	if (oCheck[i].checked){
+					   checkActivo=true;
+					}
+				}
+				
+				if (!checkActivo){
+				     var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}			
+				
+				var cont=0;
+				var checkGuardia=false;
+				var checkPostal=false;
+				
+				for(i=0; i<oCheck.length; i++) {  			
+					if (oCheck[i].checked){				
+						cont++;
+						 var tipoDir = oCheck[i].value;
+						 datosTipoDir=datosTipoDir+tipoDir+",";
+						if(tipoDir == 6) {
+							checkGuardia=true;
+						}
+						// si es de tipo correo, despacho o guia lo apunto
+						if(tipoDir == 3 || tipoDir == 2	|| tipoDir == 5 || tipoDir == 8) {						
+							checkPostal=true;
+						}						
+					}
+				}
+
+				if(checkPostal) {
+					// valido que sea una direccion postal
+					if((trim(document.datosGeneralesForm.domicilio.value)=="") ||
+						((trim(document.datosGeneralesForm.pais.value)==idEspana) && (trim(document.datosGeneralesForm.provincia.value)=="")) ||
+						((trim(document.datosGeneralesForm.pais.value)==idEspana) && (trim(document.datosGeneralesForm.poblacion.value)=="")) ||
+						(trim(document.datosGeneralesForm.codigoPostal.value)=="")) {
+					
+						var mensaje = "<siga:Idioma key="messages.obligatorioPostal.error"/>";
+						alert(mensaje);
+						fin();
+						return false;
+					}
+				}
+
+				//////////////////////////////////////  FIN VALIDACION TIPO DIRECCION  //////////////////////////////
 
 		 		//Validamos que haya algun campo metido y en ese caso pasamos las otras validadciones si no devolvemos true. Como no hemos metido idTipoDireccion no insertara
 			 	if(trim(document.datosGeneralesForm.telefono1.value)!='' ||	trim(document.datosGeneralesForm.telefono2.value)!='' || trim(document.datosGeneralesForm.domicilio.value)!='' ||
@@ -1803,19 +1856,12 @@
 			 	
 				 	document.datosGeneralesForm.telefono1.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono1.value));
 				  	document.datosGeneralesForm.telefono2.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono2.value));
-					// Validamos los errores ///////////
-					// Campos Tipo de Direccion obligatorio -> no se usa validacion Struts pq es multiple seleccion
 					
 					//CR7: No entiendo porque se hace esto. INC_11969_SIGA
 		           	document.datosGeneralesForm.idTipoDireccion.value=<%=ClsConstants.TIPO_DIRECCION_PUBLICA%>;
 				  
-				   
-					// VALIDAMOS QUE SOLO HAYAN INTRODUCIDO EN EL COMBO DE TIPO DE DIRECCION DIRECCION DE GUARDIA.
-					// SI ES ASI SOLO REALIZAMOS LA VALIDACION DEL CAMPO TELEFONO 1. EN CASO CONTRARIO SE REALIZAN
-					// EL RESTO DE VALIDACIONES TAMBIEN NECESARIAS PARA LOS OTROS TIPOS DE DIRECCION
 											
-					//VALIDACIONES GENERALES A TODOS LOS TIPOS DE DIRECCION SELECCIONADOS
-				  
+             		//VALIDACIONES GENERALES A TODOS LOS TIPOS DE DIRECCION SELECCIONADOS
 				   if (!validateDatosGeneralesDireccionForm(document.datosGeneralesForm)){
 						return false;
 					}
@@ -1866,13 +1912,12 @@
 						 return false;
 					}
 	
-	
 					// jbd 04/06/2009 opcion sms
 					if((document.datosGeneralesForm.preferenteSms.checked) && (trim(document.datosGeneralesForm.movil.value)=="")) {							 
 		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.movil"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 		 				 alert (mensaje);
 						 return false;
-					}
+					}					
 					return true;
 				 
 				 }else{

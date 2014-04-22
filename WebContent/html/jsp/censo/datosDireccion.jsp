@@ -661,7 +661,7 @@
 						checkGuardia=true;
 					}
 					// si es de tipo correo, despacho o guia lo apunto
-					if(tipoDir == 3 || tipoDir == 2	|| tipoDir == 5) {						
+					if(tipoDir == 3 || tipoDir == 2	|| tipoDir == 5 || tipoDir == 8) {						
 						checkPostal=true;
 					}						
 				}
