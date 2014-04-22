@@ -867,10 +867,18 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	
 	void validarRestricciones (CenDireccionesBean beanDir) throws SIGAException {
 		try {
-
+			// 		QUE EXISTA UNA DIRECCION DE CORREO
+			
+			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_FACTURACION) < 1) {
+				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.facturacion");
+				throw sigaExp;
+			}
 			// BUSCO SU ESTADO COLEGIAL
 			CenColegiadoAdm admCol = new CenColegiadoAdm(this.usrbean);
 			CenClienteAdm admCli = new CenClienteAdm(this.usrbean);
+			
+			
+			
 			String esLetrado=CenClienteAdm.getEsLetrado(beanDir.getIdPersona().toString(), beanDir.getIdInstitucion().toString());
 			
 			Hashtable d = admCol.getEstadoColegial (beanDir.getIdPersona(), beanDir.getIdInstitucion());
@@ -878,17 +886,15 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				// no es colegiado o no tiene estado colegial y ademas no es letrado
 				return;
 			}
-			Integer estado = UtilidadesHash.getInteger(d, CenEstadoColegialBean.C_IDESTADO);
-
-			// QUE EXISTA UNA DIRECCION DE CORREO
+			
 			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CENSOWEB) < 1) {
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoCorreo");
 				throw sigaExp;
 			}
-			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_FACTURACION) < 1) {
-				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.facturacion");
-				throw sigaExp;
-			}
+			
+			Integer estado = UtilidadesHash.getInteger(d, CenEstadoColegialBean.C_IDESTADO);
+
+			
 
 			//obtener las colegiaciones del letrado en estado ejerciente
 			Vector vInstitucionesEjerciente = admCli.getInstitucionesEjerciente(
