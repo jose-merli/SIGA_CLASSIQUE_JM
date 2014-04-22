@@ -67,6 +67,7 @@
 		       					}
 		                        jQuery("#idPlantillaEnvioDefecto").append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
 		                    });
+		       				jQuery("#idPlantillaEnvioDefecto").change();
 		       			}
 			           			
 		           },
@@ -933,10 +934,11 @@
 
 			jQuery.fn.reverse = [].reverse;
 			
-			jQuery('select').not('#comboTipoEnvioPermitidos').each(function(){
+			jQuery('select').not('#comboTipoEnvioPermitidos').not("#idPlantillaEnvioDefecto").each(function(){
 				jQuery(this).after(jQuery(this).find("option:selected").text());
 				jQuery(this).hide();
 			});
+			
 			jQuery('input').attr('readOnly','readOnly');
 			jQuery('textArea').attr('readOnly','readOnly');
 			jQuery('#comboTipoEnvioPermitidos').hide();
@@ -946,6 +948,12 @@
 					console.log(jQuery(this).text());
 				}
 			});
+
+			jQuery("#idPlantillaEnvioDefecto").change(function(){
+				jQuery("#idPlantillaEnvioDefecto").after(jQuery("#idPlantillaEnvioDefecto").find(":selected").text());
+				jQuery("#idPlantillaEnvioDefecto").hide();
+			});
+			
 		}
 		
 		function campoSoloLectura(campo){
