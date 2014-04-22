@@ -25,7 +25,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacDisqueteCargosAdm;
@@ -508,7 +507,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
-			String fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
+			String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1	
+			
 			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
 			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
 			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
@@ -929,8 +930,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				fechaRecibosB2B = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSB2B"));
 				request.setAttribute("radio","0"); // El radio seleccionado será Minimas
 			
-			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA				
-				fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA		
+				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
+				fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1	
+				
 				fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
 				fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
 				fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);

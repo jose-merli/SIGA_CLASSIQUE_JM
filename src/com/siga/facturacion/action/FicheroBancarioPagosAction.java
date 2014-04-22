@@ -28,9 +28,9 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.beans.FacDisqueteCargosAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
@@ -516,7 +516,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
-			String fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
+			String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+			
 			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
 			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
 			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);

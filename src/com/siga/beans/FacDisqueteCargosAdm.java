@@ -14,7 +14,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
 import com.siga.general.EjecucionPLs;
@@ -330,7 +329,9 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 		String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 		
-		String fechaMinimaEntrega = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+		String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
+		String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1				
+		
 		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {
 			return false;
 		}

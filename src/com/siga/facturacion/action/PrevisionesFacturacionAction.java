@@ -870,10 +870,14 @@ or	 * @param request -
 				bean.setIdPrevision(new Long(idPrevision));
 				
 				/** CR7 - Insercion de Fechas SEPA segun el algoritmo empleado en la ventana de Programacion **/
-				String fechaPresentacion = UtilidadesFecha.sumarDias("",1); //Fecha actual +1
+				String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
+				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
+				String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+				
 				GenParametrosAdm admParametros = new GenParametrosAdm(user);
 				String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
-				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(String.valueOf(ClsConstants.INSTITUCION_CGAE),fechaPresentacion,habilesUnicaCargos);
+				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPresentacion, habilesUnicaCargos);
+				
 				bean.setFechaPresentacion		(GstDate.getApplicationFormatDate("en",fechaPresentacion));
 				bean.setFechaCargoUnica			(GstDate.getApplicationFormatDate("en",fechaUnicaCargos));
 
