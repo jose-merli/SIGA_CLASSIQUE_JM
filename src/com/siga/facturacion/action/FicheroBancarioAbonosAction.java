@@ -364,7 +364,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 								concepto = "";
 						
 							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO), concepto);
-							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, concepto, fcs);
+							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000", fcs);
 							if (nFicherosGenerados < 0) {
 								correcto = false;
 							} else {
@@ -379,7 +379,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				if (!bancos.isEmpty()){
 					bancoMenorComision=((Row)bancos.firstElement()).getRow();
 					abonosBanco=adminAbono.getAbonosBancosMenorComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000"), fcs);
+					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, "000"/*adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000")*/, fcs);
 					if (nFicherosGenerados < 0) {
 						correcto = false;
 					} else {
@@ -396,7 +396,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					while (listaBancos.hasMoreElements()){
 						banco=((Row)listaBancos.nextElement()).getRow();
 						abonosBanco=adminAbono.getAbonosBanco(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000"), fcs);
+						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000"/*adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000")*/, fcs);
 						if (nFicherosGenerados < 0) {
 							correcto = false;
 						} else {
