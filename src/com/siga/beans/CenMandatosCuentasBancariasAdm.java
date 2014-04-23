@@ -53,7 +53,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" BANCOS." + CenBancosBean.C_BIC + " AS " + CenMandatosCuentasBancariasBean.C_BIC + ", " + 
 										" BANCOS." + CenBancosBean.C_NOMBRE + " AS " + CenMandatosCuentasBancariasBean.C_BANCO + ", " + 
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION;
 	
