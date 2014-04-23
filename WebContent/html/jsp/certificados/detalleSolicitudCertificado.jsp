@@ -566,26 +566,27 @@
 									fechaCo = sdf.format(date);
 								}%>		
 								<siga:Fecha nombreCampo="fechaCobro" valorInicial="<%=fechaCo%>"/>
-									<script type="text/javascript">	
-										jQuery(document).ready(function () {		
-											if (!SolicitudesCertificadosForm.checkCobro.checked){
-												jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
-												jQuery("#fechaCobro-datepicker-trigger").hide();
-												jQuery("#td_1").hide();
-												jQuery("#td_2").hide();
-												jQuery("#td_3").hide();
-												jQuery("#td_4").hide();
-												jQuery("#td_5").hide();
-											}
-										});
-									</script>
 								
 							<%} else {%>
 								<html:text name="SolicitudesCertificadosForm"
 									property="fechaCobro" styleClass="boxConsulta" readonly="true"
 									value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaCobro()) %>"
 									size="10"></html:text>
-							<%}%>		
+							<%}%>	
+							
+								<script type="text/javascript">	
+									jQuery(document).ready(function () {		
+										if (!SolicitudesCertificadosForm.checkCobro.checked){
+											jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
+											jQuery("#fechaCobro-datepicker-trigger").hide();
+											jQuery("#td_1").hide();
+											jQuery("#td_2").hide();
+											jQuery("#td_3").hide();
+											jQuery("#td_4").hide();
+											jQuery("#td_5").hide();
+										}
+									});
+								</script>	
 						</div>
 						
 						<div class="labelText colsiguientes" id="td_1" width="60px">
