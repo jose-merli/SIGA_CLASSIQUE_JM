@@ -17,8 +17,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + " AS " + CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + " AS " + CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATO + " AS " + CenAnexosCuentasBancariasBean.C_IDMANDATO + ", " + 
-										" NULL AS " + CenAnexosCuentasBancariasBean.C_IDANEXO + ", " + 
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" NULL AS " + CenAnexosCuentasBancariasBean.C_IDANEXO + ", " + 										
 										" NULL AS " + CenAnexosCuentasBancariasBean.C_ORIGEN + ", " + 
 										" NULL AS " + CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " + 
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
@@ -26,6 +25,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " AS " + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
+										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION + " AS " + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION + " AS " + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN;
@@ -36,8 +37,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " +  
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +  
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDMANDATO + "," +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDANEXO + "," +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDANEXO + "," +										
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_ORIGEN + "," +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_DESCRIPCION + "," +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
@@ -45,6 +45,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + "," +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
+										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN;;
@@ -63,6 +65,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenAnexosCuentasBancariasBean.C_IDMANDATO,
 			CenAnexosCuentasBancariasBean.C_IDANEXO,
 			CenAnexosCuentasBancariasBean.C_FECHACREACION,
+			CenAnexosCuentasBancariasBean.C_USUCREACION,
 			CenAnexosCuentasBancariasBean.C_ORIGEN,
 			CenAnexosCuentasBancariasBean.C_DESCRIPCION, 
 			CenAnexosCuentasBancariasBean.C_FIRMA_FECHA,
@@ -95,6 +98,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setIdMandato(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_IDMANDATO));
 			bean.setIdAnexo(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_IDANEXO));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FECHACREACION));
+			bean.setUsuCreacion(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_USUCREACION));
 			bean.setOrigen(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_ORIGEN)); 
 			bean.setDescripcion(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_DESCRIPCION));
 			bean.setFirmaFecha(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA));
@@ -124,7 +128,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_IDCUENTA, beanAnexo.getIdCuenta());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_IDMANDATO, beanAnexo.getIdMandato());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_IDANEXO, beanAnexo.getIdAnexo());
-			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FECHACREACION, beanAnexo.getFechaCreacion());			
+			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FECHACREACION, beanAnexo.getFechaCreacion());
+			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_USUCREACION, beanAnexo.getUsuCreacion());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_ORIGEN, beanAnexo.getOrigen());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_DESCRIPCION, beanAnexo.getDescripcion());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA, beanAnexo.getFirmaFecha());
@@ -364,12 +369,13 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 								CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " +
 								CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +
 								CenAnexosCuentasBancariasBean.C_IDMANDATO + ", " +
-								CenAnexosCuentasBancariasBean.C_IDANEXO + ", " +
-								CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
+								CenAnexosCuentasBancariasBean.C_IDANEXO + ", " +								
 								CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
 								CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +
 								CenAnexosCuentasBancariasBean.C_ORIGEN + ", " +
-								CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " +							
+								CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " +
+								CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
+								CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +								
 								CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
 								CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + 
 							") VALUES (" +
@@ -377,12 +383,13 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 								beanAnexo.getIdPersona() + ", " +
 								beanAnexo.getIdCuenta() + ", " +
 								beanAnexo.getIdMandato() + ", " +
-								idAnexo + ", " +
-								"SYSDATE, " +
+								idAnexo + ", " +								
 								sFirmaFecha + ", " +
 								sFirmaLugar + ", " +
 								sFirmaOrigen + ", " +
 								sFirmaDescripcion + ", " +
+								this.usrbean.getUserName() + ", " +
+								"SYSDATE, " +
 								this.usrbean.getUserName() + ", " +
 								"SYSDATE)";
 			

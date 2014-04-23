@@ -8,7 +8,7 @@ import com.siga.censo.form.MandatosCuentasBancariasForm;
 public class CenMandatosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
+	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, usuCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion;
 	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos,idFicheroFirma;
@@ -32,6 +32,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 	static public final String C_IDMANDATO = "IDMANDATO";
 	static public final String C_TIPOMANDATO = "TIPOMANDATO";
 	static public final String C_FECHACREACION = "FECHACREACION";
+	static public final String C_USUCREACION = "USUCREACION";
 	static public final String C_REFMANDATOSEPA = "REFMANDATOSEPA";
 	static public final String C_TIPOPAGO = "TIPOPAGO";	
 	static public final String C_ESQUEMA = "ESQUEMA";
@@ -76,6 +77,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.idMandato = formMandatos.getIdMandato();
 		this.tipoMandato = formMandatos.getTipoMandato();
 		this.fechaCreacion = formMandatos.getFechaCreacion();
+		this.usuCreacion = formMandatos.getUsuCreacion();
 		this.refMandatoSepa = formMandatos.getRefMandatoSepa();
 		this.tipoPago = formMandatos.getTipoPago();
 		this.esquema = formMandatos.getEsquema();
@@ -121,6 +123,7 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.idMandato = "";
 		this.tipoMandato = "";
 		this.fechaCreacion = "";
+		this.usuCreacion = "";
 		this.refMandatoSepa = "";		
 		this.tipoPago = "";
 		this.esquema = "";
@@ -158,6 +161,14 @@ public class CenMandatosCuentasBancariasBean extends MasterBean {
 		this.banco = "";
 	}
 	
+	public String getUsuCreacion() {
+		return usuCreacion;
+	}
+
+	public void setUsuCreacion(String usuCreacion) {
+		this.usuCreacion = usuCreacion;
+	}
+
 	public String getAcreedorTipoId() {
 		return acreedorTipoId;
 	}

@@ -8,7 +8,7 @@ import com.siga.censo.form.AnexosCuentasBancariasForm;
 public class CenAnexosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, origen, descripcion;
+	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
 	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos, idFicheroFirma;
 
 	public String getIdFicheroFirma() {
@@ -29,6 +29,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 	static public final String C_IDMANDATO = "IDMANDATO";
 	static public final String C_IDANEXO = "IDANEXO";
 	static public final String C_FECHACREACION = "FECHACREACION";
+	static public final String C_USUCREACION = "USUCREACION";
 	static public final String C_FECHAORDEN = "FECHAORDEN";	
 	static public final String C_ORIGEN = "ORIGEN";	
 	static public final String C_DESCRIPCION = "DESCRIPCION";
@@ -45,6 +46,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.idMandato = formAnexo.getIdMandato();
 		this.idAnexo = formAnexo.getIdAnexo();
 		this.fechaCreacion = formAnexo.getFechaCreacion();
+		this.usuCreacion = formAnexo.getUsuCreacion();
 		this.origen = formAnexo.getOrigen();
 		this.descripcion = formAnexo.getDescripcion();
 		this.firmaFecha = formAnexo.getFirmaFecha();
@@ -62,6 +64,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.idMandato = "";
 		this.idAnexo = "";
 		this.fechaCreacion = "";
+		this.usuCreacion = ""; 
 		this.origen = "";
 		this.descripcion = "";
 		this.firmaFecha = "";
@@ -73,6 +76,14 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 	
 	public String getIdInstitucion() {
 		return idInstitucion;
+	}
+
+	public String getUsuCreacion() {
+		return usuCreacion;
+	}
+
+	public void setUsuCreacion(String usuCreacion) {
+		this.usuCreacion = usuCreacion;
 	}
 
 	public String getFirmaFechaHora() {

@@ -4,11 +4,19 @@ import com.siga.general.form.FicheroForm;
 
 public class AnexosCuentasBancariasForm extends FicheroForm {
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, origen, descripcion;
+	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
 	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos;
 	
 	public String getIdInstitucion() {
 		return idInstitucion;
+	}
+
+	public String getUsuCreacion() {
+		return usuCreacion;
+	}
+
+	public void setUsuCreacion(String usuCreacion) {
+		this.usuCreacion = usuCreacion;
 	}
 
 	public String getFirmaFechaHora() {

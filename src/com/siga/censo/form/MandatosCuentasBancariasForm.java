@@ -6,23 +6,29 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 	
 
 	/* Variables */	
-	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
+	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, usuCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion, deudorPoblacionExtranjera;
 	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos,idFichero;
+	private String fechaUso, iban, bic, banco;		
+	private String modoMandato, nombrePersona, numero;
+	private String[] modosMandato = {"mandatoCuentaBancaria", "ficherosMandatoCuentaBancaria"};		
+
+	public String getUsuCreacion() {
+		return usuCreacion;
+	}
+
+	public void setUsuCreacion(String usuCreacion) {
+		this.usuCreacion = usuCreacion;
+	}
+	
 	public String getIdFichero() {
 		return idFichero;
-	}
+	}	
 
 	public void setIdFichero(String idFichero) {
 		this.idFichero = idFichero;
-	}
-
-	private String fechaUso, iban, bic, banco;	
-	
-	private String modoMandato, nombrePersona, numero;
-	private String[] modosMandato = {"mandatoCuentaBancaria", "ficherosMandatoCuentaBancaria"};	
-	
+	}	
 
 	public String getDeudorPoblacionExtranjera() {
 		return deudorPoblacionExtranjera;

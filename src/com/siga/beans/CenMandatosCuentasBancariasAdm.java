@@ -16,8 +16,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATO + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", " +										
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOPAGO + ", " +										
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ESQUEMA + ", " + 
@@ -53,6 +52,8 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" CUENTAS." + CenCuentasBancariasBean.C_IBAN + " AS " + CenMandatosCuentasBancariasBean.C_IBAN + ", " +
 										" BANCOS." + CenBancosBean.C_BIC + " AS " + CenMandatosCuentasBancariasBean.C_BIC + ", " + 
 										" BANCOS." + CenBancosBean.C_NOMBRE + " AS " + CenMandatosCuentasBancariasBean.C_BANCO + ", " + 
+										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", " +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION;
 	
@@ -78,6 +79,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenMandatosCuentasBancariasBean.C_IDMANDATO,
 			CenMandatosCuentasBancariasBean.C_TIPOMANDATO,
 			CenMandatosCuentasBancariasBean.C_FECHACREACION,
+			CenMandatosCuentasBancariasBean.C_USUCREACION,
 			CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA,
 			CenMandatosCuentasBancariasBean.C_TIPOPAGO, 
 			CenMandatosCuentasBancariasBean.C_ESQUEMA,
@@ -137,6 +139,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setIdMandato(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IDMANDATO));
 			bean.setTipoMandato(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_TIPOMANDATO));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHACREACION));
+			bean.setUsuCreacion(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_USUCREACION));
 			bean.setRefMandatoSepa(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA));
 			bean.setTipoPago(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_TIPOPAGO)); 
 			bean.setEsquema(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_ESQUEMA));
@@ -197,6 +200,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IDMANDATO, beanMandato.getIdMandato());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_TIPOMANDATO, beanMandato.getTipoMandato());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FECHACREACION, beanMandato.getFechaCreacion());
+			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_USUCREACION, beanMandato.getUsuCreacion());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA, beanMandato.getRefMandatoSepa());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_TIPOPAGO, beanMandato.getTipoPago());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_ESQUEMA, beanMandato.getEsquema());
