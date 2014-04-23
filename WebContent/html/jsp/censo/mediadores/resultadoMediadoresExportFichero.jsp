@@ -184,8 +184,8 @@
 		<siga:Table 		   
 		   name="listadoIncidencias"
 		   border="1"
-		   columnNames="censo.mediador.literal.colegio,censo.mediador.literal.ncolegiado,censo.mediador.literal.nombre,censo.mediador.literal.apellido1,censo.mediador.literal.apellido2,censo.mediador.literal.tipodocumento,censo.mediador.literal.documento"
-		   columnSizes="10,8,20,20,20,8,12">
+		   columnNames="censo.mediador.literal.colegio,censo.mediador.literal.tipo,censo.mediador.literal.ncolegiado,censo.mediador.literal.nombre,censo.mediador.literal.apellido1,censo.mediador.literal.apellido2,censo.mediador.literal.tipodocumento,censo.mediador.literal.documento"
+		   columnSizes="10,5,8,18,20,18,8,12">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -204,13 +204,14 @@
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleBorrado="false" visibleEdicion="false" pintarEspacio="no" clase="listaNonEdit" visibleconsulta="false" visibleEdicion="false" botones="">
 		   			<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=cenMediadorXml.getIdmediadorxml()%>">		   	
-		   			<td style="text-align: left"><%=cenMediadorXml.getIdinstitucion()!=null?CenVisibilidad.getAbreviaturaInstitucion(String.valueOf(cenMediadorXml.getIdinstitucion())):"&nbsp;"%></td>		
+		   			<td style="text-align: left"><%=cenMediadorXml.getIdinstitucion()!=null?CenVisibilidad.getAbreviaturaInstitucion(String.valueOf(cenMediadorXml.getIdinstitucion())):"&nbsp;"%></td>
+		   			<td style="text-align: center"><%=cenMediadorXml.getIdtipomovimiento()!=null?cenMediadorXml.getIdtipomovimiento():"&nbsp;"%></td>		
 		   			<td style="text-align: center"><%=cenMediadorXml.getNumcolegiado()!=null?cenMediadorXml.getNumcolegiado():"&nbsp;"%></td>
 					<td style="text-align: left"><%=cenMediadorXml.getNombre()!=null?cenMediadorXml.getNombre():"&nbsp;"%></td>
 					<td style="text-align: left"><%=cenMediadorXml.getApellido1()!=null?cenMediadorXml.getApellido1():"&nbsp;"%></td>
 					<td style="text-align: left"><%=cenMediadorXml.getApellido2()!=null?cenMediadorXml.getApellido2():"&nbsp;"%></td>
 					<td style="text-align: center"><%=cenMediadorXml.getIdtipodocumento()!=null?cenMediadorXml.getIdtipodocumento():"&nbsp;"%></td>
-					<td style="text-align: center"><%=cenMediadorXml.getDocumento()!=null?cenMediadorXml.getDocumento():"&nbsp;"%></td>
+					<td style="text-align: center"><%=cenMediadorXml.getDocumento()!=null?cenMediadorXml.getDocumento():"&nbsp;"%></td>					
 				</siga:FilaConIconos>	
 							<% }
 		   				   } else { %>
