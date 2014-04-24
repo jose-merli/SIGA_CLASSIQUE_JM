@@ -10,21 +10,37 @@
 
 package com.siga.envios.action;
 
-import java.util.*;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.administracion.SIGAConstants;
-import com.siga.beans.*;
-import com.siga.general.*;
-import com.siga.gui.processTree.SIGAPTConstants;
-import com.siga.Utilidades.UtilidadesString;
-
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import com.siga.envios.form.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
-import org.apache.struts.action.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.EnvCamposEnviosAdm;
+import com.siga.beans.EnvDestinatariosBean;
+import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
+import com.siga.envios.form.TextoEnviosSMSForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
+import com.siga.gratuita.service.EejgService;
+import com.siga.gui.processTree.SIGAPTConstants;
+
+import es.satec.businessManager.BusinessManager;
 
 public class TextoEnviosSMSAction extends MasterAction
 {
@@ -51,7 +67,9 @@ public class TextoEnviosSMSAction extends MasterAction
 
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = abrir(mapping, miForm, request, response);
-						break;				
+						break;		
+					}else if(accion!=null && accion.equalsIgnoreCase("downloadCertificado")){ 
+						mapDestino = downloadCertificado(mapping, miForm, request, response);						
 					} else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -98,6 +116,7 @@ public class TextoEnviosSMSAction extends MasterAction
         String sDescripcionEnvio = envioBean.getDescripcion();
         String sIdPlantillaEnvio = ""+envioBean.getIdPlantillaEnvios();
         String sIdPlantillaGeneracion = ""+envioBean.getIdPlantilla();
+        String CSV = envioBean.getCSV();
 
         String sCuerpo = admEnvio.getCuerpoSMS(new Integer(idInstitucion), new Integer(idEnvio));
         if (sCuerpo==null) sCuerpo="";	
@@ -122,6 +141,7 @@ public class TextoEnviosSMSAction extends MasterAction
         request.setAttribute("idPlantillaEnvio", sIdPlantillaEnvio);
         request.setAttribute("idPlantillaGeneracion", sIdPlantillaGeneracion);
         request.setAttribute("sCuerpo", sCuerpo);
+        request.setAttribute("CSV", CSV);
 
         request.setAttribute("datos", vDatos);
 
@@ -158,6 +178,35 @@ public class TextoEnviosSMSAction extends MasterAction
 	    }
 
 	    return "exito";
+	}
+	
+	protected String downloadCertificado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		String salida="";
+		
+		try {
+			TextoEnviosSMSForm form = (TextoEnviosSMSForm) formulario;
+			UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+			String idInstitucion = form.getIdInstitucion();
+			String idEnvio = form.getIdEnvio();
+
+			BusinessManager bm = getBusinessManager();
+			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
+			File fichero = eEjgS.descargarCertificadoNotificacionEMensaje(idInstitucion,idEnvio,userBean);
+			
+			if(fichero!= null){
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
+				request.setAttribute("borrarFichero", "true");			
+				request.setAttribute("generacionOK","OK");
+				salida= "descarga";
+			}
+		
+		} catch (Exception e) { 
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN PESTAÑA TEXTO BUROSMS "+e.toString(), 10);
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null); 
+		}	
+		
+		return salida;
 	}
 
 }

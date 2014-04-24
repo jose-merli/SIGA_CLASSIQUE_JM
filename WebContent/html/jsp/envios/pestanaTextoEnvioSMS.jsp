@@ -21,6 +21,7 @@
 <%@ page import="com.siga.gui.processTree.*"%>
 <%@ page import="java.util.Properties" %>
 <%@ page import="java.util.Vector" %>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -37,9 +38,13 @@
 	String tipo = UtilidadesMultidioma.getDatoMaestroIdioma((String)request.getAttribute("tipo"),userBean);
 	String idEnvio = (String)request.getAttribute("idEnvio");
 	String idInstitucion = (String)request.getAttribute("idInstitucion");
+	String CSV = (String)request.getAttribute("CSV");
 
 	String sCuerpo = (String)request.getAttribute("sCuerpo");
 	if (sCuerpo==null) sCuerpo="";	
+	
+	FilaExtElement[] elems=new FilaExtElement[1];
+	elems[0]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 %>
 
 
@@ -77,6 +82,13 @@
 			{
 				document.location.reload();
 			}
+			
+			function download(){
+				sub();
+				TextoEnviosSMSForm.modo.value="downloadCertificado";
+				TextoEnviosSMSForm.submit();
+			}	
+			
 		</script>
 
 		<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
@@ -144,6 +156,22 @@
 						</td>
 					</tr>
 				</table>
+				
+				<%if (CSV!= null && !CSV.equals("")) {%>
+					<table border="0" cellpadding="5" cellspacing="0">
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="65">&nbsp;</td>			
+	  						<td class="labelText" align="right">Descarga Certificado Recepción</td>
+							<td> <img id="iconoboton_download" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" alt="Descargar" name="iconoFila" title="Descargar" border="0" onClick="download()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download','','/SIGA/html/imagenes/bdownload_on.gif',1)"></td>
+						</tr>	
+					</table>	
+				<% } %>		
+				
 			</html:form>
 <c:catch var ="catchException">
    <bean:parameter id="origen" name="origen" />

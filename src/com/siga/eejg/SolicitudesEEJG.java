@@ -194,10 +194,8 @@ public class SolicitudesEEJG {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
 						scsEejgPeticionesBean.setCsv(infoRespuestaConsultaInfo.getDatosInformacionAAPP().getCSV());
 					}
-					
 				}
 			}				
-						
 		}
 				
 		return idXML;
@@ -278,11 +276,13 @@ public class SolicitudesEEJG {
 				
 				} else if(obtDoc.getResultado().toUpperCase().equals(AppConstants.PFD_SOLICITUD_DOCUMENTO_KO)){
 					ClsLogging.writeFileLog("El resultado de la obtencion del documento de la PFD es incorrecto", 10);
+					throw new ClsExceptions("No se ha podido realizar la petición. Ha fallado la comunicación con la plataforma generadora de PDF");
 				}
 			}
 			
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Error al solicitar documento a la PFD", e, 3);
+			throw new ClsExceptions(e, e.getLocalizedMessage());
 		}			
 		
 		return contenidoPDF;

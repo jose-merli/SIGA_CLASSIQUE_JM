@@ -21,6 +21,8 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -30,10 +32,12 @@ import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.eejg.SolicitudesEEJG;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 import com.siga.gratuita.service.EejgService;
 import com.siga.informes.InformeEejg;
+import com.sis.firma.core.B64.Base64CODEC;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -462,5 +466,35 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		return admPeticionEejg.getPeticionesEejg(eejgBean);
 	}
 
+	public File descargarCertificadoNotificacionEMensaje(String idInstitucion, String idEnvio, UsrBean usrBean) throws BusinessException {
+		File fileFirmado = null;		
+		
+		try {			
+			//Obtenemos el CSV a traves de una consulta a envios
+			EnvEnviosAdm enviosAdm = new EnvEnviosAdm(usrBean);
+			Hashtable htPk = new Hashtable();
+			htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+			htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
+			Vector envios = enviosAdm.selectByPK(htPk);
+			if(envios!= null && envios.size()>0){
+				EnvEnviosBean bean = (EnvEnviosBean) envios.get(0);
+				
+				//LLamamos al servico de EEJG para obtener el PDF a traves de la PFD
+				SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
+				String contenidoPDF = solicitudesEEJG.getDocumentoTO(bean.getCSV());
+				
+				//Construimos nuestro fichero
+				String pathFile = "CertificadoRecepcionBuroSMS_" + idInstitucion + "_" + idEnvio+ ".pdf";
+				fileFirmado = new File(pathFile);
 
+				// Realizamos la decodificacion para su correcta visualización
+				Base64CODEC.decodeToFile(contenidoPDF, pathFile);
+			}
+			
+		} catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+		}
+		
+		return fileFirmado;
+	}
 }

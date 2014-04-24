@@ -146,7 +146,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
             	EnvEnviosBean.C_ACUSERECIBO,
             	EnvEnviosBean.C_COMISIONAJG,
             	EnvEnviosBean.C_FECHAMODIFICACION,
-            	EnvEnviosBean.C_USUMODIFICACION
+            	EnvEnviosBean.C_USUMODIFICACION,
+            	EnvEnviosBean.C_CSV
 				};
 
 		return campos;
@@ -197,6 +198,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			bean.setConsulta(UtilidadesHash.getString(hash, EnvEnviosBean.C_CONSULTA));
 			bean.setAcuseRecibo(UtilidadesHash.getString(hash, EnvEnviosBean.C_ACUSERECIBO));
 			bean.setComisionAJG(UtilidadesHash.getShort(hash, EnvEnviosBean.C_COMISIONAJG));
+			bean.setCSV(UtilidadesHash.getString(hash, EnvEnviosBean.C_CSV));
 
 		}
 
@@ -237,6 +239,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvEnviosBean.C_CONSULTA, b.getConsulta());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_ACUSERECIBO, b.getAcuseRecibo());
 			UtilidadesHash.set(htData, EnvEnviosBean.C_COMISIONAJG, b.getComisionAJG());
+			UtilidadesHash.set(htData, EnvEnviosBean.C_CSV, b.getCSV());
 
 		}
 
@@ -4620,7 +4623,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     Transport tr = null;
     
     try{
-	    EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrbean);
 
         // COMPROBACIÓN
         /////////////////////////////////////
@@ -4792,6 +4794,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					Date ini = new Date();
 					ClsLogging.writeFileLog("Enviando solicitud BuroSMS...",10);
 					ResultadoSolicitudEnvio response03 = stub.enviarSMS(sesms01);
+					
 					Date fin = new Date();
 					ClsLogging.writeFileLog("Recibida respuesta BuroSMS. TIEMPO: "+new Long((fin.getTime()-ini.getTime())).toString(),10);
 					
@@ -4803,7 +4806,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	        }
 
 					ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
-							            
+					
+					//CR7 - INC_11336_SIGA. Hay que añadir un nuevo campo en EnvEnvios para guardar el idSolicitud
+					htPk.put(EnvEnviosBean.C_IDSOLICITUDECOS,response03.getIdSolicitud());
+					String[] campos = {EnvEnviosBean.C_IDSOLICITUDECOS};
+					this.updateDirect(htPk, this.getClavesBean(), campos);
 		            
 		    	    // RGG 08/06/2009 ESTADISTICA
 		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
