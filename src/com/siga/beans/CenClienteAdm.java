@@ -3767,7 +3767,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				beanDir.setPreferente (ClsConstants.TIPO_PREFERENTE_CORREO + ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO);
 			
 			//estableciendo los datos del tipo de direccion guardia
-			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
+			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
 			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
 			direccion.insertar(beanDir, tiposDir, null, null, this.usrbean);
