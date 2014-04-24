@@ -9,7 +9,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.censo.form.AnexosCuentasBancariasForm;
-import com.siga.censo.form.MandatosCuentasBancariasForm;
 
 public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	
@@ -362,7 +361,10 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			}
 			
 			// Calculo nuevo identificador de anexo
-			Integer idAnexo = this.getNuevoID(beanAnexo);							 
+			Integer idAnexo = this.getNuevoID(beanAnexo);	
+			
+			// Guardo el identificador del anexo en el bean
+			beanAnexo.setIdAnexo(idAnexo.toString());
 			
 			String sql = "INSERT INTO " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + " (" +
 								CenAnexosCuentasBancariasBean.C_IDINSTITUCION + ", " +
@@ -473,7 +475,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 						sql +=" WHERE " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + anexoMandatosCuentasBancariasForm.getIdInstitucion() +
 						" AND " + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + anexoMandatosCuentasBancariasForm.getIdPersona() + 
 						" AND " + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + anexoMandatosCuentasBancariasForm.getIdCuenta() + 
-						" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + anexoMandatosCuentasBancariasForm.getIdMandato();
+						" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + anexoMandatosCuentasBancariasForm.getIdMandato() +
+						" AND " + CenAnexosCuentasBancariasBean.C_IDANEXO + " = " + anexoMandatosCuentasBancariasForm.getIdAnexo();
 			
 			Row row = new Row();									
 			return (row.updateSQL(sql)>0);

@@ -20,9 +20,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenAnexosCuentasBancariasAdm;
 import com.siga.beans.CenAnexosCuentasBancariasBean;
-import com.siga.beans.CenMandatosCuentasBancariasAdm;
 import com.siga.censo.form.AnexosCuentasBancariasForm;
-import com.siga.censo.form.MandatosCuentasBancariasForm;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -194,13 +192,12 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
 			if (!anexosAdm.modificarFirmaAnexo(beanAnexo)) {
 				return exito("messages.updated.error", request);
+
 			}else{
 					if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
 						uploadFile(formAnexo, usuario);
 						anexosAdm.asociarFichero(formAnexo);
 					}
-
-				
 			}	
 		
 		} catch (Exception e) {
@@ -231,6 +228,19 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
 			anexosAdm.insertarFirmaAnexo(beanAnexo);
+			
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
+			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
+				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+			}			
+
+			// Cargo el nuevo identificador del anexo
+			formAnexo.setIdAnexo(beanAnexo.getIdAnexo());
+			if (formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
+				uploadFile(formAnexo, usuario);
+				anexosAdm.asociarFichero(formAnexo);
+			}
 		
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
