@@ -155,10 +155,23 @@
 			document.MandatosCuentasBancariasForm.modo.value="modificarMandatoCuentaBancaria";		
 			document.MandatosCuentasBancariasForm.submit();
 		}	
+		
+	    // Funcion que calcula la altura de la pagina de un div con los botones del final
+	    function calcularAltura() {		
+			if (document.getElementById("idBotonesAccion")) {
+				var tablaBotones = jQuery('#idBotonesAccion')[0];						
+				var divDatos = jQuery('#scrollValores')[0];
+			
+				var posTablaBotones = tablaBotones.offsetTop;
+				var posDivDatos = divDatos.offsetTop;
+			
+				jQuery('#scrollValores').height(posTablaBotones - posDivDatos);			
+			}		
+		}			
 	</script>
 </head>
 
-<body>
+<body onload="calcularAltura()" >
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" height="32px">
 		<tr>
@@ -190,182 +203,195 @@
 		<html:hidden name="MandatosCuentasBancariasForm" property="numero" styleId="numero" value="<%=numero%>" />
 		<html:hidden name="MandatosCuentasBancariasForm" property="modoMandato" styleId="modoMandato" value="<%=modoMandato%>" />
 		<html:hidden name="MandatosCuentasBancariasForm" property="autorizacionB2B" styleId="autorizacionB2B" value="0" />
+		
+		<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white;">
 	
-		<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.datosGenerales">
-			<table cellpadding="0" border="0">
-				<tr>
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.referencia"/>&nbsp;(*)</td>
-					<td><html:text name="MandatosCuentasBancariasForm" property="refMandatoSepa" styleId="refMandatoSepa" maxlength="35" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:350px;' value="<%=beanMandato.getRefMandatoSepa()%>" />
+			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.datosGenerales">
+				<table cellpadding="0" border="0">
+					<tr>
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.referencia"/>&nbsp;(*)</td>
+						<td><html:text name="MandatosCuentasBancariasForm" property="refMandatoSepa" styleId="refMandatoSepa" maxlength="35" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:350px;' value="<%=beanMandato.getRefMandatoSepa()%>" />
+						
+						<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.fechaUso"/></td>
+						<td><html:text name="MandatosCuentasBancariasForm" property="fechaUso" styleId="fechaUso" styleClass="boxConsulta" readonly="true" value="<%=beanMandato.getFechaUso()%>" />						
+					</tr>
 					
-					<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.fechaUso"/></td>
-					<td><html:text name="MandatosCuentasBancariasForm" property="fechaUso" styleId="fechaUso" styleClass="boxConsulta" readonly="true" value="<%=beanMandato.getFechaUso()%>" />						
-				</tr>
-				
-				<tr>
-					<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago"/></td>	
-					<td colspan="3">
-						<html:hidden name="MandatosCuentasBancariasForm" property="tipoPago" styleId="tipoPago" value="0" />
-						<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.recurrente"/>
+					<tr>
+						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago"/></td>	
+						<td colspan="3">
+							<html:hidden name="MandatosCuentasBancariasForm" property="tipoPago" styleId="tipoPago" value="0" />
+							<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.recurrente"/>
+						
+							<!-- Options de recurrente y unico
+								<table cellpadding="0" cellpadding="0" border="0">
+									<tr>				
+										<td>
+											<input name="tipoPago" TYPE="radio" VALUE="0" disabled <%if(beanMandato.getTipoPago().equals("0")) {%> checked <%}%>>
+											<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.recurrente"/>
+										</td>
+										<td>
+											<input name="tipoPago" TYPE="radio" VALUE="1" disabled <%if(beanMandato.getTipoPago().equals("1")) {%> checked <%}%>>
+											<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.unico"/>
+										</td>								
+									</tr>
+								</table>
+							-->
+						</td> 											
+					</tr>
 					
-						<!-- Options de recurrente y unico
-							<table cellpadding="0" cellpadding="0" border="0">
-								<tr>				
+					<tr>
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.esquema"/>&nbsp;(*)</td>
+						<td colspan="3">
+							<table cellpadding="0" border="0">
+								<tr>		
 									<td>
-										<input name="tipoPago" TYPE="radio" VALUE="0" disabled <%if(beanMandato.getTipoPago().equals("0")) {%> checked <%}%>>
-										<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.recurrente"/>
+										<input id="esquema" name="esquema" TYPE="radio" VALUE="0" <%if(beanMandato.getEsquema().equals("0")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
+										<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.core"/>
+									</td>	
+								</tr>
+		
+								<tr>
+									<td>							
+										<input id="esquema" name="esquema" TYPE="radio" VALUE="1" <%if(beanMandato.getEsquema().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);"> 
+										<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.cor1"/>
 									</td>
-									<td>
-										<input name="tipoPago" TYPE="radio" VALUE="1" disabled <%if(beanMandato.getTipoPago().equals("1")) {%> checked <%}%>>
-										<siga:Idioma key="censo.fichaCliente.datosBancarios.tipoPago.unico"/>
-									</td>								
+								</tr>
+									
+								<tr>
+									<td>							
+										<input id="esquema" name="esquema" TYPE="radio" VALUE="2" <%if(beanMandato.getEsquema().equals("2")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
+										<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.b2b"/>
+									</td>	
+									
+									<td>									
+										&nbsp;&nbsp;
+										<input id="autorizacionB2BCheck" name="autorizacionB2BCheck" TYPE="checkbox" style="vertical-align:top" <%if(beanMandato.getAutorizacionB2B().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%>>
+										<siga:Idioma key="censo.fichaCliente.datosBancarios.autorizacion.b2b"/> 			
+										<siga:ToolTip id='ayudaB2B' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"censo.fichaCliente.datosBancarios.autorizacion.b2b.ayuda"))%>' />						
+									</td>
 								</tr>
 							</table>
-						-->
-					</td> 											
-				</tr>
-				
-				<tr>
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.esquema"/>&nbsp;(*)</td>
-					<td colspan="3">
-						<table cellpadding="0" border="0">
-							<tr>		
-								<td>
-									<input id="esquema" name="esquema" TYPE="radio" VALUE="0" <%if(beanMandato.getEsquema().equals("0")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
-									<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.core"/>
-								</td>	
-							</tr>
-	
-							<tr>
-								<td>							
-									<input id="esquema" name="esquema" TYPE="radio" VALUE="1" <%if(beanMandato.getEsquema().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);"> 
-									<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.cor1"/>
-								</td>
-							</tr>
-								
-							<tr>
-								<td>							
-									<input id="esquema" name="esquema" TYPE="radio" VALUE="2" <%if(beanMandato.getEsquema().equals("2")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
-									<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.b2b"/>
-								</td>	
-								
-								<td>									
-									&nbsp;&nbsp;
-									<input id="autorizacionB2BCheck" name="autorizacionB2BCheck" TYPE="checkbox" style="vertical-align:top" <%if(beanMandato.getAutorizacionB2B().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%>>
-									<siga:Idioma key="censo.fichaCliente.datosBancarios.autorizacion.b2b"/> 			
-									<siga:ToolTip id='ayudaB2B' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"censo.fichaCliente.datosBancarios.autorizacion.b2b.ayuda"))%>' />						
-								</td>
-							</tr>
-						</table>
-					</td> 	
-				</tr>						
-			</table>	
-		</siga:ConjCampos>
-		
-		<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.acreedor">		
-			<table cellpadding="0" border="0">
-				<tr>
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.identificador"/></td>
-					<td width="350px">
-						<siga:Select queryId="getTiposIdentificacion" id="tipoIdentificacion" selectedIds="<%=arrayAcreedorTipoId%>" readOnly="true" width="100px" /> 
-						<html:text name="MandatosCuentasBancariasForm" property="acreedorId" styleClass="boxConsulta" readonly="true" style='width:200px;' value="<%=beanMandato.getAcreedorId()%>" />
-					</td>				
-
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.nombre"/></td>
-					<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="acreedorNombre" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorNombre()%>" /></td>				
-				</tr>							
-			</table>								
-		
-			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.direccion">
-				<table cellpadding="0" border="0">
-					<tr>
-						<td class="labelText" width="110px" rowspan="2"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.direccion"/></td>
-						<td width="350px" rowspan="2">
-							<html:textarea name="MandatosCuentasBancariasForm" property="acreedorDomicilio"
-								style="overflow-y:auto; overflow-x:hidden; width:340px; height:50px; resize:none;"
-								value="<%=beanMandato.getAcreedorDomicilio()%>" styleClass="boxConsulta"
-								readonly="true"></html:textarea>
-						</td>
-						
-						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.codigoPostal"/></td>
-						<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="acreedorCodigoPostal" styleClass="boxConsulta" readonly="true" style='width:50px;' value="<%=beanMandato.getAcreedorCodigoPostal()%>" /></td>				
-					</tr>
-					
-					<tr>
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.pais"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="acreedorPais" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorPais()%>" /></td>																
-					</tr>	
-					
-					<tr>						
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.provincia"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="acreedorProvincia" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorProvincia()%>" /></td>
-						
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.poblacion"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="acreedorPoblacion" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorPoblacion()%>" /></td>				
-					</tr>											
-				</table>			
-			</siga:ConjCampos>		
-		</siga:ConjCampos>	
-		
-		<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.deudor">
-			<table cellpadding="0" border="0">
-				<tr>
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.identificador"/>&nbsp;(*)</td>
-					<td width="350px">
-						<siga:Select queryId="getTiposIdentificacion" id="deudorTipoId" selectedIds="<%=arrayDeudorTipoId%>" required="true" readOnly="<%=modoConsulta%>" width="100px" /> 		
-						<html:text name="MandatosCuentasBancariasForm" property="deudorId" styleId="deudorId" maxlength="20" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:200px;' value="<%=beanMandato.getDeudorId()%>" />
-					</td>				
-
-					<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.nombre"/></td>
-					<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="deudorNombre" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorNombre()%>" /></td>				
-				</tr>							
-			</table>								
-		
-			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.direccion">
-				<table cellpadding="0" border="0">
-					<tr>
-						<td class="labelText" width="110px" rowspan="2"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.direccion"/></td>
-						<td width="350px" rowspan="2">
-							<html:textarea name="MandatosCuentasBancariasForm" property="deudorDomicilio" styleId="deudorDomicilio"
-								onkeydown="cuenta(this,100)" onchange="cuenta(this,100)"
-								style="overflow-y:auto; overflow-x:hidden; width:340px; height:50px; resize:none;"
-								value="<%=beanMandato.getDeudorDomicilio()%>" styleClass="boxConsulta"
-								readonly="true"></html:textarea>
-						</td>
-						
-						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.codigoPostal"/></td>																	
-						<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="deudorCodigoPostal" styleClass="boxConsulta" readonly="true" style='width:50px;' value="<%=beanMandato.getDeudorCodigoPostal()%>" /></td>				
-					</tr>
-					
-					<tr>
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.pais"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="deudorPais" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorPais()%>" /></td>		 
-					</tr>
-					
-					<tr>
-						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.provincia"/></td>								
-						<td><html:text name="MandatosCuentasBancariasForm" property="deudorProvincia" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorProvincia()%>" /></td>					
-						
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.poblacion"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="deudorPoblacion" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorPoblacion()%>" /></td> 											
-					</tr>										
+						</td> 	
+					</tr>						
 				</table>	
+			</siga:ConjCampos>
+			
+			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.acreedor">		
+				<table cellpadding="0" border="0">
+					<tr>
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.identificador"/></td>
+						<td width="350px">
+							<siga:Select queryId="getTiposIdentificacion" id="tipoIdentificacion" selectedIds="<%=arrayAcreedorTipoId%>" readOnly="true" width="100px" /> 
+							<html:text name="MandatosCuentasBancariasForm" property="acreedorId" styleClass="boxConsulta" readonly="true" style='width:200px;' value="<%=beanMandato.getAcreedorId()%>" />
+						</td>				
+	
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.nombre"/></td>
+						<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="acreedorNombre" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorNombre()%>" /></td>				
+					</tr>							
+				</table>								
+			
+				<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.direccion">
+					<table cellpadding="0" border="0">
+						<tr>
+							<td class="labelText" width="110px" rowspan="2"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.direccion"/></td>
+							<td width="350px" rowspan="2">
+								<html:textarea name="MandatosCuentasBancariasForm" property="acreedorDomicilio"
+									style="overflow-y:auto; overflow-x:hidden; width:340px; height:50px; resize:none;"
+									value="<%=beanMandato.getAcreedorDomicilio()%>" styleClass="boxConsulta"
+									readonly="true"></html:textarea>
+							</td>
+							
+							<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.codigoPostal"/></td>
+							<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="acreedorCodigoPostal" styleClass="boxConsulta" readonly="true" style='width:50px;' value="<%=beanMandato.getAcreedorCodigoPostal()%>" /></td>				
+						</tr>
+						
+						<tr>
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.pais"/></td>
+							<td><html:text name="MandatosCuentasBancariasForm" property="acreedorPais" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorPais()%>" /></td>																
+						</tr>	
+						
+						<tr>						
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.provincia"/></td>
+							<td><html:text name="MandatosCuentasBancariasForm" property="acreedorProvincia" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorProvincia()%>" /></td>
+							
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.poblacion"/></td>
+							<td><html:text name="MandatosCuentasBancariasForm" property="acreedorPoblacion" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getAcreedorPoblacion()%>" /></td>				
+						</tr>											
+					</table>			
+				</siga:ConjCampos>		
 			</siga:ConjCampos>	
 			
-			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.cuentaBancaria">
+			<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.deudor">
 				<table cellpadding="0" border="0">
 					<tr>
-						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.iban"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="iban" styleClass="boxConsulta" readonly="true" style='width:250px;' value="<%=beanMandato.getIban()%>" /></td>				
-						<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.bic"/></td>
-						<td><html:text name="MandatosCuentasBancariasForm" property="bic" styleClass="boxConsulta" readonly="true" style='width:500px;' value="<%=beanMandato.getBic()%>" /></td>					
-					</tr>		
-					
-					<tr>
-						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.banco"/></td>
-						<td colspan="3"><html:text name="MandatosCuentasBancariasForm" property="banco" styleClass="boxConsulta" readonly="true" style='width:850px;' value="<%=beanMandato.getBanco()%>" /></td>				
-					</tr>				
-			</siga:ConjCampos>				
-		</siga:ConjCampos>	
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.identificador"/>&nbsp;(*)</td>
+						<td width="350px">
+							<siga:Select queryId="getTiposIdentificacion" id="deudorTipoId" selectedIds="<%=arrayDeudorTipoId%>" required="true" readOnly="<%=modoConsulta%>" width="100px" /> 		
+							<html:text name="MandatosCuentasBancariasForm" property="deudorId" styleId="deudorId" maxlength="20" styleClass="<%=claseEdicion%>" readonly="<%=modoConsulta%>" style='width:200px;' value="<%=beanMandato.getDeudorId()%>" />
+						</td>				
+	
+						<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.nombre"/></td>
+						<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="deudorNombre" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorNombre()%>" /></td>				
+					</tr>							
+				</table>								
+			
+				<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.direccion">
+					<table cellpadding="0" border="0">
+						<tr>
+							<td class="labelText" width="110px" rowspan="2"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.direccion"/></td>
+							<td width="350px" rowspan="2">
+								<html:textarea name="MandatosCuentasBancariasForm" property="deudorDomicilio" styleId="deudorDomicilio"
+									onkeydown="cuenta(this,100)" onchange="cuenta(this,100)"
+									style="overflow-y:auto; overflow-x:hidden; width:340px; height:50px; resize:none;"
+									value="<%=beanMandato.getDeudorDomicilio()%>" styleClass="boxConsulta"
+									readonly="true"></html:textarea>
+							</td>
+							
+							<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.codigoPostal"/></td>																	
+							<td width="350px"><html:text name="MandatosCuentasBancariasForm" property="deudorCodigoPostal" styleClass="boxConsulta" readonly="true" style='width:50px;' value="<%=beanMandato.getDeudorCodigoPostal()%>" /></td>				
+						</tr>
+						
+						<tr>
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.pais"/></td>
+							<td><html:text name="MandatosCuentasBancariasForm" property="deudorPais" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorPais()%>" /></td>		 
+						</tr>
+						
+						<tr>
+							<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.provincia"/></td>								
+							<td><html:text name="MandatosCuentasBancariasForm" property="deudorProvincia" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorProvincia()%>" /></td>					
+							
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.datosBancarios.direccion.poblacion"/></td>
+							<td><html:text name="MandatosCuentasBancariasForm" property="deudorPoblacion" styleClass="boxConsulta" readonly="true" style='width:340px;' value="<%=beanMandato.getDeudorPoblacion()%>" /></td> 											
+						</tr>										
+					</table>	
+				</siga:ConjCampos>	
+				
+				<siga:ConjCampos leyenda="censo.fichaCliente.datosBancarios.cuentaBancaria">
+					<table cellpadding="0" border="0">
+						<tr>						
+							<td class="labelText" width="110px">
+								<siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.iban"/>
+							</td>						
+							<td>
+								<html:text name="MandatosCuentasBancariasForm" property="iban" styleClass="boxConsulta" readonly="true" style='width:250px;' value="<%=beanMandato.getIban()%>" />
+							</td>
+											
+							<td class="labelText">
+								<siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.bic"/>
+							</td>
+							<td>
+								<html:text name="MandatosCuentasBancariasForm" property="bic" styleClass="boxConsulta" readonly="true" style='width:500px;' value="<%=beanMandato.getBic()%>" />
+							</td>					
+						</tr>		
+						
+						<tr>
+							<td class="labelText" width="110px"><siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.banco"/></td>
+							<td colspan="3"><html:text name="MandatosCuentasBancariasForm" property="banco" styleClass="boxConsulta" readonly="true" style='width:850px;' value="<%=beanMandato.getBanco()%>" /></td>				
+						</tr>	
+					</table>			
+				</siga:ConjCampos>				
+			</siga:ConjCampos>
+		</div>					
 	</html:form>			
 	
 	<siga:ConjBotonesAccion botones='<%=botones%>'/>
