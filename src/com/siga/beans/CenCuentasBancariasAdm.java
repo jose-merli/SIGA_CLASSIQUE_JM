@@ -532,7 +532,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		}
 		
 		// Tratamiento de mandatos cuando tenga el abono del cargo
-		if (beanCuentas.getAbonoCargo().equals("C") || beanCuentas.getAbonoCargo().equals("T")) {
+		if (beanCuentas.getAbonoCargo() != null && (beanCuentas.getAbonoCargo().equals("C") || beanCuentas.getAbonoCargo().equals("T"))) {
 			
 			// Compruebo que no tiene mandatos asociados la cuenta
 			CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usrBean);
