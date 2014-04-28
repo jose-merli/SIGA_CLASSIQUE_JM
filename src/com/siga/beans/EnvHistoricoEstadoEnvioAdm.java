@@ -90,7 +90,7 @@ public class EnvHistoricoEstadoEnvioAdm extends MasterBeanAdministrador {
 		StringBuilder sql = new StringBuilder();
 		// Recuperamos todos los datos del historico y ademas nos traemos el nombre del creador del estado y el nombre del estado
 		sql.append(" select his.*");
-		sql.append(", to_char(his.fechaestado,'dd/mm/yyyy hh:mi:ss') as FECHACAMBIOESTADO ");
+		sql.append(", to_char(his.fechaestado,'dd/mm/yyyy hh24:mi:ss') as FECHACAMBIOESTADO ");
 		sql.append(", nvl(usu.descripcion,'') as USUARIO, f_siga_getrecurso(est.nombre, " + usrbean.getLanguage() + ") as ESTADO ");
 		sql.append(" from env_historicoestadoenvio his, adm_usuarios usu, env_estadoenvio est ");
 		sql.append(" where usu.idusuario(+) = his.usumodificacion ");
