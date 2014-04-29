@@ -328,6 +328,18 @@ public class MasterWords
 	{
 
 		try {
+			
+			Enumeration<String> claves2=dato.keys();
+            while(claves2.hasMoreElements()){
+                String clave = (String) claves2.nextElement();
+                Object o = dato.get(clave);
+                if (o instanceof Vector) {
+                    Vector aux = (Vector)o;
+                    doc = sustituyeRegionDocumento(doc,clave,aux);
+                   
+                }
+            }
+			
 			Enumeration<String> claves=dato.keys();
 			DocumentBuilder builder=new DocumentBuilder(doc);
 			while(claves.hasMoreElements()){

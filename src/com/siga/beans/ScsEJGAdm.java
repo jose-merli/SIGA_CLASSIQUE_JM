@@ -1,5 +1,9 @@
 package com.siga.beans;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
@@ -11,6 +15,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.octetstring.vde.EntrySet;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -4451,7 +4456,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 
-	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme) throws ClsExceptions {	 
+	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme, boolean agregarEtiqDesigna) throws ClsExceptions {	 
 		Vector vSalida = null;		
 		Hashtable htFuncion = new Hashtable();
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
@@ -4481,6 +4486,88 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			for (int j = 0; j < vEjg.size(); j++) {
 				Hashtable registro = (Hashtable) vEjg.get(j);
 				String idioma = "1";
+			
+				//Ini Mod MJM se incluyen las etiquetas del informe de designas si el
+                //EJG tiene designas relacionadas
+                //Se agregan las etiquetas del informe de designas al informe de EJG
+                //Si se está invocando al método desde designas o desde EJG envío telemático
+                //no hay que sacar estas etiquetas
+           
+                if((String)registro.get("DES_NUMERO")!=null && (!((String)registro.get("DES_NUMERO")).trim().equalsIgnoreCase(""))){
+
+                    if(agregarEtiqDesigna==true)
+                    {
+                        ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(this.usrbean);
+                        boolean agregarEtiqEJG=false;
+                       
+                        Vector designasRelVector = scsDesignaAdm.getDatosSalidaOficio((String)registro.get("DES_INSTITUCION"),(String)registro.get("DES_IDTURNO"),(String)registro.get("DES_ANIO"),(String)registro.get("DES_NUMERO"),null,false,idPersonaJG,this.usrbean.getLanguage(),this.usrbean.getLanguageExt(),tipoDestinatarioInforme, agregarEtiqEJG);
+                       
+                        Hashtable designasRel = new Hashtable();
+                       
+                        if(designasRelVector.size()>0){
+                           
+                            for (int dv = 0; dv < designasRelVector.size(); dv++) {
+                           
+                                Hashtable designasRelAux = (Hashtable) designasRelVector.get(dv);
+                               
+                                Enumeration e = designasRelAux.keys();
+                               
+                                while (e.hasMoreElements())
+                                {
+                                    String keyEjgRel =  (String) e.nextElement();
+                                   
+                                    String claveNew = "DESIGNARELEJG_"+ keyEjgRel;
+                                   
+                                    if(designasRelAux.get(keyEjgRel) instanceof String){
+                                   
+                                        String valor = (String)designasRelAux.get(keyEjgRel);
+                                        designasRel.put(claveNew, valor);
+       
+                                   
+                                    //Si es un area del informe
+                                    }else if(designasRelAux.get(keyEjgRel) instanceof Vector){
+                                       
+                                        Vector areasRenombrada = new Vector();
+                                        Vector areaVector = (Vector) designasRelAux.get(keyEjgRel);
+                                       
+                                       
+                                       
+                                        if(areaVector.size()>0){
+                                           
+                                            for (int av = 0; av < areaVector.size(); av++){
+                                               
+                                                Hashtable area = (Hashtable) areaVector.get(av);
+                                                Enumeration e2 = area.keys();
+                                                Hashtable areaHashtableRenombrado = new Hashtable();
+                                                while (e2.hasMoreElements()){
+                                                    Object element2 =  e2.nextElement();
+                                                    String claveNewArea = claveNew+"_"+element2;
+                                                    String valorArea = (String)area.get((String) element2);
+                                                    areaHashtableRenombrado.put(claveNewArea,valorArea);
+                                                   
+                                                }   
+                                                areasRenombrada.add(areaHashtableRenombrado);
+                                               
+                                            }
+                                           
+                                           
+                                        }
+                                        designasRel.put(claveNew, areasRenombrada);
+       
+                                    }   
+                               
+                                }
+                               
+                            }
+                        }
+                       
+                        if(designasRel!=null)
+                            registro.putAll(designasRel);
+                       
+                    }//Fin agregar etiquetas designa
+                }//Fin si el EJG tiene relacionada alguna designa
+                //Fin Mod MJM se incluyen las etiquetas del informe de designas
+
 				if(tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
 					if(registro.get("DES_ANIO")!=null && !((String)registro.get("DES_ANIO")).equals("") ){
 						Vector colegiadoDestinatarios = getLetradoDesignadoEjg((String)registro.get("DES_INSTITUCION"), (String)registro.get("DES_IDTURNO"), (String)registro.get("DES_ANIO"), (String)registro.get("DES_NUMERO"));
@@ -4609,7 +4696,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									String Idpersona=(String)registroDefendido.get("IDPERSONA");		
 
 
-									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,agregarEtiqDesigna);
 
 									// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
 									try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
@@ -4742,7 +4829,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							//solo hay uno ya que filtramos por PK
 							Hashtable registroDefendidoConDatos = (Hashtable) defendidoVector.get(0);
 							clone.putAll(registroDefendidoConDatos);
-							registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+							registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,agregarEtiqDesigna);
 
 
 							// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
@@ -5046,7 +5133,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									String Idpersona=(String)registroDefendido.get("IDPERSONA");		
 
 
-									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+									registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,agregarEtiqDesigna);
 
 									// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
 									try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
@@ -5242,7 +5329,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).equalsIgnoreCase(""))continue;
 				String idPersona=(String)registroDefendido.get("IDPERSONA");						
 	
-				registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro);
+				registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,false);
 				/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 				registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);
 	
@@ -5541,7 +5628,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 
 	public Hashtable getregistrodatosEjg(String idInstitucion, String tipoEjg,
-		String anioEjg, String numeroEjg,String idioma,String idPersonaJG, Hashtable registro) throws ClsExceptions {
+		String anioEjg, String numeroEjg,String idioma,String idPersonaJG, Hashtable registro, boolean agregarEtiqDesigna) throws ClsExceptions {
 	
 		Hashtable vsalida=new Hashtable();		
 		Hashtable htFuncion = new Hashtable();
@@ -6244,8 +6331,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			if(numeroDesigna!=null && !numeroDesigna.trim().equalsIgnoreCase("")){
 				helperInformes.completarHashSalida(registro,getDesignaEjgSalida(idInstitucionDesigna, 	idTurnoDesigna,anioDesigna,numeroDesigna,idioma));								
-				
 				helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurnoDesigna));
+				
+				
 				
 				String idProcedimiento = (String)registro.get("IDPROCEDIMIENTO");
 				if(idProcedimiento==null || idProcedimiento.trim().equalsIgnoreCase("")){
@@ -6253,7 +6341,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				}
 				helperInformes.completarHashSalida(registro,helperInformes.getProcedimientoSalida(idInstitucion,idProcedimiento,""));								
 	
-				htFuncion = new Hashtable();
+				htFuncion = new Hashtable(); 
 				htFuncion.put(new Integer(1), idTurnoDesigna);
 				htFuncion.put(new Integer(2), idInstitucionDesigna);
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_NOMBRE_PARTIDO", "NOMBRE_PARTIDO"));				

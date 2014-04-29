@@ -941,6 +941,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
 	    	    		}
 	    	    		
+	    	    		if(bean instanceof ScsDesignaBean){	    	    			
+	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
+	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    		}
+	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
 	    	    		cpBean.setValor(sCuerpo);
 	    	    		
@@ -977,6 +983,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
 	    	    		}
+	    	    		
+	    	    		if(bean instanceof ScsDesignaBean){	    	    			
+	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
+	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    		}
 	    	    			    	    		
 	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
 	    	    		cpBean.setValor(sAsunto);	    	    		
@@ -991,7 +1003,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, true);
 	    	    		}
-	    	    		
+
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
 	    	    		cpBean.setValor(sCuerpo);
 	    	    	}	    	    	
@@ -2267,7 +2279,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 //		throw new SIGAException("messages.general.error",e);
 	}
 	}
-		
 
 	public Row getDireccionPreferenteInstitucion(Integer idInstitucion,int idTipoEnvio)
 	    throws SIGAException,ClsExceptions{
@@ -5110,7 +5121,5 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-    
-    
     
 }

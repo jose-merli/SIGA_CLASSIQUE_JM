@@ -1,6 +1,7 @@
 
 package com.siga.beans;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -2088,7 +2089,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	
 			
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma,String idiomaInforme) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma,String idiomaInforme, String tipoDestinatarioInforme, Boolean agregarEtiqEJG) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
@@ -2123,7 +2124,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 //								numEjgDefendido = (String) registroDefendido.get("NUMERO_EJG");
 							if(registroDefendido!=null && registroDefendido.get("NUMERO_EJG")!=null)
 								clone.put("NUMERO_EJG_DEFENDIDO", (String) registroDefendido.get("NUMERO_EJG"));
-							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma);
+							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);							
 							
@@ -2192,7 +2193,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					// SI ENTRA AL ELSE NO TIENE DEFENDIDOS 
 					}else{						
 						
-						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma));
+						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma,tipoDestinatarioInforme,agregarEtiqEJG));
 						
 						
 						// Control de datos para el informe
@@ -2241,7 +2242,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE NO DESDOBLA POR SOLICITANTE
 				}else{	
 						
-					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma));				
+					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG));				
 										
 					
 					if(vDefendidos!=null && vDefendidos.size()>0){
@@ -3304,7 +3305,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	   * valores: se le pasa los valores de el registro, institucion y el idioma que queremos que nos aparezca.
 	   * Devuelve: nos devuelve un hastable de todos los datos.
 	   * **/
-	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma) throws ClsExceptions {
+	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma, String tipoDestinatarioInforme, boolean agregarEtiqEJG) throws ClsExceptions {
 //		  Hashtable vsalida=new Hashtable();	
 		  HelperInformesAdm helperInformes = new HelperInformesAdm();
 		  String numeroDesigna = (String)registro.get("NUMERO");
@@ -3388,78 +3389,165 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			String procuradorEjg="";											
 											
 			Vector Vtramitador=null;
-			for (int i = 0; i < ejgsdesingna.size(); i++) {					
-				Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
-			    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
-			    String aniocajg = (String)registroejg.get("ANIOCAJG");
-			    String numerocajg = (String)registroejg.get("NUMEROCAJG");	
-			    String numeroaniocajg = (String)registroejg.get("NUMEROANIOCAJG"); 
-			    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
-			    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
-			    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
-			    String numeroEJG = (String)registroejg.get("NUMERO_EJG");
-			    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
-			    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
-			    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
-			    String sFechaAperturaEJGLetra = (String)registroejg.get("FECHAAPERTURA_EJG_LETRA");
-			    
-			    if(procuradorEjg.equals(""))
-			    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
-			    else
-			    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
-			    
-			    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
-			    	Listadoanionumerocajg+=","+anionumerocajg;
-			    	Listadonumeroaniocajg+=","+numeroaniocajg;
-			    }
-			    
-			    if (!numeroAnioEjg.equals("/") && (!anioNumeroEjg.equals("/"))){
-			    	listadoAnioNumeroEjg+=","+anioNumeroEjg;
-			    	listadoNumeroAnioEjg+=","+numeroAnioEjg;
-			    }
-			    
-				if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
-					Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
-					for (int l = 0; l < Vtramitador.size(); l++) {							  
-						Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
-						String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
-						if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
-							if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
-								Listadotramitador+=","+nombretramitador;
-							} else {	
-								Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
+			
+			if(ejgsdesingna.size()>0)
+			{	
+				for (int i = 0; i < ejgsdesingna.size(); i++) {					
+					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
+				    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
+				    String aniocajg = (String)registroejg.get("ANIOCAJG");
+				    String numerocajg = (String)registroejg.get("NUMEROCAJG");	
+				    String numeroaniocajg = (String)registroejg.get("NUMEROANIOCAJG"); 
+				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
+				    String numeroAnioEjg = (String)registroejg.get("NUMEROANIOEJG"); 
+				    String anioNumeroEjg = (String)registroejg.get("ANIONUMEROEJG");
+				    String numeroEJG = (String)registroejg.get("NUMERO_EJG");
+				    String sFechaResolucionCajg = (String)registroejg.get("FECHARESOLUCIONCAJG");
+				    String sFechaResolucionCajgLetra = (String)registroejg.get("FECHARESOLUCIONCAJGLETRA");
+				    String sFechaAperturaEJG = (String)registroejg.get("FECHAAPERTURA_EJG");
+				    String sFechaAperturaEJGLetra = (String)registroejg.get("FECHAAPERTURA_EJG_LETRA");
+				    
+				    if(procuradorEjg.equals(""))
+				    	procuradorEjg = (String)registroejg.get("PROCURADOR_EJG");
+				    else
+				    	procuradorEjg = procuradorEjg +","+(String)registroejg.get("PROCURADOR_EJG");
+				    
+				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
+				    	Listadoanionumerocajg+=","+anionumerocajg;
+				    	Listadonumeroaniocajg+=","+numeroaniocajg;
+				    }
+				    
+				    if (!numeroAnioEjg.equals("/") && (!anioNumeroEjg.equals("/"))){
+				    	listadoAnioNumeroEjg+=","+anioNumeroEjg;
+				    	listadoNumeroAnioEjg+=","+numeroAnioEjg;
+				    }
+				    
+					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
+						Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
+						for (int l = 0; l < Vtramitador.size(); l++) {							  
+							Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
+							String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
+							if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
+								if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
+									Listadotramitador+=","+nombretramitador;
+								} else {	
+									Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
+								}
 							}
-						}
-					}							
-			    }
-				
-				if (sFechaResolucionCajg != null) {
-					if (sListadoFechaResolucionCajg.equals("")) {
-						sListadoFechaResolucionCajg = sFechaResolucionCajg;
-						sListadoFechaResolucionCajgLetra = sFechaResolucionCajgLetra;
+						}							
+				    }
+					
+					if (sFechaResolucionCajg != null) {
+						if (sListadoFechaResolucionCajg.equals("")) {
+							sListadoFechaResolucionCajg = sFechaResolucionCajg;
+							sListadoFechaResolucionCajgLetra = sFechaResolucionCajgLetra;
+						} else {
+							sListadoFechaResolucionCajg += "," + sFechaResolucionCajg;
+							sListadoFechaResolucionCajgLetra += "," + sFechaResolucionCajgLetra;
+						}						
+					}
+					
+					if (sFechaAperturaEJG != null) {
+						if (sListadoFechaAperturaEjg.equals("")) {
+							sListadoFechaAperturaEjg = sFechaAperturaEJG;
+							sListadoFechaAperturaEjgLetra = sFechaAperturaEJGLetra;
+						} else {
+							sListadoFechaAperturaEjg += "," + sFechaAperturaEJG;
+							sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
+						}						
+					}
+					if (numeroEJG!=null && !numeroEJG.equals("")){
+						UtilidadesHash.set(registro, "NUMERO_EJG", numeroEJG);
+						
+						//Ini Mod MJM se incluyen las etiquetas del informe de EJG
+                        //Se agregan las etiquetas del informe de EJG al informe de designas
+                        //Si se está invocando al método desde EJG o desde designas envío telemático
+                        //no hay que sacar estas etiquetas
+                        if(agregarEtiqEJG==true)
+                        {
+                            boolean agregarEtiqDesigna=false;
+                            ScsEJGAdm scsEJGAdm = new ScsEJGAdm(this.usrbean);
+                           
+                            Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), false,false, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna);     
+
+                            Hashtable datosEjgRel = new Hashtable();
+                       
+                            if(datosEjgVector.size()>0){
+                               
+                                for (int dv = 0; dv < datosEjgVector.size(); dv++) {
+                               
+                                    Hashtable datosEjgRelAux = (Hashtable) datosEjgVector.get(dv);
+                                   
+                                    Enumeration keysEjgRel = datosEjgRelAux.keys();
+                                   
+                                    while (keysEjgRel.hasMoreElements())
+                                    {
+                                        String keyEjgRel =  (String) keysEjgRel.nextElement();
+                                       
+                                        String claveNew = "EJGRELDESIGNA_"+ keyEjgRel;
+                                       
+                                        if(datosEjgRelAux.get(keyEjgRel) instanceof String){
+                                       
+                                            String valor = (String)datosEjgRelAux.get(keyEjgRel);
+                                       
+                                            datosEjgRel.put(claveNew, valor);
+           
+                                       
+                                        //Si es un area del informe
+                                        }else if(datosEjgRelAux.get(keyEjgRel) instanceof Vector){
+                                       
+                                           
+                                           
+                                            Vector areasRenombrada = new Vector();
+                                            Vector areaVector = (Vector) datosEjgRelAux.get(keyEjgRel);
+                                       
+                                           
+                                            if(areaVector.size()>0){
+                                               
+                                                for (int av = 0; av < areaVector.size(); av++){
+                                                   
+                                                    Hashtable area = (Hashtable) areaVector.get(av);
+                                                    Enumeration e2 = area.keys();
+                                                    Hashtable areaHashtableRenombrado = new Hashtable();
+                                                    while (e2.hasMoreElements()){
+                                               
+                                                        Object element2 =  e2.nextElement();
+                                                        String claveNewArea = claveNew+"_"+element2;
+                                                       
+                                                        String valorArea = (String)area.get((String) element2);
+                                                        areaHashtableRenombrado.put(claveNewArea,valorArea);
+                                                       
+                                                    }   
+                                                    areasRenombrada.add(areaHashtableRenombrado);
+                                                   
+                                                }
+                                               
+                                               
+                                            }
+                                            datosEjgRel.put(claveNew, areasRenombrada);
+           
+                                        }   
+                                   
+                                    }
+                                   
+                                }
+                            }
+                       
+                            if(datosEjgRel!=null)
+                                registro.putAll(datosEjgRel);
+                           
+                        }//Fin agregar etiquetas EJG
+                        //Fin Mod MJM se incluyen las etiquetas del informe de EJG
+						
+						
 					} else {
-						sListadoFechaResolucionCajg += "," + sFechaResolucionCajg;
-						sListadoFechaResolucionCajgLetra += "," + sFechaResolucionCajgLetra;
-					}						
-				}
-				
-				if (sFechaAperturaEJG != null) {
-					if (sListadoFechaAperturaEjg.equals("")) {
-						sListadoFechaAperturaEjg = sFechaAperturaEJG;
-						sListadoFechaAperturaEjgLetra = sFechaAperturaEJGLetra;
-					} else {
-						sListadoFechaAperturaEjg += "," + sFechaAperturaEJG;
-						sListadoFechaAperturaEjgLetra += "," + sFechaAperturaEJGLetra;
-					}						
-				}
-				if (numeroEJG!=null && !numeroEJG.equals("")){
-					UtilidadesHash.set(registro, "NUMERO_EJG", numeroEJG);
-				} else {
-					UtilidadesHash.set(registro, "NUMERO_EJG", "");
-				}
-			}//FIN FOR
-			if(ejgsdesingna.size()!=1)
+						UtilidadesHash.set(registro, "NUMERO_EJG", "");
+					}
+
+				}//FIN FOR
+			}else{
 				UtilidadesHash.set(registro, "NUMERO_EJG", "");
+			}	
 				
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJG", sListadoFechaResolucionCajg);
 			UtilidadesHash.set(registro, "FECHARESOLUCIONCAJGLETRA", sListadoFechaResolucionCajgLetra);
