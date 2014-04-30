@@ -214,6 +214,10 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 			// Consulta que no exista la referencia del mandato de SEPA para la institucion
 			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usuario);
+			
+			// Actualiza la referencia del mandato para SEPA
+			mandatosAdm.actualizarReferenciaMandatoSEPA(beanMandato);
+			
 			if (mandatosAdm.consultarMandatoSEPA(beanMandato)) {
 				return exito("censo.fichaCliente.bancos.mandatos.error.idMandatoExiste", request);
 			}	
