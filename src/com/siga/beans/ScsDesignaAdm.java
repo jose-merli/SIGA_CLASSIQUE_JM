@@ -3549,12 +3549,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_DOMICILIO_PJG", "");
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_NIF_PJG", "");
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_NOMBRE_PJG", "");
-                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_O_A_ PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_O_A_PJG", "");
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_POBLACION_PJG", "");
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_PROCURADOR_CONTRARIO", "");
-                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_PROVINCIA_ PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_PROVINCIA_PJG", "");
                             	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_REPRESENTANTE_CONTRARIO", "");
-                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_TELEFONO1_ PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_TELEFONO1_PJG", "");
                             	
                             	contrariosEjgRenom.add(datosregionCon);
 						    	datosEjgRel.put("EJGRELDESIGNA_Acontrarios", contrariosEjgRenom);
