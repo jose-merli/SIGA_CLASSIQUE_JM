@@ -1312,4 +1312,23 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		
 		return resultado;
 	}	
+	
+	/**
+	 * Función que muestra la referencia final del mandato en SEPA
+	 * @param cadena
+	 * @return String que indica el resultado final en SEPA
+	 * @throws ClsExceptions
+	 */
+	public static String ejecutarRevisarCaracteresSEPA (String cadena) throws ClsExceptions {
+		String resultado = "";
+		String sql = " SELECT TRIM(PKG_SIGA_CARGOS.F_RevisarCaracteresSEPA('" + cadena + "')) AS RESULTADO FROM DUAL";
+		
+		RowsContainer rc = new RowsContainer(); 
+		if (rc.query(sql)) {
+			Row fila = (Row) rc.get(0);
+			resultado = UtilidadesHash.getString(fila.getRow(), "RESULTADO");
+		}
+		
+		return resultado;
+	}		
 }
