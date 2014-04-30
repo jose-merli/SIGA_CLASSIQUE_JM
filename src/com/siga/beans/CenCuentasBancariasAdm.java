@@ -386,6 +386,51 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		}
 		return registro;
 	}
+	
+	/**
+	 * Funcion que inserta un mandato nuevo
+	 * @param beanCuentas
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean insert(CenCuentasBancariasBean beanCuentas) throws ClsExceptions{
+		try {
+			// Obtiene el nuevo idCuenta
+			beanCuentas.setIdCuenta(this.getNuevoID(beanCuentas));
+			
+			// Inserta la cuenta
+			if (this.insert(this.beanToHashTable(beanCuentas))) {
+				
+				// Tratamiento de mandatos cuando tenga el abono del cargo
+				if (beanCuentas.getAbonoCargo() != null && (beanCuentas.getAbonoCargo().equals("C") || beanCuentas.getAbonoCargo().equals("T"))) {
+					
+					// Compruebo que no tiene mandatos asociados la cuenta
+					CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(this.usrbean);
+					Vector<CenMandatosCuentasBancariasBean> vMandatos = mandatosAdm.obtenerMandatos(beanCuentas.getIdInstitucion(), beanCuentas.getIdPersona(), beanCuentas.getIdCuenta());			
+					if (vMandatos==null || vMandatos.size()==0) {
+						
+						// Se insertan dos mandatos nuevos a la cuenta, uno para productos y otro para servicios
+						Object[] paramMandatos = new Object[4];
+						paramMandatos[0] = beanCuentas.getIdInstitucion().toString();
+						paramMandatos[1] = beanCuentas.getIdPersona().toString();
+						paramMandatos[2] = beanCuentas.getIdCuenta().toString();
+						paramMandatos[3] = this.usrbean.getUserName().toString();
+						
+						String resultado[] = new String[2];
+						resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.InsertarMandatos(?,?,?,?,?,?)}", 2, paramMandatos);
+						if (resultado == null || !resultado[0].equals("0")) {
+							throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+						}
+					}
+				}		
+			}
+			
+			return false;
+					
+		} catch (Exception e)	{
+			throw new ClsExceptions (e,  e.getMessage());
+		}
+	}	
 
 	/**
 	 * Inserta los datos de una cuenta bancaria y rellena la tabla de historicos (CEN_HISTORICO)
