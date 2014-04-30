@@ -9,6 +9,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.censo.form.MandatosCuentasBancariasForm;
+import com.siga.general.EjecucionPLs;
 
 public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	
@@ -452,6 +453,17 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}		
 	}	
+	
+	/**
+	 * Actualiza la referencia del mandato para SEPA
+	 * @param beanMandato
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public void actualizarReferenciaMandatoSEPA(CenMandatosCuentasBancariasBean beanMandato) throws ClsExceptions {
+		String sReferenciaMandato = EjecucionPLs.ejecutarRevisarCaracteresSEPA(beanMandato.getRefMandatoSepa());
+		beanMandato.setRefMandatoSepa(sReferenciaMandato);
+	}
 	
 	
     /**
