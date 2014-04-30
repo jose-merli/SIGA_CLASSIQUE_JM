@@ -82,7 +82,10 @@
 		.col120px{width:120px;min-height:24px;float:left;display:block;}
 		.col180px{width:180px;min-height:24px;float:left;display:block;}
 		.col300px{width:300px;min-height:24px;float:left;display:block;}
+		.col400px{width:400px;min-height:24px;float:left;display:block;}
 		.col420px{width:420px;min-height:24px;float:left;display:block;}
+		
+		.scrollClass{clear:left;display:block;overflow-x:hidden;overflow-y:auto; }
 		
 		</style>
 
@@ -278,6 +281,10 @@
 		   	ProgramacionForm.submit();
 		}
 		
+		jQuery(document).ready(function(){
+			jQuery('#scrollDiv').height(window.parent.jQuery('#mainPestanas').height()-jQuery('#programacion').height()-150);
+		});
+		
 		
 		</script>
 		
@@ -397,18 +404,18 @@
 		
 		<c:if test="${!empty requestScope.estados}">
 		<div class="colIzq">
-			<siga:ConjCampos leyenda="envios.historico.leyenda">
 			<div style='margin-bottom:12px;display:block;padding-left:8px; padding-bottom:8px'>
-				<div class='tableTitle' style='float:left;width:98%;padding:2px;font-weight: bold;'>
+				<div class='tableTitle' style='float:left;width:100%;padding:2px;font-weight: bold;'>
 				
 					<div class='colIzq col300px '>ESTADO</div>
 					<div class='col180px '>FECHA</div>
-					<div class='col420px '>USUARIO</div>
+					<div class='col400px '>USUARIO</div>
 					
 				</div>
 				<br>
+				<div id='scrollDiv' class='scrollClass'>
 				<c:forEach items="${requestScope.estados}" var="estado" varStatus="status">
-					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='float:left;width:98%;padding:2px;'>
+					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='float:left;width:100%;padding:2px;'>
 						<div class='colIzq col300px labelTextValue' style='vertical-align: middle;'>	
 							<c:out value="${estado.ESTADO}"></c:out>
 							<c:if test="${estado.IDESTADO==3 && status.last}">
@@ -417,12 +424,12 @@
 							</c:if>
 						</div>
 						<div class='col180px labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
-						<div class='col420px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
+						<div class='col400px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
 					</div>
 				</c:forEach>
+				</div>
 				</br>
 			</div>
-			</siga:ConjCampos>
 		</div>
 		</c:if>
 		
