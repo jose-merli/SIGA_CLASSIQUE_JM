@@ -19,6 +19,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.CenMandatosCuentasBancariasBean"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
 
 <!-- JSP -->
 <% 
@@ -28,13 +29,20 @@
 	String numero = (String) request.getParameter("numero");
 	String modoMandato = (String) request.getParameter("modoMandato");
 	
-	CenMandatosCuentasBancariasBean beanMandato = (CenMandatosCuentasBancariasBean) request.getAttribute("beanMandato");
+	CenMandatosCuentasBancariasBean beanMandato = (CenMandatosCuentasBancariasBean) request.getAttribute("beanMandato");		
 	
 	boolean modoConsulta = false;
 	String claseEdicion = "box";
 	if (modoMandato.equals("ver") || (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("")) || (beanMandato.getFechaUso()!=null && !beanMandato.getFechaUso().equals(""))) {
 		claseEdicion = "boxConsulta";
 		modoConsulta = true;
+	}
+	
+	String iban = beanMandato.getIban();	
+	if (modoMandato.equals("ver")) {
+		iban = UtilidadesString.mostrarIBANConAsteriscos(iban);
+	} else {		
+		iban =  UtilidadesString.mostrarDatoMascara(iban, ClsConstants.MASK_IBAN);
 	}
 	
 	// JPT: Gestion de Volver y botones
@@ -373,7 +381,7 @@
 								<siga:Idioma key="censo.fichaCliente.datosBancarios.cuentaBancaria.iban"/>
 							</td>						
 							<td>
-								<html:text name="MandatosCuentasBancariasForm" property="iban" styleClass="boxConsulta" readonly="true" style='width:250px;' value="<%=beanMandato.getIban()%>" />
+								<html:text name="MandatosCuentasBancariasForm" property="iban" styleClass="boxConsulta" readonly="true" style='width:250px;' value="<%=iban%>" />
 							</td>
 											
 							<td class="labelText">
