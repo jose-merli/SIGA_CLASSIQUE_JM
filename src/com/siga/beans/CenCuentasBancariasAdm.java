@@ -396,7 +396,9 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	public boolean insert(CenCuentasBancariasBean beanCuentas) throws ClsExceptions{
 		try {
 			// Obtiene el nuevo idCuenta
-			beanCuentas.setIdCuenta(this.getNuevoID(beanCuentas));
+			if (beanCuentas.getIdCuenta()==null) {
+				beanCuentas.setIdCuenta(this.getNuevoID(beanCuentas));
+			}
 			
 			// Inserta la cuenta
 			if (this.insert(this.beanToHashTable(beanCuentas))) {
@@ -422,7 +424,9 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 							throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
 						}
 					}
-				}		
+				}	
+				
+				return true;
 			}
 			
 			return false;
