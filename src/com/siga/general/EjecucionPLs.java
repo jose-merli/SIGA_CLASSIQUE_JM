@@ -12,6 +12,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
 
 
 /**
@@ -1291,4 +1292,24 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	
 		return resultado;
 	}
+	
+	/**
+	 * Función que comprueba si el dia actual es hábil
+	 * @param idInstitucion
+	 * @param fecha
+	 * @return Boolean que indica si es hábil
+	 * @throws ClsExceptions
+	 */
+	public static Integer ejecutarEsDiaHabil (String idInstitucion, String fecha) throws ClsExceptions {
+		Integer resultado = 0;
+		String sql = " SELECT F_ESDIAHABIL(" + idInstitucion + ", TO_DATE('" + fecha + "', 'DD/MM/YYYY')) AS ESHABIL FROM DUAL";
+		
+		RowsContainer rc = new RowsContainer(); 
+		if (rc.query(sql)) {
+			Row fila = (Row) rc.get(0);
+			resultado = UtilidadesHash.getInteger(fila.getRow(), "ESHABIL");
+		}
+		
+		return resultado;
+	}	
 }
