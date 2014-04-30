@@ -3471,7 +3471,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                             Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), isSolicitantes,isContrarios, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna);     
 
                             Hashtable datosEjgRel = new Hashtable();
-                       
+                            boolean contieneContrarios=false;
+                            
                             if(datosEjgVector.size()>0){
                                
                                 for (int dv = 0; dv < datosEjgVector.size(); dv++) {
@@ -3483,7 +3484,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                                     while (keysEjgRel.hasMoreElements())
                                     {
                                         String keyEjgRel =  (String) keysEjgRel.nextElement();
-                                       
+
                                         String claveNew = "EJGRELDESIGNA_"+ keyEjgRel;
                                        
                                         if(datosEjgRelAux.get(keyEjgRel) instanceof String){
@@ -3496,7 +3497,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                                         //Si es un area del informe
                                         }else if(datosEjgRelAux.get(keyEjgRel) instanceof Vector){
                                        
-                                           
+                                           if(keyEjgRel.contains("contrarios")){
+                                        	 claveNew = keyEjgRel = "EJGRELDESIGNA_Acontrarios";
+                                        	 contieneContrarios=true;
+                                         }	 
+                                            
                                            
                                             Vector areasRenombrada = new Vector();
                                             Vector areaVector = (Vector) datosEjgRelAux.get(keyEjgRel);
@@ -3532,7 +3537,29 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                                    
                                 }
                             }
-
+                            
+                            //Sino contiene contrarios pasamos las etiquetas vacías
+                            if(contieneContrarios==false)
+                            {
+                            	Vector contrariosEjgRenom = new Vector();
+                            	 Hashtable datosregionCon = new Hashtable();
+                            	 
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_ABOGADO_CONTRARIO", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_CP_PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_DOMICILIO_PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_NIF_PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_NOMBRE_PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_O_A_ PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_POBLACION_PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_PROCURADOR_CONTRARIO", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_PROVINCIA_ PJG", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_REPRESENTANTE_CONTRARIO", "");
+                            	datosregionCon.put( "EJGRELDESIGNA_Acontrarios_TELEFONO1_ PJG", "");
+                            	
+                            	contrariosEjgRenom.add(datosregionCon);
+						    	datosEjgRel.put("EJGRELDESIGNA_Acontrarios", contrariosEjgRenom);
+                            }
+                            
                             //área de unidad familiar 
                             Vector regionUF = scsEJGAdm.getDatosRegionUF(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma);
 						   
