@@ -348,10 +348,23 @@
 						<td class="labelText">
 							<siga:Idioma key="censo.ws.literal.residente"/>
 						</td>
-						<td colspan="3">							
+						<td>							
 							<html:checkbox name="EdicionColegiadoForm" property="residente" disabled="${htmlTextReadOnly}"/>
 							<html:hidden name="EdicionColegiadoForm" property="residente" value="false"/>						
-						</td>											
+						</td>
+						
+						<td class="labelText" >
+							<siga:Idioma key="censo.ws.literal.mediador"/>
+						</td>
+						<td >
+							<!-- option select -->
+							<html:select name="EdicionColegiadoForm" property="mediador" styleClass = "boxCombo" value="${EdicionColegiadoForm.mediador}" disabled="${htmlTextReadOnly}">
+								<html:option value=""> </html:option>
+								<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+								<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+							</html:select>						
+						</td>
+																						
 					</tr>
 					
 					

@@ -178,6 +178,10 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
 			
+			if (edicionColegiadoForm.getMediador() != null && !edicionColegiadoForm.getMediador().trim().equals("")) {
+				ecomCenDatos.setMediador(Short.valueOf(edicionColegiadoForm.getMediador()));
+			}
+			
 			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
 	//		ecomCenDireccion.setIdcensodireccion(edicionColegiadoForm.getIdcensodireccion());
 			ecomCenDireccion.setPublicar(getCheckShort(edicionColegiadoForm.isPublicardireccion()));
@@ -349,6 +353,11 @@ public class EdicionColegiadoAction extends MasterAction {
 				
 			if (!edicionColegiadoForm.isColegiadoEditable()) {
 				accion = "ver";
+			}
+			
+			edicionColegiadoForm.setMediador(null);
+			if (ecomCenDatos.getMediador() != null) {
+				edicionColegiadoForm.setMediador(String.valueOf(ecomCenDatos.getMediador()));
 			}
 			
 			edicionColegiadoForm.setAccion(accion);

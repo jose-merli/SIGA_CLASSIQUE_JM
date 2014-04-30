@@ -71,6 +71,8 @@ public class EdicionColegiadoForm extends MasterForm {
 	private boolean incidenciaPoblacionNoEncontrada = false;
 	private boolean incidenciaPoblacionNoEncontradaRevisada = false;
 	
+	private String mediador = null;
+	
 	public String getNcolegiado() {
 		return ncolegiado;
 	}
@@ -412,6 +414,12 @@ public class EdicionColegiadoForm extends MasterForm {
 	public void setIncidenciaPoblacionNoEncontradaRevisada(
 			boolean incidenciaPoblacionNoEncontradaRevisada) {
 		this.incidenciaPoblacionNoEncontradaRevisada = incidenciaPoblacionNoEncontradaRevisada;
+	}
+	public String getMediador() {
+		return mediador;
+	}
+	public void setMediador(String mediador) {
+		this.mediador = mediador;
 	}
 	
 		
