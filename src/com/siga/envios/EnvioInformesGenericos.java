@@ -554,17 +554,20 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idTurno = (String) datosInforme.get("idTurno");
 			String numero = (String) datosInforme.get("numero");
 			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
+			String aContrarios = (String) datosInforme.get("aContrarios"); //Esto solo se usa para incluir las etiquetas de EJG en designas
 			String idPersonaJG = (String) datosInforme.get("idPersonaJG");
 
 			boolean isSolicitantes = aSolicitantes != null
 					&& aSolicitantes.equalsIgnoreCase("S");
+			boolean isContrarios = aContrarios != null
+					&& aContrarios.equalsIgnoreCase("S");
 			String idiomaExt =(String) datosInforme.get("idiomaExt");
 			boolean agregarEtiqEJG=true;
 			
 			String tipoDestinatarioInforme = (String) datosInforme.get("tipoDestinatarioInforme"); 
 			
 			Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
-					idinstitucion, idTurno, anio, numero, null, isSolicitantes,
+					idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
 					idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG);
 			if(!isSolicitantes && datosconsulta.size()>0){
 				Hashtable registro = (Hashtable) datosconsulta.get(0);
@@ -1867,6 +1870,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						boolean isSolicitantes = beanInforme.getASolicitantes() != null	&& beanInforme.getASolicitantes().equalsIgnoreCase("S");
 						String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + isSolicitantes;
 						datosInforme.put("aSolicitantes",beanInforme.getASolicitantes());
+						datosInforme.put("aContrarios",beanInforme.getaContrarios()); //Add MJM etiquetas informes EJG en informe designas
 						datosInformeSeleccionado.put("tipoDestinatarioInforme",tipoDestinatario);
 
 						
@@ -2917,10 +2921,14 @@ public class EnvioInformesGenericos extends MasterReport {
 							// BEGIN BNS INC_08446_SIGA SUSTITUIMOS EL ID DE LA TABLA DE EJG POR EL CÓDIGO DE EJG
 						
 						
-	                    
+	                    //En este punto no se van a agregar las etiquetas del informe EJG en la designa,
+						// por esto estos parámetros son fal
 	                    boolean agregarEtiqEJG=false;
+	                    boolean isSolicitantes = false;
+	                    boolean isContrarios = false;
+	                    
 	                    String tipoDestinatarioInforme = null;
-	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, false, null, "1","ES",tipoDestinatarioInforme,agregarEtiqEJG);
+	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, isSolicitantes,isContrarios, null, "1","ES",tipoDestinatarioInforme,agregarEtiqEJG);
 	                    Hashtable designaHash = (Hashtable) designaVector.get(0);
 	                   
 	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){	                       
@@ -10199,6 +10207,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String idioma = (String) datosInformeSeleccionado.get("idioma");
 		String idiomaExt =(String) datosInformeSeleccionado.get("idiomaExt");
 		String aSolicitantes = (String) datosInformeSeleccionado.get("aSolicitantes");
+		String aContrarios = (String) datosInformeSeleccionado.get("aContrarios"); //Add MJM 30/04/14
 		String idPersonaJG = (String) datosInformeSeleccionado.get("idPersonaJG");
 		String tipoDestinatarioInforme = (String) datosInformeSeleccionado.get("tipoDestinatarioInforme");
 
@@ -10212,10 +10221,17 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		boolean isSolicitantes = aSolicitantes.equalsIgnoreCase("S");
 		
+		//Add MJM 30/04/14 para las etiquetas de EJG se añade el parámetro isContrarios 
+		//solo está informado para informe designas
+		boolean isContrarios=false;
+		
+		if(aContrarios!=null)
+			 isContrarios = aContrarios.equalsIgnoreCase("S");		
+		
 		boolean agregarEtiqEJG=true;
 		
 		Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
-				idinstitucion, idTurno, anio, numero, null, isSolicitantes,
+				idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
 				idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG);
 		if(!isSolicitantes && datosconsulta.size()>0){
 			Hashtable registro = (Hashtable) datosconsulta.get(0);

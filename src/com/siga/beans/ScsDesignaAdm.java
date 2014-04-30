@@ -2089,7 +2089,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	
 			
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma,String idiomaInforme, String tipoDestinatarioInforme, Boolean agregarEtiqEJG) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, boolean isContrarios, String idPersonaJG, String idioma,String idiomaInforme, String tipoDestinatarioInforme, Boolean agregarEtiqEJG) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
@@ -2124,7 +2124,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 //								numEjgDefendido = (String) registroDefendido.get("NUMERO_EJG");
 							if(registroDefendido!=null && registroDefendido.get("NUMERO_EJG")!=null)
 								clone.put("NUMERO_EJG_DEFENDIDO", (String) registroDefendido.get("NUMERO_EJG"));
-							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG);
+							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);							
 							
@@ -2193,7 +2193,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					// SI ENTRA AL ELSE NO TIENE DEFENDIDOS 
 					}else{						
 						
-						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma,tipoDestinatarioInforme,agregarEtiqEJG));
+						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios));
 						
 						
 						// Control de datos para el informe
@@ -2242,7 +2242,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE NO DESDOBLA POR SOLICITANTE
 				}else{	
 						
-					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG));				
+					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG,  isSolicitantes, isContrarios));				
 										
 					
 					if(vDefendidos!=null && vDefendidos.size()>0){
@@ -3305,7 +3305,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	   * valores: se le pasa los valores de el registro, institucion y el idioma que queremos que nos aparezca.
 	   * Devuelve: nos devuelve un hastable de todos los datos.
 	   * **/
-	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma, String tipoDestinatarioInforme, boolean agregarEtiqEJG) throws ClsExceptions {
+	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma, String tipoDestinatarioInforme, boolean agregarEtiqEJG, boolean isSolicitantes, boolean isContrarios) throws ClsExceptions {
 //		  Hashtable vsalida=new Hashtable();	
 		  HelperInformesAdm helperInformes = new HelperInformesAdm();
 		  String numeroDesigna = (String)registro.get("NUMERO");
@@ -3467,8 +3467,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                         {
                             boolean agregarEtiqDesigna=false;
                             ScsEJGAdm scsEJGAdm = new ScsEJGAdm(this.usrbean);
-                           
-                            Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), false,false, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna);     
+
+                            Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), isSolicitantes,isContrarios, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna);     
 
                             Hashtable datosEjgRel = new Hashtable();
                        
@@ -3532,9 +3532,77 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                                    
                                 }
                             }
-                       
-                            if(datosEjgRel!=null)
+
+                            //área de unidad familiar 
+                            Vector regionUF = scsEJGAdm.getDatosRegionUF(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma);
+						   
+                            Hashtable datosregionUF = new Hashtable();
+						     Vector regionUFRenom = new Vector();
+                            if(regionUF.size()>0){
+						    	
+						    	for (int rv = 0; rv < regionUF.size(); rv++) {
+                               
+                                    Hashtable datosRegionUFAux = (Hashtable) regionUF.get(rv);
+                                   
+                                    Enumeration keysRegionUF = datosRegionUFAux.keys();
+                                   
+                                    while (keysRegionUF.hasMoreElements())
+                                    {
+                                        String keyRegionUF =  (String) keysRegionUF.nextElement();
+                                       
+                                        String claveUF = "EJGRELDESIGNA_unidadfamiliar_"+ keyRegionUF;
+
+                                        String valorUF = (String)datosRegionUFAux.get(keyRegionUF);
+                                       
+                                        datosregionUF.put(claveUF, valorUF);
+                                    }
+                                    
+						    	}
+						    	
+						    	regionUFRenom.add(datosregionUF);
+						    	
+						    	if(regionUFRenom!=null)
+						    		datosEjgRel.put("EJGRELDESIGNA_unidadfamiliar", regionUFRenom);
+						    }
+ 
+                            //área de cónyuge
+                            
+                            Vector regionConyuge = scsEJGAdm.getDatosRegionConyuge(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma);
+                            
+                            Hashtable datosregionConyuge = new Hashtable();
+                            Vector regionConyugeRenom = new Vector();
+                            
+						    if(regionConyuge.size()>0){
+						    	
+                               for (int rc = 0; rc < regionConyuge.size(); rc++) {
+                            	   
+                                    Hashtable datosRegionConyugeAux = (Hashtable) regionConyuge.get(rc);
+                                   
+                                    Enumeration keysRegionConyuge = datosRegionConyugeAux.keys();
+                                   
+                                    while (keysRegionConyuge.hasMoreElements())
+                                    {
+                                        String keyRegionConyuge =  (String) keysRegionConyuge.nextElement();
+                                       
+                                        String claveConyuge = "EJGRELDESIGNA_conyuge_"+ keyRegionConyuge;
+
+                                        String valorConyuge = (String)datosRegionConyugeAux.get(keyRegionConyuge);
+                                       
+                                        datosregionConyuge.put(claveConyuge, valorConyuge);
+                                    }
+                                    
+						    	}
+                            
+                            regionConyugeRenom.add(datosregionConyuge);
+						    
+						    if(regionConyugeRenom!=null)
+                            	datosEjgRel.put("EJGRELDESIGNA_conyuge", regionConyugeRenom);
+                               
+						    }
+
+						    if(datosEjgRel!=null)
                                 registro.putAll(datosEjgRel);
+						    
                            
                         }//Fin agregar etiquetas EJG
                         //Fin Mod MJM se incluyen las etiquetas del informe de EJG

@@ -4500,7 +4500,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
                         ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(this.usrbean);
                         boolean agregarEtiqEJG=false;
                        
-                        Vector designasRelVector = scsDesignaAdm.getDatosSalidaOficio((String)registro.get("DES_INSTITUCION"),(String)registro.get("DES_IDTURNO"),(String)registro.get("DES_ANIO"),(String)registro.get("DES_NUMERO"),null,false,idPersonaJG,this.usrbean.getLanguage(),this.usrbean.getLanguageExt(),tipoDestinatarioInforme, agregarEtiqEJG);
+                        Vector designasRelVector = scsDesignaAdm.getDatosSalidaOficio((String)registro.get("DES_INSTITUCION"),(String)registro.get("DES_IDTURNO"),(String)registro.get("DES_ANIO"),(String)registro.get("DES_NUMERO"),null,isSolicitantes,isAcontrarios,idPersonaJG,this.usrbean.getLanguage(),this.usrbean.getLanguageExt(),tipoDestinatarioInforme, agregarEtiqEJG);
                        
                         Hashtable designasRel = new Hashtable();
                        
