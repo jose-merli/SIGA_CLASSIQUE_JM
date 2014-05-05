@@ -180,6 +180,8 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			if (edicionColegiadoForm.getMediador() != null && !edicionColegiadoForm.getMediador().trim().equals("")) {
 				ecomCenDatos.setMediador(Short.valueOf(edicionColegiadoForm.getMediador()));
+			} else {
+				ecomCenDatos.setMediador(null);
 			}
 			
 			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
