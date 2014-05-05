@@ -211,7 +211,8 @@
 				var hora=fFecha.getHours();
 				var minuto=fFecha.getMinutes();
 
-				ProgramacionForm.fechaProgramada.value=dia+"/"+mes+"/"+yea;
+				ProgramacionForm.fechaProgramada.value=getFechaActualDDMMYYYY();
+				//ProgramacionForm.fechaProgramada.value=dia+"/"+mes+"/"+yea;
 				if(hora<10) ProgramacionForm.horas.value="0"+hora;
 				else ProgramacionForm.horas.value=hora;
 				
