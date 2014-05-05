@@ -218,7 +218,7 @@
 				
 				<td>
 					<input type="hidden" name="indice" id="${status.count}"/>
-					<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}" name="chkPL" ${preseleccionado} />
+					<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='onclickchkPL()' />
 				</td>
 				<td>
 					<c:out value="${informe.descripcion}" />
@@ -265,10 +265,38 @@
 	
 	<c:choose>	
 		<c:when test="${InformesGenericosForm.enviar =='1'}">
-			<siga:ConjBotonesAccion botones="D,EN,C" ordenar="D,EN,C" modal="P" />
+			<table class="botonesDetalle" id="idBotonesAccion"  align="center">
+			<tr>
+				<td  style="width:900px;">
+				&nbsp;
+				</td>
+				<td class="tdBotones">
+				<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
+				</td>
+				<td class="tdBotones">
+				<input type="button" alt="Enviar"  id="botonEnviar" onclick="return accionEnviar();" class="button" name="idButton" value="Enviar">
+				</td>
+				<td class="tdBotones">
+				<input type="button" alt="Cerrar"  id="idButton" onclick="return accionCerrar();" class="button" name="idButton" value="Cerrar">
+				</td>
+			</tr>
+			</table>
 		</c:when>
 		<c:otherwise>
-			<siga:ConjBotonesAccion botones="D,C" modal="P" />
+			<table class="botonesDetalle" id="idBotonesAccion"  align="center">
+				<tr>
+				<td  style="width:900px;">
+				&nbsp;
+				</td>
+				<td class="tdBotones">
+				<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
+				</td>
+				
+				<td class="tdBotones">
+				<input type="button" alt="Cerrar"  id="idButton" onclick="return accionCerrar();" class="button" name="idButton" value="Cerrar">
+				</td>
+				</tr>
+			</table>
 		</c:otherwise>
 	</c:choose>
 	<!-- FIN: CAMPOS -->
@@ -288,7 +316,10 @@
 		for (i = 0; i < oCheck.length; i++) {
 			if (oCheck[i].checked) {
 				ids = oCheck[i].id.split("_");
-				idsInformes += ids[1]+","+ids[2]+ "##";	
+				idsInformes += ids[1]+","+ids[2]+ "##";
+				//Esto se hace para cuando hay mas de un informe. Como solo dejamos descergar cuando ha seleccioando un unico informe
+				//seteamos el idtipoinforme de ualquiera de ellos al formulario global
+				document.InformesGenericosForm.idTipoInforme.value = ids[3];
 			}
 		}
 		
@@ -298,9 +329,11 @@
 	    if(idsInformes==""){
 	    	alert("Debe seleccionar al menos un informe");
 	    	fin();
-	    	
+
 	    	return false;
 	    }
+	    
+	    
 	    document.InformesGenericosForm.enviar.value = '0';
 		document.InformesGenericosForm.idInforme.value = idsInformes;
 		document.InformesGenericosForm.modo.value = "download";
@@ -337,6 +370,10 @@
 				haSeleccionadoInformes = true;
 				
 				ids = oCheck[i].id.split("_");
+				//Esto se hace para cuando hay mas de un informe. Como solo dejamos descergar cuando ha seleccioando un unico informe
+				//seteamos el idtipoinforme de ualquiera de ellos al formulario global
+				document.InformesGenericosForm.idTipoInforme.value = ids[3];
+				
 				var idTipoEnvio = document.getElementById("idTipoEnvio_"+ids[0]).value;
 				if(idTipoEnvio==''){
 					error += "Debe configurar correctamente todos los envios marcados seleccionando tipo de envio y plantilla de envio\n";
@@ -369,6 +406,7 @@
 	    	return false;
 		}
 		
+		
 	    document.DefinirEnviosForm.datosInforme.value = document.InformesGenericosForm.datosInforme.value ;
 	    document.DefinirEnviosForm.idTipoInforme.value = document.InformesGenericosForm.idTipoInforme.value ;
 	    document.DefinirEnviosForm.datosEnvios.value = idsInformes;
@@ -392,7 +430,34 @@
 		}
 		
 	}
+	function onclickchkPL() {
+		var oCheck = document.getElementsByName("chkPL");
+		var idTiposInforme = "";
+		var isPrimerRegistro = true;
+		var habilitarDescargayEnvio = true;
+		var botonesDisabled = '';
+		for (i = 0; i < oCheck.length; i++) {
+			if (oCheck[i].checked) {
+				ids = oCheck[i].id.split("_");
+				if(isPrimerRegistro){
+					idTiposInforme = ids[3];
+					isPrimerRegistro = false;
+				}
+				if(idTiposInforme!=ids[3]){
+					botonesDisabled = 'disabled'
+					break;
+				}
+			}
+		}
+	 	document.getElementById("botonDescargar").disabled = botonesDisabled;
+	 	if(document.getElementById("botonEnviar"))
+	 		document.getElementById("botonEnviar").disabled = botonesDisabled;
+
+	}
+	
+	
 	iniciarPlantillasEnvio();
+	onclickchkPL();
 	function refrescarLocal() {}
 	
 	

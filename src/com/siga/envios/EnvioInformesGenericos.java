@@ -709,7 +709,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			beanMandato.setIdCuenta(idCuenta);
 			beanMandato.setIdMandato(idMandato);
 			Hashtable mandatoHashtable = mandatosAdm.getMandato(beanMandato);
-			htDatosInforme.put("row", mandatoHashtable);
+			if(mandatoHashtable!=null)
+				htDatosInforme.put("row", mandatoHashtable);
 
 		} else if (idTipoInforme
 				.equals(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)) {
@@ -726,21 +727,22 @@ public class EnvioInformesGenericos extends MasterReport {
 			beanMandato.setIdCuenta(idCuenta);
 			beanMandato.setIdMandato(idMandato);
 			Hashtable mandatoHashtable = mandatosAdm.getMandato(beanMandato);
-			
-			// Transformo los datos del formulario en un bean
-			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean();
-			beanAnexo.setIdInstitucion(idInstitucion);
-			beanAnexo.setIdPersona(idPersona);
-			beanAnexo.setIdCuenta(idCuenta);
-			beanAnexo.setIdMandato(idMandato);
-			beanAnexo.setIdAnexo(idAnexo);
-
-			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usrBean);
-			Hashtable anexoHashtable  = anexosAdm.getAnexo(beanAnexo);				
-			mandatoHashtable.putAll(anexoHashtable);
-			
-			
-			htDatosInforme.put("row", mandatoHashtable);
+			if(mandatoHashtable!=null){
+				// Transformo los datos del formulario en un bean
+				CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean();
+				beanAnexo.setIdInstitucion(idInstitucion);
+				beanAnexo.setIdPersona(idPersona);
+				beanAnexo.setIdCuenta(idCuenta);
+				beanAnexo.setIdMandato(idMandato);
+				beanAnexo.setIdAnexo(idAnexo);
+	
+				CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usrBean);
+				Hashtable anexoHashtable  = anexosAdm.getAnexo(beanAnexo);				
+				if(anexoHashtable!=null){
+					mandatoHashtable.putAll(anexoHashtable);
+					htDatosInforme.put("row", mandatoHashtable);
+				}
+			}
 
 
 		} else if (idTipoInforme
@@ -2508,11 +2510,13 @@ public class EnvioInformesGenericos extends MasterReport {
 								"yyyyMMddhhmmssSSS");
 						identificador.append(hoy);
 					}
-
-					fileDocumento = getInformeGenerico(beanInforme,
-							htDatosInformeFinal, idiomaExt,
-							identificador.toString(), usrBean,
-							tipoPlantillaWord);
+					if(htDatosInformeFinal!=null && htDatosInformeFinal.size()>0)
+						fileDocumento = getInformeGenerico(beanInforme,
+								htDatosInformeFinal, idiomaExt,
+								identificador.toString(), usrBean,
+								tipoPlantillaWord);
+					else
+						return null;
 				}
 
 				String pathDocumento = fileDocumento.getPath();
@@ -4110,12 +4114,12 @@ public class EnvioInformesGenericos extends MasterReport {
 									(String) datosInforme.get("plantillas"),"@@",
 									usr);
 						}
-
-			
-							informesRes.addAll(this.getDocumentosAEnviar(
-									datosInforme, vPlantillas, usr,
-									EnvioInformesGenericos.docFile,
-									idTipoInforme));
+						Vector datosVector =  this.getDocumentosAEnviar(
+								datosInforme, vPlantillas, usr,
+								EnvioInformesGenericos.docFile,
+								idTipoInforme);
+						if(datosVector!=null)
+							informesRes.addAll(datosVector);
 						
 					}
 				}
@@ -4807,12 +4811,15 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		// Obtenemos la información pertinente relacionada
 		MasterReport masterReport = new MasterReport();
-		Vector datosInformeVector = masterReport.getDatosInforme(form
-				.getDatosInforme());
+		Vector datosInformeVector = null;
+		if(form.getIdTipoInforme()!=null && !form.getIdTipoInforme().equals(""))
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme(),form.getIdTipoInforme());
+		else
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme());
 		
 		String idPersona = getIdColegiadoUnico(datosInformeVector);
 		String idInstitucion = userBean.getLocation();
-
+		
 		String datosEnvios = form.getDatosEnvios();
 		String[] datosEnvio = datosEnvios.split("##");
 		Hashtable<String, List> enviosHashtable = new Hashtable<String, List>();
@@ -10363,8 +10370,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			SIGAException  {
 		// Obtenemos la información pertinente relacionada
 		MasterReport masterReport = new MasterReport();
-			Vector datosInformeVector = masterReport.getDatosInforme(form
-					.getDatosInforme());
+		Vector datosInformeVector = null;
+		if(form.getIdTipoInforme()!=null && !form.getIdTipoInforme().equals(""))
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme(),form.getIdTipoInforme());
+		else
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme());
 			
 			String idPersona = getIdColegiadoUnico(datosInformeVector);
 			String idInstitucion = userBean.getLocation();
@@ -10404,11 +10414,13 @@ public class EnvioInformesGenericos extends MasterReport {
 				informesList = enviosHashtable.get(keyEnvios);
 				informesVector = this.getInformes(informesList, userBean);			
 				Hashtable datosInforme = (Hashtable) datosInformeVector.get(0);
-				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,
+				Vector documentoVector =this.getDocumentosAEnviar(datosInforme,
 						informesVector, userBean,
-							EnvioInformesGenericos.docDocument,
-							idTipoComunicacion));
-
+						EnvioInformesGenericos.docDocument,
+						idTipoComunicacion);
+				if(documentoVector==null)
+					throw new SIGAException("messages.envios.error.noExisteDocumento");
+				vDocumentos.addAll(documentoVector);
 				
 				form.setIdTipoEnvio(keyEnvios.split("_")[0]);
 				form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);

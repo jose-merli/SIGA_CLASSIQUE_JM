@@ -304,15 +304,18 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 		sql.append(" = ");
 		sql.append(beanMandato.getIdPersona());
 		
-		sql.append(" AND  MANDATOS.");
-		sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
-		sql.append(" = ");
-		sql.append(beanMandato.getIdCuenta());
-		
-		sql.append(" AND  MANDATOS.");
-		sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
-		sql.append(" = ");
-		sql.append(beanMandato.getIdMandato());
+		if(beanMandato.getIdCuenta()!=null){
+			sql.append(" AND  MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdCuenta());
+		}
+		if(beanMandato.getIdMandato()!=null){
+			sql.append(" AND  MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdMandato());
+		}
 		
 		
 		return sql.toString();

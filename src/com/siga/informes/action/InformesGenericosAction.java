@@ -1783,6 +1783,7 @@ public class InformesGenericosAction extends MasterAction {
 			if (idTipoInforme.equals("") &&  miForm.getIdInforme().equals("")) 
 				throw new ClsExceptions("Error en generación de informe: No se ha indicado el tipo de informe ni el informe.");
 			
+			
 
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
@@ -1833,7 +1834,7 @@ public class InformesGenericosAction extends MasterAction {
 			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "facturacion.consultamorosos.mail.asunto");
 			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
-				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.censo.asunto");
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.censo.asunto");	
 			}else if (idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesFacturacionesColegiados)){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
@@ -1959,6 +1960,9 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
+				
+			}else{ //Para varios tipos de informe
+					asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "envios.plantillas.literal.asunto");
 			}
 			request.setAttribute("asunto", asunto);
 			//Vamos a ver si, aunque el informe generico tenga configurado el envio, el usuario tiene permiso para ello.

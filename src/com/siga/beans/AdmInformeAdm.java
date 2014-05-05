@@ -258,31 +258,38 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 		final int CON_COLEGIO = 0;
 		final int CON_CONSEJO = 1;
 		final int CON_GENERAL = 2;
+		StringBuffer whereComun = new StringBuffer(" WHERE VISIBLE = 'S' " );
+		String[] tiposInforme = idTipoInforme.split("#");
+		if(tiposInforme==null || tiposInforme.length==0){
+			throw new ClsExceptions("Debe configurar al menos un informe");	
+		}else{
+			whereComun.append(" AND IDTIPOINFORME IN (" );
+			for (int i = 0; i < tiposInforme.length; i++) {
+				whereComun.append("'");
+				whereComun.append(tiposInforme[i]);
+				whereComun.append("'");
+				whereComun.append(",");
+			}
+			//Quitamos la ultima ,
+			whereComun.replace(whereComun.length()-1,whereComun.length(),"");
+			whereComun.append(")");
+			
+		}
+		
+		
+		if (aSolicitantes != null && aSolicitantes.equals("S"))
+			whereComun.append(" AND ASOLICITANTES = 'S'");
+		if (destinatarios != null && !destinatarios.equals("")) {
+			whereComun.append(" AND DESTINATARIOS = '"+ destinatarios + "'");
+		}
 		StringBuffer[] where = new StringBuffer[NUM_CONSULTAS];
 		int k;
 		Vector salida;
-
+		
 		// 1. generando consulta de la institucion
 		k = CON_COLEGIO;
-		where[k] = new StringBuffer(
-				"WHERE VISIBLE = 'S' " +
-				"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
-				"  AND IDINSTITUCION = " + idInstitucion);
-		if (aSolicitantes != null && aSolicitantes.equals("S"))
-			where[k].append(
-				"  AND ASOLICITANTES = 'S'");
-
-		if (destinatarios != null && !destinatarios.equals("")) {
-			where[k].append(
-				"  AND (");
-			for (int i = 0; i < destinatarios.length(); i++) {
-				where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
-				if (i < destinatarios.length() - 1)
-					where[i].append(" OR ");
-			}
-			where[k].append("" +
-				"      ) ");
-		}
+		where[k] = new StringBuffer(whereComun);
+		where[k].append(" AND IDINSTITUCION = " + idInstitucion);
 
 		// 2. generando consulta del consejo autonomico
 		CenInstitucionAdm insadm = new CenInstitucionAdm(this.usrbean);
@@ -294,38 +301,14 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 		}
 		if (insConsejo != null) {
 			k = CON_CONSEJO;
-			where[k] = new StringBuffer(
-					"WHERE VISIBLE = 'S' " +
-					"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
-					"  AND IDINSTITUCION = " + insConsejo);
-			if (aSolicitantes != null && aSolicitantes.equals("S"))
-				where[k].append(
-					"  AND ASOLICITANTES = 'S'");
-
-			// No hay destinatarios, ¿¿deberia haberlos??
-			/*if (destinatarios != null && !destinatarios.equals("")) {
-				where[k].append(
-					"  AND (");
-				for (int i = 0; i < destinatarios.length(); i++) {
-					where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
-					if (i < destinatarios.length() - 1)
-						where[i].append(" OR ");
-				}
-				where[k].append(
-					"      ) ");
-			}*/
+			where[k] = new StringBuffer(whereComun);
+			where[k].append(" AND IDINSTITUCION = " + insConsejo);
 		}
 
 		// 3. generando consulta del CGAE
 		k = CON_GENERAL;
-		where[k] = new StringBuffer(
-				"WHERE VISIBLE = 'S' " +
-				"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
-				"  AND IDINSTITUCION = " + 0);
-		if (aSolicitantes != null && aSolicitantes.equals("S"))
-			where[k].append(
-				"  AND ASOLICITANTES = 'S'");
-
+		where[k] = new StringBuffer(whereComun);
+		where[k].append("  AND IDINSTITUCION = " + 0);
 		
 		try {
 			k = CON_COLEGIO;

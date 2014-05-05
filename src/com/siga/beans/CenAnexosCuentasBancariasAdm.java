@@ -236,20 +236,24 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		sql.append(" = ");
 		sql.append(beanAnexo.getIdPersona());
 		
-		sql.append(" AND ");
-		sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
-		sql.append(" = ");
-		sql.append(beanAnexo.getIdCuenta());
-		
-		sql.append(" AND ");
-		sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
-		sql.append(" = ");
-		sql.append(beanAnexo.getIdMandato());
-		
-		sql.append(" AND ");
-		sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
-		sql.append(" = ");
-		sql.append(beanAnexo.getIdAnexo());
+		if(beanAnexo.getIdCuenta()!=null){
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdCuenta());
+		}
+		if(beanAnexo.getIdMandato()!=null){
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdMandato());
+		}
+		if(beanAnexo.getIdAnexo()!=null){
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdAnexo());
+		}
 		return sql.toString();
 	} 
 	

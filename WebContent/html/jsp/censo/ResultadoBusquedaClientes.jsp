@@ -640,7 +640,7 @@
 %>
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
-	<html:hidden property="idTipoInforme" value="CENSO"/>
+	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
 	<html:hidden property="enviar" value="1"/>
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
@@ -651,6 +651,7 @@
 <html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "tablaDatosDinamicosD" value = ""/>
+	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
 
 </html:form>
 
@@ -774,9 +775,7 @@
 		var idPersona = document.getElementById(auxPers).value;
 		var auxInst = 'oculto' + fila + '_2';
 		var idInstPersona = document.getElementById(auxInst).value;		
-	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona+ "##idTipoPersonas==" +<%=colegiado%>+"##idTipoInforme==CENSO" ; 
-		
-		
+	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona+ "##idTipoPersonas==" +<%=colegiado%>+"" ; 
 	   	document.InformesGenericosForm.datosInforme.value=datos;
 		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 	   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
@@ -796,6 +795,8 @@
 	   		}
 	   	}
 	}
+   
+   	
    	
 	function accionComunicar()
 		{
@@ -817,7 +818,7 @@
 				idRegistros = idRegistros.substring(index+2);					
 				}	
 			
- 		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"##idTipoPersonas==" +<%=colegiado%>+"##idTipoInforme==CENSO%%%";
+ 		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"##idTipoPersonas==" +<%=colegiado%>+"%%%";
 		}
 		numElementosSeleccionados =  ObjArray.length; 
 		if (datos == '') {
