@@ -564,7 +564,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idiomaExt =(String) datosInforme.get("idiomaExt");
 			boolean agregarEtiqEJG=true;
 			
-			String tipoDestinatarioInforme = (String) datosInforme.get("tipoDestinatarioInforme"); 
+			String tipoDestinatarioInforme = (String) datosInforme.get("destinatarios"); //MJM 
 			
 			Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
 					idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
@@ -612,7 +612,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			boolean isGenerarInformeSinDireccion = generarInformeSinDireccion != null
 					&& generarInformeSinDireccion.equalsIgnoreCase("S");
 					
-			String tipoDestinatarioInforme = (String) datosInforme.get("tipoDestinatarioInforme");
+			String tipoDestinatarioInforme = (String) datosInforme.get("destinatarios"); //MJM
 //			String languageInstitucion = (String) usrBean
 //					.getLanguageInstitucion();
 			//quitar el idioma de la siguiente consulta, sacarlo abajo
@@ -1736,7 +1736,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
 							datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
 							datosInformeSeleccionado.put("aSolicitantes", "S");
-							
+							datosInformeSeleccionado.put("destinatarios",beanInforme.getDestinatarios()); //MJM
 							//String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJG+idioma; --> idPersonaJG es null y no es el item del for
 							String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJGInteresarado+idioma;
 							
@@ -1873,7 +1873,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + isSolicitantes;
 						datosInforme.put("aSolicitantes",beanInforme.getASolicitantes());
 						datosInforme.put("aContrarios",beanInforme.getaContrarios()); //Add MJM etiquetas informes EJG en informe designas
-						datosInformeSeleccionado.put("tipoDestinatarioInforme",tipoDestinatario);
+						datosInformeSeleccionado.put("destinatarios",beanInforme.getDestinatarios()); //MJM
 
 						
 						if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
@@ -2931,7 +2931,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                    boolean isSolicitantes = false;
 	                    boolean isContrarios = false;
 	                    
-	                    String tipoDestinatarioInforme = null;
+	                    String tipoDestinatarioInforme = beanInforme.getDestinatarios();
 	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, isSolicitantes,isContrarios, null, "1","ES",tipoDestinatarioInforme,agregarEtiqEJG);
 	                    Hashtable designaHash = (Hashtable) designaVector.get(0);
 	                   
@@ -6934,7 +6934,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
 					datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
 					datosInformeSeleccionado.put("aSolicitantes", "S");
-
+					datosInformeSeleccionado.put("destinatarios",(String) datosInforme.get("destinatarios")); //MJM
 					String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJGInteresado+(String)datosInforme.get("idioma");
 
 					if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
@@ -10216,7 +10216,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String aSolicitantes = (String) datosInformeSeleccionado.get("aSolicitantes");
 		String aContrarios = (String) datosInformeSeleccionado.get("aContrarios"); //Add MJM 30/04/14
 		String idPersonaJG = (String) datosInformeSeleccionado.get("idPersonaJG");
-		String tipoDestinatarioInforme = (String) datosInformeSeleccionado.get("tipoDestinatarioInforme");
+		String tipoDestinatarioInforme = (String) datosInformeSeleccionado.get("destinatarios");
 
 		
 		ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usrBean);
