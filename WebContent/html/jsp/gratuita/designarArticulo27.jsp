@@ -1642,7 +1642,7 @@
 	}
 
 	//Asociada al boton Guardar
-		function accionGuardar() {	
+	function accionGuardar() {	
 
 		if (validarFormulario()) {
 				if (validarDireccion()) {
@@ -1795,7 +1795,7 @@
 		 	if(document.datosGeneralesForm.idDireccion.value == "-1" || document.datosGeneralesForm.idDireccion.value == "" || datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
 		 		
 				///////////////////////////////////////   VALIDACIONES TIPO DIRECCION  ///////////////////////////
-				var oCheck = document.getElementsByName("checkTipoDireccion");
+				var oCheck = jQuery("input[name='checkTipoDireccion']");
 				
 				var checkActivo=false;
 				var datosTipoDir="";
@@ -1835,7 +1835,7 @@
 					// valido que sea una direccion postal
 					if((trim(document.datosGeneralesForm.domicilio.value)=="") ||
 						((trim(document.datosGeneralesForm.pais.value)==idEspana) && (trim(document.datosGeneralesForm.provincia.value)=="")) ||
-						((trim(document.datosGeneralesForm.pais.value)==idEspana) && (trim(document.datosGeneralesForm.poblacion.value)=="")) ||
+						((trim(document.datosGeneralesForm.pais.value)==idEspana) && (trim(jQuery('#poblacion').val())=="")) ||
 						(trim(document.datosGeneralesForm.codigoPostal.value)=="")) {
 					
 						var mensaje = "<siga:Idioma key="messages.obligatorioPostal.error"/>";
