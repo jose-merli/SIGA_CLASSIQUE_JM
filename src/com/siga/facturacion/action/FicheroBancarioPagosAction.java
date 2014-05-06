@@ -350,7 +350,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
 				throw new SIGAException("fecha.error.valida");
 			}				
 			
@@ -604,7 +604,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
 				throw new SIGAException("fecha.error.valida");
 			}			
 			

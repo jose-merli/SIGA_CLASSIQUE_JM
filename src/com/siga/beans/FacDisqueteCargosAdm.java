@@ -307,6 +307,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	 * @param fechaRecibosCOR1
 	 * @param fechaRecibosB2B
 	 * @param fechaTipoUnica
+	 * @param fechaPreviaPresentacion
 	 * @return
 	 * @throws ClsExceptions
 	 */
@@ -318,7 +319,8 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 				String fechaRecibosRecurrentes,
 				String fechaRecibosCOR1,
 				String fechaRecibosB2B,
-				String fechaTipoUnica
+				String fechaTipoUnica,
+				String fechaPreviaPresentacion
 			) throws ClsExceptions {
 		
 		/* Control de fechas:
@@ -356,8 +358,14 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);		
 		
-		String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-		String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1				
+		String fechaPrevista;
+		if (fechaPreviaPresentacion!=null && !fechaPreviaPresentacion.equals("")) {
+			fechaPrevista = fechaPreviaPresentacion;
+		} else {
+			fechaPrevista = GstDate.getHoyJsp(); // Obtengo la fecha actual
+		}			
+		
+		String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPrevista, "1"); // fechaPrevista + 1				
 		
 		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {
 			return false;

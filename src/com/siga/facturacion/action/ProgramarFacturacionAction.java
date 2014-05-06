@@ -6,6 +6,7 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -287,9 +288,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;	
-		Integer usuario = this.getUserName(request);
 		ProgramarFacturacionForm form = (ProgramarFacturacionForm)formulario;
-		Long idSerieFacturacion;
 		String salida = "";
 		HttpSession ses = request.getSession();
 		
@@ -319,6 +318,14 @@ public class ProgramarFacturacionAction extends MasterAction{
 			bean = adm.tratamientoEstadosProgramacion(bean);
 			
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
+			String fechaPrevistaConfirmacion = form.getFechaPrevistaConfirmacion();			
+			if (fechaPrevistaConfirmacion!=null && !fechaPrevistaConfirmacion.equals("")) {
+				// yyyy/MM/dd HH:mm:ss
+				Date dFechaPrevistaConfirmacion = GstDate.convertirFechaHora(fechaPrevistaConfirmacion);
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				fechaPrevistaConfirmacion = sdf.format(dFechaPrevistaConfirmacion); // Fecha con formato dd/MM/yyyy	
+			}
+			
 			String idInstitucion = this.getIDInstitucion(request).toString();
 			String fechaEntrega = form.getFechaPresentacion();
 			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
@@ -339,9 +346,9 @@ public class ProgramarFacturacionAction extends MasterAction{
 				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
 			}			
 			
-			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
 				throw new SIGAException("fecha.error.valida");
 			}				
 			
@@ -406,9 +413,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;	
-		Integer usuario = this.getUserName(request);
 		ProgramarFacturacionForm form = (ProgramarFacturacionForm)formulario;
-		Long idSerieFacturacion;
 		String salida="";
 		
 		try
@@ -437,10 +442,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			tx.begin();			
 			
-			// Recogemos la hashOriginal
-			
-			
-			
+			// Recogemos la hashOriginal							
 			bean.setOriginalHash(hash);
 			bean.setIdProgramacion(UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION));
 
@@ -448,6 +450,14 @@ public class ProgramarFacturacionAction extends MasterAction{
 			bean.setFechaProgramacion(null);
 			
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
+			String fechaPrevistaConfirmacion = form.getFechaPrevistaConfirmacion();			
+			if (fechaPrevistaConfirmacion!=null && !fechaPrevistaConfirmacion.equals("")) {
+				// yyyy/MM/dd HH:mm:ss
+				Date dFechaPrevistaConfirmacion = GstDate.convertirFechaHora(fechaPrevistaConfirmacion);
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				fechaPrevistaConfirmacion = sdf.format(dFechaPrevistaConfirmacion); // Fecha con formato dd/MM/yyyy	
+			}	
+			
 			String idInstitucion = this.getIDInstitucion(request).toString();
 			String fechaEntrega = form.getFechaPresentacion();
 			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
@@ -470,7 +480,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica())) {
+			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
 				throw new SIGAException("fecha.error.valida");
 			}					
 			
