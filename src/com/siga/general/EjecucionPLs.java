@@ -380,14 +380,13 @@ public class EjecucionPLs {
 
 		try {
 			// Parametros de entrada del PL
-			int i = 0;
-			paramIn[i] = idInstitucion;
-			paramIn[i++] = idTipoServicio;
-			paramIn[i++] = idServio;
-			paramIn[i++] = idServicioInstitucion;
-			paramIn[i++] = alta;
-			paramIn[i++] = fechaAlta;
-			paramIn[i++] = incluirBajaManual;
+			paramIn[0] = idInstitucion;
+			paramIn[1] = idTipoServicio;
+			paramIn[2] = idServio;
+			paramIn[3] = idServicioInstitucion;
+			paramIn[4] = alta;
+			paramIn[5] = fechaAlta;
+			paramIn[6] = incluirBajaManual;
 
 			// Ejecucion del PL
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?)}", 
