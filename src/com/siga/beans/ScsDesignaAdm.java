@@ -3498,9 +3498,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                                         }else if(datosEjgRelAux.get(keyEjgRel) instanceof Vector){
                                        
                                            if(keyEjgRel.contains("contrarios")){
-                                        	 claveNew = keyEjgRel = "EJGRELDESIGNA_Acontrarios";
+                                        	 claveNew = "EJGRELDESIGNA_Acontrarios";
                                         	 contieneContrarios=true;
-                                         }	 
+                                           }	 
                                             
                                            
                                             Vector areasRenombrada = new Vector();
