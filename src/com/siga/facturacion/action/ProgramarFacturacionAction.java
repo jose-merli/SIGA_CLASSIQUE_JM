@@ -240,11 +240,11 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
-			String habilesUnicaCargos = admParametros.getValor(idInstitucionCGAE, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
-			String habilesPrimerosRecibos = admParametros.getValor(idInstitucionCGAE, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
-			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucionCGAE, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
-			String habilesRecibosCOR1 = admParametros.getValor(idInstitucionCGAE, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
-			String habilesRecibosB2B = admParametros.getValor(idInstitucionCGAE, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
+			String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
+			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+			String habilesRecibosB2B = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
 			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
