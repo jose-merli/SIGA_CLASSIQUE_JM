@@ -564,7 +564,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idiomaExt =(String) datosInforme.get("idiomaExt");
 			boolean agregarEtiqEJG=true;
 			
-			String tipoDestinatarioInforme = (String) datosInforme.get("destinatarios"); //MJM 
+			String tipoDestinatarioInforme = (String) datosInforme.get("destinatarios"); //MJM  
 			
 			Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
 					idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
@@ -6847,6 +6847,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		boolean isAJuzgado = false;
 		Vector<AdmInformeBean> informesVector = null;
 		String keyEnvios = null;
+		String tiposDestinatario ="";
 		if (isPersonaUnica && enviosHashtable.size() == 1) {
 
 			Iterator iteEnvios = enviosHashtable.keySet().iterator();
@@ -6854,11 +6855,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			informesList = enviosHashtable.get(keyEnvios);
 
 			informesVector = this.getInformes(informesList, userBean);
-
+			
 			for (int j = 0; j < informesVector.size(); j++) {
 				AdmInformeBean informeBean = (AdmInformeBean) informesVector
 						.get(j);
-				String tiposDestinatario = informeBean.getDestinatarios();
+				tiposDestinatario = informeBean.getDestinatarios();
 				if (tiposDestinatario != null) {
 					char[] tipoDestinatario = tiposDestinatario.toCharArray();
 					for (int k = 0; k < tipoDestinatario.length; k++) {
@@ -6934,7 +6935,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					datosInformeSeleccionado.put("idioma", (String)datosInforme.get("idioma"));
 					datosInformeSeleccionado.put("idiomaExt", (String)datosInforme.get("idiomaExt"));
 					datosInformeSeleccionado.put("aSolicitantes", "S");
-					datosInformeSeleccionado.put("destinatarios",(String) datosInforme.get("destinatarios")); //MJM
+					datosInformeSeleccionado.put("destinatarios",tiposDestinatario); //MJM
 					String keyConsultasHechas = idInstitucion + anio + idTurno	+ numero + idPersonaJGInteresado+(String)datosInforme.get("idioma");
 
 					if (hashConsultasHechas.containsKey(keyConsultasHechas)) {
@@ -7099,7 +7100,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						AdmInformeBean informeBean = (AdmInformeBean) informesVector
 								.get(j);
 
-						String tiposDestinatario = informeBean
+						tiposDestinatario = informeBean
 								.getDestinatarios();
 						informesBean.setIdPlantilla(informeBean
 								.getIdPlantilla());
