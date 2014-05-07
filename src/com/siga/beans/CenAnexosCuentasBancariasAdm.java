@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -215,7 +217,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 	}
-	private String getSqlObtenerAnexo(CenAnexosCuentasBancariasBean beanAnexo){
+	private String getSqlObtenerAnexo(CenAnexosCuentasBancariasBean beanAnexo, Boolean isFirmado){
 		StringBuffer sql = new StringBuffer();
 		sql.append(this.sqlAnexosSelect);
 		sql.append(this.sqlAnexosFrom);
@@ -239,6 +241,20 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
 			sql.append(" = ");
 			sql.append(beanAnexo.getIdMandato());
+		}else{
+			if(isFirmado!=null){
+				if(isFirmado){
+					sql.append(" AND ");
+					sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
+					sql.append(" IS NOT NULL ");
+				}else{
+					sql.append(" AND  ");
+					sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
+					sql.append(" IS  NULL ");
+					
+					
+				}
+			}	
 		}
 		if(beanAnexo.getIdAnexo()!=null){
 			sql.append(" AND ");
@@ -249,12 +265,12 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		return sql.toString();
 	} 
 	
-	public Hashtable getAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
+	public Hashtable getAnexo(CenAnexosCuentasBancariasBean beanAnexo,Boolean isFirmado) throws ClsExceptions {
 		Hashtable anexoHashtable = null;
 		try {
 		
 			RowsContainer rc = new RowsContainer(); 												
-			if (rc.find(getSqlObtenerAnexo(beanAnexo)) && rc.size()>0) {
+			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
 				 
 				Row fila = (Row) rc.get(0);
 				anexoHashtable = fila.getRow();
@@ -266,6 +282,48 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 	}
+	
+	public List<Hashtable> getAnexos(CenAnexosCuentasBancariasBean beanAnexo,Boolean isFirmado) throws ClsExceptions {
+		List<Hashtable> anexosList = null;
+		CenMandatosCuentasBancariasAdm cenMandatosCuentasBancariasAdm = new CenMandatosCuentasBancariasAdm(this.usrbean);
+		try {
+			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
+			RowsContainer rc = new RowsContainer(); 												
+			anexosList = new ArrayList<Hashtable>();
+			CenMandatosCuentasBancariasBean beanMandato = null;
+			Hashtable<String, Hashtable> auxHashtable = new Hashtable<String, Hashtable>();
+			Hashtable mandato = null;
+			Hashtable anexo = null;
+			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(0);
+					beanMandato = new CenMandatosCuentasBancariasBean();
+					beanMandato.setIdInstitucion(beanAnexo.getIdInstitucion());
+					beanMandato.setIdPersona(beanAnexo.getIdPersona());
+					beanMandato.setIdCuenta(fila.getString("IDCUENTA"));
+					String idMandato = fila.getString("IDMANDATO");
+					beanMandato.setIdMandato(idMandato);
+					if(!auxHashtable.containsKey(idMandato))
+						mandato =  cenMandatosCuentasBancariasAdm.getMandato(beanMandato,isFirmado);
+					else
+						mandato = auxHashtable.get(idMandato);
+						
+					auxHashtable.put(idMandato, mandato);
+					anexo = new Hashtable();
+					anexo.putAll(mandato);
+					anexo.putAll(fila.getRow());
+					
+					anexosList.add(anexo);
+				}
+				
+            }		
+			
+			return anexosList;
+			
+		} catch(Exception e) {			
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+		}
+	}     	
 	
 	/**
 	 * Actualizo los campos que se pueden modificar en CEN_ANEXOS_CUENTASBANCARIAS

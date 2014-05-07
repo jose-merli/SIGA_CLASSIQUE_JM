@@ -708,9 +708,12 @@ public class EnvioInformesGenericos extends MasterReport {
 			beanMandato.setIdPersona(idPersona);
 			beanMandato.setIdCuenta(idCuenta);
 			beanMandato.setIdMandato(idMandato);
-			Hashtable mandatoHashtable = mandatosAdm.getMandato(beanMandato);
-			if(mandatoHashtable!=null)
-				htDatosInforme.put("row", mandatoHashtable);
+			
+			List<Hashtable> mandatosList = mandatosAdm.getMandatos(beanMandato,false);
+			if(mandatosList!=null)
+				htDatosInforme.put("rows", mandatosList);
+			
+			
 
 		} else if (idTipoInforme
 				.equals(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)) {
@@ -720,28 +723,16 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idMandato = (String) datosInforme.get("idMandato");
 			String idCuenta = (String) datosInforme.get("idCuenta");
 			String idAnexo = (String) datosInforme.get("idAnexo");
-			CenMandatosCuentasBancariasBean beanMandato = new CenMandatosCuentasBancariasBean();
-			CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usrBean);
-			beanMandato.setIdInstitucion(idInstitucion);
-			beanMandato.setIdPersona(idPersona);
-			beanMandato.setIdCuenta(idCuenta);
-			beanMandato.setIdMandato(idMandato);
-			Hashtable mandatoHashtable = mandatosAdm.getMandato(beanMandato);
-			if(mandatoHashtable!=null){
-				// Transformo los datos del formulario en un bean
-				CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean();
-				beanAnexo.setIdInstitucion(idInstitucion);
-				beanAnexo.setIdPersona(idPersona);
-				beanAnexo.setIdCuenta(idCuenta);
-				beanAnexo.setIdMandato(idMandato);
-				beanAnexo.setIdAnexo(idAnexo);
-	
-				CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usrBean);
-				Hashtable anexoHashtable  = anexosAdm.getAnexo(beanAnexo);				
-				if(anexoHashtable!=null){
-					mandatoHashtable.putAll(anexoHashtable);
-					htDatosInforme.put("row", mandatoHashtable);
-				}
+			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usrBean);
+			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean();
+			beanAnexo.setIdInstitucion(idInstitucion);
+			beanAnexo.setIdPersona(idPersona);
+			beanAnexo.setIdCuenta(idCuenta);
+			beanAnexo.setIdMandato(idMandato);
+			beanAnexo.setIdAnexo(idAnexo);
+			List<Hashtable> anexosList = anexosAdm.getAnexos(beanAnexo,false);
+			if(anexosList!=null){
+				htDatosInforme.put("rows", anexosList);
 			}
 
 
@@ -2402,6 +2393,49 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			
 			
+			}else if (tipoComunicacion
+					.equals(EnvioInformesGenericos.comunicacionesOrdenDomicializacion)||tipoComunicacion
+					.equals(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)) {
+				
+				List<Hashtable> listDatosInforme = (ArrayList)htDatosInformeFinal.get("rows");
+				int j = 0;
+				StringBuffer ident = null;
+				for (Hashtable row : listDatosInforme) {
+					ident = new StringBuffer(identificador);
+					ident.append("_");
+					ident.append(j);
+					Hashtable htDatosInforme = new Hashtable();
+					htDatosInforme.put("row", row);
+					File fileDocumento = getInformeGenerico(beanInforme,
+							htDatosInforme, idiomaExt,
+							ident.toString(), usrBean,
+							tipoPlantillaWord);
+					String pathDocumento = fileDocumento.getPath();
+					// Creacion documentos
+					int indice = pathDocumento
+							.lastIndexOf(ClsConstants.FILE_SEP);
+					String descDocumento = "";
+					if (indice > 0)
+						descDocumento = pathDocumento.substring(indice + 1);
+
+					j++;
+					switch (tipoDocumento) {
+					case 1:
+						vDocumentos.add(fileDocumento);
+						break;
+					case 2:
+						Documento documento = new Documento(pathDocumento,
+								descDocumento);
+						vDocumentos.add(documento);
+						break;
+
+					default:
+						break;
+					}
+
+				}
+			
+
 			}else {
 				
 				File fileDocumento = null;

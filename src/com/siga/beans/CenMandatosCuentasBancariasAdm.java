@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -284,7 +286,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	}      		 
 	
 	
-	private String getSqlObtenerMandato(CenMandatosCuentasBancariasBean beanMandato){
+	private String getSqlObtenerMandato(CenMandatosCuentasBancariasBean beanMandato, Boolean isFirmado){
 		StringBuffer sql = new StringBuffer();
 		sql.append(this.sqlMandatosSelect);
 		sql.append(this.sqlMandatosFrom);
@@ -309,7 +311,22 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
 			sql.append(" = ");
 			sql.append(beanMandato.getIdMandato());
+		}else{
+			if(isFirmado!=null){
+				if(isFirmado){
+					sql.append(" AND  MANDATOS.");
+					sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+					sql.append(" IS NOT NULL ");
+				}else{
+					sql.append(" AND  MANDATOS.");
+					sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+					sql.append(" IS  NULL ");
+					
+					
+				}
+			}	
 		}
+		
 		
 		
 		return sql.toString();
@@ -328,7 +345,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			
 			RowsContainer rc = new RowsContainer(); 												
 		
-			if (rc.find(getSqlObtenerMandato(beanMandato)) && rc.size()>0) {
+			if (rc.find(getSqlObtenerMandato(beanMandato,null)) && rc.size()>0) {
 				Row fila = (Row) rc.get(0);
 				beanMandato = (CenMandatosCuentasBancariasBean) this.hashTableToBean(fila.getRow());
             }		
@@ -339,7 +356,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 	}
-	public Hashtable getMandato(CenMandatosCuentasBancariasBean beanMandato) throws ClsExceptions {
+	public Hashtable getMandato(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
 		Hashtable mandatoHashtable = null;
 		try {
 			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
@@ -347,12 +364,32 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			
 			RowsContainer rc = new RowsContainer(); 												
 		
-			if (rc.find(getSqlObtenerMandato(beanMandato)) && rc.size()>0) {
+			if (rc.find(getSqlObtenerMandato(beanMandato,isFirmado)) && rc.size()>0) {
 				Row fila = (Row) rc.get(0);
 				mandatoHashtable = fila.getRow();
             }		
 			
 			return mandatoHashtable;
+			
+		} catch(Exception e) {			
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+		}
+	}     	
+	public List<Hashtable> getMandatos(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
+		List<Hashtable> mandatosList = null;
+		try {
+			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
+			RowsContainer rc = new RowsContainer(); 												
+			mandatosList = new ArrayList<Hashtable>();
+			if (rc.find(getSqlObtenerMandato(beanMandato,isFirmado)) && rc.size()>0) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(0);
+					mandatosList.add(fila.getRow());
+				}
+				
+            }		
+			
+			return mandatosList;
 			
 		} catch(Exception e) {			
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
