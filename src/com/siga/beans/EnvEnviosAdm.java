@@ -939,12 +939,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
+	    	    			
 	    	    		}
 	    	    		
 	    	    		if(bean instanceof ScsDesignaBean){	    	    			
 	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
 	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    			
 	    	    		}
 	    	    		
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -982,12 +984,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, false);
+	    	    			
 	    	    		}
 	    	    		
 	    	    		if(bean instanceof ScsDesignaBean){	    	    			
 	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
 	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    			  
 	    	    		}
 	    	    			    	    		
 	    	    		String sAsunto = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
@@ -1030,50 +1034,93 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      * @param bSms
      */
     public void obtenerDatosEnvioScsEJGBean (Hashtable ejgHashtable, Hashtable htDatosEnvio, boolean bSms) {
-    	if(ejgHashtable.get("NUMERO_EJG")!=null)
-    		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
-		
-		if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
-			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
-		else
-			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1","");
-		
-		if(ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO")!=null)
-			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
-		else
-			htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2","");
-		
-		if(ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO")!=null)
-			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
-		else
-			htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
-		
-		if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
-			String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
-			if(telefonoDespacho.length()>13 && bSms)
-				telefonoDespacho = telefonoDespacho.substring(0,13);
-			htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
-		}else
-			htDatosEnvio.put("EJG_TLFNO", "");
-		
-		if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
-			String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
-			if(dictamenEJG.length()>10 && bSms)
-				dictamenEJG = dictamenEJG.substring(0,10);			
-			htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
-		}else{
-			htDatosEnvio.put("EJG_DICTAM","");	    	    					    	    				
-		}	
-		
-		if(ejgHashtable.get("NUM_PROCEDIMIENTO_EJG")!=null)
-			htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO", (String) ejgHashtable.get("NUM_PROCEDIMIENTO_EJG"));
-		else
-			htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO","");
-		
-		if(ejgHashtable.get("ASUNTO_EJG")!=null)
-			htDatosEnvio.put("EJG_ASUNTO", (String) ejgHashtable.get("ASUNTO_EJG"));
-		else
-			htDatosEnvio.put("EJG_ASUNTO","");
+    	
+    	//Recorro el hashtable de entrada para que estén todas las etiquetas disponibles no solamente estas
+    	Enumeration e = ejgHashtable.keys();
+                               
+        while (e.hasMoreElements())
+        {
+            String key =  (String) e.nextElement();
+            
+            //Elimino las áreas (son vectores), no se van a mostrar las áreas en el mail ni en el sms
+            if(ejgHashtable.get(key) instanceof String){
+                               
+	            String valor = (String)ejgHashtable.get(key);
+	            htDatosEnvio.put(key, valor);
+
+	            if(key.equalsIgnoreCase("NUMERO_EJG")){
+	            	
+	            	if(ejgHashtable.get("NUMERO_EJG")!=null)
+	            		htDatosEnvio.put("EJG_NU",(String) ejgHashtable.get("NUMERO_EJG"));
+	            }
+	            
+				if(key.equalsIgnoreCase("N_APELLI_1_LETRADO_DESIGNADO")){
+					
+					if(ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO")!=null)
+						htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1",(String) ejgHashtable.get("N_APELLI_1_LETRADO_DESIGNADO"));
+					else
+						htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APELLI_1","");
+				}
+				
+				if(key.equalsIgnoreCase("N_APEL_1_2_LETRADO_DESIGNADO")){
+					
+					if(ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO")!=null)
+						htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2",(String) ejgHashtable.get("N_APEL_1_2_LETRADO_DESIGNADO"));
+					else
+						htDatosEnvio.put("EJG_LETRADODES_NOMBRE_APEL_1_2","");
+				}
+				
+				if(key.equalsIgnoreCase("APEL_1_2_N_LETRADO_DESIGNADO")){
+					
+					if(ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO")!=null)
+						htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE",(String) ejgHashtable.get("APEL_1_2_N_LETRADO_DESIGNADO"));
+					else
+						htDatosEnvio.put("EJG_LETRADODES_APEL_1_2_NOMBRE","");
+				}
+				
+				if(key.equalsIgnoreCase("TELEFONODESPACHO_LET_DESIGNADO")){
+				
+					if(ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO")!=null){
+						String telefonoDespacho =  (String) ejgHashtable.get("TELEFONODESPACHO_LET_DESIGNADO");
+						if(telefonoDespacho.length()>13 && bSms)
+							telefonoDespacho = telefonoDespacho.substring(0,13);
+						htDatosEnvio.put("EJG_TLFNO", telefonoDespacho);
+					}else
+						htDatosEnvio.put("EJG_TLFNO", "");
+				}
+				
+				if(key.equalsIgnoreCase("DESC_TIPODICTAMENEJG")){
+					
+					if(ejgHashtable.get("DESC_TIPODICTAMENEJG")!=null){
+						String dictamenEJG =  (String) ejgHashtable.get("DESC_TIPODICTAMENEJG");
+						if(dictamenEJG.length()>10 && bSms)
+							dictamenEJG = dictamenEJG.substring(0,10);			
+						htDatosEnvio.put("EJG_DICTAM",dictamenEJG);
+					}else{
+						htDatosEnvio.put("EJG_DICTAM","");	    	    					    	    				
+					}	
+				}
+				
+				if(key.equalsIgnoreCase("NUM_PROCEDIMIENTO_EJG")){
+					
+					if(ejgHashtable.get("NUM_PROCEDIMIENTO_EJG")!=null)
+						htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO", (String) ejgHashtable.get("NUM_PROCEDIMIENTO_EJG"));
+					else
+						htDatosEnvio.put("EJG_NUMERO_PROCEDIMIENTO","");
+				}
+				if(key.equalsIgnoreCase("ASUNTO_EJG")){
+					
+					if(ejgHashtable.get("ASUNTO_EJG")!=null)
+						htDatosEnvio.put("EJG_ASUNTO", (String) ejgHashtable.get("ASUNTO_EJG"));
+					else
+						htDatosEnvio.put("EJG_ASUNTO","");
+				}
+	            
+
+            } //Fin si es un string   
+                           
+      } //Fin lectura etiquetas
+
     }
     
     /**
