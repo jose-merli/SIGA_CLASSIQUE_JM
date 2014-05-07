@@ -9,7 +9,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
-	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos, idFicheroFirma;
+	private String firmaFecha, firmaLugar, idFicheroFirma;
 
 	public String getIdFicheroFirma() {
 		return idFicheroFirma;
@@ -34,8 +34,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 	static public final String C_ORIGEN = "ORIGEN";	
 	static public final String C_DESCRIPCION = "DESCRIPCION";
 	static public final String C_FIRMA_FECHA = "FIRMA_FECHA";
-	static public final String C_FIRMA_FECHA_HORA = "FIRMA_FECHA_HORA";
-	static public final String C_FIRMA_FECHA_MINUTOS = "FIRMA_FECHA_MINUTOS";
 	static public final String C_FIRMA_LUGAR = "FIRMA_LUGAR";	
 	static public final String C_IDFICHEROFIRMA = "IDFICHEROFIRMA";
 	
@@ -51,8 +49,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.descripcion = formAnexo.getDescripcion();
 		this.firmaFecha = formAnexo.getFirmaFecha();
 		this.firmaLugar = formAnexo.getFirmaLugar();
-		this.firmaFechaHora = formAnexo.getFirmaFechaHora();
-		this.firmaFechaMinutos = formAnexo.getFirmaFechaMinutos();
 		this.idFicheroFirma = formAnexo.getIdFichero();
 	}
 	
@@ -69,8 +65,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.descripcion = "";
 		this.firmaFecha = "";
 		this.firmaLugar = "";
-		this.firmaFechaHora = "";
-		this.firmaFechaMinutos = "";
 		this.idFicheroFirma = "";
 	}
 	
@@ -84,22 +78,6 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 
 	public void setUsuCreacion(String usuCreacion) {
 		this.usuCreacion = usuCreacion;
-	}
-
-	public String getFirmaFechaHora() {
-		return firmaFechaHora;
-	}
-
-	public void setFirmaFechaHora(String firmaFechaHora) {
-		this.firmaFechaHora = firmaFechaHora;
-	}
-
-	public String getFirmaFechaMinutos() {
-		return firmaFechaMinutos;
-	}
-
-	public void setFirmaFechaMinutos(String firmaFechaMinutos) {
-		this.firmaFechaMinutos = firmaFechaMinutos;
 	}
 
 	public void setIdInstitucion(String idInstitucion) {

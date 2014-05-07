@@ -172,10 +172,8 @@
 				}		
 				
 				String sFirmaFecha = "";
-				if (anexoBean.getFirmaFecha()!=null && !anexoBean.getFirmaFecha().equals("") &&
-					anexoBean.getFirmaFechaHora()!=null && !anexoBean.getFirmaFechaHora().equals("") &&
-					anexoBean.getFirmaFechaMinutos()!=null && !anexoBean.getFirmaFechaMinutos().equals("")) {
-					sFirmaFecha = anexoBean.getFirmaFecha() + " " + anexoBean.getFirmaFechaHora() + ":" + anexoBean.getFirmaFechaMinutos();
+				if (anexoBean.getFirmaFecha()!=null && !anexoBean.getFirmaFecha().equals("")) {
+					sFirmaFecha = anexoBean.getFirmaFecha();
 				}
 				
 				FilaExtElement[] elementos = new FilaExtElement[1];

@@ -69,37 +69,37 @@
 			
 			if (!<%=bConsultaFirma%>) {
 				controlFirma();
-			}else{
-				if (jQuery("#firmado")[0].checked) {
-					jQuery("#divFicheros").css("display", "block");
-				}else{
-					jQuery("#divFicheros").css("display", "none");	
-				}
+				
+			} else {
+				controlFirmado();
 			}
 		});			
 		
 		function controlFirma() {
 			if (jQuery("#firmado")[0].checked) {
-				jQuery("#divFicheros").css("display", "block");
 				jQuery("#firmaFecha").removeAttr("disabled");	
 				jQuery("#firmaFecha-datepicker-trigger").show();
-				jQuery("#firmaFechaHora").removeAttr("disabled");
-				jQuery("#firmaFechaMinutos").removeAttr("disabled");
 				jQuery("#firmaLugar").removeAttr("disabled");
 				
 			} else {
-				jQuery("#divFicheros").css("display", "none");
 				jQuery("#firmaFecha").val("");
 				jQuery("#firmaFecha").attr("disabled","disabled");
 				jQuery("#firmaFecha-datepicker-trigger").hide();
-				jQuery("#firmaFechaHora").val("");
-				jQuery("#firmaFechaHora").attr("disabled","disabled");
-				jQuery("#firmaFechaMinutos").val("");
-				jQuery("#firmaFechaMinutos").attr("disabled","disabled");
 				jQuery("#firmaLugar").val("");
 				jQuery("#firmaLugar").attr("disabled","disabled");			
 			}
+			
+			controlFirmado();
 		}
+		
+		function controlFirmado() {
+			if (jQuery("#firmado")[0].checked) {				
+				jQuery("#divFicheros").show();
+				
+			} else {
+				jQuery("#divFicheros").hide();
+			}
+		}			
 		
 		// Asociada al boton Restablecer
 		function accionRestablecer(){		
@@ -120,31 +120,6 @@
 			if (jQuery("#firmado")[0].checked) {
 				if (jQuery("#firmaFecha").val()=="") {
 					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada'/>"+ '\n';				
-				}
-				
-				if (trim(jQuery("#firmaFechaHora").val())=="" || trim(jQuery("#firmaFechaMinutos").val())=="") {
-					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';	
-					
-				} else {
-					if (isNaN(jQuery("#firmaFechaHora").val()) || isNaN(jQuery("#firmaFechaMinutos").val())) {
-						errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';
-						
-					} else {
-						var hora = trim(jQuery("#firmaFechaHora").val());
-						var minutos = trim(jQuery("#firmaFechaMinutos").val());
-						
-						if (hora.length==1) {
-							jQuery("#firmaFechaHora").val("0" + hora);
-						}
-						
-						if (minutos.length==1) {
-							jQuery("#firmaFechaMinutos").val("0" + minutos);
-						}
-						
-						if (hora<0 || hora>23 || minutos<0 || minutos>59) {
-							errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';	
-						}
-					}
 				}
 				
 				if (trim(jQuery("#firmaLugar").val())=="") {
@@ -217,29 +192,8 @@
 			<tr>
 				<td rowspan="3">&nbsp;</td>
 				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
-				<td style="padding:0px">
-					<table cellpadding="5" border="0">
-						<tr>
-							<td>
-								<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" 
-									valorInicial="<%=beanMandato.getFirmaFecha()%>" 
-									disabled="<%=sConsultaFirma%>" />
-							</td>
-							
-							<td class="labelText" width="50px"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.horaFirmada"/>&nbsp;(*)</td>
-							<td>
-								<html:text name="MandatosCuentasBancariasForm" property="firmaFechaHora" styleId="firmaFechaHora" 
-									onkeypress="return soloDigitos(event);" value="<%=beanMandato.getFirmaFechaHora()%>" 
-									style='width:20px;' maxlength="2" 
-									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />					
-								:
-								<html:text name="MandatosCuentasBancariasForm" property="firmaFechaMinutos" styleId="firmaFechaMinutos" 
-									onkeypress="return soloDigitos(event);" value="<%=beanMandato.getFirmaFechaMinutos()%>" 
-									style='width:20px;' maxlength="2" 
-									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />	
-							</td>
-						</tr>
-					</table>
+				<td>
+					<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" valorInicial="<%=beanMandato.getFirmaFecha()%>" disabled="<%=sConsultaFirma%>" />
 				</td>
 			</tr>
 			
@@ -251,9 +205,6 @@
 						styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
 				</td>				
 			</tr>
-			
-			
-			
 			
 			<tr>
 				

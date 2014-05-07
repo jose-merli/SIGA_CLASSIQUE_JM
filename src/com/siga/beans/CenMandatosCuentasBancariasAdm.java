@@ -45,8 +45,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_IDPOBLACION + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'HH24') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_HORA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
@@ -169,8 +167,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setDeudorPoblacion(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION));
 			bean.setFirmaFecha(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA));
 			bean.setIdFicheroFirma(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA));
-			bean.setFirmaFechaHora(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_HORA));
-			bean.setFirmaFechaMinutos(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS));
 			bean.setFirmaLugar(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR)); 
 			bean.setFechaUso(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHAUSO)); 			
 			bean.setIban(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_IBAN)); 
@@ -230,8 +226,6 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION, beanMandato.getDeudorPoblacion());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA, beanMandato.getFirmaFecha());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA, beanMandato.getIdFicheroFirma());
-			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_HORA, beanMandato.getFirmaFechaHora());
-			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS, beanMandato.getFirmaFechaMinutos());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR, beanMandato.getFirmaLugar());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_FECHAUSO, beanMandato.getFechaUso());
 			UtilidadesHash.set(htMandato, CenMandatosCuentasBancariasBean.C_IBAN, beanMandato.getIban());
@@ -405,10 +399,8 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 		try {
 			// Calculo la fecha de la firma
 			String sFirmaFecha = "NULL";
-			if (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("") && 
-					beanMandato.getFirmaFechaHora()!=null && !beanMandato.getFirmaFechaHora().equals("") &&
-					beanMandato.getFirmaFechaMinutos()!=null && !beanMandato.getFirmaFechaMinutos().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanMandato.getFirmaFecha() + " " + beanMandato.getFirmaFechaHora() + ":" + beanMandato.getFirmaFechaMinutos() + ":00', 'DD/MM/YYYY HH24:MI:SS')";
+			if (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("")) {
+				sFirmaFecha = "TO_DATE('" + beanMandato.getFirmaFecha() + "', 'DD/MM/YYYY')";
 			}
 			
 			// Calculo el lugar de la firma

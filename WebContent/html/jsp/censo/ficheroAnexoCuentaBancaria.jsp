@@ -69,40 +69,44 @@
 			
 			if (!<%=bConsultaFirma%>) {
 				controlFirma();
-			}else{
-				if (jQuery("#firmado")[0].checked) {
-					jQuery("#divFicheros").css("display", "block");
-				}else{
-					jQuery("#divFicheros").css("display", "none");	
-				}
+			} else {
+				controlFirmado();
 			}
-		});			
-		
+		});					
 		
 		function controlFirma() {
-			if (jQuery("#firmado")[0].checked) {
-				jQuery("#divFicheros").css("display", "block");
+			if (jQuery("#firmado")[0].checked) {				
 				jQuery("#firmaFecha").removeAttr("disabled");	
 				jQuery("#firmaFecha-datepicker-trigger").show();
-				jQuery("#firmaFechaHora").removeAttr("disabled");
-				jQuery("#firmaFechaMinutos").removeAttr("disabled");
 				jQuery("#firmaLugar").removeAttr("disabled");
-				jQuery("#origen").removeAttr("disabled");
-				jQuery("#descripcion").removeAttr("disabled");
 				
 			} else {
-				jQuery("#divFicheros").css("display", "none");
+				jQuery("#firmaFecha").val("");
 				jQuery("#firmaFecha").attr("disabled","disabled");				
-				jQuery("#firmaFecha-datepicker-trigger").hide();	
-				jQuery("#firmaFechaHora").attr("disabled","disabled");
-				jQuery("#firmaFechaMinutos").attr("disabled","disabled");
+				jQuery("#firmaFecha-datepicker-trigger").hide();
+				jQuery("#firmaLugar").val("");
 				jQuery("#firmaLugar").attr("disabled","disabled");
-				jQuery("#origen").attr("disabled","disabled");
-				jQuery("#descripcion").attr("disabled","disabled");							
 			}
+			
+			controlFirmado();
 		}
 		
-		
+		function controlFirmado() {
+			if (jQuery("#firmado")[0].checked) {				
+				jQuery("#fechaFirmadaSinAsterisco").hide();
+				jQuery("#fechaFirmadaConAsterisco").show();
+				jQuery("#lugarFirmaSinAsterisco").hide();
+				jQuery("#lugarFirmaConAsterisco").show();
+				jQuery("#divFicheros").show();
+				
+			} else {
+				jQuery("#fechaFirmadaSinAsterisco").show();
+				jQuery("#fechaFirmadaConAsterisco").hide();
+				jQuery("#lugarFirmaSinAsterisco").show();
+				jQuery("#lugarFirmaConAsterisco").hide();
+				jQuery("#divFicheros").hide();
+			}
+		}		
 		
 		// Asociada al boton Restablecer
 		function accionRestablecer(){		
@@ -118,49 +122,25 @@
 			sub();
 			
 			// Realizo las validaciones de la pagina
-			var errores = "";			
+			var errores = "";
+			
+			if (trim(jQuery("#origen").val())=="") {
+				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.origenFirma'/>"+ '\n';				
+			}
+
+			if (trim(jQuery("#descripcion").val())=="") {
+				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.descripcionFirma'/>"+ '\n';				
+			}			
 			
 			if (jQuery("#firmado")[0].checked) {
 				if (jQuery("#firmaFecha").val()=="") {
 					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada'/>"+ '\n';				
 				}
 				
-				if (trim(jQuery("#firmaFechaHora").val())=="" || trim(jQuery("#firmaFechaMinutos").val())=="") {
-					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';	
-					
-				} else {
-					if (isNaN(jQuery("#firmaFechaHora").val()) || isNaN(jQuery("#firmaFechaMinutos").val())) {
-						errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';
-						
-					} else {
-						var hora = trim(jQuery("#firmaFechaHora").val());
-						var minutos = trim(jQuery("#firmaFechaMinutos").val());
-						
-						if (hora.length==1) {
-							jQuery("#firmaFechaHora").val("0" + hora);
-						}
-						
-						if (minutos.length==1) {
-							jQuery("#firmaFechaMinutos").val("0" + minutos);
-						}
-						
-						if (hora<0 || hora>23 || minutos<0 || minutos>59) {
-							errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.bancos.mandatos.anexos.horaFirmada'/>"+ '\n';	
-						}
-					}
-				}
-				
 				if (trim(jQuery("#firmaLugar").val())=="") {
 					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.lugarFirma'/>"+ '\n';				
 				}
-				
-				if (trim(jQuery("#origen").val())=="") {
-					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.origenFirma'/>"+ '\n';				
-				}
-
-				if (trim(jQuery("#descripcion").val())=="") {
-					errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.descripcionFirma'/>"+ '\n';				
-				}	
+									
 				if(document.forms['AnexosCuentasBancariasForm'].theFile && document.forms['AnexosCuentasBancariasForm'].theFile.value && !TestFileType(document.forms['AnexosCuentasBancariasForm'].theFile.value, ['DOC','DOCX','PDF'])){
 					fin();
 					return false;
@@ -219,52 +199,6 @@
 		<html:hidden name="AnexosCuentasBancariasForm" property="idAnexo" styleId="idAnexo" value="<%=beanAnexo.getIdAnexo()%>" />
 		
 		<table cellpadding="5" border="0">
-			<tr>
-				<td>
-					<input type="checkbox" id="firmado" name="firmado" 
-						<%if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {%> checked <%}%> 
-						<%if (bConsultaFirma) {%> disabled <%}%>>
-				</td>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/>&nbsp;(*)</td>
-			</tr>
-			
-			<tr>
-				<td rowspan="5">&nbsp;</td>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
-				<td style="padding:0px">
-					<table cellpadding="5" border="0">
-						<tr>
-							<td>				
-								<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" 
-									valorInicial="<%=beanAnexo.getFirmaFecha()%>" 
-									disabled="<%=sConsultaFirma%>" />
-							</td>
-							
-							<td class="labelText" width="50px"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.horaFirmada"/>&nbsp;(*)</td>
-							<td>
-								<html:text name="AnexosCuentasBancariasForm" property="firmaFechaHora" styleId="firmaFechaHora" 
-									onkeypress="return soloDigitos(event);" value="<%=beanAnexo.getFirmaFechaHora()%>" 
-									style='width:20px;' maxlength="2" 
-									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />					
-								:
-								<html:text name="AnexosCuentasBancariasForm" property="firmaFechaMinutos" styleId="firmaFechaMinutos" 
-									onkeypress="return soloDigitos(event);" value="<%=beanAnexo.getFirmaFechaMinutos()%>" 
-									style='width:20px;' maxlength="2" 
-									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />	
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
-				<td>
-					<html:text name="AnexosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
-						value="<%=beanAnexo.getFirmaLugar()%>" style='width:500px;' maxlength="100" 
-						styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
-				</td>				
-			</tr>
 			
 			<tr>
 				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.origenFirma"/>&nbsp;(*)</td>
@@ -286,15 +220,49 @@
 						value="<%=beanAnexo.getDescripcion()%>" styleClass="<%=sClaseConsultaFirma%>"
 						readonly="<%=bConsultaFirma%>"></html:textarea>
 				</td>				
-			</tr>				
-			
-			<tr>
+			</tr>			
 				
-				<td colspan="2">
+			<tr>
+				<td colspan="2" style="padding:0px">
+					<table cellpadding="5" border="0">
+						<tr>
+							<td>
+								<input type="checkbox" id="firmado" name="firmado" 
+									<%if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {%> checked <%}%> 
+									<%if (bConsultaFirma) {%> disabled <%}%>>
+							</td>
+							<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/></td>
+						</tr>						
 					
-					<%@ include file="/html/jsp/general/ficheros.jsp"%>												
-				</td>				
-			</tr>		
+						<tr>
+							<td rowspan="3">&nbsp;</td>							
+							<td class="labelText" id="fechaFirmadaSinAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/></td>
+							<td class="labelText" id="fechaFirmadaConAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
+							<td>				
+								<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" 
+									valorInicial="<%=beanAnexo.getFirmaFecha()%>" 
+									disabled="<%=sConsultaFirma%>" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="labelText" id="lugarFirmaSinAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/></td>
+							<td class="labelText" id="lugarFirmaConAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
+							<td>
+								<html:text name="AnexosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
+									value="<%=beanAnexo.getFirmaLugar()%>" style='width:500px;' maxlength="100" 
+									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
+							</td>				
+						</tr>				
+						
+						<tr>							
+							<td colspan="2">								
+								<%@ include file="/html/jsp/general/ficheros.jsp"%>												
+							</td>				
+						</tr>	
+					</table>
+				</td>
+			</tr>				
 		</table>			
 	</html:form>		
 	

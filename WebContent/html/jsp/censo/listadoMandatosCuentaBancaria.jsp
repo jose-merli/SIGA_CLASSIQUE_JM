@@ -123,10 +123,8 @@
 					sNombreMandato = UtilidadesString.getMensajeIdioma(usuario, "censo.fichaCliente.bancos.mandatos.nombreProductos");
 				
 				String sFirmaFecha = "";
-				if (mandatoBean.getFirmaFecha()!=null && !mandatoBean.getFirmaFecha().equals("") &&
-					mandatoBean.getFirmaFechaHora()!=null && !mandatoBean.getFirmaFechaHora().equals("") &&
-					mandatoBean.getFirmaFechaMinutos()!=null && !mandatoBean.getFirmaFechaMinutos().equals("")) {
-					sFirmaFecha = mandatoBean.getFirmaFecha() + " " + mandatoBean.getFirmaFechaHora() + ":" + mandatoBean.getFirmaFechaMinutos();
+				if (mandatoBean.getFirmaFecha()!=null && !mandatoBean.getFirmaFecha().equals("")) {
+					sFirmaFecha = mandatoBean.getFirmaFecha();
 				}
 %>
 				<siga:FilaConIconos 

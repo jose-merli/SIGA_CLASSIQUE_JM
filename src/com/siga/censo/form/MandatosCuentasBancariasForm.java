@@ -9,7 +9,7 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, usuCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;
 	private String deudorTipoId, deudorId, deudorNombre, deudorDomicilio, deudorCodigoPostal, deudorIdPais, deudorPais, deudorIdProvincia, deudorProvincia, deudorIdPoblacion, deudorPoblacion, deudorPoblacionExtranjera;
-	private String firmaFecha, firmaLugar, firmaFechaHora, firmaFechaMinutos,idFichero;
+	private String firmaFecha, firmaLugar, idFichero;
 	private String fechaUso, iban, bic, banco;		
 	private String modoMandato, nombrePersona, numero;
 	private String[] modosMandato = {"mandatoCuentaBancaria", "ficherosMandatoCuentaBancaria"};		
@@ -32,22 +32,6 @@ public class MandatosCuentasBancariasForm  extends FicheroForm {
 
 	public String getDeudorPoblacionExtranjera() {
 		return deudorPoblacionExtranjera;
-	}
-
-	public String getFirmaFechaHora() {
-		return firmaFechaHora;
-	}
-
-	public void setFirmaFechaHora(String firmaFechaHora) {
-		this.firmaFechaHora = firmaFechaHora;
-	}
-
-	public String getFirmaFechaMinutos() {
-		return firmaFechaMinutos;
-	}
-
-	public void setFirmaFechaMinutos(String firmaFechaMinutos) {
-		this.firmaFechaMinutos = firmaFechaMinutos;
 	}
 
 	public String getAcreedorTipoId() {

@@ -20,8 +20,6 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" NULL AS " + CenAnexosCuentasBancariasBean.C_ORIGEN + ", " + 
 										" NULL AS " + CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " + 
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'HH24') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_HORA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " AS " + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
@@ -40,8 +38,6 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_ORIGEN + "," +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_DESCRIPCION + "," +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'HH24') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_HORA + ", " +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'MI') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS + ", " +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + "," +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
@@ -101,8 +97,6 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setOrigen(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_ORIGEN)); 
 			bean.setDescripcion(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_DESCRIPCION));
 			bean.setFirmaFecha(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA));
-			bean.setFirmaFechaHora(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_HORA)); 
-			bean.setFirmaFechaMinutos(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS)); 
 			bean.setFirmaLugar(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR)); 
 			bean.setIdFicheroFirma(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION));
@@ -132,8 +126,6 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_ORIGEN, beanAnexo.getOrigen());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_DESCRIPCION, beanAnexo.getDescripcion());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA, beanAnexo.getFirmaFecha());
-			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_HORA, beanAnexo.getFirmaFechaHora());
-			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FIRMA_FECHA_MINUTOS, beanAnexo.getFirmaFechaMinutos());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR, beanAnexo.getFirmaLugar());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA, beanAnexo.getIdFicheroFirma());
 			UtilidadesHash.set(htAnexo, CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION, beanAnexo.getFechaMod());
@@ -285,10 +277,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		try {
 			// Calculo la fecha de la firma
 			String sFirmaFecha = "NULL";
-			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("") && 
-					beanAnexo.getFirmaFechaHora()!=null && !beanAnexo.getFirmaFechaHora().equals("") &&
-					beanAnexo.getFirmaFechaMinutos()!=null && !beanAnexo.getFirmaFechaMinutos().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + " " + beanAnexo.getFirmaFechaHora() + ":" + beanAnexo.getFirmaFechaMinutos() + ":00', 'DD/MM/YYYY HH24:MI:SS')";
+			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
+				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + "', 'DD/MM/YYYY')";
 			}
 			
 			// Calculo el lugar de la firma
@@ -340,10 +330,8 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		try {
 			// Calculo la fecha de la firma
 			String sFirmaFecha = "NULL";
-			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("") && 
-					beanAnexo.getFirmaFechaHora()!=null && !beanAnexo.getFirmaFechaHora().equals("") &&
-					beanAnexo.getFirmaFechaMinutos()!=null && !beanAnexo.getFirmaFechaMinutos().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + " " + beanAnexo.getFirmaFechaHora() + ":" + beanAnexo.getFirmaFechaMinutos() + ":00', 'DD/MM/YYYY HH24:MI:SS')";
+			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
+				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + "', 'DD/MM/YYYY')";
 			}
 			
 			// Calculo el lugar de la firma
