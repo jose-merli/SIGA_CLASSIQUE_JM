@@ -90,6 +90,13 @@
 		
 		jQuery(function(){						
 			controlarAutorizacion("<%=beanMandato.getEsquema()%>");
+			
+			calcularAltura();
+			
+			// INICIO = Quitar este codigo para habilitar COR1 y B2B
+			jQuery("input[id=esquema][value=1]").attr("disabled","disabled");
+			jQuery("input[id=esquema][value=2]").attr("disabled","disabled");
+			// FIN = Quitar este codigo para habilitar COR1 y B2B
 		});	
 		
 		function controlarAutorizacion(valorEsquema) {
@@ -179,7 +186,7 @@
 	</script>
 </head>
 
-<body onload="calcularAltura()" >
+<body>
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0" height="32px">
 		<tr>
