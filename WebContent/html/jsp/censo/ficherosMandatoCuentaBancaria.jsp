@@ -143,7 +143,9 @@
 				int i=j+1;
 				CenAnexosCuentasBancariasBean anexoBean = (CenAnexosCuentasBancariasBean)vListadoAnexos.get(j);
 				
-				// JPT: Siempre se puede modificar los datos de los ficheros de anexos			
+				// JPT: 
+				// - Siempre se puede modificar los datos de los ficheros de anexos
+				// - Se pueden borrar los anexos que no sean automaticos
 				//	
 				// - Si tiene fecha de uso, pero no tiene fecha de firma:
 				// 		a. No se puede modificar los datos de la informacion del mandato
@@ -165,7 +167,11 @@
 				if (anexoBean.getIdAnexo()!=null && !anexoBean.getIdAnexo().equals("")) {
 					sTipoAnexo = UtilidadesString.getMensajeIdioma(usuario, "censo.fichaCliente.bancos.mandatos.anexos.tipo.anexo");
 					if (modoMandato.equals("editar")) {
-						botonesAnexo += ",E,B";
+						if (anexoBean.getEsAnexo()!=null && anexoBean.getEsAnexo().equals("1")) {
+							botonesAnexo += ",E";
+						} else {
+							botonesAnexo += ",E,B";
+						}
 					}
 					
 				} else {

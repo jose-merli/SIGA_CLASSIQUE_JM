@@ -28,7 +28,9 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION + " AS " + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION + " AS " + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN;
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN + ", " +
+										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
+										" NULL AS " + CenAnexosCuentasBancariasBean.C_ESAUTOMATICO;
 	
 	private String sqlMandatosFrom = " FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + " MANDATOS ";
 	
@@ -41,12 +43,14 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_DESCRIPCION + "," +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + "," +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
+										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
 										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
 										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN;;
+										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN + ", " +
+										" NULL AS " + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
+										" ANEXOS." + CenAnexosCuentasBancariasBean.C_ESAUTOMATICO;
 	
 	private String sqlAnexosFrom = " FROM " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + " ANEXOS ";								
 			
@@ -102,7 +106,9 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setFirmaLugar(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR)); 
 			bean.setIdFicheroFirma(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenAnexosCuentasBancariasBean.C_USUMODIFICACION));			
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenAnexosCuentasBancariasBean.C_USUMODIFICACION));
+			bean.setFechaUso(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHAUSO));
+			bean.setEsAnexo(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_ESAUTOMATICO));
 			
 		} catch (Exception e) {
 			bean = null;
