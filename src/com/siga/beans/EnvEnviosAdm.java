@@ -990,7 +990,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    		if(bean instanceof ScsDesignaBean){	    	    			
 	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
 	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
-	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, false);
 	    	    			  
 	    	    		}
 	    	    			    	    		
@@ -1006,6 +1006,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			ScsEJGBean ejgBean = (ScsEJGBean)bean;
 	    	    			Hashtable ejgHashtable =  ejgBean.getOriginalHash();	    	    			
 	    	    			this.obtenerDatosEnvioScsEJGBean(ejgHashtable!=null?ejgHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    		}
+	    	    		
+	    	    		if(bean instanceof ScsDesignaBean){	    	    			
+	    	    			ScsDesignaBean designaBean = (ScsDesignaBean)bean;
+	    	    			Hashtable designaHashtable =  designaBean.getOriginalHash();	    	    			
+	    	    			this.obtenerDatosEnvioScsEJGBean(designaHashtable!=null?designaHashtable:new Hashtable(), htDatosEnvio, true);
+	    	    			  
 	    	    		}
 
 	    	    		String sCuerpo = sustituirEtiquetas(cpBean.getValor(),htDatosEnvio);
