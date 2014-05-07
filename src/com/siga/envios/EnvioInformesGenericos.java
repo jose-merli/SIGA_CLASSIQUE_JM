@@ -612,7 +612,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			boolean isGenerarInformeSinDireccion = generarInformeSinDireccion != null
 					&& generarInformeSinDireccion.equalsIgnoreCase("S");
 					
-			String tipoDestinatarioInforme = (String) datosInforme.get("destinatarios"); //MJM
+			String tipoDestinatarioInforme = (String) datosInforme.get("tipoDestinatarioInforme"); 
 //			String languageInstitucion = (String) usrBean
 //					.getLanguageInstitucion();
 			//quitar el idioma de la siguiente consulta, sacarlo abajo
